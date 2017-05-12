@@ -1,0 +1,37 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion '25.0.2'
+    defaultConfig {
+        applicationId "com.omarea.vboot"
+        minSdkVersion 22
+        targetSdkVersion 25
+        versionCode 192
+        versionName "5.1.8_Beta"
+    }
+    buildTypes {
+        release {
+            zipAlignEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            minifyEnabled false
+        }
+        debug {
+            zipAlignEnabled true
+        }
+    }
+    productFlavors {
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    //provided files('lib/XposedBridgeApi-54.jar')
+    provided files('lib/api-82.jar')
+    //provided files('lib/api-82-sources.jar')
+    //provided 'de.robv.android.xposed:ap:82'
+    compile 'com.android.support:appcompat-v7:25.2.0'
+    compile 'com.android.support:support-v4:25.2.0'
+    compile 'com.android.support:design:25.2.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta5'
+}

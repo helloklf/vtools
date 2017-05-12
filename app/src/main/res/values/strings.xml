@@ -1,0 +1,192 @@
+<resources>
+    <string-array name="app_desktop">
+        <item>com.teslacoilsw.launcher</item>
+    </string-array>
+
+    <string name="app_name">微工具箱</string>
+
+    <string name="shortcut_clear">内存清理</string>
+    <string name="shortcut_p1">省电模式 (min~0.9Ghz)</string>
+    <string name="shortcut_p2">均衡模式 (min~1.4Ghz)</string>
+    <string name="shortcut_p3">性能模式 (min~1.8Ghz)</string>
+    <string name="shortcut_p4">极速模式 (1.2Ghz~∞)</string>
+    <string name="shortcut_systemtoggle">切换系统</string>
+
+    <string name="accessibility_service_description">
+        "<span>微工具箱后台服务</span>"
+        "<br />"
+        "<span>功能如下：</span>"
+        "<br />"
+        "<span>1.后台管理 - 自动优化后台应用</span>"
+        "<br />"
+        "<span>2.动态响应 - 根据应用场景切换性能配置</span>"
+        "<br />"
+        "<span>3.静默安装 - 安装应用时自动点击</span>"
+        "<br />"
+        "<br />"
+    "<span>具体功能，请在设置中配置。</span>"
+    </string>
+
+    <string name="autoboosterhelp">
+        "<b>配置说明：</b>"
+
+        "<span>默认后台：由系统自动管理</span>"
+
+        "<span>阻止后台：不允许后台，离开主界面立即结束</span>"
+
+        "<span>可能会导致应用意外后台时被强制终止！</span>"
+    </string>
+
+    <string name="defaultconfighelp">
+        "<b>预设-标准模式(808)：</b>"
+        "<span>\r\n 默认模式 4x384 ~ 4x1248Mhz</span>"
+        "<span>\r\n 游戏模式 4x384 ~ 4xMax</span>"
+        "<span>\r\n 省电模式 4x384 ~ 4x864Mhz</span>"
+        "<span>\r\n 充电状态电量超过85%自动使用游戏模式！</span>"
+    </string>
+    <string name="defaultconfighelp_820">
+        "<b>预设-标准模式(820)：</b>"
+        "<span>\r\n 默认模式 4x300 ~ 4x1555Mhz</span>"
+        "<span>\r\n 游戏模式 4x300 ~ 4x1824Mhz</span>"
+        "<span>\r\n 省电模式 4x300 ~ 4x960Mhz</span>"
+        "<span>\r\n 电源模式 4x1248 ~ Max</span>"
+    </string>
+
+    <string name="defaultconfighelp_bigcore">
+        "<b>预设-更高性能(808)：</b>"
+        "<span>\r\n 默认模式 4x384 ~ 4xMax</span>"
+        "<span>\r\n 游戏模式 4x384 ~ 6xMax</span>"
+        "<span>\r\n 省电模式 4x384 ~ 4x864Mhz</span>"
+        "<span>\r\n 充电状态电量超过85%自动使用游戏模式！</span>"
+    </string>
+    <string name="defaultconfighelp_bigcore_820">
+        "<b>预设-更高性能(820)：</b>"
+        "<span>\r\n 默认模式 4x300 ~ 4x1824Mhz</span>"
+        "<span>\r\n 游戏模式 4x300 ~ Max</span>"
+        "<span>\r\n 省电模式 4x300 ~ 4x960Mhz</span>"
+        "<span>\r\n 电源模式 Max</span>"
+    </string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="menu_home">首页</string>
+    <string name="menu_vboot">双系统工具</string>
+    <string name="menu_cofig">性能配置</string>
+    <string name="menu_additional">附加功能</string>
+    <string name="menu_xposed">Xposed功能</string>
+    <string name="menu_autobooster">后台管理</string>
+    <string name="menu_img">备份还原</string>
+    <string name="menu_settings">软件设置</string>
+    <string name="menu_help">使用帮助</string>
+    <string name="menu_menu_title">学习交流</string>
+    <string name="menu_share">分享</string>
+    <string name="menu_feedback">反馈</string>
+
+    <string name="title_vbootresize">VBOOT容量调整</string>
+    <string name="title_activity_rom2zip">打包当前ROM</string>
+
+    <string name="action_shutdown">关闭手机</string>
+    <string name="action_reboot">重启手机</string>
+    <string name="action_hotreboot">热重启(不推荐)</string>
+    <string name="action_reboot_rec">重启到Recovery</string>
+    <string name="action_reboot_bl">重启到FastBoot</string>
+    <string name="action_reboot9008">重启到9008模式</string>
+
+
+    <string name="dataresize_waring">
+"<big>注意：</big>"
+        "<br />"
+        "<span>保险起见，建议备份手机上重要数据！</span>"
+        "<br />"
+        "<span>推荐容量：4000MB - 8000MB</span>"
+        "<span>　　　　　≈30-50个应用</span>"
+    </string>
+
+    <string name="helpmsg">
+        为确保软件稳定运行，需要允许软件 后台自启动、读写本地文件并锁定后台加入内存清理白名单。
+        "<br />"
+        对于MIUI等具有软件休眠机制的系统，还应对本软件单独设置，避免后台服务被暂停和挂起。
+    </string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">
+        "<span></span>"
+        "<font><big><b>更新内容 v5.1.8_BETA</b></big></font>"
+        "<span>1.修复附加功能中MIUI一键精简的Bug。</span>"
+        "<br />"
+        "<br />"
+        "<font><big><b>更新内容 v5.1.7_BETA</b></big></font>"
+        "<span>1.优化动态调频运作机制，不再修改系统文件。</span>"
+        "<span>2.附加功能增加MIUI一键精简。</span>"
+        "<br />"
+        "<br />"
+        "<font><big><b>更新内容 v5.1.6_BETA</b></big></font>"
+        "<span>1.修复部分系统开启动态响应时闪退。</span>"
+        "<span>2.附加功能增加删除锁屏密码。</span>"
+        "<span>3.后台管理增加离开应用时清理缓存选项。</span>"
+        "<br />"
+        "<br />"
+        "<font><big><b>更新内容 v5.1.5_BETA</b></big></font>"
+        "<span>1.后台服务增加电池保护功能。</span>"
+        "<span>2.增加电池损耗检测（需系统支持）。</span>"
+        "<span>3.Xposed增加更多应用dpi优化</span>"
+        "<br />"
+        "<br />"
+        "<font><big><b>更新内容 v5.1.2_BETA</b></big></font>"
+        "<span>1.修复温控删除导致摄像头切换缓慢。</span>"
+        "<br />"
+        "<br />"
+        "<font><big><b>更新内容 v5.1.1_BETA</b></big></font>"
+        "<span>1.UI细微调整调整。</span>"
+        "<span>2.修复分享和反馈功能。</span>"
+        "<span>3.增加QQ个性字体气泡去除（附加功能）。</span>"
+        "<span>4.增加温控删除（附加功能）。</span>"
+        "<span>5.增加脚本执行确认提示（附加功能）。</span>"
+        "<br />"
+        "<br />"
+        "<font><big><b>更新内容 v5.0.9_BETA</b></big></font>"
+        "<span>1.修复激活Xpose的功能时自动安装功能无效。</span>"
+        "<br />"
+        "<br />"
+        "<font><big><b>更新内容 v5.0.8_BETA</b></big></font>"
+        "<br />"
+        "<span>1.新增图标shortcut菜单：切换系统、性能模式。</span>"
+        "<br />"
+        "<span>2.修复调整DPI导致系统无法启动。</span>"
+        "<br />"
+        "<span>3.修复820设备在使用省电模式时CPU锁定上限频率。</span>"
+        "<br />"
+        "<span>4.FsTrim集成外部模块，以兼容大部分系统。</span>"
+        "<br />"
+        "<span>5.应用安装自动点击功能支持系统更广泛。</span>"
+        "<br />"
+        "<span>6.Xposed功能 新增王者荣耀高帧模式。</span>"
+        "<br />"
+        "<span>7.Xposed功能 新增修复DPI导致相机UI错误。</span>"
+        "<br />"
+        "<br />"
+    </string>
+
+    <string name="helpinfo">
+        "<font><big><b>使用说明</b></big></font>"
+        "<br />"
+        "<span>1.性能配置、后台管理、充电加速等功能均依赖于辅助服务，</span>"
+        "<span>   点击主界面右上角的齿轮按钮进入辅助功能设置页面，</span>"
+        "<span>   使用其中的功能需要辅助服务保持后台运行。</span>"
+        "<br />"
+        "<span>2.充电加速只对部分设备有效，对Nubia Z11效果显著</span>"
+        "<br />"
+        "<span>3.本工具不能创建双系统，使用系统切换需先刷双系统</span>"
+        "<br />"
+        "<span>4.本工具依赖ROOT权限和Busybox，请安装并授权使用</span>"
+        "<br />"
+        "<span>5.任何对系统的修改都有一定的风险，请谨慎操作</span>"
+        "<br />"
+        "<span>6.为何充电加速需要辅助服务？</span>"
+        "<span>为了少开一个后台服务而已，所以使用了和其它功能同一个服务</span>"
+        "<br />"
+        "<br />"
+    </string>
+
+</resources>

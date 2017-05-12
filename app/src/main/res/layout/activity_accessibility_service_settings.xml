@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:keepScreenOn="true"
+    tools:context="com.omarea.vboot.activity_accessibility_service_settings">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="56dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/vbootservice_state"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="0dp"
+                android:layout_marginTop="30dp"
+                android:background="#22888888"
+                android:gravity="center_horizontal"
+                android:padding="13dp"
+                android:paddingLeft="8dp"
+                android:text="" />
+
+            <GridLayout
+                android:id="@+id/vbootserviceSettings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/activity_horizontal_margin">
+
+                <Switch
+                    android:id="@+id/settings_autobooster"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_column="0"
+                    android:layout_row="1"
+                    android:gravity="left"
+                    android:padding="8dp"
+                    android:text="后台管理" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="0"
+                    android:layout_row="2"
+                    android:paddingLeft="8dp"
+                    android:text="离开主界面时自动终止黑名单应用，具体设置请在本应用后台管理中配"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <Switch
+                    android:id="@+id/settings_dynamic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_column="0"
+                    android:layout_marginTop="20dp"
+                    android:layout_row="3"
+                    android:gravity="left"
+                    android:padding="8dp"
+                    android:text="动态响应" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="0"
+                    android:layout_row="4"
+                    android:paddingLeft="8dp"
+                    android:text="为单个应用设置CPU、GPU频率，具体设置请在在本应用性能配置中配"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <Switch
+                    android:id="@+id/settings_autoinstall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_column="0"
+                    android:layout_marginTop="20dp"
+                    android:layout_row="5"
+                    android:gravity="left"
+                    android:padding="8dp"
+                    android:text="静默安装" />
+
+                <TextView
+                    android:id="@+id/textView11"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="0"
+                    android:layout_row="6"
+                    android:padding="8dp"
+                    android:text="安装应用时自动点击安装按钮，部分ROM有效"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <Switch
+                    android:id="@+id/settings_qc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_column="0"
+                    android:layout_marginTop="20dp"
+                    android:layout_row="7"
+                    android:gravity="left"
+                    android:padding="8dp"
+                    android:text="充电加速（试验性：部分设备有效）" />
+
+                <TextView
+                    android:id="@+id/textView13"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="0"
+                    android:layout_row="8"
+                    android:padding="8dp"
+                    android:text="尝试修改充电电流限制提高充电速度，会大量增加发热"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+
+                <Switch
+                    android:id="@+id/settings_bp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_column="0"
+                    android:layout_marginTop="20dp"
+                    android:layout_row="9"
+                    android:gravity="left"
+                    android:padding="8dp"
+                    android:text="电池保护（试验性：部分设备有效）" />
+
+                <TextView
+                    android:id="@+id/textView18"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="0"
+                    android:layout_row="10"
+                    android:padding="8dp"
+                    android:text="电池电量达到90%时停止充电以保护电池。（如果微工具箱辅助服务被杀，暂停充电后可能不会自动恢复！）"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+
+                <Switch
+                    android:id="@+id/settings_debugmode"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_column="0"
+                    android:layout_marginTop="20dp"
+                    android:layout_row="11"
+                    android:gravity="left"
+                    android:padding="8dp"
+                    android:text="测试模式" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="0"
+                    android:layout_row="12"
+                    android:padding="8dp"
+                    android:text="在后台切换模式和加速充电时，弹出提示信息"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <Switch
+                    android:id="@+id/settings_delaystart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_column="0"
+                    android:layout_marginTop="20dp"
+                    android:layout_row="13"
+                    android:gravity="left"
+                    android:padding="8dp"
+                    android:text="延迟启动" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_column="0"
+                    android:layout_row="14"
+                    android:padding="8dp"
+                    android:text="服务20秒启动启动，如遇重启后配置未生效或服务卡死，请勾选此项。"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            </GridLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+    <include
+        layout="@layout/app_bar_main2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</android.support.design.widget.CoordinatorLayout>

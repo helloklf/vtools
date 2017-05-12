@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.omarea.vboot.fragment_config">
+
+    <TabHost
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/configlist_tabhost">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TabWidget
+                android:background="#33dddddd"
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></TabWidget>
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <FrameLayout
+                    android:id="@+id/configlist_tab0"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ListView
+                        android:id="@+id/config_defaultlist"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"></ListView>
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/configlist_tab1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <ListView
+                        android:id="@+id/config_gamelist"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"></ListView>
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/configlist_tab2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <ListView
+                        android:id="@+id/config_powersavelist"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"></ListView>
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/configlist_tab3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <android.support.design.widget.FloatingActionButton
+                        android:visibility="gone"
+                        android:id="@+id/config_addconfig"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|center"
+                        android:layout_margin="@dimen/fab_margin"
+                        android:src="@drawable/add" />
+
+                    <LinearLayout
+                        android:padding="8dp"
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <Switch
+                            android:id="@+id/config_showSystemApp"
+                            android:layout_marginTop="3dp"
+                            android:padding="8dp"
+                            android:gravity="left"
+                            android:text="显示系统应用"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:layout_marginBottom="10dp"
+                            android:layout_marginTop="5dp"
+                            android:paddingLeft="8dp"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:text="在列表中显示系统应用"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <Switch
+                            android:id="@+id/default_config_bigcore"
+                            android:layout_marginTop="8dp"
+                            android:padding="8dp"
+                            android:gravity="left"
+                            android:text="允许更高性能"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="10dp"
+                            android:paddingLeft="8dp"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:text="允许CPU、GPU全速运行"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <Switch
+                            android:id="@+id/default_config_poweradapter"
+                            android:layout_marginTop="8dp"
+                            android:padding="8dp"
+                            android:gravity="left"
+                            android:text="能源适配"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:layout_marginTop="8dp"
+                            android:paddingLeft="8dp"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:text="在电池电量低于20%时强制使用省电模式。充电时电量高于30%开启电源模式提高流畅度（电池保护模式下无效）。"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:id="@+id/defaultconfighelp"
+                            android:layout_marginTop="20dp"
+                            android:padding="8dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+                </FrameLayout>
+            </FrameLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_config_service_not_active"
+            android:background="#eee"
+            android:text="未激活辅助服务 - 点击去激活"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btn_config_dynamicservice_not_active"
+            android:background="#eee"
+            android:text="动态响应功能未开启 - 点击去激活"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <android.support.design.widget.FloatingActionButton
+            android:visibility="visible"
+            android:id="@+id/config_addtodefaultlist"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center"
+            android:layout_margin="@dimen/fab_margin"
+            android:src="@drawable/check" />
+    </TabHost>
+
+</RelativeLayout>

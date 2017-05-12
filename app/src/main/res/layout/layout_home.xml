@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.omarea.vboot.fragment_home"
+    android:orientation="vertical">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:showDividers="beginning"
+        android:shrinkColumns="0,1,2"
+        android:stretchColumns="0,1,2,3">
+
+
+        <TextView
+            android:textSize="12dp"
+            android:id="@+id/battrystatus"
+            android:padding="20dp"
+            android:text="电池信息："
+            android:layout_height="wrap_content"
+            android:background="#22888888"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp" />
+        <TextView
+            android:textSize="12dp"
+            android:id="@+id/powerstatus"
+            android:padding="20dp"
+            android:text="电源状态："
+            android:layout_height="wrap_content"
+            android:background="#22888888"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp" />
+
+        <TableRow>
+
+            <TextView
+                android:layout_span="2"
+                android:textSize="12dp"
+                android:layout_marginLeft="5dp"
+                android:id="@+id/coretemp"
+                android:padding="20dp"
+                android:text="核心温度："
+                android:layout_height="wrap_content"
+                android:background="#22888888"
+                android:layout_width="match_parent" />
+
+            <TextView
+                android:layout_span="2"
+                android:textSize="12dp"
+                android:id="@+id/ctltemp"
+                android:padding="20dp"
+                android:text="温控温度："
+                android:layout_height="wrap_content"
+                android:background="#22888888"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp" />
+        </TableRow>
+
+        <TableRow>
+
+            <TextView
+                android:layout_span="2"
+                android:textSize="12dp"
+                android:id="@+id/sdfree"
+                android:padding="20dp"
+                android:text="本机存储："
+                android:layout_height="wrap_content"
+                android:background="#22888888"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="5dp" />
+
+            <TextView
+                android:layout_span="2"
+                android:textSize="12dp"
+                android:id="@+id/datafree"
+                android:padding="20dp"
+                android:text="应用分区："
+                android:layout_height="wrap_content"
+                android:background="#22888888"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp" />
+        </TableRow>
+
+        <TableRow>
+            <TextView
+                android:textSize="12dp"
+                android:id="@+id/system_state"
+                android:layout_span="4"
+                android:padding="20dp"
+                android:text="系统状态："
+                android:layout_height="wrap_content"
+                android:background="#22888888"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginBottom="5dp" />
+        </TableRow>
+
+        <TextView android:text="性能配置（开启动态响应时模式会被动态覆盖）" android:textSize="8dp" android:layout_marginTop="12dp" android:layout_marginBottom="4dp" android:layout_marginLeft="12dp"/>
+        <TableRow android:layout_marginBottom="4dp">
+            <Button android:text="省电" android:layout_marginLeft="12dp" android:id="@+id/btn_powersave"
+                    android:background="#448888cc" />
+            <Button android:text="均衡" android:layout_marginLeft="4dp" android:id="@+id/btn_defaultmode"
+                    android:background="#4488cc88" />
+            <Button android:text="性能" android:layout_marginLeft="4dp" android:id="@+id/btn_gamemode"
+                    android:background="#44cccc88" />
+            <Button android:text="极速" android:layout_marginLeft="4dp" android:id="@+id/btn_fastmode"  android:layout_marginRight="12dp" android:background="#44cc8888" />
+        </TableRow>
+    </TableLayout>
+</LinearLayout>
