@@ -72,7 +72,7 @@ public class reciver_batterychanged extends BroadcastReceiver {
             myHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, msg, longMsg ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT).show();
                 }
             });
     }
@@ -99,11 +99,6 @@ public class reciver_batterychanged extends BroadcastReceiver {
         DoCmd(Consts.BPReset);
     }
 
-
-    public boolean IsXposedInstalled() {
-        return false;
-    }
-
     int lastBatteryLeavel = -1;
     boolean lastChangerState = false;
 
@@ -119,49 +114,45 @@ public class reciver_batterychanged extends BroadcastReceiver {
                 EventBus.publish(Events.BatteryChanged, batteryLevel);
                 lastBatteryLeavel = batteryLevel;
             }
-            if (onChanger && (batteryLevel < 90 || !ConfigInfo.getConfigInfo().BatteryProtection))
+
+            if (onChanger && (batteryLevel < 85 || !ConfigInfo.getConfigInfo().BatteryProtection))
                 BPReset();
 
             if (action.equals(Intent.ACTION_BATTERY_CHANGED)) {
-
                 if (AppShared.system_inited && onChanger) {
-                    if (ConfigInfo.getConfigInfo().QcMode)
-                        FastCharger();
-                    if (ConfigInfo.getConfigInfo().BatteryProtection)
-                        BP();
+                    if (ConfigInfo.getConfigInfo().QcMode) FastCharger();
+                    if (ConfigInfo.getConfigInfo().BatteryProtection) BP();
                 }
-
-                if (lastChangerState != onChanger) {
-                    lastChangerState = onChanger;
-                    if (onChanger) {
-                        if (ConfigInfo.getConfigInfo().DebugMode)
-                            ShowMsg("充电器已连接！", false);
-                        EventBus.publish(Events.PowerConnection);
-                    } else {
-                        if (ConfigInfo.getConfigInfo().DebugMode)
-                            ShowMsg("充电器已断开！", false);
-                        EventBus.publish(Events.PowerDisConnection);
-                    }
-                }
-            } else if (action.equals(Intent.ACTION_POWER_CONNECTED) || (action.equals(Intent.ACTION_BOOT_COMPLETED) && onChanger)) {
-                BPReset();
-                if (AppShared.system_inited && onChanger) {
-                    if (ConfigInfo.getConfigInfo().QcMode)
-                        FastCharger();
-                    if (ConfigInfo.getConfigInfo().BatteryProtection)
-                        BP();
-                    if (ConfigInfo.getConfigInfo().DebugMode)
-                        ShowMsg("充电器已连接！", false);
-                }
-                EventBus.publish(Events.PowerConnection);
+            } else if (action.equals(Intent.ACTION_POWER_CONNECTED)) {
+            } else if ((action.equals(Intent.ACTION_BOOT_COMPLETED) && onChanger)) {
             } else if (action.equals(Intent.ACTION_POWER_DISCONNECTED)) {
                 BPReset();
-                if (ConfigInfo.getConfigInfo().DebugMode)
-                    ShowMsg("充电器已断开！", false);
                 EventBus.publish(Events.PowerDisConnection);
+                return;
+            }
+
+            //如果充电状态切换
+            if (lastChangerState != onChanger) {
+                lastChangerState = onChanger;
+                if (onChanger) {
+                    BPReset();
+                    entryFastChanger(onChanger);
+                    EventBus.publish(Events.PowerConnection);
+                } else
+                    EventBus.publish(Events.PowerDisConnection);
             }
         } catch (Exception ex) {
+        }
+    }
 
+    private void entryFastChanger(boolean onChanger) {
+        if (AppShared.system_inited && onChanger) {
+            if (ConfigInfo.getConfigInfo().QcMode)
+                FastCharger();
+            if (ConfigInfo.getConfigInfo().BatteryProtection)
+                BP();
+            if (ConfigInfo.getConfigInfo().DebugMode)
+                ShowMsg("充电器已连接！", false);
         }
     }
 }

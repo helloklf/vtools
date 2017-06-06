@@ -1,12 +1,15 @@
 package com.omarea.shared;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 /**
  * Created by Hello on 2017/2/22.
  */
 
 public class Consts {
     public final static String FastChanger =
-            "if [ `cat /sys/class/power_supply/battery/capacity` -lt 90 ]; then " +
+            "if [ `cat /sys/class/power_supply/battery/capacity` -lt 85 ]; then " +
                     "echo 0 > /sys/class/power_supply/battery/restricted_charging;" +
                     "echo 0 > /sys/class/power_supply/battery/safety_timer_enabled;" +
                     "echo 480 > /sys/class/power_supply/bms/temp_warm;" +
@@ -17,12 +20,17 @@ public class Consts {
                     "echo 4000000 >/sys/class/power_supply/battery/constant_charge_current_max;" +
                     "fi;";
 
-    public final static String BP = "if [ `cat /sys/class/power_supply/battery/capacity` -gt 89 ]; then " +
+    public final static String BP = "if [ `cat /sys/class/power_supply/battery/capacity` -gt 84 ]; then " +
             "echo 0 > /sys/class/power_supply/battery/battery_charging_enabled;" +
             "fi;";
     public final static String BPReset = "echo 1 > /sys/class/power_supply/battery/battery_charging_enabled;\n";
 
     public final static String ClearCache = "echo 3 > /proc/sys/vm/drop_caches";
+
+    public final static ArrayList<String> SupportCPU = new ArrayList<String>(){{
+        add("msm8992");
+        add("msm8996");
+    }};
 
     public final static String MountSystemRW =
             "busybox mount -o rw,remount /system\n" +
@@ -61,13 +69,64 @@ public class Consts {
 
     public final static String DisableSELinux = "setenforce 0\n";
 
+    public final static String NubiaUninstall =
+            "pm disable com.android.cellbroadcastreceiver\n"+
+            "pm disable com.android.printspooler\n"+
+            "pm disable com.android.galaxy4\n"+
+            "pm disable com.android.noisefield\n"+
+            "pm disable com.android.phasebeam\n"+
+            "pm disable com.android.wallpaper.holospiral\n"+
+            "pm disable com.android.dreams.basic\n"+
+            "pm disable com.google.android.configupdater\n"+
+            "pm disable com.google.android.syncadapters.contacts\n"+
+            "pm disable com.google.android.syncadapters.calendar\n"+
+            "pm disable com.google.android.feedback\n"+
+            "pm disable com.google.android.backuptransport\n"+
+            "pm disable com.android.dreams.phototable\n"+
+            "pm disable com.google.android.partnersetup\n"+
+            "pm disable com.google.android.gsf\n"+
+            "pm disable com.google.android.gsf.login\n"+
+            "pm disable com.google.android.gms\n"+
+            "pm disable com.chaozh.iReaderNubia\n"+
+            "pm disable cn.nubia.presetpackageinstaller\n"+
+            "pm disable cn.nubia.factory\n"+
+            "pm disable cn.nubia.neostore\n"+
+            "pm disable cn.nubia.bootanimationinfo\n"+
+            "pm disable cn.nubia.ultrapower.launcher\n"+
+            "pm disable cn.nubia.email\n"+
+            "pm disable cn.nubia.exchange\n"+
+            "pm disable cn.nubia.video\n"+
+            "pm disable cn.nubia.nbgame\n"+
+            "pm disable cn.nubia.zbiglauncher.preset\n"+
+            "pm disable cn.nubia.phonemanualintegrate.preset\n"+
+            "pm disable cn.nubia.music.preset\n"+
+            "pm disable cn.nubia.nubiashop\n"+
+            "pm disable com.yulore.framework\n"+
+            "pm disable cn.nubia.yulorepage\n"+
+            "pm disable cn.nubia.festivalwallpaper\n"+
+            "pm disable cn.nubia.gallerylockscreen\n"+
+            "pm disable cn.nubia.wps_moffice\n"+
+            "pm disable cn.nubia.aftersale\n"+
+            "pm disable cn.nubia.aftersale\n"+
+            "pm disable com.sohu.inputmethod.sogou.nubia\n"+
+            "pm disable com.dolby\n"+
+            "pm disable com.dolby.daxappUI\n";
+
     public final static String MiuiUninstall =
+            "pm disable com.miui.yellowpage\n"+
+            "pm disable com.miui.klo.bugreport\n"+
+            //"pm disable com.xiaomi.scanner\n"+
+            //"pm disable com.android.cellbroadcastreceiver\n"+
+            //"pm disable com.android.musicfx\n"+
+            "pm disable com.miui.bugreport\n"+
+            "pm disable com.miui.systemAdSolution\n"+
+
             "rm -rf /data-app\n" +
 
             "rm -rf /system/app/Email\n" +
             "rm -rf /system/app/BasicDreams\n" +
             "rm -rf /system/app/GameCenter\n" +
-            "rm -rf /system/app/FileExplorer\n" +
+            //"rm -rf /system/app/FileExplorer\n" +
             "rm -rf /system/app/MiLinkService\n" +
             "rm -rf /system/app/MiuiCompass\n" +
             "rm -rf /system/app/MiuiDaemon\n" +
@@ -84,14 +143,19 @@ public class Consts {
             "rm -rf /system/priv-app/MiVRFramework\n" +
             "rm -rf /system/priv-app/MiGameCenterSDKService\n" +
             "rm -rf /system/priv-app/CleanMaster\n"+
+
             "sync\nreboot\n";
 
     public final static String DeleteLockPwd = "rm -f /data/system/*.key;rm -f /data/system/locksettings.db*;reboot;";
+
+    public final static String ForceDoze = "dumpsys deviceidle force-idle\n";
 
     public final static String GetBatteryStatus = "/sys/class/power_supply/battery/status\n";
 
     public final static String GetCPUName = "getprop ro.board.platform\n";
 
+    public  final static String DisableChanger = "echo 0 > /sys/class/power_supply/battery/battery_charging_enabled;\n";
+    public  final static String ResumeChanger = "echo 1 > /sys/class/power_supply/battery/battery_charging_enabled;\n";
     public final static String RebootShutdown = "reboot -p\n";
     public final static String RebootRecovery = "reboot recovery\n";
     public final static String RebootBootloader = "reboot bootloader\n";

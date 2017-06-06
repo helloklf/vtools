@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TabHost;
 
 import com.omarea.shared.Consts;
 import com.omarea.shared.AppShared;
@@ -19,6 +20,9 @@ import com.omarea.shared.cmd_shellTools;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 
 public class fragment_addin extends Fragment {
@@ -52,26 +56,16 @@ public class fragment_addin extends Fragment {
     }
 
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        ListView listView = (ListView) view.findViewById(R.id.addin_action_listview);
+    private void initSoftAddin(View view){
+        ListView listView = (ListView) view.findViewById(R.id.addin_soft_listview);
         final ArrayList<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>();/*在数组中存放数据*/
 
-        listItem.add(createItem("内存清理", "Linux标准缓存清理命令：echo 3 > /proc/sys/vm/drop_caches"));
-        listItem.add(createItem("开启ZRAM 500M", "该功能需要内核支持。size=0.5GB swappiness=100"));
-        listItem.add(createItem("开启ZRAM 1GB", "该功能需要内核支持。size=1.0GB swappiness=100"));
-        listItem.add(createItem("开启ZRAM 2GB", "该功能需要内核支持。size=1.8GB swappiness=100"));
-        listItem.add(createItem("调整DPI为410", "部分ROM不支持调整，可能出现UI错误。需要重启。"));
-        listItem.add(createItem("调整DPI为440", "部分ROM不支持调整，可能出现UI错误。需要重启。"));
-        listItem.add(createItem("调整DPI为480", "部分ROM不支持调整，可能出现UI错误。需要重启。"));
-        listItem.add(createItem("fstrim", "对磁盘进行fstrim操作，也许会解决读写速度变慢的问题。"));
-        listItem.add(createItem("挂载System可读写", "将System重新挂载为可读写状态（如果System未结果，此操作将无效）。"));
         listItem.add(createItem("QQ净化", "干掉QQ个性气泡、字体、头像挂件，会重启QQ"));
         listItem.add(createItem("QQ净化恢复", "恢复QQ个性气泡、字体、头像挂件，会重启QQ"));
-        listItem.add(createItem("干掉温控模块", "可能会对系统造成一些影响，请谨慎使用，需要重启手机。此功能对小米5较新系统无效"));
-        listItem.add(createItem("恢复温控模块", "需要重启手机"));
-        listItem.add(createItem("删除锁屏密码", "如果你忘了锁屏密码，或者恢复系统后密码不正确，这能帮你解决。会重启手机"));
-        listItem.add(createItem("MIUI一键精简", "删除或冻结MIUI中一些内置的无用软件。"));
+        listItem.add(createItem("MIUI一键精简", "删除（由于部分应用无法冻结，只能删除）或冻结系统中一些内置的无用软件，会重启手机。"));
+        listItem.add(createItem("Nubia一键精简", "冻结系统中一些内置的无用软件。"));
+        listItem.add(createItem("开启沉浸模式","自动隐藏状态栏、导航栏"));
+        listItem.add(createItem("禁用沉浸模式","恢复状态栏、导航栏自动显示"));
 
         SimpleAdapter mSimpleAdapter = new SimpleAdapter(
                 view.getContext(), listItem,
@@ -92,7 +86,92 @@ public class fragment_addin extends Fragment {
                 builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        executeScript(view, position);
+                        executeSoftScript(view, position);
+                    }
+                });
+                builder.setMessage(
+                        listItem.get(position).get("Title") + "：" + listItem.get(position).get("Desc") +
+                                "\n\n请确保你已了解此脚本的用途，并清楚对设备的影响");
+                builder.create().show();
+            }
+        });
+    }
+
+    private void executeSoftScript(View view, int position) {
+        StringBuilder stringBuilder = new StringBuilder();
+        switch (position){
+            case 0: {
+                stringBuilder.append(Consts.RMQQStyles);
+                break;
+            }
+            case 1: {
+                stringBuilder.append(Consts.ResetQQStyles);
+                break;
+            }
+            case 2: {
+                stringBuilder.append(Consts.MountSystemRW);
+                stringBuilder.append(Consts.MiuiUninstall);
+                break;
+            }
+            case 3: {
+                stringBuilder.append(Consts.MountSystemRW);
+                stringBuilder.append(Consts.NubiaUninstall);
+                break;
+            }
+            case 4:{
+                stringBuilder.append("settings put global policy_control immersive.full=*");
+                break;
+            }
+            case 5:{
+                stringBuilder.append("settings put global policy_control null");
+                break;
+            }
+        }
+        cmdshellTools.DoCmd(stringBuilder.toString());
+        Snackbar.make(view, "命令已执行！", Snackbar.LENGTH_SHORT).show();
+    }
+
+
+    private void initSystemAddin(View view){
+        ListView listView = (ListView) view.findViewById(R.id.addin_system_listview);
+        final ArrayList<HashMap<String, Object>> listItem = new ArrayList<HashMap<String, Object>>();/*在数组中存放数据*/
+
+        listItem.add(createItem("内存清理", "Linux标准缓存清理命令：echo 3 > /proc/sys/vm/drop_caches"));
+        listItem.add(createItem("开启ZRAM 500M", "该功能需要内核支持。size=0.5GB swappiness=100"));
+        listItem.add(createItem("开启ZRAM 1GB", "该功能需要内核支持。size=1.0GB swappiness=100"));
+        listItem.add(createItem("开启ZRAM 2GB", "该功能需要内核支持。size=1.8GB swappiness=100"));
+        listItem.add(createItem("调整DPI为410", "部分ROM不支持调整，可能出现UI错误。需要重启。"));
+        listItem.add(createItem("调整DPI为440", "部分ROM不支持调整，可能出现UI错误。需要重启。"));
+        listItem.add(createItem("调整DPI为480", "部分ROM不支持调整，可能出现UI错误。需要重启。"));
+        listItem.add(createItem("fstrim", "对磁盘进行fstrim操作，也许会解决读写速度变慢的问题。"));
+        listItem.add(createItem("挂载System可读写", "将System重新挂载为可读写状态（如果System未结果，此操作将无效）。"));
+        listItem.add(createItem("干掉温控模块", "可能会对系统造成一些影响，请谨慎使用，需要重启手机。此功能对小米5较新系统无效"));
+        listItem.add(createItem("恢复温控模块", "需要重启手机"));
+        listItem.add(createItem("删除锁屏密码", "如果你忘了锁屏密码，或者恢复系统后密码不正确，这能帮你解决。会重启手机"));
+        listItem.add(createItem("强制打盹", "实验性，强制进入Doze模式（如果系统支持）"));
+        listItem.add(createItem("禁止充电", "停止对电池充电，同时使用USB电源为手机供电。（与充电加速和电池保护功能冲突！）"));
+        listItem.add(createItem("恢复充电", "恢复对电池充电，由设备自行管理充放。"));
+
+        SimpleAdapter mSimpleAdapter = new SimpleAdapter(
+                view.getContext(), listItem,
+                R.layout.action_row_item,
+                new String[]{"Title", "Desc"},
+                new int[]{R.id.Title, R.id.Desc}
+        );
+        listView.setAdapter(mSimpleAdapter);
+
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(thisview);
+                builder.setTitle("执行这个脚本？");
+                builder.setNegativeButton(android.R.string.cancel, null);
+                builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        executeSystemScript(view, position);
                     }
                 });
                 builder.setMessage(
@@ -102,8 +181,7 @@ public class fragment_addin extends Fragment {
             }
         });
     }
-
-    private void executeScript(View view, int position) {
+    private void executeSystemScript(View view, int position) {
         StringBuilder stringBuilder = new StringBuilder();
         switch (position) {
             case 0: {
@@ -197,33 +275,47 @@ public class fragment_addin extends Fragment {
                 break;
             }
             case 9: {
-                stringBuilder.append(Consts.RMQQStyles);
-                break;
-            }
-            case 10: {
-                stringBuilder.append(Consts.ResetQQStyles);
-                break;
-            }
-            case 11: {
+                stringBuilder.append(Consts.MountSystemRW);
                 stringBuilder.append(Consts.RMThermal);
                 break;
             }
-            case 12: {
+            case 10: {
                 stringBuilder.append(Consts.MountSystemRW);
                 stringBuilder.append(Consts.ResetThermal);
                 break;
             }
-            case 13: {
+            case 11: {
                 stringBuilder.append(Consts.DeleteLockPwd);
                 break;
             }
-            case 14: {
-                stringBuilder.append(Consts.MountSystemRW);
-                stringBuilder.append(Consts.MiuiUninstall);
+            case 12: {
+                stringBuilder.append(Consts.ForceDoze);
+                break;
+            }
+            case 13:{
+                stringBuilder.append(Consts.DisableChanger);
+                break;
+            }
+            case 14:{
+                stringBuilder.append(Consts.ResumeChanger);
                 break;
             }
         }
         cmdshellTools.DoCmd(stringBuilder.toString());
         Snackbar.make(view, "命令已执行！", Snackbar.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        final TabHost tabHost = (TabHost) view.findViewById(R.id.addinlist_tabhost);
+
+        tabHost.setup();
+
+        tabHost.addTab(tabHost.newTabSpec("def_tab").setContent(R.id.system).setIndicator("系统"));
+        tabHost.addTab(tabHost.newTabSpec("game_tab").setContent(R.id.soft).setIndicator("软件"));
+        tabHost.setCurrentTab(0);
+
+        initSystemAddin(view);
+        initSoftAddin(view);
     }
 }

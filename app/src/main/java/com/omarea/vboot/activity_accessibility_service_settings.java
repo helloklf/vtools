@@ -11,9 +11,11 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.omarea.shared.ConfigInfo;
+import com.omarea.shared.Consts;
 import com.omarea.shared.EventBus;
 import com.omarea.shared.Events;
 import com.omarea.shared.ServiceHelper;
+import com.omarea.shared.cmd_shellTools;
 
 public class activity_accessibility_service_settings extends AppCompatActivity {
 
@@ -67,6 +69,12 @@ public class activity_accessibility_service_settings extends AppCompatActivity {
         settings_autoinstall.setChecked(ConfigInfo.getConfigInfo().AutoInstall);
         settings_autobooster.setChecked(ConfigInfo.getConfigInfo().AutoBooster);
         settings_dynamic.setChecked(ConfigInfo.getConfigInfo().DyamicCore);
+        String cpuname = new cmd_shellTools(null, null).GetCPUName();
+        if (Consts.SupportCPU.contains(cpuname)) {
+            settings_dynamic.setEnabled(false);
+            settings_dynamic.setChecked(false);
+        }
+
         settings_debugmode.setChecked(ConfigInfo.getConfigInfo().DebugMode);
         settings_qc.setChecked(ConfigInfo.getConfigInfo().QcMode);
         settings_delaystart.setChecked(ConfigInfo.getConfigInfo().DelayStart);

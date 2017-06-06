@@ -1,5 +1,7 @@
 package com.omarea.shared;
 
+import android.app.ApplicationErrorReport;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +30,7 @@ public class ConfigInfo {
     public boolean HasSystemApp = false;
     public boolean BatteryProtection = false;
     public boolean AutoClearCache = false;
+    public boolean UsingDozeMod = false;
 
     public ArrayList<HashMap<String, Object>> defaultList;
     public ArrayList<HashMap<String, Object>> gameList;
@@ -47,6 +50,7 @@ public class ConfigInfo {
         this.PowerAdapter = isTrue(jsonObject, "PowerAdapter");
         this.HasSystemApp = isTrue(jsonObject, "HasSystemApp");
         this.AutoClearCache = isTrue(jsonObject, "AutoClearCache");
+        this.UsingDozeMod = isTrue(jsonObject, "UsingDozeMod");
 
         this.defaultList = new ArrayList<>();
         this.gameList = getHashMapList(jsonObject,new String[]{"name", "packageName"}, "Profile_Games");
@@ -72,6 +76,7 @@ public class ConfigInfo {
     public boolean saveChange() {
         try {
             JSONObject jsonObject = new JSONObject()
+                    .put("UsingDozeMod", UsingDozeMod)
                     .put("AutoBooster", AutoBooster)
                     .put("DyamicCore", DyamicCore)
                     .put("QcMode", QcMode)

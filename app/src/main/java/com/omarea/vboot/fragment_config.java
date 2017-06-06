@@ -94,8 +94,8 @@ public class fragment_config extends Fragment {
             }
         });
 
-        final TabHost tabHost = (TabHost) view.findViewById(R.id.configlist_tabhost);
         final FloatingActionButton btn = (FloatingActionButton) view.findViewById(R.id.config_addtodefaultlist);
+        final TabHost tabHost = (TabHost) view.findViewById(R.id.configlist_tabhost);
 
         tabHost.setup();
 

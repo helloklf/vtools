@@ -80,14 +80,16 @@ public class xposed_interface implements IXposedHookLoadPackage {
                 packageName.equals("com.android.camera") ||
                 packageName.equals("com.android.updater") ||
                 //packageName.equals("de.robv.android.xposed.installer") ||
-                packageName.equals("com.miui.weather2")) {
+                packageName.equals("com.miui.weather2") ||
+                packageName.equals("com.miui.weather")
+                ) {
             XposedHelpers.findAndHookMethod("android.app.Application", loadPackageParam.classLoader, "attach", Context.class, new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     super.beforeHookedMethod(param);
 
                     Context context = (Context) param.args[0];
-                    float density = context.getResources().getDisplayMetrics().density;
+                    //float density = context.getResources().getDisplayMetrics().density;
                     context.getResources().getDisplayMetrics().density = 3;
                     context.getResources().getDisplayMetrics().densityDpi = 480;
                     context.getResources().getDisplayMetrics().scaledDensity = 3;

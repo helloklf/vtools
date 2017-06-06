@@ -73,7 +73,7 @@
                     android:layout_column="0"
                     android:layout_row="4"
                     android:paddingLeft="8dp"
-                    android:text="为单个应用设置CPU、GPU频率，具体设置请在在本应用性能配置中配"
+                    android:text="仅限骁龙808、820。为单个应用设置CPU、GPU频率，具体设置请在在本应用性能配置中配"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
 
                 <Switch
@@ -137,7 +137,7 @@
                     android:layout_column="0"
                     android:layout_row="10"
                     android:padding="8dp"
-                    android:text="电池电量达到90%时停止充电以保护电池。（如果微工具箱辅助服务被杀，暂停充电后可能不会自动恢复！）"
+                    android:text="电池电量达到85%时停止充电以保护电池。（如果微工具箱辅助服务被杀，暂停充电后可能不会自动恢复！）"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
 
 
@@ -178,7 +178,7 @@
                     android:layout_column="0"
                     android:layout_row="14"
                     android:padding="8dp"
-                    android:text="服务20秒启动启动，如遇重启后配置未生效或服务卡死，请勾选此项。"
+                    android:text="服务延迟20秒启动，如遇重启后配置未生效或服务卡死，请勾选此项。"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
 
             </GridLayout>

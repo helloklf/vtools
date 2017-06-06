@@ -58,6 +58,7 @@ public class fragment_booster extends Fragment {
     Button btn_booster_service_not_active;
     Button btn_booster_dynamicservice_not_active;
     Switch cacheclear;
+    Switch dozemod;
 
     @Override
     public void onResume() {
@@ -82,13 +83,21 @@ public class fragment_booster extends Fragment {
         btn_booster_service_not_active = (Button) view.findViewById(R.id.btn_booster_service_not_active);
         btn_booster_dynamicservice_not_active = (Button) view.findViewById(R.id.btn_booster_dynamicservice_not_active);
         cacheclear = (Switch) view.findViewById(R.id.cacheclear);
+        dozemod = (Switch) view.findViewById(R.id.dozemod);
 
         cacheclear.setChecked( ConfigInfo.getConfigInfo().AutoClearCache);
+        dozemod.setChecked( ConfigInfo.getConfigInfo().UsingDozeMod);
 
         cacheclear.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 ConfigInfo.getConfigInfo().AutoClearCache = isChecked;
+            }
+        });
+        dozemod.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                ConfigInfo.getConfigInfo().UsingDozeMod = isChecked;
             }
         });
 

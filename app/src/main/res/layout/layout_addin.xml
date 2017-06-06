@@ -5,8 +5,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.omarea.vboot.fragment_addin">
 
-    <ListView
-        android:id="@+id/addin_action_listview"
+    <TabHost
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></ListView>
+        android:layout_height="match_parent"
+        android:id="@+id/addinlist_tabhost">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TabWidget
+                android:background="#33dddddd"
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></TabWidget>
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <FrameLayout
+                    android:id="@+id/system"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ListView
+                        android:id="@+id/addin_system_listview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"></ListView>
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/soft"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <ListView
+                        android:id="@+id/addin_soft_listview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"></ListView>
+                </FrameLayout>
+
+            </FrameLayout>
+        </LinearLayout>
+    </TabHost>
 </RelativeLayout>

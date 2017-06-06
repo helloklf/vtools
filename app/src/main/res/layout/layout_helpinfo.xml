@@ -19,12 +19,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <TextView
+            <TextView android:autoLink="web"
                 android:layout_marginTop="15dp"
                 android:padding="10dp"
                 android:text="@string/hello_blank_fragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
+            <!--<Button android:id="@+id/checkupdate" android:text="检查更新"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>-->
         </LinearLayout>
     </ScrollView>
 </FrameLayout>

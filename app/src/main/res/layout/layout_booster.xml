@@ -88,6 +88,24 @@
                             android:text="在离开应用后主动清理缓存，可以保持内存处于较高可用状态，但可能会减缓运行速度增加耗电。"
                             android:textAppearance="?android:attr/textAppearanceSmall"/>
 
+                        <Switch
+                            android:layout_marginTop="12dp"
+                            android:id="@+id/dozemod"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="left"
+                            android:padding="8dp"
+                            android:text="休眠模式"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginTop="8dp"
+                            android:paddingLeft="8dp"
+                            android:text="使用休眠模式替代强制停止（可能不够强力！）。"
+                            android:textAppearance="?android:attr/textAppearanceSmall"/>
+
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

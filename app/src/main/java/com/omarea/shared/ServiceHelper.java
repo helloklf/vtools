@@ -26,11 +26,10 @@ public class ServiceHelper {
         EventBus.subscribe(Events.DyamicCoreConfigChanged, new IEventSubscribe() {
             @Override
             public void messageRecived(Object message) {
-                if (ConfigInfo.getConfigInfo().DyamicCore){
+                if (ConfigInfo.getConfigInfo().DyamicCore) {
                     InstallConfig();
                     onAccessibilityEvent();
-                }
-                else
+                } else
                     UnInstallConfig();
             }
         });
@@ -95,6 +94,9 @@ public class ServiceHelper {
         DoCmd(Consts.DisableSELinux);
 
         cpuName = cmd_shellTools.GetCPUName();
+        if (!(cpuName.contains("8996") || cpuName.contains("8992"))) {
+            ConfigInfo.getConfigInfo().DyamicCore = false;
+        }
 
         ShowMsg("微工具箱增强服务已启动");
 
@@ -274,6 +276,18 @@ public class ServiceHelper {
             return;
 
         if (ConfigInfo.getConfigInfo().blacklist.contains(packageName)) {
+            if (ConfigInfo.getConfigInfo().UsingDozeMod) {
+                try {
+                    DoCmd("am set-inactive " + packageName + " true");
+                    //am set-idle com.tencent.mobileqq true
+                    if (ConfigInfo.getConfigInfo().DebugMode)
+                        ShowMsg("尝试休眠了应用：" + packageName);
+                } catch (Exception ex) {
+
+                }
+                return;
+            }
+
             //android.os.Process.killProcess(android.os.Process.myPid());//自杀
             try {
                 DoCmd("pgrep " + packageName + " |xargs kill -9");
@@ -373,10 +387,9 @@ public class ServiceHelper {
     }
 
     public void onAccessibilityEvent() {
-        try{
+        try {
             onAccessibilityEvent(lastPackage);
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
@@ -390,10 +403,10 @@ public class ServiceHelper {
             InstallConfig();
         }
 
-        if(packageName==null){
+        if (packageName == null) {
             packageName = lastPackage;
         }
-        if(ConfigInfo.getConfigInfo().AutoClearCache && lastPackage!=packageName){
+        if (ConfigInfo.getConfigInfo().AutoClearCache && lastPackage != packageName) {
             DoCmd(Consts.ClearCache);
         }
 

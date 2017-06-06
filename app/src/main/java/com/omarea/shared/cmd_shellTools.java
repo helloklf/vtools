@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -1169,12 +1170,25 @@ public class cmd_shellTools {
         try {
             Process p = Runtime.getRuntime().exec("su");
             DataOutputStream out = new DataOutputStream(p.getOutputStream());
-            out.writeBytes("\n");
-            out.writeBytes("exit\n");
+            out.writeBytes("\nid\n");
             out.writeBytes("exit\n");
             out.flush();
-            return true;
-        } catch (IOException e) {
+
+            InputStream inputstream = p.getInputStream();
+            InputStreamReader inputstreamreader = new InputStreamReader(inputstream);
+            BufferedReader bufferedreader = new BufferedReader(inputstreamreader);
+            String msg = "";
+
+            while ((msg = bufferedreader.readLine()) != null) {
+                if (msg.trim().length() == 0)
+                    continue;
+                if (msg.contains("root"))
+                    return true;
+                if (msg.contains("denied"))
+                    return false;
+            }
+            return false;
+        } catch (Exception e) {
             return false;
         }
     }
@@ -1193,7 +1207,7 @@ public class cmd_shellTools {
     public boolean IsBusyboxInstalled() {
         try {
             Runtime.getRuntime().exec("busybox").destroy();
-        } catch (IOException e) {
+        } catch (Exception e) {
             return false;
         }
         return true;
@@ -1214,11 +1228,31 @@ public class cmd_shellTools {
         }
     }
 
+
+    //执行命令
+    public void DoCmdSync(String cmd) {
+        try {
+            Process p = Runtime.getRuntime().exec("su");
+            DataOutputStream out = new DataOutputStream(p.getOutputStream());
+            out.writeBytes(cmd);
+            out.writeBytes("\n");
+            out.writeBytes("exit\n");
+            out.writeBytes("exit\n");
+            out.flush();
+            p.waitFor();
+        } catch (IOException e) {
+            NoRoot();
+        }
+        catch (Exception e){
+
+        }
+    }
+
     public String GetProp(String prop) {
         try {
             Process p = Runtime.getRuntime().exec("sh");
             DataOutputStream out = new DataOutputStream(p.getOutputStream());
-            out.writeBytes("if [ ! -f \""+ prop +"\" ]; then echo \"\"; exit 0; fi;\n");
+            out.writeBytes("if [ ! -f \"" + prop + "\" ]; then echo \"\"; exit 0; fi;\n");
             out.writeBytes("cat " + prop);
             out.writeBytes("\n");
             out.flush();
@@ -1253,6 +1287,23 @@ public class cmd_shellTools {
         if (txt.length() > 4)
             return txt.substring(0, 4) + " mAh";
         return txt + " mAh";
+    }
+
+    public int getChangeMAH() {
+        String txt = GetProp("/sys/class/power_supply/battery/current_now");
+        if (txt == null || txt.trim().length() == 0)
+            txt = GetProp("/sys/class/power_supply/battery/BatteryAverageCurrent");
+
+        if(txt==null)
+            return Integer.MAX_VALUE;
+
+        try {
+            int ma = Math.abs(Integer.parseInt(txt));
+            return ma / 1000;
+        }
+        catch (Exception ex){
+            return 0;
+        }
     }
 
     //是否有多系统

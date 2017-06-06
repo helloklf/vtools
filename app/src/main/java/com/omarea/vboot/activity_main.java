@@ -29,6 +29,7 @@ import android.widget.ProgressBar;
 
 import com.omarea.shared.ConfigInfo;
 import com.omarea.shared.Consts;
+import com.omarea.shared.CrashHandler;
 import com.omarea.shared.cmd_shellTools;
 
 import java.io.File;
@@ -46,6 +47,10 @@ public class activity_main extends AppCompatActivity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        CrashHandler crashHandler = CrashHandler.getInstance();
+        crashHandler.init(this);
+        //传入参数必须为Activity，否则AlertDialog将不显示。
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -91,9 +96,13 @@ public class activity_main extends AppCompatActivity
         final NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         Menu menu = navigationView.getMenu();
-        MenuItem menuItem = menu.findItem(R.id.nav_vboot);
+        MenuItem nav_vboot = menu.findItem(R.id.nav_vboot);
         if (!cmdshellTools.IsDualSystem())
-            menuItem.setVisible(false);
+            nav_vboot.setVisible(false);
+        MenuItem nav_profile = menu.findItem(R.id.nav_profile);
+        String cpuName = cmdshellTools.GetCPUName();
+        if (!(cpuName.contains("8996") || cpuName.contains("8892")))
+            nav_profile.setVisible(false);
 
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -253,12 +262,14 @@ public class activity_main extends AppCompatActivity
             }
         } else if (id == R.id.nav_booster) {
             fragment = fragment_booster.Create(this, cmdshellTools);
+        } else if (id == R.id.nav_applictions) {
+            fragment = fragment_applistions.Create(this, cmdshellTools);
         } else if (id == R.id.nav_img) {
             fragment = fragment_img.Create(this, cmdshellTools);
         } else if (id == R.id.nav_share) {
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_TEXT, "来自嘟嘟斯基的双系统ROM和微工具箱分享：\r\n http://pan.baidu.com/s/1i46k13R");
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "你也来试试微工具箱吧，我觉得还不错：\r\n http://www.coolapk.com/apk/com.omarea.vboot");
             sendIntent.setType("text/plain");
             startActivity(sendIntent);
         } else if (id == R.id.nav_feedback) {
