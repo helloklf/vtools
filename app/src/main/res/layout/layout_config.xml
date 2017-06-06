@@ -118,6 +118,7 @@
                             android:layout_height="wrap_content" />
 
                         <Switch
+                            android:visibility="gone"
                             android:id="@+id/default_config_poweradapter"
                             android:layout_marginTop="8dp"
                             android:padding="8dp"
@@ -127,6 +128,7 @@
                             android:layout_height="wrap_content" />
 
                         <TextView
+                            android:visibility="gone"
                             android:layout_marginTop="8dp"
                             android:paddingLeft="8dp"
                             android:textAppearance="?android:attr/textAppearanceSmall"

@@ -28,6 +28,7 @@ import com.omarea.shared.EventBus;
 import com.omarea.shared.Events;
 import com.omarea.shared.ServiceHelper;
 import com.omarea.shared.cmd_shellTools;
+import com.omarea.shell.Platform;
 import com.omarea.ui.list_adapter;
 
 import java.util.ArrayList;
@@ -43,9 +44,9 @@ import static android.widget.AdapterView.VISIBLE;
 public class fragment_config extends Fragment {
 
     cmd_shellTools cmdshellTools = null;
-    activity_main thisview = null;
+    main thisview = null;
 
-    public static Fragment Create(activity_main thisView, cmd_shellTools cmdshellTools) {
+    public static Fragment Create(main thisView, cmd_shellTools cmdshellTools) {
         fragment_config fragment = new fragment_config();
         fragment.cmdshellTools = cmdshellTools;
         fragment.thisview = thisView;
@@ -63,7 +64,7 @@ public class fragment_config extends Fragment {
 
     @Override
     public void onResume() {
-        boolean serviceState = ServiceHelper.serviceIsRunning(getContext());
+        boolean serviceState = ServiceHelper.Companion.serviceIsRunning(getContext());
         btn_config_service_not_active.setVisibility(serviceState ? GONE : VISIBLE);
         btn_config_dynamicservice_not_active.setVisibility((serviceState && !ConfigInfo.getConfigInfo().DyamicCore) ? VISIBLE : GONE);
 
@@ -89,7 +90,7 @@ public class fragment_config extends Fragment {
         btn_config_dynamicservice_not_active.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(thisview, activity_accessibility_service_settings.class);
+                Intent intent = new Intent(thisview, accessibility_settings.class);
                 startActivity(intent);
             }
         });
@@ -99,10 +100,10 @@ public class fragment_config extends Fragment {
 
         tabHost.setup();
 
-        tabHost.addTab(tabHost.newTabSpec("def_tab").setContent(R.id.configlist_tab0).setIndicator("默认模式"));
-        tabHost.addTab(tabHost.newTabSpec("game_tab").setContent(R.id.configlist_tab1).setIndicator("游戏模式"));
+        tabHost.addTab(tabHost.newTabSpec("def_tab").setContent(R.id.configlist_tab0).setIndicator("均衡模式"));
+        tabHost.addTab(tabHost.newTabSpec("game_tab").setContent(R.id.configlist_tab1).setIndicator("性能模式"));
         tabHost.addTab(tabHost.newTabSpec("power_tab").setContent(R.id.configlist_tab2).setIndicator("省电模式"));
-        tabHost.addTab(tabHost.newTabSpec("confg_tab").setContent(R.id.configlist_tab3).setIndicator("配置文件"));
+        tabHost.addTab(tabHost.newTabSpec("confg_tab").setContent(R.id.configlist_tab3).setIndicator("细节设置"));
         tabHost.setCurrentTab(0);
         tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
@@ -118,7 +119,7 @@ public class fragment_config extends Fragment {
                     case 0: {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(thisview);
                         String[] items;
-                        items = new String[]{"添加选中到 -> 游戏模式", "添加选中到 -> 省电模式"};
+                        items = new String[]{"添加选中到 -> 性能模式", "添加选中到 -> 省电模式"};
                         builder.setItems(items, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -135,7 +136,7 @@ public class fragment_config extends Fragment {
                     case 1: {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(thisview);
                         String[] items;
-                        items = new String[]{"添加选中到 -> 默认模式", "添加选中到 -> 省电模式"};
+                        items = new String[]{"添加选中到 -> 均衡模式", "添加选中到 -> 省电模式"};
                         builder.setItems(items, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -152,7 +153,7 @@ public class fragment_config extends Fragment {
                     case 2: {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(thisview);
                         String[] items;
-                        items = new String[]{"添加选中到 -> 默认模式", "添加选中到 -> 游戏模式"};
+                        items = new String[]{"添加选中到 -> 均衡模式", "添加选中到 -> 性能模式"};
                         builder.setItems(items, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -176,7 +177,7 @@ public class fragment_config extends Fragment {
         default_config_bigcore.setChecked(useBigCore);
         final TextView defaultconfighelp = (TextView) view.findViewById(R.id.defaultconfighelp);
 
-        final String cpuName = cmdshellTools.GetCPUName();
+        final String cpuName = new Platform().GetCPUName();
 
         switch (cpuName.toLowerCase()) {
             case "msm8992": {
@@ -205,7 +206,7 @@ public class fragment_config extends Fragment {
                     }
                 }
                 ConfigInfo.getConfigInfo().UseBigCore = useBigCore;
-                EventBus.publish(Events.CoreConfigChanged);
+                EventBus.INSTANCE.publish(Events.INSTANCE.getCoreConfigChanged());
             }
         });
 
@@ -220,6 +221,7 @@ public class fragment_config extends Fragment {
             }
         });
 
+        /*
         final Switch default_config_poweradapter = (Switch) view.findViewById(R.id.default_config_poweradapter);
         default_config_poweradapter.setChecked(ConfigInfo.getConfigInfo().PowerAdapter);
         default_config_poweradapter.setOnClickListener(new OnClickListener() {
@@ -228,6 +230,7 @@ public class fragment_config extends Fragment {
                 ConfigInfo.getConfigInfo().PowerAdapter = default_config_poweradapter.isChecked();
             }
         });
+        */
 
         SetList();
 
@@ -249,7 +252,7 @@ public class fragment_config extends Fragment {
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(thisview);
                 String[] items;
-                items = new String[]{"添加到 -> 游戏模式", "添加到 -> 省电模式"};
+                items = new String[]{"添加到 -> 性能模式", "添加到 -> 省电模式"};
                 builder.setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -279,7 +282,7 @@ public class fragment_config extends Fragment {
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(thisview);
                 String[] items;
-                items = new String[]{"添加到 -> 默认模式", "添加到 -> 省电模式"};
+                items = new String[]{"添加到 -> 均衡模式", "添加到 -> 省电模式"};
                 builder.setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -299,7 +302,7 @@ public class fragment_config extends Fragment {
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(thisview);
                 String[] items;
-                items = new String[]{"添加到 -> 默认模式", "添加到 -> 游戏模式"};
+                items = new String[]{"添加到 -> 均衡模式", "添加到 -> 性能模式"};
                 builder.setItems(items, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

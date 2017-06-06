@@ -42,7 +42,7 @@
         </receiver>
         -->
         <service
-            android:name=".service_accessibility"
+            android:name=".vtools_accessibility"
             android:label="微工具箱-增强服务"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
@@ -59,7 +59,7 @@
         </service>
 
         <activity
-            android:name=".activity_main"
+            android:name=".main"
             android:configChanges="keyboardHidden|orientation"
             android:excludeFromRecents="false"
             android:exported="true"
@@ -89,14 +89,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity_accessibility_service_settings"
+            android:name=".accessibility_settings"
             android:configChanges="keyboardHidden|orientation"
             android:excludeFromRecents="false"
             android:label="微工具箱增强服务"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Main2Activity"
+            android:name=".shortcuts"
             android:configChanges="keyboardHidden|orientation"
             android:excludeFromRecents="false"
             android:exported="true"

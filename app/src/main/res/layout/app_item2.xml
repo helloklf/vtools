@@ -55,11 +55,13 @@
         android:textColor="#0094ff"
         android:id="@+id/ItemEnabledStateText"
         android:layout_width="40dp"
+        android:textSize="12dp"
         android:layout_column="3"
         android:layout_row="0"/>
 
     <TextView
         android:textColor="#d00"
+        android:textSize="12dp"
         android:id="@+id/ItemWranText"
         android:layout_width="40dp"
         android:layout_column="3"

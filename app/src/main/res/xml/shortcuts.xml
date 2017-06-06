@@ -10,7 +10,7 @@
         android:shortcutLongLabel="@string/shortcut_clear">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetClass="com.omarea.vboot.Main2Activity"
+            android:targetClass="com.omarea.vboot.shortcuts"
             android:targetPackage="com.omarea.vboot" />
     </shortcut>
     -->
@@ -23,7 +23,7 @@
         android:shortcutLongLabel="@string/shortcut_clear">
         <intent
             android:action="clear"
-            android:targetClass="com.omarea.vboot.Main2Activity"
+            android:targetClass="com.omarea.vboot.shortcuts"
             android:targetPackage="com.omarea.vboot" />
     </shortcut>-->
     <shortcut
@@ -35,7 +35,7 @@
         android:shortcutLongLabel="@string/shortcut_p1">
         <intent
             android:action="powersave"
-            android:targetClass="com.omarea.vboot.Main2Activity"
+            android:targetClass="com.omarea.vboot.shortcuts"
             android:targetPackage="com.omarea.vboot" />
     </shortcut>
     <shortcut
@@ -47,7 +47,7 @@
         android:shortcutLongLabel="@string/shortcut_p2">
         <intent
             android:action="defaultmode"
-            android:targetClass="com.omarea.vboot.Main2Activity"
+            android:targetClass="com.omarea.vboot.shortcuts"
             android:targetPackage="com.omarea.vboot" />
     </shortcut>
     <shortcut
@@ -59,7 +59,7 @@
         android:shortcutLongLabel="@string/shortcut_p3">
         <intent
             android:action="gamemode"
-            android:targetClass="com.omarea.vboot.Main2Activity"
+            android:targetClass="com.omarea.vboot.shortcuts"
             android:targetPackage="com.omarea.vboot" />
     </shortcut>
     <shortcut
@@ -71,7 +71,7 @@
         android:shortcutLongLabel="@string/shortcut_p4">
         <intent
             android:action="fastmode"
-            android:targetClass="com.omarea.vboot.Main2Activity"
+            android:targetClass="com.omarea.vboot.shortcuts"
             android:targetPackage="com.omarea.vboot" />
     </shortcut>
     <!--<shortcut
@@ -83,7 +83,7 @@
         android:shortcutLongLabel="@string/shortcut_systemtoggle">
         <intent
             android:action="systemtoggle"
-            android:targetClass="com.omarea.vboot.Main2Activity"
+            android:targetClass="com.omarea.vboot.shortcuts"
             android:targetPackage="com.omarea.vboot" />
     </shortcut>-->
 </shortcuts>

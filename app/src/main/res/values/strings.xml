@@ -3,6 +3,15 @@
         <item>com.teslacoilsw.launcher</item>
     </string-array>
 
+    <string name="error_root">抱歉，没有Root权限无法运行此应用！</string>
+    <string name="error_busybox">抱歉，没有安装Busybox，无法运行此应用！</string>
+    <string name="error_unsupport_uri">不支持的路径格式，非常抱歉。请向开发者反馈此问题！</string>
+    <string name="error_not_img">所选文件不是镜像格式（.img）</string>
+    <string name="unknow_action">不支持的操作！</string>
+
+    <string name="share_link">你也来试试微工具箱吧，我觉得还不错：\n http://www.coolapk.com/apk/com.omarea.vboot</string>
+    <string name="feedback_link">mqqwpa://im/chat?chat_type=wpa&amp;uin=1191634433</string>
+
     <string name="app_name">微工具箱</string>
 
     <string name="shortcut_clear">内存清理</string>
@@ -27,48 +36,94 @@
     "<span>具体功能，请在设置中配置。</span>"
     </string>
 
+    <string name="backup_action_title_boot">导出Boot</string>
+    <string name="backup_action_desc_boot">备份当前使用中的Boot为img，复制到/sdcard/boot.img</string>
+    <string name="restore_action_title_boot">刷入Boot</string>
+    <string name="restore_action_desc_boot">选择刷入boot.img</string>
+
+    <string name="backup_action_title_rec">导出Recovery</string>
+    <string name="backup_action_desc_rec">备份当前使用中的导出Recovery为img，复制到/sdcard/recovery.img</string>
+    <string name="restore_action_title_rec">刷入Recovery</string>
+    <string name="restore_action_desc_rec">选择刷入recovery.img</string>
+
+    <string name="zip_package">ZIP打包</string>
+    <string name="zip_package_desc">强大的卡刷包制作工具，一键打包调频、Boot、ROM</string>
+
+    <string name="backup_file_exists">覆盖文件？</string>
+    <string name="backup_boot_exists">/sdcard/boot.img已经存在，是否覆盖已有文件？\n</string>
+    <string name="backup_rec_exists">/sdcard/recovery.img已经存在，是否覆盖已有文件？\n</string>
+    <string name="backup_space_small">存储空间不足，请至少预留100M可用空间！</string>
+    <string name="restore_boot_confirm">确定刷入BOOT？</string>
+    <string name="restore_boot_confirm_desc">此操做非常危险，刷入无效的BOOT镜像可能导致手机无法开机！\n</string>
+
+    <string name="rom2zip_contents">打包内容</string>
+    <string name="rom2zip_romname">ROM名称，限英文</string>
+    <string name="rom2zip_size">大约需要空间：</string>
+    <string name="rom2zip_tips">本工具估算的所需空间只是预计值，为确保操作顺利，请先预留足够的可用空间，并授权允许本应用使用本地存储和ROOT权限！！</string>
+
     <string name="autoboosterhelp">
         "<b>配置说明：</b>"
 
-        "<span>默认后台：由系统自动管理</span>"
+        "<span>黑名单：当黑名单应用离开主界面进入挂起状态时，本工具将立即将它杀死或休眠（默认是杀死）。</span>"
 
-        "<span>阻止后台：不允许后台，离开主界面立即结束</span>"
-
-        "<span>可能会导致应用意外后台时被强制终止！</span>"
+        "<span>需要注意的是，其它应用的弹窗可能会导致前台应用丢失焦点，此时如果是黑名单应用可能会被意外杀死！</span>"
     </string>
+    <string name="autobooster_tab_blacklist">黑名单</string>
+    <string name="autobooster_tab_details">细节设置</string>
+    <string name="autobooster_cacheclear">缓存回收</string>
+    <string name="autobooster_cacheclear_desc">每次切换应用都进行缓存回收，可以保持内存处于较高可用状态，但可能会减缓运行速度增加耗电。</string>
+    <string name="autoboster_dozemode">休眠模式</string>
+    <string name="autobooster_dozemode_desc">使用休眠模式替代强制停止，适合内存比较过剩的设备，但是有些比较流氓的软件可能无法休眠！</string>
+    <string name="autobooster_service_unactive">未激活辅助服务 - 点击去激活</string>
+    <string name="autobooster_service_unactive2">后台管理功能未开启 - 点击去激活</string>
 
     <string name="defaultconfighelp">
         "<b>预设-标准模式(808)：</b>"
-        "<span>\r\n 默认模式 4x384 ~ 4x1248Mhz</span>"
-        "<span>\r\n 游戏模式 4x384 ~ 4xMax</span>"
+        "<span>\r\n 均衡模式 4x384 ~ 4x1248Mhz</span>"
+        "<span>\r\n 性能模式 4x384 ~ 4xMax</span>"
         "<span>\r\n 省电模式 4x384 ~ 4x864Mhz</span>"
         "<span>\r\n 充电状态电量超过85%自动使用游戏模式！</span>"
     </string>
     <string name="defaultconfighelp_820">
         "<b>预设-标准模式(820)：</b>"
-        "<span>\r\n 默认模式 4x300 ~ 4x1555Mhz</span>"
-        "<span>\r\n 游戏模式 4x300 ~ 4x1824Mhz</span>"
+        "<span>\r\n 均衡模式 4x300 ~ 4x1555Mhz</span>"
+        "<span>\r\n 性能模式 4x300 ~ 4x1824Mhz</span>"
         "<span>\r\n 省电模式 4x300 ~ 4x960Mhz</span>"
         "<span>\r\n 电源模式 4x1248 ~ Max</span>"
     </string>
 
     <string name="defaultconfighelp_bigcore">
         "<b>预设-更高性能(808)：</b>"
-        "<span>\r\n 默认模式 4x384 ~ 4xMax</span>"
-        "<span>\r\n 游戏模式 4x384 ~ 6xMax</span>"
+        "<span>\r\n 均衡模式 4x384 ~ 4xMax</span>"
+        "<span>\r\n 性能模式 4x384 ~ 6xMax</span>"
         "<span>\r\n 省电模式 4x384 ~ 4x864Mhz</span>"
         "<span>\r\n 充电状态电量超过85%自动使用游戏模式！</span>"
     </string>
     <string name="defaultconfighelp_bigcore_820">
         "<b>预设-更高性能(820)：</b>"
-        "<span>\r\n 默认模式 4x300 ~ 4x1824Mhz</span>"
-        "<span>\r\n 游戏模式 4x300 ~ Max</span>"
+        "<span>\r\n 均衡模式 4x300 ~ 4x1824Mhz</span>"
+        "<span>\r\n 性能模式 4x300 ~ Max</span>"
         "<span>\r\n 省电模式 4x300 ~ 4x960Mhz</span>"
         "<span>\r\n 电源模式 Max</span>"
     </string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="accessbility_autoclick">自动点击</string>
+    <string name="accessbility_autoclick_desc">安装第三方应用时尝试自动点击下一步和安装按钮，部分系统有效！</string>
+    <string name="accessbility_charger">充电加速 *实验性</string>
+    <string name="accessbility_charger_desc">尝试修改充电电流限制提高充电速度，会大量增加发热。支持设备甚少，对Nubia Z11有显著效果。</string>
+    <string name="accessbility_autobooster">后台管理</string>
+    <string name="accessbility_autobooster_desc">离开主界面时自动终止黑名单应用，具体设置请在本应用后台管理中配</string>
+    <string name="accessbility_dynconfig">动态响应</string>
+    <string name="accessbility_dynconfig_desc">仅限骁龙808、820。为单个应用设置CPU、GPU频率，具体设置请在在本应用性能配置中配</string>
+    <string name="accessbility_bp">充电保护 *实验性</string>
+    <string name="accessbility_bp_desc">限制手机只能充电到90%。支持设备甚少，如出现手机不充电的情况，请关闭此功能并重启手机！</string>
+    <string name="accessbility_debug">调试模式</string>
+    <string name="accessbility_debug_desc">在后台运行时显示完整的动作提示，用于测试软件是否正常工作</string>
+    <string name="accessbility_delay">延迟启动</string>
+    <string name="accessbility_delay_desc">如果出现开机后应用已启动但未正确加载配置文件，可尝试开启此项</string>
 
     <string name="menu_home">首页</string>
     <string name="menu_vboot">双系统工具</string>
@@ -94,6 +149,15 @@
     <string name="action_reboot_bl">重启到FastBoot</string>
     <string name="action_reboot9008">重启到9008模式</string>
 
+    <string name="xposed_tab_a">预设配置</string>
+    <string name="xposed_tab_b">自定义</string>
+    <string name="xposed_gamehf_title">王者荣耀 高帧率模式</string>
+    <string name="xposed_gamehf_desc">通过伪装设备型号，让王者荣耀游戏允许开启60帧模式。</string>
+    <string name="xposed_dpi_title">DPI修复、优化</string>
+    <string name="xposed_dpi_desc">修复由于更改系统dpi，导致部分应用UI错位。包括：MIUI系统相册、更新、天气；NubiaUI 相机。优化cpufloat、PerMon的显示dpi。</string>
+    <string name="xposed_actived">模块已激活-工作正常</string>
+    <string name="xposed_unactive">Xposed模块未激活</string>
+    <string name="xposed_cannot_openxposed">Xposed管理器似乎还没有安装？</string>
 
     <string name="dataresize_waring">
 "<big>注意：</big>"
@@ -110,20 +174,10 @@
         对于MIUI等具有软件休眠机制的系统，还应对本软件单独设置，避免后台服务被暂停和挂起。
     </string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">
-        "<span></span>"
-        "<font><big><b>更新内容 2017.06.01</b></big></font>"
-        "<span>1.改进首页电池信息检测机制。</span>"
-        "<span>2.增加应用管理（冻结、卸载）。</span>"
-        "<span>3.修复无法覆盖安装。</span>"
-        "<br />"
-        "<br />"
-        "<spna>详情：</spna>"
-        "<span>https://github.com/helloklf/vtools</span>"
-        "<span>版本库</span>"
-        "<span>https://github.com/helloklf/vtools/tree/master/Build-APK</span>"
-    </string>
+    <string name="accessibility_running">服务已启动</string>
+    <string name="accessibility_stoped">点击此处去勾选辅助服务</string>
+
+    <string name="error_notbusybox">没有安装Busybox，部分功能可能无法正常使用！</string>
 
     <string name="helpinfo">
         "<font><big><b>使用说明</b></big></font>"
@@ -144,6 +198,9 @@
         "<span>为了少开一个后台服务而已，所以使用了和其它功能同一个服务</span>"
         "<br />"
         "<br />"
+        "<br />"
+        "<spna>详情：</spna>"
+        "<span>http://coolapk.com/apk/com.omarea.vboot</span>"
     </string>
 
 </resources>
