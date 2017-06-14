@@ -9,9 +9,9 @@
     tools:context="com.omarea.vboot.rom2zip">
 
     <android.support.design.widget.AppBarLayout
+        android:fitsSystemWindows="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:fitsSystemWindows="false"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
@@ -33,96 +33,95 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <ProgressBar
-            android:id="@+id/rom2zipprogressBar"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:id="@+id/rom2zipprogressBar"
+            android:indeterminate="true"
+            android:visibility="gone"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="45dp"
-            android:indeterminate="true"
-            android:visibility="gone" />
+            android:layout_marginBottom="45dp" />
 
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="本工具估算的所需空间只是预计值，为确保操作顺利，请先预留足够的可用空间，并授权允许本应用使用本地存储和ROOT权限！！"
             android:id="@+id/textView6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:text="@string/rom2zip_tips"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:layout_alignParentStart="true" />
 
         <TextView
-            android:id="@+id/textView7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/textView6"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="打包内容"
+            android:id="@+id/textView7"
             android:layout_marginStart="96dp"
             android:layout_marginTop="159dp"
-            android:text="@string/rom2zip_contents"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:layout_below="@+id/textView6"
+            android:layout_alignParentStart="true" />
 
         <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Boot（建议）"
+            android:checked="true"
             android:id="@+id/rom2zip_boot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/textView7"
             android:layout_below="@+id/textView7"
-            android:layout_marginTop="30dp"
-            android:checked="true"
-            android:text="Boot" />
+            android:layout_alignStart="@+id/textView7"
+            android:layout_marginTop="30dp" />
 
         <CheckBox
+            android:checked="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="System（建议）"
             android:id="@+id/rom2zip_sys"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/rom2zip_boot"
             android:layout_below="@+id/rom2zip_boot"
-            android:checked="true"
-            android:text="System" />
+            android:layout_alignStart="@+id/rom2zip_boot" />
 
         <CheckBox
-            android:id="@+id/rom2zip_other"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/rom2zip_sys"
-            android:layout_below="@+id/rom2zip_sys"
-            android:checked="false"
+            android:text="其它（暂不支持）"
             android:enabled="false"
-            android:text="Other"
-            android:visibility="gone" />
+            android:checked="false"
+            android:id="@+id/rom2zip_other"
+            android:layout_below="@+id/rom2zip_sys"
+            android:layout_alignStart="@+id/rom2zip_sys" />
 
         <CheckBox
-            android:id="@+id/rom2zip_rec"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/rom2zip_other"
+            android:text="Recovery"
+            android:id="@+id/rom2zip_rec"
             android:layout_below="@+id/rom2zip_other"
-            android:text="Recovery" />
+            android:layout_alignStart="@+id/rom2zip_other" />
 
         <TextView
-            android:id="@+id/rom2zip_needsize"
+            android:layout_margin="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="大约需要空间：2850MB"
+            android:id="@+id/rom2zip_needsize"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true"
-            android:layout_margin="20dp"
-            android:text="@string/rom2zip_size"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:layout_alignParentStart="true" />
 
         <EditText
-            android:id="@+id/rom2zip_name"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_alignStart="@+id/rom2zip_rec"
-            android:layout_below="@+id/rom2zip_rec"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="30dp"
-            android:hint="@string/rom2zip_romname"
             android:inputType="textEmailAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/rom2zip_name"
+            android:layout_below="@+id/rom2zip_rec"
+            android:layout_alignStart="@+id/rom2zip_rec"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="5dp"
+            android:hint="ROM名称"
             android:maxLength="20"
             android:textAlignment="center"
-            android:textSize="12dp" />
+            android:layout_alignEnd="@+id/rom2zip_boot" />
 
 
     </RelativeLayout>

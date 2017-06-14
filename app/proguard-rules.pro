@@ -15,9 +15,3 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
-
--keep class com.omarea.shared.xposed_interface{*;}
--keep class com.omarea.shared.xposed_check{*;}
-
--keepclassmembers class com.omarea.shared.xposed_interface{*;}
--keepclassmembers class com.omarea.shared.xposed_check{*;}

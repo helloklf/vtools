@@ -1,6 +1,6 @@
 package com.omarea.shared;
 
-import com.omarea.shell.Platform;
+import android.app.ApplicationErrorReport;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,12 +26,11 @@ public class ConfigInfo {
     public boolean AutoInstall = true;
     public boolean DebugMode = false;
     public boolean DelayStart = false;
-    //public boolean PowerAdapter = true;
+    public boolean PowerAdapter = true;
     public boolean HasSystemApp = false;
     public boolean BatteryProtection = false;
     public boolean AutoClearCache = false;
     public boolean UsingDozeMod = false;
-    public String CPUName = null;
 
     public ArrayList<HashMap<String, Object>> defaultList;
     public ArrayList<HashMap<String, Object>> gameList;
@@ -48,7 +47,7 @@ public class ConfigInfo {
         this.QcMode = isTrue(jsonObject, "QcMode", true);
         this.UseBigCore = isTrue(jsonObject, "UseBigCore");
         this.BatteryProtection = isTrue(jsonObject, "BatteryProtection");
-        //this.PowerAdapter = isTrue(jsonObject, "PowerAdapter");
+        this.PowerAdapter = isTrue(jsonObject, "PowerAdapter");
         this.HasSystemApp = isTrue(jsonObject, "HasSystemApp");
         this.AutoClearCache = isTrue(jsonObject, "AutoClearCache");
         this.UsingDozeMod = isTrue(jsonObject, "UsingDozeMod");
@@ -66,9 +65,8 @@ public class ConfigInfo {
      */
     public static ConfigInfo getConfigInfo() {
         if (configInfo == null) {
-            JSONObject jsonObject = AppShared.INSTANCE.getConfigData();
+            JSONObject jsonObject = AppShared.getConfigData();
             configInfo = new ConfigInfo(jsonObject);
-            configInfo.CPUName = new Platform().GetCPUName();
         }
 
         return configInfo;
@@ -86,7 +84,7 @@ public class ConfigInfo {
                     .put("AutoInstall", AutoInstall)
                     .put("DebugMode", DebugMode)
                     .put("DelayStart", DelayStart)
-                    //.put("PowerAdapter", PowerAdapter)
+                    .put("PowerAdapter", PowerAdapter)
                     .put("HasSystemApp", HasSystemApp)
                     .put("AutoClearCache",AutoClearCache)
                     .put("BatteryProtection", BatteryProtection);
@@ -95,7 +93,7 @@ public class ConfigInfo {
             setHashMapList(jsonObject,powersaveList,"Profile_PowerSave");
             setArray(jsonObject,blacklist,"Booster_BlackList");
 
-            return AppShared.INSTANCE.setConfigData(jsonObject);
+            return AppShared.setConfigData(jsonObject);
         } catch (Exception ex) {
             return false;
         }

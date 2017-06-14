@@ -1,90 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context="com.omarea.vboot.fragment_xposed">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.omarea.vboot.fragment_xposed">
 
-    <TabHost
-        android:id="@+id/xposed_tabs"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TabWidget
-                android:id="@android:id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#33dddddd"></TabWidget>
-
-            <FrameLayout
-                android:id="@android:id/tabcontent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <FrameLayout
-                    android:id="@+id/xposed_tab_a"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <CheckBox
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="4dp"
-                            android:checked="true"
-                            android:enabled="false"
-                            android:text="@string/xposed_gamehf_title"
-                            android:textSize="16dp"/>
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:enabled="false"
-                            android:text="@string/xposed_gamehf_desc"
-                            android:textSize="12dp"/>
-
-                        <CheckBox
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="4dp"
-                            android:checked="true"
-                            android:enabled="false"
-                            android:text="@string/xposed_dpi_title"
-                            android:textSize="16dp"/>
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:enabled="false"
-                            android:text="@string/xposed_dpi_desc"
-                            android:textSize="12dp"/>
-                    </LinearLayout>
-                </FrameLayout>
-
-                <FrameLayout
-                    android:id="@+id/xposed_tab_b"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                </FrameLayout>
-            </FrameLayout>
-        </LinearLayout>
-
-        <Button
+        <TextView
+            android:visibility="visible"
+            android:layout_margin="0dp"
+            android:padding="13dp"
+            android:gravity="center_horizontal"
+            android:background="#22888888"
             android:id="@+id/vbootxposedservice_state"
+            android:text=""
+            android:paddingLeft="8dp"
+            android:layout_marginTop="30dp"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent" />
+
+        <CheckBox
+            android:layout_margin="4dp"
+            android:checked="true"
+            android:enabled="false"
+            android:layout_width="match_parent"
+            android:textSize="16dp"
+            android:layout_height="wrap_content"
+            android:text="王者荣耀 高帧率模式" />
+
+        <TextView
+            android:layout_margin="10dp"
+            android:textSize="12dp"
+            android:enabled="false"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#eee"
-            android:text="@string/xposed_unactive"/>
-    </TabHost>
+            android:text="通过伪装设备型号，让王者荣耀游戏允许开启60帧模式。" />
+
+        <CheckBox
+            android:layout_margin="4dp"
+            android:checked="true"
+            android:enabled="false"
+            android:layout_width="match_parent"
+            android:textSize="16dp"
+            android:layout_height="wrap_content"
+            android:text="DPI修复、优化" />
+
+        <TextView
+            android:layout_margin="10dp"
+            android:textSize="12dp"
+            android:enabled="false"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="修复由于更改系统dpi，导致部分应用UI错位。包括：MIUI系统相册、更新、天气；NubiaUI 相机。优化cpufloat、PerMon的显示dpi。" />
+    </LinearLayout>
 </RelativeLayout>

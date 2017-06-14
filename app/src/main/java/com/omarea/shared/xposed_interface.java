@@ -17,9 +17,8 @@ public class xposed_interface implements IXposedHookLoadPackage {
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         final String packageName = loadPackageParam.packageName;
 
-        //用于检查xposed是否激活
         if (packageName.equals("com.omarea.vboot")) {
-            XposedHelpers.findAndHookMethod("com.omarea.shared.xposed_check", loadPackageParam.classLoader, "xposedIsRunning", new XC_MethodHook() {
+            XposedHelpers.findAndHookMethod("com.omarea.shared.ServiceHelper", loadPackageParam.classLoader, "xposedIsRunning", new XC_MethodHook() {
                 @Override
                 protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                     super.afterHookedMethod(param);
@@ -50,7 +49,6 @@ public class xposed_interface implements IXposedHookLoadPackage {
                             switch (prop) {
                                 case "ro.product.model": {
                                     param.setResult("MI 5");
-                                    break;
                                 }
                                 case "ro.product.brand": {
                                     param.setResult("Xiaomi");
@@ -83,29 +81,18 @@ public class xposed_interface implements IXposedHookLoadPackage {
                 packageName.equals("com.android.updater") ||
                 //packageName.equals("de.robv.android.xposed.installer") ||
                 packageName.equals("com.miui.weather2") ||
-                packageName.equals("com.miui.weather")) {
+                packageName.equals("com.miui.weather")
+                ) {
             XposedHelpers.findAndHookMethod("android.app.Application", loadPackageParam.classLoader, "attach", Context.class, new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     super.beforeHookedMethod(param);
 
                     Context context = (Context) param.args[0];
-                    float pixels = context.getResources().getDisplayMetrics().widthPixels;
-                    if(pixels==1080){
-                        context.getResources().getDisplayMetrics().density = 3;
-                        context.getResources().getDisplayMetrics().densityDpi = 480;
-                        context.getResources().getDisplayMetrics().scaledDensity = 3;
-                    }
-                    else if(pixels==720){
-                        context.getResources().getDisplayMetrics().density = 2;
-                        context.getResources().getDisplayMetrics().densityDpi = 320;
-                        context.getResources().getDisplayMetrics().scaledDensity = 2;
-                    }
-                    else if(pixels==540||pixels==480){
-                        context.getResources().getDisplayMetrics().density = (float)(1.5);
-                        context.getResources().getDisplayMetrics().densityDpi = 240;
-                        context.getResources().getDisplayMetrics().scaledDensity = (float)(1.5);
-                    }
+                    //float density = context.getResources().getDisplayMetrics().density;
+                    context.getResources().getDisplayMetrics().density = 3;
+                    context.getResources().getDisplayMetrics().densityDpi = 480;
+                    context.getResources().getDisplayMetrics().scaledDensity = 3;
                 }
 
             });
@@ -116,9 +103,9 @@ public class xposed_interface implements IXposedHookLoadPackage {
                     super.beforeHookedMethod(param);
 
                     Context context = (Context) param.args[0];
-                    context.getResources().getDisplayMetrics().density = (float) (context.getResources().getDisplayMetrics().density / 1.7);
-                    context.getResources().getDisplayMetrics().densityDpi = (int)(context.getResources().getDisplayMetrics().densityDpi / 1.7);
-                    context.getResources().getDisplayMetrics().scaledDensity = (float) (context.getResources().getDisplayMetrics().scaledDensity / 1.7);
+                    context.getResources().getDisplayMetrics().density = (float) (context.getResources().getDisplayMetrics().density / 2.0);
+                    context.getResources().getDisplayMetrics().densityDpi = (context.getResources().getDisplayMetrics().densityDpi / 2);
+                    context.getResources().getDisplayMetrics().scaledDensity = (float) (context.getResources().getDisplayMetrics().scaledDensity / 2.0);
                 }
             });
         }

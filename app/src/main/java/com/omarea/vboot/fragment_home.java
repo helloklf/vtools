@@ -1,5 +1,6 @@
 package com.omarea.vboot;
 
+import android.app.ApplicationErrorReport;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -24,8 +26,8 @@ import com.omarea.shared.Events;
 import com.omarea.shared.IEventSubscribe;
 import com.omarea.shared.ServiceHelper;
 import com.omarea.shared.cmd_shellTools;
-import com.omarea.shell.DynamicConfig;
 
+import java.math.BigDecimal;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -56,8 +58,10 @@ public class fragment_home extends Fragment {
         view = inflater.inflate(R.layout.layout_home, container, false);
 
         cmdshellTools = new cmd_shellTools(null, null);
+        if (cpuName == null)
+            cpuName = cmdshellTools.GetCPUName();
 
-        if(new DynamicConfig().DynamicSupport(ConfigInfo.getConfigInfo().CPUName)){
+        if(cpuName.contains("8996")){
             view.findViewById(R.id.powermode_toggles).setVisibility(View.VISIBLE);
         }
 
@@ -123,9 +127,9 @@ public class fragment_home extends Fragment {
             getContext().registerReceiver(broadcast, ACTION_BATTERY_CHANGED);
         }
 
-        EventBus.INSTANCE.subscribe(Events.INSTANCE.getPowerDisConnection(), subscribePowerDisConn);
-        EventBus.INSTANCE.subscribe(Events.INSTANCE.getPowerConnection(), subscribePowerConn);
-        EventBus.INSTANCE.subscribe(Events.INSTANCE.getModeToggle(), eventSubscribe);
+        EventBus.subscribe(Events.PowerDisConnection, subscribePowerDisConn);
+        EventBus.subscribe(Events.PowerConnection, subscribePowerConn);
+        EventBus.subscribe(Events.ModeToggle, eventSubscribe);
 
         setModeState();
 
@@ -136,7 +140,7 @@ public class fragment_home extends Fragment {
         sdfree.setText("共享存储：" + cmdshellTools.GetDirFreeSizeMB("/sdcard") + " MB");
         datafree.setText("应用存储：" + cmdshellTools.GetDirFreeSizeMB("/data") + " MB");
         batteryMAH = cmdshellTools.getBatteryMAH() + "   ";
-        serviceRunning = (ServiceHelper.Companion.serviceIsRunning(getContext().getApplicationContext()));
+        serviceRunning = (ServiceHelper.serviceIsRunning(getContext().getApplicationContext()));
 
         timer = new Timer();
 
@@ -166,6 +170,7 @@ public class fragment_home extends Fragment {
         super.onResume();
     }
 
+    String cpuName;
     Button btn_powersave = null;
     Button btn_defaultmode = null;
     Button btn_gamemode = null;
@@ -181,10 +186,10 @@ public class fragment_home extends Fragment {
     private void installConfig() {
 
         if (ConfigInfo.getConfigInfo().UseBigCore)
-            AppShared.INSTANCE.WriteFile(getContext().getAssets(), ConfigInfo.getConfigInfo().CPUName + "/powercfg-bigcore.sh", "powercfg.sh");
+            AppShared.WriteFile(getContext().getAssets(), cpuName + "/powercfg-bigcore.sh", "powercfg.sh");
         else
-            AppShared.INSTANCE.WriteFile(getContext().getAssets(), ConfigInfo.getConfigInfo().CPUName + "/powercfg-default.sh", "powercfg.sh");
-        cmdshellTools.DoCmd(Consts.INSTANCE.getInstallPowerToggleConfigToCache());
+            AppShared.WriteFile(getContext().getAssets(), cpuName + "/powercfg-default.sh", "powercfg.sh");
+        cmdshellTools.DoCmd(Consts.InstallPowerToggleConfigToCache);
     }
 
     Button.OnClickListener togglePowerSave = new Button.OnClickListener() {
@@ -196,7 +201,7 @@ public class fragment_home extends Fragment {
             btn_gamemode.setText("游戏");
             btn_fastmode.setText("极速");
 
-            cmdshellTools.DoCmd(Consts.INSTANCE.getTogglePowersaveMode());
+            cmdshellTools.DoCmd(Consts.TogglePowersaveMode);
             Snackbar.make(v, "已切换为省电模式，适合长时间媒体播放或阅读，综合使用时并不效率也不会省电太多！", Snackbar.LENGTH_LONG).show();
         }
     };
@@ -209,7 +214,7 @@ public class fragment_home extends Fragment {
             btn_gamemode.setText("游戏 √");
             btn_fastmode.setText("极速");
 
-            cmdshellTools.DoCmd(Consts.INSTANCE.getToggleGameMode());
+            cmdshellTools.DoCmd(Consts.ToggleGameMode);
             Snackbar.make(v, "已切换为游戏（性能）模式，但受温度影响并不一定会更快，你可以考虑删除温控！", Snackbar.LENGTH_LONG).show();
         }
     };
@@ -222,7 +227,7 @@ public class fragment_home extends Fragment {
             btn_gamemode.setText("游戏");
             btn_fastmode.setText("极速 √");
 
-            cmdshellTools.DoCmd(Consts.INSTANCE.getToggleFastMode());
+            cmdshellTools.DoCmd(Consts.ToggleFastMode);
             Snackbar.make(v, "已切换为极速模式，这会大幅增加发热，如果不删除温控性能并不稳定！", Snackbar.LENGTH_LONG).show();
         }
     };
@@ -235,7 +240,7 @@ public class fragment_home extends Fragment {
             btn_gamemode.setText("游戏");
             btn_fastmode.setText("极速");
 
-            cmdshellTools.DoCmd(Consts.INSTANCE.getToggleDefaultMode());
+            cmdshellTools.DoCmd(Consts.ToggleDefaultMode);
             Snackbar.make(v, "已切换为均衡模式，适合日常使用，速度与耗电平衡！", Snackbar.LENGTH_LONG).show();
         }
     };
@@ -251,9 +256,9 @@ public class fragment_home extends Fragment {
         }
 
         try{
-            EventBus.INSTANCE.unSubscribe(Events.INSTANCE.getModeToggle(), eventSubscribe);
-            EventBus.INSTANCE.unSubscribe(Events.INSTANCE.getPowerDisConnection(), subscribePowerDisConn);
-            EventBus.INSTANCE.unSubscribe(Events.INSTANCE.getPowerDisConnection(), subscribePowerConn);
+            EventBus.unSubscribe(Events.ModeToggle, eventSubscribe);
+            EventBus.unSubscribe(Events.PowerDisConnection, subscribePowerDisConn);
+            EventBus.unSubscribe(Events.PowerDisConnection, subscribePowerConn);
             if (broadcast != null)
                 getContext().unregisterReceiver(broadcast);
         }
@@ -265,9 +270,9 @@ public class fragment_home extends Fragment {
     @Override
     public void onDestroy() {
         try{
-            EventBus.INSTANCE.unSubscribe(Events.INSTANCE.getModeToggle(), eventSubscribe);
-            EventBus.INSTANCE.unSubscribe(Events.INSTANCE.getPowerDisConnection(), subscribePowerDisConn);
-            EventBus.INSTANCE.unSubscribe(Events.INSTANCE.getPowerDisConnection(), subscribePowerConn);
+            EventBus.unSubscribe(Events.ModeToggle, eventSubscribe);
+            EventBus.unSubscribe(Events.PowerDisConnection, subscribePowerDisConn);
+            EventBus.unSubscribe(Events.PowerDisConnection, subscribePowerConn);
 
             if (broadcast != null)
                 getContext().unregisterReceiver(broadcast);

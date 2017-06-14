@@ -1,23 +1,24 @@
-package com.omarea.vboot
+package com.omarea.vboot;
 
-import android.accessibilityservice.AccessibilityService
-import android.view.accessibility.AccessibilityEvent
+import android.accessibilityservice.AccessibilityService;
+import android.view.accessibility.AccessibilityEvent;
 
-import com.omarea.shared.AutoClickService
-import com.omarea.shared.ServiceHelper
+import com.omarea.shared.AutoClickService;
+import com.omarea.shared.ServiceHelper;
 
 /**
  * Created by helloklf on 2016/8/27.
  */
-class vtools_accessibility : AccessibilityService() {
+public class service_accessibility extends AccessibilityService {
 
-    override fun onCreate() {
-        super.onCreate()
+    @Override
+    public void onCreate() {
+        super.onCreate();
 
         /*
         Notification.Builder builder = new Notification.Builder(this);
         //Intent mIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://blog.csdn.net/itachi85/"));
-        Intent mIntent = new Intent(getApplicationContext(),accessibility_settings.class);
+        Intent mIntent = new Intent(getApplicationContext(),activity_accessibility_service_settings.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, mIntent, 0);
         builder.setContentIntent(pendingIntent);
         builder.setSmallIcon(R.drawable.linux);
@@ -41,9 +42,10 @@ class vtools_accessibility : AccessibilityService() {
         */
     }
 
-    internal var serviceHelper: ServiceHelper? = null
+    ServiceHelper serviceHelper = null;
 
-    public override fun onServiceConnected() {
+    @Override
+    public void onServiceConnected() {
         /*
         AccessibilityServiceInfo info = new AccessibilityServiceInfo();
         // We are interested in all types of accessibility events.
@@ -56,14 +58,15 @@ class vtools_accessibility : AccessibilityService() {
         info.packageNames = null;
         setServiceInfo(info);
         */
-        super.onServiceConnected()
+        super.onServiceConnected();
 
         if (serviceHelper == null)
-            serviceHelper = ServiceHelper(applicationContext)
+            serviceHelper = new ServiceHelper(getApplicationContext());
     }
 
-    override fun onAccessibilityEvent(event: AccessibilityEvent) {
-        var packageName = event.packageName.toString().toLowerCase()
+    @Override
+    public void onAccessibilityEvent(AccessibilityEvent event) {
+        String packageName = event.getPackageName().toString().toLowerCase();
 
         /*if(
             packageName.equals("com.android.packageinstaller")||
@@ -71,25 +74,27 @@ class vtools_accessibility : AccessibilityService() {
             packageName.equals("com.mokee.packageinstaller")||
             packageName.equals("com.google.android.packageinstaller"))*/
         if (packageName.contains("packageinstaller")) {
-            packageName = "com.android.packageinstaller"
-            AutoClickService().packageinstallerAutoClick(event)
-        } else if (packageName == "com.miui.securitycenter") {
-            AutoClickService().miuiUsbInstallAutoClick(event)
-            return
+            packageName = "com.android.packageinstaller";
+            new AutoClickService().packageinstallerAutoClick(event);
+        } else if (packageName.equals("com.miui.securitycenter")) {
+            new AutoClickService().miuiUsbInstallAutoClick(event);
+            return;
         }
         if (serviceHelper != null)
-            serviceHelper!!.onAccessibilityEvent(packageName)
+            serviceHelper.onAccessibilityEvent(packageName);
     }
 
-    override fun onInterrupt() {
+    @Override
+    public void onInterrupt() {
         if (serviceHelper != null)
-            serviceHelper!!.onInterrupt()
+            serviceHelper.onInterrupt();
         //android.os.Process.killProcess(android.os.Process.myPid());
     }
 
-    override fun onDestroy() {
+    @Override
+    public void onDestroy() {
         if (serviceHelper != null)
-            serviceHelper!!.onInterrupt()
+            serviceHelper.onInterrupt();
         //android.os.Process.killProcess(android.os.Process.myPid());
     }
 }

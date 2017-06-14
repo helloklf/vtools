@@ -8,8 +8,10 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Process;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -19,12 +21,16 @@ import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.TabHost;
+import android.widget.Toast;
 
+import com.omarea.shared.ConfigInfo;
 import com.omarea.shared.Consts;
 import com.omarea.shared.cmd_shellTools;
+import com.omarea.ui.list_adapter;
 import com.omarea.ui.list_adapter2;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,9 +48,9 @@ public class fragment_applistions extends Fragment {
     View frameView;
 
     cmd_shellTools cmdshellTools = null;
-    main thisview = null;
+    activity_main thisview = null;
 
-    public static Fragment Create(main thisView, cmd_shellTools cmdshellTools) {
+    public static Fragment Create(activity_main thisView, cmd_shellTools cmdshellTools) {
         fragment_applistions fragment = new fragment_applistions();
         fragment.cmdshellTools = cmdshellTools;
         fragment.thisview = thisView;
@@ -255,7 +261,7 @@ public class fragment_applistions extends Fragment {
             return;
         final AlertDialog.Builder builder = new AlertDialog.Builder(thisview);
         builder.setTitle("安装提示");
-        builder.setMessage("\n这需要好些时间，而且期间你看不到安装进度，只能通过桌面程序观察应用是否已经安装！\n\n");
+        builder.setMessage("\n部分系统禁用了USB安装功能，可能无法完成批量安装。如果是MIUI系统，请在开发者选项中开启USB安装选项！\n\n");
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -276,9 +282,6 @@ public class fragment_applistions extends Fragment {
                         public void run() {
                             cmdshellTools.DoCmdSync(stringBuffer.toString());
                             backupedList = null;
-                            installedList = null;
-                            systemList = null;
-                            allApps.clear();
                             setList();
                         }
                     }).start();
@@ -482,7 +485,7 @@ public class fragment_applistions extends Fragment {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 final StringBuffer stringBuffer = new StringBuffer();
-                stringBuffer.append(Consts.INSTANCE.getMountSystemRW());
+                stringBuffer.append(Consts.MountSystemRW);
                 for (int i = 0; i < apps.size(); i++) {
                     stringBuffer.append("rm -rf ");
                     stringBuffer.append(apps.get(i).get("dir"));

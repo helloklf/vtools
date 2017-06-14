@@ -1,6 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 25
@@ -9,14 +7,14 @@ android {
         applicationId "com.omarea.vboot"
         minSdkVersion 22
         targetSdkVersion 25
-        versionCode 215
-        versionName "7.6.5"
+        versionCode 207
+        versionName "7.6.2"
     }
     buildTypes {
         release {
             zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            minifyEnabled true
+            minifyEnabled false
         }
         debug {
             zipAlignEnabled true
@@ -36,8 +34,4 @@ dependencies {
     compile 'com.android.support:support-v4:25.2.0'
     compile 'com.android.support:design:25.2.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta5'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-}
-repositories {
-    mavenCentral()
 }

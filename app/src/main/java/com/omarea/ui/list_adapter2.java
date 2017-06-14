@@ -63,7 +63,7 @@ public class list_adapter2 extends BaseAdapter {
         viewHolder.itemTitle.setText(getItem(position).get("name").toString());
         viewHolder.itemText.setText(getItem(position).get("packageName").toString());
         viewHolder.imgView.setImageDrawable((Drawable) getItem(position).get("icon"));
-        if (getItem(position).get("enabled_state") != null)
+        if(getItem(position).get("enabled_state")!=null)
             viewHolder.enabledStateText.setText(getItem(position).get("enabled_state").toString());
         else
             viewHolder.enabledStateText.setText("");

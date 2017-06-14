@@ -16,7 +16,6 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import com.omarea.shared.cmd_shellTools;
-import com.omarea.shell.Busybox;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -108,7 +107,7 @@ public class fragment_vboot extends Fragment {
                         builder.setPositiveButton("留100M", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                if (!new Busybox().IsBusyboxInstalled()) {
+                                if (!cmdshellTools.IsBusyboxInstalled()) {
                                     Snackbar.make(view, "Busybox未安装，无法进行此操作！", Snackbar.LENGTH_SHORT).show();
                                     return;
                                 }
@@ -128,7 +127,7 @@ public class fragment_vboot extends Fragment {
                     case 2: {
                         //调整vboot容量
                         if (cmdshellTools.CurrentSystemOne()) {
-                            if (!new Busybox().IsBusyboxInstalled()) {
+                            if (!cmdshellTools.IsBusyboxInstalled()) {
                                 Snackbar.make(view, "Busybox未安装，无法进行此操作！", Snackbar.LENGTH_SHORT).show();
                                 return;
                             }
