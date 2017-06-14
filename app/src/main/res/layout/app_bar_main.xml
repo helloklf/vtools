@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
-    tools:context="com.omarea.vboot.activity_main">
+    tools:context="com.omarea.vboot.main">
 
     <android.support.design.widget.AppBarLayout
         android:elevation="0dp"
@@ -25,6 +25,7 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
+        android:visibility="gone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"

@@ -7,9 +7,7 @@
      
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <!--
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
-    -->
+    <!-- <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" /> -->
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -25,7 +23,6 @@
         <meta-data
             android:name="xposedmodule"
             android:value="true" />
-            
         <meta-data
             android:name="xposeddescription"
             android:value="提供一些实用的功能" />
@@ -42,7 +39,8 @@
         </receiver>
         -->
         <service
-            android:name=".service_accessibility"
+            android:lockTaskMode="always"
+            android:name=".vtools_accessibility"
             android:label="微工具箱-增强服务"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
@@ -59,7 +57,9 @@
         </service>
 
         <activity
-            android:name=".activity_main"
+            android:launchMode="singleInstance"
+            android:lockTaskMode="never"
+            android:name=".main"
             android:configChanges="keyboardHidden|orientation"
             android:excludeFromRecents="false"
             android:exported="true"
@@ -68,8 +68,12 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <!--
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.MONKEY" />-->
             </intent-filter>
 
             <meta-data
@@ -77,26 +81,32 @@
                 android:resource="@xml/shortcuts" />
         </activity>
         <activity
+            android:lockTaskMode="never"
             android:name=".vbootresize"
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/title_vbootresize"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:lockTaskMode="never"
             android:name=".rom2zip"
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/title_activity_rom2zip"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity_accessibility_service_settings"
+            android:lockTaskMode="never"
+            android:launchMode="singleInstance"
+            android:name=".accessibility_settings"
             android:configChanges="keyboardHidden|orientation"
             android:excludeFromRecents="false"
             android:label="微工具箱增强服务"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".Main2Activity"
+            android:lockTaskMode="never"
+            android:launchMode="singleInstance"
+            android:name=".shortcuts"
             android:configChanges="keyboardHidden|orientation"
             android:excludeFromRecents="false"
             android:exported="true"

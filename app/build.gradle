@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 25
@@ -7,14 +9,14 @@ android {
         applicationId "com.omarea.vboot"
         minSdkVersion 22
         targetSdkVersion 25
-        versionCode 207
-        versionName "7.6.2"
+        versionCode 218
+        versionName "7.6.11"
     }
     buildTypes {
         release {
             zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            minifyEnabled false
+            minifyEnabled true
         }
         debug {
             zipAlignEnabled true
@@ -30,8 +32,12 @@ dependencies {
     provided files('lib/api-82.jar')
     //provided files('lib/api-82-sources.jar')
     //provided 'de.robv.android.xposed:ap:82'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     compile 'com.android.support:appcompat-v7:25.2.0'
     compile 'com.android.support:support-v4:25.2.0'
     compile 'com.android.support:design:25.2.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta5'
+}
+repositories {
+    mavenCentral()
 }

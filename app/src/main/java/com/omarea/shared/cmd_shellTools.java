@@ -1,6 +1,5 @@
 package com.omarea.shared;
 
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Environment;
@@ -13,7 +12,6 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -21,8 +19,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Created by helloklf on 2016/8/4.
@@ -80,7 +76,7 @@ public class cmd_shellTools {
             myHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, msg, longMsg ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT).show();
                 }
             });
     }
@@ -761,7 +757,7 @@ public class cmd_shellTools {
 
                 out.writeBytes("busybox --install /system/xbin\n");
                 //out.writeBytes("busybox --install /system/bin\n");
-                String cmd = "if [ ! -f \"/system/xbin/zip\" ]; then cp " + AppShared.baseUrl + "zip /system/xbin/zip; chmod 0755 /system/xbin/zip ;fi;";
+                String cmd = "if [ ! -f \"/system/xbin/zip\" ]; then cp " + AppShared.INSTANCE.getBaseUrl() + "zip /system/xbin/zip; chmod 0755 /system/xbin/zip ;fi;";
 
                 out.writeBytes(cmd);
                 out.writeBytes("\n");
@@ -770,9 +766,9 @@ public class cmd_shellTools {
                 out.writeBytes("mkdir -p /sdcard/VBOOTROMCREATE/TMP\n");
 
                 if (CurrentSystemOne())
-                    out.writeBytes("cp " + AppShared.baseUrl + "rom.zip /sdcard/VBOOTROMCREATE/newrom.zip\n");
+                    out.writeBytes("cp " + AppShared.INSTANCE.getBaseUrl() + "rom.zip /sdcard/VBOOTROMCREATE/newrom.zip\n");
                 else
-                    out.writeBytes("cp " + AppShared.baseUrl + "romvboot.zip /sdcard/VBOOTROMCREATE/newrom.zip\n");
+                    out.writeBytes("cp " + AppShared.INSTANCE.getBaseUrl() + "romvboot.zip /sdcard/VBOOTROMCREATE/newrom.zip\n");
 
                 //boot
                 if (has_boot)
@@ -834,230 +830,11 @@ public class cmd_shellTools {
     //zip
     //gzip
     //bzip2
-
+    //gunzip
     //gunzip -c /data/media/rom2/system.img.gz | dd of=/data/media/rom2/system.img
     //dd if=/data/media/rom2/system.img | gzip > /data/media/rom2/system.img.gz
     //dd if=/data/media/rom2/system.img | zip > /data/media/rom2/system.img.zip
     //在系统一下备份VBOOT系统二
-
-    //cd system
-    //tar -czpf /sdcard/TWRP/system.ext4.win .
-    public void TarBackup(boolean systemOne, boolean boot, boolean sys, boolean data, boolean other, String name) throws UnsupportedEncodingException {
-        new TarBackupThread(systemOne, boot, sys, data, other, URLEncoder.encode(name, "UTF-8")).start();
-    }
-
-    class TarBackupThread extends Thread {
-        String back_name;
-        boolean back_one;
-        boolean back_boot;
-        boolean back_sys;
-        boolean back_data;
-        boolean back_other;
-
-        public TarBackupThread(boolean systemOne, boolean boot, boolean sys, boolean data, boolean other, String name) {
-            this.back_one = systemOne;
-            this.back_boot = boot;
-            this.back_sys = sys;
-            this.back_data = data;
-            this.back_other = other;
-            this.back_name = name;
-        }
-
-        @Override
-        public void run() {
-            try {
-                ShowProgressBar();
-                Process process = Runtime.getRuntime().exec("su");
-
-                DataOutputStream out = new DataOutputStream(process.getOutputStream());
-                StringBuffer stringBuffer = new StringBuffer();
-
-                stringBuffer.append("mkdir -p /sdcard/TWRP\n");
-
-                String dir = "";
-
-                if (back_one) {
-                    stringBuffer.append("mkdir -p /sdcard/TWRP/BACKUPS\n");
-                    stringBuffer.append("mkdir -p /sdcard/TWRP/BACKUPS/6be62713\n");
-
-                    String date = new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss").format(new Date());
-                    dir = "/sdcard/TWRP/BACKUPS/6be62713/" + date + (back_one ? "-" : "VBOOT_") +
-                            (back_name.equals("") ? "NoName" : back_name);
-                    stringBuffer.append("mkdir -p " + dir);
-                } else {
-                    stringBuffer.append("mkdir -p /sdcard/TWRP/VBOOT\n");
-                    stringBuffer.append("mkdir -p /sdcard/TWRP/VBOOT/6be62713\n");
-                    String date = new SimpleDateFormat("yyyy.MM.dd_HH.mm.ss").format(new Date());
-                    dir = "/sdcard/TWRP/VBOOT/6be62713/" + date + (back_one ? "-" : "-VBOOT_") +
-                            (back_name.equals("") ? "NoName" : back_name);
-                    stringBuffer.append("mkdir -p " + dir);
-                }
-
-                stringBuffer.append("\n");
-
-                stringBuffer.append("busybox --install /system/xbin\n");
-                stringBuffer.append(
-                        "if [ ! -f \"/system/xbin/pigz\" ]; then cp " + AppShared.baseUrl + "zip /system/xbin/zip; chmod 0755 /system/xbin/pigz ;fi;\n");
-                //out.writeBytes("busybox --install /system/bin\n");
-
-                //备份系统一
-                if (back_one) {
-                    if (back_sys) {
-                        stringBuffer.append("mkdir -p /data/tmp\n");
-                        stringBuffer.append("mkdir -p /data/tmp/mount\n");
-                        stringBuffer.append("mkdir -p /data/tmp/mount/system0\n");
-                        if (CurrentSystemOne()) {
-                            stringBuffer.append("cd /system\n");
-                            stringBuffer.append("tar -cvpf - . --exclude lost+found | pigz > #dir/system.ext4.win\n");
-                        } else {
-                            stringBuffer.append("mkdir -p /data/tmp/mount/system0\n");
-                            stringBuffer.append("busybox mount /dev/block/bootdevice/by-name/system /data/tmp/mount/system0\n");
-                            stringBuffer.append("cd /data/tmp/mount/system0\n");
-                            stringBuffer.append("tar -cvpf - . --exclude lost+found | pigz > #dir/system.ext4.win\n");
-                        }
-                    }
-                    if (back_data) {
-                        if (!CurrentSystemOne()) {
-                            stringBuffer.append("cd /MainData\n");
-                            stringBuffer.append("tar -cvpf - . --exclude media  --exclude lost+found | pigz > #dir/data.ext4.win\n");
-                        } else {
-                            ShowDialogMsg("系统一Data无法备份", "该分区正在使用中，请进入系统二或Recovery进行备份！");
-                        }
-                    }
-                    if (back_boot) {
-                        if (CurrentSystemOne())
-                            stringBuffer.append("dd if=/dev/block/bootdevice/by-name/boot of=#dir/boot.emmc.win\n");
-                        else
-                            stringBuffer.append("cp /MainData/media/rom2/boot1.img #dir/boot.emmc.win\n");
-                    }
-                }
-                //备份系统二
-                else {
-                    if (back_sys) {
-                        if (CurrentSystemOne())
-                            stringBuffer.append("cd /data/media/rom2\n");
-                        else
-                            stringBuffer.append("cd /MainData/media/rom2\n");
-                        stringBuffer.append("tar -cvf - ./system.img | pigz -p 5 > #dir/system.ext4.win\n");
-                    }
-                    if (back_data) {
-                        if (CurrentSystemOne()) {
-                            stringBuffer.append("cd /data/media/rom2/\n");
-                            stringBuffer.append("tar -cvf - ./data.img | pigz -p 5 > #dir/data.ext4.win\n");
-                        } else {
-                            ShowDialogMsg("系统二Data无法备份", "该分区正在使用中，请进入系统一进行备份！");
-                        }
-                    }
-                    if (back_boot) {
-                        if (CurrentSystemOne())
-                            stringBuffer.append("cp /data/media/rom2/boot2.img #dir/boot.emmc.win\n");
-                        else
-                            stringBuffer.append("cp /MainData/media/rom2/boot2.img #dir/boot.emmc.win\n");
-                    }
-                }
-
-                if (back_boot) {
-                    stringBuffer.append("dd if=/dev/block/bootdevice/by-name/aboot of=#dir/aboot.emmc.win\n");
-                }
-                if (back_other) {
-
-                }
-
-                stringBuffer.append("cd /\n");
-                stringBuffer.append("exit");
-                stringBuffer.append("\n");
-
-                String cmd = stringBuffer.toString().replace("#dir", dir);
-                out.writeBytes(cmd);
-
-                out.flush();
-
-                ShowDialogMsg("请稍等...", "正在进行备份，这需要10-30分钟。期间，手机可能会有些卡顿。");
-
-                if (process.waitFor() == 0) {
-                    ShowDialogMsg("备份完成！", "该备份可以使用本工具或TWRP（推荐）还原！\n输出目录：" + dir);
-                } else {
-                    ShowDialogMsg("备份失败！", "完成操作过程中遇到错误，请向工具开发者反馈！");
-                }
-            } catch (IOException e) {
-                NoRoot();
-                e.printStackTrace();
-            } catch (Exception e) {
-                ShowDialogMsg("备份失败！", "完成操作过程中遇到错误，请向工具开发者反馈！");
-                e.printStackTrace();
-            } finally {
-                HideProgressBar();
-            }
-        }
-    }
-
-    public void TarRestore(String dir, boolean sys, boolean data, boolean boot, boolean one) {
-        new TarRestore(dir, sys, data, boot, one).start();
-    }
-
-    class TarRestore extends Thread {
-        boolean r_sys;
-        boolean r_data;
-        boolean r_boot;
-        boolean r_one;
-        String dir;
-
-        public TarRestore(String dir, boolean sys, boolean data, boolean boot, boolean one) {
-            this.dir = dir;
-            this.r_sys = sys;
-            this.r_data = data;
-            this.r_boot = boot;
-            this.r_one = one;
-        }
-
-        @Override
-        public void run() {
-            if (r_one)
-                return;
-
-            ShowProgressBar();
-            try {
-                ShowProgressBar();
-                ShowMsg("请稍等，这需要好一会儿...", false);
-                Process process = Runtime.getRuntime().exec("su");
-                DataOutputStream out = new DataOutputStream(process.getOutputStream());
-                StringBuffer stringBuffer = new StringBuffer();
-
-                stringBuffer.append("cd ");
-                stringBuffer.append(dir);
-                stringBuffer.append("\n");
-
-                if (r_sys)
-                    stringBuffer.append("tar -xzvf system.ext4.win -C /data/media/rom2/\n");
-                if (r_data)
-                    stringBuffer.append("tar -xzvf data.ext4.win -C /data/media/rom2/\n");
-                if (r_boot)
-                    stringBuffer.append("dd if=boot.emmc.win of=/data/media/rom2/boot2.img\n");
-
-                stringBuffer.append("exit\n");
-                String cmd = stringBuffer.toString();
-                out.writeBytes(cmd);
-                if (process.waitFor() == 0) {
-                    ShowDialogMsg("还原成功", "所选的内容已还原到指定位置！");
-                } else {
-                    ShowDialogMsg("还原失败", "还原过程中遇到问题，可能导致系统无法正常运行！");
-                }
-
-            } catch (IOException e) {
-                NoRoot();
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } finally {
-                HideProgressBar();
-            }
-
-            //cd dir
-            //tar -xzvf system.ext4.win -C /data/media/rom2/system.img
-            //tar -xzvf data.ext4.win -C /data/media/rom2/data.img
-        }
-    }
-
 
     public void SaveBoot(String path) {
         new SaveBootThread().start();
@@ -1067,10 +844,6 @@ public class cmd_shellTools {
         @Override
         public void run() {
             try {
-                if (GetSDFreeSizeMB() < 100) {
-                    ShowMsg("存储空间不足，请至少预留100M可用空间！", false);
-                    return;
-                }
                 ShowProgressBar();
                 Process p = Runtime.getRuntime().exec("su");
                 DataOutputStream dataOutputStream = new DataOutputStream(p.getOutputStream());
@@ -1101,30 +874,12 @@ public class cmd_shellTools {
     class SaveRecoveryThread extends Thread {
         @Override
         public void run() {
-            try {
-                if (GetSDFreeSizeMB() < 100) {
-                    ShowMsg("存储空间不足，请至少预留100M可用空间！", false);
-                    return;
-                }
-                ShowProgressBar();
-                Process p = Runtime.getRuntime().exec("su");
-                DataOutputStream dataOutputStream = new DataOutputStream(p.getOutputStream());
-                dataOutputStream.writeBytes("dd if=/dev/block/bootdevice/by-name/recovery of=/sdcard/recovery.img\n");
-                dataOutputStream.writeBytes("exit\n");
-                if (p.waitFor() == 0) {
-                    ShowMsg("Recovery导出成功，保存在/sdcard/recovery.img ！", true);
-                } else {
-                    ShowMsg("Recovery导出失败！", true);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                NoRoot();
-            } catch (InterruptedException e) {
+            if (new ShellRuntime().execute("dd if=/dev/block/bootdevice/by-name/recovery of=/sdcard/recovery.img\n")) {
+                ShowMsg("Recovery导出成功，已保存为/sdcard/recovery.img ！", true);
+            } else {
                 ShowMsg("Recovery导出失败！", true);
-                e.printStackTrace();
-            } finally {
-                HideProgressBar();
             }
+            HideProgressBar();
         }
     }
 
@@ -1138,15 +893,12 @@ public class cmd_shellTools {
 
         }
 
-        String BaseDir = "";
-
         @Override
         public void run() {
             try {
                 Process process = Runtime.getRuntime().exec("su");
                 DataOutputStream out = new DataOutputStream(process.getOutputStream());
                 out.writeBytes("busybox --install /system/xbin\n");
-                //out.writeBytes("busybox --install /system/bin\n");
                 out.writeBytes("exit");
                 out.writeBytes("\n");
                 if (process.waitFor() == 0) {
@@ -1162,55 +914,6 @@ public class cmd_shellTools {
                 e.printStackTrace();
             }
         }
-    }
-
-
-    //是否已经Root
-    public boolean IsRoot() {
-        try {
-            Process p = Runtime.getRuntime().exec("su");
-            DataOutputStream out = new DataOutputStream(p.getOutputStream());
-            out.writeBytes("\nid\n");
-            out.writeBytes("exit\n");
-            out.flush();
-
-            InputStream inputstream = p.getInputStream();
-            InputStreamReader inputstreamreader = new InputStreamReader(inputstream);
-            BufferedReader bufferedreader = new BufferedReader(inputstreamreader);
-            String msg = "";
-
-            while ((msg = bufferedreader.readLine()) != null) {
-                if (msg.trim().length() == 0)
-                    continue;
-                if (msg.contains("root"))
-                    return true;
-                if (msg.contains("denied"))
-                    return false;
-            }
-            return false;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    //是否已经安装Zip
-    public boolean IsZipInstalled() {
-        try {
-            Runtime.getRuntime().exec("zip").destroy();
-        } catch (IOException e) {
-            return false;
-        }
-        return true;
-    }
-
-    //是否已经安装busybox
-    public boolean IsBusyboxInstalled() {
-        try {
-            Runtime.getRuntime().exec("busybox").destroy();
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
     }
 
     //执行命令
@@ -1242,8 +945,7 @@ public class cmd_shellTools {
             p.waitFor();
         } catch (IOException e) {
             NoRoot();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
@@ -1252,7 +954,7 @@ public class cmd_shellTools {
         try {
             Process p = Runtime.getRuntime().exec("sh");
             DataOutputStream out = new DataOutputStream(p.getOutputStream());
-            out.writeBytes("if [ ! -f \"" + prop + "\" ]; then echo \"\"; exit 0; fi;\n");
+            out.writeBytes("if [ ! -f \"" + prop + "\" ]; then echo \"\"; exit 1; fi;\n");
             out.writeBytes("cat " + prop);
             out.writeBytes("\n");
             out.flush();
@@ -1272,8 +974,9 @@ public class cmd_shellTools {
                 p.destroy();
                 return line;
             }
-        } catch (IOException e) {
-            NoRoot();
+            p.destroy();
+        } catch (Exception e) {
+
         }
         return null;
     }
@@ -1282,8 +985,8 @@ public class cmd_shellTools {
         String txt = GetProp("/sys/class/power_supply/battery/charge_full");
         if (txt == null || txt.trim().length() == 0)
             txt = GetProp("/sys/class/power_supply/battery/charge_full_design");
-        if (txt == null)
-            txt = "?";
+        if (txt == null||txt.trim().length()==0)
+            txt = "? mAh";
         if (txt.length() > 4)
             return txt.substring(0, 4) + " mAh";
         return txt + " mAh";
@@ -1294,14 +997,13 @@ public class cmd_shellTools {
         if (txt == null || txt.trim().length() == 0)
             txt = GetProp("/sys/class/power_supply/battery/BatteryAverageCurrent");
 
-        if(txt==null)
+        if (txt == null)
             return Integer.MAX_VALUE;
 
         try {
             int ma = Math.abs(Integer.parseInt(txt));
             return ma / 1000;
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             return 0;
         }
     }
@@ -1334,35 +1036,5 @@ public class cmd_shellTools {
             //NoRoot();
         }
         return false;
-    }
-
-    //获取CPU型号，如msm8996
-    public String GetCPUName() {
-        try {
-            Process p = Runtime.getRuntime().exec("sh");
-            DataOutputStream out = new DataOutputStream(p.getOutputStream());
-            out.writeBytes("getprop ro.board.platform");
-            out.writeBytes("\n");
-            out.flush();
-
-            InputStream inputstream = p.getInputStream();
-            InputStreamReader inputstreamreader = new InputStreamReader(inputstream);
-            BufferedReader bufferedreader = new BufferedReader(inputstreamreader);
-
-            String line;
-            while ((line = bufferedreader.readLine()) != null) {
-                out.writeBytes("exit\n");
-                out.flush();
-                out.close();
-                bufferedreader.close();
-                inputstream.close();
-                inputstreamreader.close();
-                p.destroy();
-                return line.trim().toLowerCase();
-            }
-        } catch (IOException e) {
-            //NoRoot();
-        }
-        return null;
     }
 }

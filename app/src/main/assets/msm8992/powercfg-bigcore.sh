@@ -107,7 +107,7 @@ case "$profile" in
 		echo 1 > /sys/devices/system/cpu/cpu4/online
 		echo 1 > /sys/devices/system/cpu/cpu5/online
 		
-        echo "0:1636000 1:1636000 2:1636000 3:1636000 4:2016000 5:2016000" > /sys/module/msm_performance/parameters/cpu_max_freq
+        echo "0:1636000 1:1636000 2:1636000 3:1636000 4:633600 5:633600" > /sys/module/msm_performance/parameters/cpu_max_freq
 		echo 0 > /sys/module/msm_thermal/core_control/cpus_offlined
 		
 		echo "interactive" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
