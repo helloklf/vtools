@@ -44,7 +44,7 @@
         <CheckBox
             android:id="@+id/chk_swap_disablezram"
             android:layout_marginBottom="12dp"
-            android:text="禁用ZRAM"/>
+            android:text="优先于ZRAM"/>
 
         <TableRow android:layout_marginBottom="30dp">
 
@@ -63,13 +63,9 @@
         </TableRow>
 
         <TextView
-            android:text="* SWAP的大小建议设为RAM大小的25%-50%。"
-            android:textSize="11dp"/>
-
-        <TextView
-            android:layout_marginBottom="30dp"
-            android:text="* 禁用ZRAM和SWAP需要很长时间！！！"
-            android:textSize="11dp"/>
+            android:text="* SWAP的大小建议设为RAM大小的25%-50%"
+            android:textSize="11dp"
+            android:layout_marginBottom="6dp"/>
 
         <TextView
             android:layout_marginBottom="6dp"

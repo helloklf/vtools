@@ -89,7 +89,7 @@ class ServiceHelper(context: Context) {
             var sb = StringBuilder()
             if (ConfigInfo.getConfigInfo().AutoStartSwapDisZram) {
                 sb.append("swapon /data/swapfile -p 32767\n")
-                sb.append("swapoff /dev/block/zram0\n")
+                //sb.append("swapoff /dev/block/zram0\n")
             }
             else{
                 sb.append("swapon /data/swapfile\n")

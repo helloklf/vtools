@@ -129,7 +129,7 @@ class fragment_swap : Fragment() {
                     Thread(run).start()
                 }
             } else {
-                Snackbar.make(this.view, "请输入Swap大小，推荐为RAM大小的50%，不超过2GB", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(this.view, "请输入Swap大小！\n推荐为RAM大小的50%且不超过2GB", Snackbar.LENGTH_LONG).show()
             }
         }
         btn_swap_start.setOnClickListener {
@@ -142,11 +142,10 @@ class fragment_swap : Fragment() {
             try {
                 value = Integer.parseInt(swappiness)
             } catch (ex: Exception) {
-
             }
             if (disablezram) {
                 sb.append("swapon /data/swapfile -p 32767\n")
-                sb.append("swapoff /dev/block/zram0\n")
+                //sb.append("swapoff /dev/block/zram0\n")
             }
             else{
                 sb.append("swapon /data/swapfile\n")
