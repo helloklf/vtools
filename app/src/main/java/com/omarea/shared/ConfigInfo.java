@@ -19,6 +19,9 @@ import java.util.List;
 public class ConfigInfo {
     private static ConfigInfo configInfo;
 
+    public boolean AutoStartSwap = false;
+    public boolean AutoStartSwapDisZram = false;
+    public int AutoStartSwappiness = 65;
     public boolean AutoBooster = true;
     public boolean DyamicCore = false;
     public boolean QcMode = true;
@@ -40,6 +43,9 @@ public class ConfigInfo {
 
 
     private ConfigInfo(JSONObject jsonObject) {
+        this.AutoStartSwap = isTrue(jsonObject,"AutoStartSwap",false);
+        this.AutoStartSwapDisZram = isTrue(jsonObject,"AutoStartSwapDisZram",false);
+        this.AutoStartSwappiness = getInt(jsonObject,"AutoStartSwappiness",65);
         this.AutoInstall = isTrue(jsonObject, "AutoInstall", true);
         this.AutoBooster = isTrue(jsonObject, "AutoBooster", true);
         this.DyamicCore = isTrue(jsonObject, "DyamicCore");
@@ -79,6 +85,9 @@ public class ConfigInfo {
         try {
             JSONObject jsonObject = new JSONObject()
                     .put("UsingDozeMod", UsingDozeMod)
+                    .put("AutoStartSwap",AutoStartSwap)
+                    .put("AutoStartSwapDisZram",AutoStartSwapDisZram)
+                    .put("AutoStartSwappiness",AutoStartSwappiness)
                     .put("AutoBooster", AutoBooster)
                     .put("DyamicCore", DyamicCore)
                     .put("QcMode", QcMode)
@@ -98,6 +107,18 @@ public class ConfigInfo {
             return AppShared.INSTANCE.setConfigData(jsonObject);
         } catch (Exception ex) {
             return false;
+        }
+    }
+
+    private int getInt(JSONObject jsonObject, String propName,int defaultVal){
+        try{
+            if (propName == null || !jsonObject.has(propName))
+                return defaultVal;
+            else
+                return jsonObject.getInt(propName);
+        }
+        catch (Exception ex){
+            return defaultVal;
         }
     }
 

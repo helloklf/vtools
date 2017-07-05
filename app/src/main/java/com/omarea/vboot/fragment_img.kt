@@ -38,7 +38,6 @@ class fragment_img : Fragment() {
         return inflater!!.inflate(R.layout.layout_img, container, false)
     }
 
-
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         val listItem = ArrayList<HashMap<String, Any>>()/*在数组中存放数据*/
 
@@ -132,8 +131,6 @@ class fragment_img : Fragment() {
     }
 
     companion object {
-
-
         fun Create(thisView: main, cmdshellTools: cmd_shellTools): Fragment {
             val fragment = fragment_img()
             fragment.cmdshellTools = cmdshellTools
@@ -141,5 +138,4 @@ class fragment_img : Fragment() {
             return fragment
         }
     }
-
-}// Required empty public constructor
+}

@@ -131,6 +131,7 @@
     <string name="menu_cofig">性能配置</string>
     <string name="menu_additional">附加功能</string>
     <string name="menu_applictions">应用管理</string>
+    <string name="menu_swap">SWAP设置</string>
     <string name="menu_xposed">Xposed功能</string>
     <string name="menu_autobooster">后台管理</string>
     <string name="menu_img">备份还原</string>
@@ -197,6 +198,9 @@
         "<br />"
         "<span>6.为何充电加速需要辅助服务？</span>"
         "<span>为了少开一个后台服务而已，所以使用了和其它功能同一个服务</span>"
+        "<br />"
+        "<span>7.什么时候更新？</span>"
+        "<span>由于业余时间有限，更新周期不定，不确保能及时解决问题。</span>"
         "<br />"
         "<br />"
         "<br />"

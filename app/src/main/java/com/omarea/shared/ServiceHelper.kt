@@ -85,6 +85,20 @@ class ServiceHelper(context: Context) {
             ex.printStackTrace()
         }
 
+        if(ConfigInfo.getConfigInfo().AutoStartSwap){
+            var sb = StringBuilder()
+            if (ConfigInfo.getConfigInfo().AutoStartSwapDisZram) {
+                sb.append("swapon /data/swapfile -p 32767\n")
+                sb.append("swapoff /dev/block/zram0\n")
+            }
+            else{
+                sb.append("swapon /data/swapfile\n")
+            }
+            sb.append("echo 65 > /proc/sys/vm/swappiness\n")
+            sb.append("echo " + ConfigInfo.getConfigInfo().AutoStartSwappiness + " > /proc/sys/vm/swappiness\n")
+
+            DoCmd(sb.toString())
+        }
         return true
     }
 

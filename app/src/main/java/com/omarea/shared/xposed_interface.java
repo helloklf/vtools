@@ -36,11 +36,18 @@ public class xposed_interface implements IXposedHookLoadPackage {
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             super.beforeHookedMethod(param);
 
+                            /*
                             XposedHelpers.setStaticObjectField(android.os.Build.class, "PRODUCT", "gemini");
                             XposedHelpers.setStaticObjectField(android.os.Build.class, "DEVICE", "gemini");
                             XposedHelpers.setStaticObjectField(android.os.Build.class, "MODEL", "MI 5");
                             XposedHelpers.setStaticObjectField(android.os.Build.class, "BRAND", "Xiaomi");
                             XposedHelpers.setStaticObjectField(android.os.Build.class, "MANUFACTURER", "Xiaomi");
+                            */
+                            XposedHelpers.setStaticObjectField(android.os.Build.class, "PRODUCT", "R11");
+                            XposedHelpers.setStaticObjectField(android.os.Build.class, "DEVICE", "R11");
+                            XposedHelpers.setStaticObjectField(android.os.Build.class, "MODEL", "OPPO R11");
+                            XposedHelpers.setStaticObjectField(android.os.Build.class, "BRAND", "OPPO");
+                            XposedHelpers.setStaticObjectField(android.os.Build.class, "MANUFACTURER", "OPPO");
                         }
 
                         @Override

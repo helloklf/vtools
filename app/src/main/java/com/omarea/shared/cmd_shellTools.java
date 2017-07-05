@@ -981,11 +981,45 @@ public class cmd_shellTools {
         return null;
     }
 
+    public String GetProp(String prop, String grep) {
+        try {
+            Process p = Runtime.getRuntime().exec("sh");
+            DataOutputStream out = new DataOutputStream(p.getOutputStream());
+            out.writeBytes("if [ ! -f \"" + prop + "\" ]; then echo \"\"; exit 1; fi;\n");
+            String cmd = ("cat " + prop) + ((grep != null && grep.length() > 0) ? (" | grep " + grep) : "");
+            out.writeBytes(cmd);
+            out.writeBytes("\n");
+            out.writeBytes("exit\n");
+            out.flush();
+            out.close();
+
+            InputStream inputstream = p.getInputStream();
+            InputStreamReader inputstreamreader = new InputStreamReader(inputstream);
+            BufferedReader bufferedreader = new BufferedReader(inputstreamreader);
+
+            String line;
+            StringBuilder stringBuffer = new StringBuilder();
+            while ((line = bufferedreader.readLine()) != null) {
+                stringBuffer.append(line);
+                stringBuffer.append("\n");
+            }
+            bufferedreader.close();
+            inputstream.close();
+            inputstreamreader.close();
+            p.destroy();
+            p.destroy();
+            return stringBuffer.toString().trim();
+        } catch (Exception e) {
+
+        }
+        return null;
+    }
+
     public String getBatteryMAH() {
         String txt = GetProp("/sys/class/power_supply/battery/charge_full");
         if (txt == null || txt.trim().length() == 0)
             txt = GetProp("/sys/class/power_supply/battery/charge_full_design");
-        if (txt == null||txt.trim().length()==0)
+        if (txt == null || txt.trim().length() == 0)
             txt = "? mAh";
         if (txt.length() > 4)
             return txt.substring(0, 4) + " mAh";
@@ -993,6 +1027,7 @@ public class cmd_shellTools {
     }
 
     public int getChangeMAH() {
+        // /sys/class/power_supply/battery/current_now
         String txt = GetProp("/sys/class/power_supply/battery/current_now");
         if (txt == null || txt.trim().length() == 0)
             txt = GetProp("/sys/class/power_supply/battery/BatteryAverageCurrent");
@@ -1002,6 +1037,8 @@ public class cmd_shellTools {
 
         try {
             int ma = Math.abs(Integer.parseInt(txt));
+            if (ma < 1000)
+                return ma;
             return ma / 1000;
         } catch (Exception ex) {
             return 0;

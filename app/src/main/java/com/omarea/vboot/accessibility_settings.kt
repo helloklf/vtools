@@ -66,14 +66,6 @@ class accessibility_settings : AppCompatActivity() {
             EventBus.publish(Events.DyamicCoreConfigChanged)
         }
         settings_qc.setOnClickListener { ConfigInfo.getConfigInfo().QcMode = settings_qc.isChecked }
-
-        /*
-        if (cmd_shellTools(null, null).GetProp("/sys/class/power_supply/battery/battery_charging_enabled") == null) {
-            settings_bp.visibility = View.GONE
-            settings_bp_desc.visibility = View.GONE
-            ConfigInfo.getConfigInfo().BatteryProtection = false
-        }
-        */
     }
 
     public override fun onPause() {

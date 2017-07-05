@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.omarea.vboot.fragment_swap"
+    android:orientation="vertical">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:showDividers="beginning"
+        android:shrinkColumns="0,1,2"
+        android:stretchColumns="0,1,2,3">
+
+        <TableRow>
+
+            <EditText
+                android:id="@+id/txt_swap_size"
+                android:layout_width="match_parent"
+                android:hint="Swap大小(MB)"
+                android:inputType="number"
+                android:maxLength="4"/>
+
+            <Button
+                android:id="@+id/btn_swap_create"
+                android:layout_width="50dp"
+                android:text="创建"
+                android:textSize="14dp"/>
+        </TableRow>
+
+        <TextView
+            android:layout_marginBottom="30dp"
+            android:text="  存储位置：/data/swapfile"
+            android:textSize="11dp"/>
+
+
+        <CheckBox
+            android:id="@+id/chk_swap_autostart"
+            android:layout_marginBottom="12dp"
+            android:text="开机自启（需要允许工具箱自启动）"/>
+
+        <CheckBox
+            android:id="@+id/chk_swap_disablezram"
+            android:layout_marginBottom="12dp"
+            android:text="禁用ZRAM"/>
+
+        <TableRow android:layout_marginBottom="30dp">
+
+            <EditText
+                android:id="@+id/txt_swap_swappiness"
+                android:layout_width="match_parent"
+                android:layout_marginBottom="12dp"
+                android:hint="Swappiness(0-100)默认:65"
+                android:inputType="number"
+                android:maxLength="3"/>
+
+            <Button
+                android:id="@+id/btn_swap_start"
+                android:layout_width="50dp"
+                android:text="启动SWAP"/>
+        </TableRow>
+
+        <TextView
+            android:text="* SWAP的大小建议设为RAM大小的25%-50%。"
+            android:textSize="11dp"/>
+
+        <TextView
+            android:layout_marginBottom="30dp"
+            android:text="* 禁用ZRAM和SWAP需要很长时间！！！"
+            android:textSize="11dp"/>
+
+        <TextView
+            android:layout_marginBottom="6dp"
+            android:text="SWAP、ZRAM状态："
+            android:textSize="11dp"/>
+
+        <ListView
+            android:id="@+id/list_swaps"
+            android:layout_marginBottom="12dp"
+            android:textSize="11dp"></ListView>
+
+        <TextView android:id="@+id/txt_swapstus_swappiness"/>
+    </TableLayout>
+</LinearLayout>

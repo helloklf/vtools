@@ -3,23 +3,33 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
+    signingConfigs {
+        omarea_Signing {
+            keyAlias 'omarea.com'
+            keyPassword 'I0140728'
+            storeFile file('D:/omoarea.jks')
+            storePassword 'I0140728'
+        }
+    }
     compileSdkVersion 25
     buildToolsVersion '25.0.2'
     defaultConfig {
         applicationId "com.omarea.vboot"
         minSdkVersion 22
         targetSdkVersion 25
-        versionCode 218
-        versionName "7.6.11"
+        versionCode 224
+        versionName "7.7.3"
     }
     buildTypes {
         release {
             zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             minifyEnabled true
+            debuggable false
+            signingConfig signingConfigs.omarea_Signing
         }
         debug {
-            zipAlignEnabled true
+            signingConfig signingConfigs.omarea_Signing
         }
     }
     productFlavors {
@@ -28,7 +38,6 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    //provided files('lib/XposedBridgeApi-54.jar')
     provided files('lib/api-82.jar')
     //provided files('lib/api-82-sources.jar')
     //provided 'de.robv.android.xposed:ap:82'

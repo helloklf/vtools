@@ -11,7 +11,7 @@ object Consts {
             "if [ `cat /sys/class/power_supply/battery/capacity` -lt 85 ]; then " +
                     "echo 0 > /sys/class/power_supply/battery/restricted_charging;" +
                     "echo 0 > /sys/class/power_supply/battery/safety_timer_enabled;" +
-                    "echo 500 > /sys/class/power_supply/bms/temp_warm;" +
+                    "echo 460 > /sys/class/power_supply/bms/temp_warm;" +
                     "echo 2000000 >/sys/class/power_supply/battery/constant_charge_current_max;" +
                     "echo 2500000 >/sys/class/power_supply/battery/constant_charge_current_max;" +
                     "echo 3000000 >/sys/class/power_supply/battery/constant_charge_current_max;" +
@@ -108,6 +108,29 @@ object Consts {
                     "pm disable com.sohu.inputmethod.sogou.nubia\n" +
                     "pm disable com.dolby\n" +
                     "pm disable com.dolby.daxappUI\n"
+
+    val FlymeUninstall = "rm -rf /system/priv-app/EasyLauncher\n"+
+            "rm -rf /system/app/PrintSpooler\n"+
+            "rm -rf /system/app/Map\n"+
+            "rm -rf /system/priv-app/EBook\n"+
+            "rm -rf /system/priv-app/GameSDKService\n"+
+            "rm -rf /system/priv-app/Music\n"+
+            "rm -rf /system/priv-app/Email\n"+
+            "rm -rf /system/priv-app/ChildrenLauncher\n"+
+            "rm -rf /system/app/MzCompaign\n"+
+            "rm -rf /system/app/ToolBox\n"+
+            "rm -rf /system/priv-app/YellowPage\n"+
+            "rm -rf /system/priv-app/MzAccountPlugin\n"+
+            "rm -rf /system/app/Life\n"+
+            "rm -rf /system/priv-app/Video\n"+
+            "rm -rf /system/priv-app/Feedback\n"+
+            "rm -rf /system/app/lflytekSpeechService\n"+
+            "rm -rf /system/priv-app/VoiceAssistant\n"+
+            "rm -rf /system/app/Reader\n"+
+            "rm -rf /system/priv-app/EasyLauncher\n"+
+            "rm -rf /system/priv-app/EasyLauncher\n"+
+
+            "sync\nreboot\n";
 
     val MiuiUninstall =
             "pm disable com.miui.yellowpage\n" +

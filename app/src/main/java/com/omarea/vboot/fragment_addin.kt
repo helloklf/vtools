@@ -43,6 +43,7 @@ class fragment_addin : Fragment() {
         listItem.add(createItem("QQ净化恢复", "恢复QQ个性气泡、字体、头像挂件，会重启QQ"))
         listItem.add(createItem("MIUI一键精简", "删除（由于部分应用无法冻结，只能删除）或冻结系统中一些内置的无用软件，会重启手机。"))
         listItem.add(createItem("Nubia一键精简", "冻结系统中一些内置的无用软件。"))
+        listItem.add(createItem("Flyme一键精简", "删除系统中一些内置的无用软件。"))
         listItem.add(createItem("开启沉浸模式", "自动隐藏状态栏、导航栏"))
         listItem.add(createItem("禁用沉浸模式", "恢复状态栏、导航栏自动显示"))
 
@@ -85,10 +86,14 @@ class fragment_addin : Fragment() {
                 stringBuilder.append(Consts.NubiaUninstall)
             }
             4 -> {
+                stringBuilder.append(Consts.MountSystemRW)
+                stringBuilder.append(Consts.FlymeUninstall)
+            }
+            5 -> {
                 //stringBuilder.append("settings put global policy_control immersive.full=*")
                 stringBuilder.append("settings put global policy_control immersive.full=apps,-android,-com.android.systemui,-com.tencent.mobileqq,-com.tencent.tim,-com.tencent.mm")
             }
-            5 -> {
+            6 -> {
                 stringBuilder.append("settings put global policy_control null")
             }
         }
