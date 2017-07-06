@@ -113,6 +113,7 @@ class fragment_swap : Fragment() {
                     sb.append("dd if=/dev/zero of=/data/swapfile bs=1m count=" + size + "\n")
                     sb.append("mkswap /data/swapfile\n")
                     cmdshellTools.DoCmdSync(sb.toString())
+                    myHandler.post(getSwaps)
                     myHandler.post(showCreated)
                 }
                 var isUse = cmdshellTools.GetProp("/proc/swaps", "/data/swapfile")

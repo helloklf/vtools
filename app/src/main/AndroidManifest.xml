@@ -6,8 +6,10 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
      
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <!--
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" /> -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    -->
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -39,9 +41,9 @@
         </receiver>
         -->
         <service
-            android:lockTaskMode="always"
             android:name=".vtools_accessibility"
             android:label="微工具箱-增强服务"
+            android:lockTaskMode="always"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -57,23 +59,25 @@
         </service>
 
         <activity
-            android:launchMode="singleInstance"
-            android:lockTaskMode="never"
             android:name=".main"
             android:configChanges="keyboardHidden|orientation"
             android:excludeFromRecents="false"
             android:exported="true"
             android:label="@string/app_name"
+            android:launchMode="singleInstance"
+            android:lockTaskMode="never"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <!--
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.MONKEY" />-->
+                <category android:name="android.intent.category.MONKEY" />
+                -->
             </intent-filter>
 
             <meta-data
@@ -81,43 +85,54 @@
                 android:resource="@xml/shortcuts" />
         </activity>
         <activity
-            android:lockTaskMode="never"
             android:name=".vbootresize"
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/title_vbootresize"
+            android:lockTaskMode="never"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:lockTaskMode="never"
             android:name=".rom2zip"
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/title_activity_rom2zip"
+            android:lockTaskMode="never"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:lockTaskMode="never"
-            android:launchMode="singleInstance"
             android:name=".accessibility_settings"
             android:configChanges="keyboardHidden|orientation"
             android:excludeFromRecents="false"
             android:label="微工具箱增强服务"
+            android:launchMode="singleInstance"
+            android:lockTaskMode="never"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:lockTaskMode="never"
-            android:launchMode="singleInstance"
             android:name=".shortcuts"
             android:configChanges="keyboardHidden|orientation"
             android:excludeFromRecents="false"
             android:exported="true"
             android:label="@string/app_name"
+            android:launchMode="singleInstance"
+            android:lockTaskMode="never"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <receiver
+            android:name=".receiver_boot_openswap"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <category android:name="android.intent.category.HOME" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

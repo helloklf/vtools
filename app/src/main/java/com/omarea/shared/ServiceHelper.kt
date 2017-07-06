@@ -18,12 +18,13 @@ import java.util.*
  */
 class ServiceHelper(context: Context) {
     private var batteryChangedReciver: reciver_batterychanged? = null
-    private var context: Context?= null
+    private var context: Context? = null
     private var lastPackage: String? = null
     private var lastMode = Configs.None
     private var configInstalled: Boolean = false
     private var p: Process? = null
     private val serviceCreatedTime = Date().time
+    internal var out: DataOutputStream? = null
     //标识是否已经加载完设置
     private var SettingsLoaded = false
 
@@ -85,13 +86,13 @@ class ServiceHelper(context: Context) {
             ex.printStackTrace()
         }
 
-        if(ConfigInfo.getConfigInfo().AutoStartSwap){
-            var sb = StringBuilder()
+
+        if (ConfigInfo.getConfigInfo().AutoStartSwap) {
+            var sb = StringBuilder("setenforce 0\n")
             if (ConfigInfo.getConfigInfo().AutoStartSwapDisZram) {
                 sb.append("swapon /data/swapfile -p 32767\n")
                 //sb.append("swapoff /dev/block/zram0\n")
-            }
-            else{
+            } else {
                 sb.append("swapon /data/swapfile\n")
             }
             sb.append("echo 65 > /proc/sys/vm/swappiness\n")
@@ -99,6 +100,7 @@ class ServiceHelper(context: Context) {
 
             DoCmd(sb.toString())
         }
+
         return true
     }
 
@@ -122,7 +124,6 @@ class ServiceHelper(context: Context) {
 
     }
 
-    internal var out: DataOutputStream? = null
 
     @JvmOverloads internal fun DoCmd(cmd: String, isRedo: Boolean = false) {
         Thread(Runnable {
@@ -164,6 +165,16 @@ class ServiceHelper(context: Context) {
 
     //自动切换模式
     private fun autoToggleMode(packageName: String) {
+        if (!ConfigInfo.getConfigInfo().DyamicCore)
+            return
+
+        if (packageName == "android" || packageName == "com.android.systemui" || packageName == "com.omarea.vboot" || packageName!!.contains("inputmethod"))
+            return
+
+        //如果没有切换应用
+        if (packageName == lastPackage && lastMode != Configs.Fast)
+            return
+
         //打包安装程序速度优化-使用游戏模式
         if (packageName == "com.android.packageinstaller") {
             if (lastMode != Configs.Game) {
@@ -222,28 +233,33 @@ class ServiceHelper(context: Context) {
 
     //终止进程
     internal fun autoBoosterApp(packageName: String) {
-        if (lastPackage == "android" || lastPackage == "com.android.systemui")
+        if (!ConfigInfo.getConfigInfo().AutoBooster)
             return
 
-        if (ConfigInfo.getConfigInfo().blacklist.contains(packageName)) {
+        if (lastPackage == "android" || lastPackage == "com.android.systemui" || lastPackage == "com.omarea.vboot")
+            return
+
+        if (ConfigInfo.getConfigInfo().AutoClearCache) {
+            DoCmd(Consts.ClearCache)
+        }
+
+        if (ConfigInfo.getConfigInfo().blacklist.contains(lastPackage)) {
             if (ConfigInfo.getConfigInfo().UsingDozeMod) {
                 try {
-                    DoCmd("am set-inactive $packageName true")
+                    DoCmd("am set-inactive $lastPackage true")
                     //am set-idle com.tencent.mobileqq true
                     if (ConfigInfo.getConfigInfo().DebugMode)
-                        ShowMsg("force doze: " + packageName)
+                        ShowMsg("force doze: " + lastPackage)
                 } catch (ex: Exception) {
-
                 }
-
                 return
             }
 
             //android.os.Process.killProcess(android.os.Process.myPid());//自杀
             try {
-                DoCmd("pgrep $packageName |xargs kill -9")
+                DoCmd("pgrep $lastPackage |xargs kill -9")
                 if (ConfigInfo.getConfigInfo().DebugMode)
-                    ShowMsg("force kill: " + packageName)
+                    ShowMsg("force kill: " + lastPackage)
             } catch (ex: Exception) {
 
             }
@@ -348,65 +364,25 @@ class ServiceHelper(context: Context) {
 
     fun onAccessibilityEvent(packageName: String?) {
         var packageName = packageName
-        if (!SettingsLoaded && !SettingsLoad() || !ConfigInfo.getConfigInfo().DyamicCore)
+        if (!SettingsLoaded && !SettingsLoad())
             return
 
-        if (!configInstalled || lastPackage == null) {
+        if (ConfigInfo.getConfigInfo().DyamicCore) {
+            if (!configInstalled || lastPackage == null) {
+                lastPackage = "com.android.systemui"
+                InstallConfig()
+            }
+        } else if (lastPackage == null)
             lastPackage = "com.android.systemui"
-            InstallConfig()
-        }
 
-        if (packageName == null) {
+        if (packageName == null)
             packageName = lastPackage
-        }
-        if (ConfigInfo.getConfigInfo().AutoClearCache && lastPackage !== packageName) {
-            DoCmd(Consts.ClearCache)
-        }
 
-        /*
-        //开启电源适配且电量充足
-        if (onChanger && ConfigInfo.getConfigInfo().PowerAdapter && ConfigInfo.getConfigInfo().CPUName == "msm8996" && batteryLevel > 29) {
-            try {
-                if (lastPackage !== packageName && lastMode == Configs.Fast)
-                    return
-
-                ToggleConfig(Configs.Fast)
-                lastPackage = packageName
-                if (ConfigInfo.getConfigInfo().DebugMode)
-                    ShowMsg("Power enough to turn on fast mode...")
-            } catch (ex: Exception) {
-
-            }
-
-            return
-        }
-
-        if (!onChanger && ConfigInfo.getConfigInfo().PowerAdapter && batteryLevel < 20 && batteryLevel > 0) {
-            try {
-                if (lastMode != Configs.PowerSave) {
-                    ToggleConfig(Configs.PowerSave)
-                    lastPackage = packageName
-                    ShowMsg("Low power, turn on power saving mode...")
-                }
-            } catch (ex: Exception) {
-
-            }
-
-            return
-        }
-        */
-
-        //如果没有切换应用
-        if (packageName == lastPackage && lastMode != Configs.Fast)
+        if(lastPackage==packageName || packageName == "android" || packageName == "com.android.systemui" || packageName == "com.omarea.vboot")
             return
 
-        if (packageName == "android" || packageName == "com.android.systemui" || packageName == "com.omarea.vboot" || packageName!!.contains("inputmethod"))
-            return
-
-        autoToggleMode(packageName)
-
-        if (ConfigInfo.getConfigInfo().AutoBooster)
-            autoBoosterApp(lastPackage!!)
+        autoBoosterApp(packageName!!)
+        autoToggleMode(packageName!!)
 
         lastPackage = packageName
     }
@@ -435,5 +411,4 @@ class ServiceHelper(context: Context) {
             return false
         }
     }
-
 }

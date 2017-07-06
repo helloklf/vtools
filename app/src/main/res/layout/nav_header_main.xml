@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:text="这可能是最后一个版本"
+        android:text="针对高通骁龙设备的版本"
         android:textSize="12dp" />
 
 </LinearLayout>
