@@ -11,7 +11,7 @@ object Consts {
             "if [ `cat /sys/class/power_supply/battery/capacity` -lt 85 ]; then " +
                     "echo 0 > /sys/class/power_supply/battery/restricted_charging;" +
                     "echo 0 > /sys/class/power_supply/battery/safety_timer_enabled;" +
-                    "echo 460 > /sys/class/power_supply/bms/temp_warm;" +
+                    "echo 480 > /sys/class/power_supply/bms/temp_warm;" +
                     "echo 2000000 >/sys/class/power_supply/battery/constant_charge_current_max;" +
                     "echo 2500000 >/sys/class/power_supply/battery/constant_charge_current_max;" +
                     "echo 3000000 >/sys/class/power_supply/battery/constant_charge_current_max;" +
@@ -19,19 +19,8 @@ object Consts {
                     "echo 4000000 >/sys/class/power_supply/battery/constant_charge_current_max;" +
                     "fi;"
 
-    val BP = "if [ `cat /sys/class/power_supply/battery/capacity` -gt 84 ]; then " +
-            "echo 0 > /sys/class/power_supply/battery/battery_charging_enabled;" +
-            "fi;"
-    val BPReset = "echo 1 > /sys/class/power_supply/battery/battery_charging_enabled;\n"
-
     val ClearCache = "echo 3 > /proc/sys/vm/drop_caches"
 
-    val SupportCPU: ArrayList<String> = object : ArrayList<String>() {
-        init {
-            add("msm8992")
-            add("msm8996")
-        }
-    }
 
     val MountSystemRW =
             "busybox mount -o rw,remount /system\n" +
@@ -48,15 +37,6 @@ object Consts {
                     "chmod 0777 /cache/thermal-engine-cpuNumber.conf\n"
 
     val InstallPowerToggleConfigToCache = "cp /sdcard/Android/data/com.omarea.vboot/powercfg.sh /cache/powercfg.sh\n" + "chmod 0777 /cache/powercfg.sh\n"
-
-    val BackUpConfig = "if [ ! -f \"/system/etc/thermal-engine-cpuNumber-original.conf\" ]; then cp /system/etc/thermal-engine-cpuNumber.conf /system/etc/thermal-engine-cpuNumber-original.conf; fi;\n" + "if [ ! -f \"/system/etc/init.qcom.post_boot-original.sh\" ]; then cp /system/etc/init.qcom.post_boot.sh /system/etc/init.qcom.post_boot-original.sh; fi;\n"
-
-    val RestoreConfig =
-            "cp /system/etc/thermal-engine-cpuNumber-original.conf /system/etc/thermal-engine-cpuNumber.conf;\n" +
-                    "cp /system/etc/init.qcom.post_boot-original.sh /system/etc/init.qcom.post_boot.sh;\n" +
-                    "rm /system/etc/thermal-engine-cpuNumber-original.conf\n" +
-                    "rm /system/etc/init.qcom.post_boot-original.sh\n" +
-                    "rm /cache/powercfg.sh\n"
 
     val ExecuteConfig = "sh /cache/init.qcom.post_boot.sh\n"
     val ToggleDefaultMode = "sh /cache/powercfg.sh balance\n"
@@ -169,10 +149,6 @@ object Consts {
     val DeleteLockPwd = "rm -f /data/system/*.key;rm -f /data/system/locksettings.db*;reboot;"
 
     val ForceDoze = "dumpsys deviceidle force-idle\n"
-
-    val GetBatteryStatus = "/sys/class/power_supply/battery/status\n"
-
-    val GetCPUName = "getprop ro.board.platform\n"
 
     val DisableChanger = "echo 0 > /sys/class/power_supply/battery/battery_charging_enabled;\n"
     val ResumeChanger = "echo 1 > /sys/class/power_supply/battery/battery_charging_enabled;\n"

@@ -3,7 +3,6 @@ package com.omarea.vboot
 import android.app.AlertDialog
 import android.os.Bundle
 import android.os.Handler
-import android.os.Message
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -15,8 +14,11 @@ import com.omarea.shared.ConfigInfo
 import com.omarea.shared.cmd_shellTools
 import com.omarea.ui.swaplist_adapter
 import kotlinx.android.synthetic.main.layout_swap.*
+import java.io.File
 import java.util.ArrayList
 import java.util.HashMap
+import kotlin.collections.LinkedHashMap
+import kotlin.collections.toMutableList
 
 
 class fragment_swap : Fragment() {
@@ -71,7 +73,10 @@ class fragment_swap : Fragment() {
 
         var swappiness = cmdshellTools.GetProp("/proc/sys/vm/swappiness")
         txt_swapstus_swappiness.setText("Swappiness：" + swappiness)
-        list_swaps.setAdapter(swaplist_adapter(context, list))
+        txt_zramstus_swappiness.setText("Swappiness：" + swappiness)
+        var datas = swaplist_adapter(context, list)
+        list_swaps.setAdapter(datas)
+        list_swaps2.setAdapter(datas)
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -79,9 +84,14 @@ class fragment_swap : Fragment() {
 
         chk_swap_disablezram.isChecked = ConfigInfo.getConfigInfo().AutoStartSwapDisZram
         chk_swap_autostart.isChecked = ConfigInfo.getConfigInfo().AutoStartSwap
+        chk_zram_autostart.isChecked = ConfigInfo.getConfigInfo().AutoStartZRAM
         var piness = ConfigInfo.getConfigInfo().AutoStartSwappiness
-        if(piness>=0&&piness!=65&&piness<=100)
-            txt_swap_swappiness.setText(ConfigInfo.getConfigInfo().AutoStartSwappiness.toString())
+        if (piness >= 0 && piness != 65 && piness <= 100) {
+            txt_swap_swappiness.setText(piness.toString())
+            txt_zram_swappiness.setText(piness.toString())
+        }
+        if (ConfigInfo.getConfigInfo().AutoStartZRAMSize != 0)
+            txt_zram_size.setText(ConfigInfo.getConfigInfo().AutoStartZRAMSize.toString())
         getSwaps()
     }
 
@@ -103,6 +113,15 @@ class fragment_swap : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        swapzram_tabhost.setup()
+        swapzram_tabhost.addTab(swapzram_tabhost.newTabSpec("swap_tab").setContent(R.id.swapzram_tab0).setIndicator("SWAP设置"))
+        if (File("/dev/block/zram0").exists())
+            swapzram_tabhost.addTab(swapzram_tabhost.newTabSpec("zram_tab").setContent(R.id.swapzram_tab1).setIndicator("ZRAM设置"))
+        else
+            swapzram_tab1.visibility = View.GONE
+        swapzram_tabhost.setCurrentTab(0)
+
         btn_swap_create.setOnClickListener {
             var size = txt_swap_size.text
             if (size.length != 0) {
@@ -147,8 +166,7 @@ class fragment_swap : Fragment() {
             if (disablezram) {
                 sb.append("swapon /data/swapfile -p 32767\n")
                 //sb.append("swapoff /dev/block/zram0\n")
-            }
-            else{
+            } else {
                 sb.append("swapon /data/swapfile\n")
             }
             sb.append("echo 65 > /proc/sys/vm/swappiness\n")
@@ -166,6 +184,65 @@ class fragment_swap : Fragment() {
                 myHandler.post(showSwapOpened)
             }
             Thread(run).start()
+        }
+        btn_zram_resize.setOnClickListener {
+            var size = txt_zram_size.text.toString()
+            var swappiness = txt_zram_swappiness.text.toString()
+            var value = 65
+            var sizeVal = -1
+
+            try {
+                value = Integer.parseInt(swappiness)
+                sizeVal = Integer.parseInt(size)
+            } catch (ex: Exception) {
+            }
+
+            if (sizeVal < 2049 && sizeVal > -1) {
+                var run = Thread({
+                    var sb = StringBuilder()
+                    sb.append("if [ `cat /sys/block/zram0/disksize` != '" + sizeVal + "000000' ] ; then ")
+                    sb.append("swapoff /dev/block/zram0 &> /dev/null;")
+                    sb.append("echo 1 > /sys/block/zram0/reset;")
+                    sb.append("echo " + sizeVal + "000000 > /sys/block/zram0/disksize;")
+                    sb.append("mkswap /dev/block/zram0 &> /dev/null;")
+                    sb.append("swapon /dev/block/zram0 &> /dev/null;")
+                    sb.append("fi;\n")
+                    sb.append("echo 65 > /proc/sys/vm/swappiness\n")
+                    sb.append("echo " + value + " > /proc/sys/vm/swappiness\n")
+
+                    cmdshellTools.DoCmdSync(sb.toString())
+                    myHandler.post(getSwaps)
+                    myHandler.post(showSwapOpened)
+                })
+                var isUse = cmdshellTools.GetProp("/proc/swaps", "zram")
+                if (isUse != null && isUse.length != 0) {
+                    var builder = AlertDialog.Builder(this.context)
+                    builder.setTitle("确定重置ZRAM？")
+                    builder.setMessage("ZRAM正在使用。关闭它可能需要不少时间，因为回收ZRAM、SWAP已用空间非常的慢！")
+                    builder.setNegativeButton("取消", { dialog, which -> })
+                    builder.setPositiveButton("确定", { dialog, which ->
+                        showWait()
+                        Thread(run).start()
+                    })
+                    builder.show()
+                } else {
+                    Thread(run).start()
+                }
+                ConfigInfo.getConfigInfo().AutoStartSwappiness = value
+                ConfigInfo.getConfigInfo().AutoStartZRAMSize = sizeVal
+                ConfigInfo.getConfigInfo().AutoStartZRAM = chk_zram_autostart.isChecked
+            } else {
+                Snackbar.make(this.view, "请输入ZRAM大小，值应在0 - 2048之间！", Snackbar.LENGTH_LONG).show()
+            }
+        }
+
+        chk_zram_autostart.setOnCheckedChangeListener { buttonView, isChecked ->
+            if(!isChecked)
+                ConfigInfo.getConfigInfo().AutoStartZRAM = isChecked
+        }
+        chk_swap_autostart.setOnCheckedChangeListener { buttonView, isChecked ->
+            if(!isChecked)
+                ConfigInfo.getConfigInfo().AutoStartSwap = isChecked
         }
     }
 

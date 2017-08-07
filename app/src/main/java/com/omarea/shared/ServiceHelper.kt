@@ -12,6 +12,7 @@ import com.omarea.vboot.reciver_batterychanged
 import java.io.DataOutputStream
 import java.io.IOException
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Created by helloklf on 2016/10/1.
@@ -27,6 +28,7 @@ class ServiceHelper(context: Context) {
     internal var out: DataOutputStream? = null
     //标识是否已经加载完设置
     private var SettingsLoaded = false
+    var ignoredList = arrayListOf<String>("com.miui.securitycenter", "android", "com.android.systemui", "com.omarea.vboot", "com.miui.touchassistant")
 
     init {
         EventBus.subscribe(Events.DyamicCoreConfigChanged, object : IEventSubscribe {
@@ -89,12 +91,25 @@ class ServiceHelper(context: Context) {
 
         if (ConfigInfo.getConfigInfo().AutoStartSwap) {
             var sb = StringBuilder("setenforce 0\n")
+
+            if(ConfigInfo.getConfigInfo().AutoStartZRAM) {
+                var zramSize = ConfigInfo.getConfigInfo().AutoStartZRAMSize
+                sb.append("if [ `cat /sys/block/zram0/disksize` != '" + zramSize + "000000' ] ; then ")
+                sb.append("swapoff /dev/block/zram0 &> /dev/null;")
+                sb.append("echo 1 > /sys/block/zram0/reset;")
+                sb.append("echo " + zramSize + "000000 > /sys/block/zram0/disksize;")
+                sb.append("mkswap /dev/block/zram0 &> /dev/null;")
+                sb.append("swapon /dev/block/zram0 &> /dev/null;")
+                sb.append("fi;\n")
+            }
+
             if (ConfigInfo.getConfigInfo().AutoStartSwapDisZram) {
                 sb.append("swapon /data/swapfile -p 32767\n")
                 //sb.append("swapoff /dev/block/zram0\n")
             } else {
                 sb.append("swapon /data/swapfile\n")
             }
+
             sb.append("echo 65 > /proc/sys/vm/swappiness\n")
             sb.append("echo " + ConfigInfo.getConfigInfo().AutoStartSwappiness + " > /proc/sys/vm/swappiness\n")
 
@@ -295,7 +310,7 @@ class ServiceHelper(context: Context) {
         if (context == null) return
 
         if (!DynamicConfig().DynamicSupport(ConfigInfo.getConfigInfo().CPUName)) {
-            ShowMsg("Unsupported device!(Support only msm8992, msm8996,and other devices create your own configuration files)")
+            ShowMsg("Unsupported device!(Support only msm8992, msm8996, msm8998,and other devices create your own configuration files)")
             return
         }
 
@@ -305,11 +320,11 @@ class ServiceHelper(context: Context) {
             val cpuNumber = ConfigInfo.getConfigInfo().CPUName.replace("msm", "")
 
             if (ConfigInfo.getConfigInfo().UseBigCore) {
-                AppShared.WriteFile(ass, ConfigInfo.getConfigInfo().CPUName + "/thermal-engine-bigcore.conf", "thermal-engine.conf")
+                //AppShared.WriteFile(ass, ConfigInfo.getConfigInfo().CPUName + "/thermal-engine-bigcore.conf", "thermal-engine.conf")
                 AppShared.WriteFile(ass, ConfigInfo.getConfigInfo().CPUName + "/init.qcom.post_boot-bigcore.sh", "init.qcom.post_boot.sh")
                 AppShared.WriteFile(ass, ConfigInfo.getConfigInfo().CPUName + "/powercfg-bigcore.sh", "powercfg.sh")
             } else {
-                AppShared.WriteFile(ass, ConfigInfo.getConfigInfo().CPUName + "/thermal-engine-default.conf", "thermal-engine.conf")
+                //AppShared.WriteFile(ass, ConfigInfo.getConfigInfo().CPUName + "/thermal-engine-default.conf", "thermal-engine.conf")
                 AppShared.WriteFile(ass, ConfigInfo.getConfigInfo().CPUName + "/init.qcom.post_boot-default.sh", "init.qcom.post_boot.sh")
                 AppShared.WriteFile(ass, ConfigInfo.getConfigInfo().CPUName + "/powercfg-default.sh", "powercfg.sh")
             }
@@ -378,7 +393,7 @@ class ServiceHelper(context: Context) {
         if (packageName == null)
             packageName = lastPackage
 
-        if(lastPackage==packageName || packageName == "android" || packageName == "com.android.systemui" || packageName == "com.omarea.vboot")
+        if(lastPackage==packageName || ignoredList.contains(packageName))
             return
 
         autoBoosterApp(packageName!!)
@@ -389,7 +404,6 @@ class ServiceHelper(context: Context) {
 
     fun onInterrupt() {
         if (batteryChangedReciver != null) {
-            DoCmd(Consts.BPReset)
             context!!.unregisterReceiver(batteryChangedReciver)
             reciver_batterychanged.serviceHelper = null
             batteryChangedReciver = null

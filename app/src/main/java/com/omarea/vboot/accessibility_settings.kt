@@ -50,13 +50,7 @@ class accessibility_settings : AppCompatActivity() {
         settings_debugmode.isChecked = ConfigInfo.getConfigInfo().DebugMode
         settings_qc.isChecked = ConfigInfo.getConfigInfo().QcMode
         settings_delaystart.isChecked = ConfigInfo.getConfigInfo().DelayStart
-        settings_bp.isChecked = ConfigInfo.getConfigInfo().BatteryProtection
 
-        settings_bp.setOnClickListener {
-            ConfigInfo.getConfigInfo().BatteryProtection = settings_bp.isChecked;
-            if (!settings_bp.isChecked)
-                ShellRuntime().execute(Consts.BPReset)
-        }
         settings_delaystart.setOnClickListener { ConfigInfo.getConfigInfo().DelayStart = settings_delaystart.isChecked }
         settings_debugmode.setOnClickListener { ConfigInfo.getConfigInfo().DebugMode = settings_debugmode.isChecked }
         settings_autoinstall.setOnClickListener { ConfigInfo.getConfigInfo().AutoInstall = settings_autoinstall.isChecked }

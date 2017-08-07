@@ -70,6 +70,9 @@ class reciver_batterychanged : BroadcastReceiver() {
     private fun FastCharger() {
         if (!ConfigInfo.getConfigInfo().QcMode)
             return
+
+        if (ConfigInfo.getConfigInfo().DebugMode)
+            ShowMsg("充电器已连接！", false)
         DoCmd(Consts.FastChanger)
     }
 
@@ -126,8 +129,6 @@ class reciver_batterychanged : BroadcastReceiver() {
         if (AppShared.system_inited && onChanger) {
             if (ConfigInfo.getConfigInfo().QcMode) {
                 FastCharger()
-                if (ConfigInfo.getConfigInfo().DebugMode)
-                    ShowMsg("充电器已连接！", false)
             }
         }
     }

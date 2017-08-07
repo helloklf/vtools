@@ -64,6 +64,30 @@
                 <FrameLayout
                     android:id="@+id/configlist_tab3"
                     android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <ListView
+                        android:id="@+id/config_fastlist"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"></ListView>
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/configlist_tab4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <ListView
+                        android:id="@+id/config_ignoredlist"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"></ListView>
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/configlist_tab5"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
                     <android.support.design.widget.FloatingActionButton

@@ -113,13 +113,14 @@ class fragment_addin : Fragment() {
         listItem.add(createItem("调整DPI为410", "部分ROM不支持调整，可能出现UI错误。需要重启。"))
         listItem.add(createItem("调整DPI为440", "部分ROM不支持调整，可能出现UI错误。需要重启。"))
         listItem.add(createItem("调整DPI为480", "部分ROM不支持调整，可能出现UI错误。需要重启。"))
-        listItem.add(createItem("挂载System可读写", "将System重新挂载为可读写状态（如果System未结果，此操作将无效）。"))
         listItem.add(createItem("干掉温控模块", "可能会对系统造成一些影响，请谨慎使用，需要重启手机。此功能对小米5较新系统无效"))
         listItem.add(createItem("恢复温控模块", "需要重启手机"))
         listItem.add(createItem("删除锁屏密码", "如果你忘了锁屏密码，或者恢复系统后密码不正确，这能帮你解决。会重启手机"))
         listItem.add(createItem("强制打盹", "实验性，强制进入Doze模式（如果系统支持）"))
         listItem.add(createItem("禁止充电", "停止对电池充电，同时使用USB电源为手机供电。（与充电加速和电池保护功能冲突！）"))
         listItem.add(createItem("恢复充电", "恢复对电池充电，由设备自行管理充放。"))
+        listItem.add(createItem("机型伪装", "将机型信息改为OPPO R11 Plus，以便在王者荣耀或获得专属优化体验。（会导致小米5 Home键轻触不可用！！！）"))
+
 
         val mSimpleAdapter = SimpleAdapter(
                 view.context, listItem,
@@ -216,26 +217,40 @@ class fragment_addin : Fragment() {
             }
             7 -> {
                 stringBuilder.append(Consts.MountSystemRW)
+                stringBuilder.append(Consts.RMThermal)
             }
             8 -> {
                 stringBuilder.append(Consts.MountSystemRW)
-                stringBuilder.append(Consts.RMThermal)
-            }
-            9 -> {
-                stringBuilder.append(Consts.MountSystemRW)
                 stringBuilder.append(Consts.ResetThermal)
             }
-            10 -> {
+            9 -> {
                 stringBuilder.append(Consts.DeleteLockPwd)
             }
-            11 -> {
+            10 -> {
                 stringBuilder.append(Consts.ForceDoze)
             }
-            12 -> {
+            11 -> {
                 stringBuilder.append(Consts.DisableChanger)
             }
-            13 -> {
+            12 -> {
                 stringBuilder.append(Consts.ResumeChanger)
+            }
+            13 -> {
+                stringBuilder.append(Consts.MountSystemRW)
+                stringBuilder.append(
+                        "busybox sed 's/^ro.product.model=.*/ro.product.model=OPPO R11 Plus/' /system/build.prop > /data/build.prop;" +
+                        "busybox sed -i 's/^ro.product.brand=.*/ro.product.brand=OPPO/' /data/build.prop;" +
+                        "busybox sed -i 's/^ro.product.brand=.*/ro.product.brand=OPPO/' /data/build.prop;" +
+                        "busybox sed -i 's/^ro.product.name=.*/ro.product.name=R11 Plus/' /data/build.prop;" +
+                        "busybox sed -i 's/^ro.product.device=.*/ro.product.device=R11 Plus/' /data/build.prop;" +
+                        "busybox sed -i 's/^ro.build.product=.*/ro.build.product=R11 Plus/' /data/build.prop;" +
+                        "busybox sed -i 's/^ro.product.manufacturer=.*/ro.product.manufacturer=OPPO/' /data/build.prop;")
+                stringBuilder.append("cp /system/build.prop /system/build.bak.prop\n")
+                stringBuilder.append("cp /data/build.prop /system/build.prop\n")
+                stringBuilder.append("rm /data/build.prop\n")
+                stringBuilder.append("chmod 0644 /system/build.prop\n")
+                stringBuilder.append("sync\n")
+                stringBuilder.append("reboot\n")
             }
         }
         cmdshellTools!!.DoCmd(stringBuilder.toString())

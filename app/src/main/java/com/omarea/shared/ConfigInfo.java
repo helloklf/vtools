@@ -22,6 +22,8 @@ public class ConfigInfo {
     public boolean AutoStartSwap = false;
     public boolean AutoStartSwapDisZram = false;
     public int AutoStartSwappiness = 65;
+    public int AutoStartZRAMSize = 0;
+    public boolean AutoStartZRAM = false;
     public boolean AutoBooster = true;
     public boolean DyamicCore = false;
     public boolean QcMode = true;
@@ -46,6 +48,8 @@ public class ConfigInfo {
         this.AutoStartSwap = isTrue(jsonObject,"AutoStartSwap",false);
         this.AutoStartSwapDisZram = isTrue(jsonObject,"AutoStartSwapDisZram",false);
         this.AutoStartSwappiness = getInt(jsonObject,"AutoStartSwappiness",65);
+        this.AutoStartZRAMSize = getInt(jsonObject,"AutoStartZRAMSize",0);
+        this.AutoStartZRAM = isTrue(jsonObject,"AutoStartZRAM",false);
         this.AutoInstall = isTrue(jsonObject, "AutoInstall", true);
         this.AutoBooster = isTrue(jsonObject, "AutoBooster", true);
         this.DyamicCore = isTrue(jsonObject, "DyamicCore");
@@ -88,6 +92,8 @@ public class ConfigInfo {
                     .put("AutoStartSwap",AutoStartSwap)
                     .put("AutoStartSwapDisZram",AutoStartSwapDisZram)
                     .put("AutoStartSwappiness",AutoStartSwappiness)
+                    .put("AutoStartZRAM",AutoStartZRAM)
+                    .put("AutoStartZRAMSize",AutoStartZRAMSize)
                     .put("AutoBooster", AutoBooster)
                     .put("DyamicCore", DyamicCore)
                     .put("QcMode", QcMode)

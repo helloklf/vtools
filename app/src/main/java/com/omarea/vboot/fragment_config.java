@@ -100,10 +100,12 @@ public class fragment_config extends Fragment {
 
         tabHost.setup();
 
-        tabHost.addTab(tabHost.newTabSpec("def_tab").setContent(R.id.configlist_tab0).setIndicator("均衡模式"));
-        tabHost.addTab(tabHost.newTabSpec("game_tab").setContent(R.id.configlist_tab1).setIndicator("性能模式"));
-        tabHost.addTab(tabHost.newTabSpec("power_tab").setContent(R.id.configlist_tab2).setIndicator("省电模式"));
-        tabHost.addTab(tabHost.newTabSpec("confg_tab").setContent(R.id.configlist_tab3).setIndicator("细节设置"));
+        tabHost.addTab(tabHost.newTabSpec("def_tab").setContent(R.id.configlist_tab0).setIndicator("均衡"));
+        tabHost.addTab(tabHost.newTabSpec("game_tab").setContent(R.id.configlist_tab1).setIndicator("性能"));
+        tabHost.addTab(tabHost.newTabSpec("power_tab").setContent(R.id.configlist_tab2).setIndicator("省电"));
+        tabHost.addTab(tabHost.newTabSpec("fast_tab").setContent(R.id.configlist_tab3).setIndicator("极速"));
+        tabHost.addTab(tabHost.newTabSpec("fast_tab").setContent(R.id.configlist_tab4).setIndicator("忽略"));
+        tabHost.addTab(tabHost.newTabSpec("confg_tab").setContent(R.id.configlist_tab5).setIndicator("设置"));
         tabHost.setCurrentTab(0);
         tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
@@ -186,6 +188,10 @@ public class fragment_config extends Fragment {
             }
             case "msm8996": {
                 defaultconfighelp.setText(useBigCore ? R.string.defaultconfighelp_bigcore_820 : R.string.defaultconfighelp_820);
+                break;
+            }
+            case "msm8998": {
+                defaultconfighelp.setText(useBigCore ? R.string.defaultconfighelp_bigcore_835 : R.string.defaultconfighelp_835);
                 break;
             }
         }

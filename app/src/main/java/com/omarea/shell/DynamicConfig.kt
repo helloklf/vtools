@@ -14,7 +14,7 @@ import java.io.File
 class DynamicConfig {
     fun DynamicSupport(): Boolean {
         val cpuName = Platform().GetCPUName()
-        if (cpuName.contains("8996") || cpuName.contains("8992")) {
+        if (cpuName.contains("8998") || cpuName.contains("8996") || cpuName.contains("8992")) {
             return true
         }
 
@@ -23,7 +23,7 @@ class DynamicConfig {
     }
 
     fun DynamicSupport(cpuName: String): Boolean {
-        if (cpuName.contains("8996") || cpuName.contains("8992")) {
+        if (cpuName.contains("8998") || cpuName.contains("8996") || cpuName.contains("8992")) {
             return true
         }
 

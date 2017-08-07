@@ -51,18 +51,31 @@ class receiver_boot_openswap : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
+        var sb = StringBuilder("setenforce 0\n")
         if (ConfigInfo.getConfigInfo().AutoStartSwap) {
-            var sb = StringBuilder("setenforce 0\n")
+
+            if(ConfigInfo.getConfigInfo().AutoStartZRAM) {
+                var zramSize = ConfigInfo.getConfigInfo().AutoStartZRAMSize
+                sb.append("if [ `cat /sys/block/zram0/disksize` != '" + zramSize + "000000' ] ; then ")
+                sb.append("swapoff /dev/block/zram0 &> /dev/null;")
+                sb.append("echo 1 > /sys/block/zram0/reset;")
+                sb.append("echo " + zramSize + "000000 > /sys/block/zram0/disksize;")
+                sb.append("mkswap /dev/block/zram0 &> /dev/null;")
+                sb.append("swapon /dev/block/zram0 &> /dev/null;")
+                sb.append("fi;\n")
+            }
+
             if (ConfigInfo.getConfigInfo().AutoStartSwapDisZram) {
                 sb.append("swapon /data/swapfile -p 32767\n")
                 //sb.append("swapoff /dev/block/zram0\n")
             } else {
                 sb.append("swapon /data/swapfile\n")
             }
+
             sb.append("echo 65 > /proc/sys/vm/swappiness\n")
             sb.append("echo " + ConfigInfo.getConfigInfo().AutoStartSwappiness + " > /proc/sys/vm/swappiness\n")
-
-            DoCmd(sb.toString())
         }
+        sb.append("sh /data/data/me.piebridge.brevent/brevent.sh;");
+        DoCmd(sb.toString())
     }
 }
