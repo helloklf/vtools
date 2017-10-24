@@ -29,8 +29,8 @@ class CrashHandler private constructor() : Thread.UncaughtExceptionHandler {
         object : Thread() {
             override fun run() {
                 Looper.prepare()
-                AlertDialog.Builder(mContext).setTitle("Oops").setCancelable(false)
-                        .setMessage("The application has stopped running...\n\n" + ex.localizedMessage).setNeutralButton("OK") { dialog, which -> System.exit(0) }
+                AlertDialog.Builder(mContext).setTitle("啊哦...").setCancelable(false)
+                        .setMessage("这破程序又崩溃了...\n\n" + ex.localizedMessage).setNeutralButton("垃圾") { dialog, which -> System.exit(0) }
                         .create().show()
                 Looper.loop()
             }

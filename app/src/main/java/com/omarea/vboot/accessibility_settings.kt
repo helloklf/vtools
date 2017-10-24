@@ -42,13 +42,12 @@ class accessibility_settings : AppCompatActivity() {
         settings_autoinstall.isChecked = ConfigInfo.getConfigInfo().AutoInstall
         settings_autobooster.isChecked = ConfigInfo.getConfigInfo().AutoBooster
         settings_dynamic.isChecked = ConfigInfo.getConfigInfo().DyamicCore
-        if (!DynamicConfig().DynamicSupport(ConfigInfo.getConfigInfo().CPUName)) {
+        if (!DynamicConfig().DynamicSupport(this)) {
             settings_dynamic.isEnabled = false
             settings_dynamic.isChecked = false
         }
 
         settings_debugmode.isChecked = ConfigInfo.getConfigInfo().DebugMode
-        settings_qc.isChecked = ConfigInfo.getConfigInfo().QcMode
         settings_delaystart.isChecked = ConfigInfo.getConfigInfo().DelayStart
 
         settings_delaystart.setOnClickListener { ConfigInfo.getConfigInfo().DelayStart = settings_delaystart.isChecked }
@@ -59,7 +58,6 @@ class accessibility_settings : AppCompatActivity() {
             ConfigInfo.getConfigInfo().DyamicCore = settings_dynamic.isChecked
             EventBus.publish(Events.DyamicCoreConfigChanged)
         }
-        settings_qc.setOnClickListener { ConfigInfo.getConfigInfo().QcMode = settings_qc.isChecked }
     }
 
     public override fun onPause() {

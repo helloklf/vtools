@@ -18,6 +18,8 @@
 
 -keep class com.omarea.shared.xposed_interface{*;}
 -keep class com.omarea.shared.xposed_check{*;}
+-keep class com.omarea.vboot.BatteryService{*;}
 
 -keepclassmembers class com.omarea.shared.xposed_interface{*;}
 -keepclassmembers class com.omarea.shared.xposed_check{*;}
+-keepclassmembers class com.omarea.vboot.BatteryService{*;}

@@ -543,8 +543,12 @@ public class fragment_applistions extends Fragment {
         myHandler.post(new Runnable() {
             @Override
             public void run() {
+            try {
                 thisview.progressBar.setVisibility(View.GONE);
                 lv.setAdapter(new list_adapter2(getContext(), dl));
+            } catch (Exception ex) {
+
+            }
             }
         });
     }

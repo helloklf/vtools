@@ -51,6 +51,15 @@ class receiver_boot_openswap : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
+        if(ConfigInfo.getConfigInfo().QcMode || ConfigInfo.getConfigInfo().BatteryProtection){
+            try{
+                val intent = Intent( context, BatteryService::class.java)
+                context.startService(intent)
+            } catch (ex:Exception){
+
+            }
+        }
+
         var sb = StringBuilder("setenforce 0\n")
         if (ConfigInfo.getConfigInfo().AutoStartSwap) {
 

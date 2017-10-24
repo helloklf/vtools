@@ -13,32 +13,7 @@
         android:shrinkColumns="0,1,2"
         android:stretchColumns="0,1,2,3">
 
-
-        <TextView
-            android:textSize="12dp"
-            android:id="@+id/battrystatus"
-            android:padding="20dp"
-            android:text="电池信息："
-            android:layout_height="wrap_content"
-            android:background="#22888888"
-            android:layout_width="match_parent"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp" />
-        <TextView
-            android:textSize="12dp"
-            android:id="@+id/powerstatus"
-            android:padding="20dp"
-            android:text="电池充放："
-            android:layout_height="match_parent"
-            android:background="#22888888"
-            android:layout_width="match_parent"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp" />
-
-        <TableRow>
+        <TableRow android:layout_marginTop="5dp">
 
             <TextView
                 android:layout_span="2"
@@ -66,8 +41,7 @@
                 android:layout_marginBottom="5dp" />
         </TableRow>
 
-        <TextView android:visibility="gone" android:id="@+id/powermode_toggles" android:text="性能配置（开启动态响应时模式会被动态覆盖）" android:textSize="8dp" android:layout_marginTop="12dp" android:layout_marginBottom="4dp" android:layout_marginLeft="4dp"/>
-        <TableRow android:layout_marginBottom="4dp">
+        <TableRow android:layout_marginBottom="4dp" android:visibility="gone" android:id="@+id/powermode_toggles" >
             <Button android:text="省电" android:layout_marginLeft="4dp" android:id="@+id/btn_powersave"
                     android:background="#448888cc" />
             <Button android:text="均衡" android:layout_marginLeft="4dp" android:id="@+id/btn_defaultmode"

@@ -14,6 +14,7 @@ class ShellRuntime {
             val dataOutputStream = DataOutputStream(p.outputStream)
             dataOutputStream.writeBytes(cmd)
             dataOutputStream.writeBytes("\n\nexit\n")
+            dataOutputStream.flush()
 
             return p.waitFor() == 0
         } catch (e: InterruptedException) {

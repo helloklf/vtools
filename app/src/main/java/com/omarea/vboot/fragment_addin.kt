@@ -46,6 +46,7 @@ class fragment_addin : Fragment() {
         listItem.add(createItem("Flyme一键精简", "删除系统中一些内置的无用软件。"))
         listItem.add(createItem("开启沉浸模式", "自动隐藏状态栏、导航栏"))
         listItem.add(createItem("禁用沉浸模式", "恢复状态栏、导航栏自动显示"))
+        listItem.add(createItem("减少Flyme6模糊", "禁用Flyme6下拉通知中心的实时模糊效果，以减少在游戏或视频播放时下拉通知中心的卡顿，或许还能省电"))
 
         val mSimpleAdapter = SimpleAdapter(
                 view.context, listItem,
@@ -96,6 +97,9 @@ class fragment_addin : Fragment() {
             6 -> {
                 stringBuilder.append("settings put global policy_control null")
             }
+            7 -> {
+                stringBuilder.append("setprop persist.sys.static_blur_mode true")
+            }
         }
         cmdshellTools!!.DoCmd(stringBuilder.toString())
         Snackbar.make(view, "命令已执行！", Snackbar.LENGTH_SHORT).show()
@@ -120,6 +124,7 @@ class fragment_addin : Fragment() {
         listItem.add(createItem("禁止充电", "停止对电池充电，同时使用USB电源为手机供电。（与充电加速和电池保护功能冲突！）"))
         listItem.add(createItem("恢复充电", "恢复对电池充电，由设备自行管理充放。"))
         listItem.add(createItem("机型伪装", "将机型信息改为OPPO R11 Plus，以便在王者荣耀或获得专属优化体验。（会导致小米5 Home键轻触不可用！！！）"))
+        listItem.add(createItem("build.prop参数还原", "使用了DPI修改和机型伪装的小伙伴，可以点这个还原到上次修改前的状态"))
 
 
         val mSimpleAdapter = SimpleAdapter(
@@ -251,6 +256,10 @@ class fragment_addin : Fragment() {
                 stringBuilder.append("chmod 0644 /system/build.prop\n")
                 stringBuilder.append("sync\n")
                 stringBuilder.append("reboot\n")
+            }
+            14 -> {
+                stringBuilder.append(Consts.MountSystemRW)
+                stringBuilder.append("if [ -f '/system/build.bak.prop' ];then rm /system/build.prop;cp /system/build.bak.prop /system/build.prop;chmod 0644 /system/build.prop; sync; reboot; fi;")
             }
         }
         cmdshellTools!!.DoCmd(stringBuilder.toString())

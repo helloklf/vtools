@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.omarea.vboot.fragment_battery"
+    android:orientation="vertical">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:showDividers="beginning"
+        android:shrinkColumns="0,1,2"
+        android:stretchColumns="0,1,2,3">
+
+
+        <TextView
+            android:textSize="12dp"
+            android:id="@+id/battrystatus"
+            android:padding="20dp"
+            android:text="电池信息："
+            android:layout_height="wrap_content"
+            android:background="#22888888"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp" />
+        <TextView
+            android:textSize="12dp"
+            android:id="@+id/powerstatus"
+            android:padding="20dp"
+            android:text="电池充放："
+            android:layout_height="match_parent"
+            android:background="#22888888"
+            android:layout_width="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp" />
+
+        <LinearLayout android:orientation="vertical" android:padding="16dp">
+            <Switch
+                android:id="@+id/settings_qc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_marginTop="20dp"
+                android:gravity="left"
+                android:padding="8dp"
+                android:text="@string/accessbility_charger"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:padding="8dp"
+                android:text="@string/accessbility_charger_desc"
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
+            <Switch
+                android:id="@+id/settings_bp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:layout_marginTop="20dp"
+                android:gravity="left"
+                android:padding="8dp"
+                android:text="@string/accessbility_bp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:padding="8dp"
+                android:text="@string/accessbility_bp_desc"
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+            <EditText
+                android:id="@+id/settings_bp_level"
+                android:hint="充电限制百分百0-99，默认85%"
+                android:inputType="number"
+                android:maxLength="2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_column="0"
+                android:padding="8dp"
+                android:text="@string/accessbility_bp_level_desc"
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
+        </LinearLayout>
+
+    </TableLayout>
+</LinearLayout>

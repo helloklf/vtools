@@ -3,24 +3,33 @@
 #
 target=`getprop ro.board.platform`
 
+chmod 0777 /sys/devices/system/cpu/cpu0/online
+chmod 0777 /sys/devices/system/cpu/cpu1/online
+chmod 0777 /sys/devices/system/cpu/cpu2/online
+chmod 0777 /sys/devices/system/cpu/cpu3/online
+chmod 0777 /sys/devices/system/cpu/cpu4/online
+chmod 0777 /sys/devices/system/cpu/cpu5/online
+chmod 0777 /sys/devices/system/cpu/cpu6/online
+chmod 0777 /sys/devices/system/cpu/cpu7/online
+
 #835
 case "$target" in
     "msm8998")
 
-	echo 2 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
+	echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
 	echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/max_cpus
-	echo 60 > /sys/devices/system/cpu/cpu4/core_ctl/busy_up_thres
-	echo 30 > /sys/devices/system/cpu/cpu4/core_ctl/busy_down_thres
-	echo 100 > /sys/devices/system/cpu/cpu4/core_ctl/offline_delay_ms
+	echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/busy_up_thres
+	echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/busy_down_thres
+	echo 1000 > /sys/devices/system/cpu/cpu4/core_ctl/offline_delay_ms
 	echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/is_big_cluster
-	echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/task_thres
+	echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/task_thres
 
 	# Setting b.L scheduler parameters
 	echo 1 > /proc/sys/kernel/sched_migration_fixup
-	echo 95 > /proc/sys/kernel/sched_upmigrate
-	echo 90 > /proc/sys/kernel/sched_downmigrate
-	echo 100 > /proc/sys/kernel/sched_group_upmigrate
-	echo 95 > /proc/sys/kernel/sched_group_downmigrate
+	echo 40 > /proc/sys/kernel/sched_upmigrate
+	echo 25 > /proc/sys/kernel/sched_downmigrate
+	echo 35 > /proc/sys/kernel/sched_group_upmigrate
+	echo 25 > /proc/sys/kernel/sched_group_downmigrate
 	echo 0 > /proc/sys/kernel/sched_select_prev_cpu_us
 	echo 400000 > /proc/sys/kernel/sched_freq_inc_notify
 	echo 400000 > /proc/sys/kernel/sched_freq_dec_notify
@@ -164,12 +173,12 @@ case "$target" in
 	echo N > /sys/module/lpm_levels/system/pwr/pwr-l2-ret/idle_enabled
 	echo N > /sys/module/lpm_levels/system/perf/perf-l2-dynret/idle_enabled
 	echo N > /sys/module/lpm_levels/system/perf/perf-l2-ret/idle_enabled
-	echo N > /sys/module/lpm_levels/parameters/sleep_disabled
-	echo 0 > /dev/cpuset/background/cpus
-	echo 0-2 > /dev/cpuset/system-background/cpus
-	echo 4-7 > /dev/cpuset/foreground/boost/cpus
-	echo 0-2,4-7 > /dev/cpuset/foreground/cpus
-	echo 0 > /proc/sys/kernel/sched_boost
+	echo Y > /sys/module/lpm_levels/parameters/sleep_disabled
+    echo 0-1 > /dev/cpuset/background/cpus
+    echo 0-3 > /dev/cpuset/system-background/cpus
+    echo 4-7 > /dev/cpuset/foreground/boost/cpus
+    echo 0-7 > /dev/cpuset/foreground/cpus
+    echo 0 > /proc/sys/kernel/sched_boost
     ;;
 esac
 
@@ -235,3 +244,9 @@ case "$console_config" in
         echo "Enable console config to $console_config"
         ;;
 esac
+
+
+echo 1 > /sys/devices/system/cpu/cpu4/online
+echo 1 > /sys/devices/system/cpu/cpu5/online
+echo 1 > /sys/devices/system/cpu/cpu6/online
+echo 1 > /sys/devices/system/cpu/cpu7/online

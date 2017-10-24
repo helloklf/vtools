@@ -11,7 +11,9 @@ object Consts {
             "if [ `cat /sys/class/power_supply/battery/capacity` -lt 85 ]; then " +
                     "echo 0 > /sys/class/power_supply/battery/restricted_charging;" +
                     "echo 0 > /sys/class/power_supply/battery/safety_timer_enabled;" +
+                    "chmod 0777 /sys/class/power_supply/bms/temp_warm;" +
                     "echo 480 > /sys/class/power_supply/bms/temp_warm;" +
+                    "chmod 0777 /sys/class/power_supply/battery/constant_charge_current_max;" +
                     "echo 2000000 >/sys/class/power_supply/battery/constant_charge_current_max;" +
                     "echo 2500000 >/sys/class/power_supply/battery/constant_charge_current_max;" +
                     "echo 3000000 >/sys/class/power_supply/battery/constant_charge_current_max;" +
@@ -27,22 +29,25 @@ object Consts {
                     "mount -o rw,remount /system\n" +
                     "busybox mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
                     "mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n"
+    val MountSystemRW2 =
+            "/cache/busybox mount -o rw,remount /system\n" +
+                    "mount -o rw,remount /system\n" +
+                    "/cache/busybox mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
+                    "mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n"
 
     val InstallConfig =
             "cp /sdcard/Android/data/com.omarea.vboot/init.qcom.post_boot.sh /cache/init.qcom.post_boot.sh\n" +
-                    "cp /sdcard/Android/data/com.omarea.vboot/thermal-engine.conf /cache/thermal-engine-cpuNumber.conf\n" +
                     "cp /sdcard/Android/data/com.omarea.vboot/powercfg.sh /cache/powercfg.sh\n" +
                     "chmod 0777 /cache/powercfg.sh\n" +
-                    "chmod 0777 /cache/init.qcom.post_boot.sh\n" +
-                    "chmod 0777 /cache/thermal-engine-cpuNumber.conf\n"
+                    "chmod 0777 /cache/init.qcom.post_boot.sh\n"
 
     val InstallPowerToggleConfigToCache = "cp /sdcard/Android/data/com.omarea.vboot/powercfg.sh /cache/powercfg.sh\n" + "chmod 0777 /cache/powercfg.sh\n"
 
-    val ExecuteConfig = "sh /cache/init.qcom.post_boot.sh\n"
-    val ToggleDefaultMode = "sh /cache/powercfg.sh balance\n"
-    val ToggleGameMode = "sh /cache/powercfg.sh performance\n"
-    val TogglePowersaveMode = "sh /cache/powercfg.sh powersave\n"
-    val ToggleFastMode = "sh /cache/powercfg.sh fast\n"
+    val ExecuteConfig = "sh /cache/init.qcom.post_boot.sh;setprop vtools.powercfg null;\n"
+    val ToggleDefaultMode = "sh /cache/powercfg.sh balance;setprop vtools.powercfg default;\n"
+    val ToggleGameMode = "sh /cache/powercfg.sh performance;setprop vtools.powercfg game;\n"
+    val TogglePowersaveMode = "sh /cache/powercfg.sh powersave;setprop vtools.powercfg powersave;\n"
+    val ToggleFastMode = "sh /cache/powercfg.sh fast;setprop vtools.powercfg fast;\n"
 
     val DisableSELinux = "setenforce 0\n"
 
@@ -150,8 +155,8 @@ object Consts {
 
     val ForceDoze = "dumpsys deviceidle force-idle\n"
 
-    val DisableChanger = "echo 0 > /sys/class/power_supply/battery/battery_charging_enabled;\n"
-    val ResumeChanger = "echo 1 > /sys/class/power_supply/battery/battery_charging_enabled;\n"
+    val DisableChanger = "if [ -f '/sys/class/power_supply/battery/battery_charging_enabled' ]; then echo 0 > /sys/class/power_supply/battery/battery_charging_enabled; else echo 1 > /sys/class/power_supply/battery/input_suspend; fi;setprop vtools.bp 1;\n"
+    val ResumeChanger = "if [ -f '/sys/class/power_supply/battery/battery_charging_enabled' ]; then echo 1 > /sys/class/power_supply/battery/battery_charging_enabled; else echo 0 > /sys/class/power_supply/battery/input_suspend; fi;setprop vtools.bp 0;\n"
     val RebootShutdown = "reboot -p\n"
     val RebootRecovery = "reboot recovery\n"
     val RebootBootloader = "reboot bootloader\n"
@@ -160,16 +165,31 @@ object Consts {
     val RebootHot = "busybox killall system_server\n"
 
     val RMQQStyles =
-            "rm -rf /storage/emulated/0/tencent/MobileQQ/font_info\n" +
+            "rm -rf /storage/emulated/0/tencent/MobileQQ/.font_info\n" +
+                    "echo \"\" > /storage/emulated/0/tencent/MobileQQ/.font_info\n" +
+                    "rm -rf /storage/emulated/0/tencent/MobileQQ/font_info\n" +
                     "echo \"\" > /storage/emulated/0/tencent/MobileQQ/font_info\n" +
+                    "rm -rf /sdcard/tencent/MobileQQ/.font_info\n" +
+                    "echo \"\" > /sdcard/tencent/MobileQQ/.font_info\n" +
+                    "rm -rf /sdcard/tencent/MobileQQ/font_info\n" +
+                    "echo \"\" > /sdcard/tencent/MobileQQ/font_info\n" +
                     "rm -rf /data/data/com.tencent.mobileqq/files/bubble_info\n" +
                     "echo \"\" > /data/data/com.tencent.mobileqq/files/bubble_info\n" +
                     "rm -rf /data/data/com.tencent.mobileqq/files/pendant_info\n" +
                     "echo \"\" > /data/data/com.tencent.mobileqq/files/pendant_info\n" +
+                    "rm -rf /storage/emulated/0/tencent/MobileQQ/.pendant\n" +
+                    "echo \"\" > /storage/emulated/0/tencent/MobileQQ/.pendant\n" +
+                    "rm -rf /sdcard/tencent/MobileQQ/.pendant\n" +
+                    "echo \"\" > /sdcard/tencent/MobileQQ/.pendant\n" +
                     "pgrep com.tencent.mobileqq |xargs kill -9\n"
 
     val ResetQQStyles =
             "rm -rf /storage/emulated/0/tencent/MobileQQ/font_info\n" +
+                    "rm -rf /sdcard/tencent/MobileQQ/font_info\n" +
+                    "rm -rf /storage/emulated/0/tencent/MobileQQ/.font_info\n" +
+                    "rm -rf /sdcard/tencent/MobileQQ/.font_info\n" +
+                    "rm -rf /storage/emulated/0/tencent/MobileQQ/.pendant\n" +
+                    "rm -rf /sdcard/tencent/MobileQQ/.pendant\n" +
                     "rm -rf /data/data/com.tencent.mobileqq/files/bubble_info\n" +
                     "rm -rf /data/data/com.tencent.mobileqq/files/pendant_info\n" +
                     "pgrep com.tencent.mobileqq |xargs kill -9\n"

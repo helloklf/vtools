@@ -79,10 +79,6 @@
                 <category android:name="android.intent.category.MONKEY" />
                 -->
             </intent-filter>
-
-            <meta-data
-                android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts" />
         </activity>
         <activity
             android:name=".vbootresize"
@@ -130,9 +126,16 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
+
+        <service
+            android:name=".BatteryService"
+            android:enabled="true"
+            android:exported="true" />
+
     </application>
 
 </manifest>

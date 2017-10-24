@@ -8,6 +8,7 @@ import android.os.Handler
 import android.os.Message
 import android.widget.Toast
 import com.omarea.shared.*
+import com.omarea.shell.Props
 import java.io.DataOutputStream
 import java.io.IOException
 
@@ -15,6 +16,7 @@ class reciver_batterychanged : BroadcastReceiver() {
 
     private var p: Process? = null
     internal var out: DataOutputStream? = null
+    private var bp:Boolean = false
 
     internal fun tryExit() {
         try {
@@ -84,11 +86,38 @@ class reciver_batterychanged : BroadcastReceiver() {
         try {
             val action = intent.action
             val onChanger = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1) == BatteryManager.BATTERY_STATUS_CHARGING
+            val r = intent.getIntExtra(BatteryManager.EXTRA_STATUS, 0);
+            val plugged = r != BatteryManager.BATTERY_STATUS_DISCHARGING
             val batteryLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
 
             if (lastBatteryLeavel != batteryLevel) {
                 EventBus.publish(Events.BatteryChanged, batteryLevel)
                 lastBatteryLeavel = batteryLevel
+            }
+
+            //BatteryProtection
+            if(ConfigInfo.getConfigInfo().BatteryProtection){
+                if(onChanger){
+                    if(batteryLevel >= ConfigInfo.getConfigInfo().BatteryProtectionLevel) {
+                        bp = true
+                        DoCmd(Consts.DisableChanger)
+                    }
+                }
+                //电量不足，恢复充电功能
+                else if(action == Intent.ACTION_BATTERY_LOW) {
+                    DoCmd(Consts.ResumeChanger)
+                    Toast.makeText(this.context,"电池电量低，当前电量：" + batteryLevel,Toast.LENGTH_SHORT).show()
+                    bp = false
+                }
+                else if(bp && batteryLevel!=-1 && batteryLevel < ConfigInfo.getConfigInfo().BatteryProtectionLevel - 10){
+                    /*
+                    if(Props.getProp("vtools.bp") == "1"){
+                    }
+                    */
+                    //电量低于保护级别10
+                    DoCmd(Consts.ResumeChanger)
+                    bp = false
+                }
             }
 
             if (action == Intent.ACTION_BATTERY_CHANGED) {
@@ -131,9 +160,5 @@ class reciver_batterychanged : BroadcastReceiver() {
                 FastCharger()
             }
         }
-    }
-
-    companion object {
-        var serviceHelper: ServiceHelper? = null
     }
 }

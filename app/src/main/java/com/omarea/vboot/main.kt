@@ -1,13 +1,11 @@
 package com.omarea.vboot
 
 import android.Manifest
-import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.provider.MediaStore
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.NavigationView
 import android.support.design.widget.Snackbar
@@ -36,7 +34,6 @@ class main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
     lateinit internal var cmdshellTools: cmd_shellTools
     internal var onToggleSys: Boolean = false
     lateinit internal var progressBar: ProgressBar
-    var fileSelectType: FileSelectType = FileSelectType.BootSave
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,8 +64,39 @@ class main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
         }
 
         if (!Busybox().IsBusyboxInstalled()) {
-            Snackbar.make(fab, application.getString(R.string.error_busybox), Snackbar.LENGTH_LONG).show()
-            return
+            //Snackbar.make(fab, application.getString(R.string.error_busybox), Snackbar.LENGTH_LONG).show()
+            AlertDialog.Builder(this)
+                .setTitle("安装Busybox吗？")
+                .setMessage("你的手机似乎没有安装busybox，这会导致微工具箱无法使用，是否要立即安装（需要修改System）？")
+                .setNegativeButton(
+                    "取消",
+                    { dialog, which ->
+                        android.os.Process.killProcess(android.os.Process.myPid());
+                    }
+                )
+                .setPositiveButton(
+                    "确定",
+                    { a,b->
+                        AppShared.WriteFile(thisview.assets, "busybox.zip", "busybox")
+                        val cmd = StringBuilder("cp /sdcard/Android/data/com.omarea.vboot/busybox /cache/busybox\nchmod 0777 /cache/busybox\n")
+                        cmd.append(Consts.MountSystemRW2)
+                        cmd.append("cp /cache/busybox /system/xbin/busybox\n/cache/busybox chmod 0777 /system/xbin/busybox\n")
+                        cmdshellTools.DoCmdSync(cmd.toString())
+                        //android.os.Process.killProcess(android.os.Process.myPid());
+                    }
+                )
+                .setCancelable(false)
+                .create().show()
+            //return
+        }
+
+        //自动启动后台服务
+        if(ConfigInfo.getConfigInfo().QcMode || ConfigInfo.getConfigInfo().BatteryProtection){
+            try{
+                val intent = Intent( this.applicationContext, BatteryService::class.java)
+                this.applicationContext.startService(intent)
+            } catch (ex:Exception){
+            }
         }
 
         if (cmdshellTools.IsDualSystem())
@@ -90,7 +118,7 @@ class main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
             nav_vboot.isVisible = true
         val nav_profile = menu.findItem(R.id.nav_profile)
 
-        if (DynamicConfig().DynamicSupport(ConfigInfo.getConfigInfo().CPUName)) {
+        if (DynamicConfig().DynamicSupport(this)) {
             nav_profile.isVisible = true
         }
 
@@ -102,14 +130,10 @@ class main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
             Snackbar.make(view, "正在切换系统，请稍等...", Snackbar.LENGTH_SHORT).setAction("Action", null).show()
             navigationView.visibility = View.GONE
             toolbar.visibility = View.GONE
-            findViewById(R.id.main_content).visibility = View.GONE
+            findViewById(R.id.main_content)!!.visibility = View.GONE
         }
 
         InitApp()
-    }
-
-    fun setfileSelectType(ft: FileSelectType) {
-        this.fileSelectType = ft;
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -174,7 +198,6 @@ class main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
         return true
     }
 
-
     //右上角菜单
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
@@ -235,6 +258,8 @@ class main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
             fragment = fragment_applistions.Create(this, cmdshellTools)
         } else if(id==R.id.nav_swap){
             fragment = fragment_swap.Create(this, cmdshellTools)
+        } else if(id==R.id.nav_battery){
+            fragment = fragment_battery.Create(this, cmdshellTools)
         } else if (id == R.id.nav_img) {
             fragment = fragment_img.Create(this, cmdshellTools)
         } else if (id == R.id.nav_share) {
@@ -275,75 +300,6 @@ class main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
         drawer.closeDrawer(GravityCompat.START)
         return false
     }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        if (resultCode == Activity.RESULT_OK) {//是否选择，没选择就不会继续
-
-            val uri = data.data//得到uri，后面就是将uri转化成file的过程。
-            var img_path = ""
-
-            var file: File? = null
-
-            val proj = arrayOf(MediaStore.Images.Media.DATA)
-            val actualimagecursor = thisview.contentResolver.query(uri, proj, null, null, null)
-
-            if (actualimagecursor != null) {
-                val actual_image_column_index = actualimagecursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
-                actualimagecursor.moveToFirst()
-                img_path = actualimagecursor.getString(actual_image_column_index)
-                file = File(img_path)
-            } else {
-                val uriString = uri.toString()
-                var a = arrayOfNulls<String>(2)
-                //判断文件是否在sd卡中
-                if (uriString.indexOf(Environment.getExternalStorageDirectory().toString()) != -1) {
-                    //对Uri进行切割
-                    a = uriString.split(Environment.getExternalStorageDirectory().toString().toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                    //获取到file
-                    file = File(Environment.getExternalStorageDirectory(), a[1])
-                    img_path = file.absolutePath
-                } else if (uriString.indexOf(Environment.getDataDirectory().toString()) != -1) { //判断文件是否在手机内存中
-                    //对Uri进行切割
-                    a = uriString.split(Environment.getDataDirectory().toString().toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                    //获取到file
-                    file = File(Environment.getDataDirectory(), a[1])
-                    img_path = file.absolutePath
-                }
-
-            }
-
-            if (img_path == "" && file == null) {
-                Snackbar.make(fab, application.getString(R.string.error_unsupport_uri), Snackbar.LENGTH_SHORT).show()
-                return
-            }
-
-            val fileName = file!!.toString()
-            when (fileSelectType) {
-                FileSelectType.BootSave -> {
-                }
-                FileSelectType.BootFlash -> {
-                    if (!fileName.toLowerCase().endsWith(".img")) {
-                        Snackbar.make(fab, application.getString(R.string.error_not_img), Snackbar.LENGTH_LONG).show()
-                        return
-                    }
-                    cmdshellTools.FlashBoot(fileName)
-                }
-                FileSelectType.RecSave -> {
-                }
-                FileSelectType.RecFlash -> {
-                    if (!fileName.toLowerCase().endsWith(".img")) {
-                        Snackbar.make(fab, application.getString(R.string.error_not_img), Snackbar.LENGTH_LONG).show()
-                        return
-                    }
-                    cmdshellTools.FlashRecovery(fileName)
-                }
-                else -> {
-                    Snackbar.make(fab, application.getString(R.string.unknow_action), Snackbar.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-
 
     public override fun onPause() {
         ConfigInfo.getConfigInfo().saveChange()

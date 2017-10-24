@@ -77,47 +77,32 @@
     <string name="autobooster_service_unactive">未激活辅助服务 - 点击去激活</string>
     <string name="autobooster_service_unactive2">后台管理功能未开启 - 点击去激活</string>
 
-    <string name="defaultconfighelp">
-        "<b>预设-标准模式(808)：</b>"
-        "<span>\r\n 均衡模式 4x384 ~ 4x1248Mhz</span>"
-        "<span>\r\n 性能模式 4x384 ~ 4xMax</span>"
-        "<span>\r\n 省电模式 4x384 ~ 4x864Mhz</span>"
-        "<span>\r\n 充电状态电量超过85%自动使用游戏模式！</span>"
-    </string>
     <string name="defaultconfighelp_820">
         "<b>预设-标准模式(820)：</b>"
-        "<span>\r\n 均衡模式 4x300 ~ 4x1555Mhz</span>"
-        "<span>\r\n 性能模式 4x300 ~ 4x1824Mhz</span>"
-        "<span>\r\n 省电模式 4x300 ~ 4x960Mhz</span>"
-        "<span>\r\n 极速模式 4x1248 ~ Max</span>"
-    </string>
-    <string name="defaultconfighelp_835">
-        "<b>预设-标准模式(835)：</b>"
-        "<span>\r\n 均衡模式 4x300 ~ 4x1555Mhz</span>"
-        "<span>\r\n 性能模式 4x300 ~ 4x1824Mhz</span>"
-        "<span>\r\n 省电模式 4x300 ~ 4x960Mhz</span>"
-        "<span>\r\n 极速模式 4x1248 ~ Max</span>"
-    </string>
-
-    <string name="defaultconfighelp_bigcore">
-        "<b>预设-更高性能(808)：</b>"
-        "<span>\r\n 均衡模式 4x384 ~ 4xMax</span>"
-        "<span>\r\n 性能模式 4x384 ~ 6xMax</span>"
-        "<span>\r\n 省电模式 4x384 ~ 4x864Mhz</span>"
-        "<span>\r\n 充电状态电量超过85%自动使用游戏模式！</span>"
+        "<span>\r\n 省电模式 4x300Mhz ~ 4x960Mhz</span>"
+        "<span>\r\n 均衡模式 4x300Mhz ~ 4x1555Mhz</span>"
+        "<span>\r\n 性能模式 4x300Mhz ~ 4x1824Mhz</span>"
+        "<span>\r\n 极速模式 4x1248Mhz ~ Max</span>"
     </string>
     <string name="defaultconfighelp_bigcore_820">
         "<b>预设-更高性能(820)：</b>"
-        "<span>\r\n 均衡模式 4x300 ~ 8x1.6ghz</span>"
-        "<span>\r\n 性能模式 4x300 ~ Max</span>"
-        "<span>\r\n 省电模式 4x300 ~ 8x1.2Ghz</span>"
+        "<span>\r\n 省电模式 4x300Mhz ~ 8x1.2Ghz</span>"
+        "<span>\r\n 均衡模式 4x300Mhz ~ 8x1.6ghz</span>"
+        "<span>\r\n 性能模式 4x300Mhz ~ Max</span>"
         "<span>\r\n 极速模式 Max</span>"
+    </string>
+    <string name="defaultconfighelp_835">
+        "<b>预设-标准模式(835)：</b>"
+        "<span>\r\n 省电模式 8x300Mhz ~ 8x1.2Ghz</span>"
+        "<span>\r\n 均衡模式 8x300Mhz ~ 8x1.6Ghz</span>"
+        "<span>\r\n 性能模式 8x300Mhz ~ 8x2.0Ghz</span>"
+        "<span>\r\n 极速模式 8x1.2Ghz ~ Max</span>"
     </string>
     <string name="defaultconfighelp_bigcore_835">
         "<b>预设-更高性能(835)：</b>"
-        "<span>\r\n 均衡模式 8x300 ~ 8x1.8Ghz</span>"
-        "<span>\r\n 性能模式 8x300 ~ Max</span>"
-        "<span>\r\n 省电模式 8x300 ~ 8x1.6Ghz</span>"
+        "<span>\r\n 省电模式 8x300Mhz ~ 8x1.2Ghz</span>"
+        "<span>\r\n 均衡模式 8x300Mhz ~ 8x2.0Ghz</span>"
+        "<span>\r\n 性能模式 8x300Mhz ~ Max</span>"
         "<span>\r\n 极速模式 8x1.2Ghz ~ Max</span>"
     </string>
 
@@ -131,9 +116,10 @@
     <string name="accessbility_autobooster">后台管理</string>
     <string name="accessbility_autobooster_desc">离开主界面时自动终止黑名单应用，具体设置请在本应用后台管理中配</string>
     <string name="accessbility_dynconfig">动态响应</string>
-    <string name="accessbility_dynconfig_desc">仅限骁龙808、820。为单个应用设置CPU、GPU频率，具体设置请在在本应用性能配置中配</string>
+    <string name="accessbility_dynconfig_desc">仅限骁龙820、821、835。为单个应用设置CPU、GPU频率，具体设置请在在本应用性能配置中配</string>
     <string name="accessbility_bp">充电保护 *实验性</string>
-    <string name="accessbility_bp_desc">限制手机只能充电到90%。支持设备甚少，如出现手机不充电的情况，请关闭此功能并重启手机！</string>
+    <string name="accessbility_bp_desc">限制手机只能充电到指定百分比。支持设备较少，如出现手机不充电的情况，请关闭此功能并重启手机！</string>
+    <string name="accessbility_bp_level_desc">电量达到此值时停止充电，并在电量低于此值-10时恢复充电。（推荐值20-99，百分百）输完回车保存。如果你发现此功能不支持你的设备，请务必关闭电池保护功能！</string>
     <string name="accessbility_debug">调试模式</string>
     <string name="accessbility_debug_desc">在后台运行时显示完整的动作提示，用于测试软件是否正常工作</string>
     <string name="accessbility_delay">延迟启动</string>
@@ -145,6 +131,7 @@
     <string name="menu_additional">附加功能</string>
     <string name="menu_applictions">应用管理</string>
     <string name="menu_swap">SWAP设置</string>
+    <string name="menu_battery">电池充电</string>
     <string name="menu_xposed">Xposed功能</string>
     <string name="menu_autobooster">后台管理</string>
     <string name="menu_img">备份还原</string>
@@ -164,12 +151,12 @@
     <string name="action_reboot_bl">重启到FastBoot</string>
     <string name="action_reboot9008">重启到9008模式</string>
 
-    <string name="xposed_tab_a">预设配置</string>
-    <string name="xposed_tab_b">自定义</string>
+    <string name="xposed_tab_a">推荐</string>
+    <string name="xposed_tab_b">DPI守护</string>
     <string name="xposed_gamehf_title">王者荣耀 高帧率模式</string>
-    <string name="xposed_gamehf_desc">通过伪装设备型号，让王者荣耀游戏允许开启60帧模式。</string>
-    <string name="xposed_dpi_title">DPI修复、优化</string>
-    <string name="xposed_dpi_desc">修复由于更改系统dpi，导致部分应用UI错位。包括：MIUI系统相册、更新、天气；NubiaUI 相机。优化cpufloat、PerMon的显示dpi。</string>
+    <string name="xposed_gamehf_desc">通过伪装设备型号为OPPO R11 Plus，让王者荣耀游戏允许开启60帧模式并提高游戏稳定性。</string>
+    <string name="xposed_dpi_title">DPI守护 总开关</string>
+    <string name="xposed_dpi_desc">勾选此项才会使右边的DPI守护设置列表生效。对勾选的应用使用当前分辨率的默认DPI值，也许能修复部分更改系统DPI导致的应用UI错误。</string>
     <string name="xposed_actived">模块已激活-工作正常</string>
     <string name="xposed_unactive">Xposed模块未激活</string>
     <string name="xposed_cannot_openxposed">Xposed管理器似乎还没有安装？</string>

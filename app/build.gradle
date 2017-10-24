@@ -11,14 +11,14 @@ android {
             storePassword 'I0140728'
         }
     }
-    compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    compileSdkVersion 23
+    buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "com.omarea.vboot"
-        minSdkVersion 22
-        targetSdkVersion 25
-        versionCode 232
-        versionName "7.8.6"
+        minSdkVersion 21
+        targetSdkVersion 23
+        versionCode 270
+        versionName "7.10.22"
     }
     buildTypes {
         release {
@@ -42,9 +42,9 @@ dependencies {
     //provided files('lib/api-82-sources.jar')
     //provided 'de.robv.android.xposed:ap:82'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    compile 'com.android.support:appcompat-v7:25.2.0'
-    compile 'com.android.support:support-v4:25.2.0'
-    compile 'com.android.support:design:25.2.0'
+    compile 'com.android.support:appcompat-v7:23.+'
+    compile 'com.android.support:support-v4:23.+'
+    compile 'com.android.support:design:23.+'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta5'
 }
 repositories {

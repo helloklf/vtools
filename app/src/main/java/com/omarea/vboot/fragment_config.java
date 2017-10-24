@@ -42,7 +42,6 @@ import static android.widget.AdapterView.VISIBLE;
 
 
 public class fragment_config extends Fragment {
-
     cmd_shellTools cmdshellTools = null;
     main thisview = null;
 
@@ -110,7 +109,7 @@ public class fragment_config extends Fragment {
         tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
-                btn.setVisibility((tabHost.getCurrentTab() == 3) ? GONE : VISIBLE);
+                btn.setVisibility((tabHost.getCurrentTab() > 4) ? GONE : VISIBLE);
             }
         });
 
@@ -120,53 +119,77 @@ public class fragment_config extends Fragment {
                 switch (tabHost.getCurrentTab()) {
                     case 0: {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(thisview);
-                        String[] items;
-                        items = new String[]{"添加选中到 -> 性能模式", "添加选中到 -> 省电模式"};
+                        String[] items = new String[]{"添加选中到 -> 性能模式", "添加选中到 -> 省电模式", "添加选中到 -> 极速模式", "添加选中到 -> 忽略列表"};
+                        final Configs[] configses = new Configs[]{ Configs.Game, Configs.PowerSave, Configs.Fast, Configs.Ignored };
                         builder.setItems(items, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 list_adapter listadapter = (list_adapter) config_defaultlist.getAdapter();
-                                AddToList(ConfigInfo.getConfigInfo().defaultList, listadapter.states, which == 0 ? Configs.Game : Configs.PowerSave);
+                                AddToList(ConfigInfo.getConfigInfo().defaultList, listadapter.states, configses[which]);
                                 SetList();
                             }
                         });
-                        builder.setIcon(R.drawable.ic_menu_profile);
-                        builder.setTitle("设置配置模式");
-                        builder.create().show();
+                        builder.setIcon(R.drawable.ic_menu_profile).setTitle("设置配置模式").create().show();
                         break;
                     }
                     case 1: {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(thisview);
-                        String[] items;
-                        items = new String[]{"添加选中到 -> 均衡模式", "添加选中到 -> 省电模式"};
+                        String[] items = new String[]{"添加选中到 -> 均衡模式", "添加选中到 -> 省电模式", "添加选中到 -> 极速模式", "添加选中到 -> 忽略列表"};
+                        final Configs[] configses = new Configs[]{ Configs.Default, Configs.PowerSave, Configs.Fast, Configs.Ignored };
                         builder.setItems(items, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 list_adapter listadapter = (list_adapter) config_gamelist.getAdapter();
-                                AddToList(ConfigInfo.getConfigInfo().gameList, listadapter.states, which == 0 ? Configs.Default : Configs.PowerSave);
+                                AddToList(ConfigInfo.getConfigInfo().gameList, listadapter.states, configses[which]);
                                 SetList();
                             }
                         });
-                        builder.setIcon(R.drawable.ic_menu_profile);
-                        builder.setTitle("设置配置模式");
-                        builder.create().show();
+                        builder.setIcon(R.drawable.ic_menu_profile).setTitle("设置配置模式").create().show();
                         break;
                     }
                     case 2: {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(thisview);
-                        String[] items;
-                        items = new String[]{"添加选中到 -> 均衡模式", "添加选中到 -> 性能模式"};
+                        String[] items = new String[]{"添加选中到 -> 均衡模式", "添加选中到 -> 性能模式", "添加选中到 -> 极速模式", "添加选中到 -> 忽略列表"};
+                        final Configs[] configses = new Configs[]{ Configs.Default, Configs.Game, Configs.Fast, Configs.Ignored };
                         builder.setItems(items, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 list_adapter listadapter = (list_adapter) config_powersavelist.getAdapter();
-                                AddToList(ConfigInfo.getConfigInfo().powersaveList, listadapter.states, which == 0 ? Configs.Default : Configs.Game);
+                                AddToList(ConfigInfo.getConfigInfo().powersaveList, listadapter.states, configses[which]);
                                 SetList();
                             }
                         });
-                        builder.setIcon(R.drawable.ic_menu_profile);
-                        builder.setTitle("设置配置模式");
-                        builder.create().show();
+                        builder.setIcon(R.drawable.ic_menu_profile).setTitle("设置配置模式").create().show();
+                        break;
+                    }
+                    case 3: {
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(thisview);
+                        String[] items = new String[]{"添加选中到 -> 均衡模式", "添加选中到 -> 性能模式", "添加选中到 -> 省电模式", "添加选中到 -> 忽略列表"};
+                        final Configs[] configses = new Configs[]{ Configs.Default, Configs.Game, Configs.PowerSave, Configs.Ignored };
+                        builder.setItems(items, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                list_adapter listadapter = (list_adapter) config_fastlist.getAdapter();
+                                AddToList(ConfigInfo.getConfigInfo().fastList, listadapter.states, configses[which]);
+                                SetList();
+                            }
+                        });
+                        builder.setIcon(R.drawable.ic_menu_profile).setTitle("设置配置模式").create().show();
+                        break;
+                    }
+                    case 4: {
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(thisview);
+                        String[] items = new String[]{"添加选中到 -> 均衡模式", "添加选中到 -> 性能模式", "添加选中到 -> 省电模式", "添加选中到 -> 极速模式"};
+                        final Configs[] configses = new Configs[]{ Configs.Default, Configs.Game, Configs.PowerSave, Configs.Fast };
+                        builder.setItems(items, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                list_adapter listadapter = (list_adapter) config_ignoredlist.getAdapter();
+                                AddToList(ConfigInfo.getConfigInfo().ignoredList, listadapter.states, configses[which]);
+                                SetList();
+                            }
+                        });
+                        builder.setIcon(R.drawable.ic_menu_profile).setTitle("设置配置模式").create().show();
                         break;
                     }
                 }
@@ -177,41 +200,15 @@ public class fragment_config extends Fragment {
         final Switch default_config_bigcore = (Switch) view.findViewById(R.id.default_config_bigcore);
         boolean useBigCore = ConfigInfo.getConfigInfo().UseBigCore;
         default_config_bigcore.setChecked(useBigCore);
-        final TextView defaultconfighelp = (TextView) view.findViewById(R.id.defaultconfighelp);
 
-        final String cpuName = new Platform().GetCPUName();
-
-        switch (cpuName.toLowerCase()) {
-            case "msm8992": {
-                defaultconfighelp.setText(useBigCore ? R.string.defaultconfighelp_bigcore : R.string.defaultconfighelp);
-                break;
-            }
-            case "msm8996": {
-                defaultconfighelp.setText(useBigCore ? R.string.defaultconfighelp_bigcore_820 : R.string.defaultconfighelp_820);
-                break;
-            }
-            case "msm8998": {
-                defaultconfighelp.setText(useBigCore ? R.string.defaultconfighelp_bigcore_835 : R.string.defaultconfighelp_835);
-                break;
-            }
-        }
+        setConfigInfoText();
 
         default_config_bigcore.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 boolean useBigCore = default_config_bigcore.isChecked();
                 ConfigInfo.getConfigInfo().UseBigCore = useBigCore;
-                switch (cpuName.toLowerCase()) {
-                    case "msm8992": {
-                        defaultconfighelp.setText(useBigCore ? R.string.defaultconfighelp_bigcore : R.string.defaultconfighelp);
-                        break;
-                    }
-                    case "msm8996": {
-                        defaultconfighelp.setText(useBigCore ? R.string.defaultconfighelp_bigcore_820 : R.string.defaultconfighelp_820);
-                        break;
-                    }
-                }
-                ConfigInfo.getConfigInfo().UseBigCore = useBigCore;
+                setConfigInfoText();
                 EventBus.INSTANCE.publish(Events.INSTANCE.getCoreConfigChanged());
             }
         });
@@ -221,9 +218,9 @@ public class fragment_config extends Fragment {
         config_showSystemApp.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                ConfigInfo.getConfigInfo().HasSystemApp = config_showSystemApp.isChecked();
-                LoadList();
-                SetList();
+            ConfigInfo.getConfigInfo().HasSystemApp = config_showSystemApp.isChecked();
+            LoadList();
+            SetList();
             }
         });
 
@@ -232,6 +229,8 @@ public class fragment_config extends Fragment {
         config_defaultlist = (ListView) view.findViewById(R.id.config_defaultlist);
         config_gamelist = (ListView) view.findViewById(R.id.config_gamelist);
         config_powersavelist = (ListView) view.findViewById(R.id.config_powersavelist);
+        config_fastlist = (ListView) view.findViewById(R.id.config_fastlist);
+        config_ignoredlist = (ListView) view.findViewById(R.id.config_ignoredlist);
 
         config_defaultlist.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -242,26 +241,6 @@ public class fragment_config extends Fragment {
                 ConfigInfo.getConfigInfo().defaultList.get(position).put("select_state", !select_state.isChecked());
             }
         });
-        config_defaultlist.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(thisview);
-                String[] items;
-                items = new String[]{"添加到 -> 性能模式", "添加到 -> 省电模式"};
-                builder.setItems(items, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        AddToList(ConfigInfo.getConfigInfo().defaultList, position, which == 0 ? Configs.Game : Configs.PowerSave);
-                        SetList();
-                    }
-                });
-                builder.setIcon(R.drawable.ic_menu_profile);
-                builder.setTitle("设置配置模式");
-                builder.create().show();
-                return true;
-            }
-        });
-
 
         config_gamelist.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -272,45 +251,7 @@ public class fragment_config extends Fragment {
                 ConfigInfo.getConfigInfo().gameList.get(position).put("select_state", !select_state.isChecked());
             }
         });
-        config_gamelist.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(thisview);
-                String[] items;
-                items = new String[]{"添加到 -> 均衡模式", "添加到 -> 省电模式"};
-                builder.setItems(items, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        AddToList(ConfigInfo.getConfigInfo().gameList, position, which == 0 ? Configs.Default : Configs.PowerSave);
-                        SetList();
-                    }
-                });
-                builder.setIcon(R.drawable.ic_menu_profile);
-                builder.setTitle("设置配置模式");
-                builder.create().show();
-                return true;
-            }
-        });
 
-        config_powersavelist.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(thisview);
-                String[] items;
-                items = new String[]{"添加到 -> 均衡模式", "添加到 -> 性能模式"};
-                builder.setItems(items, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        AddToList(ConfigInfo.getConfigInfo().powersaveList, position, which == 0 ? Configs.Default : Configs.Game);
-                        SetList();
-                    }
-                });
-                builder.setIcon(R.drawable.ic_menu_profile);
-                builder.setTitle("设置配置模式");
-                builder.create().show();
-                return true;
-            }
-        });
         config_powersavelist.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View current, final int position, long id) {
@@ -320,11 +261,49 @@ public class fragment_config extends Fragment {
                 ConfigInfo.getConfigInfo().powersaveList.get(position).put("select_state", !select_state.isChecked());
             }
         });
+
+        config_fastlist.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View current, final int position, long id) {
+                CheckBox select_state = (CheckBox) current.findViewById(R.id.select_state);
+                if (select_state != null)
+                    select_state.setChecked(!select_state.isChecked());
+                ConfigInfo.getConfigInfo().fastList.get(position).put("select_state", !select_state.isChecked());
+            }
+        });
+
+        config_ignoredlist.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View current, final int position, long id) {
+                CheckBox select_state = (CheckBox) current.findViewById(R.id.select_state);
+                if (select_state != null)
+                    select_state.setChecked(!select_state.isChecked());
+                ConfigInfo.getConfigInfo().ignoredList.get(position).put("select_state", !select_state.isChecked());
+            }
+        });
+    }
+
+    //设置配置文件提示信息
+    private void setConfigInfoText() {
+        final String cpuName = new Platform().GetCPUName();
+        final TextView defaultconfighelp = (TextView) thisview.findViewById(R.id.defaultconfighelp);
+        switch (cpuName.toLowerCase()) {
+            case "msm8996": {
+                defaultconfighelp.setText(ConfigInfo.getConfigInfo().UseBigCore ? R.string.defaultconfighelp_bigcore_820 : R.string.defaultconfighelp_820);
+                break;
+            }
+            case "msm8998": {
+                defaultconfighelp.setText(ConfigInfo.getConfigInfo().UseBigCore ? R.string.defaultconfighelp_bigcore_835 : R.string.defaultconfighelp_835);
+                break;
+            }
+        }
     }
 
     ListView config_defaultlist;
     ListView config_gamelist;
     ListView config_powersavelist;
+    ListView config_ignoredlist;
+    ListView config_fastlist;
 
     final Handler myHandler = new Handler() {
         public void handleMessage(Message msg) {
@@ -342,6 +321,8 @@ public class fragment_config extends Fragment {
                 SetListData(ConfigInfo.getConfigInfo().defaultList, config_defaultlist);
                 SetListData(ConfigInfo.getConfigInfo().gameList, config_gamelist);
                 SetListData(ConfigInfo.getConfigInfo().powersaveList, config_powersavelist);
+                SetListData(ConfigInfo.getConfigInfo().fastList, config_fastlist);
+                SetListData(ConfigInfo.getConfigInfo().ignoredList, config_ignoredlist);
             }
         }).start();
     }
@@ -407,16 +388,30 @@ public class fragment_config extends Fragment {
         }
         ConfigInfo.getConfigInfo().gameList = GetAppIcon(ConfigInfo.getConfigInfo().gameList);
         ConfigInfo.getConfigInfo().powersaveList = GetAppIcon(ConfigInfo.getConfigInfo().powersaveList);
-
+        ConfigInfo.getConfigInfo().fastList = GetAppIcon(ConfigInfo.getConfigInfo().fastList);
+        ConfigInfo.getConfigInfo().ignoredList = GetAppIcon(ConfigInfo.getConfigInfo().ignoredList);
         ConfigInfo.getConfigInfo().defaultList = (ArrayList<HashMap<String, Object>>) installedList.clone();
+
         for (HashMap<String, Object> item : ConfigInfo.getConfigInfo().gameList) {
             RemoveItem(ConfigInfo.getConfigInfo().defaultList, item);
         }
         for (HashMap<String, Object> item : ConfigInfo.getConfigInfo().powersaveList) {
             RemoveItem(ConfigInfo.getConfigInfo().defaultList, item);
         }
+        for (HashMap<String, Object> item : ConfigInfo.getConfigInfo().fastList) {
+            RemoveItem(ConfigInfo.getConfigInfo().defaultList, item);
+        }
+        for (HashMap<String, Object> item : ConfigInfo.getConfigInfo().ignoredList) {
+            RemoveItem(ConfigInfo.getConfigInfo().defaultList, item);
+        }
     }
 
+    /**
+     * 从当前列表中获取已选中的应用，添加到指定模式
+     * @param list 当前列表
+     * @param postions 各个序号的选中状态
+     * @param config 指定的新模式
+     */
     void AddToList(ArrayList<HashMap<String, Object>> list, HashMap<Integer, Boolean> postions, Configs config) {
         ArrayList<HashMap<String, Object>> selectedItems = new ArrayList<>();
         for (int position : postions.keySet()) {
@@ -429,12 +424,16 @@ public class fragment_config extends Fragment {
                 for (HashMap<String, Object> item : selectedItems) {
                     ConfigInfo.getConfigInfo().gameList.remove(item);
                     ConfigInfo.getConfigInfo().powersaveList.remove(item);
+                    ConfigInfo.getConfigInfo().fastList.remove(item);
+                    ConfigInfo.getConfigInfo().ignoredList.remove(item);
                 }
                 break;
             }
             case Game: {
                 for (HashMap<String, Object> item : selectedItems) {
                     ConfigInfo.getConfigInfo().powersaveList.remove(item);
+                    ConfigInfo.getConfigInfo().fastList.remove(item);
+                    ConfigInfo.getConfigInfo().ignoredList.remove(item);
                     ConfigInfo.getConfigInfo().gameList.add(item);
                 }
                 break;
@@ -442,7 +441,27 @@ public class fragment_config extends Fragment {
             case PowerSave: {
                 for (HashMap<String, Object> item : selectedItems) {
                     ConfigInfo.getConfigInfo().gameList.remove(item);
+                    ConfigInfo.getConfigInfo().fastList.remove(item);
+                    ConfigInfo.getConfigInfo().ignoredList.remove(item);
                     ConfigInfo.getConfigInfo().powersaveList.add(item);
+                }
+                break;
+            }
+            case Fast: {
+                for (HashMap<String, Object> item : selectedItems) {
+                    ConfigInfo.getConfigInfo().gameList.remove(item);
+                    ConfigInfo.getConfigInfo().powersaveList.remove(item);
+                    ConfigInfo.getConfigInfo().ignoredList.remove(item);
+                    ConfigInfo.getConfigInfo().fastList.add(item);
+                }
+                break;
+            }
+            case Ignored: {
+                for (HashMap<String, Object> item : selectedItems) {
+                    ConfigInfo.getConfigInfo().gameList.remove(item);
+                    ConfigInfo.getConfigInfo().powersaveList.remove(item);
+                    ConfigInfo.getConfigInfo().fastList.remove(item);
+                    ConfigInfo.getConfigInfo().ignoredList.add(item);
                 }
                 break;
             }
@@ -452,30 +471,6 @@ public class fragment_config extends Fragment {
         } catch (Exception ex) {
 
         }
-    }
-
-    void AddToList(ArrayList<HashMap<String, Object>> list, int postion, Configs config) {
-        HashMap<String, Object> app = null;
-        app = list.get(postion);
-        switch (config) {
-            case Default: {
-                RemoveItem(ConfigInfo.getConfigInfo().gameList, app);
-                RemoveItem(ConfigInfo.getConfigInfo().powersaveList, app);
-                break;
-            }
-            case Game: {
-                RemoveItem(ConfigInfo.getConfigInfo().powersaveList, app);
-                AddItem(ConfigInfo.getConfigInfo().gameList, app);
-                break;
-            }
-            case PowerSave: {
-                RemoveItem(ConfigInfo.getConfigInfo().gameList, app);
-                AddItem(ConfigInfo.getConfigInfo().powersaveList, app);
-                break;
-            }
-        }
-
-        LoadList();
     }
 
     void RemoveItem(List<HashMap<String, Object>> list, HashMap<String, Object> app) {
@@ -490,23 +485,7 @@ public class fragment_config extends Fragment {
             list.remove(item);
     }
 
-    void AddItem(ArrayList<HashMap<String, Object>> list, HashMap<String, Object> app) {
-        String pkgName = app.get("packageName").toString();
-
-        for (HashMap<String, Object> row : list) {
-            for (Object val : row.values()) {
-                if (val != null && val.toString() == pkgName) {
-                    return;
-                }
-            }
-        }
-        HashMap<String, Object> item = new HashMap<>();
-        for (String key : app.keySet()) {
-            item.put(key, app.get(key));
-        }
-        list.add(item);
-    }
-
+    //销毁：释放内存资源
     @Override
     public void onDestroy() {
         installedList.clear();
@@ -515,17 +494,20 @@ public class fragment_config extends Fragment {
         SetListData(installedList, config_gamelist);
         SetListData(installedList, config_powersavelist);
 
-        ArrayList<HashMap<String, Object>> defaultList = ConfigInfo.getConfigInfo().defaultList;
-        ArrayList<HashMap<String, Object>> gamelist = ConfigInfo.getConfigInfo().gameList;
-        ArrayList<HashMap<String, Object>> powersavelist = ConfigInfo.getConfigInfo().powersaveList;
-        for (int i = 0; i < defaultList.size(); i++) {
-            defaultList.get(i).remove("icon");
+        for (int i = 0; i < ConfigInfo.getConfigInfo().defaultList.size(); i++) {
+            ConfigInfo.getConfigInfo().defaultList.get(i).remove("icon");
         }
-        for (int i = 0; i < gamelist.size(); i++) {
-            gamelist.get(i).remove("icon");
+        for (int i = 0; i < ConfigInfo.getConfigInfo().gameList.size(); i++) {
+            ConfigInfo.getConfigInfo().gameList.get(i).remove("icon");
         }
-        for (int i = 0; i < powersavelist.size(); i++) {
-            powersavelist.get(i).remove("icon");
+        for (int i = 0; i < ConfigInfo.getConfigInfo().powersaveList.size(); i++) {
+            ConfigInfo.getConfigInfo().powersaveList.get(i).remove("icon");
+        }
+        for (int i = 0; i < ConfigInfo.getConfigInfo().fastList.size(); i++) {
+            ConfigInfo.getConfigInfo().fastList.get(i).remove("icon");
+        }
+        for (int i = 0; i < ConfigInfo.getConfigInfo().ignoredList.size(); i++) {
+            ConfigInfo.getConfigInfo().ignoredList.get(i).remove("icon");
         }
 
         super.onDestroy();
@@ -534,6 +516,8 @@ public class fragment_config extends Fragment {
     enum Configs {
         Default,
         Game,
-        PowerSave;
+        PowerSave,
+        Fast,
+        Ignored;
     }
 }

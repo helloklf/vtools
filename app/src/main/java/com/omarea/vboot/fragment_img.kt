@@ -69,29 +69,37 @@ class fragment_img : Fragment() {
                         builder.setNegativeButton(android.R.string.cancel, null)
                         builder.setPositiveButton(android.R.string.yes) { dialog, which ->
                             //导出boot
-                            cmdshellTools!!.SaveBoot("")
+                            cmdshellTools!!.SaveBoot()
                         }
                         builder.setMessage(context.getString(R.string.backup_boot_exists))
                         builder.create().show()
                     } else {
                         //导出boot
-                        cmdshellTools!!.SaveBoot("")
+                        cmdshellTools!!.SaveBoot()
                     }
                 }
                 1 -> {
                     //刷入boot
-                    val builder = AlertDialog.Builder(thisview!!)
-                    builder.setTitle(context.getString(R.string.restore_boot_confirm))
-                    builder.setNegativeButton(android.R.string.cancel, null)
-                    builder.setPositiveButton(android.R.string.yes) { dialog, which ->
-                        val intent = Intent(Intent.ACTION_GET_CONTENT)
-                        intent.type = "*/img"
-                        intent.addCategory(Intent.CATEGORY_OPENABLE)
-                        startActivityForResult(intent, 1)
-                        thisview!!.setfileSelectType(FileSelectType.BootFlash)
+                    if (File("/sdcard/boot.img").exists()) {
+                        val builder = AlertDialog.Builder(thisview!!)
+                        builder.setTitle("确定刷入/sdcard/boot.img？")
+                        builder.setNegativeButton(android.R.string.cancel, null)
+                        builder.setPositiveButton(android.R.string.yes) { dialog, which ->
+                            cmdshellTools!!.FlashBoot("/sdcard/boot.img")
+                        }
+                        builder.setMessage("此操作将刷入/sdcard/boot.img到系统Boot分区，我十分不推荐你这么做，刷入无效的Boot文件可能导致你的设备无法启动。如果你没有办法在设备无法启动时紧急恢复。")
+                        builder.create().show()
+                    } else {
+                        val builder = AlertDialog.Builder(thisview!!)
+                        builder.setTitle("")
+                        builder.setNegativeButton("", null)
+                        builder.setPositiveButton(android.R.string.yes) { dialog, which ->
+                        }
+                        builder.setMessage("由于安卓系统的文件选择器兼容性差异，现在做文件选择变得非常困难，因此不再支持自选文件刷入。请将你要刷入的Boot文件放到以下位置：\n" +
+                                "/sdcard/boot.img\n" +
+                                "路径和文件名区分大小写")
+                        builder.create().show()
                     }
-                    builder.setMessage(context.getString(R.string.restore_boot_confirm_desc))
-                    builder.create().show()
                 }
                 2 -> {
                     if (cmdshellTools!!.GetSDFreeSizeMB() < 100) {
@@ -104,22 +112,45 @@ class fragment_img : Fragment() {
                         builder.setNegativeButton(android.R.string.cancel, null)
                         builder.setPositiveButton(android.R.string.yes) { dialog, which ->
                             //导出rec
-                            cmdshellTools!!.SaveRecovery("")
+                            cmdshellTools!!.SaveRecovery()
                         }
                         builder.setMessage(context.getString(R.string.backup_rec_exists))
                         builder.create().show()
                     } else {
                         //导出rec
-                        cmdshellTools!!.SaveRecovery("")
+                        cmdshellTools!!.SaveRecovery()
                     }
                 }
                 3 -> {
+                    //刷入recovery
+                    if (File("/sdcard/recovery.img").exists()) {
+                        val builder = AlertDialog.Builder(thisview!!)
+                        builder.setTitle("确认刷入/sdcard/recovery.img？")
+                        builder.setNegativeButton(android.R.string.cancel, null)
+                        builder.setPositiveButton(android.R.string.yes) { dialog, which ->
+                            cmdshellTools!!.FlashRecovery("/sdcard/recovery.img")
+                        }
+                        builder.setMessage("此操作将刷入/sdcard/reovery.img到系统Recovery分区，应用无法验证该文件是否有效，你需要自己确保该recovery镜像适合本设备使用！")
+                        builder.create().show()
+                    } else {
+                        val builder = AlertDialog.Builder(thisview!!)
+                        builder.setTitle("")
+                        builder.setNegativeButton("", null)
+                        builder.setPositiveButton(android.R.string.yes) { dialog, which ->
+                        }
+                        builder.setMessage("由于安卓系统的文件选择器兼容性差异，现在做文件选择变得非常困难，因此不再支持自选文件刷入。请将你要刷入的recovery文件放到以下位置：\n" +
+                                "/sdcard/reovery.img\n" +
+                                "路径和文件名区分大小写")
+                        builder.create().show()
+                    }
+
                     //刷入rec
-                    val intent = Intent(Intent.ACTION_GET_CONTENT)
-                    intent.type = "*/img"//设置MIME类型
-                    intent.addCategory(Intent.CATEGORY_OPENABLE)
-                    startActivityForResult(intent, 1)
-                    thisview!!.setfileSelectType(FileSelectType.RecFlash)
+                    //val intent = Intent(Intent.ACTION_GET_CONTENT)
+                    //intent.type = "*/img"//设置MIME类型
+                    //intent.type = "*/*"//设置MIME类型
+                    //intent.addCategory(Intent.CATEGORY_OPENABLE)
+                    //startActivityForResult(intent, 1)
+                    //thisview!!.setfileSelectType(FileSelectType.RecFlash)
                 }
                 4 -> {
                     //打包rom

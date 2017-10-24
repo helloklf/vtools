@@ -836,7 +836,7 @@ public class cmd_shellTools {
     //dd if=/data/media/rom2/system.img | zip > /data/media/rom2/system.img.zip
     //在系统一下备份VBOOT系统二
 
-    public void SaveBoot(String path) {
+    public void SaveBoot() {
         new SaveBootThread().start();
     }
 
@@ -847,8 +847,9 @@ public class cmd_shellTools {
                 ShowProgressBar();
                 Process p = Runtime.getRuntime().exec("su");
                 DataOutputStream dataOutputStream = new DataOutputStream(p.getOutputStream());
-                dataOutputStream.writeBytes("dd if=/dev/block/bootdevice/by-name/boot of=/sdcard/boot.img\n");
+                dataOutputStream.writeBytes("dd if=/dev/block/bootdevice/by-name/boot of=/sdcard/boot.img;\n");
                 dataOutputStream.writeBytes("exit\n");
+                dataOutputStream.flush();
                 if (p.waitFor() == 0) {
                     ShowMsg("Boot导出成功，保存在/sdcard/boot.img ！", true);
                 } else {
@@ -867,13 +868,14 @@ public class cmd_shellTools {
     }
 
 
-    public void SaveRecovery(String path) {
+    public void SaveRecovery() {
         new SaveRecoveryThread().start();
     }
 
     class SaveRecoveryThread extends Thread {
         @Override
         public void run() {
+            ShowProgressBar();
             if (new ShellRuntime().execute("dd if=/dev/block/bootdevice/by-name/recovery of=/sdcard/recovery.img\n")) {
                 ShowMsg("Recovery导出成功，已保存为/sdcard/recovery.img ！", true);
             } else {
@@ -901,6 +903,7 @@ public class cmd_shellTools {
                 out.writeBytes("busybox --install /system/xbin\n");
                 out.writeBytes("exit");
                 out.writeBytes("\n");
+                out.flush();
                 if (process.waitFor() == 0) {
                     //ShowMsg("自动安装了Busybox工具箱等插件！",false);
                 } else {
@@ -948,6 +951,36 @@ public class cmd_shellTools {
         } catch (Exception e) {
 
         }
+    }
+
+    public String GetProp2(String prop) {
+        try {
+            Process p = Runtime.getRuntime().exec("sh");
+            DataOutputStream out = new DataOutputStream(p.getOutputStream());
+            out.writeBytes("getprop " + prop);
+            out.writeBytes("\n");
+            out.flush();
+
+            InputStream inputstream = p.getInputStream();
+            InputStreamReader inputstreamreader = new InputStreamReader(inputstream);
+            BufferedReader bufferedreader = new BufferedReader(inputstreamreader);
+
+            String line;
+            while ((line = bufferedreader.readLine()) != null) {
+                out.writeBytes("exit\n");
+                out.flush();
+                out.close();
+                bufferedreader.close();
+                inputstream.close();
+                inputstreamreader.close();
+                p.destroy();
+                return line;
+            }
+            p.destroy();
+        } catch (Exception e) {
+
+        }
+        return null;
     }
 
     public String GetProp(String prop) {

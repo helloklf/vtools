@@ -34,6 +34,7 @@ public class ConfigInfo {
     //public boolean PowerAdapter = true;
     public boolean HasSystemApp = false;
     public boolean BatteryProtection = false;
+    public int BatteryProtectionLevel = 85;
     public boolean AutoClearCache = false;
     public boolean UsingDozeMod = false;
     public String CPUName = null;
@@ -41,6 +42,8 @@ public class ConfigInfo {
     public ArrayList<HashMap<String, Object>> defaultList;
     public ArrayList<HashMap<String, Object>> gameList;
     public ArrayList<HashMap<String, Object>> powersaveList;
+    public ArrayList<HashMap<String, Object>> fastList;
+    public ArrayList<HashMap<String, Object>> ignoredList;
     public ArrayList<String> blacklist;
 
 
@@ -58,7 +61,6 @@ public class ConfigInfo {
         this.QcMode = isTrue(jsonObject, "QcMode", true);
         this.UseBigCore = isTrue(jsonObject, "UseBigCore");
         this.BatteryProtection = isTrue(jsonObject, "BatteryProtection");
-        //this.PowerAdapter = isTrue(jsonObject, "PowerAdapter");
         this.HasSystemApp = isTrue(jsonObject, "HasSystemApp");
         this.AutoClearCache = isTrue(jsonObject, "AutoClearCache");
         this.UsingDozeMod = isTrue(jsonObject, "UsingDozeMod");
@@ -66,7 +68,10 @@ public class ConfigInfo {
         this.defaultList = new ArrayList<>();
         this.gameList = getHashMapList(jsonObject,new String[]{"name", "packageName"}, "Profile_Games");
         this.powersaveList = getHashMapList(jsonObject,new String[]{"name", "packageName"}, "Profile_PowerSave");
+        this.fastList = getHashMapList(jsonObject,new String[]{"name", "packageName"}, "Profile_Fast");
+        this.ignoredList = getHashMapList(jsonObject,new String[]{"name", "packageName"}, "Profile_Ignored");
         this.blacklist = getArray(jsonObject,"Booster_BlackList");
+        this.BatteryProtectionLevel = getInt(jsonObject, "BatteryProtectionLevel", 85);
     }
 
     /**
@@ -101,13 +106,15 @@ public class ConfigInfo {
                     .put("AutoInstall", AutoInstall)
                     .put("DebugMode", DebugMode)
                     .put("DelayStart", DelayStart)
-                    //.put("PowerAdapter", PowerAdapter)
                     .put("HasSystemApp", HasSystemApp)
                     .put("AutoClearCache",AutoClearCache)
-                    .put("BatteryProtection", BatteryProtection);
+                    .put("BatteryProtection", BatteryProtection)
+                    .put("BatteryProtectionLevel", BatteryProtectionLevel);
 
             setHashMapList(jsonObject,gameList,"Profile_Games");
             setHashMapList(jsonObject,powersaveList,"Profile_PowerSave");
+            setHashMapList(jsonObject,fastList,"Profile_Fast");
+            setHashMapList(jsonObject,ignoredList,"Profile_Ignored");
             setArray(jsonObject,blacklist,"Booster_BlackList");
 
             return AppShared.INSTANCE.setConfigData(jsonObject);

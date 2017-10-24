@@ -37,11 +37,10 @@
                         android:orientation="vertical">
 
                         <CheckBox
+                            android:id="@+id/xposed_config_hight_fps"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="4dp"
-                            android:checked="true"
-                            android:enabled="false"
                             android:text="@string/xposed_gamehf_title"
                             android:textSize="16dp"/>
 
@@ -49,16 +48,14 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="10dp"
-                            android:enabled="false"
                             android:text="@string/xposed_gamehf_desc"
                             android:textSize="12dp"/>
 
                         <CheckBox
+                            android:id="@+id/xposed_config_dpi_fix"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="4dp"
-                            android:checked="true"
-                            android:enabled="false"
                             android:text="@string/xposed_dpi_title"
                             android:textSize="16dp"/>
 
@@ -66,8 +63,37 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_margin="10dp"
-                            android:enabled="false"
                             android:text="@string/xposed_dpi_desc"
+                            android:textSize="12dp"/>
+
+                        <CheckBox
+                            android:id="@+id/xposed_config_cm_su"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="4dp"
+                            android:text="禁用CM/LOS状态栏的SU图标"
+                            android:textSize="16dp"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:text="去除原生类系统自带ROOT管理器在状态栏显示的SU图标，更改此项需重启SystemUI生效"
+                            android:textSize="12dp"/>
+
+                        <CheckBox
+                            android:id="@+id/xposed_config_webview_debug"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="4dp"
+                            android:text="强制开启Webview调试"
+                            android:textSize="16dp"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:text="方便网页前端开发人员调试网页。开启手机adb连接到电脑，打开Chrome浏览器在地址栏输入chrome://inspect即可远程调试手机上的网页。"
                             android:textSize="12dp"/>
                     </LinearLayout>
                 </FrameLayout>
@@ -76,6 +102,10 @@
                     android:id="@+id/xposed_tab_b"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
+                    <ListView
+                        android:id="@+id/xposed_apps_dpifix"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"></ListView>
                 </FrameLayout>
             </FrameLayout>
         </LinearLayout>

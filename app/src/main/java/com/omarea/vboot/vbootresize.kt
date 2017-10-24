@@ -39,7 +39,7 @@ class vbootresize : AppCompatActivity() {
             }
         }
 
-        findViewById(R.id.CommitBtn).setOnClickListener { v ->
+        findViewById(R.id.CommitBtn)!!.setOnClickListener { v ->
             val text = (findViewById(R.id.DataSizeValue) as EditText).text.toString()
             if (text !== "" && text.trim { it <= ' ' } !== "") {
                 val value = Integer.parseInt(text)

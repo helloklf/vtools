@@ -1,13 +1,6 @@
 package com.omarea.vboot;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.BatteryManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -22,33 +15,30 @@ import com.omarea.shared.Consts;
 import com.omarea.shared.EventBus;
 import com.omarea.shared.Events;
 import com.omarea.shared.IEventSubscribe;
-import com.omarea.shared.ServiceHelper;
 import com.omarea.shared.cmd_shellTools;
 import com.omarea.shell.DynamicConfig;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 public class fragment_home extends Fragment {
 
     public fragment_home() {
-        // Required empty public constructor
     }
 
+    /*
+    void toggleIcon() {
+        PackageManager packageManager = getPackageManager();
+        ComponentName componentName = new ComponentName(this, "com.smartmadsoft.xposed.aio.Launch");
+        int newComponentState = 0x2;
+        if(packageManager.getComponentEnabledSetting(componentName) == newComponentState) {
+            newComponentState = 0x1;
+            String text = "Launcher icon has been restored";
+        }
+        packageManager.setComponentEnabledSetting(componentName, newComponentState, 0x1);
+        Toast.makeText(this, text, 0x0).show();
+    }
+    */
+
     View view;
-    IEventSubscribe subscribePowerDisConn = new IEventSubscribe() {
-        @Override
-        public void messageRecived(Object message) {
-            Snackbar.make(view, "充电器已断开连接！", Snackbar.LENGTH_SHORT).show();
-        }
-    };
-    IEventSubscribe subscribePowerConn = new IEventSubscribe() {
-        @Override
-        public void messageRecived(Object message) {
-            Snackbar.make(view, "充电器已连接！", Snackbar.LENGTH_SHORT).show();
-        }
-    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,7 +47,7 @@ public class fragment_home extends Fragment {
 
         cmdshellTools = new cmd_shellTools(null, null);
 
-        if (new DynamicConfig().DynamicSupport(ConfigInfo.getConfigInfo().CPUName)) {
+        if (new DynamicConfig().DynamicSupport(getContext())) {
             view.findViewById(R.id.powermode_toggles).setVisibility(View.VISIBLE);
         }
 
@@ -74,14 +64,6 @@ public class fragment_home extends Fragment {
         return view;
     }
 
-    Handler myHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-        }
-    };
-
-    Timer timer;
-    String batteryMAH;
     IEventSubscribe eventSubscribe = new IEventSubscribe() {
         @Override
         public void messageRecived(Object message) {
@@ -89,80 +71,16 @@ public class fragment_home extends Fragment {
         }
     };
 
-    double temp = 0;
-    int level = 0;
-    boolean powerChonnected = false;
-    double voltage;
-
     @Override
     public void onResume() {
-        if (broadcast == null) {
-            broadcast = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    try {
-                        temp = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0);
-                        temp = temp / 10.0;
-                        level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
-                        voltage = intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0);
-                        if (voltage > 1000)
-                            voltage = voltage / 1000.0;
-                        if (voltage > 100)
-                            voltage = voltage / 100.0;
-                        else if (voltage > 10)
-                            voltage = voltage / 10.0;
-                        powerChonnected = intent.getIntExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_NOT_CHARGING)
-                                == BatteryManager.BATTERY_STATUS_CHARGING;
-                        //intent.getDoubleExtra(BatteryManager.EXTRA_HEALTH);
-                    } catch (Exception ex) {
-                        System.out.print(ex.getMessage());
-                    }
-                }
-            };
-            IntentFilter ACTION_BATTERY_CHANGED = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-            getContext().registerReceiver(broadcast, ACTION_BATTERY_CHANGED);
-        }
-
-        EventBus.INSTANCE.subscribe(Events.INSTANCE.getPowerDisConnection(), subscribePowerDisConn);
-        EventBus.INSTANCE.subscribe(Events.INSTANCE.getPowerConnection(), subscribePowerConn);
         EventBus.INSTANCE.subscribe(Events.INSTANCE.getModeToggle(), eventSubscribe);
 
         setModeState();
 
-        final TextView battrystatus = (TextView) view.findViewById(R.id.battrystatus);
-        final TextView powerstatus = (TextView) view.findViewById(R.id.powerstatus);
         final TextView sdfree = (TextView) view.findViewById(R.id.sdfree);
         final TextView datafree = (TextView) view.findViewById(R.id.datafree);
         sdfree.setText("共享存储：" + cmdshellTools.GetDirFreeSizeMB("/sdcard") + " MB");
         datafree.setText("应用存储：" + cmdshellTools.GetDirFreeSizeMB("/data") + " MB");
-        batteryMAH = cmdshellTools.getBatteryMAH() + "   ";
-        serviceRunning = (ServiceHelper.Companion.serviceIsRunning(getContext().getApplicationContext()));
-
-        timer = new Timer();
-
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                myHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        battrystatus.setText("电池信息：" +
-                                batteryMAH +
-                                temp + "°C   " +
-                                level + "%    " +
-                                voltage + "v"
-                        );
-
-                        powerstatus.setText("电池充放：" +
-                                (powerChonnected ? "+" : "-") + cmdshellTools.getChangeMAH() + "ma      " +
-                                (ConfigInfo.getConfigInfo().QcMode && serviceRunning ? "充电已加速" : "未加速")
-                        );
-                    }
-                });
-            }
-        }, 0, 3000);
-
-
         super.onResume();
     }
 
@@ -176,10 +94,28 @@ public class fragment_home extends Fragment {
         btn_defaultmode.setText("均衡");
         btn_gamemode.setText("游戏");
         btn_fastmode.setText("极速");
+        String cfg = cmdshellTools.GetProp2("vtools.powercfg");
+        switch (cfg) {
+            case "default": {
+                btn_defaultmode.setText("均衡 √");
+                break;
+            }
+            case "game": {
+                btn_gamemode.setText("游戏 √");
+                break;
+            }
+            case "powersave": {
+                btn_powersave.setText("省电 √");
+                break;
+            }
+            case "fast": {
+                btn_fastmode.setText("极速 √");
+                break;
+            }
+        }
     }
 
     private void installConfig() {
-
         if (ConfigInfo.getConfigInfo().UseBigCore)
             AppShared.INSTANCE.WriteFile(getContext().getAssets(), ConfigInfo.getConfigInfo().CPUName + "/powercfg-bigcore.sh", "powercfg.sh");
         else
@@ -240,22 +176,11 @@ public class fragment_home extends Fragment {
         }
     };
 
-    boolean serviceRunning = false;
-
     @Override
     public void onPause() {
         super.onPause();
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
-
         try {
             EventBus.INSTANCE.unSubscribe(Events.INSTANCE.getModeToggle(), eventSubscribe);
-            EventBus.INSTANCE.unSubscribe(Events.INSTANCE.getPowerDisConnection(), subscribePowerDisConn);
-            EventBus.INSTANCE.unSubscribe(Events.INSTANCE.getPowerConnection(), subscribePowerConn);
-            if (broadcast != null)
-                getContext().unregisterReceiver(broadcast);
         } catch (Exception ex) {
 
         }
@@ -265,18 +190,11 @@ public class fragment_home extends Fragment {
     public void onDestroy() {
         try {
             EventBus.INSTANCE.unSubscribe(Events.INSTANCE.getModeToggle(), eventSubscribe);
-            EventBus.INSTANCE.unSubscribe(Events.INSTANCE.getPowerDisConnection(), subscribePowerDisConn);
-            EventBus.INSTANCE.unSubscribe(Events.INSTANCE.getPowerConnection(), subscribePowerConn);
-
-            if (broadcast != null)
-                getContext().unregisterReceiver(broadcast);
         } catch (Exception ex) {
 
         }
         super.onDestroy();
     }
-
-    BroadcastReceiver broadcast;
     cmd_shellTools cmdshellTools;
 
     @Override

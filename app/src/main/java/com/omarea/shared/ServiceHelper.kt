@@ -18,7 +18,6 @@ import kotlin.collections.ArrayList
  * Created by helloklf on 2016/10/1.
  */
 class ServiceHelper(context: Context) {
-    private var batteryChangedReciver: reciver_batterychanged? = null
     private var context: Context? = null
     private var lastPackage: String? = null
     private var lastMode = Configs.None
@@ -57,7 +56,7 @@ class ServiceHelper(context: Context) {
 
         DoCmd(Consts.DisableSELinux)
 
-        if (!DynamicConfig().DynamicSupport(ConfigInfo.getConfigInfo().CPUName)) {
+        if (!DynamicConfig().DynamicSupport(context!!)) {
             ConfigInfo.getConfigInfo().DyamicCore = false
         }
 
@@ -65,28 +64,6 @@ class ServiceHelper(context: Context) {
 
         SettingsLoaded = true
         AppShared.system_inited = true
-
-        try {
-            if (batteryChangedReciver == null) {
-                //监听电池改变
-                batteryChangedReciver = reciver_batterychanged()
-                reciver_batterychanged.serviceHelper = this
-                //启动完成
-                val ACTION_BOOT_COMPLETED = IntentFilter(Intent.ACTION_BOOT_COMPLETED)
-                context!!.registerReceiver(batteryChangedReciver, ACTION_BOOT_COMPLETED)
-                //电源连接
-                val ACTION_POWER_CONNECTED = IntentFilter(Intent.ACTION_POWER_CONNECTED)
-                context!!.registerReceiver(batteryChangedReciver, ACTION_POWER_CONNECTED)
-                //电源断开
-                val ACTION_POWER_DISCONNECTED = IntentFilter(Intent.ACTION_POWER_DISCONNECTED)
-                context!!.registerReceiver(batteryChangedReciver, ACTION_POWER_DISCONNECTED)
-                //电量变化
-                val ACTION_BATTERY_CHANGED = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-                context!!.registerReceiver(batteryChangedReciver, ACTION_BATTERY_CHANGED)
-            }
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-        }
 
 
         if (ConfigInfo.getConfigInfo().AutoStartSwap) {
@@ -190,6 +167,21 @@ class ServiceHelper(context: Context) {
         if (packageName == lastPackage && lastMode != Configs.Fast)
             return
 
+        for (item in ConfigInfo.getConfigInfo().gameList) {
+            if (item["packageName"].toString() == packageName) {
+                if (lastMode != Configs.Game) {
+                    try {
+                        ToggleConfig(Configs.Game)
+                        ShowModeToggleMsg(packageName, "performance mode")
+                    } catch (ex: Exception) {
+                        ShowModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
+                    }
+
+                }
+                return
+            }
+        }
+
         //打包安装程序速度优化-使用游戏模式
         if (packageName == "com.android.packageinstaller") {
             if (lastMode != Configs.Game) {
@@ -219,13 +211,27 @@ class ServiceHelper(context: Context) {
             }
         }
 
-
         for (item in ConfigInfo.getConfigInfo().powersaveList) {
             if (item["packageName"].toString() == packageName) {
                 if (lastMode != Configs.PowerSave) {
                     try {
                         ToggleConfig(Configs.PowerSave)
                         ShowModeToggleMsg(packageName, "powersave mode")
+                    } catch (ex: Exception) {
+                        ShowModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
+                    }
+
+                }
+                return
+            }
+        }
+
+        for (item in ConfigInfo.getConfigInfo().fastList) {
+            if (item["packageName"].toString() == packageName) {
+                if (lastMode != Configs.Fast) {
+                    try {
+                        ToggleConfig(Configs.Fast)
+                        ShowModeToggleMsg(packageName, "fast mode")
                     } catch (ex: Exception) {
                         ShowModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
                     }
@@ -242,7 +248,6 @@ class ServiceHelper(context: Context) {
             } catch (ex: Exception) {
                 ShowModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
             }
-
         }
     }
 
@@ -309,8 +314,8 @@ class ServiceHelper(context: Context) {
     internal fun InstallConfig() {
         if (context == null) return
 
-        if (!DynamicConfig().DynamicSupport(ConfigInfo.getConfigInfo().CPUName)) {
-            ShowMsg("Unsupported device!(Support only msm8992, msm8996, msm8998,and other devices create your own configuration files)")
+        if (!DynamicConfig().DynamicSupport(context!!)) {
+            ShowMsg("未找到对应到当前SOC的调频配置文件！")
             return
         }
 
@@ -320,11 +325,9 @@ class ServiceHelper(context: Context) {
             val cpuNumber = ConfigInfo.getConfigInfo().CPUName.replace("msm", "")
 
             if (ConfigInfo.getConfigInfo().UseBigCore) {
-                //AppShared.WriteFile(ass, ConfigInfo.getConfigInfo().CPUName + "/thermal-engine-bigcore.conf", "thermal-engine.conf")
                 AppShared.WriteFile(ass, ConfigInfo.getConfigInfo().CPUName + "/init.qcom.post_boot-bigcore.sh", "init.qcom.post_boot.sh")
                 AppShared.WriteFile(ass, ConfigInfo.getConfigInfo().CPUName + "/powercfg-bigcore.sh", "powercfg.sh")
             } else {
-                //AppShared.WriteFile(ass, ConfigInfo.getConfigInfo().CPUName + "/thermal-engine-default.conf", "thermal-engine.conf")
                 AppShared.WriteFile(ass, ConfigInfo.getConfigInfo().CPUName + "/init.qcom.post_boot-default.sh", "init.qcom.post_boot.sh")
                 AppShared.WriteFile(ass, ConfigInfo.getConfigInfo().CPUName + "/powercfg-default.sh", "powercfg.sh")
             }
@@ -403,11 +406,6 @@ class ServiceHelper(context: Context) {
     }
 
     fun onInterrupt() {
-        if (batteryChangedReciver != null) {
-            context!!.unregisterReceiver(batteryChangedReciver)
-            reciver_batterychanged.serviceHelper = null
-            batteryChangedReciver = null
-        }
         UnInstallConfig()
     }
 
