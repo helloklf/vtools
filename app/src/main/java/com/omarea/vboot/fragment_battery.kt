@@ -1,9 +1,6 @@
 package com.omarea.vboot
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Handler
@@ -16,6 +13,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import com.omarea.shared.*
+import com.omarea.shell.units.BatteryUnit
 
 import kotlinx.android.synthetic.main.layout_battery.*
 
@@ -56,11 +54,19 @@ class fragment_battery : Fragment() {
     internal var level = 0
     internal var powerChonnected = false
     internal var voltage: Double = 0.toDouble()
+    private var batteryUnits = BatteryUnit()
+    private lateinit var spf:SharedPreferences
 
     override fun onResume() {
-        settings_qc.isChecked = ConfigInfo.getConfigInfo().QcMode
-        settings_bp.isChecked = ConfigInfo.getConfigInfo().BatteryProtection
-        settings_bp_level.setText(ConfigInfo.getConfigInfo().BatteryProtectionLevel.toString())
+        if (spf!=null){
+            spf.registerOnSharedPreferenceChangeListener{ sharedPreferences, key ->
+
+            }
+        }
+
+        settings_qc.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)
+        settings_bp.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_BP, false)
+        settings_bp_level.setText(spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85).toString())
 
         if (broadcast == null) {
             broadcast = object : BroadcastReceiver() {
@@ -93,7 +99,7 @@ class fragment_battery : Fragment() {
 
         val battrystatus = view.findViewById(R.id.battrystatus) as TextView
         val powerstatus = view.findViewById(R.id.powerstatus) as TextView
-        batteryMAH = cmdshellTools.batteryMAH + "   "
+        batteryMAH = batteryUnits.batteryMAH + "   "
         val context = context.applicationContext
         serviceRunning = BatteryService.serviceIsRunning(context)
 
@@ -108,9 +114,10 @@ class fragment_battery : Fragment() {
                             level + "%    " +
                             voltage + "v"
 
-                    powerstatus.text = "电池充放：" +
-                            (if (powerChonnected) "+" else "-") + cmdshellTools.changeMAH + "ma      " +
-                            if (ConfigInfo.getConfigInfo().QcMode && serviceRunning) "充电已加速" else "未加速"
+                    var changeMAH = batteryUnits.changeMAH
+                    powerstatus.text = "充电速度：" +
+                            (if (powerChonnected) "+" else "-") + changeMAH + "      " +
+                            if (spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) && serviceRunning) "充电已加速" else "未加速"
                 }
             }
         }, 0, 3000)
@@ -157,9 +164,11 @@ class fragment_battery : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        spf = context.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
+
         settings_qc.setOnClickListener {
-            ConfigInfo.getConfigInfo().QcMode = settings_qc.isChecked
-            if(!ConfigInfo.getConfigInfo().QcMode){
+            spf.edit().putBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, settings_qc.isChecked).commit()
+            if(!settings_qc.isChecked){
                 Snackbar.make(this.view,"充电加速服务已禁用，可能需要重启手机才能恢复默认设置！",Snackbar.LENGTH_SHORT).show()
             } else{
                 //启用电池服务
@@ -168,9 +177,9 @@ class fragment_battery : Fragment() {
             }
         }
         settings_bp.setOnClickListener {
-            ConfigInfo.getConfigInfo().BatteryProtection = settings_bp.isChecked
+            spf.edit().putBoolean(SpfConfig.CHARGE_SPF_BP, settings_bp.isChecked).commit()
             //禁用电池保护：恢复充电功能
-            if(!ConfigInfo.getConfigInfo().BatteryProtection){
+            if(!settings_bp.isChecked){
                 cmdshellTools.DoCmdSync(Consts.ResumeChanger)
             }
             else {
@@ -184,7 +193,7 @@ class fragment_battery : Fragment() {
                 val level:Int
                 try{
                     level = settings_bp_level.text.toString().toInt()
-                    ConfigInfo.getConfigInfo().BatteryProtectionLevel = level
+                    spf.edit().putInt(SpfConfig.CHARGE_SPF_BP_LEVEL, level).commit()
                     Snackbar.make(this.view, "设置已保存，稍后生效。当前限制等级："+ settings_bp_level.text, Snackbar.LENGTH_SHORT ).show()
                     startBatteryService();
                 }

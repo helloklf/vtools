@@ -41,13 +41,8 @@ public class xposed_interface implements IXposedHookLoadPackage,IXposedHookZygot
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         final String packageName = loadPackageParam.packageName;
-
-        try{
-            XposedBridge.log("vtools:\n\n" + new JSONObject(prefs.getAll()).toString(2)+"\n\n\n");
-        }
-         catch (Exception ex) {
-             XposedBridge.log("vtools error:\n\n" + ex.getLocalizedMessage() +"\n\n\n");
-         }
+        prefs.reload();
+        prefs2.reload();
 
         if (packageName.equals("com.android.systemui")) {
             if (useDefaultConfig || prefs.getBoolean("xposed_hide_su", false)) {
@@ -77,7 +72,7 @@ public class xposed_interface implements IXposedHookLoadPackage,IXposedHookZygot
             });
         }
 
-        //王者荣耀 高帧率模式 - 伪装MI5
+        //王者荣耀 高帧率模式
         else if (packageName.equals("com.tencent.tmgp.sgame")) {
             if (useDefaultConfig || prefs.getBoolean("xposed_hight_fps", false)) {
                 XposedHelpers.findAndHookMethod(

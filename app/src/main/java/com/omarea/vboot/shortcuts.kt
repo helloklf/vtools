@@ -41,20 +41,6 @@ class shortcuts : AppCompatActivity() {
                 InstallPowerToggleConfig()
                 cmd_shellTools.DoCmd(Consts.ToggleFastMode)
             }
-            "systemtoggle" -> {
-                run {
-                    cmd_shellTools = cmd_shellTools(this, null)
-                    if (cmd_shellTools.IsDualSystem()) {
-                        Toast.makeText(this, "正在切换系统，请不要终止操作！", Toast.LENGTH_LONG).show()
-                        cmd_shellTools.ToggleSystem()
-                        return
-                    } else {
-                        Toast.makeText(this, "双系统未安装，无法切换！", Toast.LENGTH_LONG).show()
-                        finish()
-                        return
-                    }
-                }
-            }
             "android.intent.action.VIEW" -> {
             }
             else -> {

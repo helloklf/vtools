@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.os.Message
 import android.view.accessibility.AccessibilityManager
 import android.widget.Toast
@@ -25,6 +26,8 @@ class ServiceHelper(context: Context) {
     private var p: Process? = null
     private val serviceCreatedTime = Date().time
     internal var out: DataOutputStream? = null
+    private var spfPowercfg: SharedPreferences
+    private var spfBooster: SharedPreferences
     //标识是否已经加载完设置
     private var SettingsLoaded = false
     var ignoredList = arrayListOf<String>("com.miui.securitycenter", "android", "com.android.systemui", "com.omarea.vboot", "com.miui.touchassistant")
@@ -47,6 +50,8 @@ class ServiceHelper(context: Context) {
         })
 
         this.context = context
+        spfPowercfg = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
+        spfBooster = context.getSharedPreferences(SpfConfig.BOOSTER_CONFIG_SPF, Context.MODE_PRIVATE)
     }
 
     //加载设置
@@ -64,34 +69,6 @@ class ServiceHelper(context: Context) {
 
         SettingsLoaded = true
         AppShared.system_inited = true
-
-
-        if (ConfigInfo.getConfigInfo().AutoStartSwap) {
-            var sb = StringBuilder("setenforce 0\n")
-
-            if(ConfigInfo.getConfigInfo().AutoStartZRAM) {
-                var zramSize = ConfigInfo.getConfigInfo().AutoStartZRAMSize
-                sb.append("if [ `cat /sys/block/zram0/disksize` != '" + zramSize + "000000' ] ; then ")
-                sb.append("swapoff /dev/block/zram0 &> /dev/null;")
-                sb.append("echo 1 > /sys/block/zram0/reset;")
-                sb.append("echo " + zramSize + "000000 > /sys/block/zram0/disksize;")
-                sb.append("mkswap /dev/block/zram0 &> /dev/null;")
-                sb.append("swapon /dev/block/zram0 &> /dev/null;")
-                sb.append("fi;\n")
-            }
-
-            if (ConfigInfo.getConfigInfo().AutoStartSwapDisZram) {
-                sb.append("swapon /data/swapfile -p 32767\n")
-                //sb.append("swapoff /dev/block/zram0\n")
-            } else {
-                sb.append("swapon /data/swapfile\n")
-            }
-
-            sb.append("echo 65 > /proc/sys/vm/swappiness\n")
-            sb.append("echo " + ConfigInfo.getConfigInfo().AutoStartSwappiness + " > /proc/sys/vm/swappiness\n")
-
-            DoCmd(sb.toString())
-        }
 
         return true
     }
@@ -113,7 +90,6 @@ class ServiceHelper(context: Context) {
             p!!.destroy()
         } catch (ex: Exception) {
         }
-
     }
 
 
@@ -167,21 +143,6 @@ class ServiceHelper(context: Context) {
         if (packageName == lastPackage && lastMode != Configs.Fast)
             return
 
-        for (item in ConfigInfo.getConfigInfo().gameList) {
-            if (item["packageName"].toString() == packageName) {
-                if (lastMode != Configs.Game) {
-                    try {
-                        ToggleConfig(Configs.Game)
-                        ShowModeToggleMsg(packageName, "performance mode")
-                    } catch (ex: Exception) {
-                        ShowModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
-                    }
-
-                }
-                return
-            }
-        }
-
         //打包安装程序速度优化-使用游戏模式
         if (packageName == "com.android.packageinstaller") {
             if (lastMode != Configs.Game) {
@@ -191,28 +152,16 @@ class ServiceHelper(context: Context) {
                 } catch (ex: Exception) {
                     ShowModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
                 }
-
             }
             return
         }
 
-        for (item in ConfigInfo.getConfigInfo().gameList) {
-            if (item["packageName"].toString() == packageName) {
-                if (lastMode != Configs.Game) {
-                    try {
-                        ToggleConfig(Configs.Game)
-                        ShowModeToggleMsg(packageName, "performance mode")
-                    } catch (ex: Exception) {
-                        ShowModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
-                    }
-
-                }
+        var mod = spfPowercfg.getString(packageName, "default")
+        when(mod){
+            "igoned" -> {
                 return
             }
-        }
-
-        for (item in ConfigInfo.getConfigInfo().powersaveList) {
-            if (item["packageName"].toString() == packageName) {
+            "powersave" -> {
                 if (lastMode != Configs.PowerSave) {
                     try {
                         ToggleConfig(Configs.PowerSave)
@@ -220,14 +169,21 @@ class ServiceHelper(context: Context) {
                     } catch (ex: Exception) {
                         ShowModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
                     }
-
                 }
                 return
             }
-        }
-
-        for (item in ConfigInfo.getConfigInfo().fastList) {
-            if (item["packageName"].toString() == packageName) {
+            "game" -> {
+                if (lastMode != Configs.Game) {
+                    try {
+                        ToggleConfig(Configs.Game)
+                        ShowModeToggleMsg(packageName, "performance mode")
+                    } catch (ex: Exception) {
+                        ShowModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
+                    }
+                }
+                return
+            }
+            "fast" -> {
                 if (lastMode != Configs.Fast) {
                     try {
                         ToggleConfig(Configs.Fast)
@@ -235,18 +191,18 @@ class ServiceHelper(context: Context) {
                     } catch (ex: Exception) {
                         ShowModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
                     }
-
                 }
                 return
             }
-        }
-
-        if (lastMode != Configs.Default) {
-            try {
-                ToggleConfig(Configs.Default)
-                ShowModeToggleMsg(packageName, "balance mode")
-            } catch (ex: Exception) {
-                ShowModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
+            else -> {
+                if (lastMode != Configs.Default) {
+                    try {
+                        ToggleConfig(Configs.Default)
+                        ShowModeToggleMsg(packageName, "balance mode")
+                    } catch (ex: Exception) {
+                        ShowModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
+                    }
+                }
             }
         }
     }
@@ -256,15 +212,16 @@ class ServiceHelper(context: Context) {
         if (!ConfigInfo.getConfigInfo().AutoBooster)
             return
 
-        if (lastPackage == "android" || lastPackage == "com.android.systemui" || lastPackage == "com.omarea.vboot")
+        if (lastPackage == "android" || lastPackage == "com.android.systemui" || lastPackage == "com.omarea.vboot" || lastPackage.equals(packageName))
             return
 
-        if (ConfigInfo.getConfigInfo().AutoClearCache) {
+        if (spfBooster.getBoolean(SpfConfig.BOOSTER_SPF_CLEAR_CACHE, false)) {
             DoCmd(Consts.ClearCache)
         }
 
-        if (ConfigInfo.getConfigInfo().blacklist.contains(lastPackage)) {
-            if (ConfigInfo.getConfigInfo().UsingDozeMod) {
+
+        if (spfBooster.contains(lastPackage)) {
+            if (spfBooster.getBoolean(SpfConfig.BOOSTER_SPF_DOZE_MOD, false)) {
                 try {
                     DoCmd("am set-inactive $lastPackage true")
                     //am set-idle com.tencent.mobileqq true
@@ -332,8 +289,7 @@ class ServiceHelper(context: Context) {
                 AppShared.WriteFile(ass, ConfigInfo.getConfigInfo().CPUName + "/powercfg-default.sh", "powercfg.sh")
             }
 
-
-            val cmd = StringBuilder().append(Consts.InstallConfig).append(Consts.ExecuteConfig)
+            val cmd = StringBuilder().append(Consts.InstallConfig).append(Consts.ExecuteConfig).append(Consts.ToggleDefaultMode)
                     .toString().replace("cpuNumber", cpuNumber)
             DoCmd(cmd)
 
@@ -396,7 +352,7 @@ class ServiceHelper(context: Context) {
         if (packageName == null)
             packageName = lastPackage
 
-        if(lastPackage==packageName || ignoredList.contains(packageName))
+        if (lastPackage == packageName || ignoredList.contains(packageName))
             return
 
         autoBoosterApp(packageName!!)
@@ -410,7 +366,6 @@ class ServiceHelper(context: Context) {
     }
 
     companion object {
-
         //判断服务是否激活
         fun serviceIsRunning(context: Context): Boolean {
             val m = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager

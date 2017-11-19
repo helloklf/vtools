@@ -1,8 +1,10 @@
 package com.omarea.vboot;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -27,6 +29,7 @@ import com.omarea.shared.ConfigInfo;
 import com.omarea.shared.EventBus;
 import com.omarea.shared.Events;
 import com.omarea.shared.ServiceHelper;
+import com.omarea.shared.SpfConfig;
 import com.omarea.shared.cmd_shellTools;
 import com.omarea.shell.Platform;
 import com.omarea.ui.list_adapter;
@@ -44,6 +47,9 @@ import static android.widget.AdapterView.VISIBLE;
 public class fragment_config extends Fragment {
     cmd_shellTools cmdshellTools = null;
     main thisview = null;
+
+    SharedPreferences spfPowercfg;
+    SharedPreferences.Editor editor;
 
     public static Fragment Create(main thisView, cmd_shellTools cmdshellTools) {
         fragment_config fragment = new fragment_config();
@@ -72,6 +78,9 @@ public class fragment_config extends Fragment {
 
     @Override
     public void onViewCreated(final View view, @Nullable Bundle savedInstanceState) {
+        spfPowercfg = getContext().getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE);
+        editor = spfPowercfg.edit();
+
         btn_config_service_not_active = (Button) view.findViewById(R.id.btn_config_service_not_active);
         btn_config_dynamicservice_not_active = (Button) view.findViewById(R.id.btn_config_dynamicservice_not_active);
 
@@ -120,13 +129,12 @@ public class fragment_config extends Fragment {
                     case 0: {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(thisview);
                         String[] items = new String[]{"添加选中到 -> 性能模式", "添加选中到 -> 省电模式", "添加选中到 -> 极速模式", "添加选中到 -> 忽略列表"};
-                        final Configs[] configses = new Configs[]{ Configs.Game, Configs.PowerSave, Configs.Fast, Configs.Ignored };
+                        final Configs[] configses = new Configs[]{Configs.Game, Configs.PowerSave, Configs.Fast, Configs.Ignored};
                         builder.setItems(items, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 list_adapter listadapter = (list_adapter) config_defaultlist.getAdapter();
-                                AddToList(ConfigInfo.getConfigInfo().defaultList, listadapter.states, configses[which]);
-                                SetList();
+                                AddToList(defaultList, listadapter.states, configses[which]);
                             }
                         });
                         builder.setIcon(R.drawable.ic_menu_profile).setTitle("设置配置模式").create().show();
@@ -135,13 +143,12 @@ public class fragment_config extends Fragment {
                     case 1: {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(thisview);
                         String[] items = new String[]{"添加选中到 -> 均衡模式", "添加选中到 -> 省电模式", "添加选中到 -> 极速模式", "添加选中到 -> 忽略列表"};
-                        final Configs[] configses = new Configs[]{ Configs.Default, Configs.PowerSave, Configs.Fast, Configs.Ignored };
+                        final Configs[] configses = new Configs[]{Configs.Default, Configs.PowerSave, Configs.Fast, Configs.Ignored};
                         builder.setItems(items, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 list_adapter listadapter = (list_adapter) config_gamelist.getAdapter();
-                                AddToList(ConfigInfo.getConfigInfo().gameList, listadapter.states, configses[which]);
-                                SetList();
+                                AddToList(gameList, listadapter.states, configses[which]);
                             }
                         });
                         builder.setIcon(R.drawable.ic_menu_profile).setTitle("设置配置模式").create().show();
@@ -150,13 +157,12 @@ public class fragment_config extends Fragment {
                     case 2: {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(thisview);
                         String[] items = new String[]{"添加选中到 -> 均衡模式", "添加选中到 -> 性能模式", "添加选中到 -> 极速模式", "添加选中到 -> 忽略列表"};
-                        final Configs[] configses = new Configs[]{ Configs.Default, Configs.Game, Configs.Fast, Configs.Ignored };
+                        final Configs[] configses = new Configs[]{Configs.Default, Configs.Game, Configs.Fast, Configs.Ignored};
                         builder.setItems(items, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 list_adapter listadapter = (list_adapter) config_powersavelist.getAdapter();
-                                AddToList(ConfigInfo.getConfigInfo().powersaveList, listadapter.states, configses[which]);
-                                SetList();
+                                AddToList(powersaveList, listadapter.states, configses[which]);
                             }
                         });
                         builder.setIcon(R.drawable.ic_menu_profile).setTitle("设置配置模式").create().show();
@@ -165,13 +171,12 @@ public class fragment_config extends Fragment {
                     case 3: {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(thisview);
                         String[] items = new String[]{"添加选中到 -> 均衡模式", "添加选中到 -> 性能模式", "添加选中到 -> 省电模式", "添加选中到 -> 忽略列表"};
-                        final Configs[] configses = new Configs[]{ Configs.Default, Configs.Game, Configs.PowerSave, Configs.Ignored };
+                        final Configs[] configses = new Configs[]{Configs.Default, Configs.Game, Configs.PowerSave, Configs.Ignored};
                         builder.setItems(items, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 list_adapter listadapter = (list_adapter) config_fastlist.getAdapter();
-                                AddToList(ConfigInfo.getConfigInfo().fastList, listadapter.states, configses[which]);
-                                SetList();
+                                AddToList(fastList, listadapter.states, configses[which]);
                             }
                         });
                         builder.setIcon(R.drawable.ic_menu_profile).setTitle("设置配置模式").create().show();
@@ -180,20 +185,18 @@ public class fragment_config extends Fragment {
                     case 4: {
                         final AlertDialog.Builder builder = new AlertDialog.Builder(thisview);
                         String[] items = new String[]{"添加选中到 -> 均衡模式", "添加选中到 -> 性能模式", "添加选中到 -> 省电模式", "添加选中到 -> 极速模式"};
-                        final Configs[] configses = new Configs[]{ Configs.Default, Configs.Game, Configs.PowerSave, Configs.Fast };
+                        final Configs[] configses = new Configs[]{Configs.Default, Configs.Game, Configs.PowerSave, Configs.Fast};
                         builder.setItems(items, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 list_adapter listadapter = (list_adapter) config_ignoredlist.getAdapter();
-                                AddToList(ConfigInfo.getConfigInfo().ignoredList, listadapter.states, configses[which]);
-                                SetList();
+                                AddToList(ignoredList, listadapter.states, configses[which]);
                             }
                         });
                         builder.setIcon(R.drawable.ic_menu_profile).setTitle("设置配置模式").create().show();
                         break;
                     }
                 }
-
             }
         });
 
@@ -218,13 +221,10 @@ public class fragment_config extends Fragment {
         config_showSystemApp.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-            ConfigInfo.getConfigInfo().HasSystemApp = config_showSystemApp.isChecked();
-            LoadList();
-            SetList();
+                ConfigInfo.getConfigInfo().HasSystemApp = config_showSystemApp.isChecked();
+                LoadList();
             }
         });
-
-        SetList();
 
         config_defaultlist = (ListView) view.findViewById(R.id.config_defaultlist);
         config_gamelist = (ListView) view.findViewById(R.id.config_gamelist);
@@ -238,7 +238,7 @@ public class fragment_config extends Fragment {
                 CheckBox select_state = (CheckBox) current.findViewById(R.id.select_state);
                 if (select_state != null)
                     select_state.setChecked(!select_state.isChecked());
-                ConfigInfo.getConfigInfo().defaultList.get(position).put("select_state", !select_state.isChecked());
+                defaultList.get(position).put("select_state", !select_state.isChecked());
             }
         });
 
@@ -248,7 +248,7 @@ public class fragment_config extends Fragment {
                 CheckBox select_state = (CheckBox) current.findViewById(R.id.select_state);
                 if (select_state != null)
                     select_state.setChecked(!select_state.isChecked());
-                ConfigInfo.getConfigInfo().gameList.get(position).put("select_state", !select_state.isChecked());
+                gameList.get(position).put("select_state", !select_state.isChecked());
             }
         });
 
@@ -258,7 +258,7 @@ public class fragment_config extends Fragment {
                 CheckBox select_state = (CheckBox) current.findViewById(R.id.select_state);
                 if (select_state != null)
                     select_state.setChecked(!select_state.isChecked());
-                ConfigInfo.getConfigInfo().powersaveList.get(position).put("select_state", !select_state.isChecked());
+                powersaveList.get(position).put("select_state", !select_state.isChecked());
             }
         });
 
@@ -268,7 +268,7 @@ public class fragment_config extends Fragment {
                 CheckBox select_state = (CheckBox) current.findViewById(R.id.select_state);
                 if (select_state != null)
                     select_state.setChecked(!select_state.isChecked());
-                ConfigInfo.getConfigInfo().fastList.get(position).put("select_state", !select_state.isChecked());
+                fastList.get(position).put("select_state", !select_state.isChecked());
             }
         });
 
@@ -278,9 +278,11 @@ public class fragment_config extends Fragment {
                 CheckBox select_state = (CheckBox) current.findViewById(R.id.select_state);
                 if (select_state != null)
                     select_state.setChecked(!select_state.isChecked());
-                ConfigInfo.getConfigInfo().ignoredList.get(position).put("select_state", !select_state.isChecked());
+                ignoredList.get(position).put("select_state", !select_state.isChecked());
             }
         });
+
+        LoadList();
     }
 
     //设置配置文件提示信息
@@ -294,6 +296,10 @@ public class fragment_config extends Fragment {
             }
             case "msm8998": {
                 defaultconfighelp.setText(ConfigInfo.getConfigInfo().UseBigCore ? R.string.defaultconfighelp_bigcore_835 : R.string.defaultconfighelp_835);
+                break;
+            }
+            default: {
+                defaultconfighelp.setText("");
                 break;
             }
         }
@@ -311,22 +317,6 @@ public class fragment_config extends Fragment {
         }
     };
 
-    void SetList() {
-        thisview.progressBar.setVisibility(View.VISIBLE);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (installedList == null)
-                    LoadList();
-                SetListData(ConfigInfo.getConfigInfo().defaultList, config_defaultlist);
-                SetListData(ConfigInfo.getConfigInfo().gameList, config_gamelist);
-                SetListData(ConfigInfo.getConfigInfo().powersaveList, config_powersavelist);
-                SetListData(ConfigInfo.getConfigInfo().fastList, config_fastlist);
-                SetListData(ConfigInfo.getConfigInfo().ignoredList, config_ignoredlist);
-            }
-        }).start();
-    }
-
     void SetListData(final ArrayList<HashMap<String, Object>> dl, final ListView lv) {
         myHandler.post(new Runnable() {
             @Override
@@ -337,7 +327,12 @@ public class fragment_config extends Fragment {
         });
     }
 
-    ArrayList<HashMap<String, Object>> installedList;
+    private ArrayList<HashMap<String, Object>> defaultList;
+    private ArrayList<HashMap<String, Object>> gameList;
+    private ArrayList<HashMap<String, Object>> powersaveList;
+    private ArrayList<HashMap<String, Object>> fastList;
+    private ArrayList<HashMap<String, Object>> ignoredList;
+    private ArrayList<HashMap<String, Object>> installedList;
 
     ArrayList<HashMap<String, Object>> GetAppIcon(List<HashMap<String, Object>> list) {
         ArrayList<HashMap<String, Object>> newDic = new ArrayList<>();
@@ -368,102 +363,122 @@ public class fragment_config extends Fragment {
         return newDic;
     }
 
+    PackageManager packageManager;
+
     void LoadList() {
-        PackageManager packageManager = thisview.getPackageManager();
-        List<ApplicationInfo> packageInfos = packageManager.getInstalledApplications(0);
+        thisview.progressBar.setVisibility(View.VISIBLE);
+        if (packageManager == null) {
+            packageManager = thisview.getPackageManager();
+        }
 
-        installedList = new ArrayList<HashMap<String, Object>>();/*在数组中存放数据*/
-        Boolean hasSystemApp = ConfigInfo.getConfigInfo().HasSystemApp;
-        for (int i = 0; i < packageInfos.size(); i++) {
-            if (!hasSystemApp && (packageInfos.get(i).sourceDir.indexOf("/system") == 0)) {
-                continue;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (installedList == null || installedList.size() == 0) {
+                    List<ApplicationInfo> packageInfos = packageManager.getInstalledApplications(0);
+
+                    installedList = new ArrayList<HashMap<String, Object>>();/*在数组中存放数据*/
+                    Boolean hasSystemApp = ConfigInfo.getConfigInfo().HasSystemApp;
+                    for (int i = 0; i < packageInfos.size(); i++) {
+                        if (!hasSystemApp && (packageInfos.get(i).sourceDir.indexOf("/system") == 0)) {
+                            continue;
+                        }
+
+                        HashMap<String, Object> item = new HashMap<String, Object>();
+                        item.put("icon", packageInfos.get(i).loadIcon(packageManager));
+                        item.put("name", packageInfos.get(i).loadLabel(packageManager));
+                        item.put("packageName", packageInfos.get(i).packageName.toLowerCase());
+                        item.put("select_state", false);
+                        installedList.add(item);
+                    }
+                    installedList = GetAppIcon(installedList);
+                }
+                defaultList = new ArrayList<HashMap<String, Object>>();
+                gameList = new ArrayList<HashMap<String, Object>>();
+                powersaveList = new ArrayList<HashMap<String, Object>>();
+                fastList = new ArrayList<HashMap<String, Object>>();
+                ignoredList = new ArrayList<HashMap<String, Object>>();
+
+                for (int i = 0; i < installedList.size(); i++) {
+                    HashMap<String, Object> item = installedList.get(i);
+                    if (item.containsKey("select_state")) {
+                        item.remove("select_state");
+                    }
+                    item.put("select_state", false);
+                    String config = spfPowercfg.getString(installedList.get(i).get("packageName").toString().toLowerCase(), "default");
+                    switch (config) {
+                        case "powersave": {
+                            powersaveList.add(installedList.get(i));
+                            break;
+                        }
+                        case "game": {
+                            gameList.add(installedList.get(i));
+                            break;
+                        }
+                        case "fast": {
+                            fastList.add(installedList.get(i));
+                            break;
+                        }
+                        case "igoned": {
+                            ignoredList.add(installedList.get(i));
+                            break;
+                        }
+                        default: {
+                            defaultList.add(installedList.get(i));
+                            break;
+                        }
+                    }
+                }
+                myHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        thisview.progressBar.setVisibility(View.GONE);
+                        SetListData(defaultList, config_defaultlist);
+                        SetListData(gameList, config_gamelist);
+                        SetListData(powersaveList, config_powersavelist);
+                        SetListData(fastList, config_fastlist);
+                        SetListData(ignoredList, config_ignoredlist);
+                    }
+                });
             }
-
-            HashMap<String, Object> item = new HashMap<String, Object>();
-            item.put("icon", packageInfos.get(i).loadIcon(packageManager));
-            item.put("name", packageInfos.get(i).loadLabel(packageManager));
-            item.put("packageName", packageInfos.get(i).packageName.toLowerCase());
-            item.put("select_state", false);
-            installedList.add(item);
-        }
-        ConfigInfo.getConfigInfo().gameList = GetAppIcon(ConfigInfo.getConfigInfo().gameList);
-        ConfigInfo.getConfigInfo().powersaveList = GetAppIcon(ConfigInfo.getConfigInfo().powersaveList);
-        ConfigInfo.getConfigInfo().fastList = GetAppIcon(ConfigInfo.getConfigInfo().fastList);
-        ConfigInfo.getConfigInfo().ignoredList = GetAppIcon(ConfigInfo.getConfigInfo().ignoredList);
-        ConfigInfo.getConfigInfo().defaultList = (ArrayList<HashMap<String, Object>>) installedList.clone();
-
-        for (HashMap<String, Object> item : ConfigInfo.getConfigInfo().gameList) {
-            RemoveItem(ConfigInfo.getConfigInfo().defaultList, item);
-        }
-        for (HashMap<String, Object> item : ConfigInfo.getConfigInfo().powersaveList) {
-            RemoveItem(ConfigInfo.getConfigInfo().defaultList, item);
-        }
-        for (HashMap<String, Object> item : ConfigInfo.getConfigInfo().fastList) {
-            RemoveItem(ConfigInfo.getConfigInfo().defaultList, item);
-        }
-        for (HashMap<String, Object> item : ConfigInfo.getConfigInfo().ignoredList) {
-            RemoveItem(ConfigInfo.getConfigInfo().defaultList, item);
-        }
+        }).start();
     }
 
     /**
      * 从当前列表中获取已选中的应用，添加到指定模式
-     * @param list 当前列表
+     *
+     * @param list     当前列表
      * @param postions 各个序号的选中状态
-     * @param config 指定的新模式
+     * @param config   指定的新模式
      */
     void AddToList(ArrayList<HashMap<String, Object>> list, HashMap<Integer, Boolean> postions, Configs config) {
         ArrayList<HashMap<String, Object>> selectedItems = new ArrayList<>();
         for (int position : postions.keySet()) {
             if (postions.get(position) == true) {
-                selectedItems.add(list.get(position));
-            }
-        }
-        switch (config) {
-            case Default: {
-                for (HashMap<String, Object> item : selectedItems) {
-                    ConfigInfo.getConfigInfo().gameList.remove(item);
-                    ConfigInfo.getConfigInfo().powersaveList.remove(item);
-                    ConfigInfo.getConfigInfo().fastList.remove(item);
-                    ConfigInfo.getConfigInfo().ignoredList.remove(item);
+                HashMap<String, Object> item = list.get(position);
+                selectedItems.add(item);
+                switch (config) {
+                    case Default: {
+                        editor.putString(item.get("packageName").toString().toLowerCase(), "default").commit();
+                        break;
+                    }
+                    case Game: {
+                        editor.putString(item.get("packageName").toString().toLowerCase(), "game").commit();
+                        break;
+                    }
+                    case PowerSave: {
+                        editor.putString(item.get("packageName").toString().toLowerCase(), "powersave").commit();
+                        break;
+                    }
+                    case Fast: {
+                        editor.putString(item.get("packageName").toString().toLowerCase(), "fast").commit();
+                        break;
+                    }
+                    case Ignored: {
+                        editor.putString(item.get("packageName").toString().toLowerCase(), "igoned").commit();
+                        break;
+                    }
                 }
-                break;
-            }
-            case Game: {
-                for (HashMap<String, Object> item : selectedItems) {
-                    ConfigInfo.getConfigInfo().powersaveList.remove(item);
-                    ConfigInfo.getConfigInfo().fastList.remove(item);
-                    ConfigInfo.getConfigInfo().ignoredList.remove(item);
-                    ConfigInfo.getConfigInfo().gameList.add(item);
-                }
-                break;
-            }
-            case PowerSave: {
-                for (HashMap<String, Object> item : selectedItems) {
-                    ConfigInfo.getConfigInfo().gameList.remove(item);
-                    ConfigInfo.getConfigInfo().fastList.remove(item);
-                    ConfigInfo.getConfigInfo().ignoredList.remove(item);
-                    ConfigInfo.getConfigInfo().powersaveList.add(item);
-                }
-                break;
-            }
-            case Fast: {
-                for (HashMap<String, Object> item : selectedItems) {
-                    ConfigInfo.getConfigInfo().gameList.remove(item);
-                    ConfigInfo.getConfigInfo().powersaveList.remove(item);
-                    ConfigInfo.getConfigInfo().ignoredList.remove(item);
-                    ConfigInfo.getConfigInfo().fastList.add(item);
-                }
-                break;
-            }
-            case Ignored: {
-                for (HashMap<String, Object> item : selectedItems) {
-                    ConfigInfo.getConfigInfo().gameList.remove(item);
-                    ConfigInfo.getConfigInfo().powersaveList.remove(item);
-                    ConfigInfo.getConfigInfo().fastList.remove(item);
-                    ConfigInfo.getConfigInfo().ignoredList.add(item);
-                }
-                break;
             }
         }
         try {
@@ -471,46 +486,6 @@ public class fragment_config extends Fragment {
         } catch (Exception ex) {
 
         }
-    }
-
-    void RemoveItem(List<HashMap<String, Object>> list, HashMap<String, Object> app) {
-        String pkgName = app.get("packageName").toString();
-        HashMap<String, Object> item = null;
-        for (HashMap<String, Object> row : list) {
-            if (row.get("packageName") != null && row.get("packageName").toString().equals(pkgName)) {
-                item = row;
-            }
-        }
-        if (item != null)
-            list.remove(item);
-    }
-
-    //销毁：释放内存资源
-    @Override
-    public void onDestroy() {
-        installedList.clear();
-
-        SetListData(installedList, config_defaultlist);
-        SetListData(installedList, config_gamelist);
-        SetListData(installedList, config_powersavelist);
-
-        for (int i = 0; i < ConfigInfo.getConfigInfo().defaultList.size(); i++) {
-            ConfigInfo.getConfigInfo().defaultList.get(i).remove("icon");
-        }
-        for (int i = 0; i < ConfigInfo.getConfigInfo().gameList.size(); i++) {
-            ConfigInfo.getConfigInfo().gameList.get(i).remove("icon");
-        }
-        for (int i = 0; i < ConfigInfo.getConfigInfo().powersaveList.size(); i++) {
-            ConfigInfo.getConfigInfo().powersaveList.get(i).remove("icon");
-        }
-        for (int i = 0; i < ConfigInfo.getConfigInfo().fastList.size(); i++) {
-            ConfigInfo.getConfigInfo().fastList.get(i).remove("icon");
-        }
-        for (int i = 0; i < ConfigInfo.getConfigInfo().ignoredList.size(); i++) {
-            ConfigInfo.getConfigInfo().ignoredList.get(i).remove("icon");
-        }
-
-        super.onDestroy();
     }
 
     enum Configs {

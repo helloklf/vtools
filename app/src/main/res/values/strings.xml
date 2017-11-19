@@ -3,6 +3,11 @@
         <item>com.teslacoilsw.launcher</item>
     </string-array>
 
+    <string name="btn_confirm">确定</string>
+    <string name="btn_exit">退出</string>
+    <string name="btn_refresh">重试</string>
+    <string name="error_su_timeout">等待超时，请确保你的Root管理器正在后台运行，并重试！</string>
+
     <string name="error_root">抱歉，没有Root权限无法运行此应用！</string>
     <string name="error_busybox">抱歉，没有安装Busybox，无法运行此应用！</string>
     <string name="error_unsupport_uri">不支持的路径格式，非常抱歉。请向开发者反馈此问题！</string>
@@ -119,13 +124,13 @@
     <string name="accessbility_dynconfig_desc">仅限骁龙820、821、835。为单个应用设置CPU、GPU频率，具体设置请在在本应用性能配置中配</string>
     <string name="accessbility_bp">充电保护 *实验性</string>
     <string name="accessbility_bp_desc">限制手机只能充电到指定百分比。支持设备较少，如出现手机不充电的情况，请关闭此功能并重启手机！</string>
-    <string name="accessbility_bp_level_desc">电量达到此值时停止充电，并在电量低于此值-10时恢复充电。（推荐值20-99，百分百）输完回车保存。如果你发现此功能不支持你的设备，请务必关闭电池保护功能！</string>
+    <string name="accessbility_bp_level_desc">电量达到此值时停止充电，并在电量低于此值-20时恢复充电。（推荐值20-99，百分百）输完回车保存。如果你发现此功能不支持你的设备，请务必关闭电池保护功能！</string>
     <string name="accessbility_debug">调试模式</string>
     <string name="accessbility_debug_desc">在后台运行时显示完整的动作提示，用于测试软件是否正常工作</string>
     <string name="accessbility_delay">延迟启动</string>
     <string name="accessbility_delay_desc">如果出现开机后应用已启动但未正确加载配置文件，可尝试开启此项</string>
 
-    <string name="menu_home">首页</string>
+    <string name="menu_home">概况</string>
     <string name="menu_vboot">双系统工具</string>
     <string name="menu_cofig">性能配置</string>
     <string name="menu_additional">附加功能</string>

@@ -12,9 +12,7 @@
         android:showDividers="beginning"
         android:shrinkColumns="0,1,2"
         android:stretchColumns="0,1,2,3">
-
         <TableRow android:layout_marginTop="5dp">
-
             <TextView
                 android:layout_span="2"
                 android:textSize="12dp"

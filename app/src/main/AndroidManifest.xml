@@ -3,13 +3,14 @@
     package="com.omarea.vboot">
 
     <uses-permission android:name="android.permission.BATTERY_STATS" />
+    <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
      
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <!--
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
+    <!--
     -->
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -64,8 +65,6 @@
             android:excludeFromRecents="false"
             android:exported="true"
             android:label="@string/app_name"
-            android:launchMode="singleInstance"
-            android:lockTaskMode="never"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -81,26 +80,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".vbootresize"
-            android:configChanges="keyboardHidden|orientation"
-            android:label="@string/title_vbootresize"
-            android:lockTaskMode="never"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
             android:name=".rom2zip"
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/title_activity_rom2zip"
-            android:lockTaskMode="never"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".accessibility_settings"
             android:configChanges="keyboardHidden|orientation"
-            android:excludeFromRecents="false"
+            android:excludeFromRecents="true"
             android:label="微工具箱增强服务"
-            android:launchMode="singleInstance"
-            android:lockTaskMode="never"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
@@ -109,8 +98,6 @@
             android:excludeFromRecents="false"
             android:exported="true"
             android:label="@string/app_name"
-            android:launchMode="singleInstance"
-            android:lockTaskMode="never"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -126,7 +113,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
-
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
@@ -134,7 +120,11 @@
         <service
             android:name=".BatteryService"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.omarea.vboot.BatteryService" />
+            </intent-filter>
+        </service>
 
     </application>
 

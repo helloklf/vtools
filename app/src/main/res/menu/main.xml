@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:title=""
+        android:icon="@drawable/graph"
+        android:id="@+id/action_graph"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom" />
+    <item
+        android:title=""
         android:icon="@drawable/settings"
         android:id="@+id/action_settings"
         android:orderInCategory="100"

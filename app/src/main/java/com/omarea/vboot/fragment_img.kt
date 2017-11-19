@@ -1,7 +1,5 @@
 package com.omarea.vboot
 
-import android.content.DialogInterface
-import kotlinx.android.synthetic.main.layout_img.*
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -11,15 +9,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.ListView
 import android.widget.SimpleAdapter
-
-import com.omarea.shared.FileSelectType
 import com.omarea.shared.cmd_shellTools
-
+import com.omarea.shell.units.BackupRestoreUnit
+import kotlinx.android.synthetic.main.activity_vbootresize.*
+import kotlinx.android.synthetic.main.layout_img.*
 import java.io.File
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 
 class fragment_img : Fragment() {
@@ -69,13 +65,13 @@ class fragment_img : Fragment() {
                         builder.setNegativeButton(android.R.string.cancel, null)
                         builder.setPositiveButton(android.R.string.yes) { dialog, which ->
                             //导出boot
-                            cmdshellTools!!.SaveBoot()
+                            BackupRestoreUnit(activity,progressBar2).SaveBoot()
                         }
                         builder.setMessage(context.getString(R.string.backup_boot_exists))
                         builder.create().show()
                     } else {
                         //导出boot
-                        cmdshellTools!!.SaveBoot()
+                        BackupRestoreUnit(activity,progressBar2).SaveBoot()
                     }
                 }
                 1 -> {
@@ -85,7 +81,7 @@ class fragment_img : Fragment() {
                         builder.setTitle("确定刷入/sdcard/boot.img？")
                         builder.setNegativeButton(android.R.string.cancel, null)
                         builder.setPositiveButton(android.R.string.yes) { dialog, which ->
-                            cmdshellTools!!.FlashBoot("/sdcard/boot.img")
+                            BackupRestoreUnit(activity,progressBar2).FlashBoot("/sdcard/boot.img")
                         }
                         builder.setMessage("此操作将刷入/sdcard/boot.img到系统Boot分区，我十分不推荐你这么做，刷入无效的Boot文件可能导致你的设备无法启动。如果你没有办法在设备无法启动时紧急恢复。")
                         builder.create().show()
@@ -112,13 +108,13 @@ class fragment_img : Fragment() {
                         builder.setNegativeButton(android.R.string.cancel, null)
                         builder.setPositiveButton(android.R.string.yes) { dialog, which ->
                             //导出rec
-                            cmdshellTools!!.SaveRecovery()
+                            BackupRestoreUnit(activity,progressBar2).SaveRecovery()
                         }
                         builder.setMessage(context.getString(R.string.backup_rec_exists))
                         builder.create().show()
                     } else {
                         //导出rec
-                        cmdshellTools!!.SaveRecovery()
+                        BackupRestoreUnit(activity,progressBar2).SaveRecovery()
                     }
                 }
                 3 -> {
@@ -128,7 +124,7 @@ class fragment_img : Fragment() {
                         builder.setTitle("确认刷入/sdcard/recovery.img？")
                         builder.setNegativeButton(android.R.string.cancel, null)
                         builder.setPositiveButton(android.R.string.yes) { dialog, which ->
-                            cmdshellTools!!.FlashRecovery("/sdcard/recovery.img")
+                            BackupRestoreUnit(activity, progressBar2).FlashRecovery("/sdcard/recovery.img")
                         }
                         builder.setMessage("此操作将刷入/sdcard/reovery.img到系统Recovery分区，应用无法验证该文件是否有效，你需要自己确保该recovery镜像适合本设备使用！")
                         builder.create().show()

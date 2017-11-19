@@ -43,8 +43,8 @@ object EventBus {
         if (handlers === null)
             return
 
-        for (i in handlers!!.indices) {
-            handlers!!.get(i).messageRecived(message)
+        for (i in handlers.indices) {
+            handlers.get(i).messageRecived(message)
         }
     }
 
@@ -57,7 +57,7 @@ object EventBus {
         if (handlers === null)
             return
 
-        for (i in handlers!!.indices) {
+        for (i in handlers.indices) {
             handlers.get(i).messageRecived(null)
         }
     }

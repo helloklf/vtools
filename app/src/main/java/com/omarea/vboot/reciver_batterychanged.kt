@@ -3,17 +3,17 @@ package com.omarea.vboot
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.BatteryManager
 import android.os.Handler
 import android.os.Message
 import android.widget.Toast
 import com.omarea.shared.*
-import com.omarea.shell.Props
 import java.io.DataOutputStream
 import java.io.IOException
+import java.util.*
 
 class reciver_batterychanged : BroadcastReceiver() {
-
     private var p: Process? = null
     internal var out: DataOutputStream? = null
     private var bp:Boolean = false
@@ -56,6 +56,8 @@ class reciver_batterychanged : BroadcastReceiver() {
     }
 
     internal var context: Context? = null
+    private var sharedPreferences: SharedPreferences? = null
+    internal var listener: SharedPreferences.OnSharedPreferenceChangeListener? = null
     private val myHandler = object : Handler() {
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
@@ -70,10 +72,10 @@ class reciver_batterychanged : BroadcastReceiver() {
 
     //快速充电
     private fun FastCharger() {
-        if (!ConfigInfo.getConfigInfo().QcMode)
+        if (!sharedPreferences!!.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false))
             return
 
-        if (ConfigInfo.getConfigInfo().DebugMode)
+        if (sharedPreferences!!.getBoolean(SpfConfig.DEBUG, false))
             ShowMsg("充电器已连接！", false)
         DoCmd(Consts.FastChanger)
     }
@@ -82,12 +84,16 @@ class reciver_batterychanged : BroadcastReceiver() {
     internal var lastChangerState = false
 
     override fun onReceive(context: Context, intent: Intent) {
+        if (sharedPreferences == null) {
+            sharedPreferences = context.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
+            listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key -> }
+            sharedPreferences!!.registerOnSharedPreferenceChangeListener(listener)
+        }
+
         this.context = context
         try {
             val action = intent.action
             val onChanger = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1) == BatteryManager.BATTERY_STATUS_CHARGING
-            val r = intent.getIntExtra(BatteryManager.EXTRA_STATUS, 0);
-            val plugged = r != BatteryManager.BATTERY_STATUS_DISCHARGING
             val batteryLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
 
             if (lastBatteryLeavel != batteryLevel) {
@@ -96,9 +102,9 @@ class reciver_batterychanged : BroadcastReceiver() {
             }
 
             //BatteryProtection
-            if(ConfigInfo.getConfigInfo().BatteryProtection){
+            if(sharedPreferences!!.getBoolean(SpfConfig.CHARGE_SPF_BP, false)){
                 if(onChanger){
-                    if(batteryLevel >= ConfigInfo.getConfigInfo().BatteryProtectionLevel) {
+                    if(batteryLevel >= sharedPreferences!!.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85)) {
                         bp = true
                         DoCmd(Consts.DisableChanger)
                     }
@@ -106,14 +112,10 @@ class reciver_batterychanged : BroadcastReceiver() {
                 //电量不足，恢复充电功能
                 else if(action == Intent.ACTION_BATTERY_LOW) {
                     DoCmd(Consts.ResumeChanger)
-                    Toast.makeText(this.context,"电池电量低，当前电量：" + batteryLevel,Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this.context,"电池电量低，请及时充电！",Toast.LENGTH_SHORT).show()
                     bp = false
                 }
-                else if(bp && batteryLevel!=-1 && batteryLevel < ConfigInfo.getConfigInfo().BatteryProtectionLevel - 10){
-                    /*
-                    if(Props.getProp("vtools.bp") == "1"){
-                    }
-                    */
+                else if(bp && batteryLevel!=-1 && batteryLevel < sharedPreferences!!.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85) - 20){
                     //电量低于保护级别10
                     DoCmd(Consts.ResumeChanger)
                     bp = false
@@ -156,7 +158,7 @@ class reciver_batterychanged : BroadcastReceiver() {
 
     private fun entryFastChanger(onChanger: Boolean) {
         if (AppShared.system_inited && onChanger) {
-            if (ConfigInfo.getConfigInfo().QcMode) {
+            if (sharedPreferences!!.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
                 FastCharger()
             }
         }

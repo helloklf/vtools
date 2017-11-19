@@ -13,6 +13,10 @@ import android.widget.SimpleAdapter
 import android.widget.TabHost
 import com.omarea.shared.Consts
 import com.omarea.shared.cmd_shellTools
+import com.omarea.shell.units.FlymeUnit
+import com.omarea.shell.units.FullScreenSUnit
+import com.omarea.shell.units.NubiaUnit
+import com.omarea.shell.units.QQStyleUnit
 import java.util.*
 
 
@@ -73,32 +77,36 @@ class fragment_addin : Fragment() {
         val stringBuilder = StringBuilder()
         when (position) {
             0 -> {
-                stringBuilder.append(Consts.RMQQStyles)
+                QQStyleUnit().DisableQQStyle()
+                return
             }
             1 -> {
-                stringBuilder.append(Consts.ResetQQStyles)
+                QQStyleUnit().RestoreQQStyle()
+                return
             }
             2 -> {
                 stringBuilder.append(Consts.MountSystemRW)
                 stringBuilder.append(Consts.MiuiUninstall)
             }
             3 -> {
-                stringBuilder.append(Consts.MountSystemRW)
-                stringBuilder.append(Consts.NubiaUninstall)
+                NubiaUnit().DisableSomeApp()
+                return
             }
             4 -> {
                 stringBuilder.append(Consts.MountSystemRW)
                 stringBuilder.append(Consts.FlymeUninstall)
             }
             5 -> {
-                //stringBuilder.append("settings put global policy_control immersive.full=*")
-                stringBuilder.append("settings put global policy_control immersive.full=apps,-android,-com.android.systemui,-com.tencent.mobileqq,-com.tencent.tim,-com.tencent.mm")
+                FullScreenSUnit().FullScreen()
+                return
             }
             6 -> {
-                stringBuilder.append("settings put global policy_control null")
+                FullScreenSUnit().ExitFullScreen()
+                return
             }
             7 -> {
-                stringBuilder.append("setprop persist.sys.static_blur_mode true")
+                FlymeUnit().StaticBlur()
+                return
             }
         }
         cmdshellTools!!.DoCmd(stringBuilder.toString())
@@ -111,19 +119,14 @@ class fragment_addin : Fragment() {
         val listItem = ArrayList<HashMap<String, Any>>()/*在数组中存放数据*/
 
         listItem.add(createItem("内存清理", "Linux标准缓存清理命令：echo 3 > /proc/sys/vm/drop_caches"))
-        listItem.add(createItem("开启ZRAM 500M", "该功能需要内核支持。size=0.5GB swappiness=100"))
-        listItem.add(createItem("开启ZRAM 1GB", "该功能需要内核支持。size=1.0GB swappiness=100"))
-        listItem.add(createItem("开启ZRAM 2GB", "该功能需要内核支持。size=1.8GB swappiness=100"))
-        listItem.add(createItem("调整DPI为410", "部分ROM不支持调整，可能出现UI错误。需要重启。"))
-        listItem.add(createItem("调整DPI为440", "部分ROM不支持调整，可能出现UI错误。需要重启。"))
-        listItem.add(createItem("调整DPI为480", "部分ROM不支持调整，可能出现UI错误。需要重启。"))
-        listItem.add(createItem("干掉温控模块", "可能会对系统造成一些影响，请谨慎使用，需要重启手机。此功能对小米5较新系统无效"))
-        listItem.add(createItem("恢复温控模块", "需要重启手机"))
+        listItem.add(createItem("干掉温控模块", "这可以确保手机性能更加稳定，但会显著增加发热，同时也会导致MIUI系统的CPU智能调度失效，需要重启手机。"))
+        listItem.add(createItem("恢复温控模块", "如果你后悔了想把文科还原回来，可以点这个。需要重启手机"))
         listItem.add(createItem("删除锁屏密码", "如果你忘了锁屏密码，或者恢复系统后密码不正确，这能帮你解决。会重启手机"))
-        listItem.add(createItem("强制打盹", "实验性，强制进入Doze模式（如果系统支持）"))
+        //listItem.add(createItem("强制打盹", "实验性，强制进入Doze模式（如果系统支持）"))
         listItem.add(createItem("禁止充电", "停止对电池充电，同时使用USB电源为手机供电。（与充电加速和电池保护功能冲突！）"))
         listItem.add(createItem("恢复充电", "恢复对电池充电，由设备自行管理充放。"))
-        listItem.add(createItem("机型伪装", "将机型信息改为OPPO R11 Plus，以便在王者荣耀或获得专属优化体验。（会导致小米5 Home键轻触不可用！！！）"))
+        listItem.add(createItem("改机型为OPPO R11", "将机型信息改为OPPO R11 Plus，以便在王者荣耀或获得专属优化体验。（会导致部分设备软件fc）"))
+        listItem.add(createItem("改机型为vivo X20", "将机型信息改为vivo X20，据说比改OPPO R11还好用？（会导致部分设备软件fc）"))
         listItem.add(createItem("build.prop参数还原", "使用了DPI修改和机型伪装的小伙伴，可以点这个还原到上次修改前的状态"))
 
 
@@ -155,101 +158,31 @@ class fragment_addin : Fragment() {
                 stringBuilder.append("echo 3 > /proc/sys/vm/drop_caches")
             }
             1 -> {
-                stringBuilder.append(
-                        "swapoff /dev/block/zram0\n" +
-                                "echo 1 > /sys/block/zram0/reset\n" +
-                                "echo 597000000 > /sys/block/zram0/disksize\n" +
-                                "mkswap /dev/block/zram0 &> /dev/null\n" +
-                                "swapon /dev/block/zram0 &> /dev/null\n" +
-                                "echo 100 > /proc/sys/vm/swappiness\n")
-            }
-            2 -> {
-                stringBuilder.append(
-                        "swapoff /dev/block/zram0\n" +
-                                "echo 1 > /sys/block/zram0/reset\n" +
-                                "echo 1097000000 > /sys/block/zram0/disksize\n" +
-                                "mkswap /dev/block/zram0 &> /dev/null\n" +
-                                "swapon /dev/block/zram0 &> /dev/null\n" +
-                                "echo 100 > /proc/sys/vm/swappiness\n")
-            }
-            3 -> {
-                stringBuilder.append(
-                        "swapoff /dev/block/zram0\n" +
-                                "echo 1 > /sys/block/zram0/reset\n" +
-                                "echo 2097000000 > /sys/block/zram0/disksize\n" +
-                                "mkswap /dev/block/zram0 &> /dev/null\n" +
-                                "swapon /dev/block/zram0 &> /dev/null\n" +
-                                "echo 100 > /proc/sys/vm/swappiness\n")
-            }
-            4 -> {
-                stringBuilder.append(Consts.MountSystemRW)
-                stringBuilder.append("sed '/ro.sf.lcd_density=/'d /system/build.prop > /data/build.prop\n")
-                stringBuilder.append("sed '\$aro.sf.lcd_density=410' /data/build.prop > /data/build2.prop\n")
-                stringBuilder.append("cp /system/build.prop /system/build.bak.prop\n")
-                stringBuilder.append("cp /data/build2.prop /system/build.prop\n")
-                stringBuilder.append("rm /data/build.prop\n")
-                stringBuilder.append("rm /data/build2.prop\n")
-                stringBuilder.append("chmod 0644 /system/build.prop\n")
-                stringBuilder.append("wm size 1080x1920\n")
-                stringBuilder.append("sync\n")
-                stringBuilder.append("reboot\n")
-            }
-            5 -> {
-                stringBuilder.append(Consts.MountSystemRW)
-                stringBuilder.append("sed '/ro.sf.lcd_density=/'d /system/build.prop > /data/build.prop\n")
-                stringBuilder.append("sed '\$aro.sf.lcd_density=440' /data/build.prop > /data/build2.prop\n")
-                stringBuilder.append("cp /system/build.prop /system/build.bak.prop\n")
-                stringBuilder.append("cp /data/build2.prop /system/build.prop\n")
-                stringBuilder.append("rm /data/build.prop\n")
-                stringBuilder.append("rm /data/build2.prop\n")
-                stringBuilder.append("chmod 0644 /system/build.prop\n")
-                stringBuilder.append("wm size 1080x1920\n")
-                stringBuilder.append("sync\n")
-                stringBuilder.append("reboot\n")
-            }
-            6 -> {
-                stringBuilder.append(Consts.MountSystemRW)
-                stringBuilder.append("sed '/ro.sf.lcd_density=/'d /system/build.prop > /data/build.prop\n")
-                stringBuilder.append("sed '\$aro.sf.lcd_density=480' /data/build.prop > /data/build2.prop\n")
-                stringBuilder.append("cp /system/build.prop /system/build.bak.prop\n")
-                stringBuilder.append("cp /data/build2.prop /system/build.prop\n")
-                stringBuilder.append("rm /data/build.prop\n")
-                stringBuilder.append("rm /data/build2.prop\n")
-                stringBuilder.append("chmod 0644 /system/build.prop\n")
-                stringBuilder.append("wm size 1080x1920\n")
-                stringBuilder.append("sync\n")
-                stringBuilder.append("reboot\n")
-            }
-            7 -> {
                 stringBuilder.append(Consts.MountSystemRW)
                 stringBuilder.append(Consts.RMThermal)
             }
-            8 -> {
+            2 -> {
                 stringBuilder.append(Consts.MountSystemRW)
                 stringBuilder.append(Consts.ResetThermal)
             }
-            9 -> {
+            3 -> {
                 stringBuilder.append(Consts.DeleteLockPwd)
             }
-            10 -> {
-                stringBuilder.append(Consts.ForceDoze)
-            }
-            11 -> {
+            4 -> {
                 stringBuilder.append(Consts.DisableChanger)
             }
-            12 -> {
+            5 -> {
                 stringBuilder.append(Consts.ResumeChanger)
             }
-            13 -> {
+            6 -> {
                 stringBuilder.append(Consts.MountSystemRW)
                 stringBuilder.append(
                         "busybox sed 's/^ro.product.model=.*/ro.product.model=OPPO R11 Plus/' /system/build.prop > /data/build.prop;" +
-                        "busybox sed -i 's/^ro.product.brand=.*/ro.product.brand=OPPO/' /data/build.prop;" +
-                        "busybox sed -i 's/^ro.product.brand=.*/ro.product.brand=OPPO/' /data/build.prop;" +
-                        "busybox sed -i 's/^ro.product.name=.*/ro.product.name=R11 Plus/' /data/build.prop;" +
-                        "busybox sed -i 's/^ro.product.device=.*/ro.product.device=R11 Plus/' /data/build.prop;" +
-                        "busybox sed -i 's/^ro.build.product=.*/ro.build.product=R11 Plus/' /data/build.prop;" +
-                        "busybox sed -i 's/^ro.product.manufacturer=.*/ro.product.manufacturer=OPPO/' /data/build.prop;")
+                                "busybox sed -i 's/^ro.product.brand=.*/ro.product.brand=OPPO/' /data/build.prop;" +
+                                "busybox sed -i 's/^ro.product.name=.*/ro.product.name=R11 Plus/' /data/build.prop;" +
+                                "busybox sed -i 's/^ro.product.device=.*/ro.product.device=R11 Plus/' /data/build.prop;" +
+                                "busybox sed -i 's/^ro.build.product=.*/ro.build.product=R11 Plus/' /data/build.prop;" +
+                                "busybox sed -i 's/^ro.product.manufacturer=.*/ro.product.manufacturer=OPPO/' /data/build.prop;")
                 stringBuilder.append("cp /system/build.prop /system/build.bak.prop\n")
                 stringBuilder.append("cp /data/build.prop /system/build.prop\n")
                 stringBuilder.append("rm /data/build.prop\n")
@@ -257,7 +190,23 @@ class fragment_addin : Fragment() {
                 stringBuilder.append("sync\n")
                 stringBuilder.append("reboot\n")
             }
-            14 -> {
+            7 -> {
+                stringBuilder.append(Consts.MountSystemRW)
+                stringBuilder.append(
+                        "busybox sed 's/^ro.product.model=.*/ro.product.model=vivo X20/' /system/build.prop > /data/build.prop;" +
+                                "busybox sed -i 's/^ro.product.brand=.*/ro.product.brand=vivo/' /data/build.prop;" +
+                                "busybox sed -i 's/^ro.product.name=.*/ro.product.name=X20/' /data/build.prop;" +
+                                "busybox sed -i 's/^ro.product.device=.*/ro.product.device=X20/' /data/build.prop;" +
+                                "busybox sed -i 's/^ro.build.product=.*/ro.build.product=X20/' /data/build.prop;" +
+                                "busybox sed -i 's/^ro.product.manufacturer=.*/ro.product.manufacturer=vivo/' /data/build.prop;")
+                stringBuilder.append("cp /system/build.prop /system/build.bak.prop\n")
+                stringBuilder.append("cp /data/build.prop /system/build.prop\n")
+                stringBuilder.append("rm /data/build.prop\n")
+                stringBuilder.append("chmod 0644 /system/build.prop\n")
+                stringBuilder.append("sync\n")
+                stringBuilder.append("reboot\n")
+            }
+            8 -> {
                 stringBuilder.append(Consts.MountSystemRW)
                 stringBuilder.append("if [ -f '/system/build.bak.prop' ];then rm /system/build.prop;cp /system/build.bak.prop /system/build.prop;chmod 0644 /system/build.prop; sync; reboot; fi;")
             }

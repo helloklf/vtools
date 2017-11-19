@@ -4,20 +4,8 @@
     android:layout_height="match_parent"
     tools:context="com.omarea.vboot.fragment_helpinfo">
 
-    <ScrollView
+
+    <WebView android:id="@+id/help_webview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView android:autoLink="web"
-                android:padding="10dp"
-                android:text="@string/helpinfo"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-    </ScrollView>
+        android:layout_height="match_parent" />
 </FrameLayout>

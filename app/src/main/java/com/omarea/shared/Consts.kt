@@ -23,7 +23,6 @@ object Consts {
 
     val ClearCache = "echo 3 > /proc/sys/vm/drop_caches"
 
-
     val MountSystemRW =
             "busybox mount -o rw,remount /system\n" +
                     "mount -o rw,remount /system\n" +
@@ -43,58 +42,16 @@ object Consts {
 
     val InstallPowerToggleConfigToCache = "cp /sdcard/Android/data/com.omarea.vboot/powercfg.sh /cache/powercfg.sh\n" + "chmod 0777 /cache/powercfg.sh\n"
 
-    val ExecuteConfig = "sh /cache/init.qcom.post_boot.sh;setprop vtools.powercfg null;\n"
-    val ToggleDefaultMode = "sh /cache/powercfg.sh balance;setprop vtools.powercfg default;\n"
-    val ToggleGameMode = "sh /cache/powercfg.sh performance;setprop vtools.powercfg game;\n"
-    val TogglePowersaveMode = "sh /cache/powercfg.sh powersave;setprop vtools.powercfg powersave;\n"
-    val ToggleFastMode = "sh /cache/powercfg.sh fast;setprop vtools.powercfg fast;\n"
+    val ExecuteConfig = "setprop vtools.powercfg null;/cache/init.qcom.post_boot.sh;\n"
+    val ToggleDefaultMode = "setprop vtools.powercfg default;/cache/powercfg.sh balance;\n"
+    val ToggleGameMode = "setprop vtools.powercfg game;/cache/powercfg.sh performance;\n"
+    val TogglePowersaveMode = "setprop vtools.powercfg powersave;/cache/powercfg.sh powersave;\n"
+    val ToggleFastMode = "setprop vtools.powercfg fast;/cache/powercfg.sh fast;\n"
 
     val DisableSELinux = "setenforce 0\n"
 
-    val NubiaUninstall =
-            "pm disable com.android.cellbroadcastreceiver\n" +
-                    "pm disable com.android.printspooler\n" +
-                    "pm disable com.android.galaxy4\n" +
-                    "pm disable com.android.noisefield\n" +
-                    "pm disable com.android.phasebeam\n" +
-                    "pm disable com.android.wallpaper.holospiral\n" +
-                    "pm disable com.android.dreams.basic\n" +
-                    "pm disable com.google.android.configupdater\n" +
-                    "pm disable com.google.android.syncadapters.contacts\n" +
-                    "pm disable com.google.android.syncadapters.calendar\n" +
-                    "pm disable com.google.android.feedback\n" +
-                    "pm disable com.google.android.backuptransport\n" +
-                    "pm disable com.android.dreams.phototable\n" +
-                    "pm disable com.google.android.partnersetup\n" +
-                    "pm disable com.google.android.gsf\n" +
-                    "pm disable com.google.android.gsf.login\n" +
-                    "pm disable com.google.android.gms\n" +
-                    "pm disable com.chaozh.iReaderNubia\n" +
-                    "pm disable cn.nubia.presetpackageinstaller\n" +
-                    "pm disable cn.nubia.factory\n" +
-                    "pm disable cn.nubia.neostore\n" +
-                    "pm disable cn.nubia.bootanimationinfo\n" +
-                    "pm disable cn.nubia.ultrapower.launcher\n" +
-                    "pm disable cn.nubia.email\n" +
-                    "pm disable cn.nubia.exchange\n" +
-                    "pm disable cn.nubia.video\n" +
-                    "pm disable cn.nubia.nbgame\n" +
-                    "pm disable cn.nubia.zbiglauncher.preset\n" +
-                    "pm disable cn.nubia.phonemanualintegrate.preset\n" +
-                    "pm disable cn.nubia.music.preset\n" +
-                    "pm disable cn.nubia.nubiashop\n" +
-                    "pm disable com.yulore.framework\n" +
-                    "pm disable cn.nubia.yulorepage\n" +
-                    "pm disable cn.nubia.festivalwallpaper\n" +
-                    "pm disable cn.nubia.gallerylockscreen\n" +
-                    "pm disable cn.nubia.wps_moffice\n" +
-                    "pm disable cn.nubia.aftersale\n" +
-                    "pm disable cn.nubia.aftersale\n" +
-                    "pm disable com.sohu.inputmethod.sogou.nubia\n" +
-                    "pm disable com.dolby\n" +
-                    "pm disable com.dolby.daxappUI\n"
-
-    val FlymeUninstall = "rm -rf /system/priv-app/EasyLauncher\n"+
+    val FlymeUninstall =
+            "rm -rf /system/priv-app/EasyLauncher\n"+
             "rm -rf /system/app/PrintSpooler\n"+
             "rm -rf /system/app/Map\n"+
             "rm -rf /system/priv-app/EBook\n"+
@@ -163,36 +120,6 @@ object Consts {
     val RebootOEM_EDL = "reboot edl\n"
     val Reboot = "reboot\n"
     val RebootHot = "busybox killall system_server\n"
-
-    val RMQQStyles =
-            "rm -rf /storage/emulated/0/tencent/MobileQQ/.font_info\n" +
-                    "echo \"\" > /storage/emulated/0/tencent/MobileQQ/.font_info\n" +
-                    "rm -rf /storage/emulated/0/tencent/MobileQQ/font_info\n" +
-                    "echo \"\" > /storage/emulated/0/tencent/MobileQQ/font_info\n" +
-                    "rm -rf /sdcard/tencent/MobileQQ/.font_info\n" +
-                    "echo \"\" > /sdcard/tencent/MobileQQ/.font_info\n" +
-                    "rm -rf /sdcard/tencent/MobileQQ/font_info\n" +
-                    "echo \"\" > /sdcard/tencent/MobileQQ/font_info\n" +
-                    "rm -rf /data/data/com.tencent.mobileqq/files/bubble_info\n" +
-                    "echo \"\" > /data/data/com.tencent.mobileqq/files/bubble_info\n" +
-                    "rm -rf /data/data/com.tencent.mobileqq/files/pendant_info\n" +
-                    "echo \"\" > /data/data/com.tencent.mobileqq/files/pendant_info\n" +
-                    "rm -rf /storage/emulated/0/tencent/MobileQQ/.pendant\n" +
-                    "echo \"\" > /storage/emulated/0/tencent/MobileQQ/.pendant\n" +
-                    "rm -rf /sdcard/tencent/MobileQQ/.pendant\n" +
-                    "echo \"\" > /sdcard/tencent/MobileQQ/.pendant\n" +
-                    "pgrep com.tencent.mobileqq |xargs kill -9\n"
-
-    val ResetQQStyles =
-            "rm -rf /storage/emulated/0/tencent/MobileQQ/font_info\n" +
-                    "rm -rf /sdcard/tencent/MobileQQ/font_info\n" +
-                    "rm -rf /storage/emulated/0/tencent/MobileQQ/.font_info\n" +
-                    "rm -rf /sdcard/tencent/MobileQQ/.font_info\n" +
-                    "rm -rf /storage/emulated/0/tencent/MobileQQ/.pendant\n" +
-                    "rm -rf /sdcard/tencent/MobileQQ/.pendant\n" +
-                    "rm -rf /data/data/com.tencent.mobileqq/files/bubble_info\n" +
-                    "rm -rf /data/data/com.tencent.mobileqq/files/pendant_info\n" +
-                    "pgrep com.tencent.mobileqq |xargs kill -9\n"
 
     val RMThermal =
             "cp /system/vendor/bin/thermal-engine /system/vendor/bin/thermal-engine.bak\n" +

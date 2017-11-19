@@ -16,6 +16,7 @@ import android.view.View.GONE
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.CheckBox
+import android.widget.Toast
 import com.omarea.shared.cmd_shellTools
 import com.omarea.shared.xposed_check
 import com.omarea.ui.list_adapter2
@@ -128,18 +129,27 @@ class fragment_xposed : Fragment() {
     }
 
     override fun onPause() {
-        val listadapter = xposed_apps_dpifix.getAdapter() as list_adapter2
-        val states = listadapter.states
-        var dpifixList = thisview!!.getSharedPreferences("xposed_dpifix", MODE_WORLD_READABLE).edit().clear()
-
-        for (position in states.keys) {
-            if (states[position] == true) {
-                dpifixList.putBoolean(installedList[position].get("packageName").toString(), true)
-            }
-        }
-        dpifixList.commit()
-
         super.onPause()
+        try {
+            if (xposed_apps_dpifix.getAdapter() == null) {
+                return
+            }
+            val listadapter = xposed_apps_dpifix.getAdapter() as list_adapter2
+            if (listadapter == null) {
+                return
+            }
+            val states = listadapter.states
+            var dpifixList = thisview!!.getSharedPreferences("xposed_dpifix", MODE_WORLD_READABLE).edit().clear()
+
+            for (position in states.keys) {
+                if (states[position] == true) {
+                    dpifixList.putBoolean(installedList[position].get("packageName").toString(), true)
+                }
+            }
+            dpifixList.commit()
+        } catch (ex: Exception) {
+            Toast.makeText(thisview, ex.message, Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun loadList(): ArrayList<HashMap<String, Any>> {

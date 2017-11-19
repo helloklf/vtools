@@ -1,35 +1,57 @@
 #!/system/bin/sh
 # Copyright (c) 2012-2013, 2016, The Linux Foundation. All rights reserved.
 #
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#     * Redistributions of source code must retain the above copyright
+#       notice, this list of conditions and the following disclaimer.
+#     * Redistributions in binary form must reproduce the above copyright
+#       notice, this list of conditions and the following disclaimer in the
+#       documentation and/or other materials provided with the distribution.
+#     * Neither the name of The Linux Foundation nor
+#       the names of its contributors may be used to endorse or promote
+#       products derived from this software without specific prior written
+#       permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NON-INFRINGEMENT ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+# OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+# ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+
 target=`getprop ro.board.platform`
 
-chmod 0777 /sys/devices/system/cpu/cpu0/online
-chmod 0777 /sys/devices/system/cpu/cpu1/online
-chmod 0777 /sys/devices/system/cpu/cpu2/online
-chmod 0777 /sys/devices/system/cpu/cpu3/online
-chmod 0777 /sys/devices/system/cpu/cpu4/online
-chmod 0777 /sys/devices/system/cpu/cpu5/online
-chmod 0777 /sys/devices/system/cpu/cpu6/online
-chmod 0777 /sys/devices/system/cpu/cpu7/online
-
-#835
 case "$target" in
     "msm8998")
+    chmod 0644 /sys/devices/system/cpu/cpu0/online
+    chmod 0644 /sys/devices/system/cpu/cpu1/online
+    chmod 0644 /sys/devices/system/cpu/cpu2/online
+    chmod 0644 /sys/devices/system/cpu/cpu3/online
+    chmod 0644 /sys/devices/system/cpu/cpu4/online
+    chmod 0644 /sys/devices/system/cpu/cpu5/online
+    chmod 0644 /sys/devices/system/cpu/cpu6/online
+    chmod 0644 /sys/devices/system/cpu/cpu7/online
 
-	echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
-	echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/max_cpus
-	#echo 60 > /sys/devices/system/cpu/cpu4/core_ctl/busy_up_thres
-	#echo 30 > /sys/devices/system/cpu/cpu4/core_ctl/busy_down_thres
-	#echo 100 > /sys/devices/system/cpu/cpu4/core_ctl/offline_delay_ms
-	#echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/is_big_cluster
-	#echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/task_thres
+	echo 2 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
+	echo 60 > /sys/devices/system/cpu/cpu4/core_ctl/busy_up_thres
+	echo 30 > /sys/devices/system/cpu/cpu4/core_ctl/busy_down_thres
+	echo 100 > /sys/devices/system/cpu/cpu4/core_ctl/offline_delay_ms
+	echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/is_big_cluster
+	echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/task_thres
 
 	# Setting b.L scheduler parameters
 	echo 1 > /proc/sys/kernel/sched_migration_fixup
-	echo 35 > /proc/sys/kernel/sched_upmigrate
-	echo 20 > /proc/sys/kernel/sched_downmigrate
-	echo 70 > /proc/sys/kernel/sched_group_upmigrate
-	echo 50 > /proc/sys/kernel/sched_group_downmigrate
+	echo 95 > /proc/sys/kernel/sched_upmigrate
+	echo 90 > /proc/sys/kernel/sched_downmigrate
+	echo 100 > /proc/sys/kernel/sched_group_upmigrate
+	echo 95 > /proc/sys/kernel/sched_group_downmigrate
 	echo 0 > /proc/sys/kernel/sched_select_prev_cpu_us
 	echo 400000 > /proc/sys/kernel/sched_freq_inc_notify
 	echo 400000 > /proc/sys/kernel/sched_freq_dec_notify
@@ -74,11 +96,13 @@ case "$target" in
 	echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/ignore_hispeed_on_notif
 
     # re-enable thermal and BCL hotplug
-    echo 0 > /sys/module/msm_thermal/core_control/enabled
+    echo 1 > /sys/module/msm_thermal/core_control/enabled
 
     # Enable input boost configuration
     echo "0:1324800" > /sys/module/cpu_boost/parameters/input_boost_freq
     echo 40 > /sys/module/cpu_boost/parameters/input_boost_ms
+    echo "0:0 1:0 2:0 3:0 4:2208000 5:0 6:0 7:0" > /sys/module/cpu_boost/parameters/powerkey_input_boost_freq
+    echo 400 > /sys/module/cpu_boost/parameters/powerkey_input_boost_ms
     # Enable bus-dcvs
     for cpubw in /sys/class/devfreq/*qcom,cpubw*
     do
@@ -174,11 +198,16 @@ case "$target" in
 	echo N > /sys/module/lpm_levels/system/perf/perf-l2-dynret/idle_enabled
 	echo N > /sys/module/lpm_levels/system/perf/perf-l2-ret/idle_enabled
 	echo N > /sys/module/lpm_levels/parameters/sleep_disabled
-    echo 0-1 > /dev/cpuset/background/cpus
-    echo 0-3 > /dev/cpuset/system-background/cpus
+    echo 0 > /dev/cpuset/background/cpus
+    echo 0-2 > /dev/cpuset/system-background/cpus
     echo 4-7 > /dev/cpuset/foreground/boost/cpus
-    echo 0-2,4-7 > /dev/cpuset/foreground/cpus
+    echo 0-7 > /dev/cpuset/foreground/cpus
     echo 0 > /proc/sys/kernel/sched_boost
+
+    echo 1 > /sys/devices/system/cpu/cpu4/online
+    echo 1 > /sys/devices/system/cpu/cpu5/online
+    echo 1 > /sys/devices/system/cpu/cpu6/online
+    echo 1 > /sys/devices/system/cpu/cpu7/online
     ;;
 esac
 
@@ -197,11 +226,8 @@ case "$emmc_boot"
 esac
 
 # Post-setup services
-case "$target" in
-    "msm8994" | "msm8992" | "msm8996" | "msm8998" | "sdm660")
-        setprop sys.post_boot.parsed 1
-    ;;
-esac
+setprop sys.post_boot.parsed 1
+
 
 # Install AdrenoTest.apk if not already installed
 if [ -f /data/prebuilt/AdrenoTest.apk ]; then
@@ -244,9 +270,3 @@ case "$console_config" in
         echo "Enable console config to $console_config"
         ;;
 esac
-
-
-echo 1 > /sys/devices/system/cpu/cpu4/online
-echo 1 > /sys/devices/system/cpu/cpu5/online
-echo 1 > /sys/devices/system/cpu/cpu6/online
-echo 1 > /sys/devices/system/cpu/cpu7/online

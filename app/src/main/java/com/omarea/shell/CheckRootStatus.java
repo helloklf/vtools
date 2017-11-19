@@ -23,11 +23,8 @@ public class CheckRootStatus {
             InputStream errorStream = p.getErrorStream();
 
             while ((msg = new BufferedReader(new InputStreamReader(errorStream)).readLine()) != null) {
-                if (msg.toLowerCase().equals("permission denied")) {
-                    p.destroy();
-                    return false;
-                }
-                if(msg.equals("not found")){
+                msg = msg.toLowerCase();
+                if (msg.equals("permission denied") || msg.contains("not allowed") || msg.equals("not found")) {
                     p.destroy();
                     return false;
                 }

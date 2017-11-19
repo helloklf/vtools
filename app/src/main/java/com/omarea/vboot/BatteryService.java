@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 public class BatteryService extends Service {
     public BatteryService() {
     }
+
 
     @Override
     public IBinder onBind(Intent intent) {

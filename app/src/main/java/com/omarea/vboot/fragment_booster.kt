@@ -1,7 +1,8 @@
 package com.omarea.vboot
 
+import android.content.Context
 import android.content.Intent
-import android.content.pm.ApplicationInfo
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
@@ -20,6 +21,7 @@ import android.widget.TabHost
 import android.widget.TextView
 import com.omarea.shared.ConfigInfo
 import com.omarea.shared.ServiceHelper
+import com.omarea.shared.SpfConfig
 import com.omarea.shared.cmd_shellTools
 import com.omarea.ui.list_adapter
 import kotlinx.android.synthetic.main.layout_booster.*
@@ -31,8 +33,9 @@ class fragment_booster : Fragment() {
 
     lateinit internal var frameView: View
 
-    internal var cmdshellTools: cmd_shellTools? = null
     internal var thisview: main? = null
+    internal lateinit var spf: SharedPreferences
+    internal lateinit var editor: SharedPreferences.Editor
 
     override fun onResume() {
         val serviceState = ServiceHelper.serviceIsRunning(context)
@@ -50,12 +53,18 @@ class fragment_booster : Fragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         this.frameView = view!!
+        spf = context.getSharedPreferences(SpfConfig.BOOSTER_CONFIG_SPF, Context.MODE_PRIVATE)
+        editor = spf.edit()
 
-        cacheclear.isChecked = ConfigInfo.getConfigInfo().AutoClearCache
-        dozemod.isChecked = ConfigInfo.getConfigInfo().UsingDozeMod
+        cacheclear.isChecked = spf.getBoolean(SpfConfig.BOOSTER_SPF_CLEAR_CACHE, false)
+        dozemod.isChecked = spf.getBoolean(SpfConfig.BOOSTER_SPF_DOZE_MOD, false)
 
-        cacheclear.setOnCheckedChangeListener { buttonView, isChecked -> ConfigInfo.getConfigInfo().AutoClearCache = isChecked }
-        dozemod.setOnCheckedChangeListener { buttonView, isChecked -> ConfigInfo.getConfigInfo().UsingDozeMod = isChecked }
+        cacheclear.setOnCheckedChangeListener { buttonView, isChecked ->
+            editor.putBoolean(SpfConfig.BOOSTER_SPF_CLEAR_CACHE, isChecked).commit()
+        }
+        dozemod.setOnCheckedChangeListener { buttonView, isChecked ->
+            editor.putBoolean(SpfConfig.BOOSTER_SPF_DOZE_MOD, isChecked).commit()
+        }
 
         btn_booster_service_not_active.setOnClickListener {
             try {
@@ -135,11 +144,10 @@ class fragment_booster : Fragment() {
             item.put("icon", d)
             val pkgName = packageInfo.packageName
             item.put("select_state", false)
-            for (blitem in ConfigInfo.getConfigInfo().blacklist) {
-                if (blitem == pkgName) {
-                    item.put("select_state", true)
-                    break
-                }
+            if (spf.contains(pkgName)) {
+                item.put("select_state", true)
+            } else {
+                item.put("select_state", false)
             }
             item.put("name", packageInfo.loadLabel(packageManager))
             item.put("packageName", pkgName)
@@ -148,33 +156,16 @@ class fragment_booster : Fragment() {
     }
 
     internal fun ToogleBlackItem(pkgName: String) {
-        try {
-            if (!ConfigInfo.getConfigInfo().blacklist.contains(pkgName)) {
-                ConfigInfo.getConfigInfo().blacklist.add(pkgName)
-            } else {
-                ConfigInfo.getConfigInfo().blacklist.remove(pkgName)
-            }
-        } catch (ex: Exception) {
-
+        if (spf.contains(pkgName)) {
+            editor.remove(pkgName).commit()
+        } else {
+            editor.putBoolean(pkgName, true).commit()
         }
-
-    }
-
-    override fun onDestroy() {
-        if (installedList != null) {
-            installedList!!.clear()
-            SetListData(installedList!!, booster_blacklist)
-        }
-        cmdshellTools = null
-
-        super.onDestroy()
     }
 
     companion object {
-
         fun Create(thisView: main, cmdshellTools: cmd_shellTools): Fragment {
             val fragment = fragment_booster()
-            fragment.cmdshellTools = cmdshellTools
             fragment.thisview = thisView
             return fragment
         }

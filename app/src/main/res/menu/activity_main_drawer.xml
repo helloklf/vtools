@@ -13,11 +13,6 @@
             android:title="@string/menu_img" />
         <item
             android:visible="false"
-            android:id="@+id/nav_vboot"
-            android:icon="@drawable/ic_menu_vboot"
-            android:title="@string/menu_vboot" />
-        <item
-            android:visible="false"
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_menu_profile"
             android:title="@string/menu_cofig" />
@@ -51,7 +46,7 @@
             android:icon="@drawable/ic_menu_config"
             android:title="@string/menu_settings" />
         <item
-            android:visible="true"
+            android:visible="false"
             android:id="@+id/nav_help"
             android:icon="@drawable/ic_menu_help"
             android:title="@string/menu_help" />

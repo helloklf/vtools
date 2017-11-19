@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.omarea.shared.ConfigInfo
+import com.omarea.shared.SpfConfig
 import java.io.DataOutputStream
 import java.io.IOException
 
@@ -51,10 +52,12 @@ class receiver_boot_openswap : BroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        if(ConfigInfo.getConfigInfo().QcMode || ConfigInfo.getConfigInfo().BatteryProtection){
+        //判断是否开启了充电加速和充电保护，如果开启了，自动启动后台服务
+        var chargeConfig = context.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
+        if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) || chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_BP, false)) {
             try{
-                val intent = Intent( context, BatteryService::class.java)
-                context.startService(intent)
+                val i = Intent( context, BatteryService::class.java)
+                context.startService(i)
             } catch (ex:Exception){
 
             }
@@ -66,11 +69,11 @@ class receiver_boot_openswap : BroadcastReceiver() {
             if(ConfigInfo.getConfigInfo().AutoStartZRAM) {
                 var zramSize = ConfigInfo.getConfigInfo().AutoStartZRAMSize
                 sb.append("if [ `cat /sys/block/zram0/disksize` != '" + zramSize + "000000' ] ; then ")
-                sb.append("swapoff /dev/block/zram0 &> /dev/null;")
+                sb.append("swapoff /dev/block/zram0 >/dev/null 2>&1;")
                 sb.append("echo 1 > /sys/block/zram0/reset;")
                 sb.append("echo " + zramSize + "000000 > /sys/block/zram0/disksize;")
-                sb.append("mkswap /dev/block/zram0 &> /dev/null;")
-                sb.append("swapon /dev/block/zram0 &> /dev/null;")
+                sb.append("mkswap /dev/block/zram0 >/dev/null 2>&1;")
+                sb.append("swapon /dev/block/zram0 >/dev/null 2>&1;")
                 sb.append("fi;\n")
             }
 
