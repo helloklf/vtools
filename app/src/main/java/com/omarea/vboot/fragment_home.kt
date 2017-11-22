@@ -6,21 +6,14 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
-
-import com.omarea.shared.AppShared
-import com.omarea.shared.ConfigInfo
-import com.omarea.shared.Consts
-import com.omarea.shared.EventBus
-import com.omarea.shared.Events
-import com.omarea.shared.IEventSubscribe
-import com.omarea.shared.cmd_shellTools
+import com.omarea.shared.*
 import com.omarea.shell.DynamicConfig
 import com.omarea.shell.Files
-import com.omarea.shell.KernelProrp
+import com.omarea.shell.Platform
 import com.omarea.shell.Props
 import kotlinx.android.synthetic.main.layout_home.*
+import java.io.File
 
 
 class fragment_home : Fragment() {
@@ -40,12 +33,6 @@ class fragment_home : Fragment() {
     */
 
     internal lateinit var view: View
-
-    internal var eventSubscribe: IEventSubscribe = object : IEventSubscribe {
-        override fun messageRecived(message: Any?) {
-            setModeState()
-        }
-    }
 
     internal lateinit var cmdshellTools: cmd_shellTools
 
@@ -83,7 +70,6 @@ class fragment_home : Fragment() {
     }
 
     override fun onResume() {
-        EventBus.subscribe(Events.ModeToggle, eventSubscribe)
         setModeState()
         val sdfree = view.findViewById(R.id.sdfree) as TextView
         val datafree = view.findViewById(R.id.datafree) as TextView
@@ -115,27 +101,13 @@ class fragment_home : Fragment() {
     }
 
     private fun installConfig(after:String) {
-        if (ConfigInfo.getConfigInfo().UseBigCore)
-            AppShared.WriteFile(context.assets, ConfigInfo.getConfigInfo().CPUName + "/powercfg-bigcore.sh", "powercfg.sh")
-        else
-            AppShared.WriteFile(context.assets, ConfigInfo.getConfigInfo().CPUName + "/powercfg-default.sh", "powercfg.sh")
-        cmdshellTools.DoCmdSync(Consts.InstallPowerToggleConfigToCache + "\n\n" + after)
-        setModeState();
-    }
-
-    override fun onPause() {
-        super.onPause()
-        try {
-            EventBus.unSubscribe(Events.ModeToggle, eventSubscribe)
-        } catch (ex: Exception) {
+        if (File("/data/powercfg.sh").exists() && File("/data/init.qcom.post_boot.sh").exists()) {
+            cmdshellTools.DoCmdSync(after)
+        } else {
+            //TODO：选取配置
+            AppShared.WriteFile(context.assets, Platform().GetCPUName() + "/powercfg-default.sh", "powercfg.sh")
+            cmdshellTools.DoCmdSync(Consts.InstallPowerToggleConfigToCache + "\n\n" + after)
+            setModeState();
         }
-    }
-
-    override fun onDestroy() {
-        try {
-            EventBus.unSubscribe(Events.ModeToggle, eventSubscribe)
-        } catch (ex: Exception) {
-        }
-        super.onDestroy()
     }
 }

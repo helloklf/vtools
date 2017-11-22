@@ -1,6 +1,7 @@
 package com.omarea.vboot
 
-import android.app.AlertDialog
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.Snackbar
@@ -10,7 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
-import com.omarea.shared.ConfigInfo
+import com.omarea.shared.SpfConfig
 import com.omarea.shared.cmd_shellTools
 import com.omarea.shell.KernelProrp
 import com.omarea.ui.swaplist_adapter
@@ -19,7 +20,6 @@ import java.io.File
 import java.util.ArrayList
 import java.util.HashMap
 import kotlin.collections.LinkedHashMap
-import kotlin.collections.toMutableList
 
 
 class fragment_swap : Fragment() {
@@ -28,6 +28,7 @@ class fragment_swap : Fragment() {
     internal lateinit var cmdshellTools: cmd_shellTools
     internal lateinit var progressBar: ProgressBar
     internal lateinit var myHandler: Handler
+    internal lateinit var swapConfig: SharedPreferences
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -36,7 +37,7 @@ class fragment_swap : Fragment() {
         progressBar = thisview.findViewById(R.id.shell_on_execute) as ProgressBar
         myHandler = Handler()
         cmdshellTools = cmd_shellTools(null, null)
-
+        swapConfig = context.getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)
         return view
     }
 
@@ -83,16 +84,16 @@ class fragment_swap : Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        chk_swap_disablezram.isChecked = ConfigInfo.getConfigInfo().AutoStartSwapDisZram
-        chk_swap_autostart.isChecked = ConfigInfo.getConfigInfo().AutoStartSwap
-        chk_zram_autostart.isChecked = ConfigInfo.getConfigInfo().AutoStartZRAM
-        var piness = ConfigInfo.getConfigInfo().AutoStartSwappiness
+        chk_swap_disablezram.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, false)
+        chk_swap_autostart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)
+        chk_zram_autostart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)
+        var piness = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65)
         if (piness >= 0 && piness != 65 && piness <= 100) {
             txt_swap_swappiness.setText(piness.toString())
             txt_zram_swappiness.setText(piness.toString())
         }
-        if (ConfigInfo.getConfigInfo().AutoStartZRAMSize != 0)
-            txt_zram_size.setText(ConfigInfo.getConfigInfo().AutoStartZRAMSize.toString())
+        if (swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0) != 0)
+            txt_zram_size.setText(swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0).toString())
         getSwaps()
     }
 
@@ -161,9 +162,11 @@ class fragment_swap : Fragment() {
             sb.append("echo 65 > /proc/sys/vm/swappiness\n")
             sb.append("echo " + value + " > /proc/sys/vm/swappiness\n")
 
-            ConfigInfo.getConfigInfo().AutoStartSwap = autostart
-            ConfigInfo.getConfigInfo().AutoStartSwapDisZram = disablezram
-            ConfigInfo.getConfigInfo().AutoStartSwappiness = value
+            val edit = swapConfig.edit()
+            edit.putBoolean(SpfConfig.SWAP_SPF_SWAP, autostart)
+            edit.putBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, disablezram)
+            edit.putInt(SpfConfig.SWAP_SPF_SWAPPINESS, value)
+            edit.commit()
 
             var run = Runnable {
                 if (disablezram)
@@ -204,21 +207,23 @@ class fragment_swap : Fragment() {
                     myHandler.post(showSwapOpened)
                 })
                 Thread(run).start()
-                ConfigInfo.getConfigInfo().AutoStartSwappiness = value
-                ConfigInfo.getConfigInfo().AutoStartZRAMSize = sizeVal
-                ConfigInfo.getConfigInfo().AutoStartZRAM = chk_zram_autostart.isChecked
+                val edit = swapConfig.edit()
+                edit.putBoolean(SpfConfig.SWAP_SPF_ZRAM, chk_zram_autostart.isChecked)
+                edit.putInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, sizeVal)
+                edit.putInt(SpfConfig.SWAP_SPF_SWAPPINESS, value)
+                edit.commit()
             } else {
                 Snackbar.make(this.view, "请输入ZRAM大小，值应在0 - 2048之间！", Snackbar.LENGTH_LONG).show()
             }
         }
 
         chk_zram_autostart.setOnCheckedChangeListener { buttonView, isChecked ->
-            if(!isChecked)
-                ConfigInfo.getConfigInfo().AutoStartZRAM = isChecked
+            if (!isChecked)
+                swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_ZRAM, isChecked).commit()
         }
         chk_swap_autostart.setOnCheckedChangeListener { buttonView, isChecked ->
-            if(!isChecked)
-                ConfigInfo.getConfigInfo().AutoStartSwap = isChecked
+            if (!isChecked)
+                swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP, isChecked).commit()
         }
     }
 

@@ -3,7 +3,6 @@ package com.omarea.vboot
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.omarea.shared.ConfigInfo
 import com.omarea.shared.SpfConfig
 import java.io.DataOutputStream
 import java.io.IOException
@@ -64,20 +63,20 @@ class receiver_boot_openswap : BroadcastReceiver() {
         }
 
         var sb = StringBuilder("setenforce 0\n")
-        if (ConfigInfo.getConfigInfo().AutoStartSwap) {
+        val swapConfig = context.getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)
+        if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false) || swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) {
 
-            if(ConfigInfo.getConfigInfo().AutoStartZRAM) {
-                var zramSize = ConfigInfo.getConfigInfo().AutoStartZRAMSize
-                sb.append("if [ `cat /sys/block/zram0/disksize` != '" + zramSize + "000000' ] ; then ")
+            if(swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) {
+                sb.append("if [ `cat /sys/block/zram0/disksize` != '" + swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0) + "000000' ] ; then ")
                 sb.append("swapoff /dev/block/zram0 >/dev/null 2>&1;")
                 sb.append("echo 1 > /sys/block/zram0/reset;")
-                sb.append("echo " + zramSize + "000000 > /sys/block/zram0/disksize;")
+                sb.append("echo " + swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0) + "000000 > /sys/block/zram0/disksize;")
                 sb.append("mkswap /dev/block/zram0 >/dev/null 2>&1;")
                 sb.append("swapon /dev/block/zram0 >/dev/null 2>&1;")
                 sb.append("fi;\n")
             }
 
-            if (ConfigInfo.getConfigInfo().AutoStartSwapDisZram) {
+            if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, false)) {
                 sb.append("swapon /data/swapfile -p 32767\n")
                 //sb.append("swapoff /dev/block/zram0\n")
             } else {
@@ -85,9 +84,9 @@ class receiver_boot_openswap : BroadcastReceiver() {
             }
 
             sb.append("echo 65 > /proc/sys/vm/swappiness\n")
-            sb.append("echo " + ConfigInfo.getConfigInfo().AutoStartSwappiness + " > /proc/sys/vm/swappiness\n")
+            sb.append("echo " + swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65) + " > /proc/sys/vm/swappiness\n")
         }
-        sb.append("sh /data/data/me.piebridge.brevent/brevent.sh;");
+        //sb.append("sh /data/data/me.piebridge.brevent/brevent.sh;");
         DoCmd(sb.toString())
     }
 }

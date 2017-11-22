@@ -35,18 +35,18 @@ object Consts {
                     "mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n"
 
     val InstallConfig =
-            "cp /sdcard/Android/data/com.omarea.vboot/init.qcom.post_boot.sh /cache/init.qcom.post_boot.sh\n" +
-                    "cp /sdcard/Android/data/com.omarea.vboot/powercfg.sh /cache/powercfg.sh\n" +
-                    "chmod 0777 /cache/powercfg.sh\n" +
-                    "chmod 0777 /cache/init.qcom.post_boot.sh\n"
+            "cp /sdcard/Android/data/com.omarea.vboot/init.qcom.post_boot.sh /data/init.qcom.post_boot.sh\n" +
+                    "cp /sdcard/Android/data/com.omarea.vboot/powercfg.sh /data/powercfg.sh\n" +
+                    "chmod 0777 /data/powercfg.sh\n" +
+                    "chmod 0777 /data/init.qcom.post_boot.sh\n"
 
-    val InstallPowerToggleConfigToCache = "cp /sdcard/Android/data/com.omarea.vboot/powercfg.sh /cache/powercfg.sh\n" + "chmod 0777 /cache/powercfg.sh\n"
+    val InstallPowerToggleConfigToCache = "cp /sdcard/Android/data/com.omarea.vboot/powercfg.sh /data/powercfg.sh\n" + "chmod 0777 /data/powercfg.sh\n"
 
-    val ExecuteConfig = "setprop vtools.powercfg null;/cache/init.qcom.post_boot.sh;\n"
-    val ToggleDefaultMode = "setprop vtools.powercfg default;/cache/powercfg.sh balance;\n"
-    val ToggleGameMode = "setprop vtools.powercfg game;/cache/powercfg.sh performance;\n"
-    val TogglePowersaveMode = "setprop vtools.powercfg powersave;/cache/powercfg.sh powersave;\n"
-    val ToggleFastMode = "setprop vtools.powercfg fast;/cache/powercfg.sh fast;\n"
+    val ExecuteConfig = "setprop vtools.powercfg null;/data/init.qcom.post_boot.sh;\n"
+    val ToggleDefaultMode = "setprop vtools.powercfg default;/data/powercfg.sh balance;\n"
+    val ToggleGameMode = "setprop vtools.powercfg game;/data/powercfg.sh performance;\n"
+    val TogglePowersaveMode = "setprop vtools.powercfg powersave;/data/powercfg.sh powersave;\n"
+    val ToggleFastMode = "setprop vtools.powercfg fast;/data/powercfg.sh fast;\n"
 
     val DisableSELinux = "setenforce 0\n"
 

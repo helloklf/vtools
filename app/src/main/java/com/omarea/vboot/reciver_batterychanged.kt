@@ -57,6 +57,7 @@ class reciver_batterychanged : BroadcastReceiver() {
 
     internal var context: Context? = null
     private var sharedPreferences: SharedPreferences? = null
+    private var globalSharedPreferences: SharedPreferences? = null
     internal var listener: SharedPreferences.OnSharedPreferenceChangeListener? = null
     private val myHandler = object : Handler() {
         override fun handleMessage(msg: Message) {
@@ -75,7 +76,7 @@ class reciver_batterychanged : BroadcastReceiver() {
         if (!sharedPreferences!!.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false))
             return
 
-        if (sharedPreferences!!.getBoolean(SpfConfig.DEBUG, false))
+        if (globalSharedPreferences!!.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false))
             ShowMsg("充电器已连接！", false)
         DoCmd(Consts.FastChanger)
     }
@@ -89,6 +90,9 @@ class reciver_batterychanged : BroadcastReceiver() {
             listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key -> }
             sharedPreferences!!.registerOnSharedPreferenceChangeListener(listener)
         }
+        if (globalSharedPreferences == null) {
+            globalSharedPreferences = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+        }
 
         this.context = context
         try {
@@ -97,7 +101,6 @@ class reciver_batterychanged : BroadcastReceiver() {
             val batteryLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
 
             if (lastBatteryLeavel != batteryLevel) {
-                EventBus.publish(Events.BatteryChanged, batteryLevel)
                 lastBatteryLeavel = batteryLevel
             }
 
@@ -126,27 +129,20 @@ class reciver_batterychanged : BroadcastReceiver() {
                 //如果充电状态切换
                 if (lastChangerState != onChanger) {
                     lastChangerState = onChanger
-                    if (onChanger) {
-                        EventBus.publish(Events.PowerConnection)
-                    } else
-                        EventBus.publish(Events.PowerDisConnection)
                 }
                 if (onChanger)
                     entryFastChanger(onChanger)
                 return
             } else if (action == Intent.ACTION_POWER_CONNECTED) {
                 lastChangerState = onChanger
-                EventBus.publish(Events.PowerConnection)
                 entryFastChanger(onChanger)
                 return
             } else if (action == Intent.ACTION_BOOT_COMPLETED && onChanger) {
                 lastChangerState = onChanger
-                EventBus.publish(Events.PowerConnection)
                 entryFastChanger(onChanger)
                 return
             } else if (action == Intent.ACTION_POWER_DISCONNECTED) {
                 lastChangerState = onChanger
-                EventBus.publish(Events.PowerDisConnection)
                 entryFastChanger(onChanger)
                 return
             }
@@ -157,7 +153,7 @@ class reciver_batterychanged : BroadcastReceiver() {
     }
 
     private fun entryFastChanger(onChanger: Boolean) {
-        if (AppShared.system_inited && onChanger) {
+        if (onChanger) {
             if (sharedPreferences!!.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
                 FastCharger()
             }

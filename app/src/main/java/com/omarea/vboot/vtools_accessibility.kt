@@ -72,7 +72,7 @@ class vtools_accessibility : AccessibilityService() {
             packageName.equals("com.google.android.packageinstaller"))*/
         if (packageName.contains("packageinstaller")) {
             packageName = "com.android.packageinstaller"
-            AutoClickService().packageinstallerAutoClick(event)
+            AutoClickService().packageinstallerAutoClick(this.applicationContext, event)
         } else if (packageName == "com.miui.securitycenter") {
             AutoClickService().miuiUsbInstallAutoClick(event)
             return

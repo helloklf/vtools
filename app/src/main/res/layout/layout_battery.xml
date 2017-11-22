@@ -81,6 +81,14 @@
                 android:maxLength="2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+            <EditText
+                android:contentDescription="ssss"
+                android:id="@+id/settings_qc_limit"
+                android:hint="充电速度限制，单位mA"
+                android:inputType="number"
+                android:maxLength="4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

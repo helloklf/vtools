@@ -127,6 +127,4 @@ object AppShared {
         }
 
     }
-
-    var system_inited = false
 }

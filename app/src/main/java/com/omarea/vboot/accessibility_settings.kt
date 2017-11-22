@@ -1,6 +1,8 @@
 package com.omarea.vboot
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
@@ -20,10 +22,16 @@ class accessibility_settings : AppCompatActivity() {
         val serviceState = ServiceHelper.serviceIsRunning(applicationContext)
         vbootserviceSettings!!.visibility = if (serviceState) View.VISIBLE else View.GONE
 
-        servicceState.text = if (serviceState) application.getString(R.string.accessibility_running) else application.getString(R.string.accessibility_stoped)
+        vbootservice_state.text = if (serviceState) application.getString(R.string.accessibility_running) else application.getString(R.string.accessibility_stoped)
+
+        settings_autoinstall.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false)
+        settings_autobooster.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, false)
+        settings_dynamic.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
+        settings_debugmode.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
+        settings_delaystart.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DELAY, false)
     }
 
-    lateinit var servicceState: TextView;
+    lateinit var spf:SharedPreferences;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,44 +39,36 @@ class accessibility_settings : AppCompatActivity() {
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
-        servicceState = findViewById(R.id.vbootservice_state) as TextView
+        spf = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+        if (!DynamicConfig().DynamicSupport(this)) {
+            settings_dynamic.isEnabled = false
+            settings_dynamic.isChecked = false
+            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false).commit()
+        }
 
-        servicceState.setOnClickListener {
+        vbootservice_state.setOnClickListener {
             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
             startActivity(intent)
         }
 
-
-        settings_autoinstall.isChecked = ConfigInfo.getConfigInfo().AutoInstall
-        settings_autobooster.isChecked = ConfigInfo.getConfigInfo().AutoBooster
-        settings_dynamic.isChecked = ConfigInfo.getConfigInfo().DyamicCore
-        if (!DynamicConfig().DynamicSupport(this)) {
-            settings_dynamic.isEnabled = false
-            settings_dynamic.isChecked = false
+        settings_delaystart.setOnClickListener {
+            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DELAY, settings_delaystart.isChecked).commit()
         }
-
-        settings_debugmode.isChecked = ConfigInfo.getConfigInfo().DebugMode
-        settings_delaystart.isChecked = ConfigInfo.getConfigInfo().DelayStart
-
-        settings_delaystart.setOnClickListener { ConfigInfo.getConfigInfo().DelayStart = settings_delaystart.isChecked }
-        settings_debugmode.setOnClickListener { ConfigInfo.getConfigInfo().DebugMode = settings_debugmode.isChecked }
-        settings_autoinstall.setOnClickListener { ConfigInfo.getConfigInfo().AutoInstall = settings_autoinstall.isChecked }
-        settings_autobooster.setOnClickListener { ConfigInfo.getConfigInfo().AutoBooster = settings_autobooster.isChecked }
+        settings_debugmode.setOnClickListener {
+            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DEBUG, settings_debugmode.isChecked).commit()
+        }
+        settings_autoinstall.setOnClickListener {
+            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_INSTALL, settings_autoinstall.isChecked).commit()
+        }
+        settings_autobooster.setOnClickListener {
+            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, settings_autobooster.isChecked).commit()
+        }
         settings_dynamic.setOnClickListener {
-            ConfigInfo.getConfigInfo().DyamicCore = settings_dynamic.isChecked
-            EventBus.publish(Events.DyamicCoreConfigChanged)
+            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, settings_dynamic.isChecked).commit()
         }
     }
 
     public override fun onPause() {
-        ConfigInfo.getConfigInfo().saveChange()
-
         super.onPause()
-    }
-
-    override fun onDestroy() {
-        ConfigInfo.getConfigInfo().saveChange()
-
-        super.onDestroy()
     }
 }

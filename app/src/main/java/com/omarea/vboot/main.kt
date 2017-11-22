@@ -340,15 +340,11 @@ class main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
     }
 
     public override fun onPause() {
-        ConfigInfo.getConfigInfo().saveChange()
-
         super.onPause()
     }
 
     override fun onDestroy() {
-        ConfigInfo.getConfigInfo().saveChange()
         //System.exit(0)
-
         super.onDestroy()
     }
 }

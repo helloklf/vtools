@@ -24,16 +24,6 @@ import java.util.TimerTask
 class fragment_battery : Fragment() {
 
     lateinit internal var view: View
-    internal var subscribePowerDisConn: IEventSubscribe = object : IEventSubscribe {
-        override fun messageRecived(message: Any?) {
-            Snackbar.make(view, "充电器已断开连接！", Snackbar.LENGTH_SHORT).show()
-        }
-    }
-    internal var subscribePowerConn: IEventSubscribe = object : IEventSubscribe {
-        override fun messageRecived(message: Any?) {
-            Snackbar.make(view, "充电器已连接！", Snackbar.LENGTH_SHORT).show()
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -67,6 +57,7 @@ class fragment_battery : Fragment() {
         settings_qc.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)
         settings_bp.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_BP, false)
         settings_bp_level.setText(spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85).toString())
+        settings_qc_limit.setText(spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT,4000).toString())
 
         if (broadcast == null) {
             broadcast = object : BroadcastReceiver() {
@@ -93,9 +84,6 @@ class fragment_battery : Fragment() {
             val ACTION_BATTERY_CHANGED = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
             context.registerReceiver(broadcast, ACTION_BATTERY_CHANGED)
         }
-
-        EventBus.subscribe(Events.PowerDisConnection, subscribePowerDisConn)
-        EventBus.subscribe(Events.PowerConnection, subscribePowerConn)
 
         val battrystatus = view.findViewById(R.id.battrystatus) as TextView
         val powerstatus = view.findViewById(R.id.powerstatus) as TextView
@@ -135,8 +123,6 @@ class fragment_battery : Fragment() {
         }
 
         try {
-            EventBus.unSubscribe(Events.PowerDisConnection, subscribePowerDisConn)
-            EventBus.unSubscribe(Events.PowerConnection, subscribePowerConn)
             if (broadcast != null)
                 context.unregisterReceiver(broadcast)
         } catch (ex: Exception) {
@@ -147,9 +133,6 @@ class fragment_battery : Fragment() {
 
     override fun onDestroy() {
         try {
-            EventBus.unSubscribe(Events.PowerDisConnection, subscribePowerDisConn)
-            EventBus.unSubscribe(Events.PowerConnection, subscribePowerConn)
-
             if (broadcast != null)
                 context.unregisterReceiver(broadcast)
         } catch (ex: Exception) {
@@ -195,6 +178,20 @@ class fragment_battery : Fragment() {
                     level = settings_bp_level.text.toString().toInt()
                     spf.edit().putInt(SpfConfig.CHARGE_SPF_BP_LEVEL, level).commit()
                     Snackbar.make(this.view, "设置已保存，稍后生效。当前限制等级："+ settings_bp_level.text, Snackbar.LENGTH_SHORT ).show()
+                    startBatteryService();
+                }
+                catch(e:Exception){
+                }
+            }
+            false
+        }
+        settings_qc_limit.setOnEditorActionListener { v, actionId, event ->
+            if(actionId == EditorInfo.IME_ACTION_DONE){
+                val level:Int
+                try{
+                    level = settings_qc_limit.text.toString().toInt()
+                    spf.edit().putInt(SpfConfig.CHARGE_SPF_QC_LIMIT, level).commit()
+                    Snackbar.make(this.view, "设置已保存。当前限制速度："+ settings_qc_limit.text + "mA", Snackbar.LENGTH_SHORT ).show()
                     startBatteryService();
                 }
                 catch(e:Exception){

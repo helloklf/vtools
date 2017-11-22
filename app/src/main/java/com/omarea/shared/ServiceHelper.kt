@@ -2,18 +2,13 @@ package com.omarea.shared
 
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.content.SharedPreferences
 import android.os.Message
 import android.view.accessibility.AccessibilityManager
 import android.widget.Toast
-import com.omarea.shell.DynamicConfig
-import com.omarea.vboot.reciver_batterychanged
 import java.io.DataOutputStream
 import java.io.IOException
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Created by helloklf on 2016/10/1.
@@ -22,53 +17,62 @@ class ServiceHelper(context: Context) {
     private var context: Context? = null
     private var lastPackage: String? = null
     private var lastMode = Configs.None
-    private var configInstalled: Boolean = false
     private var p: Process? = null
     private val serviceCreatedTime = Date().time
     internal var out: DataOutputStream? = null
     private var spfPowercfg: SharedPreferences
     private var spfBooster: SharedPreferences
+    private var spfGlobal: SharedPreferences
     //标识是否已经加载完设置
     private var SettingsLoaded = false
     var ignoredList = arrayListOf<String>("com.miui.securitycenter", "android", "com.android.systemui", "com.omarea.vboot", "com.miui.touchassistant")
 
-    init {
-        EventBus.subscribe(Events.DyamicCoreConfigChanged, object : IEventSubscribe {
-            override fun messageRecived(message: Any?) {
-                if (ConfigInfo.getConfigInfo().DyamicCore) {
-                    InstallConfig()
-                    onAccessibilityEvent()
-                } else
-                    UnInstallConfig()
-            }
-        })
-        EventBus.subscribe(Events.CoreConfigChanged, object : IEventSubscribe {
-            override fun messageRecived(message: Any?) {
-                configInstalled = false
-                onAccessibilityEvent()
-            }
-        })
 
+    var AutoBooster = true;
+    var DyamicCore = false;
+    var DebugMode = false;
+    var DelayStart = false;
+
+    init {
         this.context = context
         spfPowercfg = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         spfBooster = context.getSharedPreferences(SpfConfig.BOOSTER_CONFIG_SPF, Context.MODE_PRIVATE)
+        spfGlobal = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+
+        DebugMode = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
+        AutoBooster = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, false)
+        DyamicCore = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
+        DelayStart = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DELAY, false)
+
+        val listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+            if (key == SpfConfig.GLOBAL_SPF_AUTO_BOOSTER) {
+                if (this.lastPackage != null) {
+                    autoBoosterApp(this.lastPackage!!)
+                }
+                AutoBooster = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, false)
+            } else if (key == SpfConfig.GLOBAL_SPF_DYNAMIC_CPU || key == SpfConfig.GLOBAL_SPF_DYNAMIC_CPU_CONFIG) {
+                DoCmd(Consts.ExecuteConfig)
+                if (this.lastPackage != null) {
+                    autoToggleMode(this.lastPackage!!)
+                }
+                DyamicCore = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
+            } else if (key == SpfConfig.GLOBAL_SPF_DEBUG) {
+                DebugMode = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
+            }
+        }
+        spfGlobal.registerOnSharedPreferenceChangeListener(listener)
     }
 
     //加载设置
     private fun SettingsLoad(): Boolean {
-        if (ConfigInfo.getConfigInfo().DelayStart && !AppShared.system_inited && Date().time - serviceCreatedTime < 20000)
+        if (DelayStart && Date().time - serviceCreatedTime < 20000)
             return false
 
         DoCmd(Consts.DisableSELinux)
-
-        if (!DynamicConfig().DynamicSupport(context!!)) {
-            ConfigInfo.getConfigInfo().DyamicCore = false
-        }
-
+        DoCmd(Consts.ExecuteConfig)
         ShowMsg("微工具箱增强服务已启动")
 
         SettingsLoaded = true
-        AppShared.system_inited = true
 
         return true
     }
@@ -85,18 +89,16 @@ class ServiceHelper(context: Context) {
                 out!!.close()
         } catch (ex: Exception) {
         }
-
         try {
             p!!.destroy()
         } catch (ex: Exception) {
         }
     }
 
-
     @JvmOverloads internal fun DoCmd(cmd: String, isRedo: Boolean = false) {
         Thread(Runnable {
             try {
-                tryExit()
+                //tryExit()
                 if (p == null || isRedo || out == null) {
                     tryExit()
                     p = Runtime.getRuntime().exec("su")
@@ -127,13 +129,13 @@ class ServiceHelper(context: Context) {
     internal var msgTemplate = "Package: %s\n Mode: %s"
 
     private fun ShowModeToggleMsg(packageName: String, modeName: String) {
-        if (ConfigInfo.getConfigInfo().DebugMode)
+        if (DebugMode)
             ShowMsg(String.format(msgTemplate, packageName, modeName))
     }
 
     //自动切换模式
     private fun autoToggleMode(packageName: String) {
-        if (!ConfigInfo.getConfigInfo().DyamicCore)
+        if (!DyamicCore)
             return
 
         if (packageName == "android" || packageName == "com.android.systemui" || packageName == "com.omarea.vboot" || packageName!!.contains("inputmethod"))
@@ -142,19 +144,6 @@ class ServiceHelper(context: Context) {
         //如果没有切换应用
         if (packageName == lastPackage && lastMode != Configs.Fast)
             return
-
-        //打包安装程序速度优化-使用游戏模式
-        if (packageName == "com.android.packageinstaller") {
-            if (lastMode != Configs.Game) {
-                try {
-                    ToggleConfig(Configs.Game)
-                    ShowModeToggleMsg("com.android.packageinstaller", "performance mode")
-                } catch (ex: Exception) {
-                    ShowModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
-                }
-            }
-            return
-        }
 
         var mod = spfPowercfg.getString(packageName, "default")
         when(mod){
@@ -209,7 +198,7 @@ class ServiceHelper(context: Context) {
 
     //终止进程
     internal fun autoBoosterApp(packageName: String) {
-        if (!ConfigInfo.getConfigInfo().AutoBooster)
+        if (!AutoBooster)
             return
 
         if (lastPackage == "android" || lastPackage == "com.android.systemui" || lastPackage == "com.omarea.vboot" || lastPackage.equals(packageName))
@@ -219,13 +208,12 @@ class ServiceHelper(context: Context) {
             DoCmd(Consts.ClearCache)
         }
 
-
         if (spfBooster.contains(lastPackage)) {
             if (spfBooster.getBoolean(SpfConfig.BOOSTER_SPF_DOZE_MOD, false)) {
                 try {
                     DoCmd("am set-inactive $lastPackage true")
                     //am set-idle com.tencent.mobileqq true
-                    if (ConfigInfo.getConfigInfo().DebugMode)
+                    if (DebugMode)
                         ShowMsg("force doze: " + lastPackage)
                 } catch (ex: Exception) {
                 }
@@ -235,12 +223,10 @@ class ServiceHelper(context: Context) {
             //android.os.Process.killProcess(android.os.Process.myPid());//自杀
             try {
                 DoCmd("pgrep $lastPackage |xargs kill -9")
-                if (ConfigInfo.getConfigInfo().DebugMode)
+                if (DebugMode)
                     ShowMsg("force kill: " + lastPackage)
             } catch (ex: Exception) {
-
             }
-
         }
     }
 
@@ -267,58 +253,6 @@ class ServiceHelper(context: Context) {
         lastMode = mode
     }
 
-    //安装调频文件
-    internal fun InstallConfig() {
-        if (context == null) return
-
-        if (!DynamicConfig().DynamicSupport(context!!)) {
-            ShowMsg("未找到对应到当前SOC的调频配置文件！")
-            return
-        }
-
-        try {
-            val ass = context!!.assets
-
-            val cpuNumber = ConfigInfo.getConfigInfo().CPUName.replace("msm", "")
-
-            if (ConfigInfo.getConfigInfo().UseBigCore) {
-                AppShared.WriteFile(ass, ConfigInfo.getConfigInfo().CPUName + "/init.qcom.post_boot-bigcore.sh", "init.qcom.post_boot.sh")
-                AppShared.WriteFile(ass, ConfigInfo.getConfigInfo().CPUName + "/powercfg-bigcore.sh", "powercfg.sh")
-            } else {
-                AppShared.WriteFile(ass, ConfigInfo.getConfigInfo().CPUName + "/init.qcom.post_boot-default.sh", "init.qcom.post_boot.sh")
-                AppShared.WriteFile(ass, ConfigInfo.getConfigInfo().CPUName + "/powercfg-default.sh", "powercfg.sh")
-            }
-
-            val cmd = StringBuilder().append(Consts.InstallConfig).append(Consts.ExecuteConfig).append(Consts.ToggleDefaultMode)
-                    .toString().replace("cpuNumber", cpuNumber)
-            DoCmd(cmd)
-
-            ToggleConfig(Configs.Default)
-            configInstalled = true
-
-            if (ConfigInfo.getConfigInfo().DebugMode)
-                ShowMsg("The configuration file is installed!")
-        } catch (ex: Exception) {
-            ShowMsg("The configuration file installation failed!")
-        }
-
-    }
-
-    fun UnInstallConfig() {
-        if (ConfigInfo.getConfigInfo().CPUName == null || ConfigInfo.getConfigInfo().CPUName.trim { it <= ' ' } == "") return
-
-        try {
-            ToggleConfig(Configs.Game)
-            DoCmd(StringBuilder().append(Consts.ExecuteConfig)
-                    .toString().replace("cpuNumber", ConfigInfo.getConfigInfo().CPUName.replace("msm", ""))
-            )
-            ShowMsg("Restore complete, you may need to restart your phone!")
-        } catch (ex: Exception) {
-            ShowMsg("You may need to restart your phone！")
-        }
-
-    }
-
     enum class Configs {
         None,
         Default,
@@ -327,24 +261,14 @@ class ServiceHelper(context: Context) {
         Fast
     }
 
-    fun onAccessibilityEvent() {
-        try {
-            onAccessibilityEvent(lastPackage)
-        } catch (ex: Exception) {
-            ex.printStackTrace()
-        }
-
-    }
-
     fun onAccessibilityEvent(packageName: String?) {
         var packageName = packageName
         if (!SettingsLoaded && !SettingsLoad())
             return
 
-        if (ConfigInfo.getConfigInfo().DyamicCore) {
-            if (!configInstalled || lastPackage == null) {
+        if (DyamicCore) {
+            if (lastPackage != null) {
                 lastPackage = "com.android.systemui"
-                InstallConfig()
             }
         } else if (lastPackage == null)
             lastPackage = "com.android.systemui"
@@ -362,7 +286,6 @@ class ServiceHelper(context: Context) {
     }
 
     fun onInterrupt() {
-        UnInstallConfig()
     }
 
     companion object {

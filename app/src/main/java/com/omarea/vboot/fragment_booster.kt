@@ -19,7 +19,6 @@ import android.widget.CheckBox
 import android.widget.ListView
 import android.widget.TabHost
 import android.widget.TextView
-import com.omarea.shared.ConfigInfo
 import com.omarea.shared.ServiceHelper
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.cmd_shellTools
@@ -40,7 +39,7 @@ class fragment_booster : Fragment() {
     override fun onResume() {
         val serviceState = ServiceHelper.serviceIsRunning(context)
         btn_booster_service_not_active.visibility = if (serviceState) GONE else VISIBLE
-        btn_booster_dynamicservice_not_active.visibility = if (serviceState && !ConfigInfo.getConfigInfo().AutoBooster) VISIBLE else GONE
+        btn_booster_dynamicservice_not_active.visibility = if (serviceState && !context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, false)) VISIBLE else GONE
 
         super.onResume()
     }
