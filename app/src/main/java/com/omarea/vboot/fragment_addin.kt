@@ -11,6 +11,7 @@ import android.widget.AdapterView
 import android.widget.ListView
 import android.widget.SimpleAdapter
 import android.widget.TabHost
+import com.omarea.shared.AppShared
 import com.omarea.shared.Consts
 import com.omarea.shared.cmd_shellTools
 import com.omarea.shell.units.FlymeUnit
@@ -51,6 +52,7 @@ class fragment_addin : Fragment() {
         listItem.add(createItem("开启沉浸模式", "自动隐藏状态栏、导航栏"))
         listItem.add(createItem("禁用沉浸模式", "恢复状态栏、导航栏自动显示"))
         listItem.add(createItem("减少Flyme6模糊", "禁用Flyme6下拉通知中心的实时模糊效果，以减少在游戏或视频播放时下拉通知中心的卡顿，或许还能省电"))
+        listItem.add(createItem("MIUI9去通知中心搜索", "默认隐藏MIUI9系统下拉通知中心的搜索框"))
 
         val mSimpleAdapter = SimpleAdapter(
                 view.context, listItem,
@@ -107,6 +109,13 @@ class fragment_addin : Fragment() {
             7 -> {
                 FlymeUnit().StaticBlur()
                 return
+            }
+            8 -> {
+                AppShared.WriteFile(context.assets, "com.android.systemui", "com.android.systemui")
+                stringBuilder.append(Consts.MountSystemRW)
+                stringBuilder.append("cp /sdcard/Android/data/com.omarea.vboot/com.android.systemui /system/media/theme/default/com.android.systemui\n")
+                stringBuilder.append("chmod 0644 /system/media/theme/default/com.android.systemui\n")
+                stringBuilder.append(Consts.Reboot)
             }
         }
         cmdshellTools!!.DoCmd(stringBuilder.toString())

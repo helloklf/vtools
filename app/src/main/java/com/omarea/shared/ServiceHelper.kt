@@ -9,6 +9,9 @@ import android.widget.Toast
 import java.io.DataOutputStream
 import java.io.IOException
 import java.util.*
+import android.app.ActivityManager
+
+
 
 /**
  * Created by helloklf on 2016/10/1.
@@ -32,6 +35,22 @@ class ServiceHelper(context: Context) {
     var DyamicCore = false;
     var DebugMode = false;
     var DelayStart = false;
+    var listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+        if (key == SpfConfig.GLOBAL_SPF_AUTO_BOOSTER) {
+            if (this.lastPackage != null) {
+                autoBoosterApp(this.lastPackage!!)
+            }
+            AutoBooster = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, false)
+        } else if (key == SpfConfig.GLOBAL_SPF_DYNAMIC_CPU || key == SpfConfig.GLOBAL_SPF_DYNAMIC_CPU_CONFIG) {
+            DoCmd(Consts.ExecuteConfig)
+            if (this.lastPackage != null) {
+                autoToggleMode(this.lastPackage!!)
+            }
+            DyamicCore = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
+        } else if (key == SpfConfig.GLOBAL_SPF_DEBUG) {
+            DebugMode = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
+        }
+    }
 
     init {
         this.context = context
@@ -44,22 +63,6 @@ class ServiceHelper(context: Context) {
         DyamicCore = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
         DelayStart = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DELAY, false)
 
-        val listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
-            if (key == SpfConfig.GLOBAL_SPF_AUTO_BOOSTER) {
-                if (this.lastPackage != null) {
-                    autoBoosterApp(this.lastPackage!!)
-                }
-                AutoBooster = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, false)
-            } else if (key == SpfConfig.GLOBAL_SPF_DYNAMIC_CPU || key == SpfConfig.GLOBAL_SPF_DYNAMIC_CPU_CONFIG) {
-                DoCmd(Consts.ExecuteConfig)
-                if (this.lastPackage != null) {
-                    autoToggleMode(this.lastPackage!!)
-                }
-                DyamicCore = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
-            } else if (key == SpfConfig.GLOBAL_SPF_DEBUG) {
-                DebugMode = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
-            }
-        }
         spfGlobal.registerOnSharedPreferenceChangeListener(listener)
     }
 

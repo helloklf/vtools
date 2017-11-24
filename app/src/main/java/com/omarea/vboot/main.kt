@@ -296,6 +296,8 @@ class main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
             fragment = fragment_applistions.Create(this, cmdshellTools)
         } else if (id == R.id.nav_swap) {
             fragment = fragment_swap.Create(this, cmdshellTools)
+        } else if (id == R.id.nav_tasks) {
+            fragment = fragment_tasks.Create(this, cmdshellTools)
         } else if (id == R.id.nav_battery) {
             fragment = fragment_battery.Create(this, cmdshellTools)
         } else if (id == R.id.nav_img) {

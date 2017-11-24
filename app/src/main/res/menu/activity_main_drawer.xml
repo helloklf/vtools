@@ -33,6 +33,10 @@
             android:icon="@drawable/ic_menu_modules"
             android:title="@string/menu_applictions" />
         <item
+            android:id="@+id/nav_tasks"
+            android:icon="@drawable/ic_menu_task"
+            android:title="@string/menu_tasks" />
+        <item
             android:id="@+id/nav_swap"
             android:icon="@drawable/ic_menu_digital"
             android:title="@string/menu_swap" />

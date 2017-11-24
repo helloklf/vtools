@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
     <TextView
         android:id="@+id/itemPid"
         android:layout_width="0dip"
-        android:layout_height="wrap_content"
         android:layout_weight="2"
-        android:text="路径" />
+        android:layout_height="wrap_content"
+        android:text="" />
 
     <TextView
         android:id="@+id/itemCpu"
@@ -17,13 +21,13 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
-        android:text="itemName" />
+        android:text="" />
 
     <TextView
         android:id="@+id/itemType"
         android:layout_width="0dip"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:gravity="center"
         android:text="大小" />
 
@@ -31,7 +35,7 @@
         android:id="@+id/itemName"
         android:layout_width="0dip"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="5"
         android:gravity="center"
         android:text="已用" />
 </LinearLayout>

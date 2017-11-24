@@ -124,7 +124,8 @@ public class SysUtils {
                 StringBuilder builder = new StringBuilder();
                 BufferedReader br = new BufferedReader(new InputStreamReader(is));
                 String line;
-                while ((line = br.readLine()) != null) builder.append(line);
+                while ((line = br.readLine()) != null)
+                    builder.append(line.trim()).append("\n");
                 return builder.toString();
             } else {
                 is = process.getErrorStream();
