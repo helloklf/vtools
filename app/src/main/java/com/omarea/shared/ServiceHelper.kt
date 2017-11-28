@@ -45,6 +45,8 @@ class ServiceHelper(context: Context) {
             DoCmd(Consts.ExecuteConfig)
             if (this.lastPackage != null) {
                 autoToggleMode(this.lastPackage!!)
+            } else {
+                ToggleConfig(Configs.Default)
             }
             DyamicCore = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
         } else if (key == SpfConfig.GLOBAL_SPF_DEBUG) {

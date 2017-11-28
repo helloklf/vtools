@@ -1,16 +1,15 @@
 package com.omarea.vboot
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Message
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ListView
-import android.widget.SimpleAdapter
-import android.widget.TabHost
+import android.widget.*
 import com.omarea.shared.AppShared
 import com.omarea.shared.Consts
 import com.omarea.shared.cmd_shellTools
@@ -18,6 +17,7 @@ import com.omarea.shell.units.FlymeUnit
 import com.omarea.shell.units.FullScreenSUnit
 import com.omarea.shell.units.NubiaUnit
 import com.omarea.shell.units.QQStyleUnit
+import kotlinx.android.synthetic.main.activity_vbootresize.*
 import java.util.*
 
 
@@ -26,6 +26,12 @@ class fragment_addin : Fragment() {
 
     internal var cmdshellTools: cmd_shellTools? = null
     internal var thisview: main? = null
+    lateinit internal var progressBar: ProgressBar
+    internal val myHandler: Handler = object : Handler() {
+        override fun handleMessage(msg: Message) {
+            super.handleMessage(msg)
+        }
+    }
 
     fun createItem(title: String, desc: String): HashMap<String, Any> {
         val item = HashMap<String, Any>()
@@ -118,8 +124,14 @@ class fragment_addin : Fragment() {
                 stringBuilder.append(Consts.Reboot)
             }
         }
-        cmdshellTools!!.DoCmd(stringBuilder.toString())
-        Snackbar.make(view, "命令已执行！", Snackbar.LENGTH_SHORT).show()
+        progressBar.visibility = View.VISIBLE
+        Thread(Runnable {
+            cmdshellTools!!.DoCmd(stringBuilder.toString())
+            myHandler.post {
+                Snackbar.make(view, "命令已执行！", Snackbar.LENGTH_SHORT).show()
+                progressBar.visibility = View.GONE
+            }
+        }).start()
     }
 
 
@@ -220,8 +232,14 @@ class fragment_addin : Fragment() {
                 stringBuilder.append("if [ -f '/system/build.bak.prop' ];then rm /system/build.prop;cp /system/build.bak.prop /system/build.prop;chmod 0644 /system/build.prop; sync; reboot; fi;")
             }
         }
-        cmdshellTools!!.DoCmd(stringBuilder.toString())
-        Snackbar.make(view, "命令已执行！", Snackbar.LENGTH_SHORT).show()
+        progressBar.visibility = View.VISIBLE
+        Thread(Runnable {
+            cmdshellTools!!.DoCmd(stringBuilder.toString())
+            myHandler.post {
+                Snackbar.make(view, "命令已执行！", Snackbar.LENGTH_SHORT).show()
+                progressBar.visibility = View.GONE
+            }
+        }).start()
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -243,6 +261,7 @@ class fragment_addin : Fragment() {
             val fragment = fragment_addin()
             fragment.cmdshellTools = cmdshellTools
             fragment.thisview = thisView
+            fragment.progressBar = thisView.progressBar
             return fragment
         }
     }

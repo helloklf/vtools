@@ -266,9 +266,19 @@ class fragment_config : Fragment() {
 
     //检查配置文件是否已经安装
     fun checkConfig () {
+        var support = DynamicConfig().DynamicSupport(context)
+        if (support) {
+            config_cfg_select.visibility = View.VISIBLE
+            config_cfg_select_0.setOnClickListener {
+                InstallConfig(false)
+            }
+            config_cfg_select_1.setOnClickListener {
+                InstallConfig(true)
+            }
+        }
         if (File("/data/powercfg.sh").exists()) {
             //TODO：检查是否更新
-        } else if (DynamicConfig().DynamicSupport(context)) {
+        } else if (support) {
             var i = 0;
             AlertDialog.Builder(context)
             .setTitle("首次使用，先选择配置偏好")
@@ -316,9 +326,9 @@ class fragment_config : Fragment() {
 
             //ToggleConfig(Configs.Default)
 
-            Snackbar.make(view!!, "The configuration file is installed!", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(view!!, "配置安装成功！", Snackbar.LENGTH_LONG).show()
         } catch (ex: Exception) {
-            Snackbar.make(view!!, "The configuration file installation failed!", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(view!!, "安装配置文件失败!\n" + ex.message, Snackbar.LENGTH_LONG).show()
         }
     }
 

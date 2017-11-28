@@ -1,9 +1,6 @@
 #!/system/bin/sh
-
 setenforce 0
-
 action=$1
-
 if [ ! `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor` = "interactive" ]; then 
 	sh /system/etc/init.qcom.post_boot.sh
 fi
@@ -23,6 +20,8 @@ if [ "$action" = "powersave" ]; then
 	echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/max_cpus
 	echo 95 > /sys/devices/system/cpu/cpu4/core_ctl/busy_up_thres
 	echo 60 > /sys/devices/system/cpu/cpu4/core_ctl/busy_down_thres
+	echo 1 > /dev/cpuset/background/cpus
+	echo 1 > /dev/cpuset/system-background/cpus
 
 	echo "75 960000:95" > /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
 	echo "87 700000:95" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
@@ -43,9 +42,9 @@ if [ "$action" = "powersave" ]; then
 	echo 8 > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
 
-    echo 1 > /sys/module/msm_thermal/core_control/enabled
-    echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
-    echo Y > /sys/module/msm_thermal/parameters/enabled
+	echo 1 > /sys/module/msm_thermal/core_control/enabled
+	echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
+	echo Y > /sys/module/msm_thermal/parameters/enabled
 	exit 0
 fi
 
@@ -60,6 +59,8 @@ echo 0 > /dev/cpuset/background/cpus
 echo 0-2 > /dev/cpuset/system-background/cpus
 echo 4-7 > /dev/cpuset/foreground/boost/cpus
 echo 0-7 > /dev/cpuset/foreground/cpus
+echo 1 > /dev/cpuset/background/cpus
+echo 1-2 > /dev/cpuset/system-background/cpus
 
 if [ "$action" = "balance" ]; then
 	echo "0:1280000 1:1280000 2:1280000 3:1280000 4:1635000 5:1635000 6:1635000 7:1635000" > /sys/module/msm_performance/parameters/cpu_max_freq
@@ -70,7 +71,7 @@ if [ "$action" = "balance" ]; then
 	
 	echo 960000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
 	echo 960000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
-	
+
 	echo "msm-adreno-tz" > /sys/class/kgsl/kgsl-3d0/devfreq/governor
 	echo 710000000 > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
 	echo 257000000 > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
@@ -79,9 +80,9 @@ if [ "$action" = "balance" ]; then
 	echo 6 > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
 
-    echo 1 > /sys/module/msm_thermal/core_control/enabled
-    echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
-    echo Y > /sys/module/msm_thermal/parameters/enabled
+	echo 1 > /sys/module/msm_thermal/core_control/enabled
+	echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
+	echo Y > /sys/module/msm_thermal/parameters/enabled
 
 	exit 0
 fi
@@ -104,9 +105,9 @@ if [ "$action" = "performance" ]; then
 	echo 6 > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
 
-    echo 0 > /sys/module/msm_thermal/core_control/enabled
-    echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
-    echo N > /sys/module/msm_thermal/parameters/enabled
+	echo 0 > /sys/module/msm_thermal/core_control/enabled
+	echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
+	echo N > /sys/module/msm_thermal/parameters/enabled
 
 	exit 0
 fi
@@ -129,9 +130,9 @@ if [ "$action" = "fast" ]; then
 	echo 5 > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 1 > /proc/sys/kernel/sched_boost
 
-    echo 0 > /sys/module/msm_thermal/core_control/enabled
-    echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
-    echo Y > /sys/module/msm_thermal/parameters/enabled
+	echo 0 > /sys/module/msm_thermal/core_control/enabled
+	echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
+	echo Y > /sys/module/msm_thermal/parameters/enabled
 	
 	exit 0
 fi

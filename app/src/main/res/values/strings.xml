@@ -82,35 +82,6 @@
     <string name="autobooster_service_unactive">未激活辅助服务 - 点击去激活</string>
     <string name="autobooster_service_unactive2">后台管理功能未开启 - 点击去激活</string>
 
-    <string name="defaultconfighelp_820">
-        "<b>预设-标准模式(820)：</b>"
-        "<span>\r\n 省电模式 4x300Mhz ~ 4x960Mhz</span>"
-        "<span>\r\n 均衡模式 4x300Mhz ~ 4x1555Mhz</span>"
-        "<span>\r\n 性能模式 4x300Mhz ~ 4x1824Mhz</span>"
-        "<span>\r\n 极速模式 4x1248Mhz ~ Max</span>"
-    </string>
-    <string name="defaultconfighelp_bigcore_820">
-        "<b>预设-更高性能(820)：</b>"
-        "<span>\r\n 省电模式 4x300Mhz ~ 8x1.2Ghz</span>"
-        "<span>\r\n 均衡模式 4x300Mhz ~ 8x1.6ghz</span>"
-        "<span>\r\n 性能模式 4x300Mhz ~ Max</span>"
-        "<span>\r\n 极速模式 Max</span>"
-    </string>
-    <string name="defaultconfighelp_835">
-        "<b>预设-标准模式(835)：</b>"
-        "<span>\r\n 省电模式 8x300Mhz ~ 8x1.2Ghz</span>"
-        "<span>\r\n 均衡模式 8x300Mhz ~ 8x1.6Ghz</span>"
-        "<span>\r\n 性能模式 8x300Mhz ~ 8x2.0Ghz</span>"
-        "<span>\r\n 极速模式 8x1.2Ghz ~ Max</span>"
-    </string>
-    <string name="defaultconfighelp_bigcore_835">
-        "<b>预设-更高性能(835)：</b>"
-        "<span>\r\n 省电模式 8x300Mhz ~ 8x1.2Ghz</span>"
-        "<span>\r\n 均衡模式 8x300Mhz ~ 8x2.0Ghz</span>"
-        "<span>\r\n 性能模式 8x300Mhz ~ Max</span>"
-        "<span>\r\n 极速模式 8x1.2Ghz ~ Max</span>"
-    </string>
-
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
@@ -121,7 +92,7 @@
     <string name="accessbility_autobooster">后台管理</string>
     <string name="accessbility_autobooster_desc">离开主界面时自动终止黑名单应用，具体设置请在本应用后台管理中配</string>
     <string name="accessbility_dynconfig">动态响应</string>
-    <string name="accessbility_dynconfig_desc">仅限骁龙820、821、835。为单个应用设置CPU、GPU频率，具体设置请在在本应用性能配置中配</string>
+    <string name="accessbility_dynconfig_desc">为每个应用单独配置性能模式，在切换应用时自动调整CPU和GPU频率，具体设置请在在本应用性能配置中配</string>
     <string name="accessbility_bp">充电保护 *实验性</string>
     <string name="accessbility_bp_desc">限制手机只能充电到指定百分比。支持设备较少，如出现手机不充电的情况，请关闭此功能并重启手机！</string>
     <string name="accessbility_bp_level_desc">电量达到此值时停止充电，并在电量低于此值-20时恢复充电。（推荐值20-99，百分百）输完回车保存。如果你发现此功能不支持你的设备，请务必关闭电池保护功能！</string>

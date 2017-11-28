@@ -118,11 +118,6 @@ class main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
         val navigationView = findViewById(R.id.nav_view) as NavigationView
         navigationView.setNavigationItemSelectedListener(this)
         val menu = navigationView.menu
-        val nav_profile = menu.findItem(R.id.nav_profile)
-
-        if (DynamicConfig().DynamicSupport(this)) {
-            nav_profile.isVisible = true
-        }
 
         checkFileWrite()
     }

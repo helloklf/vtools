@@ -21,6 +21,8 @@ if [ "$action" = "powersave" ]; then
 	echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/max_cpus
 	echo 95 > /sys/devices/system/cpu/cpu4/core_ctl/busy_up_thres
 	echo 60 > /sys/devices/system/cpu/cpu4/core_ctl/busy_down_thres
+	echo 1 > /dev/cpuset/background/cpus
+	echo 1 > /dev/cpuset/system-background/cpus
 
 	echo "75 960000:95" > /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
 	echo "87 700000:95" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
@@ -59,6 +61,8 @@ echo 0 > /dev/cpuset/background/cpus
 echo 0-2 > /dev/cpuset/system-background/cpus
 echo 4-7 > /dev/cpuset/foreground/boost/cpus
 echo 0-7 > /dev/cpuset/foreground/cpus
+echo 1 > /dev/cpuset/background/cpus
+echo 1-2 > /dev/cpuset/system-background/cpus
 
 if [ "$action" = "balance" ]; then
 	

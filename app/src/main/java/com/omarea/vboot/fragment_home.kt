@@ -101,13 +101,13 @@ class fragment_home : Fragment() {
     }
 
     private fun installConfig(after:String) {
-        if (File("/data/powercfg.sh").exists() && File("/data/init.qcom.post_boot.sh").exists()) {
-            cmdshellTools.DoCmdSync(after)
+        if (File("/data/powercfg.sh").exists()) {
+            cmdshellTools.DoCmdSync(Consts.ExecuteConfig + "\n" + after)
         } else {
             //TODO：选取配置
             AppShared.WriteFile(context.assets, Platform().GetCPUName() + "/powercfg-default.sh", "powercfg.sh")
-            cmdshellTools.DoCmdSync(Consts.InstallPowerToggleConfigToCache + "\n\n" + after)
-            setModeState();
+            cmdshellTools.DoCmdSync(Consts.InstallPowerToggleConfigToCache + "\n\n" + Consts.ExecuteConfig + "\n" + after)
         }
+        setModeState();
     }
 }

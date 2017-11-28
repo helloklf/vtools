@@ -12,7 +12,6 @@
             android:icon="@drawable/ic_menu_img"
             android:title="@string/menu_img" />
         <item
-            android:visible="false"
             android:id="@+id/nav_profile"
             android:icon="@drawable/ic_menu_profile"
             android:title="@string/menu_cofig" />
