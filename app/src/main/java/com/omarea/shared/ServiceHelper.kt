@@ -216,7 +216,7 @@ class ServiceHelper(context: Context) {
         if (spfBooster.contains(lastPackage)) {
             if (spfBooster.getBoolean(SpfConfig.BOOSTER_SPF_DOZE_MOD, false)) {
                 try {
-                    DoCmd("am set-inactive $lastPackage true")
+                    DoCmd("dumpsys deviceidle enable; am set-inactive $lastPackage true")
                     //am set-idle com.tencent.mobileqq true
                     if (DebugMode)
                         ShowMsg("force doze: " + lastPackage)
@@ -227,7 +227,7 @@ class ServiceHelper(context: Context) {
 
             //android.os.Process.killProcess(android.os.Process.myPid());//自杀
             try {
-                DoCmd("pgrep $lastPackage |xargs kill -9")
+                DoCmd("killall -9 $lastPackage;pkill -9 $lastPackage;pgrep $lastPackage |xargs kill -9;")
                 if (DebugMode)
                     ShowMsg("force kill: " + lastPackage)
             } catch (ex: Exception) {

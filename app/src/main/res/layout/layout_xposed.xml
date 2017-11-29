@@ -62,9 +62,18 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginRight="10dp"
                             android:text="@string/xposed_dpi_desc"
                             android:textSize="12dp"/>
+                        <EditText
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:id="@+id/xposed_config_default_dpi"
+                            android:layout_marginBottom="10dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" android:hint="默认DPI（默认为屏幕宽度/2.25）" />
 
                         <CheckBox
                             android:id="@+id/xposed_config_cm_su"

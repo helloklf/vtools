@@ -143,7 +143,6 @@ class fragment_addin : Fragment() {
         listItem.add(createItem("干掉温控模块", "这可以确保手机性能更加稳定，但会显著增加发热，同时也会导致MIUI系统的CPU智能调度失效，需要重启手机。"))
         listItem.add(createItem("恢复温控模块", "如果你后悔了想把温控还原回来，可以点这个。需要重启手机"))
         listItem.add(createItem("删除锁屏密码", "如果你忘了锁屏密码，或者恢复系统后密码不正确，这能帮你解决。会重启手机"))
-        //listItem.add(createItem("强制打盹", "实验性，强制进入Doze模式（如果系统支持）"))
         listItem.add(createItem("禁止充电", "停止对电池充电，同时使用USB电源为手机供电。（与充电加速和电池保护功能冲突！）"))
         listItem.add(createItem("恢复充电", "恢复对电池充电，由设备自行管理充放。"))
         listItem.add(createItem("改机型为OPPO R11", "将机型信息改为OPPO R11 Plus，以便在王者荣耀或获得专属优化体验。（会导致部分设备软件fc）"))

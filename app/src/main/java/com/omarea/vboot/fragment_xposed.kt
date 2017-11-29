@@ -14,12 +14,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.CheckBox
 import android.widget.Toast
+import com.omarea.shared.SpfConfig
 import com.omarea.shared.cmd_shellTools
 import com.omarea.shared.xposed_check
 import com.omarea.ui.list_adapter2
+import kotlinx.android.synthetic.main.layout_battery.*
 import kotlinx.android.synthetic.main.layout_xposed.*
 import java.io.File
 import java.util.ArrayList
@@ -90,6 +93,19 @@ class fragment_xposed : Fragment() {
             }
         }
         xposed_apps_dpifix.setOnItemClickListener(config_powersavelistClick)
+        xposed_config_default_dpi.setOnEditorActionListener { v, actionId, event ->
+            if(actionId == EditorInfo.IME_ACTION_DONE){
+                val dpi:Int
+                try{
+                    dpi = v.text.toString().toInt()
+                    spf.edit().putInt("xposed_default_dpi", dpi).commit()
+                    Snackbar.make(v, "设置已保存，可能需要重启手机才会生效。"+ v.text, Snackbar.LENGTH_SHORT ).show()
+                }
+                catch(e:Exception){
+                }
+            }
+            false
+        }
     }
 
     internal val myHandler: Handler = object : Handler() {
@@ -105,6 +121,14 @@ class fragment_xposed : Fragment() {
         xposed_config_dpi_fix.isChecked = spf.getBoolean("xposed_dpi_fix", false)
         xposed_config_cm_su.isChecked = spf.getBoolean("xposed_hide_su", false)
         xposed_config_webview_debug.isChecked = spf.getBoolean("xposed_webview_debug", false)
+        val w = context.resources.displayMetrics.widthPixels.toFloat()
+        val h = context.resources.displayMetrics.heightPixels.toFloat()
+        val pixels = if (w > h) h else w
+        val def = (pixels / 2.25).toInt()
+        if (!spf.contains("xposed_default_dpi")) {
+            spf.edit().putInt("xposed_default_dpi", def).commit()
+        }
+        xposed_config_default_dpi.setText(spf.getInt("xposed_default_dpi", def).toString())
         thisview!!.progressBar.visibility = View.VISIBLE
         Thread({
             installedList = loadList()

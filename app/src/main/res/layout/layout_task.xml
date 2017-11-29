@@ -10,12 +10,12 @@
         android:orientation="horizontal"
         android:layout_height="wrap_content"
         android:layout_width="match_parent">
-        <CheckBox android:text="内核进程" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/checkbox_kernel" />
+        <CheckBox android:text="显示全部" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/checkbox_kernel" />
         <CheckBox android:text="自动刷新" android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/checkbox_refresh" />
     </LinearLayout>
     <ListView
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:id="@+id/list_tasks"
-        android:textSize="11dp"></ListView>
+        android:textSize="10dp"></ListView>
 </LinearLayout>

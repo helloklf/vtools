@@ -25,7 +25,7 @@ class fragment_tasks : Fragment() {
     internal lateinit var progressBar: ProgressBar
     internal lateinit var myHandler: Handler
     var refresh = true
-    var kernel = true
+    var kernel = false
     var process: Process? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
