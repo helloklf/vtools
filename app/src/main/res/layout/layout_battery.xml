@@ -82,7 +82,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
             <EditText
-                android:contentDescription="ssss"
+                android:visibility="gone"
                 android:id="@+id/settings_qc_limit"
                 android:hint="充电速度限制，单位mA"
                 android:inputType="number"

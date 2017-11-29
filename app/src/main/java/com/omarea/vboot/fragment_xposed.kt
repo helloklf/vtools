@@ -1,5 +1,7 @@
 package com.omarea.vboot
 
+import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context.MODE_PRIVATE
 import android.content.Context.MODE_WORLD_READABLE
 import android.content.Intent
@@ -7,26 +9,23 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import android.preference.PreferenceManager
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.CheckBox
-import android.widget.Toast
+import android.widget.EditText
+import android.widget.TextView
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.cmd_shellTools
 import com.omarea.shared.xposed_check
 import com.omarea.ui.list_adapter2
-import kotlinx.android.synthetic.main.layout_battery.*
 import kotlinx.android.synthetic.main.layout_xposed.*
 import java.io.File
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 
 class fragment_xposed : Fragment() {
@@ -43,12 +42,22 @@ class fragment_xposed : Fragment() {
         userVisibleHint = true
     }
 
+    @SuppressLint("WrongConstant")
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        dpi_spf = thisview!!.getSharedPreferences(SpfConfig.XPOSED_DPI_SPF, MODE_WORLD_READABLE)
+        val w = context.resources.displayMetrics.widthPixels.toFloat()
+        val h = context.resources.displayMetrics.heightPixels.toFloat()
+        val pixels = if (w > h) h else w
+        def = (pixels / 2.25).toInt()
+
+
         try {
             spf = activity.getSharedPreferences("xposed", 0x1)
-        } catch (ex:Exception) {
+        } catch (ex: Exception) {
             spf = context.getSharedPreferences("xposed", MODE_PRIVATE)
         }
+        spf.edit().putInt("xposed_default_dpi", def).commit()
+
         xposed_tabs.setup();
 
         xposed_tabs.addTab(xposed_tabs.newTabSpec("tab_a").setContent(R.id.xposed_tab_a).setIndicator(getString(R.string.xposed_tab_a)));
@@ -89,23 +98,39 @@ class fragment_xposed : Fragment() {
         val config_powersavelistClick = object : AdapterView.OnItemClickListener {
             override fun onItemClick(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 val checkBox = view.findViewById(R.id.select_state) as CheckBox
-                checkBox.isChecked = !checkBox.isChecked
+                val textView = view.findViewById(R.id.ItemEnabledStateText) as TextView
+
+                var list = parent.adapter as list_adapter2
+                val layoutInflater = LayoutInflater.from(context)
+                val edit = layoutInflater.inflate(R.layout.dpi_input_layout, null)
+                var input = (edit.findViewById(R.id.dpi_input)) as EditText
+                var packageName = list.getItem(position).get("packageName").toString()
+                input.setText(list.getItem(position).get("enabled_state").toString())
+
+                AlertDialog.Builder(context)
+                        .setTitle("请输入DPI")
+                        .setNeutralButton("清除设置", { dialog, which ->
+                            list.states[position] = false
+                            checkBox.isChecked = false
+                            dpi_spf.edit().remove(packageName).commit()
+                            list.getItem(position).put("enabled_state", "")
+                            textView.setText("")
+                        })
+                        .setNegativeButton("确定", { dialog, which ->
+                            var text = input.text.toString()
+                            if (text.length === 0) {
+                                return@setNegativeButton
+                            }
+                            list.getItem(position).put("enabled_state", text)
+                            textView.setText(text)
+                            dpi_spf.edit().putInt(packageName, text.toInt()).commit()
+                            checkBox.isChecked = true
+                            list.states[position] = true
+                        })
+                        .setView(edit).create().show()
             }
         }
         xposed_apps_dpifix.setOnItemClickListener(config_powersavelistClick)
-        xposed_config_default_dpi.setOnEditorActionListener { v, actionId, event ->
-            if(actionId == EditorInfo.IME_ACTION_DONE){
-                val dpi:Int
-                try{
-                    dpi = v.text.toString().toInt()
-                    spf.edit().putInt("xposed_default_dpi", dpi).commit()
-                    Snackbar.make(v, "设置已保存，可能需要重启手机才会生效。"+ v.text, Snackbar.LENGTH_SHORT ).show()
-                }
-                catch(e:Exception){
-                }
-            }
-            false
-        }
     }
 
     internal val myHandler: Handler = object : Handler() {
@@ -113,22 +138,17 @@ class fragment_xposed : Fragment() {
             super.handleMessage(msg)
         }
     }
+    var def = 480
     lateinit var installedList: ArrayList<HashMap<String, Any>>
-    lateinit var spf: SharedPreferences;
+    lateinit var spf: SharedPreferences
+    lateinit var dpi_spf: SharedPreferences
     override fun onResume() {
         super.onResume()
         xposed_config_hight_fps.isChecked = spf.getBoolean("xposed_hight_fps", false)
         xposed_config_dpi_fix.isChecked = spf.getBoolean("xposed_dpi_fix", false)
         xposed_config_cm_su.isChecked = spf.getBoolean("xposed_hide_su", false)
         xposed_config_webview_debug.isChecked = spf.getBoolean("xposed_webview_debug", false)
-        val w = context.resources.displayMetrics.widthPixels.toFloat()
-        val h = context.resources.displayMetrics.heightPixels.toFloat()
-        val pixels = if (w > h) h else w
-        val def = (pixels / 2.25).toInt()
-        if (!spf.contains("xposed_default_dpi")) {
-            spf.edit().putInt("xposed_default_dpi", def).commit()
-        }
-        xposed_config_default_dpi.setText(spf.getInt("xposed_default_dpi", def).toString())
+
         thisview!!.progressBar.visibility = View.VISIBLE
         Thread({
             installedList = loadList()
@@ -136,11 +156,13 @@ class fragment_xposed : Fragment() {
                 try {
                     xposed_apps_dpifix.setAdapter(list_adapter2(context, installedList))
                     val listadapter = xposed_apps_dpifix.getAdapter() as list_adapter2
-                    var status = thisview!!.getSharedPreferences("xposed_dpifix", MODE_WORLD_READABLE).all
-                    for (postion in status.keys) {
+
+                    var status = dpi_spf.all
+                    for (key in status.keys) {
                         for (i in installedList.indices) {
-                            if (installedList[i].get("packageName").toString() == postion) {
+                            if (installedList[i].get("packageName").toString() == key) {
                                 listadapter.states[i] = true
+                                listadapter.getItem(i)["enabled_state"] = dpi_spf.getInt(key, def)
                             }
                         }
                     }
@@ -150,30 +172,6 @@ class fragment_xposed : Fragment() {
                 }
             }
         }).start()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        try {
-            if (xposed_apps_dpifix.getAdapter() == null) {
-                return
-            }
-            val listadapter = xposed_apps_dpifix.getAdapter() as list_adapter2
-            if (listadapter == null) {
-                return
-            }
-            val states = listadapter.states
-            var dpifixList = thisview!!.getSharedPreferences("xposed_dpifix", MODE_WORLD_READABLE).edit().clear()
-
-            for (position in states.keys) {
-                if (states[position] == true) {
-                    dpifixList.putBoolean(installedList[position].get("packageName").toString(), true)
-                }
-            }
-            dpifixList.commit()
-        } catch (ex: Exception) {
-            Toast.makeText(thisview, ex.message, Toast.LENGTH_LONG).show()
-        }
     }
 
     private fun loadList(): ArrayList<HashMap<String, Any>> {
@@ -194,7 +192,7 @@ class fragment_xposed : Fragment() {
             item.put("select_state", false)
             item.put("dir", packageInfo.sourceDir)
             item.put("enabled", packageInfo.enabled)
-            item.put("enabled_state", if (packageInfo.enabled) "" else "已冻结")
+            item.put("enabled_state", "")
 
             item.put("name", packageInfo.loadLabel(packageManager))
             item.put("packageName", packageInfo.packageName)
@@ -204,6 +202,7 @@ class fragment_xposed : Fragment() {
         }
         return list
     }
+
     companion object {
         fun Create(thisView: main, cmdshellTools: cmd_shellTools): Fragment {
             val fragment = fragment_xposed()

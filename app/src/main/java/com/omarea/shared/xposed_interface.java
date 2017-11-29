@@ -72,7 +72,8 @@ public class xposed_interface implements IXposedHookLoadPackage, IXposedHookZygo
     @Override
     public void initZygote(IXposedHookZygoteInit.StartupParam startupParam) throws Throwable {
         prefs = new XSharedPreferences("com.omarea.vboot", "xposed");
-        prefs2 = new XSharedPreferences("com.omarea.vboot", "xposed_dpifix");
+        prefs2 = new XSharedPreferences("com.omarea.vboot", SpfConfig.XPOSED_DPI_SPF);
+
         //prefs.reload();
         //强制绕开权限限制读取配置 因为SharedPreferences在Android N中不能设置为MODE_WORLD_READABLE
         prefs.makeWorldReadable();
@@ -84,7 +85,7 @@ public class xposed_interface implements IXposedHookLoadPackage, IXposedHookZygo
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
-                param.setResult(defaultDpi);
+                param.setResult(prefs2.getInt(AndroidAppHelper.currentPackageName(), defaultDpi));
             }
         });
 
@@ -94,7 +95,7 @@ public class xposed_interface implements IXposedHookLoadPackage, IXposedHookZygo
                 String packageName = AndroidAppHelper.currentPackageName();
                 if ((useDefaultConfig || prefs.getBoolean("xposed_dpi_fix", false)) && prefs2.contains(packageName)) {
                     Object mDisplayInfo = XposedHelpers.getObjectField(param.thisObject, "mDisplayInfo");
-                    XposedHelpers.setIntField(mDisplayInfo, "logicalDensityDpi", defaultDpi);
+                    XposedHelpers.setIntField(mDisplayInfo, "logicalDensityDpi", prefs2.getInt(packageName, defaultDpi));
                 }
             }
 
@@ -129,9 +130,7 @@ public class xposed_interface implements IXposedHookLoadPackage, IXposedHookZygo
                             String hostPackageName = AndroidAppHelper.currentPackageName();
                             float dpi = 0;
                             if ((useDefaultConfig || prefs.getBoolean("xposed_dpi_fix", false)) && (prefs2.contains(packageName) || prefs2.contains(hostPackageName))) {
-                                dpi = defaultDpi;
-                            } else if (packageName.equals("com.waterdaaan.cpufloat") || packageName.equals("eu.chainfire.perfmon")) {
-                                dpi = defaultDpi / 1.7f;
+                                dpi = prefs2.getInt(packageName, defaultDpi);
                             } else {
                                 return;
                             }
@@ -245,36 +244,7 @@ public class xposed_interface implements IXposedHookLoadPackage, IXposedHookZygo
                             }
                         });
             }
-        } else if (packageName.equals("com.waterdaaan.cpufloat") || packageName.equals("eu.chainfire.perfmon")) {
-            if (useDefaultConfig || prefs.getBoolean("xposed_dpi_fix", false)) {
-                XposedHelpers.findAndHookMethod("android.app.Application", loadPackageParam.classLoader, "attach", Context.class, new XC_MethodHook() {
-                    @Override
-                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        super.beforeHookedMethod(param);
-
-                        Context context = (Context) param.args[0];
-                        context.getResources().getDisplayMetrics().density = (float) (context.getResources().getDisplayMetrics().density / 1.7);
-                        context.getResources().getDisplayMetrics().densityDpi = (int) (context.getResources().getDisplayMetrics().densityDpi / 1.7);
-                        context.getResources().getDisplayMetrics().scaledDensity = (float) (context.getResources().getDisplayMetrics().scaledDensity / 1.7);
-                    }
-                });
-            }
-        } else if (packageName.equals("net.oneplus.launcher")) {
-            if (useDefaultConfig || prefs.getBoolean("xposed_dpi_fix", false)) {
-                XposedHelpers.findAndHookMethod("android.app.Application", loadPackageParam.classLoader, "attach", Context.class, new XC_MethodHook() {
-                    @Override
-                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                        super.beforeHookedMethod(param);
-
-                        Context context = (Context) param.args[0];
-                        context.getResources().getDisplayMetrics().density = (float) (defaultDpi * 0.9);
-                        context.getResources().getDisplayMetrics().densityDpi = (int) (defaultDpi * 0.9);
-                        context.getResources().getDisplayMetrics().scaledDensity = (float) (defaultDpi * 0.9);
-                    }
-                });
-            }
         }
-
         if (useDefaultConfig || prefs.getBoolean("xposed_webview_debug", false)) {
             //强制开启webview调试
             XposedBridge.hookAllConstructors(android.webkit.WebView.class, new XC_MethodHook() {
@@ -298,16 +268,11 @@ public class xposed_interface implements IXposedHookLoadPackage, IXposedHookZygo
                     super.beforeHookedMethod(param);
 
                     Context context = (Context) param.args[0];
-                    context.getResources().getDisplayMetrics().density = defaultDpi / 160.0f;
-                    context.getResources().getDisplayMetrics().densityDpi = defaultDpi;
-                    context.getResources().getDisplayMetrics().scaledDensity = defaultDpi / 160.0f;
+                    context.getResources().getDisplayMetrics().density = prefs2.getInt(packageName, defaultDpi) / 160.0f;
+                    context.getResources().getDisplayMetrics().densityDpi = prefs2.getInt(packageName, defaultDpi);
+                    context.getResources().getDisplayMetrics().scaledDensity = prefs2.getInt(packageName, defaultDpi) / 160.0f;
                 }
             });
         }
-        /*
-        float dpi = getApplicationContext().getResources().getDisplayMetrics().density;
-        getApplicationContext().getResources().getDisplayMetrics().density = 2;
-        Toast.makeText(getApplicationContext(),String.valueOf(dpi),Toast.LENGTH_SHORT).show();
-        */
     }
 }

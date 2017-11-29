@@ -129,11 +129,11 @@
     <string name="action_reboot9008">重启到9008模式</string>
 
     <string name="xposed_tab_a">推荐</string>
-    <string name="xposed_tab_b">DPI守护</string>
+    <string name="xposed_tab_b">DPI配置</string>
     <string name="xposed_gamehf_title">王者荣耀 高帧率模式</string>
     <string name="xposed_gamehf_desc">通过伪装设备型号为OPPO R11 Plus，让王者荣耀游戏允许开启60帧模式并提高游戏稳定性。</string>
-    <string name="xposed_dpi_title">DPI守护 总开关</string>
-    <string name="xposed_dpi_desc">勾选此项才会使右边的DPI守护设置列表生效。对勾选的应用使用当前分辨率的默认DPI值，也许能修复部分更改系统DPI导致的应用UI错误。</string>
+    <string name="xposed_dpi_title">应用DPI修改</string>
+    <string name="xposed_dpi_desc">允许对应用程序单独配置DPI缩放，勾选此项才能使右侧列表中的配置生效。</string>
     <string name="xposed_actived">模块已激活-工作正常</string>
     <string name="xposed_unactive">Xposed模块未激活</string>
     <string name="xposed_cannot_openxposed">Xposed管理器似乎还没有安装？</string>

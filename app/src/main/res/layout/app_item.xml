@@ -13,6 +13,7 @@
         android:layout_rowSpan="2"
         android:clickable="false"
         android:focusable="false"
+        android:editable="false"
         android:focusableInTouchMode="false"/>
 
     <ImageView

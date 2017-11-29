@@ -32,4 +32,6 @@ public class SpfConfig {
     public static String SWAP_SPF_ZRAM = "zram";
     public static String SWAP_SPF_ZRAM_SIZE = "zram_size";
     public static String SWAP_SPF_SWAPPINESS = "swappiness";
+
+    public static String XPOSED_DPI_SPF = "xposed_dpi";
 }
