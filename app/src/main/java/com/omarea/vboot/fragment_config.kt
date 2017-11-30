@@ -190,6 +190,27 @@ class fragment_config : Fragment() {
         LoadList()
     }
 
+    private fun sortAppList (list:ArrayList<HashMap<String, Any>>): ArrayList<HashMap<String, Any>> {
+        list.sortWith(Comparator {
+            l,r ->
+            val les = l["enabled_state"].toString()
+            val res = r["enabled_state"].toString()
+            when {
+                les < res -> -1
+                les > res -> 1
+                else -> {
+                    val lp = l["packageName"].toString()
+                    val rp = r["packageName"].toString()
+                    when {
+                        lp < rp -> -1
+                        lp > rp -> 1
+                        else -> 0
+                    }
+                }
+            }
+        })
+        return  list
+    }
     internal fun SetListData(dl: ArrayList<HashMap<String, Any>>?, lv: ListView) {
         myHandler.post {
             lv.adapter = list_adapter(context, dl)
@@ -221,6 +242,7 @@ class fragment_config : Fragment() {
                     item.put("select_state", false)
                     installedList!!.add(item)
                 }
+                sortAppList(installedList!!)
             }
             defaultList = ArrayList()
             gameList = ArrayList()

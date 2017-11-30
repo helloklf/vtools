@@ -172,7 +172,7 @@ class fragment_battery : Fragment() {
             }
         }
         settings_bp_level.setOnEditorActionListener { v, actionId, event ->
-            if(actionId == EditorInfo.IME_ACTION_DONE){
+            if(actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT){
                 val level:Int
                 try{
                     level = settings_bp_level.text.toString().toInt()
@@ -186,7 +186,7 @@ class fragment_battery : Fragment() {
             false
         }
         settings_qc_limit.setOnEditorActionListener { v, actionId, event ->
-            if(actionId == EditorInfo.IME_ACTION_DONE){
+            if(actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT){
                 val level:Int
                 try{
                     level = settings_qc_limit.text.toString().toInt()

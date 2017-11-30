@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:context="com.omarea.vboot.fragment_applistions">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.omarea.vboot.fragment_applistions">
+
+    <EditText
+        android:visibility="gone"
+        android:id="@+id/apps_search_box"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#33dddddd"
+        android:hint="搜索 应用名或PackageName"
+        android:inputType="textFilter"
+        android:padding="8dp"
+        android:singleLine="true" />
 
     <TabHost
         android:id="@+id/blacklist_tabhost"
@@ -40,7 +52,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|center"
                         android:layout_margin="@dimen/fab_margin"
-                        android:src="@drawable/check"/>
+                        android:src="@drawable/check" />
 
                     <ListView
                         android:id="@+id/apps_userlist"
@@ -60,7 +72,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|center"
                         android:layout_margin="@dimen/fab_margin"
-                        android:src="@drawable/check"/>
+                        android:src="@drawable/check" />
 
                     <ListView
                         android:id="@+id/apps_systemlist"
@@ -82,7 +94,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|center"
                         android:layout_margin="@dimen/fab_margin"
-                        android:src="@drawable/check"/>
+                        android:src="@drawable/check" />
 
                     <ListView
                         android:id="@+id/apps_backupedlist"
@@ -94,4 +106,4 @@
         </LinearLayout>
     </TabHost>
 
-</RelativeLayout>
+</LinearLayout>

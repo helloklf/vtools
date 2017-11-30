@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.CheckBox
 import android.widget.EditText
@@ -26,6 +27,8 @@ import com.omarea.ui.list_adapter2
 import kotlinx.android.synthetic.main.layout_xposed.*
 import java.io.File
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 class fragment_xposed : Fragment() {
@@ -94,7 +97,6 @@ class fragment_xposed : Fragment() {
         if (xposed_check.xposedIsRunning())
             vbootxposedservice_state.visibility = GONE;
 
-
         val config_powersavelistClick = object : AdapterView.OnItemClickListener {
             override fun onItemClick(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 val checkBox = view.findViewById(R.id.select_state) as CheckBox
@@ -131,6 +133,20 @@ class fragment_xposed : Fragment() {
             }
         }
         xposed_apps_dpifix.setOnItemClickListener(config_powersavelistClick)
+        xposed_config_search.setOnEditorActionListener({
+            tv, actionId, key ->
+            if(actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT){
+                val text = tv.text.toString()
+
+                val list = installedList.filter {
+                    item ->
+                    if (item.get("packageName").toString().contains(text) || item.get("name").toString().contains(text)) true else false
+                }
+
+                xposed_apps_dpifix.setAdapter(list_adapter2(context, java.util.ArrayList<HashMap<String,Any>>(list)))
+            }
+            false
+        })
     }
 
     internal val myHandler: Handler = object : Handler() {
@@ -152,20 +168,19 @@ class fragment_xposed : Fragment() {
         thisview!!.progressBar.visibility = View.VISIBLE
         Thread({
             installedList = loadList()
+
+            var status = dpi_spf.all
+            for (key in status.keys) {
+                for (i in installedList.indices) {
+                    if (installedList[i].get("packageName").toString() == key) {
+                        installedList[i]["enabled_state"] = dpi_spf.getInt(key, def)
+                    }
+                }
+            }
+
             myHandler.post {
                 try {
-                    xposed_apps_dpifix.setAdapter(list_adapter2(context, installedList))
-                    val listadapter = xposed_apps_dpifix.getAdapter() as list_adapter2
-
-                    var status = dpi_spf.all
-                    for (key in status.keys) {
-                        for (i in installedList.indices) {
-                            if (installedList[i].get("packageName").toString() == key) {
-                                listadapter.states[i] = true
-                                listadapter.getItem(i)["enabled_state"] = dpi_spf.getInt(key, def)
-                            }
-                        }
-                    }
+                    xposed_apps_dpifix.setAdapter(list_adapter2(context, sortAppList(installedList)))
                     thisview!!.progressBar.visibility = View.GONE
                 } catch (ex: Exception) {
 
@@ -174,6 +189,27 @@ class fragment_xposed : Fragment() {
         }).start()
     }
 
+    private fun sortAppList (list:ArrayList<HashMap<String, Any>>): ArrayList<HashMap<String, Any>> {
+        list.sortWith(Comparator {
+            l,r ->
+            val les = l["enabled_state"].toString()
+            val res = r["enabled_state"].toString()
+            when {
+                les < res -> 1
+                les > res -> -1
+                else -> {
+                    val lp = l["packageName"].toString()
+                    val rp = r["packageName"].toString()
+                    when {
+                        lp < rp -> -1
+                        lp > rp -> 1
+                        else -> 0
+                    }
+                }
+            }
+        })
+        return  list
+    }
     private fun loadList(): ArrayList<HashMap<String, Any>> {
         var packageManager = thisview!!.getPackageManager()
         var packageInfos = packageManager.getInstalledApplications(0)

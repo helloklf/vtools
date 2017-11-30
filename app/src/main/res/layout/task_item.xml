@@ -11,7 +11,7 @@
     <TextView
         android:id="@+id/itemPid"
         android:layout_width="0dip"
-        android:layout_weight="2"
+        android:layout_weight="20"
         android:layout_height="wrap_content"
         android:text="" />
 
@@ -19,7 +19,7 @@
         android:id="@+id/itemCpu"
         android:layout_width="0dip"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="13"
         android:gravity="center"
         android:text="" />
 
@@ -27,7 +27,7 @@
         android:id="@+id/itemType"
         android:layout_width="0dip"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
+        android:layout_weight="20"
         android:gravity="center"
         android:text="大小" />
 
@@ -35,7 +35,7 @@
         android:id="@+id/itemName"
         android:layout_width="0dip"
         android:layout_height="wrap_content"
-        android:layout_weight="5"
+        android:layout_weight="50"
         android:gravity="center"
         android:text="已用" />
 </LinearLayout>
