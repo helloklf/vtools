@@ -3,6 +3,40 @@
         <item>com.teslacoilsw.launcher</item>
     </string-array>
 
+    <string-array name="powercfg_igoned">
+        <item>com.zbar.lib</item>
+        <item>eu.chainfire.supersu</item>
+        <item>dev.nick.app.screencast</item>
+        <item>eu.chainfire.perfmon</item>
+        <item>com.c4x.roundcorner</item>
+        <item>com.sohu.inputmethod.sogou.xiaomi</item>
+        <item>com.sohu.inputmethod.sogou</item>
+        <item>com.tencent.gamehelper.smoba</item>
+        <item>com.gamebench.metricscollector</item>
+        <item>com.miui.systemadsolution</item>
+        <item>com.waterdaaan.cpufloat</item>
+    </string-array>
+    <string-array name="powercfg_game">
+        <item>com.rarlab.rar</item>
+        <item>com.stupeflix.replay</item>
+        <item>com.niksoftware.snapseed</item>
+        <item>com.goseet.vidtrim</item>
+        <item>com.netease.hyxd</item>
+        <item>com.mihoyo.bh3.uc</item>
+        <item>com.pinguo.edit.sdk</item>
+        <item>com.ak.mi</item>
+        <item>com.tencent.cldts</item>
+    </string-array>
+    <string-array name="powercfg_fast">
+        <item>com.antutu.abenchmark</item>
+        <item>com.antutu.benchmark.full</item>
+        <item>com.keramidas.titaniumbackup</item>
+        <item>com.primatelabs.geekbench</item>
+        <item>com.andromeda.androbench2</item>
+        <item>com.xzr.La.bench</item>
+        <item>com.ioncannon.cpuburn.gpugflops</item>
+    </string-array>
+
     <string name="btn_confirm">确定</string>
     <string name="btn_exit">退出</string>
     <string name="btn_refresh">重试</string>

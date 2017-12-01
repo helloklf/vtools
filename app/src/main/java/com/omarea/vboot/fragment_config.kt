@@ -69,6 +69,10 @@ class fragment_config : Fragment() {
         applistHelper = AppListHelper(context)
         spfPowercfg = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         editor = spfPowercfg.edit()
+
+        if (spfPowercfg.all.size == 0) {
+            initDefaultConfig()
+        }
         checkConfig();
 
         btn_config_service_not_active.setOnClickListener {
@@ -201,6 +205,18 @@ class fragment_config : Fragment() {
         LoadList()
     }
 
+    private fun initDefaultConfig() {
+        for (item in resources.getStringArray(R.array.powercfg_igoned)) {
+            editor.putString(item, "igoned")
+        }
+        for (item in resources.getStringArray(R.array.powercfg_fast)) {
+            editor.putString(item, "fast")
+        }
+        for (item in resources.getStringArray(R.array.powercfg_game)) {
+            editor.putString(item, "game")
+        }
+        editor.commit()
+    }
     private fun sortAppList(list: ArrayList<HashMap<String, Any>>): ArrayList<HashMap<String, Any>> {
         list.sortWith(Comparator { l, r ->
             val les = l["enabled_state"].toString()

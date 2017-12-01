@@ -38,9 +38,6 @@ class fragment_applistions : Fragment() {
     internal var cmdshellTools: cmd_shellTools? = null
     internal var thisview: main? = null
 
-    lateinit internal var apps_userlist: ListView
-    lateinit internal var apps_systemlist: ListView
-    lateinit internal var apps_backupedlist: ListView
     lateinit internal var appListHelper: AppListHelper
 
     internal var installedList: ArrayList<HashMap<String, Any>>? = null
@@ -63,17 +60,10 @@ class fragment_applistions : Fragment() {
 
         val tabHost = view!!.findViewById(R.id.blacklist_tabhost) as TabHost
         tabHost.setup()
-        tabHost.addTab(tabHost.newTabSpec("tab_1")
-                .setContent(R.id.tab_apps_user).setIndicator("用户程序"))
-        tabHost.addTab(tabHost.newTabSpec("tab_2")
-                .setContent(R.id.tab_apps_system).setIndicator("系统自带"))
-        tabHost.addTab(tabHost.newTabSpec("tab_3")
-                .setContent(R.id.tab_apps_backuped).setIndicator("已备份"))
+        tabHost.addTab(tabHost.newTabSpec("tab_1").setContent(R.id.tab_apps_user).setIndicator("用户程序"))
+        tabHost.addTab(tabHost.newTabSpec("tab_2").setContent(R.id.tab_apps_system).setIndicator("系统自带"))
+        tabHost.addTab(tabHost.newTabSpec("tab_3").setContent(R.id.tab_apps_backuped).setIndicator("已备份"))
         tabHost.currentTab = 0
-
-        apps_userlist = view.findViewById(R.id.apps_userlist) as ListView
-        apps_systemlist = view.findViewById(R.id.apps_systemlist) as ListView
-        apps_backupedlist = view.findViewById(R.id.apps_backupedlist) as ListView
 
         val toggleSelectState = OnItemClickListener { parent, view, position, id ->
             val checkBox = view.findViewById(R.id.select_state) as CheckBox
@@ -83,7 +73,7 @@ class fragment_applistions : Fragment() {
         apps_systemlist.onItemClickListener = toggleSelectState
         apps_backupedlist.onItemClickListener = toggleSelectState
 
-        view.findViewById(R.id.fab_apps_user).setOnClickListener(View.OnClickListener {
+        fab_apps_user.setOnClickListener(View.OnClickListener {
             val selectedItems = getSelectedItems(apps_userlist.adapter)
             if (selectedItems.size == 0)
                 return@OnClickListener
@@ -103,14 +93,14 @@ class fragment_applistions : Fragment() {
         })
 
 
-        view.findViewById(R.id.fab_apps_system).setOnClickListener(View.OnClickListener {
+        fab_apps_system.setOnClickListener(View.OnClickListener {
             val selectedItems = getSelectedItems(apps_systemlist.adapter)
             if (selectedItems.size == 0)
                 return@OnClickListener
 
             val builder = AlertDialog.Builder(context)
             builder.setTitle("系统应用，请谨慎操作！！！")
-            builder.setItems(arrayOf("冻结", "解冻", "删除-需要重启")) { dialog, which ->
+            builder.setItems(arrayOf("冻结", "解冻", "删除")) { dialog, which ->
                 when (which) {
                     0 -> disabledApp(selectedItems, true)
                     1 -> enableApp(selectedItems, true)
@@ -120,14 +110,14 @@ class fragment_applistions : Fragment() {
             builder.show()
         })
 
-        view.findViewById(R.id.fab_apps_backuped).setOnClickListener(View.OnClickListener {
+        fab_apps_backuped.setOnClickListener(View.OnClickListener {
             val selectedItems = getSelectedItems(apps_backupedlist.adapter)
             if (selectedItems.size == 0)
                 return@OnClickListener
 
             val builder = AlertDialog.Builder(context)
             builder.setTitle("系统应用，请谨慎操作！！！")
-            builder.setItems(arrayOf("安装（ROOT模式）", "删除备份")) { dialog, which ->
+            builder.setItems(arrayOf("安装", "删除备份")) { dialog, which ->
                 when (which) {
                     0 -> installApp(selectedItems)
                     1 -> deleteBackup(selectedItems)
@@ -140,7 +130,7 @@ class fragment_applistions : Fragment() {
         setList()
         apps_search_box.setOnEditorActionListener({ tv, actionId, key ->
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
-                filterList(tv.text.toString())
+                refreshList(tv.text.toString())
                 setList()
             }
             false
@@ -355,7 +345,7 @@ class fragment_applistions : Fragment() {
         builder.show()
     }
 
-    private fun filterList(text: String) {
+    private fun refreshList(text: String) {
         systemList = java.util.ArrayList<HashMap<String, Any>>(appListHelper.getSystemAppList().filter { item ->
             if (item.get("packageName").toString().contains(text) || item.get("name").toString().contains(text)) true else false
         })
@@ -393,7 +383,7 @@ class fragment_applistions : Fragment() {
 
         Thread(Runnable {
             if (apps_search_box.text.length > 0) {
-                filterList(apps_search_box.text.toString())
+                refreshList(apps_search_box.text.toString())
             } else {
                 if (installedList == null)
                     installedList = appListHelper.getUserAppList()
@@ -421,7 +411,6 @@ class fragment_applistions : Fragment() {
     }
 
     companion object {
-
         fun Create(thisView: main, cmdshellTools: cmd_shellTools): Fragment {
             val fragment = fragment_applistions()
             fragment.cmdshellTools = cmdshellTools

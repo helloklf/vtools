@@ -40,7 +40,7 @@
         android:layout_gravity="center_vertical|center_horizontal"
         android:layout_width="match_parent"
         android:padding="160dp"
-        android:background="#50000000"
+        android:background="#80000000"
         android:layout_height="match_parent" />
 
 </android.support.design.widget.CoordinatorLayout>
