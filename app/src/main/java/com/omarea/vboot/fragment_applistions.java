@@ -97,10 +97,13 @@ public class fragment_applistions extends Fragment {
         tab_apps_system.setOnItemClickListener(config_powersavelistClick);
         tab_apps_backuped.setOnItemClickListener(config_powersavelistClick);
 
-        ((FloatingActionButton) view.findViewById(R.id.fab_apps_user)).setOnClickListener(new View.OnClickListener() {
+        (view.findViewById(R.id.fab_apps_user)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 list_adapter2 listadapter = (list_adapter2) tab_apps_user.getAdapter();
+                if (listadapter == null) {
+                    return;
+                }
                 final HashMap<Integer, Boolean> states = listadapter.states;
                 AlertDialog.Builder builder = new AlertDialog.Builder(thisview);
                 builder.setTitle("请选择操作");
@@ -110,15 +113,11 @@ public class fragment_applistions extends Fragment {
                                 "解冻",
                                 "卸载-删除数据",
                                 "卸载-保留数据",
-                                "备份应用",
-                                "取消"
+                                "备份应用"
                         },
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                if (which == 5)
-                                    return;
-
                                 ArrayList<HashMap<String, Object>> selectedItems = new ArrayList<>();
                                 for (int position : states.keySet()) {
                                     if (states.get(position) == true) {
@@ -156,10 +155,13 @@ public class fragment_applistions extends Fragment {
         });
 
 
-        ((FloatingActionButton) view.findViewById(R.id.fab_apps_system)).setOnClickListener(new View.OnClickListener() {
+        (view.findViewById(R.id.fab_apps_system)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final list_adapter2 listadapter = (list_adapter2) tab_apps_system.getAdapter();
+                if (listadapter == null) {
+                    return;
+                }
                 final HashMap<Integer, Boolean> states = listadapter.states;
                 AlertDialog.Builder builder = new AlertDialog.Builder(thisview);
                 builder.setTitle("系统应用，请谨慎操作！！！");
@@ -167,15 +169,11 @@ public class fragment_applistions extends Fragment {
                         new String[]{
                                 "冻结",
                                 "解冻",
-                                "删除-需要重启",
-                                "取消"
+                                "删除-需要重启"
                         },
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                if (which == 3)
-                                    return;
-
                                 ArrayList<HashMap<String, Object>> selectedItems = new ArrayList<>();
                                 for (int position : states.keySet()) {
                                     if (states.get(position) == true) {
@@ -209,21 +207,20 @@ public class fragment_applistions extends Fragment {
             @Override
             public void onClick(View v) {
                 final list_adapter2 listadapter = (list_adapter2) tab_apps_backuped.getAdapter();
+                if (listadapter == null) {
+                    return;
+                }
                 final HashMap<Integer, Boolean> states = listadapter.states;
                 AlertDialog.Builder builder = new AlertDialog.Builder(thisview);
                 builder.setTitle("系统应用，请谨慎操作！！！");
                 builder.setItems(
                         new String[]{
                                 "安装（ROOT模式）",
-                                "删除备份",
-                                "取消"
+                                "删除备份"
                         },
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                if (which == 3)
-                                    return;
-
                                 ArrayList<HashMap<String, Object>> selectedItems = new ArrayList<>();
                                 for (int position : states.keySet()) {
                                     if (states.get(position) == true) {
@@ -543,12 +540,12 @@ public class fragment_applistions extends Fragment {
         myHandler.post(new Runnable() {
             @Override
             public void run() {
-            try {
-                thisview.progressBar.setVisibility(View.GONE);
-                lv.setAdapter(new list_adapter2(getContext(), dl));
-            } catch (Exception ex) {
+                try {
+                    thisview.progressBar.setVisibility(View.GONE);
+                    lv.setAdapter(new list_adapter2(getContext(), dl));
+                } catch (Exception ex) {
 
-            }
+                }
             }
         });
     }

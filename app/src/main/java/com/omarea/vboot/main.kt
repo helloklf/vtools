@@ -2,18 +2,13 @@ package com.omarea.vboot
 
 import android.Manifest
 import android.app.AlertDialog
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.ServiceConnection
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.IBinder
 import android.os.Message
-import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.NavigationView
-import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.PermissionChecker
@@ -29,9 +24,7 @@ import android.widget.ProgressBar
 import com.omarea.shared.*
 import com.omarea.shell.Busybox
 import com.omarea.shell.CheckRootStatus
-import com.omarea.shell.DynamicConfig
 import com.omarea.shell.units.BusyboxInstallerUnit
-import java.io.File
 
 class main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
