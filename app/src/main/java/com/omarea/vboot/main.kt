@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
 import android.os.Message
@@ -21,6 +22,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
+import android.widget.Toast
 import com.omarea.shared.*
 import com.omarea.shell.Busybox
 import com.omarea.shell.CheckRootStatus
