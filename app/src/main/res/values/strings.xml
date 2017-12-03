@@ -165,7 +165,7 @@
     <string name="xposed_tab_a">推荐</string>
     <string name="xposed_tab_b">DPI配置</string>
     <string name="xposed_gamehf_title">王者荣耀 高帧率模式</string>
-    <string name="xposed_gamehf_desc">通过伪装设备型号为OPPO R11 Plus，让王者荣耀游戏允许开启60帧模式并提高游戏稳定性。</string>
+    <string name="xposed_gamehf_desc">通过伪装设备型号为vivo X20，让王者荣耀游戏允许开启60帧模式并提高游戏稳定性。</string>
     <string name="xposed_dpi_title">应用DPI修改</string>
     <string name="xposed_dpi_desc">允许对应用程序单独配置DPI缩放，勾选此项才能使右侧列表中的配置生效。</string>
     <string name="xposed_actived">模块已激活-工作正常</string>

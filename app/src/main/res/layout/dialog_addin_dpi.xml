@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="26dp"
+    android:paddingRight="26dp">
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:textColor="#888"
+        android:textSize="12dp"
+        android:text="DPI"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/dialog_addin_dpi_dpiinput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:maxLength="3" />
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:textColor="#888"
+        android:textSize="12dp"
+        android:text="分辨率"
+        android:hint="min:96"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/dialog_addin_dpi_width"
+            android:inputType="number"
+            android:maxLength="4"
+            android:hint="min:320"
+            android:layout_width="60dp"
+            android:layout_row="0" />
+
+        <TextView
+            android:text="×" />
+
+        <EditText
+            android:id="@+id/dialog_addin_dpi_height"
+            android:inputType="number"
+            android:maxLength="4"
+            android:hint="min:480"
+            android:layout_width="60dp"
+            android:layout_row="0" />
+
+    </GridLayout>
+    <CheckBox android:layout_marginTop="20dp" android:layout_marginBottom="10dp" android:id="@+id/dialog_addin_dpi_quickchange" android:text="快速更改（Android7.0+）"
+        android:layout_height="wrap_content" android:layout_width="match_parent" />
+</LinearLayout>

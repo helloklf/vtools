@@ -1,11 +1,13 @@
 package com.omarea.vboot
 
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
+import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,11 +15,12 @@ import android.widget.*
 import com.omarea.shared.AppShared
 import com.omarea.shared.Consts
 import com.omarea.shared.cmd_shellTools
+import com.omarea.shell.SuDo
 import com.omarea.shell.units.FlymeUnit
 import com.omarea.shell.units.FullScreenSUnit
 import com.omarea.shell.units.NubiaUnit
 import com.omarea.shell.units.QQStyleUnit
-import kotlinx.android.synthetic.main.activity_vbootresize.*
+import kotlinx.android.synthetic.main.layout_addin.*
 import java.util.*
 
 
@@ -241,6 +244,29 @@ class fragment_addin : Fragment() {
         }).start()
     }
 
+    private fun initCustomAddin(view: View) {
+        val listItem = ArrayList<HashMap<String, Any>>()/*在数组中存放数据*/
+        listItem.add(createItem("DPI、分辨率修改", "自定义手机DPI或分辨率，这可能导致设备无法正常启动或UI错误"))
+        listItem.add(createItem("机型修改", "通过更改build.prop，把机型修改成别的手机"))
+
+        val mSimpleAdapter = SimpleAdapter(
+                view.context, listItem,
+                R.layout.action_row_item,
+                arrayOf("Title", "Desc"),
+                intArrayOf(R.id.Title, R.id.Desc)
+        )
+        addin_custom_listview.adapter = mSimpleAdapter
+
+
+        addin_custom_listview.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+            if (position == 0) {
+                dialog_addin_modifydpi(context).modifyDPI(thisview!!.windowManager.defaultDisplay)
+            } else if (position == 1) {
+                dialog_addin_modifydevice(context).modifyDeviceInfo()
+            }
+        }
+    }
+
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         val tabHost = view!!.findViewById(R.id.addinlist_tabhost) as TabHost
 
@@ -248,10 +274,12 @@ class fragment_addin : Fragment() {
 
         tabHost.addTab(tabHost.newTabSpec("def_tab").setContent(R.id.system).setIndicator("系统"))
         tabHost.addTab(tabHost.newTabSpec("game_tab").setContent(R.id.soft).setIndicator("软件"))
+        tabHost.addTab(tabHost.newTabSpec("custom_tab").setContent(R.id.custom).setIndicator("定制"))
         tabHost.currentTab = 0
 
         initSystemAddin(view)
         initSoftAddin(view)
+        initCustomAddin(view)
     }
 
     companion object {

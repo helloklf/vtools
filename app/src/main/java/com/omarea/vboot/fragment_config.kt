@@ -157,7 +157,7 @@ class fragment_config : Fragment() {
         config_showSystemApp.isChecked = HasSystemApp
         config_showSystemApp.setOnClickListener {
             HasSystemApp = config_showSystemApp.isChecked
-            LoadList()
+            LoadList(true)
         }
 
         config_defaultlist.onItemClickListener = OnItemClickListener { parent, current, position, id ->
@@ -245,14 +245,14 @@ class fragment_config : Fragment() {
         }
     }
 
-    internal fun LoadList() {
+    internal fun LoadList(foreceReload: Boolean = false) {
         thisview!!.progressBar.visibility = View.VISIBLE
         if (packageManager == null) {
             packageManager = thisview!!.packageManager
         }
 
         Thread(Runnable {
-            if (installedList == null || installedList!!.size == 0) {
+            if (foreceReload || installedList == null || installedList!!.size == 0) {
                 installedList = ArrayList()/*在数组中存放数据*/
                 val hasSystemApp = HasSystemApp
                 installedList = if (hasSystemApp) applistHelper.getAll() else applistHelper.getUserAppList()

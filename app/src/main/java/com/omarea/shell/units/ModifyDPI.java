@@ -5,6 +5,14 @@ package com.omarea.shell.units;
  */
 
 public class ModifyDPI {
+    public void quickChangeDpi (int dpi, int width, int height) {
+
+    }
+
+    public void quickChangeDpi (int dpi) {
+
+    }
+
     /*
     1 -> {
         stringBuilder.append(Consts.MountSystemRW)

@@ -1,10 +1,13 @@
 package com.omarea.vboot
 
 import android.accessibilityservice.AccessibilityService
+import android.app.usage.UsageStatsManager
 import android.view.accessibility.AccessibilityEvent
 
 import com.omarea.shared.AutoClickService
 import com.omarea.shared.ServiceHelper
+
+
 
 /**
  * Created by helloklf on 2016/8/27.
@@ -61,16 +64,50 @@ class vtools_accessibility : AccessibilityService() {
         if (serviceHelper == null)
             serviceHelper = ServiceHelper(applicationContext)
     }
+    /*
+    @SuppressLint("NewApi")
+    private fun getForegroundApp(): String? {
+        val calendar = Calendar.getInstance()
+        calendar.setTime(Date())
+        val endt = calendar.getTimeInMillis()//结束时间
+        calendar.add(Calendar.DAY_OF_MONTH, -1)//时间间隔为一个月
+        val statt = calendar.getTimeInMillis()//开始时间
+        val usageStatsManager = getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager
+        //获取一个月内的信息
+        val queryUsageStats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_MONTHLY, statt, endt)
+
+        if (queryUsageStats == null || queryUsageStats.isEmpty()) {
+            return null
+        }
+
+        var recentStats: UsageStats? = null
+        for (usageStats in queryUsageStats) {
+
+            if (recentStats == null || recentStats.lastTimeUsed < usageStats.lastTimeUsed) {
+                recentStats = usageStats
+            }
+        }
+
+        return recentStats!!.packageName
+    }
+* */
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         var packageName = event.packageName.toString().toLowerCase()
-
+        //修复傻逼一加桌面文件夹抢占焦点导致的问题
+        if ((packageName == "net.oneplus.h2launcher" || packageName == "net.oneplus.launcher") && event.className == "android.widget.LinearLayout") {
+            return
+        }
+        //net.oneplus.h2launcher
+        //android.widget.LinearLayout
         /*if(
             packageName.equals("com.android.packageinstaller")||
             packageName.equals("com.miui.packageinstaller")||
             packageName.equals("com.mokee.packageinstaller")||
             packageName.equals("com.google.android.packageinstaller"))*/
         if (packageName.contains("packageinstaller")) {
+            if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity")
+                return
             packageName = "com.android.packageinstaller"
             AutoClickService().packageinstallerAutoClick(this.applicationContext, event)
         } else if (packageName == "com.miui.securitycenter") {

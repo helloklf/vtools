@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#f8f8f8"
+    android:paddingBottom="10dp"
+    android:paddingLeft="26dp"
+    android:paddingRight="26dp">
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:textSize="12dp"
+        android:textColor="@color/colorPrimary"
+        android:text="请不要输入[英文 数字 空格]以外的内容！！！"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/dialog_addin_model"
+        android:hint="ro.product.model="
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text" />
+    <EditText
+        android:id="@+id/dialog_addin_brand"
+        android:hint="ro.product.brand="
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text" />
+    <EditText
+        android:id="@+id/dialog_addin_name"
+        android:hint="ro.product.name="
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text" />
+    <EditText
+        android:id="@+id/dialog_addin_device"
+        android:hint="ro.product.device="
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text" />
+    <!--<EditText
+        android:id="@+id/dialog_addin_product"
+        android:hint="ro.build.product="
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text" />-->
+    <EditText
+        android:id="@+id/dialog_addin_manufacturer"
+        android:hint="ro.product.manufacturer="
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text" />
+
+    <TextView
+        android:text="预设模板"
+        android:textColor="#888"
+        android:textSize="12dp"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:orientation="horizontal">
+        <Button
+            android:id="@+id/dialog_addin_r11"
+            android:text="R11+"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/dialog_addin_x20"
+            android:text="X20"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/dialog_addin_default"
+            android:text="Default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</LinearLayout>

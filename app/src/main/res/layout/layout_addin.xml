@@ -49,6 +49,18 @@
                         android:layout_height="wrap_content"></ListView>
                 </FrameLayout>
 
+                <FrameLayout
+                    android:id="@+id/custom"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <ListView
+                        android:id="@+id/addin_custom_listview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"></ListView>
+                </FrameLayout>
+
             </FrameLayout>
         </LinearLayout>
     </TabHost>

@@ -1,8 +1,6 @@
 package com.omarea.shared;
 
-import android.app.Activity;
 import android.app.AndroidAppHelper;
-import android.app.Application;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -110,7 +108,7 @@ public class xposed_interface implements IXposedHookLoadPackage, IXposedHookZygo
                     Object mDisplayInfo = XposedHelpers.getObjectField(param.thisObject, "mDisplayInfo");
                     int dpi = prefs2.getInt(packageName, defaultDpi);
                     XposedHelpers.setIntField(mDisplayInfo, "logicalDensityDpi", dpi);
-                    DisplayMetrics displayMetrics = (DisplayMetrics)param.args[0];
+                    DisplayMetrics displayMetrics = (DisplayMetrics) param.args[0];
                     displayMetrics.scaledDensity = dpi / 160.0f;
                     displayMetrics.densityDpi = dpi;
                     displayMetrics.density = dpi / 160.0f;
@@ -164,10 +162,10 @@ public class xposed_interface implements IXposedHookLoadPackage, IXposedHookZygo
 
                             if (dpi > 0) {
                                 newMetrics.density = dpi / 160f;
-                                newMetrics.densityDpi = (int)dpi;
+                                newMetrics.densityDpi = (int) dpi;
                                 newMetrics.scaledDensity = dpi / 160f;
                                 if (Build.VERSION.SDK_INT >= 17) {
-                                    setIntField(newConfig, "densityDpi", (int)dpi);
+                                    setIntField(newConfig, "densityDpi", (int) dpi);
                                 }
                             }
 
@@ -201,13 +199,12 @@ public class xposed_interface implements IXposedHookLoadPackage, IXposedHookZygo
         //王者荣耀 高帧率模式
         else if (packageName.equals("com.tencent.tmgp.sgame")) {
             if (useDefaultConfig || prefs.getBoolean("xposed_hight_fps", false)) {
-                new DeviceInfo().simulationR11(loadPackageParam);
+                new DeviceInfo().simulationX20(loadPackageParam);
             }
         }
         if (useDefaultConfig || prefs.getBoolean("xposed_webview_debug", false)) {
             new WebView().allowDebug();
         }
-        XposedBridge.log(packageName + "："+ prefs.getBoolean("xposed_dpi_fix", false));
         if ((useDefaultConfig || prefs.getBoolean("xposed_dpi_fix", false)) && (prefs2.contains(packageName))) {
             XposedHelpers.findAndHookMethod("android.app.Application", loadPackageParam.classLoader, "attach", Context.class, new XC_MethodHook() {
                 @Override
@@ -227,7 +224,7 @@ public class xposed_interface implements IXposedHookLoadPackage, IXposedHookZygo
                     super.beforeHookedMethod(param);
                     String packageName = AndroidAppHelper.currentPackageName();
                     if ((useDefaultConfig || prefs.getBoolean("xposed_dpi_fix", false)) && prefs2.contains(packageName)) {
-                        DisplayMetrics displayMetrics = (DisplayMetrics)(param.args[0]);
+                        DisplayMetrics displayMetrics = (DisplayMetrics) (param.args[0]);
                         if (displayMetrics != null) {
                             int dpi = prefs2.getInt(packageName, defaultDpi);
                             displayMetrics.density = dpi / 160.0f;
@@ -244,7 +241,7 @@ public class xposed_interface implements IXposedHookLoadPackage, IXposedHookZygo
                     super.beforeHookedMethod(param);
                     String packageName = AndroidAppHelper.currentPackageName();
                     if ((useDefaultConfig || prefs.getBoolean("xposed_dpi_fix", false)) && prefs2.contains(packageName)) {
-                        DisplayMetrics displayMetrics = (DisplayMetrics)(param.args[0]);
+                        DisplayMetrics displayMetrics = (DisplayMetrics) (param.args[0]);
                         if (displayMetrics != null) {
                             int dpi = prefs2.getInt(packageName, defaultDpi);
                             displayMetrics.density = dpi / 160.0f;
