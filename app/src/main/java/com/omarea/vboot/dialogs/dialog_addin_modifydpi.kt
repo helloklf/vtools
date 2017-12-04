@@ -1,4 +1,4 @@
-package com.omarea.vboot
+package com.omarea.vboot.dialogs
 
 import android.content.Context
 import android.os.Build
@@ -10,6 +10,7 @@ import android.widget.CheckBox
 import android.widget.EditText
 import com.omarea.shared.Consts
 import com.omarea.shell.SuDo
+import com.omarea.vboot.R
 
 /**
  * Created by Hello on 2017/12/03.

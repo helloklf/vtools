@@ -1,4 +1,4 @@
-package com.omarea.vboot
+package com.omarea.vboot.dialogs
 
 import android.content.Context
 import android.support.v7.app.AlertDialog
@@ -9,6 +9,7 @@ import android.widget.EditText
 import android.widget.Toast
 import com.omarea.shared.Consts
 import com.omarea.shell.SuDo
+import com.omarea.vboot.R
 
 /**
  * Created by Hello on 2017/12/03.

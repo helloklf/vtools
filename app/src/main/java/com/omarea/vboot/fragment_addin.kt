@@ -1,13 +1,11 @@
 package com.omarea.vboot
 
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,11 +13,12 @@ import android.widget.*
 import com.omarea.shared.AppShared
 import com.omarea.shared.Consts
 import com.omarea.shared.cmd_shellTools
-import com.omarea.shell.SuDo
 import com.omarea.shell.units.FlymeUnit
 import com.omarea.shell.units.FullScreenSUnit
 import com.omarea.shell.units.NubiaUnit
 import com.omarea.shell.units.QQStyleUnit
+import com.omarea.vboot.dialogs.dialog_addin_modifydevice
+import com.omarea.vboot.dialogs.dialog_addin_modifydpi
 import kotlinx.android.synthetic.main.layout_addin.*
 import java.util.*
 

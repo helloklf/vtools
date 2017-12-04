@@ -19,6 +19,7 @@ import com.omarea.shared.Consts
 import com.omarea.shared.cmd_shellTools
 import com.omarea.ui.list_adapter2
 import com.omarea.units.AppListHelper
+import com.omarea.vboot.dialogs.dialog_app_options
 import kotlinx.android.synthetic.main.layout_applictions.*
 import java.io.File
 import java.util.ArrayList
@@ -60,8 +61,8 @@ class fragment_applistions : Fragment() {
 
         val tabHost = view!!.findViewById(R.id.blacklist_tabhost) as TabHost
         tabHost.setup()
-        tabHost.addTab(tabHost.newTabSpec("tab_1").setContent(R.id.tab_apps_user).setIndicator("用户程序"))
-        tabHost.addTab(tabHost.newTabSpec("tab_2").setContent(R.id.tab_apps_system).setIndicator("系统自带"))
+        tabHost.addTab(tabHost.newTabSpec("tab_1").setContent(R.id.tab_apps_user).setIndicator("用户"))
+        tabHost.addTab(tabHost.newTabSpec("tab_2").setContent(R.id.tab_apps_system).setIndicator("系统"))
         tabHost.addTab(tabHost.newTabSpec("tab_3").setContent(R.id.tab_apps_backuped).setIndicator("已备份"))
         tabHost.currentTab = 0
 
@@ -72,6 +73,19 @@ class fragment_applistions : Fragment() {
         apps_userlist.onItemClickListener = toggleSelectState
         apps_systemlist.onItemClickListener = toggleSelectState
         apps_backupedlist.onItemClickListener = toggleSelectState
+
+        /*
+        apps_userlist.setOnItemLongClickListener({
+            parent, view, position, id ->
+            val item = parent.adapter.getItem(position)
+            val list = ArrayList<HashMap<String,Any>>()
+            list.add(item as HashMap<String, Any>)
+            dialog_app_options(context, list).selectOptions(Runnable{
+                refreshList()
+            })
+            false
+        })
+        */
 
         fab_apps_user.setOnClickListener(View.OnClickListener {
             val selectedItems = getSelectedItems(apps_userlist.adapter)
@@ -92,7 +106,6 @@ class fragment_applistions : Fragment() {
             builder.show()
         })
 
-
         fab_apps_system.setOnClickListener(View.OnClickListener {
             val selectedItems = getSelectedItems(apps_systemlist.adapter)
             if (selectedItems.size == 0)
@@ -100,11 +113,12 @@ class fragment_applistions : Fragment() {
 
             val builder = AlertDialog.Builder(context)
             builder.setTitle("系统应用，请谨慎操作！！！")
-            builder.setItems(arrayOf("冻结", "解冻", "删除")) { dialog, which ->
+            builder.setItems(arrayOf("冻结", "解冻", "删除", "隐藏")) { dialog, which ->
                 when (which) {
                     0 -> disabledApp(selectedItems, true)
                     1 -> enableApp(selectedItems, true)
                     2 -> deleteApp(selectedItems)
+                    3 -> hideApp(selectedItems)
                 }
             }
             builder.show()
@@ -295,7 +309,7 @@ class fragment_applistions : Fragment() {
 
         val builder = AlertDialog.Builder(context)
         builder.setTitle("确定要冻结 " + apps.size + " 个应用吗？")
-        builder.setMessage(if (isSystem) "\n如果你不知道这些应用是干嘛的，千万别乱冻结，随时会挂掉的！！！\n\n" else "\n一口气干掉太多容易闪到腰哦，搞错了我可不管！！！\n\n")
+        builder.setMessage(if (isSystem) "\n如果你不知道这些应用是干嘛的，千万别乱冻结，可能会挂掉的！！！\n\n" else "\n不要怂就是干！！！\n\n")
         builder.setPositiveButton("确定冻结") { dialog, which ->
             val stringBuffer = StringBuffer()
             for (i in apps.indices) {
@@ -311,6 +325,32 @@ class fragment_applistions : Fragment() {
                     systemList = null
                 else
                     installedList = null
+                setList()
+            }).start()
+        }
+        builder.setNegativeButton("取消") { dialog, which -> }
+        builder.show()
+    }
+
+    private fun hideApp(apps: ArrayList<HashMap<String, Any>>?) {
+        if (apps == null || apps.size == 0)
+            return
+
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle("确定要隐藏 " + apps.size + " 个应用吗？")
+        builder.setMessage("\n隐藏了就真的找不到也打不开了哦，真的这么干！？\n\n")
+        builder.setPositiveButton("确定冻结") { dialog, which ->
+            val stringBuffer = StringBuffer()
+            for (i in apps.indices) {
+                stringBuffer.append("pm hide ")
+                stringBuffer.append(apps[i]["packageName"])
+                stringBuffer.append(";\n")
+            }
+            thisview!!.progressBar.visibility = View.VISIBLE
+
+            Thread(Runnable {
+                cmdshellTools!!.DoCmdSync(stringBuffer.toString())
+                refreshList()
                 setList()
             }).start()
         }
@@ -343,6 +383,9 @@ class fragment_applistions : Fragment() {
         }
         builder.setNegativeButton("取消（推荐）") { dialog, which -> }
         builder.show()
+    }
+    private fun refreshList() {
+        refreshList(apps_search_box.text.toString())
     }
 
     private fun refreshList(text: String) {
