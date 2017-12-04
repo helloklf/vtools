@@ -30,40 +30,9 @@ import static de.robv.android.xposed.XposedHelpers.setIntField;
  * Created by helloklf on 2016/10/1.
  */
 public class xposed_interface implements IXposedHookLoadPackage, IXposedHookZygoteInit {
-    //IXposedHookInitPackageResources
-    //public static ServiceHelper serviceHelper;
     private static XSharedPreferences prefs;
     private static XSharedPreferences prefs2;
     private boolean useDefaultConfig = false;
-
-    private int dpiCompute(Context context) {
-        float w = context.getResources().getDisplayMetrics().widthPixels;
-        float h = context.getResources().getDisplayMetrics().heightPixels;
-        float pixels = w > h ? h : w;
-
-        /*if (pixels == 2160) {
-            context.getResources().getDisplayMetrics().density = 6;
-            context.getResources().getDisplayMetrics().densityDpi = 960;
-            context.getResources().getDisplayMetrics().scaledDensity = 6;
-        } else if (pixels == 1440) {
-            context.getResources().getDisplayMetrics().density = 4;
-            context.getResources().getDisplayMetrics().densityDpi = 640;
-            context.getResources().getDisplayMetrics().scaledDensity = 4;
-        } else if (pixels == 1080) {
-            context.getResources().getDisplayMetrics().density = 3;
-            context.getResources().getDisplayMetrics().densityDpi = 480;
-            context.getResources().getDisplayMetrics().scaledDensity = 3;
-        } else if (pixels == 720) {
-            context.getResources().getDisplayMetrics().density = 2;
-            context.getResources().getDisplayMetrics().densityDpi = 320;
-            context.getResources().getDisplayMetrics().scaledDensity = 2;
-        } else if (pixels == 540 || pixels == 480) {
-            context.getResources().getDisplayMetrics().density = (float) (1.5);
-            context.getResources().getDisplayMetrics().densityDpi = 240;
-            context.getResources().getDisplayMetrics().scaledDensity = (float) (1.5);
-        }*/
-        return (int) (pixels * 2.25);
-    }
 
     @Override
     public void initZygote(IXposedHookZygoteInit.StartupParam startupParam) throws Throwable {

@@ -159,7 +159,7 @@ class ServiceHelper(context: Context) {
                 if (lastMode != Configs.PowerSave) {
                     try {
                         ToggleConfig(Configs.PowerSave)
-                        ShowModeToggleMsg(packageName, "powersave mode")
+                        ShowModeToggleMsg(packageName, "节电模式")
                     } catch (ex: Exception) {
                         ShowModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
                     }
@@ -170,7 +170,7 @@ class ServiceHelper(context: Context) {
                 if (lastMode != Configs.Game) {
                     try {
                         ToggleConfig(Configs.Game)
-                        ShowModeToggleMsg(packageName, "performance mode")
+                        ShowModeToggleMsg(packageName, "性能模式")
                     } catch (ex: Exception) {
                         ShowModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
                     }
@@ -181,7 +181,7 @@ class ServiceHelper(context: Context) {
                 if (lastMode != Configs.Fast) {
                     try {
                         ToggleConfig(Configs.Fast)
-                        ShowModeToggleMsg(packageName, "fast mode")
+                        ShowModeToggleMsg(packageName, "极速模式")
                     } catch (ex: Exception) {
                         ShowModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
                     }
@@ -192,7 +192,7 @@ class ServiceHelper(context: Context) {
                 if (lastMode != Configs.Default) {
                     try {
                         ToggleConfig(Configs.Default)
-                        ShowModeToggleMsg(packageName, "balance mode")
+                        ShowModeToggleMsg(packageName, "均衡模式")
                     } catch (ex: Exception) {
                         ShowModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
                     }
@@ -219,7 +219,7 @@ class ServiceHelper(context: Context) {
                     DoCmd("dumpsys deviceidle enable; am set-inactive $lastPackage true")
                     //am set-idle com.tencent.mobileqq true
                     if (DebugMode)
-                        ShowMsg("force doze: " + lastPackage)
+                        ShowMsg("休眠： " + lastPackage)
                 } catch (ex: Exception) {
                 }
                 return
@@ -229,7 +229,7 @@ class ServiceHelper(context: Context) {
             try {
                 DoCmd("killall -9 $lastPackage;pkill -9 $lastPackage;pgrep $lastPackage |xargs kill -9;")
                 if (DebugMode)
-                    ShowMsg("force kill: " + lastPackage)
+                    ShowMsg("结束运行: " + lastPackage)
             } catch (ex: Exception) {
             }
         }

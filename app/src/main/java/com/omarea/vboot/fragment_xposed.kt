@@ -180,7 +180,17 @@ class fragment_xposed : Fragment() {
 
             myHandler.post {
                 try {
-                    xposed_apps_dpifix.setAdapter(list_adapter2(context, sortAppList(installedList)))
+                    val ld = list_adapter2(context, sortAppList(installedList))
+
+                    for (i in installedList.indices) {
+                        if (installedList[i]["enabled_state"].toString().length > 0) {
+                            ld.states[i] = true
+                        } else {
+                            ld.states[i] = false
+                        }
+                    }
+                    xposed_apps_dpifix.setAdapter(ld)
+
                     thisview!!.progressBar.visibility = View.GONE
                 } catch (ex: Exception) {
 
@@ -210,6 +220,7 @@ class fragment_xposed : Fragment() {
         })
         return  list
     }
+
     private fun loadList(): ArrayList<HashMap<String, Any>> {
         var packageManager = thisview!!.getPackageManager()
         var packageInfos = packageManager.getInstalledApplications(0)
