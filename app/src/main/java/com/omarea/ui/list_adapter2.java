@@ -55,6 +55,7 @@ public class list_adapter2 extends BaseAdapter {
             viewHolder.itemText = (TextView) convertView.findViewById(R.id.ItemText);
             viewHolder.imgView = (ImageView) convertView.findViewById(R.id.ItemIcon);
             viewHolder.itemChecke = (CheckBox) convertView.findViewById(R.id.select_state);
+            viewHolder.wranStateText = (TextView) convertView.findViewById(R.id.ItemWranText);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();
@@ -78,6 +79,11 @@ public class list_adapter2 extends BaseAdapter {
         //从hashmap里面取出我们的状态值,然后赋值给listview对应位置的checkbox
         viewHolder.itemChecke.setChecked(states.get(position));
 
+        if (getItem(position).get("wran_state") != null)
+            viewHolder.wranStateText.setText(getItem(position).get("wran_state").toString());
+        else
+            viewHolder.wranStateText.setText("");
+
         return convertView;
     }
 
@@ -89,5 +95,6 @@ public class list_adapter2 extends BaseAdapter {
         public ImageView imgView;
         public TextView itemText;
         public TextView enabledStateText;
+        public TextView wranStateText;
     }
 }

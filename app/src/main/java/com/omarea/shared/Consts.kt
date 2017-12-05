@@ -7,6 +7,8 @@ import java.util.*
  */
 
 object Consts {
+    val BackUpDir = "/sdcard/Android/apps/";
+
     val FastChanger =
             "if [ `cat /sys/class/power_supply/battery/capacity` -lt 85 ]; then " +
                     "echo 0 > /sys/class/power_supply/battery/restricted_charging;" +

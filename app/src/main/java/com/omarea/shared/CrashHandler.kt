@@ -29,8 +29,13 @@ class CrashHandler private constructor() : Thread.UncaughtExceptionHandler {
         object : Thread() {
             override fun run() {
                 Looper.prepare()
-                AlertDialog.Builder(mContext).setTitle("啊哦...").setCancelable(false)
-                        .setMessage("这破程序又崩溃了...\n\n" + ex.localizedMessage).setNeutralButton("垃圾") { dialog, which -> System.exit(0) }
+                AlertDialog.Builder(mContext).setTitle("啊哦...")
+                        .setCancelable(false)
+                        .setMessage("这破程序又崩溃了...\n\n" + ex.localizedMessage)
+                        .setNeutralButton("垃圾") { dialog, which ->
+                            android.os.Process.killProcess(android.os.Process.myPid());
+                            System.exit(0)
+                        }
                         .create().show()
                 Looper.loop()
             }

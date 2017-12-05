@@ -2,6 +2,7 @@ package com.omarea.units
 
 import android.content.Context
 import android.content.pm.PackageManager
+import com.omarea.shared.Consts
 import java.io.File
 import java.util.ArrayList
 import java.util.HashMap
@@ -75,14 +76,13 @@ class AppListHelper {
             item.put("select_state", false)
             item.put("dir", packageInfo.sourceDir)
             item.put("enabled", packageInfo.enabled)
-            item.put("enabled_state", if (packageInfo.enabled) "" else "已冻结")
+            item.put("enabled_state", if (File(Consts.BackUpDir + packageInfo.packageName + ".apk").exists()) "已备份" else "")
+            item.put("wran_state", if (packageInfo.enabled) "" else "已冻结")
 
             item.put("name", packageInfo.loadLabel(packageManager))
             item.put("packageName", packageInfo.packageName)
             item.put("path", packageInfo.sourceDir)
             item.put("dir", file.parent)
-            //if (!allApps.contains(packageInfo.packageName))
-            //    allApps.add(packageInfo.packageName)
             list.add(item)
         }
         return (list)
