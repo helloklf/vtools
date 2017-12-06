@@ -70,7 +70,9 @@ class AsynSuShellUnit(var handler: Handler) {
         writer.write("exit;exit;exit;")
         writer.write("\n\n")
         writer.flush()
-        process!!.waitFor()
-        destroy()
+        Thread(Runnable {
+            process!!.waitFor()
+            destroy()
+        }).start()
     }
 }

@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
+import com.omarea.shared.Consts
 import com.omarea.shell.AsynSuShellUnit
 import com.omarea.vboot.R
 import java.io.File
@@ -19,7 +20,7 @@ import java.util.*
 
 class dialog_app_options(private var context: Context, private var apps: ArrayList<HashMap<String, Any>>, private var handler: Handler) {
     var allowPigz = false
-    var backupPath = "/sdcard/Android/apps/"
+    var backupPath = Consts.BackUpDir
 
     fun selectUserAppOptions() {
         val alert = AlertDialog.Builder(context).setTitle("请选择操作")
@@ -142,45 +143,54 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
         val progressBar = (dialog.findViewById(R.id.dialog_app_details_progress) as ProgressBar)
         textView.setText("正在获取权限")
         val alert = AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
+        AsynSuShellUnit(progressHandler(dialog, alert, handler)).exec(sb.toString()).waitFor()
+        alert.show()
+    }
 
-        val h = object : Handler() {
-            override fun handleMessage(msg: Message) {
-                super.handleMessage(msg)
-                if (msg.obj != null) {
-                    if (msg.what == 0) {
-                        textView.setText("正在执行操作...")
-                    } else {
-                        val obj = msg.obj.toString()
-                        if (obj == "[operation completed]") {
-                            progressBar.progress = 100
-                            textView.setText("操作完成！")
-                            handler.postDelayed({
-                                alert.dismiss()
-                                alert.hide()
-                            }, 2000)
-                            handler.handleMessage(handler.obtainMessage(2))
-                        } else if (Regex("^\\[.*\\]\$").matches(obj)) {
-                            progressBar.progress = msg.what
-                            val txt = obj
-                                    .replace("uninstall", "卸载")
-                                    .replace("install", "安装")
-                                    .replace("restore", "还原")
-                                    .replace("backup", "备份")
-                                    .replace("unhide", "显示")
-                                    .replace("hide", "隐藏")
-                                    .replace("delete", "删除")
-                                    .replace("disable", "禁用")
-                                    .replace("enable", "启用")
-                                    .replace("trim caches", "清除缓存")
-                                    .replace("clear", "清除数据")
-                            textView.setText(txt)
-                        }
+    class progressHandler(dialog: View, var alert: AlertDialog, var handler: Handler) : Handler() {
+        var textView:TextView
+        var progressBar:ProgressBar
+
+        override fun handleMessage(msg: Message) {
+            super.handleMessage(msg)
+            if (msg.obj != null) {
+                if (msg.what == 0) {
+                    textView.setText("正在执行操作...")
+                } else {
+                    val obj = msg.obj.toString()
+                    if (obj == "[operation completed]") {
+                        progressBar.progress = 100
+                        textView.setText("操作完成！")
+                        handler.postDelayed({
+                            alert.dismiss()
+                            alert.hide()
+                        }, 2000)
+                        handler.handleMessage(handler.obtainMessage(2))
+                    } else if (Regex("^\\[.*\\]\$").matches(obj)) {
+                        progressBar.progress = msg.what
+                        val txt = obj
+                                .replace("uninstall", "卸载")
+                                .replace("install", "安装")
+                                .replace("restore", "还原")
+                                .replace("backup", "备份")
+                                .replace("unhide", "显示")
+                                .replace("hide", "隐藏")
+                                .replace("delete", "删除")
+                                .replace("disable", "禁用")
+                                .replace("enable", "启用")
+                                .replace("trim caches", "清除缓存")
+                                .replace("clear", "清除数据")
+                        textView.setText(txt)
                     }
                 }
             }
         }
-        alert.show()
-        AsynSuShellUnit(h).exec(sb.toString())
+
+        init {
+            textView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
+            progressBar = (dialog.findViewById(R.id.dialog_app_details_progress) as ProgressBar)
+            textView.setText("正在获取权限")
+        }
     }
 
     private fun confirm(title: String, msg: String, next: Runnable?) {
