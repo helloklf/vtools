@@ -30,7 +30,7 @@ public class CheckRootStatus {
                 }
             }
             p.destroy();
-            return true;
+            return p.exitValue() == 0;
         } catch (Exception e) {
             if (p != null)
                 p.destroy();

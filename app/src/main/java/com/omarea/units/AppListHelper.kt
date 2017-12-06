@@ -19,6 +19,7 @@ class AppListHelper {
 
     internal var ignore: ArrayList<String> = object : ArrayList<String>() {
         init {
+            add("com.omarea.vboot")
             add("com.android.mms")
             add("com.android.providers.media")
             add("com.android.packageinstaller")

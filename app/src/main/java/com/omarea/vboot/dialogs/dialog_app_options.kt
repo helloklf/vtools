@@ -32,10 +32,26 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
                                 "冻结",
                                 "解冻"), { dialog, which ->
                     when (which) {
-                        0 -> backupAll()
-                        1 -> uninstallAll()
-                        2 -> uninstallKeepDataAll()
-                        3 -> clearAll()
+                        0 -> {
+                            confirm("备份应用和数据", "备份功能目前还是实验性的，无法保证在所有设备上运行，备份可能无法正常还原。继续尝试使用吗？", Runnable {
+                                backupAll()
+                            })
+                        }
+                        1 -> {
+                            confirm("卸载", "正在卸载${apps.size}个应用，继续吗？", Runnable {
+                                uninstallAll()
+                            })
+                        }
+                        2 -> {
+                            confirm("卸载（保留数据）", "正在卸载${apps.size}个应用，这些应用的数据会被保留，这可能会导致下次安装不同签名的同名应用时无法安装，继续吗？", Runnable {
+                                uninstallKeepDataAll()
+                            })
+                        }
+                        3 -> {
+                            confirm("清除应用数据", "正在清除${apps.size}个应用的数据，继续吗？", Runnable {
+                                clearAll()
+                            })
+                        }
                         4 -> trimCachesAll()
                         5 -> disableAll()
                         6 -> enableAll()
@@ -55,12 +71,28 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
                                 "解冻",
                                 "禁用+隐藏"), { dialog, which ->
                     when (which) {
-                        0 -> deleteAll()
-                        1 -> clearAll()
+                        0 -> {
+                            confirm("删除应用", "删除系统应用可能导致功能不正常，甚至无法开机，确定要继续删除？", Runnable {
+                                deleteAll()
+                            })
+                        }
+                        1 -> {
+                            confirm("清空应用数据", "已选中了${apps.size}个应用，这些应用的数据将会被清除，确定吗？", Runnable {
+                                clearAll()
+                            })
+                        }
                         2 -> trimCachesAll()
-                        3 -> disableAll()
+                        3 -> {
+                            confirm("冻结应用", "已选中了${apps.size}个应用，这些应用将会被冻结，可能导致手机功能不正常，继续冻结？", Runnable {
+                                disableAll()
+                            })
+                        }
                         4 -> enableAll()
-                        5 -> hideAll()
+                        5 -> {
+                            confirm("隐藏应用", "你将禁用并隐藏${apps.size}个应用，该操作无法撤销，继续这个操作？", Runnable {
+                                hideAll()
+                            })
+                        }
                     }
                 })
                 .show()
@@ -75,10 +107,28 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
                                 "还原(应用)",
                                 "还原(数据)"), { dialog, which ->
                     when (which) {
-                        0 -> deleteAll()
-                        1 -> restoreAll(true, true)
-                        2 -> restoreAll(true, false)
-                        3 -> restoreAll(false, true)
+                        0 -> {
+                            confirm("删除备份", "永久删除这些备份文件？", Runnable {
+                                deleteBackupAll()
+                            })
+                        }
+                        1 -> {
+                            confirm("还原应用和数据", "该功能目前还在实验阶段，可能不能在所有设备上正常运行，也许会导致应用数据丢失。\n继续尝试恢复吗？", Runnable {
+                                restoreAll(true, true)
+                            })
+                        }
+                        2 -> {
+                            confirm("还原应用", "该功能目前还在实验阶段，可能不能在所有设备上正常运行，也许会导致应用数据丢失。\n" +
+                                    "继续尝试恢复吗？", Runnable {
+                                restoreAll(true, false)
+                            })
+                        }
+                        3 -> {
+                            confirm("还原数据", "该功能目前还在实验阶段，可能不能在所有设备上正常运行，也许会导致应用数据丢失。\\n\" +\n" +
+                                    "                                    \"继续尝试恢复吗？", Runnable {
+                                restoreAll(false, true)
+                            })
+                        }
                     }
                 })
                 .show()
@@ -111,15 +161,17 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
                         } else if (Regex("^\\[.*\\]\$").matches(obj)) {
                             progressBar.progress = msg.what
                             val txt = obj
-                                    .replace("install", "安装：")
-                                    .replace("restore", "还原：")
-                                    .replace("uninstall", "卸载：")
-                                    .replace("hide", "隐藏：")
-                                    .replace("delete", "删除：")
-                                    .replace("disable", "禁用：")
-                                    .replace("enable", "启用：")
-                                    .replace("trim caches", "清除缓存：")
-                                    .replace("clear", "清除数据：")
+                                    .replace("uninstall", "卸载")
+                                    .replace("install", "安装")
+                                    .replace("restore", "还原")
+                                    .replace("backup", "备份")
+                                    .replace("unhide", "显示")
+                                    .replace("hide", "隐藏")
+                                    .replace("delete", "删除")
+                                    .replace("disable", "禁用")
+                                    .replace("enable", "启用")
+                                    .replace("trim caches", "清除缓存")
+                                    .replace("clear", "清除数据")
                             textView.setText(txt)
                         }
                     }
@@ -128,6 +180,23 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
         }
         alert.show()
         AsynSuShellUnit(h).exec(sb.toString())
+    }
+
+    private fun confirm(title:String, msg:String, next: Runnable?) {
+        AlertDialog.Builder(context)
+                .setTitle(title)
+                .setMessage(msg)
+                .setNegativeButton("确定",{
+                    dialog, which ->
+                    if (next !=null) {
+                        next.run()
+                    }
+                })
+                .setNeutralButton("取消",{
+                    dialog, which ->  
+                })
+                .create()
+                .show()
     }
 
     /**
@@ -158,9 +227,9 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
                 sb.append("cp $path $backupPath$packageName.apk;")
             if (data) {
                 if (allowPigz)
-                    sb.append("tar cf - * --exclude cache --exclude lib | pigz > $backupPath$packageName.tar.gz;")
+                    sb.append("busybox tar cf - * --exclude cache --exclude lib | pigz > $backupPath$packageName.tar.gz;")
                 else
-                    sb.append("tar -czf $backupPath$packageName.tar.gz * --exclude cache --exclude lib;")
+                    sb.append("busybox tar -czf $backupPath$packageName.tar.gz * --exclude cache --exclude lib;")
             }
         }
 
@@ -185,7 +254,8 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
 
                 sb.append("pm clear $packageName;")
                 sb.append("cd /data/data/$packageName;")
-                sb.append("tar -xzf $backupPath$packageName.tar.gz;")
+                sb.append("busybox tar -xzf $backupPath$packageName.tar.gz;")
+                sb.append("dirUser=`ls -ld . | head -1 | cut -f 3 -d ' '`;chown -R \$dirUser:\$dirUser *;")
                 sb.append("chown -R --reference=/data/data/$packageName *;")
             }
         }
@@ -252,6 +322,23 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
 
             val dir = item.get("dir").toString()
             sb.append("rm -rf $dir;")
+        }
+
+        sb.append("echo '[operation completed]';")
+        execShell(sb)
+    }
+
+    /**
+     * 删除备份
+     */
+    private fun deleteBackupAll () {
+        var sb = StringBuilder()
+        for (item in apps) {
+            val packageName = item.get("packageName").toString()
+            sb.append("echo '[delete $packageName]';")
+
+            sb.append("rm -rf $backupPath$packageName.apk;")
+            sb.append("rm -rf $backupPath$packageName.tar.gz;")
         }
 
         sb.append("echo '[operation completed]';")
