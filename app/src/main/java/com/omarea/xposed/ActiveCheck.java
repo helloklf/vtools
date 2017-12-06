@@ -9,7 +9,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
  */
 
 public class ActiveCheck {
-    public void isActive (final XC_LoadPackage.LoadPackageParam loadPackageParam) {
+    public void isActive(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
         XposedHelpers.findAndHookMethod("com.omarea.shared.xposed_check", loadPackageParam.classLoader, "xposedIsRunning", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {

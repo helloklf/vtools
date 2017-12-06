@@ -16,7 +16,7 @@ import java.util.*
 class reciver_batterychanged : BroadcastReceiver() {
     private var p: Process? = null
     internal var out: DataOutputStream? = null
-    private var bp:Boolean = false
+    private var bp: Boolean = false
 
     internal fun tryExit() {
         try {
@@ -105,20 +105,19 @@ class reciver_batterychanged : BroadcastReceiver() {
             }
 
             //BatteryProtection
-            if(sharedPreferences!!.getBoolean(SpfConfig.CHARGE_SPF_BP, false)){
-                if(onChanger){
-                    if(batteryLevel >= sharedPreferences!!.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85)) {
+            if (sharedPreferences!!.getBoolean(SpfConfig.CHARGE_SPF_BP, false)) {
+                if (onChanger) {
+                    if (batteryLevel >= sharedPreferences!!.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85)) {
                         bp = true
                         DoCmd(Consts.DisableChanger)
                     }
                 }
                 //电量不足，恢复充电功能
-                else if(action == Intent.ACTION_BATTERY_LOW) {
+                else if (action == Intent.ACTION_BATTERY_LOW) {
                     DoCmd(Consts.ResumeChanger)
-                    Toast.makeText(this.context,"电池电量低，请及时充电！",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this.context, "电池电量低，请及时充电！", Toast.LENGTH_SHORT).show()
                     bp = false
-                }
-                else if(bp && batteryLevel!=-1 && batteryLevel < sharedPreferences!!.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85) - 20){
+                } else if (bp && batteryLevel != -1 && batteryLevel < sharedPreferences!!.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85) - 20) {
                     //电量低于保护级别10
                     DoCmd(Consts.ResumeChanger)
                     bp = false

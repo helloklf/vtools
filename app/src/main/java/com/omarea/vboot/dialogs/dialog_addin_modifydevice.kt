@@ -40,6 +40,9 @@ class dialog_addin_modifydevice {
         (dialog.findViewById(R.id.dialog_addin_r11) as Button).setOnClickListener { v: View? ->
             setR11Plus()
         }
+        (dialog.findViewById(R.id.dialog_addin_ipx) as Button).setOnClickListener { v: View? ->
+            setIPhoneX()
+        }
         AlertDialog.Builder(context).setTitle("机型信息修改").setView(dialog).setNegativeButton("保存重启", { d, w ->
             val sb = StringBuilder()
             val model = editModel.text.trim()
@@ -114,6 +117,14 @@ class dialog_addin_modifydevice {
         editProductName.setText("R11 Plus")
         editDevice.setText("R11 Plus")
         editManufacturer.setText("OPPO")
+    }
+
+    private fun setIPhoneX() {
+        editBrand.setText("iPhone")
+        editModel.setText("X")
+        editProductName.setText("hydrogen")
+        editDevice.setText("hydrogen")
+        editManufacturer.setText("iPhone")
     }
 
     private fun backupDefault() {

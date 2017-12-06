@@ -12,7 +12,6 @@ import java.util.*
 import android.app.ActivityManager
 
 
-
 /**
  * Created by helloklf on 2016/10/1.
  */
@@ -151,7 +150,7 @@ class ServiceHelper(context: Context) {
             return
 
         var mod = spfPowercfg.getString(packageName, "default")
-        when(mod){
+        when (mod) {
             "igoned" -> {
                 return
             }

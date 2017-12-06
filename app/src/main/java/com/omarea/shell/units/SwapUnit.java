@@ -9,8 +9,8 @@ import java.util.ArrayList;
  */
 
 public class SwapUnit {
-    public Boolean zramOn (final int sizeMB) {
-        ArrayList<String> commands = new ArrayList<String>(){{
+    public Boolean zramOn(final int sizeMB) {
+        ArrayList<String> commands = new ArrayList<String>() {{
             add("if [ `cat /sys/block/zram0/disksize` != '" + sizeMB + "000000' ] ; then ");
             add("swapoff /dev/block/zram0 >/dev/null 2>&1;");
             add("echo 1 > /sys/block/zram0/reset;");
@@ -22,7 +22,7 @@ public class SwapUnit {
         return SysUtils.executeRootCommand(commands);
     }
 
-    public boolean swwapOn (String path, Boolean p) {
+    public boolean swwapOn(String path, Boolean p) {
         ArrayList<String> commands = new ArrayList<String>();
         if (p) {
             commands.add("swapon " + path + " -p 32767\n");

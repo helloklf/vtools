@@ -8,7 +8,6 @@ import com.omarea.shared.AutoClickService
 import com.omarea.shared.ServiceHelper
 
 
-
 /**
  * Created by helloklf on 2016/8/27.
  */

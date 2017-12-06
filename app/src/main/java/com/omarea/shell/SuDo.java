@@ -12,11 +12,12 @@ import java.io.IOException;
 
 public class SuDo {
     Context context;
-    public SuDo (Context context) {
+
+    public SuDo(Context context) {
         this.context = context;
     }
 
-    private void  noRoot () {
+    private void noRoot() {
         if (context != null)
             Toast.makeText(context, "没有ROOT权限无法运行", Toast.LENGTH_SHORT).show();
     }

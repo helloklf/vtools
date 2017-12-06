@@ -14,6 +14,7 @@ import android.widget.CheckBox
 import android.widget.ListAdapter
 import android.widget.ListView
 import android.widget.TabHost
+import com.omarea.shared.Consts
 import com.omarea.shared.cmd_shellTools
 import com.omarea.ui.list_adapter2
 import com.omarea.units.AppListHelper
@@ -40,12 +41,7 @@ class fragment_applistions : Fragment() {
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
             if (msg.what == 2) {
-                Thread{
-                    Runnable {
-                        refreshList()
-                        setList()
-                    }
-                }.start()
+                setList()
             }
         }
     }
@@ -112,7 +108,6 @@ class fragment_applistions : Fragment() {
         setList()
         apps_search_box.setOnEditorActionListener({ tv, actionId, key ->
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
-                refreshList(tv.text.toString())
                 setList()
             }
             false
@@ -135,37 +130,35 @@ class fragment_applistions : Fragment() {
         return selectedItems
     }
 
-    private fun refreshList() {
-        refreshList(apps_search_box.text.toString())
-    }
-
-    private fun refreshList(kw: String) {
-        val text = kw.toLowerCase()
-        systemList = java.util.ArrayList<HashMap<String, Any>>(appListHelper.getSystemAppList().filter { item ->
-            if (item.get("packageName").toString().toLowerCase().contains(text) || item.get("name").toString().toLowerCase().contains(text)) true else false
-        })
-        installedList = java.util.ArrayList<HashMap<String, Any>>(appListHelper.getUserAppList().filter { item ->
-            if (item.get("packageName").toString().toLowerCase().contains(text) || item.get("name").toString().toLowerCase().contains(text)) true else false
-        })
-        backupedList = java.util.ArrayList<HashMap<String, Any>>(appListHelper.getApkFilesInfoList("/sdcard/Android/apps").filter { item ->
+    private fun filterAppList(appList: ArrayList<HashMap<String, Any>> ):ArrayList<HashMap<String, Any>> {
+        val text = apps_search_box.text.toString().toLowerCase()
+        return java.util.ArrayList<HashMap<String, Any>>(appList.filter { item ->
             if (item.get("packageName").toString().toLowerCase().contains(text) || item.get("name").toString().toLowerCase().contains(text)) true else false
         })
     }
 
     private fun sortAppList(list: ArrayList<HashMap<String, Any>>): ArrayList<HashMap<String, Any>> {
         list.sortWith(Comparator { l, r ->
-            val les = l["enabled_state"].toString()
-            val res = r["enabled_state"].toString()
+            val wl = l["wran_state"].toString()
+            val wr = r["wran_state"].toString()
             when {
-                les < res -> -1
-                les > res -> 1
+                wl.length > 0 && wr.length == 0 -> 1
+                wr.length > 0 && wl.length == 0 -> -1
                 else -> {
-                    val lp = l["packageName"].toString()
-                    val rp = r["packageName"].toString()
+                    val les = l["enabled_state"].toString()
+                    val res = r["enabled_state"].toString()
                     when {
-                        lp < rp -> -1
-                        lp > rp -> 1
-                        else -> 0
+                        les < res -> -1
+                        les > res -> 1
+                        else -> {
+                            val lp = l["packageName"].toString()
+                            val rp = r["packageName"].toString()
+                            when {
+                                lp < rp -> -1
+                                lp > rp -> 1
+                                else -> 0
+                            }
+                        }
                     }
                 }
             }
@@ -177,16 +170,9 @@ class fragment_applistions : Fragment() {
         thisview!!.progressBar.visibility = View.VISIBLE
 
         Thread(Runnable {
-            if (apps_search_box.text.length > 0) {
-                refreshList(apps_search_box.text.toString())
-            } else {
-                if (installedList == null)
-                    installedList = appListHelper.getUserAppList()
-                if (systemList == null)
-                    systemList = appListHelper.getSystemAppList()
-                if (backupedList == null)
-                    backupedList = appListHelper.getApkFilesInfoList("/sdcard/Android/apps")
-            }
+            systemList = filterAppList(appListHelper.getSystemAppList())
+            installedList = filterAppList(appListHelper.getUserAppList())
+            backupedList = filterAppList(appListHelper.getApkFilesInfoList(Consts.BackUpDir))
 
             setListData(installedList, apps_userlist)
             setListData(systemList, apps_systemlist)

@@ -13,7 +13,8 @@ import java.util.HashMap
 
 class AppListHelper {
     var packageManager: PackageManager
-    constructor(context: Context){
+
+    constructor(context: Context) {
         packageManager = context.packageManager
     }
 
@@ -53,14 +54,21 @@ class AppListHelper {
         }
     }
 
-    fun getAppList (systemApp: Boolean? = null, removeIgnore: Boolean = true) : ArrayList<HashMap<String,Any>> {
+    private fun exclude(packageName: String):Boolean{
+        if (packageName.endsWith(".Pure")) {
+            return true
+        }
+        return false
+    }
+
+    fun getAppList(systemApp: Boolean? = null, removeIgnore: Boolean = true): ArrayList<HashMap<String, Any>> {
         val packageInfos = packageManager.getInstalledApplications(0)
 
         val list = ArrayList<HashMap<String, Any>>()/*在数组中存放数据*/
         for (i in packageInfos.indices) {
             val packageInfo = packageInfos[i]
 
-            if (removeIgnore && ignore.contains(packageInfo.packageName)) {
+            if (removeIgnore && ignore.contains(packageInfo.packageName) || exclude(packageInfo.packageName)) {
                 continue
             }
 
@@ -77,7 +85,7 @@ class AppListHelper {
             item.put("select_state", false)
             item.put("dir", packageInfo.sourceDir)
             item.put("enabled", packageInfo.enabled)
-            item.put("enabled_state", if (File(Consts.BackUpDir + packageInfo.packageName + ".apk").exists()) "已备份" else "")
+            item.put("enabled_state", if (File(Consts.BackUpDir + packageInfo.packageName + ".apk").exists() || File(Consts.BackUpDir + packageInfo.packageName + ".tar.gz").exists()) "已备份" else "")
             item.put("wran_state", if (packageInfo.enabled) "" else "已冻结")
 
             item.put("name", packageInfo.loadLabel(packageManager))
@@ -101,7 +109,7 @@ class AppListHelper {
         return getAppList(null, false)
     }
 
-    fun checkInstalled (packageName: String): Boolean {
+    fun checkInstalled(packageName: String): Boolean {
         try {
             packageManager.getPackageInfo(packageName, 0)
             return true
@@ -110,7 +118,7 @@ class AppListHelper {
         }
     }
 
-    fun getApkFilesInfoList (dirPath: String): ArrayList<HashMap<String,Any>> {
+    fun getApkFilesInfoList(dirPath: String): ArrayList<HashMap<String, Any>> {
         val list = ArrayList<HashMap<String, Any>>()
         val dir = File(dirPath)
         if (!dir.exists())
@@ -125,7 +133,7 @@ class AppListHelper {
         val files = dir.list { dir, name -> name.toLowerCase().endsWith(".apk") }
 
         for (i in files.indices) {
-            val absPath = dirPath + "/" + files[i]
+            val absPath = dirPath+ files[i]
             try {
                 val packageInfo = packageManager.getPackageArchiveInfo(absPath, PackageManager.GET_ACTIVITIES)
                 if (packageInfo != null) {

@@ -37,11 +37,11 @@ class fragment_booster : Fragment() {
     internal lateinit var editor: SharedPreferences.Editor
 
     override fun onResume() {
+        super.onResume()
+
         val serviceState = ServiceHelper.serviceIsRunning(context)
         btn_booster_service_not_active.visibility = if (serviceState) GONE else VISIBLE
         btn_booster_dynamicservice_not_active.visibility = if (serviceState && !context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, false)) VISIBLE else GONE
-
-        super.onResume()
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,

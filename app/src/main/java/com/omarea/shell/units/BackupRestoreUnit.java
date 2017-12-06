@@ -24,6 +24,7 @@ public class BackupRestoreUnit {
     public ProgressBar progressBar;
     public Context context;
     public Activity activity;
+
     public BackupRestoreUnit(Activity activity, ProgressBar progressBar) {
         this.activity = activity;
         if (activity != null)
@@ -58,6 +59,7 @@ public class BackupRestoreUnit {
             }
         });
     }
+
     //显示文本消息
     public void ShowMsg(final String msg, final boolean longMsg) {
         if (context != null)
@@ -92,6 +94,7 @@ public class BackupRestoreUnit {
     void NoRoot() {
         ShowDialogMsg("请检查ROOT权限", "请检查是否已ROOT手机，并允许本应用访问ROOT权限！");
     }
+
     class FlashBootThread extends Thread {
         public FlashBootThread(String path) {
             this.path = path;

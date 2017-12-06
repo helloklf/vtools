@@ -9,7 +9,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
  */
 
 public class DeviceInfo {
-    public void simulationR11 (final XC_LoadPackage.LoadPackageParam loadPackageParam) {
+    public void simulationR11(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
         XposedHelpers.findAndHookMethod(
                 "android.os.SystemProperties", loadPackageParam.classLoader, "get", String.class, String.class, new XC_MethodHook() {
                     @Override
@@ -54,7 +54,8 @@ public class DeviceInfo {
                     }
                 });
     }
-    public void simulationX20 (final XC_LoadPackage.LoadPackageParam loadPackageParam) {
+
+    public void simulationX20(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
         XposedHelpers.findAndHookMethod(
                 "android.os.SystemProperties", loadPackageParam.classLoader, "get", String.class, String.class, new XC_MethodHook() {
                     @Override

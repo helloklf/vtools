@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Handler
 import android.os.Message
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import com.omarea.shell.AsynSuShellUnit
@@ -145,7 +146,7 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
         val h = object : Handler() {
             override fun handleMessage(msg: Message) {
                 super.handleMessage(msg)
-                if (msg.obj != null){
+                if (msg.obj != null) {
                     if (msg.what == 0) {
                         textView.setText("正在执行操作...")
                     } else {
@@ -182,18 +183,16 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
         AsynSuShellUnit(h).exec(sb.toString())
     }
 
-    private fun confirm(title:String, msg:String, next: Runnable?) {
+    private fun confirm(title: String, msg: String, next: Runnable?) {
         AlertDialog.Builder(context)
                 .setTitle(title)
                 .setMessage(msg)
-                .setNegativeButton("确定",{
-                    dialog, which ->
-                    if (next !=null) {
+                .setNegativeButton("确定", { dialog, which ->
+                    if (next != null) {
                         next.run()
                     }
                 })
-                .setNeutralButton("取消",{
-                    dialog, which ->  
+                .setNeutralButton("取消", { dialog, which ->
                 })
                 .create()
                 .show()
@@ -211,7 +210,7 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
     /**
      * 备份选中的应用
      */
-    private fun backupAll(apk:Boolean = true, data:Boolean = true) {
+    private fun backupAll(apk: Boolean = true, data: Boolean = true) {
         checkPigz()
 
         var sb = StringBuilder()
@@ -240,7 +239,7 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
     /**
      * 还原选中的应用
      */
-    private fun restoreAll(apk:Boolean = true, data:Boolean = true) {
+    private fun restoreAll(apk: Boolean = true, data: Boolean = true) {
         var sb = StringBuilder()
         for (item in apps) {
             val packageName = item.get("packageName").toString()
@@ -314,7 +313,7 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
     /**
      * 删除选中的应用
      */
-    private fun deleteAll () {
+    private fun deleteAll() {
         var sb = StringBuilder()
         for (item in apps) {
             val packageName = item.get("packageName").toString()
@@ -331,7 +330,7 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
     /**
      * 删除备份
      */
-    private fun deleteBackupAll () {
+    private fun deleteBackupAll() {
         var sb = StringBuilder()
         for (item in apps) {
             val packageName = item.get("packageName").toString()

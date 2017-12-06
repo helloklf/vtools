@@ -53,8 +53,8 @@ public class cmd_shellTools_backup {
         myHandler.post(new Runnable() {
             @Override
             public void run() {
-            if (progressBar != null)
-                progressBar.setVisibility(View.VISIBLE);
+                if (progressBar != null)
+                    progressBar.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -64,8 +64,8 @@ public class cmd_shellTools_backup {
         myHandler.post(new Runnable() {
             @Override
             public void run() {
-            if (progressBar != null)
-                progressBar.setVisibility(View.GONE);
+                if (progressBar != null)
+                    progressBar.setVisibility(View.GONE);
             }
         });
     }
@@ -76,7 +76,7 @@ public class cmd_shellTools_backup {
             myHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                Toast.makeText(context, msg, longMsg ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, msg, longMsg ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT).show();
                 }
             });
     }
@@ -87,11 +87,11 @@ public class cmd_shellTools_backup {
             myHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-                builder.setTitle(title);
-                builder.setPositiveButton(android.R.string.yes, null);
-                builder.setMessage(msg + "\n");
-                builder.create().show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                    builder.setTitle(title);
+                    builder.setPositiveButton(android.R.string.yes, null);
+                    builder.setMessage(msg + "\n");
+                    builder.create().show();
                 }
             });
     }

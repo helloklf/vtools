@@ -5,11 +5,11 @@ package com.omarea.shell.units;
  */
 
 public class ModifyDPI {
-    public void quickChangeDpi (int dpi, int width, int height) {
+    public void quickChangeDpi(int dpi, int width, int height) {
 
     }
 
-    public void quickChangeDpi (int dpi) {
+    public void quickChangeDpi(int dpi) {
 
     }
 

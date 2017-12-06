@@ -51,31 +51,32 @@ class fragment_home : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        btn_powersave.setOnClickListener{
+        btn_powersave.setOnClickListener {
             installConfig(Consts.TogglePowersaveMode)
             Snackbar.make(this.view, "已切换为省电模式，适合长时间媒体播放或阅读，综合使用时并不效率也不会省电太多！", Snackbar.LENGTH_LONG).show()
         }
-        btn_defaultmode.setOnClickListener{
+        btn_defaultmode.setOnClickListener {
             installConfig(Consts.ToggleDefaultMode)
             Snackbar.make(this.view, "已切换为均衡模式，适合日常使用，速度与耗电平衡！", Snackbar.LENGTH_LONG).show()
         }
-        btn_gamemode.setOnClickListener{
+        btn_gamemode.setOnClickListener {
             installConfig(Consts.ToggleGameMode)
             Snackbar.make(this.view, "已切换为游戏（性能）模式，但受温度影响并不一定会更快，你可以考虑删除温控！", Snackbar.LENGTH_LONG).show()
         }
-        btn_fastmode.setOnClickListener{
+        btn_fastmode.setOnClickListener {
             installConfig(Consts.ToggleFastMode)
             Snackbar.make(this.view, "已切换为极速模式，这会大幅增加发热，如果不删除温控性能并不稳定！", Snackbar.LENGTH_LONG).show()
         }
     }
 
     override fun onResume() {
+        super.onResume()
+
         setModeState()
         val sdfree = view.findViewById(R.id.sdfree) as TextView
         val datafree = view.findViewById(R.id.datafree) as TextView
         sdfree.text = "共享存储：" + Files.GetDirFreeSizeMB("/sdcard") + " MB"
         datafree.text = "应用存储：" + Files.GetDirFreeSizeMB("/data") + " MB"
-        super.onResume()
     }
 
     private fun setModeState() {
@@ -100,7 +101,7 @@ class fragment_home : Fragment() {
         }
     }
 
-    private fun installConfig(after:String) {
+    private fun installConfig(after: String) {
         if (File("/data/powercfg.sh").exists()) {
             cmdshellTools.DoCmdSync(Consts.ExecuteConfig + "\n" + after)
         } else {

@@ -62,27 +62,27 @@ class main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
         if (!Busybox().IsBusyboxInstalled()) {
             //Snackbar.make(fab, application.getString(R.string.error_busybox), Snackbar.LENGTH_LONG).show()
             AlertDialog.Builder(this)
-                .setTitle("安装Busybox吗？")
-                .setMessage("你的手机似乎没有安装busybox，这会导致微工具箱无法使用，是否要立即安装（需要修改System）？")
-                .setNegativeButton(
-                        "取消",
-                        { dialog, which ->
-                            android.os.Process.killProcess(android.os.Process.myPid());
-                        }
-                )
-                .setPositiveButton(
-                        "确定",
-                        { a, b ->
-                            AppShared.WriteFile(thisview.assets, "busybox.zip", "busybox")
-                            val cmd = StringBuilder("cp /sdcard/Android/data/com.omarea.vboot/busybox /cache/busybox\nchmod 0777 /cache/busybox\n")
-                            cmd.append(Consts.MountSystemRW2)
-                            cmd.append("cp /cache/busybox /system/xbin/busybox\n/cache/busybox chmod 0777 /system/xbin/busybox\n")
-                            cmdshellTools.DoCmdSync(cmd.toString())
-                            //android.os.Process.killProcess(android.os.Process.myPid());
-                        }
-                )
-                .setCancelable(false)
-                .create().show()
+                    .setTitle("安装Busybox吗？")
+                    .setMessage("你的手机似乎没有安装busybox，这会导致微工具箱无法使用，是否要立即安装（需要修改System）？")
+                    .setNegativeButton(
+                            "取消",
+                            { dialog, which ->
+                                android.os.Process.killProcess(android.os.Process.myPid());
+                            }
+                    )
+                    .setPositiveButton(
+                            "确定",
+                            { a, b ->
+                                AppShared.WriteFile(thisview.assets, "busybox.zip", "busybox")
+                                val cmd = StringBuilder("cp /sdcard/Android/data/com.omarea.vboot/busybox /cache/busybox\nchmod 0777 /cache/busybox\n")
+                                cmd.append(Consts.MountSystemRW2)
+                                cmd.append("cp /cache/busybox /system/xbin/busybox\n/cache/busybox chmod 0777 /system/xbin/busybox\n")
+                                cmdshellTools.DoCmdSync(cmd.toString())
+                                //android.os.Process.killProcess(android.os.Process.myPid());
+                            }
+                    )
+                    .setCancelable(false)
+                    .create().show()
             //return
         }
         val fragmentManager = supportFragmentManager

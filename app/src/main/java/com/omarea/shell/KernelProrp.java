@@ -13,10 +13,11 @@ import java.io.InputStreamReader;
 public class KernelProrp {
     /**
      * 获取属性
+     *
      * @param propName 属性名称
      * @return
      */
-    public static String getProp(String propName){
+    public static String getProp(String propName) {
         if (!new File(propName).exists()) {
             return "";
         }
@@ -51,20 +52,20 @@ public class KernelProrp {
 
     /**
      * 保存属性
+     *
      * @param propName 属性名称（要永久保存，请以persist.开头）
-     * @param value 属性值,值尽量是简单的数字或字母，避免出现错误
+     * @param value    属性值,值尽量是简单的数字或字母，避免出现错误
      */
     public static boolean setProp(String propName, String value) {
-        try{
+        try {
             Process p = Runtime.getRuntime().exec("sh");
             DataOutputStream out = new DataOutputStream(p.getOutputStream());
             out.writeBytes("echo " + value + " > " + propName);
             out.writeBytes("\n");
             out.flush();
-            return  true;
-        }
-        catch (Exception ex){
-            return  false;
+            return true;
+        } catch (Exception ex) {
+            return false;
         }
     }
 }

@@ -16,7 +16,7 @@ public class CheckRootStatus {
         try {
             p = Runtime.getRuntime().exec("su");
             DataOutputStream out = new DataOutputStream(p.getOutputStream());
-            out.writeBytes("\nsetenforce 0\ndumpsys deviceidle whitelist +com.omarea.vboot;\nexit\nexit\n");
+            out.writeBytes("setenforce 0;\ndumpsys deviceidle whitelist +com.omarea.vboot;\nexit;\nexit;\n");
             out.flush();
 
             String msg = "";
@@ -29,8 +29,10 @@ public class CheckRootStatus {
                     return false;
                 }
             }
+            p.waitFor();
+            boolean r = p.exitValue() == 0;
             p.destroy();
-            return p.exitValue() == 0;
+            return r;
         } catch (Exception e) {
             if (p != null)
                 p.destroy();

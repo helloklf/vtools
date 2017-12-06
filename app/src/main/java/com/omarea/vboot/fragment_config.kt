@@ -58,11 +58,11 @@ class fragment_config : Fragment() {
     }
 
     override fun onResume() {
+        super.onResume()
+
         val serviceState = ServiceHelper.serviceIsRunning(context)
         btn_config_service_not_active.visibility = if (serviceState) View.GONE else View.VISIBLE
         btn_config_dynamicservice_not_active.visibility = if (!context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)) View.VISIBLE else View.GONE
-
-        super.onResume()
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
@@ -195,8 +195,7 @@ class fragment_config : Fragment() {
             ignoredList!![position].put("select_state", !select_state.isChecked)
         }
 
-        config_search_box.setOnEditorActionListener({
-            tv, actionId, key ->
+        config_search_box.setOnEditorActionListener({ tv, actionId, key ->
             if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
                 LoadList()
             }
@@ -217,6 +216,7 @@ class fragment_config : Fragment() {
         }
         editor.commit()
     }
+
     private fun sortAppList(list: ArrayList<HashMap<String, Any>>): ArrayList<HashMap<String, Any>> {
         list.sortWith(Comparator { l, r ->
             val les = l["enabled_state"].toString()

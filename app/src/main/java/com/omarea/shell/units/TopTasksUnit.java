@@ -34,15 +34,15 @@ public class TopTasksUnit {
             boolean lastEmpty = false;
             int rowCout = 0;
             while ((line = br.readLine()) != null) {
-                rowCout ++;
+                rowCout++;
                 if (line.equals("") && rowCout > 3) {
                     handler.sendMessage(handler.obtainMessage(1, builder.toString().trim()));
-                    if ( builder.length() > 1)
-                        builder.delete(0, builder.length()-1);
+                    if (builder.length() > 1)
+                        builder.delete(0, builder.length() - 1);
                     rowCout = 0;
                 } else if (line.equals("")) {
-                    if ( builder.length() > 1)
-                        builder.delete(0, builder.length()-1);
+                    if (builder.length() > 1)
+                        builder.delete(0, builder.length() - 1);
                     rowCout = 0;
                 } else {
                     builder.append(line.trim()).append("\n");

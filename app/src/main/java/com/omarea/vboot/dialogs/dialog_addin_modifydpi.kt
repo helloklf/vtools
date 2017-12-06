@@ -18,9 +18,11 @@ import com.omarea.vboot.R
 
 class dialog_addin_modifydpi {
     var context: Context
+
     constructor(context: Context) {
         this.context = context
     }
+
     fun modifyDPI(display: Display) {
         val layoutInflater = LayoutInflater.from(context)
         val dialog = layoutInflater.inflate(R.layout.dialog_addin_dpi, null)

@@ -5,10 +5,11 @@ package com.omarea.shell.units;
  */
 
 public class MiuiUnit {
-    public boolean CenterClock(){
+    public boolean CenterClock() {
         return false;
     }
-    public boolean HideSearchBox(){
+
+    public boolean HideSearchBox() {
         return false;
     }
 }

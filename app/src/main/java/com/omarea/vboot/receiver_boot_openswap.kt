@@ -42,8 +42,7 @@ class receiver_boot_openswap : BroadcastReceiver() {
                 //重试一次
                 if (!isRedo)
                     DoCmd(cmd, true)
-                else
-                {
+                else {
 
                 }
             }
@@ -54,10 +53,10 @@ class receiver_boot_openswap : BroadcastReceiver() {
         //判断是否开启了充电加速和充电保护，如果开启了，自动启动后台服务
         var chargeConfig = context.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
         if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) || chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_BP, false)) {
-            try{
-                val i = Intent( context, BatteryService::class.java)
+            try {
+                val i = Intent(context, BatteryService::class.java)
                 context.startService(i)
-            } catch (ex:Exception){
+            } catch (ex: Exception) {
 
             }
         }
@@ -66,7 +65,7 @@ class receiver_boot_openswap : BroadcastReceiver() {
         val swapConfig = context.getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)
         if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false) || swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) {
 
-            if(swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) {
+            if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) {
                 sb.append("if [ `cat /sys/block/zram0/disksize` != '" + swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0) + "000000' ] ; then ")
                 sb.append("swapoff /dev/block/zram0 >/dev/null 2>&1;")
                 sb.append("echo 1 > /sys/block/zram0/reset;")

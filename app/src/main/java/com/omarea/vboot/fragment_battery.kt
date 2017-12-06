@@ -45,11 +45,13 @@ class fragment_battery : Fragment() {
     internal var powerChonnected = false
     internal var voltage: Double = 0.toDouble()
     private var batteryUnits = BatteryUnit()
-    private lateinit var spf:SharedPreferences
+    private lateinit var spf: SharedPreferences
 
     override fun onResume() {
-        if (spf!=null){
-            spf.registerOnSharedPreferenceChangeListener{ sharedPreferences, key ->
+        super.onResume()
+
+        if (spf != null) {
+            spf.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
 
             }
         }
@@ -57,7 +59,7 @@ class fragment_battery : Fragment() {
         settings_qc.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)
         settings_bp.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_BP, false)
         settings_bp_level.setText(spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85).toString())
-        settings_qc_limit.setText(spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT,4000).toString())
+        settings_qc_limit.setText(spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 4000).toString())
 
         if (broadcast == null) {
             broadcast = object : BroadcastReceiver() {
@@ -110,7 +112,6 @@ class fragment_battery : Fragment() {
             }
         }, 0, 3000)
 
-        super.onResume()
     }
 
     internal var serviceRunning = false
@@ -151,50 +152,47 @@ class fragment_battery : Fragment() {
 
         settings_qc.setOnClickListener {
             spf.edit().putBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, settings_qc.isChecked).commit()
-            if(!settings_qc.isChecked){
-                Snackbar.make(this.view,"充电加速服务已禁用，可能需要重启手机才能恢复默认设置！",Snackbar.LENGTH_SHORT).show()
-            } else{
+            if (!settings_qc.isChecked) {
+                Snackbar.make(this.view, "充电加速服务已禁用，可能需要重启手机才能恢复默认设置！", Snackbar.LENGTH_SHORT).show()
+            } else {
                 //启用电池服务
                 startBatteryService()
-                Snackbar.make(this.view,"OK！如果你要手机重启后自动开启本功能，请允许微工具箱开机自启！",Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(this.view, "OK！如果你要手机重启后自动开启本功能，请允许微工具箱开机自启！", Snackbar.LENGTH_SHORT).show()
             }
         }
         settings_bp.setOnClickListener {
             spf.edit().putBoolean(SpfConfig.CHARGE_SPF_BP, settings_bp.isChecked).commit()
             //禁用电池保护：恢复充电功能
-            if(!settings_bp.isChecked){
+            if (!settings_bp.isChecked) {
                 cmdshellTools.DoCmdSync(Consts.ResumeChanger)
-            }
-            else {
+            } else {
                 //启用电池服务
                 startBatteryService()
-                Snackbar.make(this.view,"OK！如果你要手机重启后自动开启本功能，请允许微工具箱开机自启！",Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(this.view, "OK！如果你要手机重启后自动开启本功能，请允许微工具箱开机自启！", Snackbar.LENGTH_SHORT).show()
             }
         }
         settings_bp_level.setOnEditorActionListener { v, actionId, event ->
-            if(actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT){
-                val level:Int
-                try{
+            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
+                val level: Int
+                try {
                     level = settings_bp_level.text.toString().toInt()
                     spf.edit().putInt(SpfConfig.CHARGE_SPF_BP_LEVEL, level).commit()
-                    Snackbar.make(this.view, "设置已保存，稍后生效。当前限制等级："+ settings_bp_level.text, Snackbar.LENGTH_SHORT ).show()
+                    Snackbar.make(this.view, "设置已保存，稍后生效。当前限制等级：" + settings_bp_level.text, Snackbar.LENGTH_SHORT).show()
                     startBatteryService();
-                }
-                catch(e:Exception){
+                } catch (e: Exception) {
                 }
             }
             false
         }
         settings_qc_limit.setOnEditorActionListener { v, actionId, event ->
-            if(actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT){
-                val level:Int
-                try{
+            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
+                val level: Int
+                try {
                     level = settings_qc_limit.text.toString().toInt()
                     spf.edit().putInt(SpfConfig.CHARGE_SPF_QC_LIMIT, level).commit()
-                    Snackbar.make(this.view, "设置已保存。当前限制速度："+ settings_qc_limit.text + "mA", Snackbar.LENGTH_SHORT ).show()
+                    Snackbar.make(this.view, "设置已保存。当前限制速度：" + settings_qc_limit.text + "mA", Snackbar.LENGTH_SHORT).show()
                     startBatteryService();
-                }
-                catch(e:Exception){
+                } catch (e: Exception) {
                 }
             }
             false
@@ -203,10 +201,10 @@ class fragment_battery : Fragment() {
 
     //启动电池服务
     private fun startBatteryService() {
-        try{
-            val intent = Intent( context, BatteryService::class.java)
+        try {
+            val intent = Intent(context, BatteryService::class.java)
             context.startService(intent)
-        } catch (ex:Exception){
+        } catch (ex: Exception) {
         }
     }
 

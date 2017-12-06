@@ -16,6 +16,7 @@ public class FullScreenSUnit {
         }};
         return SysUtils.executeRootCommand(commands);
     }
+
     public boolean ExitFullScreen() {
         ArrayList<String> commands = new ArrayList<String>() {{
             add("settings put global policy_control null");

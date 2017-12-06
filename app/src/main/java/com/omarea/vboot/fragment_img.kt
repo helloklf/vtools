@@ -65,13 +65,13 @@ class fragment_img : Fragment() {
                         builder.setNegativeButton(android.R.string.cancel, null)
                         builder.setPositiveButton(android.R.string.yes) { dialog, which ->
                             //导出boot
-                            BackupRestoreUnit(activity,progressBar2).SaveBoot()
+                            BackupRestoreUnit(activity, progressBar2).SaveBoot()
                         }
                         builder.setMessage(context.getString(R.string.backup_boot_exists))
                         builder.create().show()
                     } else {
                         //导出boot
-                        BackupRestoreUnit(activity,progressBar2).SaveBoot()
+                        BackupRestoreUnit(activity, progressBar2).SaveBoot()
                     }
                 }
                 1 -> {
@@ -81,7 +81,7 @@ class fragment_img : Fragment() {
                         builder.setTitle("确定刷入/sdcard/boot.img？")
                         builder.setNegativeButton(android.R.string.cancel, null)
                         builder.setPositiveButton(android.R.string.yes) { dialog, which ->
-                            BackupRestoreUnit(activity,progressBar2).FlashBoot("/sdcard/boot.img")
+                            BackupRestoreUnit(activity, progressBar2).FlashBoot("/sdcard/boot.img")
                         }
                         builder.setMessage("此操作将刷入/sdcard/boot.img到系统Boot分区，我十分不推荐你这么做，刷入无效的Boot文件可能导致你的设备无法启动。如果你没有办法在设备无法启动时紧急恢复。")
                         builder.create().show()
@@ -108,13 +108,13 @@ class fragment_img : Fragment() {
                         builder.setNegativeButton(android.R.string.cancel, null)
                         builder.setPositiveButton(android.R.string.yes) { dialog, which ->
                             //导出rec
-                            BackupRestoreUnit(activity,progressBar2).SaveRecovery()
+                            BackupRestoreUnit(activity, progressBar2).SaveRecovery()
                         }
                         builder.setMessage(context.getString(R.string.backup_rec_exists))
                         builder.create().show()
                     } else {
                         //导出rec
-                        BackupRestoreUnit(activity,progressBar2).SaveRecovery()
+                        BackupRestoreUnit(activity, progressBar2).SaveRecovery()
                     }
                 }
                 3 -> {

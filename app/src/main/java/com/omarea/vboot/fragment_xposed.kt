@@ -133,17 +133,15 @@ class fragment_xposed : Fragment() {
             }
         }
         xposed_apps_dpifix.setOnItemClickListener(config_powersavelistClick)
-        xposed_config_search.setOnEditorActionListener({
-            tv, actionId, key ->
-            if(actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT){
+        xposed_config_search.setOnEditorActionListener({ tv, actionId, key ->
+            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
                 val text = tv.text.toString()
 
-                val list = installedList.filter {
-                    item ->
+                val list = installedList.filter { item ->
                     if (item.get("packageName").toString().contains(text) || item.get("name").toString().contains(text)) true else false
                 }
 
-                xposed_apps_dpifix.setAdapter(list_adapter2(context, java.util.ArrayList<HashMap<String,Any>>(list)))
+                xposed_apps_dpifix.setAdapter(list_adapter2(context, java.util.ArrayList<HashMap<String, Any>>(list)))
             }
             false
         })
@@ -199,9 +197,8 @@ class fragment_xposed : Fragment() {
         }).start()
     }
 
-    private fun sortAppList (list:ArrayList<HashMap<String, Any>>): ArrayList<HashMap<String, Any>> {
-        list.sortWith(Comparator {
-            l,r ->
+    private fun sortAppList(list: ArrayList<HashMap<String, Any>>): ArrayList<HashMap<String, Any>> {
+        list.sortWith(Comparator { l, r ->
             val les = l["enabled_state"].toString()
             val res = r["enabled_state"].toString()
             when {
@@ -218,7 +215,7 @@ class fragment_xposed : Fragment() {
                 }
             }
         })
-        return  list
+        return list
     }
 
     private fun loadList(): ArrayList<HashMap<String, Any>> {

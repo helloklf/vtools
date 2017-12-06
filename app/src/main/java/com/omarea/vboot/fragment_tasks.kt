@@ -67,7 +67,7 @@ class fragment_tasks : Fragment() {
                         var params = rows[i].split(" ").toMutableList()
                         if (params.size > 4) {
                             tr.put("itemPid", params[pidIndex])
-                            if (!kernel && i !=0 && params[typeIndex].indexOf("u") != 0) {
+                            if (!kernel && i != 0 && params[typeIndex].indexOf("u") != 0) {
                                 continue
                             }
                             if (params[nameIndex] == "top") {
@@ -123,7 +123,7 @@ class fragment_tasks : Fragment() {
         super.onDestroy()
     }
 
-    fun killProcess (pid:String) {
+    fun killProcess(pid: String) {
         SysUtils.executeRootCommand(mutableListOf("kill " + pid))
         progressBar.visibility = View.VISIBLE
     }
@@ -149,7 +149,7 @@ class fragment_tasks : Fragment() {
             var item = adapter.getItem(position)
             if (item.get("itemName") == "com.omarea.vboot") {
                 Snackbar.make(view, "你这是要我自杀啊！！！", Snackbar.LENGTH_SHORT).show()
-                 return@setOnItemClickListener
+                return@setOnItemClickListener
             }
             AlertDialog.Builder(context).setTitle("结束" + item.get("itemName") + "?").setMessage("确定要强行停止这个任务吗，这可能导致数据丢失，甚至系统崩溃需要重启！")
                     .setNegativeButton(

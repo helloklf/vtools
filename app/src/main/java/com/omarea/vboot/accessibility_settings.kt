@@ -31,7 +31,7 @@ class accessibility_settings : AppCompatActivity() {
         settings_delaystart.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DELAY, false)
     }
 
-    lateinit var spf:SharedPreferences;
+    lateinit var spf: SharedPreferences;
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

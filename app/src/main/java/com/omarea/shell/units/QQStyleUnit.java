@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class QQStyleUnit {
     public boolean DisableQQStyle() {
-        ArrayList<String> commands = new ArrayList<String>(){{
+        ArrayList<String> commands = new ArrayList<String>() {{
             add("rm -rf /storage/emulated/0/tencent/MobileQQ/.font_info\n" +
                     "echo \"\" > /storage/emulated/0/tencent/MobileQQ/.font_info\n" +
                     "rm -rf /storage/emulated/0/tencent/MobileQQ/font_info\n" +
@@ -34,7 +34,7 @@ public class QQStyleUnit {
     }
 
     public boolean RestoreQQStyle() {
-        ArrayList<String> commands = new ArrayList<String>(){{
+        ArrayList<String> commands = new ArrayList<String>() {{
             add("rm -rf /storage/emulated/0/tencent/MobileQQ/font_info\n" +
                     "rm -rf /sdcard/tencent/MobileQQ/font_info\n" +
                     "rm -rf /storage/emulated/0/tencent/MobileQQ/.font_info\n" +

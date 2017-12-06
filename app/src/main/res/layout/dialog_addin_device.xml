@@ -65,12 +65,17 @@
         <Button
             android:id="@+id/dialog_addin_r11"
             android:text="R11+"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="wrap_content" />
         <Button
             android:id="@+id/dialog_addin_x20"
             android:text="X20"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/dialog_addin_ipx"
+            android:text="IPX"
+            android:layout_width="50dp"
             android:layout_height="wrap_content" />
         <Button
             android:id="@+id/dialog_addin_default"

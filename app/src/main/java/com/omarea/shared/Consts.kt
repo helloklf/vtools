@@ -53,28 +53,28 @@ object Consts {
     val DisableSELinux = "setenforce 0\n"
 
     val FlymeUninstall =
-            "rm -rf /system/priv-app/EasyLauncher\n"+
-            "rm -rf /system/app/PrintSpooler\n"+
-            "rm -rf /system/app/Map\n"+
-            "rm -rf /system/priv-app/EBook\n"+
-            "rm -rf /system/priv-app/GameSDKService\n"+
-            "rm -rf /system/priv-app/Music\n"+
-            "rm -rf /system/priv-app/Email\n"+
-            "rm -rf /system/priv-app/ChildrenLauncher\n"+
-            "rm -rf /system/app/MzCompaign\n"+
-            "rm -rf /system/app/ToolBox\n"+
-            "rm -rf /system/priv-app/YellowPage\n"+
-            "rm -rf /system/priv-app/MzAccountPlugin\n"+
-            "rm -rf /system/app/Life\n"+
-            "rm -rf /system/priv-app/Video\n"+
-            "rm -rf /system/priv-app/Feedback\n"+
-            "rm -rf /system/app/lflytekSpeechService\n"+
-            "rm -rf /system/priv-app/VoiceAssistant\n"+
-            "rm -rf /system/app/Reader\n"+
-            "rm -rf /system/priv-app/EasyLauncher\n"+
-            "rm -rf /system/priv-app/EasyLauncher\n"+
+            "rm -rf /system/priv-app/EasyLauncher\n" +
+                    "rm -rf /system/app/PrintSpooler\n" +
+                    "rm -rf /system/app/Map\n" +
+                    "rm -rf /system/priv-app/EBook\n" +
+                    "rm -rf /system/priv-app/GameSDKService\n" +
+                    "rm -rf /system/priv-app/Music\n" +
+                    "rm -rf /system/priv-app/Email\n" +
+                    "rm -rf /system/priv-app/ChildrenLauncher\n" +
+                    "rm -rf /system/app/MzCompaign\n" +
+                    "rm -rf /system/app/ToolBox\n" +
+                    "rm -rf /system/priv-app/YellowPage\n" +
+                    "rm -rf /system/priv-app/MzAccountPlugin\n" +
+                    "rm -rf /system/app/Life\n" +
+                    "rm -rf /system/priv-app/Video\n" +
+                    "rm -rf /system/priv-app/Feedback\n" +
+                    "rm -rf /system/app/lflytekSpeechService\n" +
+                    "rm -rf /system/priv-app/VoiceAssistant\n" +
+                    "rm -rf /system/app/Reader\n" +
+                    "rm -rf /system/priv-app/EasyLauncher\n" +
+                    "rm -rf /system/priv-app/EasyLauncher\n" +
 
-            "sync\nreboot\n";
+                    "sync\nreboot\n";
 
     val MiuiUninstall =
             "pm disable com.miui.yellowpage\n" +

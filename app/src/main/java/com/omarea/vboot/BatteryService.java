@@ -20,6 +20,7 @@ public class BatteryService extends Service {
         // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
     }
+
     reciver_batterychanged batteryChangedReciver;
 
     @Override
@@ -55,10 +56,10 @@ public class BatteryService extends Service {
 
     //服务是否在运行
     public static Boolean serviceIsRunning(Context context) {
-        ActivityManager m = (ActivityManager)(context.getSystemService(Context.ACTIVITY_SERVICE));
+        ActivityManager m = (ActivityManager) (context.getSystemService(Context.ACTIVITY_SERVICE));
         List<ActivityManager.RunningServiceInfo> serviceInfos = m.getRunningServices(5000);
         for (ActivityManager.RunningServiceInfo serviceInfo : serviceInfos) {
-            if(serviceInfo.service.getPackageName().equals("com.omarea.vboot")){
+            if (serviceInfo.service.getPackageName().equals("com.omarea.vboot")) {
                 if (serviceInfo.service.getClassName().equals("com.omarea.vboot.BatteryService")) {
                     return true;
                 }
