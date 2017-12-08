@@ -20,7 +20,7 @@ import java.util.*
 
 class fragment_img : Fragment() {
     internal var cmdshellTools: cmd_shellTools? = null
-    internal var thisview: main? = null
+    internal var thisview: MainActivity? = null
 
     fun createItem(title: String, desc: String): HashMap<String, Any> {
         val item = HashMap<String, Any>()
@@ -30,9 +30,8 @@ class fragment_img : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.layout_img, container, false)
-    }
+                              savedInstanceState: Bundle?): View? =
+            inflater!!.inflate(R.layout.layout_img, container, false)
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         val listItem = ArrayList<HashMap<String, Any>>()/*在数组中存放数据*/
@@ -52,7 +51,7 @@ class fragment_img : Fragment() {
         img_action_listview.adapter = mSimpleAdapter
 
 
-        img_action_listview.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+        img_action_listview.onItemClickListener = AdapterView.OnItemClickListener { _, view, position, id ->
             when (position) {
                 0 -> {
                     if (cmdshellTools!!.GetSDFreeSizeMB() < 100) {
@@ -80,7 +79,7 @@ class fragment_img : Fragment() {
                         val builder = AlertDialog.Builder(thisview!!)
                         builder.setTitle("确定刷入/sdcard/boot.img？")
                         builder.setNegativeButton(android.R.string.cancel, null)
-                        builder.setPositiveButton(android.R.string.yes) { dialog, which ->
+                        builder.setPositiveButton(android.R.string.yes) { _, which ->
                             BackupRestoreUnit(activity, progressBar2).FlashBoot("/sdcard/boot.img")
                         }
                         builder.setMessage("此操作将刷入/sdcard/boot.img到系统Boot分区，我十分不推荐你这么做，刷入无效的Boot文件可能导致你的设备无法启动。如果你没有办法在设备无法启动时紧急恢复。")
@@ -106,7 +105,7 @@ class fragment_img : Fragment() {
                         val builder = AlertDialog.Builder(thisview!!)
                         builder.setTitle(context.getString(R.string.backup_file_exists))
                         builder.setNegativeButton(android.R.string.cancel, null)
-                        builder.setPositiveButton(android.R.string.yes) { dialog, which ->
+                        builder.setPositiveButton(android.R.string.yes) { _, which ->
                             //导出rec
                             BackupRestoreUnit(activity, progressBar2).SaveRecovery()
                         }
@@ -150,7 +149,7 @@ class fragment_img : Fragment() {
                 }
                 4 -> {
                     //打包rom
-                    val intent = Intent(thisview, rom2zip::class.java)
+                    val intent = Intent(thisview, Rom2ZipActivity::class.java)
                     startActivity(intent)
                 }
             }
@@ -158,7 +157,7 @@ class fragment_img : Fragment() {
     }
 
     companion object {
-        fun Create(thisView: main, cmdshellTools: cmd_shellTools): Fragment {
+        fun createPage(thisView: MainActivity, cmdshellTools: cmd_shellTools): Fragment {
             val fragment = fragment_img()
             fragment.cmdshellTools = cmdshellTools
             fragment.thisview = thisView

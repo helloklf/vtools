@@ -1,5 +1,6 @@
 package com.omarea.vboot
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -7,7 +8,6 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
-import android.os.Message
 import android.provider.Settings
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -29,19 +29,14 @@ import java.util.*
 
 
 class fragment_config : Fragment() {
-    internal var cmdshellTools: cmd_shellTools? = null
-    internal var thisview: main? = null
+    private var cmdshellTools: cmd_shellTools? = null
+    private var thisview: MainActivity? = null
+    private lateinit var spfPowercfg: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
+    private var hasSystemApp = false
+    private lateinit var applistHelper: AppListHelper
 
-    lateinit internal var spfPowercfg: SharedPreferences
-    lateinit internal var editor: SharedPreferences.Editor
-    internal var HasSystemApp = false
-    lateinit var applistHelper: AppListHelper
-
-    internal val myHandler: Handler = object : Handler() {
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-        }
-    }
+    internal val myHandler: Handler = Handler()
 
     private var defaultList: ArrayList<HashMap<String, Any>>? = null
     private var gameList: ArrayList<HashMap<String, Any>>? = null
@@ -50,12 +45,11 @@ class fragment_config : Fragment() {
     private var ignoredList: ArrayList<HashMap<String, Any>>? = null
     private var installedList: ArrayList<HashMap<String, Any>>? = null
 
-    internal var packageManager: PackageManager? = null
+    private var packageManager: PackageManager? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.layout_config, container, false)
-    }
+                              savedInstanceState: Bundle?): View? =
+            inflater!!.inflate(R.layout.layout_config, container, false)
 
     override fun onResume() {
         super.onResume()
@@ -65,15 +59,16 @@ class fragment_config : Fragment() {
         btn_config_dynamicservice_not_active.visibility = if (!context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)) View.VISIBLE else View.GONE
     }
 
+    @SuppressLint("CommitPrefEdits")
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         applistHelper = AppListHelper(context)
         spfPowercfg = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         editor = spfPowercfg.edit()
 
-        if (spfPowercfg.all.size == 0) {
+        if (spfPowercfg.all.isEmpty()) {
             initDefaultConfig()
         }
-        checkConfig();
+        checkConfig()
 
         btn_config_service_not_active.setOnClickListener {
             try {
@@ -84,7 +79,7 @@ class fragment_config : Fragment() {
             }
         }
         btn_config_dynamicservice_not_active.setOnClickListener {
-            val intent = Intent(thisview, accessibility_settings::class.java)
+            val intent = Intent(thisview, AccessibilitySettingsActivity::class.java)
             startActivity(intent)
         }
 
@@ -105,9 +100,9 @@ class fragment_config : Fragment() {
                     val builder = AlertDialog.Builder(thisview)
                     val items = arrayOf("添加选中到 -> 性能模式", "添加选中到 -> 省电模式", "添加选中到 -> 极速模式", "添加选中到 -> 忽略列表")
                     val configses = arrayOf(Configs.Game, Configs.PowerSave, Configs.Fast, Configs.Ignored)
-                    builder.setItems(items) { dialog, which ->
+                    builder.setItems(items) { _, which ->
                         val listadapter = config_defaultlist.adapter as list_adapter
-                        AddToList(defaultList!!, listadapter.states, configses[which])
+                        addToList(defaultList!!, listadapter.states, configses[which])
                     }
                     builder.setIcon(R.drawable.ic_menu_profile).setTitle("设置配置模式").create().show()
                 }
@@ -115,9 +110,9 @@ class fragment_config : Fragment() {
                     val builder = AlertDialog.Builder(thisview)
                     val items = arrayOf("添加选中到 -> 均衡模式", "添加选中到 -> 省电模式", "添加选中到 -> 极速模式", "添加选中到 -> 忽略列表")
                     val configses = arrayOf(Configs.Default, Configs.PowerSave, Configs.Fast, Configs.Ignored)
-                    builder.setItems(items) { dialog, which ->
+                    builder.setItems(items) { _, which ->
                         val listadapter = config_gamelist.adapter as list_adapter
-                        AddToList(gameList!!, listadapter.states, configses[which])
+                        addToList(gameList!!, listadapter.states, configses[which])
                     }
                     builder.setIcon(R.drawable.ic_menu_profile).setTitle("设置配置模式").create().show()
                 }
@@ -125,9 +120,9 @@ class fragment_config : Fragment() {
                     val builder = AlertDialog.Builder(thisview)
                     val items = arrayOf("添加选中到 -> 均衡模式", "添加选中到 -> 性能模式", "添加选中到 -> 极速模式", "添加选中到 -> 忽略列表")
                     val configses = arrayOf(Configs.Default, Configs.Game, Configs.Fast, Configs.Ignored)
-                    builder.setItems(items) { dialog, which ->
+                    builder.setItems(items) { _, which ->
                         val listadapter = config_powersavelist.adapter as list_adapter
-                        AddToList(powersaveList!!, listadapter.states, configses[which])
+                        addToList(powersaveList!!, listadapter.states, configses[which])
                     }
                     builder.setIcon(R.drawable.ic_menu_profile).setTitle("设置配置模式").create().show()
                 }
@@ -135,9 +130,9 @@ class fragment_config : Fragment() {
                     val builder = AlertDialog.Builder(thisview)
                     val items = arrayOf("添加选中到 -> 均衡模式", "添加选中到 -> 性能模式", "添加选中到 -> 省电模式", "添加选中到 -> 忽略列表")
                     val configses = arrayOf(Configs.Default, Configs.Game, Configs.PowerSave, Configs.Ignored)
-                    builder.setItems(items) { dialog, which ->
+                    builder.setItems(items) { _, which ->
                         val listadapter = config_fastlist.adapter as list_adapter
-                        AddToList(fastList!!, listadapter.states, configses[which])
+                        addToList(fastList!!, listadapter.states, configses[which])
                     }
                     builder.setIcon(R.drawable.ic_menu_profile).setTitle("设置配置模式").create().show()
                 }
@@ -145,63 +140,58 @@ class fragment_config : Fragment() {
                     val builder = AlertDialog.Builder(thisview)
                     val items = arrayOf("添加选中到 -> 均衡模式", "添加选中到 -> 性能模式", "添加选中到 -> 省电模式", "添加选中到 -> 极速模式")
                     val configses = arrayOf(Configs.Default, Configs.Game, Configs.PowerSave, Configs.Fast)
-                    builder.setItems(items) { dialog, which ->
+                    builder.setItems(items) { _, which ->
                         val listadapter = config_ignoredlist.adapter as list_adapter
-                        AddToList(ignoredList!!, listadapter.states, configses[which])
+                        addToList(ignoredList!!, listadapter.states, configses[which])
                     }
                     builder.setIcon(R.drawable.ic_menu_profile).setTitle("设置配置模式").create().show()
                 }
             }
         }
 
-        config_showSystemApp.isChecked = HasSystemApp
+        config_showSystemApp.isChecked = hasSystemApp
         config_showSystemApp.setOnClickListener {
-            HasSystemApp = config_showSystemApp.isChecked
-            LoadList(true)
+            hasSystemApp = config_showSystemApp.isChecked
+            loadList(true)
         }
 
-        config_defaultlist.onItemClickListener = OnItemClickListener { parent, current, position, id ->
-            val select_state = current.findViewById(R.id.select_state) as CheckBox
-            if (select_state != null)
-                select_state.isChecked = !select_state.isChecked
-            defaultList!![position].put("select_state", !select_state.isChecked)
+        config_defaultlist.onItemClickListener = OnItemClickListener { _, current, position, _ ->
+            val selectState = current.findViewById(R.id.select_state) as CheckBox
+            selectState.isChecked = !selectState.isChecked
+            defaultList!![position].put("select_state", !selectState.isChecked)
         }
 
-        config_gamelist.onItemClickListener = OnItemClickListener { parent, current, position, id ->
-            val select_state = current.findViewById(R.id.select_state) as CheckBox
-            if (select_state != null)
-                select_state.isChecked = !select_state.isChecked
-            gameList!![position].put("select_state", !select_state.isChecked)
+        config_gamelist.onItemClickListener = OnItemClickListener { _, current, position, _ ->
+            val selectState = current.findViewById(R.id.select_state) as CheckBox
+            selectState.isChecked = !selectState.isChecked
+            gameList!![position].put("select_state", !selectState.isChecked)
         }
 
-        config_powersavelist.onItemClickListener = OnItemClickListener { parent, current, position, id ->
-            val select_state = current.findViewById(R.id.select_state) as CheckBox
-            if (select_state != null)
-                select_state.isChecked = !select_state.isChecked
-            powersaveList!![position].put("select_state", !select_state.isChecked)
+        config_powersavelist.onItemClickListener = OnItemClickListener { _, current, position, _ ->
+            val selectState = current.findViewById(R.id.select_state) as CheckBox
+            selectState.isChecked = !selectState.isChecked
+            powersaveList!![position].put("select_state", !selectState.isChecked)
         }
 
-        config_fastlist.onItemClickListener = OnItemClickListener { parent, current, position, id ->
-            val select_state = current.findViewById(R.id.select_state) as CheckBox
-            if (select_state != null)
-                select_state.isChecked = !select_state.isChecked
-            fastList!![position].put("select_state", !select_state.isChecked)
+        config_fastlist.onItemClickListener = OnItemClickListener { _, current, position, _ ->
+            val selectState = current.findViewById(R.id.select_state) as CheckBox
+            selectState.isChecked = !selectState.isChecked
+            fastList!![position].put("select_state", !selectState.isChecked)
         }
 
-        config_ignoredlist.onItemClickListener = OnItemClickListener { parent, current, position, id ->
-            val select_state = current.findViewById(R.id.select_state) as CheckBox
-            if (select_state != null)
-                select_state.isChecked = !select_state.isChecked
-            ignoredList!![position].put("select_state", !select_state.isChecked)
+        config_ignoredlist.onItemClickListener = OnItemClickListener { _, current, position, _ ->
+            val selectState = current.findViewById(R.id.select_state) as CheckBox
+            selectState.isChecked = !selectState.isChecked
+            ignoredList!![position].put("select_state", !selectState.isChecked)
         }
 
-        config_search_box.setOnEditorActionListener({ tv, actionId, key ->
+        config_search_box.setOnEditorActionListener({ _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
-                LoadList()
+                loadList()
             }
             false
         })
-        LoadList()
+        loadList()
     }
 
     private fun initDefaultConfig() {
@@ -238,14 +228,14 @@ class fragment_config : Fragment() {
         return list
     }
 
-    internal fun SetListData(dl: ArrayList<HashMap<String, Any>>?, lv: ListView) {
+    private fun setListData(dl: ArrayList<HashMap<String, Any>>?, lv: ListView) {
         myHandler.post {
             lv.adapter = list_adapter(context, dl)
             thisview!!.progressBar.visibility = View.GONE
         }
     }
 
-    internal fun LoadList(foreceReload: Boolean = false) {
+    private fun loadList(foreceReload: Boolean = false) {
         thisview!!.progressBar.visibility = View.VISIBLE
         if (packageManager == null) {
             packageManager = thisview!!.packageManager
@@ -254,7 +244,7 @@ class fragment_config : Fragment() {
         Thread(Runnable {
             if (foreceReload || installedList == null || installedList!!.size == 0) {
                 installedList = ArrayList()/*在数组中存放数据*/
-                val hasSystemApp = HasSystemApp
+                val hasSystemApp = hasSystemApp
                 installedList = if (hasSystemApp) applistHelper.getAll() else applistHelper.getUserAppList()
                 sortAppList(installedList!!)
             }
@@ -265,7 +255,7 @@ class fragment_config : Fragment() {
             ignoredList = ArrayList()
 
             val keyword = config_search_box.text.toString()
-            val search = keyword.length > 0
+            val search = keyword.isNotEmpty()
             for (i in installedList!!.indices) {
                 val item = installedList!![i]
                 if (item.containsKey("select_state")) {
@@ -287,48 +277,56 @@ class fragment_config : Fragment() {
             }
             myHandler.post {
                 thisview!!.progressBar.visibility = View.GONE
-                SetListData(defaultList, config_defaultlist)
-                SetListData(gameList, config_gamelist)
-                SetListData(powersaveList, config_powersavelist)
-                SetListData(fastList, config_fastlist)
-                SetListData(ignoredList, config_ignoredlist)
+                setListData(defaultList, config_defaultlist)
+                setListData(gameList, config_gamelist)
+                setListData(powersaveList, config_powersavelist)
+                setListData(fastList, config_fastlist)
+                setListData(ignoredList, config_ignoredlist)
             }
         }).start()
     }
 
     //检查配置文件是否已经安装
-    fun checkConfig() {
-        var support = DynamicConfig().DynamicSupport(context)
+    private fun checkConfig() {
+        val support = DynamicConfig().DynamicSupport(context)
         if (support) {
             config_cfg_select.visibility = View.VISIBLE
             config_cfg_select_0.setOnClickListener {
-                InstallConfig(false)
+                installConfig(false)
             }
             config_cfg_select_1.setOnClickListener {
-                InstallConfig(true)
+                installConfig(true)
             }
         }
-        if (File("/data/powercfg.sh").exists()) {
-            //TODO：检查是否更新
-        } else if (support) {
-            var i = 0;
-            AlertDialog.Builder(context)
-                    .setTitle("首次使用，先选择配置偏好")
-                    .setCancelable(false)
-                    .setSingleChoiceItems(arrayOf("保守 - 更加省电", "激进 - 性能优先"), 0, { dialog, which ->
-                        i = which
-                    })
-                    .setNegativeButton("确定", { dialog, which ->
-                        InstallConfig(i > 0)
-                    }).create().show()
-        } else {
-            AlertDialog.Builder(context).setTitle("未找到可用的模式配置文件").setMessage("尽管应用没有为您的设备专门适配此功能。但你仍然可以自己创建配置文件（powercfg.sh）并复制打/data/powercfg.sh。详情可以咨询开发者，").setNegativeButton("知道了", { dialog, which ->
-            }).create().show()
+        when {
+            File("${Consts.POWER_CFG_PATH}").exists() -> {
+                //TODO：检查是否更新
+            }
+            support -> {
+                var i = 0
+                AlertDialog.Builder(context)
+                        .setTitle("首次使用，先选择配置偏好")
+                        .setCancelable(false)
+                        .setSingleChoiceItems(arrayOf("保守 - 更加省电", "激进 - 性能优先"), 0, { _, which ->
+                            i = which
+                        })
+                        .setNegativeButton("确定", { _, _ ->
+                            installConfig(i > 0)
+                        }).create().show()
+            }
+            else ->
+                AlertDialog.Builder(context)
+                        .setTitle("未找到可用的模式配置文件")
+                        .setMessage("尽管应用没有为您的设备专门适配此功能。但你仍然可以自己创建配置文件（powercfg.sh）并复制到${Consts.POWER_CFG_PATH}。详情可以咨询开发者")
+                        .setNegativeButton("知道了", { _, _ ->
+                        })
+                        .create()
+                        .show()
         }
     }
 
     //安装调频文件
-    internal fun InstallConfig(useBigCore: Boolean) {
+    private fun installConfig(useBigCore: Boolean) {
         if (context == null) return
 
         if (!DynamicConfig().DynamicSupport(context!!)) {
@@ -368,22 +366,22 @@ class fragment_config : Fragment() {
      * @param postions 各个序号的选中状态
      * @param config   指定的新模式
      */
-    internal fun AddToList(list: ArrayList<HashMap<String, Any>>, postions: HashMap<Int, Boolean>, config: Configs) {
-        for (position in postions.keys) {
-            if (postions[position] == true) {
-                val item = list[position]
-                when (config) {
-                    fragment_config.Configs.Default -> editor.putString(item["packageName"].toString().toLowerCase(), "default")
-                    fragment_config.Configs.Game -> editor.putString(item["packageName"].toString().toLowerCase(), "game")
-                    fragment_config.Configs.PowerSave -> editor.putString(item["packageName"].toString().toLowerCase(), "powersave")
-                    fragment_config.Configs.Fast -> editor.putString(item["packageName"].toString().toLowerCase(), "fast")
-                    fragment_config.Configs.Ignored -> editor.putString(item["packageName"].toString().toLowerCase(), "igoned")
+    private fun addToList(list: ArrayList<HashMap<String, Any>>, postions: HashMap<Int, Boolean>, config: Configs) {
+        postions.keys
+                .filter { postions[it] == true }
+                .map { list[it] }
+                .forEach {
+                    when (config) {
+                        Configs.Default -> editor.putString(it["packageName"].toString().toLowerCase(), "default")
+                        Configs.Game -> editor.putString(it["packageName"].toString().toLowerCase(), "game")
+                        Configs.PowerSave -> editor.putString(it["packageName"].toString().toLowerCase(), "powersave")
+                        Configs.Fast -> editor.putString(it["packageName"].toString().toLowerCase(), "fast")
+                        Configs.Ignored -> editor.putString(it["packageName"].toString().toLowerCase(), "igoned")
+                    }
                 }
-            }
-        }
         editor.commit()
         try {
-            LoadList()
+            loadList()
         } catch (ex: Exception) {
         }
     }
@@ -397,10 +395,9 @@ class fragment_config : Fragment() {
     }
 
     companion object {
-
-        fun Create(thisView: main, cmdshellTools: cmd_shellTools): Fragment {
+        fun createPage(thisView: MainActivity, shellTools: cmd_shellTools): Fragment {
             val fragment = fragment_config()
-            fragment.cmdshellTools = cmdshellTools
+            fragment.cmdshellTools = shellTools
             fragment.thisview = thisView
             return fragment
         }

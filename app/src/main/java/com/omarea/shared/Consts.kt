@@ -1,13 +1,16 @@
 package com.omarea.shared
 
-import java.util.*
+import android.os.Environment
 
 /**
  * Created by Hello on 2017/2/22.
  */
 
 object Consts {
-    val BackUpDir = "/sdcard/Android/apps/";
+    val PACKAGE_NAME = "com.omarea.vboot"
+    val SDCardDir = Environment.getExternalStorageDirectory().absolutePath
+
+    val BackUpDir = Environment.getExternalStorageDirectory().absolutePath + "/backups/apps/";
 
     val FastChanger =
             "if [ `cat /sys/class/power_supply/battery/capacity` -lt 85 ]; then " +
@@ -36,19 +39,21 @@ object Consts {
                     "/cache/busybox mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
                     "mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n"
 
+    val POWER_CFG_PATH = "/data/powercfg"
+    val POWER_CFG_BASE = "/data/init.qcom.post_boot.sh"
     val InstallConfig =
-            "cp /sdcard/Android/data/com.omarea.vboot/init.qcom.post_boot.sh /data/init.qcom.post_boot.sh\n" +
-                    "cp /sdcard/Android/data/com.omarea.vboot/powercfg.sh /data/powercfg.sh\n" +
-                    "chmod 0777 /data/powercfg.sh\n" +
-                    "chmod 0777 /data/init.qcom.post_boot.sh\n"
+            "cp ${Consts.SDCardDir}/Android/data/${PACKAGE_NAME}/init.qcom.post_boot.sh ${POWER_CFG_BASE}\n" +
+                    "cp ${Consts.SDCardDir}/Android/data/${PACKAGE_NAME}/powercfg.sh $POWER_CFG_PATH\n" +
+                    "chmod 0777 $POWER_CFG_PATH\n" +
+                    "chmod 0777 ${POWER_CFG_BASE}\n"
 
-    val InstallPowerToggleConfigToCache = "cp /sdcard/Android/data/com.omarea.vboot/powercfg.sh /data/powercfg.sh\n" + "chmod 0777 /data/powercfg.sh\n"
+    val InstallPowerToggleConfigToCache = "cp ${Consts.SDCardDir}/Android/data/${PACKAGE_NAME}/powercfg.sh $POWER_CFG_PATH\n" + "chmod 0777 $POWER_CFG_PATH\n"
 
-    val ExecuteConfig = "setprop vtools.powercfg null;/data/init.qcom.post_boot.sh;\n"
-    val ToggleDefaultMode = "setprop vtools.powercfg default;/data/powercfg.sh balance;\n"
-    val ToggleGameMode = "setprop vtools.powercfg game;/data/powercfg.sh performance;\n"
-    val TogglePowersaveMode = "setprop vtools.powercfg powersave;/data/powercfg.sh powersave;\n"
-    val ToggleFastMode = "setprop vtools.powercfg fast;/data/powercfg.sh fast;\n"
+    val ExecuteConfig = "setprop vtools.powercfg null;${POWER_CFG_BASE};\n"
+    val ToggleDefaultMode = "setprop vtools.powercfg default;$POWER_CFG_PATH balance;\n"
+    val ToggleGameMode = "setprop vtools.powercfg game;$POWER_CFG_PATH performance;\n"
+    val TogglePowersaveMode = "setprop vtools.powercfg powersave;$POWER_CFG_PATH powersave;\n"
+    val ToggleFastMode = "setprop vtools.powercfg fast;$POWER_CFG_PATH fast;\n"
 
     val DisableSELinux = "setenforce 0\n"
 

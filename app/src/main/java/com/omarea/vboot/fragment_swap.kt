@@ -1,5 +1,6 @@
 package com.omarea.vboot
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -23,12 +24,12 @@ import kotlin.collections.LinkedHashMap
 
 
 class fragment_swap : Fragment() {
-    internal lateinit var thisview: main
+    lateinit var thisview: MainActivity
     internal lateinit var view: View
-    internal lateinit var cmdshellTools: cmd_shellTools
-    internal lateinit var progressBar: ProgressBar
-    internal lateinit var myHandler: Handler
-    internal lateinit var swapConfig: SharedPreferences
+    private lateinit var cmdshellTools: cmd_shellTools
+    private lateinit var progressBar: ProgressBar
+    private lateinit var myHandler: Handler
+    private lateinit var swapConfig: SharedPreferences
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -42,14 +43,14 @@ class fragment_swap : Fragment() {
     }
 
     internal var getSwaps = {
-        var txt = cmdshellTools.GetProp("/proc/swaps", null)
-        txt = txt.replace("\t\t", "\t").replace("\t", " ")
+        var ret = cmdshellTools.GetProp("/proc/swaps", null)
+        var txt = if (ret == null) "" else ret.replace("\t\t", "\t").replace("\t", " ")
         while (txt.contains("  ")) {
             txt = txt.replace("  ", " ")
         }
-        var list = ArrayList<HashMap<String, String>>()
-        var rows = txt.split("\n").toMutableList()
-        var thr = LinkedHashMap<String, String>()
+        val list = ArrayList<HashMap<String, String>>()
+        val rows = txt.split("\n").toMutableList()
+        val thr = LinkedHashMap<String, String>()
         thr.put("path", "路径")
         thr.put("type", "类型")
         thr.put("size", "大小")
@@ -58,25 +59,25 @@ class fragment_swap : Fragment() {
         list.add(thr)
 
         for (i in 1..rows.size - 1) {
-            var tr = LinkedHashMap<String, String>()
-            var params = rows[i].split(" ").toMutableList()
+            val tr = LinkedHashMap<String, String>()
+            val params = rows[i].split(" ").toMutableList()
             tr.put("path", params[0])
             tr.put("type", params[1].replace("file", "文件").replace("partition", "分区"))
 
-            var size = params[2]
+            val size = params[2]
             tr.put("size", if (size.length > 3) (size.substring(0, size.length - 3) + "m") else "0")
 
-            var used = params[3]
+            val used = params[3]
             tr.put("used", if (used.length > 3) (used.substring(0, used.length - 3) + "m") else "0")
 
             tr.put("priority", params[4])
             list.add(tr)
         }
 
-        var swappiness = KernelProrp.getProp("/proc/sys/vm/swappiness")
-        txt_swapstus_swappiness.setText("Swappiness：" + swappiness)
-        txt_zramstus_swappiness.setText("Swappiness：" + swappiness)
-        var datas = swaplist_adapter(context, list)
+        val swappiness = KernelProrp.getProp("/proc/sys/vm/swappiness")
+        txt_swapstus_swappiness.setText("Swappiness: $swappiness")
+        txt_zramstus_swappiness.setText("Swappiness: $swappiness")
+        val datas = swaplist_adapter(context, list)
         list_swaps.setAdapter(datas)
         list_swaps2.setAdapter(datas)
     }
@@ -87,7 +88,7 @@ class fragment_swap : Fragment() {
         chk_swap_disablezram.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, false)
         chk_swap_autostart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)
         chk_zram_autostart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)
-        var piness = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65)
+        val piness = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65)
         if (piness >= 0 && piness != 65 && piness <= 100) {
             txt_swap_swappiness.setText(piness.toString())
             txt_zram_swappiness.setText(piness.toString())
@@ -98,21 +99,22 @@ class fragment_swap : Fragment() {
     }
 
 
-    internal var showWait = {
+    private var showWait = {
         Toast.makeText(thisview, "正在执行操作，请稍等...", Toast.LENGTH_SHORT).show()
         progressBar.visibility = View.VISIBLE
     }
 
-    internal var showCreated = {
+    private var showCreated = {
         Snackbar.make(view, "虚拟Swap分区已创建，现在可以点击启动按钮来开启它！", Snackbar.LENGTH_LONG).show()
         progressBar.visibility = View.GONE
     }
 
-    internal var showSwapOpened = {
+    private var showSwapOpened = {
         Snackbar.make(view, "操作已完成！", Snackbar.LENGTH_LONG).show()
         progressBar.visibility = View.GONE
     }
 
+    @SuppressLint("ApplySharedPref")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -122,14 +124,14 @@ class fragment_swap : Fragment() {
             swapzram_tabhost.addTab(swapzram_tabhost.newTabSpec("zram_tab").setContent(R.id.swapzram_tab1).setIndicator("ZRAM设置"))
         else
             swapzram_tab1.visibility = View.GONE
-        swapzram_tabhost.setCurrentTab(0)
+        swapzram_tabhost.currentTab = 0
 
         btn_swap_create.setOnClickListener {
-            var size = txt_swap_size.text
-            if (size.length != 0) {
-                var run = Runnable {
+            val size = txt_swap_size.text
+            if (size.isNotEmpty()) {
+                val run = Runnable {
                     myHandler.post(showWait)
-                    var sb = StringBuilder()
+                    val sb = StringBuilder()
                     sb.append("swapoff /data/swapfile >/dev/null 2>&1\n")
                     sb.append("dd if=/dev/zero of=/data/swapfile bs=1m count=" + size + "\n")
                     sb.append("mkswap /data/swapfile\n")
@@ -143,11 +145,11 @@ class fragment_swap : Fragment() {
             }
         }
         btn_swap_start.setOnClickListener {
-            var swappiness = txt_swap_swappiness.text.toString()
-            var autostart = chk_swap_autostart.isChecked
-            var disablezram = chk_swap_disablezram.isChecked
+            val swappiness = txt_swap_swappiness.text.toString()
+            val autostart = chk_swap_autostart.isChecked
+            val disablezram = chk_swap_disablezram.isChecked
 
-            var sb = StringBuilder()
+            val sb = StringBuilder()
             var value = 65
             try {
                 value = Integer.parseInt(swappiness)
@@ -160,7 +162,7 @@ class fragment_swap : Fragment() {
                 sb.append("swapon /data/swapfile\n")
             }
             sb.append("echo 65 > /proc/sys/vm/swappiness\n")
-            sb.append("echo " + value + " > /proc/sys/vm/swappiness\n")
+            sb.append("echo $value > /proc/sys/vm/swappiness\n")
 
             val edit = swapConfig.edit()
             edit.putBoolean(SpfConfig.SWAP_SPF_SWAP, autostart)
@@ -168,18 +170,17 @@ class fragment_swap : Fragment() {
             edit.putInt(SpfConfig.SWAP_SPF_SWAPPINESS, value)
             edit.commit()
 
-            var run = Runnable {
+            Thread(Runnable {
                 if (disablezram)
                     myHandler.post(showWait)
                 cmdshellTools.DoCmdSync(sb.toString())
                 myHandler.post(getSwaps)
                 myHandler.post(showSwapOpened)
-            }
-            Thread(run).start()
+            }).start()
         }
         btn_zram_resize.setOnClickListener {
-            var size = txt_zram_size.text.toString()
-            var swappiness = txt_zram_swappiness.text.toString()
+            val size = txt_zram_size.text.toString()
+            val swappiness = txt_zram_swappiness.text.toString()
             var value = 65
             var sizeVal = -1
 
@@ -190,8 +191,8 @@ class fragment_swap : Fragment() {
             }
 
             if (sizeVal < 2049 && sizeVal > -1) {
-                var run = Thread({
-                    var sb = StringBuilder()
+                val run = Thread({
+                    val sb = StringBuilder()
                     sb.append("if [ `cat /sys/block/zram0/disksize` != '" + sizeVal + "000000' ] ; then ")
                     sb.append("swapoff /dev/block/zram0 >/dev/null 2>&1;")
                     sb.append("echo 1 > /sys/block/zram0/reset;")
@@ -200,7 +201,7 @@ class fragment_swap : Fragment() {
                     sb.append("swapon /dev/block/zram0 >/dev/null 2>&1;")
                     sb.append("fi;\n")
                     sb.append("echo 65 > /proc/sys/vm/swappiness\n")
-                    sb.append("echo " + value + " > /proc/sys/vm/swappiness\n")
+                    sb.append("echo $value > /proc/sys/vm/swappiness\n")
 
                     cmdshellTools.DoCmdSync(sb.toString())
                     myHandler.post(getSwaps)
@@ -217,18 +218,18 @@ class fragment_swap : Fragment() {
             }
         }
 
-        chk_zram_autostart.setOnCheckedChangeListener { buttonView, isChecked ->
+        chk_zram_autostart.setOnCheckedChangeListener { _, isChecked ->
             if (!isChecked)
                 swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_ZRAM, isChecked).commit()
         }
-        chk_swap_autostart.setOnCheckedChangeListener { buttonView, isChecked ->
+        chk_swap_autostart.setOnCheckedChangeListener { _, isChecked ->
             if (!isChecked)
                 swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP, isChecked).commit()
         }
     }
 
     companion object {
-        fun Create(thisView: main, cmdshellTools: cmd_shellTools): Fragment {
+        fun createPage(thisView: MainActivity, cmdshellTools: cmd_shellTools): Fragment {
             val fragment = fragment_swap()
             fragment.cmdshellTools = cmdshellTools
             fragment.thisview = thisView

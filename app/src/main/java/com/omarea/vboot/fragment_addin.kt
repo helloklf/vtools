@@ -2,7 +2,6 @@ package com.omarea.vboot
 
 import android.os.Bundle
 import android.os.Handler
-import android.os.Message
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
@@ -17,25 +16,19 @@ import com.omarea.shell.units.FlymeUnit
 import com.omarea.shell.units.FullScreenSUnit
 import com.omarea.shell.units.NubiaUnit
 import com.omarea.shell.units.QQStyleUnit
-import com.omarea.vboot.dialogs.dialog_addin_modifydevice
-import com.omarea.vboot.dialogs.dialog_addin_modifydpi
+import com.omarea.vboot.dialogs.DialogAddinModifydevice
+import com.omarea.vboot.dialogs.DialogAddinModifyDPI
 import kotlinx.android.synthetic.main.layout_addin.*
 import java.util.*
 
 
 class fragment_addin : Fragment() {
-
-
     internal var cmdshellTools: cmd_shellTools? = null
-    internal var thisview: main? = null
+    internal var thisview: MainActivity? = null
     lateinit internal var progressBar: ProgressBar
-    internal val myHandler: Handler = object : Handler() {
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-        }
-    }
+    internal val myHandler: Handler = Handler()
 
-    fun createItem(title: String, desc: String): HashMap<String, Any> {
+    private fun createItem(title: String, desc: String): HashMap<String, Any> {
         val item = HashMap<String, Any>()
         item.put("Title", title)
         item.put("Desc", desc)
@@ -43,9 +36,8 @@ class fragment_addin : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.layout_addin, container, false)
-    }
+                              savedInstanceState: Bundle?): View? =
+            inflater!!.inflate(R.layout.layout_addin, container, false)
 
 
     private fun initSoftAddin(view: View) {
@@ -71,11 +63,11 @@ class fragment_addin : Fragment() {
         listView.adapter = mSimpleAdapter
 
 
-        listView.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+        listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             val builder = AlertDialog.Builder(thisview!!)
             builder.setTitle("执行这个脚本？")
             builder.setNegativeButton(android.R.string.cancel, null)
-            builder.setPositiveButton(android.R.string.yes) { dialog, which -> executeSoftScript(view, position) }
+            builder.setPositiveButton(android.R.string.yes) { _, _ -> executeSoftScript(view, position) }
             builder.setMessage(
                     listItem[position]["Title"].toString() + "：" + listItem[position]["Desc"] +
                             "\n\n请确保你已了解此脚本的用途，并清楚对设备的影响")
@@ -121,7 +113,7 @@ class fragment_addin : Fragment() {
             8 -> {
                 AppShared.WriteFile(context.assets, "com.android.systemui", "com.android.systemui")
                 stringBuilder.append(Consts.MountSystemRW)
-                stringBuilder.append("cp /sdcard/Android/data/com.omarea.vboot/com.android.systemui /system/media/theme/default/com.android.systemui\n")
+                stringBuilder.append("cp ${Consts.SDCardDir}/Android/data/${Consts.PACKAGE_NAME}/com.android.systemui /system/media/theme/default/com.android.systemui\n")
                 stringBuilder.append("chmod 0644 /system/media/theme/default/com.android.systemui\n")
                 stringBuilder.append(Consts.Reboot)
             }
@@ -161,11 +153,11 @@ class fragment_addin : Fragment() {
         listView.adapter = mSimpleAdapter
 
 
-        listView.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+        listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             val builder = AlertDialog.Builder(thisview!!)
             builder.setTitle("执行这个脚本？")
             builder.setNegativeButton(android.R.string.cancel, null)
-            builder.setPositiveButton(android.R.string.yes) { dialog, which -> executeSystemScript(view, position) }
+            builder.setPositiveButton(android.R.string.yes) { _, _ -> executeSystemScript(view, position) }
             builder.setMessage(
                     listItem[position]["Title"].toString() + "：" + listItem[position]["Desc"] +
                             "\n\n请确保你已了解此脚本的用途，并清楚对设备的影响")
@@ -257,11 +249,11 @@ class fragment_addin : Fragment() {
         addin_custom_listview.adapter = mSimpleAdapter
 
 
-        addin_custom_listview.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+        addin_custom_listview.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             if (position == 0) {
-                dialog_addin_modifydpi(context).modifyDPI(thisview!!.windowManager.defaultDisplay)
+                DialogAddinModifyDPI(context).modifyDPI(thisview!!.windowManager.defaultDisplay)
             } else if (position == 1) {
-                dialog_addin_modifydevice(context).modifyDeviceInfo()
+                DialogAddinModifydevice(context).modifyDeviceInfo()
             }
         }
     }
@@ -283,7 +275,7 @@ class fragment_addin : Fragment() {
 
     companion object {
 
-        fun Create(thisView: main, cmdshellTools: cmd_shellTools): Fragment {
+        fun createPage(thisView: MainActivity, cmdshellTools: cmd_shellTools): Fragment {
             val fragment = fragment_addin()
             fragment.cmdshellTools = cmdshellTools
             fragment.thisview = thisView

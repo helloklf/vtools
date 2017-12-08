@@ -1,13 +1,16 @@
 package com.omarea.vboot
 
 import android.os.Bundle
+import android.os.Environment
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.omarea.shared.*
+import com.omarea.shared.AppShared
+import com.omarea.shared.Consts
+import com.omarea.shared.cmd_shellTools
 import com.omarea.shell.DynamicConfig
 import com.omarea.shell.Files
 import com.omarea.shell.Platform
@@ -75,8 +78,8 @@ class fragment_home : Fragment() {
         setModeState()
         val sdfree = view.findViewById(R.id.sdfree) as TextView
         val datafree = view.findViewById(R.id.datafree) as TextView
-        sdfree.text = "共享存储：" + Files.GetDirFreeSizeMB("/sdcard") + " MB"
-        datafree.text = "应用存储：" + Files.GetDirFreeSizeMB("/data") + " MB"
+        sdfree.text = "共享存储：" + Files.GetDirFreeSizeMB(Environment.getExternalStorageDirectory().absolutePath) + " MB"
+        datafree.text = "应用存储：" + Files.GetDirFreeSizeMB(Environment.getDataDirectory().absolutePath) + " MB"
     }
 
     private fun setModeState() {
@@ -102,7 +105,7 @@ class fragment_home : Fragment() {
     }
 
     private fun installConfig(after: String) {
-        if (File("/data/powercfg.sh").exists()) {
+        if (File("${Consts.POWER_CFG_PATH}").exists()) {
             cmdshellTools.DoCmdSync(Consts.ExecuteConfig + "\n" + after)
         } else {
             //TODO：选取配置

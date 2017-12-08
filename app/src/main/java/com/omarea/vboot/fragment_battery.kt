@@ -1,10 +1,10 @@
 package com.omarea.vboot
 
+import android.annotation.SuppressLint
 import android.content.*
 import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Handler
-import android.os.Message
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -12,13 +12,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-import com.omarea.shared.*
+import com.omarea.shared.Consts
+import com.omarea.shared.SpfConfig
+import com.omarea.shared.cmd_shellTools
 import com.omarea.shell.units.BatteryUnit
-
 import kotlinx.android.synthetic.main.layout_battery.*
-
-import java.util.Timer
-import java.util.TimerTask
+import java.util.*
 
 
 class fragment_battery : Fragment() {
@@ -31,29 +30,21 @@ class fragment_battery : Fragment() {
         return view
     }
 
-    internal var myHandler: Handler = object : Handler() {
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-        }
-    }
-
-    internal var timer: Timer? = null
-    lateinit internal var batteryMAH: String
-
-    internal var temp = 0.0
-    internal var level = 0
-    internal var powerChonnected = false
-    internal var voltage: Double = 0.toDouble()
+    private var myHandler: Handler = Handler()
+    private var timer: Timer? = null
+    private lateinit var batteryMAH: String
+    private var temp = 0.0
+    private var level = 0
+    private var powerChonnected = false
+    private var voltage: Double = 0.toDouble()
     private var batteryUnits = BatteryUnit()
     private lateinit var spf: SharedPreferences
 
     override fun onResume() {
         super.onResume()
 
-        if (spf != null) {
-            spf.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
+        spf.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
 
-            }
         }
 
         settings_qc.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)
@@ -63,28 +54,23 @@ class fragment_battery : Fragment() {
 
         if (broadcast == null) {
             broadcast = object : BroadcastReceiver() {
-                override fun onReceive(context: Context, intent: Intent) {
-                    try {
-                        temp = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0).toDouble()
-                        temp = temp / 10.0
-                        level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
-                        voltage = intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0).toDouble()
-                        if (voltage > 1000)
-                            voltage = voltage / 1000.0
-                        if (voltage > 100)
-                            voltage = voltage / 100.0
-                        else if (voltage > 10)
-                            voltage = voltage / 10.0
-                        powerChonnected = intent.getIntExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_NOT_CHARGING) == BatteryManager.BATTERY_STATUS_CHARGING
-                        //intent.getDoubleExtra(BatteryManager.EXTRA_HEALTH);
-                    } catch (ex: Exception) {
-                        print(ex.message)
-                    }
-
+                override fun onReceive(context: Context, intent: Intent) = try {
+                    temp = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0).toDouble()
+                    temp /= 10.0
+                    level = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0)
+                    voltage = intent.getIntExtra(BatteryManager.EXTRA_VOLTAGE, 0).toDouble()
+                    if (voltage > 1000)
+                        voltage /= 1000.0
+                    if (voltage > 100)
+                        voltage /= 100.0
+                    else if (voltage > 10)
+                        voltage /= 10.0
+                    powerChonnected = intent.getIntExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_NOT_CHARGING) == BatteryManager.BATTERY_STATUS_CHARGING
+                } catch (ex: Exception) {
+                    print(ex.message)
                 }
             }
-            val ACTION_BATTERY_CHANGED = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-            context.registerReceiver(broadcast, ACTION_BATTERY_CHANGED)
+            context.registerReceiver(broadcast, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
         }
 
         val battrystatus = view.findViewById(R.id.battrystatus) as TextView
@@ -96,6 +82,7 @@ class fragment_battery : Fragment() {
         timer = Timer()
 
         timer!!.schedule(object : TimerTask() {
+            @SuppressLint("SetTextI18n")
             override fun run() {
                 myHandler.post {
                     battrystatus.text = "电池信息：" +
@@ -143,9 +130,10 @@ class fragment_battery : Fragment() {
         super.onDestroy()
     }
 
-    internal var broadcast: BroadcastReceiver? = null
+    private var broadcast: BroadcastReceiver? = null
     lateinit internal var cmdshellTools: cmd_shellTools
 
+    @SuppressLint("ApplySharedPref")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         spf = context.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
@@ -171,27 +159,27 @@ class fragment_battery : Fragment() {
                 Snackbar.make(this.view, "OK！如果你要手机重启后自动开启本功能，请允许微工具箱开机自启！", Snackbar.LENGTH_SHORT).show()
             }
         }
-        settings_bp_level.setOnEditorActionListener { v, actionId, event ->
+        settings_bp_level.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
                 val level: Int
                 try {
                     level = settings_bp_level.text.toString().toInt()
                     spf.edit().putInt(SpfConfig.CHARGE_SPF_BP_LEVEL, level).commit()
                     Snackbar.make(this.view, "设置已保存，稍后生效。当前限制等级：" + settings_bp_level.text, Snackbar.LENGTH_SHORT).show()
-                    startBatteryService();
+                    startBatteryService()
                 } catch (e: Exception) {
                 }
             }
             false
         }
-        settings_qc_limit.setOnEditorActionListener { v, actionId, event ->
+        settings_qc_limit.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
                 val level: Int
                 try {
                     level = settings_qc_limit.text.toString().toInt()
                     spf.edit().putInt(SpfConfig.CHARGE_SPF_QC_LIMIT, level).commit()
                     Snackbar.make(this.view, "设置已保存。当前限制速度：" + settings_qc_limit.text + "mA", Snackbar.LENGTH_SHORT).show()
-                    startBatteryService();
+                    startBatteryService()
                 } catch (e: Exception) {
                 }
             }
@@ -209,9 +197,9 @@ class fragment_battery : Fragment() {
     }
 
     companion object {
-        fun Create(thisView: main, cmdshellTools: cmd_shellTools): Fragment {
+        fun createPage(shellTools: cmd_shellTools): Fragment {
             val fragment = fragment_battery()
-            fragment.cmdshellTools = cmdshellTools
+            fragment.cmdshellTools = shellTools
             return fragment
         }
     }

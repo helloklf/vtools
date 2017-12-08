@@ -1,6 +1,5 @@
 package com.omarea.vboot
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
 import android.os.Handler
@@ -20,7 +19,7 @@ import java.util.*
 import kotlin.collections.LinkedHashMap
 
 class fragment_tasks : Fragment() {
-    internal lateinit var thisview: main
+    internal lateinit var thisview: MainActivity
     internal lateinit var view: View
     internal lateinit var progressBar: ProgressBar
     internal lateinit var myHandler: Handler
@@ -171,7 +170,7 @@ class fragment_tasks : Fragment() {
     }
 
     companion object {
-        fun Create(thisView: main, cmdshellTools: cmd_shellTools): Fragment {
+        fun Create(thisView: MainActivity, cmdshellTools: cmd_shellTools): Fragment {
             val fragment = fragment_tasks()
             fragment.thisview = thisView
             return fragment

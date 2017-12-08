@@ -5,7 +5,6 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.IBinder;
 
 import java.util.List;
@@ -57,11 +56,13 @@ public class BatteryService extends Service {
     //服务是否在运行
     public static Boolean serviceIsRunning(Context context) {
         ActivityManager m = (ActivityManager) (context.getSystemService(Context.ACTIVITY_SERVICE));
-        List<ActivityManager.RunningServiceInfo> serviceInfos = m.getRunningServices(5000);
-        for (ActivityManager.RunningServiceInfo serviceInfo : serviceInfos) {
-            if (serviceInfo.service.getPackageName().equals("com.omarea.vboot")) {
-                if (serviceInfo.service.getClassName().equals("com.omarea.vboot.BatteryService")) {
-                    return true;
+        if (m != null) {
+            List<ActivityManager.RunningServiceInfo> serviceInfos = m.getRunningServices(5000);
+            for (ActivityManager.RunningServiceInfo serviceInfo : serviceInfos) {
+                if (serviceInfo.service.getPackageName().equals("com.omarea.vboot")) {
+                    if (serviceInfo.service.getClassName().equals("com.omarea.vboot.BatteryService")) {
+                        return true;
+                    }
                 }
             }
         }

@@ -17,18 +17,22 @@ class AsynSuShellUnit(var handler: Handler) {
                 process = Runtime.getRuntime().exec("su")
 
             Thread(Runnable {
-                var line = ""
-                val reader = process!!.inputStream.bufferedReader()
-                while (true) {
-                    line = reader.readLine()
-                    if (line != null) {
-                        line = line.trim()
-                        if (line.length > 0)
-                            handler.sendMessage(handler.obtainMessage(1, line))
-                    } else {
-                        destroy()
-                        break
+                try {
+                    var line : String
+                    val reader = process!!.inputStream.bufferedReader()
+                    while (true) {
+                        line = reader.readLine()
+                        if (line != null) {
+                            line = line.trim()
+                            if (line.length > 0)
+                                handler.sendMessage(handler.obtainMessage(1, line))
+                        } else {
+                            destroy()
+                            break
+                        }
                     }
+                } catch (ex:Exception) {
+                    print(ex.message)
                 }
             }).start()
             handler.sendMessage(handler.obtainMessage(0, true))
@@ -52,6 +56,10 @@ class AsynSuShellUnit(var handler: Handler) {
     fun exec(cmd: String): AsynSuShellUnit {
         if (process == null) {
             start()
+        }
+        if (process == null) {
+            handler.handleMessage(handler.obtainMessage(-1))
+            return this
         }
         val outputStream = process!!.outputStream
         val writer = outputStream.bufferedWriter()

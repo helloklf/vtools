@@ -25,8 +25,7 @@ public class list_adapter2 extends BaseAdapter {
         this.context = context;
         this.list = list;
         for (int i = 0; i < list.size(); i++) {
-            states.put(i,
-                    (list.get(i).get("select_state") == null || ((Boolean) (list.get(i).get("select_state"))) == false) ? false : true);
+            states.put(i, (list.get(i).get("select_state") == null || ((Boolean) (list.get(i).get("select_state"))) == false) ? false : true);
         }
     }
 

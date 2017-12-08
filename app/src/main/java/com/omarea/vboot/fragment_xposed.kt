@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
-import android.os.Message
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -33,7 +32,7 @@ import kotlin.collections.HashMap
 
 class fragment_xposed : Fragment() {
     internal var cmdshellTools: cmd_shellTools? = null
-    internal var thisview: main? = null
+    internal var thisview: MainActivity? = null
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -45,7 +44,7 @@ class fragment_xposed : Fragment() {
         userVisibleHint = true
     }
 
-    @SuppressLint("WrongConstant")
+    @SuppressLint("ApplySharedPref", "WrongConstant")
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         dpi_spf = thisview!!.getSharedPreferences(SpfConfig.XPOSED_DPI_SPF, MODE_WORLD_READABLE)
         val w = context.resources.displayMetrics.widthPixels.toFloat()
@@ -61,15 +60,15 @@ class fragment_xposed : Fragment() {
         }
         spf.edit().putInt("xposed_default_dpi", def).commit()
 
-        xposed_tabs.setup();
+        xposed_tabs.setup()
 
-        xposed_tabs.addTab(xposed_tabs.newTabSpec("tab_a").setContent(R.id.xposed_tab_a).setIndicator(getString(R.string.xposed_tab_a)));
-        xposed_tabs.addTab(xposed_tabs.newTabSpec("tab_b").setContent(R.id.xposed_tab_b).setIndicator(getString(R.string.xposed_tab_b)));
-        xposed_tabs.setCurrentTab(0);
+        xposed_tabs.addTab(xposed_tabs.newTabSpec("tab_a").setContent(R.id.xposed_tab_a).setIndicator(getString(R.string.xposed_tab_a)))
+        xposed_tabs.addTab(xposed_tabs.newTabSpec("tab_b").setContent(R.id.xposed_tab_b).setIndicator(getString(R.string.xposed_tab_b)))
+        xposed_tabs.setCurrentTab(0)
 
         vbootxposedservice_state.setOnClickListener {
             try {
-                var intent = context.packageManager.getLaunchIntentForPackage("de.robv.android.xposed.installer");
+                var intent = context.packageManager.getLaunchIntentForPackage("de.robv.android.xposed.installer")
                 //intent.putExtra("section", "modules")
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
@@ -78,35 +77,32 @@ class fragment_xposed : Fragment() {
             }
         }
         xposed_config_hight_fps.setOnCheckedChangeListener { a, value ->
-            spf.edit()
             spf.edit().putBoolean("xposed_hight_fps", value).commit()
         }
         xposed_config_dpi_fix.setOnCheckedChangeListener { a, value ->
-            spf.edit()
             spf.edit().putBoolean("xposed_dpi_fix", value).commit()
         }
         xposed_config_cm_su.setOnCheckedChangeListener { a, value ->
-            spf.edit()
             spf.edit().putBoolean("xposed_hide_su", value).commit()
         }
         xposed_config_webview_debug.setOnCheckedChangeListener { a, value ->
-            spf.edit()
             spf.edit().putBoolean("xposed_webview_debug", value).commit()
         }
 
         if (xposed_check.xposedIsRunning())
-            vbootxposedservice_state.visibility = GONE;
+            vbootxposedservice_state.visibility = GONE
 
         val config_powersavelistClick = object : AdapterView.OnItemClickListener {
+            @SuppressLint("ApplySharedPref")
             override fun onItemClick(parent: AdapterView<*>, view: View, position: Int, id: Long) {
                 val checkBox = view.findViewById(R.id.select_state) as CheckBox
                 val textView = view.findViewById(R.id.ItemEnabledStateText) as TextView
 
-                var list = parent.adapter as list_adapter2
+                val list = parent.adapter as list_adapter2
                 val layoutInflater = LayoutInflater.from(context)
                 val edit = layoutInflater.inflate(R.layout.dpi_input_layout, null)
-                var input = (edit.findViewById(R.id.dpi_input)) as EditText
-                var packageName = list.getItem(position).get("packageName").toString()
+                val input = (edit.findViewById(R.id.dpi_input)) as EditText
+                val packageName = list.getItem(position).get("packageName").toString()
                 input.setText(list.getItem(position).get("enabled_state").toString())
 
                 AlertDialog.Builder(context)
@@ -119,8 +115,8 @@ class fragment_xposed : Fragment() {
                             textView.setText("")
                         })
                         .setNegativeButton("确定", { dialog, which ->
-                            var text = input.text.toString()
-                            if (text.length === 0) {
+                            val text = input.text.toString()
+                            if (text.isEmpty()) {
                                 return@setNegativeButton
                             }
                             list.getItem(position).put("enabled_state", text)
@@ -147,15 +143,12 @@ class fragment_xposed : Fragment() {
         })
     }
 
-    internal val myHandler: Handler = object : Handler() {
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-        }
-    }
-    var def = 480
-    lateinit var installedList: ArrayList<HashMap<String, Any>>
-    lateinit var spf: SharedPreferences
-    lateinit var dpi_spf: SharedPreferences
+    internal val myHandler: Handler = Handler()
+
+    private var def = 480
+    private lateinit var installedList: ArrayList<HashMap<String, Any>>
+    private lateinit var spf: SharedPreferences
+    private lateinit var dpi_spf: SharedPreferences
     override fun onResume() {
         super.onResume()
         xposed_config_hight_fps.isChecked = spf.getBoolean("xposed_hight_fps", false)
@@ -167,13 +160,11 @@ class fragment_xposed : Fragment() {
         Thread({
             installedList = loadList()
 
-            var status = dpi_spf.all
+            val status = dpi_spf.all
             for (key in status.keys) {
-                for (i in installedList.indices) {
-                    if (installedList[i].get("packageName").toString() == key) {
-                        installedList[i]["enabled_state"] = dpi_spf.getInt(key, def)
-                    }
-                }
+                installedList.indices
+                        .filter { installedList[it].get("packageName").toString() == key }
+                        .forEach { installedList[it]["enabled_state"] = dpi_spf.getInt(key, def) }
             }
 
             myHandler.post {
@@ -181,11 +172,7 @@ class fragment_xposed : Fragment() {
                     val ld = list_adapter2(context, sortAppList(installedList))
 
                     for (i in installedList.indices) {
-                        if (installedList[i]["enabled_state"].toString().length > 0) {
-                            ld.states[i] = true
-                        } else {
-                            ld.states[i] = false
-                        }
+                        ld.states[i] = installedList[i]["enabled_state"].toString().length > 0
                     }
                     xposed_apps_dpifix.setAdapter(ld)
 
@@ -219,8 +206,8 @@ class fragment_xposed : Fragment() {
     }
 
     private fun loadList(): ArrayList<HashMap<String, Any>> {
-        var packageManager = thisview!!.getPackageManager()
-        var packageInfos = packageManager.getInstalledApplications(0)
+        val packageManager = thisview!!.getPackageManager()
+        val packageInfos = packageManager.getInstalledApplications(0)
 
         val list = ArrayList<HashMap<String, Any>>()/*在数组中存放数据*/
         for (i in packageInfos.indices) {
@@ -248,7 +235,7 @@ class fragment_xposed : Fragment() {
     }
 
     companion object {
-        fun Create(thisView: main, cmdshellTools: cmd_shellTools): Fragment {
+        fun Create(thisView: MainActivity, cmdshellTools: cmd_shellTools): Fragment {
             val fragment = fragment_xposed()
             fragment.cmdshellTools = cmdshellTools
             fragment.thisview = thisView

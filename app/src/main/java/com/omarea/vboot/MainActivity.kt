@@ -5,10 +5,9 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
-import android.os.Message
+import android.os.Handler
 import android.support.design.widget.NavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
@@ -22,24 +21,18 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
-import android.widget.Toast
 import com.omarea.shared.*
 import com.omarea.shell.Busybox
 import com.omarea.shell.CheckRootStatus
 import com.omarea.shell.units.BusyboxInstallerUnit
 
-class main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     lateinit internal var thisview: AppCompatActivity
     lateinit internal var cmdshellTools: cmd_shellTools
-    internal var onToggleSys: Boolean = false
     lateinit internal var progressBar: ProgressBar
 
-    internal var myHandler: android.os.Handler = object : android.os.Handler() {
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-        }
-    }
+    internal var myHandler: android.os.Handler = Handler()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val crashHandler = CrashHandler.instance
@@ -66,15 +59,15 @@ class main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
                     .setMessage("你的手机似乎没有安装busybox，这会导致微工具箱无法使用，是否要立即安装（需要修改System）？")
                     .setNegativeButton(
                             "取消",
-                            { dialog, which ->
-                                android.os.Process.killProcess(android.os.Process.myPid());
+                            { _, _ ->
+                                android.os.Process.killProcess(android.os.Process.myPid())
                             }
                     )
                     .setPositiveButton(
                             "确定",
-                            { a, b ->
+                            { _, _ ->
                                 AppShared.WriteFile(thisview.assets, "busybox.zip", "busybox")
-                                val cmd = StringBuilder("cp /sdcard/Android/data/com.omarea.vboot/busybox /cache/busybox\nchmod 0777 /cache/busybox\n")
+                                val cmd = StringBuilder("cp ${Consts.SDCardDir}/Android/data/${Consts.PACKAGE_NAME}/busybox /cache/busybox\nchmod 0777 /cache/busybox\n")
                                 cmd.append(Consts.MountSystemRW2)
                                 cmd.append("cp /cache/busybox /system/xbin/busybox\n/cache/busybox chmod 0777 /system/xbin/busybox\n")
                                 cmdshellTools.DoCmdSync(cmd.toString())
@@ -95,8 +88,8 @@ class main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
         setSupportActionBar(toolbar)
 
         //判断是否开启了充电加速和充电保护，如果开启了，自动启动后台服务
-        var chargeConfig = getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
-        if (chargeConfig!!.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) || chargeConfig!!.getBoolean(SpfConfig.CHARGE_SPF_BP, false)) {
+        val chargeConfig = getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
+        if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) || chargeConfig!!.getBoolean(SpfConfig.CHARGE_SPF_BP, false)) {
             try {
                 val intent = Intent(this.applicationContext, BatteryService::class.java)
                 this.applicationContext.startService(intent)
@@ -112,7 +105,6 @@ class main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
 
         val navigationView = findViewById(R.id.nav_view) as NavigationView
         navigationView.setNavigationItemSelectedListener(this)
-        val menu = navigationView.menu
 
         checkFileWrite()
     }
@@ -124,17 +116,13 @@ class main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
                 completed = true
                 myHandler.post {
                     progressBar.visibility = View.GONE
-                    var alert = android.support.v7.app.AlertDialog.Builder(this)
+                    val alert = AlertDialog.Builder(this)
                     alert.setCancelable(false)
                     alert.setTitle(R.string.error_root)
-                    alert.setNegativeButton(R.string.btn_refresh, { a, b ->
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                            this.recreate()
-                        } else {
-                            android.os.Process.killProcess(android.os.Process.myPid())
-                        }
+                    alert.setNegativeButton(R.string.btn_refresh, { _, _ ->
+                        this.recreate()
                     })
-                    alert.setNeutralButton(R.string.btn_exit, { a, b ->
+                    alert.setNeutralButton(R.string.btn_exit, { _, _ ->
                         android.os.Process.killProcess(android.os.Process.myPid())
                     })
                     alert.create().show()
@@ -150,14 +138,14 @@ class main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
         myHandler.postDelayed({
             if (!completed) {
                 progressBar.visibility = View.GONE
-                var alert = android.support.v7.app.AlertDialog.Builder(this)
+                val alert = AlertDialog.Builder(this)
                 alert.setCancelable(false)
                 alert.setTitle(R.string.error_root)
                 alert.setMessage(R.string.error_su_timeout)
-                alert.setNegativeButton(R.string.btn_refresh, { a, b ->
+                alert.setNegativeButton(R.string.btn_refresh, { _, _ ->
                     this.recreate()
                 })
-                alert.setNeutralButton(R.string.btn_exit, { a, b ->
+                alert.setNeutralButton(R.string.btn_exit, { _, _ ->
                     android.os.Process.killProcess(android.os.Process.myPid())
                 })
                 alert.create().show()
@@ -192,15 +180,24 @@ class main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
     }
     */
 
-    internal fun CheckSelfPermission(permission: String): Boolean {
-        return PermissionChecker.checkSelfPermission(this@main, Manifest.permission.READ_EXTERNAL_STORAGE) == PermissionChecker.PERMISSION_GRANTED
-    }
+    private fun checkPermission(permission: String): Boolean =
+            PermissionChecker.checkSelfPermission(this@MainActivity, permission) == PermissionChecker.PERMISSION_GRANTED
 
     //检查权限 主要是文件读写权限
     private fun checkFileWrite() {
         Thread(Runnable {
-            if (!(CheckSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) && CheckSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
-                ActivityCompat.requestPermissions(this@main, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS, Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Manifest.permission.WAKE_LOCK), 0x11)
+            if (!(checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
+                ActivityCompat.requestPermissions(
+                        this@MainActivity,
+                        arrayOf(
+                                Manifest.permission.READ_EXTERNAL_STORAGE,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,
+                                Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                                Manifest.permission.WAKE_LOCK
+                        ),
+                        0x11
+                )
             }
 
             BusyboxInstallerUnit().InstallShellTools()
@@ -210,15 +207,11 @@ class main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
     //返回键事件
     override fun onBackPressed() {
         val drawer = findViewById(R.id.drawer_layout) as DrawerLayout
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START)
-        } else if (onToggleSys) {
-            return
-        } else if (supportFragmentManager.backStackEntryCount > 0) {
-            supportFragmentManager.popBackStack();
-        } else {
-            //supportFragmentManager.fragments.clear()
-            super.onBackPressed()
+        when {
+            drawer.isDrawerOpen(GravityCompat.START) -> drawer.closeDrawer(GravityCompat.START)
+            supportFragmentManager.backStackEntryCount > 0 -> supportFragmentManager.popBackStack()
+            else -> //supportFragmentManager.fragments.clear()
+                super.onBackPressed()
         }
     }
 
@@ -234,8 +227,7 @@ class main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
         when (id) {
             R.id.action_graph -> {
                 try {
-                    var intent = this.packageManager.getLaunchIntentForPackage("com.omarea.kernel");
-                    //intent.putExtra("section", "modules")
+                    val intent = this.packageManager.getLaunchIntentForPackage("com.omarea.kernel")
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
                 } catch (e: Exception) {
@@ -243,7 +235,7 @@ class main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
                 }
             }
             R.id.action_settings -> {
-                val intent = Intent(thisview, accessibility_settings::class.java)
+                val intent = Intent(thisview, AccessibilitySettingsActivity::class.java)
                 startActivity(intent)
             }
             R.id.action_hotreboot -> {
@@ -278,43 +270,35 @@ class main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
         if (Build.VERSION.SDK_INT >= 21)
             supportActionBar!!.elevation = 0f
 
-        if (id == R.id.nav_home) {
-            fragment = fragment_home()
-        } else if (id == R.id.nav_booster) {
-            fragment = fragment_booster.Create(this, cmdshellTools)
-        } else if (id == R.id.nav_applictions) {
-            fragment = fragment_applistions.Create(this, cmdshellTools)
-        } else if (id == R.id.nav_swap) {
-            fragment = fragment_swap.Create(this, cmdshellTools)
-        } else if (id == R.id.nav_tasks) {
-            fragment = fragment_tasks.Create(this, cmdshellTools)
-        } else if (id == R.id.nav_battery) {
-            fragment = fragment_battery.Create(this, cmdshellTools)
-        } else if (id == R.id.nav_img) {
-            fragment = fragment_img.Create(this, cmdshellTools)
-        } else if (id == R.id.nav_share) {
-            val sendIntent = Intent()
-            sendIntent.action = Intent.ACTION_SEND
-            sendIntent.putExtra(Intent.EXTRA_TEXT, application.getString(R.string.share_link))
-            sendIntent.type = "text/plain"
-            startActivity(sendIntent)
-        } else if (id == R.id.nav_feedback) {
-            val url = application.getString(R.string.feedback_link)
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-            /*
-            String url = "http://jq.qq.com/?_wv=1027&k=2F5EVSu"; // web address
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(url));
-            startActivity(intent);
-            */
-        } else if (id == R.id.nav_profile) {
-            fragment = fragment_config.Create(this, cmdshellTools)
-        } else if (id == R.id.nav_additional) {
-            fragment = fragment_addin.Create(this, cmdshellTools)
-        } else if (id == R.id.nav_help) {
-            fragment = fragment_helpinfo()
-        } else if (id == R.id.nav_xposed) {
-            fragment = fragment_xposed.Create(this, cmdshellTools)
+        when (id) {
+            R.id.nav_home -> fragment = fragment_home()
+            R.id.nav_booster -> fragment = fragment_booster.createPage(this)
+            R.id.nav_applictions -> fragment = fragment_applistions.createPage(this, cmdshellTools)
+            R.id.nav_swap -> fragment = fragment_swap.createPage(this, cmdshellTools)
+            R.id.nav_tasks -> fragment = fragment_tasks.Create(this, cmdshellTools)
+            R.id.nav_battery -> fragment = fragment_battery.createPage(cmdshellTools)
+            R.id.nav_img -> fragment = fragment_img.createPage(this, cmdshellTools)
+            R.id.nav_share -> {
+                val sendIntent = Intent()
+                sendIntent.action = Intent.ACTION_SEND
+                sendIntent.putExtra(Intent.EXTRA_TEXT, application.getString(R.string.share_link))
+                sendIntent.type = "text/plain"
+                startActivity(sendIntent)
+            }
+            R.id.nav_feedback -> {
+                val url = application.getString(R.string.feedback_link)
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                /*
+                String url = "http://jq.qq.com/?_wv=1027&k=2F5EVSu"; // web address
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(url));
+                startActivity(intent);
+                */
+            }
+            R.id.nav_profile -> fragment = fragment_config.createPage(this, cmdshellTools)
+            R.id.nav_additional -> fragment = fragment_addin.createPage(this, cmdshellTools)
+            R.id.nav_help -> fragment = fragment_helpinfo()
+            R.id.nav_xposed -> fragment = fragment_xposed.Create(this, cmdshellTools)
         }
 
         if (fragment != null) {
@@ -333,10 +317,5 @@ class main : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListene
 
     public override fun onPause() {
         super.onPause()
-    }
-
-    override fun onDestroy() {
-        //System.exit(0)
-        super.onDestroy()
     }
 }

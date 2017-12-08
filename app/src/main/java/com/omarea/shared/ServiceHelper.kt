@@ -3,91 +3,77 @@ package com.omarea.shared
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Message
+import android.os.Handler
 import android.view.accessibility.AccessibilityManager
 import android.widget.Toast
 import java.io.DataOutputStream
 import java.io.IOException
 import java.util.*
-import android.app.ActivityManager
 
 
 /**
  * Created by helloklf on 2016/10/1.
  */
-class ServiceHelper(context: Context) {
-    private var context: Context? = null
+class ServiceHelper(private var context: Context) {
     private var lastPackage: String? = null
     private var lastMode = Configs.None
     private var p: Process? = null
     private val serviceCreatedTime = Date().time
-    internal var out: DataOutputStream? = null
-    private var spfPowercfg: SharedPreferences
-    private var spfBooster: SharedPreferences
-    private var spfGlobal: SharedPreferences
+    private var out: DataOutputStream? = null
+    private var spfPowercfg: SharedPreferences = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
+    private var spfBooster: SharedPreferences = context.getSharedPreferences(SpfConfig.BOOSTER_CONFIG_SPF, Context.MODE_PRIVATE)
+    private var spfGlobal: SharedPreferences = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
     //标识是否已经加载完设置
-    private var SettingsLoaded = false
-    var ignoredList = arrayListOf<String>("com.miui.securitycenter", "android", "com.android.systemui", "com.omarea.vboot", "com.miui.touchassistant")
+    private var settingsLoaded = false
+    private var ignoredList = arrayListOf<String>("com.miui.securitycenter", "android", "com.android.systemui", "com.omarea.vboot", "com.miui.touchassistant")
+    private var autoBooster = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, false)
+    private var dyamicCore = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
+    private var debugMode = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
+    private var delayStart = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DELAY, false)
 
-
-    var AutoBooster = true;
-    var DyamicCore = false;
-    var DebugMode = false;
-    var DelayStart = false;
-    var listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+    private var listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
         if (key == SpfConfig.GLOBAL_SPF_AUTO_BOOSTER) {
             if (this.lastPackage != null) {
                 autoBoosterApp(this.lastPackage!!)
             }
-            AutoBooster = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, false)
+            autoBooster = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, false)
         } else if (key == SpfConfig.GLOBAL_SPF_DYNAMIC_CPU || key == SpfConfig.GLOBAL_SPF_DYNAMIC_CPU_CONFIG) {
-            DoCmd(Consts.ExecuteConfig)
+            doCmd(Consts.ExecuteConfig)
             if (this.lastPackage != null) {
                 autoToggleMode(this.lastPackage!!)
             } else {
-                ToggleConfig(Configs.Default)
+                toggleConfig(Configs.Default)
             }
-            DyamicCore = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
+            dyamicCore = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
         } else if (key == SpfConfig.GLOBAL_SPF_DEBUG) {
-            DebugMode = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
+            debugMode = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
         }
     }
 
     init {
-        this.context = context
-        spfPowercfg = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
-        spfBooster = context.getSharedPreferences(SpfConfig.BOOSTER_CONFIG_SPF, Context.MODE_PRIVATE)
-        spfGlobal = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-
-        DebugMode = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
-        AutoBooster = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, false)
-        DyamicCore = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
-        DelayStart = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DELAY, false)
+        val crashHandler = CrashHandler.instance
+        crashHandler.init(context)
 
         spfGlobal.registerOnSharedPreferenceChangeListener(listener)
     }
 
     //加载设置
-    private fun SettingsLoad(): Boolean {
-        if (DelayStart && Date().time - serviceCreatedTime < 20000)
+    private fun settingsLoad(): Boolean {
+        if (delayStart && Date().time - serviceCreatedTime < 20000)
             return false
 
-        DoCmd(Consts.DisableSELinux)
-        DoCmd(Consts.ExecuteConfig)
-        ShowMsg("微工具箱增强服务已启动")
+        doCmd(Consts.DisableSELinux)
+        doCmd(Consts.ExecuteConfig)
+        showMsg("微工具箱增强服务已启动")
 
-        SettingsLoaded = true
+        settingsLoaded = true
 
         return true
     }
 
-    internal var myHandler: android.os.Handler = object : android.os.Handler() {
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-        }
-    }
+    internal var myHandler = Handler()
 
-    internal fun tryExit() {
+    private fun tryExit() {
         try {
             if (out != null)
                 out!!.close()
@@ -99,7 +85,7 @@ class ServiceHelper(context: Context) {
         }
     }
 
-    @JvmOverloads internal fun DoCmd(cmd: String, isRedo: Boolean = false) {
+    private fun doCmd(cmd: String, isRedo: Boolean = false) {
         Thread(Runnable {
             try {
                 //tryExit()
@@ -115,34 +101,28 @@ class ServiceHelper(context: Context) {
             } catch (e: IOException) {
                 //重试一次
                 if (!isRedo)
-                    DoCmd(cmd, true)
+                    doCmd(cmd, true)
                 else
-                    ShowMsg("Failed execution action!\nError message : " + e.message + "\n\n\ncommand : \r\n" + cmd)
+                    showMsg("Failed execution action!\nError message : " + e.message + "\n\n\ncommand : \r\n" + cmd)
             }
         }).start()
     }
 
-    private fun ShowMsg(msg: String) {
-        if (context != null)
-            myHandler.post { Toast.makeText(context, msg, Toast.LENGTH_SHORT).show() }
-        else {
-            //XposedBridge.log("微工具箱 Message：" + msg);
-        }
+    private fun showMsg(msg: String) {
+        myHandler.post { Toast.makeText(context, msg, Toast.LENGTH_SHORT).show() }
     }
 
-    internal var msgTemplate = "Package: %s\n Mode: %s"
-
-    private fun ShowModeToggleMsg(packageName: String, modeName: String) {
-        if (DebugMode)
-            ShowMsg(String.format(msgTemplate, packageName, modeName))
+    private fun showModeToggleMsg(packageName: String, modeName: String) {
+        if (debugMode)
+            showMsg("Package: $packageName\n Mode: $modeName")
     }
 
     //自动切换模式
     private fun autoToggleMode(packageName: String) {
-        if (!DyamicCore)
+        if (!dyamicCore)
             return
 
-        if (packageName == "android" || packageName == "com.android.systemui" || packageName == "com.omarea.vboot" || packageName!!.contains("inputmethod"))
+        if (packageName == "android" || packageName == "com.android.systemui" || packageName == "com.omarea.vboot" || packageName.contains("inputmethod"))
             return
 
         //如果没有切换应用
@@ -157,10 +137,10 @@ class ServiceHelper(context: Context) {
             "powersave" -> {
                 if (lastMode != Configs.PowerSave) {
                     try {
-                        ToggleConfig(Configs.PowerSave)
-                        ShowModeToggleMsg(packageName, "节电模式")
+                        toggleConfig(Configs.PowerSave)
+                        showModeToggleMsg(packageName, "节电模式")
                     } catch (ex: Exception) {
-                        ShowModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
+                        showModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
                     }
                 }
                 return
@@ -168,10 +148,10 @@ class ServiceHelper(context: Context) {
             "game" -> {
                 if (lastMode != Configs.Game) {
                     try {
-                        ToggleConfig(Configs.Game)
-                        ShowModeToggleMsg(packageName, "性能模式")
+                        toggleConfig(Configs.Game)
+                        showModeToggleMsg(packageName, "性能模式")
                     } catch (ex: Exception) {
-                        ShowModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
+                        showModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
                     }
                 }
                 return
@@ -179,10 +159,10 @@ class ServiceHelper(context: Context) {
             "fast" -> {
                 if (lastMode != Configs.Fast) {
                     try {
-                        ToggleConfig(Configs.Fast)
-                        ShowModeToggleMsg(packageName, "极速模式")
+                        toggleConfig(Configs.Fast)
+                        showModeToggleMsg(packageName, "极速模式")
                     } catch (ex: Exception) {
-                        ShowModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
+                        showModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
                     }
                 }
                 return
@@ -190,10 +170,10 @@ class ServiceHelper(context: Context) {
             else -> {
                 if (lastMode != Configs.Default) {
                     try {
-                        ToggleConfig(Configs.Default)
-                        ShowModeToggleMsg(packageName, "均衡模式")
+                        toggleConfig(Configs.Default)
+                        showModeToggleMsg(packageName, "均衡模式")
                     } catch (ex: Exception) {
-                        ShowModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
+                        showModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
                     }
                 }
             }
@@ -202,23 +182,23 @@ class ServiceHelper(context: Context) {
 
     //终止进程
     internal fun autoBoosterApp(packageName: String) {
-        if (!AutoBooster)
+        if (!autoBooster)
             return
 
         if (lastPackage == "android" || lastPackage == "com.android.systemui" || lastPackage == "com.omarea.vboot" || lastPackage.equals(packageName))
             return
 
         if (spfBooster.getBoolean(SpfConfig.BOOSTER_SPF_CLEAR_CACHE, false)) {
-            DoCmd(Consts.ClearCache)
+            doCmd(Consts.ClearCache)
         }
 
         if (spfBooster.contains(lastPackage)) {
             if (spfBooster.getBoolean(SpfConfig.BOOSTER_SPF_DOZE_MOD, false)) {
                 try {
-                    DoCmd("dumpsys deviceidle enable; am set-inactive $lastPackage true")
+                    doCmd("dumpsys deviceidle enable; am set-inactive $lastPackage true")
                     //am set-idle com.tencent.mobileqq true
-                    if (DebugMode)
-                        ShowMsg("休眠： " + lastPackage)
+                    if (debugMode)
+                        showMsg("休眠： " + lastPackage)
                 } catch (ex: Exception) {
                 }
                 return
@@ -226,17 +206,16 @@ class ServiceHelper(context: Context) {
 
             //android.os.Process.killProcess(android.os.Process.myPid());//自杀
             try {
-                DoCmd("killall -9 $lastPackage;pkill -9 $lastPackage;pgrep $lastPackage |xargs kill -9;")
-                if (DebugMode)
-                    ShowMsg("结束运行: " + lastPackage)
+                doCmd("killall -9 $lastPackage;pkill -9 $lastPackage;pgrep $lastPackage |xargs kill -9;")
+                if (debugMode)
+                    showMsg("结束运行: " + lastPackage)
             } catch (ex: Exception) {
             }
         }
     }
 
     //切换配置
-    @Throws(IOException::class, InterruptedException::class)
-    fun ToggleConfig(mode: Configs) {
+    private fun toggleConfig(mode: Configs) {
         val cmd = StringBuilder()
         when (mode) {
             ServiceHelper.Configs.Game -> {
@@ -252,7 +231,7 @@ class ServiceHelper(context: Context) {
                 cmd.append(Consts.ToggleDefaultMode)
             }
         }
-        DoCmd(cmd.toString())
+        doCmd(cmd.toString())
 
         lastMode = mode
     }
@@ -265,12 +244,12 @@ class ServiceHelper(context: Context) {
         Fast
     }
 
-    fun onAccessibilityEvent(packageName: String?) {
-        var packageName = packageName
-        if (!SettingsLoaded && !SettingsLoad())
+    fun onAccessibilityEvent(pkgName: String?) {
+        var packageName = pkgName
+        if (!settingsLoaded && !settingsLoad())
             return
 
-        if (DyamicCore) {
+        if (dyamicCore) {
             if (lastPackage != null) {
                 lastPackage = "com.android.systemui"
             }
@@ -284,7 +263,7 @@ class ServiceHelper(context: Context) {
             return
 
         autoBoosterApp(packageName!!)
-        autoToggleMode(packageName!!)
+        autoToggleMode(packageName)
 
         lastPackage = packageName
     }
@@ -298,7 +277,7 @@ class ServiceHelper(context: Context) {
             val m = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
             val serviceInfos = m.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
             for (serviceInfo in serviceInfos) {
-                if (serviceInfo.id == "com.omarea.vboot/.vtools_accessibility") {
+                if (serviceInfo.id == "${Consts.PACKAGE_NAME}/.vtools_accessibility") {
                     return true
                 }
             }

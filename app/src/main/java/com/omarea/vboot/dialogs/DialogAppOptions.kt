@@ -18,12 +18,12 @@ import java.util.*
  * Created by helloklf on 2017/12/04.
  */
 
-class dialog_app_options(private var context: Context, private var apps: ArrayList<HashMap<String, Any>>, private var handler: Handler) {
-    var allowPigz = false
-    var backupPath = Consts.BackUpDir
+class DialogAppOptions(private var context: Context, private var apps: ArrayList<HashMap<String, Any>>, private var handler: Handler) {
+    private var allowPigz = false
+    private var backupPath = Consts.BackUpDir
 
     fun selectUserAppOptions() {
-        val alert = AlertDialog.Builder(context).setTitle("请选择操作")
+        AlertDialog.Builder(context).setTitle("请选择操作")
                 .setCancelable(true)
                 .setItems(
                         arrayOf("备份（带数据）",
@@ -32,7 +32,7 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
                                 "清空数据",
                                 "清除缓存",
                                 "冻结",
-                                "解冻"), { dialog, which ->
+                                "解冻"), { _, which ->
                     when (which) {
                         0 -> {
                             confirm("备份应用和数据", "备份功能目前还是实验性的，无法保证在所有设备上运行，备份可能无法正常还原。继续尝试使用吗？", Runnable {
@@ -63,7 +63,7 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
     }
 
     fun selectSystemAppOptions() {
-        val alert = AlertDialog.Builder(context).setTitle("请选择操作")
+        AlertDialog.Builder(context).setTitle("请选择操作")
                 .setCancelable(true)
                 .setItems(
                         arrayOf("删除",
@@ -71,7 +71,7 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
                                 "清除缓存",
                                 "冻结",
                                 "解冻",
-                                "禁用+隐藏"), { dialog, which ->
+                                "禁用+隐藏"), { _, which ->
                     when (which) {
                         0 -> {
                             confirm("删除应用", "删除系统应用可能导致功能不正常，甚至无法开机，确定要继续删除？", Runnable {
@@ -101,13 +101,13 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
     }
 
     fun selectBackupOptions() {
-        val alert = AlertDialog.Builder(context).setTitle("请选择操作")
+        AlertDialog.Builder(context).setTitle("请选择操作")
                 .setCancelable(true)
                 .setItems(
                         arrayOf("删除备份",
                                 "还原",
                                 "还原(应用)",
-                                "还原(数据)"), { dialog, which ->
+                                "还原(数据)"), { _, which ->
                     when (which) {
                         0 -> {
                             confirm("删除备份", "永久删除这些备份文件？", Runnable {
@@ -120,14 +120,12 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
                             })
                         }
                         2 -> {
-                            confirm("还原应用", "该功能目前还在实验阶段，可能不能在所有设备上正常运行，也许会导致应用数据丢失。\n" +
-                                    "继续尝试恢复吗？", Runnable {
+                            confirm("还原应用", "该功能目前还在实验阶段，可能不能在所有设备上正常运行，也许会导致应用数据丢失。\n继续尝试恢复吗？", Runnable {
                                 restoreAll(true, false)
                             })
                         }
                         3 -> {
-                            confirm("还原数据", "该功能目前还在实验阶段，可能不能在所有设备上正常运行，也许会导致应用数据丢失。\\n\" +\n" +
-                                    "                                    \"继续尝试恢复吗？", Runnable {
+                            confirm("还原数据", "该功能目前还在实验阶段，可能不能在所有设备上正常运行，也许会导致应用数据丢失。\n继续尝试恢复吗？", Runnable {
                                 restoreAll(false, true)
                             })
                         }
@@ -140,27 +138,26 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
         val layoutInflater = LayoutInflater.from(context)
         val dialog = layoutInflater.inflate(R.layout.dialog_app_options, null)
         val textView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
-        val progressBar = (dialog.findViewById(R.id.dialog_app_details_progress) as ProgressBar)
-        textView.setText("正在获取权限")
+        textView.text = "正在获取权限"
         val alert = AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
-        AsynSuShellUnit(progressHandler(dialog, alert, handler)).exec(sb.toString()).waitFor()
+        AsynSuShellUnit(ProgressHandler(dialog, alert, handler)).exec(sb.toString()).waitFor()
         alert.show()
     }
 
-    class progressHandler(dialog: View, var alert: AlertDialog, var handler: Handler) : Handler() {
-        var textView:TextView
-        var progressBar:ProgressBar
+    class ProgressHandler(dialog: View, private var alert: AlertDialog, private var handler: Handler) : Handler() {
+        private var textView: TextView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
+        var progressBar: ProgressBar = (dialog.findViewById(R.id.dialog_app_details_progress) as ProgressBar)
 
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
             if (msg.obj != null) {
                 if (msg.what == 0) {
-                    textView.setText("正在执行操作...")
+                    textView.text = "正在执行操作..."
                 } else {
                     val obj = msg.obj.toString()
                     if (obj == "[operation completed]") {
                         progressBar.progress = 100
-                        textView.setText("操作完成！")
+                        textView.text = "操作完成！"
                         handler.postDelayed({
                             alert.dismiss()
                             alert.hide()
@@ -169,27 +166,25 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
                     } else if (Regex("^\\[.*\\]\$").matches(obj)) {
                         progressBar.progress = msg.what
                         val txt = obj
-                                .replace("uninstall", "卸载")
-                                .replace("install", "安装")
-                                .replace("restore", "还原")
-                                .replace("backup", "备份")
-                                .replace("unhide", "显示")
-                                .replace("hide", "隐藏")
-                                .replace("delete", "删除")
-                                .replace("disable", "禁用")
-                                .replace("enable", "启用")
-                                .replace("trim caches", "清除缓存")
-                                .replace("clear", "清除数据")
-                        textView.setText(txt)
+                                .replace("[uninstall ", "[卸载")
+                                .replace("[install ", "[安装")
+                                .replace("[restore ", "[还原")
+                                .replace("[backup ", "[备份")
+                                .replace("[unhide ", "[显示")
+                                .replace("[hide ", "[隐藏")
+                                .replace("[delete ", "[删除")
+                                .replace("[disable ", "[禁用")
+                                .replace("[enable ", "[启用")
+                                .replace("[trim caches ", "[清除缓存")
+                                .replace("[clear ", "[清除数据")
+                        textView.text = txt
                     }
                 }
             }
         }
 
         init {
-            textView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
-            progressBar = (dialog.findViewById(R.id.dialog_app_details_progress) as ProgressBar)
-            textView.setText("正在获取权限")
+            textView.text = "正在获取权限"
         }
     }
 
@@ -197,12 +192,10 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
         AlertDialog.Builder(context)
                 .setTitle(title)
                 .setMessage(msg)
-                .setNegativeButton("确定", { dialog, which ->
-                    if (next != null) {
-                        next.run()
-                    }
+                .setNegativeButton("确定", { _, _ ->
+                    next?.run()
                 })
-                .setNeutralButton("取消", { dialog, which ->
+                .setNeutralButton("取消", { _, _ ->
                 })
                 .create()
                 .show()
@@ -223,12 +216,12 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
     private fun backupAll(apk: Boolean = true, data: Boolean = true) {
         checkPigz()
 
-        var sb = StringBuilder()
+        val sb = StringBuilder()
         sb.append("mkdir -p $backupPath;")
 
         for (item in apps) {
-            val packageName = item.get("packageName").toString()
-            val path = item.get("path").toString()
+            val packageName = item["packageName"].toString()
+            val path = item["path"].toString()
 
             sb.append("echo '[backup $packageName]';")
             sb.append("cd /data/data/$packageName;")
@@ -250,9 +243,11 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
      * 还原选中的应用
      */
     private fun restoreAll(apk: Boolean = true, data: Boolean = true) {
-        var sb = StringBuilder()
+        checkPigz()
+
+        val sb = StringBuilder()
         for (item in apps) {
-            val packageName = item.get("packageName").toString()
+            val packageName = item["packageName"].toString()
             if (apk && File("$backupPath$packageName.apk").exists()) {
                 sb.append("echo '[install $packageName]';")
 
@@ -276,9 +271,9 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
      * 禁用所选的应用
      */
     private fun disableAll() {
-        var sb = StringBuilder()
+        val sb = StringBuilder()
         for (item in apps) {
-            val packageName = item.get("packageName").toString()
+            val packageName = item["packageName"].toString()
             sb.append("echo '[disable $packageName]';")
 
             sb.append("pm disable $packageName;")
@@ -292,9 +287,9 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
      * 启用所选的应用
      */
     private fun enableAll() {
-        var sb = StringBuilder()
+        val sb = StringBuilder()
         for (item in apps) {
-            val packageName = item.get("packageName").toString()
+            val packageName = item["packageName"].toString()
             sb.append("echo '[enable $packageName]';")
 
             sb.append("pm enable $packageName;")
@@ -308,9 +303,9 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
      * 隐藏所选的应用
      */
     private fun hideAll() {
-        var sb = StringBuilder()
+        val sb = StringBuilder()
         for (item in apps) {
-            val packageName = item.get("packageName").toString()
+            val packageName = item["packageName"].toString()
             sb.append("echo '[hide $packageName]';")
 
             sb.append("pm hide $packageName;")
@@ -324,12 +319,12 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
      * 删除选中的应用
      */
     private fun deleteAll() {
-        var sb = StringBuilder()
+        val sb = StringBuilder()
         for (item in apps) {
-            val packageName = item.get("packageName").toString()
+            val packageName = item["packageName"].toString()
             sb.append("echo '[delete $packageName]';")
 
-            val dir = item.get("dir").toString()
+            val dir = item["dir"].toString()
             sb.append("rm -rf $dir;")
         }
 
@@ -341,9 +336,9 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
      * 删除备份
      */
     private fun deleteBackupAll() {
-        var sb = StringBuilder()
+        val sb = StringBuilder()
         for (item in apps) {
-            val packageName = item.get("packageName").toString()
+            val packageName = item["packageName"].toString()
             sb.append("echo '[delete $packageName]';")
 
             sb.append("rm -rf $backupPath$packageName.apk;")
@@ -358,9 +353,9 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
      * 清除数据
      */
     private fun clearAll() {
-        var sb = StringBuilder()
+        val sb = StringBuilder()
         for (item in apps) {
-            val packageName = item.get("packageName").toString()
+            val packageName = item["packageName"].toString()
             sb.append("echo '[clear $packageName]';")
 
             sb.append("pm clear $packageName;")
@@ -374,9 +369,9 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
      * 清除缓存
      */
     private fun trimCachesAll() {
-        var sb = StringBuilder()
+        val sb = StringBuilder()
         for (item in apps) {
-            val packageName = item.get("packageName").toString()
+            val packageName = item["packageName"].toString()
             sb.append("echo '[trim caches $packageName]';")
 
             sb.append("pm trim-caches $packageName;")
@@ -390,9 +385,9 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
      * 卸载选中
      */
     private fun uninstallAll() {
-        var sb = StringBuilder()
+        val sb = StringBuilder()
         for (item in apps) {
-            val packageName = item.get("packageName").toString()
+            val packageName = item["packageName"].toString()
             sb.append("echo '[uninstall $packageName]';")
 
             sb.append("pm uninstall $packageName;")
@@ -406,9 +401,9 @@ class dialog_app_options(private var context: Context, private var apps: ArrayLi
      * 卸载且保留数据
      */
     private fun uninstallKeepDataAll() {
-        var sb = StringBuilder()
+        val sb = StringBuilder()
         for (item in apps) {
-            val packageName = item.get("packageName").toString()
+            val packageName = item["packageName"].toString()
             sb.append("echo '[uninstall $packageName]';")
 
             sb.append("pm uninstall -k $packageName;")

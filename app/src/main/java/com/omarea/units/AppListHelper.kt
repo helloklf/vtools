@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import com.omarea.shared.Consts
 import java.io.File
+import java.io.FileFilter
 import java.util.ArrayList
 import java.util.HashMap
 
@@ -129,11 +130,20 @@ class AppListHelper {
             dir.mkdirs()
             return list
         }
+        if (!dir.canRead()) {
+            return list
+        }
 
-        val files = dir.list { dir, name -> name.toLowerCase().endsWith(".apk") }
+        val files = dir.listFiles({ name ->
+            name.extension.toLowerCase() == "apk"
+        })
+
+        if (files == null) {
+            return list
+        }
 
         for (i in files.indices) {
-            val absPath = dirPath+ files[i]
+            val absPath = files[i].absolutePath
             try {
                 val packageInfo = packageManager.getPackageArchiveInfo(absPath, PackageManager.GET_ACTIVITIES)
                 if (packageInfo != null) {

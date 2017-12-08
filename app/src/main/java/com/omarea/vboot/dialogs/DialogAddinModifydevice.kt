@@ -1,5 +1,6 @@
 package com.omarea.vboot.dialogs
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
@@ -15,12 +16,7 @@ import com.omarea.vboot.R
  * Created by Hello on 2017/12/03.
  */
 
-class dialog_addin_modifydevice {
-    var context: Context
-
-    constructor(context: Context) {
-        this.context = context
-    }
+class DialogAddinModifydevice(var context: Context) {
 
     fun modifyDeviceInfo() {
         val layoutInflater = LayoutInflater.from(context)
@@ -31,39 +27,39 @@ class dialog_addin_modifydevice {
         editDevice = dialog.findViewById(R.id.dialog_addin_device) as EditText
         editManufacturer = dialog.findViewById(R.id.dialog_addin_manufacturer) as EditText
 
-        (dialog.findViewById(R.id.dialog_addin_default) as Button).setOnClickListener { v: View? ->
+        (dialog.findViewById(R.id.dialog_addin_default) as Button).setOnClickListener {
             setDefault()
         }
-        (dialog.findViewById(R.id.dialog_addin_x20) as Button).setOnClickListener { v: View? ->
+        (dialog.findViewById(R.id.dialog_addin_x20) as Button).setOnClickListener {
             setX20()
         }
-        (dialog.findViewById(R.id.dialog_addin_r11) as Button).setOnClickListener { v: View? ->
+        (dialog.findViewById(R.id.dialog_addin_r11) as Button).setOnClickListener {
             setR11Plus()
         }
-        (dialog.findViewById(R.id.dialog_addin_ipx) as Button).setOnClickListener { v: View? ->
+        (dialog.findViewById(R.id.dialog_addin_ipx) as Button).setOnClickListener {
             setIPhoneX()
         }
-        AlertDialog.Builder(context).setTitle("机型信息修改").setView(dialog).setNegativeButton("保存重启", { d, w ->
+        AlertDialog.Builder(context).setTitle("机型信息修改").setView(dialog).setNegativeButton("保存重启", { _, _ ->
             val sb = StringBuilder()
             val model = editModel.text.trim()
             val brand = editBrand.text.trim()
             val product = editProductName.text.trim()
             val device = editDevice.text.trim()
             val manufacturer = editManufacturer.text.trim()
-            if (model.length > 0 || brand.length > 0 || product.length > 0 || device.length > 0 || manufacturer.length > 0) {
+            if (model.isNotEmpty() || brand.isNotEmpty() || product.isNotEmpty() || device.isNotEmpty() || manufacturer.isNotEmpty()) {
                 backupDefault()
                 sb.append(Consts.MountSystemRW)
                 sb.append("cp /system/build.prop /data/build.prop;chmod 0644 /data/build.prop;")
 
-                if (brand.length > 0)
+                if (brand.isNotEmpty())
                     sb.append("busybox sed -i 's/^ro.product.brand=.*/ro.product.brand=$brand/' /data/build.prop;")
-                if (product.length > 0)
+                if (product.isNotEmpty())
                     sb.append("busybox sed -i 's/^ro.product.name=.*/ro.product.name=$product/' /data/build.prop;")
-                if (model.length > 0)
+                if (model.isNotEmpty())
                     sb.append("busybox sed -i 's/^ro.product.model=.*/ro.product.model=$model/' /data/build.prop;")
-                if (manufacturer.length > 0)
+                if (manufacturer.isNotEmpty())
                     sb.append("busybox sed -i 's/^ro.product.manufacturer=.*/ro.product.manufacturer=$manufacturer/' /data/build.prop;")
-                if (device.length > 0)
+                if (device.isNotEmpty())
                     sb.append("busybox sed -i 's/^ro.product.device=.*/ro.product.device=$device/' /data/build.prop;")
 
                 sb.append("cp /system/build.prop /system/build.bak.prop\n")
@@ -80,15 +76,15 @@ class dialog_addin_modifydevice {
         }).create().show()
     }
 
-    lateinit var editModel: EditText
-    lateinit var editBrand: EditText
-    lateinit var editProductName: EditText
-    lateinit var editDevice: EditText
-    lateinit var editManufacturer: EditText
+    private lateinit var editModel: EditText
+    private lateinit var editBrand: EditText
+    private lateinit var editProductName: EditText
+    private lateinit var editDevice: EditText
+    private lateinit var editManufacturer: EditText
 
     private fun setDefault() {
         val spf = context.getSharedPreferences("deviceinfo", Context.MODE_PRIVATE)
-        if (spf.all.size == 0) {
+        if (spf.all.isEmpty()) {
             editBrand.setText(android.os.Build.BRAND)
             editModel.setText(android.os.Build.MODEL)
             editProductName.setText(android.os.Build.PRODUCT)
@@ -127,9 +123,10 @@ class dialog_addin_modifydevice {
         editManufacturer.setText("iPhone")
     }
 
+    @SuppressLint("ApplySharedPref")
     private fun backupDefault() {
         val spf = context.getSharedPreferences("deviceinfo", Context.MODE_PRIVATE)
-        if (spf.all.size == 0) {
+        if (spf.all.isEmpty()) {
             spf.edit()
                     .putString("android.os.Build.BRAND", android.os.Build.BRAND)
                     .putString("android.os.Build.MODEL", android.os.Build.MODEL)

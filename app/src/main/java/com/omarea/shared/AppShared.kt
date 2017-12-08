@@ -10,61 +10,7 @@ import java.nio.charset.Charset
  * Created by helloklf on 2016/8/27.
  */
 object AppShared {
-    var baseUrl = "/sdcard/Android/data/com.omarea.vboot/"
-    var datFile = baseUrl + "data.dat"
-
-
-    val configData: JSONObject
-        get() {
-            val file = File(datFile)
-            try {
-                if (!file.exists()) {
-                    File(baseUrl).mkdirs()
-                    file.createNewFile()
-                }
-
-                val inputStream = FileInputStream(file)
-                val dataInputStream = DataInputStream(inputStream)
-
-                val datas = ByteArray(file.length().toInt())
-                dataInputStream.read(datas)
-                val json = String(datas, Charset.forName("UTF-8"))
-
-                var jsonObject: JSONObject
-
-                try {
-                    jsonObject = JSONObject(json)
-                } catch (e: JSONException) {
-                    jsonObject = JSONObject()
-                }
-
-                return jsonObject
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-
-            return JSONObject()
-        }
-
-    fun setConfigData(jsonObject: JSONObject): Boolean {
-        val file = File(datFile)
-        try {
-            val outputStream = FileOutputStream(file)
-            val dataOutputStream = DataOutputStream(outputStream)
-
-            val data = jsonObject.toString()
-            dataOutputStream.writeBytes(data)
-
-            dataOutputStream.flush()
-            dataOutputStream.close()
-            outputStream.close()
-
-            return true
-        } catch (e: IOException) {
-        }
-
-        return false
-    }
+    var baseUrl = "${Consts.SDCardDir}/Android/data/${Consts.PACKAGE_NAME}/"
 
     fun WriteFile(ass: AssetManager, file: String, hasExtName: Boolean) {
         try {

@@ -1,9 +1,7 @@
 package com.omarea.vboot
 
 import android.accessibilityservice.AccessibilityService
-import android.app.usage.UsageStatsManager
 import android.view.accessibility.AccessibilityEvent
-
 import com.omarea.shared.AutoClickService
 import com.omarea.shared.ServiceHelper
 
@@ -13,35 +11,35 @@ import com.omarea.shared.ServiceHelper
  */
 class vtools_accessibility : AccessibilityService() {
 
-    override fun onCreate() {
-        super.onCreate()
+    /*
+override fun onCreate() {
+    super.onCreate()
 
-        /*
-        Notification.Builder builder = new Notification.Builder(this);
-        //Intent mIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://blog.csdn.net/itachi85/"));
-        Intent mIntent = new Intent(getApplicationContext(),accessibility_settings.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, mIntent, 0);
-        builder.setContentIntent(pendingIntent);
-        builder.setSmallIcon(R.drawable.linux);
-        builder.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.linux));
-        builder.setAutoCancel(true);
-        //RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.notxxx_layout);
-        //builder.setContent(remoteViews);
-        //builder.setContentTitle("微工具箱");
-        //builder.setContentInfo("增强服务正在运行，点此进入设置");
-        //Notification.Action action = new Notification.Action(R.drawable.p3,"性能",pendingIntent);
-        //Notification.Action action1 = new Notification.Action(R.drawable.p2,"均衡",pendingIntent);
-        //Notification.Action action2 = new Notification.Action(R.drawable.p1,"省电",pendingIntent);
-        //builder.addAction(action);
-        //builder.addAction(action1);
-        //builder.addAction(action2);
+    Notification.Builder builder = new Notification.Builder(this);
+    //Intent mIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://blog.csdn.net/itachi85/"));
+    Intent mIntent = new Intent(getApplicationContext(),AccessibilitySettingsActivity.class);
+    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, mIntent, 0);
+    builder.setContentIntent(pendingIntent);
+    builder.setSmallIcon(R.drawable.linux);
+    builder.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.linux));
+    builder.setAutoCancel(true);
+    //RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.notxxx_layout);
+    //builder.setContent(remoteViews);
+    //builder.setContentTitle("微工具箱");
+    //builder.setContentInfo("增强服务正在运行，点此进入设置");
+    //Notification.Action action = new Notification.Action(R.drawable.p3,"性能",pendingIntent);
+    //Notification.Action action1 = new Notification.Action(R.drawable.p2,"均衡",pendingIntent);
+    //Notification.Action action2 = new Notification.Action(R.drawable.p1,"省电",pendingIntent);
+    //builder.addAction(action);
+    //builder.addAction(action1);
+    //builder.addAction(action2);
 
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        //notificationManager.notify(74545342, builder.build());
+    NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+    //notificationManager.notify(74545342, builder.build());
 
-        startForeground(74545342, builder.build());//该方法已创建通知管理器，设置为前台优先级后，点击通知不再自动取消
-        */
+    startForeground(74545342, builder.build());//该方法已创建通知管理器，设置为前台优先级后，点击通知不再自动取消
     }
+    */
 
     internal var serviceHelper: ServiceHelper? = null
 
@@ -59,10 +57,14 @@ class vtools_accessibility : AccessibilityService() {
         setServiceInfo(info);
         */
         super.onServiceConnected()
+        initServiceHelper()
+    }
 
+    private fun initServiceHelper(){
         if (serviceHelper == null)
             serviceHelper = ServiceHelper(applicationContext)
     }
+
     /*
     @SuppressLint("NewApi")
     private fun getForegroundApp(): String? {
@@ -97,8 +99,7 @@ class vtools_accessibility : AccessibilityService() {
         if ((packageName == "net.oneplus.h2launcher" || packageName == "net.oneplus.launcher") && event.className == "android.widget.LinearLayout") {
             return
         }
-        //net.oneplus.h2launcher
-        //android.widget.LinearLayout
+
         /*if(
             packageName.equals("com.android.packageinstaller")||
             packageName.equals("com.miui.packageinstaller")||
@@ -113,19 +114,24 @@ class vtools_accessibility : AccessibilityService() {
             AutoClickService().miuiUsbInstallAutoClick(event)
             return
         }
-        if (serviceHelper != null)
-            serviceHelper!!.onAccessibilityEvent(packageName)
+        if (serviceHelper == null)
+            initServiceHelper()
+        serviceHelper?.onAccessibilityEvent(event.packageName.toString())
     }
 
     override fun onInterrupt() {
-        if (serviceHelper != null)
+        if (serviceHelper != null){
             serviceHelper!!.onInterrupt()
+            serviceHelper = null
+        }
         //android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     override fun onDestroy() {
-        if (serviceHelper != null)
+        if (serviceHelper != null){
             serviceHelper!!.onInterrupt()
+            serviceHelper = null
+        }
         //android.os.Process.killProcess(android.os.Process.myPid());
     }
 }

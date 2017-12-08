@@ -1,12 +1,12 @@
 package com.omarea.vboot
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
-import android.os.Message
 import android.provider.Settings
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -21,7 +21,6 @@ import android.widget.TabHost
 import android.widget.TextView
 import com.omarea.shared.ServiceHelper
 import com.omarea.shared.SpfConfig
-import com.omarea.shared.cmd_shellTools
 import com.omarea.ui.list_adapter
 import kotlinx.android.synthetic.main.layout_booster.*
 import java.util.*
@@ -30,11 +29,10 @@ import kotlin.collections.ArrayList
 
 class fragment_booster : Fragment() {
 
-    lateinit internal var frameView: View
-
-    internal var thisview: main? = null
-    internal lateinit var spf: SharedPreferences
-    internal lateinit var editor: SharedPreferences.Editor
+    private lateinit var frameView: View
+    private var thisview: MainActivity? = null
+    private lateinit var spf: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
 
     override fun onResume() {
         super.onResume()
@@ -45,11 +43,11 @@ class fragment_booster : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.layout_booster, container, false)
-    }
+                              savedInstanceState: Bundle?): View? =
+            inflater!!.inflate(R.layout.layout_booster, container, false)
 
 
+    @SuppressLint("ApplySharedPref")
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         this.frameView = view!!
         spf = context.getSharedPreferences(SpfConfig.BOOSTER_CONFIG_SPF, Context.MODE_PRIVATE)
@@ -58,10 +56,10 @@ class fragment_booster : Fragment() {
         cacheclear.isChecked = spf.getBoolean(SpfConfig.BOOSTER_SPF_CLEAR_CACHE, false)
         dozemod.isChecked = spf.getBoolean(SpfConfig.BOOSTER_SPF_DOZE_MOD, false)
 
-        cacheclear.setOnCheckedChangeListener { buttonView, isChecked ->
+        cacheclear.setOnCheckedChangeListener { _, isChecked ->
             editor.putBoolean(SpfConfig.BOOSTER_SPF_CLEAR_CACHE, isChecked).commit()
         }
-        dozemod.setOnCheckedChangeListener { buttonView, isChecked ->
+        dozemod.setOnCheckedChangeListener { _, isChecked ->
             editor.putBoolean(SpfConfig.BOOSTER_SPF_DOZE_MOD, isChecked).commit()
         }
 
@@ -74,7 +72,7 @@ class fragment_booster : Fragment() {
             }
         }
         btn_booster_dynamicservice_not_active.setOnClickListener {
-            val intent = Intent(thisview, accessibility_settings::class.java)
+            val intent = Intent(thisview, AccessibilitySettingsActivity::class.java)
             startActivity(intent)
         }
 
@@ -87,55 +85,44 @@ class fragment_booster : Fragment() {
                 .setContent(R.id.blacklist_tab2).setIndicator(context.getString(R.string.autobooster_tab_details)))
         tabHost.currentTab = 0
 
-        SetList(view)
-
-        booster_blacklist = view.findViewById(R.id.booster_blacklist) as ListView
-
-        val config_powersavelistClick = OnItemClickListener { parent, view, position, id ->
-            ToogleBlackItem((view.findViewById(R.id.ItemText) as TextView).text.toString())
-            val checkBox = view.findViewById(R.id.select_state) as CheckBox
+        setList()
+        booster_blacklist.onItemClickListener = OnItemClickListener { _, itemView, _, _ ->
+            toogleBlackItem((itemView.findViewById(R.id.ItemText) as TextView).text.toString())
+            val checkBox = itemView.findViewById(R.id.select_state) as CheckBox
             checkBox.isChecked = !checkBox.isChecked
-            print(view)
-        }
-        booster_blacklist.onItemClickListener = config_powersavelistClick
-    }
-
-    lateinit internal var booster_blacklist: ListView
-
-    internal val myHandler: Handler = object : Handler() {
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
         }
     }
 
-    private fun SetList(view: View) {
+    internal val myHandler: Handler = Handler()
+
+    private fun setList() {
         thisview!!.progressBar.visibility = View.VISIBLE
 
         Thread(Runnable {
             if (installedList == null) {
-                LoadList()
+                loadList()
             }
-            SetListData(installedList!!, booster_blacklist)
+            setListData(installedList!!, booster_blacklist)
         }).start()
     }
 
-    internal fun SetListData(dl: ArrayList<HashMap<String, Any>>, lv: ListView) {
+    private fun setListData(dl: ArrayList<HashMap<String, Any>>, lv: ListView) {
         myHandler.post {
             thisview!!.progressBar.visibility = View.GONE
             lv.adapter = list_adapter(context, dl)
         }
     }
 
-    lateinit internal var packageManager: PackageManager
-    internal var installedList: ArrayList<HashMap<String, Any>>? = null
+    private lateinit var packageManager: PackageManager
+    private var installedList: ArrayList<HashMap<String, Any>>? = null
 
-    internal fun LoadList() {
+    private fun loadList() {
         packageManager = thisview!!.packageManager
-        var packageInfos = packageManager.getInstalledApplications(0)
+        val packageInfos = packageManager.getInstalledApplications(0)
 
-        installedList = ArrayList<HashMap<String, Any>>()/*在数组中存放数据*/
+        installedList = ArrayList()
         for (i in packageInfos.indices) {
-            var packageInfo = packageInfos[i];
+            val packageInfo = packageInfos[i]
             if (packageInfo.sourceDir.indexOf("/system") == 0)
                 continue
             val item = HashMap<String, Any>()
@@ -154,7 +141,7 @@ class fragment_booster : Fragment() {
         }
     }
 
-    internal fun ToogleBlackItem(pkgName: String) {
+    private fun toogleBlackItem(pkgName: String) {
         if (spf.contains(pkgName)) {
             editor.remove(pkgName).commit()
         } else {
@@ -163,7 +150,7 @@ class fragment_booster : Fragment() {
     }
 
     companion object {
-        fun Create(thisView: main, cmdshellTools: cmd_shellTools): Fragment {
+        fun createPage(thisView: MainActivity): Fragment {
             val fragment = fragment_booster()
             fragment.thisview = thisView
             return fragment

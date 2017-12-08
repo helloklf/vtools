@@ -59,7 +59,7 @@
         </service>
 
         <activity
-            android:name=".main"
+            android:name=".MainActivity"
             android:configChanges="keyboardHidden|orientation"
             android:excludeFromRecents="true"
             android:exported="true"
@@ -79,14 +79,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".rom2zip"
+            android:name=".Rom2ZipActivity"
             android:configChanges="keyboardHidden|orientation"
             android:label="@string/title_activity_rom2zip"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:autoRemoveFromRecents="true"
-            android:name=".accessibility_settings"
+            android:name=".AccessibilitySettingsActivity"
             android:configChanges="keyboardHidden|orientation"
             android:excludeFromRecents="true"
             android:label="微工具箱增强服务"

@@ -1,5 +1,6 @@
 package com.omarea.vboot
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -8,13 +9,16 @@ import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.View
-import android.widget.TextView
-import com.omarea.shared.*
+import com.omarea.shared.Consts
+import com.omarea.shared.ServiceHelper
+import com.omarea.shared.SpfConfig
 import com.omarea.shell.DynamicConfig
 import kotlinx.android.synthetic.main.activity_accessibility_settings.*
+import java.io.File
 
+class AccessibilitySettingsActivity : AppCompatActivity() {
+    private lateinit var spf: SharedPreferences
 
-class accessibility_settings : AppCompatActivity() {
     override fun onPostResume() {
         super.onPostResume()
         delegate.onPostResume()
@@ -31,8 +35,7 @@ class accessibility_settings : AppCompatActivity() {
         settings_delaystart.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DELAY, false)
     }
 
-    lateinit var spf: SharedPreferences;
-
+    @SuppressLint("ApplySharedPref")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_accessibility_settings)
@@ -40,7 +43,7 @@ class accessibility_settings : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         spf = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-        if (!DynamicConfig().DynamicSupport(this)) {
+        if (!DynamicConfig().DynamicSupport(this) && !File(Consts.POWER_CFG_PATH).exists()) {
             settings_dynamic.isEnabled = false
             settings_dynamic.isChecked = false
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false).commit()

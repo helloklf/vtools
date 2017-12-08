@@ -16,12 +16,7 @@ import com.omarea.vboot.R
  * Created by Hello on 2017/12/03.
  */
 
-class dialog_addin_modifydpi {
-    var context: Context
-
-    constructor(context: Context) {
-        this.context = context
-    }
+class DialogAddinModifyDPI(var context: Context) {
 
     fun modifyDPI(display: Display) {
         val layoutInflater = LayoutInflater.from(context)
@@ -39,15 +34,15 @@ class dialog_addin_modifydpi {
             quickChange.isChecked = true
         }
 
-        AlertDialog.Builder(context).setTitle("DPI、分辨率").setView(dialog).setNegativeButton("确定", { d, w ->
-            val dpi = if (dpiInput.text.length > 0) (dpiInput.text.toString().toInt()) else (0)
-            val width = if (widthInput.text.length > 0) (widthInput.text.toString().toInt()) else (0)
-            val height = if (heightInput.text.length > 0) (heightInput.text.toString().toInt()) else (0)
+        AlertDialog.Builder(context).setTitle("DPI、分辨率").setView(dialog).setNegativeButton("确定", { _, _ ->
+            val dpi = if (dpiInput.text.isNotEmpty()) (dpiInput.text.toString().toInt()) else (0)
+            val width = if (widthInput.text.isNotEmpty()) (widthInput.text.toString().toInt()) else (0)
+            val height = if (heightInput.text.isNotEmpty()) (heightInput.text.toString().toInt()) else (0)
             val qc = quickChange.isChecked
 
             val cmd = StringBuilder()
             if (width >= 320 && height >= 480) {
-                cmd.append("wm size ${width}x${height}")
+                cmd.append("wm size ${width}x$height")
                 cmd.append("\n")
             }
             if (dpi >= 96) {
@@ -66,7 +61,7 @@ class dialog_addin_modifydpi {
                 cmd.append("sync\n")
                 cmd.append("reboot\n")
             }
-            if (cmd.length > 0)
+            if (cmd.isNotEmpty())
                 SuDo(context).execCmdSync(cmd.toString())
         }).create().show()
     }

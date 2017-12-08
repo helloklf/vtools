@@ -6,12 +6,11 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.BatteryManager
 import android.os.Handler
-import android.os.Message
 import android.widget.Toast
-import com.omarea.shared.*
+import com.omarea.shared.Consts
+import com.omarea.shared.SpfConfig
 import java.io.DataOutputStream
 import java.io.IOException
-import java.util.*
 
 class reciver_batterychanged : BroadcastReceiver() {
     private var p: Process? = null
@@ -32,7 +31,7 @@ class reciver_batterychanged : BroadcastReceiver() {
 
     }
 
-    @JvmOverloads internal fun DoCmd(cmd: String, isRedo: Boolean = false) {
+    @JvmOverloads private fun doCmd(cmd: String, isRedo: Boolean = false) {
         Thread(Runnable {
             try {
                 tryExit()
@@ -48,9 +47,9 @@ class reciver_batterychanged : BroadcastReceiver() {
             } catch (e: IOException) {
                 //重试一次
                 if (!isRedo)
-                    DoCmd(cmd, true)
+                    doCmd(cmd, true)
                 else
-                    ShowMsg("Failed execution action!\nError message : " + e.message + "\n\n\ncommand : \r\n" + cmd, true)
+                    showMsg("Failed execution action!\nError message : " + e.message + "\n\n\ncommand : \r\n" + cmd, true)
             }
         }).start()
     }
@@ -58,31 +57,27 @@ class reciver_batterychanged : BroadcastReceiver() {
     internal var context: Context? = null
     private var sharedPreferences: SharedPreferences? = null
     private var globalSharedPreferences: SharedPreferences? = null
-    internal var listener: SharedPreferences.OnSharedPreferenceChangeListener? = null
-    private val myHandler = object : Handler() {
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-        }
-    }
+    private var listener: SharedPreferences.OnSharedPreferenceChangeListener? = null
+    private val myHandler = Handler()
 
     //显示文本消息
-    private fun ShowMsg(msg: String, longMsg: Boolean) {
+    private fun showMsg(msg: String, longMsg: Boolean) {
         if (context != null)
             myHandler.post { Toast.makeText(context, msg, if (longMsg) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show() }
     }
 
     //快速充电
-    private fun FastCharger() {
+    private fun fastCharger() {
         if (!sharedPreferences!!.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false))
             return
 
         if (globalSharedPreferences!!.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false))
-            ShowMsg("充电器已连接！", false)
-        DoCmd(Consts.FastChanger)
+            showMsg("充电器已连接！", false)
+        doCmd(Consts.FastChanger)
     }
 
-    internal var lastBatteryLeavel = -1
-    internal var lastChangerState = false
+    private var lastBatteryLeavel = -1
+    private var lastChangerState = false
 
     override fun onReceive(context: Context, intent: Intent) {
         if (sharedPreferences == null) {
@@ -109,17 +104,17 @@ class reciver_batterychanged : BroadcastReceiver() {
                 if (onChanger) {
                     if (batteryLevel >= sharedPreferences!!.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85)) {
                         bp = true
-                        DoCmd(Consts.DisableChanger)
+                        doCmd(Consts.DisableChanger)
                     }
                 }
                 //电量不足，恢复充电功能
                 else if (action == Intent.ACTION_BATTERY_LOW) {
-                    DoCmd(Consts.ResumeChanger)
+                    doCmd(Consts.ResumeChanger)
                     Toast.makeText(this.context, "电池电量低，请及时充电！", Toast.LENGTH_SHORT).show()
                     bp = false
                 } else if (bp && batteryLevel != -1 && batteryLevel < sharedPreferences!!.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85) - 20) {
                     //电量低于保护级别10
-                    DoCmd(Consts.ResumeChanger)
+                    doCmd(Consts.ResumeChanger)
                     bp = false
                 }
             }
@@ -146,7 +141,7 @@ class reciver_batterychanged : BroadcastReceiver() {
                 return
             }
         } catch (ex: Exception) {
-            ShowMsg("充电加速服务：\n" + ex.message, true);
+            showMsg("充电加速服务：\n" + ex.message, true);
         }
 
     }
@@ -154,7 +149,7 @@ class reciver_batterychanged : BroadcastReceiver() {
     private fun entryFastChanger(onChanger: Boolean) {
         if (onChanger) {
             if (sharedPreferences!!.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
-                FastCharger()
+                fastCharger()
             }
         }
     }
