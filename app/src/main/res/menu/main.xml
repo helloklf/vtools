@@ -3,8 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:title=""
+        android:visible="false"
         android:icon="@drawable/graph"
         android:id="@+id/action_graph"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom" />
+    <item
+        android:title=""
+        android:icon="@drawable/ic_power"
+        android:id="@+id/action_power"
         android:orderInCategory="100"
         app:showAsAction="ifRoom" />
     <item
@@ -13,34 +20,4 @@
         android:id="@+id/action_settings"
         android:orderInCategory="100"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/action_shutdown"
-        android:orderInCategory="100"
-        android:title="@string/action_shutdown"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_reboot"
-        android:orderInCategory="100"
-        android:title="@string/action_reboot"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_hotreboot"
-        android:orderInCategory="100"
-        android:title="@string/action_hotreboot"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_reboot_rec"
-        android:orderInCategory="100"
-        android:title="@string/action_reboot_rec"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_reboot_bl"
-        android:orderInCategory="100"
-        android:title="@string/action_reboot_bl"
-        app:showAsAction="never" />
-    <item
-        android:id="@+id/action_reboot9008"
-        android:orderInCategory="100"
-        android:title="@string/action_reboot9008"
-        app:showAsAction="never" />
 </menu>

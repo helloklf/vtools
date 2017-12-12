@@ -26,22 +26,29 @@ class CrashHandler private constructor() : Thread.UncaughtExceptionHandler {
         // }
         println("uncaughtException")
 
+        /*
         object : Thread() {
             override fun run() {
                 Looper.prepare()
-                AlertDialog.Builder(mContext).setTitle("啊哦...")
-                        .setCancelable(false)
-                        .setMessage("这破程序又出错了...\n" + ex.localizedMessage)
-                        .setNeutralButton("垃圾") { _, _ ->
-                        }
-                        .setPositiveButton("退出", { _, _ ->
-                            android.os.Process.killProcess(android.os.Process.myPid());
-                            System.exit(0)
-                        })
-                        .create().show()
+                try {
+                    AlertDialog.Builder(mContext).setTitle("啊哦...")
+                            .setCancelable(false)
+                            .setMessage("这破程序又出错了...\n" + ex.localizedMessage)
+                            .setNeutralButton("垃圾") { _, _ ->
+                            }
+                            .setPositiveButton("退出", { _, _ ->
+                                android.os.Process.killProcess(android.os.Process.myPid());
+                                System.exit(0)
+                            })
+                            .create().show()
+                } catch (ex:Exception) {
+                    android.os.Process.killProcess(android.os.Process.myPid());
+                }
                 Looper.loop()
             }
+
         }.start()
+        */
     }
 
     /**

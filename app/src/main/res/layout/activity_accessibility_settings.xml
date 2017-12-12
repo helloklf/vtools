@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:keepScreenOn="true"
-    tools:context="com.omarea.vboot.AccessibilitySettingsActivity">
+    tools:context="com.omarea.vboot.ActivityAccessibilitySettings">
 
     <ScrollView
         android:layout_width="match_parent"

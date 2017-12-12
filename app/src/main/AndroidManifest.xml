@@ -5,18 +5,17 @@
     <uses-permission android:name="android.permission.BATTERY_STATS" />
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-     
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <!--<uses-permission  android:name="android.permission.PACKAGE_USAGE_STATS" />-->
+    <!-- <uses-permission  android:name="android.permission.PACKAGE_USAGE_STATS" /> -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.BIND_ACCESSIBILITY_SERVICE" />
+    <!--<uses-permission android:name="android.permission.INJECT_EVENTS" />-->
 
     <application
-        android:allowBackup="true"
         android:icon="@drawable/linux"
         android:label="@string/app_name"
         android:persistent="true"
@@ -32,16 +31,8 @@
             android:name="xposedminversion"
             android:value="30" />
 
-        <!--
-        <receiver android:name="BootBroadcastReceiver">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
-                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
-            </intent-filter>  
-        </receiver>
-        -->
         <service
-            android:name=".vtools_accessibility"
+            android:name=".AccessibilityServiceVTools"
             android:label="微工具箱-增强服务"
             android:lockTaskMode="always"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
@@ -59,9 +50,9 @@
         </service>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".ActivityMain"
             android:configChanges="keyboardHidden|orientation"
-            android:excludeFromRecents="true"
+            android:excludeFromRecents="false"
             android:exported="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
@@ -71,30 +62,20 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <!--
-                <category android:name="android.intent.category.HOME" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.MONKEY" />
-                -->
             </intent-filter>
         </activity>
+
         <activity
-            android:name=".Rom2ZipActivity"
-            android:configChanges="keyboardHidden|orientation"
-            android:label="@string/title_activity_rom2zip"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
+            android:name=".ActivityAccessibilitySettings"
             android:autoRemoveFromRecents="true"
-            android:name=".AccessibilitySettingsActivity"
             android:configChanges="keyboardHidden|orientation"
-            android:excludeFromRecents="true"
+            android:excludeFromRecents="false"
             android:label="微工具箱增强服务"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <receiver
-            android:name=".receiver_boot_openswap"
+            android:name=".ReceiverBoot"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -104,14 +85,13 @@
         </receiver>
 
         <service
-            android:name=".BatteryService"
+            android:name=".ServiceBattery"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="com.omarea.vboot.BatteryService" />
             </intent-filter>
         </service>
-
     </application>
 
 </manifest>

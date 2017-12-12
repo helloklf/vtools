@@ -4,9 +4,10 @@
     android:accessibilityFeedbackType="feedbackGeneric"
     android:accessibilityFlags="flagDefault"
     android:packageNames="@null"
-    android:settingsActivity="com.omarea.vboot.AccessibilitySettingsActivity"
+    android:settingsActivity="com.omarea.vboot.ActivityAccessibilitySettings"
     android:canRetrieveWindowContent="true"
-    android:canRequestTouchExplorationMode="true"
+    android:canRequestFilterKeyEvents="false"
+    android:canRequestTouchExplorationMode="false"
     android:description="@string/accessibility_service_description"
     android:notificationTimeout="100" />
     <!--<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"

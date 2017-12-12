@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.omarea.vboot.fragment_config">
+    tools:context="com.omarea.vboot.FragmentConfig">
 
     <EditText
         android:id="@+id/config_search_box"

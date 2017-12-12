@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.omarea.vboot.fragment_home"
+    tools:context="com.omarea.vboot.FragmentHome"
     android:orientation="vertical">
 
     <TableLayout

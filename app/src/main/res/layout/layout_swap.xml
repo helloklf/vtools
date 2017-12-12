@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.omarea.vboot.fragment_swap">
+    tools:context="com.omarea.vboot.FragmentSwap">
 
     <TabHost
         android:id="@+id/swapzram_tabhost"

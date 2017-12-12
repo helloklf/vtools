@@ -166,17 +166,18 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
                     } else if (Regex("^\\[.*\\]\$").matches(obj)) {
                         progressBar.progress = msg.what
                         val txt = obj
-                                .replace("[uninstall ", "[卸载")
-                                .replace("[install ", "[安装")
-                                .replace("[restore ", "[还原")
-                                .replace("[backup ", "[备份")
-                                .replace("[unhide ", "[显示")
-                                .replace("[hide ", "[隐藏")
-                                .replace("[delete ", "[删除")
-                                .replace("[disable ", "[禁用")
-                                .replace("[enable ", "[启用")
-                                .replace("[trim caches ", "[清除缓存")
-                                .replace("[clear ", "[清除数据")
+                                .replace("[copy ", "[复制 ")
+                                .replace("[uninstall ", "[卸载 ")
+                                .replace("[install ", "[安装 ")
+                                .replace("[restore ", "[还原 ")
+                                .replace("[backup ", "[备份 ")
+                                .replace("[unhide ", "[显示 ")
+                                .replace("[hide ", "[隐藏 ")
+                                .replace("[delete ", "[删除 ")
+                                .replace("[disable ", "[禁用 ")
+                                .replace("[enable ", "[启用 ")
+                                .replace("[trim caches ", "[清除缓存 ")
+                                .replace("[clear ", "[清除数据 ")
                         textView.text = txt
                     }
                 }
@@ -225,16 +226,20 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
 
             sb.append("echo '[backup $packageName]';")
             sb.append("cd /data/data/$packageName;")
-            if (apk)
-                sb.append("cp $path $backupPath$packageName.apk;")
+            if (apk) {
+                sb.append("echo '[copy $packageName]';")
+                sb.append("cp -F $path $backupPath$packageName.apk;")
+            }
             if (data) {
+                sb.append("echo '[backup $packageName]';")
                 if (allowPigz)
                     sb.append("busybox tar cf - * --exclude cache --exclude lib | pigz > $backupPath$packageName.tar.gz;")
                 else
                     sb.append("busybox tar -czf $backupPath$packageName.tar.gz * --exclude cache --exclude lib;")
             }
         }
-
+        sb.append("chown sdcard_rw *;")
+        sb.append("chmod 7777 *;")
         sb.append("echo '[operation completed]';")
         execShell(sb)
     }
@@ -246,12 +251,19 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
         checkPigz()
 
         val sb = StringBuilder()
+        sb.append("chown sdcard_rw *;")
+        sb.append("chmod 7777 *;")
         for (item in apps) {
             val packageName = item["packageName"].toString()
+            val apkPath = item["path"].toString()
             if (apk && File("$backupPath$packageName.apk").exists()) {
                 sb.append("echo '[install $packageName]';")
 
                 sb.append("pm install $backupPath$packageName.apk;")
+            } else if (apk && File(apkPath).exists()) {
+                sb.append("echo '[install $packageName]';")
+
+                sb.append("pm install $apkPath;")
             }
             if (data && File("$backupPath$packageName.tar.gz").exists()) {
                 sb.append("echo '[restore $packageName]';")
@@ -320,6 +332,7 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
      */
     private fun deleteAll() {
         val sb = StringBuilder()
+        sb.append(Consts.MountSystemRW)
         for (item in apps) {
             val packageName = item["packageName"].toString()
             sb.append("echo '[delete $packageName]';")

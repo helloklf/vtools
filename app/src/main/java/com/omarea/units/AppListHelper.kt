@@ -148,6 +148,8 @@ class AppListHelper {
                 val packageInfo = packageManager.getPackageArchiveInfo(absPath, PackageManager.GET_ACTIVITIES)
                 if (packageInfo != null) {
                     val applicationInfo = packageInfo.applicationInfo
+                    if (applicationInfo.packageName == "com.omarea.vboot")
+                        continue
                     applicationInfo.sourceDir = absPath
                     applicationInfo.publicSourceDir = absPath
 

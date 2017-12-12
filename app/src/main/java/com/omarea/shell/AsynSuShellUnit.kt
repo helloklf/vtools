@@ -1,8 +1,6 @@
 package com.omarea.shell
 
 import android.os.Handler
-import android.widget.Toast
-import java.nio.charset.Charset
 
 /**
  * Created by helloklf on 2017/12/01.

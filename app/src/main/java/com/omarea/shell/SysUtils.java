@@ -55,6 +55,7 @@ public class SysUtils {
                 dos.writeBytes("cat " + pathToFile + " \n");
                 dos.flush();
                 dos.writeBytes("exit \n");
+                dos.writeBytes("exit \n");
                 dos.flush();
                 dos.close();
                 if (process.waitFor() == 0) {
@@ -87,6 +88,7 @@ public class SysUtils {
                     Log.d(App_Tag, cmd);
                 }
             }
+            dos.writeBytes("exit \n");
             dos.writeBytes("exit \n");
             dos.flush();
             if (mProcess.waitFor() == 0) {

@@ -13,7 +13,7 @@ class ShellRuntime {
             val p = Runtime.getRuntime().exec("su")
             val dataOutputStream = DataOutputStream(p.outputStream)
             dataOutputStream.writeBytes(cmd)
-            dataOutputStream.writeBytes("\n\nexit\n")
+            dataOutputStream.writeBytes("\n\nexit\nexit\n")
             dataOutputStream.flush()
 
             return p.waitFor() == 0

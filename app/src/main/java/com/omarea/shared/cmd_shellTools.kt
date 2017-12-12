@@ -1,22 +1,19 @@
 package com.omarea.shared
 
-import android.app.AlertDialog
 import android.content.Context
 import android.os.Environment
 import android.os.Handler
 import android.os.Message
 import android.os.StatFs
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.ProgressBar
-
-import java.io.BufferedReader
 import java.io.DataOutputStream
 import java.io.IOException
-import java.io.InputStream
-import java.io.InputStreamReader
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
+
 
 /**
  * Created by helloklf on 2016/8/4.
@@ -24,11 +21,7 @@ import java.net.URLEncoder
 class cmd_shellTools(var activity: AppCompatActivity?, var progressBar: ProgressBar?) {
     lateinit var context: Context
 
-    internal var myHandler: Handler = object : Handler() {
-        override fun handleMessage(msg: Message) {
-            super.handleMessage(msg)
-        }
-    }
+    internal var myHandler: Handler = Handler()
 
     init {
         if (activity != null)
@@ -217,28 +210,15 @@ class cmd_shellTools(var activity: AppCompatActivity?, var progressBar: Progress
             out.flush()
             out.close()
 
-            val inputstream = p.inputStream
-            val inputstreamreader = InputStreamReader(inputstream)
-            val bufferedreader = BufferedReader(inputstreamreader)
+            val bufferedreader = p.inputStream.bufferedReader()
 
-            var line: String
             val stringBuffer = StringBuilder()
-            while (true) {
-                line = bufferedreader.readLine()
-                if (line == null) {
-                    break
-                }
-                stringBuffer.append(line)
-                stringBuffer.append("\n")
-            }
+            bufferedreader.lineSequence().joinTo(stringBuffer,"\n")
             bufferedreader.close()
-            inputstream.close()
-            inputstreamreader.close()
-            p.destroy()
             p.destroy()
             return stringBuffer.toString().trim { it <= ' ' }
         } catch (e: Exception) {
-
+            e.stackTrace
         }
 
         return null

@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.os.Handler
 import android.view.accessibility.AccessibilityManager
 import android.widget.Toast
+import java.io.BufferedWriter
 import java.io.DataOutputStream
 import java.io.IOException
 import java.util.*
@@ -16,10 +17,11 @@ import java.util.*
  */
 class ServiceHelper(private var context: Context) {
     private var lastPackage: String? = null
+    private var lastModePackage: String? = null
     private var lastMode = Configs.None
     private var p: Process? = null
     private val serviceCreatedTime = Date().time
-    private var out: DataOutputStream? = null
+    private var out: BufferedWriter? = null
     private var spfPowercfg: SharedPreferences = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
     private var spfBooster: SharedPreferences = context.getSharedPreferences(SpfConfig.BOOSTER_CONFIG_SPF, Context.MODE_PRIVATE)
     private var spfGlobal: SharedPreferences = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
@@ -34,13 +36,13 @@ class ServiceHelper(private var context: Context) {
     private var listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
         if (key == SpfConfig.GLOBAL_SPF_AUTO_BOOSTER) {
             if (this.lastPackage != null) {
-                autoBoosterApp(this.lastPackage!!)
+                autoBoosterApp(this.lastPackage)
             }
             autoBooster = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, false)
         } else if (key == SpfConfig.GLOBAL_SPF_DYNAMIC_CPU || key == SpfConfig.GLOBAL_SPF_DYNAMIC_CPU_CONFIG) {
             doCmd(Consts.ExecuteConfig)
-            if (this.lastPackage != null) {
-                autoToggleMode(this.lastPackage!!)
+            if (this.lastModePackage != null) {
+                autoToggleMode(this.lastModePackage)
             } else {
                 toggleConfig(Configs.Default)
             }
@@ -63,7 +65,7 @@ class ServiceHelper(private var context: Context) {
             return false
 
         doCmd(Consts.DisableSELinux)
-        doCmd(Consts.ExecuteConfig)
+        doCmd(Consts.ExecuteConfig + "\n" + Consts.ToggleDefaultMode)
         showMsg("微工具箱增强服务已启动")
 
         settingsLoaded = true
@@ -77,12 +79,15 @@ class ServiceHelper(private var context: Context) {
         try {
             if (out != null)
                 out!!.close()
+            out = null
         } catch (ex: Exception) {
         }
+        out = null
         try {
             p!!.destroy()
         } catch (ex: Exception) {
         }
+        p = null
     }
 
     private fun doCmd(cmd: String, isRedo: Boolean = false) {
@@ -92,12 +97,12 @@ class ServiceHelper(private var context: Context) {
                 if (p == null || isRedo || out == null) {
                     tryExit()
                     p = Runtime.getRuntime().exec("su")
-                    out = DataOutputStream(p!!.outputStream)
+                    out = p!!.outputStream.bufferedWriter()
                 }
-                out!!.writeBytes(cmd)
-                out!!.writeBytes("\n")
+
+                out!!.write(cmd)
+                out!!.write("\n\n")
                 out!!.flush()
-                //out!!.close()
             } catch (e: IOException) {
                 //重试一次
                 if (!isRedo)
@@ -114,19 +119,16 @@ class ServiceHelper(private var context: Context) {
 
     private fun showModeToggleMsg(packageName: String, modeName: String) {
         if (debugMode)
-            showMsg("Package: $packageName\n Mode: $modeName")
+            showMsg("$modeName \n$packageName")
     }
 
     //自动切换模式
-    private fun autoToggleMode(packageName: String) {
-        if (!dyamicCore)
-            return
-
-        if (packageName == "android" || packageName == "com.android.systemui" || packageName == "com.omarea.vboot" || packageName.contains("inputmethod"))
+    private fun autoToggleMode(packageName: String?) {
+        if (!dyamicCore || packageName == null)
             return
 
         //如果没有切换应用
-        if (packageName == lastPackage && lastMode != Configs.Fast)
+        if (packageName == lastModePackage)
             return
 
         var mod = spfPowercfg.getString(packageName, "default")
@@ -143,7 +145,7 @@ class ServiceHelper(private var context: Context) {
                         showModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
                     }
                 }
-                return
+                else return
             }
             "game" -> {
                 if (lastMode != Configs.Game) {
@@ -154,7 +156,7 @@ class ServiceHelper(private var context: Context) {
                         showModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
                     }
                 }
-                return
+                else return
             }
             "fast" -> {
                 if (lastMode != Configs.Fast) {
@@ -164,8 +166,7 @@ class ServiceHelper(private var context: Context) {
                     } catch (ex: Exception) {
                         showModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
                     }
-                }
-                return
+                } else return
             }
             else -> {
                 if (lastMode != Configs.Default) {
@@ -176,13 +177,15 @@ class ServiceHelper(private var context: Context) {
                         showModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
                     }
                 }
+                else return
             }
         }
+        lastModePackage = packageName
     }
 
     //终止进程
-    internal fun autoBoosterApp(packageName: String) {
-        if (!autoBooster)
+    internal fun autoBoosterApp(packageName: String?) {
+        if (!autoBooster || lastPackage == null || packageName == null)
             return
 
         if (lastPackage == "android" || lastPackage == "com.android.systemui" || lastPackage == "com.omarea.vboot" || lastPackage.equals(packageName))
@@ -244,26 +247,19 @@ class ServiceHelper(private var context: Context) {
         Fast
     }
 
-    fun onAccessibilityEvent(pkgName: String?) {
+    fun onAccessibilityEvent(pkgName: String) {
         var packageName = pkgName
         if (!settingsLoaded && !settingsLoad())
             return
 
-        if (dyamicCore) {
-            if (lastPackage != null) {
-                lastPackage = "com.android.systemui"
-            }
-        } else if (lastPackage == null)
-            lastPackage = "com.android.systemui"
-
-        if (packageName == null)
-            packageName = lastPackage
-
         if (lastPackage == packageName || ignoredList.contains(packageName))
             return
 
-        autoBoosterApp(packageName!!)
-        autoToggleMode(packageName)
+        if (lastPackage == null)
+            lastPackage = "com.android.systemui"
+
+        autoBoosterApp(packageName)
+        autoToggleMode(packageName.toLowerCase())
 
         lastPackage = packageName
     }
@@ -277,7 +273,7 @@ class ServiceHelper(private var context: Context) {
             val m = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
             val serviceInfos = m.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
             for (serviceInfo in serviceInfos) {
-                if (serviceInfo.id == "${Consts.PACKAGE_NAME}/.vtools_accessibility") {
+                if (serviceInfo.id == "${Consts.PACKAGE_NAME}/.AccessibilityServiceVTools") {
                     return true
                 }
             }

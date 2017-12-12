@@ -13,4 +13,9 @@ public class Files {
         long size = stat.getAvailableBytes();
         return size / 1024 / 1024; //剩余空间
     }
+    public static long getDirSize(String dir) {
+        StatFs stat = new StatFs(dir);
+        long size = stat.getTotalBytes();
+        return size / 1024 / 1024; //剩余空间
+    }
 }
