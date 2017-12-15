@@ -36,9 +36,11 @@ class Busybox(private var context: Context) {
                             "确定",
                             { _, _ ->
                                 AppShared.WriteFile(context.assets, "busybox.zip", "busybox")
-                                val cmd = StringBuilder("cp ${Consts.SDCardDir}/Android/data/${Consts.PACKAGE_NAME}/busybox /cache/busybox\nchmod 0777 /cache/busybox\n")
+                                val cmd = StringBuilder("cp ${Consts.SDCardDir}/Android/data/${Consts.PACKAGE_NAME}/busybox /cache/busybox;\n")
+                                cmd.append("chmod 7777 /cache/busybox;\n")
                                 cmd.append(Consts.MountSystemRW2)
-                                cmd.append("cp /cache/busybox /system/xbin/busybox\n/cache/busybox chmod 0777 /system/xbin/busybox\n")
+                                cmd.append("cp /cache/busybox /system/xbin/busybox;")
+                                cmd.append("/cache/busybox chmod 0777 /system/xbin/busybox;")
                                 SuDo(context).execCmdSync(cmd.toString())
                                 if (next != null)
                                     next.run()

@@ -60,7 +60,7 @@ public class ServiceBattery extends Service {
             List<ActivityManager.RunningServiceInfo> serviceInfos = m.getRunningServices(5000);
             for (ActivityManager.RunningServiceInfo serviceInfo : serviceInfos) {
                 if (serviceInfo.service.getPackageName().equals("com.omarea.vboot")) {
-                    if (serviceInfo.service.getClassName().equals("com.omarea.vboot.BatteryService")) {
+                    if (serviceInfo.service.getClassName().equals("com.omarea.vboot.ServiceBattery")) {
                         return true;
                     }
                 }

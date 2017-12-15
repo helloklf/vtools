@@ -26,7 +26,8 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
         AlertDialog.Builder(context).setTitle("请选择操作")
                 .setCancelable(true)
                 .setItems(
-                        arrayOf("备份（带数据）",
+                        arrayOf("备份（apk、data）",
+                                "备份（apk）",
                                 "卸载",
                                 "卸载（保留数据）",
                                 "清空数据",
@@ -36,27 +37,30 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
                     when (which) {
                         0 -> {
                             confirm("备份应用和数据", "备份功能目前还是实验性的，无法保证在所有设备上运行，备份可能无法正常还原。继续尝试使用吗？", Runnable {
-                                backupAll()
+                                backupAll(true, true)
                             })
                         }
                         1 -> {
+                            backupAll(true, false)
+                        }
+                        2 -> {
                             confirm("卸载", "正在卸载${apps.size}个应用，继续吗？", Runnable {
                                 uninstallAll()
                             })
                         }
-                        2 -> {
+                        3 -> {
                             confirm("卸载（保留数据）", "正在卸载${apps.size}个应用，这些应用的数据会被保留，这可能会导致下次安装不同签名的同名应用时无法安装，继续吗？", Runnable {
                                 uninstallKeepDataAll()
                             })
                         }
-                        3 -> {
+                        4 -> {
                             confirm("清除应用数据", "正在清除${apps.size}个应用的数据，继续吗？", Runnable {
                                 clearAll()
                             })
                         }
-                        4 -> trimCachesAll()
-                        5 -> disableAll()
-                        6 -> enableAll()
+                        5 -> trimCachesAll()
+                        6 -> disableAll()
+                        7 -> enableAll()
                     }
                 })
                 .show()

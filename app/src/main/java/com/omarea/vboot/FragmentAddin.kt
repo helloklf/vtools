@@ -19,6 +19,7 @@ import com.omarea.shell.units.QQStyleUnit
 import com.omarea.vboot.dialogs.DialogAddinModifyDPI
 import com.omarea.vboot.dialogs.DialogAddinModifydevice
 import kotlinx.android.synthetic.main.layout_addin.*
+import java.io.File
 import java.util.*
 
 
@@ -153,6 +154,28 @@ class FragmentAddin : Fragment() {
 
 
         listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
+            if (position == 1 || position == 2) {
+                if (File("/system/vendor/bin/thermal-engine").exists() || File("/system/vendor/bin/thermal-engine.bak").exists()) {
+                    if (position == 1 && File("/system/vendor/bin/thermal-engine.bak").exists()) {
+                        Toast.makeText(context, "你已执行过这个操作，不需要再次执行，如果未生效请重启手机！", Toast.LENGTH_SHORT).show()
+                        return@OnItemClickListener
+                    }
+                    if (position == 2 && File("/system/vendor/bin/thermal-engine").exists()) {
+                        Toast.makeText(context, "你不需要此操作，温控文件正在正常使用，如果无效请重启手机！", Toast.LENGTH_SHORT).show()
+                        return@OnItemClickListener
+                    }
+                } else {
+                    Toast.makeText(context, "该功能暂不支持您的设备！", Toast.LENGTH_SHORT).show()
+                    return@OnItemClickListener
+                }
+            }
+            if (position == 4 || position == 5) {
+                if (File("/sys/class/power_supply/battery/battery_charging_enabled").exists() || File("/sys/class/power_supply/battery/input_suspend").exists()) {
+                } else {
+                    Toast.makeText(context, "该功能暂不支持您的设备！", Toast.LENGTH_SHORT).show()
+                    return@OnItemClickListener
+                }
+            }
             val builder = AlertDialog.Builder(thisview!!)
             builder.setTitle("执行这个脚本？")
             builder.setNegativeButton(android.R.string.cancel, null)

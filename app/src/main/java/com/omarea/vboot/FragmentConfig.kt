@@ -33,7 +33,7 @@ class FragmentConfig : Fragment() {
     private var thisview: ActivityMain? = null
     private lateinit var spfPowercfg: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
-    private var hasSystemApp = false
+    private var hasSystemApp = true
     private lateinit var applistHelper: AppListHelper
 
     internal val myHandler: Handler = Handler()

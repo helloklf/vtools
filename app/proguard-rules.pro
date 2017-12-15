@@ -16,10 +16,10 @@
 #   public *;
 #}
 
--keep class com.omarea.shared.xposed_interface{*;}
--keep class com.omarea.shared.xposed_check{*;}
--keep class com.omarea.vboot.BatteryService{*;}
+-keep class com.omarea.shared.XposedInterface{*;}
+-keep class com.omarea.shared.XposedCheck{*;}
+-keep class com.omarea.vboot.ServiceBattery{*;}
 
--keepclassmembers class com.omarea.shared.xposed_interface{*;}
--keepclassmembers class com.omarea.shared.xposed_check{*;}
--keepclassmembers class com.omarea.vboot.BatteryService{*;}
+-keepclassmembers class com.omarea.shared.XposedInterface{*;}
+-keepclassmembers class com.omarea.shared.XposedCheck{*;}
+-keepclassmembers class com.omarea.vboot.ServiceBattery{*;}

@@ -30,14 +30,19 @@ object Consts {
 
     val MountSystemRW =
             "busybox mount -o rw,remount /system\n" +
+                    "busybox mount -f -o rw,remount /system\n" +
                     "mount -o rw,remount /system\n" +
                     "busybox mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
                     "mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n"
     val MountSystemRW2 =
             "/cache/busybox mount -o rw,remount /system\n" +
+                    "/cache/busybox mount -f -o rw,remount /system\n" +
                     "mount -o rw,remount /system\n" +
                     "/cache/busybox mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
-                    "mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n"
+                    "mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
+                    "/cache/busybox mount -o rw,remount /system/xbin\n" +
+                    "/cache/busybox mount -f -o rw,remount /system/xbin\n" +
+                    "mount -o rw,remount /system/xbin\n"
 
     val POWER_CFG_PATH = "/data/powercfg"
     val POWER_CFG_BASE = "/data/init.qcom.post_boot.sh"

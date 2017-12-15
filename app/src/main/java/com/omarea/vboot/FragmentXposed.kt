@@ -20,7 +20,7 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
 import com.omarea.shared.SpfConfig
-import com.omarea.shared.xposed_check
+import com.omarea.shared.XposedCheck
 import com.omarea.ui.list_adapter2
 import kotlinx.android.synthetic.main.layout_xposed.*
 import java.io.File
@@ -87,7 +87,7 @@ class FragmentXposed : Fragment() {
             spf.edit().putBoolean("xposed_webview_debug", value).commit()
         }
 
-        if (xposed_check.xposedIsRunning())
+        if (XposedCheck.xposedIsRunning())
             vbootxposedservice_state.visibility = GONE
 
         val config_powersavelistClick = object : AdapterView.OnItemClickListener {
