@@ -52,7 +52,7 @@ class FragmentImg : Fragment() {
         img_action_listview.adapter = mSimpleAdapter
 
 
-        img_action_listview.onItemClickListener = AdapterView.OnItemClickListener { _, view, position, id ->
+        img_action_listview.onItemClickListener = AdapterView.OnItemClickListener { _, view, position, _ ->
             when (position) {
                 0 -> {
                     if (cmdshellTools!!.GetSDFreeSizeMB() < 100) {
@@ -63,7 +63,7 @@ class FragmentImg : Fragment() {
                         val builder = AlertDialog.Builder(thisview!!)
                         builder.setTitle(context.getString(R.string.backup_file_exists))
                         builder.setNegativeButton(android.R.string.cancel, null)
-                        builder.setPositiveButton(android.R.string.yes) { dialog, which ->
+                        builder.setPositiveButton(android.R.string.yes) { _, _ ->
                             //导出boot
                             BackupRestoreUnit(activity, progressBar2).SaveBoot()
                         }
@@ -80,7 +80,7 @@ class FragmentImg : Fragment() {
                         val builder = AlertDialog.Builder(thisview!!)
                         builder.setTitle("确定刷入${Consts.SDCardDir}/boot.img？")
                         builder.setNegativeButton(android.R.string.cancel, null)
-                        builder.setPositiveButton(android.R.string.yes) { _, which ->
+                        builder.setPositiveButton(android.R.string.yes) { _, _ ->
                             BackupRestoreUnit(activity, progressBar2).FlashBoot("${Consts.SDCardDir}/boot.img")
                         }
                         builder.setMessage("此操作将刷入${Consts.SDCardDir}/boot.img到系统Boot分区，我十分不推荐你这么做，刷入无效的Boot文件可能导致你的设备无法启动。如果你没有办法在设备无法启动时紧急恢复。")
@@ -89,7 +89,7 @@ class FragmentImg : Fragment() {
                         val builder = AlertDialog.Builder(thisview!!)
                         builder.setTitle("")
                         builder.setNegativeButton("", null)
-                        builder.setPositiveButton(android.R.string.yes) { dialog, which ->
+                        builder.setPositiveButton(android.R.string.yes) { _, _ ->
                         }
                         builder.setMessage("由于安卓系统的文件选择器兼容性差异，现在做文件选择变得非常困难，因此不再支持自选文件刷入。请将你要刷入的Boot文件放到以下位置：\n" +
                                 "${Consts.SDCardDir}/boot.img\n" +
@@ -106,7 +106,7 @@ class FragmentImg : Fragment() {
                         val builder = AlertDialog.Builder(thisview!!)
                         builder.setTitle(context.getString(R.string.backup_file_exists))
                         builder.setNegativeButton(android.R.string.cancel, null)
-                        builder.setPositiveButton(android.R.string.yes) { _, which ->
+                        builder.setPositiveButton(android.R.string.yes) { _, _ ->
                             //导出rec
                             BackupRestoreUnit(activity, progressBar2).SaveRecovery()
                         }
@@ -123,7 +123,7 @@ class FragmentImg : Fragment() {
                         val builder = AlertDialog.Builder(thisview!!)
                         builder.setTitle("确认刷入${Consts.SDCardDir}/recovery.img？")
                         builder.setNegativeButton(android.R.string.cancel, null)
-                        builder.setPositiveButton(android.R.string.yes) { dialog, which ->
+                        builder.setPositiveButton(android.R.string.yes) { _, _ ->
                             BackupRestoreUnit(activity, progressBar2).FlashRecovery("${Consts.SDCardDir}/recovery.img")
                         }
                         builder.setMessage("此操作将刷入${Consts.SDCardDir}/reovery.img到系统Recovery分区，应用无法验证该文件是否有效，你需要自己确保该recovery镜像适合本设备使用！")
@@ -132,7 +132,7 @@ class FragmentImg : Fragment() {
                         val builder = AlertDialog.Builder(thisview!!)
                         builder.setTitle("")
                         builder.setNegativeButton("", null)
-                        builder.setPositiveButton(android.R.string.yes) { dialog, which ->
+                        builder.setPositiveButton(android.R.string.yes) { _, _ ->
                         }
                         builder.setMessage("由于安卓系统的文件选择器兼容性差异，现在做文件选择变得非常困难，因此不再支持自选文件刷入。请将你要刷入的recovery文件放到以下位置：\n" +
                                 "${Consts.SDCardDir}/reovery.img\n" +

@@ -27,7 +27,7 @@ class ServiceHelper(private var context: Context) {
     private var spfGlobal: SharedPreferences = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
     //标识是否已经加载完设置
     private var settingsLoaded = false
-    private var ignoredList = arrayListOf<String>("com.miui.securitycenter", "android", "com.android.systemui", "com.omarea.vboot", "com.miui.touchassistant")
+    private var ignoredList = arrayListOf<String>("com.miui.securitycenter", "android", "com.android.systemui", "com.omarea.vboot", "com.miui.touchassistant", "com.miui.contentextension", "com.miui.systemAdSolution")
     private var autoBooster = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, false)
     private var dyamicCore = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
     private var debugMode = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
@@ -40,13 +40,13 @@ class ServiceHelper(private var context: Context) {
             }
             autoBooster = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, false)
         } else if (key == SpfConfig.GLOBAL_SPF_DYNAMIC_CPU || key == SpfConfig.GLOBAL_SPF_DYNAMIC_CPU_CONFIG) {
+            dyamicCore = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
             doCmd(Consts.ExecuteConfig)
             if (this.lastModePackage != null) {
                 autoToggleMode(this.lastModePackage)
-            } else {
+            } else if (dyamicCore) {
                 toggleConfig(Configs.Default)
             }
-            dyamicCore = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
         } else if (key == SpfConfig.GLOBAL_SPF_DEBUG) {
             debugMode = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
         }
@@ -65,7 +65,6 @@ class ServiceHelper(private var context: Context) {
             return false
 
         doCmd(Consts.DisableSELinux)
-        doCmd(Consts.ExecuteConfig + "\n" + Consts.ToggleDefaultMode)
         showMsg("微工具箱增强服务已启动")
 
         settingsLoaded = true

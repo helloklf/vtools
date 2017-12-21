@@ -1,7 +1,6 @@
 package com.omarea.vboot
 
 import android.Manifest
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -19,12 +18,10 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.ProgressBar
 import com.omarea.shared.*
 import com.omarea.shell.Busybox
 import com.omarea.shell.CheckRootStatus
-import com.omarea.shell.units.BusyboxInstallerUnit
 import com.omarea.vboot.dialogs.DialogPower
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -159,7 +156,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_booster -> fragment = FragmentBooster.createPage(this)
             R.id.nav_applictions -> fragment = FragmentApplistions.createPage(this)
             R.id.nav_swap -> fragment = FragmentSwap.createPage(this, cmdshellTools)
-            R.id.nav_tasks -> fragment = FragmentTasks.Create(this, cmdshellTools)
+            R.id.nav_tasks -> fragment = FragmentTasks.Create(this)
             R.id.nav_battery -> fragment = FragmentBattery.createPage(cmdshellTools)
             R.id.nav_img -> fragment = FragmentImg.createPage(this, cmdshellTools)
             R.id.nav_share -> {

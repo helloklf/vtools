@@ -8,8 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import com.omarea.shared.Consts
 import com.omarea.shell.AsynSuShellUnit
+import com.omarea.shell.SysUtils
 import com.omarea.vboot.R
 import java.io.File
 import java.util.*
@@ -20,13 +22,14 @@ import java.util.*
 
 class DialogAppOptions(private var context: Context, private var apps: ArrayList<HashMap<String, Any>>, private var handler: Handler) {
     private var allowPigz = false
-    private var backupPath = Consts.BackUpDir
+    private var backupPath = Consts.AbsBackUpDir
 
     fun selectUserAppOptions() {
         AlertDialog.Builder(context).setTitle("请选择操作")
                 .setCancelable(true)
                 .setItems(
-                        arrayOf("备份（带数据）",
+                        arrayOf("备份（apk、data）",
+                                "备份（apk）",
                                 "卸载",
                                 "卸载（保留数据）",
                                 "清空数据",
@@ -35,28 +38,35 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
                                 "解冻"), { _, which ->
                     when (which) {
                         0 -> {
+                            if (!checkRestoreData()) {
+                                Toast.makeText(context, "抱歉，数据备份还原功能暂不支持你的设备！", Toast.LENGTH_LONG).show()
+                                return@setItems
+                            }
                             confirm("备份应用和数据", "备份功能目前还是实验性的，无法保证在所有设备上运行，备份可能无法正常还原。继续尝试使用吗？", Runnable {
-                                backupAll()
+                                backupAll(true, true)
                             })
                         }
                         1 -> {
+                            backupAll(true, false)
+                        }
+                        2 -> {
                             confirm("卸载", "正在卸载${apps.size}个应用，继续吗？", Runnable {
                                 uninstallAll()
                             })
                         }
-                        2 -> {
+                        3 -> {
                             confirm("卸载（保留数据）", "正在卸载${apps.size}个应用，这些应用的数据会被保留，这可能会导致下次安装不同签名的同名应用时无法安装，继续吗？", Runnable {
                                 uninstallKeepDataAll()
                             })
                         }
-                        3 -> {
+                        4 -> {
                             confirm("清除应用数据", "正在清除${apps.size}个应用的数据，继续吗？", Runnable {
                                 clearAll()
                             })
                         }
-                        4 -> trimCachesAll()
-                        5 -> disableAll()
-                        6 -> enableAll()
+                        5 -> trimCachesAll()
+                        6 -> disableAll()
+                        7 -> enableAll()
                     }
                 })
                 .show()
@@ -115,6 +125,10 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
                             })
                         }
                         1 -> {
+                            if (!checkRestoreData()) {
+                                Toast.makeText(context, "抱歉，数据备份还原功能暂不支持你的设备！", Toast.LENGTH_LONG).show()
+                                return@setItems
+                            }
                             confirm("还原应用和数据", "该功能目前还在实验阶段，可能不能在所有设备上正常运行，也许会导致应用数据丢失。\n继续尝试恢复吗？", Runnable {
                                 restoreAll(true, true)
                             })
@@ -125,6 +139,10 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
                             })
                         }
                         3 -> {
+                            if (!checkRestoreData()) {
+                                Toast.makeText(context, "抱歉，数据备份还原功能暂不支持你的设备！", Toast.LENGTH_LONG).show()
+                                return@setItems
+                            }
                             confirm("还原数据", "该功能目前还在实验阶段，可能不能在所有设备上正常运行，也许会导致应用数据丢失。\n继续尝试恢复吗？", Runnable {
                                 restoreAll(false, true)
                             })
@@ -132,6 +150,11 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
                     }
                 })
                 .show()
+    }
+
+    private fun checkRestoreData(): Boolean {
+        var r = SysUtils.executeCommandWithOutput(false, "cd /data/data/${Consts.PACKAGE_NAME};echo `toybox ls -ld . | head -1 | cut -f 3 -d ' '`;")
+        return r != null && r.trim().length > 0
     }
 
     private fun execShell(sb: StringBuilder) {
@@ -178,6 +201,8 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
                                 .replace("[enable ", "[启用 ")
                                 .replace("[trim caches ", "[清除缓存 ")
                                 .replace("[clear ", "[清除数据 ")
+                                .replace("[skip ", "[跳过 ")
+                                .replace("[link ", "[链接 ")
                         textView.text = txt
                     }
                 }
@@ -217,29 +242,60 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
     private fun backupAll(apk: Boolean = true, data: Boolean = true) {
         checkPigz()
 
+        val date = Date().time.toString()
+
         val sb = StringBuilder()
-        sb.append("mkdir -p $backupPath;")
+        sb.append("backup_date=\"$date\";");
+        sb.append("\n")
+        sb.append("backup_path=\"${Consts.AbsBackUpDir}\";")
+        sb.append("\n")
+        sb.append("hard_link_path=\"${Consts.HarLinkBackUpDir}\";")
+        sb.append("mkdir -p \${backup_path};")
+        sb.append("\n")
+        sb.append("echo \$backup_date > \${backup_path}date.dat;")
+        sb.append("\n")
+        sb.append("if [ `cat \${backup_path}date.dat` = \$backup_date ];")
+        sb.append(" then ")
+            sb.append("backup_path=\${hard_link_path};")
+        sb.append(" fi;")
+        sb.append("\n")
 
         for (item in apps) {
             val packageName = item["packageName"].toString()
             val path = item["path"].toString()
 
-            sb.append("echo '[backup $packageName]';")
-            sb.append("cd /data/data/$packageName;")
             if (apk) {
-                sb.append("echo '[copy $packageName]';")
-                sb.append("cp -F $path $backupPath$packageName.apk;")
+                sb.append("rm -f \${backup_path}$packageName.apk;")
+                sb.append("\n")
+                /*
+                sb.append("ln -f $path \${backup_path}$packageName.apk;")
+                sb.append("\n")
+                sb.append("if [ -f \${backup_path}$packageName.apk ];")
+                sb.append(" then ")
+                    sb.append("echo '[link $packageName.apk]';")
+                    sb.append("sleep 1;")
+                sb.append(" else ")
+                    sb.append("echo '[copy $packageName.apk]';")
+                    sb.append("cp -F $path \${backup_path}$packageName.apk;")
+                sb.append("fi;")
+                */
+                sb.append("echo '[copy $packageName.apk]';")
+                sb.append("cp -F $path \${backup_path}$packageName.apk;")
+                sb.append("\n")
             }
             if (data) {
+                sb.append("cd /data/data/$packageName;")
                 sb.append("echo '[backup $packageName]';")
                 if (allowPigz)
-                    sb.append("busybox tar cf - * --exclude cache --exclude lib | pigz > $backupPath$packageName.tar.gz;")
+                    sb.append("busybox tar cpf - * --exclude cache --exclude lib | pigz > \${backup_path}$packageName.tar.gz;")
                 else
-                    sb.append("busybox tar -czf $backupPath$packageName.tar.gz * --exclude cache --exclude lib;")
+                    sb.append("busybox tar -czpf \${backup_path}$packageName.tar.gz * --exclude cache --exclude lib;")
+                sb.append("\n")
             }
         }
-        sb.append("chown sdcard_rw *;")
-        sb.append("chmod 7777 *;")
+        sb.append("cd \${backup_path};")
+        sb.append("chown sdcard_rw:sdcard_rw *;")
+        sb.append("chmod 777 *;")
         sb.append("echo '[operation completed]';")
         execShell(sb)
     }
@@ -266,13 +322,18 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
                 sb.append("pm install $apkPath;")
             }
             if (data && File("$backupPath$packageName.tar.gz").exists()) {
-                sb.append("echo '[restore $packageName]';")
-
-                sb.append("pm clear $packageName;")
-                sb.append("cd /data/data/$packageName;")
-                sb.append("busybox tar -xzf $backupPath$packageName.tar.gz;")
-                sb.append("dirUser=`ls -ld . | head -1 | cut -f 3 -d ' '`;chown -R \$dirUser:\$dirUser *;")
-                sb.append("chown -R --reference=/data/data/$packageName *;")
+                sb.append("if [ -d /data/data/$packageName ];")
+                sb.append(" then ")
+                    sb.append("echo '[restore $packageName]';")
+                    sb.append("pm clear $packageName;")
+                    sb.append("cd /data/data/$packageName;")
+                    sb.append("busybox tar -xzpf $backupPath$packageName.tar.gz;")
+                    sb.append("chown -R -L `toybox ls -ld .|cut -f3 -d ' '`:`toybox ls -ld .|cut -f4 -d ' '` *;")
+                    //sb.append("chown -R --reference=/data/data/$packageName *;")
+                sb.append(" else ")
+                    sb.append("echo '[skip $packageName]';")
+                    sb.append("sleep 1;")
+                sb.append("fi;")
             }
         }
         sb.append("echo '[operation completed]';")

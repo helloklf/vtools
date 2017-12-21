@@ -82,7 +82,7 @@ class ReciverBatterychanged : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (sharedPreferences == null) {
             sharedPreferences = context.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
-            listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key -> }
+            listener = SharedPreferences.OnSharedPreferenceChangeListener { _, _ -> }
             sharedPreferences!!.registerOnSharedPreferenceChangeListener(listener)
         }
         if (globalSharedPreferences == null) {

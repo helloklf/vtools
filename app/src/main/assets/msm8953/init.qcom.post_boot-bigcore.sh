@@ -1,30 +1,4 @@
 #!/system/bin/sh
-# Copyright (c) 2012-2013, 2016, The Linux Foundation. All rights reserved.
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#     * Redistributions of source code must retain the above copyright
-#       notice, this list of conditions and the following disclaimer.
-#     * Redistributions in binary form must reproduce the above copyright
-#       notice, this list of conditions and the following disclaimer in the
-#       documentation and/or other materials provided with the distribution.
-#     * Neither the name of The Linux Foundation nor
-#       the names of its contributors may be used to endorse or promote
-#       products derived from this software without specific prior written
-#       permission.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-# IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-# NON-INFRINGEMENT ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
-# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
-# OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
-# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
-# ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#
 
 target=`getprop ro.board.platform`
 
@@ -195,25 +169,6 @@ case "$target" in
                 echo 40000 > /sys/devices/system/cpu/cpufreq/interactive/sampling_down_factor
                 echo 652800 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 
-                # re-enable thermal & BCL core_control now
-                echo 1 > /sys/module/msm_thermal/core_control/enabled
-                for mode in /sys/devices/soc.0/qcom,bcl.*/mode
-                do
-                    echo -n disable > $mode
-                done
-                for hotplug_mask in /sys/devices/soc.0/qcom,bcl.*/hotplug_mask
-                do
-                    echo $bcl_hotplug_mask > $hotplug_mask
-                done
-                for hotplug_soc_mask in /sys/devices/soc.0/qcom,bcl.*/hotplug_soc_mask
-                do
-                    echo $bcl_soc_hotplug_mask > $hotplug_soc_mask
-                done
-                for mode in /sys/devices/soc.0/qcom,bcl.*/mode
-                do
-                    echo -n enable > $mode
-                done
-
                 # Bring up all cores online
                 echo 1 > /sys/devices/system/cpu/cpu1/online
                 echo 1 > /sys/devices/system/cpu/cpu2/online
@@ -236,13 +191,12 @@ case "$target" in
                 echo 1 > /sys/devices/system/cpu/cpufreq/interactive/use_migration_notif
                 echo 200000 > /proc/sys/kernel/sched_freq_inc_notify
                 echo 200000 > /proc/sys/kernel/sched_freq_dec_notify
+                echo 0 > /sys/devices/system/cpu/cpufreq/interactive/use_sched_load
 
                 echo 0 > /dev/cpuset/background/cpus
-                echo 0-2 > /dev/cpuset/system-background/cpus
-                echo 4-7 > /dev/cpuset/foreground/boost/cpus
-                echo 0-7 > /dev/cpuset/foreground/cpus
-                echo 1 > /dev/cpuset/background/cpus
-                echo 1-2 > /dev/cpuset/system-background/cpus
+                echo 0 > /dev/cpuset/system-background/cpus
+                echo 1-7 > /dev/cpuset/foreground/cpus
+                echo 1-3 > /dev/cpuset/foreground/boost/cpus
 	;;
 	esac
 	;;

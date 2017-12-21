@@ -172,7 +172,7 @@ class FragmentApplistions : Fragment() {
         Thread(Runnable {
             systemList = filterAppList(appListHelper.getSystemAppList())
             installedList = filterAppList(appListHelper.getUserAppList())
-            backupedList = filterAppList(appListHelper.getApkFilesInfoList(Consts.BackUpDir))
+            backupedList = filterAppList(appListHelper.getApkFilesInfoList(Consts.AbsBackUpDir))
 
             setListData(installedList, apps_userlist)
             setListData(systemList, apps_systemlist)
@@ -189,6 +189,13 @@ class FragmentApplistions : Fragment() {
             } catch (ex: Exception) {
             }
         }
+    }
+
+    override fun onDestroy() {
+        if (thisview != null){
+            thisview!!.progressBar.visibility = View.GONE
+        }
+        super.onDestroy()
     }
 
     companion object {

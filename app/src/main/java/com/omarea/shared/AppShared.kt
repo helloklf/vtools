@@ -54,9 +54,8 @@ object AppShared {
     fun WriteFile(assetManager: AssetManager, file: String, outName: String) {
         try {
             val inputStream = assetManager.open(file)
-            val f = File(file)
             val datas = ByteArray(2 * 1024 * 1024)
-            val a = inputStream.available()
+            //inputStream.available()
             val len = inputStream.read(datas)
             val dir = File(AppShared.baseUrl)
             if (!dir.exists())

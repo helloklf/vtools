@@ -20,7 +20,7 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.TextView
 import com.omarea.shared.SpfConfig
-import com.omarea.shared.xposed_check
+import com.omarea.shared.XposedCheck
 import com.omarea.ui.list_adapter2
 import kotlinx.android.synthetic.main.layout_xposed.*
 import java.io.File
@@ -42,7 +42,7 @@ class FragmentXposed : Fragment() {
         userVisibleHint = true
     }
 
-    @SuppressLint("ApplySharedPref", "WrongConstant")
+    @SuppressLint("ApplySharedPref", "WrongConstant", "WorldReadableFiles")
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         dpi_spf = thisview!!.getSharedPreferences(SpfConfig.XPOSED_DPI_SPF, MODE_WORLD_READABLE)
         val w = context.resources.displayMetrics.widthPixels.toFloat()
@@ -74,20 +74,20 @@ class FragmentXposed : Fragment() {
                 Snackbar.make(getView()!!, context.getString(R.string.xposed_cannot_openxposed), Snackbar.LENGTH_SHORT).show()
             }
         }
-        xposed_config_hight_fps.setOnCheckedChangeListener { a, value ->
+        xposed_config_hight_fps.setOnCheckedChangeListener { _, value ->
             spf.edit().putBoolean("xposed_hight_fps", value).commit()
         }
-        xposed_config_dpi_fix.setOnCheckedChangeListener { a, value ->
+        xposed_config_dpi_fix.setOnCheckedChangeListener { _, value ->
             spf.edit().putBoolean("xposed_dpi_fix", value).commit()
         }
-        xposed_config_cm_su.setOnCheckedChangeListener { a, value ->
+        xposed_config_cm_su.setOnCheckedChangeListener { _, value ->
             spf.edit().putBoolean("xposed_hide_su", value).commit()
         }
-        xposed_config_webview_debug.setOnCheckedChangeListener { a, value ->
+        xposed_config_webview_debug.setOnCheckedChangeListener { _, value ->
             spf.edit().putBoolean("xposed_webview_debug", value).commit()
         }
 
-        if (xposed_check.xposedIsRunning())
+        if (XposedCheck.xposedIsRunning())
             vbootxposedservice_state.visibility = GONE
 
         val config_powersavelistClick = object : AdapterView.OnItemClickListener {
@@ -105,14 +105,14 @@ class FragmentXposed : Fragment() {
 
                 AlertDialog.Builder(context)
                         .setTitle("请输入DPI")
-                        .setNeutralButton("清除设置", { dialog, which ->
+                        .setNeutralButton("清除设置", { _, _ ->
                             list.states[position] = false
                             checkBox.isChecked = false
                             dpi_spf.edit().remove(packageName).commit()
                             list.getItem(position).put("enabled_state", "")
                             textView.setText("")
                         })
-                        .setNegativeButton("确定", { dialog, which ->
+                        .setNegativeButton("确定", { _, _ ->
                             val text = input.text.toString()
                             if (text.isEmpty()) {
                                 return@setNegativeButton
@@ -127,7 +127,7 @@ class FragmentXposed : Fragment() {
             }
         }
         xposed_apps_dpifix.setOnItemClickListener(config_powersavelistClick)
-        xposed_config_search.setOnEditorActionListener({ tv, actionId, key ->
+        xposed_config_search.setOnEditorActionListener({ tv, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
                 val text = tv.text.toString()
 
@@ -230,6 +230,13 @@ class FragmentXposed : Fragment() {
             list.add(item)
         }
         return list
+    }
+
+    override fun onDestroy() {
+        if (thisview != null){
+            thisview!!.progressBar.visibility = View.GONE
+        }
+        super.onDestroy()
     }
 
     companion object {

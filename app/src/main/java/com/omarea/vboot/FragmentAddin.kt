@@ -18,7 +18,9 @@ import com.omarea.shell.units.NubiaUnit
 import com.omarea.shell.units.QQStyleUnit
 import com.omarea.vboot.dialogs.DialogAddinModifyDPI
 import com.omarea.vboot.dialogs.DialogAddinModifydevice
+import com.omarea.vboot.dialogs.DialogFilesHardLinks2
 import kotlinx.android.synthetic.main.layout_addin.*
+import java.io.File
 import java.util.*
 
 
@@ -127,7 +129,6 @@ class FragmentAddin : Fragment() {
         }).start()
     }
 
-
     private fun initSystemAddin(view: View) {
         val listView = view.findViewById(R.id.addin_system_listview) as ListView
         val listItem = ArrayList<HashMap<String, Any>>()/*在数组中存放数据*/
@@ -153,6 +154,28 @@ class FragmentAddin : Fragment() {
 
 
         listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
+            if (position == 1 || position == 2) {
+                if (File("/system/vendor/bin/thermal-engine").exists() || File("/system/vendor/bin/thermal-engine.bak").exists()) {
+                    if (position == 1 && File("/system/vendor/bin/thermal-engine.bak").exists()) {
+                        Toast.makeText(context, "你已执行过这个操作，不需要再次执行，如果未生效请重启手机！", Toast.LENGTH_SHORT).show()
+                        return@OnItemClickListener
+                    }
+                    if (position == 2 && File("/system/vendor/bin/thermal-engine").exists()) {
+                        Toast.makeText(context, "你不需要此操作，温控文件正在正常使用，如果无效请重启手机！", Toast.LENGTH_SHORT).show()
+                        return@OnItemClickListener
+                    }
+                } else {
+                    Toast.makeText(context, "该功能暂不支持您的设备！", Toast.LENGTH_SHORT).show()
+                    return@OnItemClickListener
+                }
+            }
+            if (position == 4 || position == 5) {
+                if (File("/sys/class/power_supply/battery/battery_charging_enabled").exists() || File("/sys/class/power_supply/battery/input_suspend").exists()) {
+                } else {
+                    Toast.makeText(context, "该功能暂不支持您的设备！", Toast.LENGTH_SHORT).show()
+                    return@OnItemClickListener
+                }
+            }
             val builder = AlertDialog.Builder(thisview!!)
             builder.setTitle("执行这个脚本？")
             builder.setNegativeButton(android.R.string.cancel, null)
@@ -237,7 +260,8 @@ class FragmentAddin : Fragment() {
     private fun initCustomAddin(view: View) {
         val listItem = ArrayList<HashMap<String, Any>>()/*在数组中存放数据*/
         listItem.add(createItem("DPI、分辨率修改", "自定义手机DPI或分辨率，这可能导致设备无法正常启动或UI错误"))
-        listItem.add(createItem("机型修改", "通过更改build.prop，把机型修改成别的手机"))
+        listItem.add(createItem("机型修改", "通过更改build.prop，把机型修改成别的手机，可能会导致部分系统不能开机或出现Bug"))
+        //listItem.add(createItem("硬链合并【实验性】", "适用于“DualBootPatcher”多系统用户，通过Linux底层硬链技术，将相同的文件指向同一个inode，从而减少相同文件复制多份导致的空间浪费。目前仅处理已安装应用的.apk和.so文件。"))
 
         val mSimpleAdapter = SimpleAdapter(
                 view.context, listItem,
@@ -253,6 +277,8 @@ class FragmentAddin : Fragment() {
                 DialogAddinModifyDPI(context).modifyDPI(thisview!!.windowManager.defaultDisplay)
             } else if (position == 1) {
                 DialogAddinModifydevice(context).modifyDeviceInfo()
+            } else if (position == 2) {
+                DialogFilesHardLinks2(context).checkFileList()
             }
         }
     }
@@ -264,7 +290,7 @@ class FragmentAddin : Fragment() {
 
         tabHost.addTab(tabHost.newTabSpec("def_tab").setContent(R.id.system).setIndicator("系统"))
         tabHost.addTab(tabHost.newTabSpec("game_tab").setContent(R.id.soft).setIndicator("软件"))
-        tabHost.addTab(tabHost.newTabSpec("custom_tab").setContent(R.id.custom).setIndicator("定制"))
+        tabHost.addTab(tabHost.newTabSpec("custom_tab").setContent(R.id.custom).setIndicator("高级"))
         tabHost.currentTab = 0
 
         initSystemAddin(view)

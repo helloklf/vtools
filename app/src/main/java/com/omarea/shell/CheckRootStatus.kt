@@ -24,8 +24,6 @@ class CheckRootStatus(var progressBar: ProgressBar, var context: Context, var ne
             out.write("setenforce 0;\ndumpsys deviceidle whitelist +com.omarea.vboot;\nexit;\nexit;\n")
             out.flush()
 
-            var msg = ""
-
             process.waitFor()
             val r = process.exitValue() == 0
             process.destroy()

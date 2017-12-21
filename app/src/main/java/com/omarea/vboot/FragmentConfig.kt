@@ -33,7 +33,7 @@ class FragmentConfig : Fragment() {
     private var thisview: ActivityMain? = null
     private lateinit var spfPowercfg: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
-    private var hasSystemApp = false
+    private var hasSystemApp = true
     private lateinit var applistHelper: AppListHelper
 
     internal val myHandler: Handler = Handler()
@@ -384,6 +384,13 @@ class FragmentConfig : Fragment() {
             loadList()
         } catch (ex: Exception) {
         }
+    }
+
+    override fun onDestroy() {
+        if (thisview != null){
+            thisview!!.progressBar.visibility = View.GONE
+        }
+        super.onDestroy()
     }
 
     internal enum class Configs {

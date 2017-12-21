@@ -86,7 +86,7 @@ class AppListHelper {
             item.put("select_state", false)
             item.put("dir", packageInfo.sourceDir)
             item.put("enabled", packageInfo.enabled)
-            item.put("enabled_state", if (File(Consts.BackUpDir + packageInfo.packageName + ".apk").exists() || File(Consts.BackUpDir + packageInfo.packageName + ".tar.gz").exists()) "已备份" else "")
+            item.put("enabled_state", if (File(Consts.AbsBackUpDir + packageInfo.packageName + ".apk").exists() || File(Consts.BackUpDir + packageInfo.packageName + ".tar.gz").exists()) "已备份" else "")
             item.put("wran_state", if (packageInfo.enabled) "" else "已冻结")
 
             item.put("name", packageInfo.loadLabel(packageManager))

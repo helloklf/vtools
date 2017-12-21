@@ -43,10 +43,6 @@ class FragmentBattery : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        spf.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
-
-        }
-
         settings_qc.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)
         settings_bp.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_BP, false)
         settings_bp_level.setText(spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85).toString())

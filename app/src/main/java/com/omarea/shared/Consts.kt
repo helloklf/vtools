@@ -10,7 +10,9 @@ object Consts {
     val PACKAGE_NAME = "com.omarea.vboot"
     val SDCardDir = Environment.getExternalStorageDirectory().absolutePath
 
-    val BackUpDir = Environment.getExternalStorageDirectory().absolutePath + "/backups/apps/";
+    val BackUpDir = "/backups/apps/";
+    val HarLinkBackUpDir = "/data/media/0/backups/apps/";
+    val AbsBackUpDir = SDCardDir + "/backups/apps/";
 
     val FastChanger =
             "if [ `cat /sys/class/power_supply/battery/capacity` -lt 85 ]; then " +
@@ -30,14 +32,19 @@ object Consts {
 
     val MountSystemRW =
             "busybox mount -o rw,remount /system\n" +
+                    "busybox mount -f -o rw,remount /system\n" +
                     "mount -o rw,remount /system\n" +
                     "busybox mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
                     "mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n"
     val MountSystemRW2 =
             "/cache/busybox mount -o rw,remount /system\n" +
+                    "/cache/busybox mount -f -o rw,remount /system\n" +
                     "mount -o rw,remount /system\n" +
                     "/cache/busybox mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
-                    "mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n"
+                    "mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
+                    "/cache/busybox mount -o rw,remount /system/xbin\n" +
+                    "/cache/busybox mount -f -o rw,remount /system/xbin\n" +
+                    "mount -o rw,remount /system/xbin\n"
 
     val POWER_CFG_PATH = "/data/powercfg"
     val POWER_CFG_BASE = "/data/init.qcom.post_boot.sh"
