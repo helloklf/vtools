@@ -153,7 +153,7 @@ class DialogFilesHardLinks2(private var context: Context) {
             }
             AlertDialog.Builder(context)
                     .setTitle("文件检索完成")
-                    .setMessage("找到${redundancy}个冗余文件，处理以后可节省${mbSize/1024}MB存储空间\n\n但该功能是试验性的，可能会导致应用闪退或需要恢复出厂设置！！！")
+                    .setMessage("找到${redundancy}个冗余文件，处理以后可节省${mbSize/1024}MB存储空间\n\n但该功能是试验性的，可能会导致应用闪退、应用丢失甚至需要恢复出厂设置！！！")
                     .setNegativeButton("处理", {
                         _,_ ->
                         hardlinkMerge(md5Map)

@@ -8,3 +8,5 @@
 ./app/build
 ./app/release
 /captures
+app/release/app-release.apk
+app/build.gradle

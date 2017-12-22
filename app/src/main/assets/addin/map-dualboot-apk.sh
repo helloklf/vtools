@@ -134,13 +134,13 @@ function get_one_system_apps ()
 }
 
 #esFileManager or vTools backup dir
-for apk_path in ${root_dir}/data/media/0/backups/apps/*.apk
-do
-    if test -f "${apk_path}"
-    then
-        echo_fileinfo ${apk_path}
-    fi
-done
+#for apk_path in ${root_dir}/data/media/0/backups/apps/*.apk
+#do
+#    if test -f "${apk_path}"
+#    then
+#        echo_fileinfo ${apk_path}
+#    fi
+#done
 
 #Search Apk or solib on DualBoot System
 function get_multiboot_apps ()

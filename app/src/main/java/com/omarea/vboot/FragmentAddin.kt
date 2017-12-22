@@ -261,7 +261,7 @@ class FragmentAddin : Fragment() {
         val listItem = ArrayList<HashMap<String, Any>>()/*在数组中存放数据*/
         listItem.add(createItem("DPI、分辨率修改", "自定义手机DPI或分辨率，这可能导致设备无法正常启动或UI错误"))
         listItem.add(createItem("机型修改", "通过更改build.prop，把机型修改成别的手机，可能会导致部分系统不能开机或出现Bug"))
-        //listItem.add(createItem("硬链合并【实验性】", "适用于“DualBootPatcher”多系统用户，通过Linux底层硬链技术，将相同的文件指向同一个inode，从而减少相同文件复制多份导致的空间浪费。目前仅处理已安装应用的.apk和.so文件。"))
+        listItem.add(createItem("硬链合并【实验性】", "适用于“DualBootPatcher”多系统用户，通过Linux底层硬链技术，将相同的文件指向同一个inode，从而减少相同文件复制多份导致的空间浪费。目前仅处理已安装应用的.apk和.so文件。"))
 
         val mSimpleAdapter = SimpleAdapter(
                 view.context, listItem,
