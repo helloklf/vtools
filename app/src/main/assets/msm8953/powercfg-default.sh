@@ -6,6 +6,11 @@ if [ ! `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor` = "interactiv
 	sh /system/etc/init.qcom.post_boot.sh
 fi
 
+echo 0 > /dev/cpuset/background/cpus
+echo 1-2 > /dev/cpuset/system-background/cpus
+echo 1-7 > /dev/cpuset/foreground/cpus
+echo 1-3 > /dev/cpuset/foreground/boost/cpus
+
 echo 0 > /sys/devices/system/cpu/cpufreq/interactive/use_sched_load
 echo 1 > /sys/devices/system/cpu/cpu0/online
 echo 1 > /sys/devices/system/cpu/cpu1/online

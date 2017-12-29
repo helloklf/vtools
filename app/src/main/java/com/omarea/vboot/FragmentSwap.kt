@@ -177,6 +177,7 @@ class FragmentSwap : Fragment() {
             }).start()
         }
         btn_zram_resize.setOnClickListener {
+            myHandler.post(showWait)
             val size = txt_zram_size.text.toString()
             val swappiness = txt_zram_swappiness.text.toString()
             var value = 65

@@ -41,10 +41,11 @@
 
     <string name="btn_confirm">确定</string>
     <string name="btn_exit">退出</string>
+    <string name="btn_skip">忽略</string>
     <string name="btn_refresh">重试</string>
     <string name="error_su_timeout">等待超时，请确保你的Root管理器正在后台运行，并重试！</string>
 
-    <string name="error_root">抱歉，没有Root权限无法运行此应用！</string>
+    <string name="error_root">抱歉，没有获取到ROOT权限，很多功能将无法使用！</string>
     <string name="error_busybox">抱歉，没有安装Busybox，无法运行此应用！</string>
     <string name="error_unsupport_uri">不支持的路径格式，非常抱歉。请向开发者反馈此问题！</string>
     <string name="error_not_img">所选文件不是镜像格式（.img）</string>
@@ -105,7 +106,7 @@
     <string name="autoboosterhelp">
         "<b>配置说明：</b>"
 
-        "<span>黑名单：当黑名单应用离开主界面进入挂起状态时，本工具将立即将它杀死或休眠（默认是杀死）。</span>"
+        "<span>当黑名单应用离开主界面进入挂起状态时，本工具将立即将它杀死或休眠（默认是杀死）。</span>"
 
         "<span>需要注意的是，其它应用的弹窗可能会导致前台应用丢失焦点，此时如果是黑名单应用可能会被意外杀死！</span>"
     </string>
@@ -124,14 +125,15 @@
     <string name="accessbility_autoclick">自动点击</string>
     <string name="accessbility_autoclick_desc">安装第三方应用时尝试自动点击下一步和安装按钮，部分系统有效！</string>
     <string name="accessbility_charger">充电加速 *实验性</string>
-    <string name="accessbility_charger_desc">尝试修改充电电流限制提高充电速度，会大量增加发热。支持设备甚少，对Nubia Z11有显著效果。</string>
+    <string name="accessbility_charger_desc">尝试提高充电最大电流限制，但不代表实际充电速度</string>
     <string name="accessbility_autobooster">后台管理</string>
     <string name="accessbility_autobooster_desc">离开主界面时自动终止黑名单应用，具体设置请在本应用后台管理中配</string>
     <string name="accessbility_dynconfig">动态响应</string>
     <string name="accessbility_dynconfig_desc">为每个应用单独配置性能模式，在切换应用时自动调整CPU和GPU频率，具体设置请在在本应用性能配置中配</string>
-    <string name="accessbility_bp">充电保护 *实验性</string>
-    <string name="accessbility_bp_desc">限制手机只能充电到指定百分比。支持设备较少，如出现手机不充电的情况，请关闭此功能并重启手机！</string>
-    <string name="accessbility_bp_level_desc">电量达到此值时停止充电，并在电量低于此值-20时恢复充电。（推荐值20-99，百分百）输完回车保存。如果你发现此功能不支持你的设备，请务必关闭电池保护功能！</string>
+    <string name="accessbility_bp">充电保护</string>
+    <string name="accessbility_bp_desc">限制手机只能充电到指定百分比，浅充浅放有助于保护电视。但可能导致电量显示不精准。</string>
+    <string name="accessbility_bp_level_desc">电量限制值（默认85%）</string>
+    <string name="settings_qc_limit_desc">充电速度限制(mA)，默认将限制提升至5000mA。</string>
     <string name="accessbility_debug">调试模式</string>
     <string name="accessbility_debug_desc">在后台运行时显示完整的动作提示，用于测试软件是否正常工作</string>
     <string name="accessbility_delay">延迟启动</string>
@@ -220,4 +222,7 @@
         "<spna>详情：</spna>"
         "<span>http://coolapk.com/apk/com.omarea.vboot</span>"
     </string>
+    <string name="settings_qc_limit_hint">充电速度上限(mA)</string>
+    <string name="settings_bp_level_hint">电量限制0-99，默认85%</string>
+    <string name="battery_uevent_title">$ cat /sys/class/power_supply/bms/uevent</string>
 </resources>

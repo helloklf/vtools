@@ -54,6 +54,7 @@ class FragmentAddin : Fragment() {
         listItem.add(createItem("禁用沉浸模式", "恢复状态栏、导航栏自动显示"))
         listItem.add(createItem("减少Flyme6模糊", "禁用Flyme6下拉通知中心的实时模糊效果，以减少在游戏或视频播放时下拉通知中心的卡顿，或许还能省电"))
         listItem.add(createItem("MIUI9去通知中心搜索", "默认隐藏MIUI9系统下拉通知中心的搜索框"))
+        listItem.add(createItem("隐藏!和×", "禁用网络可用性检测，去除类原生系统状态栏上WIIF、4G图标的!和x"))
 
         val mSimpleAdapter = SimpleAdapter(
                 view.context, listItem,
@@ -117,6 +118,11 @@ class FragmentAddin : Fragment() {
                 stringBuilder.append("cp ${Consts.SDCardDir}/Android/data/${Consts.PACKAGE_NAME}/com.android.systemui /system/media/theme/default/com.android.systemui\n")
                 stringBuilder.append("chmod 0644 /system/media/theme/default/com.android.systemui\n")
                 stringBuilder.append(Consts.Reboot)
+            }
+            9 -> {
+                stringBuilder.append("settings put global captive_portal_mode 0;")
+                stringBuilder.append("settings put global captive_portal_detection_enabled 0;")
+                stringBuilder.append("settings put global captive_portal_server www.androidbak.net;")
             }
         }
         progressBar.visibility = View.VISIBLE
@@ -261,7 +267,7 @@ class FragmentAddin : Fragment() {
         val listItem = ArrayList<HashMap<String, Any>>()/*在数组中存放数据*/
         listItem.add(createItem("DPI、分辨率修改", "自定义手机DPI或分辨率，这可能导致设备无法正常启动或UI错误"))
         listItem.add(createItem("机型修改", "通过更改build.prop，把机型修改成别的手机，可能会导致部分系统不能开机或出现Bug"))
-        listItem.add(createItem("硬链合并【实验性】", "适用于“DualBootPatcher”多系统用户，通过Linux底层硬链技术，将相同的文件指向同一个inode，从而减少相同文件复制多份导致的空间浪费。目前仅处理已安装应用的.apk和.so文件。"))
+        //listItem.add(createItem("硬链合并【实验性】", "适用于“DualBootPatcher”多系统用户，通过Linux底层硬链技术，将相同的文件指向同一个inode，从而减少相同文件复制多份导致的空间浪费。目前仅处理已安装应用的.apk和.so文件。"))
 
         val mSimpleAdapter = SimpleAdapter(
                 view.context, listItem,

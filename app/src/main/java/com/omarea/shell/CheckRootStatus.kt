@@ -12,7 +12,7 @@ import com.omarea.vboot.R
  * Created by helloklf on 2017/6/3.
  */
 
-class CheckRootStatus(var progressBar: ProgressBar, var context: Context, var next:Runnable? = null) {
+class CheckRootStatus(var progressBar: ProgressBar, var context: Context, var next:Runnable? = null, var skip:Runnable?) {
     var myHandler: Handler = Handler()
 
     //是否已经Root
@@ -51,8 +51,14 @@ class CheckRootStatus(var progressBar: ProgressBar, var context: Context, var ne
                     alert.setNegativeButton(R.string.btn_refresh, { _, _ ->
                         forceGetRoot()
                     })
-                    alert.setNeutralButton(R.string.btn_exit, { _, _ ->
-                        android.os.Process.killProcess(android.os.Process.myPid())
+                    alert.setNeutralButton(R.string.btn_skip, { _, _ ->
+                        //android.os.Process.killProcess(android.os.Process.myPid())
+                        completed = true
+                        myHandler.post {
+                            progressBar.visibility = View.GONE
+                            if (skip != null)
+                                skip!!.run()
+                        }
                     })
                     alert.create().show()
                 }

@@ -40,13 +40,15 @@ class FragmentBattery : Fragment() {
     private var batteryUnits = BatteryUnit()
     private lateinit var spf: SharedPreferences
 
+    @SuppressLint("ApplySharedPref")
     override fun onResume() {
         super.onResume()
 
         settings_qc.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)
         settings_bp.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_BP, false)
         settings_bp_level.setText(spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85).toString())
-        settings_qc_limit.setText(spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 4000).toString())
+        settings_qc_limit.setText(spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000).toString())
+
 
         if (broadcast == null) {
             broadcast = object : BroadcastReceiver() {
@@ -70,7 +72,6 @@ class FragmentBattery : Fragment() {
         }
 
         val battrystatus = view.findViewById(R.id.battrystatus) as TextView
-        val powerstatus = view.findViewById(R.id.powerstatus) as TextView
         batteryMAH = batteryUnits.batteryMAH + "   "
         val context = context.applicationContext
         serviceRunning = ServiceBattery.serviceIsRunning(context)
@@ -78,7 +79,6 @@ class FragmentBattery : Fragment() {
         timer = Timer()
 
         timer!!.schedule(object : TimerTask() {
-            @SuppressLint("SetTextI18n")
             override fun run() {
                 myHandler.post {
                     battrystatus.text = "电池信息：" +
@@ -87,10 +87,8 @@ class FragmentBattery : Fragment() {
                             level + "%    " +
                             voltage + "v"
 
-                    var changeMAH = batteryUnits.changeMAH
-                    powerstatus.text = "充电速度：" +
-                            (if (powerChonnected) "+" else "-") + changeMAH + "      " +
-                            if (spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) && serviceRunning) "充电已加速" else "未加速"
+                    settings_qc.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) && serviceRunning
+                    battery_uevent.text = batteryUnits.batteryInfo
                 }
             }
         }, 0, 3000)
@@ -174,12 +172,25 @@ class FragmentBattery : Fragment() {
                 try {
                     level = settings_qc_limit.text.toString().toInt()
                     spf.edit().putInt(SpfConfig.CHARGE_SPF_QC_LIMIT, level).commit()
-                    Snackbar.make(this.view, "设置已保存。当前限制速度：" + settings_qc_limit.text + "mA", Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(this.view, "设置已保存。当前限制速度：" + level + "mA", Snackbar.LENGTH_SHORT).show()
                     startBatteryService()
+                    batteryUnits.setChargeInputLimit(level);
                 } catch (e: Exception) {
                 }
             }
             false
+        }
+
+        if (!batteryUnits.qcSettingSuupport()) {
+            settings_qc.isEnabled = false
+            spf.edit().putBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false).commit()
+            settings_qc_limit.isEnabled = false
+        }
+
+        if (!batteryUnits.bpSetting()) {
+            settings_bp.isEnabled = false
+            spf.edit().putBoolean(SpfConfig.CHARGE_SPF_BP, false).commit()
+            settings_bp_level.isEnabled = false
         }
     }
 
@@ -188,6 +199,7 @@ class FragmentBattery : Fragment() {
         try {
             val intent = Intent(context, ServiceBattery::class.java)
             context.startService(intent)
+            serviceRunning = ServiceBattery.serviceIsRunning(context)
         } catch (ex: Exception) {
         }
     }

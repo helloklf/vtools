@@ -28,18 +28,17 @@ class ReciverBatterychanged : BroadcastReceiver() {
             p!!.destroy()
         } catch (ex: Exception) {
         }
-
     }
 
     private fun doCmd(cmd: String, isRedo: Boolean = false) {
         Thread(Runnable {
             try {
-                tryExit()
                 if (p == null || isRedo || out == null) {
                     tryExit()
                     p = Runtime.getRuntime().exec("su")
                     out = DataOutputStream(p!!.outputStream)
                 }
+                out!!.writeBytes("\n")
                 out!!.writeBytes(cmd)
                 out!!.writeBytes("\n")
                 out!!.flush()
@@ -59,6 +58,7 @@ class ReciverBatterychanged : BroadcastReceiver() {
     private var globalSharedPreferences: SharedPreferences? = null
     private var listener: SharedPreferences.OnSharedPreferenceChangeListener? = null
     private val myHandler = Handler()
+    private var qcLimit = 50000
 
     //显示文本消息
     private fun showMsg(msg: String, longMsg: Boolean) {
@@ -74,6 +74,7 @@ class ReciverBatterychanged : BroadcastReceiver() {
         if (globalSharedPreferences!!.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false))
             showMsg("充电器已连接！", false)
         doCmd(Consts.FastChanger)
+        doCmd("echo ${qcLimit}000 > /sys/class/power_supply/battery/constant_charge_current_max;")
     }
 
     private var lastBatteryLeavel = -1
@@ -82,8 +83,13 @@ class ReciverBatterychanged : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (sharedPreferences == null) {
             sharedPreferences = context.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
-            listener = SharedPreferences.OnSharedPreferenceChangeListener { _, _ -> }
+            listener = SharedPreferences.OnSharedPreferenceChangeListener { spf, key ->
+                if(key == SpfConfig.CHARGE_SPF_QC_LIMIT) {
+                    qcLimit = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000)
+                }
+            }
             sharedPreferences!!.registerOnSharedPreferenceChangeListener(listener)
+            qcLimit = sharedPreferences!!.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000)
         }
         if (globalSharedPreferences == null) {
             globalSharedPreferences = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
@@ -113,7 +119,7 @@ class ReciverBatterychanged : BroadcastReceiver() {
                     Toast.makeText(this.context, "电池电量低，请及时充电！", Toast.LENGTH_SHORT).show()
                     bp = false
                 } else if (bp && batteryLevel != -1 && batteryLevel < sharedPreferences!!.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85) - 20) {
-                    //电量低于保护级别10
+                    //电量低于保护级别20
                     doCmd(Consts.ResumeChanger)
                     bp = false
                 }

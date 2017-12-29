@@ -1,5 +1,9 @@
 package com.omarea.vboot
 
+import android.app.Notification
+import android.app.NotificationManager
+import android.app.Service
+import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.support.design.widget.Snackbar
@@ -8,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.omarea.shared.AppShared
+import com.omarea.shared.BootService
 import com.omarea.shared.Consts
 import com.omarea.shell.*
 import kotlinx.android.synthetic.main.layout_home.*
@@ -26,6 +31,7 @@ class FragmentHome : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         if (DynamicConfig().DynamicSupport(context))
             powermode_toggles.visibility = View.VISIBLE
 

@@ -23,17 +23,15 @@ public class SpfConfig {
     public static String GLOBAL_SPF_DYNAMIC_CPU = "is_dynamic_cpu";
     public static String GLOBAL_SPF_DYNAMIC_CPU_CONFIG = "dynamic_cpu_config";
     public static String GLOBAL_SPF_DEBUG = "is_debug";
-    public static String GLOBAL_SPF_POWERCFG_DELAY = "powercfg_delay";
+    public static String GLOBAL_SPF_START_DELAY = "start_delay";
     public static String GLOBAL_SPF_DELAY = "is_delay_start";
 
-    public static String SWAP_SPF = "swap";
+    public static String SWAP_SPF = "swap"; //spf
     public static String SWAP_SPF_SWAP = "swap";
     public static String SWAP_SPF_SWAP_FIRST = "swap_first";
     public static String SWAP_SPF_ZRAM = "zram";
     public static String SWAP_SPF_ZRAM_SIZE = "zram_size";
     public static String SWAP_SPF_SWAPPINESS = "swappiness";
 
-    public static String XPOSED_DPI_SPF = "xposed_dpi";
-
-    public static String XPOSED_DONT_UPDSTE_SPF = "dont_update";
+    public static String XPOSED_DPI_SPF = "xposed_dpi"; //spf
 }

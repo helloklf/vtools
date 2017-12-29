@@ -21,7 +21,7 @@
             android:layout_marginTop="56dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/main_content"></FrameLayout>
+            android:id="@+id/main_content" />
     </LinearLayout>
 
     <include

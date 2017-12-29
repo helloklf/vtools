@@ -1,11 +1,7 @@
 package com.omarea.vboot
 
 import android.accessibilityservice.AccessibilityService
-import android.app.Instrumentation
-import android.os.Handler
-import android.view.KeyEvent
 import android.view.accessibility.AccessibilityEvent
-import android.widget.Toast
 import com.omarea.shared.AutoClickService
 import com.omarea.shared.ServiceHelper
 
@@ -89,7 +85,7 @@ override fun onCreate() {
         }
         if (serviceHelper == null)
             initServiceHelper()
-        serviceHelper?.onAccessibilityEvent(event.packageName.toString())
+        serviceHelper?.onFocusAppChanged(event.packageName.toString())
     }
     /*
     Thread(Runnable {

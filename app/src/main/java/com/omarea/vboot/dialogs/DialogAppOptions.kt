@@ -153,7 +153,7 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
     }
 
     private fun checkRestoreData(): Boolean {
-        var r = SysUtils.executeCommandWithOutput(false, "cd /data/data/${Consts.PACKAGE_NAME};echo `toybox ls -ld . | head -1 | cut -f 3 -d ' '`;")
+        var r = SysUtils.executeCommandWithOutput(false, "cd /data/data/${Consts.PACKAGE_NAME};echo `toybox ls -ld|cut -f3 -d ' '`; echo `ls -ld|cut -f3 -d ' '`;")
         return r != null && r.trim().length > 0
     }
 

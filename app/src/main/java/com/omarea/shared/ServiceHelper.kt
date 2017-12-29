@@ -5,9 +5,10 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Handler
 import android.view.accessibility.AccessibilityManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import com.omarea.shell.AsynSuShellUnit
 import java.io.BufferedWriter
-import java.io.DataOutputStream
 import java.io.IOException
 import java.util.*
 
@@ -53,10 +54,19 @@ class ServiceHelper(private var context: Context) {
     }
 
     init {
-        val crashHandler = CrashHandler.instance
-        crashHandler.init(context)
-
         spfGlobal.registerOnSharedPreferenceChangeListener(listener)
+
+        //添加输入法到忽略列表
+        Thread(Runnable {
+            val im = (context.getSystemService(Context.INPUT_METHOD_SERVICE)) as InputMethodManager?
+            if (im == null)
+                return@Runnable
+
+            val inputList = im.inputMethodList
+            for (input in inputList) {
+                ignoredList.add(input.packageName)
+            }
+        }).start()
     }
 
     //加载设置
@@ -183,7 +193,7 @@ class ServiceHelper(private var context: Context) {
     }
 
     //终止进程
-    internal fun autoBoosterApp(packageName: String?) {
+    private fun autoBoosterApp(packageName: String?) {
         if (!autoBooster || lastPackage == null || packageName == null)
             return
 
@@ -195,12 +205,12 @@ class ServiceHelper(private var context: Context) {
         }
 
         if (spfBooster.contains(lastPackage)) {
-            if (spfBooster.getBoolean(SpfConfig.BOOSTER_SPF_DOZE_MOD, false)) {
+            if (spfBooster.getBoolean(SpfConfig.BOOSTER_SPF_DOZE_MOD, true)) {
                 try {
                     doCmd("dumpsys deviceidle enable; am set-inactive $lastPackage true")
                     //am set-idle com.tencent.mobileqq true
                     if (debugMode)
-                        showMsg("休眠： " + lastPackage)
+                        showMsg("休眠 " + lastPackage)
                 } catch (ex: Exception) {
                 }
                 return
@@ -210,7 +220,7 @@ class ServiceHelper(private var context: Context) {
             try {
                 doCmd("killall -9 $lastPackage;pkill -9 $lastPackage;pgrep $lastPackage |xargs kill -9;")
                 if (debugMode)
-                    showMsg("结束运行: " + lastPackage)
+                    showMsg("结束 " + lastPackage)
             } catch (ex: Exception) {
             }
         }
@@ -246,8 +256,8 @@ class ServiceHelper(private var context: Context) {
         Fast
     }
 
-    fun onAccessibilityEvent(pkgName: String) {
-        var packageName = pkgName
+    fun onFocusAppChanged(pkgName: String) {
+        val packageName = pkgName
         if (!settingsLoaded && !settingsLoad())
             return
 

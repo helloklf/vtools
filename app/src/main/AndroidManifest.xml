@@ -20,7 +20,8 @@
         android:label="@string/app_name"
         android:persistent="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:allowBackup="true">
         <meta-data
             android:name="xposedmodule"
             android:value="true" />
@@ -34,14 +35,11 @@
         <service
             android:name=".AccessibilityServiceVTools"
             android:label="微工具箱-增强服务"
-            android:lockTaskMode="always"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
-
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.accessibilityservice.AccessibilityService" />
-                <!-- <action android:name="android.intent.action."></action> -->
             </intent-filter>
 
             <meta-data
@@ -52,14 +50,14 @@
         <activity
             android:name=".ActivityMain"
             android:configChanges="keyboardHidden|orientation"
-            android:excludeFromRecents="false"
+            android:excludeFromRecents="true"
+            android:autoRemoveFromRecents="false"
             android:exported="true"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -67,9 +65,8 @@
 
         <activity
             android:name=".ActivityAccessibilitySettings"
-            android:autoRemoveFromRecents="true"
             android:configChanges="keyboardHidden|orientation"
-            android:excludeFromRecents="false"
+            android:excludeFromRecents="true"
             android:label="微工具箱增强服务"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -87,11 +84,13 @@
         <service
             android:name=".ServiceBattery"
             android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.omarea.vboot.BatteryService" />
-            </intent-filter>
+            android:permission="">
         </service>
+
+        <service
+            android:name="com.omarea.shared.BootService"
+            android:enabled="true"
+            android:permission="" />
     </application>
 
 </manifest>

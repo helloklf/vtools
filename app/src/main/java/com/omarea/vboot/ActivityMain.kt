@@ -14,14 +14,19 @@ import android.support.v4.content.PermissionChecker
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View.GONE
 import android.widget.ProgressBar
-import com.omarea.shared.*
+import com.omarea.shared.CrashHandler
+import com.omarea.shared.SpfConfig
+import com.omarea.shared.cmd_shellTools
 import com.omarea.shell.Busybox
 import com.omarea.shell.CheckRootStatus
+import com.omarea.shell.units.BatteryUnit
 import com.omarea.vboot.dialogs.DialogPower
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -30,6 +35,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit internal var thisview: AppCompatActivity
     lateinit internal var cmdshellTools: cmd_shellTools
     lateinit internal var progressBar: ProgressBar
+    private var hasRoot = false
 
     internal var myHandler: android.os.Handler = Handler()
 
@@ -45,16 +51,34 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         cmdshellTools = cmd_shellTools(this, progressBar)
 
         checkRoot(Runnable {
+            hasRoot = true
             checkBusybox()
+        }, Runnable {
+            next()
         })
     }
 
-    private fun next() {
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        try {
+            setHomePage()
+        } catch (ex: Exception) {
+            AlertDialog.Builder(this).setTitle("抱歉").setMessage("启动应用失败\n" + ex.message).setNegativeButton("重试", {
+                _,_ ->
+                setHomePage()
+            }).create().show()
+        }
+    }
+
+    private fun setHomePage() {
         val fragmentManager = supportFragmentManager
         val transaction = fragmentManager.beginTransaction()
         val fragment = FragmentHome()
         transaction.replace(R.id.main_content, fragment)
         transaction.commit()
+    }
+
+    private fun next() {
 
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
@@ -75,6 +99,10 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val navigationView = findViewById(R.id.nav_view) as NavigationView
         navigationView.setNavigationItemSelectedListener(this)
+        navigationView.menu.findItem(R.id.nav_battery).isEnabled = BatteryUnit().isSupport
+
+        if (!hasRoot)
+            hideRootMenu(navigationView.menu);
 
         checkFileWrite()
     }
@@ -85,10 +113,8 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
     }
 
-    private fun checkRoot(next: Runnable) {
-        CheckRootStatus(progressBar, this, Runnable {
-            next.run()
-        }).forceGetRoot()
+    private fun checkRoot(next: Runnable, skip: Runnable) {
+        CheckRootStatus(progressBar, this, next, skip).forceGetRoot()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -134,7 +160,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     //右上角菜单
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when ( item.itemId) {
+        when (item.itemId) {
             R.id.action_settings -> startActivity(Intent(thisview, ActivityAccessibilitySettings::class.java))
             R.id.action_power -> DialogPower(thisview).showPowerMenu()
         }
@@ -173,7 +199,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         if (fragment != null) {
-            transaction.disallowAddToBackStack()
+            //transaction.disallowAddToBackStack()
             transaction.replace(R.id.main_content, fragment)
             transaction.commit()
             title = item.title
@@ -182,6 +208,21 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         drawer_layout.closeDrawer(GravityCompat.START)
         return false
+    }
+
+    private fun hideRootMenu(menu: Menu) {
+        try{
+            menu.findItem(R.id.nav_booster).isEnabled = false
+            menu.findItem(R.id.nav_applictions).isEnabled = false
+            menu.findItem(R.id.nav_swap).isEnabled = false
+            menu.findItem(R.id.nav_tasks).isEnabled = false
+            menu.findItem(R.id.nav_battery).isEnabled = false
+            menu.findItem(R.id.nav_img).isEnabled = false
+            menu.findItem(R.id.nav_profile).isEnabled = false
+            menu.findItem(R.id.nav_additional).isEnabled = false
+        } catch (ex: Exception) {
+
+        }
     }
 
     public override fun onPause() {

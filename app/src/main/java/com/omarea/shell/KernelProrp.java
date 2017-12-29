@@ -26,6 +26,8 @@ public class KernelProrp {
             DataOutputStream out = new DataOutputStream(p.getOutputStream());
             out.writeBytes("cat " + propName);
             out.writeBytes("\n");
+            out.writeBytes("exit\n");
+            out.writeBytes("exit\n");
             out.flush();
 
             InputStream inputstream = p.getInputStream();
@@ -33,17 +35,18 @@ public class KernelProrp {
             BufferedReader bufferedreader = new BufferedReader(inputstreamreader);
 
             String line;
+            StringBuilder stringBuilder = new StringBuilder();
             while ((line = bufferedreader.readLine()) != null) {
-                out.writeBytes("exit\n");
-                out.flush();
-                out.close();
-                bufferedreader.close();
-                inputstream.close();
-                inputstreamreader.close();
-                p.destroy();
-                return line;
+                stringBuilder.append(line);
+                stringBuilder.append("\n");
             }
+            out.flush();
+            out.close();
+            bufferedreader.close();
+            inputstream.close();
+            inputstreamreader.close();
             p.destroy();
+            return stringBuilder.toString().trim();
         } catch (Exception e) {
 
         }

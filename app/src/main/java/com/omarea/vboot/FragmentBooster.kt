@@ -54,7 +54,7 @@ class FragmentBooster : Fragment() {
         editor = spf.edit()
 
         cacheclear.isChecked = spf.getBoolean(SpfConfig.BOOSTER_SPF_CLEAR_CACHE, false)
-        dozemod.isChecked = spf.getBoolean(SpfConfig.BOOSTER_SPF_DOZE_MOD, false)
+        dozemod.isChecked = spf.getBoolean(SpfConfig.BOOSTER_SPF_DOZE_MOD, true)
 
         cacheclear.setOnCheckedChangeListener { _, isChecked ->
             editor.putBoolean(SpfConfig.BOOSTER_SPF_CLEAR_CACHE, isChecked).commit()

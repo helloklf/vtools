@@ -6,16 +6,10 @@ if test -d /raw/data
 then
 root_dir="/raw"
 else
-root_dir="/"
+root_dir=""
 fi
 
-if test -d /raw/data
-then
-multiboot_dir="${root_dir}/data/multiboot"
-else
-multiboot_dir="${root_dir}/data/multiboot"
-fi
-
+multiboot_dir="${root_dir}/data/multiboot"11
 apk_so_lib=()
 apk_oat_odex=()
 
