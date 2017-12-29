@@ -18,15 +18,8 @@ import java.net.URLEncoder
 /**
  * Created by helloklf on 2016/8/4.
  */
-class cmd_shellTools(var activity: AppCompatActivity?, var progressBar: ProgressBar?) {
-    lateinit var context: Context
-
+class cmd_shellTools(var context: Context?, var progressBar: ProgressBar?) {
     internal var myHandler: Handler = Handler()
-
-    init {
-        if (activity != null)
-            this.context = activity!!.getApplicationContext()
-    }
 
     //显示进度条
     fun ShowProgressBar() {
@@ -46,9 +39,9 @@ class cmd_shellTools(var activity: AppCompatActivity?, var progressBar: Progress
 
     //显示弹窗提示
     fun ShowDialogMsg(title: String, msg: String) {
-        if (activity != null)
+        if (context != null)
             myHandler.post {
-                val builder = AlertDialog.Builder(activity)
+                val builder = AlertDialog.Builder(context!!)
                 builder.setTitle(title)
                 builder.setPositiveButton(android.R.string.yes, null)
                 builder.setMessage(msg + "\n")

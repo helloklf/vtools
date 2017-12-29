@@ -1,16 +1,22 @@
 package com.omarea.shared
 
 import android.accessibilityservice.AccessibilityServiceInfo
+import android.app.Notification
+import android.app.NotificationManager
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Handler
 import android.view.accessibility.AccessibilityManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import com.omarea.shell.AsynSuShellUnit
+import com.omarea.vboot.ActivityMain
+import com.omarea.vboot.R
 import java.io.BufferedWriter
 import java.io.IOException
 import java.util.*
+import android.app.PendingIntent
+import android.app.Service
 
 
 /**
@@ -69,13 +75,48 @@ class ServiceHelper(private var context: Context) {
         }).start()
     }
 
+    private var notification:Notification? = null
+    private var notificationManager:NotificationManager? = null
+
+    //显示通知
+    private fun showNotify(msg: String = "辅助服务正在后台运行"){
+        if (notification == null) {
+            notificationManager =  context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
+            notification =
+                    Notification.Builder(context)
+                    .setSmallIcon(R.drawable.linux)
+                    .setContentTitle("微工具箱")
+                    //.setContentText(msg)
+                    .setTicker(msg)
+                    .setWhen(System.currentTimeMillis())
+                    .setAutoCancel(true)
+                    //.setDefaults(Notification.DEFAULT_SOUND)
+                    .setContentIntent(null).build()
+
+            notification!!.flags = Notification.FLAG_NO_CLEAR or Notification.FLAG_ONGOING_EVENT
+            notificationManager?.notify(0x100, notification)
+        } else {
+            notification?.tickerText = msg
+            notificationManager?.notify(0x100, notification)
+        }
+    }
+
+    //隐藏通知
+    private fun hideNotify() {
+        if (notification != null) {
+            notificationManager?.cancel(0x100)
+            notification = null
+            notificationManager = null
+        }
+    }
+
     //加载设置
     private fun settingsLoad(): Boolean {
         if (delayStart && Date().time - serviceCreatedTime < 20000)
             return false
 
         doCmd(Consts.DisableSELinux)
-        showMsg("微工具箱增强服务已启动")
+        showNotify("辅助服务已启动")
 
         settingsLoaded = true
 
@@ -129,6 +170,7 @@ class ServiceHelper(private var context: Context) {
     private fun showModeToggleMsg(packageName: String, modeName: String) {
         if (debugMode)
             showMsg("$modeName \n$packageName")
+        showNotify("$modeName \n$packageName")
     }
 
     //自动切换模式
@@ -274,6 +316,7 @@ class ServiceHelper(private var context: Context) {
     }
 
     fun onInterrupt() {
+        hideNotify()
     }
 
     companion object {

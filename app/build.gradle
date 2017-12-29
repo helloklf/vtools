@@ -11,14 +11,14 @@ android {
             storePassword 'I0140728'
         }
     }
-    compileSdkVersion 23
+    compileSdkVersion 26
     buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.omarea.vboot"
         minSdkVersion 21
         targetSdkVersion 23
-        versionCode 373
-        versionName "7.12.28"
+        versionCode 377
+        versionName "7.12.29"
     }
     buildTypes {
         release {
@@ -43,14 +43,9 @@ dependencies {
     //provided files('lib/api-82-sources.jar')
     provided 'de.robv.android.xposed:api:82'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    compile 'com.android.support:appcompat-v7:23.4.0'
-    compile 'com.android.support:support-v4:23.4.0'
-    compile 'com.android.support:cardview-v7:23.4.0'
-    compile 'com.android.support:design:23.4.0'
-    compile 'com.android.support.constraint:constraint-layout:1.1.0-beta4'
-    //implementation 'com.android.support:appcompat-v7:26.1.0'
-    //implementation 'com.android.support:support-v4:26.1.0'
-    //implementation 'com.android.support:design:26.1.0'
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:support-v4:26.1.0'
+    implementation 'com.android.support:design:26.1.0'
     //implementation 'com.android.support.constraint:constraint-layout:1.0.2'
 }
 repositories {
