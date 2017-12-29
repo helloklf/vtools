@@ -48,5 +48,9 @@
                     android:background="#44cccc88" />
             <Button android:text="极速" android:layout_marginLeft="4dp" android:id="@+id/btn_fastmode"  android:layout_marginRight="4dp" android:background="#44cc8888" />
         </TableRow>
+        <TableRow>
+            <Switch
+                android:layout_span="4" android:text="@string/home_hide_in_recents" android:id="@+id/home_hide_in_recents" />
+        </TableRow>
     </TableLayout>
 </LinearLayout>

@@ -41,13 +41,28 @@
                 android:gravity="left"
                 android:padding="8dp"
                 android:text="@string/accessbility_debug"/>
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_column="0"
                 android:padding="8dp"
                 android:text="@string/accessbility_debug_desc"
+                android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+
+            <Switch
+                android:id="@+id/accessbility_notify"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:padding="8dp"
+                android:text="@string/accessbility_notify"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="@string/accessbility_notify_desc"
                 android:textAppearance="?android:attr/textAppearanceSmall"/>
 
             <GridLayout

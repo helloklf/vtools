@@ -25,6 +25,8 @@ public class SpfConfig {
     public static String GLOBAL_SPF_DEBUG = "is_debug";
     public static String GLOBAL_SPF_START_DELAY = "start_delay";
     public static String GLOBAL_SPF_DELAY = "is_delay_start";
+    public static String GLOBAL_SPF_NOTIFY = "accessbility_notify";
+    public static String GLOBAL_SPF_AUTO_REMOVE_RECENT = "remove_recent";
 
     public static String SWAP_SPF = "swap"; //spf
     public static String SWAP_SPF_SWAP = "swap";

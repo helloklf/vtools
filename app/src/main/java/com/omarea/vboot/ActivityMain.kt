@@ -19,7 +19,6 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View.GONE
 import android.widget.ProgressBar
 import com.omarea.shared.CrashHandler
 import com.omarea.shared.SpfConfig
@@ -63,8 +62,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         try {
             setHomePage()
         } catch (ex: Exception) {
-            AlertDialog.Builder(this).setTitle("抱歉").setMessage("启动应用失败\n" + ex.message).setNegativeButton("重试", {
-                _,_ ->
+            AlertDialog.Builder(this).setTitle("抱歉").setMessage("启动应用失败\n" + ex.message).setNegativeButton("重试", { _, _ ->
                 setHomePage()
             }).create().show()
         }
@@ -153,6 +151,17 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    override fun onDestroy() {
+        try {
+            if (getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+                    .getBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, false)) {
+                this.finishAndRemoveTask()
+            }
+        } catch (ex: Exception) {
+        }
+        super.onDestroy()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main, menu)
         return true
@@ -211,7 +220,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun hideRootMenu(menu: Menu) {
-        try{
+        try {
             menu.findItem(R.id.nav_booster).isEnabled = false
             menu.findItem(R.id.nav_applictions).isEnabled = false
             menu.findItem(R.id.nav_swap).isEnabled = false

@@ -120,9 +120,13 @@ class FragmentAddin : Fragment() {
                 stringBuilder.append(Consts.Reboot)
             }
             9 -> {
+                stringBuilder.append("settings put global airplane_mode_on 1;")
+                stringBuilder.append("am broadcast -a android.intent.action.AIRPLANE_MODE --ez state true;")
                 stringBuilder.append("settings put global captive_portal_mode 0;")
                 stringBuilder.append("settings put global captive_portal_detection_enabled 0;")
                 stringBuilder.append("settings put global captive_portal_server www.androidbak.net;")
+                stringBuilder.append("settings put global airplane_mode_on 0;")
+                stringBuilder.append("am broadcast -a android.intent.action.AIRPLANE_MODE --ez state false;");
             }
         }
         progressBar.visibility = View.VISIBLE

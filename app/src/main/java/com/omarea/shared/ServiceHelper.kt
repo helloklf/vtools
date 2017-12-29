@@ -3,20 +3,22 @@ package com.omarea.shared
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.app.Notification
 import android.app.NotificationManager
+import android.app.Service
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Handler
 import android.view.accessibility.AccessibilityManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import com.omarea.vboot.ActivityMain
 import com.omarea.vboot.R
 import java.io.BufferedWriter
 import java.io.IOException
 import java.util.*
 import android.app.PendingIntent
-import android.app.Service
+import android.app.PendingIntent.FLAG_UPDATE_CURRENT
+import android.widget.TextView
+import android.content.Intent
+import com.omarea.vboot.ActivityMain
 
 
 /**
@@ -39,6 +41,7 @@ class ServiceHelper(private var context: Context) {
     private var dyamicCore = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
     private var debugMode = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
     private var delayStart = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DELAY, false)
+    private var showNofity = spfBooster.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true)
 
     private var listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
         if (key == SpfConfig.GLOBAL_SPF_AUTO_BOOSTER) {
@@ -56,6 +59,13 @@ class ServiceHelper(private var context: Context) {
             }
         } else if (key == SpfConfig.GLOBAL_SPF_DEBUG) {
             debugMode = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
+        } else if (key == SpfConfig.GLOBAL_SPF_NOTIFY) {
+            showNofity = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true)
+            if (!showNofity) {
+                hideNotify()
+            } else if(notification == null) {
+                showNotify()
+            }
         }
     }
 
@@ -64,6 +74,8 @@ class ServiceHelper(private var context: Context) {
 
         //添加输入法到忽略列表
         Thread(Runnable {
+            showNotify("辅助服务已启动")
+
             val im = (context.getSystemService(Context.INPUT_METHOD_SERVICE)) as InputMethodManager?
             if (im == null)
                 return@Runnable
@@ -75,30 +87,31 @@ class ServiceHelper(private var context: Context) {
         }).start()
     }
 
-    private var notification:Notification? = null
-    private var notificationManager:NotificationManager? = null
+    private var notification: Notification? = null
+    private var notificationManager: NotificationManager? = null
 
     //显示通知
-    private fun showNotify(msg: String = "辅助服务正在后台运行"){
-        if (notification == null) {
-            notificationManager =  context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
-            notification =
-                    Notification.Builder(context)
-                    .setSmallIcon(R.drawable.linux)
-                    .setContentTitle("微工具箱")
-                    //.setContentText(msg)
-                    .setTicker(msg)
-                    .setWhen(System.currentTimeMillis())
-                    .setAutoCancel(true)
-                    //.setDefaults(Notification.DEFAULT_SOUND)
-                    .setContentIntent(null).build()
-
-            notification!!.flags = Notification.FLAG_NO_CLEAR or Notification.FLAG_ONGOING_EVENT
-            notificationManager?.notify(0x100, notification)
-        } else {
-            notification?.tickerText = msg
-            notificationManager?.notify(0x100, notification)
+    private fun showNotify(msg: String = "辅助服务正在后台运行") {
+        if (!showNofity) {
+            return
         }
+        //获取PendingIntent
+        val mainIntent = Intent(context, ActivityMain::class.java)
+        val mainPendingIntent = PendingIntent.getActivity(context, 0, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        notificationManager = context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
+        notification =
+                Notification.Builder(context)
+                        .setSmallIcon(R.drawable.linux)
+                        .setContentTitle("微工具箱")
+                        .setContentText(msg)
+                        .setWhen(System.currentTimeMillis())
+                        .setAutoCancel(true)
+                        //.setDefaults(Notification.DEFAULT_SOUND)
+                        .setContentIntent(mainPendingIntent)
+                        .build()
+
+        notification!!.flags = Notification.FLAG_NO_CLEAR or Notification.FLAG_ONGOING_EVENT
+        notificationManager?.notify(0x100, notification)
     }
 
     //隐藏通知
@@ -116,7 +129,6 @@ class ServiceHelper(private var context: Context) {
             return false
 
         doCmd(Consts.DisableSELinux)
-        showNotify("辅助服务已启动")
 
         settingsLoaded = true
 
@@ -195,8 +207,7 @@ class ServiceHelper(private var context: Context) {
                     } catch (ex: Exception) {
                         showModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
                     }
-                }
-                else return
+                } else return
             }
             "game" -> {
                 if (lastMode != Configs.Game) {
@@ -206,8 +217,7 @@ class ServiceHelper(private var context: Context) {
                     } catch (ex: Exception) {
                         showModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
                     }
-                }
-                else return
+                } else return
             }
             "fast" -> {
                 if (lastMode != Configs.Fast) {
@@ -227,8 +237,7 @@ class ServiceHelper(private var context: Context) {
                     } catch (ex: Exception) {
                         showModeToggleMsg(packageName, "切换模式失败，请允许本应用使用ROOT权限！")
                     }
-                }
-                else return
+                } else return
             }
         }
         lastModePackage = packageName

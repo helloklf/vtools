@@ -326,9 +326,10 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
                 sb.append(" then ")
                     sb.append("echo '[restore $packageName]';")
                     sb.append("pm clear $packageName;")
+                    sb.append("sync;")
                     sb.append("cd /data/data/$packageName;")
                     sb.append("busybox tar -xzpf $backupPath$packageName.tar.gz;")
-                    sb.append("chown -R -L `toybox ls -ld .|cut -f3 -d ' '`:`toybox ls -ld .|cut -f4 -d ' '` *;")
+                    sb.append("chown -R -L `toybox ls -ld|cut -f3 -d ' '`:`toybox ls -ld|cut -f4 -d ' '` /data/data/$packageName/*;")
                     //sb.append("chown -R --reference=/data/data/$packageName *;")
                 sb.append(" else ")
                     sb.append("echo '[skip $packageName]';")
@@ -336,6 +337,8 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
                 sb.append("fi;")
             }
         }
+        sb.append("sync;")
+        sb.append("sleep 2;")
         sb.append("echo '[operation completed]';")
         execShell(sb)
     }

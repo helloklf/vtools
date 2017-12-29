@@ -136,6 +136,8 @@
     <string name="settings_qc_limit_desc">充电速度限制(mA)，默认将限制提升至5000mA。</string>
     <string name="accessbility_debug">调试模式</string>
     <string name="accessbility_debug_desc">在后台运行时显示完整的动作提示，用于测试软件是否正常工作</string>
+    <string name="accessbility_notify">常驻通知</string>
+    <string name="accessbility_notify_desc">运行辅助服务是在状态栏显示通知</string>
     <string name="accessbility_delay">延迟启动</string>
     <string name="accessbility_delay_desc">如果出现开机后应用已启动但未正确加载配置文件，可尝试开启此项</string>
 
@@ -225,4 +227,5 @@
     <string name="settings_qc_limit_hint">充电速度上限(mA)</string>
     <string name="settings_bp_level_hint">电量限制0-99，默认85%</string>
     <string name="battery_uevent_title">$ cat /sys/class/power_supply/bms/uevent</string>
+    <string name="home_hide_in_recents">从最近任务列表隐藏</string>
 </resources>
