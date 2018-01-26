@@ -112,12 +112,17 @@
     </string>
     <string name="autobooster_tab_blacklist">黑名单</string>
     <string name="autobooster_tab_details">细节设置</string>
+    <string name="autobooster_tab_screen">开关屏幕</string>
     <string name="autobooster_cacheclear">缓存回收</string>
     <string name="autobooster_cacheclear_desc">每次切换应用都进行缓存回收，可以保持内存处于较高可用状态，但可能会减缓运行速度增加耗电。</string>
-    <string name="autoboster_dozemode">休眠模式</string>
-    <string name="autobooster_dozemode_desc">使用休眠模式替代强制停止，适合内存比较过剩的设备，但是有些比较流氓的软件可能无法休眠！</string>
+    <string name="autoboster_dozemode">休眠模式（Android 6.0+）</string>
+    <string name="autobooster_dozemode_desc">使用休眠模式替代强制停止，适合内存比较充足的设备，但是有些比较流氓的软件可能无法休眠！</string>
+    <string name="auto_clear_tasks">黑屏清理</string>
+    <string name="auto_clear_tasks_desc">在关闭屏幕后，自动结束运行中的黑名单应用</string>
+    <string name="auto_clear_ignore_chager">充电状态忽略</string>
+    <string name="auto_clear_ignore_chager_desc">充电状态下，息屏动作延迟到充电完成才执行</string>
     <string name="autobooster_service_unactive">未激活辅助服务 - 点击去激活</string>
-    <string name="autobooster_service_unactive2">后台管理功能未开启 - 点击去激活</string>
+    <string name="autobooster_service_unactive2">自动行为功能未开启 - 点击去激活</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -126,16 +131,18 @@
     <string name="accessbility_autoclick_desc">安装第三方应用时尝试自动点击下一步和安装按钮，部分系统有效！</string>
     <string name="accessbility_charger">充电加速 *实验性</string>
     <string name="accessbility_charger_desc">尝试提高充电最大电流限制，但不代表实际充电速度</string>
-    <string name="accessbility_autobooster">后台管理</string>
-    <string name="accessbility_autobooster_desc">离开主界面时自动终止黑名单应用，具体设置请在本应用后台管理中配</string>
+    <string name="accessbility_autobooster">自动行为</string>
+    <string name="accessbility_autobooster_desc">特定事件执行特定操作，具体设置请在本应用自动行为中配</string>
     <string name="accessbility_dynconfig">动态响应</string>
     <string name="accessbility_dynconfig_desc">为每个应用单独配置性能模式，在切换应用时自动调整CPU和GPU频率，具体设置请在在本应用性能配置中配</string>
     <string name="accessbility_bp">充电保护</string>
-    <string name="accessbility_bp_desc">限制手机只能充电到指定百分比，浅充浅放有助于保护电视。但可能导致电量显示不精准。</string>
+    <string name="accessbility_bp_desc">限制手机只能充电到指定百分比，浅充浅放有助于保护电池。但可能导致电量显示不精准。</string>
     <string name="accessbility_bp_level_desc">电量限制值（默认85%）</string>
     <string name="settings_qc_limit_desc">充电速度限制(mA)，默认将限制提升至5000mA。</string>
     <string name="accessbility_debug">调试模式</string>
     <string name="accessbility_debug_desc">在后台运行时显示完整的动作提示，用于测试软件是否正常工作</string>
+    <string name="accessbility_notify">常驻通知</string>
+    <string name="accessbility_notify_desc">运行辅助服务是在状态栏显示通知</string>
     <string name="accessbility_delay">延迟启动</string>
     <string name="accessbility_delay_desc">如果出现开机后应用已启动但未正确加载配置文件，可尝试开启此项</string>
 
@@ -148,7 +155,7 @@
     <string name="menu_swap">SWAP设置</string>
     <string name="menu_battery">电池充电</string>
     <string name="menu_xposed">Xposed功能</string>
-    <string name="menu_autobooster">后台管理</string>
+    <string name="menu_autobooster">自动行为</string>
     <string name="menu_img">备份还原</string>
     <string name="menu_settings">软件设置</string>
     <string name="menu_help">使用帮助</string>
@@ -223,6 +230,8 @@
         "<span>http://coolapk.com/apk/com.omarea.vboot</span>"
     </string>
     <string name="settings_qc_limit_hint">充电速度上限(mA)</string>
-    <string name="settings_bp_level_hint">电量限制0-99，默认85%</string>
+    <string name="settings_bp_level_hint">电量限制0–99，默认85%</string>
     <string name="battery_uevent_title">$ cat /sys/class/power_supply/bms/uevent</string>
+    <string name="home_hide_in_recents">从最近任务列表隐藏</string>
+    <string name="applist_help">✔ 已备份\n✘ 备份的版本比安装的版本更高\n★ 已安装的版本比备份的版本旧\n☆ 已备份数据未备份APK\n\n目前所提供的应用数据备份功能，需要系统集成busybox、toybox，使用tar+gz压缩数据（如果系统支持，将使用pigz提高压缩速度），仅备份 “/data/data/应用包名” 下的数据，且不保证兼容所有系统和应用。\n\n“系统”应用栏提供“禁用+隐藏”选项，被隐藏的应用将被从已安装应用列表移除（不同于冻结，应用被隐藏后你无法运行也不会在应用管理中看到）</string>
 </resources>

@@ -72,7 +72,7 @@ public class list_adapter2 extends BaseAdapter {
         viewHolder.itemChecke.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                states.put(position, isChecked);
+            states.put(position, isChecked);
             }
         });
         //从hashmap里面取出我们的状态值,然后赋值给listview对应位置的checkbox

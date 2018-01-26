@@ -22,6 +22,7 @@ class BootService : Service() {
     private var handler = Handler()
     private lateinit var chargeConfig:SharedPreferences
     private lateinit var swapConfig:SharedPreferences
+    private lateinit var globalConfig:SharedPreferences
 
     private fun autoBoot() {
         //判断是否开启了充电加速和充电保护，如果开启了，自动启动后台服务
@@ -34,6 +35,20 @@ class BootService : Service() {
         }
 
         val sb = StringBuilder("setenforce 0;")
+
+        if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE, false)) {
+            val mac = globalConfig.getString(SpfConfig.GLOBAL_SPF_MAC, "")
+            if (mac != "") {
+                sb.append("chmod 0644 /sys/class/net/wlan0/address;" +
+                        "svc wifi disable;" +
+                        "ifconfig wlan0 down;" +
+                        "echo '$mac' > /sys/class/net/wlan0/address;" +
+                        "ifconfig wlan0 hw ether '$mac';" +
+                        "ifconfig wlan0 up;" +
+                        "svc wifi enable;\n\n")
+            }
+        }
+
         if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false) || swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) {
             if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) {
                 sb.append("if [ `cat /sys/block/zram0/disksize` != '" + swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0) + "000000' ] ; then ")
@@ -67,8 +82,9 @@ class BootService : Service() {
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         chargeConfig = this.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
         swapConfig = this.getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)
+        globalConfig = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
-        if (getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_START_DELAY, false)) {
+        if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_START_DELAY, false)) {
             handler.postDelayed({
                 autoBoot()
             }, 25000)

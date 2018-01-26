@@ -1,12 +1,16 @@
 package com.omarea.vboot
 
 import android.Manifest
+import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.support.annotation.RequiresApi
 import android.support.design.widget.NavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
@@ -19,7 +23,6 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View.GONE
 import android.widget.ProgressBar
 import com.omarea.shared.CrashHandler
 import com.omarea.shared.SpfConfig
@@ -38,6 +41,32 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var hasRoot = false
 
     internal var myHandler: android.os.Handler = Handler()
+    private var globalSPF: SharedPreferences? = null
+
+    private fun setExcludeFromRecents(exclude:Boolean? = null) {
+        try {
+            if (globalSPF == null) {
+                globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+                val listener = SharedPreferences.OnSharedPreferenceChangeListener {
+                    sharedPreferences, key ->
+                    if (key == SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT) {
+                        setExcludeFromRecents(sharedPreferences.getBoolean(key, false))
+                    }
+                }
+                globalSPF!!.registerOnSharedPreferenceChangeListener(listener)
+            }
+
+            val service = this.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            for (task in service.appTasks) {
+                if (task.taskInfo.id == this.taskId) {
+                    val b = if (exclude == null) globalSPF!!.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, false) else exclude
+                    task.setExcludeFromRecents(b)
+                }
+            }
+        } catch (ex: Exception) {
+            ex.stackTrace
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,6 +85,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }, Runnable {
             next()
         })
+        setExcludeFromRecents()
     }
 
     override fun onAttachedToWindow() {
@@ -63,8 +93,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         try {
             setHomePage()
         } catch (ex: Exception) {
-            AlertDialog.Builder(this).setTitle("抱歉").setMessage("启动应用失败\n" + ex.message).setNegativeButton("重试", {
-                _,_ ->
+            AlertDialog.Builder(this).setTitle("抱歉").setMessage("启动应用失败\n" + ex.message).setNegativeButton("重试", { _, _ ->
                 setHomePage()
             }).create().show()
         }
@@ -211,7 +240,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun hideRootMenu(menu: Menu) {
-        try{
+        try {
             menu.findItem(R.id.nav_booster).isEnabled = false
             menu.findItem(R.id.nav_applictions).isEnabled = false
             menu.findItem(R.id.nav_swap).isEnabled = false

@@ -33,6 +33,7 @@ class ActivityAccessibilitySettings : AppCompatActivity() {
         settings_dynamic.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
         settings_debugmode.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
         settings_delaystart.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DELAY, false)
+        accessbility_notify.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true)
     }
 
     @SuppressLint("ApplySharedPref")
@@ -54,21 +55,30 @@ class ActivityAccessibilitySettings : AppCompatActivity() {
             startActivity(intent)
         }
 
-        settings_delaystart.setOnClickListener {
-            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DELAY, settings_delaystart.isChecked).commit()
-        }
-        settings_debugmode.setOnClickListener {
-            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DEBUG, settings_debugmode.isChecked).commit()
-        }
-        settings_autoinstall.setOnClickListener {
-            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_INSTALL, settings_autoinstall.isChecked).commit()
-        }
-        settings_autobooster.setOnClickListener {
-            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, settings_autobooster.isChecked).commit()
-        }
-        settings_dynamic.setOnClickListener {
-            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, settings_dynamic.isChecked).commit()
-        }
+        settings_delaystart.setOnCheckedChangeListener({
+            _,checked ->
+            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DELAY, checked).commit()
+        })
+        settings_debugmode.setOnCheckedChangeListener({
+            _,checked ->
+            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DEBUG, checked).commit()
+        })
+        settings_autoinstall.setOnCheckedChangeListener({
+            _,checked ->
+            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_INSTALL, checked).commit()
+        })
+        settings_autobooster.setOnCheckedChangeListener({
+            _,checked ->
+            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, checked).commit()
+        })
+        settings_dynamic.setOnCheckedChangeListener({
+            _,checked ->
+            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, checked).commit()
+        })
+        accessbility_notify.setOnCheckedChangeListener({
+            _,checked ->
+            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, checked).commit()
+        })
     }
 
     public override fun onPause() {

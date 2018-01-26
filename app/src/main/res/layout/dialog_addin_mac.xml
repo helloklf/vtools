@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="26dp"
+    android:paddingRight="26dp">
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:textColor="#888"
+        android:textSize="12dp"
+        android:text="MAC"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/dialog_addin_mac_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text"
+        android:maxLength="18" />
+
+    <TextView
+        android:layout_marginTop="20dp"
+        android:textColor="#888"
+        android:textSize="12dp"
+        android:text="自启动"
+        android:hint="min:96"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <CheckBox android:layout_marginTop="20dp" android:layout_marginBottom="10dp" android:id="@+id/dialog_addin_mac_autochange" android:text="开机后自动修改"
+        android:layout_height="wrap_content" android:layout_width="match_parent" />
+</LinearLayout>

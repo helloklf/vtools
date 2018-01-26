@@ -13,9 +13,20 @@ public class SpfConfig {
     public static String CHARGE_SPF_BP = "bp"; //bool
     public static String CHARGE_SPF_BP_LEVEL = "bp_level"; //int
 
-    public static String BOOSTER_CONFIG_SPF = "boostercfg";
-    public static String BOOSTER_SPF_CLEAR_CACHE = "auto_clear_cache";
-    public static String BOOSTER_SPF_DOZE_MOD = "use_doze_mod";
+    public static String BOOSTER_BLACKLIST_SPF = "boostercfg";
+
+    public static String BOOSTER_SPF_CFG_SPF = "boostercfg2";
+    public static String BOOSTER_SPF_CFG_SPF_CLEAR_CACHE = "auto_clear_cache";
+    public static String BOOSTER_SPF_CFG_SPF_DOZE_MOD = "use_doze_mod";
+    public static String BOOSTER_SPF_CFG_SPF_CLEAR_TASKS = "auto_clear_tasks";
+
+    public static String DATA = "data";
+    public static String WIFI = "wifi";
+    public static String NFC = "nfc";
+    public static String GPS = "gps";
+
+    public static String ON = "_on";
+    public static String OFF = "_off";
 
     public static String GLOBAL_SPF = "global"; //spf
     public static String GLOBAL_SPF_AUTO_INSTALL = "is_auto_install";
@@ -25,6 +36,10 @@ public class SpfConfig {
     public static String GLOBAL_SPF_DEBUG = "is_debug";
     public static String GLOBAL_SPF_START_DELAY = "start_delay";
     public static String GLOBAL_SPF_DELAY = "is_delay_start";
+    public static String GLOBAL_SPF_NOTIFY = "accessbility_notify";
+    public static String GLOBAL_SPF_AUTO_REMOVE_RECENT = "remove_recent";
+    public static String GLOBAL_SPF_MAC = "wifi_mac";
+    public static String GLOBAL_SPF_MAC_AUTOCHANGE = "wifi_mac_autochange";
 
     public static String SWAP_SPF = "swap"; //spf
     public static String SWAP_SPF_SWAP = "swap";

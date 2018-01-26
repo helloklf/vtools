@@ -6,6 +6,8 @@ import com.omarea.shell.SysUtils;
 
 import java.io.File;
 
+import kotlin.text.Regex;
+
 /**
  * Created by Hello on 2017/11/01.
  */
@@ -34,28 +36,38 @@ public class BatteryUnit {
                 batteryInfos = "";
             String[] infos = batteryInfos.split("\n");
             StringBuilder stringBuilder = new StringBuilder();
+            String io = "";
+            int mahLength = 0;
             for (String info : infos) {
                 try {
                     String keyrowd = "";
                     if (info.startsWith(keyrowd = "POWER_SUPPLY_CHARGE_FULL=")) {
                         stringBuilder.append("充满容量 = ");
                         stringBuilder.append(info.substring(keyrowd.length(), keyrowd.length() + 4));
+                        if (mahLength == 0) {
+                            String value = info.substring(keyrowd.length(),info.length());
+                            mahLength = value.length();
+                        }
                         stringBuilder.append("mAh");
                     } else if (info.startsWith(keyrowd = "POWER_SUPPLY_CHARGE_FULL_DESIGN=")) {
                         stringBuilder.append("设计容量 = ");
                         stringBuilder.append(info.substring(keyrowd.length(), keyrowd.length() + 4));
                         stringBuilder.append("mAh");
+                        String value = info.substring(keyrowd.length(),info.length());
+                        mahLength = value.length();
                     } else if (info.startsWith(keyrowd = "POWER_SUPPLY_TEMP=")) {
                         stringBuilder.append("电池温度 = ");
                         stringBuilder.append(info.substring(keyrowd.length(), keyrowd.length() + 2));
                         stringBuilder.append("°C");
                     } else if (info.startsWith(keyrowd = "POWER_SUPPLY_TEMP_WARM=")) {
                         stringBuilder.append("警戒温度 = ");
-                        stringBuilder.append(info.substring("POWER_SUPPLY_TEMP_WARM=".length(), keyrowd.length() + 2));
+                        int value = Integer.parseInt(info.substring(keyrowd.length(), info.length()));
+                        stringBuilder.append(value / 10);
                         stringBuilder.append("°C");
                     } else if (info.startsWith(keyrowd = "POWER_SUPPLY_TEMP_COOL=")) {
                         stringBuilder.append("低温温度 = ");
-                        stringBuilder.append(info.substring(keyrowd.length(), keyrowd.length() + 2));
+                        int value = Integer.parseInt(info.substring(keyrowd.length(), info.length()));
+                        stringBuilder.append(value / 10);
                         stringBuilder.append("°C");
                     } else if (info.startsWith(keyrowd = "POWER_SUPPLY_VOLTAGE_NOW=")) {
                         stringBuilder.append("当前电压 = ");
@@ -93,19 +105,19 @@ public class BatteryUnit {
                         stringBuilder.append(info.substring(keyrowd.length(), ((keyrowd.length() + 2) > info.length()) ? info.length() : (keyrowd.length() + 2)));
                         stringBuilder.append("%");
                     } else if (info.startsWith(keyrowd = "POWER_SUPPLY_CURRENT_NOW=")) {
-                        stringBuilder.append("当前电流 = ");
-                        String val = info.substring(keyrowd.length(), info.length());
-                        while (val.length() > 5) {
-                            val = val.substring(0, val.length() - 3);
-                        }
-                        stringBuilder.append(val);
-                        stringBuilder.append("mA");
+                        io = info.substring(keyrowd.length(), info.length());
+                        continue;
                     } else {
                         continue;
                     }
                     stringBuilder.append("\n");
                 } catch (Exception ignored) {
                 }
+            }
+
+            if (io.length() > 0 && mahLength != 0) {
+                int val = (mahLength < 5) ? (Integer.parseInt(io)):((int) (Integer.parseInt(io) / Math.pow(10, mahLength - 4)));
+                stringBuilder.insert(0, "放电速度 = "+ val +"mA\n");
             }
 
             return stringBuilder.toString();

@@ -199,6 +199,7 @@ case "$target" in
 	echo N > /sys/module/lpm_levels/system/perf/perf-l2-dynret/idle_enabled
 	echo N > /sys/module/lpm_levels/system/perf/perf-l2-ret/idle_enabled
 	echo N > /sys/module/lpm_levels/parameters/sleep_disabled
+
     echo 0 > /dev/cpuset/background/cpus
     echo 0-3 > /dev/cpuset/system-background/cpus
     echo 4-7 > /dev/cpuset/foreground/boost/cpus

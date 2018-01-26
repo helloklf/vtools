@@ -8,14 +8,13 @@
     <TabHost
         android:id="@+id/blacklist_tabhost"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_column="0"
-        android:layout_row="2">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <EditText
                 android:id="@+id/apps_search_box"
                 android:layout_width="match_parent"
@@ -30,7 +29,7 @@
                 android:id="@android:id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#33dddddd"></TabWidget>
+                android:background="#33dddddd" />
 
             <FrameLayout
                 android:id="@android:id/tabcontent"
@@ -49,7 +48,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|center"
                         android:layout_margin="@dimen/fab_margin"
-                        android:src="@drawable/check"/>
+                        android:src="@drawable/check" />
 
                     <ListView
                         android:id="@+id/apps_userlist"
@@ -69,7 +68,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|center"
                         android:layout_margin="@dimen/fab_margin"
-                        android:src="@drawable/check"/>
+                        android:src="@drawable/check" />
 
                     <ListView
                         android:id="@+id/apps_systemlist"
@@ -77,7 +76,6 @@
                         android:layout_height="match_parent"></ListView>
 
                 </FrameLayout>
-
 
                 <FrameLayout
                     android:id="@+id/tab_apps_backuped"
@@ -91,13 +89,38 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="bottom|center"
                         android:layout_margin="@dimen/fab_margin"
-                        android:src="@drawable/check"/>
+                        android:src="@drawable/check" />
 
                     <ListView
                         android:id="@+id/apps_backupedlist"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"></ListView>
+                        android:layout_height="match_parent" />
 
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/tab_apps_helper"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:padding="20dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+                        <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="说明"
+                        android:textSize="18dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/applist_help"
+                            android:textSize="14dp" />
+                    </LinearLayout>
                 </FrameLayout>
             </FrameLayout>
         </LinearLayout>

@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import com.omarea.shared.Appinfo
 import com.omarea.shared.Consts
 import com.omarea.shell.AsynSuShellUnit
 import com.omarea.shell.SysUtils
@@ -20,9 +21,9 @@ import java.util.*
  * Created by helloklf on 2017/12/04.
  */
 
-class DialogAppOptions(private var context: Context, private var apps: ArrayList<HashMap<String, Any>>, private var handler: Handler) {
-    private var allowPigz = false
-    private var backupPath = Consts.AbsBackUpDir
+open class DialogAppOptions(protected open var context: Context, protected var apps: ArrayList<Appinfo>, protected open var handler: Handler) {
+    protected var allowPigz = false
+    protected var backupPath = Consts.AbsBackUpDir
 
     fun selectUserAppOptions() {
         AlertDialog.Builder(context).setTitle("请选择操作")
@@ -37,33 +38,11 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
                                 "冻结",
                                 "解冻"), { _, which ->
                     when (which) {
-                        0 -> {
-                            if (!checkRestoreData()) {
-                                Toast.makeText(context, "抱歉，数据备份还原功能暂不支持你的设备！", Toast.LENGTH_LONG).show()
-                                return@setItems
-                            }
-                            confirm("备份应用和数据", "备份功能目前还是实验性的，无法保证在所有设备上运行，备份可能无法正常还原。继续尝试使用吗？", Runnable {
-                                backupAll(true, true)
-                            })
-                        }
-                        1 -> {
-                            backupAll(true, false)
-                        }
-                        2 -> {
-                            confirm("卸载", "正在卸载${apps.size}个应用，继续吗？", Runnable {
-                                uninstallAll()
-                            })
-                        }
-                        3 -> {
-                            confirm("卸载（保留数据）", "正在卸载${apps.size}个应用，这些应用的数据会被保留，这可能会导致下次安装不同签名的同名应用时无法安装，继续吗？", Runnable {
-                                uninstallKeepDataAll()
-                            })
-                        }
-                        4 -> {
-                            confirm("清除应用数据", "正在清除${apps.size}个应用的数据，继续吗？", Runnable {
-                                clearAll()
-                            })
-                        }
+                        0 -> backupAll(true, true)
+                        1 -> backupAll(true, false)
+                        2 -> uninstallAll()
+                        3 -> uninstallKeepDataAll()
+                        4 -> clearAll()
                         5 -> trimCachesAll()
                         6 -> disableAll()
                         7 -> enableAll()
@@ -83,81 +62,39 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
                                 "解冻",
                                 "禁用+隐藏"), { _, which ->
                     when (which) {
-                        0 -> {
-                            confirm("删除应用", "删除系统应用可能导致功能不正常，甚至无法开机，确定要继续删除？", Runnable {
-                                deleteAll()
-                            })
-                        }
-                        1 -> {
-                            confirm("清空应用数据", "已选中了${apps.size}个应用，这些应用的数据将会被清除，确定吗？", Runnable {
-                                clearAll()
-                            })
-                        }
+                        0 -> deleteAll()
+                        1 -> clearAll()
                         2 -> trimCachesAll()
-                        3 -> {
-                            confirm("冻结应用", "已选中了${apps.size}个应用，这些应用将会被冻结，可能导致手机功能不正常，继续冻结？", Runnable {
-                                disableAll()
-                            })
-                        }
+                        3 -> disableAll()
                         4 -> enableAll()
-                        5 -> {
-                            confirm("隐藏应用", "你将禁用并隐藏${apps.size}个应用，该操作无法撤销，继续这个操作？", Runnable {
-                                hideAll()
-                            })
-                        }
+                        5 -> hideAll()
                     }
                 })
                 .show()
     }
 
     fun selectBackupOptions() {
-        AlertDialog.Builder(context).setTitle("请选择操作")
+        AlertDialog
+                .Builder(context)
+                .setTitle("请选择操作")
                 .setCancelable(true)
-                .setItems(
-                        arrayOf("删除备份",
-                                "还原",
-                                "还原(应用)",
-                                "还原(数据)"), { _, which ->
+                .setItems(arrayOf("删除备份", "还原", "还原(应用)", "还原(数据)"), { _, which ->
                     when (which) {
-                        0 -> {
-                            confirm("删除备份", "永久删除这些备份文件？", Runnable {
-                                deleteBackupAll()
-                            })
-                        }
-                        1 -> {
-                            if (!checkRestoreData()) {
-                                Toast.makeText(context, "抱歉，数据备份还原功能暂不支持你的设备！", Toast.LENGTH_LONG).show()
-                                return@setItems
-                            }
-                            confirm("还原应用和数据", "该功能目前还在实验阶段，可能不能在所有设备上正常运行，也许会导致应用数据丢失。\n继续尝试恢复吗？", Runnable {
-                                restoreAll(true, true)
-                            })
-                        }
-                        2 -> {
-                            confirm("还原应用", "该功能目前还在实验阶段，可能不能在所有设备上正常运行，也许会导致应用数据丢失。\n继续尝试恢复吗？", Runnable {
-                                restoreAll(true, false)
-                            })
-                        }
-                        3 -> {
-                            if (!checkRestoreData()) {
-                                Toast.makeText(context, "抱歉，数据备份还原功能暂不支持你的设备！", Toast.LENGTH_LONG).show()
-                                return@setItems
-                            }
-                            confirm("还原数据", "该功能目前还在实验阶段，可能不能在所有设备上正常运行，也许会导致应用数据丢失。\n继续尝试恢复吗？", Runnable {
-                                restoreAll(false, true)
-                            })
-                        }
+                        0 -> deleteBackupAll()
+                        1 -> restoreAll(true, true)
+                        2 -> restoreAll(true, false)
+                        3 -> restoreAll(false, true)
                     }
                 })
                 .show()
     }
 
-    private fun checkRestoreData(): Boolean {
-        var r = SysUtils.executeCommandWithOutput(false, "cd /data/data/${Consts.PACKAGE_NAME};echo `toybox ls -ld|cut -f3 -d ' '`; echo `ls -ld|cut -f3 -d ' '`;")
+    protected fun checkRestoreData(): Boolean {
+        val r = SysUtils.executeCommandWithOutput(false, "cd /data/data/${Consts.PACKAGE_NAME};echo `toybox ls -ld|cut -f3 -d ' '`; echo `ls -ld|cut -f3 -d ' '`;")
         return r != null && r.trim().length > 0
     }
 
-    private fun execShell(sb: StringBuilder) {
+    protected fun execShell(sb: StringBuilder) {
         val layoutInflater = LayoutInflater.from(context)
         val dialog = layoutInflater.inflate(R.layout.dialog_app_options, null)
         val textView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
@@ -167,8 +104,8 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
         alert.show()
     }
 
-    class ProgressHandler(dialog: View, private var alert: AlertDialog, private var handler: Handler) : Handler() {
-        private var textView: TextView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
+    class ProgressHandler(dialog: View, protected var alert: AlertDialog, protected var handler: Handler) : Handler() {
+        protected var textView: TextView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
         var progressBar: ProgressBar = (dialog.findViewById(R.id.dialog_app_details_progress) as ProgressBar)
 
         override fun handleMessage(msg: Message) {
@@ -214,7 +151,7 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
         }
     }
 
-    private fun confirm(title: String, msg: String, next: Runnable?) {
+    protected fun confirm(title: String, msg: String, next: Runnable?) {
         AlertDialog.Builder(context)
                 .setTitle(title)
                 .setMessage(msg)
@@ -230,7 +167,7 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
     /**
      * 检查是否可用pigz
      */
-    private fun checkPigz() {
+    protected fun checkPigz() {
         if (File("/system/xbin/pigz").exists() || File("/system/bin/pigz").exists()) {
             allowPigz = true
         }
@@ -239,7 +176,21 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
     /**
      * 备份选中的应用
      */
-    private fun backupAll(apk: Boolean = true, data: Boolean = true) {
+    protected fun backupAll(apk: Boolean = true, data: Boolean = true) {
+        if (data) {
+            if (!checkRestoreData()) {
+                Toast.makeText(context, "抱歉，数据备份还原功能暂不支持你的设备！", Toast.LENGTH_LONG).show()
+                return
+            }
+            confirm("备份应用和数据", "备份功能目前还是实验性的，无法保证在所有设备上运行，备份可能无法正常还原。继续尝试使用吗？", Runnable {
+                _backupAll(apk, data)
+            })
+        } else {
+            _backupAll(apk, data)
+        }
+    }
+
+    private fun _backupAll(apk: Boolean = true, data: Boolean = true) {
         checkPigz()
 
         val date = Date().time.toString()
@@ -256,13 +207,13 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
         sb.append("\n")
         sb.append("if [ `cat \${backup_path}date.dat` = \$backup_date ];")
         sb.append(" then ")
-            sb.append("backup_path=\${hard_link_path};")
+        sb.append("backup_path=\${hard_link_path};")
         sb.append(" fi;")
         sb.append("\n")
 
         for (item in apps) {
-            val packageName = item["packageName"].toString()
-            val path = item["path"].toString()
+            val packageName = item.packageName.toString()
+            val path = item.path.toString()
 
             if (apk) {
                 sb.append("rm -f \${backup_path}$packageName.apk;")
@@ -303,15 +254,31 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
     /**
      * 还原选中的应用
      */
-    private fun restoreAll(apk: Boolean = true, data: Boolean = true) {
+    protected fun restoreAll(apk: Boolean = true, data: Boolean = true) {
+        if (data) {
+            if (!checkRestoreData()) {
+                Toast.makeText(context, "抱歉，数据备份还原功能暂不支持你的设备！", Toast.LENGTH_LONG).show()
+                return
+            }
+            confirm("还原应用和数据", "该功能目前还在实验阶段，可能不能在所有设备上正常运行，也许会导致应用数据丢失。\n继续尝试恢复吗？", Runnable {
+                _restoreAll(apk, data)
+            })
+        } else {
+            confirm("还原应用", "该功能目前还在实验阶段，可能不能在所有设备上正常运行，也许会导致应用数据丢失。\n继续尝试恢复吗？", Runnable {
+                _restoreAll(apk, data)
+            })
+        }
+    }
+
+    private fun _restoreAll(apk: Boolean = true, data: Boolean = true) {
         checkPigz()
 
         val sb = StringBuilder()
         sb.append("chown sdcard_rw *;")
         sb.append("chmod 7777 *;")
         for (item in apps) {
-            val packageName = item["packageName"].toString()
-            val apkPath = item["path"].toString()
+            val packageName = item.packageName.toString()
+            val apkPath = item.path.toString()
             if (apk && File("$backupPath$packageName.apk").exists()) {
                 sb.append("echo '[install $packageName]';")
 
@@ -324,18 +291,21 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
             if (data && File("$backupPath$packageName.tar.gz").exists()) {
                 sb.append("if [ -d /data/data/$packageName ];")
                 sb.append(" then ")
-                    sb.append("echo '[restore $packageName]';")
-                    sb.append("pm clear $packageName;")
-                    sb.append("cd /data/data/$packageName;")
-                    sb.append("busybox tar -xzpf $backupPath$packageName.tar.gz;")
-                    sb.append("chown -R -L `toybox ls -ld .|cut -f3 -d ' '`:`toybox ls -ld .|cut -f4 -d ' '` *;")
-                    //sb.append("chown -R --reference=/data/data/$packageName *;")
+                sb.append("echo '[restore $packageName]';")
+                sb.append("pm clear $packageName;")
+                sb.append("sync;")
+                sb.append("cd /data/data/$packageName;")
+                sb.append("busybox tar -xzpf $backupPath$packageName.tar.gz;")
+                sb.append("chown -R -L `toybox ls -ld|cut -f3 -d ' '`:`toybox ls -ld|cut -f4 -d ' '` /data/data/$packageName/*;")
+                //sb.append("chown -R --reference=/data/data/$packageName *;")
                 sb.append(" else ")
-                    sb.append("echo '[skip $packageName]';")
-                    sb.append("sleep 1;")
+                sb.append("echo '[skip $packageName]';")
+                sb.append("sleep 1;")
                 sb.append("fi;")
             }
         }
+        sb.append("sync;")
+        sb.append("sleep 2;")
         sb.append("echo '[operation completed]';")
         execShell(sb)
     }
@@ -343,10 +313,16 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
     /**
      * 禁用所选的应用
      */
-    private fun disableAll() {
+    protected fun disableAll() {
+        confirm("冻结应用", "已选中了${apps.size}个应用，这些应用将会被冻结，可能导致手机功能不正常，继续冻结？", Runnable {
+            _disableAll()
+        })
+    }
+
+    private fun _disableAll() {
         val sb = StringBuilder()
         for (item in apps) {
-            val packageName = item["packageName"].toString()
+            val packageName = item.packageName.toString()
             sb.append("echo '[disable $packageName]';")
 
             sb.append("pm disable $packageName;")
@@ -359,10 +335,10 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
     /**
      * 启用所选的应用
      */
-    private fun enableAll() {
+    protected fun enableAll() {
         val sb = StringBuilder()
         for (item in apps) {
-            val packageName = item["packageName"].toString()
+            val packageName = item.packageName.toString()
             sb.append("echo '[enable $packageName]';")
 
             sb.append("pm enable $packageName;")
@@ -375,10 +351,16 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
     /**
      * 隐藏所选的应用
      */
-    private fun hideAll() {
+    protected fun hideAll() {
+        confirm("隐藏应用", "你将禁用并隐藏${apps.size}个应用，该操作无法撤销，继续这个操作？", Runnable {
+            _hideAll()
+        })
+    }
+
+    private fun _hideAll() {
         val sb = StringBuilder()
         for (item in apps) {
-            val packageName = item["packageName"].toString()
+            val packageName = item.packageName.toString()
             sb.append("echo '[hide $packageName]';")
 
             sb.append("pm hide $packageName;")
@@ -391,14 +373,20 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
     /**
      * 删除选中的应用
      */
-    private fun deleteAll() {
+    protected fun deleteAll() {
+        confirm("删除应用", "删除系统应用可能导致功能不正常，甚至无法开机，确定要继续删除？", Runnable {
+            _deleteAll()
+        })
+    }
+
+    private fun _deleteAll() {
         val sb = StringBuilder()
         sb.append(Consts.MountSystemRW)
         for (item in apps) {
-            val packageName = item["packageName"].toString()
+            val packageName = item.packageName.toString()
             sb.append("echo '[delete $packageName]';")
 
-            val dir = item["dir"].toString()
+            val dir = item.dir.toString()
             sb.append("rm -rf $dir;")
         }
 
@@ -409,14 +397,27 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
     /**
      * 删除备份
      */
-    private fun deleteBackupAll() {
+    protected fun deleteBackupAll() {
+        confirm("删除备份", "永久删除这些备份文件？", Runnable {
+            _deleteBackupAll()
+        })
+    }
+
+    private fun _deleteBackupAll() {
         val sb = StringBuilder()
         for (item in apps) {
-            val packageName = item["packageName"].toString()
+            val packageName = item.packageName.toString()
             sb.append("echo '[delete $packageName]';")
 
-            sb.append("rm -rf $backupPath$packageName.apk;")
-            sb.append("rm -rf $backupPath$packageName.tar.gz;")
+            if (item.path != null) {
+                sb.append("rm -rf ${item.path};")
+                if (item.path == "$backupPath$packageName.apk") {
+                    sb.append("rm -rf $backupPath$packageName.tar.gz;")
+                }
+            } else {
+                sb.append("rm -rf $backupPath$packageName.apk;")
+                sb.append("rm -rf $backupPath$packageName.tar.gz;")
+            }
         }
 
         sb.append("echo '[operation completed]';")
@@ -426,10 +427,16 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
     /**
      * 清除数据
      */
-    private fun clearAll() {
+    protected fun clearAll() {
+        confirm("清空应用数据", "已选中了${apps.size}个应用，这些应用的数据将会被清除，确定吗？", Runnable {
+            _clearAll()
+        })
+    }
+
+    private fun _clearAll() {
         val sb = StringBuilder()
         for (item in apps) {
-            val packageName = item["packageName"].toString()
+            val packageName = item.packageName.toString()
             sb.append("echo '[clear $packageName]';")
 
             sb.append("pm clear $packageName;")
@@ -442,10 +449,10 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
     /**
      * 清除缓存
      */
-    private fun trimCachesAll() {
+    protected fun trimCachesAll() {
         val sb = StringBuilder()
         for (item in apps) {
-            val packageName = item["packageName"].toString()
+            val packageName = item.packageName.toString()
             sb.append("echo '[trim caches $packageName]';")
 
             sb.append("pm trim-caches $packageName;")
@@ -458,10 +465,16 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
     /**
      * 卸载选中
      */
-    private fun uninstallAll() {
+    protected fun uninstallAll() {
+        confirm("卸载", "正在卸载${apps.size}个应用，继续吗？", Runnable {
+            _uninstallAll()
+        })
+    }
+
+    private fun _uninstallAll() {
         val sb = StringBuilder()
         for (item in apps) {
-            val packageName = item["packageName"].toString()
+            val packageName = item.packageName.toString()
             sb.append("echo '[uninstall $packageName]';")
 
             sb.append("pm uninstall $packageName;")
@@ -474,10 +487,16 @@ class DialogAppOptions(private var context: Context, private var apps: ArrayList
     /**
      * 卸载且保留数据
      */
-    private fun uninstallKeepDataAll() {
+    protected fun uninstallKeepDataAll() {
+        confirm("卸载（保留数据）", "正在卸载${apps.size}个应用，这些应用的数据会被保留，这可能会导致下次安装不同签名的同名应用时无法安装，继续吗？", Runnable {
+            _uninstallKeepDataAll()
+        })
+    }
+
+    private fun _uninstallKeepDataAll() {
         val sb = StringBuilder()
         for (item in apps) {
-            val packageName = item["packageName"].toString()
+            val packageName = item.packageName.toString()
             sb.append("echo '[uninstall $packageName]';")
 
             sb.append("pm uninstall -k $packageName;")

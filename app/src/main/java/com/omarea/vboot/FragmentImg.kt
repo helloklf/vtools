@@ -135,7 +135,7 @@ class FragmentImg : Fragment() {
                         builder.setPositiveButton(android.R.string.yes) { _, _ ->
                         }
                         builder.setMessage("由于安卓系统的文件选择器兼容性差异，现在做文件选择变得非常困难，因此不再支持自选文件刷入。请将你要刷入的recovery文件放到以下位置：\n" +
-                                "${Consts.SDCardDir}/reovery.img\n" +
+                                "${Consts.SDCardDir}/recovery.img\n" +
                                 "路径和文件名区分大小写")
                         builder.create().show()
                     }

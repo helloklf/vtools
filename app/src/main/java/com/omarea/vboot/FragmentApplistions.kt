@@ -5,20 +5,22 @@ import android.os.Handler
 import android.os.Message
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
-import android.widget.CheckBox
-import android.widget.ListAdapter
-import android.widget.ListView
-import android.widget.TabHost
+import com.omarea.shared.Appinfo
 import com.omarea.shared.Consts
-import com.omarea.shared.cmd_shellTools
-import com.omarea.ui.list_adapter2
+import com.omarea.shared.helper.MyHandler
+import com.omarea.ui.AppListAdapter
 import com.omarea.units.AppListHelper
+import com.omarea.units.AppListHelper2
 import com.omarea.vboot.dialogs.DialogAppOptions
+import com.omarea.vboot.dialogs.DialogSingleAppOptions
 import kotlinx.android.synthetic.main.layout_applictions.*
 import java.util.ArrayList
 import java.util.HashMap
@@ -26,12 +28,11 @@ import kotlin.Comparator
 
 
 class FragmentApplistions : Fragment() {
-    private var frameView: View? = null
     internal var thisview: ActivityMain? = null
-    private lateinit var appListHelper: AppListHelper
-    private var installedList: ArrayList<HashMap<String, Any>>? = null
-    private var systemList: ArrayList<HashMap<String, Any>>? = null
-    private var backupedList: ArrayList<HashMap<String, Any>>? = null
+    private lateinit var appListHelper: AppListHelper2
+    private var installedList: ArrayList<Appinfo>? = null
+    private var systemList: ArrayList<Appinfo>? = null
+    private var backupedList: ArrayList<Appinfo>? = null
     private val myHandler: Handler = UpdateHandler(Runnable {
         setList()
     })
@@ -52,14 +53,13 @@ class FragmentApplistions : Fragment() {
             inflater!!.inflate(R.layout.layout_applictions, container, false)
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        this.frameView = view
-
         val tabHost = view!!.findViewById(R.id.blacklist_tabhost) as TabHost
         tabHost.setup()
         tabHost.addTab(tabHost.newTabSpec("tab_1").setContent(R.id.tab_apps_user).setIndicator("用户"))
         tabHost.addTab(tabHost.newTabSpec("tab_2").setContent(R.id.tab_apps_system).setIndicator("系统"))
         tabHost.addTab(tabHost.newTabSpec("tab_3").setContent(R.id.tab_apps_backuped).setIndicator("已备份"))
-        tabHost.currentTab = 0
+        tabHost.addTab(tabHost.newTabSpec("tab_3").setContent(R.id.tab_apps_helper).setIndicator("帮助"))
+        tabHost.currentTab = 3
 
         val toggleSelectState = OnItemClickListener { _, itemView, _, _ ->
             val checkBox = itemView.findViewById(R.id.select_state) as CheckBox
@@ -69,43 +69,53 @@ class FragmentApplistions : Fragment() {
         apps_systemlist.onItemClickListener = toggleSelectState
         apps_backupedlist.onItemClickListener = toggleSelectState
 
-        /*
         apps_userlist.setOnItemLongClickListener({
-            parent, view, position, id ->
-            val item = parent.adapter.getItem(position)
-            val list = ArrayList<HashMap<String,Any>>()
-            list.add(item as HashMap<String, Any>)
-            dialog_app_options(context, list).selectUserAppOptions(Runnable{
-                refreshList()
-            })
-            false
+            parent, _, position, id ->
+            DialogSingleAppOptions(context, apps_userlist.adapter.getItem(position) as Appinfo, myHandler).showUserAppOptions()
+            true
         })
-        */
+
+        apps_systemlist.setOnItemLongClickListener({
+            parent, _, position, id ->
+            DialogSingleAppOptions(context, apps_userlist.adapter.getItem(position) as Appinfo, myHandler).showSystemAppOptions()
+            true
+        })
+
+        apps_backupedlist.setOnItemLongClickListener({
+            parent, _, position, id ->
+            DialogSingleAppOptions(context, apps_userlist.adapter.getItem(position) as Appinfo, myHandler).showBackupAppOptions()
+            true
+        })
 
         fab_apps_user.setOnClickListener(View.OnClickListener {
-            val selectedItems = getSelectedItems(apps_userlist.adapter)
-            if (selectedItems.size == 0)
+            val selectedItems = (apps_userlist.adapter as AppListAdapter).getSelectedItems()
+            if (selectedItems.size == 0) {
+                Snackbar.make(view, "一个应用也没有选中！", Snackbar.LENGTH_SHORT).show()
                 return@OnClickListener
+            }
 
             DialogAppOptions(context, selectedItems, myHandler).selectUserAppOptions()
         })
 
         fab_apps_system.setOnClickListener(View.OnClickListener {
-            val selectedItems = getSelectedItems(apps_systemlist.adapter)
-            if (selectedItems.size == 0)
+            val selectedItems = (apps_systemlist.adapter as AppListAdapter).getSelectedItems()
+            if (selectedItems.size == 0) {
+                Snackbar.make(view, "一个应用也没有选中！", Snackbar.LENGTH_SHORT).show()
                 return@OnClickListener
+            }
             DialogAppOptions(context, selectedItems, myHandler).selectSystemAppOptions()
         })
 
         fab_apps_backuped.setOnClickListener(View.OnClickListener {
-            val selectedItems = getSelectedItems(apps_backupedlist.adapter)
+            val selectedItems = (apps_backupedlist.adapter as AppListAdapter).getSelectedItems()
             if (selectedItems.size == 0) {
+                Snackbar.make(view, "一个应用也没有选中！", Snackbar.LENGTH_SHORT).show()
                 return@OnClickListener
             }
             DialogAppOptions(context, selectedItems, myHandler).selectBackupOptions()
         })
 
-        appListHelper = AppListHelper(context)
+        appListHelper = AppListHelper2(context)
         setList()
         apps_search_box.setOnEditorActionListener({ _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
@@ -113,66 +123,38 @@ class FragmentApplistions : Fragment() {
             }
             false
         })
+        apps_search_box.addTextChangedListener(SearchTextWatcher(Runnable {
+            searchApp()
+        }))
     }
 
-    private fun getSelectedItems(adapter: ListAdapter): ArrayList<HashMap<String, Any>> {
-        val listadapter = adapter as list_adapter2? ?: return ArrayList()
-        val states = listadapter.states
-        val selectedItems = states.keys
-                .filter { states[it] == true }
-                .mapTo(ArrayList<HashMap<String, Any>>()) { listadapter.getItem(it) }
-
-        if (selectedItems.size == 0) {
-            Snackbar.make(view!!, "一个应用也没有选中！", Snackbar.LENGTH_SHORT).show()
-            return ArrayList()
+    private class SearchTextWatcher(private var onChange: Runnable) : TextWatcher {
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            onChange.run()
         }
-        return selectedItems
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+        override fun afterTextChanged(s: Editable?) {
+            //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
     }
 
-    private fun filterAppList(appList: ArrayList<HashMap<String, Any>>): ArrayList<HashMap<String, Any>> {
-        val text = apps_search_box.text.toString().toLowerCase()
-        if (text.isEmpty())
-            return appList
-        return java.util.ArrayList(appList.filter { item ->
-            item["packageName"].toString().toLowerCase().contains(text) || item["name"].toString().toLowerCase().contains(text)
-        })
-    }
-
-    private fun sortAppList(list: ArrayList<HashMap<String, Any>>): ArrayList<HashMap<String, Any>> {
-        list.sortWith(Comparator { l, r ->
-            val wl = l["wran_state"].toString()
-            val wr = r["wran_state"].toString()
-            when {
-                wl.isNotEmpty() && wr.isEmpty() -> 1
-                wr.isNotEmpty() && wl.isEmpty() -> -1
-                else -> {
-                    val les = l["enabled_state"].toString()
-                    val res = r["enabled_state"].toString()
-                    when {
-                        les < res -> -1
-                        les > res -> 1
-                        else -> {
-                            val lp = l["packageName"].toString()
-                            val rp = r["packageName"].toString()
-                            when {
-                                lp < rp -> -1
-                                lp > rp -> 1
-                                else -> 0
-                            }
-                        }
-                    }
-                }
-            }
-        })
-        return list
+    private fun searchApp() {
+        setListData(installedList, apps_userlist)
+        setListData(systemList, apps_systemlist)
+        setListData(backupedList, apps_backupedlist)
     }
 
     private fun setList() {
         thisview!!.progressBar.visibility = View.VISIBLE
         Thread(Runnable {
-            systemList = filterAppList(appListHelper.getSystemAppList())
-            installedList = filterAppList(appListHelper.getUserAppList())
-            backupedList = filterAppList(appListHelper.getApkFilesInfoList(Consts.AbsBackUpDir))
+            systemList = appListHelper.getSystemAppList()
+            installedList = appListHelper.getUserAppList()
+            backupedList = appListHelper.getApkFilesInfoList(Consts.AbsBackUpDir)
 
             setListData(installedList, apps_userlist)
             setListData(systemList, apps_systemlist)
@@ -180,12 +162,13 @@ class FragmentApplistions : Fragment() {
         }).start()
     }
 
-    private fun setListData(dl: ArrayList<HashMap<String, Any>>?, lv: ListView) {
-        sortAppList(dl!!)
+    private fun setListData(dl: ArrayList<Appinfo>?, lv: ListView) {
+        if (dl == null)
+            return
         myHandler.post {
             try {
                 thisview!!.progressBar.visibility = View.GONE
-                lv.adapter = list_adapter2(context, dl)
+                lv.adapter = AppListAdapter(context, dl, apps_search_box.text.toString().toLowerCase())
             } catch (ex: Exception) {
             }
         }

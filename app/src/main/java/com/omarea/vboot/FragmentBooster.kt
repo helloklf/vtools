@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
@@ -14,11 +15,8 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
-import android.widget.CheckBox
-import android.widget.ListView
-import android.widget.TabHost
-import android.widget.TextView
 import com.omarea.shared.ServiceHelper
 import com.omarea.shared.SpfConfig
 import com.omarea.ui.list_adapter
@@ -31,7 +29,7 @@ class FragmentBooster : Fragment() {
 
     private lateinit var frameView: View
     private var thisview: ActivityMain? = null
-    private lateinit var spf: SharedPreferences
+    private lateinit var blacklist: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
 
     override fun onResume() {
@@ -48,20 +46,44 @@ class FragmentBooster : Fragment() {
 
 
     @SuppressLint("ApplySharedPref")
+    private fun bindSPF(checkBox: Switch, spf: SharedPreferences, prop: String, defValue: Boolean = false) {
+        checkBox.isChecked = spf.getBoolean(prop, defValue)
+        checkBox.setOnCheckedChangeListener{
+            _, isChecked ->
+            spf.edit().putBoolean(prop, isChecked).commit()
+        }
+    }
+
+    @SuppressLint("ApplySharedPref")
+    private fun bindSPF(checkBox: CheckBox, spf: SharedPreferences, prop: String, defValue: Boolean = false) {
+        checkBox.isChecked = spf.getBoolean(prop, defValue)
+        checkBox.setOnCheckedChangeListener{
+            _, isChecked ->
+            spf.edit().putBoolean(prop, isChecked).commit()
+        }
+    }
+
+    @SuppressLint("ApplySharedPref", "CommitPrefEdits")
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         this.frameView = view!!
-        spf = context.getSharedPreferences(SpfConfig.BOOSTER_CONFIG_SPF, Context.MODE_PRIVATE)
-        editor = spf.edit()
+        blacklist = context.getSharedPreferences(SpfConfig.BOOSTER_BLACKLIST_SPF, Context.MODE_PRIVATE)
+        editor = blacklist.edit()
 
-        cacheclear.isChecked = spf.getBoolean(SpfConfig.BOOSTER_SPF_CLEAR_CACHE, false)
-        dozemod.isChecked = spf.getBoolean(SpfConfig.BOOSTER_SPF_DOZE_MOD, true)
+        val spfAutoConfig = context.getSharedPreferences(SpfConfig.BOOSTER_SPF_CFG_SPF, Context.MODE_PRIVATE)
 
-        cacheclear.setOnCheckedChangeListener { _, isChecked ->
-            editor.putBoolean(SpfConfig.BOOSTER_SPF_CLEAR_CACHE, isChecked).commit()
-        }
-        dozemod.setOnCheckedChangeListener { _, isChecked ->
-            editor.putBoolean(SpfConfig.BOOSTER_SPF_DOZE_MOD, isChecked).commit()
-        }
+        bindSPF(cacheclear, spfAutoConfig, SpfConfig.BOOSTER_SPF_CFG_SPF_CLEAR_CACHE, false)
+        bindSPF(dozemod, spfAutoConfig, SpfConfig.BOOSTER_SPF_CFG_SPF_DOZE_MOD, Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        bindSPF(auto_clear_tasks, spfAutoConfig, SpfConfig.BOOSTER_SPF_CFG_SPF_CLEAR_TASKS, true)
+
+        bindSPF(auto_switch_network_on_wifi, spfAutoConfig, SpfConfig.WIFI + SpfConfig.ON, false)
+        bindSPF(auto_switch_network_on_data, spfAutoConfig, SpfConfig.DATA + SpfConfig.ON, false)
+        bindSPF(auto_switch_network_on_nfc, spfAutoConfig, SpfConfig.NFC + SpfConfig.ON, false)
+        bindSPF(auto_switch_network_on_gps, spfAutoConfig, SpfConfig.GPS + SpfConfig.ON, false)
+
+        bindSPF(auto_switch_network_off_wifi, spfAutoConfig, SpfConfig.WIFI + SpfConfig.OFF, false)
+        bindSPF(auto_switch_network_off_data, spfAutoConfig, SpfConfig.DATA + SpfConfig.OFF, false)
+        bindSPF(auto_switch_network_off_nfc, spfAutoConfig, SpfConfig.NFC + SpfConfig.OFF, false)
+        bindSPF(auto_switch_network_off_gps, spfAutoConfig, SpfConfig.GPS + SpfConfig.OFF, false)
 
         btn_booster_service_not_active.setOnClickListener {
             try {
@@ -83,6 +105,8 @@ class FragmentBooster : Fragment() {
                 .setContent(R.id.blacklist_tab1).setIndicator(context.getString(R.string.autobooster_tab_blacklist)))
         tabHost.addTab(tabHost.newTabSpec("tab_2")
                 .setContent(R.id.blacklist_tab2).setIndicator(context.getString(R.string.autobooster_tab_details)))
+        tabHost.addTab(tabHost.newTabSpec("tab_3")
+                .setContent(R.id.blacklist_tab3).setIndicator(context.getString(R.string.autobooster_tab_screen)))
         tabHost.currentTab = 0
 
         setList()
@@ -130,7 +154,7 @@ class FragmentBooster : Fragment() {
             item.put("icon", d)
             val pkgName = packageInfo.packageName
             item.put("select_state", false)
-            if (spf.contains(pkgName)) {
+            if (blacklist.contains(pkgName)) {
                 item.put("select_state", true)
             } else {
                 item.put("select_state", false)
@@ -142,7 +166,7 @@ class FragmentBooster : Fragment() {
     }
 
     private fun toogleBlackItem(pkgName: String) {
-        if (spf.contains(pkgName)) {
+        if (blacklist.contains(pkgName)) {
             editor.remove(pkgName).commit()
         } else {
             editor.putBoolean(pkgName, true).commit()

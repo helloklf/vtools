@@ -65,7 +65,7 @@
         <Button
             android:id="@+id/dialog_addin_r11"
             android:text="R11+"
-            android:layout_width="50dp"
+            android:layout_width="60dp"
             android:textSize="12dp"
             android:layout_height="wrap_content" />
         <Button
