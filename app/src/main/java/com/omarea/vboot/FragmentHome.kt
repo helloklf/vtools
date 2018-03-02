@@ -97,9 +97,13 @@ class FragmentHome : Fragment() {
             //SuDo(context).execCmdSync(Consts.ExecuteConfig + "\n" + after)
         } else {
             //TODO：选取配置
-            AppShared.WriteFile(context.assets, Platform().GetCPUName() + "/powercfg-default.sh", "powercfg.sh")
+            AppShared.WritePrivateFile(context.assets, Platform().GetCPUName() + "/powercfg-default.sh", "powercfg.sh", context)
+            val cmd = StringBuilder()
+                    .append("cp ${AppShared.getPrivateFilePath(context, "powercfg.sh")} ${Consts.POWER_CFG_PATH};")
+                    .append("chmod 0777 ${Consts.POWER_CFG_PATH};")
+                    .append(after)
             //SuDo(context).execCmdSync(Consts.InstallPowerToggleConfigToCache + "\n\n" + Consts.ExecuteConfig + "\n" + after)
-            SuDo(context).execCmdSync(Consts.InstallPowerToggleConfigToCache + "\n\n" + "\n" + after)
+            SuDo(context).execCmdSync(cmd.toString())
         }
         setModeState();
     }

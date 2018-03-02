@@ -69,7 +69,8 @@
                             android:layout_marginBottom="12dp"
                             android:text="优先于ZRAM" />
 
-                        <TableRow android:layout_marginBottom="30dp">
+                        <TableRow android:layout_marginBottom="30dp" android:focusable="true"
+                            android:focusableInTouchMode="true">
 
                             <EditText
                                 android:id="@+id/txt_swap_swappiness"
@@ -115,7 +116,8 @@
                         android:shrinkColumns="0,1,2"
                         android:stretchColumns="0,1,2,3">
 
-                        <TableRow>
+                        <TableRow android:focusable="true"
+                            android:focusableInTouchMode="true">
 
                             <EditText
                                 android:id="@+id/txt_zram_size"
@@ -132,7 +134,8 @@
                             android:id="@+id/chk_zram_autostart"
                             android:layout_marginBottom="12dp"
                             android:text="开机自启（需要允许工具箱自启动）" />
-                        <TableRow android:layout_marginBottom="30dp">
+                        <TableRow android:layout_marginBottom="30dp" android:focusable="true"
+                            android:focusableInTouchMode="true">
                             <EditText
                                 android:id="@+id/txt_zram_swappiness"
                                 android:layout_width="match_parent"

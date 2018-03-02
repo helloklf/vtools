@@ -196,6 +196,7 @@
                             android:textAppearance="?android:attr/textAppearanceSmall"/>
 
                         <Switch
+                            android:visibility="gone"
                             android:layout_marginTop="12dp"
                             android:id="@+id/auto_clear_ignore_chager"
                             android:layout_width="match_parent"
@@ -203,6 +204,7 @@
                             android:padding="8dp"
                             android:text="@string/auto_clear_ignore_chager"/>
                         <TextView
+                            android:visibility="gone"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"

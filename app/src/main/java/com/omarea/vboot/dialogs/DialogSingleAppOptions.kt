@@ -27,9 +27,9 @@ class DialogSingleAppOptions(override var context: Context, private var app: App
                                 "卸载（保留数据）",
                                 "清空数据",
                                 "清除缓存",
-                                "冻结/解冻",
+                                (if(app.enabled)  "冻结" else "解冻"),
                                 "应用详情",
-                                "复制包名",
+                                "复制PackageName",
                                 "在应用商店查看"), { _, which ->
                     when (which) {
                         0 -> backupAll(true, true)
@@ -58,9 +58,9 @@ class DialogSingleAppOptions(override var context: Context, private var app: App
                                 "禁用 + 隐藏",
                                 "清空数据",
                                 "清除缓存",
-                                "冻结/解冻",
+                                (if(app.enabled)  "冻结" else "解冻"),
                                 "应用详情",
-                                "复制包名",
+                                "复制PackageName",
                                 "在应用商店查看"), { _, which ->
                     when (which) {
                         0 -> uninstallAll()

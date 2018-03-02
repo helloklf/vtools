@@ -4,13 +4,11 @@ import android.Manifest
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.support.annotation.RequiresApi
 import android.support.design.widget.NavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
@@ -79,6 +77,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         progressBar = findViewById(R.id.shell_on_execute) as ProgressBar
         cmdshellTools = cmd_shellTools(this, progressBar)
 
+        checkFileWrite()
         checkRoot(Runnable {
             hasRoot = true
             checkBusybox()
@@ -132,8 +131,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         if (!hasRoot)
             hideRootMenu(navigationView.menu);
-
-        checkFileWrite()
     }
 
     private fun checkBusybox() {
@@ -219,12 +216,13 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         when (id) {
             R.id.nav_home -> fragment = FragmentHome()
-            R.id.nav_booster -> fragment = FragmentBooster.createPage(this)
-            R.id.nav_applictions -> fragment = FragmentApplistions.createPage(this)
-            R.id.nav_swap -> fragment = FragmentSwap.createPage(this, cmdshellTools)
-            R.id.nav_tasks -> fragment = FragmentTasks.Create(this)
+            R.id.nav_booster -> fragment = FragmentBooster.createPage()
+            R.id.nav_applictions -> fragment = FragmentApplistions.createPage()
+            R.id.nav_swap -> fragment = FragmentSwap.createPage(cmdshellTools)
+            R.id.nav_tasks -> fragment = FragmentTasks.Create()
             R.id.nav_battery -> fragment = FragmentBattery.createPage(cmdshellTools)
             R.id.nav_img -> fragment = FragmentImg.createPage(this, cmdshellTools)
+            R.id.nav_core_control -> fragment = FragmentCpuControl.newInstance()
             R.id.nav_share -> {
                 val sendIntent = Intent()
                 sendIntent.action = Intent.ACTION_SEND
@@ -233,9 +231,9 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 startActivity(sendIntent)
             }
             R.id.nav_feedback -> startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(application.getString(R.string.feedback_link))))
-            R.id.nav_profile -> fragment = FragmentConfig.createPage(this, cmdshellTools)
+            R.id.nav_profile -> fragment = FragmentConfig.createPage(cmdshellTools)
             R.id.nav_additional -> fragment = FragmentAddin.createPage(this)
-            R.id.nav_xposed -> fragment = FragmentXposed.Create(this)
+            R.id.nav_xposed -> fragment = FragmentXposed.Create()
         }
 
         if (fragment != null) {

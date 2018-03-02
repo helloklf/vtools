@@ -1,95 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.omarea.vboot.FragmentBattery"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.omarea.vboot.FragmentBattery">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"><TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:showDividers="beginning">
-        <TextView
-            android:textSize="11dp"
-            android:id="@+id/battrystatus"
-            android:padding="20dp"
-            android:text="电池信息："
+        android:layout_height="wrap_content">
+
+        <TableLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#22888888"
-            android:layout_width="match_parent"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="5dp" />
-
-        <LinearLayout android:orientation="vertical" android:padding="16dp">
-            <Switch
-                android:id="@+id/settings_qc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:padding="8dp"
-                android:text="@string/accessbility_charger"/>
-            <TextView
-                android:textSize="11dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:text="@string/accessbility_charger_desc"
-                android:textAppearance="?android:attr/textAppearanceSmall"/>
-
-            <EditText
-                android:id="@+id/settings_qc_limit"
-                android:hint="@string/settings_qc_limit_hint"
-                android:inputType="number"
-                android:maxLength="4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:text="@string/settings_qc_limit_desc"
-                android:textAppearance="?android:attr/textAppearanceSmall"/>
-
-            <Switch
-                android:id="@+id/settings_bp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:padding="8dp"
-                android:text="@string/accessbility_bp"
-                tools:ignore="RtlHardcoded" />
+            android:showDividers="beginning">
 
             <TextView
-                android:textSize="11sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:text="@string/accessbility_bp_desc"
-                android:textAppearance="?android:attr/textAppearanceSmall"/>
-
-            <EditText
-                android:id="@+id/settings_bp_level"
-                android:hint="@string/settings_bp_level_hint"
-                android:inputType="number"
-                android:maxLength="2"
+                android:id="@+id/battrystatus"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:text="@string/accessbility_bp_level_desc"
-                android:textAppearance="?android:attr/textAppearanceSmall"/>
-        </LinearLayout>
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="5dp"
+                android:background="#22888888"
+                android:padding="20dp"
+                android:text="电池信息："
+                android:textSize="11dp" />
 
-        <TextView android:text="@string/battery_uevent_title" android:layout_marginLeft="21dp" android:layout_marginRight="21dp" android:layout_marginBottom="16dp"
-            android:textSize="11sp"
-            android:id="@+id/battery_uevent"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </TableLayout></ScrollView>
+            <LinearLayout
+                android:focusable="false"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <Switch
+                    android:id="@+id/settings_qc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:padding="8dp"
+                    android:text="@string/accessbility_charger" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:text="@string/accessbility_charger_desc"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textSize="11dp" />
+
+                <EditText
+                    android:id="@+id/settings_qc_limit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/settings_qc_limit_hint"
+                    android:inputType="number"
+                    android:maxLength="4" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:text="@string/settings_qc_limit_desc"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+
+                <Switch
+                    android:id="@+id/settings_bp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:padding="8dp"
+                    android:text="@string/accessbility_bp"
+                    tools:ignore="RtlHardcoded" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:text="@string/accessbility_bp_desc"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textSize="11sp" />
+
+                <EditText
+                    android:id="@+id/settings_bp_level"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/settings_bp_level_hint"
+                    android:inputType="number"
+                    android:maxLength="2" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:text="@string/accessbility_bp_level_desc"
+                    android:textAppearance="?android:attr/textAppearanceSmall" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/battery_uevent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="21dp"
+                android:layout_marginRight="21dp"
+                android:text="@string/battery_uevent_title"
+                android:textSize="11sp" />
+        </TableLayout>
+    </ScrollView>
 </FrameLayout>

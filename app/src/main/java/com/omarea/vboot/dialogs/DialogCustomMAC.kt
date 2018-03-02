@@ -50,6 +50,8 @@ class DialogCustomMAC(private var context: Context) {
                     "ifconfig wlan0 down\n" +
                     "echo '$mac' > /sys/class/net/wlan0/address\n" +
                     "ifconfig wlan0 hw ether '$mac'\n" +
+                    "chmod 0644 /sys/devices/soc/a000000.qcom,wcnss-wlan/wcnss_mac_addr\n" +
+                    "echo '$mac' > /sys/devices/soc/a000000.qcom,wcnss-wlan/wcnss_mac_addr\n" +
                     "ifconfig wlan0 up\n" +
                     "svc wifi enable\n");
             Toast.makeText(context, "MAC已修改", Toast.LENGTH_SHORT).show()

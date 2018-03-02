@@ -13,16 +13,16 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.BIND_ACCESSIBILITY_SERVICE" />
-    <!--<uses-permission android:name="android.permission.REMOVE_TASKS" />-->
-    <!--<uses-permission android:name="android.permission.INJECT_EVENTS" />-->
 
+    <!-- <uses-permission android:name="android.permission.REMOVE_TASKS" /> -->
+    <!-- <uses-permission android:name="android.permission.INJECT_EVENTS" /> -->
     <application
+        android:allowBackup="true"
         android:icon="@drawable/linux"
         android:label="@string/app_name"
         android:persistent="true"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:allowBackup="true">
+        android:theme="@style/AppTheme">
         <meta-data
             android:name="xposedmodule"
             android:value="true" />
@@ -39,6 +39,7 @@
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
+
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
@@ -50,9 +51,9 @@
 
         <activity
             android:name=".ActivityMain"
+            android:autoRemoveFromRecents="false"
             android:configChanges="keyboardHidden|orientation"
             android:excludeFromRecents="false"
-            android:autoRemoveFromRecents="false"
             android:exported="true"
             android:label="@string/app_name"
             android:launchMode="singleInstance"
@@ -60,11 +61,11 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ActivityAccessibilitySettings"
             android:configChanges="keyboardHidden|orientation"
@@ -80,6 +81,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
+
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
@@ -87,13 +89,19 @@
         <service
             android:name=".ServiceBattery"
             android:enabled="true"
-            android:permission="">
-        </service>
-
+            android:permission="" />
         <service
             android:name="com.omarea.shared.BootService"
             android:enabled="true"
             android:permission="" />
+
+        <activity
+            android:launchMode="singleTop"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:name=".ActivityCoreContrl"
+            android:label="@string/title_activity_core_contrl" />
     </application>
 
 </manifest>

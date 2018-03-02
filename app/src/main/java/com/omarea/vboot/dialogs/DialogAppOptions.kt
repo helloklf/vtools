@@ -199,16 +199,8 @@ open class DialogAppOptions(protected open var context: Context, protected var a
         sb.append("backup_date=\"$date\";");
         sb.append("\n")
         sb.append("backup_path=\"${Consts.AbsBackUpDir}\";")
-        sb.append("\n")
-        sb.append("hard_link_path=\"${Consts.HarLinkBackUpDir}\";")
         sb.append("mkdir -p \${backup_path};")
         sb.append("\n")
-        sb.append("echo \$backup_date > \${backup_path}date.dat;")
-        sb.append("\n")
-        sb.append("if [ `cat \${backup_path}date.dat` = \$backup_date ];")
-        sb.append(" then ")
-        sb.append("backup_path=\${hard_link_path};")
-        sb.append(" fi;")
         sb.append("\n")
 
         for (item in apps) {
@@ -218,29 +210,18 @@ open class DialogAppOptions(protected open var context: Context, protected var a
             if (apk) {
                 sb.append("rm -f \${backup_path}$packageName.apk;")
                 sb.append("\n")
-                /*
-                sb.append("ln -f $path \${backup_path}$packageName.apk;")
-                sb.append("\n")
-                sb.append("if [ -f \${backup_path}$packageName.apk ];")
-                sb.append(" then ")
-                    sb.append("echo '[link $packageName.apk]';")
-                    sb.append("sleep 1;")
-                sb.append(" else ")
-                    sb.append("echo '[copy $packageName.apk]';")
-                    sb.append("cp -F $path \${backup_path}$packageName.apk;")
-                sb.append("fi;")
-                */
                 sb.append("echo '[copy $packageName.apk]';")
                 sb.append("cp -F $path \${backup_path}$packageName.apk;")
                 sb.append("\n")
             }
             if (data) {
+                sb.append("killall -9 $packageName;pkill -9 $packageName;pgrep $packageName |xargs kill -9;")
                 sb.append("cd /data/data/$packageName;")
                 sb.append("echo '[backup $packageName]';")
                 if (allowPigz)
-                    sb.append("busybox tar cpf - * --exclude cache --exclude lib | pigz > \${backup_path}$packageName.tar.gz;")
+                    sb.append("busybox tar cpf - * --exclude ./cache --exclude ./lib | pigz > \${backup_path}$packageName.tar.gz;")
                 else
-                    sb.append("busybox tar -czpf \${backup_path}$packageName.tar.gz * --exclude cache --exclude lib;")
+                    sb.append("busybox tar -czpf \${backup_path}$packageName.tar.gz * --exclude ./cache --exclude ./lib;")
                 sb.append("\n")
             }
         }
@@ -282,11 +263,11 @@ open class DialogAppOptions(protected open var context: Context, protected var a
             if (apk && File("$backupPath$packageName.apk").exists()) {
                 sb.append("echo '[install $packageName]';")
 
-                sb.append("pm install $backupPath$packageName.apk;")
+                sb.append("pm install -r $backupPath$packageName.apk;")
             } else if (apk && File(apkPath).exists()) {
                 sb.append("echo '[install $packageName]';")
 
-                sb.append("pm install $apkPath;")
+                sb.append("pm install -r $apkPath;")
             }
             if (data && File("$backupPath$packageName.tar.gz").exists()) {
                 sb.append("if [ -d /data/data/$packageName ];")
@@ -387,7 +368,10 @@ open class DialogAppOptions(protected open var context: Context, protected var a
             sb.append("echo '[delete $packageName]';")
 
             val dir = item.dir.toString()
-            sb.append("rm -rf $dir;")
+
+            sb.append("rm -rf $dir/oat;")
+            sb.append("rm -rf $dir/lib;")
+            sb.append("rm -rf ${item.path};")
         }
 
         sb.append("echo '[operation completed]';")

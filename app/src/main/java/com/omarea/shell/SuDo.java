@@ -39,4 +39,20 @@ public class SuDo {
 
         }
     }
+
+    public void execCmd(String cmd) {
+        try {
+            Process p = Runtime.getRuntime().exec("su");
+            DataOutputStream out = new DataOutputStream(p.getOutputStream());
+            out.writeBytes(cmd);
+            out.writeBytes("\n");
+            out.writeBytes("exit\n");
+            out.writeBytes("exit\n");
+            out.flush();
+        } catch (IOException e) {
+            noRoot();
+        } catch (Exception e) {
+
+        }
+    }
 }

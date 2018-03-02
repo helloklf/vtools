@@ -3,6 +3,9 @@
         <item>com.teslacoilsw.launcher</item>
     </string-array>
 
+    <string-array name="lockscreen">
+        <item>com.android.keyguard</item>
+    </string-array>
     <string-array name="powercfg_igoned">
         <item>com.zbar.lib</item>
         <item>eu.chainfire.supersu</item>
@@ -17,6 +20,7 @@
         <item>com.waterdaaan.cpufloat</item>
         <item>com.miui.contentextension</item>
         <item>com.miui.systemAdSolution</item>
+        <item>com.</item>
     </string-array>
     <string-array name="powercfg_game">
         <item>com.rarlab.rar</item>
@@ -149,6 +153,7 @@
     <string name="menu_home">概况</string>
     <string name="menu_vboot">双系统工具</string>
     <string name="menu_cofig">性能配置</string>
+    <string name="menu_core_control">CPU 控制</string>
     <string name="menu_additional">附加功能</string>
     <string name="menu_applictions">应用管理</string>
     <string name="menu_tasks">系统进程</string>
@@ -234,4 +239,5 @@
     <string name="battery_uevent_title">$ cat /sys/class/power_supply/bms/uevent</string>
     <string name="home_hide_in_recents">从最近任务列表隐藏</string>
     <string name="applist_help">✔ 已备份\n✘ 备份的版本比安装的版本更高\n★ 已安装的版本比备份的版本旧\n☆ 已备份数据未备份APK\n\n目前所提供的应用数据备份功能，需要系统集成busybox、toybox，使用tar+gz压缩数据（如果系统支持，将使用pigz提高压缩速度），仅备份 “/data/data/应用包名” 下的数据，且不保证兼容所有系统和应用。\n\n“系统”应用栏提供“禁用+隐藏”选项，被隐藏的应用将被从已安装应用列表移除（不同于冻结，应用被隐藏后你无法运行也不会在应用管理中看到）</string>
+    <string name="title_activity_core_contrl">CPU控制</string>
 </resources>

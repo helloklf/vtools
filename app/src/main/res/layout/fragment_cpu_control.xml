@@ -1,0 +1,376 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.omarea.vboot.FragmentCpuControl">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/help_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="4dp">
+                <LinearLayout
+                    android:padding="16dp"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_marginBottom="10dp"
+                        android:text="说明"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:textSize="12dp"
+                        android:textColor="#aaa"
+                        android:text="这是一个功能简陋的CPU控制器，但实际上CPU的调度工作非常复杂，单纯的提高或降低频率限制，并不一定能提高流畅度或节省电量。\n\n部分的手机底层具有自动调节CPU参数的机制，会导致自定义的参数很快失效。如MIUI9，需要先在本应用附加功能中使用“干掉温控”以后，才能控制CPU频率。此外，热插拔温控功能可能也会影响你对CPU参数的修改！\n\ninteractive调度适用于大多数手机，反应迅速，ondemand调度则会更缓慢的切换频率。\n\nBig核心集群通常是A57、A73，性能比Little(A53、A35)核心高得多，优先Big核心会在获得绝佳的流畅体验的同时，耗电和发热显著增高。"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_marginTop="20dp"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="4dp">
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_columnSpan="2"
+                        android:layout_gravity="fill_horizontal"
+                        android:layout_marginBottom="10dp"
+                        android:layout_row="0"
+                        android:text="Little Cluster"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        android:layout_column="0"
+                        android:layout_gravity="fill"
+                        android:layout_row="1"
+                        android:gravity="center_vertical"
+                        android:text="最小频率" />
+
+                    <Spinner android:spinnerMode="dialog"
+                        android:id="@+id/cluster_little_min_freq"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:layout_row="1" />
+
+                    <TextView
+                        android:layout_column="0"
+                        android:layout_gravity="fill"
+                        android:layout_row="2"
+                        android:gravity="center_vertical"
+                        android:text="最大频率" />
+
+                    <Spinner android:spinnerMode="dialog"
+                        android:id="@+id/cluster_little_max_freq"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:layout_row="2" />
+
+                    <TextView
+                        android:layout_column="0"
+                        android:layout_gravity="fill"
+                        android:layout_row="3"
+                        android:gravity="center_vertical"
+                        android:text="调度模式" />
+
+                    <Spinner android:spinnerMode="dialog"
+                        android:id="@+id/cluster_little_governor"
+                        android:layout_width="150dp"
+                        android:layout_column="1"
+                        android:layout_row="3" />
+
+                </GridLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/big_core_configs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:cardCornerRadius="4dp">
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_columnSpan="2"
+                        android:layout_gravity="fill"
+                        android:layout_marginBottom="10dp"
+                        android:layout_row="0"
+                        android:text="Big Cluster"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        android:layout_column="0"
+                        android:layout_gravity="fill"
+                        android:layout_row="1"
+                        android:gravity="center_vertical"
+                        android:text="最小频率" />
+
+                    <Spinner android:spinnerMode="dialog"
+                        android:id="@+id/cluster_big_min_freq"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:layout_row="1" />
+
+                    <TextView
+                        android:layout_column="0"
+                        android:layout_gravity="fill"
+                        android:layout_row="2"
+                        android:gravity="center_vertical"
+                        android:text="最大频率" />
+
+                    <Spinner android:spinnerMode="dialog"
+                        android:id="@+id/cluster_big_max_freq"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:layout_row="2" />
+
+                    <TextView
+                        android:layout_column="0"
+                        android:layout_gravity="fill"
+                        android:layout_row="3"
+                        android:gravity="center_vertical"
+                        android:text="调度模式" />
+
+                    <Spinner android:spinnerMode="dialog"
+                        android:id="@+id/cluster_big_governor"
+                        android:layout_width="150dp"
+                        android:layout_column="1"
+                        android:layout_row="3" />
+
+                </GridLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:cardCornerRadius="4dp">
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_columnSpan="2"
+                        android:layout_gravity="fill"
+                        android:layout_marginBottom="10dp"
+                        android:layout_row="0"
+                        android:text="Thermal"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        android:layout_column="0"
+                        android:layout_gravity="fill"
+                        android:layout_row="1"
+                        android:gravity="center_vertical"
+                        android:text="Core Control" />
+
+                    <CheckBox
+                        android:id="@+id/thermal_core_control"
+                        android:layout_column="1"
+                        android:layout_row="1" />
+
+                    <TextView
+                        android:layout_column="0"
+                        android:layout_gravity="fill"
+                        android:layout_row="2"
+                        android:gravity="center_vertical"
+                        android:text="VDD Restriction" />
+
+                    <CheckBox
+                        android:id="@+id/thermal_vdd"
+                        android:layout_column="1"
+                        android:layout_row="2" />
+
+                    <TextView
+                        android:layout_column="0"
+                        android:layout_gravity="fill"
+                        android:layout_row="3"
+                        android:gravity="center_vertical"
+                        android:text="MSM Thermal" />
+
+                    <CheckBox
+                        android:id="@+id/thermal_paramters"
+                        android:layout_column="1"
+                        android:layout_row="3" />
+
+                </GridLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                app:cardCornerRadius="4dp">
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_columnSpan="2"
+                        android:layout_gravity="fill"
+                        android:layout_marginBottom="10dp"
+                        android:layout_row="0"
+                        android:text="Booster"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        android:layout_column="0"
+                        android:layout_gravity="fill"
+                        android:layout_row="1"
+                        android:gravity="center_vertical"
+                        android:text="InputBoost 持续时间（ms）" />
+
+                    <EditText
+                        android:textAlignment="textEnd"
+                        android:id="@+id/cpu_inputboost_time"
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:layout_row="1"
+                        android:hint="毫秒"
+                        android:inputType="number"
+                        android:maxLength="4" />
+
+                    <TextView
+                        android:layout_column="0"
+                        android:layout_gravity="fill"
+                        android:layout_row="2"
+                        android:gravity="center_vertical"
+                        android:text="InputBoost 频率" />
+
+                    <EditText
+                        android:id="@+id/cpu_inputboost_freq"
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:layout_row="2"
+                        android:inputType="text"
+                        android:editable="false"
+                        android:focusable="false" />
+
+                    <TextView
+                        android:layout_column="0"
+                        android:layout_gravity="fill"
+                        android:layout_row="3"
+                        android:gravity="center_vertical"
+                        android:text="持续加速（优先Big核心）" />
+
+                    <CheckBox
+                        android:id="@+id/cpu_sched_boost"
+                        android:layout_column="1"
+                        android:layout_gravity="end"
+                        android:layout_row="3" />
+                </GridLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                app:cardCornerRadius="4dp">
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_columnSpan="2"
+                        android:layout_gravity="fill"
+                        android:layout_marginBottom="10dp"
+                        android:layout_row="0"
+                        android:text="Core Online"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16dp" />
+
+                    <LinearLayout android:layout_columnSpan="2" android:layout_column="0" android:layout_row="1" android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
+                        <CheckBox
+                            android:id="@+id/core_0"
+                            android:text="CPU0"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <CheckBox
+                            android:id="@+id/core_1"
+                            android:text="CPU1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <CheckBox
+                            android:id="@+id/core_2"
+                            android:text="CPU2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <CheckBox
+                            android:id="@+id/core_3"
+                            android:text="CPU3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <LinearLayout android:layout_columnSpan="2" android:layout_column="0" android:layout_row="2" android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
+                        <CheckBox
+                            android:id="@+id/core_4"
+                            android:text="CPU4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <CheckBox
+                            android:id="@+id/core_5"
+                            android:text="CPU5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <CheckBox
+                            android:id="@+id/core_6"
+                            android:text="CPU6"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <CheckBox
+                            android:id="@+id/core_7"
+                            android:text="CPU7"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                </GridLayout>
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+</FrameLayout>

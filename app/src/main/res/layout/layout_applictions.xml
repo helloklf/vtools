@@ -46,14 +46,14 @@
                         android:id="@+id/fab_apps_user"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="bottom|center"
+                        android:layout_gravity="bottom|right"
                         android:layout_margin="@dimen/fab_margin"
                         android:src="@drawable/check" />
 
                     <ListView
                         android:id="@+id/apps_userlist"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"></ListView>
+                        android:layout_height="match_parent" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -66,14 +66,14 @@
                         android:id="@+id/fab_apps_system"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="bottom|center"
+                        android:layout_gravity="bottom|right"
                         android:layout_margin="@dimen/fab_margin"
                         android:src="@drawable/check" />
 
                     <ListView
                         android:id="@+id/apps_systemlist"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"></ListView>
+                        android:layout_height="match_parent" />
 
                 </FrameLayout>
 
@@ -87,7 +87,7 @@
                         android:id="@+id/fab_apps_backuped"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="bottom|center"
+                        android:layout_gravity="bottom|right"
                         android:layout_margin="@dimen/fab_margin"
                         android:src="@drawable/check" />
 

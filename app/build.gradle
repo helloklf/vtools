@@ -17,8 +17,8 @@ android {
         applicationId "com.omarea.vboot"
         minSdkVersion 21
         targetSdkVersion 23
-        versionCode 398
-        versionName "8.1.19"
+        versionCode 410
+        versionName "8.3.2"
     }
     buildTypes {
         release {
@@ -38,6 +38,7 @@ android {
 }
 
 dependencies {
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     //provided files('lib/api-82.jar')
     //provided files('lib/api-82-sources.jar')
@@ -47,6 +48,7 @@ dependencies {
     implementation 'com.android.support:support-v4:26.1.0'
     implementation 'com.android.support:design:26.1.0'
     //implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support:cardview-v7:26.1.0'
 }
 repositories {
     mavenCentral()

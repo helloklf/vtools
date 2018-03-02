@@ -29,8 +29,8 @@ class DialogFilesHardLinks2(private var context: Context) {
     }
 
     fun getApkFiles() {
-        AppShared.WriteFile(context.assets, "addin/map-dualboot-apk.sh", "map-dualboot-apk.sh")
-        val shellFile = "${Consts.SDCardDir}/Android/data/${Consts.PACKAGE_NAME}/map-dualboot-apk.sh"
+        AppShared.WritePrivateFile(context.assets, "addin/map-dualboot-apk.sh", "map-dualboot-apk.sh", context)
+        val shellFile = "${AppShared.getPrivateFileDir(context)}/map-dualboot-apk.sh"
         val sb = StringBuilder()
         sb.append("cp $shellFile /cache/map-dualboot-apk.sh;")
         sb.append("chmod 777 /cache/map-dualboot-apk.sh;")

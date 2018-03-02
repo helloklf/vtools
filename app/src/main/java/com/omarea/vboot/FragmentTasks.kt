@@ -17,6 +17,7 @@ import android.widget.ProgressBar
 import android.widget.TabHost
 import com.omarea.shell.SysUtils
 import com.omarea.shell.units.TopTasksUnit
+import com.omarea.ui.ProgressBarDialog
 import com.omarea.ui.task_adapter
 import kotlinx.android.synthetic.main.layout_task.*
 import java.util.*
@@ -25,9 +26,8 @@ import kotlin.collections.LinkedHashMap
 
 
 class FragmentTasks : Fragment() {
-    internal lateinit var thisview: ActivityMain
+    private lateinit var processBarDialog: ProgressBarDialog
     internal lateinit var view: View
-    internal lateinit var progressBar: ProgressBar
     internal lateinit var myHandler: Handler
     var refresh = true
     var kernel = false
@@ -38,8 +38,6 @@ class FragmentTasks : Fragment() {
                               savedInstanceState: Bundle?): View? {
         view = inflater!!.inflate(R.layout.layout_task, container, false)
 
-        progressBar = thisview.findViewById(R.id.shell_on_execute) as ProgressBar
-
         myHandler = object : android.os.Handler() {
             override fun handleMessage(msg: Message) {
                 super.handleMessage(msg)
@@ -47,13 +45,13 @@ class FragmentTasks : Fragment() {
                     process = msg.obj as Process
                 } else if (msg.what == -1) {
                     this.post {
-                        progressBar.visibility = View.GONE
+                        processBarDialog.hideDialog()
                         android.widget.Toast.makeText(context, "获取进程信息出错，可能不支持你的系统", android.widget.Toast.LENGTH_SHORT).show()
                     }
                 } else if(msg.what == -2) {
                     this.post {
                         if (isNew) {
-                            progressBar.visibility = View.GONE
+                            processBarDialog.hideDialog()
                             android.widget.Toast.makeText(context, "获取进程信息出错，可能不支持你的系统", android.widget.Toast.LENGTH_SHORT).show()
                         } else {
                             isNew = true
@@ -113,10 +111,10 @@ class FragmentTasks : Fragment() {
                     }
 
                     myHandler.post {
-                        if (progressBar.visibility === View.VISIBLE || refresh) {
+                        if (processBarDialog.isDialogShow() || refresh) {
                             var datas = task_adapter(context, list)
                             list_tasks.setAdapter(datas)
-                            progressBar.visibility = View.GONE
+                            processBarDialog.hideDialog()
                         }
                     }
                 }
@@ -140,7 +138,7 @@ class FragmentTasks : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        progressBar.visibility = View.VISIBLE
+        processBarDialog.showDialog()
 
         getSwaps()
         getTasks()
@@ -186,7 +184,6 @@ class FragmentTasks : Fragment() {
     }
 
     override fun onDestroy() {
-        thisview.progressBar.visibility = View.GONE
         if (process != null) {
             process!!.destroy()
             process = null
@@ -196,24 +193,25 @@ class FragmentTasks : Fragment() {
 
     fun killProcess(pid: String) {
         SysUtils.executeRootCommand(mutableListOf("kill " + pid))
-        progressBar.visibility = View.VISIBLE
+        processBarDialog.showDialog()
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        processBarDialog = ProgressBarDialog(this.context)
         checkbox_refresh.isChecked = this.refresh
         checkbox_refresh.setOnCheckedChangeListener({ _, isChecked ->
             this.refresh = isChecked
             if (isChecked) {
-                progressBar.visibility = View.VISIBLE
+                processBarDialog.showDialog()
             } else {
-                progressBar.visibility = View.GONE
+                processBarDialog.hideDialog()
             }
         })
         checkbox_kernel.isChecked = this.kernel
         checkbox_kernel.setOnCheckedChangeListener({ _, isChecked ->
             this.kernel = isChecked
-            progressBar.visibility = View.VISIBLE
+            processBarDialog.showDialog()
         })
         tasks_user.setOnItemClickListener { _, dialogView, position, _ ->
             val adapter = tasks_user.adapter as task_adapter
@@ -256,9 +254,8 @@ class FragmentTasks : Fragment() {
     }
 
     companion object {
-        fun Create(thisView: ActivityMain): Fragment {
+        fun Create(): Fragment {
             val fragment = FragmentTasks()
-            fragment.thisview = thisView
             return fragment
         }
     }

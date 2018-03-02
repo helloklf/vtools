@@ -40,7 +40,7 @@ class AsynSuShellUnit(var handler: Handler) {
         return this
     }
 
-    private fun destroy() {
+    fun destroy() {
         try {
             if (process != null) {
                 process!!.outputStream.close()
@@ -79,6 +79,7 @@ class AsynSuShellUnit(var handler: Handler) {
         Thread(Runnable {
             process!!.waitFor()
             destroy()
+            handler.sendMessage(handler.obtainMessage(10, true))
         }).start()
     }
 }

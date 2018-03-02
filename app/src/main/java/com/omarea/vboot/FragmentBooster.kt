@@ -19,6 +19,7 @@ import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
 import com.omarea.shared.ServiceHelper
 import com.omarea.shared.SpfConfig
+import com.omarea.ui.ProgressBarDialog
 import com.omarea.ui.list_adapter
 import kotlinx.android.synthetic.main.layout_booster.*
 import java.util.*
@@ -26,9 +27,8 @@ import kotlin.collections.ArrayList
 
 
 class FragmentBooster : Fragment() {
-
+    private lateinit var processBarDialog: ProgressBarDialog
     private lateinit var frameView: View
-    private var thisview: ActivityMain? = null
     private lateinit var blacklist: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
 
@@ -65,6 +65,7 @@ class FragmentBooster : Fragment() {
 
     @SuppressLint("ApplySharedPref", "CommitPrefEdits")
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        processBarDialog = ProgressBarDialog(this.context)
         this.frameView = view!!
         blacklist = context.getSharedPreferences(SpfConfig.BOOSTER_BLACKLIST_SPF, Context.MODE_PRIVATE)
         editor = blacklist.edit()
@@ -94,7 +95,7 @@ class FragmentBooster : Fragment() {
             }
         }
         btn_booster_dynamicservice_not_active.setOnClickListener {
-            val intent = Intent(thisview, ActivityAccessibilitySettings::class.java)
+            val intent = Intent(context, ActivityAccessibilitySettings::class.java)
             startActivity(intent)
         }
 
@@ -120,7 +121,7 @@ class FragmentBooster : Fragment() {
     internal val myHandler: Handler = Handler()
 
     private fun setList() {
-        thisview!!.progressBar.visibility = View.VISIBLE
+        processBarDialog.showDialog()
 
         Thread(Runnable {
             if (installedList == null) {
@@ -130,9 +131,14 @@ class FragmentBooster : Fragment() {
         }).start()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        processBarDialog.hideDialog()
+    }
+
     private fun setListData(dl: ArrayList<HashMap<String, Any>>, lv: ListView) {
         myHandler.post {
-            thisview!!.progressBar.visibility = View.GONE
+            processBarDialog.hideDialog()
             lv.adapter = list_adapter(context, dl)
         }
     }
@@ -141,7 +147,7 @@ class FragmentBooster : Fragment() {
     private var installedList: ArrayList<HashMap<String, Any>>? = null
 
     private fun loadList() {
-        packageManager = thisview!!.packageManager
+        packageManager = context.packageManager
         val packageInfos = packageManager.getInstalledApplications(0)
 
         installedList = ArrayList()
@@ -174,9 +180,8 @@ class FragmentBooster : Fragment() {
     }
 
     companion object {
-        fun createPage(thisView: ActivityMain): Fragment {
+        fun createPage(): Fragment {
             val fragment = FragmentBooster()
-            fragment.thisview = thisView
             return fragment
         }
     }

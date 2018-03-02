@@ -35,12 +35,20 @@ class Busybox(private var context: Context) {
                     .setPositiveButton(
                             "确定",
                             { _, _ ->
-                                AppShared.WriteFile(context.assets, "busybox.zip", "busybox")
-                                val cmd = StringBuilder("cp ${Consts.SDCardDir}/Android/data/${Consts.PACKAGE_NAME}/busybox /cache/busybox;\n")
+                                AppShared.WritePrivateFile(context.assets, "busybox.zip", "busybox", context)
+                                val path = "${AppShared.getPrivateFileDir(context)}busybox"
+                                val cmd = StringBuilder("cp ${path} /cache/busybox;\n")
+                                cmd.append("chmod 7777 ${path};\n")
+                                cmd.append("${path} chmod 7777 /cache/busybox;\n")
                                 cmd.append("chmod 7777 /cache/busybox;\n")
                                 cmd.append(Consts.MountSystemRW2)
-                                cmd.append("cp /cache/busybox /system/xbin/busybox;")
-                                cmd.append("/cache/busybox chmod 0777 /system/xbin/busybox;")
+                                cmd.append("cp ${path} /system/xbin/busybox;")
+                                cmd.append("${path} chmod 0777 /system/xbin/busybox;")
+                                cmd.append("chmod 0777 /system/xbin/busybox;")
+                                cmd.append("${path} chown root:root /system/xbin/busybox;")
+                                cmd.append("chown root:root /system/xbin/busybox;")
+                                cmd.append("/system/xbin/busybox --install /system/xbin;")
+
                                 SuDo(context).execCmdSync(cmd.toString())
                                 if (next != null)
                                     next.run()

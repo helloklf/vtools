@@ -16,6 +16,10 @@
             android:icon="@drawable/ic_menu_profile"
             android:title="@string/menu_cofig" />
         <item
+            android:id="@+id/nav_core_control"
+            android:icon="@drawable/cpu"
+            android:title="@string/menu_core_control" />
+        <item
             android:id="@+id/nav_booster"
             android:icon="@drawable/ic_menu_booster"
             android:title="@string/menu_autobooster" />

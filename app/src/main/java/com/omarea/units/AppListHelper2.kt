@@ -129,7 +129,7 @@ class AppListHelper2 {
                 continue
             }
 
-            if ((systemApp == false && packageInfo.sourceDir.startsWith("/system")) || (systemApp == true && packageInfo.sourceDir.startsWith("/data")))
+            if ((systemApp == false && packageInfo.sourceDir.startsWith("/system")) || (systemApp == true && !packageInfo.sourceDir.startsWith("/system")))
                 continue
 
             val file = File(packageInfo.publicSourceDir)

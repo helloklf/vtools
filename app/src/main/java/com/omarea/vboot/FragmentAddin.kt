@@ -1,6 +1,5 @@
 package com.omarea.vboot
 
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.Snackbar
@@ -16,9 +15,13 @@ import com.omarea.shell.SuDo
 import com.omarea.shell.SysUtils
 import com.omarea.shell.units.FlymeUnit
 import com.omarea.shell.units.FullScreenSUnit
-import com.omarea.shell.units.NubiaUnit
 import com.omarea.shell.units.QQStyleUnit
-import com.omarea.vboot.dialogs.*
+import com.omarea.ui.ProgressBarDialog
+import com.omarea.vboot.addin.DexCompileAddin
+import com.omarea.vboot.dialogs.DialogAddinModifyDPI
+import com.omarea.vboot.dialogs.DialogAddinModifydevice
+import com.omarea.vboot.dialogs.DialogAddinWIFI
+import com.omarea.vboot.dialogs.DialogCustomMAC
 import kotlinx.android.synthetic.main.layout_addin.*
 import java.io.File
 import java.util.*
@@ -26,8 +29,8 @@ import java.util.*
 
 class FragmentAddin : Fragment() {
     internal var thisview: ActivityMain? = null
-    lateinit internal var progressBar: ProgressBar
     internal val myHandler: Handler = Handler()
+    private lateinit var processBarDialog: ProgressBarDialog
 
     private fun createItem(title: String, desc: String): HashMap<String, Any> {
         val item = HashMap<String, Any>()
@@ -50,7 +53,7 @@ class FragmentAddin : Fragment() {
         listItem.add(createItem("开启沉浸模式", "自动隐藏状态栏、导航栏"))
         listItem.add(createItem("禁用沉浸模式", "恢复状态栏、导航栏自动显示"))
         listItem.add(createItem("减少Flyme6模糊", "禁用Flyme6下拉通知中心的实时模糊效果，以减少在游戏或视频播放时下拉通知中心的卡顿，或许还能省电"))
-        listItem.add(createItem("MIUI9去通知中心搜索", "默认隐藏MIUI9系统下拉通知中心的搜索框"))
+        listItem.add(createItem("MIUI9去通知中心搜索", "默认隐藏MIUI9系统下拉通知中心的搜索框，重启后生效"))
         listItem.add(createItem("隐藏!和×", "禁用网络可用性检测，去除类原生系统状态栏上WIIF、4G图标的!和x"))
         listItem.add(createItem("冻结谷歌套件", "冻结谷歌服务基础4件套，以减少待机耗电"))
         listItem.add(createItem("解冻谷歌套件", "解冻谷歌4件套"))
@@ -100,11 +103,10 @@ class FragmentAddin : Fragment() {
                 return
             }
             5 -> {
-                AppShared.WriteFile(context.assets, "com.android.systemui", "com.android.systemui")
+                AppShared.WritePrivateFile(context.assets, "com.android.systemui", "com.android.systemui", context)
                 stringBuilder.append(Consts.MountSystemRW)
-                stringBuilder.append("cp ${Consts.SDCardDir}/Android/data/${Consts.PACKAGE_NAME}/com.android.systemui /system/media/theme/default/com.android.systemui\n")
+                stringBuilder.append("cp ${AppShared.getPrivateFileDir(context)}/com.android.systemui /system/media/theme/default/com.android.systemui\n")
                 stringBuilder.append("chmod 0644 /system/media/theme/default/com.android.systemui\n")
-                stringBuilder.append(Consts.Reboot)
             }
             6 -> {
                 stringBuilder.append("settings put global airplane_mode_on 1;")
@@ -128,12 +130,12 @@ class FragmentAddin : Fragment() {
                 stringBuilder.append("pm enable com.android.vending;")
             }
         }
-        progressBar.visibility = View.VISIBLE
+        processBarDialog.showDialog("正在执行，请稍等...")
         Thread(Runnable {
             SuDo(context).execCmdSync(stringBuilder.toString())
             myHandler.post {
                 Snackbar.make(view, "命令已执行！", Snackbar.LENGTH_SHORT).show()
-                progressBar.visibility = View.GONE
+                processBarDialog.hideDialog()
             }
         }).start()
     }
@@ -161,8 +163,10 @@ class FragmentAddin : Fragment() {
         listItem.add(createItem("改机型为vivo X20", "将机型信息改为vivo X20，据说比改OPPO R11还好用？（会导致部分设备软件fc）"))
         listItem.add(createItem("build.prop参数还原", "使用了DPI修改和机型伪装的小伙伴，可以点这个还原到上次修改前的状态"))
         listItem.add(createItem("开启网络ADB", "开启网络adb前，请先连接wifi。开启后通过同一局域网下的电脑，使用adb connect ${getIP()}:5555 命令连接"))
-        listItem.add(createItem("查看保存的WIFI", "查看已保存的WIFI信息，通过读取/data/misc/wifi/wpa_supplicant.conf"))
-        listItem.add(createItem("Dex编译", "需要Android N+，使用cmd package compile -m speed -a命令，手动触发dex2oat执行代码编译优化。首次执行此操作，可能需要几十分钟，期间手机可能会卡顿，会消耗大量电量！！！"))
+        listItem.add(createItem("查看保存的WIFI", "查看已保存的WIFI信息，通过读取/data/misc/wifi/wpa_supplicant.conf 或 /data/misc/wifi/WifiConfigStore.xml（Android Oreo+）"))
+        listItem.add(createItem("执行Dex编译", "需要Android N+，使用cmd package compile命令，手动触发dex2oat执行代码编译优化。首次执行此操作，可能需要几十分钟，并增加应用空间占用30%左右，期间手机可能会卡顿，会消耗大量电量！！！"))
+        listItem.add(createItem("调整ART参数", "需要Android N+，调整应用安装策略为“speed”，启动策略为“verify-none”。\n会使应用安装时间变长占用空间变大，但运行更加流畅，重启后生效。"))
+        listItem.add(createItem("删除使用电池记录", "通过删除/data/system/batterystats-checkin.bin、/data/system/batterystats-daily.xml、/data/system/batterystats.bin 来清空系统的电池使用记录，会重启手机！"))
 
 
         val mSimpleAdapter = SimpleAdapter(
@@ -206,12 +210,6 @@ class FragmentAddin : Fragment() {
                 DialogAddinWIFI(context).show()
                 return@OnItemClickListener
             }
-            else if (position == 12) {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-                    Toast.makeText(context, "系统版本过低，至少需要Android 7.0！", Toast.LENGTH_SHORT).show()
-                    return@OnItemClickListener
-                }
-            }
             val builder = AlertDialog.Builder(thisview!!)
             builder.setTitle("执行这个脚本？")
             builder.setNegativeButton(android.R.string.cancel, null)
@@ -221,6 +219,17 @@ class FragmentAddin : Fragment() {
                             "\n\n请确保你已了解此脚本的用途，并清楚对设备的影响")
             builder.create().show()
         }
+    }
+
+    private fun runCommand(stringBuilder: StringBuilder) {
+        processBarDialog.showDialog("正在执行，请稍等...")
+        Thread(Runnable {
+            SuDo(context).execCmdSync(stringBuilder.toString())
+            myHandler.post {
+                Snackbar.make(this.view!!, "命令已执行！", Snackbar.LENGTH_SHORT).show()
+                processBarDialog.hideDialog()
+            }
+        }).start()
     }
 
     private fun executeSystemScript(view: View, position: Int) {
@@ -267,28 +276,26 @@ class FragmentAddin : Fragment() {
                 stringBuilder.append("cp /data/build.prop /system/build.prop\n")
                 stringBuilder.append("rm /data/build.prop\n")
                 stringBuilder.append("chmod 0644 /system/build.prop\n")
-                stringBuilder.append("sync\n")
-                stringBuilder.append("reboot\n")
+                stringBuilder.append(Consts.Reboot)
             }
             8 -> {
                 stringBuilder.append(Consts.MountSystemRW)
                 stringBuilder.append(
                         "busybox sed 's/^ro.product.model=.*/ro.product.model=vivo X20/' /system/build.prop > /data/build.prop;" +
-                                "busybox sed -i 's/^ro.product.brand=.*/ro.product.brand=vivo/' /data/build.prop;" +
-                                "busybox sed -i 's/^ro.product.name=.*/ro.product.name=X20/' /data/build.prop;" +
-                                "busybox sed -i 's/^ro.product.device=.*/ro.product.device=X20/' /data/build.prop;" +
-                                "busybox sed -i 's/^ro.build.product=.*/ro.build.product=X20/' /data/build.prop;" +
-                                "busybox sed -i 's/^ro.product.manufacturer=.*/ro.product.manufacturer=vivo/' /data/build.prop;")
+                        "busybox sed -i 's/^ro.product.brand=.*/ro.product.brand=vivo/' /data/build.prop;" +
+                        "busybox sed -i 's/^ro.product.name=.*/ro.product.name=X20/' /data/build.prop;" +
+                        "busybox sed -i 's/^ro.product.device=.*/ro.product.device=X20/' /data/build.prop;" +
+                        "busybox sed -i 's/^ro.build.product=.*/ro.build.product=X20/' /data/build.prop;" +
+                        "busybox sed -i 's/^ro.product.manufacturer=.*/ro.product.manufacturer=vivo/' /data/build.prop;")
                 stringBuilder.append("cp /system/build.prop /system/build.bak.prop\n")
                 stringBuilder.append("cp /data/build.prop /system/build.prop\n")
                 stringBuilder.append("rm /data/build.prop\n")
                 stringBuilder.append("chmod 0644 /system/build.prop\n")
-                stringBuilder.append("sync\n")
-                stringBuilder.append("reboot\n")
+                stringBuilder.append(Consts.Reboot)
             }
             9 -> {
                 stringBuilder.append(Consts.MountSystemRW)
-                stringBuilder.append("if [ -f '/system/build.bak.prop' ];then rm /system/build.prop;cp /system/build.bak.prop /system/build.prop;chmod 0644 /system/build.prop; sync; reboot; fi;")
+                stringBuilder.append("if [ -f '/system/build.bak.prop' ];then rm /system/build.prop;cp /system/build.bak.prop /system/build.prop;chmod 0644 /system/build.prop; sync;sleep 2;reboot; fi;")
             }
             10 -> {
                 stringBuilder.append("setprop service.adb.tcp.port 5555;")
@@ -297,17 +304,19 @@ class FragmentAddin : Fragment() {
                 stringBuilder.append("start adbd;")
             }
             12 -> {
-                stringBuilder.append("cmd package compile -m speed -a;")
+                DexCompileAddin(context).run()
+                return
+            }
+            13 -> {
+                DexCompileAddin(context).modifyConfig()
+                return
+            }
+            14 -> {
+                stringBuilder.append("rm -f /data/system/batterystats-checkin.bin;rm -f /data/system/batterystats-daily.xml;rm -f /data/system/batterystats.bin;")
+                stringBuilder.append(Consts.Reboot)
             }
         }
-        progressBar.visibility = View.VISIBLE
-        Thread(Runnable {
-            SuDo(context).execCmdSync(stringBuilder.toString())
-            myHandler.post {
-                Snackbar.make(view, "命令已执行！", Snackbar.LENGTH_SHORT).show()
-                progressBar.visibility = View.GONE
-            }
-        }).start()
+        runCommand(stringBuilder)
     }
 
     private fun initCustomAddin(view: View) {
@@ -315,7 +324,6 @@ class FragmentAddin : Fragment() {
         listItem.add(createItem("DPI、分辨率修改", "自定义手机DPI或分辨率，这可能导致设备无法正常启动或UI错误"))
         listItem.add(createItem("机型修改", "通过更改build.prop，把机型修改成别的手机，可能会导致部分系统不能开机或出现Bug"))
         listItem.add(createItem("修改MAC地址", "自定义手机WIFI网卡MAC地址"))
-        //listItem.add(createItem("硬链合并【实验性】", "适用于“DualBootPatcher”多系统用户，通过Linux底层硬链技术，将相同的文件指向同一个inode，从而减少相同文件复制多份导致的空间浪费。目前仅处理已安装应用的.apk和.so文件。"))
 
         val mSimpleAdapter = SimpleAdapter(
                 view.context, listItem,
@@ -333,13 +341,12 @@ class FragmentAddin : Fragment() {
                 DialogAddinModifydevice(context).modifyDeviceInfo()
             } else if (position == 2) {
                 DialogCustomMAC(context).modifyMAC()
-            } else if (position == 3) {
-                DialogFilesHardLinks2(context).checkFileList()
             }
         }
     }
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        processBarDialog = ProgressBarDialog(this.context)
         val tabHost = view!!.findViewById(R.id.addinlist_tabhost) as TabHost
 
         tabHost.setup()
@@ -359,7 +366,6 @@ class FragmentAddin : Fragment() {
         fun createPage(thisView: ActivityMain): Fragment {
             val fragment = FragmentAddin()
             fragment.thisview = thisView
-            fragment.progressBar = thisView.progressBar
             return fragment
         }
     }

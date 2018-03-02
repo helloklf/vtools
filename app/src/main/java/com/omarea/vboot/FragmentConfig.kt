@@ -21,6 +21,7 @@ import android.widget.ListView
 import com.omarea.shared.*
 import com.omarea.shell.DynamicConfig
 import com.omarea.shell.Platform
+import com.omarea.ui.ProgressBarDialog
 import com.omarea.ui.list_adapter
 import com.omarea.units.AppListHelper
 import kotlinx.android.synthetic.main.layout_config.*
@@ -29,8 +30,8 @@ import java.util.*
 
 
 class FragmentConfig : Fragment() {
+    private lateinit var processBarDialog: ProgressBarDialog
     private var cmdshellTools: cmd_shellTools? = null
-    private var thisview: ActivityMain? = null
     private lateinit var spfPowercfg: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
     private var hasSystemApp = true
@@ -61,6 +62,7 @@ class FragmentConfig : Fragment() {
 
     @SuppressLint("CommitPrefEdits")
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        processBarDialog = ProgressBarDialog(context)
         applistHelper = AppListHelper(context)
         spfPowercfg = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         editor = spfPowercfg.edit()
@@ -79,7 +81,7 @@ class FragmentConfig : Fragment() {
             }
         }
         btn_config_dynamicservice_not_active.setOnClickListener {
-            val intent = Intent(thisview, ActivityAccessibilitySettings::class.java)
+            val intent = Intent(context, ActivityAccessibilitySettings::class.java)
             startActivity(intent)
         }
 
@@ -97,7 +99,7 @@ class FragmentConfig : Fragment() {
         config_addtodefaultlist.setOnClickListener {
             when (configlist_tabhost.currentTab) {
                 0 -> {
-                    val builder = AlertDialog.Builder(thisview)
+                    val builder = AlertDialog.Builder(context)
                     val items = arrayOf("添加选中到 -> 性能模式", "添加选中到 -> 省电模式", "添加选中到 -> 极速模式", "添加选中到 -> 忽略列表")
                     val configses = arrayOf(Configs.Game, Configs.PowerSave, Configs.Fast, Configs.Ignored)
                     builder.setItems(items) { _, which ->
@@ -107,7 +109,7 @@ class FragmentConfig : Fragment() {
                     builder.setIcon(R.drawable.ic_menu_profile).setTitle("设置配置模式").create().show()
                 }
                 1 -> {
-                    val builder = AlertDialog.Builder(thisview)
+                    val builder = AlertDialog.Builder(context)
                     val items = arrayOf("添加选中到 -> 均衡模式", "添加选中到 -> 省电模式", "添加选中到 -> 极速模式", "添加选中到 -> 忽略列表")
                     val configses = arrayOf(Configs.Default, Configs.PowerSave, Configs.Fast, Configs.Ignored)
                     builder.setItems(items) { _, which ->
@@ -117,7 +119,7 @@ class FragmentConfig : Fragment() {
                     builder.setIcon(R.drawable.ic_menu_profile).setTitle("设置配置模式").create().show()
                 }
                 2 -> {
-                    val builder = AlertDialog.Builder(thisview)
+                    val builder = AlertDialog.Builder(context)
                     val items = arrayOf("添加选中到 -> 均衡模式", "添加选中到 -> 性能模式", "添加选中到 -> 极速模式", "添加选中到 -> 忽略列表")
                     val configses = arrayOf(Configs.Default, Configs.Game, Configs.Fast, Configs.Ignored)
                     builder.setItems(items) { _, which ->
@@ -127,7 +129,7 @@ class FragmentConfig : Fragment() {
                     builder.setIcon(R.drawable.ic_menu_profile).setTitle("设置配置模式").create().show()
                 }
                 3 -> {
-                    val builder = AlertDialog.Builder(thisview)
+                    val builder = AlertDialog.Builder(context)
                     val items = arrayOf("添加选中到 -> 均衡模式", "添加选中到 -> 性能模式", "添加选中到 -> 省电模式", "添加选中到 -> 忽略列表")
                     val configses = arrayOf(Configs.Default, Configs.Game, Configs.PowerSave, Configs.Ignored)
                     builder.setItems(items) { _, which ->
@@ -137,7 +139,7 @@ class FragmentConfig : Fragment() {
                     builder.setIcon(R.drawable.ic_menu_profile).setTitle("设置配置模式").create().show()
                 }
                 4 -> {
-                    val builder = AlertDialog.Builder(thisview)
+                    val builder = AlertDialog.Builder(context)
                     val items = arrayOf("添加选中到 -> 均衡模式", "添加选中到 -> 性能模式", "添加选中到 -> 省电模式", "添加选中到 -> 极速模式")
                     val configses = arrayOf(Configs.Default, Configs.Game, Configs.PowerSave, Configs.Fast)
                     builder.setItems(items) { _, which ->
@@ -231,14 +233,14 @@ class FragmentConfig : Fragment() {
     private fun setListData(dl: ArrayList<HashMap<String, Any>>?, lv: ListView) {
         myHandler.post {
             lv.adapter = list_adapter(context, dl)
-            thisview!!.progressBar.visibility = View.GONE
+            processBarDialog.hideDialog()
         }
     }
 
     private fun loadList(foreceReload: Boolean = false) {
-        thisview!!.progressBar.visibility = View.VISIBLE
+        processBarDialog.showDialog()
         if (packageManager == null) {
-            packageManager = thisview!!.packageManager
+            packageManager = context.packageManager
         }
 
         Thread(Runnable {
@@ -276,7 +278,7 @@ class FragmentConfig : Fragment() {
                 }
             }
             myHandler.post {
-                thisview!!.progressBar.visibility = View.GONE
+                processBarDialog.hideDialog()
                 setListData(defaultList, config_defaultlist)
                 setListData(gameList, config_gamelist)
                 setListData(powersaveList, config_powersavelist)
@@ -340,14 +342,20 @@ class FragmentConfig : Fragment() {
             val cpuNumber = cpuName.replace("msm", "")
 
             if (useBigCore) {
-                AppShared.WriteFile(ass, cpuName + "/init.qcom.post_boot-bigcore.sh", "init.qcom.post_boot.sh")
-                AppShared.WriteFile(ass, cpuName + "/powercfg-bigcore.sh", "powercfg.sh")
+                AppShared.WritePrivateFile(ass, cpuName + "/init.qcom.post_boot-bigcore.sh", "init.qcom.post_boot.sh", context)
+                AppShared.WritePrivateFile(ass, cpuName + "/powercfg-bigcore.sh", "powercfg.sh", context)
             } else {
-                AppShared.WriteFile(ass, cpuName + "/init.qcom.post_boot-default.sh", "init.qcom.post_boot.sh")
-                AppShared.WriteFile(ass, cpuName + "/powercfg-default.sh", "powercfg.sh")
+                AppShared.WritePrivateFile(ass, cpuName + "/init.qcom.post_boot-default.sh", "init.qcom.post_boot.sh", context)
+                AppShared.WritePrivateFile(ass, cpuName + "/powercfg-default.sh", "powercfg.sh", context)
             }
 
-            val cmd = StringBuilder().append(Consts.InstallConfig).append(Consts.ExecuteConfig).append(Consts.ToggleDefaultMode)
+            val cmd = StringBuilder()
+                    .append("cp ${AppShared.getPrivateFilePath(context, "init.qcom.post_boot.sh")} ${Consts.POWER_CFG_BASE};")
+                    .append("cp ${AppShared.getPrivateFilePath(context, "powercfg.sh")} ${Consts.POWER_CFG_PATH};")
+                    .append("chmod 0777 ${Consts.POWER_CFG_PATH};")
+                    .append("chmod 0777 ${Consts.POWER_CFG_BASE};")
+                    .append(Consts.ExecuteConfig)
+                    .append(Consts.ToggleDefaultMode)
                     .toString().replace("cpuNumber", cpuNumber)
             cmdshellTools!!.DoCmdSync(cmd)
 
@@ -387,9 +395,7 @@ class FragmentConfig : Fragment() {
     }
 
     override fun onDestroy() {
-        if (thisview != null){
-            thisview!!.progressBar.visibility = View.GONE
-        }
+        processBarDialog.hideDialog()
         super.onDestroy()
     }
 
@@ -402,10 +408,9 @@ class FragmentConfig : Fragment() {
     }
 
     companion object {
-        fun createPage(thisView: ActivityMain, shellTools: cmd_shellTools): Fragment {
+        fun createPage(shellTools: cmd_shellTools): Fragment {
             val fragment = FragmentConfig()
             fragment.cmdshellTools = shellTools
-            fragment.thisview = thisView
             return fragment
         }
     }

@@ -44,6 +44,8 @@ class BootService : Service() {
                         "ifconfig wlan0 down;" +
                         "echo '$mac' > /sys/class/net/wlan0/address;" +
                         "ifconfig wlan0 hw ether '$mac';" +
+                        "chmod 0644 /sys/devices/soc/a000000.qcom,wcnss-wlan/wcnss_mac_addr\n" +
+                        "echo '$mac' > /sys/devices/soc/a000000.qcom,wcnss-wlan/wcnss_mac_addr\n" +
                         "ifconfig wlan0 up;" +
                         "svc wifi enable;\n\n")
             }

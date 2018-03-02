@@ -11,7 +11,6 @@ object Consts {
     val SDCardDir = Environment.getExternalStorageDirectory().absolutePath
 
     val BackUpDir = "/backups/apps/";
-    val HarLinkBackUpDir = "/data/media/0/backups/apps/";
     val AbsBackUpDir = SDCardDir + "/backups/apps/";
 
     val FastChanger =
@@ -66,19 +65,13 @@ object Consts {
 
     val POWER_CFG_PATH = "/data/powercfg"
     val POWER_CFG_BASE = "/data/init.qcom.post_boot.sh"
-    val InstallConfig =
-            "cp ${Consts.SDCardDir}/Android/data/${PACKAGE_NAME}/init.qcom.post_boot.sh ${POWER_CFG_BASE}\n" +
-                    "cp ${Consts.SDCardDir}/Android/data/${PACKAGE_NAME}/powercfg.sh $POWER_CFG_PATH\n" +
-                    "chmod 0777 $POWER_CFG_PATH\n" +
-                    "chmod 0777 ${POWER_CFG_BASE}\n"
-
-    val InstallPowerToggleConfigToCache = "cp ${Consts.SDCardDir}/Android/data/${PACKAGE_NAME}/powercfg.sh $POWER_CFG_PATH\n" + "chmod 0777 $POWER_CFG_PATH\n"
 
     val ExecuteConfig = "setprop vtools.powercfg null;${POWER_CFG_BASE};\n"
     val ToggleDefaultMode = "setprop vtools.powercfg default;$POWER_CFG_PATH balance;\n"
     val ToggleGameMode = "setprop vtools.powercfg game;$POWER_CFG_PATH performance;\n"
     val TogglePowersaveMode = "setprop vtools.powercfg powersave;$POWER_CFG_PATH powersave;\n"
     val ToggleFastMode = "setprop vtools.powercfg fast;$POWER_CFG_PATH fast;\n"
+    val ToogleLockScreenMode = "setprop vtools.powercfg screenoff;$POWER_CFG_PATH screenoff;\n"
 
     val DisableSELinux = "setenforce 0\n"
 
@@ -150,7 +143,7 @@ object Consts {
     val RebootRecovery = "reboot recovery\n"
     val RebootBootloader = "reboot bootloader\n"
     val RebootOEM_EDL = "reboot edl\n"
-    val Reboot = "reboot\n"
+    val Reboot = "sync;sleep 2;reboot\n"
     val RebootHot = "busybox killall system_server\n"
 
     val RMThermal =

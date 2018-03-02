@@ -23,6 +23,22 @@ class AppListAdapter(private val context: Context, apps: ArrayList<Appinfo>, pri
 
     private var viewHolder: AppListAdapter.ViewHolder? = null
 
+    fun setSelecteStateAll(selected: Boolean = true) {
+        for (item in states) {
+            states[item.key] = selected
+        }
+    }
+
+    fun getIsAllSelected(): Boolean {
+        var count = 0
+        for (item in states) {
+            if (item.value == true) {
+                count++
+            }
+        }
+        return count == this.list!!.size
+    }
+
     init {
         this.list = sortAppList(filterAppList(apps, keywords))
         for (i in list.indices) {

@@ -21,6 +21,7 @@ import android.widget.EditText
 import android.widget.TextView
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.XposedCheck
+import com.omarea.ui.ProgressBarDialog
 import com.omarea.ui.list_adapter2
 import kotlinx.android.synthetic.main.layout_xposed.*
 import java.io.File
@@ -30,7 +31,7 @@ import kotlin.collections.HashMap
 
 
 class FragmentXposed : Fragment() {
-    internal var thisview: ActivityMain? = null
+    private lateinit var processBarDialog: ProgressBarDialog
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -44,7 +45,8 @@ class FragmentXposed : Fragment() {
 
     @SuppressLint("ApplySharedPref", "WrongConstant", "WorldReadableFiles")
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        dpi_spf = thisview!!.getSharedPreferences(SpfConfig.XPOSED_DPI_SPF, MODE_WORLD_READABLE)
+        processBarDialog = ProgressBarDialog(this.context)
+        dpi_spf = context.getSharedPreferences(SpfConfig.XPOSED_DPI_SPF, MODE_WORLD_READABLE)
         val w = context.resources.displayMetrics.widthPixels.toFloat()
         val h = context.resources.displayMetrics.heightPixels.toFloat()
         val pixels = if (w > h) h else w
@@ -154,7 +156,7 @@ class FragmentXposed : Fragment() {
         xposed_config_cm_su.isChecked = spf.getBoolean("xposed_hide_su", false)
         xposed_config_webview_debug.isChecked = spf.getBoolean("xposed_webview_debug", false)
 
-        thisview!!.progressBar.visibility = View.VISIBLE
+        processBarDialog.showDialog()
         Thread({
             installedList = loadList()
 
@@ -174,7 +176,7 @@ class FragmentXposed : Fragment() {
                     }
                     xposed_apps_dpifix.setAdapter(ld)
 
-                    thisview!!.progressBar.visibility = View.GONE
+                    processBarDialog.hideDialog()
                 } catch (ex: Exception) {
 
                 }
@@ -233,16 +235,12 @@ class FragmentXposed : Fragment() {
     }
 
     override fun onDestroy() {
-        if (thisview != null){
-            thisview!!.progressBar.visibility = View.GONE
-        }
         super.onDestroy()
     }
 
     companion object {
-        fun Create(thisView: ActivityMain): Fragment {
+        fun Create(): Fragment {
             val fragment = FragmentXposed()
-            fragment.thisview = thisView
             return fragment
         }
     }

@@ -32,6 +32,7 @@ class CheckRootStatus(var progressBar: ProgressBar, var context: Context, var ne
         } catch (e: Exception) {
             if (process != null)
                 process.destroy()
+            e.stackTrace
             return false
         }
 

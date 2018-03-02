@@ -10,13 +10,13 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import android.widget.Toast
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.cmd_shellTools
 import com.omarea.shell.KernelProrp
 import com.omarea.shell.SuDo
 import com.omarea.shell.units.ChangeZRAM
+import com.omarea.ui.ProgressBarDialog
 import com.omarea.ui.swaplist_adapter
 import kotlinx.android.synthetic.main.layout_swap.*
 import java.io.File
@@ -26,10 +26,9 @@ import kotlin.collections.LinkedHashMap
 
 
 class FragmentSwap : Fragment() {
-    lateinit var thisview: ActivityMain
+    private lateinit var processBarDialog: ProgressBarDialog
     internal lateinit var view: View
     private lateinit var cmdshellTools: cmd_shellTools
-    private lateinit var progressBar: ProgressBar
     private lateinit var myHandler: Handler
     private lateinit var swapConfig: SharedPreferences
 
@@ -37,7 +36,6 @@ class FragmentSwap : Fragment() {
                               savedInstanceState: Bundle?): View? {
         view = inflater!!.inflate(R.layout.layout_swap, container, false)
 
-        progressBar = thisview.findViewById(R.id.shell_on_execute) as ProgressBar
         myHandler = Handler()
         cmdshellTools = cmd_shellTools(null, null)
         swapConfig = context.getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)
@@ -45,7 +43,7 @@ class FragmentSwap : Fragment() {
     }
 
     internal var getSwaps = {
-        var ret = cmdshellTools.GetProp("/proc/swaps", null)
+        val ret = cmdshellTools.GetProp("/proc/swaps", null)
         var txt = if (ret == null) "" else ret.replace("\t\t", "\t").replace("\t", " ")
         while (txt.contains("  ")) {
             txt = txt.replace("  ", " ")
@@ -86,6 +84,7 @@ class FragmentSwap : Fragment() {
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        processBarDialog = ProgressBarDialog(this.context)
 
         chk_swap_disablezram.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, false)
         chk_swap_autostart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)
@@ -102,18 +101,18 @@ class FragmentSwap : Fragment() {
 
 
     private var showWait = {
-        Toast.makeText(thisview, "正在执行操作，请稍等...", Toast.LENGTH_SHORT).show()
-        progressBar.visibility = View.VISIBLE
+        processBarDialog.showDialog()
+        Toast.makeText(context, "正在执行操作，请稍等...", Toast.LENGTH_SHORT).show()
     }
 
     private var showCreated = {
         Snackbar.make(view, "虚拟Swap分区已创建，现在可以点击启动按钮来开启它！", Snackbar.LENGTH_LONG).show()
-        progressBar.visibility = View.GONE
+        processBarDialog.hideDialog()
     }
 
     private var showSwapOpened = {
         Snackbar.make(view, "操作已完成！", Snackbar.LENGTH_LONG).show()
-        progressBar.visibility = View.GONE
+        processBarDialog.hideDialog()
     }
 
     @SuppressLint("ApplySharedPref")
@@ -177,7 +176,6 @@ class FragmentSwap : Fragment() {
             }).start()
         }
         btn_zram_resize.setOnClickListener {
-            myHandler.post(showWait)
             val size = txt_zram_size.text.toString()
             val swappiness = txt_zram_swappiness.text.toString()
             var value = 65
@@ -190,6 +188,8 @@ class FragmentSwap : Fragment() {
             }
 
             if (sizeVal < 2049 && sizeVal > -1) {
+                myHandler.post(showWait)
+
                 val run = Thread({
                     val sb = StringBuilder()
                     sb.append("if [ `cat /sys/block/zram0/disksize` != '" + sizeVal + "000000' ] ; then ")
@@ -228,10 +228,9 @@ class FragmentSwap : Fragment() {
     }
 
     companion object {
-        fun createPage(thisView: ActivityMain, cmdshellTools: cmd_shellTools): Fragment {
+        fun createPage(cmdshellTools: cmd_shellTools): Fragment {
             val fragment = FragmentSwap()
             fragment.cmdshellTools = cmdshellTools
-            fragment.thisview = thisView
             return fragment
         }
     }

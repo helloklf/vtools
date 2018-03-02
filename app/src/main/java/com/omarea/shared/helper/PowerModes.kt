@@ -9,5 +9,6 @@ enum class PowerModes {
     Default,
     Game,
     PowerSave,
-    Fast
+    Fast,
+    LockScreen
 }

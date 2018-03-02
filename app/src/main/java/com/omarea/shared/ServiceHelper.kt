@@ -4,9 +4,13 @@ import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
+import android.os.Handler
+import android.os.Message
 import android.view.accessibility.AccessibilityManager
 import android.widget.Toast
 import com.omarea.shared.helper.*
+import com.omarea.shell.AsynSuShellUnit
+import com.omarea.shell.SuDo
 import java.util.*
 
 /**
@@ -43,6 +47,8 @@ class ServiceHelper(private var context: Context) {
     //屏幕关闭时执行
     private fun onScreenOff () {
         screenOn = false
+
+        toggleConfig(PowerModes.LockScreen)
 
         if (debugMode)
             showMsg("屏幕关闭！")
@@ -84,8 +90,12 @@ class ServiceHelper(private var context: Context) {
     private fun onScreenOn () {
         if (debugMode)
             showMsg("屏幕开启！")
+
         lastScreenOnOff = System.currentTimeMillis()
         if (screenOn == true) return
+
+        if (this.lastModePackage != null)
+            autoToggleMode(this.lastModePackage)
 
         screenOn = true
         if (autoBooster && screenOn == true) {
@@ -245,6 +255,7 @@ class ServiceHelper(private var context: Context) {
             PowerModes.Game ->      keepShell.doCmd(Consts.ToggleGameMode)
             PowerModes.PowerSave -> keepShell.doCmd(Consts.TogglePowersaveMode)
             PowerModes.Fast ->      keepShell.doCmd(Consts.ToggleFastMode)
+            PowerModes.LockScreen ->      keepShell.doCmd(Consts.ToggleFastMode)
             else ->                 keepShell.doCmd(Consts.ToggleDefaultMode)
         }
 
@@ -279,9 +290,25 @@ class ServiceHelper(private var context: Context) {
             }
 
             if (!screenOn && spfAutoConfig.getBoolean(SpfConfig.BOOSTER_SPF_CFG_SPF_CLEAR_TASKS, true)) {
+                val cmds = StringBuilder()
                 for (item in spfBlacklist.all) {
-                    killApp(item.key, false)
+                    cmds.append("dumpsys deviceidle enable; am set-inactive ${item.key} true")
+                    cmds.append("killall -9 ${item.key};pkill -9 ${item.key};pgrep ${item.key} |xargs kill -9;")
                 }
+                var p:Process?
+
+                AsynSuShellUnit(object : Handler() {
+                    override fun handleMessage(msg: Message?) {
+                        super.handleMessage(msg)
+                        if (msg == null) {
+                            return
+                        }
+                        if (msg.what == 0) {
+                            if (msg.obj == true) {
+                            }
+                        }
+                    }
+                }).exec(cmds.toString()).waitFor()
                 if (debugMode)
                     showMsg("后台已自动清理...")
             }

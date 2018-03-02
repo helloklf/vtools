@@ -1,5 +1,6 @@
 package com.omarea.shared
 
+import android.content.Context
 import android.content.res.AssetManager
 import org.json.JSONException
 import org.json.JSONObject
@@ -70,6 +71,34 @@ object AppShared {
         } catch (e: IOException) {
             e.printStackTrace()
         }
+    }
 
+    fun getPrivateFileDir(context: Context): String {
+        return context.filesDir.path + "/private/"
+    }
+
+    fun getPrivateFilePath(context: Context, outName: String): String {
+        return getPrivateFileDir(context) + outName
+    }
+
+    fun WritePrivateFile(assetManager: AssetManager, file: String, outName: String, context: Context) {
+        try {
+            val inputStream = assetManager.open(file)
+            val datas = ByteArray(2 * 1024 * 1024)
+            //inputStream.available()
+            val len = inputStream.read(datas)
+            val dir = File(getPrivateFileDir(context))
+            if (!dir.exists())
+                dir.mkdirs()
+            val filePath = getPrivateFilePath(context, outName)
+
+            val fileOutputStream = FileOutputStream(filePath)
+            fileOutputStream.write(datas, 0, len)
+            fileOutputStream.close()
+            inputStream.close()
+            //getApplicationContext().getClassLoader().getResourceAsStream("");
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
     }
 }
