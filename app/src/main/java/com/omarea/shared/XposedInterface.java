@@ -13,6 +13,7 @@ import android.view.Display;
 import com.omarea.xposed.ActiveCheck;
 import com.omarea.xposed.DeviceInfo;
 import com.omarea.xposed.SystemUI;
+import com.omarea.xposed.ViewConfig;
 import com.omarea.xposed.WebView;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -149,6 +150,11 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
 
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
+        //平滑滚动
+        if(prefs.getBoolean("xposed_config_scroll", false)) {
+            ViewConfig.handleLoadPackage();
+        }
+
         final String packageName = loadPackageParam.packageName;
         prefs.reload();
         prefs2.reload();

@@ -82,6 +82,21 @@
                             android:textSize="12dp"/>
 
                         <CheckBox
+                            android:id="@+id/xposed_config_scroll"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="4dp"
+                            android:text="平滑滚动 *实验性"
+                            android:textSize="16dp"/>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:text="功能代码借鉴与XuiMod，通过调整安卓系统UI的滚动速度和惯性摩擦值，并添加列表滑动到底部时的回弹效果。如果使用此功能后出现系统UI崩溃的情况，请进入REC删除微工具箱（com.omarea.vboot）！！"
+                            android:textSize="12dp"/>
+
+                        <CheckBox
                             android:id="@+id/xposed_config_webview_debug"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

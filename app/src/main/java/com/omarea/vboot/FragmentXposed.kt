@@ -76,6 +76,9 @@ class FragmentXposed : Fragment() {
                 Snackbar.make(getView()!!, context.getString(R.string.xposed_cannot_openxposed), Snackbar.LENGTH_SHORT).show()
             }
         }
+        xposed_config_scroll.setOnCheckedChangeListener { _, value ->
+            spf.edit().putBoolean("xposed_config_scroll", value).commit()
+        }
         xposed_config_hight_fps.setOnCheckedChangeListener { _, value ->
             spf.edit().putBoolean("xposed_hight_fps", value).commit()
         }
@@ -152,6 +155,7 @@ class FragmentXposed : Fragment() {
     override fun onResume() {
         super.onResume()
         xposed_config_hight_fps.isChecked = spf.getBoolean("xposed_hight_fps", false)
+        xposed_config_scroll.isChecked = spf.getBoolean("xposed_config_scroll", false)
         xposed_config_dpi_fix.isChecked = spf.getBoolean("xposed_dpi_fix", false)
         xposed_config_cm_su.isChecked = spf.getBoolean("xposed_hide_su", false)
         xposed_config_webview_debug.isChecked = spf.getBoolean("xposed_webview_debug", false)

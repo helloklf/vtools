@@ -159,7 +159,7 @@ public class CpuFrequencyUtils {
     public static int getCoreCount() {
         int cores = 0;
         while (true) {
-            File file = new File(Constants.cpufreq_sys_dir.replace("cpu0", "cpu" + cores));
+            File file = new File(Constants.cpu_dir.replace("cpu0", "cpu" + cores));
             if (file.exists()) {
                 cores++;
             } else {

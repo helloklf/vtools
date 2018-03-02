@@ -21,6 +21,7 @@ public interface Constants {
 
     // CPU
     String core_control_online = "/sys/devices/system/cpu/cpu0/online";
+    String cpu_dir = "/sys/devices/system/cpu/cpu0/";
     String cpufreq_sys_dir = "/sys/devices/system/cpu/cpu0/cpufreq/";
     String scaling_min_freq = cpufreq_sys_dir + "scaling_min_freq";
     String cpuinfo_min_freq = cpufreq_sys_dir + "cpuinfo_min_freq";
