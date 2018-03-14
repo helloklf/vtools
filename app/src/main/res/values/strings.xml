@@ -178,12 +178,12 @@
     <string name="action_reboot_bl">重启到FastBoot</string>
     <string name="action_reboot9008">重启到9008模式</string>
 
-    <string name="xposed_tab_a">推荐</string>
-    <string name="xposed_tab_b">DPI配置</string>
+    <string name="xposed_tab_a">全局配置</string>
+    <string name="xposed_tab_b">应用配置</string>
     <string name="xposed_gamehf_title">王者荣耀 高帧率模式</string>
     <string name="xposed_gamehf_desc">通过伪装设备型号为OPPO R11，让王者荣耀游戏允许开启60帧模式并提高游戏稳定性。</string>
-    <string name="xposed_dpi_title">应用DPI修改</string>
-    <string name="xposed_dpi_desc">允许对应用程序单独配置DPI缩放，勾选此项才能使右侧列表中的配置生效。</string>
+    <string name="xposed_dpi_title">应用单独配置</string>
+    <string name="xposed_appconfig_desc">允许对应用单独进行配置，自定义应用DPI和隐藏任务时需要开启此项。</string>
     <string name="xposed_actived">模块已激活-工作正常</string>
     <string name="xposed_unactive">Xposed模块未激活</string>
     <string name="xposed_cannot_openxposed">Xposed管理器似乎还没有安装？</string>
@@ -234,10 +234,9 @@
         "<spna>详情：</spna>"
         "<span>http://coolapk.com/apk/com.omarea.vboot</span>"
     </string>
-    <string name="settings_qc_limit_hint">充电速度上限(mA)</string>
-    <string name="settings_bp_level_hint">电量限制0–99，默认85%</string>
     <string name="battery_uevent_title">$ cat /sys/class/power_supply/bms/uevent</string>
     <string name="home_hide_in_recents">从最近任务列表隐藏</string>
+    <string name="home_app_night">夜间主题</string>
     <string name="applist_help">✔ 已备份\n✘ 备份的版本比安装的版本更高\n★ 已安装的版本比备份的版本旧\n☆ 已备份数据未备份APK\n\n目前所提供的应用数据备份功能，需要系统集成busybox、toybox，使用tar+gz压缩数据（如果系统支持，将使用pigz提高压缩速度），仅备份 “/data/data/应用包名” 下的数据，且不保证兼容所有系统和应用。\n\n“系统”应用栏提供“禁用+隐藏”选项，被隐藏的应用将被从已安装应用列表移除（不同于冻结，应用被隐藏后你无法运行也不会在应用管理中看到）</string>
     <string name="title_activity_core_contrl">CPU控制</string>
 </resources>

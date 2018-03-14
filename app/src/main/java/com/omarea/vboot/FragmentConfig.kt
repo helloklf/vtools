@@ -11,6 +11,8 @@ import android.os.Handler
 import android.provider.Settings
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +24,7 @@ import com.omarea.shared.*
 import com.omarea.shell.DynamicConfig
 import com.omarea.shell.Platform
 import com.omarea.ui.ProgressBarDialog
+import com.omarea.ui.SearchTextWatcher
 import com.omarea.ui.list_adapter
 import com.omarea.units.AppListHelper
 import kotlinx.android.synthetic.main.layout_config.*
@@ -187,12 +190,10 @@ class FragmentConfig : Fragment() {
             ignoredList!![position].put("select_state", !selectState.isChecked)
         }
 
-        config_search_box.setOnEditorActionListener({ _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_DONE) {
-                loadList()
-            }
-            false
-        })
+        config_search_box.addTextChangedListener(SearchTextWatcher(Runnable {
+            loadList()
+        }))
+
         loadList()
     }
 

@@ -38,12 +38,15 @@ class ActivityAccessibilitySettings : AppCompatActivity() {
 
     @SuppressLint("ApplySharedPref")
     override fun onCreate(savedInstanceState: Bundle?) {
+        spf = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+        if (spf.getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false))
+            this.setTheme(R.style.AppTheme_NoActionBarNight)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_accessibility_settings)
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
-        spf = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         if (!DynamicConfig().DynamicSupport(this) && !File(Consts.POWER_CFG_PATH).exists()) {
             settings_dynamic.isEnabled = false
             settings_dynamic.isChecked = false

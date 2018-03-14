@@ -1,21 +1,16 @@
 package com.omarea.xposed;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.graphics.Color;
-import android.os.Handler;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.ListView;
 import android.widget.ScrollView;
 
 import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XSharedPreferences;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 /**
  * Created by Hello on 2018/03/02.
@@ -176,7 +171,7 @@ public class ViewConfig {
         //滚动回弹距离
         public static final int DEFAULT_SCROLLING_OVERFLING = 160;
         //滚动惯性
-        public static final int DEFAULT_SCROLLING_FRICTION = 300;
+        public static final int DEFAULT_SCROLLING_FRICTION = 256;
         //最大滚动速度
         public static final int DEFAULT_SCROLLING_VELOCITY = 4000;
     }

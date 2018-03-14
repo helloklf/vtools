@@ -35,10 +35,10 @@
             android:id="@+id/nav_applictions"
             android:icon="@drawable/ic_menu_modules"
             android:title="@string/menu_applictions" />
-        <item
+        <!--<item
             android:id="@+id/nav_tasks"
             android:icon="@drawable/ic_menu_task"
-            android:title="@string/menu_tasks" />
+            android:title="@string/menu_tasks" />-->
         <item
             android:id="@+id/nav_swap"
             android:icon="@drawable/ic_menu_digital"

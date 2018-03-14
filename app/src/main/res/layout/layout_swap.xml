@@ -1,178 +1,245 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.omarea.vboot.FragmentSwap">
 
-    <TabHost
-        android:id="@+id/swapzram_tabhost"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-        <LinearLayout
+        <TableLayout
+            android:padding="16dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TabWidget
-                android:id="@android:id/tabs"
+            <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#33dddddd">
+                android:layout_marginBottom="10dp">
 
-            </TabWidget>
-
-            <FrameLayout
-                android:id="@android:id/tabcontent"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <FrameLayout
-                    android:id="@+id/swapzram_tab0"
+                <TableLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <TableLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="12dp"
-                        android:showDividers="beginning"
-                        android:shrinkColumns="0,1,2"
-                        android:stretchColumns="0,1,2,3">
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:showDividers="beginning"
+                    android:stretchColumns="0">
+                    <TextView android:textColor="@color/colorAccent" android:text="SWAP" android:layout_marginBottom="20dp"/>
 
-                        <TableRow>
-                            <EditText
-                                android:id="@+id/txt_swap_size"
-                                android:layout_width="match_parent"
-                                android:hint="Swap大小(MB)"
-                                android:inputType="number"
-                                android:maxLength="4" />
-                            <Button
-                                android:id="@+id/btn_swap_create"
-                                android:layout_width="50dp"
-                                android:text="创建"
-                                android:textSize="14dp" />
-                        </TableRow>
+                    <TableRow>
+
+                        <SeekBar
+                            android:id="@+id/txt_swap_size"
+                            android:layout_height="30dp"
+                            android:max="8192"
+                            android:min="0" />
 
                         <TextView
-                            android:layout_marginBottom="30dp"
-                            android:text="  存储位置：/data/swapfile"
-                            android:textSize="11dp" />
+                            android:layout_gravity="center_vertical"
+                            android:id="@+id/txt_swap_size_display"
+                            android:layout_width="60dp"
+                            android:text="size MB" />
+                    </TableRow>
 
-                        <CheckBox
-                            android:id="@+id/chk_swap_autostart"
-                            android:layout_marginBottom="12dp"
-                            android:text="开机自启（需要允许工具箱自启动）" />
+                    <TextView
+                        android:text="  存储位置：/data/swapfile"
+                        android:textSize="11dp" />
 
-                        <CheckBox
-                            android:id="@+id/chk_swap_disablezram"
-                            android:layout_marginBottom="12dp"
-                            android:text="优先于ZRAM" />
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_marginBottom="30dp">
 
-                        <TableRow android:layout_marginBottom="30dp" android:focusable="true"
-                            android:focusableInTouchMode="true">
+                        <LinearLayout
+                            android:layout_gravity="right"
+                            android:layout_span="2"
+                            android:orientation="horizontal">
 
-                            <EditText
-                                android:id="@+id/txt_swap_swappiness"
-                                android:layout_width="match_parent"
-                                android:layout_marginBottom="12dp"
-                                android:hint="Swappiness(0-100)默认:65"
-                                android:inputType="number"
-                                android:maxLength="3" />
+                            <Button
+                                android:id="@+id/btn_swap_create"
+                                android:layout_width="60dp"
+                                android:layout_height="wrap_content"
+                                android:text="创建"
+                                android:textSize="14dp" />
 
                             <Button
                                 android:id="@+id/btn_swap_start"
-                                android:layout_width="50dp"
+                                android:layout_width="60dp"
+                                android:layout_height="wrap_content"
                                 android:text="启动" />
-                        </TableRow>
 
-                        <TextView
-                            android:layout_marginBottom="6dp"
-                            android:text="* SWAP的大小建议设为RAM大小的25%-50%"
-                            android:textSize="11dp" />
+                            <Button
+                                android:id="@+id/btn_swap_close"
+                                android:layout_width="60dp"
+                                android:layout_height="wrap_content"
+                                android:text="关闭" />
 
-                        <TextView
-                            android:layout_marginBottom="6dp"
-                            android:text="SWAP、ZRAM状态："
-                            android:textSize="11dp" />
+                            <Button
+                                android:id="@+id/btn_swap_delete"
+                                android:layout_width="60dp"
+                                android:layout_height="wrap_content"
+                                android:text="删除" />
+                        </LinearLayout>
+                    </TableRow>
 
-                        <ListView
-                            android:id="@+id/list_swaps"
-                            android:layout_marginBottom="12dp"
-                            android:textSize="11dp"></ListView>
+                    <CheckBox
+                        android:id="@+id/chk_swap_autostart"
+                        android:layout_marginBottom="12dp"
+                        android:text="开机自启（需要允许工具箱自启动）" />
 
-                        <TextView android:id="@+id/txt_swapstus_swappiness" />
-                    </TableLayout>
-                </FrameLayout>
-                <FrameLayout
-                    android:id="@+id/swapzram_tab1"
+                    <CheckBox
+                        android:layout_marginBottom="20dp"
+                        android:id="@+id/chk_swap_disablezram"
+                        android:text="优先使用（如果有多个SWAP或ZRAM）" />
+
+                    <TextView
+                        android:textColor="@color/colorPrimary"
+                        android:layout_marginBottom="6dp"
+                        android:text="说明：SWAP即磁盘交换技术，在RAM不足时，将一部分数据暂时转移到磁盘中，从而缓解RAM的压力，对性能影响大。SWAP建议设为RAM大小的25%-50%。"
+                        android:textSize="11dp" />
+                </TableLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp">
+
+                <TableLayout
+                    android:id="@+id/swap_config_zram"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <TableLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="12dp"
-                        android:showDividers="beginning"
-                        android:shrinkColumns="0,1,2"
-                        android:stretchColumns="0,1,2,3">
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:showDividers="beginning"
+                    android:stretchColumns="0">
 
-                        <TableRow android:focusable="true"
-                            android:focusableInTouchMode="true">
+                    <TextView android:textColor="@color/colorAccent" android:text="ZRAM" android:layout_marginBottom="20dp"/>
+                    <TableRow
+                        android:focusable="true"
+                        android:focusableInTouchMode="true">
 
-                            <EditText
-                                android:id="@+id/txt_zram_size"
-                                android:layout_width="match_parent"
-                                android:hint="ZRAM大小(MB)"
-                                android:inputType="number"
-                                android:maxLength="4" />
-                        </TableRow>
+                        <SeekBar
+                            android:id="@+id/txt_zram_size"
+                            android:layout_width="match_parent"
+                            android:max="2048"
+                            android:layout_height="30dp"
+                            android:min="1" />
+
                         <TextView
-                            android:layout_marginBottom="12dp"
-                            android:text="  ZRAM最大可设置为2048M"
-                            android:textSize="11dp" />
+                            android:id="@+id/txt_zram_size_display"
+                            android:layout_width="60dp"
+                            android:layout_gravity="center_vertical"
+                            android:text="size MB" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_marginBottom="20dp"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true">
                         <CheckBox
                             android:id="@+id/chk_zram_autostart"
                             android:layout_marginBottom="12dp"
                             android:text="开机自启（需要允许工具箱自启动）" />
-                        <TableRow android:layout_marginBottom="30dp" android:focusable="true"
-                            android:focusableInTouchMode="true">
-                            <EditText
-                                android:id="@+id/txt_zram_swappiness"
-                                android:layout_width="match_parent"
-                                android:layout_marginBottom="12dp"
-                                android:hint="Swappiness(0-100)默认:65"
-                                android:inputType="number"
-                                android:maxLength="3" />
-                            <Button
-                                android:id="@+id/btn_zram_resize"
-                                android:layout_width="50dp"
-                                android:text="调整" />
-                        </TableRow>
-                        <TextView
-                            android:layout_marginBottom="6dp"
-                            android:text="* Swappiness设置ZRAM和SWAP共用！"
-                            android:textSize="11dp" />
-                        <TextView
-                            android:layout_marginBottom="6dp"
-                            android:text="* ZRAM大小推荐为RAM大小的10-25%，过多使用压缩内存会导致设备卡顿耗电！"
-                            android:textSize="11dp" />
-                        <TextView
-                            android:layout_marginBottom="6dp"
-                            android:text="* 推荐ZRAM和SWAP的大小比率设置为1：3"
-                            android:textSize="11dp" />
-                        <TextView
-                            android:layout_marginBottom="6dp"
-                            android:text="SWAP、ZRAM状态："
+                        <Button
+                            android:id="@+id/btn_zram_resize"
+                            android:layout_width="60dp"
+                            android:text="调整" />
+                    </TableRow>
+
+
+                    <TextView
+                        android:textColor="@color/colorPrimary"
+                        android:layout_marginBottom="6dp"
+                        android:text="说明：ZRAM即内存压缩技术，通过压缩RAM中的数据减少其空间占用。对性能影响小，但后台能力提升不大。"
+                        android:textSize="11dp" />
+                </TableLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp">
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:showDividers="beginning"
+                    android:stretchColumns="0">
+
+                    <TextView android:textColor="@color/colorAccent" android:text="Swappiness" android:layout_marginBottom="20dp"/>
+
+                    <TableRow
+                        android:focusable="true"
+                        android:focusableInTouchMode="true">
+                        <SeekBar
+                            android:id="@+id/txt_swap_swappiness"
+                            android:layout_width="match_parent"
+                            android:layout_height="30dp" />
+                        <TextView android:id="@+id/txt_zramstus_swappiness"
+                            android:text="100"
+                            android:layout_width="60dp"
+                            android:layout_gravity="center_vertical" />
+                    </TableRow>
+                    <TextView
+                        android:textColor="@color/colorPrimary"
+                        android:layout_marginBottom="6dp"
+                        android:text="说明：Swappiness决定ZRAM/SWAP使用积极程度，0表示尽量不用，100表示尽量使用"
+                        android:textSize="11dp" />
+
+                </TableLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp">
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:showDividers="beginning"
+                    android:stretchColumns="0">
+                        <TextView android:textColor="@color/colorAccent" android:text="Swaps" android:layout_marginBottom="20dp"/>
+                        <TextView android:id="@+id/swap_swappiness_display"
+                            android:layout_marginBottom="20dp"
+                            android:text="Swappiness"
                             android:textSize="11dp" />
                         <ListView
                             android:id="@+id/list_swaps2"
+                            android:layout_height="100dp"
                             android:layout_marginBottom="12dp"
-                            android:textSize="11dp"></ListView>
+                            android:textSize="11dp"
+                            android:layout_width="match_parent"></ListView>
+                </TableLayout>
+            </android.support.v7.widget.CardView>
 
-                        <TextView android:id="@+id/txt_zramstus_swappiness" />
-                    </TableLayout>
-                </FrameLayout>
-            </FrameLayout>
-        </LinearLayout>
-    </TabHost>
-</LinearLayout>
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp">
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:showDividers="beginning"
+                    android:stretchColumns="0">
+                    <TextView android:textColor="@color/colorAccent" android:text="Memory Info" android:layout_marginBottom="20dp"/>
+                    <TableRow
+                        android:focusable="true"
+                        android:focusableInTouchMode="true">
+                        <TextView
+                            android:id="@+id/txt_mem"
+                            android:text="100"
+                            android:layout_width="60dp"
+                            android:layout_gravity="center_vertical" />
+                    </TableRow>
+                </TableLayout>
+            </android.support.v7.widget.CardView>
+
+        </TableLayout>
+    </ScrollView>
+</FrameLayout>

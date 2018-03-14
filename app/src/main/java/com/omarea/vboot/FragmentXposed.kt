@@ -22,13 +22,16 @@ import android.widget.TextView
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.XposedCheck
 import com.omarea.ui.ProgressBarDialog
+import com.omarea.ui.SearchTextWatcher
 import com.omarea.ui.list_adapter2
+import kotlinx.android.synthetic.main.layout_config.*
 import kotlinx.android.synthetic.main.layout_xposed.*
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
+//TODO: 从最近任务隐藏的APP不会被选中修复
 
 class FragmentXposed : Fragment() {
     private lateinit var processBarDialog: ProgressBarDialog
@@ -47,6 +50,7 @@ class FragmentXposed : Fragment() {
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         processBarDialog = ProgressBarDialog(this.context)
         dpi_spf = context.getSharedPreferences(SpfConfig.XPOSED_DPI_SPF, MODE_WORLD_READABLE)
+        rencent_spf = context.getSharedPreferences(SpfConfig.XPOSED_HIDETASK_SPF, MODE_WORLD_READABLE)
         val w = context.resources.displayMetrics.widthPixels.toFloat()
         val h = context.resources.displayMetrics.heightPixels.toFloat()
         val pixels = if (w > h) h else w
@@ -105,58 +109,67 @@ class FragmentXposed : Fragment() {
                 val layoutInflater = LayoutInflater.from(context)
                 val edit = layoutInflater.inflate(R.layout.dpi_input_layout, null)
                 val input = (edit.findViewById(R.id.dpi_input)) as EditText
+                val hide_in_recent = (edit.findViewById(R.id.hide_in_recent)) as CheckBox
                 val packageName = list.getItem(position).get("packageName").toString()
-                input.setText(list.getItem(position).get("enabled_state").toString())
+                val dpi = dpi_spf.getInt(packageName, 0)
+                input.setText(if(dpi > 0) "" + dpi else "")
+                hide_in_recent.isChecked = rencent_spf.getBoolean(packageName, false)
 
                 AlertDialog.Builder(context)
-                        .setTitle("请输入DPI")
+                        .setTitle("应用配置")
                         .setNeutralButton("清除设置", { _, _ ->
                             list.states[position] = false
                             checkBox.isChecked = false
                             dpi_spf.edit().remove(packageName).commit()
+                            rencent_spf.edit().remove(packageName).commit()
                             list.getItem(position).put("enabled_state", "")
                             textView.setText("")
                         })
                         .setNegativeButton("确定", { _, _ ->
                             val text = input.text.toString()
-                            if (text.isEmpty()) {
+                            if ((text.isEmpty() || text.toInt() < 72) && hide_in_recent.isChecked == rencent_spf.getBoolean(packageName, false)) {
                                 return@setNegativeButton
                             }
-                            list.getItem(position).put("enabled_state", text)
-                            textView.setText(text)
-                            dpi_spf.edit().putInt(packageName, text.toInt()).commit()
+                            if (!text.isEmpty()) {
+                                list.getItem(position).put("enabled_state", text)
+                                textView.setText(text)
+                                dpi_spf.edit().putInt(packageName, text.toInt()).commit()
+                            }
+                            rencent_spf.edit().putBoolean(packageName, hide_in_recent.isChecked).commit()
                             checkBox.isChecked = true
                             list.states[position] = true
                         })
-                        .setView(edit).create().show()
+                        .setView(edit)
+                        .create()
+                        .show()
             }
         }
         xposed_apps_dpifix.setOnItemClickListener(config_powersavelistClick)
-        xposed_config_search.setOnEditorActionListener({ tv, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
-                val text = tv.text.toString()
 
-                val list = installedList.filter { item ->
-                    if (item.get("packageName").toString().contains(text) || item.get("name").toString().contains(text)) true else false
-                }
 
-                xposed_apps_dpifix.setAdapter(list_adapter2(context, java.util.ArrayList<HashMap<String, Any>>(list)))
+        xposed_config_search.addTextChangedListener(SearchTextWatcher(Runnable {
+            val text = xposed_config_search.text.toString()
+
+            val list = installedList.filter { item ->
+                if (item.get("packageName").toString().contains(text) || item.get("name").toString().contains(text)) true else false
             }
-            false
-        })
+
+            xposed_apps_dpifix.setAdapter(list_adapter2(context, java.util.ArrayList<HashMap<String, Any>>(list)))
+        }))
     }
 
     internal val myHandler: Handler = Handler()
 
-    private var def = 480
+    private var def = 0
     private lateinit var installedList: ArrayList<HashMap<String, Any>>
     private lateinit var spf: SharedPreferences
     private lateinit var dpi_spf: SharedPreferences
+    private lateinit var rencent_spf: SharedPreferences
     override fun onResume() {
         super.onResume()
         xposed_config_hight_fps.isChecked = spf.getBoolean("xposed_hight_fps", false)
         xposed_config_scroll.isChecked = spf.getBoolean("xposed_config_scroll", false)
-        xposed_config_dpi_fix.isChecked = spf.getBoolean("xposed_dpi_fix", false)
+        xposed_config_dpi_fix.isChecked = spf.getBoolean("xposed_dpi_fix", true)
         xposed_config_cm_su.isChecked = spf.getBoolean("xposed_hide_su", false)
         xposed_config_webview_debug.isChecked = spf.getBoolean("xposed_webview_debug", false)
 
@@ -165,10 +178,11 @@ class FragmentXposed : Fragment() {
             installedList = loadList()
 
             val status = dpi_spf.all
-            for (key in status.keys) {
-                installedList.indices
-                        .filter { installedList[it].get("packageName").toString() == key }
-                        .forEach { installedList[it]["enabled_state"] = dpi_spf.getInt(key, def) }
+            for (app in installedList) {
+                val packageName = app.get("packageName").toString()
+                if (dpi_spf.contains(packageName) || rencent_spf.contains(packageName)) {
+                    app["enabled_state"] = "" + dpi_spf.getInt(packageName, def) + "," + (if (rencent_spf.getBoolean(packageName, false)) 1 else 0)
+                }
             }
 
             myHandler.post {
@@ -236,10 +250,6 @@ class FragmentXposed : Fragment() {
             list.add(item)
         }
         return list
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     companion object {

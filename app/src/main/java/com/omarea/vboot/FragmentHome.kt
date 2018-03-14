@@ -66,11 +66,20 @@ class FragmentHome : Fragment() {
             _,checked ->
             globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, checked).commit()
         })
+        home_app_nightmode.setOnCheckedChangeListener({
+            _,checked ->
+            if (globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false) == checked) {
+                return@setOnCheckedChangeListener
+            }
+            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, checked).commit()
+            Snackbar.make(view!!, "此设置将在下次启动微工具箱时生效！", Snackbar.LENGTH_SHORT).show()
+        })
     }
 
     override fun onResume() {
         super.onResume()
 
+        home_app_nightmode.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false)
         home_hide_in_recents.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, false)
         setModeState()
         sdfree.text = "共享存储：" + Files.GetDirFreeSizeMB(Environment.getExternalStorageDirectory().absolutePath) + " MB"
@@ -92,7 +101,7 @@ class FragmentHome : Fragment() {
     }
 
     private fun installConfig(after: String) {
-        if (File("${Consts.POWER_CFG_PATH}").exists()) {
+        if (File(Consts.POWER_CFG_PATH).exists()) {
             SuDo(context).execCmdSync(after)
             //SuDo(context).execCmdSync(Consts.ExecuteConfig + "\n" + after)
         } else {

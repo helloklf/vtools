@@ -1,10 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:layout_height="match_parent" android:paddingLeft="26dp" android:paddingRight="26dp">
+    <TextView
+        android:layout_marginLeft="4dp"
+        android:layout_marginTop="20dp"
+        android:text="DPI"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
     <EditText
+        android:layout_marginBottom="20dp"
         android:id="@+id/dpi_input"
         android:inputType="number"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" android:maxLength="3" />
+    <CheckBox
+        android:id="@+id/hide_in_recent"
+        android:text="从最近任务列表隐藏"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 </LinearLayout>

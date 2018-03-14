@@ -18,7 +18,7 @@ class ChangeZRAM(private var context: Context, private var swapfilePath:String =
                             "swapon /dev/block/zram0 &> /dev/null\n" +
                             "echo 100 > /proc/sys/vm/swappiness\n")
         }*/
-    fun createSwapFile(size: String) {
+    fun createSwapFile(size: Int) {
         val sb = StringBuilder()
         sb.append("swapoff $swapfilePath >/dev/null 2>&1;\n")
         sb.append("dd if=/dev/zero of=$swapfilePath bs=1048576 count=$size;\n")

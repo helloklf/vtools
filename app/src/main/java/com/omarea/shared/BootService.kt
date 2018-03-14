@@ -53,11 +53,15 @@ class BootService : Service() {
 
         if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false) || swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) {
             if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) {
-                sb.append("if [ `cat /sys/block/zram0/disksize` != '" + swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0) + "000000' ] ; then ")
+                var sizeVal = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0)
+                sb.append("if [ `cat /sys/block/zram0/disksize` != '" + sizeVal + "000000' ] ; then ")
                 sb.append("swapoff /dev/block/zram0 >/dev/null 2>&1;")
                 sb.append("echo 1 > /sys/block/zram0/reset;")
-                sb.append("echo " + swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0) + "000000 > /sys/block/zram0/disksize;")
-                sb.append("fi;\n")
+                sb.append("echo " + sizeVal + "000000 > /sys/block/zram0/disksize;")
+                sb.append("mkswap /dev/block/zram0 >/dev/null 2>&1;")
+                sb.append("fi;")
+                sb.append("\n")
+                sb.append("swapon /dev/block/zram0 >/dev/null 2>&1;")
             }
             sb.append("mkswap /dev/block/zram0 >/dev/null 2>&1;")
             sb.append("swapon /dev/block/zram0 >/dev/null 2>&1;")

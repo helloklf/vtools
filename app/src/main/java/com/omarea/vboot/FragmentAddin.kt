@@ -164,8 +164,8 @@ class FragmentAddin : Fragment() {
         listItem.add(createItem("build.prop参数还原", "使用了DPI修改和机型伪装的小伙伴，可以点这个还原到上次修改前的状态"))
         listItem.add(createItem("开启网络ADB", "开启网络adb前，请先连接wifi。开启后通过同一局域网下的电脑，使用adb connect ${getIP()}:5555 命令连接"))
         listItem.add(createItem("查看保存的WIFI", "查看已保存的WIFI信息，通过读取/data/misc/wifi/wpa_supplicant.conf 或 /data/misc/wifi/WifiConfigStore.xml（Android Oreo+）"))
-        listItem.add(createItem("执行Dex编译", "需要Android N+，使用cmd package compile命令，手动触发dex2oat执行代码编译优化。首次执行此操作，可能需要几十分钟，并增加应用空间占用30%左右，期间手机可能会卡顿，会消耗大量电量！！！"))
-        listItem.add(createItem("调整ART参数", "需要Android N+，调整应用安装策略为“speed”，启动策略为“verify-none”。\n会使应用安装时间变长占用空间变大，但运行更加流畅，重启后生效。"))
+        listItem.add(createItem("执行Dex编译", "适用于Android N+，对已安装应用进行dex2oat编译从而提高运行性能。首次执行此操作，可能需要几十分钟，并增加应用空间占用30%左右，期间手机可能会卡顿，会消耗大量电量！！！"))
+        listItem.add(createItem("调整ART参数", "适用于Android N+，调整应用安装策略为“speed”，启动策略为“verify-none”。\n会使应用安装时间变长占用空间变大，但运行更加流畅，重启后生效。"))
         listItem.add(createItem("删除使用电池记录", "通过删除/data/system/batterystats-checkin.bin、/data/system/batterystats-daily.xml、/data/system/batterystats.bin 来清空系统的电池使用记录，会重启手机！"))
 
 

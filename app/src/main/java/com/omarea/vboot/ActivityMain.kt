@@ -43,17 +43,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun setExcludeFromRecents(exclude:Boolean? = null) {
         try {
-            if (globalSPF == null) {
-                globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-                val listener = SharedPreferences.OnSharedPreferenceChangeListener {
-                    sharedPreferences, key ->
-                    if (key == SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT) {
-                        setExcludeFromRecents(sharedPreferences.getBoolean(key, false))
-                    }
-                }
-                globalSPF!!.registerOnSharedPreferenceChangeListener(listener)
-            }
-
             val service = this.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
             for (task in service.appTasks) {
                 if (task.taskInfo.id == this.taskId) {
@@ -67,6 +56,18 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (globalSPF == null) {
+            globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+            val listener = SharedPreferences.OnSharedPreferenceChangeListener {
+                sharedPreferences, key ->
+                if (key == SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT) {
+                    setExcludeFromRecents(sharedPreferences.getBoolean(key, false))
+                }
+            }
+            globalSPF!!.registerOnSharedPreferenceChangeListener(listener)
+        }
+        if (globalSPF!!.getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false))
+            this.setTheme(R.style.AppTheme_NoActionBarNight)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -219,7 +220,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_booster -> fragment = FragmentBooster.createPage()
             R.id.nav_applictions -> fragment = FragmentApplistions.createPage()
             R.id.nav_swap -> fragment = FragmentSwap.createPage(cmdshellTools)
-            R.id.nav_tasks -> fragment = FragmentTasks.Create()
             R.id.nav_battery -> fragment = FragmentBattery.createPage(cmdshellTools)
             R.id.nav_img -> fragment = FragmentImg.createPage(this, cmdshellTools)
             R.id.nav_core_control -> fragment = FragmentCpuControl.newInstance()
@@ -253,7 +253,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             menu.findItem(R.id.nav_booster).isEnabled = false
             menu.findItem(R.id.nav_applictions).isEnabled = false
             menu.findItem(R.id.nav_swap).isEnabled = false
-            menu.findItem(R.id.nav_tasks).isEnabled = false
+            menu.findItem(R.id.nav_core_control).isEnabled = false
             menu.findItem(R.id.nav_battery).isEnabled = false
             menu.findItem(R.id.nav_img).isEnabled = false
             menu.findItem(R.id.nav_profile).isEnabled = false

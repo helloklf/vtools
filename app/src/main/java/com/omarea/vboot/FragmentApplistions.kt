@@ -1,12 +1,11 @@
 package com.omarea.vboot
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +19,7 @@ import com.omarea.shared.Appinfo
 import com.omarea.shared.Consts
 import com.omarea.ui.AppListAdapter
 import com.omarea.ui.ProgressBarDialog
+import com.omarea.ui.SearchTextWatcher
 import com.omarea.units.AppListHelper2
 import com.omarea.vboot.dialogs.DialogAppOptions
 import com.omarea.vboot.dialogs.DialogSingleAppOptions
@@ -52,6 +52,7 @@ class FragmentApplistions : Fragment() {
                               savedInstanceState: Bundle?): View? =
             inflater!!.inflate(R.layout.layout_applictions, container, false)
 
+    @SuppressLint("InflateParams")
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         processBarDialog = ProgressBarDialog(this.context)
 
@@ -69,19 +70,22 @@ class FragmentApplistions : Fragment() {
 
         apps_userlist.setOnItemLongClickListener({
             parent, _, position, id ->
-            DialogSingleAppOptions(context, apps_userlist.adapter.getItem(position) as Appinfo, myHandler).showUserAppOptions()
+            val adapter = (parent.adapter as HeaderViewListAdapter).wrappedAdapter
+            DialogSingleAppOptions(context, adapter.getItem(position - 1) as Appinfo, myHandler).showUserAppOptions()
             true
         })
 
         apps_systemlist.setOnItemLongClickListener({
             parent, _, position, id ->
-            DialogSingleAppOptions(context, apps_userlist.adapter.getItem(position) as Appinfo, myHandler).showSystemAppOptions()
+            val adapter = (parent.adapter as HeaderViewListAdapter).wrappedAdapter
+            DialogSingleAppOptions(context, adapter.getItem(position - 1) as Appinfo, myHandler).showSystemAppOptions()
             true
         })
 
         apps_backupedlist.setOnItemLongClickListener({
             parent, _, position, id ->
-            DialogSingleAppOptions(context, apps_userlist.adapter.getItem(position) as Appinfo, myHandler).showBackupAppOptions()
+            val adapter = (parent.adapter as HeaderViewListAdapter).wrappedAdapter
+            DialogSingleAppOptions(context, adapter.getItem(position - 1) as Appinfo, myHandler).showBackupAppOptions()
             true
         })
 
@@ -127,20 +131,6 @@ class FragmentApplistions : Fragment() {
         apps_search_box.addTextChangedListener(SearchTextWatcher(Runnable {
             searchApp()
         }))
-    }
-
-    private class SearchTextWatcher(private var onChange: Runnable) : TextWatcher {
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            onChange.run()
-        }
-
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
-
-        override fun afterTextChanged(s: Editable?) {
-            //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
     }
 
     private fun searchApp() {

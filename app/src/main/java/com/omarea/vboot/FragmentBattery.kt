@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.SeekBar
 import android.widget.TextView
 import com.omarea.shared.Consts
 import com.omarea.shared.SpfConfig
@@ -46,8 +47,10 @@ class FragmentBattery : Fragment() {
 
         settings_qc.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)
         settings_bp.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_BP, false)
-        settings_bp_level.setText(spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85).toString())
-        settings_qc_limit.setText(spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000).toString())
+        settings_bp_level.setProgress(spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85))
+        accessbility_bp_level_desc.setText("充电限制电量：" + spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85) + "%")
+        settings_qc_limit.setProgress(spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000))
+        settings_qc_limit_desc.setText("充电上限电流：" + spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000) + "mA")
 
 
         if (broadcast == null) {
@@ -153,33 +156,18 @@ class FragmentBattery : Fragment() {
                 Snackbar.make(this.view, "OK！如果你要手机重启后自动开启本功能，请允许微工具箱开机自启！", Snackbar.LENGTH_SHORT).show()
             }
         }
-        settings_bp_level.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
-                val level: Int
-                try {
-                    level = settings_bp_level.text.toString().toInt()
-                    spf.edit().putInt(SpfConfig.CHARGE_SPF_BP_LEVEL, level).commit()
-                    Snackbar.make(this.view, "设置已保存，稍后生效。当前限制等级：" + settings_bp_level.text, Snackbar.LENGTH_SHORT).show()
-                    startBatteryService()
-                } catch (e: Exception) {
-                }
-            }
-            false
-        }
-        settings_qc_limit.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
-                val level: Int
-                try {
-                    level = settings_qc_limit.text.toString().toInt()
-                    spf.edit().putInt(SpfConfig.CHARGE_SPF_QC_LIMIT, level).commit()
-                    Snackbar.make(this.view, "设置已保存。当前限制速度：" + level + "mA", Snackbar.LENGTH_SHORT).show()
-                    startBatteryService()
-                    batteryUnits.setChargeInputLimit(level);
-                } catch (e: Exception) {
-                }
-            }
-            false
-        }
+
+        settings_bp_level.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
+            startBatteryService()
+            accessbility_bp_level_desc.setText("充电限制电量：" + spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85) + "%")
+        }, spf, SpfConfig.CHARGE_SPF_BP_LEVEL))
+        settings_qc_limit.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
+            val level = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000)
+            startBatteryService()
+            batteryUnits.setChargeInputLimit(level);
+            settings_qc_limit_desc.setText("充电上限电流：" + level + "mA")
+        }, spf, SpfConfig.CHARGE_SPF_QC_LIMIT))
+
 
         if (!batteryUnits.qcSettingSuupport()) {
             settings_qc.isEnabled = false
@@ -191,6 +179,23 @@ class FragmentBattery : Fragment() {
             settings_bp.isEnabled = false
             spf.edit().putBoolean(SpfConfig.CHARGE_SPF_BP, false).commit()
             settings_bp_level.isEnabled = false
+        }
+    }
+
+    class  OnSeekBarChangeListener(private var next:Runnable, private var spf: SharedPreferences, private var spfProp:String) : SeekBar.OnSeekBarChangeListener {
+        override fun onStopTrackingTouch(seekBar: SeekBar?) {
+        }
+
+        override fun onStartTrackingTouch(seekBar: SeekBar?) {
+        }
+
+        @SuppressLint("ApplySharedPref")
+        override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+            if (spf.getInt(spfProp, Int.MIN_VALUE) == progress) {
+                return
+            }
+            spf.edit().putInt(spfProp, progress).commit()
+            next.run()
         }
     }
 

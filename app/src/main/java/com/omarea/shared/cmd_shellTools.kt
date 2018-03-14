@@ -82,7 +82,7 @@ class cmd_shellTools(var context: Context?, var progressBar: ProgressBar?) {
                 process = Runtime.getRuntime().exec("su")
                 val out = DataOutputStream(process!!.outputStream)
 
-                out.writeBytes("busybox --install /system/xbin\n")
+                out.writeBytes("busybox --install /system/xbin;\n")
                 //out.writeBytes("busybox --install /system/bin\n");
                 val cmd = "if [ ! -f \"/system/xbin/zip\" ]; then cp " + AppShared.baseUrl + "zip /system/xbin/zip; chmod 0755 /system/xbin/zip ;fi;"
 

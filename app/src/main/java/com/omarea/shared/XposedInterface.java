@@ -1,5 +1,7 @@
 package com.omarea.shared;
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.AndroidAppHelper;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -7,6 +9,7 @@ import android.content.res.Resources;
 import android.content.res.XModuleResources;
 import android.content.res.XResources;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Display;
 
@@ -15,6 +18,8 @@ import com.omarea.xposed.DeviceInfo;
 import com.omarea.xposed.SystemUI;
 import com.omarea.xposed.ViewConfig;
 import com.omarea.xposed.WebView;
+
+import java.util.List;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
@@ -33,12 +38,14 @@ import static de.robv.android.xposed.XposedHelpers.setIntField;
 public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygoteInit {
     private static XSharedPreferences prefs;
     private static XSharedPreferences prefs2;
+    private static XSharedPreferences prefs3;
     private boolean useDefaultConfig = false;
 
     @Override
     public void initZygote(IXposedHookZygoteInit.StartupParam startupParam) throws Throwable {
         prefs = new XSharedPreferences("com.omarea.vboot", "xposed");
         prefs2 = new XSharedPreferences("com.omarea.vboot", SpfConfig.XPOSED_DPI_SPF);
+        prefs3 = new XSharedPreferences("com.omarea.vboot", SpfConfig.XPOSED_HIDETASK_SPF);
 
         //prefs.reload();
         //强制绕开权限限制读取配置 因为SharedPreferences在Android N中不能设置为MODE_WORLD_READABLE
@@ -180,8 +187,28 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
         if (useDefaultConfig || prefs.getBoolean("xposed_webview_debug", false)) {
             new WebView().allowDebug();
         }
-        if ((useDefaultConfig || prefs.getBoolean("xposed_dpi_fix", false)) && (prefs2.contains(packageName))) {
-            XposedHelpers.findAndHookMethod("android.app.Application", loadPackageParam.classLoader, "attach", Context.class, new XC_MethodHook() {
+        if ((useDefaultConfig || prefs.getBoolean("xposed_dpi_fix", true))) {
+            if (prefs3.contains(packageName)) {
+                XposedHelpers.findAndHookMethod("android.app.Activity", loadPackageParam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        super.afterHookedMethod(param);
+                        Activity activity = (Activity)param.thisObject;
+                        if (activity != null) {
+                            ActivityManager service = (ActivityManager)(activity.getSystemService(Context.ACTIVITY_SERVICE));
+                            if (service == null)
+                                return;
+                            List<ActivityManager.AppTask> tasks = service.getAppTasks();
+                            for (ActivityManager.AppTask task : tasks) {
+                                if (task.getTaskInfo().id == activity.getTaskId()) {
+                                    task.setExcludeFromRecents(true);
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            if (prefs2.contains(packageName)) {XposedHelpers.findAndHookMethod("android.app.Application", loadPackageParam.classLoader, "attach", Context.class, new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     super.beforeHookedMethod(param);
@@ -193,40 +220,41 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
                 }
             });
 
-            XposedHelpers.findAndHookMethod("android.util.DisplayMetrics", loadPackageParam.classLoader, "setTo", DisplayMetrics.class, new XC_MethodHook() {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    super.beforeHookedMethod(param);
-                    String packageName = AndroidAppHelper.currentPackageName();
-                    if ((useDefaultConfig || prefs.getBoolean("xposed_dpi_fix", false)) && prefs2.contains(packageName)) {
-                        DisplayMetrics displayMetrics = (DisplayMetrics) (param.args[0]);
-                        if (displayMetrics != null) {
-                            int dpi = prefs2.getInt(packageName, defaultDpi);
-                            displayMetrics.density = dpi / 160.0f;
-                            displayMetrics.densityDpi = dpi;
-                            displayMetrics.scaledDensity = dpi / 160.0f;
-                            XposedBridge.log("setTo======" + displayMetrics.densityDpi);
+                XposedHelpers.findAndHookMethod("android.util.DisplayMetrics", loadPackageParam.classLoader, "setTo", DisplayMetrics.class, new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        super.beforeHookedMethod(param);
+                        String packageName = AndroidAppHelper.currentPackageName();
+                        if ((useDefaultConfig || prefs.getBoolean("xposed_dpi_fix", true)) && prefs2.contains(packageName)) {
+                            DisplayMetrics displayMetrics = (DisplayMetrics) (param.args[0]);
+                            if (displayMetrics != null) {
+                                int dpi = prefs2.getInt(packageName, defaultDpi);
+                                displayMetrics.density = dpi / 160.0f;
+                                displayMetrics.densityDpi = dpi;
+                                displayMetrics.scaledDensity = dpi / 160.0f;
+                                XposedBridge.log("setTo======" + displayMetrics.densityDpi);
+                            }
                         }
                     }
-                }
-            });
-            XposedHelpers.findAndHookMethod("android.util.DisplayMetrics", loadPackageParam.classLoader, "getRealMetrics", DisplayMetrics.class, new XC_MethodHook() {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    super.beforeHookedMethod(param);
-                    String packageName = AndroidAppHelper.currentPackageName();
-                    if ((useDefaultConfig || prefs.getBoolean("xposed_dpi_fix", false)) && prefs2.contains(packageName)) {
-                        DisplayMetrics displayMetrics = (DisplayMetrics) (param.args[0]);
-                        if (displayMetrics != null) {
-                            int dpi = prefs2.getInt(packageName, defaultDpi);
-                            displayMetrics.density = dpi / 160.0f;
-                            displayMetrics.densityDpi = dpi;
-                            displayMetrics.scaledDensity = dpi / 160.0f;
-                            XposedBridge.log("getRealMetrics======" + displayMetrics.densityDpi);
+                });
+                XposedHelpers.findAndHookMethod("android.util.DisplayMetrics", loadPackageParam.classLoader, "getRealMetrics", DisplayMetrics.class, new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        super.beforeHookedMethod(param);
+                        String packageName = AndroidAppHelper.currentPackageName();
+                        if ((useDefaultConfig || prefs.getBoolean("xposed_dpi_fix", true)) && prefs2.contains(packageName)) {
+                            DisplayMetrics displayMetrics = (DisplayMetrics) (param.args[0]);
+                            if (displayMetrics != null) {
+                                int dpi = prefs2.getInt(packageName, defaultDpi);
+                                displayMetrics.density = dpi / 160.0f;
+                                displayMetrics.densityDpi = dpi;
+                                displayMetrics.scaledDensity = dpi / 160.0f;
+                                XposedBridge.log("getRealMetrics======" + displayMetrics.densityDpi);
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
         }
     }
 }
