@@ -273,7 +273,7 @@ open class DialogAppOptions(protected open var context: Context, protected var a
                 sb.append("if [ -d /data/data/$packageName ];")
                 sb.append(" then ")
                 sb.append("echo '[restore $packageName]';")
-                sb.append("pm clear $packageName;")
+                //sb.append("pm clear $packageName;")
                 sb.append("sync;")
                 sb.append("cd /data/data/$packageName;")
                 sb.append("busybox tar -xzpf $backupPath$packageName.tar.gz;")

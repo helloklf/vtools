@@ -23,6 +23,24 @@ public class BatteryUnit {
         return new File("/sys/class/power_supply/battery/constant_charge_current_max").exists();
     }
 
+    public String getqcLimit () {
+        String limit = KernelProrp.getProp("/sys/class/power_supply/battery/constant_charge_current_max");
+        if (limit.length() > 3) {
+            limit = limit.substring(0, limit.length() - 3) + "mA";
+        } else if (limit.length() > 0) {
+            try {
+              if (Integer.parseInt(limit) == 0) {
+                  limit = "0";
+              }
+            } catch (Exception ex) {
+
+            }
+        } else {
+            return "?mA";
+        }
+        return limit;
+    }
+
     //快充是否支持电池保护
     public boolean bpSetting() {
         return new File("/sys/class/power_supply/battery/battery_charging_enabled").exists() || new File("/sys/class/power_supply/battery/input_suspend").exists();

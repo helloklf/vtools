@@ -51,6 +51,7 @@ class DialogAddinModifyDPI(var context: Context) {
             }
             if (!qc && dpi >= 96) {
                 cmd.append(Consts.MountSystemRW)
+                cmd.append("wm density reset\n")
                 cmd.append("sed '/ro.sf.lcd_density=/'d /system/build.prop > /data/build.prop\n")
                 cmd.append("sed '\$aro.sf.lcd_density=$dpi' /data/build.prop > /data/build2.prop\n")
                 cmd.append("cp /system/build.prop /system/build.prop.dpi_bak\n")

@@ -6,21 +6,6 @@ action=$1
 #	sh /system/etc/init.qcom.post_boot.sh
 #fi
 
-if [ "$action" = "screenoff" ]; then
-    echo "powersave" > /sys/class/kgsl/kgsl-3d0/devfreq/governor
-	echo "powersave" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-    echo 1 > /sys/devices/system/cpu/cpu0/online
-    echo 1 > /sys/devices/system/cpu/cpu1/online
-    echo 1 > /sys/devices/system/cpu/cpu2/online
-    echo 1 > /sys/devices/system/cpu/cpu3/online
-    echo 0 > /sys/devices/system/cpu/cpu4/online
-    echo 0 > /sys/devices/system/cpu/cpu5/online
-    echo 0 > /sys/devices/system/cpu/cpu6/online
-    echo 0 > /sys/devices/system/cpu/cpu7/online
-
-	exit 0
-fi
-
 #powersave 1.6Ghz
 if [ "$action" = "powersave" ]; then
 	echo "0" > /sys/module/cpu_boost/parameters/input_boost_freq

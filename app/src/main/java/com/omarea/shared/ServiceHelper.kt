@@ -48,7 +48,7 @@ class ServiceHelper(private var context: Context) {
     private fun onScreenOff () {
         screenOn = false
 
-        toggleConfig(PowerModes.LockScreen)
+        //if (dyamicCore) toggleConfig(PowerModes.LockScreen)
 
         if (debugMode)
             showMsg("屏幕关闭！")
@@ -94,8 +94,7 @@ class ServiceHelper(private var context: Context) {
         lastScreenOnOff = System.currentTimeMillis()
         if (screenOn == true) return
 
-        if (this.lastModePackage != null)
-            autoToggleMode(this.lastModePackage)
+        //if (dyamicCore && this.lastModePackage != null) autoToggleMode(this.lastModePackage)
 
         screenOn = true
         if (autoBooster && screenOn == true) {

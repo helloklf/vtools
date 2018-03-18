@@ -16,6 +16,7 @@ import android.widget.TextView
 import com.omarea.shared.Consts
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.cmd_shellTools
+import com.omarea.shell.SuDo
 import com.omarea.shell.units.BatteryUnit
 import kotlinx.android.synthetic.main.layout_battery.*
 import java.util.*
@@ -50,7 +51,7 @@ class FragmentBattery : Fragment() {
         settings_bp_level.setProgress(spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85))
         accessbility_bp_level_desc.setText("充电限制电量：" + spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85) + "%")
         settings_qc_limit.setProgress(spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000))
-        settings_qc_limit_desc.setText("充电上限电流：" + spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000) + "mA")
+        settings_qc_limit_desc.setText("设定上限电流：" + spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000) + "mA")
 
 
         if (broadcast == null) {
@@ -84,6 +85,9 @@ class FragmentBattery : Fragment() {
         timer!!.schedule(object : TimerTask() {
             override fun run() {
                 myHandler.post {
+                    if (qcSettingSuupport) {
+                        settings_qc_limit_current.text = "实际上限电流：" + batteryUnits.getqcLimit()
+                    }
                     battrystatus.text = "电池信息：" +
                             batteryMAH +
                             temp + "°C   " +
@@ -129,11 +133,13 @@ class FragmentBattery : Fragment() {
 
     private var broadcast: BroadcastReceiver? = null
     lateinit internal var cmdshellTools: cmd_shellTools
+    private var qcSettingSuupport = false
 
     @SuppressLint("ApplySharedPref")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         spf = context.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
+        qcSettingSuupport = batteryUnits.qcSettingSuupport()
 
         settings_qc.setOnClickListener {
             spf.edit().putBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, settings_qc.isChecked).commit()
@@ -169,10 +175,11 @@ class FragmentBattery : Fragment() {
         }, spf, SpfConfig.CHARGE_SPF_QC_LIMIT))
 
 
-        if (!batteryUnits.qcSettingSuupport()) {
+        if (!qcSettingSuupport) {
             settings_qc.isEnabled = false
             spf.edit().putBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false).commit()
             settings_qc_limit.isEnabled = false
+            settings_qc_limit_current.visibility = View.GONE
         }
 
         if (!batteryUnits.bpSetting()) {

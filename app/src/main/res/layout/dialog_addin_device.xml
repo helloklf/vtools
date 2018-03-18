@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#f8f8f8"
     android:paddingBottom="10dp"
     android:paddingLeft="26dp"
     android:paddingRight="26dp">
@@ -12,7 +11,7 @@
         android:layout_marginTop="10dp"
         android:textSize="12dp"
         android:textColor="@color/colorPrimary"
-        android:text="请不要输入[英文 数字 空格]以外的内容！！！"
+        android:text="@string/dialog_addin_device_warn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <EditText
@@ -53,7 +52,7 @@
         android:inputType="text" />
 
     <TextView
-        android:text="预设模板"
+        android:text="@string/dialog_addin_device_inner"
         android:textColor="#888"
         android:textSize="12dp"
         android:layout_marginTop="20dp"

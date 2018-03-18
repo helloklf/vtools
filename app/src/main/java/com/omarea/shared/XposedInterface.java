@@ -188,7 +188,7 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
             new WebView().allowDebug();
         }
         if ((useDefaultConfig || prefs.getBoolean("xposed_dpi_fix", true))) {
-            if (prefs3.contains(packageName)) {
+            if (prefs3.getBoolean(packageName, false)) {
                 XposedHelpers.findAndHookMethod("android.app.Activity", loadPackageParam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -208,17 +208,18 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
                     }
                 });
             }
-            if (prefs2.contains(packageName)) {XposedHelpers.findAndHookMethod("android.app.Application", loadPackageParam.classLoader, "attach", Context.class, new XC_MethodHook() {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                    super.beforeHookedMethod(param);
+            if (prefs2.getInt(packageName, 0) > 0) {
+                XposedHelpers.findAndHookMethod("android.app.Application", loadPackageParam.classLoader, "attach", Context.class, new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        super.beforeHookedMethod(param);
 
-                    Context context = (Context) param.args[0];
-                    context.getResources().getDisplayMetrics().density = prefs2.getInt(packageName, defaultDpi) / 160.0f;
-                    context.getResources().getDisplayMetrics().densityDpi = prefs2.getInt(packageName, defaultDpi);
-                    context.getResources().getDisplayMetrics().scaledDensity = prefs2.getInt(packageName, defaultDpi) / 160.0f;
-                }
-            });
+                        Context context = (Context) param.args[0];
+                        context.getResources().getDisplayMetrics().density = prefs2.getInt(packageName, defaultDpi) / 160.0f;
+                        context.getResources().getDisplayMetrics().densityDpi = prefs2.getInt(packageName, defaultDpi);
+                        context.getResources().getDisplayMetrics().scaledDensity = prefs2.getInt(packageName, defaultDpi) / 160.0f;
+                    }
+                });
 
                 XposedHelpers.findAndHookMethod("android.util.DisplayMetrics", loadPackageParam.classLoader, "setTo", DisplayMetrics.class, new XC_MethodHook() {
                     @Override
@@ -232,7 +233,7 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
                                 displayMetrics.density = dpi / 160.0f;
                                 displayMetrics.densityDpi = dpi;
                                 displayMetrics.scaledDensity = dpi / 160.0f;
-                                XposedBridge.log("setTo======" + displayMetrics.densityDpi);
+                                //XposedBridge.log("setTo======" + displayMetrics.densityDpi);
                             }
                         }
                     }
@@ -249,7 +250,7 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
                                 displayMetrics.density = dpi / 160.0f;
                                 displayMetrics.densityDpi = dpi;
                                 displayMetrics.scaledDensity = dpi / 160.0f;
-                                XposedBridge.log("getRealMetrics======" + displayMetrics.densityDpi);
+                                //XposedBridge.log("getRealMetrics======" + displayMetrics.densityDpi);
                             }
                         }
                     }

@@ -42,6 +42,7 @@ class FragmentImg : Fragment() {
         listItem.add(createItem(context.getString(R.string.restore_action_title_boot), context.getString(R.string.restore_action_desc_boot)))
         listItem.add(createItem(context.getString(R.string.backup_action_title_rec), context.getString(R.string.backup_action_desc_rec)))
         listItem.add(createItem(context.getString(R.string.restore_action_title_rec), context.getString(R.string.restore_action_desc_rec)))
+        //listItem.add(createItem(context.getString(R.string.restore_action_title_rec), context.getString(R.string.restore_action_desc_rec)))
 
         val mSimpleAdapter = SimpleAdapter(
                 view!!.context, listItem,
@@ -147,6 +148,12 @@ class FragmentImg : Fragment() {
                     //intent.addCategory(Intent.CATEGORY_OPENABLE)
                     //startActivityForResult(intent, 1)
                     //thisview!!.setfileSelectType(FileSelectType.RecFlash)
+                }
+                4 -> {
+                    val transaction = thisview!!.supportFragmentManager.beginTransaction()
+                    transaction.replace(R.id.main_content, FragmentGhostClone.createPage(thisview!!))
+                    transaction.commit()
+                    thisview!!.title = "镜像克隆"
                 }
             }
         }
