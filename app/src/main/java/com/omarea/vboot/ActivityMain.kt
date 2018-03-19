@@ -108,7 +108,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun next() {
-
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
@@ -233,6 +232,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_feedback -> startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(application.getString(R.string.feedback_link))))
             R.id.nav_profile -> fragment = FragmentConfig.createPage(cmdshellTools)
             R.id.nav_additional -> fragment = FragmentAddin.createPage(this)
+            R.id.nav_reward -> fragment = FragmentReward.createPage()
             R.id.nav_xposed -> fragment = FragmentXposed.Create()
         }
 

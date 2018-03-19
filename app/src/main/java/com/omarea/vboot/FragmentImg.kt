@@ -149,12 +149,6 @@ class FragmentImg : Fragment() {
                     //startActivityForResult(intent, 1)
                     //thisview!!.setfileSelectType(FileSelectType.RecFlash)
                 }
-                4 -> {
-                    val transaction = thisview!!.supportFragmentManager.beginTransaction()
-                    transaction.replace(R.id.main_content, FragmentGhostClone.createPage(thisview!!))
-                    transaction.commit()
-                    thisview!!.title = "镜像克隆"
-                }
             }
         }
     }

@@ -1,7 +1,5 @@
 package com.omarea.xposed;
 
-import com.omarea.shared.XposedCheck;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -12,7 +10,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 public class ActiveCheck {
     public void isActive(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
-        XposedHelpers.findAndHookMethod("com.omarea.shared.XposedCheck", loadPackageParam.classLoader,"xposedIsRunning", new XC_MethodHook() {
+        XposedHelpers.findAndHookMethod("com.omarea.xposed.XposedCheck", loadPackageParam.classLoader,"xposedIsRunning", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);

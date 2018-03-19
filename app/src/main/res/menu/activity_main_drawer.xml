@@ -3,8 +3,8 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:checked="true"
             android:id="@+id/nav_home"
+            android:checked="true"
             android:icon="@drawable/ic_menu_home"
             android:title="@string/menu_home" />
         <item
@@ -48,19 +48,23 @@
             android:icon="@drawable/battery"
             android:title="@string/menu_battery" />
         <item
-            android:visible="false"
             android:id="@+id/nav_settings"
             android:icon="@drawable/ic_menu_config"
-            android:title="@string/menu_settings" />
+            android:title="@string/menu_settings"
+            android:visible="false" />
         <item
-            android:visible="false"
             android:id="@+id/nav_help"
             android:icon="@drawable/ic_menu_help"
-            android:title="@string/menu_help" />
+            android:title="@string/menu_help"
+            android:visible="false" />
     </group>
 
     <item android:title="@string/menu_menu_title">
         <menu>
+            <item
+                android:id="@+id/nav_reward"
+                android:icon="@drawable/ic_menu_reward"
+                android:title="@string/menu_reward" />
             <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"

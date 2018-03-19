@@ -1,4 +1,4 @@
-package com.omarea.shared;
+package com.omarea.xposed;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Display;
 
+import com.omarea.shared.SpfConfig;
 import com.omarea.xposed.ActiveCheck;
 import com.omarea.xposed.DeviceInfo;
 import com.omarea.xposed.SystemUI;
@@ -159,7 +160,7 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         //平滑滚动
         if(prefs.getBoolean("xposed_config_scroll", false)) {
-            ViewConfig.handleLoadPackage();
+            new ViewConfig().handleLoadPackage(loadPackageParam);
         }
 
         final String packageName = loadPackageParam.packageName;

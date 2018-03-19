@@ -13,8 +13,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.CheckBox
 import android.widget.Spinner
-import com.omarea.cpucontrol.CpuFrequencyUtils
-import com.omarea.cpucontrol.ThermalControlUtils
+import com.omarea.shell.cpucontrol.CpuFrequencyUtils
+import com.omarea.shell.cpucontrol.ThermalControlUtils
 import com.omarea.ui.StringAdapter
 import kotlinx.android.synthetic.main.fragment_cpu_control.*
 import java.util.*

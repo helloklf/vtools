@@ -77,6 +77,8 @@ class FragmentSwap : Fragment() {
 
         val swappiness = KernelProrp.getProp("/proc/sys/vm/swappiness")
         swap_swappiness_display.setText("Swappiness：" + swappiness)
+        txt_swap_swappiness.setProgress(swappiness.toInt())
+
         val datas = swaplist_adapter(context, list)
         list_swaps2.setAdapter(datas)
 

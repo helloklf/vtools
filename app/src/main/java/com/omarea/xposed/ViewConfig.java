@@ -11,6 +11,7 @@ import android.widget.ScrollView;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 /**
  * Created by Hello on 2018/03/02.
@@ -20,7 +21,7 @@ public class ViewConfig {
     static float mDensity = -1;
     static final float MULTIPLIER_SCROLL_FRICTION = 10000f;
 
-    public static void handleLoadPackage() {
+    public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
         hookViewConfiguration(ViewConfiguration.class);
         hookScrollbarNoFading(ViewConfiguration.class);
         hookOverscrollDistance(ViewConfiguration.class);
@@ -163,16 +164,16 @@ public class ViewConfig {
 
     public class Common {
         //是否启用
-        public static final boolean DEFAULT_SCROLLING_ENABLE = true;
+        static final boolean DEFAULT_SCROLLING_ENABLE = true;
         //
-        public static final boolean DEFAULT_SCROLLING_NO_FADING = false;
+        static final boolean DEFAULT_SCROLLING_NO_FADING = false;
         //滚动溢出最大距离
-        public static final int DEFAULT_SCROLLING_OVERSCROLL = 160;
+        static final int DEFAULT_SCROLLING_OVERSCROLL = 160;
         //滚动回弹距离
-        public static final int DEFAULT_SCROLLING_OVERFLING = 160;
+        static final int DEFAULT_SCROLLING_OVERFLING = 160;
         //滚动惯性
-        public static final int DEFAULT_SCROLLING_FRICTION = 256;
+        static final int DEFAULT_SCROLLING_FRICTION = 256;
         //最大滚动速度
-        public static final int DEFAULT_SCROLLING_VELOCITY = 4000;
+        static final int DEFAULT_SCROLLING_VELOCITY = 4000;
     }
 }

@@ -94,14 +94,6 @@
             android:name="com.omarea.shared.BootService"
             android:enabled="true"
             android:permission="" />
-
-        <activity
-            android:launchMode="singleTop"
-            android:configChanges="keyboardHidden|orientation"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:name=".ActivityCoreContrl"
-            android:label="@string/title_activity_core_contrl" />
     </application>
 
 </manifest>

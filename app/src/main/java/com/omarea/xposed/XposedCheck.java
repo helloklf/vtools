@@ -1,4 +1,4 @@
-package com.omarea.shared;
+package com.omarea.xposed;
 
 /**
  * Created by helloklf on 2017/6/3.

@@ -243,9 +243,6 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                             stringBuilder.append("sed -i '\$adalvik.vm.dex2oat-filter=speed' /data/build.prop;")
                         }
                         3 -> {
-                            //
-                        }
-                        4 -> {
                             stringBuilder.append("sed -i '\$apm.dexopt.ab-ota=verify-none' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.bg-dexopt=verify-none' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.boot=verify-none' /data/build.prop;")
@@ -261,6 +258,9 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                             stringBuilder.append("sed -i '\$apm.dexopt.shared-apk=verify-none' /data/build.prop;")
                             stringBuilder.append("sed -i '\$adalvik.vm.image-dex2oat-filter=verify-none' /data/build.prop;")
                             stringBuilder.append("sed -i '\$adalvik.vm.dex2oat-filter=verify-none' /data/build.prop;")
+                        }
+                        4 -> {
+                            //
                         }
                     }
 

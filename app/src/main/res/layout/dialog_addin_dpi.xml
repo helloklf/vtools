@@ -18,6 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="number"
+        android:hint="min:96"
         android:maxLength="3" />
 
     <TextView
@@ -25,7 +26,6 @@
         android:textColor="#888"
         android:textSize="12dp"
         android:text="分辨率"
-        android:hint="min:96"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <GridLayout
@@ -54,4 +54,39 @@
     </GridLayout>
     <CheckBox android:layout_marginTop="20dp" android:layout_marginBottom="10dp" android:id="@+id/dialog_addin_dpi_quickchange" android:text="快速更改（Android7.0+）"
         android:layout_height="wrap_content" android:layout_width="match_parent" />
+    <TextView
+        android:text="@string/dialog_addin_device_inner"
+        android:textColor="#888"
+        android:textSize="12dp"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:orientation="horizontal">
+        <Button
+            android:id="@+id/dialog_dpi_720"
+            android:text="HD"
+            android:layout_width="50dp"
+            android:textSize="12dp"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/dialog_dpi_1080"
+            android:text="FHD"
+            android:layout_width="50dp"
+            android:textSize="12dp"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/dialog_dpi_2k"
+            android:text="2K"
+            android:layout_width="50dp"
+            android:textSize="12dp"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/dialog_dpi_4k"
+            android:text="4K"
+            android:layout_width="50dp"
+            android:textSize="12dp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 </LinearLayout>

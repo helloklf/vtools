@@ -148,7 +148,7 @@
     <string name="accessbility_debug">调试模式</string>
     <string name="accessbility_debug_desc">在后台运行时显示完整的动作提示，用于测试软件是否正常工作</string>
     <string name="accessbility_notify">常驻通知</string>
-    <string name="accessbility_notify_desc">运行辅助服务是在状态栏显示通知</string>
+    <string name="accessbility_notify_desc">运行辅助服务时在状态栏显示通知</string>
     <string name="accessbility_delay">延迟启动</string>
     <string name="accessbility_delay_desc">如果出现开机后应用已启动但未正确加载配置文件，可尝试开启此项</string>
 
@@ -166,9 +166,10 @@
     <string name="menu_img">备份还原</string>
     <string name="menu_settings">软件设置</string>
     <string name="menu_help">使用帮助</string>
-    <string name="menu_menu_title">学习交流</string>
+    <string name="menu_menu_title">反馈交流</string>
     <string name="menu_share">分享</string>
     <string name="menu_feedback">反馈</string>
+    <string name="menu_reward">捐赠</string>
 
     <string name="title_vbootresize">VBOOT容量调整</string>
     <string name="title_activity_rom2zip">打包当前ROM</string>

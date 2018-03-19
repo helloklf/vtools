@@ -6,6 +6,7 @@ import android.support.v7.app.AlertDialog
 import android.util.DisplayMetrics
 import android.view.Display
 import android.view.LayoutInflater
+import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import com.omarea.shared.Consts
@@ -25,6 +26,7 @@ class DialogAddinModifyDPI(var context: Context) {
         val widthInput = dialog.findViewById(R.id.dialog_addin_dpi_width) as EditText
         val heightInput = dialog.findViewById(R.id.dialog_addin_dpi_height) as EditText
         val quickChange = dialog.findViewById(R.id.dialog_addin_dpi_quickchange) as CheckBox
+
         val dm = DisplayMetrics()
         display.getMetrics(dm)
         dpiInput.setText(dm.densityDpi.toString())
@@ -33,6 +35,44 @@ class DialogAddinModifyDPI(var context: Context) {
         if (Build.VERSION.SDK_INT >= 24) {
             quickChange.isChecked = true
         }
+
+        val rate = dm.heightPixels / 1.0 / dm.widthPixels
+        dialog.findViewById<Button>(R.id.dialog_dpi_720).setOnClickListener({
+            widthInput.setText("720")
+            if (rate > 1.8) {
+                heightInput.setText("1440")
+            } else {
+                heightInput.setText("1280")
+            }
+            dpiInput.setText("320")
+        })
+        dialog.findViewById<Button>(R.id.dialog_dpi_1080).setOnClickListener({
+            widthInput.setText("1080")
+            if (rate > 1.8) {
+                heightInput.setText("2160")
+            } else {
+                heightInput.setText("1920")
+            }
+            dpiInput.setText("480")
+        })
+        dialog.findViewById<Button>(R.id.dialog_dpi_2k).setOnClickListener({
+            widthInput.setText("1440")
+            if (rate > 1.8) {
+                heightInput.setText("2960")
+            } else {
+                heightInput.setText("2560")
+            }
+            dpiInput.setText("640")
+        })
+        dialog.findViewById<Button>(R.id.dialog_dpi_4k).setOnClickListener({
+            widthInput.setText("2160")
+            if (rate > 1.8) {
+                heightInput.setText("4440")
+            } else {
+                heightInput.setText("3840")
+            }
+            dpiInput.setText("960")
+        })
 
         AlertDialog.Builder(context).setTitle("DPI、分辨率").setView(dialog).setNegativeButton("确定", { _, _ ->
             val dpi = if (dpiInput.text.isNotEmpty()) (dpiInput.text.toString().toInt()) else (0)

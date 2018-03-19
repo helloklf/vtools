@@ -1,4 +1,4 @@
-package com.omarea.cpucontrol;
+package com.omarea.shell.cpucontrol;
 
 import android.content.Context;
 import android.widget.Toast;

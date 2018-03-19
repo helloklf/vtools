@@ -1,4 +1,4 @@
-package com.omarea.cpucontrol;
+package com.omarea.shell.cpucontrol;
 
 public interface Constants {
 

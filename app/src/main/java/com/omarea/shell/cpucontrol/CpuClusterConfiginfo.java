@@ -1,4 +1,4 @@
-package com.omarea.cpucontrol;
+package com.omarea.shell.cpucontrol;
 
 /**
  * Created by Hello on 2018/02/01.
