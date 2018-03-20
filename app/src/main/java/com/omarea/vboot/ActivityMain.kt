@@ -2,9 +2,11 @@ package com.omarea.vboot
 
 import android.Manifest
 import android.app.ActivityManager
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.ShortcutManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -22,12 +24,14 @@ import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ProgressBar
+import android.widget.Toast
 import com.omarea.shared.CrashHandler
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.cmd_shellTools
 import com.omarea.shell.Busybox
 import com.omarea.shell.CheckRootStatus
 import com.omarea.shell.units.BatteryUnit
+import com.omarea.ui.AppShortcutManager
 import com.omarea.vboot.dialogs.DialogPower
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -86,6 +90,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             next()
         })
         setExcludeFromRecents()
+        AppShortcutManager(thisview).removeMenu()
     }
 
     override fun onAttachedToWindow() {
@@ -233,7 +238,14 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_profile -> fragment = FragmentConfig.createPage(cmdshellTools)
             R.id.nav_additional -> fragment = FragmentAddin.createPage(this)
             R.id.nav_reward -> fragment = FragmentReward.createPage()
-            R.id.nav_xposed -> fragment = FragmentXposed.Create()
+            R.id.nav_xposed -> {
+                //fragment = FragmentXposed.Create()
+                try {
+                    startActivity(Intent().setComponent(ComponentName("com.omarea.vaddin", "com.omarea.vaddin.MainActivity")))
+                } catch (e: Exception) {
+                    Toast.makeText(this, getString(R.string.xposed_cannot_openaddin), Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         if (fragment != null) {

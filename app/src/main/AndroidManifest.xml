@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.omarea.vboot" android:installLocation="internalOnly">
+    package="com.omarea.vboot"
+    android:installLocation="internalOnly">
 
     <uses-permission android:name="android.permission.BATTERY_STATS" />
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
@@ -65,6 +66,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
         <activity
             android:name=".ActivityAccessibilitySettings"
@@ -94,6 +99,19 @@
             android:name="com.omarea.shared.BootService"
             android:enabled="true"
             android:permission="" />
+
+        <activity
+            android:name=".ActivityShortcut"
+            android:excludeFromRecents="true"
+            android:finishOnTaskLaunch="false"
+            android:label="@string/title_activity_shortcut"
+            android:launchMode="standard" />
+
+        <provider
+            android:name="com.omarea.shared.PowerContentProvider"
+            android:authorities="com.omarea.vboot"
+            android:enabled="true"
+            android:exported="true"></provider>
     </application>
 
 </manifest>

@@ -137,10 +137,10 @@ class AppListHelper2 {
                 continue
 
             val item = Appinfo.getItem()
-            val d = packageInfo.loadIcon(packageManager)
+            //val d = packageInfo.loadIcon(packageManager)
             item.appName = packageInfo.loadLabel(packageManager)
             item.packageName = packageInfo.packageName
-            item.icon = d
+            //item.icon = d
             item.dir = file.parent
             item.enabled = packageInfo.enabled
             item.enabledState = checkBackup(packageInfo)

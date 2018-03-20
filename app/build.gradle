@@ -11,12 +11,12 @@ android {
             storePassword 'I0140728'
         }
     }
-    compileSdkVersion 26
+    compileSdkVersion 27
     buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.omarea.vboot"
         minSdkVersion 21
-        targetSdkVersion 23
+        targetSdkVersion 27
         versionCode 421
         versionName "8.3.19"
     }

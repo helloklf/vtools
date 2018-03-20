@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/shortcut_settings"
+        android:shortcutDisabledMessage="@string/shortcut_disabled"
+        android:shortcutId="xposed"
+        android:shortcutLongLabel="@string/shortcut_xposed"
+        android:shortcutShortLabel="@string/shortcut_xposed_long">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.omarea.vaddin.MainActivity"
+            android:targetPackage="com.omarea.vaddin" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/shortcut_p0"
+        android:shortcutDisabledMessage="@string/shortcut_disabled"
+        android:shortcutId="powersave"
+        android:shortcutLongLabel="@string/shortcut_p0"
+        android:shortcutShortLabel="@string/shortcut_p0_long">
+        <intent
+            android:action="powersave"
+            android:targetClass="com.omarea.vboot.ActivityShortcut"
+            android:targetPackage="com.omarea.vboot" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/shortcut_p1"
+        android:shortcutDisabledMessage="@string/shortcut_disabled"
+        android:shortcutId="balance"
+        android:shortcutLongLabel="@string/shortcut_p1"
+        android:shortcutShortLabel="@string/shortcut_p1_long">
+        <intent
+            android:action="balance"
+            android:targetClass="com.omarea.vboot.ActivityShortcut"
+            android:targetPackage="com.omarea.vboot" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/shortcut_p2"
+        android:shortcutDisabledMessage="@string/shortcut_disabled"
+        android:shortcutId="performance"
+        android:shortcutLongLabel="@string/shortcut_p2"
+        android:shortcutShortLabel="@string/shortcut_p2_long">
+        <intent
+            android:action="performance"
+            android:targetClass="com.omarea.vboot.ActivityShortcut"
+            android:targetPackage="com.omarea.vboot" />
+    </shortcut>
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/shortcut_p3"
+        android:shortcutDisabledMessage="@string/shortcut_disabled"
+        android:shortcutId="fast"
+        android:shortcutLongLabel="@string/shortcut_p3"
+        android:shortcutShortLabel="@string/shortcut_p3_long">
+        <intent
+            android:action="fast"
+            android:targetClass="com.omarea.vboot.ActivityShortcut"
+            android:targetPackage="com.omarea.vboot" />
+    </shortcut>
+</shortcuts>

@@ -60,13 +60,6 @@
 
     <string name="app_name">微工具箱</string>
 
-    <string name="shortcut_clear">内存清理</string>
-    <string name="shortcut_p1">省电模式</string>
-    <string name="shortcut_p2">均衡模式</string>
-    <string name="shortcut_p3">性能模式</string>
-    <string name="shortcut_p4">极速模式</string>
-    <string name="shortcut_systemtoggle">切换系统</string>
-
     <string name="accessibility_service_description">
         "<span>微工具箱后台服务</span>"
         "<br />"
@@ -190,6 +183,7 @@
     <string name="xposed_actived">模块已激活-工作正常</string>
     <string name="xposed_unactive">Xposed模块未激活</string>
     <string name="xposed_cannot_openxposed">Xposed管理器似乎还没有安装？</string>
+    <string name="xposed_cannot_openaddin">似乎还没有安装Xposed功能插件？</string>
 
     <string name="dataresize_waring">
 "<big>注意：</big>"
@@ -244,4 +238,17 @@
     <string name="title_activity_core_contrl">CPU控制</string>
     <string name="dialog_addin_device_warn">请不要输入[英文 数字 空格]以外的内容！！！</string>
     <string name="dialog_addin_device_inner">预设模板</string>
+    <string name="title_activity_shortcut">ActivityShortcut</string>
+
+    <string name="shortcut_disabled">暂不可用</string>
+    <string name="shortcut_p0">省电模式</string>
+    <string name="shortcut_p0_long">性能配置-省电</string>
+    <string name="shortcut_p1">均衡模式</string>
+    <string name="shortcut_p1_long">性能配置-均衡</string>
+    <string name="shortcut_p2">性能模式</string>
+    <string name="shortcut_p2_long">性能配置-性能</string>
+    <string name="shortcut_p3">极速模式</string>
+    <string name="shortcut_p3_long">性能配置-极速</string>
+    <string name="shortcut_xposed">Xposed</string>
+    <string name="shortcut_xposed_long">Xposed插件</string>
 </resources>

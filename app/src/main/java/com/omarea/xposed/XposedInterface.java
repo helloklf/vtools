@@ -44,9 +44,9 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
 
     @Override
     public void initZygote(IXposedHookZygoteInit.StartupParam startupParam) throws Throwable {
-        prefs = new XSharedPreferences("com.omarea.vboot", "xposed");
-        prefs2 = new XSharedPreferences("com.omarea.vboot", SpfConfig.XPOSED_DPI_SPF);
-        prefs3 = new XSharedPreferences("com.omarea.vboot", SpfConfig.XPOSED_HIDETASK_SPF);
+        prefs = new XSharedPreferences("com.omarea.vaddin", "xposed");
+        prefs2 = new XSharedPreferences("com.omarea.vaddin", SpfConfig.XPOSED_DPI_SPF);
+        prefs3 = new XSharedPreferences("com.omarea.vaddin", SpfConfig.XPOSED_HIDETASK_SPF);
 
         //prefs.reload();
         //强制绕开权限限制读取配置 因为SharedPreferences在Android N中不能设置为MODE_WORLD_READABLE
@@ -175,7 +175,7 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
         }
 
         //用于检查xposed是否激活
-        else if (packageName.equals("com.omarea.vboot")) {
+        else if (packageName.equals("com.omarea.vboot") || packageName.equals("com.omarea.vaddin")) {
             new ActiveCheck().isActive(loadPackageParam);
         }
 

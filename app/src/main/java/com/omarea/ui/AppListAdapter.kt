@@ -12,6 +12,9 @@ import com.omarea.vboot.R
 import kotlinx.android.synthetic.main.layout_applictions.*
 import java.util.ArrayList
 import java.util.HashMap
+import android.graphics.drawable.BitmapDrawable
+import android.util.LruCache
+
 
 /**
  * Created by Hello on 2018/01/26.
@@ -108,6 +111,8 @@ class AppListAdapter(private val context: Context, apps: ArrayList<Appinfo>, pri
         return selectedItems
     }
 
+    private val mImageCache: LruCache<String, Drawable> = LruCache(20)
+
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
         var convertView = view
         if (convertView == null) {
@@ -119,16 +124,34 @@ class AppListAdapter(private val context: Context, apps: ArrayList<Appinfo>, pri
             viewHolder!!.imgView = convertView.findViewById(R.id.ItemIcon)
             viewHolder!!.itemChecke = convertView.findViewById(R.id.select_state)
             viewHolder!!.wranStateText = convertView.findViewById(R.id.ItemWranText)
+            viewHolder!!.imgView!!.setTag(getItem(position).packageName)
             convertView.tag = viewHolder
         } else {
             viewHolder = convertView.tag as ViewHolder
         }
 
-        viewHolder!!.itemTitle!!.text = getItem(position).appName
-        viewHolder!!.itemText!!.text = getItem(position).packageName
-        viewHolder!!.imgView!!.setImageDrawable(getItem(position).icon)
-        if (getItem(position).enabledState != null)
-            viewHolder!!.enabledStateText!!.text = getItem(position).enabledState
+        val item = getItem(position)
+        viewHolder!!.itemTitle!!.text = item.appName
+        viewHolder!!.itemText!!.text = item.packageName
+        if (item.icon == null) {
+            var icon = mImageCache.get(item.packageName.toString())
+            if (icon != null) {
+                viewHolder!!.imgView!!.setImageDrawable(mImageCache.get(item.packageName.toString()))
+            } else {
+                try {
+                    val installInfo = context.packageManager.getPackageInfo(item.packageName.toString(), 0)
+                    icon = installInfo.applicationInfo.loadIcon(context.packageManager)
+                    mImageCache.put(item.packageName.toString(), icon)
+                    viewHolder!!.imgView!!.setImageDrawable(icon)
+                } catch (ex: Exception) {
+
+                }
+            }
+        } else {
+            viewHolder!!.imgView!!.setImageDrawable(item.icon)
+        }
+        if (item.enabledState != null)
+            viewHolder!!.enabledStateText!!.text = item.enabledState
         else
             viewHolder!!.enabledStateText!!.text = ""
 
@@ -137,8 +160,8 @@ class AppListAdapter(private val context: Context, apps: ArrayList<Appinfo>, pri
         //从hashmap里面取出我们的状态值,然后赋值给listview对应位置的checkbox
         viewHolder!!.itemChecke!!.setChecked(states[position] == true)
 
-        if (getItem(position).wranState != null)
-            viewHolder!!.wranStateText!!.text = getItem(position).wranState
+        if (item.wranState != null)
+            viewHolder!!.wranStateText!!.text = item.wranState
         else
             viewHolder!!.wranStateText!!.text = ""
 
