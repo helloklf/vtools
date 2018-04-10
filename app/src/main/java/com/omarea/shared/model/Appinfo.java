@@ -1,8 +1,9 @@
-package com.omarea.shared;
+package com.omarea.shared.model;
 
 import android.graphics.drawable.Drawable;
 
 /**
+ * 应用信息
  * Created by Hello on 2018/01/26.
  */
 

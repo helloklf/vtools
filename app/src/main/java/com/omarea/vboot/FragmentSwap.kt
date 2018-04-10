@@ -13,12 +13,11 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.Toast
 import com.omarea.shared.SpfConfig
-import com.omarea.shared.cmd_shellTools
 import com.omarea.shell.KernelProrp
 import com.omarea.shell.SuDo
 import com.omarea.shell.units.ChangeZRAM
+import com.omarea.ui.AdapterSwaplist
 import com.omarea.ui.ProgressBarDialog
-import com.omarea.ui.swaplist_adapter
 import kotlinx.android.synthetic.main.layout_swap.*
 import java.io.File
 import java.util.ArrayList
@@ -29,34 +28,34 @@ import kotlin.collections.LinkedHashMap
 class FragmentSwap : Fragment() {
     private lateinit var processBarDialog: ProgressBarDialog
     internal lateinit var view: View
-    private lateinit var cmdshellTools: cmd_shellTools
     private lateinit var myHandler: Handler
     private lateinit var swapConfig: SharedPreferences
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         view = inflater!!.inflate(R.layout.layout_swap, container, false)
 
         myHandler = Handler()
-        cmdshellTools = cmd_shellTools(null, null)
-        swapConfig = context.getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)
+        swapConfig = context!!.getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)
         return view
     }
 
     internal var getSwaps = {
-        val ret = cmdshellTools.GetProp("/proc/swaps", null)
+
+        val ret = KernelProrp.getProp("/proc/swaps")
         var txt = if (ret == null) "" else ret.replace("\t\t", "\t").replace("\t", " ")
         while (txt.contains("  ")) {
             txt = txt.replace("  ", " ")
         }
         val list = ArrayList<HashMap<String, String>>()
         val rows = txt.split("\n").toMutableList()
-        val thr = LinkedHashMap<String, String>()
-        thr.put("path", "路径")
-        thr.put("type", "类型")
-        thr.put("size", "大小")
-        thr.put("used", "已用")
-        thr.put("priority", "优先级")
+        val thr = LinkedHashMap<String, String>().apply {
+            put("path", getString(R.string.path))
+            put("type", getString(R.string.type))
+            put("size", getString(R.string.size))
+            put("used", getString(R.string.used))
+            put("priority", getString(R.string.priority))
+        }
         list.add(thr)
 
         for (i in 1..rows.size - 1) {
@@ -76,11 +75,11 @@ class FragmentSwap : Fragment() {
         }
 
         val swappiness = KernelProrp.getProp("/proc/sys/vm/swappiness")
-        swap_swappiness_display.setText("Swappiness：" + swappiness)
-        txt_swap_swappiness.setProgress(swappiness.toInt())
+        swap_swappiness_display.text = "Swappiness：" + swappiness
+        txt_swap_swappiness.progress = swappiness.toInt()
 
-        val datas = swaplist_adapter(context, list)
-        list_swaps2.setAdapter(datas)
+        val datas = AdapterSwaplist(context, list)
+        list_swaps2.adapter = datas
 
         txt_mem.text = KernelProrp.getProp("/proc/meminfo")
 
@@ -95,36 +94,36 @@ class FragmentSwap : Fragment() {
         super.onResume()
         getSwaps()
     }
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        processBarDialog = ProgressBarDialog(this.context)
+        processBarDialog = ProgressBarDialog(this.context!!)
 
         chk_swap_disablezram.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, false)
         chk_swap_autostart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)
         chk_zram_autostart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)
 
-        txt_swap_size.setProgress(swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, if (File("/data/swapfile").exists()) (File("/data/swapfile").length() / 1024 /1024).toInt() else 0))
-        txt_swap_size_display.setText(swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 0).toString() + "MB")
+        txt_swap_size.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, if (File("/data/swapfile").exists()) (File("/data/swapfile").length() / 1024 /1024).toInt() else 0)
+        txt_swap_size_display.text = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 0).toString() + "MB"
 
-        txt_zram_size.setProgress(swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0))
-        txt_zram_size_display.setText(swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0).toString() + "MB")
+        txt_zram_size.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0)
+        txt_zram_size_display.text = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0).toString() + "MB"
 
-        txt_swap_swappiness.setProgress(swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65))
+        txt_swap_swappiness.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65)
 
         txt_swap_size.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
-            txt_swap_size_display.setText(swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 0).toString() + "MB")
+            txt_swap_size_display.text = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 0).toString() + "MB"
         }, swapConfig, SpfConfig.SWAP_SPF_SWAP_SWAPSIZE))
         txt_zram_size.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
-            txt_zram_size_display.setText(swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0).toString() + "MB")
+            txt_zram_size_display.text = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0).toString() + "MB"
         }, swapConfig, SpfConfig.SWAP_SPF_ZRAM_SIZE))
         txt_swap_swappiness.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
             val swappiness = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 0)
-            txt_zramstus_swappiness.setText(swappiness.toString())
+            txt_zramstus_swappiness.text = swappiness.toString()
             SuDo(context).execCmd("echo $swappiness > /proc/sys/vm/swappiness;")
         }, swapConfig, SpfConfig.SWAP_SPF_SWAPPINESS))
 
         btn_swap_close.setOnClickListener {
-            processBarDialog.showDialog("正在关闭SWAP，这可能很慢")
+            processBarDialog.showDialog(getString(R.string.swap_on_close))
             val run = Runnable {
                 val sb = StringBuilder()
                 sb.append("swapoff /data/swapfile > /dev/null 2>&1;")
@@ -137,7 +136,7 @@ class FragmentSwap : Fragment() {
             Thread(run).start()
         }
         btn_swap_delete.setOnClickListener {
-            processBarDialog.showDialog("正在关闭SWAP，这可能很慢")
+            processBarDialog.showDialog(getString(R.string.swap_on_close))
             val run = Runnable {
                 val sb = StringBuilder()
                 sb.append("swapoff /data/swapfile >/dev/null 2>&1;")
@@ -154,11 +153,11 @@ class FragmentSwap : Fragment() {
 
     private var showWait = {
         processBarDialog.showDialog()
-        Toast.makeText(context, "正在执行操作，请稍等...", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, getString(R.string.on_execute_please_wait), Toast.LENGTH_SHORT).show()
     }
 
     private var showSwapOpened = {
-        Snackbar.make(view, "操作已完成！", Snackbar.LENGTH_LONG).show()
+        Snackbar.make(view, getString(R.string.executed), Snackbar.LENGTH_LONG).show()
         processBarDialog.hideDialog()
     }
 
@@ -176,9 +175,9 @@ class FragmentSwap : Fragment() {
             val run = Runnable {
                 val startTime = System.currentTimeMillis()
                 myHandler.post({
-                    processBarDialog.showDialog("创建文件中")
+                    processBarDialog.showDialog(getString(R.string.file_creating))
                 })
-                ChangeZRAM(context).createSwapFile(size)
+                ChangeZRAM(context!!).createSwapFile(size)
                 myHandler.post(getSwaps)
                 val time = System.currentTimeMillis() - startTime
                 myHandler.post({
@@ -218,7 +217,7 @@ class FragmentSwap : Fragment() {
             var sizeVal = txt_zram_size.progress
 
             if (sizeVal < 2049 && sizeVal > -1) {
-                processBarDialog.showDialog("正在调整ZRAM，请稍等...")
+                processBarDialog.showDialog(getString(R.string.zram_resizing))
 
                 val run = Thread({
                     val sb = StringBuilder()
@@ -240,7 +239,7 @@ class FragmentSwap : Fragment() {
                 Thread(run).start()
                 swapConfig.edit().putInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, sizeVal).commit()
             } else {
-                Snackbar.make(this.view, "请输入ZRAM大小，值应在0 - 2048之间！", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(this.view, getString(R.string.zram_size_area), Snackbar.LENGTH_LONG).show()
             }
         }
 
@@ -273,9 +272,8 @@ class FragmentSwap : Fragment() {
     }
 
     companion object {
-        fun createPage(cmdshellTools: cmd_shellTools): Fragment {
+        fun createPage(): Fragment {
             val fragment = FragmentSwap()
-            fragment.cmdshellTools = cmdshellTools
             return fragment
         }
     }

@@ -10,7 +10,6 @@ import android.view.accessibility.AccessibilityManager
 import android.widget.Toast
 import com.omarea.shared.helper.*
 import com.omarea.shell.AsynSuShellUnit
-import com.omarea.shell.SuDo
 import java.util.*
 
 /**
@@ -19,7 +18,7 @@ import java.util.*
 class ServiceHelper(private var context: Context) {
     private var lastPackage: String? = null
     private var lastModePackage: String? = null
-    private var lastMode = PowerModes.None
+    private var lastMode = ""
     private val serviceCreatedTime = Date().time
     private var spfPowercfg: SharedPreferences = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
     private var spfBlacklist: SharedPreferences = context.getSharedPreferences(SpfConfig.BOOSTER_BLACKLIST_SPF, Context.MODE_PRIVATE)
@@ -39,22 +38,18 @@ class ServiceHelper(private var context: Context) {
     private val SCREEN_OFF_SWITCH_NETWORK_DELAY:Long = 30000
     //屏幕关闭后清理任务延迟（ms）
     private val SCREEN_OFF_CLEAR_TASKS_DELAY:Long = 60000
-    //实例化myHandler
-    private var myHandler = MyHandler({ onScreenOff() }, { onScreenOn() })
+    private var screenHandler = ScreenEventHandler({ onScreenOff() }, { onScreenOn() })
 
     private var notifyHelper: NotifyHelper = NotifyHelper(context, spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))
 
     //屏幕关闭时执行
     private fun onScreenOff () {
         screenOn = false
-
-        //if (dyamicCore) toggleConfig(PowerModes.LockScreen)
-
         if (debugMode)
             showMsg("屏幕关闭！")
         lastScreenOnOff = System.currentTimeMillis()
         if (autoBooster) {
-            myHandler.postDelayed({
+            screenHandler.postDelayed({
                 onScreenOffCloseNetwork()
             }, SCREEN_OFF_SWITCH_NETWORK_DELAY)
         }
@@ -65,19 +60,19 @@ class ServiceHelper(private var context: Context) {
     private fun onScreenOffCloseNetwork() {
         if (autoBooster && System.currentTimeMillis() - lastScreenOnOff >= SCREEN_OFF_SWITCH_NETWORK_DELAY && screenOn == false) {
             if (spfAutoConfig.getBoolean(SpfConfig.WIFI + SpfConfig.OFF, false))
-                keepShell.doCmd("svc wifi disable");
+                keepShell.doCmd("svc wifi disable")
 
             if (spfAutoConfig.getBoolean(SpfConfig.NFC + SpfConfig.OFF, false))
-                keepShell.doCmd("svc nfc disable");
+                keepShell.doCmd("svc nfc disable")
 
             if (spfAutoConfig.getBoolean(SpfConfig.DATA + SpfConfig.OFF, false))
-                keepShell.doCmd("svc data disable");
+                keepShell.doCmd("svc data disable")
 
             if (spfAutoConfig.getBoolean(SpfConfig.GPS + SpfConfig.OFF, false)) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    keepShell.doCmd("settings put secure location_providers_allowed -gps;");
+                    keepShell.doCmd("settings put secure location_providers_allowed -gps;")
                 } else {
-                    keepShell.doCmd("settings put secure location_providers_allowed network");
+                    keepShell.doCmd("settings put secure location_providers_allowed network")
                 }
             }
 
@@ -94,24 +89,23 @@ class ServiceHelper(private var context: Context) {
         lastScreenOnOff = System.currentTimeMillis()
         if (screenOn == true) return
 
-        //if (dyamicCore && this.lastModePackage != null) autoToggleMode(this.lastModePackage)
-
         screenOn = true
         if (autoBooster && screenOn == true) {
+            keepShell.doCmd("dumpsys deviceidle unforce;dumpsys deviceidle enable all;")
             if (spfAutoConfig.getBoolean(SpfConfig.WIFI + SpfConfig.ON, false))
-                keepShell.doCmd("svc wifi enable");
+                keepShell.doCmd("svc wifi enable")
 
             if (spfAutoConfig.getBoolean(SpfConfig.NFC + SpfConfig.ON, false))
-                keepShell.doCmd("svc nfc enable");
+                keepShell.doCmd("svc nfc enable")
 
             if (spfAutoConfig.getBoolean(SpfConfig.DATA + SpfConfig.ON, false))
-                keepShell.doCmd("svc data enable");
+                keepShell.doCmd("svc data enable")
 
             if (spfAutoConfig.getBoolean(SpfConfig.GPS + SpfConfig.ON, false)) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    keepShell.doCmd("settings put secure location_providers_allowed -gps;settings put secure location_providers_allowed +gps");
+                    keepShell.doCmd("settings put secure location_providers_allowed -gps;settings put secure location_providers_allowed +gps")
                 } else {
-                    keepShell.doCmd("settings put secure location_providers_allowed gps,network");
+                    keepShell.doCmd("settings put secure location_providers_allowed gps,network")
                 }
             }
 
@@ -130,18 +124,18 @@ class ServiceHelper(private var context: Context) {
             dyamicCore = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
             keepShell.doCmd(Consts.ExecuteConfig)
             if (!dyamicCore) {
-                notifyHelper.HideNotify()
-                notifyHelper.ShowNotify()
+                notifyHelper.hideNotify()
+                notifyHelper.notify()
             }
             if (dyamicCore && this.lastModePackage != null) {
                 autoToggleMode(this.lastModePackage)
             } else if (dyamicCore) {
-                toggleConfig(PowerModes.Game)
+                toggleConfig("performance")
             }
         } else if (key == SpfConfig.GLOBAL_SPF_DEBUG) {
             debugMode = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
         } else if (key == SpfConfig.GLOBAL_SPF_NOTIFY) {
-            notifyHelper.SetNotify(sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))
+            notifyHelper.setNotify(sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))
         } else if (key == SpfConfig.BOOSTER_SPF_CFG_SPF_CLEAR_TASKS) {
 
         }
@@ -150,14 +144,14 @@ class ServiceHelper(private var context: Context) {
     init {
         spfGlobal.registerOnSharedPreferenceChangeListener(listener)
 
-        notifyHelper.ShowNotify("辅助服务已启动")
+        notifyHelper.notify("辅助服务已启动")
 
         //添加输入法到忽略列表
         Thread(Runnable {
             ignoredList.addAll(InputHelper(context).getInputMethods())
         }).start()
 
-        ReciverLock.autoRegister(context, myHandler)
+        ReciverLock.autoRegister(context, screenHandler)
     }
 
     //加载设置
@@ -179,7 +173,7 @@ class ServiceHelper(private var context: Context) {
 
     //显示消息
     private fun showMsg(msg: String) {
-        myHandler.post { Toast.makeText(context, msg, Toast.LENGTH_SHORT).show() }
+        screenHandler.post { Toast.makeText(context, msg, Toast.LENGTH_SHORT).show() }
     }
 
     //显示模式切换通知
@@ -190,16 +184,16 @@ class ServiceHelper(private var context: Context) {
 
     //更新通知
     private fun updateModeNofity(){
-        notifyHelper.ShowNotify("${getModName(lastMode)} -> $lastModePackage")
+        notifyHelper.notify("${getModName(lastMode)} -> $lastModePackage")
     }
 
-    private fun getModName(mode:PowerModes) : String {
+    private fun getModName(mode:String) : String {
         when(mode) {
-            PowerModes.PowerSave -> return "省电模式"
-            PowerModes.Game ->      return "性能模式"
-            PowerModes.Fast ->      return "极速模式"
-            PowerModes.Default ->   return "均衡模式"
-            else ->                 return "未知模式"
+            "powersave" ->      return "省电模式"
+            "performance" ->      return "性能模式"
+            "fast" ->      return "极速模式"
+            "balance" ->   return "均衡模式"
+            else ->         return "未知模式"
         }
     }
 
@@ -208,22 +202,19 @@ class ServiceHelper(private var context: Context) {
         if (!dyamicCore || packageName == null || packageName == lastModePackage)
             return
 
-        var mode = lastMode
-        when (spfPowercfg.getString(packageName, "default")) {
+        val mode = spfPowercfg.getString(packageName, "balance")
+        when (mode) {
             "igoned" ->     return
-            "powersave" ->  mode = PowerModes.PowerSave
-            "game" ->       mode = PowerModes.Game
-            "fast" ->       mode = PowerModes.Fast
-            else ->         mode = PowerModes.Default
-        }
+            else ->{
+                if (lastMode != mode) {
+                    toggleConfig(mode)
+                    showModeToggleMsg(packageName, getModName(mode))
+                }
 
-        if (lastMode != mode) {
-            toggleConfig(mode)
-            showModeToggleMsg(packageName, getModName(mode))
+                lastModePackage = packageName
+                updateModeNofity()
+            }
         }
-
-        lastModePackage = packageName
-        updateModeNofity()
     }
 
     //终止进程
@@ -248,23 +239,15 @@ class ServiceHelper(private var context: Context) {
         }
     }
 
-    //切换配置
-    private fun toggleConfig(mode: PowerModes) {
-        when (mode) {
-            PowerModes.Game ->      keepShell.doCmd(Consts.ToggleGameMode)
-            PowerModes.PowerSave -> keepShell.doCmd(Consts.TogglePowersaveMode)
-            PowerModes.Fast ->      keepShell.doCmd(Consts.ToggleFastMode)
-            PowerModes.LockScreen ->      keepShell.doCmd(Consts.ToggleFastMode)
-            else ->                 keepShell.doCmd(Consts.ToggleDefaultMode)
-        }
-
+    private fun toggleConfig(mode: String) {
+        keepShell.doCmd(String.format(Consts.ToggleMode, mode))
         lastMode = mode
     }
 
     //#region 工具方法
     //休眠指定包名的应用
     private fun dozeApp(packageName: String) {
-        keepShell.doCmd("dumpsys deviceidle enable; am set-inactive $packageName true")
+        keepShell.doCmd("dumpsys deviceidle whitelist -$packageName;\ndumpsys deviceidle enable;\ndumpsys deviceidle enable all;\nam set-inactive $packageName true")
         if (debugMode)
             showMsg("休眠 " + packageName)
     }
@@ -290,31 +273,40 @@ class ServiceHelper(private var context: Context) {
 
             if (!screenOn && spfAutoConfig.getBoolean(SpfConfig.BOOSTER_SPF_CFG_SPF_CLEAR_TASKS, true)) {
                 val cmds = StringBuilder()
+                cmds.append("dumpsys deviceidle enable all;\n")
+                cmds.append("dumpsys deviceidle force-idle;\n")
+
+
+                cmds.append("\n\n")
+                val spf = context.getSharedPreferences(SpfConfig.WHITE_LIST_SPF, Context.MODE_PRIVATE)
+                for (item in spf.all) {
+                    if (item.value == true) {
+                        cmds.append("dumpsys deviceidle whitelist +${item.key}")
+                    } else {
+                        cmds.append("dumpsys deviceidle whitelist -${item.key}")
+                    }
+                    cmds.append(";\n")
+                }
+                cmds.append("\n\n")
+
                 for (item in spfBlacklist.all) {
-                    cmds.append("dumpsys deviceidle enable; am set-inactive ${item.key} true")
+                    cmds.append("am set-inactive ${item.key} true")
                     cmds.append("killall -9 ${item.key};pkill -9 ${item.key};pgrep ${item.key} |xargs kill -9;")
                 }
+                cmds.append("dumpsys deviceidle step\n")
+                cmds.append("dumpsys deviceidle step\n")
+                cmds.append("dumpsys deviceidle step\n")
+                cmds.append("dumpsys deviceidle step\n")
                 var p:Process?
 
-                AsynSuShellUnit(object : Handler() {
-                    override fun handleMessage(msg: Message?) {
-                        super.handleMessage(msg)
-                        if (msg == null) {
-                            return
-                        }
-                        if (msg.what == 0) {
-                            if (msg.obj == true) {
-                            }
-                        }
-                    }
-                }).exec(cmds.toString()).waitFor()
+                AsynSuShellUnit(Handler()).exec(cmds.toString()).waitFor()
                 if (debugMode)
                     showMsg("后台已自动清理...")
             }
         }
         else {
             //超时时间：1分钟
-            myHandler.postDelayed({
+            screenHandler.postDelayed({
                 if (System.currentTimeMillis() - lastScreenOnOff >= SCREEN_OFF_CLEAR_TASKS_DELAY) {
                     clearTasks(0)
                 }
@@ -342,7 +334,7 @@ class ServiceHelper(private var context: Context) {
     }
 
     fun onInterrupt() {
-        notifyHelper.HideNotify()
+        notifyHelper.hideNotify()
         ReciverLock.unRegister(context)
         keepShell.tryExit()
     }

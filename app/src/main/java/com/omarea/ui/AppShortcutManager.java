@@ -1,6 +1,5 @@
 package com.omarea.ui;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,9 +12,9 @@ import com.omarea.vboot.ActivityShortcut;
 import com.omarea.vboot.R;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
+ * 管理应用的Shortcut
  * Created by Hello on 2018/03/20.
  */
 

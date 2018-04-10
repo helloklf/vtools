@@ -10,8 +10,11 @@ import com.omarea.ui.ProgressBarDialog
 open class AddinBase(private var context: Context) : ProgressBarDialog(context) {
     var title: String? = null
     var desc: String? = null
+    var command: String? = null
 
     open fun run() {
-
+        if (command != null) {
+            execShell(command!!)
+        }
     }
 }

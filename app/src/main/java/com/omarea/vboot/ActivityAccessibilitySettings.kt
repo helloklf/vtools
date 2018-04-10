@@ -12,7 +12,7 @@ import android.view.View
 import com.omarea.shared.Consts
 import com.omarea.shared.ServiceHelper
 import com.omarea.shared.SpfConfig
-import com.omarea.shell.DynamicConfig
+import com.omarea.shell.Platform
 import kotlinx.android.synthetic.main.activity_accessibility_settings.*
 import java.io.File
 
@@ -47,7 +47,7 @@ class ActivityAccessibilitySettings : AppCompatActivity() {
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
-        if (!DynamicConfig().DynamicSupport(this) && !File(Consts.POWER_CFG_PATH).exists()) {
+        if (!Platform().dynamicSupport(this) && !File(Consts.POWER_CFG_PATH).exists()) {
             settings_dynamic.isEnabled = false
             settings_dynamic.isChecked = false
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false).commit()

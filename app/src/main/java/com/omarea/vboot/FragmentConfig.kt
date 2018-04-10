@@ -11,22 +11,23 @@ import android.os.Handler
 import android.provider.Settings
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.CheckBox
 import android.widget.ListView
-import com.omarea.shared.*
-import com.omarea.shell.DynamicConfig
+import com.omarea.shared.Consts
+import com.omarea.shared.FileWrite
+import com.omarea.shared.ServiceHelper
+import com.omarea.shared.SpfConfig
+import com.omarea.shared.model.Appinfo
 import com.omarea.shell.Platform
+import com.omarea.shell.SuDo
+import com.omarea.ui.AppListAdapter
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.ui.SearchTextWatcher
-import com.omarea.ui.list_adapter
-import com.omarea.units.AppListHelper
+import com.omarea.shared.AppListHelper
 import kotlinx.android.synthetic.main.layout_config.*
 import java.io.File
 import java.util.*
@@ -34,7 +35,6 @@ import java.util.*
 
 class FragmentConfig : Fragment() {
     private lateinit var processBarDialog: ProgressBarDialog
-    private var cmdshellTools: cmd_shellTools? = null
     private lateinit var spfPowercfg: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
     private var hasSystemApp = true
@@ -42,32 +42,32 @@ class FragmentConfig : Fragment() {
 
     internal val myHandler: Handler = Handler()
 
-    private var defaultList: ArrayList<HashMap<String, Any>>? = null
-    private var gameList: ArrayList<HashMap<String, Any>>? = null
-    private var powersaveList: ArrayList<HashMap<String, Any>>? = null
-    private var fastList: ArrayList<HashMap<String, Any>>? = null
-    private var ignoredList: ArrayList<HashMap<String, Any>>? = null
-    private var installedList: ArrayList<HashMap<String, Any>>? = null
+    private var defaultList: ArrayList<Appinfo>? = null
+    private var gameList: ArrayList<Appinfo>? = null
+    private var powersaveList: ArrayList<Appinfo>? = null
+    private var fastList: ArrayList<Appinfo>? = null
+    private var ignoredList: ArrayList<Appinfo>? = null
+    private var installedList: ArrayList<Appinfo>? = null
 
     private var packageManager: PackageManager? = null
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
             inflater!!.inflate(R.layout.layout_config, container, false)
 
     override fun onResume() {
         super.onResume()
 
-        val serviceState = ServiceHelper.serviceIsRunning(context)
+        val serviceState = ServiceHelper.serviceIsRunning(context!!)
         btn_config_service_not_active.visibility = if (serviceState) View.GONE else View.VISIBLE
-        btn_config_dynamicservice_not_active.visibility = if (!context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)) View.VISIBLE else View.GONE
+        btn_config_dynamicservice_not_active.visibility = if (!context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)) View.VISIBLE else View.GONE
     }
 
     @SuppressLint("CommitPrefEdits")
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        processBarDialog = ProgressBarDialog(context)
-        applistHelper = AppListHelper(context)
-        spfPowercfg = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        processBarDialog = ProgressBarDialog(context!!)
+        applistHelper = AppListHelper(context!!)
+        spfPowercfg = context!!.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         editor = spfPowercfg.edit()
 
         if (spfPowercfg.all.isEmpty()) {
@@ -103,53 +103,53 @@ class FragmentConfig : Fragment() {
             when (configlist_tabhost.currentTab) {
                 0 -> {
                     val builder = AlertDialog.Builder(context)
-                    val items = arrayOf("添加选中到 -> 性能模式", "添加选中到 -> 省电模式", "添加选中到 -> 极速模式", "添加选中到 -> 忽略列表")
+                    val items = arrayOf(getString(R.string.addto_performance), getString(R.string.addto_powersave), getString(R.string.addto_fast), getString(R.string.addto_ignore))
                     val configses = arrayOf(Configs.Game, Configs.PowerSave, Configs.Fast, Configs.Ignored)
                     builder.setItems(items) { _, which ->
-                        val listadapter = config_defaultlist.adapter as list_adapter
+                        val listadapter = config_defaultlist.adapter as AppListAdapter
                         addToList(defaultList!!, listadapter.states, configses[which])
                     }
-                    builder.setIcon(R.drawable.ic_menu_profile).setTitle("设置配置模式").create().show()
+                    builder.setIcon(R.drawable.ic_menu_profile).setTitle(getString(R.string.set_power_mode)).create().show()
                 }
                 1 -> {
                     val builder = AlertDialog.Builder(context)
-                    val items = arrayOf("添加选中到 -> 均衡模式", "添加选中到 -> 省电模式", "添加选中到 -> 极速模式", "添加选中到 -> 忽略列表")
+                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_powersave), getString(R.string.addto_fast), getString(R.string.addto_ignore))
                     val configses = arrayOf(Configs.Default, Configs.PowerSave, Configs.Fast, Configs.Ignored)
                     builder.setItems(items) { _, which ->
-                        val listadapter = config_gamelist.adapter as list_adapter
+                        val listadapter = config_gamelist.adapter as AppListAdapter
                         addToList(gameList!!, listadapter.states, configses[which])
                     }
-                    builder.setIcon(R.drawable.ic_menu_profile).setTitle("设置配置模式").create().show()
+                    builder.setIcon(R.drawable.ic_menu_profile).setTitle(getString(R.string.set_power_mode)).create().show()
                 }
                 2 -> {
                     val builder = AlertDialog.Builder(context)
-                    val items = arrayOf("添加选中到 -> 均衡模式", "添加选中到 -> 性能模式", "添加选中到 -> 极速模式", "添加选中到 -> 忽略列表")
+                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_performance), getString(R.string.addto_fast), getString(R.string.addto_ignore))
                     val configses = arrayOf(Configs.Default, Configs.Game, Configs.Fast, Configs.Ignored)
                     builder.setItems(items) { _, which ->
-                        val listadapter = config_powersavelist.adapter as list_adapter
+                        val listadapter = config_powersavelist.adapter as AppListAdapter
                         addToList(powersaveList!!, listadapter.states, configses[which])
                     }
-                    builder.setIcon(R.drawable.ic_menu_profile).setTitle("设置配置模式").create().show()
+                    builder.setIcon(R.drawable.ic_menu_profile).setTitle(getString(R.string.set_power_mode)).create().show()
                 }
                 3 -> {
                     val builder = AlertDialog.Builder(context)
-                    val items = arrayOf("添加选中到 -> 均衡模式", "添加选中到 -> 性能模式", "添加选中到 -> 省电模式", "添加选中到 -> 忽略列表")
+                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_performance), getString(R.string.addto_powersave), getString(R.string.addto_ignore))
                     val configses = arrayOf(Configs.Default, Configs.Game, Configs.PowerSave, Configs.Ignored)
                     builder.setItems(items) { _, which ->
-                        val listadapter = config_fastlist.adapter as list_adapter
+                        val listadapter = config_fastlist.adapter as AppListAdapter
                         addToList(fastList!!, listadapter.states, configses[which])
                     }
-                    builder.setIcon(R.drawable.ic_menu_profile).setTitle("设置配置模式").create().show()
+                    builder.setIcon(R.drawable.ic_menu_profile).setTitle(getString(R.string.set_power_mode)).create().show()
                 }
                 4 -> {
                     val builder = AlertDialog.Builder(context)
-                    val items = arrayOf("添加选中到 -> 均衡模式", "添加选中到 -> 性能模式", "添加选中到 -> 省电模式", "添加选中到 -> 极速模式")
+                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_performance), getString(R.string.addto_powersave), getString(R.string.addto_fast))
                     val configses = arrayOf(Configs.Default, Configs.Game, Configs.PowerSave, Configs.Fast)
                     builder.setItems(items) { _, which ->
-                        val listadapter = config_ignoredlist.adapter as list_adapter
+                        val listadapter = config_ignoredlist.adapter as AppListAdapter
                         addToList(ignoredList!!, listadapter.states, configses[which])
                     }
-                    builder.setIcon(R.drawable.ic_menu_profile).setTitle("设置配置模式").create().show()
+                    builder.setIcon(R.drawable.ic_menu_profile).setTitle(getString(R.string.set_power_mode)).create().show()
                 }
             }
         }
@@ -163,31 +163,31 @@ class FragmentConfig : Fragment() {
         config_defaultlist.onItemClickListener = OnItemClickListener { _, current, position, _ ->
             val selectState = current.findViewById(R.id.select_state) as CheckBox
             selectState.isChecked = !selectState.isChecked
-            defaultList!![position].put("select_state", !selectState.isChecked)
+            defaultList!![position].selectState = !selectState.isChecked
         }
 
         config_gamelist.onItemClickListener = OnItemClickListener { _, current, position, _ ->
             val selectState = current.findViewById(R.id.select_state) as CheckBox
             selectState.isChecked = !selectState.isChecked
-            gameList!![position].put("select_state", !selectState.isChecked)
+            gameList!![position].selectState = !selectState.isChecked
         }
 
         config_powersavelist.onItemClickListener = OnItemClickListener { _, current, position, _ ->
             val selectState = current.findViewById(R.id.select_state) as CheckBox
             selectState.isChecked = !selectState.isChecked
-            powersaveList!![position].put("select_state", !selectState.isChecked)
+            powersaveList!![position].selectState = !selectState.isChecked
         }
 
         config_fastlist.onItemClickListener = OnItemClickListener { _, current, position, _ ->
             val selectState = current.findViewById(R.id.select_state) as CheckBox
             selectState.isChecked = !selectState.isChecked
-            fastList!![position].put("select_state", !selectState.isChecked)
+            fastList!![position].selectState = !selectState.isChecked
         }
 
         config_ignoredlist.onItemClickListener = OnItemClickListener { _, current, position, _ ->
             val selectState = current.findViewById(R.id.select_state) as CheckBox
             selectState.isChecked = !selectState.isChecked
-            ignoredList!![position].put("select_state", !selectState.isChecked)
+            ignoredList!![position].selectState = !selectState.isChecked
         }
 
         config_search_box.addTextChangedListener(SearchTextWatcher(Runnable {
@@ -210,16 +210,16 @@ class FragmentConfig : Fragment() {
         editor.commit()
     }
 
-    private fun sortAppList(list: ArrayList<HashMap<String, Any>>): ArrayList<HashMap<String, Any>> {
+    private fun sortAppList(list: ArrayList<Appinfo>): ArrayList<Appinfo> {
         list.sortWith(Comparator { l, r ->
-            val les = l["enabled_state"].toString()
-            val res = r["enabled_state"].toString()
+            val les = l.enabledState.toString()
+            val res = r.enabledState.toString()
             when {
                 les < res -> -1
                 les > res -> 1
                 else -> {
-                    val lp = l["packageName"].toString()
-                    val rp = r["packageName"].toString()
+                    val lp = l.packageName.toString()
+                    val rp = r.packageName.toString()
                     when {
                         lp < rp -> -1
                         lp > rp -> 1
@@ -231,17 +231,18 @@ class FragmentConfig : Fragment() {
         return list
     }
 
-    private fun setListData(dl: ArrayList<HashMap<String, Any>>?, lv: ListView) {
+    private fun setListData(dl: ArrayList<Appinfo>?, lv: ListView) {
         myHandler.post {
-            lv.adapter = list_adapter(context, dl)
+            lv.adapter = AppListAdapter(context!!, dl!!)
             processBarDialog.hideDialog()
         }
     }
 
+    @SuppressLint("ApplySharedPref")
     private fun loadList(foreceReload: Boolean = false) {
         processBarDialog.showDialog()
         if (packageManager == null) {
-            packageManager = context.packageManager
+            packageManager = context!!.packageManager
         }
 
         Thread(Runnable {
@@ -261,18 +262,23 @@ class FragmentConfig : Fragment() {
             val search = keyword.isNotEmpty()
             for (i in installedList!!.indices) {
                 val item = installedList!![i]
-                if (item.containsKey("select_state")) {
-                    item.remove("select_state")
-                }
-                item.put("select_state", false)
-                val packageName = item["packageName"].toString()
-                if (search && !(packageName.contains(keyword) || item["name"].toString().contains(keyword))) {
+                item.selectState = false
+                val packageName = item.packageName.toString()
+                if (search && !(packageName.contains(keyword) || item.appName.toString().contains(keyword))) {
                     continue
                 }
                 val config = spfPowercfg.getString(packageName.toLowerCase(), "default")
                 when (config) {
                     "powersave" -> powersaveList!!.add(installedList!![i])
-                    "game" -> gameList!!.add(installedList!![i])
+                    "performance" -> gameList!!.add(installedList!![i])
+                    "game" -> {
+                        gameList!!.add(installedList!![i])
+                        spfPowercfg.edit().putString(installedList!![i].packageName.toString(), "performance").commit()
+                    }
+                    "default" -> {
+                        defaultList!!.add(installedList!![i])
+                        spfPowercfg.edit().remove(installedList!![i].packageName.toString()).commit()
+                    }
                     "fast" -> fastList!!.add(installedList!![i])
                     "igoned" -> ignoredList!!.add(installedList!![i])
                     else -> defaultList!!.add(installedList!![i])
@@ -291,7 +297,7 @@ class FragmentConfig : Fragment() {
 
     //检查配置文件是否已经安装
     private fun checkConfig() {
-        val support = DynamicConfig().DynamicSupport(context)
+        val support = Platform().dynamicSupport(context!!)
         if (support) {
             config_cfg_select.visibility = View.VISIBLE
             config_cfg_select_0.setOnClickListener {
@@ -302,26 +308,26 @@ class FragmentConfig : Fragment() {
             }
         }
         when {
-            File("${Consts.POWER_CFG_PATH}").exists() -> {
+            File(Consts.POWER_CFG_PATH).exists() -> {
                 //TODO：检查是否更新
             }
             support -> {
                 var i = 0
                 AlertDialog.Builder(context)
-                        .setTitle("首次使用，先选择配置偏好")
+                        .setTitle(getString(R.string.first_start_select_config))
                         .setCancelable(false)
-                        .setSingleChoiceItems(arrayOf("保守 - 更加省电", "激进 - 性能优先"), 0, { _, which ->
+                        .setSingleChoiceItems(arrayOf(getString(R.string.conservative), getString(R.string.radicalness)), 0, { _, which ->
                             i = which
                         })
-                        .setNegativeButton("确定", { _, _ ->
+                        .setNegativeButton(R.string.btn_confirm, { _, _ ->
                             installConfig(i > 0)
                         }).create().show()
             }
             else ->
                 AlertDialog.Builder(context)
-                        .setTitle("未找到可用的模式配置文件")
-                        .setMessage("尽管应用没有为您的设备专门适配此功能。但你仍然可以自己创建配置文件（powercfg.sh）并复制到${Consts.POWER_CFG_PATH}。详情可以咨询开发者")
-                        .setNegativeButton("知道了", { _, _ ->
+                        .setTitle(getString(R.string.not_support_config))
+                        .setMessage(String.format(getString(R.string.not_support_config_desc),Consts.POWER_CFG_PATH))
+                        .setNegativeButton(getString(R.string.i_know), { _, _ ->
                         })
                         .create()
                         .show()
@@ -332,8 +338,8 @@ class FragmentConfig : Fragment() {
     private fun installConfig(useBigCore: Boolean) {
         if (context == null) return
 
-        if (!DynamicConfig().DynamicSupport(context!!)) {
-            Snackbar.make(view!!, "未找到对应到当前SOC的调频配置文件！", Snackbar.LENGTH_LONG).show()
+        if (!Platform().dynamicSupport(context!!)) {
+            Snackbar.make(view!!, R.string.not_support_config, Snackbar.LENGTH_LONG).show()
             return
         }
 
@@ -343,28 +349,28 @@ class FragmentConfig : Fragment() {
             val cpuNumber = cpuName.replace("msm", "")
 
             if (useBigCore) {
-                AppShared.WritePrivateFile(ass, cpuName + "/init.qcom.post_boot-bigcore.sh", "init.qcom.post_boot.sh", context)
-                AppShared.WritePrivateFile(ass, cpuName + "/powercfg-bigcore.sh", "powercfg.sh", context)
+                FileWrite.WritePrivateFile(ass, cpuName + "/init.qcom.post_boot-bigcore.sh", "init.qcom.post_boot.sh", context!!)
+                FileWrite.WritePrivateFile(ass, cpuName + "/powercfg-bigcore.sh", "powercfg.sh", context!!)
             } else {
-                AppShared.WritePrivateFile(ass, cpuName + "/init.qcom.post_boot-default.sh", "init.qcom.post_boot.sh", context)
-                AppShared.WritePrivateFile(ass, cpuName + "/powercfg-default.sh", "powercfg.sh", context)
+                FileWrite.WritePrivateFile(ass, cpuName + "/init.qcom.post_boot-default.sh", "init.qcom.post_boot.sh", context!!)
+                FileWrite.WritePrivateFile(ass, cpuName + "/powercfg-default.sh", "powercfg.sh", context!!)
             }
 
             val cmd = StringBuilder()
-                    .append("cp ${AppShared.getPrivateFilePath(context, "init.qcom.post_boot.sh")} ${Consts.POWER_CFG_BASE};")
-                    .append("cp ${AppShared.getPrivateFilePath(context, "powercfg.sh")} ${Consts.POWER_CFG_PATH};")
+                    .append("cp ${FileWrite.getPrivateFilePath(context!!, "init.qcom.post_boot.sh")} ${Consts.POWER_CFG_BASE};")
+                    .append("cp ${FileWrite.getPrivateFilePath(context!!, "powercfg.sh")} ${Consts.POWER_CFG_PATH};")
                     .append("chmod 0777 ${Consts.POWER_CFG_PATH};")
                     .append("chmod 0777 ${Consts.POWER_CFG_BASE};")
                     .append(Consts.ExecuteConfig)
                     .append(Consts.ToggleDefaultMode)
                     .toString().replace("cpuNumber", cpuNumber)
-            cmdshellTools!!.DoCmdSync(cmd)
+            SuDo(context).execCmdSync(cmd)
 
             //ToggleConfig(Configs.Default)
 
-            Snackbar.make(view!!, "配置安装成功！", Snackbar.LENGTH_LONG).show()
+            Snackbar.make(view!!, getString(R.string.config_installed), Snackbar.LENGTH_LONG).show()
         } catch (ex: Exception) {
-            Snackbar.make(view!!, "安装配置文件失败!\n" + ex.message, Snackbar.LENGTH_LONG).show()
+            Snackbar.make(view!!, getString(R.string.config_install_fail) + ex.message, Snackbar.LENGTH_LONG).show()
         }
     }
 
@@ -375,17 +381,17 @@ class FragmentConfig : Fragment() {
      * @param postions 各个序号的选中状态
      * @param config   指定的新模式
      */
-    private fun addToList(list: ArrayList<HashMap<String, Any>>, postions: HashMap<Int, Boolean>, config: Configs) {
+    private fun addToList(list: ArrayList<Appinfo>, postions: HashMap<Int, Boolean>, config: Configs) {
         postions.keys
                 .filter { postions[it] == true }
                 .map { list[it] }
                 .forEach {
                     when (config) {
-                        Configs.Default -> editor.putString(it["packageName"].toString().toLowerCase(), "default")
-                        Configs.Game -> editor.putString(it["packageName"].toString().toLowerCase(), "game")
-                        Configs.PowerSave -> editor.putString(it["packageName"].toString().toLowerCase(), "powersave")
-                        Configs.Fast -> editor.putString(it["packageName"].toString().toLowerCase(), "fast")
-                        Configs.Ignored -> editor.putString(it["packageName"].toString().toLowerCase(), "igoned")
+                        Configs.Default -> editor.putString(it.packageName.toString().toLowerCase(), "balance")
+                        Configs.Game -> editor.putString(it.packageName.toString().toLowerCase(), "performance")
+                        Configs.PowerSave -> editor.putString(it.packageName.toString().toLowerCase(), "powersave")
+                        Configs.Fast -> editor.putString(it.packageName.toString().toLowerCase(), "fast")
+                        Configs.Ignored -> editor.putString(it.packageName.toString().toLowerCase(), "igoned")
                     }
                 }
         editor.commit()
@@ -409,9 +415,8 @@ class FragmentConfig : Fragment() {
     }
 
     companion object {
-        fun createPage(shellTools: cmd_shellTools): Fragment {
+        fun createPage(): Fragment {
             val fragment = FragmentConfig()
-            fragment.cmdshellTools = shellTools
             return fragment
         }
     }

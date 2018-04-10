@@ -12,21 +12,21 @@ import kotlinx.android.synthetic.main.layout_reward.*
 
 
 class FragmentReward : Fragment() {
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
             inflater!!.inflate(R.layout.layout_reward, container, false)
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         reward_alipay.setOnClickListener({
             try {
-                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("HTTPS://QR.ALIPAY.COM/FKX04429SWVGJZNETBJHD6".toLowerCase())))
+                context!!.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("HTTPS://QR.ALIPAY.COM/FKX04429SWVGJZNETBJHD6".toLowerCase())))
             } catch (ex: Exception) {
                 Toast.makeText(context, "调用浏览器失败~", Toast.LENGTH_SHORT).show()
             }
         })
         reward_wechat.setOnClickListener({
             try {
-                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("wxp://f2f0B9VzSuz_RlKssYfgIt1vaIaMb9xmNaiF")))
+                context!!.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("wxp://f2f0B9VzSuz_RlKssYfgIt1vaIaMb9xmNaiF")))
             } catch (ex: Exception) {
                 Toast.makeText(context, "启动微信失败~", Toast.LENGTH_SHORT).show()
             }

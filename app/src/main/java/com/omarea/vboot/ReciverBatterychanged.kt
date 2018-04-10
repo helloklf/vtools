@@ -72,7 +72,7 @@ class ReciverBatterychanged : BroadcastReceiver() {
             return
 
         if (globalSharedPreferences!!.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false))
-            showMsg("充电器已连接！", false)
+            showMsg(context!!.getString(R.string.power_connected), false)
         doCmd(Consts.FastChanger)
         doCmd("echo ${qcLimit}000 > /sys/class/power_supply/battery/constant_charge_current_max;")
     }
@@ -116,7 +116,7 @@ class ReciverBatterychanged : BroadcastReceiver() {
                 //电量不足，恢复充电功能
                 else if (action == Intent.ACTION_BATTERY_LOW) {
                     doCmd(Consts.ResumeChanger)
-                    Toast.makeText(this.context, "电池电量低，请及时充电！", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this.context, context.getString(R.string.battery_low), Toast.LENGTH_SHORT).show()
                     bp = false
                 } else if (bp && batteryLevel != -1 && batteryLevel < sharedPreferences!!.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85) - 20) {
                     //电量低于保护级别20

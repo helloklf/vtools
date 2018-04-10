@@ -19,7 +19,7 @@
                 android:background="#33dddddd"
                 android:id="@android:id/tabs"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"></TabWidget>
+                android:layout_height="wrap_content" />
 
             <FrameLayout
                 android:id="@android:id/tabcontent"
@@ -34,7 +34,7 @@
                     <ListView
                         android:id="@+id/addin_system_listview"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"></ListView>
+                        android:layout_height="wrap_content" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -46,7 +46,7 @@
                     <ListView
                         android:id="@+id/addin_soft_listview"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"></ListView>
+                        android:layout_height="wrap_content" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -58,7 +58,7 @@
                     <ListView
                         android:id="@+id/addin_custom_listview"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"></ListView>
+                        android:layout_height="wrap_content" />
                 </FrameLayout>
 
             </FrameLayout>

@@ -3,20 +3,24 @@
     package="com.omarea.vboot"
     android:installLocation="internalOnly">
 
-    <uses-permission android:name="android.permission.BATTERY_STATS" />
     <uses-permission android:name="android.permission.ACCESS_SUPERUSER" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <!-- <uses-permission  android:name="android.permission.PACKAGE_USAGE_STATS" /> -->
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.BIND_ACCESSIBILITY_SERVICE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
-    <!-- <uses-permission android:name="android.permission.REMOVE_TASKS" /> -->
-    <!-- <uses-permission android:name="android.permission.INJECT_EVENTS" /> -->
+    <!--
+    <uses-permission android:name="android.permission.BATTERY_STATS" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.BIND_ACCESSIBILITY_SERVICE" />
+    <uses-permission  android:name="android.permission.PACKAGE_USAGE_STATS" />
+    <uses-permission android:name="android.permission.REMOVE_TASKS" />
+    <uses-permission android:name="android.permission.INJECT_EVENTS" />
+    -->
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/linux"
@@ -24,15 +28,6 @@
         android:persistent="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <meta-data
-            android:name="xposedmodule"
-            android:value="true" />
-        <meta-data
-            android:name="xposeddescription"
-            android:value="提供一些实用的功能" />
-        <meta-data
-            android:name="xposedminversion"
-            android:value="30" />
 
         <service
             android:name=".AccessibilityServiceVTools"
@@ -40,7 +35,6 @@
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
-
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.accessibilityservice.AccessibilityService" />
             </intent-filter>
@@ -62,7 +56,6 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -106,12 +99,6 @@
             android:finishOnTaskLaunch="false"
             android:label="@string/title_activity_shortcut"
             android:launchMode="standard" />
-
-        <provider
-            android:name="com.omarea.shared.PowerContentProvider"
-            android:authorities="com.omarea.vboot"
-            android:enabled="true"
-            android:exported="true"></provider>
     </application>
 
 </manifest>

@@ -2,15 +2,16 @@ package com.omarea.shared
 
 import android.content.Context
 import android.content.res.AssetManager
-import org.json.JSONException
-import org.json.JSONObject
-import java.io.*
-import java.nio.charset.Charset
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
 
 /**
+ * 提供公共方法，向外置存储读写文件
  * Created by helloklf on 2016/8/27.
  */
-object AppShared {
+object FileWrite {
     var baseUrl = "${Consts.SDCardDir}/Android/data/${Consts.PACKAGE_NAME}/"
 
     fun WriteFile(ass: AssetManager, file: String, hasExtName: Boolean) {
@@ -31,10 +32,10 @@ object AppShared {
             raf.write(datas,0,len);
             raf.close();
             */
-            val dir = File(AppShared.baseUrl)
+            val dir = File(FileWrite.baseUrl)
             if (!dir.exists())
                 dir.mkdirs()
-            val filePath = AppShared.baseUrl + if (hasExtName)
+            val filePath = FileWrite.baseUrl + if (hasExtName)
                 file
             else
                 file.substring(0, if (file.lastIndexOf(".") > 0) file.lastIndexOf(".") else file.length)
@@ -58,10 +59,10 @@ object AppShared {
             val datas = ByteArray(2 * 1024 * 1024)
             //inputStream.available()
             val len = inputStream.read(datas)
-            val dir = File(AppShared.baseUrl)
+            val dir = File(FileWrite.baseUrl)
             if (!dir.exists())
                 dir.mkdirs()
-            val filePath = AppShared.baseUrl + outName
+            val filePath = FileWrite.baseUrl + outName
 
             val fileOutputStream = FileOutputStream(filePath)
             fileOutputStream.write(datas, 0, len)

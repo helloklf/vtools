@@ -15,12 +15,12 @@ import android.widget.CheckBox
 import android.widget.HeaderViewListAdapter
 import android.widget.ListView
 import android.widget.TabHost
-import com.omarea.shared.Appinfo
 import com.omarea.shared.Consts
+import com.omarea.shared.model.Appinfo
 import com.omarea.ui.AppListAdapter
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.ui.SearchTextWatcher
-import com.omarea.units.AppListHelper2
+import com.omarea.shared.AppListHelper
 import com.omarea.vboot.dialogs.DialogAppOptions
 import com.omarea.vboot.dialogs.DialogSingleAppOptions
 import kotlinx.android.synthetic.main.layout_applictions.*
@@ -29,7 +29,7 @@ import java.util.*
 
 class FragmentApplistions : Fragment() {
     private lateinit var processBarDialog: ProgressBarDialog
-    private lateinit var appListHelper: AppListHelper2
+    private lateinit var appListHelper: AppListHelper
     private var installedList: ArrayList<Appinfo>? = null
     private var systemList: ArrayList<Appinfo>? = null
     private var backupedList: ArrayList<Appinfo>? = null
@@ -48,20 +48,20 @@ class FragmentApplistions : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
             inflater!!.inflate(R.layout.layout_applictions, container, false)
 
     @SuppressLint("InflateParams")
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        processBarDialog = ProgressBarDialog(this.context)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        processBarDialog = ProgressBarDialog(this.context!!)
 
         val tabHost = view!!.findViewById(R.id.blacklist_tabhost) as TabHost
         tabHost.setup()
-        tabHost.addTab(tabHost.newTabSpec("tab_1").setContent(R.id.tab_apps_user).setIndicator("用户"))
-        tabHost.addTab(tabHost.newTabSpec("tab_2").setContent(R.id.tab_apps_system).setIndicator("系统"))
-        tabHost.addTab(tabHost.newTabSpec("tab_3").setContent(R.id.tab_apps_backuped).setIndicator("已备份"))
-        tabHost.addTab(tabHost.newTabSpec("tab_3").setContent(R.id.tab_apps_helper).setIndicator("帮助"))
+        tabHost.addTab(tabHost.newTabSpec("tab_1").setContent(R.id.tab_apps_user).setIndicator(getString(R.string.use)))
+        tabHost.addTab(tabHost.newTabSpec("tab_2").setContent(R.id.tab_apps_system).setIndicator(getString(R.string.system)))
+        tabHost.addTab(tabHost.newTabSpec("tab_3").setContent(R.id.tab_apps_backuped).setIndicator(getString(R.string.backuped)))
+        tabHost.addTab(tabHost.newTabSpec("tab_3").setContent(R.id.tab_apps_helper).setIndicator(getString(R.string.help)))
         tabHost.currentTab = 3
 
         apps_userlist.addHeaderView(this.getLayoutInflater().inflate(R.layout.app_list_headerview, null))
@@ -71,21 +71,21 @@ class FragmentApplistions : Fragment() {
         apps_userlist.setOnItemLongClickListener({
             parent, _, position, id ->
             val adapter = (parent.adapter as HeaderViewListAdapter).wrappedAdapter
-            DialogSingleAppOptions(context, adapter.getItem(position - 1) as Appinfo, myHandler).showUserAppOptions()
+            DialogSingleAppOptions(context!!, adapter.getItem(position - 1) as Appinfo, myHandler).showUserAppOptions()
             true
         })
 
         apps_systemlist.setOnItemLongClickListener({
             parent, _, position, id ->
             val adapter = (parent.adapter as HeaderViewListAdapter).wrappedAdapter
-            DialogSingleAppOptions(context, adapter.getItem(position - 1) as Appinfo, myHandler).showSystemAppOptions()
+            DialogSingleAppOptions(context!!, adapter.getItem(position - 1) as Appinfo, myHandler).showSystemAppOptions()
             true
         })
 
         apps_backupedlist.setOnItemLongClickListener({
             parent, _, position, id ->
             val adapter = (parent.adapter as HeaderViewListAdapter).wrappedAdapter
-            DialogSingleAppOptions(context, adapter.getItem(position - 1) as Appinfo, myHandler).showBackupAppOptions()
+            DialogSingleAppOptions(context!!, adapter.getItem(position - 1) as Appinfo, myHandler).showBackupAppOptions()
             true
         })
 
@@ -93,34 +93,34 @@ class FragmentApplistions : Fragment() {
             val adapter = (apps_userlist.adapter as HeaderViewListAdapter).wrappedAdapter
             val selectedItems = (adapter as AppListAdapter).getSelectedItems()
             if (selectedItems.size == 0) {
-                Snackbar.make(view, "一个应用也没有选中！", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(view, getString(R.string.app_selected_none), Snackbar.LENGTH_SHORT).show()
                 return@OnClickListener
             }
 
-            DialogAppOptions(context, selectedItems, myHandler).selectUserAppOptions()
+            DialogAppOptions(context!!, selectedItems, myHandler).selectUserAppOptions()
         })
 
         fab_apps_system.setOnClickListener(View.OnClickListener {
             val adapter = (apps_systemlist.adapter as HeaderViewListAdapter).wrappedAdapter
             val selectedItems = (adapter as AppListAdapter).getSelectedItems()
             if (selectedItems.size == 0) {
-                Snackbar.make(view, "一个应用也没有选中！", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(view, getString(R.string.app_selected_none), Snackbar.LENGTH_SHORT).show()
                 return@OnClickListener
             }
-            DialogAppOptions(context, selectedItems, myHandler).selectSystemAppOptions()
+            DialogAppOptions(context!!, selectedItems, myHandler).selectSystemAppOptions()
         })
 
         fab_apps_backuped.setOnClickListener(View.OnClickListener {
             val adapter = (apps_backupedlist.adapter as HeaderViewListAdapter).wrappedAdapter
             val selectedItems = (adapter as AppListAdapter).getSelectedItems()
             if (selectedItems.size == 0) {
-                Snackbar.make(view, "一个应用也没有选中！", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(view, getString(R.string.app_selected_none), Snackbar.LENGTH_SHORT).show()
                 return@OnClickListener
             }
-            DialogAppOptions(context, selectedItems, myHandler).selectBackupOptions()
+            DialogAppOptions(context!!, selectedItems, myHandler).selectBackupOptions()
         })
 
-        appListHelper = AppListHelper2(context)
+        appListHelper = AppListHelper(context!!)
         setList()
         apps_search_box.setOnEditorActionListener({ _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
@@ -160,13 +160,12 @@ class FragmentApplistions : Fragment() {
                     return@post
                 }
                 processBarDialog.hideDialog()
-                val adapter = AppListAdapter(context, dl, apps_search_box.text.toString().toLowerCase())
+                val adapter = AppListAdapter(context!!, dl, apps_search_box.text.toString().toLowerCase())
                 lv.adapter = adapter
                 lv.onItemClickListener = OnItemClickListener { list, itemView, _, _ ->
                     try {
                         val checkBox = itemView.findViewById(R.id.select_state) as CheckBox
                         checkBox.isChecked = !checkBox.isChecked
-                        //checkBox.isChecked = adapter.getIsAllSelected()
                         val all = lv.findViewById<CheckBox>(R.id.select_state_all)
                         all.isChecked = adapter.getIsAllSelected()
                     } catch (ex: Exception) {

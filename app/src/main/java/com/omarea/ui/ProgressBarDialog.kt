@@ -11,6 +11,7 @@ import com.omarea.shell.AsynSuShellUnit
 import com.omarea.vboot.R
 
 /**
+ * Loading弹窗
  * Created by Hello on 2018/02/27.
  */
 
@@ -27,13 +28,13 @@ open class ProgressBarDialog(private var context: Context) {
             if (msg.what == 10) {
                 alertDialog!!.dismiss()
                 alertDialog!!.hide()
-                Toast.makeText(alertDialog!!.context, "操作已执行", Toast.LENGTH_SHORT).show()
+                Toast.makeText(alertDialog!!.context, R.string.execute_success, Toast.LENGTH_SHORT).show()
             } else if (msg.what == -1) {
-                Toast.makeText(alertDialog!!.context, "执行失败！", Toast.LENGTH_SHORT).show()
+                Toast.makeText(alertDialog!!.context, R.string.execute_fail, Toast.LENGTH_SHORT).show()
             } else if (msg.what == 0 && msg.obj == false) {
                 alertDialog!!.dismiss()
                 alertDialog!!.hide()
-                Toast.makeText(alertDialog!!.context, "执行失败！", Toast.LENGTH_SHORT).show()
+                Toast.makeText(alertDialog!!.context, R.string.execute_fail, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -44,7 +45,7 @@ open class ProgressBarDialog(private var context: Context) {
         val layoutInflater = LayoutInflater.from(context)
         val dialog = layoutInflater.inflate(R.layout.dialog_app_options, null)
         val textView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
-        textView.text = "正在执行，请稍等..."
+        textView.text = context.getString(R.string.execute_wait)
         alert = AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
         if (handler == null) {
             AsynSuShellUnit(defaultHandler(alert)).exec(cmd).waitFor()

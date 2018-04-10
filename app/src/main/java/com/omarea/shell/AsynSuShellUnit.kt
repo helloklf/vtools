@@ -1,6 +1,7 @@
 package com.omarea.shell
 
 import android.os.Handler
+import java.nio.charset.Charset
 
 /**
  * Created by helloklf on 2017/12/01.
@@ -60,10 +61,10 @@ class AsynSuShellUnit(var handler: Handler) {
             return this
         }
         val outputStream = process!!.outputStream
-        val writer = outputStream.bufferedWriter()
-        writer.write(cmd)
-        writer.write("\n\n")
-        writer.flush()
+        outputStream.write("\n\n".toByteArray(Charset.forName("UTF-8")))
+        outputStream.write(cmd.toByteArray(Charset.forName("UTF-8")))
+        outputStream.write("\n\n".toByteArray(Charset.forName("UTF-8")))
+        outputStream.flush()
         return this
     }
 

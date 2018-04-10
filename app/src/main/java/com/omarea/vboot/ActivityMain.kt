@@ -2,11 +2,7 @@ package com.omarea.vboot
 
 import android.Manifest
 import android.app.ActivityManager
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
-import android.content.pm.ShortcutManager
+import android.content.*
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -21,15 +17,16 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ProgressBar
 import android.widget.Toast
 import com.omarea.shared.CrashHandler
 import com.omarea.shared.SpfConfig
-import com.omarea.shared.cmd_shellTools
 import com.omarea.shell.Busybox
 import com.omarea.shell.CheckRootStatus
+import com.omarea.shell.KernelProrp
+import com.omarea.shell.SuDo
 import com.omarea.shell.units.BatteryUnit
 import com.omarea.ui.AppShortcutManager
 import com.omarea.vboot.dialogs.DialogPower
@@ -38,8 +35,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     lateinit internal var thisview: AppCompatActivity
-    lateinit internal var cmdshellTools: cmd_shellTools
-    lateinit internal var progressBar: ProgressBar
     private var hasRoot = false
 
     internal var myHandler: android.os.Handler = Handler()
@@ -79,9 +74,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         crashHandler.init(this)
 
         thisview = this
-        progressBar = findViewById(R.id.shell_on_execute) as ProgressBar
-        cmdshellTools = cmd_shellTools(this, progressBar)
-
         checkFileWrite()
         checkRoot(Runnable {
             hasRoot = true
@@ -98,7 +90,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         try {
             setHomePage()
         } catch (ex: Exception) {
-            AlertDialog.Builder(this).setTitle("抱歉").setMessage("启动应用失败\n" + ex.message).setNegativeButton("重试", { _, _ ->
+            AlertDialog.Builder(this).setTitle(getString(R.string.sorry)).setMessage("启动应用失败\n" + ex.message).setNegativeButton("重试", { _, _ ->
                 setHomePage()
             }).create().show()
         }
@@ -145,7 +137,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun checkRoot(next: Runnable, skip: Runnable) {
-        CheckRootStatus(progressBar, this, next, skip).forceGetRoot()
+        CheckRootStatus(this, next, skip).forceGetRoot()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -223,10 +215,11 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_home -> fragment = FragmentHome()
             R.id.nav_booster -> fragment = FragmentBooster.createPage()
             R.id.nav_applictions -> fragment = FragmentApplistions.createPage()
-            R.id.nav_swap -> fragment = FragmentSwap.createPage(cmdshellTools)
-            R.id.nav_battery -> fragment = FragmentBattery.createPage(cmdshellTools)
-            R.id.nav_img -> fragment = FragmentImg.createPage(this, cmdshellTools)
+            R.id.nav_swap -> fragment = FragmentSwap.createPage()
+            R.id.nav_battery -> fragment = FragmentBattery.createPage()
+            R.id.nav_img -> fragment = FragmentImg.createPage(this)
             R.id.nav_core_control -> fragment = FragmentCpuControl.newInstance()
+            R.id.nav_whitelist -> fragment = FragmentWhitelist.createPage()
             R.id.nav_share -> {
                 val sendIntent = Intent()
                 sendIntent.action = Intent.ACTION_SEND
@@ -235,7 +228,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 startActivity(sendIntent)
             }
             R.id.nav_feedback -> startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(application.getString(R.string.feedback_link))))
-            R.id.nav_profile -> fragment = FragmentConfig.createPage(cmdshellTools)
+            R.id.nav_profile -> fragment = FragmentConfig.createPage()
             R.id.nav_additional -> fragment = FragmentAddin.createPage(this)
             R.id.nav_reward -> fragment = FragmentReward.createPage()
             R.id.nav_xposed -> {
@@ -243,7 +236,11 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 try {
                     startActivity(Intent().setComponent(ComponentName("com.omarea.vaddin", "com.omarea.vaddin.MainActivity")))
                 } catch (e: Exception) {
-                    Toast.makeText(this, getString(R.string.xposed_cannot_openaddin), Toast.LENGTH_SHORT).show()
+                    AlertDialog.Builder(this).setTitle("Fail！")
+                            .setMessage( getString(R.string.xposed_cannot_openaddin))
+                            .setPositiveButton(R.string.btn_confirm, DialogInterface.OnClickListener { dialog, which ->  })
+                            .create()
+                            .show()
                 }
             }
         }

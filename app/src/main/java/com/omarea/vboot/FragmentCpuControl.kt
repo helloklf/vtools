@@ -1,5 +1,6 @@
 package com.omarea.vboot
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
@@ -65,27 +66,43 @@ class FragmentCpuControl : Fragment() {
         }
     }
 
+    /*
+    * 获得近似值
+    */
+    private fun getApproximation(arr: Array<String>, value: String): String {
+        if (arr.contains(value)) {
+            return value
+        } else {
+            var approximation = if ( arr.size > 0 ) arr[0] else ""
+            for (item in arr) {
+                if (item <= value) {
+                    approximation  = item
+                } else {
+                    break
+                }
+            }
+
+            return approximation
+        }
+    }
+
+    @SuppressLint("InflateParams")
     private fun bindEvent() {
         thermal_core_control.setOnCheckedChangeListener({ buttonView, isChecked ->
             ThermalControlUtils.setCoreControlState(isChecked, this.context)
-            updateState()
         })
         thermal_vdd.setOnCheckedChangeListener({ buttonView, isChecked ->
             ThermalControlUtils.setVDDRestrictionState(isChecked, this.context)
-            updateState()
         })
         thermal_paramters.setOnCheckedChangeListener({ buttonView, isChecked ->
             ThermalControlUtils.setTheramlState(isChecked, this.context)
-            updateState()
         })
 
         cpu_sched_boost.setOnCheckedChangeListener({ buttonView, isChecked ->
             CpuFrequencyUtils.setSechedBoostState(isChecked, this.context)
-            updateState()
         })
 
         val next = Runnable {
-            updateState()
         }
 
         cluster_little_min_freq.onItemSelectedListener = ItemSelected(R.id.cluster_little_min_freq, next)
@@ -160,8 +177,7 @@ class FragmentCpuControl : Fragment() {
         cpu_inputboost_time.setOnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
                 CpuFrequencyUtils.setInputBoosterTime(v.text.toString())
-                updateState()
-                val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 // 得到InputMethodManager的实例
                 if (imm.isActive()) {
                     // 如果开启
@@ -174,7 +190,6 @@ class FragmentCpuControl : Fragment() {
             val core = i
             cores[core].setOnCheckedChangeListener { buttonView, isChecked ->
                 CpuFrequencyUtils.setCoreOnlineState(core, isChecked)
-                updateState()
             }
         }
     }
@@ -255,8 +270,8 @@ class FragmentCpuControl : Fragment() {
     private fun updateState() {
         Thread(Runnable {
             try {
-                status.cluster_little_min_freq = littleFreqs.indexOf(CpuFrequencyUtils.getCurrentMinFrequency(0))
-                status.cluster_little_max_freq = littleFreqs.indexOf(CpuFrequencyUtils.getCurrentMaxFrequency(0))
+                status.cluster_little_min_freq = littleFreqs.indexOf(getApproximation(littleFreqs, CpuFrequencyUtils.getCurrentMinFrequency(0)))
+                status.cluster_little_max_freq = littleFreqs.indexOf(getApproximation(littleFreqs,CpuFrequencyUtils.getCurrentMaxFrequency(0)))
                 status.cluster_little_governor = littleGovernor.indexOf(CpuFrequencyUtils.getCurrentScalingGovernor(0))
                 status.coreControl = ThermalControlUtils.getCoreControlState()
                 status.vdd = ThermalControlUtils.getVDDRestrictionState()
@@ -266,8 +281,8 @@ class FragmentCpuControl : Fragment() {
                 status.boostTime = CpuFrequencyUtils.getInputBoosterTime()
 
                 if (hasBigCore) {
-                    status.cluster_big_min_freq = bigFreqs.indexOf(CpuFrequencyUtils.getCurrentMinFrequency(1))
-                    status.cluster_big_max_freq = bigFreqs.indexOf(CpuFrequencyUtils.getCurrentMaxFrequency(1))
+                    status.cluster_big_min_freq = bigFreqs.indexOf(getApproximation(bigFreqs,CpuFrequencyUtils.getCurrentMinFrequency(1)))
+                    status.cluster_big_max_freq = bigFreqs.indexOf(getApproximation(bigFreqs,CpuFrequencyUtils.getCurrentMaxFrequency(1)))
                     status.cluster_big_governor = bigGovernor.indexOf(CpuFrequencyUtils.getCurrentScalingGovernor(1))
                 }
 
@@ -334,7 +349,7 @@ class FragmentCpuControl : Fragment() {
         } catch (ex: Exception) { }
     }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         Thread(Runnable {
@@ -382,8 +397,8 @@ class FragmentCpuControl : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater!!.inflate(R.layout.fragment_cpu_control, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_cpu_control, container, false)
     }
 
     companion object {
@@ -392,4 +407,4 @@ class FragmentCpuControl : Fragment() {
             return fragment
         }
     }
-}// Required empty public constructor
+}

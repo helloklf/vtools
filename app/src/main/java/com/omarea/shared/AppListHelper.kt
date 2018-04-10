@@ -1,25 +1,18 @@
-package com.omarea.units
+package com.omarea.shared
 
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import com.omarea.shared.Consts
+import com.omarea.shared.model.Appinfo
 import java.io.File
-import java.io.FileFilter
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 /**
  * Created by helloklf on 2017/12/01.
  */
-
-class AppListHelper {
+class AppListHelper(context: Context) {
     var packageManager: PackageManager
-
-    constructor(context: Context) {
-        packageManager = context.packageManager
-    }
 
     //应用忽略列表 一些关键性的应用
     internal var ignore: ArrayList<String> = object : ArrayList<String>() {
@@ -116,10 +109,10 @@ class AppListHelper {
         }
     }
 
-    fun getAppList(systemApp: Boolean? = null, removeIgnore: Boolean = true): ArrayList<HashMap<String, Any>> {
+    fun getAppList(systemApp: Boolean? = null, removeIgnore: Boolean = true): ArrayList<Appinfo> {
         val packageInfos = packageManager.getInstalledApplications(0)
 
-        val list = ArrayList<HashMap<String, Any>>()/*在数组中存放数据*/
+        val list = ArrayList<Appinfo>()/*在数组中存放数据*/
         for (i in packageInfos.indices) {
             val packageInfo = packageInfos[i]
 
@@ -127,45 +120,43 @@ class AppListHelper {
                 continue
             }
 
-            if ((systemApp == false && packageInfo.sourceDir.startsWith("/system")) || (systemApp == true && packageInfo.sourceDir.startsWith("/data")))
+            if ((systemApp == false && packageInfo.sourceDir.startsWith("/system")) || (systemApp == true && !packageInfo.sourceDir.startsWith("/system")))
                 continue
 
             val file = File(packageInfo.publicSourceDir)
             if (!file.exists())
                 continue
 
-            val item = HashMap<String, Any>()
-            val d = packageInfo.loadIcon(packageManager)
-            item.put("icon", d)
-            item.put("select_state", false)
-            item.put("dir", packageInfo.sourceDir)
-            item.put("enabled", packageInfo.enabled)
-            item.put("enabled_state", checkBackup(packageInfo))
-            item.put("wran_state", if (packageInfo.enabled) "" else "已冻结")
+            val item = Appinfo.getItem()
+            //val d = packageInfo.loadIcon(packageManager)
+            item.appName = packageInfo.loadLabel(packageManager)
+            item.packageName = packageInfo.packageName
+            //item.icon = d
+            item.dir = file.parent
+            item.enabled = packageInfo.enabled
+            item.enabledState = checkBackup(packageInfo)
+            item.wranState = if (packageInfo.enabled) "" else "已冻结"
+            item.path = packageInfo.sourceDir
 
-            item.put("name", packageInfo.loadLabel(packageManager))
-            item.put("packageName", packageInfo.packageName)
-            item.put("path", packageInfo.sourceDir)
-            item.put("dir", file.parent)
             list.add(item)
         }
         return (list)
     }
 
-    fun getUserAppList(): ArrayList<HashMap<String, Any>> {
+    fun getUserAppList(): ArrayList<Appinfo> {
         return getAppList(false)
     }
 
-    fun getSystemAppList(): ArrayList<HashMap<String, Any>> {
+    fun getSystemAppList(): ArrayList<Appinfo> {
         return getAppList(true)
     }
 
-    fun getAll(): ArrayList<HashMap<String, Any>> {
+    fun getAll(): ArrayList<Appinfo> {
         return getAppList(null, false)
     }
 
-    fun getApkFilesInfoList(dirPath: String): ArrayList<HashMap<String, Any>> {
-        val list = ArrayList<HashMap<String, Any>>()
+    fun getApkFilesInfoList(dirPath: String): ArrayList<Appinfo> {
+        val list = ArrayList<Appinfo>()
         val dir = File(dirPath)
         if (!dir.exists())
             return list
@@ -198,14 +189,14 @@ class AppListHelper {
                     applicationInfo.sourceDir = absPath
                     applicationInfo.publicSourceDir = absPath
 
-                    val item = HashMap<String, Any>()
-                    val d = applicationInfo.loadIcon(packageManager)
-                    item.put("icon", d)
-                    item.put("select_state", false)
-                    item.put("name", applicationInfo.loadLabel(packageManager).toString() + "  (" + packageInfo.versionCode + ")")
-                    item.put("packageName", applicationInfo.packageName)
-                    item.put("path", applicationInfo.sourceDir)
-                    item.put("enabled_state", checkInstall(packageInfo))
+                    val item = Appinfo.getItem()
+                    //val d = applicationInfo.loadIcon(packageManager)
+                    //item.icon = d
+                    item.selectState = false
+                    item.appName = applicationInfo.loadLabel(packageManager).toString() + "  (" + packageInfo.versionCode + ")"
+                    item.packageName = applicationInfo.packageName
+                    item.path = applicationInfo.sourceDir
+                    item.enabledState = checkInstall(packageInfo)
                     list.add(item)
                 }
             } catch (ex: Exception) {
@@ -213,5 +204,9 @@ class AppListHelper {
         }
 
         return list
+    }
+
+    init {
+        packageManager = context.packageManager
     }
 }

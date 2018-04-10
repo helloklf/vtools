@@ -3,14 +3,11 @@ package com.omarea.vboot.dialogs
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
 import android.support.v7.app.AlertDialog
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
-import com.omarea.shared.Consts
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.SuDo
 import com.omarea.vboot.R

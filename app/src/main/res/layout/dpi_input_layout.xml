@@ -17,7 +17,7 @@
         android:layout_height="wrap_content" android:maxLength="3" />
     <CheckBox
         android:id="@+id/hide_in_recent"
-        android:text="从最近任务列表隐藏"
+        android:text="@string/exclude_recent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

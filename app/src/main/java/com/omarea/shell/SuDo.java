@@ -1,17 +1,18 @@
 package com.omarea.shell;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
-
 import java.io.DataOutputStream;
 import java.io.IOException;
 
 /**
+ * 使用ROOT权限执行命令
  * Created by Hello on 2017/12/03.
  */
 
 public class SuDo {
-    Context context;
+    private Context context;
 
     public SuDo(Context context) {
         this.context = context;
@@ -23,35 +24,38 @@ public class SuDo {
     }
 
     //执行命令
-    public void execCmdSync(String cmd) {
+    public boolean execCmdSync(String cmd) {
         try {
             Process p = Runtime.getRuntime().exec("su");
             DataOutputStream out = new DataOutputStream(p.getOutputStream());
-            out.writeBytes(cmd);
+            out.write(cmd.getBytes("UTF-8"));
             out.writeBytes("\n");
             out.writeBytes("exit\n");
             out.writeBytes("exit\n");
             out.flush();
             p.waitFor();
+            Log.d("r", "" + p.exitValue());
+            return p.exitValue() == 0;
         } catch (IOException e) {
             noRoot();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
+        return false;
     }
 
     public void execCmd(String cmd) {
         try {
             Process p = Runtime.getRuntime().exec("su");
             DataOutputStream out = new DataOutputStream(p.getOutputStream());
-            out.writeBytes(cmd);
+            out.write(cmd.getBytes("UTF-8"));
             out.writeBytes("\n");
             out.writeBytes("exit\n");
             out.writeBytes("exit\n");
             out.flush();
         } catch (IOException e) {
             noRoot();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
     }

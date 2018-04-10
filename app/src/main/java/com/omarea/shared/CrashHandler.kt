@@ -1,8 +1,6 @@
 package com.omarea.shared
 
-import android.app.AlertDialog
 import android.content.Context
-import android.os.Looper
 
 /**
  * Created by Hello on 2017/5/24.

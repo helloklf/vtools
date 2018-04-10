@@ -1,6 +1,7 @@
 package com.omarea.shared.helper
 
 /**
+ * 电源模式枚举类型
  * Created by Hello on 2018/01/23.
  */
 

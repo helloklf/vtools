@@ -5,10 +5,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-
 import com.omarea.vboot.R;
 
 /**
+ * 显示简单文本内容的Adapter
  * Created by Hello on 2018/02/01.
  */
 
