@@ -62,10 +62,6 @@
     <item android:title="@string/menu_menu_title">
         <menu>
             <item
-                android:id="@+id/nav_reward"
-                android:icon="@drawable/ic_menu_reward"
-                android:title="@string/menu_reward" />
-            <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
                 android:title="@string/menu_share" />

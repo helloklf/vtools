@@ -19,6 +19,7 @@ import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
 import com.omarea.shared.ServiceHelper
 import com.omarea.shared.SpfConfig
+import com.omarea.ui.OverScrollListView
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.ui.list_adapter
 import kotlinx.android.synthetic.main.layout_booster.*
@@ -136,7 +137,7 @@ class FragmentBooster : Fragment() {
         processBarDialog.hideDialog()
     }
 
-    private fun setListData(dl: ArrayList<HashMap<String, Any>>, lv: ListView) {
+    private fun setListData(dl: ArrayList<HashMap<String, Any>>, lv: OverScrollListView) {
         myHandler.post {
             processBarDialog.hideDialog()
             lv.adapter = list_adapter(context, dl)

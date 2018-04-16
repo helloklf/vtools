@@ -11,18 +11,15 @@ import android.os.Handler
 import android.provider.Settings
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.CheckBox
-import android.widget.ListView
 import com.omarea.shared.*
 import com.omarea.shell.DynamicConfig
 import com.omarea.shell.Platform
+import com.omarea.ui.OverScrollListView
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.ui.SearchTextWatcher
 import com.omarea.ui.list_adapter
@@ -231,7 +228,7 @@ class FragmentConfig : Fragment() {
         return list
     }
 
-    private fun setListData(dl: ArrayList<HashMap<String, Any>>?, lv: ListView) {
+    private fun setListData(dl: ArrayList<HashMap<String, Any>>?, lv: OverScrollListView) {
         myHandler.post {
             lv.adapter = list_adapter(context, dl)
             processBarDialog.hideDialog()

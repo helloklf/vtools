@@ -30,7 +30,7 @@
                 android:id="@android:id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#33dddddd"></TabWidget>
+                android:background="#33dddddd" />
 
             <FrameLayout
                 android:id="@android:id/tabcontent"
@@ -42,10 +42,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <ListView
+                    <com.omarea.ui.OverScrollListView
                         android:id="@+id/config_defaultlist"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"></ListView>
+                        android:layout_height="match_parent" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -54,10 +54,10 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <ListView
+                    <com.omarea.ui.OverScrollListView
                         android:id="@+id/config_gamelist"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"></ListView>
+                        android:layout_height="match_parent" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -66,10 +66,10 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <ListView
+                    <com.omarea.ui.OverScrollListView
                         android:id="@+id/config_powersavelist"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"></ListView>
+                        android:layout_height="match_parent" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -78,10 +78,10 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <ListView
+                    <com.omarea.ui.OverScrollListView
                         android:id="@+id/config_fastlist"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"></ListView>
+                        android:layout_height="match_parent" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -90,10 +90,10 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <ListView
+                    <com.omarea.ui.OverScrollListView
                         android:id="@+id/config_ignoredlist"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"></ListView>
+                        android:layout_height="match_parent" />
                 </FrameLayout>
 
                 <FrameLayout

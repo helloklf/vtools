@@ -14,27 +14,23 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
             <TabWidget
                 android:background="#33dddddd"
                 android:id="@android:id/tabs"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"></TabWidget>
-
+                android:layout_height="wrap_content" />
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
-
                 <FrameLayout
                     android:id="@+id/system"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-
-                    <ListView
+                    <com.omarea.ui.OverScrollListView
                         android:id="@+id/addin_system_listview"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"></ListView>
+                        android:layout_height="wrap_content" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -42,11 +38,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
-
-                    <ListView
+                    <com.omarea.ui.OverScrollListView
                         android:id="@+id/addin_soft_listview"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"></ListView>
+                        android:layout_height="wrap_content" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -54,13 +49,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
-
-                    <ListView
+                    <com.omarea.ui.OverScrollListView
                         android:id="@+id/addin_custom_listview"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"></ListView>
+                        android:layout_height="wrap_content" />
                 </FrameLayout>
-
             </FrameLayout>
         </LinearLayout>
     </TabHost>

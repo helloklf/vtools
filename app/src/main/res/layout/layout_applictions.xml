@@ -50,7 +50,7 @@
                         android:layout_margin="@dimen/fab_margin"
                         android:src="@drawable/check" />
 
-                    <ListView
+                    <com.omarea.ui.OverScrollListView
                         android:id="@+id/apps_userlist"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
@@ -70,7 +70,7 @@
                         android:layout_margin="@dimen/fab_margin"
                         android:src="@drawable/check" />
 
-                    <ListView
+                    <com.omarea.ui.OverScrollListView
                         android:id="@+id/apps_systemlist"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
@@ -91,7 +91,7 @@
                         android:layout_margin="@dimen/fab_margin"
                         android:src="@drawable/check" />
 
-                    <ListView
+                    <com.omarea.ui.OverScrollListView
                         android:id="@+id/apps_backupedlist"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />

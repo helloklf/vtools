@@ -13,11 +13,11 @@ import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.CheckBox
 import android.widget.HeaderViewListAdapter
-import android.widget.ListView
 import android.widget.TabHost
 import com.omarea.shared.Appinfo
 import com.omarea.shared.Consts
 import com.omarea.ui.AppListAdapter
+import com.omarea.ui.OverScrollListView
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.ui.SearchTextWatcher
 import com.omarea.units.AppListHelper2
@@ -70,6 +70,8 @@ class FragmentApplistions : Fragment() {
 
         apps_userlist.setOnItemLongClickListener({
             parent, _, position, id ->
+            if (position < 1)
+                return@setOnItemLongClickListener false
             val adapter = (parent.adapter as HeaderViewListAdapter).wrappedAdapter
             DialogSingleAppOptions(context, adapter.getItem(position - 1) as Appinfo, myHandler).showUserAppOptions()
             true
@@ -77,6 +79,8 @@ class FragmentApplistions : Fragment() {
 
         apps_systemlist.setOnItemLongClickListener({
             parent, _, position, id ->
+            if (position < 1)
+                return@setOnItemLongClickListener false
             val adapter = (parent.adapter as HeaderViewListAdapter).wrappedAdapter
             DialogSingleAppOptions(context, adapter.getItem(position - 1) as Appinfo, myHandler).showSystemAppOptions()
             true
@@ -84,6 +88,8 @@ class FragmentApplistions : Fragment() {
 
         apps_backupedlist.setOnItemLongClickListener({
             parent, _, position, id ->
+            if (position < 1)
+                return@setOnItemLongClickListener false
             val adapter = (parent.adapter as HeaderViewListAdapter).wrappedAdapter
             DialogSingleAppOptions(context, adapter.getItem(position - 1) as Appinfo, myHandler).showBackupAppOptions()
             true
@@ -151,7 +157,7 @@ class FragmentApplistions : Fragment() {
         }).start()
     }
 
-    private fun setListData(dl: ArrayList<Appinfo>?, lv: ListView) {
+    private fun setListData(dl: ArrayList<Appinfo>?, lv: OverScrollListView) {
         if (dl == null)
             return
         myHandler.post {
