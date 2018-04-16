@@ -70,6 +70,8 @@ class FragmentApplistions : Fragment() {
 
         apps_userlist.setOnItemLongClickListener({
             parent, _, position, id ->
+            if (position < 1)
+                return@setOnItemLongClickListener true
             val adapter = (parent.adapter as HeaderViewListAdapter).wrappedAdapter
             DialogSingleAppOptions(context!!, adapter.getItem(position - 1) as Appinfo, myHandler).showUserAppOptions()
             true
@@ -77,6 +79,8 @@ class FragmentApplistions : Fragment() {
 
         apps_systemlist.setOnItemLongClickListener({
             parent, _, position, id ->
+            if (position < 1)
+                return@setOnItemLongClickListener true
             val adapter = (parent.adapter as HeaderViewListAdapter).wrappedAdapter
             DialogSingleAppOptions(context!!, adapter.getItem(position - 1) as Appinfo, myHandler).showSystemAppOptions()
             true
@@ -84,6 +88,8 @@ class FragmentApplistions : Fragment() {
 
         apps_backupedlist.setOnItemLongClickListener({
             parent, _, position, id ->
+            if (position < 1)
+                return@setOnItemLongClickListener true
             val adapter = (parent.adapter as HeaderViewListAdapter).wrappedAdapter
             DialogSingleAppOptions(context!!, adapter.getItem(position - 1) as Appinfo, myHandler).showBackupAppOptions()
             true
