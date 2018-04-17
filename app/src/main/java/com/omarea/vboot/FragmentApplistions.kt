@@ -13,11 +13,11 @@ import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.CheckBox
 import android.widget.HeaderViewListAdapter
+import android.widget.ListView
 import android.widget.TabHost
 import com.omarea.shared.Consts
 import com.omarea.shared.model.Appinfo
 import com.omarea.ui.AppListAdapter
-import com.omarea.ui.OverScrollListView
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.ui.SearchTextWatcher
 import com.omarea.shared.AppListHelper
@@ -157,7 +157,7 @@ class FragmentApplistions : Fragment() {
         }).start()
     }
 
-    private fun setListData(dl: ArrayList<Appinfo>?, lv: OverScrollListView) {
+    private fun setListData(dl: ArrayList<Appinfo>?, lv: ListView) {
         if (dl == null)
             return
         myHandler.post {
