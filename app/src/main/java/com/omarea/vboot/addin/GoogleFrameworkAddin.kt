@@ -1,5 +1,6 @@
 package com.omarea.vboot.addin
 
+import android.app.AlertDialog
 import android.content.Context
 
 /**
@@ -7,7 +8,24 @@ import android.content.Context
  */
 
 class GoogleFrameworkAddin(private var context: Context) : AddinBase(context) {
-    fun disableFramework() {
+    fun showOption() {
+        val arr = arrayOf("冻结谷歌基础4件套", "解冻")
+        var index = 0
+        AlertDialog.Builder(context)
+                .setTitle("请选择操作")
+                .setSingleChoiceItems(arr, index, { _, which ->
+                    index = which
+                })
+                .setNegativeButton("确定", { _, _ ->
+                    when (index) {
+                        0 -> disableFramework()
+                        1 -> enableFramework()
+                    }
+                })
+                .create().show()
+    }
+
+    private fun disableFramework() {
         command = StringBuilder()
                 .append("pm disable com.google.android.gsf;")
                 .append("pm disable com.google.android.gsf.login;")
@@ -18,7 +36,7 @@ class GoogleFrameworkAddin(private var context: Context) : AddinBase(context) {
         super.run()
     }
 
-    fun enableFramework() {
+    private fun enableFramework() {
         command = StringBuilder()
                 .append("pm enable com.google.android.gsf;")
                 .append("pm enable com.google.android.gsf.login;")

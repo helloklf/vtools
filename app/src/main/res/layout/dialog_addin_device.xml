@@ -56,6 +56,7 @@
         android:textColor="#888"
         android:textSize="12dp"
         android:layout_marginTop="20dp"
+        android:layout_marginBottom="6dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <LinearLayout
@@ -66,25 +67,33 @@
             android:text="@string/r11"
             android:layout_width="60dp"
             android:textSize="12dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="32dp"
+            android:background="@drawable/btn_bg"
+            android:layout_marginRight="6dp" />
         <Button
             android:id="@+id/dialog_addin_x20"
             android:text="@string/x20"
             android:layout_width="50dp"
             android:textSize="12dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="32dp"
+            android:background="@drawable/btn_bg"
+            android:layout_marginRight="6dp" />
         <Button
             android:id="@+id/dialog_addin_ipx"
             android:text="@string/ipx"
             android:layout_width="50dp"
             android:textSize="12dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="32dp"
+            android:background="@drawable/btn_bg"
+            android:layout_marginRight="6dp" />
         <Button
             android:id="@+id/dialog_addin_default"
-            android:text="Default"
+            android:text="默认"
             android:textSize="12dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="32dp"
+            android:background="@drawable/btn_bg"
+            android:layout_marginRight="6dp" />
     </LinearLayout>
 
 </LinearLayout>

@@ -1,5 +1,6 @@
 package com.omarea.shell.units;
 
+import com.omarea.shared.Consts;
 import com.omarea.shell.KernelProrp;
 import com.omarea.shell.SuDo;
 
@@ -12,7 +13,7 @@ import java.io.File;
 public class BatteryUnit {
     //是否兼容此设备
     public boolean isSupport() {
-        return new File("/sys/class/power_supply/bms/uevent").exists() || (qcSettingSuupport() || bpSetting());
+        return new File("/sys/class/power_supply/bms/uevent").exists() || (qcSettingSuupport() || bpSettingSuupport());
     }
 
     //快充是否支持修改充电速度设置
@@ -39,7 +40,7 @@ public class BatteryUnit {
     }
 
     //快充是否支持电池保护
-    public boolean bpSetting() {
+    public boolean bpSettingSuupport() {
         return new File("/sys/class/power_supply/battery/battery_charging_enabled").exists() || new File("/sys/class/power_supply/battery/input_suspend").exists();
     }
 

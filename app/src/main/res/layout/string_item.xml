@@ -1,3 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"  android:layout_height="wrap_content" android:id="@+id/text"/>
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"  android:layout_height="wrap_content" android:id="@+id/text" />

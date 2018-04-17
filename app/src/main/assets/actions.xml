@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<actions>
+    <action root="true">
+        <title>调整DPI</title>
+        <desc>快速调整手机DPI，不需要重启</desc>
+        <script>
+            wm size reset;
+            wm density $dpi;
+            busybox killall com.android.systemui;
+        </script>
+        <params>
+            <param name="dpi" value="440">
+                <option val="480">默认（480）</option>
+                <option val="440">适中（440）</option>
+                <option val="410">较小（410）</option>
+                <option val="380">很小（380）</option>
+            </param>
+        </params>
+    </action>
+    <action root="true">
+        <title>自定义DPI、分辨率</title>
+        <desc>输入无效的设置会导致系统界面奔溃，可能需要重置手机才能恢复，请谨慎操作！</desc>
+        <script>file:///android_asset/scripts/display.sh</script>
+        <params>
+            <param name="dpi" desc="请输入DPI，推荐值：400~480" type="int" value="440" maxlength="3" />
+            <param name="width" desc="请输入屏幕横向分辨率" type="int" value="1080" maxlength="4" />
+            <param name="height" desc="请输入屏幕纵向向分辨率" type="int" value="1920" maxlength="4" />
+        </params>
+    </action>
+    <action root="true" confirm="false">
+        <title>开关核心</title>
+        <desc>单独控制CPU核心[在线/离线]状态</desc>
+        <script>file:///android_asset/scripts/core_control.sh</script>
+        <params>
+            <param name="cpu5" type="bool" value="1" desc="CPU4" />
+            <param name="cpu6" type="bool" value="1" desc="CPU5" />
+            <param name="cpu7" type="bool" value="1" desc="CPU6" />
+            <param name="cpu8" type="bool" value="1" desc="CPU7" />
+        </params>
+    </action>
+</actions>

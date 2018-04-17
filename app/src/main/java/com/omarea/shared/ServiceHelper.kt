@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Handler
-import android.os.Message
 import android.view.accessibility.AccessibilityManager
 import android.widget.Toast
 import com.omarea.shared.helper.*

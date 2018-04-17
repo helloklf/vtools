@@ -138,7 +138,7 @@
     <string name="accessbility_dynconfig">动态响应</string>
     <string name="accessbility_dynconfig_desc">为每个应用单独配置性能模式，在切换应用时自动调整CPU和GPU频率，具体设置请在在本应用性能配置中配</string>
     <string name="accessbility_bp">充电保护</string>
-    <string name="accessbility_bp_desc">限制手机只能充电到指定百分比，浅充浅放有助于保护电池。但可能导致电量显示不精准。</string>
+    <string name="accessbility_bp_desc">充电到指定百分百时自动禁止充电功能，浅充浅放有助于保护电池。但可能导致电量显示不精准。</string>
     <string name="accessbility_bp_level_desc">电量限制值（默认85%）</string>
     <string name="settings_qc_limit_desc">充电速度限制(mA)，默认将限制提升至5000mA。</string>
     <string name="accessbility_debug">调试模式</string>
@@ -169,8 +169,6 @@
     <string name="menu_reward">捐赠</string>
 
     <string name="system">系统</string>
-    <string name="software">软件</string>
-    <string name="advance">高级</string>
 
     <string name="title_vbootresize">VBOOT容量调整</string>
     <string name="title_activity_rom2zip">打包当前ROM</string>
@@ -267,23 +265,17 @@
     <string name="device_unsupport">该功能暂不支持您的设备！</string>
 
     <string name="addin_qq_clear">QQ净化</string>
-    <string name="addin_qq_clear_desc">干掉QQ个性气泡、字体、头像挂件，会重启QQ</string>
-    <string name="addin_qq_reset">QQ净化恢复</string>
-    <string name="addin_qq_reset_desc">恢复QQ个性气泡、字体、头像挂件，会重启QQ</string>
-    <string name="addin_fullscreen_on">开启沉浸模式</string>
+    <string name="addin_qq_clear_desc">干掉/恢复QQ个性气泡、字体、头像挂件，会重启QQ</string>
+    <string name="addin_fullscreen_on">沉浸式体验</string>
     <string name="addin_fullscreen_on_desc">自动隐藏状态栏、导航栏</string>
-    <string name="addin_fullscreen_off">禁用沉浸模式</string>
-    <string name="addin_fullscreen_off_desc">恢复状态栏、导航栏自动显示</string>
     <string name="addin_flyme_static_blur">减少Flyme6模糊</string>
-    <string name="addin_flyme_static_blur_desc">禁用Flyme6下拉通知中心的实时模糊效果，以减少在游戏或视频播放时下拉通知中心的卡顿，或许还能省电</string>
+    <string name="addin_flyme_static_blur_desc">禁用Flyme6下拉通知中心的实时模糊效果，以减少魅族低端机在游戏或视频播放时下拉通知中心的卡顿，或许还能省电，需要重启。</string>
     <string name="addin_miui_hide_search">MIUI9去通知中心搜索</string>
     <string name="addin_miui_hide_search_desc">默认隐藏MIUI9系统下拉通知中心的搜索框，重启后生效</string>
-    <string name="addin_disable_x_desc">禁用网络可用性检测，去除类原生系统状态栏上WIIF、4G图标的!和x</string>
-    <string name="addin_disable_x">隐藏!和×</string>
-    <string name="addin_disable_google">冻结谷歌套件</string>
-    <string name="addin_disable_google_desc">冻结谷歌服务基础4件套，以减少待机耗电</string>
-    <string name="addin_enable_google">解冻谷歌套件</string>
-    <string name="addin_enable_google_desc">解冻谷歌4件套</string>
+    <string name="addin_disable_x">修复!和×</string>
+    <string name="addin_disable_x_desc">将网络可用性检测地址设为国内服务器，从而去除类原生系统状态栏上WIIF、4G图标的!和x</string>
+    <string name="addin_disable_google">冻结/解冻 谷歌套件</string>
+    <string name="addin_disable_google_desc">冻结谷歌服务基础4件套，可以减少待机耗电</string>
     <string name="addin_dpi">DPI、分辨率修改</string>
     <string name="addin_dpi_desc">自定义手机DPI或分辨率，这可能导致设备无法正常启动或UI错误</string>
     <string name="addin_deviceinfo">机型修改</string>
@@ -296,24 +288,10 @@
     <string name="addin_pm_dexopt_desc">适用于Android N+，调整应用编译策略，可以选择更快的安装应用或缓慢的安装更流畅的运行。</string>
     <string name="addin_drop_caches">内存清理</string>
     <string name="addin_drop_caches_desc"><![CDATA[Linux标准缓存清理命令：echo 3 > /proc/sys/vm/drop_caches]]></string>
-    <string name="addin_thermal_remove">干掉温控模块</string>
-    <string name="addin_thermal_remove_desc">这可以确保手机性能更加稳定，但会显著增加发热，同时也会导致MIUI系统的CPU智能调度失效，需要重启手机。</string>
-    <string name="addin_thermal_resume">恢复温控模块</string>
-    <string name="addin_thermal_resume_desc">如果你后悔了想把温控还原回来，可以点这个。需要重启手机</string>
-    <string name="addin_thermal_close">关闭温控</string>
-    <string name="addin_thermal_close_desc">临时关闭温控，不需要重启手机，重启后失效</string>
+    <string name="addin_thermal_remove">删除、恢复、禁用温控</string>
+    <string name="addin_thermal_remove_desc">禁用温控可确保手机性能更加稳定，但会显著增加发热，同时也会导致MIUI系统的CPU智能调度失效，需要重启手机。</string>
     <string name="addin_del_pwd">删除锁屏密码</string>
-    <string name="addin_del_pwd_desc">如果你忘了锁屏密码，或者恢复系统后密码不正确，这能帮你解决。会重启手机</string>
-    <string name="addin_charge_disable">禁止充电</string>
-    <string name="addin_charge_disable_desc">停止对电池充电，同时使用USB电源为手机供电。（与充电加速和电池保护功能冲突！）</string>
-    <string name="addin_charge_enable">恢复充电</string>
-    <string name="addin_charge_enable_desc">恢复对电池充电，由设备自行管理充放。</string>
-    <string name="addin_device_r11">改机型为OPPO R11</string>
-    <string name="addin_device_r11_desc">将机型信息改为OPPO R11 Plus，以便在王者荣耀或获得专属优化体验。（会导致部分设备软件fc）</string>
-    <string name="addin_device_x20">改机型为vivo X20</string>
-    <string name="addin_device_x20_desc">将机型信息改为vivo X20，据说比改OPPO R11还好用？（会导致部分设备软件fc）</string>
-    <string name="addin_restore_buildprop">build.prop参数还原</string>
-    <string name="addin_restore_buildprop_desc">使用了DPI修改和机型伪装的小伙伴，可以点这个还原到上次修改前的状态</string>
+    <string name="addin_del_pwd_desc">如果你的设备处于加密状态（大部分设备默认都是），请不要点这个！！！</string>
     <string name="addin_adb_network">开启网络ADB</string>
     <string name="addin_wifi">查看保存的WIFI</string>
     <string name="addin_wifi_desc">查看已保存的WIFI信息，通过读取/data/misc/wifi/wpa_supplicant.conf 或 /data/misc/wifi/WifiConfigStore.xml（Android Oreo+）</string>
@@ -321,7 +299,6 @@
     <string name="addin_battery_history_del_desc">通过删除/data/system/batterystats-checkin.bin、/data/system/batterystats-daily.xml、/data/system/batterystats.bin 来清空系统的电池使用记录，会重启手机！</string>
     <string name="addin_adb_network_desc">开启网络adb前，请先连接wifi。开启后通过同一局域网下的电脑，使用adb connect %s:5555 命令连接</string>
     <string name="addin_execute">确定执行？</string>
-    <string name="addin_execute_message">\n\n请确保你已了解此功能的用途，并清楚对设备的影响</string>
     <string name="swap_on_close">正在关闭SWAP，这可能很慢</string>
     <string name="on_execute_please_wait">正在执行操作，请稍等...</string>
     <string name="executed">操作已完成！</string>

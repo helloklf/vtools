@@ -114,29 +114,35 @@ class AppListHelper(context: Context) {
 
         val list = ArrayList<Appinfo>()/*在数组中存放数据*/
         for (i in packageInfos.indices) {
-            val packageInfo = packageInfos[i]
-
-            if (removeIgnore && ignore.contains(packageInfo.packageName) || exclude(packageInfo.packageName)) {
+            val applicationInfo = packageInfos[i]
+            if (removeIgnore && ignore.contains(applicationInfo.packageName) || exclude(applicationInfo.packageName)) {
                 continue
             }
 
-            if ((systemApp == false && packageInfo.sourceDir.startsWith("/system")) || (systemApp == true && !packageInfo.sourceDir.startsWith("/system")))
+            if ((systemApp == false && applicationInfo.sourceDir.startsWith("/system")) || (systemApp == true && !applicationInfo.sourceDir.startsWith("/system")))
                 continue
 
-            val file = File(packageInfo.publicSourceDir)
+            val file = File(applicationInfo.publicSourceDir)
             if (!file.exists())
                 continue
 
             val item = Appinfo.getItem()
             //val d = packageInfo.loadIcon(packageManager)
-            item.appName = packageInfo.loadLabel(packageManager)
-            item.packageName = packageInfo.packageName
+            item.appName = applicationInfo.loadLabel(packageManager)
+            item.packageName = applicationInfo.packageName
             //item.icon = d
             item.dir = file.parent
-            item.enabled = packageInfo.enabled
-            item.enabledState = checkBackup(packageInfo)
-            item.wranState = if (packageInfo.enabled) "" else "已冻结"
-            item.path = packageInfo.sourceDir
+            item.enabled = applicationInfo.enabled
+            item.enabledState = checkBackup(applicationInfo)
+            item.wranState = if (applicationInfo.enabled) "" else "已冻结"
+            item.path = applicationInfo.sourceDir
+            item.appType = if (applicationInfo.sourceDir.startsWith("/system")) Appinfo.AppType.SYSTEM else Appinfo.AppType.USER
+            try {
+                val packageInfo = packageManager.getPackageInfo(packageInfos[i].packageName, 0)
+                item.versionName = packageInfo.versionName
+                item.versionCode = packageInfo.versionCode
+            } catch (ex: Exception) {
+            }
 
             list.add(item)
         }
@@ -190,13 +196,14 @@ class AppListHelper(context: Context) {
                     applicationInfo.publicSourceDir = absPath
 
                     val item = Appinfo.getItem()
-                    //val d = applicationInfo.loadIcon(packageManager)
-                    //item.icon = d
                     item.selectState = false
                     item.appName = applicationInfo.loadLabel(packageManager).toString() + "  (" + packageInfo.versionCode + ")"
                     item.packageName = applicationInfo.packageName
                     item.path = applicationInfo.sourceDir
                     item.enabledState = checkInstall(packageInfo)
+                    item.versionName = packageInfo.versionName
+                    item.versionCode = packageInfo.versionCode
+                    item.appType = Appinfo.AppType.BACKUPFILE
                     list.add(item)
                 }
             } catch (ex: Exception) {

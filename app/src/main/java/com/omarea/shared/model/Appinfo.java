@@ -21,4 +21,14 @@ public class Appinfo {
     public CharSequence path = "";
     public CharSequence dir = "";
     public Boolean enabled = false;
+    public String versionName = "";
+    public int versionCode = 0;
+    public AppType appType = AppType.UNKNOW;
+
+    public enum AppType {
+        UNKNOW,
+        USER,
+        SYSTEM,
+        BACKUPFILE
+    }
 }

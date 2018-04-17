@@ -72,7 +72,7 @@
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
-            <android.support.v7.widget.CardView android:layout_height="wrap_content"
+            <android.support.v7.widget.CardView android:id="@+id/bp_cardview" android:visibility="gone" android:layout_height="wrap_content"
                 android:layout_width="match_parent" android:layout_marginTop="10dp" android:paddingBottom="10dp">
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -108,6 +108,36 @@
                         android:text="@string/accessbility_bp_level_desc"
                         android:textAppearance="?android:attr/textAppearanceSmall" />
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:orientation="vertical">
+                        <TextView
+                            android:paddingLeft="8dp"
+                            android:layout_marginTop="10dp"
+                            android:text="手动控制"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                        <LinearLayout
+                            android:layout_gravity="right"
+                            android:padding="8dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:orientation="horizontal">
+                            <Button
+                                android:id="@+id/bp_disable_charge"
+                                android:elevation="2dp"
+                                android:background="@drawable/btn_bg"
+                                android:text="禁止充电"
+                                android:layout_width="wrap_content"
+                                android:layout_height="36dp" android:layout_marginRight="10dp" />
+                            <Button
+                                android:id="@+id/bp_enable_charge"
+                                android:elevation="2dp"
+                                android:background="@drawable/btn_bg"
+                                android:text="恢复充电"
+                                android:layout_width="wrap_content"
+                                android:layout_height="36dp" />
+                        </LinearLayout>
+                    </LinearLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
@@ -124,6 +154,40 @@
                     android:layout_marginRight="21dp"
                     android:text="@string/battery_uevent_title"
                     android:textSize="11sp" />
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:layout_marginBottom="10dp">
+                <LinearLayout
+                    android:padding="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:orientation="vertical">
+                    <TextView
+                        android:text="电池使用记录"
+                        android:layout_marginBottom="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                    <LinearLayout
+                        android:layout_gravity="right"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:orientation="horizontal">
+                        <Button
+                            android:id="@+id/btn_battery_history"
+                            android:elevation="2dp"
+                            android:background="@drawable/btn_bg"
+                            android:text="查看记录"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp" android:layout_marginRight="10dp" />
+                        <Button
+                            android:id="@+id/btn_battery_history_del"
+                            android:elevation="2dp"
+                            android:background="@drawable/btn_bg"
+                            android:text="删除记录"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp" android:layout_marginRight="10dp" />
+                    </LinearLayout>
+                </LinearLayout>
             </android.support.v7.widget.CardView>
         </LinearLayout>
     </ScrollView>

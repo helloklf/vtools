@@ -1,6 +1,7 @@
 package com.omarea.vboot
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.*
 import android.os.BatteryManager
 import android.os.Bundle
@@ -12,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.TextView
+import android.widget.Toast
 import com.omarea.shared.Consts
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.SuDo
@@ -178,14 +180,56 @@ class FragmentBattery : Fragment() {
             settings_qc_limit_current.visibility = View.GONE
         }
 
-        if (!batteryUnits.bpSetting()) {
+        if (!batteryUnits.bpSettingSuupport()) {
             settings_bp.isEnabled = false
             spf.edit().putBoolean(SpfConfig.CHARGE_SPF_BP, false).commit()
-            settings_bp_level.isEnabled = false
+
+            bp_cardview.visibility = View.GONE
+        } else {
+            bp_cardview.visibility = View.VISIBLE
+        }
+
+        btn_battery_history.setOnClickListener {
+            try {
+                val powerUsageIntent = Intent(Intent.ACTION_POWER_USAGE_SUMMARY)
+                val resolveInfo = context!!.getPackageManager().resolveActivity(powerUsageIntent, 0)
+                // check that the Battery app exists on this device
+                if (resolveInfo != null) {
+                    startActivity(powerUsageIntent)
+                }
+                /*
+                Intent intent = new Intent("/");
+                ComponentName cm = new ComponentName("com.android.settings","com.android.settings.BatteryInfo ");
+                intent.setComponent(cm);
+                intent.setAction("android.intent.action.VIEW");
+                activity.startActivityForResult( intent , 0);
+                */
+            } catch (ex: Exception) {
+
+            }
+        }
+        btn_battery_history_del.setOnClickListener {
+            AlertDialog.Builder(context!!)
+                    .setTitle("需要重启")
+                    .setMessage("删除电池使用记录需要立即重启手机，是否继续？")
+                    .setPositiveButton(R.string.btn_confirm, DialogInterface.OnClickListener { dialog, which ->
+                        SuDo(context!!).execCmdSync(Consts.DeleteBatteryHistory)
+                    })
+                    .setNegativeButton(R.string.btn_cancel, DialogInterface.OnClickListener { dialog, which -> })
+                    .create().show()
+        }
+
+        bp_disable_charge.setOnClickListener {
+            SuDo(context).execCmdSync(Consts.DisableChanger)
+            Toast.makeText(context!!, "充电功能已禁止！", Toast.LENGTH_SHORT).show()
+        }
+        bp_enable_charge.setOnClickListener {
+            SuDo(context).execCmdSync(Consts.ResumeChanger)
+            Toast.makeText(context!!, "充电功能已恢复！", Toast.LENGTH_SHORT).show()
         }
     }
 
-    class  OnSeekBarChangeListener(private var next:Runnable, private var spf: SharedPreferences, private var spfProp:String) : SeekBar.OnSeekBarChangeListener {
+    class OnSeekBarChangeListener(private var next: Runnable, private var spf: SharedPreferences, private var spfProp: String) : SeekBar.OnSeekBarChangeListener {
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
         }
 

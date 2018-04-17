@@ -10,11 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
-import android.widget.CheckBox
-import android.widget.HeaderViewListAdapter
-import android.widget.ListView
-import android.widget.TabHost
 import com.omarea.shared.Consts
 import com.omarea.shared.model.Appinfo
 import com.omarea.ui.AppListAdapter
@@ -50,13 +47,13 @@ class FragmentApplistions : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
-            inflater!!.inflate(R.layout.layout_applictions, container, false)
+            inflater.inflate(R.layout.layout_applictions, container, false)
 
     @SuppressLint("InflateParams")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         processBarDialog = ProgressBarDialog(this.context!!)
 
-        val tabHost = view!!.findViewById(R.id.blacklist_tabhost) as TabHost
+        val tabHost = view.findViewById(R.id.blacklist_tabhost) as TabHost
         tabHost.setup()
         tabHost.addTab(tabHost.newTabSpec("tab_1").setContent(R.id.tab_apps_user).setIndicator(getString(R.string.use)))
         tabHost.addTab(tabHost.newTabSpec("tab_2").setContent(R.id.tab_apps_system).setIndicator(getString(R.string.system)))
@@ -68,62 +65,27 @@ class FragmentApplistions : Fragment() {
         apps_systemlist.addHeaderView(this.getLayoutInflater().inflate(R.layout.app_list_headerview, null))
         apps_backupedlist.addHeaderView(this.getLayoutInflater().inflate(R.layout.app_list_headerview, null))
 
-        apps_userlist.setOnItemLongClickListener({
-            parent, _, position, id ->
+        val onItemLongClick = AdapterView.OnItemLongClickListener { parent, _, position, id ->
             if (position < 1)
-                return@setOnItemLongClickListener true
+                return@OnItemLongClickListener true
             val adapter = (parent.adapter as HeaderViewListAdapter).wrappedAdapter
-            DialogSingleAppOptions(context!!, adapter.getItem(position - 1) as Appinfo, myHandler).showUserAppOptions()
+            val app = adapter.getItem(position - 1) as Appinfo
+            DialogSingleAppOptions(context!!, app, myHandler).showSingleAppOptions()
             true
+        }
+
+        apps_userlist.setOnItemLongClickListener(onItemLongClick)
+        apps_systemlist.setOnItemLongClickListener(onItemLongClick)
+        apps_backupedlist.setOnItemLongClickListener(onItemLongClick)
+
+        fab_apps_user.setOnClickListener({
+            getSelectedAppShowOptions(Appinfo.AppType.USER)
         })
-
-        apps_systemlist.setOnItemLongClickListener({
-            parent, _, position, id ->
-            if (position < 1)
-                return@setOnItemLongClickListener true
-            val adapter = (parent.adapter as HeaderViewListAdapter).wrappedAdapter
-            DialogSingleAppOptions(context!!, adapter.getItem(position - 1) as Appinfo, myHandler).showSystemAppOptions()
-            true
+        fab_apps_system.setOnClickListener({
+            getSelectedAppShowOptions(Appinfo.AppType.SYSTEM)
         })
-
-        apps_backupedlist.setOnItemLongClickListener({
-            parent, _, position, id ->
-            if (position < 1)
-                return@setOnItemLongClickListener true
-            val adapter = (parent.adapter as HeaderViewListAdapter).wrappedAdapter
-            DialogSingleAppOptions(context!!, adapter.getItem(position - 1) as Appinfo, myHandler).showBackupAppOptions()
-            true
-        })
-
-        fab_apps_user.setOnClickListener(View.OnClickListener {
-            val adapter = (apps_userlist.adapter as HeaderViewListAdapter).wrappedAdapter
-            val selectedItems = (adapter as AppListAdapter).getSelectedItems()
-            if (selectedItems.size == 0) {
-                Snackbar.make(view, getString(R.string.app_selected_none), Snackbar.LENGTH_SHORT).show()
-                return@OnClickListener
-            }
-
-            DialogAppOptions(context!!, selectedItems, myHandler).selectUserAppOptions()
-        })
-
-        fab_apps_system.setOnClickListener(View.OnClickListener {
-            val adapter = (apps_systemlist.adapter as HeaderViewListAdapter).wrappedAdapter
-            val selectedItems = (adapter as AppListAdapter).getSelectedItems()
-            if (selectedItems.size == 0) {
-                Snackbar.make(view, getString(R.string.app_selected_none), Snackbar.LENGTH_SHORT).show()
-                return@OnClickListener
-            }
-            DialogAppOptions(context!!, selectedItems, myHandler).selectSystemAppOptions()
-        })
-
-        fab_apps_backuped.setOnClickListener(View.OnClickListener {
-            val adapter = (apps_backupedlist.adapter as HeaderViewListAdapter).wrappedAdapter
-            val selectedItems = (adapter as AppListAdapter).getSelectedItems()
-            if (selectedItems.size == 0) {
-                Snackbar.make(view, getString(R.string.app_selected_none), Snackbar.LENGTH_SHORT).show()
-                return@OnClickListener
-            }
-            DialogAppOptions(context!!, selectedItems, myHandler).selectBackupOptions()
+        fab_apps_backuped.setOnClickListener({
+            getSelectedAppShowOptions(Appinfo.AppType.BACKUPFILE)
         })
 
         appListHelper = AppListHelper(context!!)
@@ -137,6 +99,27 @@ class FragmentApplistions : Fragment() {
         apps_search_box.addTextChangedListener(SearchTextWatcher(Runnable {
             searchApp()
         }))
+    }
+
+    private fun getSelectedAppShowOptions(apptype: Appinfo.AppType) {
+        var adapter:Adapter? = null
+        when (apptype) {
+            Appinfo.AppType.USER -> adapter = apps_userlist.adapter
+            Appinfo.AppType.SYSTEM -> adapter = apps_systemlist.adapter
+            Appinfo.AppType.BACKUPFILE -> adapter = apps_backupedlist.adapter
+            else -> {
+            }
+        }
+        if (adapter == null)
+            return
+        adapter = (adapter as HeaderViewListAdapter).wrappedAdapter
+        val selectedItems = (adapter as AppListAdapter).getSelectedItems()
+        if (selectedItems.size == 0) {
+            Snackbar.make(this.view!!, getString(R.string.app_selected_none), Snackbar.LENGTH_SHORT).show()
+            return
+        }
+
+        DialogAppOptions(context!!, selectedItems, myHandler).selectUserAppOptions()
     }
 
     private fun searchApp() {
@@ -168,26 +151,24 @@ class FragmentApplistions : Fragment() {
                 processBarDialog.hideDialog()
                 val adapter = AppListAdapter(context!!, dl, apps_search_box.text.toString().toLowerCase())
                 lv.adapter = adapter
-                lv.onItemClickListener = OnItemClickListener { list, itemView, _, _ ->
-                    try {
-                        val checkBox = itemView.findViewById(R.id.select_state) as CheckBox
-                        checkBox.isChecked = !checkBox.isChecked
-                        val all = lv.findViewById<CheckBox>(R.id.select_state_all)
-                        all.isChecked = adapter.getIsAllSelected()
-                    } catch (ex: Exception) {
+                lv.onItemClickListener = OnItemClickListener { list, itemView, postion, _ ->
+                    if (postion == 0) {
                         val checkBox = itemView.findViewById(R.id.select_state_all) as CheckBox
                         checkBox.isChecked = !checkBox.isChecked
                         adapter.setSelecteStateAll(checkBox.isChecked)
                         adapter.notifyDataSetChanged()
+                    } else {
+                        val checkBox = itemView.findViewById(R.id.select_state) as CheckBox
+                        checkBox.isChecked = !checkBox.isChecked
+                        val all = lv.findViewById<CheckBox>(R.id.select_state_all)
+                        all.isChecked = adapter.getIsAllSelected()
                     }
                 }
+                val all = lv.findViewById<CheckBox>(R.id.select_state_all)
+                all.isChecked = false
             } catch (ex: Exception) {
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     companion object {

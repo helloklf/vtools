@@ -3,7 +3,11 @@ package com.omarea.ui
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
@@ -65,12 +69,18 @@ class AppListAdapter(private val context: Context, apps: ArrayList<Appinfo>, pri
         return position.toLong()
     }
 
+    private fun keywordSearch(item: Appinfo, text: String): Boolean {
+        return item.packageName.toString().toLowerCase().contains(text)
+                || item.appName.toString().toLowerCase().contains(text)
+                || item.path.toString().toLowerCase().contains(text)
+    }
+
     private fun filterAppList(appList: ArrayList<Appinfo>, keywords: String): ArrayList<Appinfo> {
         val text = keywords.toLowerCase()
         if (text.isEmpty())
             return appList
         return java.util.ArrayList(appList.filter { item ->
-            item.packageName.toString().toLowerCase().contains(text) || item.appName.toString().toLowerCase().contains(text)
+            keywordSearch(item, text)
         })
     }
 
@@ -115,9 +125,9 @@ class AppListAdapter(private val context: Context, apps: ArrayList<Appinfo>, pri
         return selectedItems
     }
 
-    private fun loadIcon (viewHolder: ViewHolder, item : Appinfo) {
+    private fun loadIcon(viewHolder: ViewHolder, item: Appinfo) {
         Thread(Runnable {
-            var icon:Drawable? = null
+            var icon: Drawable? = null
             try {
                 val installInfo = context.packageManager.getPackageInfo(item.packageName.toString(), 0)
                 icon = installInfo.applicationInfo.loadIcon(context.packageManager)
@@ -128,7 +138,8 @@ class AppListAdapter(private val context: Context, apps: ArrayList<Appinfo>, pri
                         val pm = context.packageManager
                         icon = pm.getPackageArchiveInfo(file.absolutePath, PackageManager.GET_ACTIVITIES).applicationInfo.loadIcon(pm)
                     }
-                } catch (ex: Exception) {  }
+                } catch (ex: Exception) {
+                }
             } finally {
                 if (icon != null) {
                     viewHolder.imgView!!.post {
@@ -137,6 +148,20 @@ class AppListAdapter(private val context: Context, apps: ArrayList<Appinfo>, pri
                 }
             }
         }).start()
+    }
+
+    private fun keywordHightLight(str: String): SpannableString {
+        val spannableString = SpannableString(str)
+        var index = 0
+        if (keywords.length == 0) {
+            return spannableString;
+        }
+        index = str.toLowerCase().indexOf(keywords.toLowerCase());
+        if (index < 0)
+            return spannableString
+
+        spannableString.setSpan(ForegroundColorSpan(Color.parseColor("#0094ff")), index, index + keywords.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return spannableString;
     }
 
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
@@ -150,6 +175,7 @@ class AppListAdapter(private val context: Context, apps: ArrayList<Appinfo>, pri
             viewHolder!!.imgView = convertView.findViewById(R.id.ItemIcon)
             viewHolder!!.itemChecke = convertView.findViewById(R.id.select_state)
             viewHolder!!.wranStateText = convertView.findViewById(R.id.ItemWranText)
+            viewHolder!!.itemPath = convertView.findViewById(R.id.ItemPath)
             viewHolder!!.imgView!!.setTag(getItem(position).packageName)
             convertView.tag = viewHolder
         } else {
@@ -157,8 +183,8 @@ class AppListAdapter(private val context: Context, apps: ArrayList<Appinfo>, pri
         }
 
         val item = getItem(position)
-        viewHolder!!.itemTitle!!.text = item.appName
-        viewHolder!!.itemText!!.text = item.packageName
+        viewHolder!!.itemTitle!!.text = keywordHightLight(item.appName.toString())
+        viewHolder!!.itemText!!.text = keywordHightLight(item.packageName.toString())
         if (item.icon == null) {
             loadIcon(viewHolder!!, item)
         } else {
@@ -178,6 +204,7 @@ class AppListAdapter(private val context: Context, apps: ArrayList<Appinfo>, pri
             viewHolder!!.wranStateText!!.text = item.wranState
         else
             viewHolder!!.wranStateText!!.text = ""
+        viewHolder!!.itemPath!!.text = item.path
 
         return convertView
     }
@@ -189,5 +216,6 @@ class AppListAdapter(private val context: Context, apps: ArrayList<Appinfo>, pri
         internal var itemText: TextView? = null
         internal var enabledStateText: TextView? = null
         internal var wranStateText: TextView? = null
+        internal var itemPath: TextView? = null
     }
 }

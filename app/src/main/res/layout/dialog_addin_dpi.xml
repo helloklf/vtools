@@ -59,6 +59,7 @@
         android:textColor="#888"
         android:textSize="12dp"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="6dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
     <LinearLayout
@@ -69,24 +70,32 @@
             android:text="HD"
             android:layout_width="50dp"
             android:textSize="12dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="32dp"
+            android:background="@drawable/btn_bg"
+            android:layout_marginRight="6dp" />
         <Button
             android:id="@+id/dialog_dpi_1080"
             android:text="FHD"
             android:layout_width="50dp"
             android:textSize="12dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="32dp"
+            android:background="@drawable/btn_bg"
+            android:layout_marginRight="6dp" />
         <Button
             android:id="@+id/dialog_dpi_2k"
             android:text="2K"
             android:layout_width="50dp"
             android:textSize="12dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="32dp"
+            android:background="@drawable/btn_bg"
+            android:layout_marginRight="6dp" />
         <Button
             android:id="@+id/dialog_dpi_4k"
             android:text="4K"
             android:layout_width="50dp"
             android:textSize="12dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="32dp"
+            android:background="@drawable/btn_bg"
+            android:layout_marginRight="6dp" />
     </LinearLayout>
 </LinearLayout>

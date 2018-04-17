@@ -1,0 +1,130 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<actions>
+    <!--1.0.0 规范-->
+    <!--
+    //action
+            [root]=[true/false]，是否以root权限执行，默认为false。
+            [confirm]=[true/false]，操作是否需要二次确认，避免误操作，默认为false
+            [start]=[dir]，执行脚本时的起始位置，将在执行script前cd到起始位置，默认位置为/cache
+    <action root="true" confirm="false">
+        <title>功能标题</title>
+        <desc>功能说明</desc>
+        //script 点击后要执行的脚本（可以直接要执行的文件路径、或要执行的代码）
+                内容将支持三种方式
+                1.脚本文件或程序路径，如：/system/etc/init.d/00test
+                2.要执行的代码内容（不需要#!/xbin/sh等类似标头），如：echo 'hello world！'; echo '执行完毕！';
+                3.assets内嵌资源文件，路径以file:///android_asset开头，如：file:///android_asset/scripts/test.sh，执行时会自动提取并运行
+        <script>echo 'hello world！'</scripts>
+    </action>
+    -->
+
+    <!--示例代码1.0.0-->
+    <!--<action root="true">
+        <title>脚本执行器测试</title>
+        <desc>测试脚本执行器，执行指定路径的脚本文件</desc>
+        <script>/system/xbin/yaodao/00WIFI密码.sh</script>
+    </action>
+    <action root="true">
+        <title>脚本执行器测试</title>
+        <desc>测试脚本执行器，直接执行代码段</desc>
+        <script>
+            echo '现在，开始执行脚本了！';
+            testvalue='1'
+            echo 'testvalue=$testvalue';
+            echo '好了，代码执行完毕！';
+        </script>
+    </action>-->
+
+    <!--1.0.1 规范-->
+    <!--
+    <action root="true">
+        <title>自定义DPI</title>
+        <desc>允许你自定义手机DPI，1080P屏幕推荐DPI为400~480，设置太高或太低可能导致界面崩溃！</desc>
+        <script>wm density $dpi;</script>
+        //通过params定义脚本执行参数
+        <params>
+            <param name="dpi" />
+        </params>
+    </action>
+    -->
+
+
+    <!--示例代码1.0.1-->
+    <!--
+    //1、通过单选列表指定参数
+    <action root="true">
+        <title>切换状态栏风格</title>
+        <desc>选择状态栏布局，[时间居中/默认]</desc>
+        //可以在script中使用定义的参数
+        <script>
+            echo "mode参数的值：$mode"
+            if [ "$mode" = "time_center" ]; then echo '刚刚点了 时间居中' fi;
+        </script>
+        //params 用于在执行脚本前，先通过用户交互的方式定义变量，参数数量不限于一个，但不建议定义太多
+        <params>
+            //param 定义单个参数
+                [name]=[参数名]，指定参数名称，这是必需的！！！
+                [value]=[默认值]，设置参数默认值（默认选中项）
+                [val]=[默认值]，设置参数默认值（默认选中项），value的简写，作用等同
+            <param name="mode" value="default">
+                //通过option 自定义选项
+                    [value]=[当前选项的值] 如果不写这个属性，则默认使用显示文字作为值
+                <option val="default">默认布局</option>
+                <option val="time_center">时间居中</option>
+            </param>
+        </params>
+    </action>
+
+    //2、通过文本框录入参数
+    <action root="true">
+        <title>自定义DPI</title>
+        <desc>允许你自定义手机DPI，1080P屏幕推荐DPI为400~480，设置太高或太低可能导致界面崩溃！</desc>
+        <script>
+            wm density $dpi;
+            wm size ${width}x${height};
+        </script>
+        <params>
+            //如果不在param节点下定义option，则会直接在界面上显示文本输入框，让用户直接输入值，从而达到更灵活的配置
+                [name],[value] 同上
+                [desc]=[提示信息] 将显示在文本框底部作为提示
+                [type]=[int] 限制输入类型，目前支持的类型有：
+                                int 整数
+                                bool 布尔值，用数字 1 或 0 表示 true 或 false
+                             * 如果不设置此项则默认为不限制输入类型
+                 [readonly]=[readonly] 设置属性值不可修改，不需要则不谢
+                [maxlength]=[最大输入长度] 限制可以输入几个字（包括空格和标点），不限制则不写（不推荐）
+                注意：文本输入框不支持输入英文双引号（"）
+            <param name="dpi" desc="请输入DPI，推荐值：400~480" type="int" value="440" maxlength="3" />
+            <param name="width" desc="请输入屏幕横向分辨率" type="int" value="1080" maxlength="4" />
+            <param name="height" desc="请输入屏幕纵向向分辨率" type="int" value="1920" maxlength="4" />
+        </params>
+    </action>
+
+    //3、为脚本文件或程序传参
+        可参考 https://blog.csdn.net/czyt1988/article/details/79110450
+    <action root="true">
+        <title>自定义DPI</title>
+        <desc>允许你自定义手机DPI，1080P屏幕推荐DPI为400~480，设置太高或太低可能导致界面崩溃！</desc>
+        //通过这种方式传参，则可以在脚本内通过 $1 $2...按顺序取得参数
+        <script>/system/etc/init.d/00test $dpi $width $height</script>
+        <params>
+            <param name="dpi" desc="请输入DPI，推荐值：400~480" type="int" value="440" maxlength="3" />
+            <param name="width" desc="请输入屏幕横向分辨率" type="int" value="1080" maxlength="4" />
+            <param name="height" desc="请输入屏幕纵向向分辨率" type="int" value="1920" maxlength="4" />
+        </params>
+    </action>
+
+    //4、为内嵌脚本传参
+    <action root="true">
+        <title>自定义DPI</title>
+        <desc>允许你自定义手机DPI，1080P屏幕推荐DPI为400~480，设置太高或太低可能导致界面崩溃！</desc>
+        //通过file:///android_asset协议调用内置脚本时，会自动按顺序传递参数到脚本，直接在脚本内通过 $1 $2...按顺序取得参数即可
+        <script>file:///android_asset/scripts/test.sh</script>
+        <params>
+            <param name="dpi" desc="请输入DPI，推荐值：400~480" type="int" value="440" maxlength="3" />
+            <param name="width" desc="请输入屏幕横向分辨率" type="int" value="1080" maxlength="4" />
+            <param name="height" desc="请输入屏幕纵向向分辨率" type="int" value="1920" maxlength="4" />
+        </params>
+    </action>
+    -->
+</actions>

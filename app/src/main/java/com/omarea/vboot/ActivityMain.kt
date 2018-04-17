@@ -17,16 +17,12 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import com.omarea.shared.CrashHandler
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.Busybox
 import com.omarea.shell.CheckRootStatus
-import com.omarea.shell.KernelProrp
-import com.omarea.shell.SuDo
 import com.omarea.shell.units.BatteryUnit
 import com.omarea.ui.AppShortcutManager
 import com.omarea.vboot.dialogs.DialogPower
@@ -229,7 +225,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.nav_feedback -> startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(application.getString(R.string.feedback_link))))
             R.id.nav_profile -> fragment = FragmentConfig.createPage()
-            R.id.nav_additional -> fragment = FragmentAddin.createPage(this)
+            R.id.nav_additional -> fragment = FragmentAddin.createPage()
             R.id.nav_reward -> fragment = FragmentReward.createPage()
             R.id.nav_xposed -> {
                 //fragment = FragmentXposed.Create()

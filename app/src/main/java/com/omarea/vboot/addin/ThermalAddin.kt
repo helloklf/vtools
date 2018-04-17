@@ -1,5 +1,6 @@
 package com.omarea.vboot.addin
 
+import android.app.AlertDialog
 import android.content.Context
 import android.widget.Toast
 import com.omarea.shared.Consts
@@ -19,10 +20,28 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
         }
     }
 
-    fun removeThermal() {
+    fun showOption() {
         if (!isSupprt()) {
             return
         }
+        val arr = arrayOf("移除温控文件（需要重启）", "恢复温控文件（需要重启）", "临时关闭温控")
+        var index = 0
+        AlertDialog.Builder(context)
+                .setTitle("请选择操作")
+                .setSingleChoiceItems(arr, index, { _, which ->
+                    index = which
+                })
+                .setNegativeButton("确定", { _, _ ->
+                    when (index) {
+                        0 -> removeThermal()
+                        1 -> resumeThermal()
+                        2 -> closeThermal()
+                    }
+                })
+                .create().show()
+    }
+
+    private fun removeThermal() {
         if (File("/system/vendor/bin/thermal-engine.bak").exists()) {
             Toast.makeText(context, "你已执行过这个操作，不需要再次执行，如果未生效请重启手机！", Toast.LENGTH_SHORT).show()
             return
@@ -35,10 +54,7 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
         super.run()
     }
 
-    fun resumeThermal() {
-        if (!isSupprt()) {
-            return
-        }
+    private fun resumeThermal() {
         if (File("/system/vendor/bin/thermal-engine").exists()) {
             Toast.makeText(context, "你不需要此操作，温控文件正在正常使用，如果无效请重启手机！", Toast.LENGTH_SHORT).show()
             return
@@ -51,7 +67,7 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
         super.run()
     }
 
-    fun closeThermal() {
+    private fun closeThermal() {
         if (!isSupprt()) {
             return
         }

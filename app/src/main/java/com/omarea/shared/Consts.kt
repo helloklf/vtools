@@ -6,7 +6,7 @@ import android.os.Environment
  * Created by Hello on 2017/2/22.
  */
 
-object Consts {
+public object Consts {
     val PACKAGE_NAME = "com.omarea.vboot"
     val SDCardDir = Environment.getExternalStorageDirectory().absolutePath
 
@@ -79,8 +79,9 @@ object Consts {
 
     val ForceDoze = "dumpsys deviceidle force-idle\n"
 
-    val DisableChanger = "if [ -f '/sys/class/power_supply/battery/battery_charging_enabled' ]; then echo 0 > /sys/class/power_supply/battery/battery_charging_enabled; else echo 1 > /sys/class/power_supply/battery/input_suspend; fi;setprop vtools.bp 1;\n"
+    public val DisableChanger = "if [ -f '/sys/class/power_supply/battery/battery_charging_enabled' ]; then echo 0 > /sys/class/power_supply/battery/battery_charging_enabled; else echo 1 > /sys/class/power_supply/battery/input_suspend; fi;setprop vtools.bp 1;\n"
     val ResumeChanger = "if [ -f '/sys/class/power_supply/battery/battery_charging_enabled' ]; then echo 1 > /sys/class/power_supply/battery/battery_charging_enabled; else echo 0 > /sys/class/power_supply/battery/input_suspend; fi;setprop vtools.bp 0;\n"
+    val DeleteBatteryHistory = "rm -f /data/system/batterystats-checkin.bin;rm -f /data/system/batterystats-daily.xml;rm -f /data/system/batterystats.bin;sync;sleep 2; reboot;";
     val RebootShutdown = "reboot -p\n"
     val RebootRecovery = "reboot recovery\n"
     val RebootBootloader = "reboot bootloader\n"

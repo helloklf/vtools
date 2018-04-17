@@ -21,10 +21,10 @@ import java.util.*
  * Created by helloklf on 2017/12/04.
  */
 
-open class DialogAppOptions(protected open var context: Context, protected var apps: ArrayList<Appinfo>, protected open var handler: Handler) {
+open class DialogAppOptions(protected final var context: Context, protected var apps: ArrayList<Appinfo>, protected var handler: Handler) {
     protected var allowPigz = false
     protected var backupPath = Consts.AbsBackUpDir
-    protected var userdataPath = context.filesDir.parent
+    protected var userdataPath = ""
 
     init {
         userdataPath = context.filesDir.absolutePath

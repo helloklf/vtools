@@ -13,11 +13,23 @@ import com.omarea.shared.model.Appinfo
  * Created by Hello on 2018/01/26.
  */
 
-class DialogSingleAppOptions(override var context: Context, private var app: Appinfo, override var handler: Handler) : DialogAppOptions(context, arrayListOf<Appinfo>(app), handler) {
+class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handler) : DialogAppOptions(context, arrayListOf<Appinfo>(app), handler) {
+
+    fun showSingleAppOptions() {
+        when(app.appType) {
+            Appinfo.AppType.USER -> showUserAppOptions()
+            Appinfo.AppType.SYSTEM -> showSystemAppOptions()
+            Appinfo.AppType.BACKUPFILE -> showBackupAppOptions()
+            else -> {
+                Toast.makeText(context, "UNSupport！", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     /**
      * 显示用户应用选项
      */
-    fun showUserAppOptions() {
+    private fun showUserAppOptions() {
         AlertDialog.Builder(context).setTitle(app.appName)
                 .setCancelable(true)
                 .setItems(
@@ -50,7 +62,7 @@ class DialogSingleAppOptions(override var context: Context, private var app: App
     /**
      * 显示系统应用选项
      */
-    fun showSystemAppOptions() {
+    private fun showSystemAppOptions() {
         AlertDialog.Builder(context).setTitle(app.appName)
                 .setCancelable(true)
                 .setItems(
@@ -79,7 +91,7 @@ class DialogSingleAppOptions(override var context: Context, private var app: App
     /**
      * 显示备份的应用选项
      */
-    fun showBackupAppOptions() {
+    private fun showBackupAppOptions() {
         AlertDialog.Builder(context).setTitle(app.appName)
                 .setCancelable(true)
                 .setItems(

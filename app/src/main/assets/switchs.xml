@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<switchs>
+    <!--
+        [root]=[true/false] 是否使用ROOT权限执行脚本
+        [confirm]=[true/false]执行脚本前是否需要确认
+    -->
+    <switch root="true">
+        <!--开关标题-->
+        <title>流畅模式</title>
+        <!--开关说明-->
+        <desc>在正常负载的情况下优先使用大核，大幅提高流畅度，但会降低续航能力</desc>
+        <!--在应用启动时获取状态，用于设定开关显示状态，确保执行时间不会太长，避免启动时界面未响应-->
+        <getstate>file:///android_asset/custom/switchs/booster_get.sh</getstate>
+        <!--设置状态，直接脚本时通过$state读取参数，file:///assets_file 方式的脚本文件，则通过 $1 获取参数-->
+        <setstate>file:///android_asset/custom/switchs/booster_set.sh</setstate>
+    </switch>
+    <switch root="true">
+        <title>模拟全面屏</title>
+        <desc>显示设置中的“全面屏”选项</desc>
+        <getstate>file:///android_asset/custom/switchs/mainkey_get.sh</getstate>
+        <setstate>file:///android_asset/custom/switchs/mainkey_set.sh</setstate>
+    </switch>
+</switchs>

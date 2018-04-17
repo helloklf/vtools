@@ -15,7 +15,7 @@
 
     <Spinner
         android:id="@+id/boost_cluster0"
-        android:layout_width="120dp"
+        android:layout_width="160dp"
         android:layout_column="1"
         android:layout_row="0" />
 
@@ -28,7 +28,7 @@
 
     <Spinner
         android:id="@+id/boost_cluster1"
-        android:layout_width="120dp"
+        android:layout_width="160dp"
         android:layout_column="1"
         android:layout_row="1" />
 </GridLayout>

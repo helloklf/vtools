@@ -1,76 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout android:padding="6dp"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent">
+<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="6dp">
 
     <CheckBox
-        android:focusableInTouchMode="false"
         android:id="@+id/select_state"
-        android:layout_height="45dp"
         android:layout_width="40dp"
+        android:layout_height="45dp"
         android:clickable="false"
-        android:focusable="false"
-        android:layout_column="0"
         android:editable="false"
-        android:layout_row="0"
-        android:layout_rowSpan="2" />
+        android:focusable="false"
+        android:layout_gravity="center"
+        android:focusableInTouchMode="false" />
 
     <ImageView
-        android:layout_height="45dp"
-        android:layout_width="45dp"
         android:id="@+id/ItemIcon"
-        android:minHeight="45dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_gravity="center"
+        android:layout_toRightOf="@+id/select_state"
         android:maxHeight="45dp"
-        android:minWidth="45dp"
         android:maxWidth="45dp"
-        android:layout_column="1"
-        android:layout_row="0"
-        android:layout_rowSpan="2" />
-
-    <LinearLayout android:orientation="vertical"
-        android:layout_row="0"
-        android:layout_rowSpan="2"
-        android:layout_column="2"
-        android:paddingLeft="7dp"
-        android:layout_gravity="fill_horizontal">
-        <TextView
-            android:text="AppName"
-            android:id="@+id/ItemTitle"
-            android:lines="1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="14dp" />
-
-        <TextView
-            android:text="com.android.PackageName.test"
-            android:layout_gravity="fill_horizontal"
-            android:paddingTop="8dp"
-            android:id="@+id/ItemText"
-            android:lines="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="11dp"
-            android:textColor="#8888" />
-    </LinearLayout>
+        android:minHeight="45dp"
+        android:minWidth="45dp" />
 
     <TextView
+        android:layout_alignParentRight="true"
+        android:id="@+id/ItemEnabledStateText"
+        android:layout_width="40dp"
         android:minWidth="40dp"
         android:textAlignment="textEnd"
         android:textColor="#0094ff"
-        android:id="@+id/ItemEnabledStateText"
-        android:layout_width="40dp"
         android:textSize="12dp"
-        android:layout_column="3"
-        android:layout_row="0"/>
+        android:layout_height="wrap_content" />
 
     <TextView
-        android:textAlignment="textEnd"
-        android:textColor="#d00"
-        android:textSize="12dp"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/ItemEnabledStateText"
         android:id="@+id/ItemWranText"
         android:layout_width="40dp"
         android:minWidth="40dp"
-        android:layout_column="3"
-        android:layout_row="1"/>
-</GridLayout>
+        android:textAlignment="textEnd"
+        android:textColor="#d00"
+        android:textSize="12dp"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_toLeftOf="@+id/ItemEnabledStateText"
+        android:id="@+id/center"
+        android:layout_toRightOf="@+id/ItemIcon"
+        android:layout_gravity="fill_horizontal"
+        android:orientation="vertical"
+        android:paddingLeft="7dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/ItemTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:text=""
+            android:textSize="14dp" />
+
+        <TextView
+            android:id="@+id/ItemText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal"
+            android:lines="1"
+            android:text=""
+            android:textColor="#8888"
+            android:textSize="11dp" />
+    </LinearLayout>
+
+
+    <TextView
+        android:layout_toLeftOf="@+id/ItemEnabledStateText"
+        android:layout_below="@id/center"
+        android:layout_alignLeft="@+id/center"
+        android:id="@+id/ItemPath"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="7dp"
+        android:text=""
+        android:textColor="#aaa"
+        android:textSize="11dp" />
+</RelativeLayout>
