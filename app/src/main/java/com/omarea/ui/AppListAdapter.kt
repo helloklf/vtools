@@ -1,17 +1,21 @@
 package com.omarea.ui
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
-import android.support.design.widget.Snackbar
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
-
-import com.omarea.shared.Appinfo
+import android.widget.BaseAdapter
+import android.widget.CheckBox
+import android.widget.ImageView
+import android.widget.TextView
+import com.omarea.shared.model.Appinfo
 import com.omarea.vboot.R
-import kotlinx.android.synthetic.main.layout_applictions.*
+import java.io.File
 import java.util.ArrayList
 import java.util.HashMap
+import kotlin.Comparator
 
 /**
  * Created by Hello on 2018/01/26.
@@ -19,7 +23,10 @@ import java.util.HashMap
 
 class AppListAdapter(private val context: Context, apps: ArrayList<Appinfo>, private var keywords: String = "") : BaseAdapter() {
     private val list: ArrayList<Appinfo>?
+    @SuppressLint("UseSparseArrays")
     var states = HashMap<Int, Boolean>()
+
+    //private val mImageCache: LruCache<String, Drawable> = LruCache(20)
 
     private var viewHolder: AppListAdapter.ViewHolder? = null
 
@@ -41,8 +48,8 @@ class AppListAdapter(private val context: Context, apps: ArrayList<Appinfo>, pri
 
     init {
         this.list = sortAppList(filterAppList(apps, keywords))
-        for (i in list.indices) {
-            states[i] = !(list[i].enabledState == null || !list[i].selectState)
+        for (i in this.list.indices) {
+            states[i] = !(this.list[i].enabledState == null || !this.list[i].selectState)
         }
     }
 
@@ -100,7 +107,7 @@ class AppListAdapter(private val context: Context, apps: ArrayList<Appinfo>, pri
         val states = states
         val selectedItems = states.keys
                 .filter { states[it] == true }
-                .mapTo(ArrayList<Appinfo>()) { getItem(it) }
+                .mapTo(ArrayList()) { getItem(it) }
 
         if (selectedItems.size == 0) {
             return ArrayList()
@@ -108,27 +115,57 @@ class AppListAdapter(private val context: Context, apps: ArrayList<Appinfo>, pri
         return selectedItems
     }
 
+    private fun loadIcon (viewHolder: ViewHolder, item : Appinfo) {
+        Thread(Runnable {
+            var icon:Drawable? = null
+            try {
+                val installInfo = context.packageManager.getPackageInfo(item.packageName.toString(), 0)
+                icon = installInfo.applicationInfo.loadIcon(context.packageManager)
+            } catch (ex: Exception) {
+                try {
+                    val file = File(item.path.toString())
+                    if (file.exists() && file.canRead()) {
+                        val pm = context.packageManager
+                        icon = pm.getPackageArchiveInfo(file.absolutePath, PackageManager.GET_ACTIVITIES).applicationInfo.loadIcon(pm)
+                    }
+                } catch (ex: Exception) {  }
+            } finally {
+                if (icon != null) {
+                    viewHolder.imgView!!.post {
+                        viewHolder.imgView!!.setImageDrawable(icon)
+                    }
+                }
+            }
+        }).start()
+    }
+
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
         var convertView = view
         if (convertView == null) {
             viewHolder = ViewHolder()
-            convertView = View.inflate(context, R.layout.app_item2, null)
+            convertView = View.inflate(context, R.layout.app_item, null)
             viewHolder!!.itemTitle = convertView!!.findViewById(R.id.ItemTitle)
             viewHolder!!.enabledStateText = convertView.findViewById(R.id.ItemEnabledStateText)
             viewHolder!!.itemText = convertView.findViewById(R.id.ItemText)
             viewHolder!!.imgView = convertView.findViewById(R.id.ItemIcon)
             viewHolder!!.itemChecke = convertView.findViewById(R.id.select_state)
             viewHolder!!.wranStateText = convertView.findViewById(R.id.ItemWranText)
+            viewHolder!!.imgView!!.setTag(getItem(position).packageName)
             convertView.tag = viewHolder
         } else {
             viewHolder = convertView.tag as ViewHolder
         }
 
-        viewHolder!!.itemTitle!!.text = getItem(position).appName
-        viewHolder!!.itemText!!.text = getItem(position).packageName
-        viewHolder!!.imgView!!.setImageDrawable(getItem(position).icon)
-        if (getItem(position).enabledState != null)
-            viewHolder!!.enabledStateText!!.text = getItem(position).enabledState
+        val item = getItem(position)
+        viewHolder!!.itemTitle!!.text = item.appName
+        viewHolder!!.itemText!!.text = item.packageName
+        if (item.icon == null) {
+            loadIcon(viewHolder!!, item)
+        } else {
+            viewHolder!!.imgView!!.setImageDrawable(item.icon)
+        }
+        if (item.enabledState != null)
+            viewHolder!!.enabledStateText!!.text = item.enabledState
         else
             viewHolder!!.enabledStateText!!.text = ""
 
@@ -137,8 +174,8 @@ class AppListAdapter(private val context: Context, apps: ArrayList<Appinfo>, pri
         //从hashmap里面取出我们的状态值,然后赋值给listview对应位置的checkbox
         viewHolder!!.itemChecke!!.setChecked(states[position] == true)
 
-        if (getItem(position).wranState != null)
-            viewHolder!!.wranStateText!!.text = getItem(position).wranState
+        if (item.wranState != null)
+            viewHolder!!.wranStateText!!.text = item.wranState
         else
             viewHolder!!.wranStateText!!.text = ""
 

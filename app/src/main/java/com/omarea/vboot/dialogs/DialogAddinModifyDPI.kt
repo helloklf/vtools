@@ -1,6 +1,7 @@
 package com.omarea.vboot.dialogs
 
 import android.content.Context
+import android.graphics.Point
 import android.os.Build
 import android.support.v7.app.AlertDialog
 import android.util.DisplayMetrics
@@ -29,9 +30,12 @@ class DialogAddinModifyDPI(var context: Context) {
 
         val dm = DisplayMetrics()
         display.getMetrics(dm)
+        val point = Point()
+        display.getRealSize(point)
+
         dpiInput.setText(dm.densityDpi.toString())
-        widthInput.setText(dm.widthPixels.toString())
-        heightInput.setText(dm.heightPixels.toString())
+        widthInput.setText(point.x.toString())
+        heightInput.setText(point.y.toString())
         if (Build.VERSION.SDK_INT >= 24) {
             quickChange.isChecked = true
         }

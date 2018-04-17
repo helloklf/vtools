@@ -10,12 +10,10 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.widget.SeekBar
 import android.widget.TextView
 import com.omarea.shared.Consts
 import com.omarea.shared.SpfConfig
-import com.omarea.shared.cmd_shellTools
 import com.omarea.shell.SuDo
 import com.omarea.shell.units.BatteryUnit
 import kotlinx.android.synthetic.main.layout_battery.*
@@ -23,10 +21,9 @@ import java.util.*
 
 
 class FragmentBattery : Fragment() {
-
     lateinit internal var view: View
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         view = inflater!!.inflate(R.layout.layout_battery, container, false)
         return view
@@ -72,12 +69,12 @@ class FragmentBattery : Fragment() {
                     print(ex.message)
                 }
             }
-            context.registerReceiver(broadcast, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+            context!!.registerReceiver(broadcast, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
         }
 
         val battrystatus = view.findViewById(R.id.battrystatus) as TextView
         batteryMAH = batteryUnits.batteryMAH + "   "
-        val context = context.applicationContext
+        val context = context!!.applicationContext
         serviceRunning = ServiceBattery.serviceIsRunning(context)
 
         timer = Timer()
@@ -113,7 +110,7 @@ class FragmentBattery : Fragment() {
 
         try {
             if (broadcast != null)
-                context.unregisterReceiver(broadcast)
+                context!!.unregisterReceiver(broadcast)
         } catch (ex: Exception) {
 
         }
@@ -123,7 +120,7 @@ class FragmentBattery : Fragment() {
     override fun onDestroy() {
         try {
             if (broadcast != null)
-                context.unregisterReceiver(broadcast)
+                context!!.unregisterReceiver(broadcast)
         } catch (ex: Exception) {
 
         }
@@ -132,13 +129,12 @@ class FragmentBattery : Fragment() {
     }
 
     private var broadcast: BroadcastReceiver? = null
-    lateinit internal var cmdshellTools: cmd_shellTools
     private var qcSettingSuupport = false
 
     @SuppressLint("ApplySharedPref")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        spf = context.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
+        spf = context!!.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
         qcSettingSuupport = batteryUnits.qcSettingSuupport()
 
         settings_qc.setOnClickListener {
@@ -155,7 +151,7 @@ class FragmentBattery : Fragment() {
             spf.edit().putBoolean(SpfConfig.CHARGE_SPF_BP, settings_bp.isChecked).commit()
             //禁用电池保护：恢复充电功能
             if (!settings_bp.isChecked) {
-                cmdshellTools.DoCmdSync(Consts.ResumeChanger)
+                SuDo(context).execCmdSync(Consts.ResumeChanger)
             } else {
                 //启用电池服务
                 startBatteryService()
@@ -210,16 +206,15 @@ class FragmentBattery : Fragment() {
     private fun startBatteryService() {
         try {
             val intent = Intent(context, ServiceBattery::class.java)
-            context.startService(intent)
+            context!!.startService(intent)
             serviceRunning = ServiceBattery.serviceIsRunning(context)
         } catch (ex: Exception) {
         }
     }
 
     companion object {
-        fun createPage(shellTools: cmd_shellTools): Fragment {
+        fun createPage(): Fragment {
             val fragment = FragmentBattery()
-            fragment.cmdshellTools = shellTools
             return fragment
         }
     }

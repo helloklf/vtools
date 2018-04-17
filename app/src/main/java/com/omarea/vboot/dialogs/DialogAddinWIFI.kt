@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Build
 import android.widget.Toast
 import com.omarea.shell.SysUtils
-import java.io.BufferedInputStream
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import javax.xml.parsers.DocumentBuilderFactory

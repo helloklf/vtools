@@ -1,6 +1,5 @@
 package com.omarea.shell
 
-import android.os.Environment
 import android.os.StatFs
 
 /**
@@ -20,7 +19,8 @@ object Files {
         return size / 1024 / 1024 //剩余空间
     }
 
-    fun getFiles(dir:String) {
-        val cmdResult = SysUtils.executeCommandWithOutput(false, "")
+    fun getFiles(dir:String): String? {
+        val cmdResult = SysUtils.executeCommandWithOutput(false, "ls -lh ${dir};")
+        return cmdResult;
     }
 }

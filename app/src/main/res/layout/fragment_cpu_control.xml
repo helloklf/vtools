@@ -27,7 +27,7 @@
                     android:layout_height="wrap_content">
                     <TextView
                         android:layout_marginBottom="10dp"
-                        android:text="说明"
+                        android:text="@string/help"
                         android:textColor="@color/colorPrimary"
                         android:textSize="16dp"
                         android:layout_width="match_parent"
@@ -35,7 +35,7 @@
                     <TextView
                         android:textSize="12dp"
                         android:textColor="#aaa"
-                        android:text="这是一个功能简陋的CPU控制器，但实际上CPU的调度工作非常复杂，单纯的提高或降低频率限制，并不一定能提高流畅度或节省电量。\n\n部分的手机底层具有自动调节CPU参数的机制，会导致自定义的参数很快失效。如MIUI9，需要先在本应用附加功能中使用“干掉温控”以后，才能控制CPU频率。此外，热插拔温控功能可能也会影响你对CPU参数的修改！\n\ninteractive调度适用于大多数手机，反应迅速，ondemand调度则会更缓慢的切换频率。\n\nBig核心集群通常是A57、A73，性能比Little(A53、A35)核心高得多，优先Big核心会在获得绝佳的流畅体验的同时，耗电和发热显著增高。"
+                        android:text="@string/core_control_helpinfo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                 </LinearLayout>

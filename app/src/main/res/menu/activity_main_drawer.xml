@@ -24,6 +24,10 @@
             android:icon="@drawable/ic_menu_booster"
             android:title="@string/menu_autobooster" />
         <item
+            android:id="@+id/nav_whitelist"
+            android:icon="@drawable/ic_menu_task"
+            android:title="@string/menu_whitelist" />
+        <item
             android:id="@+id/nav_additional"
             android:icon="@drawable/ic_menu_vboot"
             android:title="@string/menu_additional" />
@@ -62,10 +66,16 @@
     <item android:title="@string/menu_menu_title">
         <menu>
             <item
+                android:visible="false"
+                android:id="@+id/nav_reward"
+                android:icon="@drawable/ic_menu_reward"
+                android:title="@string/menu_reward" />
+            <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
                 android:title="@string/menu_share" />
             <item
+                android:visible="false"
                 android:id="@+id/nav_feedback"
                 android:icon="@drawable/ic_menu_send"
                 android:title="@string/menu_feedback" />

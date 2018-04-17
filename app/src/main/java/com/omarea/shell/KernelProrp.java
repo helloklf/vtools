@@ -5,8 +5,10 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.concurrent.TimeUnit;
 
 /**
+ * 操作内核参数节点
  * Created by Hello on 2017/11/01.
  */
 
@@ -18,13 +20,22 @@ public class KernelProrp {
      * @return
      */
     public static String getProp(String propName) {
+        return getProp(propName, false);
+    }
+    /**
+     * 获取属性
+     *
+     * @param propName 属性名称
+     * @return
+     */
+    public static String getProp(String propName, Boolean root) {
         if (!new File(propName).exists()) {
             return "";
         }
         try {
-            Process p = Runtime.getRuntime().exec("sh");
+            Process p = Runtime.getRuntime().exec(root ? "su" : "sh");
             DataOutputStream out = new DataOutputStream(p.getOutputStream());
-            out.writeBytes("cat " + propName);
+            out.write(("cat " + propName).getBytes("UTF-8"));
             out.writeBytes("\n");
             out.writeBytes("exit\n");
             out.writeBytes("exit\n");
@@ -45,13 +56,45 @@ public class KernelProrp {
             bufferedreader.close();
             inputstream.close();
             inputstreamreader.close();
-            p.destroy();
-            return stringBuilder.toString().trim();
+            if (p.waitFor() != 0) {
+                p.destroy();
+                return getProp(propName, true);
+            } else  {
+                p.destroy();
+                return stringBuilder.toString().trim();
+            }
         } catch (Exception e) {
-
         }
         return null;
     }
+
+    /*
+    fun GetProp(prop: String, grep: String?): String? {
+        try {
+            val p = Runtime.getRuntime().exec("sh")
+            val out = DataOutputStream(p.outputStream)
+            out.writeBytes("if [ ! -f \"$prop\" ]; then echo \"\"; exit 1; fi;\n")
+            val cmd = "cat " + prop + if (grep != null && grep.length > 0) " | grep " + grep else ""
+            out.writeBytes(cmd)
+            out.writeBytes("\n")
+            out.writeBytes("exit\n")
+            out.flush()
+            out.close()
+
+            val bufferedreader = p.inputStream.bufferedReader()
+
+            val stringBuffer = StringBuilder()
+            bufferedreader.lineSequence().joinTo(stringBuffer,"\n")
+            bufferedreader.close()
+            p.destroy()
+            return stringBuffer.toString().trim { it <= ' ' }
+        } catch (e: Exception) {
+            e.stackTrace
+        }
+
+        return null
+    }
+    */
 
     /**
      * 保存属性

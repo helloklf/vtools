@@ -1,21 +1,18 @@
 package com.omarea.shell;
 
 import android.util.Log;
-
 import com.omarea.vboot.BuildConfig;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 
 public class SysUtils {
-    static String App_Tag = "Performance Tweaker";
-    static boolean debug = BuildConfig.DEBUG;
+    private static String App_Tag = "Performance Tweaker";
+    private static boolean debug = BuildConfig.DEBUG;
 
     public static String readOutputFromFile(String pathToFile) {
         StringBuilder buffer = new StringBuilder();
@@ -42,9 +39,6 @@ public class SysUtils {
 
             data = buffer.toString();
         }
-        /*
-         * try reading the file as root
-		 */
         else {
             InputStream inputStream;
             DataOutputStream dos;
@@ -117,8 +111,8 @@ public class SysUtils {
             process = root ? Runtime.getRuntime().exec("su") : Runtime.getRuntime().exec("sh");
             if (process == null) return "";
             dos = new DataOutputStream(process.getOutputStream());
-            dos.writeBytes(command + "\n");
-            dos.writeBytes("exit \n");
+            dos.write(command.getBytes("UTF-8"));
+            dos.writeBytes("\nexit \n");
             dos.flush();
             dos.close();
             if (process.waitFor() == 0) {
@@ -142,10 +136,6 @@ public class SysUtils {
         return "";
     }
 
-    public static boolean isPropActive(String key) {
-        return executeCommandWithOutput(true, "getprop | grep " + key + "\n").split("]:")[1].contains("running");
-    }
-
     private static void printOutputOnStdout(InputStream is) {
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
         String line;
@@ -156,32 +146,5 @@ public class SysUtils {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static String secToString(long tSec) {
-        long h = (long) Math.floor(tSec / (60 * 60));
-        long m = (long) Math.floor((tSec - h * 60 * 60) / 60);
-        long s = tSec % 60;
-        String sDur;
-        sDur = h + ":";
-        if (m < 10) sDur += "0";
-        sDur += m + ":";
-        if (s < 10) sDur += "0";
-        sDur += s;
-
-        return sDur;
-    }
-
-    public static String getKernelInfo() {
-        String data = readOutputFromFile("/proc/version");
-        if (data != null) return data;
-        return "";
-    }
-
-    public static void mount(boolean writeable, String mountpoint) {
-        ArrayList<String> command = new ArrayList<>();
-
-        command.add("mount -o rw,remount" + " " + mountpoint);
-        executeRootCommand(command);
     }
 }

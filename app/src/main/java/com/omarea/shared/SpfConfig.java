@@ -1,6 +1,7 @@
 package com.omarea.shared;
 
 /**
+ * 公共参数
  * Created by helloklf on 2017/11/02.
  */
 
@@ -41,6 +42,7 @@ public class SpfConfig {
     public static String GLOBAL_SPF_NIGHT_MODE = "app_night_mode";
     public static String GLOBAL_SPF_MAC = "wifi_mac";
     public static String GLOBAL_SPF_MAC_AUTOCHANGE = "wifi_mac_autochange";
+    public static String GLOBAL_SPF_DOZELIST_AUTOSET = "doze_whitelist_auto_resume";
 
     public static String SWAP_SPF = "swap"; //spf
     public static String SWAP_SPF_SWAP = "swap";
@@ -52,4 +54,6 @@ public class SpfConfig {
 
     public static String XPOSED_DPI_SPF = "xposed_dpi"; //spf
     public static String XPOSED_HIDETASK_SPF = "xposed_hidetask"; //spf
+
+    public static String WHITE_LIST_SPF = "doze_white_list";
 }

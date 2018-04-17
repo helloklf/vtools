@@ -4,6 +4,7 @@ import android.text.Editable
 import android.text.TextWatcher
 
 /**
+ * 监听文本变化的简单SearchTextWatcher
  * Created by Hello on 2018/03/04.
  */
 

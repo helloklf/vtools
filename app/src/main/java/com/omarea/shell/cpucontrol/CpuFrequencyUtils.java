@@ -2,7 +2,9 @@ package com.omarea.shell.cpucontrol;
 
 import android.content.Context;
 import android.widget.Toast;
+
 import com.omarea.shell.SysUtils;
+
 import java.io.File;
 import java.util.ArrayList;
 

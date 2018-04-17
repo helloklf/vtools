@@ -16,25 +16,25 @@
         android:layout_height="wrap_content" />
     <EditText
         android:id="@+id/dialog_addin_model"
-        android:hint="ro.product.model="
+        android:hint="@string/ro_product_model"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="text" />
     <EditText
         android:id="@+id/dialog_addin_brand"
-        android:hint="ro.product.brand="
+        android:hint="@string/ro_product_brand"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="text" />
     <EditText
         android:id="@+id/dialog_addin_name"
-        android:hint="ro.product.name="
+        android:hint="@string/ro_product_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="text" />
     <EditText
         android:id="@+id/dialog_addin_device"
-        android:hint="ro.product.device="
+        android:hint="@string/ro_product_device"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="text" />
@@ -46,7 +46,7 @@
         android:inputType="text" />-->
     <EditText
         android:id="@+id/dialog_addin_manufacturer"
-        android:hint="ro.product.manufacturer="
+        android:hint="@string/ro_product_manufacturer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="text" />
@@ -63,19 +63,19 @@
         android:layout_height="wrap_content" android:orientation="horizontal">
         <Button
             android:id="@+id/dialog_addin_r11"
-            android:text="R11+"
+            android:text="@string/r11"
             android:layout_width="60dp"
             android:textSize="12dp"
             android:layout_height="wrap_content" />
         <Button
             android:id="@+id/dialog_addin_x20"
-            android:text="X20"
+            android:text="@string/x20"
             android:layout_width="50dp"
             android:textSize="12dp"
             android:layout_height="wrap_content" />
         <Button
             android:id="@+id/dialog_addin_ipx"
-            android:text="IPX"
+            android:text="@string/ipx"
             android:layout_width="50dp"
             android:textSize="12dp"
             android:layout_height="wrap_content" />

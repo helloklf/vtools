@@ -8,17 +8,15 @@ import android.os.Build
 import android.os.Handler
 import android.os.Message
 import android.support.v7.app.AlertDialog
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import com.omarea.shared.Appinfo
 import com.omarea.shared.Consts
 import com.omarea.shell.AsynSuShellUnit
 import com.omarea.vboot.R
-import java.util.ArrayList
+import java.util.*
 
 /**
  * Created by Hello on 2018/02/20.
@@ -64,10 +62,10 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
 
 
     class ProgressHandler(context: Context) : Handler() {
-        protected lateinit var dialog: View
-        protected lateinit var alert: android.app.AlertDialog
-        protected lateinit var textView: TextView
-        protected lateinit var progressBar: ProgressBar
+        protected var dialog: View
+        protected var alert: android.app.AlertDialog
+        protected var textView: TextView
+        protected var progressBar: ProgressBar
 
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
@@ -107,7 +105,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
 
 
     private fun getAllPackageNames(): ArrayList<String> {
-        var packageManager: PackageManager = context.packageManager
+        val packageManager: PackageManager = context.packageManager
         val packageInfos = packageManager.getInstalledApplications(0)
         val list = ArrayList<String>()/*在数组中存放数据*/
         for (i in packageInfos.indices) {
@@ -174,7 +172,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
             return
         }
 
-        val arr = arrayOf("最快安装速度", "最佳性能（安装较慢）", "完整编译（安装极慢）", "永不编译（不推荐）", "恢复默认")
+        val arr = arrayOf("最快安装速度", "最佳性能（Speed）", "完整编译（Everything）", "永不编译", "恢复默认")
         var index = 0
         AlertDialog.Builder(context)
                 .setTitle("请选择pm.dexopt策略")

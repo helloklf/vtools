@@ -67,71 +67,13 @@ object Consts {
     val POWER_CFG_BASE = "/data/init.qcom.post_boot.sh"
 
     val ExecuteConfig = "setprop vtools.powercfg null;${POWER_CFG_BASE};\n"
+    val ToggleMode = "setprop vtools.powercfg default;$POWER_CFG_PATH %s;\n"
     val ToggleDefaultMode = "setprop vtools.powercfg default;$POWER_CFG_PATH balance;\n"
     val ToggleGameMode = "setprop vtools.powercfg game;$POWER_CFG_PATH performance;\n"
     val TogglePowersaveMode = "setprop vtools.powercfg powersave;$POWER_CFG_PATH powersave;\n"
     val ToggleFastMode = "setprop vtools.powercfg fast;$POWER_CFG_PATH fast;\n"
-    val ToogleLockScreenMode = "setprop vtools.powercfg screenoff;$POWER_CFG_PATH screenoff;\n"
 
     val DisableSELinux = "setenforce 0\n"
-
-    val FlymeUninstall =
-            "rm -rf /system/priv-app/EasyLauncher\n" +
-                    "rm -rf /system/app/PrintSpooler\n" +
-                    "rm -rf /system/app/Map\n" +
-                    "rm -rf /system/priv-app/EBook\n" +
-                    "rm -rf /system/priv-app/GameSDKService\n" +
-                    "rm -rf /system/priv-app/Music\n" +
-                    "rm -rf /system/priv-app/Email\n" +
-                    "rm -rf /system/priv-app/ChildrenLauncher\n" +
-                    "rm -rf /system/app/MzCompaign\n" +
-                    "rm -rf /system/app/ToolBox\n" +
-                    "rm -rf /system/priv-app/YellowPage\n" +
-                    "rm -rf /system/priv-app/MzAccountPlugin\n" +
-                    "rm -rf /system/app/Life\n" +
-                    "rm -rf /system/priv-app/Video\n" +
-                    "rm -rf /system/priv-app/Feedback\n" +
-                    "rm -rf /system/app/lflytekSpeechService\n" +
-                    "rm -rf /system/priv-app/VoiceAssistant\n" +
-                    "rm -rf /system/app/Reader\n" +
-                    "rm -rf /system/priv-app/EasyLauncher\n" +
-                    "rm -rf /system/priv-app/EasyLauncher\n" +
-
-                    "sync\nreboot\n";
-
-    val MiuiUninstall =
-            "pm disable com.miui.yellowpage\n" +
-                    "pm disable com.miui.klo.bugreport\n" +
-                    //"pm disable com.xiaomi.scanner\n"+
-                    //"pm disable com.android.cellbroadcastreceiver\n"+
-                    //"pm disable com.android.musicfx\n"+
-                    "pm disable com.miui.bugreport\n" +
-                    "pm disable com.miui.systemAdSolution\n" +
-
-                    "rm -rf /data-app\n" +
-
-                    "rm -rf /system/app/Email\n" +
-                    "rm -rf /system/app/BasicDreams\n" +
-                    "rm -rf /system/app/GameCenter\n" +
-                    //"rm -rf /system/app/FileExplorer\n" +
-                    "rm -rf /system/app/MiLinkService\n" +
-                    "rm -rf /system/app/MiuiCompass\n" +
-                    "rm -rf /system/app/MiuiDaemon\n" +
-                    "rm -rf /system/app/mab\n" +
-                    "rm -rf /system/app/PhotoTable\n" +
-                    "rm -rf /system/app/VoiceAssist\n" +
-                    "rm -rf /system/app/PhotoTableVoicePrintService\n" +
-                    //"rm -rf /system/app/PrintSpooler\n" +
-
-                    "rm -rf /system/priv-app/Mipub\n" +
-                    "rm -rf /system/priv-app/Music\n" +
-                    "rm -rf /system/priv-app/MiuiVideo\n" +
-                    //"rm -rf /system/priv-app/Browser\n" +
-                    "rm -rf /system/priv-app/MiVRFramework\n" +
-                    "rm -rf /system/priv-app/MiGameCenterSDKService\n" +
-                    //"rm -rf /system/priv-app/CleanMaster\n" +
-
-                    "sync\nreboot\n"
 
     val DeleteLockPwd = "rm -f /data/system/*.key;rm -f /data/system/locksettings.db*;reboot;"
 

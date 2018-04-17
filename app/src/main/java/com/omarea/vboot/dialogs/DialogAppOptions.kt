@@ -9,8 +9,8 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import com.omarea.shared.Appinfo
 import com.omarea.shared.Consts
+import com.omarea.shared.model.Appinfo
 import com.omarea.shell.AsynSuShellUnit
 import com.omarea.shell.SysUtils
 import com.omarea.vboot.R
@@ -24,6 +24,12 @@ import java.util.*
 open class DialogAppOptions(protected open var context: Context, protected var apps: ArrayList<Appinfo>, protected open var handler: Handler) {
     protected var allowPigz = false
     protected var backupPath = Consts.AbsBackUpDir
+    protected var userdataPath = context.filesDir.parent
+
+    init {
+        userdataPath = context.filesDir.absolutePath
+        userdataPath = userdataPath.substring(0, userdataPath.indexOf(context.packageName) - 1)
+    }
 
     fun selectUserAppOptions() {
         AlertDialog.Builder(context).setTitle("请选择操作")
@@ -90,7 +96,7 @@ open class DialogAppOptions(protected open var context: Context, protected var a
     }
 
     protected fun checkRestoreData(): Boolean {
-        val r = SysUtils.executeCommandWithOutput(false, "cd /data/data/${Consts.PACKAGE_NAME};echo `toybox ls -ld|cut -f3 -d ' '`; echo `ls -ld|cut -f3 -d ' '`;")
+        val r = SysUtils.executeCommandWithOutput(false, "cd $userdataPath/${Consts.PACKAGE_NAME};echo `toybox ls -ld|cut -f3 -d ' '`; echo `ls -ld|cut -f3 -d ' '`;")
         return r != null && r.trim().length > 0
     }
 
@@ -182,7 +188,7 @@ open class DialogAppOptions(protected open var context: Context, protected var a
                 Toast.makeText(context, "抱歉，数据备份还原功能暂不支持你的设备！", Toast.LENGTH_LONG).show()
                 return
             }
-            confirm("备份应用和数据", "备份功能目前还是实验性的，无法保证在所有设备上运行，备份可能无法正常还原。继续尝试使用吗？", Runnable {
+            confirm("备份应用和数据", "备份所选的${apps.size}个应用和数据？（很不推荐使用数据备份功能，因为经常会有兼容性问题，可能导致还原的软件出现FC并出现异常耗电）", Runnable {
                 _backupAll(apk, data)
             })
         } else {
@@ -216,7 +222,7 @@ open class DialogAppOptions(protected open var context: Context, protected var a
             }
             if (data) {
                 sb.append("killall -9 $packageName;pkill -9 $packageName;pgrep $packageName |xargs kill -9;")
-                sb.append("cd /data/data/$packageName;")
+                sb.append("cd $userdataPath/$packageName;")
                 sb.append("echo '[backup $packageName]';")
                 if (allowPigz)
                     sb.append("busybox tar cpf - * --exclude ./cache --exclude ./lib | pigz > \${backup_path}$packageName.tar.gz;")
@@ -241,11 +247,11 @@ open class DialogAppOptions(protected open var context: Context, protected var a
                 Toast.makeText(context, "抱歉，数据备份还原功能暂不支持你的设备！", Toast.LENGTH_LONG).show()
                 return
             }
-            confirm("还原应用和数据", "该功能目前还在实验阶段，可能不能在所有设备上正常运行，也许会导致应用数据丢失。\n继续尝试恢复吗？", Runnable {
+            confirm("还原应用和数据", "还原所选的${apps.size}个应用和数据？（很不推荐使用数据还原功能，因为经常会有兼容性问题，可能导致还原的软件出现FC并出现异常耗电）", Runnable {
                 _restoreAll(apk, data)
             })
         } else {
-            confirm("还原应用", "该功能目前还在实验阶段，可能不能在所有设备上正常运行，也许会导致应用数据丢失。\n继续尝试恢复吗？", Runnable {
+            confirm("还原应用", "还原所选的${apps.size}个应用和数据？", Runnable {
                 _restoreAll(apk, data)
             })
         }
@@ -270,15 +276,15 @@ open class DialogAppOptions(protected open var context: Context, protected var a
                 sb.append("pm install -r $apkPath;")
             }
             if (data && File("$backupPath$packageName.tar.gz").exists()) {
-                sb.append("if [ -d /data/data/$packageName ];")
+                sb.append("if [ -d $userdataPath/$packageName ];")
                 sb.append(" then ")
                 sb.append("echo '[restore $packageName]';")
                 //sb.append("pm clear $packageName;")
                 sb.append("sync;")
-                sb.append("cd /data/data/$packageName;")
+                sb.append("cd $userdataPath/$packageName;")
                 sb.append("busybox tar -xzpf $backupPath$packageName.tar.gz;")
-                sb.append("chown -R -L `toybox ls -ld|cut -f3 -d ' '`:`toybox ls -ld|cut -f4 -d ' '` /data/data/$packageName/*;")
-                //sb.append("chown -R --reference=/data/data/$packageName *;")
+                sb.append("chown -R -L `toybox ls -ld|cut -f3 -d ' '`:`toybox ls -ld|cut -f4 -d ' '` $userdataPath/$packageName/*;")
+                //sb.append("chown -R --reference=$userdataPath/$packageName *;")
                 sb.append(" else ")
                 sb.append("echo '[skip $packageName]';")
                 sb.append("sleep 1;")

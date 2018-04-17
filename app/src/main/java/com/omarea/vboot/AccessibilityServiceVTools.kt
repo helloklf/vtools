@@ -68,7 +68,7 @@ override fun onCreate() {
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         if (event.packageName == null || event.className == null)
             return
-        var packageName = event.packageName.toString().toLowerCase()
+        val packageName = event.packageName.toString().toLowerCase()
         //修复傻逼一加桌面文件夹抢占焦点导致的问题
         if ((packageName == "net.oneplus.h2launcher" || packageName == "net.oneplus.launcher") && event.className == "android.widget.LinearLayout") {
             return
@@ -77,7 +77,6 @@ override fun onCreate() {
         if (packageName.contains("packageinstaller")) {
             if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity")
                 return
-            //packageName = "com.android.packageinstaller"
             AutoClickService().packageinstallerAutoClick(this.applicationContext, event)
         } else if (packageName == "com.miui.securitycenter") {
             AutoClickService().miuiUsbInstallAutoClick(event)

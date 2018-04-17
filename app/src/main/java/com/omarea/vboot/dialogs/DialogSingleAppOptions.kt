@@ -7,7 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Handler
 import android.widget.Toast
-import com.omarea.shared.Appinfo
+import com.omarea.shared.model.Appinfo
 
 /**
  * Created by Hello on 2018/01/26.

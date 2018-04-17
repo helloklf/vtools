@@ -2,11 +2,8 @@ package com.omarea.shell.units;
 
 import com.omarea.shell.KernelProrp;
 import com.omarea.shell.SuDo;
-import com.omarea.shell.SysUtils;
 
 import java.io.File;
-
-import kotlin.text.Regex;
 
 /**
  * Created by Hello on 2017/11/01.

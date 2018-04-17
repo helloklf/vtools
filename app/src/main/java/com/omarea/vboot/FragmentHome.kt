@@ -1,12 +1,7 @@
 package com.omarea.vboot
 
 import android.annotation.SuppressLint
-import android.app.ActivityManager
-import android.app.Notification
-import android.app.NotificationManager
-import android.app.Service
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Environment
@@ -15,8 +10,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.omarea.shared.AppShared
-import com.omarea.shared.BootService
+import com.omarea.shared.FileWrite
 import com.omarea.shared.Consts
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.*
@@ -25,7 +19,7 @@ import java.io.File
 
 
 class FragmentHome : Fragment() {
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater!!.inflate(R.layout.layout_home, container, false)
     }
@@ -40,27 +34,27 @@ class FragmentHome : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        globalSPF = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+        globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
-        if (DynamicConfig().DynamicSupport(context)) {
+        if (Platform().dynamicSupport(context!!)) {
             powermode_toggles.visibility = View.VISIBLE
         }
 
         btn_powersave.setOnClickListener {
             installConfig(Consts.TogglePowersaveMode)
-            showMsg("已切换为省电模式，适合长时间媒体播放或阅读，综合使用时并不效率也不会省电太多！")
+            showMsg(getString(R.string.power_change_powersave))
         }
         btn_defaultmode.setOnClickListener {
             installConfig(Consts.ToggleDefaultMode)
-            showMsg("已切换为均衡模式，适合日常使用，速度与耗电平衡！")
+            showMsg(getString(R.string.power_change_default))
         }
         btn_gamemode.setOnClickListener {
             installConfig(Consts.ToggleGameMode)
-            showMsg("已切换为游戏（性能）模式，但受温度影响并不一定会更快，你可以考虑删除温控！")
+            showMsg(getString(R.string.power_change_game))
         }
         btn_fastmode.setOnClickListener {
             installConfig(Consts.ToggleFastMode)
-            showMsg("已切换为极速模式，这会大幅增加发热，如果不删除温控性能并不稳定！")
+            showMsg(getString(R.string.power_chagne_fast))
         }
         home_hide_in_recents.setOnCheckedChangeListener({
             _,checked ->
@@ -72,7 +66,7 @@ class FragmentHome : Fragment() {
                 return@setOnCheckedChangeListener
             }
             globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, checked).commit()
-            Snackbar.make(view!!, "此设置将在下次启动微工具箱时生效！", Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(view!!, getString(R.string.change_need_reboot), Snackbar.LENGTH_SHORT).show()
         })
     }
 
@@ -106,10 +100,12 @@ class FragmentHome : Fragment() {
             //SuDo(context).execCmdSync(Consts.ExecuteConfig + "\n" + after)
         } else {
             //TODO：选取配置
-            AppShared.WritePrivateFile(context.assets, Platform().GetCPUName() + "/powercfg-default.sh", "powercfg.sh", context)
+            FileWrite.WritePrivateFile(context!!.assets, Platform().GetCPUName() + "/powercfg-default.sh", "powercfg.sh", context!!)
+            FileWrite.WritePrivateFile(context!!.assets, Platform().GetCPUName() + "/init.qcom.post_boot-default", "init.qcom.post_boot.sh", context!!)
             val cmd = StringBuilder()
-                    .append("cp ${AppShared.getPrivateFilePath(context, "powercfg.sh")} ${Consts.POWER_CFG_PATH};")
+                    .append("cp ${FileWrite.getPrivateFilePath(context!!, "powercfg.sh")} ${Consts.POWER_CFG_PATH};")
                     .append("chmod 0777 ${Consts.POWER_CFG_PATH};")
+                    .append("chmod 0777 ${Consts.POWER_CFG_BASE};")
                     .append(after)
             //SuDo(context).execCmdSync(Consts.InstallPowerToggleConfigToCache + "\n\n" + Consts.ExecuteConfig + "\n" + after)
             SuDo(context).execCmdSync(cmd.toString())

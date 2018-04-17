@@ -83,7 +83,7 @@ class KeepShell(private var context: Context) {
                     if (!isRedo)
                         doCmd(cmd, true)
                     else
-                        showMsg("Failed execution action!\nError message : Unable to obtain Root permissions" + "\n\n\ncommand : \r\n" + cmd)
+                        showMsg("Failed execution action!\nError message : Unable to obtain Root permissions\n\n\ncommand : \r\n$cmd")
                 })
             } else {
                 out!!.write(cmd)

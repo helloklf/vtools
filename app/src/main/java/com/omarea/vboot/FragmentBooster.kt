@@ -19,11 +19,11 @@ import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
 import com.omarea.shared.ServiceHelper
 import com.omarea.shared.SpfConfig
-import com.omarea.ui.OverScrollListView
+import com.omarea.shared.model.Appinfo
+import com.omarea.ui.AppListAdapter
 import com.omarea.ui.ProgressBarDialog
-import com.omarea.ui.list_adapter
+import com.omarea.shared.AppListHelper
 import kotlinx.android.synthetic.main.layout_booster.*
-import java.util.*
 import kotlin.collections.ArrayList
 
 
@@ -36,12 +36,12 @@ class FragmentBooster : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        val serviceState = ServiceHelper.serviceIsRunning(context)
+        val serviceState = ServiceHelper.serviceIsRunning(context!!)
         btn_booster_service_not_active.visibility = if (serviceState) GONE else VISIBLE
-        btn_booster_dynamicservice_not_active.visibility = if (serviceState && !context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, false)) VISIBLE else GONE
+        btn_booster_dynamicservice_not_active.visibility = if (serviceState && !context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, false)) VISIBLE else GONE
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
             inflater!!.inflate(R.layout.layout_booster, container, false)
 
@@ -65,13 +65,13 @@ class FragmentBooster : Fragment() {
     }
 
     @SuppressLint("ApplySharedPref", "CommitPrefEdits")
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        processBarDialog = ProgressBarDialog(this.context)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        processBarDialog = ProgressBarDialog(this.context!!)
         this.frameView = view!!
-        blacklist = context.getSharedPreferences(SpfConfig.BOOSTER_BLACKLIST_SPF, Context.MODE_PRIVATE)
+        blacklist = context!!.getSharedPreferences(SpfConfig.BOOSTER_BLACKLIST_SPF, Context.MODE_PRIVATE)
         editor = blacklist.edit()
 
-        val spfAutoConfig = context.getSharedPreferences(SpfConfig.BOOSTER_SPF_CFG_SPF, Context.MODE_PRIVATE)
+        val spfAutoConfig = context!!.getSharedPreferences(SpfConfig.BOOSTER_SPF_CFG_SPF, Context.MODE_PRIVATE)
 
         bindSPF(cacheclear, spfAutoConfig, SpfConfig.BOOSTER_SPF_CFG_SPF_CLEAR_CACHE, false)
         bindSPF(dozemod, spfAutoConfig, SpfConfig.BOOSTER_SPF_CFG_SPF_DOZE_MOD, Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
@@ -104,11 +104,11 @@ class FragmentBooster : Fragment() {
         tabHost.setup()
 
         tabHost.addTab(tabHost.newTabSpec("tab_1")
-                .setContent(R.id.blacklist_tab1).setIndicator(context.getString(R.string.autobooster_tab_blacklist)))
+                .setContent(R.id.blacklist_tab1).setIndicator(context!!.getString(R.string.autobooster_tab_blacklist)))
         tabHost.addTab(tabHost.newTabSpec("tab_2")
-                .setContent(R.id.blacklist_tab2).setIndicator(context.getString(R.string.autobooster_tab_details)))
+                .setContent(R.id.blacklist_tab2).setIndicator(context!!.getString(R.string.autobooster_tab_details)))
         tabHost.addTab(tabHost.newTabSpec("tab_3")
-                .setContent(R.id.blacklist_tab3).setIndicator(context.getString(R.string.autobooster_tab_screen)))
+                .setContent(R.id.blacklist_tab3).setIndicator(context!!.getString(R.string.autobooster_tab_screen)))
         tabHost.currentTab = 0
 
         setList()
@@ -137,39 +137,23 @@ class FragmentBooster : Fragment() {
         processBarDialog.hideDialog()
     }
 
-    private fun setListData(dl: ArrayList<HashMap<String, Any>>, lv: OverScrollListView) {
+    private fun setListData(dl: ArrayList<Appinfo>, lv: ListView) {
         myHandler.post {
             processBarDialog.hideDialog()
-            lv.adapter = list_adapter(context, dl)
+            lv.adapter = AppListAdapter(context!!, dl)
         }
     }
 
     private lateinit var packageManager: PackageManager
-    private var installedList: ArrayList<HashMap<String, Any>>? = null
+    private var installedList: ArrayList<Appinfo>? = null
 
     private fun loadList() {
-        packageManager = context.packageManager
-        val packageInfos = packageManager.getInstalledApplications(0)
-
-        installedList = ArrayList()
-        for (i in packageInfos.indices) {
-            val packageInfo = packageInfos[i]
-            if (packageInfo.sourceDir.indexOf("/system") == 0)
-                continue
-            val item = HashMap<String, Any>()
-            val d = packageInfo.loadIcon(packageManager)
-            item.put("icon", d)
-            val pkgName = packageInfo.packageName
-            item.put("select_state", false)
-            if (blacklist.contains(pkgName)) {
-                item.put("select_state", true)
-            } else {
-                item.put("select_state", false)
-            }
-            item.put("name", packageInfo.loadLabel(packageManager))
-            item.put("packageName", pkgName)
-            installedList!!.add(item)
+        packageManager = context!!.packageManager
+        val packageInfos = AppListHelper(context!!).getAll()
+        for (item in packageInfos.iterator()) {
+            item.selectState = blacklist.contains(item.packageName.toString())
         }
+        installedList = packageInfos
     }
 
     private fun toogleBlackItem(pkgName: String) {

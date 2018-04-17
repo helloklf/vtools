@@ -9,8 +9,10 @@ import android.os.Build
 import android.os.Handler
 
 /**
+ * 监听屏幕开关事件
  * Created by Hello on 2018/01/23.
  */
+
 class ReciverLock(private var callbacks: Handler): BroadcastReceiver() {
     private var handler = Handler()
     private var lastChange = 0L
@@ -75,18 +77,12 @@ class ReciverLock(private var callbacks: Handler): BroadcastReceiver() {
 
             reciver = ReciverLock(callbacks)
 
-            val ACTION_SCREEN_OFF = IntentFilter(Intent.ACTION_SCREEN_OFF)
-            context.registerReceiver(reciver, ACTION_SCREEN_OFF)
+            context.registerReceiver(reciver, IntentFilter(Intent.ACTION_SCREEN_OFF))
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                val ACTION_USER_UNLOCKED = IntentFilter(Intent.ACTION_USER_UNLOCKED)
-                context.registerReceiver(reciver, ACTION_USER_UNLOCKED)
-            } else {
-                //TODO("VERSION.SDK_INT < N")
+                context.registerReceiver(reciver, IntentFilter(Intent.ACTION_USER_UNLOCKED))
             }
-            val ACTION_SCREEN_ON = IntentFilter(Intent.ACTION_SCREEN_ON)
-            context.registerReceiver(reciver, ACTION_SCREEN_ON)
-            val ACTION_USER_PRESENT = IntentFilter(Intent.ACTION_USER_PRESENT)
-            context.registerReceiver(reciver, ACTION_USER_PRESENT)
+            context.registerReceiver(reciver, IntentFilter(Intent.ACTION_SCREEN_ON))
+            context.registerReceiver(reciver, IntentFilter(Intent.ACTION_USER_PRESENT))
         }
 
         fun unRegister(context: Context) {

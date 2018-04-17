@@ -8,8 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
-import android.widget.Toast
-import com.omarea.shared.AppShared
+import com.omarea.shared.FileWrite
 import com.omarea.shared.Consts
 import com.omarea.shell.AsynSuShellUnit
 import com.omarea.shell.Files
@@ -29,8 +28,8 @@ class DialogFilesHardLinks2(private var context: Context) {
     }
 
     fun getApkFiles() {
-        AppShared.WritePrivateFile(context.assets, "addin/map-dualboot-apk.sh", "map-dualboot-apk.sh", context)
-        val shellFile = "${AppShared.getPrivateFileDir(context)}/map-dualboot-apk.sh"
+        FileWrite.WritePrivateFile(context.assets, "addin/map-dualboot-apk.sh", "map-dualboot-apk.sh", context)
+        val shellFile = "${FileWrite.getPrivateFileDir(context)}/map-dualboot-apk.sh"
         val sb = StringBuilder()
         sb.append("cp $shellFile /cache/map-dualboot-apk.sh;")
         sb.append("chmod 777 /cache/map-dualboot-apk.sh;")

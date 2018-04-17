@@ -14,7 +14,7 @@ public class Props {
      * 获取属性
      *
      * @param propName 属性名称
-     * @return
+     * @return 内容
      */
     public static String getProp(String propName) {
         try {
