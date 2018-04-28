@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
@@ -53,7 +54,7 @@ class FragmentConfig : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
-            inflater!!.inflate(R.layout.layout_config, container, false)
+            inflater.inflate(R.layout.layout_config, container, false)
 
     override fun onResume() {
         super.onResume()
@@ -327,7 +328,15 @@ class FragmentConfig : Fragment() {
                 AlertDialog.Builder(context)
                         .setTitle(getString(R.string.not_support_config))
                         .setMessage(String.format(getString(R.string.not_support_config_desc),Consts.POWER_CFG_PATH))
-                        .setNegativeButton(getString(R.string.i_know), { _, _ ->
+                        .setNegativeButton(getString(R.string.more), { _, _ ->
+                            val intent = Intent()
+                            //Intent intent = new Intent(Intent.ACTION_VIEW,uri);
+                            intent.action = "android.intent.action.VIEW"
+                            val content_url = Uri.parse("https://github.com/helloklf/vtools")
+                            intent.data = content_url
+                            startActivity(intent)
+                        })
+                        .setPositiveButton(getString(R.string.i_know),{ _, _ ->
                         })
                         .create()
                         .show()

@@ -32,8 +32,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     lateinit internal var thisview: AppCompatActivity
     private var hasRoot = false
-
-    internal var myHandler: android.os.Handler = Handler()
     private var globalSPF: SharedPreferences? = null
 
     private fun setExcludeFromRecents(exclude:Boolean? = null) {

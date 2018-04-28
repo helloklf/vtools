@@ -17,7 +17,9 @@
         <item>com.waterdaaan.cpufloat</item>
         <item>com.miui.contentextension</item>
         <item>com.miui.systemAdSolution</item>
-        <item>com.</item>
+        <item>com.sec.app.screenrecorder</item>
+        <item>com.cyngn.screencast</item>
+        <item>com.samsung.android.game.gametools</item>
     </string-array>
     <string-array name="powercfg_game">
         <item>com.rarlab.rar</item>
@@ -264,8 +266,6 @@
     <string name="change_need_reboot">此设置将在下次启动微工具箱时生效！</string>
     <string name="device_unsupport">该功能暂不支持您的设备！</string>
 
-    <string name="addin_qq_clear">QQ净化</string>
-    <string name="addin_qq_clear_desc">干掉/恢复QQ个性气泡、字体、头像挂件，会重启QQ</string>
     <string name="addin_fullscreen_on">沉浸式体验</string>
     <string name="addin_fullscreen_on_desc">自动隐藏状态栏、导航栏</string>
     <string name="addin_flyme_static_blur">减少Flyme6模糊</string>
@@ -276,6 +276,8 @@
     <string name="addin_disable_x_desc">将网络可用性检测地址设为国内服务器，从而去除类原生系统状态栏上WIIF、4G图标的!和x</string>
     <string name="addin_disable_google">冻结/解冻 谷歌套件</string>
     <string name="addin_disable_google_desc">冻结谷歌服务基础4件套，可以减少待机耗电</string>
+    <string name="addin_qq_clear">QQ净化</string>
+    <string name="addin_qq_clear_desc">干掉/恢复QQ个性气泡、字体、头像挂件，会重启QQ</string>
     <string name="addin_dpi">DPI、分辨率修改</string>
     <string name="addin_dpi_desc">自定义手机DPI或分辨率，这可能导致设备无法正常启动或UI错误</string>
     <string name="addin_deviceinfo">机型修改</string>
@@ -328,8 +330,9 @@
     <string name="addto_balance"><![CDATA[添加选中到 -> 均衡模式]]></string>
     <string name="set_power_mode">设置配置模式</string>
     <string name="i_know">知道了</string>
+    <string name="more">了解更多</string>
     <string name="not_support_config">未找到可用的模式配置文件</string>
-    <string name="not_support_config_desc">尽管应用没有为您的设备专门适配此功能。但你仍然可以自己创建配置文件（powercfg.sh）并复制到%s。详情可以咨询开发者</string>
+    <string name="not_support_config_desc">本应由目前还没有为您当前Soc提供性能配置文件，但你可以自己创建配置文件，并放到/data目录下，文件命名为powercfg，权限设为777.</string>
     <string name="first_start_select_config">首次使用，先选择配置偏好</string>
     <string name="conservative">保守 - 更加省电</string>
     <string name="radicalness">激进 - 性能优先</string>
@@ -343,6 +346,9 @@
     <string name="r11">R11+</string>
     <string name="x20">X20</string>
     <string name="ipx">IPX</string>
+    <string name="mrs">Mate RS</string>
+    <string name="_8848">8848</string>
+    <string name="r15">R15</string>
     <string name="auto_start">自启动</string>
     <string name="boot_after_auto_modify">开机后自动修改</string>
     <string name="exclude_recent">从最近任务列表隐藏</string>

@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.omarea.shared.ConfigInstaller
 import com.omarea.shared.FileWrite
 import com.omarea.shared.Consts
 import com.omarea.shared.SpfConfig
@@ -97,18 +98,8 @@ class FragmentHome : Fragment() {
     private fun installConfig(after: String) {
         if (File(Consts.POWER_CFG_PATH).exists()) {
             SuDo(context).execCmdSync(after)
-            //SuDo(context).execCmdSync(Consts.ExecuteConfig + "\n" + after)
         } else {
-            //TODO：选取配置
-            FileWrite.WritePrivateFile(context!!.assets, Platform().GetCPUName() + "/powercfg-default.sh", "powercfg.sh", context!!)
-            FileWrite.WritePrivateFile(context!!.assets, Platform().GetCPUName() + "/init.qcom.post_boot-default", "init.qcom.post_boot.sh", context!!)
-            val cmd = StringBuilder()
-                    .append("cp ${FileWrite.getPrivateFilePath(context!!, "powercfg.sh")} ${Consts.POWER_CFG_PATH};")
-                    .append("chmod 0777 ${Consts.POWER_CFG_PATH};")
-                    .append("chmod 0777 ${Consts.POWER_CFG_BASE};")
-                    .append(after)
-            //SuDo(context).execCmdSync(Consts.InstallPowerToggleConfigToCache + "\n\n" + Consts.ExecuteConfig + "\n" + after)
-            SuDo(context).execCmdSync(cmd.toString())
+            ConfigInstaller().installPowerConfig(context!!, after);
         }
         setModeState();
     }

@@ -38,6 +38,18 @@ class DialogAddinModifydevice(var context: Context) {
         (dialog.findViewById(R.id.dialog_addin_ipx) as Button).setOnClickListener {
             setIPhoneX()
         }
+        (dialog.findViewById(R.id.dialog_addin_mrs) as Button).setOnClickListener {
+            setMateRS()
+        }
+        (dialog.findViewById(R.id.dialog_addin_s9plus) as Button).setOnClickListener {
+            setS9Plus()
+        }
+        (dialog.findViewById(R.id.dialog_addin_r15) as Button).setOnClickListener {
+            setR15Plus()
+        }
+        (dialog.findViewById(R.id.dialog_addin_8848) as Button).setOnClickListener {
+            set8848()
+        }
         AlertDialog.Builder(context).setTitle("机型信息修改").setView(dialog).setNegativeButton("保存重启", { _, _ ->
             val sb = StringBuilder()
             val model = editModel.text.trim()
@@ -73,6 +85,7 @@ class DialogAddinModifydevice(var context: Context) {
                 Toast.makeText(context, "什么也没有修改！", Toast.LENGTH_SHORT).show()
             }
         }).create().show()
+        loadCurrent()
     }
 
     private lateinit var editModel: EditText
@@ -80,6 +93,19 @@ class DialogAddinModifydevice(var context: Context) {
     private lateinit var editProductName: EditText
     private lateinit var editDevice: EditText
     private lateinit var editManufacturer: EditText
+
+    private fun loadCurrent() {
+        val spf = context.getSharedPreferences("deviceinfo", Context.MODE_PRIVATE)
+        if (spf.all.isEmpty()) {
+            return
+        } else {
+            editBrand.setText(android.os.Build.BRAND)
+            editModel.setText(android.os.Build.MODEL)
+            editProductName.setText(android.os.Build.PRODUCT)
+            editDevice.setText(android.os.Build.DEVICE)
+            editManufacturer.setText(android.os.Build.MANUFACTURER)
+        }
+    }
 
     private fun setDefault() {
         val spf = context.getSharedPreferences("deviceinfo", Context.MODE_PRIVATE)
@@ -120,6 +146,38 @@ class DialogAddinModifydevice(var context: Context) {
         editProductName.setText("hydrogen")
         editDevice.setText("hydrogen")
         editManufacturer.setText("iPhone")
+    }
+
+    private fun setS9Plus() {
+        editBrand.setText("samsung")
+        editModel.setText("SM-G9650")
+        editProductName.setText("star2qltezc")
+        editDevice.setText("star2qltechn")
+        editManufacturer.setText("samsung")
+    }
+
+    private fun setR15Plus() {
+        editBrand.setText("OPPO")
+        editModel.setText("PAAM00")
+        editProductName.setText("OPPO R15")
+        editDevice.setText("PAAM00")
+        editManufacturer.setText("OPPO")
+    }
+
+    private fun set8848() {
+        editBrand.setText("ERENEBEN")
+        editModel.setText("EBEN M2")
+        editProductName.setText("EBEN M2")
+        editDevice.setText("EBEN M2")
+        editManufacturer.setText("ERENEBEN")
+    }
+
+    private fun setMateRS() {
+        editBrand.setText("HUAWEI")
+        editModel.setText("NEO-AL00")
+        editProductName.setText("NEO-AL00")
+        editDevice.setText("NEO-AL00")
+        editManufacturer.setText("HUAWEI")
     }
 
     @SuppressLint("ApplySharedPref")

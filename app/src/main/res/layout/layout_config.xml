@@ -153,16 +153,16 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="10dp"
                                 android:paddingLeft="8dp"
-                                android:text="本应用自带的，针对部分处理器和设备专门优化的配置文件，不代表会在所有系统上发挥最佳效果。当然，如果你不喜欢内置的模式，你也可以按照格式自定配置文件，复制到/data/powercfg.sh"
+                                android:text="安装本应由内置的模式配置文件，这是应用开发者针对部分CPU定制的配置。当然，你也可以自定义配置文件，命名为powercfg，放到/data下，并设置权限为777。"
                                 android:textAppearance="?android:attr/textAppearanceSmall"
                                 android:textSize="9dp" />
 
-                            <Button android:id="@+id/config_cfg_select_0"
+                            <Button android:background="@drawable/btn_bg" android:id="@+id/config_cfg_select_0"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="保守（偏重省电）" />
 
-                            <Button android:id="@+id/config_cfg_select_1"
+                            <Button android:background="@drawable/btn_bg" android:id="@+id/config_cfg_select_1"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="激进（更加流畅）" />

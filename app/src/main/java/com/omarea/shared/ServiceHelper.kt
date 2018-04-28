@@ -9,6 +9,8 @@ import android.view.accessibility.AccessibilityManager
 import android.widget.Toast
 import com.omarea.shared.helper.*
 import com.omarea.shell.AsynSuShellUnit
+import com.omarea.shell.SuDo
+import java.io.File
 import java.util.*
 
 /**
@@ -239,8 +241,13 @@ class ServiceHelper(private var context: Context) {
     }
 
     private fun toggleConfig(mode: String) {
-        keepShell.doCmd(String.format(Consts.ToggleMode, mode))
-        lastMode = mode
+        if (File(Consts.POWER_CFG_PATH).exists()) {
+            keepShell.doCmd(String.format(Consts.ToggleMode, mode))
+            lastMode = mode
+        } else {
+            ConfigInstaller().installPowerConfig(context, String.format(Consts.ToggleMode, mode));
+            lastMode = mode
+        }
     }
 
     //#region 工具方法

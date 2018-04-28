@@ -71,8 +71,45 @@
             android:background="@drawable/btn_bg"
             android:layout_marginRight="6dp" />
         <Button
+            android:id="@+id/dialog_addin_r15"
+            android:text="@string/r15"
+            android:layout_width="50dp"
+            android:textSize="12dp"
+            android:layout_height="32dp"
+            android:background="@drawable/btn_bg"
+            android:layout_marginRight="6dp" />
+        <Button
             android:id="@+id/dialog_addin_x20"
             android:text="@string/x20"
+            android:layout_width="50dp"
+            android:textSize="12dp"
+            android:layout_height="32dp"
+            android:background="@drawable/btn_bg"
+            android:layout_marginRight="6dp" />
+        <Button
+            android:id="@+id/dialog_addin_default"
+            android:text="默认"
+            android:textSize="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:background="@drawable/btn_bg"
+            android:layout_marginRight="6dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_marginTop="6dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:orientation="horizontal">
+        <Button
+            android:id="@+id/dialog_addin_s9plus"
+            android:text="S9+"
+            android:layout_width="60dp"
+            android:textSize="12dp"
+            android:layout_height="32dp"
+            android:background="@drawable/btn_bg"
+            android:layout_marginRight="6dp" />
+        <Button
+            android:id="@+id/dialog_addin_8848"
+            android:text="@string/_8848"
             android:layout_width="50dp"
             android:textSize="12dp"
             android:layout_height="32dp"
@@ -87,8 +124,8 @@
             android:background="@drawable/btn_bg"
             android:layout_marginRight="6dp" />
         <Button
-            android:id="@+id/dialog_addin_default"
-            android:text="默认"
+            android:id="@+id/dialog_addin_mrs"
+            android:text="@string/mrs"
             android:textSize="12dp"
             android:layout_width="wrap_content"
             android:layout_height="32dp"

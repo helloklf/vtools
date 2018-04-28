@@ -3,6 +3,7 @@ package com.omarea.vboot
 import android.app.Activity
 import android.os.Bundle
 import android.widget.Toast
+import com.omarea.shared.ConfigInstaller
 import com.omarea.shared.Consts
 import com.omarea.shared.FileWrite
 import com.omarea.shell.Platform
@@ -44,15 +45,7 @@ class ActivityShortcut : Activity() {
         if (File(Consts.POWER_CFG_PATH).exists()) {
             SuDo(this).execCmdSync(after)
         } else {
-            //TODO：选取配置
-            FileWrite.WritePrivateFile(this.assets, Platform().GetCPUName() + "/powercfg-default.sh", "powercfg.sh", this)
-            FileWrite.WritePrivateFile(this.assets, Platform().GetCPUName() + "/init.qcom.post_boot-default", "init.qcom.post_boot.sh", this)
-            val cmd = StringBuilder()
-                    .append("cp ${FileWrite.getPrivateFilePath(this, "powercfg.sh")} ${Consts.POWER_CFG_PATH};")
-                    .append("chmod 0777 ${Consts.POWER_CFG_PATH};")
-                    .append("chmod 0777 ${Consts.POWER_CFG_BASE};")
-                    .append(after)
-            SuDo(this).execCmdSync(cmd.toString())
+            ConfigInstaller().installPowerConfig(this, after);
         }
     }
 }

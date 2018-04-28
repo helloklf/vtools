@@ -119,7 +119,16 @@ class FragmentApplistions : Fragment() {
             return
         }
 
-        DialogAppOptions(context!!, selectedItems, myHandler).selectUserAppOptions()
+        when(apptype) {
+            Appinfo.AppType.SYSTEM->
+                DialogAppOptions(context!!, selectedItems, myHandler).selectSystemAppOptions()
+            Appinfo.AppType.USER ->
+                DialogAppOptions(context!!, selectedItems, myHandler).selectUserAppOptions()
+            Appinfo.AppType.BACKUPFILE->
+                DialogAppOptions(context!!, selectedItems, myHandler).selectBackupOptions()
+            else -> {
+            }
+        }
     }
 
     private fun searchApp() {

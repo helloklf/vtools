@@ -128,7 +128,8 @@ case "$target" in
 
         #/sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster1_volt_table
         chmod 664 /sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster1_volt_table
-        echo "2600000 1100000" > /sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster1_volt_table
+        echo "2704000 1121250" > /sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster1_volt_table
+        echo "2600000 1090000" > /sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster1_volt_table
         echo "2496000 1062500" > /sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster1_volt_table
         echo "2392000 1037500" > /sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster1_volt_table
         echo "2288000 1000000" > /sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster1_volt_table
@@ -156,6 +157,8 @@ case "$target" in
         echo 130000 > /sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster1_min_freq
 
         #/sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster0_volt_table
+        echo "1794000 962500" > /sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster0_volt_table
+        echo "1690000 937500" > /sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster0_volt_table
         echo "1586000 925000" > /sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster0_volt_table
         echo "1482000 875000" > /sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster0_volt_table
         echo "1378000 831250" > /sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster0_volt_table
@@ -184,9 +187,11 @@ chown -h system /sys/devices/system/cpu/cpufreq/ondemand/io_is_busy
 
 chmod 664 /dev/cpuset/background/cpus
 echo 0 > /dev/cpuset/background/cpus
+echo 1 > /dev/cpuset/background/cpus
 
 chmod 664 /dev/cpuset/system-background/cpus
 echo 0-2 > /dev/cpuset/system-background/cpus
+echo 2-3 > /dev/cpuset/system-background/cpus
 
 chmod 664 /dev/cpuset/boost/cpus
 echo 4-7 > /dev/cpuset/foreground/boost/cpus

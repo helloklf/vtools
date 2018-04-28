@@ -17,7 +17,7 @@ if [ "$action" = "powersave" ]; then
     echo 0 > /sys/devices/system/cpu/cpu5/online
     echo 0 > /sys/devices/system/cpu/cpu6/online
     echo 0 > /sys/devices/system/cpu/cpu7/online
-    echo 4 /sys/devices/system/cpu/cpuhotplug/max_online_cpu
+    echo 4 > /sys/devices/system/cpu/cpuhotplug/max_online_cpu
 
     chmod 664 /sys/kernel/hmp/down_threshold
     echo 280 > /sys/kernel/hmp/down_threshold
