@@ -268,7 +268,7 @@ class FragmentConfig : Fragment() {
                 if (search && !(packageName.contains(keyword) || item.appName.toString().contains(keyword))) {
                     continue
                 }
-                val config = spfPowercfg.getString(packageName.toLowerCase(), "default")
+                val config = spfPowercfg.getString(packageName.toLowerCase(), "balance")
                 when (config) {
                     "powersave" -> powersaveList!!.add(installedList!![i])
                     "performance" -> gameList!!.add(installedList!![i])

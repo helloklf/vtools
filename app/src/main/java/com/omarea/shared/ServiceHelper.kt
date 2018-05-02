@@ -126,7 +126,7 @@ class ServiceHelper(private var context: Context) {
             keepShell.doCmd(Consts.ExecuteConfig)
             if (!dyamicCore) {
                 notifyHelper.hideNotify()
-                notifyHelper.notify()
+                notifyHelper.notify("辅助服务已启动，动态响应未开启")
             }
             if (dyamicCore && this.lastModePackage != null) {
                 autoToggleMode(this.lastModePackage)
@@ -145,7 +145,7 @@ class ServiceHelper(private var context: Context) {
     init {
         spfGlobal.registerOnSharedPreferenceChangeListener(listener)
 
-        notifyHelper.notify("辅助服务已启动")
+        notifyHelper.notify("辅助服务已启动，" + if(dyamicCore) "动态响应已启动" else "动态响应未开启")
 
         //添加输入法到忽略列表
         Thread(Runnable {
@@ -185,7 +185,10 @@ class ServiceHelper(private var context: Context) {
 
     //更新通知
     private fun updateModeNofity(){
-        notifyHelper.notify("${getModName(lastMode)} -> $lastModePackage")
+        if (lastModePackage != null && !lastModePackage.isNullOrEmpty()) {
+            notifyHelper.notify("${getModName(lastMode)} -> $lastModePackage", lastModePackage!!)
+        } else
+            notifyHelper.notify("${getModName(lastMode)} -> $lastModePackage")
     }
 
     private fun getModName(mode:String) : String {

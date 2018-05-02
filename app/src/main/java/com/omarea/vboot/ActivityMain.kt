@@ -1,12 +1,12 @@
 package com.omarea.vboot
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.*
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.support.design.widget.NavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
@@ -19,10 +19,13 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
+import com.omarea.shared.Consts
 import com.omarea.shared.CrashHandler
 import com.omarea.shared.SpfConfig
+import com.omarea.shared.helper.NotifyHelper
 import com.omarea.shell.Busybox
 import com.omarea.shell.CheckRootStatus
+import com.omarea.shell.SuDo
 import com.omarea.shell.units.BatteryUnit
 import com.omarea.ui.AppShortcutManager
 import com.omarea.vboot.dialogs.DialogPower
@@ -77,6 +80,81 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
         setExcludeFromRecents()
         AppShortcutManager(thisview).removeMenu()
+        if (this.intent.extras != null && this.intent.extras.containsKey("packageName")) {
+            quickSwitchMode()
+        }
+    }
+
+    private fun getModName(mode:String) : String {
+        when(mode) {
+            "powersave" ->      return "省电模式"
+            "performance" ->      return "性能模式"
+            "fast" ->      return "极速模式"
+            "balance" ->   return "均衡模式"
+            else ->         return "未知模式"
+        }
+    }
+
+    private fun getAppName(packageName: String): String{
+        try {
+            val packageInfo = packageManager.getPackageInfo(packageName, 0);
+            return  packageInfo.applicationInfo.loadLabel(packageManager).toString()
+        } catch (ex : Exception) {
+            return  packageName;
+        }
+    }
+
+    @SuppressLint("ApplySharedPref")
+    private fun quickSwitchMode(){
+        val parameterValue = this.intent.getStringExtra("packageName");
+        if(packageName == null || parameterValue.isEmpty()) {
+            return
+        }
+        val spfPowercfg = getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
+        val mode = spfPowercfg.getString(parameterValue, "balance");
+        var index = 0;
+
+        when(mode) {
+            "powersave" ->      index = 0
+            "balance" ->   index = 1
+            "performance" ->      index = 2
+            "fast" ->      index = 3
+            else ->         index = 1
+        }
+
+        AlertDialog.Builder(this)
+                .setPositiveButton(R.string.btn_confirm, { dialog, which ->
+                    try {
+                        var selectedMode = ""
+                        when(index) {
+                            0 -> selectedMode = "powersave"
+                            1 -> selectedMode = "balance"
+                            2 -> selectedMode = "performance"
+                            3 -> selectedMode = "fast"
+                            4 -> selectedMode = "igoned"
+                        }
+                        spfPowercfg.edit().putString(parameterValue, selectedMode).commit()
+                        SuDo(this).execCmd(String.format(Consts.ToggleMode, selectedMode));
+                        NotifyHelper(this).notify("${getModName(selectedMode)} -> $parameterValue" , parameterValue)
+
+                        val intent = getPackageManager().getLaunchIntentForPackage(parameterValue);
+                        startActivity(intent);
+                    } catch (ex : Exception) {
+
+                    }
+                })
+                .setNegativeButton(R.string.btn_cancel, { dialog, which ->
+
+                })
+                .setNeutralButton("", { dialog, which ->
+
+                })
+                .setTitle(getAppName(parameterValue))
+                .setSingleChoiceItems(arrayOf("省电模式", "均衡模式", "游戏模式", "极速模式", "加入“忽略列表”"),index, { dialog, which ->
+                    index = which;
+                })
+                .create()
+                .show()
     }
 
     override fun onAttachedToWindow() {
