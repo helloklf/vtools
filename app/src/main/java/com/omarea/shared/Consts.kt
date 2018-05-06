@@ -12,7 +12,20 @@ public object Consts {
 
     val BackUpDir = "/backups/apps/";
     val AbsBackUpDir = SDCardDir + "/backups/apps/";
-
+    val FastChangerBase =
+            //"chmod 0777 /sys/class/power_supply/usb/pd_active;" +
+            //"chmod 0777 /sys/class/power_supply/usb/pd_allowed;" +
+            //"echo 1 > /sys/class/power_supply/usb/pd_active;" +
+            //"echo 1 > /sys/class/power_supply/usb/pd_allowed;" +
+            "chmod 0777 /sys/class/power_supply/main/constant_charge_current_max;" +
+            "chmod 0777 /sys/class/qcom-battery/restricted_current;" +
+            "chmod 0777 /sys/class/qcom-battery/restricted_charging;" +
+            "echo 0 > /sys/class/qcom-battery/restricted_charging;" +
+            "echo 0 > /sys/class/power_supply/battery/restricted_charging;" +
+            "echo 0 > /sys/class/power_supply/battery/safety_timer_enabled;" +
+            "chmod 0777 /sys/class/power_supply/bms/temp_warm;" +
+            "echo 480 > /sys/class/power_supply/bms/temp_warm;" +
+            "chmod 0777 /sys/class/power_supply/battery/constant_charge_current_max;"
     val FastChanger =
             "echo 0 > /sys/class/power_supply/battery/restricted_charging;" +
             "echo 0 > /sys/class/power_supply/battery/safety_timer_enabled;" +

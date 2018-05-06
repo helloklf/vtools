@@ -30,7 +30,7 @@
                 android:id="@android:id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#33dddddd"></TabWidget>
+                android:background="#33dddddd" />
 
             <FrameLayout
                 android:id="@android:id/tabcontent"
@@ -45,7 +45,7 @@
                     <ListView
                         android:id="@+id/config_defaultlist"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"></ListView>
+                        android:layout_height="match_parent" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -57,7 +57,7 @@
                     <ListView
                         android:id="@+id/config_gamelist"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"></ListView>
+                        android:layout_height="match_parent" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -69,7 +69,7 @@
                     <ListView
                         android:id="@+id/config_powersavelist"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"></ListView>
+                        android:layout_height="match_parent" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -81,7 +81,7 @@
                     <ListView
                         android:id="@+id/config_fastlist"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"></ListView>
+                        android:layout_height="match_parent" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -93,7 +93,7 @@
                     <ListView
                         android:id="@+id/config_ignoredlist"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"></ListView>
+                        android:layout_height="match_parent" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -157,15 +157,21 @@
                                 android:textAppearance="?android:attr/textAppearanceSmall"
                                 android:textSize="9dp" />
 
-                            <Button android:background="@drawable/btn_bg" android:id="@+id/config_cfg_select_0"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="保守（偏重省电）" />
+                            <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+                                <Button android:background="@drawable/btn_bg" android:id="@+id/config_cfg_select_0"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="36dp"
+                                    android:layout_marginRight="10dp"
+                                    android:text="保守（偏重省电）" android:paddingLeft="10dp" android:paddingRight="10dp" />
 
-                            <Button android:background="@drawable/btn_bg" android:id="@+id/config_cfg_select_1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="激进（更加流畅）" />
+                                <Button android:background="@drawable/btn_bg" android:id="@+id/config_cfg_select_1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="36dp"
+                                    android:text="激进（更加流畅）" android:paddingLeft="10dp" android:paddingRight="10dp" />
+                            </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>
                 </FrameLayout>

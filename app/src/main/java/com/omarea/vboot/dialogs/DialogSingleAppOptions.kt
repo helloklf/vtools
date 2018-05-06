@@ -99,7 +99,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                                 "还原 应用（仅安装）",
                                 "还原 应用和数据",
                                 "还原 数据",
-                                "复制包名",
+                                "复制PackageName",
                                 "在应用商店查看"), { _, which ->
                     when (which) {
                         0 -> deleteBackupAll()

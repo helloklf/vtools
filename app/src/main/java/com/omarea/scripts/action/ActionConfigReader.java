@@ -4,7 +4,10 @@ import android.content.Context;
 import android.util.Log;
 import android.util.Xml;
 import android.widget.Toast;
+
 import com.omarea.scripts.ExtractAssets;
+import com.omarea.scripts.simple.shell.ExecuteCommandWithOutput;
+
 import org.xmlpull.v1.XmlPullParser;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -54,7 +57,44 @@ public class ActionConfigReader {
                             if ("title".equals(parser.getName())) {
                                 action.title = parser.nextText();
                             } else if ("desc".equals(parser.getName())) {
-                                action.desc = parser.nextText();
+                                for (int i = 0; i < parser.getAttributeCount(); i++) {
+                                    String attrValue = parser.getAttributeValue(i);
+                                    switch (parser.getAttributeName(i)) {
+                                        case "su": {
+                                            if (attrValue.trim().startsWith(ASSETS_FILE)) {
+                                                String path = new ExtractAssets(context).extractToFilesDir(attrValue.trim());
+                                                action.descPollingSUShell = "chmod 7777 " + path + "\n" + path;
+                                            } else {
+                                                action.descPollingSUShell = attrValue;
+                                            }
+                                            action.desc = executeResultRoot(context, action.descPollingSUShell);
+                                            break;
+                                        }
+                                        case "sh": {
+                                            if (attrValue.trim().startsWith(ASSETS_FILE)) {
+                                                String path = new ExtractAssets(context).extractToFilesDir(attrValue.trim());
+                                                action.descPollingShell = "chmod 7777 " + path + "\n" + path;
+                                            } else {
+                                                action.descPollingShell = attrValue;
+                                            }
+                                            action.desc = executeResultRoot(context, action.descPollingShell);
+                                            break;
+                                        }
+                                        case "polling": {
+                                            try {
+                                                if (!attrValue.isEmpty()) {
+                                                    int polling = Integer.parseInt(attrValue);
+                                                    if (polling > 0)
+                                                        action.polling = polling;
+                                                }
+                                            } catch (Exception ignored) {
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (action.desc == null || action.desc.isEmpty())
+                                    action.desc = parser.nextText();
                             } else if ("script".equals(parser.getName())) {
                                 String script = parser.nextText();
                                 if (script.trim().startsWith(ASSETS_FILE)) {
@@ -96,8 +136,50 @@ public class ActionConfigReader {
                                             actionParamInfo.maxLength = Integer.parseInt(parser.getAttributeValue(i));
                                             break;
                                         }
+                                        case "value-sh": {
+                                            String script = parser.getAttributeValue(i);
+                                            if (script.trim().startsWith(ASSETS_FILE)) {
+                                                String path = new ExtractAssets(context).extractToFilesDir(script.trim());
+                                                actionParamInfo.valueShell = "chmod 7777 " + path + "\n" + path;
+                                            } else {
+                                                actionParamInfo.valueShell = script;
+                                            }
+                                            break;
+                                        }
+                                        case "value-su": {
+                                            String script = parser.getAttributeValue(i);
+                                            if (script.trim().startsWith(ASSETS_FILE)) {
+                                                String path = new ExtractAssets(context).extractToFilesDir(script.trim());
+                                                actionParamInfo.valueSUShell = "chmod 7777 " + path + "\n" + path;
+                                            } else {
+                                                actionParamInfo.valueSUShell = script;
+                                            }
+                                            break;
+                                        }
                                         case "maxLength": {
                                             actionParamInfo.maxLength = Integer.parseInt(parser.getAttributeValue(i));
+                                            break;
+                                        }
+                                        case "options-sh": {
+                                            actionParamInfo.options = new ArrayList<>();
+                                            String shellResult = executeResult(context, parser.getAttributeValue(i));
+                                            if (shellResult != null) {
+                                                final String[] options = shellResult.split("\n");
+                                                for (final String item : options) {
+                                                    if (item.contains("|")) {
+                                                        final String[] itemSplit = item.split("\\|");
+                                                        actionParamInfo.options.add(new ActionParamInfo.ActionParamOption() {{
+                                                            value = itemSplit[0];
+                                                            desc = itemSplit[1];
+                                                        }});
+                                                    } else {
+                                                        actionParamInfo.options.add(new ActionParamInfo.ActionParamOption() {{
+                                                            value = item;
+                                                            desc = item;
+                                                        }});
+                                                    }
+                                                }
+                                            }
                                             break;
                                         }
                                     }
@@ -157,5 +239,23 @@ public class ActionConfigReader {
             Log.d("VTools ReadConfig Fail！", ex.getMessage());
         }
         return null;
+    }
+
+    private static String executeResult(Context context, String script) {
+        if (script.trim().startsWith(ASSETS_FILE)) {
+            String path = new ExtractAssets(context).extractToFilesDir(script.trim());
+            script = "chmod 7777 " + path + "\n" + path;
+        }
+        String shellResult = ExecuteCommandWithOutput.executeCommandWithOutput(false, script);
+        return shellResult;
+    }
+
+    private static String executeResultRoot(Context context, String script) {
+        if (script.trim().startsWith(ASSETS_FILE)) {
+            String path = new ExtractAssets(context).extractToFilesDir(script.trim());
+            script = "chmod 7777 " + path + "\n" + path;
+        }
+        String shellResult = ExecuteCommandWithOutput.executeCommandWithOutput(true, script);
+        return shellResult;
     }
 }

@@ -6,13 +6,11 @@ import android.util.Xml;
 import android.widget.Toast;
 
 import com.omarea.scripts.ExtractAssets;
+import com.omarea.scripts.simple.shell.ExecuteCommandWithOutput;
 
 import org.xmlpull.v1.XmlPullParser;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
+
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -23,21 +21,31 @@ import java.util.Objects;
 public class SwitchConfigReader {
     private static final String ASSETS_FILE = "file:///android_asset/";
 
-    public static ArrayList<ActionInfo> readActionConfigXml(Context context) {
+    private static InputStream getConfig(Context context){
         try {
-            InputStream fileInputStream = context.getAssets().open("switchs.xml");
+            return context.getAssets().open("switchs.xml");
+        } catch (Exception ex) {
+            return null;
+        }
+    }
+
+    public static ArrayList<SwitchInfo> readActionConfigXml(Context context) {
+        try {
+            InputStream fileInputStream = getConfig(context);
+            if (fileInputStream == null)
+                return new ArrayList<>();
             XmlPullParser parser = Xml.newPullParser();// 获取xml解析器
             parser.setInput(fileInputStream, "utf-8");// 参数分别为输入流和字符编码
             int type = parser.getEventType();
-            ArrayList<ActionInfo> actions = null;
-            ActionInfo action = null;
+            ArrayList<SwitchInfo> actions = null;
+            SwitchInfo action = null;
             while (type != XmlPullParser.END_DOCUMENT) {// 如果事件不等于文档结束事件就继续循环
                 switch (type) {
                     case XmlPullParser.START_TAG:
                         if ("switchs".equals(parser.getName())) {
                             actions = new ArrayList<>();
                         } else if ("switch".equals(parser.getName())) {
-                            action = new ActionInfo();
+                            action = new SwitchInfo();
                             for (int i = 0; i < parser.getAttributeCount(); i++) {
                                 switch (parser.getAttributeName(i)) {
                                     case "root": {
@@ -62,7 +70,7 @@ public class SwitchConfigReader {
                             } else if ("getstate".equals(parser.getName())) {
                                 String script = parser.nextText();
                                 if (script.trim().startsWith(ASSETS_FILE)) {
-                                    action.getStateType = ActionInfo.ActionScript.ASSETS_FILE;
+                                    action.getStateType = SwitchInfo.ActionScript.ASSETS_FILE;
                                     String path = new ExtractAssets(context).extractToFilesDir(script.trim());
                                     action.getState = "chmod 7777 " + path + "\n" + path;
                                 } else {
@@ -71,7 +79,7 @@ public class SwitchConfigReader {
                             } else if ("setstate".equals(parser.getName())) {
                                 String script = parser.nextText();
                                 if (script.trim().startsWith(ASSETS_FILE)) {
-                                    action.setStateType = ActionInfo.ActionScript.ASSETS_FILE;
+                                    action.setStateType = SwitchInfo.ActionScript.ASSETS_FILE;
                                     String path = new ExtractAssets(context).extractToFilesDir(script.trim());
                                     action.setState = "chmod 7777 " + path + "\n" + path;
                                 } else {
@@ -91,7 +99,8 @@ public class SwitchConfigReader {
                             if (action.getState == null) {
                                 action.getState = "";
                             } else {
-                                action.selected = executeCommandWithOutput(action.root, action.getState).equals("1");
+                                String shellResult = ExecuteCommandWithOutput.executeCommandWithOutput(action.root, action.getState);
+                                action.selected = shellResult != null && (shellResult.equals("1") || shellResult.toLowerCase().equals("true"));
                             }
                             if (action.setState == null) {
                                 action.setState = "";
@@ -111,39 +120,5 @@ public class SwitchConfigReader {
             Log.d("VTools ReadConfig Fail！", ex.getMessage());
         }
         return null;
-    }
-
-
-    public static String executeCommandWithOutput(boolean root, String command) {
-        DataOutputStream dos;
-        InputStream is;
-        try {
-            Process process;
-            process = root ? Runtime.getRuntime().exec("su") : Runtime.getRuntime().exec("sh");
-            if (process == null) return "";
-            dos = new DataOutputStream(process.getOutputStream());
-            dos.writeBytes(command + "\n");
-            dos.writeBytes("exit \n");
-            dos.writeBytes("exit \n");
-            dos.flush();
-            dos.close();
-            if (process.waitFor() == 0) {
-                is = process.getInputStream();
-                StringBuilder builder = new StringBuilder();
-                BufferedReader br = new BufferedReader(new InputStreamReader(is));
-                String line;
-                while ((line = br.readLine()) != null)
-                    builder.append(line.trim()).append("\n");
-                return builder.toString().trim();
-            } else {
-                is = process.getErrorStream();
-                BufferedReader br = new BufferedReader(new InputStreamReader(is));
-                String line;
-                while ((line = br.readLine()) != null) Log.d("error", line);
-            }
-        } catch (IOException | InterruptedException | IllegalArgumentException e) {
-            e.printStackTrace();
-        }
-        return "";
     }
 }

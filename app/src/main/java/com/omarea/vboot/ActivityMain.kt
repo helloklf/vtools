@@ -80,10 +80,9 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
         setExcludeFromRecents()
         AppShortcutManager(thisview).removeMenu()
-        if (this.intent.extras != null && this.intent.extras.containsKey("packageName")) {
-            quickSwitchMode()
-        }
     }
+
+
 
     private fun getModName(mode:String) : String {
         when(mode) {
@@ -214,6 +213,19 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (this.intent.extras != null && this.intent.extras.containsKey("packageName")) {
+            quickSwitchMode()
+        }
+    }
+    override fun onResume() {
+        super.onResume()
+    }
+    override fun onRestart() {
+        super.onRestart()
     }
 
     private fun checkPermission(permission: String): Boolean =

@@ -50,19 +50,26 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:padding="8dp">
+                        <TextView
+                            android:text="@string/android_m_doze_doze"
+                            android:layout_marginLeft="8dp"
+                            android:layout_marginRight="8dp"
+                            android:layout_marginBottom="30dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
                         <Switch
                             android:id="@+id/doze_whitelist_autoset"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="8dp"
-                            android:text="自动恢复设置"/>
+                            android:text="@string/auto_resume"/>
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
                             android:layout_marginTop="8dp"
                             android:paddingLeft="8dp"
-                            android:text="手机开机完成后，自动恢复当前设定状态（由于MIUI系统重启后会自动将系统应用全部添加到白名单中）"
+                            android:text="@string/doze_list_auto_resume"
                             android:textAppearance="?android:attr/textAppearanceSmall"/>、
                     </LinearLayout>
                 </FrameLayout>

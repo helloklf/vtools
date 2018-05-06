@@ -2,6 +2,7 @@ package com.omarea.scripts.action;
 
 import android.text.InputFilter;
 import android.text.Spanned;
+
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,6 +11,9 @@ public class ActionParamInfo {
     String name;
     String desc;
     String value;
+    String valueShell;
+    String valueSUShell;
+    String valueFromShell;
     int maxLength = -1;
     String type;
     boolean readonly;
@@ -24,7 +28,7 @@ public class ActionParamInfo {
 
         @Override
         public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-            if (source!=null && source.toString().contains("\"")) {
+            if (source != null && source.toString().contains("\"")) {
                 return "";
             }
 
@@ -40,13 +44,13 @@ public class ActionParamInfo {
                 if (paramInfo.type.equals("int")) {
                     Pattern regex = Pattern.compile("^[0-9]{0,}$");
                     Matcher matcher = regex.matcher(source.toString());
-                    if(!matcher.matches()) {
+                    if (!matcher.matches()) {
                         return "";
                     }
                 } else if (paramInfo.type.equals("number")) {
                     Pattern regex = Pattern.compile("^[\\-.,0-9]{0,}$");
                     Matcher matcher = regex.matcher(source.toString());
-                    if(!matcher.matches()) {
+                    if (!matcher.matches()) {
                         return "";
                     }
                 }

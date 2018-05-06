@@ -23,6 +23,7 @@ class Platform {
         }
     }
 
+    //
     fun dynamicSupport(context: Context): Boolean {
         val cpuName = GetCPUName()
         val names = context.assets.list("")

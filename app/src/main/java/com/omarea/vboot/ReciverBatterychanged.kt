@@ -73,8 +73,29 @@ class ReciverBatterychanged : BroadcastReceiver() {
 
         if (globalSharedPreferences!!.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false))
             showMsg(context!!.getString(R.string.power_connected), false)
-        doCmd(Consts.FastChanger)
-        doCmd("echo ${qcLimit}000 > /sys/class/power_supply/battery/constant_charge_current_max;")
+        doCmd(Consts.FastChangerBase)
+        // /sys/class/qcom-battery/restricted_charging
+        //doCmd("echo ${qcLimit}000 > /sys/class/power_supply/battery/constant_charge_current_max;")
+        doCmd(computeLeves(qcLimit).toString())
+    }
+
+    private fun computeLeves(qcLimit:Int): StringBuilder {
+        val arr = StringBuilder()
+        if(qcLimit < 500) {
+        }
+        else {
+            var level = 500
+            while (level < qcLimit) {
+                arr.append("echo ${level}000 > /sys/class/power_supply/battery/constant_charge_current_max;")
+                arr.append("echo ${level}000 > /sys/class/power_supply/main/constant_charge_current_max;")
+                arr.append("echo ${level}000 > /sys/class/qcom-battery/restricted_current;")
+                level += 500
+            }
+        }
+        arr.append("echo ${qcLimit}000 > /sys/class/power_supply/battery/constant_charge_current_max;")
+        arr.append("echo ${qcLimit}000 > /sys/class/power_supply/main/constant_charge_current_max;")
+        arr.append("echo ${qcLimit}000 > /sys/class/qcom-battery/restricted_current;")
+        return arr;
     }
 
     private var lastBatteryLeavel = -1

@@ -17,4 +17,26 @@
             </param>
         </params>
     </action>
+    <action root="true">
+        <title>王者荣耀配置修改</title>
+        <desc su="file:///android_asset/custom/actions/tmgp_get.sh"></desc>
+        <script>file:///android_asset/custom/actions/tmgp_set.sh</script>
+        <params>
+            <param options-sh="file:///android_asset/custom/actions/tmgp_options.sh" name="action"></param>
+        </params>
+    </action>
+    <action root="true">
+        <title>谷歌相机HDR+</title>
+        <desc su="file:///android_asset/custom/actions/gcm_get.sh"></desc>
+        <script>
+            setprop persist.camera.HAL3.enabled $option;
+            echo '已修改，可能需要重启才能生效！';
+        </script>
+        <params>
+            <param name="option">
+                <option value="1">添加persist.camera.HAL3.enabled</option>
+                <option value="0">移除persist.camera.HAL3.enabled</option>
+            </param>
+        </params>
+    </action>
 </actions>

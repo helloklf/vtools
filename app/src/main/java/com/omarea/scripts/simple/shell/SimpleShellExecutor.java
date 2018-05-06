@@ -22,17 +22,19 @@ import com.omarea.vboot.R;
 public class SimpleShellExecutor {
     private Context context;
     private boolean started = false;
+
     public SimpleShellExecutor(Context context) {
         this.context = context;
     }
 
     /**
      * 执行脚本
+     *
      * @param root
      * @param cmds
      * @param startPath
      */
-    public boolean execute(Boolean root, StringBuilder cmds, String startPath) {
+    public boolean execute(Boolean root, String title, StringBuilder cmds, String startPath, Runnable onExit) {
         if (started) {
             return false;
         }
@@ -45,23 +47,23 @@ public class SimpleShellExecutor {
         }
 
         if (process != null) {
-            TextView textView = setLogView();
+            TextView textView = setLogView(title);
 
             final ShellHandler shellHandler = new SimpleShellHandler(textView);
-            setHandler(process, shellHandler);
+            setHandler(process, shellHandler, onExit);
 
             final OutputStream outputStream = process.getOutputStream();
             DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
             try {
                 String start = startPath;
-                if (startPath!=null) {
+                if (startPath != null) {
                     start = startPath;
                 } else {
                     start = context.getFilesDir().getAbsolutePath();
                 }
                 dataOutputStream.write(String.format("cd '%s'\n", start).getBytes("UTF-8"));
 
-                shellHandler.sendMessage(shellHandler.obtainMessage(ShellHandler.EVENT_START, "shell@android:" +start + " $\n\n"));
+                shellHandler.sendMessage(shellHandler.obtainMessage(ShellHandler.EVENT_START, "shell@android:" + start + " $\n\n"));
                 shellHandler.sendMessage(shellHandler.obtainMessage(ShellHandler.EVENT_WRITE, cmds.toString()));
 
                 dataOutputStream.writeBytes("sleep 0.2;\n");
@@ -81,18 +83,23 @@ public class SimpleShellExecutor {
 
     /**
      * 创建并获取日志输出界面
+     *
      * @return
      */
-    private TextView setLogView() {
+    private TextView setLogView(String title) {
+        if (title == null) {
+            title = context.getString(R.string.shell_executor);
+        }
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View view = layoutInflater.inflate(R.layout.dialog_shell_executor, null);
         TextView textView = (TextView) view.findViewById(R.id.shell_output);
         new AlertDialog.Builder(context)
-                .setTitle("脚本执行")
+                .setTitle(title)
                 .setView(view)
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {  }
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
                 })
                 .create()
                 .show();
@@ -101,10 +108,11 @@ public class SimpleShellExecutor {
 
     /**
      * 设置日志处理Handler
-     * @param process Runtime进程
+     *
+     * @param process      Runtime进程
      * @param shellHandler ShellHandler
      */
-    private void setHandler(Process process, final ShellHandler shellHandler) {
+    private void setHandler(Process process, final ShellHandler shellHandler, final Runnable onExit) {
         final InputStream inputStream = process.getInputStream();
         final InputStream errorStream = process.getErrorStream();
         final Thread reader = new Thread(new Runnable() {
@@ -152,6 +160,7 @@ public class SimpleShellExecutor {
                     if (readerError.isAlive()) {
                         readerError.interrupt();
                     }
+                    onExit.run();
                 }
             }
         });

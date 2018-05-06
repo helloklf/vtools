@@ -34,7 +34,7 @@ class FragmentWhitelist : Fragment() {
         dialog = ProgressBarDialog(context!!)
         whitelist_tabhost.setup()
         whitelist_tabhost.addTab(whitelist_tabhost.newTabSpec("tab_1")
-                .setContent(R.id.whitelist_tab1).setIndicator(context!!.getString(R.string.autobooster_tab_blacklist)))
+                .setContent(R.id.whitelist_tab1).setIndicator(context!!.getString(R.string.autobooster_tab_disDoze)))
         whitelist_tabhost.addTab(whitelist_tabhost.newTabSpec("tab_2")
                 .setContent(R.id.whitelist_tab2).setIndicator(context!!.getString(R.string.autobooster_tab_details)))
         whitelist_tabhost.currentTab = 0
