@@ -13,12 +13,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
+
 import com.omarea.scripts.ActionAdapter;
 import com.omarea.scripts.simple.shell.ExecuteCommandWithOutput;
 import com.omarea.scripts.simple.shell.SimpleShellExecutor;
 import com.omarea.ui.OverScrollListView;
 import com.omarea.ui.ProgressBarDialog;
-import com.omarea.vboot.ActivityMain;
 import com.omarea.vboot.R;
 
 import java.util.ArrayList;

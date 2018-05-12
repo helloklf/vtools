@@ -9,7 +9,6 @@ import android.view.accessibility.AccessibilityManager
 import android.widget.Toast
 import com.omarea.shared.helper.*
 import com.omarea.shell.AsynSuShellUnit
-import com.omarea.shell.SuDo
 import java.io.File
 import java.util.*
 
@@ -160,7 +159,8 @@ class ServiceHelper(private var context: Context) {
         if (delayStart && Date().time - serviceCreatedTime < 20000)
             return false
 
-        keepShell.doCmd(Consts.DisableSELinux)
+        if(spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true))
+            keepShell.doCmd(Consts.DisableSELinux)
 
         if  (dyamicCore)
             keepShell.doCmd(Consts.ExecuteConfig)

@@ -6,7 +6,7 @@
     android:orientation="vertical"
     tools:context="com.omarea.vboot.FragmentBattery">
 
-    <ScrollView
+    <com.omarea.ui.OverScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
@@ -190,5 +190,5 @@
                 </LinearLayout>
             </android.support.v7.widget.CardView>
         </LinearLayout>
-    </ScrollView>
+    </com.omarea.ui.OverScrollView>
 </FrameLayout>

@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.widget.Toast
 import com.omarea.shared.ConfigInstaller
 import com.omarea.shared.Consts
-import com.omarea.shared.FileWrite
 import com.omarea.shell.Platform
 import com.omarea.shell.SuDo
 import java.io.File

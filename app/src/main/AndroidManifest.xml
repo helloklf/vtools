@@ -99,6 +99,14 @@
             android:finishOnTaskLaunch="false"
             android:label="@string/title_activity_shortcut"
             android:launchMode="standard" />
+        <activity
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:name=".ActivityAddinOnline"
+            android:excludeFromRecents="true"
+            android:finishOnTaskLaunch="false"
+            android:label="@string/title_activity_online"
+            android:launchMode="standard" />
     </application>
 
 </manifest>

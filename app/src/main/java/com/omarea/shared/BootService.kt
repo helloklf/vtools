@@ -35,8 +35,11 @@ class BootService : Service() {
             }
         }
 
-        val sb = StringBuilder("setenforce 0;\n")
-        sb.append("\n\n")
+        val sb = StringBuilder()
+        if(globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true)) {
+            sb.append(Consts.DisableSELinux)
+            sb.append("\n\n")
+        }
 
         if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE, false)) {
             val mac = globalConfig.getString(SpfConfig.GLOBAL_SPF_MAC, "")
@@ -93,7 +96,6 @@ class BootService : Service() {
             sb.append("\n\n")
         }
 
-        sb.append("sh /data/data/me.piebridge.brevent/brevent.sh;");
         sb.append("\n\n")
         SuDo(this).execCmdSync(sb.toString())
         val nm =  getSystemService(NOTIFICATION_SERVICE) as NotificationManager

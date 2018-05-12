@@ -24,7 +24,7 @@ class FragmentWhitelist : Fragment() {
     private lateinit var dialog: ProgressBarDialog
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
-            inflater!!.inflate(R.layout.layout_whitelist, container, false)
+            inflater.inflate(R.layout.layout_whitelist, container, false)
 
     private lateinit var keepShell: KeepShell
 

@@ -1,6 +1,8 @@
 package com.omarea.vboot
 
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
@@ -9,23 +11,29 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.SimpleAdapter
 import android.widget.TabHost
+import android.widget.Toast
 import com.omarea.scripts.action.ActionConfigReader
 import com.omarea.scripts.action.ActionListConfig
 import com.omarea.scripts.switchs.SwitchConfigReader
+import com.omarea.scripts.switchs.SwitchListConfig
+import com.omarea.shared.FileWrite
 import com.omarea.shell.SysUtils
 import com.omarea.shell.units.FlymeUnit
 import com.omarea.shell.units.QQStyleUnit
+import com.omarea.ui.ProgressBarDialog
 import com.omarea.vboot.addin.*
 import com.omarea.vboot.dialogs.DialogAddinModifyDPI
 import com.omarea.vboot.dialogs.DialogAddinModifydevice
 import com.omarea.vboot.dialogs.DialogAddinWIFI
 import com.omarea.vboot.dialogs.DialogCustomMAC
-import com.omarea.scripts.switchs.SwitchListConfig
-import java.util.*
 import kotlinx.android.synthetic.main.layout_addin.*
+import java.io.File
+import java.io.InputStream
+import java.util.*
 
 
 class FragmentAddin : Fragment() {
+    private var myHandler = Handler()
     private fun createItem(title: String, desc: String, runnable: Runnable?, wran: Boolean = true): HashMap<String, Any> {
         val item = HashMap<String, Any>()
         item.put("Title", title)
@@ -100,9 +108,34 @@ class FragmentAddin : Fragment() {
     private fun loadConfig() {
         if (customConfigLoaded)
             return
-        ActionListConfig(this.activity!!).setListData(ActionConfigReader.readActionConfigXml(this.activity!!));
-        SwitchListConfig(this.activity!!).setListData(SwitchConfigReader.readActionConfigXml(this.activity!!));
-        customConfigLoaded = true
+        val progressBarDialog = ProgressBarDialog(context!!)
+        progressBarDialog.showDialog("读取配置，稍等...")
+        Thread(Runnable {
+            val actions = ActionConfigReader.readActionConfigXml(this.activity!!)
+            val onlineAddinDir = File(FileWrite.getPrivateFileDir(this.context !!) + "online-addin/")
+            if(onlineAddinDir.exists() && onlineAddinDir.isDirectory) {
+                val onlineAddins = onlineAddinDir.list { dir, name ->
+                    name.endsWith(".sh")
+                }
+                for (addinFile in onlineAddins) {
+                    try {
+                        val result = ActionConfigReader.readActionConfigXml(this.activity, File("$onlineAddinDir/$addinFile").inputStream())
+                        if(result != null && result.size > 0)
+                            actions.addAll(result)
+                    } catch (ex: Exception) {
+                        myHandler.post {
+                            Toast.makeText(context, addinFile + "读取解析失败\n" + ex.message, Toast.LENGTH_LONG).show()
+                        }
+                    }
+                }
+            }
+            myHandler.post {
+                ActionListConfig(this.activity!!).setListData(actions);
+                SwitchListConfig(this.activity!!).setListData(SwitchConfigReader.readActionConfigXml(this.activity!!));
+                customConfigLoaded = true
+                progressBarDialog.hideDialog()
+            }
+        }).start()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -120,6 +153,10 @@ class FragmentAddin : Fragment() {
         })
 
         initAddin(view)
+        addin_online.setOnClickListener {
+            val intent = Intent(context, ActivityAddinOnline::class.java)
+            startActivity(intent)
+        }
     }
 
     companion object {

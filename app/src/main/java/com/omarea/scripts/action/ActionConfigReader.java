@@ -9,6 +9,7 @@ import com.omarea.scripts.ExtractAssets;
 import com.omarea.scripts.simple.shell.ExecuteCommandWithOutput;
 
 import org.xmlpull.v1.XmlPullParser;
+
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -20,9 +21,8 @@ import java.util.Objects;
 public class ActionConfigReader {
     private static final String ASSETS_FILE = "file:///android_asset/";
 
-    public static ArrayList<ActionInfo> readActionConfigXml(Context context) {
+    public static ArrayList<ActionInfo> readActionConfigXml(Context context, InputStream fileInputStream) {
         try {
-            InputStream fileInputStream = context.getAssets().open("actions.xml");
             XmlPullParser parser = Xml.newPullParser();// 获取xml解析器
             parser.setInput(fileInputStream, "utf-8");// 参数分别为输入流和字符编码
             int type = parser.getEventType();
@@ -234,6 +234,17 @@ public class ActionConfigReader {
             }
 
             return actions;
+        } catch (Exception ex) {
+            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
+            Log.d("VTools ReadConfig Fail！", ex.getMessage());
+        }
+        return null;
+    }
+
+    public static ArrayList<ActionInfo> readActionConfigXml(Context context) {
+        try {
+            InputStream fileInputStream = context.getAssets().open("actions.xml");
+            return readActionConfigXml(context, fileInputStream);
         } catch (Exception ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
             Log.d("VTools ReadConfig Fail！", ex.getMessage());

@@ -17,14 +17,14 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
+import com.omarea.shared.AppListHelper
 import com.omarea.shared.ServiceHelper
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.model.Appinfo
 import com.omarea.ui.AppListAdapter
+import com.omarea.ui.OverScrollListView
 import com.omarea.ui.ProgressBarDialog
-import com.omarea.shared.AppListHelper
 import kotlinx.android.synthetic.main.layout_booster.*
-import kotlin.collections.ArrayList
 
 
 class FragmentBooster : Fragment() {
@@ -137,7 +137,7 @@ class FragmentBooster : Fragment() {
         processBarDialog.hideDialog()
     }
 
-    private fun setListData(dl: ArrayList<Appinfo>, lv: ListView) {
+    private fun setListData(dl: ArrayList<Appinfo>, lv: OverScrollListView) {
         myHandler.post {
             processBarDialog.hideDialog()
             lv.adapter = AppListAdapter(context!!, dl)

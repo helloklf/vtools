@@ -9,10 +9,11 @@ import android.widget.TextView;
 
 import com.omarea.scripts.action.ActionInfo;
 import com.omarea.scripts.simple.shell.ExecuteCommandWithOutput;
+import com.omarea.vboot.R;
+
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-import com.omarea.vboot.R;
 
 public class ActionAdapter extends BaseAdapter {
     private ArrayList<ActionInfo> actionInfos;

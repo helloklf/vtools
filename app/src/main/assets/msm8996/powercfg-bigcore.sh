@@ -1,6 +1,5 @@
 #!/system/bin/sh
 
-setenforce 0
 action=$1
 
 if [ ! `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor` = "interactive" ]; then 

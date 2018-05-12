@@ -3,6 +3,7 @@ package com.omarea.vboot
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
@@ -13,6 +14,7 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.CheckBox
+import android.widget.SeekBar
 import android.widget.Spinner
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import com.omarea.shell.cpucontrol.ThermalControlUtils
@@ -30,6 +32,8 @@ class FragmentCpuControl : Fragment() {
     private var handler = Handler()
     private var coreCount = 0
     private var cores = arrayListOf<CheckBox>()
+    private var exynosCpuhotplug = false;
+    private var exynosHMP = false;
 
     private fun initData() {
         hasBigCore = CpuFrequencyUtils.getClusterInfo().size > 1
@@ -38,6 +42,8 @@ class FragmentCpuControl : Fragment() {
         bigFreqs = CpuFrequencyUtils.getAvailableFrequencies(1)
         bigGovernor = CpuFrequencyUtils.getAvailableGovernors(1)
         coreCount = CpuFrequencyUtils.getCoreCount()
+        exynosCpuhotplug = CpuFrequencyUtils.exynosCpuhotplugSupport()
+        exynosHMP = CpuFrequencyUtils.exynosHMP()
 
         handler.post {
             try {
@@ -53,6 +59,12 @@ class FragmentCpuControl : Fragment() {
                     cluster_big_max_freq.adapter = StringAdapter(this.context, bigFreqs)
                     cluster_big_governor.adapter = StringAdapter(this.context, bigGovernor)
                 }
+
+                exynos_cpuhotplug.isEnabled = exynosCpuhotplug
+                exynos_hmp_up.isEnabled = exynosHMP
+                exynos_hmp_down.isEnabled = exynosHMP
+                exynos_hmp_booster.isEnabled = exynosHMP
+
                 cores = arrayListOf<CheckBox>(core_0, core_1, core_2, core_3, core_4, core_5, core_6, core_7)
                 if (coreCount > cores.size) coreCount = cores.size;
                 for (i in 0..cores.size - 1) {
@@ -97,7 +109,6 @@ class FragmentCpuControl : Fragment() {
         thermal_paramters.setOnCheckedChangeListener({ buttonView, isChecked ->
             ThermalControlUtils.setTheramlState(isChecked, this.context)
         })
-
         cpu_sched_boost.setOnCheckedChangeListener({ buttonView, isChecked ->
             CpuFrequencyUtils.setSechedBoostState(isChecked, this.context)
         })
@@ -188,9 +199,35 @@ class FragmentCpuControl : Fragment() {
         }
         for (i in 0..cores.size - 1) {
             val core = i
-            cores[core].setOnCheckedChangeListener { buttonView, isChecked ->
-                CpuFrequencyUtils.setCoreOnlineState(core, isChecked)
+            cores[core].setOnClickListener {
+                CpuFrequencyUtils.setCoreOnlineState(core, (it as CheckBox).isChecked)
             }
+        }
+
+        exynos_cpuhotplug.setOnClickListener {
+            CpuFrequencyUtils.setExynosHotplug((it as CheckBox).isChecked)
+        }
+        exynos_hmp_booster.setOnClickListener {
+            CpuFrequencyUtils.setExynosBooster((it as CheckBox).isChecked)
+        }
+        exynos_hmp_up.setOnSeekBarChangeListener(OnSeekBarChangeListener(true))
+        exynos_hmp_down.setOnSeekBarChangeListener(OnSeekBarChangeListener(false))
+    }
+
+    class OnSeekBarChangeListener(private var up: Boolean) : SeekBar.OnSeekBarChangeListener {
+        override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            if(seekBar != null) {
+                if(up)
+                    CpuFrequencyUtils.setExynosHmpUP(seekBar.progress)
+                else
+                    CpuFrequencyUtils.setExynosHmpDown(seekBar.progress)
+            }
+        }
+        override fun onStartTrackingTouch(seekBar: SeekBar?) {
+        }
+
+        @SuppressLint("ApplySharedPref")
+        override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
         }
     }
 
@@ -263,6 +300,11 @@ class FragmentCpuControl : Fragment() {
         var boostFreq = ""
         var boostTime = ""
         var coreOnline = arrayListOf<Boolean>()
+
+        var exynosHmpUP = 0;
+        var exynosHmpDown = 0;
+        var exynosHmpBooster = false;
+        var exynosHotplug = false;
     }
 
     private var status = Status()
@@ -279,6 +321,10 @@ class FragmentCpuControl : Fragment() {
                 status.boost = CpuFrequencyUtils.getSechedBoostState()
                 status.boostFreq = CpuFrequencyUtils.getInputBoosterFreq()
                 status.boostTime = CpuFrequencyUtils.getInputBoosterTime()
+                status.exynosHmpUP = CpuFrequencyUtils.getExynosHmpUP()
+                status.exynosHmpDown = CpuFrequencyUtils.getExynosHmpDown()
+                status.exynosHmpBooster = CpuFrequencyUtils.getExynosBooster()
+                status.exynosHotplug = CpuFrequencyUtils.getExynosHotplug()
 
                 if (hasBigCore) {
                     status.cluster_big_min_freq = bigFreqs.indexOf(getApproximation(bigFreqs,CpuFrequencyUtils.getCurrentMinFrequency(1)))
@@ -288,7 +334,7 @@ class FragmentCpuControl : Fragment() {
 
                 status.coreOnline = arrayListOf()
                 for (i in 0..coreCount - 1) {
-                    status.coreOnline.add(CpuFrequencyUtils.getCoreOnlineStae(i))
+                    status.coreOnline.add(CpuFrequencyUtils.getCoreOnlineState(i))
                 }
 
                 handler.post {
@@ -331,6 +377,13 @@ class FragmentCpuControl : Fragment() {
                 cpu_sched_boost.isEnabled = false
             }
             cpu_sched_boost.isChecked = status.boost == "1"
+
+            exynos_hmp_down.setProgress(status.exynosHmpDown)
+            exynos_hmp_down_text.setText(status.exynosHmpDown.toString())
+            exynos_hmp_up.setProgress(status.exynosHmpUP)
+            exynos_hmp_up_text.setText(status.exynosHmpUP.toString())
+            exynos_cpuhotplug.isChecked = status.exynosHotplug
+            exynos_hmp_booster.isChecked = status.exynosHmpBooster
 
             if (status.boostFreq.isEmpty()) {
                 cpu_inputboost_freq.isEnabled = false

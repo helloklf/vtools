@@ -7,6 +7,7 @@ import android.content.*
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.support.design.widget.NavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
@@ -19,6 +20,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import com.omarea.shared.Consts
 import com.omarea.shared.CrashHandler
 import com.omarea.shared.SpfConfig
@@ -28,6 +30,7 @@ import com.omarea.shell.CheckRootStatus
 import com.omarea.shell.SuDo
 import com.omarea.shell.units.BatteryUnit
 import com.omarea.ui.AppShortcutManager
+import com.omarea.ui.ProgressBarDialog
 import com.omarea.vboot.dialogs.DialogPower
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -36,6 +39,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     lateinit internal var thisview: AppCompatActivity
     private var hasRoot = false
     private var globalSPF: SharedPreferences? = null
+    private var myHandler = Handler()
 
     private fun setExcludeFromRecents(exclude:Boolean? = null) {
         try {
@@ -81,8 +85,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setExcludeFromRecents()
         AppShortcutManager(thisview).removeMenu()
     }
-
-
 
     private fun getModName(mode:String) : String {
         when(mode) {
@@ -207,8 +209,48 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
     }
 
+    @SuppressLint("ApplySharedPref", "CommitPrefEdits")
     private fun checkRoot(next: Runnable, skip: Runnable) {
-        CheckRootStatus(this, next, skip).forceGetRoot()
+        val globalConfig = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+        if (globalConfig.contains(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE_CHECKING)) {
+            AlertDialog.Builder(this)
+                    .setTitle("兼容性问题")
+                    .setMessage("检测到你的设备在上次“兼容性检测”过程中断，“自动SELinux宽容模式”将不会被开启！\n\n因此，有些功能可能无法使用！")
+                    .setPositiveButton(R.string.btn_confirm, DialogInterface.OnClickListener { dialog, which ->
+                        globalConfig.edit()
+                                .putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE_CHECKING, false)
+                                .remove(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE_CHECKING)
+                                .commit()
+                        CheckRootStatus(this, next, skip, false).forceGetRoot()
+                    })
+                    .setCancelable(false)
+                    .create()
+                    .show()
+        }
+        if(!globalConfig.contains(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE)) {
+            CheckRootStatus(this, Runnable {
+                myHandler.post {
+                    globalConfig.edit().putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE_CHECKING, true)
+                            .commit()
+                    val dialog = ProgressBarDialog(this)
+                    dialog.showDialog("兼容性检测，稍等10几秒...")
+                    Thread(Runnable {
+                        SuDo(this).execCmdSync(Consts.DisableSELinux + "\n sleep 10; \n")
+                        myHandler.post {
+                            dialog.hideDialog()
+                            next.run()
+                        }
+                        globalConfig.edit()
+                                .putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true)
+                                .remove(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE_CHECKING)
+                                .commit()
+                    }).start()
+                }
+            }, skip, false).forceGetRoot()
+        } else{
+            val disableSeLinux = globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true)
+            CheckRootStatus(this, next, skip, disableSeLinux).forceGetRoot()
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -219,6 +261,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onStart()
         if (this.intent.extras != null && this.intent.extras.containsKey("packageName")) {
             quickSwitchMode()
+            this.intent.extras.clear()
         }
     }
     override fun onResume() {
@@ -334,7 +377,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             transaction.replace(R.id.main_content, fragment)
             transaction.commit()
             title = item.title
-            item.isChecked = true
+            //item.isChecked = true
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)

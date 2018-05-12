@@ -48,7 +48,7 @@ public class SwitchAdapter implements ListAdapter {
         View view = listview.getChildAt(index - visiblePosition);
         ViewHolder holder = (ViewHolder) view.getTag();
         SwitchInfo actionInfo = ((SwitchInfo) getItem(index));
-        if (actionInfo.getState != null && !actionInfo.getState.isEmpty()) {
+        if (actionInfo.descPollingShell != null && !actionInfo.descPollingShell.isEmpty()) {
             actionInfo.desc = ExecuteCommandWithOutput.executeCommandWithOutput(false, actionInfo.descPollingShell);
         }
         if (actionInfo.descPollingSUShell != null && !actionInfo.descPollingSUShell.isEmpty()) {

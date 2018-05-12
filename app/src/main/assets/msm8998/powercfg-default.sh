@@ -1,5 +1,5 @@
 #!/system/bin/sh
-setenforce 0
+
 action=$1
 
 

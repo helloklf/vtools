@@ -8,8 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
-import com.omarea.shared.FileWrite
 import com.omarea.shared.Consts
+import com.omarea.shared.FileWrite
 import com.omarea.shell.AsynSuShellUnit
 import com.omarea.shell.Files
 import com.omarea.vboot.R

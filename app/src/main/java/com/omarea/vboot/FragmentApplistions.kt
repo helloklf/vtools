@@ -12,12 +12,13 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
+import com.omarea.shared.AppListHelper
 import com.omarea.shared.Consts
 import com.omarea.shared.model.Appinfo
 import com.omarea.ui.AppListAdapter
+import com.omarea.ui.OverScrollListView
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.ui.SearchTextWatcher
-import com.omarea.shared.AppListHelper
 import com.omarea.vboot.dialogs.DialogAppOptions
 import com.omarea.vboot.dialogs.DialogSingleAppOptions
 import kotlinx.android.synthetic.main.layout_applictions.*
@@ -149,7 +150,7 @@ class FragmentApplistions : Fragment() {
         }).start()
     }
 
-    private fun setListData(dl: ArrayList<Appinfo>?, lv: ListView) {
+    private fun setListData(dl: ArrayList<Appinfo>?, lv: OverScrollListView) {
         if (dl == null)
             return
         myHandler.post {

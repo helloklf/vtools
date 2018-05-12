@@ -1,32 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:checked="false"
+        android:icon="@drawable/ic_menu_home"
+        android:title="@string/menu_home" />
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_home"
-            android:checked="true"
-            android:icon="@drawable/ic_menu_home"
-            android:title="@string/menu_home" />
+    <item android:title="辅助功能">
+        <menu>
+            <item
+                android:id="@+id/nav_profile"
+                android:icon="@drawable/ic_menu_profile"
+                android:title="@string/menu_cofig" />
+            <item
+                android:id="@+id/nav_booster"
+                android:icon="@drawable/ic_menu_booster"
+                android:title="@string/menu_autobooster" />
+        </menu>
+    </item>
+    <item android:title="常用功能">
+        <menu>
+            <item
+                android:id="@+id/nav_img"
+                android:icon="@drawable/ic_menu_img"
+                android:title="@string/menu_img" />
+            <item
+                android:id="@+id/nav_additional"
+                android:icon="@drawable/ic_menu_vboot"
+                android:title="@string/menu_additional" />
+            <item
+                android:id="@+id/nav_xposed"
+                android:icon="@drawable/ic_menu_config"
+                android:title="@string/menu_xposed" />
+            <item
+                android:id="@+id/nav_applictions"
+                android:icon="@drawable/ic_menu_modules"
+                android:title="@string/menu_applictions" />
+        </menu>
+    </item>
+    <item android:title="系统管理">
+        <menu>
+            <item
+                android:id="@+id/nav_core_control"
+                android:icon="@drawable/cpu"
+                android:title="@string/menu_core_control" />
+            <item
+                android:id="@+id/nav_whitelist"
+                android:icon="@drawable/ic_menu_task"
+                android:title="@string/menu_whitelist" />
+            <item
+                android:id="@+id/nav_swap"
+                android:icon="@drawable/ic_menu_digital"
+                android:title="@string/menu_swap" />
+            <item
+                android:id="@+id/nav_battery"
+                android:icon="@drawable/battery"
+                android:title="@string/menu_battery" />
+                android:visible="false" />
+        </menu>
+    </item>
+    <!--<group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_img"
             android:icon="@drawable/ic_menu_img"
             android:title="@string/menu_img" />
-        <item
-            android:id="@+id/nav_profile"
-            android:icon="@drawable/ic_menu_profile"
-            android:title="@string/menu_cofig" />
-        <item
-            android:id="@+id/nav_core_control"
-            android:icon="@drawable/cpu"
-            android:title="@string/menu_core_control" />
-        <item
-            android:id="@+id/nav_booster"
-            android:icon="@drawable/ic_menu_booster"
-            android:title="@string/menu_autobooster" />
-        <item
-            android:id="@+id/nav_whitelist"
-            android:icon="@drawable/ic_menu_task"
-            android:title="@string/menu_whitelist" />
         <item
             android:id="@+id/nav_additional"
             android:icon="@drawable/ic_menu_vboot"
@@ -39,32 +76,20 @@
             android:id="@+id/nav_applictions"
             android:icon="@drawable/ic_menu_modules"
             android:title="@string/menu_applictions" />
-        <!--<item
-            android:id="@+id/nav_tasks"
-            android:icon="@drawable/ic_menu_task"
-            android:title="@string/menu_tasks" />-->
-        <item
-            android:id="@+id/nav_swap"
-            android:icon="@drawable/ic_menu_digital"
-            android:title="@string/menu_swap" />
-        <item
-            android:id="@+id/nav_battery"
-            android:icon="@drawable/battery"
-            android:title="@string/menu_battery" />
-        <item
-            android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_menu_config"
-            android:title="@string/menu_settings"
-            android:visible="false" />
-        <item
-            android:id="@+id/nav_help"
-            android:icon="@drawable/ic_menu_help"
-            android:title="@string/menu_help"
-            android:visible="false" />
-    </group>
+    </group>-->
 
     <item android:title="@string/menu_menu_title">
         <menu>
+            <item
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_menu_config"
+                android:title="@string/menu_settings"
+                android:visible="false" />
+            <item
+                android:id="@+id/nav_help"
+                android:icon="@drawable/ic_menu_help"
+                android:title="@string/menu_help"
+                android:visible="false" />
             <item
                 android:visible="false"
                 android:id="@+id/nav_reward"

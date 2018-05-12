@@ -42,7 +42,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <ListView
+                    <com.omarea.ui.OverScrollListView
                         android:id="@+id/config_defaultlist"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
@@ -54,7 +54,7 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <ListView
+                    <com.omarea.ui.OverScrollListView
                         android:id="@+id/config_gamelist"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
@@ -66,7 +66,7 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <ListView
+                    <com.omarea.ui.OverScrollListView
                         android:id="@+id/config_powersavelist"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
@@ -78,7 +78,7 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <ListView
+                    <com.omarea.ui.OverScrollListView
                         android:id="@+id/config_fastlist"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
@@ -90,7 +90,7 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <ListView
+                    <com.omarea.ui.OverScrollListView
                         android:id="@+id/config_ignoredlist"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />

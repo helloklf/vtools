@@ -31,6 +31,8 @@ public class SpfConfig {
 
     public static String GLOBAL_SPF = "global"; //spf
     public static String GLOBAL_SPF_AUTO_INSTALL = "is_auto_install";
+    public static String GLOBAL_SPF_DISABLE_ENFORCE = "enforce_0";
+    public static String GLOBAL_SPF_DISABLE_ENFORCE_CHECKING = "enforce_checking";
     public static String GLOBAL_SPF_AUTO_BOOSTER = "is_auto_booster";
     public static String GLOBAL_SPF_DYNAMIC_CPU = "is_dynamic_cpu";
     public static String GLOBAL_SPF_DYNAMIC_CPU_CONFIG = "dynamic_cpu_config";

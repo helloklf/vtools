@@ -4,11 +4,6 @@ import android.app.AlertDialog
 import android.content.Context
 import android.widget.Toast
 
-import com.omarea.shell.SysUtils
-import com.omarea.vboot.addin.AddinBase
-
-import java.util.ArrayList
-
 /**
  * Created by Hello on 2017/11/01.
  */

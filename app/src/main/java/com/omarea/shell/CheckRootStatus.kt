@@ -3,6 +3,8 @@ package com.omarea.shell
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Handler
+import com.omarea.shared.Consts
+import com.omarea.shared.SpfConfig
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.vboot.R
 
@@ -11,16 +13,17 @@ import com.omarea.vboot.R
  * Created by helloklf on 2017/6/3.
  */
 
-class CheckRootStatus(var context: Context, private var next:Runnable? = null, private var skip:Runnable?) {
+class CheckRootStatus(var context: Context, private var next:Runnable? = null, private var skip:Runnable?, private var disableSeLinux: Boolean = false) {
     var myHandler: Handler = Handler()
 
     //是否已经Root
-    private fun isRoot(): Boolean {
+    private fun isRoot(disableSeLinux: Boolean): Boolean {
         var process: java.lang.Process? = null
         try {
             process = Runtime.getRuntime().exec("su")
             val out = process!!.outputStream.bufferedWriter()
-            out.write("setenforce 0;\n")
+            if(disableSeLinux)
+                out.write(Consts.DisableSELinux)
             out.write("dumpsys deviceidle whitelist +com.omarea.vboot;\n")
             out.write("exit;\n")
             out.write("exit;\n")
@@ -45,7 +48,7 @@ class CheckRootStatus(var context: Context, private var next:Runnable? = null, p
         pd.showDialog("正在检查ROOT权限")
         var completed = false
         Thread {
-            if (!isRoot()) {
+            if (!isRoot(disableSeLinux)) {
                 completed = true
                 myHandler.post {
                     pd.hideDialog()

@@ -13,20 +13,31 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <TextView
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="55dp"
         android:textSize="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="@string/app_name"
+        android:textColor="@android:color/white"
+        android:textAlignment="textEnd"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:text="针对高通骁龙设备的版本"
+        android:textColor="@android:color/white"
+        android:textAlignment="textEnd"
+        android:text="玩机有风险，操作需谨慎"
         android:textSize="12dp" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="@android:color/white"
+        android:textAlignment="textEnd"
+        android:text="Design by 嘟嘟斯基"
+        android:textSize="11dp" />
 
 </LinearLayout>

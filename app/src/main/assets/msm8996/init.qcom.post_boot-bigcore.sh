@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-setenforce 0
+
 target=`getprop ro.board.platform`
 
 function configure_memory_parameters() {

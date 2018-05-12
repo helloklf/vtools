@@ -132,28 +132,30 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="accessbility_autoclick">自动点击</string>
-    <string name="accessbility_autoclick_desc">安装第三方应用时尝试自动点击下一步和安装按钮，部分系统有效！</string>
+    <string name="accessbility_autoclick">安装点击</string>
+    <string name="accessbility_autoclick_desc">安装第三方应用时，自动帮你点“下一步”</string>
     <string name="accessbility_charger">充电加速 *实验性</string>
     <string name="accessbility_charger_desc">尝试提高充电最大电流限制，但不代表实际充电速度</string>
-    <string name="accessbility_autobooster">自动行为</string>
+    <string name="accessbility_autobooster">自动行为 - 总开关</string>
     <string name="accessbility_autobooster_desc">特定事件执行特定操作，具体设置请在本应用自动行为中配</string>
-    <string name="accessbility_dynconfig">动态响应</string>
-    <string name="accessbility_dynconfig_desc">为每个应用单独配置性能模式，在切换应用时自动调整CPU和GPU频率，具体设置请在在本应用性能配置中配</string>
+    <string name="accessbility_dynconfig">动态响应 - 总开关</string>
+    <string name="accessbility_dynconfig_desc">开启此功能时，你的设备性能将受微工具箱控制</string>
     <string name="accessbility_bp">充电保护</string>
     <string name="accessbility_bp_desc">充电到指定百分百时自动禁止充电功能，浅充浅放有助于保护电池。但可能导致电量显示不精准。</string>
     <string name="accessbility_bp_level_desc">电量限制值（默认85%）</string>
     <string name="settings_qc_limit_desc">充电速度限制(mA)，默认将限制提升至5000mA。</string>
-    <string name="accessbility_debug">调试模式</string>
-    <string name="accessbility_debug_desc">在后台运行时显示完整的动作提示，用于测试软件是否正常工作</string>
-    <string name="accessbility_notify">常驻通知</string>
-    <string name="accessbility_notify_desc">运行辅助服务时在状态栏显示通知</string>
-    <string name="accessbility_delay">延迟启动</string>
-    <string name="accessbility_delay_desc">如果出现开机后应用已启动但未正确加载配置文件，可尝试开启此项</string>
+    <string name="accessbility_debug">吼吼吼！！！</string>
+    <string name="accessbility_debug_desc">让微工具箱在后台执行动作时显示通知</string>
+    <string name="accessbility_notify">阴魂不散</string>
+    <string name="accessbility_notify_desc">在下拉通知中心显示微工具箱</string>
+    <string name="accessbility_delay">慢点儿</string>
+    <string name="accessbility_delay_desc">微工具箱自启动完成25秒后再应用配置</string>
+    <string name="settings_disable_selinux">SeLinux宽容模式</string>
+    <string name="settings_disable_selinux_desc">自动开启SeLinux宽容模式，部分设备会卡死重启。如果不开有些功能会用不了</string>
 
     <string name="menu_home">概况</string>
     <string name="menu_vboot">双系统工具</string>
-    <string name="menu_cofig">性能配置</string>
+    <string name="menu_cofig">动态响应</string>
     <string name="menu_core_control">CPU 控制</string>
     <string name="menu_additional">附加功能</string>
     <string name="menu_applictions">应用管理</string>
@@ -209,15 +211,15 @@
         对于MIUI等具有软件休眠机制的系统，还应对本软件单独设置，避免后台服务被暂停和挂起。
     </string>
 
-    <string name="accessibility_running">服务已启动</string>
-    <string name="accessibility_stoped">点击此处去勾选辅助服务</string>
+    <string name="accessibility_running">辅助服务已激活</string>
+    <string name="accessibility_stoped">点击此处去激活辅助服务</string>
 
     <string name="error_notbusybox">没有安装Busybox，部分功能可能无法正常使用！</string>
 
     <string name="helpinfo">
         "<font><big><b>使用说明</b></big></font>"
         "<br />"
-        "<span>1.性能配置、后台管理、充电加速等功能均依赖于辅助服务，</span>"
+        "<span>1.动态响应、后台管理、充电加速等功能均依赖于辅助服务，</span>"
         "<span>   点击主界面右上角的齿轮按钮进入辅助功能设置页面，</span>"
         "<span>   使用其中的功能需要辅助服务保持后台运行。</span>"
         "<br />"
@@ -241,13 +243,16 @@
         "<span>http://coolapk.com/apk/com.omarea.vboot</span>"
     </string>
     <string name="battery_uevent_title">$ cat /sys/class/power_supply/bms/uevent</string>
-    <string name="home_hide_in_recents">从最近任务列表隐藏</string>
-    <string name="home_app_night">夜间主题</string>
+    <string name="home_hide_in_recents">强迫症</string>
+    <string name="home_hide_in_recents_desc">不要在多任务界面显示微工具箱</string>
+    <string name="home_app_night">辣眼睛</string>
+    <string name="home_app_night_desc">开启暗色主题</string>
     <string name="applist_help">✔ 已备份\n✘ 备份的版本比安装的版本更高\n★ 已安装的版本比备份的版本旧\n☆ 已备份数据未备份APK\n\n目前所提供的应用数据备份功能，需要系统集成busybox、toybox，使用tar+gz压缩数据（如果系统支持，将使用pigz提高压缩速度），仅备份 “/data/data/应用包名” 下的数据，且不保证兼容所有系统和应用。\n\n“系统”应用栏提供“禁用+隐藏”选项，被隐藏的应用将被从已安装应用列表移除（不同于冻结，应用被隐藏后你无法运行也不会在应用管理中看到）</string>
     <string name="title_activity_core_contrl">CPU控制</string>
     <string name="dialog_addin_device_warn">请不要输入[英文 数字 空格]以外的内容！！！</string>
     <string name="dialog_addin_device_inner">预设模板</string>
     <string name="title_activity_shortcut">ActivityShortcut</string>
+    <string name="title_activity_online">微工具箱 - Online</string>
 
     <string name="shortcut_disabled">暂不可用</string>
     <string name="shortcut_p0">省电模式</string>
@@ -333,7 +338,7 @@
     <string name="i_know">知道了</string>
     <string name="more">了解更多</string>
     <string name="not_support_config">未找到可用的模式配置文件</string>
-    <string name="not_support_config_desc">本应由目前还没有为您当前Soc提供性能配置文件，但你可以自己创建配置文件，并放到/data目录下，文件命名为powercfg，权限设为777.</string>
+    <string name="not_support_config_desc">本应用目前还没有为您当前Soc提供性能配置文件，但你可以自己创建配置文件，并放到/data目录下，文件命名为powercfg，权限设为777.</string>
     <string name="first_start_select_config">首次使用，先选择配置偏好</string>
     <string name="conservative">保守 - 更加省电</string>
     <string name="radicalness">激进 - 性能优先</string>
@@ -353,9 +358,10 @@
     <string name="auto_start">自启动</string>
     <string name="boot_after_auto_modify">开机后自动修改</string>
     <string name="exclude_recent">从最近任务列表隐藏</string>
-    <string name="core_control_helpinfo">这是一个功能简陋的CPU控制器，但实际上CPU的调度工作非常复杂，单纯的提高或降低频率限制，并不一定能提高流畅度或节省电量。  部分的手机底层具有自动调节CPU参数的机制，会导致自定义的参数很快失效。如MIUI9，需要先在本应用附加功能中使用“干掉温控”以后，才能控制CPU频率。此外，热插拔温控功能可能也会影响你对CPU参数的修改！  interactive调度适用于大多数手机，反应迅速，ondemand调度则会更缓慢的切换频率。  Big核心集群通常是A57、A73，性能比Little(A53、A35)核心高得多，优先Big核心会在获得绝佳的流畅体验的同时，耗电和发热显著增高。</string>
+    <string name="core_control_helpinfo">这是一个功能简陋的CPU控制器，但实际上CPU的调度工作非常复杂，单纯的提高或降低频率限制，并不一定能提高流畅度或节省电量。\n部分的手机底层具有自动调节CPU参数的机制，会导致自定义的参数很快失效。\n如MIUI9，需要先在本应用附加功能中使用“干掉温控”以后，才能控制CPU频率。\n此外，热插拔温控功能可能也会影响你对CPU参数的修改！\n\ninteractive调度适用于大多数手机，反应迅速，ondemand调度则会更缓慢的切换频率。\n\nBig核心集群通常是A57、A73、A75架构，性能比Little(A55、A53、A35)架构核心高得多，优先Big核心会在获得绝佳的流畅体验的同时，耗电和发热显著增高。</string>
     <string name="android_m_doze_doze">在白名单中的应用，将不会被安卓（Android M+）的Doze机制休眠。当然，Doze模式在国内的作用是微乎其微的，而且不被休眠并不代表进程不会被杀死！</string>
     <string name="doze_list_auto_resume">手机开机完成后，自动恢复当前设定状态（由于MIUI系统重启后会自动将系统应用全部添加到白名单中）</string>
     <string name="auto_resume">自动恢复设置</string>
     <string name="shell_executor">脚本执行</string>
+    <string name="service_helper">使用动态响应、自动行为、安装点击功能，要先激活辅助服务！</string>
 </resources>

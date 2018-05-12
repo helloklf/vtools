@@ -1,6 +1,5 @@
 package com.omarea.shell.units;
 
-import com.omarea.shared.Consts;
 import com.omarea.shell.KernelProrp;
 import com.omarea.shell.SuDo;
 

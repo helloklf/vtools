@@ -1,16 +1,12 @@
 package com.omarea.shell.units
 
-import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Handler
-import android.view.View
-import android.widget.ProgressBar
 import android.widget.Toast
 import com.omarea.shared.Consts
 import com.omarea.shell.SuDo
 import com.omarea.ui.ProgressBarDialog
-import java.io.DataOutputStream
 import java.io.IOException
 
 /**

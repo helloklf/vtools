@@ -7,6 +7,7 @@ import com.omarea.shell.SysUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class CpuFrequencyUtils {
     public static String[] getAvailableFrequencies(Integer cluster) {
@@ -17,6 +18,11 @@ public class CpuFrequencyUtils {
         String[] frequencies;
         if (new File(Constants.scaling_available_freq.replace("cpu0", cpu)).exists()) {
             frequencies = SysUtils.readOutputFromFile(Constants.scaling_available_freq.replace("cpu0", cpu)).split(" ");
+            return frequencies;
+        } else if(new File("/sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster" + cluster +"_freq_table").exists()) {
+            frequencies = SysUtils
+                    .readOutputFromFile("/sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster" + cluster +"_freq_table")
+                    .split(" ");
             return frequencies;
         } else {
             return new String[]{};
@@ -138,15 +144,17 @@ public class CpuFrequencyUtils {
         SysUtils.executeRootCommand(commands);
     }
 
-    public static boolean getCoreOnlineStae(int coreIndex) {
+    public static boolean getCoreOnlineState(int coreIndex) {
         return SysUtils.readOutputFromFile("/sys/devices/system/cpu/cpu0/online".replace("cpu0", "cpu" + coreIndex)).equals("1");
     }
 
     public static void setCoreOnlineState(int coreIndex, boolean online) {
         ArrayList<String> commands = new ArrayList<>();
+        if(exynosCpuhotplugSupport() && getExynosHotplug()) {
+            commands.add("echo 0 > /sys/devices/system/cpu/cpuhotplug/enabled;");
+        }
         commands.add("chmod 0644 /sys/devices/system/cpu/cpu0/online".replace("cpu0", "cpu" + coreIndex));
         commands.add("echo "+ (online ? "1" : "0") +" > /sys/devices/system/cpu/cpu0/online".replace("cpu0", "cpu" + coreIndex));
-
         SysUtils.executeRootCommand(commands);
     }
 
@@ -155,6 +163,65 @@ public class CpuFrequencyUtils {
         commands.add("chmod 0644 /sys/module/cpu_boost/parameters/input_boost_freq");
         commands.add("echo "+ freqs +" > /sys/module/cpu_boost/parameters/input_boost_freq");
 
+        SysUtils.executeRootCommand(commands);
+    }
+
+    public static int getExynosHmpUP() {
+        String up = SysUtils.executeCommandWithOutput(false, "cat /sys/kernel/hmp/up_threshold;").trim();
+        if(Objects.equals(up, "")) {
+            return 0;
+        }
+        try {
+            return Integer.parseInt(up);
+        } catch (Exception ex) {
+            return 0;
+        }
+    }
+    public static void setExynosHmpUP(int up){
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add("chmod 0664 /sys/kernel/hmp/up_threshold;");
+        commands.add("echo " + up + " > /sys/kernel/hmp/up_threshold;");
+        SysUtils.executeRootCommand(commands);
+    }
+
+    public static int getExynosHmpDown() {
+        String value = SysUtils.executeCommandWithOutput(false, "cat /sys/kernel/hmp/down_threshold;").trim();
+        if(Objects.equals(value, "")) {
+            return 0;
+        }
+        try {
+            return Integer.parseInt(value);
+        } catch (Exception ex) {
+            return 0;
+        }
+    }
+    public static void setExynosHmpDown(int down){
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add("chmod 0664 /sys/kernel/hmp/down_threshold;");
+        commands.add("echo " + down + " > /sys/kernel/hmp/down_threshold;");
+        SysUtils.executeRootCommand(commands);
+    }
+
+    public static boolean getExynosBooster() {
+        String value = SysUtils.executeCommandWithOutput(false, "cat /sys/kernel/hmp/boost;").trim().toLowerCase();
+        return Objects.equals(value, "1") || Objects.equals(value, "true") || Objects.equals(value, "enabled");
+    }
+    public static void setExynosBooster(boolean hotplug) {
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add("chmod 0664 /sys/kernel/hmp/boost");
+        commands.add("echo " + (hotplug ? 1 : 0) + " > /sys/kernel/hmp/boost");
+        SysUtils.executeRootCommand(commands);
+    }
+
+    public static boolean getExynosHotplug() {
+        String value = SysUtils.executeCommandWithOutput(false, "cat /sys/devices/system/cpu/cpuhotplug/enabled;").trim().toLowerCase();
+        return Objects.equals(value, "1") || Objects.equals(value, "true") || Objects.equals(value, "enabled");
+    }
+
+    public static void setExynosHotplug(boolean hotplug) {
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add("chmod 0664 /sys/devices/system/cpu/cpuhotplug/enabled;");
+        commands.add("echo " + (hotplug ? 1 : 0) + " > /sys/devices/system/cpu/cpuhotplug/enabled;");
         SysUtils.executeRootCommand(commands);
     }
 
@@ -233,5 +300,14 @@ public class CpuFrequencyUtils {
             }
         }
         return frequency;
+    }
+
+    // /sys/devices/system/cpu/cpuhotplug
+    public static boolean exynosCpuhotplugSupport() {
+        return new File("/sys/devices/system/cpu/cpuhotplug").exists();
+    }
+
+    public static boolean exynosHMP() {
+        return new File("/sys/kernel/hmp/down_threshold").exists() && new File("/sys/kernel/hmp/up_threshold").exists() && new File("/sys/kernel/hmp/boost").exists();
     }
 }

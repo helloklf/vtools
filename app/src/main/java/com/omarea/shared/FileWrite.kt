@@ -63,6 +63,9 @@ object FileWrite {
             if (!dir.exists())
                 dir.mkdirs()
             val filePath = FileWrite.baseUrl + outName
+            val fileDir = File(filePath).parentFile
+            if(!fileDir.exists())
+                fileDir.mkdirs()
 
             val fileOutputStream = FileOutputStream(filePath)
             fileOutputStream.write(datas, 0, len)
@@ -92,6 +95,9 @@ object FileWrite {
             if (!dir.exists())
                 dir.mkdirs()
             val filePath = getPrivateFilePath(context, outName)
+            val fileDir = File(filePath).parentFile
+            if(!fileDir.exists())
+                fileDir.mkdirs()
 
             val fileOutputStream = FileOutputStream(filePath)
             fileOutputStream.write(datas, 0, len)
@@ -100,6 +106,27 @@ object FileWrite {
             //getApplicationContext().getClassLoader().getResourceAsStream("");
         } catch (e: IOException) {
             e.printStackTrace()
+        }
+    }
+
+    fun WritePrivateFile(bytes: ByteArray, outName: String, context: Context): Boolean {
+        try {
+            val dir = File(getPrivateFileDir(context))
+            if (!dir.exists())
+                dir.mkdirs()
+            val filePath = getPrivateFilePath(context, outName)
+            val fileDir = File(filePath).parentFile
+            if(!fileDir.exists())
+                fileDir.mkdirs()
+
+            val fileOutputStream = FileOutputStream(filePath)
+            fileOutputStream.write(bytes, 0, bytes.size)
+            fileOutputStream.close()
+            //getApplicationContext().getClassLoader().getResourceAsStream("");
+            return true
+        } catch (e: IOException) {
+            e.printStackTrace()
+            return false
         }
     }
 }

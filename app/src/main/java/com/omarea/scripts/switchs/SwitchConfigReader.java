@@ -66,7 +66,33 @@ public class SwitchConfigReader {
                             if ("title".equals(parser.getName())) {
                                 action.title = parser.nextText();
                             } else if ("desc".equals(parser.getName())) {
-                                action.desc = parser.nextText();
+                                for (int i = 0; i < parser.getAttributeCount(); i++) {
+                                    String attrValue = parser.getAttributeValue(i);
+                                    switch (parser.getAttributeName(i)) {
+                                        case "su": {
+                                            if (attrValue.trim().startsWith(ASSETS_FILE)) {
+                                                String path = new ExtractAssets(context).extractToFilesDir(attrValue.trim());
+                                                action.descPollingSUShell = "chmod 7777 " + path + "\n" + path;
+                                            } else {
+                                                action.descPollingSUShell = attrValue;
+                                            }
+                                            action.desc = executeResultRoot(context, action.descPollingSUShell);
+                                            break;
+                                        }
+                                        case "sh": {
+                                            if (attrValue.trim().startsWith(ASSETS_FILE)) {
+                                                String path = new ExtractAssets(context).extractToFilesDir(attrValue.trim());
+                                                action.descPollingShell = "chmod 7777 " + path + "\n" + path;
+                                            } else {
+                                                action.descPollingShell = attrValue;
+                                            }
+                                            action.desc = executeResultRoot(context, action.descPollingShell);
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (action.desc == null || action.desc.isEmpty())
+                                    action.desc = parser.nextText();
                             } else if ("getstate".equals(parser.getName())) {
                                 String script = parser.nextText();
                                 if (script.trim().startsWith(ASSETS_FILE)) {
@@ -120,5 +146,23 @@ public class SwitchConfigReader {
             Log.d("VTools ReadConfig Fail！", ex.getMessage());
         }
         return null;
+    }
+
+    private static String executeResult(Context context, String script) {
+        if (script.trim().startsWith(ASSETS_FILE)) {
+            String path = new ExtractAssets(context).extractToFilesDir(script.trim());
+            script = "chmod 7777 " + path + "\n" + path;
+        }
+        String shellResult = ExecuteCommandWithOutput.executeCommandWithOutput(false, script);
+        return shellResult;
+    }
+
+    private static String executeResultRoot(Context context, String script) {
+        if (script.trim().startsWith(ASSETS_FILE)) {
+            String path = new ExtractAssets(context).extractToFilesDir(script.trim());
+            script = "chmod 7777 " + path + "\n" + path;
+        }
+        String shellResult = ExecuteCommandWithOutput.executeCommandWithOutput(true, script);
+        return shellResult;
     }
 }

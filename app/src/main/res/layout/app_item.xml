@@ -62,6 +62,8 @@
             android:layout_height="wrap_content"
             android:lines="1"
             android:text=""
+            android:textColor="?android:attr/textColorPrimary"
+            android:textStyle="bold"
             android:textSize="14dp" />
 
         <TextView

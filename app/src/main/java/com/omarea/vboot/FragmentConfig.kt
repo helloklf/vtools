@@ -18,17 +18,14 @@ import android.view.ViewGroup
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.CheckBox
 import android.widget.ListView
-import com.omarea.shared.Consts
-import com.omarea.shared.FileWrite
-import com.omarea.shared.ServiceHelper
-import com.omarea.shared.SpfConfig
+import com.omarea.shared.*
 import com.omarea.shared.model.Appinfo
 import com.omarea.shell.Platform
 import com.omarea.shell.SuDo
 import com.omarea.ui.AppListAdapter
+import com.omarea.ui.OverScrollListView
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.ui.SearchTextWatcher
-import com.omarea.shared.AppListHelper
 import kotlinx.android.synthetic.main.layout_config.*
 import java.io.File
 import java.util.*
@@ -232,7 +229,7 @@ class FragmentConfig : Fragment() {
         return list
     }
 
-    private fun setListData(dl: ArrayList<Appinfo>?, lv: ListView) {
+    private fun setListData(dl: ArrayList<Appinfo>?, lv: OverScrollListView) {
         myHandler.post {
             lv.adapter = AppListAdapter(context!!, dl!!)
             processBarDialog.hideDialog()
