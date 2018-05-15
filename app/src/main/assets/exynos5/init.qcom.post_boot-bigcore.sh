@@ -64,21 +64,21 @@ case "$target" in
         chmod 0664 /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy
         echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy
 
-
-        chmod 664 /sys/devices/system/cpu/cpuhotplug/enabled
-        echo 1 /sys/devices/system/cpu/cpuhotplug/enabled
-        chmod 664 /sys/devices/system/cpu/cpuhotplug/enabled
-        echo 1 /sys/devices/system/cpu/cpuhotplug/enabled
-        chmod 664 /sys/devices/system/cpu/cpuhotplug/max_online_cpu
-        echo 8 /sys/devices/system/cpu/cpuhotplug/max_online_cpu
-        chmod 664 /sys/devices/system/cpu/cpuhotplug/min_online_cpu
-        echo 0 /sys/devices/system/cpu/cpuhotplug/min_online_cpu
+        chmod 664 > /sys/devices/system/cpu/cpuhotplug/enabled
+        echo 1 > /sys/devices/system/cpu/cpuhotplug/enabled
+        chmod 664 > /sys/devices/system/cpu/cpuhotplug/enabled
+        echo 1 > /sys/devices/system/cpu/cpuhotplug/enabled
+        chmod 664 > /sys/devices/system/cpu/cpuhotplug/max_online_cpu
+        echo 8 > /sys/devices/system/cpu/cpuhotplug/max_online_cpu
+        chmod 664 > /sys/devices/system/cpu/cpuhotplug/min_online_cpu
+        echo 1 > /sys/devices/system/cpu/cpuhotplug/min_online_cpu
         #chmod 664 /sys/devices/system/cpu/cpuhotplug/control_online_cpus
         #echo 8 /sys/devices/system/cpu/cpuhotplug/control_online_cpus
         # /sys/devices/system/cpu/cpuhotplug/governor/....
 
         #
         echo 0 > /sys/power/cpuhotplug/enabled
+        echo 0 > /sys/devices/system/cpu/cpuhotplug/enabled
 
         #HMP
         chmod 500 /sys/kernel/hmp/down_threshold
