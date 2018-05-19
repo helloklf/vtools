@@ -82,7 +82,7 @@ object FileWrite {
     }
 
     fun getPrivateFilePath(context: Context, outName: String): String {
-        return getPrivateFileDir(context) + outName
+        return getPrivateFileDir(context) + ( if(outName.startsWith("/")) outName.substring(1, outName.length) else outName )
     }
 
     fun WritePrivateFile(assetManager: AssetManager, file: String, outName: String, context: Context) {
@@ -122,6 +122,7 @@ object FileWrite {
             val fileOutputStream = FileOutputStream(filePath)
             fileOutputStream.write(bytes, 0, bytes.size)
             fileOutputStream.close()
+            File(filePath).setExecutable(true, false)
             //getApplicationContext().getClassLoader().getResourceAsStream("");
             return true
         } catch (e: IOException) {

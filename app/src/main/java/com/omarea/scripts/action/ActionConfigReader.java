@@ -77,7 +77,7 @@ public class ActionConfigReader {
                                             } else {
                                                 action.descPollingShell = attrValue;
                                             }
-                                            action.desc = executeResultRoot(context, action.descPollingShell);
+                                            action.desc = executeResult(context, action.descPollingShell);
                                             break;
                                         }
                                         case "polling": {
@@ -161,24 +161,26 @@ public class ActionConfigReader {
                                             break;
                                         }
                                         case "options-sh": {
-                                            actionParamInfo.options = new ArrayList<>();
-                                            String shellResult = executeResult(context, parser.getAttributeValue(i));
-                                            if (shellResult != null) {
-                                                final String[] options = shellResult.split("\n");
-                                                for (final String item : options) {
-                                                    if (item.contains("|")) {
-                                                        final String[] itemSplit = item.split("\\|");
-                                                        actionParamInfo.options.add(new ActionParamInfo.ActionParamOption() {{
-                                                            value = itemSplit[0];
-                                                            desc = itemSplit[1];
-                                                        }});
-                                                    } else {
-                                                        actionParamInfo.options.add(new ActionParamInfo.ActionParamOption() {{
-                                                            value = item;
-                                                            desc = item;
-                                                        }});
-                                                    }
-                                                }
+                                            if(actionParamInfo.options == null)
+                                                actionParamInfo.options = new ArrayList<>();
+                                            String script = parser.getAttributeValue(i);
+                                            if (script.trim().startsWith(ASSETS_FILE)) {
+                                                String path = new ExtractAssets(context).extractToFilesDir(script.trim());
+                                                actionParamInfo.optionsSh = "chmod 7777 " + path + "\n" + path;
+                                            } else {
+                                                actionParamInfo.optionsSh = script;
+                                            }
+                                            break;
+                                        }
+                                        case "options-su": {
+                                            if(actionParamInfo.options == null)
+                                                actionParamInfo.options = new ArrayList<>();
+                                            String script = parser.getAttributeValue(i);
+                                            if (script.trim().startsWith(ASSETS_FILE)) {
+                                                String path = new ExtractAssets(context).extractToFilesDir(script.trim());
+                                                actionParamInfo.optionsSU = "chmod 7777 " + path + "\n" + path;
+                                            } else {
+                                                actionParamInfo.optionsSU = script;
                                             }
                                             break;
                                         }

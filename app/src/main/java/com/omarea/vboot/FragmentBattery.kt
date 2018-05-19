@@ -172,7 +172,6 @@ class FragmentBattery : Fragment() {
             settings_qc_limit_desc.setText("充电上限电流：" + level + "mA")
         }, spf, SpfConfig.CHARGE_SPF_QC_LIMIT))
 
-
         if (!qcSettingSuupport) {
             settings_qc.isEnabled = false
             spf.edit().putBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false).commit()
@@ -231,18 +230,18 @@ class FragmentBattery : Fragment() {
 
     class OnSeekBarChangeListener(private var next: Runnable, private var spf: SharedPreferences, private var spfProp: String) : SeekBar.OnSeekBarChangeListener {
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            val progress = seekBar!!.progress
+            if (spf.getInt(spfProp, Int.MIN_VALUE) == progress) {
+                return
+            }
+            spf.edit().putInt(spfProp, progress).apply()
+            next.run()
         }
 
         override fun onStartTrackingTouch(seekBar: SeekBar?) {
         }
-
-        @SuppressLint("ApplySharedPref")
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-            if (spf.getInt(spfProp, Int.MIN_VALUE) == progress) {
-                return
-            }
-            spf.edit().putInt(spfProp, progress).commit()
-            next.run()
+
         }
     }
 

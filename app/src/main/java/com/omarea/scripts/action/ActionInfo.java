@@ -7,6 +7,7 @@ public class ActionInfo {
     public String desc;
     public String descPollingSUShell;
     public String descPollingShell;
+    //FIXME:暂时没用
     public int polling = 0;
     public String script;
     public String start;

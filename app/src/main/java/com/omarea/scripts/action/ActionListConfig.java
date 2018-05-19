@@ -122,17 +122,52 @@ public class ActionListConfig {
                             public void run() {
                                 progressBarDialog.hideDialog();
                                 for (ActionParamInfo actionParamInfo : actionParamInfos) {
-                                    if (actionParamInfo.options != null && actionParamInfo.options.size() > 0) {
+                                    if ((actionParamInfo.options != null && actionParamInfo.options.size() > 0) || (actionParamInfo.optionsSh != null && !actionParamInfo.optionsSh.isEmpty()) || (actionParamInfo.optionsSU != null && !actionParamInfo.optionsSU.isEmpty())) {
+                                        if(actionParamInfo.options == null)
+                                            actionParamInfo.options = new ArrayList<>();
                                         Spinner spinner = new Spinner(context);
                                         ArrayList<HashMap<String, Object>> options = new ArrayList<>();
                                         int selectedIndex = -1;
                                         int index = 0;
                                         ArrayList<String> valList = new ArrayList<>();
-                                        for (ActionParamInfo.ActionParamOption option : actionParamInfo.options) {
-                                            HashMap<String, Object> opt = new HashMap<>();
-                                            opt.put("title", option.desc);
-                                            opt.put("item", option);
-                                            options.add(opt);
+
+                                        if((actionParamInfo.optionsSh != null && !actionParamInfo.optionsSh.isEmpty()) || (actionParamInfo.optionsSU != null && !actionParamInfo.optionsSU.isEmpty())) {
+                                            String shellResult = "";
+                                            if(actionParamInfo.optionsSh != null && !actionParamInfo.optionsSh.isEmpty()) {
+                                                shellResult =  ExecuteCommandWithOutput.executeCommandWithOutput(false, actionParamInfo.optionsSh);
+                                            } else {
+                                                shellResult =  ExecuteCommandWithOutput.executeCommandWithOutput(true, actionParamInfo.optionsSU);
+                                            }
+                                            if (shellResult != null && !shellResult.isEmpty()) {
+                                                for (final String item : shellResult.split("\n")) {
+                                                    if (item.contains("|")) {
+                                                        final String[] itemSplit = item.split("\\|");
+                                                        options.add(new HashMap<String, Object>(){{
+                                                            put("title", itemSplit[1]);
+                                                            put("", itemSplit[0]);
+                                                        }});
+                                                    } else {
+                                                        options.add(new HashMap<String, Object>(){{
+                                                            put("title", item);
+                                                            put("", item);
+                                                        }});
+                                                    }
+                                                }
+                                            } else  {
+                                                for (ActionParamInfo.ActionParamOption option : actionParamInfo.options) {
+                                                    HashMap<String, Object> opt = new HashMap<>();
+                                                    opt.put("title", option.desc);
+                                                    opt.put("item", option);
+                                                    options.add(opt);
+                                                }
+                                            }
+                                        } else {
+                                            for (ActionParamInfo.ActionParamOption option : actionParamInfo.options) {
+                                                HashMap<String, Object> opt = new HashMap<>();
+                                                opt.put("title", option.desc);
+                                                opt.put("item", option);
+                                                options.add(opt);
+                                            }
                                         }
 
                                         if (actionParamInfo.valueFromShell != null)

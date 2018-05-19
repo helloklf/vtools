@@ -13,7 +13,7 @@ class ActivityShortcut : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (Platform().dynamicSupport(this)) {
+        if (Platform().dynamicSupport(this) ||  File(Consts.POWER_CFG_PATH).exists()) {
             val action = intent.action
             when (action) {
                 "powersave" -> {

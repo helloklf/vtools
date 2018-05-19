@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.CheckBox
 import android.widget.ListView
@@ -34,6 +35,7 @@ import java.util.*
 class FragmentConfig : Fragment() {
     private lateinit var processBarDialog: ProgressBarDialog
     private lateinit var spfPowercfg: SharedPreferences
+    private lateinit var globalSPF: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
     private var hasSystemApp = true
     private lateinit var applistHelper: AppListHelper
@@ -61,11 +63,12 @@ class FragmentConfig : Fragment() {
         btn_config_dynamicservice_not_active.visibility = if (!context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)) View.VISIBLE else View.GONE
     }
 
-    @SuppressLint("CommitPrefEdits")
+    @SuppressLint("CommitPrefEdits", "ApplySharedPref")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         processBarDialog = ProgressBarDialog(context!!)
         applistHelper = AppListHelper(context!!)
         spfPowercfg = context!!.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
+        globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         editor = spfPowercfg.edit()
 
         if (spfPowercfg.all.isEmpty()) {
@@ -74,12 +77,29 @@ class FragmentConfig : Fragment() {
         checkConfig()
 
         btn_config_service_not_active.setOnClickListener {
-            try {
-                val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                startActivity(intent)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            val dialog = ProgressBarDialog(context!!)
+            dialog.showDialog("尝试使用ROOT权限开启服务...")
+            Thread(Runnable {
+                if(!ServiceHelper.startServiceUseRoot(context!!)) {
+                    try {
+                        myHandler.post {
+                            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                            startActivity(intent)
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    } finally {
+                        myHandler.post {
+                            dialog.hideDialog()
+                        }
+                    }
+                } else {
+                    myHandler.post {
+                        dialog.hideDialog()
+                        btn_config_service_not_active.visibility = if (ServiceHelper.serviceIsRunning(context!!)) View.GONE else View.VISIBLE
+                    }
+                }
+            }).start()
         }
         btn_config_dynamicservice_not_active.setOnClickListener {
             val intent = Intent(context, ActivityAccessibilitySettings::class.java)
@@ -157,6 +177,10 @@ class FragmentConfig : Fragment() {
             hasSystemApp = config_showSystemApp.isChecked
             loadList(true)
         }
+        lock_screen_optimize.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE, false)
+        lock_screen_optimize.setOnClickListener {
+            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE, lock_screen_optimize.isChecked).apply()
+        }
 
         config_defaultlist.onItemClickListener = OnItemClickListener { _, current, position, _ ->
             val selectState = current.findViewById(R.id.select_state) as CheckBox
@@ -193,6 +217,37 @@ class FragmentConfig : Fragment() {
         }))
 
         loadList()
+
+        val modeValue = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance")
+        when(modeValue) {
+            "powersave" -> first_mode.setSelection(0)
+            "balance" -> first_mode.setSelection(1)
+            "performance" -> first_mode.setSelection(2)
+            "fast" -> first_mode.setSelection(3)
+            "igoned" -> first_mode.setSelection(4)
+        }
+        first_mode.onItemSelectedListener = ModeOnItemSelectedListener(globalSPF, Runnable {
+            loadList()
+        })
+    }
+
+    private class ModeOnItemSelectedListener(private var globalSPF: SharedPreferences, private var runnable: Runnable): AdapterView.OnItemSelectedListener {
+        override fun onNothingSelected(parent: AdapterView<*>?) {
+        }
+
+        @SuppressLint("ApplySharedPref")
+        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {var mode = "balance";
+            when(position) {
+                0 -> mode = "powersave";
+                1 -> mode = "balance";
+                2 -> mode = "performance";
+                3 -> mode = "fast";
+                4 -> mode = "igoned";
+            }
+            globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, mode).commit()
+            runnable.run()
+        }
+
     }
 
     private fun initDefaultConfig() {
@@ -258,6 +313,7 @@ class FragmentConfig : Fragment() {
 
             val keyword = config_search_box.text.toString()
             val search = keyword.isNotEmpty()
+            val firstMode = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance")
             for (i in installedList!!.indices) {
                 val item = installedList!![i]
                 item.selectState = false
@@ -265,7 +321,7 @@ class FragmentConfig : Fragment() {
                 if (search && !(packageName.contains(keyword) || item.appName.toString().contains(keyword))) {
                     continue
                 }
-                val config = spfPowercfg.getString(packageName.toLowerCase(), "balance")
+                val config = spfPowercfg.getString(packageName.toLowerCase(), firstMode)
                 when (config) {
                     "powersave" -> powersaveList!!.add(installedList!![i])
                     "performance" -> gameList!!.add(installedList!![i])
@@ -350,30 +406,7 @@ class FragmentConfig : Fragment() {
         }
 
         try {
-            val ass = context!!.assets
-            val cpuName = Platform().GetCPUName()
-            val cpuNumber = cpuName.replace("msm", "")
-
-            if (useBigCore) {
-                FileWrite.WritePrivateFile(ass, cpuName + "/init.qcom.post_boot-bigcore.sh", "init.qcom.post_boot.sh", context!!)
-                FileWrite.WritePrivateFile(ass, cpuName + "/powercfg-bigcore.sh", "powercfg.sh", context!!)
-            } else {
-                FileWrite.WritePrivateFile(ass, cpuName + "/init.qcom.post_boot-default.sh", "init.qcom.post_boot.sh", context!!)
-                FileWrite.WritePrivateFile(ass, cpuName + "/powercfg-default.sh", "powercfg.sh", context!!)
-            }
-
-            val cmd = StringBuilder()
-                    .append("cp ${FileWrite.getPrivateFilePath(context!!, "init.qcom.post_boot.sh")} ${Consts.POWER_CFG_BASE};")
-                    .append("cp ${FileWrite.getPrivateFilePath(context!!, "powercfg.sh")} ${Consts.POWER_CFG_PATH};")
-                    .append("chmod 0777 ${Consts.POWER_CFG_PATH};")
-                    .append("chmod 0777 ${Consts.POWER_CFG_BASE};")
-                    .append(Consts.ExecuteConfig)
-                    .append(Consts.ToggleDefaultMode)
-                    .toString().replace("cpuNumber", cpuNumber)
-            SuDo(context).execCmdSync(cmd)
-
-            //ToggleConfig(Configs.Default)
-
+            ConfigInstaller().installPowerConfig(context!!, "", useBigCore)
             Snackbar.make(view!!, getString(R.string.config_installed), Snackbar.LENGTH_LONG).show()
         } catch (ex: Exception) {
             Snackbar.make(view!!, getString(R.string.config_install_fail) + ex.message, Snackbar.LENGTH_LONG).show()

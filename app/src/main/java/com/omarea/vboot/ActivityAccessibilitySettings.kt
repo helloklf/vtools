@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
 import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -13,11 +14,13 @@ import com.omarea.shared.Consts
 import com.omarea.shared.ServiceHelper
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.Platform
+import com.omarea.ui.ProgressBarDialog
 import kotlinx.android.synthetic.main.activity_accessibility_settings.*
 import java.io.File
 
 class ActivityAccessibilitySettings : AppCompatActivity() {
     private lateinit var spf: SharedPreferences
+    private var myHandler = Handler()
 
     override fun onPostResume() {
         super.onPostResume()
@@ -54,8 +57,40 @@ class ActivityAccessibilitySettings : AppCompatActivity() {
         }
 
         vbootservice_state.setOnClickListener {
-            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-            startActivity(intent)
+            if(ServiceHelper.serviceIsRunning(this)) {
+                try {
+                    val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                    startActivity(intent)
+                } catch (ex: Exception) {
+
+                }
+                return@setOnClickListener
+            }
+            val dialog = ProgressBarDialog(this)
+            dialog.showDialog("尝试使用ROOT权限开启服务...")
+            Thread(Runnable {
+                if(!ServiceHelper.startServiceUseRoot(this)) {
+                    try {
+                        myHandler.post {
+                            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                            startActivity(intent)
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    } finally {
+                        myHandler.post {
+                            dialog.hideDialog()
+                        }
+                    }
+                } else {
+                    myHandler.post {
+                        dialog.hideDialog()
+                        val serviceState = ServiceHelper.serviceIsRunning(this)
+                        vbootserviceSettings!!.visibility = if (serviceState) View.VISIBLE else View.GONE
+                        vbootservice_state.text = if (serviceState) getString(R.string.accessibility_running) else getString(R.string.accessibility_stoped)
+                    }
+                }
+            }).start()
         }
 
         settings_delaystart.setOnCheckedChangeListener({

@@ -1,10 +1,17 @@
 package com.omarea.vboot
 
 import android.accessibilityservice.AccessibilityService
+import android.app.ActivityManager
+import android.app.usage.UsageEvents
+import android.app.usage.UsageStatsManager
 import android.view.accessibility.AccessibilityEvent
 import com.omarea.shared.AutoClickService
 import com.omarea.shared.ServiceHelper
-
+import android.content.pm.PackageManager
+import android.content.ComponentName
+import android.content.Context
+import android.content.pm.ActivityInfo
+import android.os.Build
 
 /**
  * Created by helloklf on 2016/8/27.
@@ -65,9 +72,56 @@ override fun onCreate() {
             serviceHelper = ServiceHelper(applicationContext)
     }
 
+    private fun tryGetActivity(componentName: ComponentName): ActivityInfo? {
+        try {
+            return packageManager.getActivityInfo(componentName, 0)
+        } catch (e: PackageManager.NameNotFoundException) {
+            return null
+        }
+    }
+
+    fun topAppPackageName(): String {
+        var packageName = "";
+
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP){
+            val end = System.currentTimeMillis();
+            val usageStatsManager =  getSystemService( Context.USAGE_STATS_SERVICE) as UsageStatsManager?
+            if (null == usageStatsManager) {
+                return packageName;
+            }
+            val events = usageStatsManager.queryEvents((end - 5 * 1000), end);
+            if (null == events) {
+                return packageName;
+            }
+            val usageEvent = UsageEvents.Event();
+            var lastMoveToFGEvent:UsageEvents.Event? = null;
+            while (events.hasNextEvent()) {
+                events.getNextEvent(usageEvent);
+                if (usageEvent.getEventType() == UsageEvents.Event.MOVE_TO_FOREGROUND) {
+                    lastMoveToFGEvent = usageEvent
+                }
+            }
+            if (lastMoveToFGEvent != null) {
+                packageName = lastMoveToFGEvent.getPackageName();
+            }
+        }
+        return packageName;
+    }
+
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         if (event.packageName == null || event.className == null)
             return
+        /*
+        val componentName = ComponentName(
+                event.packageName.toString(),
+                event.className.toString()
+        )
+        val activityInfo = tryGetActivity(componentName)
+        val isActivity = activityInfo != null
+        if(isActivity) {
+
+        }
+        */
         val packageName = event.packageName.toString().toLowerCase()
         //修复傻逼一加桌面文件夹抢占焦点导致的问题
         if ((packageName == "net.oneplus.h2launcher" || packageName == "net.oneplus.launcher") && event.className == "android.widget.LinearLayout") {
@@ -93,10 +147,12 @@ override fun onCreate() {
         */
 
     override fun onInterrupt() {
+        /*
         if (serviceHelper != null){
             serviceHelper!!.onInterrupt()
             serviceHelper = null
         }
+        */
         //android.os.Process.killProcess(android.os.Process.myPid());
     }
 

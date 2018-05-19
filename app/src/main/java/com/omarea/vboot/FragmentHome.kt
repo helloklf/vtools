@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
 import android.provider.Settings
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -22,6 +23,7 @@ import com.omarea.shell.Files
 import com.omarea.shell.Platform
 import com.omarea.shell.Props
 import com.omarea.shell.SuDo
+import com.omarea.ui.ProgressBarDialog
 import kotlinx.android.synthetic.main.layout_home.*
 import java.io.File
 
@@ -32,6 +34,7 @@ class FragmentHome : Fragment() {
         return inflater.inflate(R.layout.layout_home, container, false)
     }
 
+    private var myHandler = Handler()
     private lateinit var globalSPF: SharedPreferences
     private fun showMsg(msg:String) {
         this.view?.let { Snackbar.make(it, msg, Snackbar.LENGTH_LONG).show() }
@@ -82,8 +85,40 @@ class FragmentHome : Fragment() {
         }
 
         vbootservice_state.setOnClickListener {
-            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-            startActivity(intent)
+            if(ServiceHelper.serviceIsRunning(context!!)) {
+                try {
+                    val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                    startActivity(intent)
+                } catch (ex: Exception) {
+
+                }
+                return@setOnClickListener
+            }
+            val dialog = ProgressBarDialog(context!!)
+            dialog.showDialog("尝试使用ROOT权限开启服务...")
+            Thread(Runnable {
+                if(!ServiceHelper.startServiceUseRoot(context!!)) {
+                    try {
+                        myHandler.post {
+                            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                            startActivity(intent)
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    } finally {
+                        myHandler.post {
+                            dialog.hideDialog()
+                        }
+                    }
+                } else {
+                    myHandler.post {
+                        dialog.hideDialog()
+                        val serviceState = ServiceHelper.serviceIsRunning(context!!)
+                        vbootserviceSettings!!.visibility = if (serviceState) View.VISIBLE else View.GONE
+                        vbootservice_state.text = if (serviceState) context!!.getString(R.string.accessibility_running) else context!!.getString(R.string.accessibility_stoped)
+                    }
+                }
+            }).start()
         }
 
         settings_delaystart.setOnCheckedChangeListener({
@@ -110,6 +145,17 @@ class FragmentHome : Fragment() {
             _,checked ->
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, checked).commit()
         })
+        settings_disable_selinux.setOnClickListener {
+            if(settings_disable_selinux.isChecked) {
+                SuDo(context).execCmdSync(Consts.DisableSELinux)
+                myHandler.postDelayed({
+                    spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true).commit()
+                }, 10000)
+            } else {
+                SuDo(context).execCmdSync(Consts.ResumeSELinux)
+                spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false).commit()
+            }
+        }
     }
 
     override fun onResume() {
@@ -150,7 +196,7 @@ class FragmentHome : Fragment() {
     }
 
     private fun installConfig(after: String, message: String) {
-        if(spf.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)) {
+        if(spf.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false) && ServiceHelper.serviceIsRunning(this.context!!)) {
             AlertDialog.Builder(context)
                     .setTitle("")
                     .setMessage("检测到你已经开启“动态响应”，微工具箱将根据你的前台应用，自动调整CPU、GPU性能。\n如果你要更改全局性能，请先关闭“动态响应”！")

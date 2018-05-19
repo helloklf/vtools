@@ -87,6 +87,7 @@ public object Consts {
     val ToggleFastMode = "setprop vtools.powercfg fast;$POWER_CFG_PATH fast;\n"
 
     val DisableSELinux = "setenforce 0;\n"
+    val ResumeSELinux = "setenforce 0;\n"
 
     val DeleteLockPwd = "rm -f /data/system/*.key;rm -f /data/system/locksettings.db*;reboot;"
 

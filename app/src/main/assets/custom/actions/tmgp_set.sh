@@ -1,4 +1,5 @@
 #!/system/bin/sh
+
 action=$1
 dir='/data/data/com.tencent.tmgp.sgame/shared_prefs'
 prefs='/data/data/com.tencent.tmgp.sgame/shared_prefs/com.tencent.tmgp.sgame.v2.playerprefs.xml'

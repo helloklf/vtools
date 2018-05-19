@@ -88,12 +88,29 @@ class FragmentBooster : Fragment() {
         bindSPF(auto_switch_network_off_gps, spfAutoConfig, SpfConfig.GPS + SpfConfig.OFF, false)
 
         btn_booster_service_not_active.setOnClickListener {
-            try {
-                val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                startActivity(intent)
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            val dialog = ProgressBarDialog(context!!)
+            dialog.showDialog("尝试使用ROOT权限开启服务...")
+            Thread(Runnable {
+                if(!ServiceHelper.startServiceUseRoot(context!!)) {
+                    try {
+                        myHandler.post {
+                            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                            startActivity(intent)
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    } finally {
+                        myHandler.post {
+                            dialog.hideDialog()
+                        }
+                    }
+                } else {
+                    myHandler.post {
+                        dialog.hideDialog()
+                        btn_booster_service_not_active.visibility = if (ServiceHelper.serviceIsRunning(context!!)) View.GONE else View.VISIBLE
+                    }
+                }
+            }).start()
         }
         btn_booster_dynamicservice_not_active.setOnClickListener {
             val intent = Intent(context, ActivityAccessibilitySettings::class.java)

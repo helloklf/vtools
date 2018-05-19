@@ -1,8 +1,10 @@
 package com.omarea.shell
 
+import android.Manifest
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Handler
+import android.support.v4.content.PermissionChecker
 import com.omarea.shared.Consts
 import com.omarea.shared.SpfConfig
 import com.omarea.ui.ProgressBarDialog
@@ -16,6 +18,9 @@ import com.omarea.vboot.R
 class CheckRootStatus(var context: Context, private var next:Runnable? = null, private var skip:Runnable?, private var disableSeLinux: Boolean = false) {
     var myHandler: Handler = Handler()
 
+    private fun checkPermission(permission: String): Boolean =
+            PermissionChecker.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED
+
     //是否已经Root
     private fun isRoot(disableSeLinux: Boolean): Boolean {
         var process: java.lang.Process? = null
@@ -25,6 +30,10 @@ class CheckRootStatus(var context: Context, private var next:Runnable? = null, p
             if(disableSeLinux)
                 out.write(Consts.DisableSELinux)
             out.write("dumpsys deviceidle whitelist +com.omarea.vboot;\n")
+            if (!(checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
+                out.write("pm grant com.omarea.vboot android.permission.READ_EXTERNAL_STORAGE;\n")
+                out.write("pm grant com.omarea.vboot android.permission.WRITE_EXTERNAL_STORAGE;\n")
+            }
             out.write("exit;\n")
             out.write("exit;\n")
             out.flush()
@@ -43,11 +52,12 @@ class CheckRootStatus(var context: Context, private var next:Runnable? = null, p
 
     }
 
+    var therad: Thread? = null
     fun forceGetRoot() {
         val pd = ProgressBarDialog(context)
         pd.showDialog("正在检查ROOT权限")
         var completed = false
-        Thread {
+        therad = Thread {
             if (!isRoot(disableSeLinux)) {
                 completed = true
                 myHandler.post {
@@ -56,11 +66,19 @@ class CheckRootStatus(var context: Context, private var next:Runnable? = null, p
                     alert.setCancelable(false)
                     alert.setTitle(R.string.error_root)
                     alert.setNegativeButton(R.string.btn_refresh, { _, _ ->
+                        if(therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
+                            therad!!.interrupt()
+                            therad = null
+                        }
                         forceGetRoot()
                     })
                     alert.setNeutralButton(R.string.btn_skip, { _, _ ->
                         //android.os.Process.killProcess(android.os.Process.myPid())
                         completed = true
+                        if(therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
+                            therad!!.interrupt()
+                            therad = null
+                        }
                         myHandler.post {
                             pd.hideDialog()
                             if (skip != null)
@@ -77,7 +95,8 @@ class CheckRootStatus(var context: Context, private var next:Runnable? = null, p
                         next!!.run()
                 }
             }
-        }.start()
+        };
+        therad!!.start()
         myHandler.postDelayed({
             if (!completed) {
                 pd.hideDialog()
@@ -86,10 +105,24 @@ class CheckRootStatus(var context: Context, private var next:Runnable? = null, p
                 alert.setTitle(R.string.error_root)
                 alert.setMessage(R.string.error_su_timeout)
                 alert.setNegativeButton(R.string.btn_refresh, { _, _ ->
+                    if(therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
+                        therad!!.interrupt()
+                        therad = null
+                    }
                     forceGetRoot()
                 })
-                alert.setNeutralButton(R.string.btn_exit, { _, _ ->
-                    android.os.Process.killProcess(android.os.Process.myPid())
+                alert.setNeutralButton(R.string.btn_skip, { _, _ ->
+                    if(therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
+                        therad!!.interrupt()
+                        therad = null
+                    }
+                    completed = true
+                    myHandler.post {
+                        pd.hideDialog()
+                        if (skip != null)
+                            skip!!.run()
+                    }
+                    //android.os.Process.killProcess(android.os.Process.myPid())
                 })
                 alert.create().show()
             }

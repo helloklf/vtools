@@ -67,7 +67,7 @@ class FragmentAddin : Fragment() {
             add(createItem(getString(R.string.addin_thermal_remove), getString(R.string.addin_thermal_remove_desc), Runnable { ThermalAddin(context!!).showOption() }, false))
             add(createItem(getString(R.string.addin_del_pwd), getString(R.string.addin_del_pwd_desc), Runnable { SystemAddin(context!!).deleteLockPwd() }))
             add(createItem(getString(R.string.addin_adb_network), String.format(getString(R.string.addin_adb_network_desc), getIP()), Runnable { AdbAddin(context!!).openNetworkDebug() }))
-            add(createItem(getString(R.string.addin_wifi), getString(R.string.addin_wifi_desc), Runnable { DialogAddinWIFI(context!!).show() }))
+            add(createItem(getString(R.string.addin_wifi), getString(R.string.addin_wifi_desc), Runnable { DialogAddinWIFI(context!!).show() }, false))
             add(createItem(getString(R.string.addin_battery_history_del), getString(R.string.addin_battery_history_del_desc), Runnable { BatteryAddin(context!!).deleteHistory() }))
 
             add(createItem(getString(R.string.addin_dpi), getString(R.string.addin_dpi_desc), Runnable { DialogAddinModifyDPI(context!!).modifyDPI(activity!!.windowManager.defaultDisplay) }, false))
@@ -115,7 +115,7 @@ class FragmentAddin : Fragment() {
             val onlineAddinDir = File(FileWrite.getPrivateFileDir(this.context !!) + "online-addin/")
             if(onlineAddinDir.exists() && onlineAddinDir.isDirectory) {
                 val onlineAddins = onlineAddinDir.list { dir, name ->
-                    name.endsWith(".sh")
+                    name.endsWith(".xml")
                 }
                 for (addinFile in onlineAddins) {
                     try {

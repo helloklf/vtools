@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.provider.Settings
 import android.support.design.widget.NavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
@@ -21,6 +22,7 @@ import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import com.omarea.shared.ConfigInstaller
 import com.omarea.shared.Consts
 import com.omarea.shared.CrashHandler
 import com.omarea.shared.SpfConfig
@@ -75,7 +77,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         crashHandler.init(this)
 
         thisview = this
-        checkFileWrite()
+        //checkFileWrite()
         checkRoot(Runnable {
             hasRoot = true
             checkBusybox()
@@ -84,6 +86,17 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         })
         setExcludeFromRecents()
         AppShortcutManager(thisview).removeMenu()
+        //checkUseState()
+
+        val intent = Intent(this, ActivityAddinOnline::class.java)
+        //startActivity(intent)
+    }
+
+    fun checkUseState() {
+        if (!(checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(Manifest.permission.PACKAGE_USAGE_STATS))) {
+            val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+            startActivity(intent);
+        }
     }
 
     private fun getModName(mode:String) : String {
@@ -204,6 +217,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun checkBusybox() {
+        ConfigInstaller().configCodeVerify(this)
         Busybox(this).forceInstall(Runnable {
             next()
         })
@@ -226,6 +240,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     .setCancelable(false)
                     .create()
                     .show()
+            return
         }
         if(!globalConfig.contains(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE)) {
             CheckRootStatus(this, Runnable {

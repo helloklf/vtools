@@ -9,6 +9,7 @@ import android.view.accessibility.AccessibilityManager
 import android.widget.Toast
 import com.omarea.shared.helper.*
 import com.omarea.shell.AsynSuShellUnit
+import com.omarea.shell.SuDo
 import java.io.File
 import java.util.*
 
@@ -31,6 +32,8 @@ class ServiceHelper(private var context: Context) {
     private var dyamicCore = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
     private var debugMode = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
     private var delayStart = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DELAY, false)
+    private var lockScreenOptimize = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE, false)
+    private var firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance")
     private var screenOn: Boolean = true
     private var lastScreenOnOff:Long = 0
 
@@ -39,14 +42,22 @@ class ServiceHelper(private var context: Context) {
     //屏幕关闭后清理任务延迟（ms）
     private val SCREEN_OFF_CLEAR_TASKS_DELAY:Long = 60000
     private var screenHandler = ScreenEventHandler({ onScreenOff() }, { onScreenOn() })
+    private var handler = Handler()
 
     private var notifyHelper: NotifyHelper = NotifyHelper(context, spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))
 
     //屏幕关闭时执行
     private fun onScreenOff () {
         screenOn = false
-        if (debugMode)
-            showMsg("屏幕关闭！")
+        if (debugMode && autoBooster) {
+            handler.postDelayed({
+                if(!screenOn) {
+                    showMsg("屏幕关闭！")
+                    if(debugMode)
+                        showMsg("动态响应-锁屏优化 已息屏，自动切换省电模式")
+                }
+            }, 5000)
+        }
         lastScreenOnOff = System.currentTimeMillis()
         if (autoBooster) {
             screenHandler.postDelayed({
@@ -58,6 +69,9 @@ class ServiceHelper(private var context: Context) {
 
     //屏幕关闭后 - 关闭网络
     private fun onScreenOffCloseNetwork() {
+        if((settingsLoaded || settingsLoad()) && dyamicCore && lockScreenOptimize) {
+            toggleConfig("powersave")
+        }
         if (autoBooster && System.currentTimeMillis() - lastScreenOnOff >= SCREEN_OFF_SWITCH_NETWORK_DELAY && screenOn == false) {
             if (spfAutoConfig.getBoolean(SpfConfig.WIFI + SpfConfig.OFF, false))
                 keepShell.doCmd("svc wifi disable")
@@ -76,20 +90,32 @@ class ServiceHelper(private var context: Context) {
                 }
             }
 
-            if (debugMode)
-                showMsg("屏幕关闭 - 网络模式已切换！")
+            //if (debugMode)
+            //    showMsg("屏幕关闭 - 网络模式已切换！")
         }
     }
 
     //点亮屏幕且解锁后执行
     private fun onScreenOn () {
-        if (debugMode)
+        if (debugMode && autoBooster)
             showMsg("屏幕开启！")
 
         lastScreenOnOff = System.currentTimeMillis()
         if (screenOn == true) return
 
         screenOn = true
+
+        if((settingsLoaded || settingsLoad()) && dyamicCore && lockScreenOptimize) {
+            if(this.lastModePackage != null && !this.lastModePackage.isNullOrEmpty())
+            {
+                handler.postDelayed({
+                    if(screenOn)
+                        autoToggleMode(this.lastModePackage)
+                    if(debugMode)
+                        showMsg("动态响应-锁屏优化 已解锁，自动恢复配置")
+                }, 5000)
+            }
+        }
         if (autoBooster && screenOn == true) {
             keepShell.doCmd("dumpsys deviceidle unforce;dumpsys deviceidle enable all;")
             if (spfAutoConfig.getBoolean(SpfConfig.WIFI + SpfConfig.ON, false))
@@ -109,8 +135,8 @@ class ServiceHelper(private var context: Context) {
                 }
             }
 
-            if (debugMode)
-                showMsg("屏幕开启 - 网络模式已切换！")
+            //if (debugMode)
+            //    showMsg("屏幕开启 - 网络模式已切换！")
         }
     }
 
@@ -123,21 +149,30 @@ class ServiceHelper(private var context: Context) {
         } else if (key == SpfConfig.GLOBAL_SPF_DYNAMIC_CPU || key == SpfConfig.GLOBAL_SPF_DYNAMIC_CPU_CONFIG) {
             dyamicCore = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
             keepShell.doCmd(Consts.ExecuteConfig)
-            if (!dyamicCore) {
-                notifyHelper.hideNotify()
-                notifyHelper.notify("辅助服务已启动，动态响应未开启")
-            }
-            if (dyamicCore && this.lastModePackage != null) {
-                autoToggleMode(this.lastModePackage)
-            } else if (dyamicCore) {
-                toggleConfig("performance")
-            }
+            handler.postDelayed({
+                if (!dyamicCore) {
+                    notifyHelper.hideNotify()
+                    notifyHelper.notify("辅助服务已启动，动态响应未开启")
+                } else {
+                    notifyHelper.notify("辅助服务已启动，动态响应已启动")
+                    if (dyamicCore && this.lastModePackage != null) {
+                        lastMode = ""
+                        autoToggleMode(this.lastModePackage)
+                    } else if (dyamicCore) {
+                        toggleConfig(firstMode)
+                    }
+                }
+            }, 2000)
         } else if (key == SpfConfig.GLOBAL_SPF_DEBUG) {
-            debugMode = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
+            debugMode = sharedPreferences.getBoolean(key, false)
+        } else if (key == SpfConfig.GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE) {
+            lockScreenOptimize = spfGlobal.getBoolean(key, false)
         } else if (key == SpfConfig.GLOBAL_SPF_NOTIFY) {
-            notifyHelper.setNotify(sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))
+            notifyHelper.setNotify(sharedPreferences.getBoolean(key, true))
         } else if (key == SpfConfig.BOOSTER_SPF_CFG_SPF_CLEAR_TASKS) {
 
+        } else if (key == SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE) {
+            firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance")
         }
     }
 
@@ -156,8 +191,11 @@ class ServiceHelper(private var context: Context) {
 
     //加载设置
     private fun settingsLoad(): Boolean {
-        if (delayStart && Date().time - serviceCreatedTime < 20000)
+        if (delayStart && Date().time - serviceCreatedTime < 25000){
+            if(dyamicCore)
+                notifyHelper.notify("已开启延迟启动，动态响应暂时未生效")
             return false
+        }
 
         if(spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true))
             keepShell.doCmd(Consts.DisableSELinux)
@@ -206,7 +244,7 @@ class ServiceHelper(private var context: Context) {
         if (!dyamicCore || packageName == null || packageName == lastModePackage)
             return
 
-        val mode = spfPowercfg.getString(packageName, "balance")
+        val mode = spfPowercfg.getString(packageName, firstMode)
         when (mode) {
             "igoned" ->     return
             else ->{
@@ -269,7 +307,6 @@ class ServiceHelper(private var context: Context) {
     }
     //#endregion
 
-
     //清理后台
     private fun clearTasks(timeout: Long =  SCREEN_OFF_CLEAR_TASKS_DELAY) {
         if (!autoBooster) {
@@ -326,8 +363,9 @@ class ServiceHelper(private var context: Context) {
     //焦点应用改变
     fun onFocusAppChanged(pkgName: String) {
         val packageName = pkgName
-        if (!settingsLoaded && !settingsLoad())
+        if (!settingsLoaded && !settingsLoad()) {
             return
+        }
 
         if (lastPackage == packageName || ignoredList.contains(packageName))
             return
@@ -354,11 +392,26 @@ class ServiceHelper(private var context: Context) {
             val m = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
             val serviceInfos = m.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
             for (serviceInfo in serviceInfos) {
-                if (serviceInfo.id == "${Consts.PACKAGE_NAME}/.AccessibilityServiceVTools") {
+                //if (serviceInfo.id == "${Consts.PACKAGE_NAME}/.AccessibilityServiceVTools") {
+                if (serviceInfo.id.endsWith("AccessibilityServiceVTools")) {
                     return true
                 }
             }
             return false
+        }
+
+        fun startServiceUseRoot(context: Context) : Boolean {
+            return SuDo(context).execCmdSync(
+                "services=`settings get secure enabled_accessibility_services`;\n" +
+                        "service='com.omarea.vboot/com.omarea.vboot.AccessibilityServiceVTools';\n" +
+                        "echo \"\$services\" |grep -q \"\$service\"\n" +
+                        "if [ \$? -gt -1 ]\n" +
+                        "then\n" +
+                        "\tsettings put secure enabled_accessibility_services \"\$services:\$service\"; \n" +
+                        "fi\n" +
+                        "settings put secure accessibility_enabled 1;\n" +
+                        "am startservice -n \$service;\n"
+            )
         }
     }
 }

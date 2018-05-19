@@ -45,6 +45,8 @@ public class SpfConfig {
     public static String GLOBAL_SPF_MAC = "wifi_mac";
     public static String GLOBAL_SPF_MAC_AUTOCHANGE = "wifi_mac_autochange";
     public static String GLOBAL_SPF_DOZELIST_AUTOSET = "doze_whitelist_auto_resume";
+    public static String GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE = "power_config_screen_omtimize";
+    public static String GLOBAL_SPF_POWERCFG_FIRST_MODE = "powercfg_first_mode";
 
     public static String SWAP_SPF = "swap"; //spf
     public static String SWAP_SPF_SWAP = "swap";
