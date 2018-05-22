@@ -3,7 +3,11 @@ package com.omarea.vboot
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.support.v7.app.AlertDialog
 import android.widget.Toast
 import com.omarea.shared.Consts
@@ -23,10 +27,25 @@ class ActivityQuickSwitchMode : Activity() {
         //window.attributes = wl
         if(this.intent != null && this.intent.extras != null) {
             val parameterValue = this.intent.getStringExtra("packageName");
-            if(packageName == null || parameterValue.isEmpty()) {
+            if(parameterValue == null || parameterValue.isEmpty()) {
                 return
             }
-            FloatPowercfgSelector().showPopupWindow(this, packageName)
+            if (Build.VERSION.SDK_INT >= 23) {
+                if (Settings.canDrawOverlays(this)) {
+                    FloatPowercfgSelector().showPopupWindow(this, parameterValue)
+                } else {
+                    //若没有权限，提示获取
+                    //val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                    //startActivity(intent);
+                    val intent = Intent()
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    intent.action = "android.settings.APPLICATION_DETAILS_SETTINGS"
+                    intent.data = Uri.fromParts("package", this.packageName, null)
+                    Toast.makeText(this,"为微工具箱授权显示悬浮窗权限，从而在应用中快速切换模式！",Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                FloatPowercfgSelector().showPopupWindow(this, parameterValue)
+            }
             finishAndRemoveTask()
             //DisplayMetrics{density=2.75, width=1080, height=2160, scaledDensity=2.75, xdpi=403.411, ydpi=403.411}
 
@@ -35,7 +54,7 @@ class ActivityQuickSwitchMode : Activity() {
             windowManager.defaultDisplay.getMetrics(metric)
             metric.density = metric.density / 1.6f;
             metric.scaledDensity = metric.scaledDensity / 1.6f;
-            if (this.intent.extras != null && this.intent.extras.containsKey("packageName")) {
+            if (this.intent.extras != null && this.intent.extras.containsKey("parameterValue")) {
                 quickSwitchMode()
             }
             */

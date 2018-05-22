@@ -46,6 +46,20 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/phone_accessibility" />
         </service>
+        <service
+            android:name=".AccessibilityServiceVToolsKeyEvent"
+            android:label="微工具箱-按键辅助"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/keyevent_accessibility" />
+        </service>
 
         <activity
             android:name=".ActivityMain"
@@ -71,7 +85,15 @@
             android:name=".ActivityAccessibilitySettings"
             android:configChanges="keyboardHidden|orientation"
             android:excludeFromRecents="true"
-            android:label="微工具箱增强服务"
+            android:label="微工具箱 - 增强服务"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ActivityAccessibilityKeyEventSettings"
+            android:configChanges="keyboardHidden|orientation"
+            android:excludeFromRecents="true"
+            android:label="微工具箱 - 按键辅助"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -103,7 +125,7 @@
             android:label="@string/title_activity_shortcut"
             android:launchMode="standard" />
         <activity
-            android:screenOrientation="fullSensor"
+            android:screenOrientation="fullUser"
             android:name=".ActivityQuickSwitchMode"
             android:excludeFromRecents="true"
             android:finishOnTaskLaunch="true"

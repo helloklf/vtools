@@ -1,85 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:layout_gravity="center"
     android:gravity="center"
-    android:padding="1dp"
-    android:background="@android:color/darker_gray"
+    android:fitsSystemWindows="true"
+    android:background="#50000000"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/popup_window"
-        android:layout_width="270dp"
-        android:layout_height="190dp"
-        android:background="@android:color/white"
-        android:orientation="vertical" >
+    <android.support.v7.widget.CardView
+        android:layout_margin="6dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:id="@+id/popup_window"
+            android:layout_width="270dp"
+            android:layout_height="190dp"
+            android:background="@android:color/white"
+            android:orientation="vertical" >
 
-        <TextView
-            android:id="@+id/fw_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/app_name"
-            android:textColor="@android:color/black"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="18dp"
-            android:paddingBottom="18dp"
-            android:lines="1"
-            style="@style/textTitle" />
-
-        <View
-            android:id="@+id/title_divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@id/fw_title"
-            android:background="@android:color/darker_gray" />
-
-        <Spinner
-            android:id="@+id/fw_powercfg_selector_spinner"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/title_divider"
-            android:layout_marginTop="8dp"
-            android:theme="@style/AppTheme"
-            android:entries="@array/powercfg_modes"
-            android:padding="16dp" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:orientation="horizontal"
-            android:paddingBottom="6dp"
-            android:paddingLeft="6dp"
-            android:paddingRight="6dp" >
-
-            <Button
-                android:id="@+id/negativeBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:layout_weight="1"
-                android:background="@drawable/btn_bg"
-                android:focusable="true"
-                android:padding="6dp"
-                android:text="@string/btn_cancel"
+            <TextView
+                android:id="@+id/fw_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:text="@string/app_name"
                 android:textColor="@android:color/black"
-                android:textSize="12dp" />
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                android:lines="1"
+                style="@style/textTitle" />
 
-            <Button
-                android:id="@+id/positiveBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:layout_marginLeft="18dp"
-                android:layout_weight="1"
-                android:background="@drawable/btn_bg"
-                android:focusable="true"
-                android:padding="6dp"
-                android:text="@string/btn_confirm"
-                android:textColor="@android:color/black"
-                android:textSize="12dp" />
-        </LinearLayout>
-    </RelativeLayout>
+            <Spinner
+                android:spinnerMode="dropdown"
+                android:id="@+id/fw_powercfg_selector_spinner"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fw_title"
+                android:layout_gravity="center"
+                android:theme="@style/AppTheme"
+                android:layout_marginLeft="35dp"
+                android:entries="@array/powercfg_modes"
+                android:padding="16dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal"
+                android:paddingBottom="6dp"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp" >
+
+                <Button
+                    android:textColor="@color/colorAccent"
+                    android:background="@android:color/transparent"
+                    android:id="@+id/negativeBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:focusable="true"
+                    android:padding="6dp"
+                    android:text="@string/btn_cancel" />
+
+                <Button
+                    android:id="@+id/positiveBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+                    android:layout_marginLeft="18dp"
+                    android:layout_weight="1"
+                    android:focusable="true"
+                    android:padding="6dp"
+                    android:text="@string/btn_confirm"
+                    android:textColor="@color/colorAccent"
+                    android:background="@android:color/transparent"
+                    android:textSize="12dp" />
+            </LinearLayout>
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
 
 </LinearLayout>

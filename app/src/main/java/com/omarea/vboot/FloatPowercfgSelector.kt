@@ -81,8 +81,8 @@ class FloatPowercfgSelector {
         // 设置 FLAG_NOT_FOCUSABLE 悬浮窗口较小时，后面的应用图标由不可长按变为可长按
         // 不设置这个flag的话，home页的划屏会有问题
 
-        params.width = LayoutParams.WRAP_CONTENT
-        params.height = LayoutParams.WRAP_CONTENT
+        params.width = LayoutParams.MATCH_PARENT
+        params.height = LayoutParams.MATCH_PARENT
 
         params.gravity = Gravity.CENTER
 
@@ -114,6 +114,7 @@ class FloatPowercfgSelector {
             "balance" -> index = 1
             "performance" -> index = 2
             "fast" -> index = 3
+            "igoned" -> index = 4
             else -> index = 1
         }
         val spinner = view.findViewById<View>(R.id.fw_powercfg_selector_spinner) as Spinner
@@ -141,8 +142,9 @@ class FloatPowercfgSelector {
                 4 -> selectedMode = "igoned"
             }
             spfPowercfg.edit().putString(packageName, selectedMode).commit()
-            SuDo(context).execCmd(String.format(Consts.ToggleMode, selectedMode))
-            NotifyHelper(context, false)._notify(getModName(selectedMode) + " -> " + packageName, packageName)
+            if(index != 4)
+                SuDo(context).execCmd(String.format(Consts.ToggleMode, selectedMode))
+            NotifyHelper(context, true)._notify(getModName(selectedMode) + " -> " + packageName, packageName)
 
             //Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);
             //context.startActivity(intent);
@@ -189,6 +191,7 @@ class FloatPowercfgSelector {
             "performance" -> return "性能模式"
             "fast" -> return "极速模式"
             "balance" -> return "均衡模式"
+            "igoned" -> return "已加入忽略"
             else -> return "未知模式"
         }
     }

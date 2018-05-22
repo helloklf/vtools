@@ -65,20 +65,8 @@
 
     <string name="app_name">微工具箱</string>
 
-    <string name="accessibility_service_description">
-        "<span>微工具箱后台服务</span>"
-        "<br />"
-        "<span>功能如下：</span>"
-        "<br />"
-        "<span>1.后台管理 - 自动优化后台应用</span>"
-        "<br />"
-        "<span>2.动态响应 - 根据应用场景切换性能配置</span>"
-        "<br />"
-        "<span>3.静默安装 - 安装应用时自动点击</span>"
-        "<br />"
-        "<br />"
-    "<span>具体功能，请在设置中配置。</span>"
-    </string>
+    <string name="accessibility_service_description">微工具箱增强服务\n你需要激活本服务，才能使用以下功能：\n\n1.动态响应（根据前台应用自动调整性能）.\n\n2.自动行为（在开关屏幕时切换网络或切换应用时回收进程）.\n\n3.自动安装（安装第三方应用时自动点击下一步）</string>
+    <string name="accessibility_keyevent_description">微工具箱按键辅助程序\n\n你需要开启本服务并保持持续运行，才能实现按键模拟</string>
 
     <string name="backup_action_title_boot">导出Boot</string>
     <string name="backup_action_desc_boot">备份当前使用中的Boot为img，复制到/sdcard/boot.img</string>
@@ -370,5 +358,15 @@
         <item>性能模式</item>
         <item>极速模式</item>
         <item>忽略切换</item>
+    </string-array>
+    <string-array name="key_event">
+        <item>默认动作</item>
+        <item>返回</item>
+        <item>首页</item>
+        <item>菜单</item>
+        <item>最近任务</item>
+        <item>下拉通知</item>
+        <item>截屏</item>
+        <item>相机</item>
     </string-array>
 </resources>
