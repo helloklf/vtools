@@ -2,7 +2,9 @@ package com.omarea.vboot
 
 import android.accessibilityservice.AccessibilityService
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Binder
 import android.os.Handler
 import android.view.KeyEvent
 import android.view.KeyEvent.*
@@ -10,6 +12,9 @@ import android.view.accessibility.AccessibilityEvent
 import android.widget.Toast
 import com.omarea.shared.SpfConfig
 import kotlin.collections.HashMap
+import android.os.IBinder
+
+
 
 
 /**
@@ -25,6 +30,13 @@ class AccessibilityServiceVToolsKeyEvent : AccessibilityService() {
     override fun onCreate() {
         super.onCreate()
         sharedPreferences = this.getSharedPreferences(SpfConfig.KEY_EVENT_SPF, Context.MODE_PRIVATE)
+        sharedPreferences.registerOnSharedPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+            updateKeyEventProcess()
+        })
+        updateKeyEventProcess()
+    }
+
+    private fun updateKeyEventProcess() {
         try {
             for (item in sharedPreferences.all.keys) {
                 var keyCode = Int.MIN_VALUE
@@ -43,7 +55,8 @@ class AccessibilityServiceVToolsKeyEvent : AccessibilityService() {
     override fun onKeyEvent(event: KeyEvent) :Boolean{
         //如果返回true，就会导致其他应用接收不到事件了，但是对KeyEvent的修改是不会分发到其他应用中的！
         if(eventHandlers.containsKey(event.keyCode)) {
-            eventHandlers[event.keyCode]!!.onEvent(event)
+            val stopEvent = eventHandlers[event.keyCode]!!.onEvent(event)
+            return stopEvent
         }
         return false
     }
@@ -58,7 +71,8 @@ class AccessibilityServiceVToolsKeyEvent : AccessibilityService() {
             //TODO:读取配置，看看当前键码的长按设置为啥了
             val overrideKeyCode = spf.getInt("${keyCode}_long_click", Int.MIN_VALUE)
             //如果重写了事件
-            if(overrideKeyCode != Int.MIN_VALUE && overrideKeyCode != keyCode) {
+            if(overrideKeyCode != Int.MIN_VALUE) {
+                downTime = downTimeDefault
                 accessibilityService.performGlobalAction(overrideKeyCode)
             }
         }
@@ -67,7 +81,8 @@ class AccessibilityServiceVToolsKeyEvent : AccessibilityService() {
             //TODO: 读取配置，看当前键码短按设置为啥了
             val overrideKeyCode = spf.getInt("${keyCode}_click", Int.MIN_VALUE)
             //如果重写了事件
-            if(overrideKeyCode != Int.MIN_VALUE && overrideKeyCode != keyCode) {
+            if(overrideKeyCode != Int.MIN_VALUE) {
+                downTime = downTimeDefault
                 accessibilityService.performGlobalAction(overrideKeyCode)
                 return true
             }
@@ -86,6 +101,7 @@ class AccessibilityServiceVToolsKeyEvent : AccessibilityService() {
         private fun onDown(event: KeyEvent) : Boolean {
             downTime = event.eventTime
             startTimer()
+            val overrideKeyCode = spf.getInt("${keyCode}_click", Int.MIN_VALUE)
             return false
         }
 
@@ -97,8 +113,7 @@ class AccessibilityServiceVToolsKeyEvent : AccessibilityService() {
                     //TODO:读取配置，看看当前键码的长按设置为啥了
                     val overrideKeyCode = spf.getInt("${keyCode}_long_click", Int.MIN_VALUE)
                     //如果重写了事件
-                    if(overrideKeyCode != Int.MIN_VALUE && overrideKeyCode != keyCode) {
-                        // accessibilityService.performGlobalAction(overrideKeyCode)
+                    if(overrideKeyCode != Int.MIN_VALUE) {
                         stopEvent = true
                     }
                 }
@@ -108,10 +123,10 @@ class AccessibilityServiceVToolsKeyEvent : AccessibilityService() {
                 }
             }
             else {
+                stopEvent = true
                 //居然还有没有经过down就到了up的事件？也许可能会有吧，反正这么写做容错好了
             }
             downTime = downTimeDefault;
-
             return stopEvent
         }
 

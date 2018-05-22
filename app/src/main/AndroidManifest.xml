@@ -125,11 +125,12 @@
             android:label="@string/title_activity_shortcut"
             android:launchMode="standard" />
         <activity
-            android:screenOrientation="fullUser"
+            android:screenOrientation="behind"
             android:name=".ActivityQuickSwitchMode"
             android:excludeFromRecents="true"
             android:finishOnTaskLaunch="true"
-            android:label="@string/app_name"
+            android:label="@string/app_name_mode_switch"
+            android:configChanges="keyboardHidden|orientation"
             android:theme="@style/FloatActivity"
             android:launchMode="standard">
             <intent-filter>
