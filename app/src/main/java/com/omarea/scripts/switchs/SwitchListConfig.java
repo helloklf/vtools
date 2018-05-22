@@ -13,6 +13,7 @@ import com.omarea.ui.OverScrollListView;
 import com.omarea.vboot.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class SwitchListConfig {
     private FragmentActivity context;
@@ -91,10 +92,12 @@ public class SwitchListConfig {
         }
         cmds.append("\n\n");
         cmds.append("\n\n");
-        executeScript(action.title, action.root, cmds, startPath, onExit);
+        executeScript(action.title, action.root, cmds, startPath, onExit, new HashMap<String, String>() {{
+            put("state", (toValue ? "1" : "0"));
+        }});
     }
 
-    private void executeScript(String title, Boolean root, StringBuilder cmds, String startPath, Runnable onExit) {
-        new SimpleShellExecutor(context).execute(root, title, cmds, startPath, onExit);
+    private void executeScript(String title, Boolean root, StringBuilder cmds, String startPath, Runnable onExit, HashMap<String,String> params) {
+        new SimpleShellExecutor(context, context.getWindow()).execute(root, title, cmds, startPath, onExit, params);
     }
 }

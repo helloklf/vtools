@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import com.omarea.vboot.ActivityMain
+import com.omarea.vboot.ActivityQuickSwitchMode
 import com.omarea.vboot.R
 
 
@@ -63,7 +64,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         }
 
         //获取PendingIntent
-        val mainIntent = Intent(context, ActivityMain::class.java)
+        val mainIntent = Intent(context, ActivityQuickSwitchMode::class.java)
         mainIntent.putExtra("packageName", stringPackage)
         val mainPendingIntent = PendingIntent.getActivity(context, 0, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         notificationManager = context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
@@ -96,6 +97,9 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         notificationManager?.notify(0x100, notification)
     }
 
+    public fun _notify(msg: String = "辅助服务正在后台运行", stringPackage: String) {
+        this.notify(msg, stringPackage)
+    }
     //隐藏通知
     internal fun hideNotify() {
         if (notification != null) {

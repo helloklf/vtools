@@ -1,7 +1,20 @@
 #!/system/bin/sh
 
 text='开启OpenGLES3、Vulkan特性（可能会花屏或闪退），当前状态：'
-prefs='/data/data/com.tencent.tmgp.sgame/shared_prefs/com.tencent.tmgp.sgame.v2.playerprefs.xml'
+
+USER_ID='0'
+if [[ -n "${ANDROID_UID}" ]]; then
+    USER_ID="${ANDROID_UID}";
+fi;
+
+dir="/data/user/${USER_ID}/com.tencent.tmgp.sgame/shared_prefs"
+prefs="${dir}/com.tencent.tmgp.sgame.v2.playerprefs.xml"
+
+if [[ ! -f "$prefs" ]]; then
+    echo $text "配置不存在";
+    exit 0;
+fi;
+
 render='OpenGLES2'
 mt=''
 

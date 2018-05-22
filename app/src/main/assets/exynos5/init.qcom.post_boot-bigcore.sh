@@ -1,36 +1,30 @@
 #!/system/bin/sh
 
 target=`getprop ro.board.platform`
-function trim()
-{
-    var=$1
-    var=${var%% }
-    var=${var## }
-    echo $var
-}
 
 function setvolt()
 {
     cluster=$1
     freq=$2
     volt=$3
-    if [ -f $cluster ]; then
-        valid=`cat $cluster | grep $freq`
-        if [  $(trim $valid)  -ne '' ]; then
-            echo "$freq $volt" > $cluster
+    if [[ -f "$cluster" ]]; then
+        valid="$(cat $cluster | grep $freq)"
+        if [[ -n "$valid" ]]; then
+            echo "$freq $volt" > "$cluster"
         fi;
     fi;
 }
-
+#setvolt $cluster1 "2600000 " "1090000"
 
 function set_value()
 {
     value=$1
     path=$2
     if [ -f $path ]; then
-        if [ ! $(trim `cat $path`) = $(trim $value) ]; then
-            chmod 0664 $path
-            echo $value > $path
+        current_value="$(cat $path)"
+        if [ ! "$current_value" = "$value" ]; then
+            chmod 0664 "$path"
+            echo "$value" > "$path"
         fi;
     fi;
 }
@@ -71,17 +65,11 @@ case "$target" in
         set_value 1 /sys/devices/system/cpu/cpu0/cpufreq/interactive/boost
         set_value 1 /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy
 
-        set_value 1 /sys/devices/system/cpu/cpuhotplug/enabled
+        #
+        set_value 1 /sys/power/cpuhotplug/enabled
         set_value 1 /sys/devices/system/cpu/cpuhotplug/enabled
         set_value 8 /sys/devices/system/cpu/cpuhotplug/max_online_cpu
-        set_value 1 /sys/devices/system/cpu/cpuhotplug/min_online_cpu
-        #chmod 664 /sys/devices/system/cpu/cpuhotplug/control_online_cpus
-        #echo 8 /sys/devices/system/cpu/cpuhotplug/control_online_cpus
-        # /sys/devices/system/cpu/cpuhotplug/governor/....
-
-        #
-        set_value 0 /sys/power/cpuhotplug/enabled
-        set_value 0 /sys/devices/system/cpu/cpuhotplug/enabled
+        set_value 4 /sys/devices/system/cpu/cpuhotplug/min_online_cpu
 
         #HMP
         set_value 200 /sys/kernel/hmp/down_threshold
@@ -108,32 +96,32 @@ case "$target" in
         #/sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster1_volt_table
         cluster1="/sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster1_volt_table"
         chmod 0664 $cluster1
-        setvolt $cluster1 "2704000 " "1121250"
+        setvolt $cluster1 "2704000 " "1161250"
 
-        setvolt $cluster1 "2600000 " "1090000"
-        setvolt $cluster1 "2496000 " "1062500"
-        setvolt $cluster1 "2392000 " "1037500"
-        setvolt $cluster1 "2288000 " "1000000"
-        setvolt $cluster1 "2184000 " "962500"
-        setvolt $cluster1 "2080000 " "937500"
-        setvolt $cluster1 "1976000 " "912500"
-        setvolt $cluster1 "1872000 " "881250"
-        setvolt $cluster1 "1768000 " "856250"
-        setvolt $cluster1 "1664000 " "831250"
-        setvolt $cluster1 "1560000 " "793750"
-        setvolt $cluster1 "1456000 " "762500"
-        setvolt $cluster1 "1352000 " "737500"
-        setvolt $cluster1 "1248000 " "712500"
-        setvolt $cluster1 "1144000 " "693750"
-        setvolt $cluster1 "1040000 " "668750"
-        setvolt $cluster1 "936000 " "643750"
-        setvolt $cluster1 "832000 " "618750"
-        setvolt $cluster1 "728000 " "593750"
-        setvolt $cluster1 "624000 " "575000"
-        setvolt $cluster1 "520000 " "556250"
-        setvolt $cluster1 "416000 " "556250"
-        setvolt $cluster1 "312000 " "556250"
-        setvolt $cluster1 "208000 " "556250"
+        setvolt $cluster1 "2600000 " "1118750"
+        setvolt $cluster1 "2496000 " "1081250"
+        setvolt $cluster1 "2392000 " "1056250"
+        setvolt $cluster1 "2288000 " "1018750"
+        setvolt $cluster1 "2184000 " "981250"
+        setvolt $cluster1 "2080000 " "956250"
+        setvolt $cluster1 "1976000 " "931250"
+        setvolt $cluster1 "1872000 " "900000"
+        setvolt $cluster1 "1768000 " "875000"
+        setvolt $cluster1 "1664000 " "850000"
+        setvolt $cluster1 "1560000 " "812500"
+        setvolt $cluster1 "1456000 " "781250"
+        setvolt $cluster1 "1352000 " "756250"
+        setvolt $cluster1 "1248000 " "731250"
+        setvolt $cluster1 "1144000 " "712500"
+        setvolt $cluster1 "1040000 " "687500"
+        setvolt $cluster1 "936000 " "662500"
+        setvolt $cluster1 "832000 " "637500"
+        setvolt $cluster1 "728000 " "612500"
+        setvolt $cluster1 "624000 " "593750"
+        setvolt $cluster1 "520000 " "575000"
+        setvolt $cluster1 "416000 " "575000"
+        setvolt $cluster1 "312000 " "575000"
+        setvolt $cluster1 "208000 " "575000"
 
         set_value 130000 /sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster1_min_freq
 
@@ -141,31 +129,27 @@ case "$target" in
         cluster0="/sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster0_volt_table"
         chmod 0644 $cluster0
         setvolt $cluster0 "1794000 " "962500"
-        setvolt $cluster0 "1690000 " "937500"
-        setvolt $cluster0 "1586000 " "925000"
-        setvolt $cluster0 "1482000 " "875000"
-        setvolt $cluster0 "1378000 " "831250"
-        setvolt $cluster0 "1274000 " "793750"
-        setvolt $cluster0 "1170000 " "743750"
-        setvolt $cluster0 "1066000 " "706250"
-        setvolt $cluster0 "962000 " "668750"
-        setvolt $cluster0 "858000 " "637500"
-        setvolt $cluster0 "754000 " "606250"
-        setvolt $cluster0 "650000 " "575000"
-        setvolt $cluster0 "546000 " "543750"
-        setvolt $cluster0 "442000 " "506250"
-        setvolt $cluster0 "338000 " "500000"
-        setvolt $cluster0 "234000 " "500000"
-        setvolt $cluster0 "130000 " "500000"
+        setvolt $cluster0 "1690000 " "987500"
+        setvolt $cluster0 "1586000 " "950000"
+        setvolt $cluster0 "1482000 " "900000"
+        setvolt $cluster0 "1378000 " "856250"
+        setvolt $cluster0 "1274000 " "818750"
+        setvolt $cluster0 "1170000 " "768750"
+        setvolt $cluster0 "1066000 " "731250"
+        setvolt $cluster0 "962000 " "693750"
+        setvolt $cluster0 "858000 " "662500"
+        setvolt $cluster0 "754000 " "631250"
+        setvolt $cluster0 "650000 " "600000"
+        setvolt $cluster0 "546000 " "568750"
+        setvolt $cluster0 "442000 " "531250"
+        setvolt $cluster0 "338000 " "512500"
+        setvolt $cluster0 "234000 " "512500"
+        setvolt $cluster0 "130000 " "512500"
 
         set_value 130000 /sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster0_min_freq
         set_value 0 /sys/block/sda/queue/iostats
     ;;
 esac
-
-chown -h system /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
-chown -h system /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor
-chown -h system /sys/devices/system/cpu/cpufreq/ondemand/io_is_busy
 
 set_value 0 /dev/cpuset/background/cpus
 set_value 1 /dev/cpuset/background/cpus

@@ -163,14 +163,12 @@ class FragmentBattery : Fragment() {
 
         settings_bp_level.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
             startBatteryService()
-            accessbility_bp_level_desc.setText("充电限制电量：" + spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85) + "%")
-        }, spf, SpfConfig.CHARGE_SPF_BP_LEVEL))
-        settings_qc_limit.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
+        }, spf, accessbility_bp_level_desc))
+        settings_qc_limit.setOnSeekBarChangeListener(OnSeekBarChangeListener2(Runnable {
             val level = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000)
             startBatteryService()
             batteryUnits.setChargeInputLimit(level);
-            settings_qc_limit_desc.setText("充电上限电流：" + level + "mA")
-        }, spf, SpfConfig.CHARGE_SPF_QC_LIMIT))
+        }, spf, settings_qc_limit_desc))
 
         if (!qcSettingSuupport) {
             settings_qc.isEnabled = false
@@ -228,20 +226,41 @@ class FragmentBattery : Fragment() {
         }
     }
 
-    class OnSeekBarChangeListener(private var next: Runnable, private var spf: SharedPreferences, private var spfProp: String) : SeekBar.OnSeekBarChangeListener {
+    class OnSeekBarChangeListener(private var next: Runnable, private var spf: SharedPreferences, private var accessbility_bp_level_desc: TextView) : SeekBar.OnSeekBarChangeListener {
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
             val progress = seekBar!!.progress
-            if (spf.getInt(spfProp, Int.MIN_VALUE) == progress) {
+            if (spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, Int.MIN_VALUE) == progress) {
                 return
             }
-            spf.edit().putInt(spfProp, progress).apply()
+            spf.edit().putInt(SpfConfig.CHARGE_SPF_BP_LEVEL, progress).apply()
             next.run()
         }
 
         override fun onStartTrackingTouch(seekBar: SeekBar?) {
-        }
-        override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
 
+        }
+
+        override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+            accessbility_bp_level_desc.setText("充电限制电量：" + progress + "%")
+        }
+    }
+
+    class OnSeekBarChangeListener2(private var next: Runnable, private var spf: SharedPreferences, private var settings_qc_limit_desc: TextView) : SeekBar.OnSeekBarChangeListener {
+        override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            val progress = seekBar!!.progress
+            if (spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, Int.MIN_VALUE) == progress) {
+                return
+            }
+            spf.edit().putInt(SpfConfig.CHARGE_SPF_QC_LIMIT, progress).apply()
+            next.run()
+        }
+
+        override fun onStartTrackingTouch(seekBar: SeekBar?) {
+
+        }
+
+        override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+            settings_qc_limit_desc.setText("充电上限电流：" + progress + "mA")
         }
     }
 

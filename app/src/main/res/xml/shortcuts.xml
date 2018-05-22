@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
-    <shortcut
+    <!--<shortcut
         android:enabled="true"
         android:icon="@drawable/shortcut_settings"
         android:shortcutDisabledMessage="@string/shortcut_disabled"
@@ -11,7 +11,7 @@
             android:action="android.intent.action.VIEW"
             android:targetClass="com.omarea.vaddin.MainActivity"
             android:targetPackage="com.omarea.vaddin" />
-    </shortcut>
+    </shortcut>-->
     <shortcut
         android:enabled="true"
         android:icon="@drawable/shortcut_p0"

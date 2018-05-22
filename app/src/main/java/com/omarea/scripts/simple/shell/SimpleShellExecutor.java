@@ -3,8 +3,15 @@ package com.omarea.scripts.simple.shell;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.ApplicationInfo;
+import android.graphics.Point;
+import android.os.Build;
+import android.os.Environment;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -12,10 +19,13 @@ import com.omarea.vboot.R;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Hello on 2018/04/01.
@@ -23,10 +33,12 @@ import java.io.OutputStream;
 
 public class SimpleShellExecutor {
     private Context context;
+    private Window window;
     private boolean started = false;
 
-    public SimpleShellExecutor(Context context) {
+    public SimpleShellExecutor(Context context, Window window) {
         this.context = context;
+        this.window = window;
     }
 
     /**
@@ -36,16 +48,48 @@ public class SimpleShellExecutor {
      * @param cmds
      * @param startPath
      */
-    public boolean execute(Boolean root, String title, StringBuilder cmds, String startPath, Runnable onExit) {
+    public boolean execute(Boolean root, String title, StringBuilder cmds, String startPath, Runnable onExit, HashMap<String, String> params) {
         if (started) {
             return false;
         }
         Process process = null;
+        final File dir = context.getFilesDir();
+        final String dirUri = dir.getAbsolutePath();
+        ArrayList<String> envp = new ArrayList<String>();
+        if (params != null) {
+            for (String item : params.keySet()) {
+                String value = params.get(item);
+                if (value == null) {
+                    value = "";
+                }
+                envp.add(item + "=" + value);
+            }
+        }
+        envp.add("TEMP_DIR=" + dirUri + "/temp");
+        envp.add("ANDROID_UID=" + dir.getParentFile().getParentFile().getName());
+        envp.add("ANDROID_SDK=" + Build.VERSION.SDK_INT);
+        envp.add("SDCARD_PATH=" + Environment.getExternalStorageDirectory().getAbsolutePath());
+
+        Display display = window.getWindowManager().getDefaultDisplay();
+        DisplayMetrics dm = new DisplayMetrics();
+        display.getMetrics(dm);
+        Point point = new Point();
+        display.getRealSize(point);
+
+        envp.add("DISPLAY_DPI=" + dm.densityDpi);
+        envp.add("DISPLAY_H=" + point.y);
+        envp.add("DISPLAY_W=" + point.x);
         try {
             //process = Runtime.getRuntime().exec(root ? "su" : "bash");
-            process = Runtime.getRuntime().exec(root ? "su" : "sh");
+            if(root) {
+                process = Runtime.getRuntime().exec("su");
+            } else {
+                process = Runtime.getRuntime().exec("sh", envp.toArray(new String[envp.size()]));
+            }
         } catch (Exception ex) {
-            Toast.makeText(context, R.string.error_root, Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
+            if (onExit != null)
+                onExit.run();
         }
 
         if (process != null) {
@@ -63,13 +107,23 @@ public class SimpleShellExecutor {
                 } else {
                     start = context.getFilesDir().getAbsolutePath();
                 }
+
+                if(root) {
+                    StringBuilder envpCmds = new StringBuilder();
+                    if(envp.size() > 0) {
+                        for (String param: envp) {
+                            envpCmds.append("export ").append(param).append("\n");
+                        }
+                    }
+                    dataOutputStream.write(envpCmds.toString().getBytes("UTF-8"));
+                }
                 dataOutputStream.write(String.format("cd '%s'\n", start).getBytes("UTF-8"));
 
                 shellHandler.sendMessage(shellHandler.obtainMessage(ShellHandler.EVENT_START, "shell@android:" + start + " $\n\n"));
                 shellHandler.sendMessage(shellHandler.obtainMessage(ShellHandler.EVENT_WRITE, cmds.toString()));
 
                 dataOutputStream.writeBytes("sleep 0.2;\n");
-                dataOutputStream.write(cmds.toString().getBytes("UTF-8"));
+                dataOutputStream.write(cmds.toString().replaceAll("\r\n", "\n").replaceAll("\r\t", "\t").getBytes("UTF-8"));
                 dataOutputStream.writeBytes("\n\n");
                 dataOutputStream.writeBytes("sleep 0.2;\n");
                 dataOutputStream.writeBytes("exit\n");

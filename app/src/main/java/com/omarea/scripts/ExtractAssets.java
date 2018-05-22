@@ -5,6 +5,9 @@ import android.content.Context;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.nio.charset.Charset;
+
+import kotlin.text.Charsets;
 
 /**
  * Created by Hello on 2018/04/03.
@@ -29,10 +32,10 @@ public class ExtractAssets {
                 dir.mkdirs();
             }
             FileOutputStream fileOutputStream = new FileOutputStream(filePath);
-            byte[] cache = new byte[4096];
+            byte[] cache = new byte[1024 * 1024];
             int length;
             while ((length = inputStream.read(cache)) > 0) {
-                fileOutputStream.write(cache, 0, length);
+                fileOutputStream.write(new String(cache,0, length).replaceAll("\r\n", "\n").replaceAll("\r\t", "\t").getBytes(Charsets.UTF_8));
             }
             fileOutputStream.flush();
             fileOutputStream.close();

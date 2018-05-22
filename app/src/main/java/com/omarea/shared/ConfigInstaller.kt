@@ -42,6 +42,12 @@ class ConfigInstaller {
         if (fileBase.exists() && (!fileBase.canExecute() || !fileBase.canRead())) {
             SuDo(context).execCmdSync("chmod 0775 ${Consts.POWER_CFG_BASE}")
         }
+        if(file.length() > 1024 * 1024) {
+            return
+        }
+        if(fileBase.length() > 1024 * 1024) {
+            return
+        }
         val cmd = StringBuilder()
         if (file.exists()) {
             val powercfg = SysUtils.executeCommandWithOutput(false, "cat ${Consts.POWER_CFG_PATH}")

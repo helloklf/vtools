@@ -2,7 +2,7 @@
     <string-array name="app_desktop">
         <item>com.teslacoilsw.launcher</item>
     </string-array>
-
+    <integer name="opacity">0</integer>
     <string-array name="powercfg_igoned">
         <item>com.zbar.lib</item>
         <item>eu.chainfire.supersu</item>

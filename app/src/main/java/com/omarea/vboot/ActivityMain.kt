@@ -4,6 +4,8 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.*
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -58,6 +60,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        //setMaxAspect()
         if (globalSPF == null) {
             globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
             val listener = SharedPreferences.OnSharedPreferenceChangeListener {
@@ -98,79 +101,23 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             startActivity(intent);
         }
     }
-
-    private fun getModName(mode:String) : String {
-        when(mode) {
-            "powersave" ->      return "省电模式"
-            "performance" ->      return "性能模式"
-            "fast" ->      return "极速模式"
-            "balance" ->   return "均衡模式"
-            else ->         return "未知模式"
-        }
-    }
-
-    private fun getAppName(packageName: String): String{
+    public fun setMaxAspect() {
+        var applicationInfo: ApplicationInfo? = null;
         try {
-            val packageInfo = packageManager.getPackageInfo(packageName, 0);
-            return  packageInfo.applicationInfo.loadLabel(packageManager).toString()
-        } catch (ex : Exception) {
-            return  packageName;
+            applicationInfo = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace();
+        }
+        if (applicationInfo == null) {
+            throw IllegalArgumentException(" get application info = null, has no meta data! ");
+        }
+        val metaData = applicationInfo.metaData
+        if(metaData != null) {
+            val aspect = metaData.getFloat("android.max_aspect")
+            if(aspect < 2.4f)
+            metaData.putFloat("android.max_aspect", 2.1f)
         }
     }
-
-    @SuppressLint("ApplySharedPref")
-    private fun quickSwitchMode(){
-        val parameterValue = this.intent.getStringExtra("packageName");
-        if(packageName == null || parameterValue.isEmpty()) {
-            return
-        }
-        val spfPowercfg = getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
-        val mode = spfPowercfg.getString(parameterValue, "balance");
-        var index = 0;
-
-        when(mode) {
-            "powersave" ->      index = 0
-            "balance" ->   index = 1
-            "performance" ->      index = 2
-            "fast" ->      index = 3
-            else ->         index = 1
-        }
-
-        AlertDialog.Builder(this)
-                .setPositiveButton(R.string.btn_confirm, { dialog, which ->
-                    try {
-                        var selectedMode = ""
-                        when(index) {
-                            0 -> selectedMode = "powersave"
-                            1 -> selectedMode = "balance"
-                            2 -> selectedMode = "performance"
-                            3 -> selectedMode = "fast"
-                            4 -> selectedMode = "igoned"
-                        }
-                        spfPowercfg.edit().putString(parameterValue, selectedMode).commit()
-                        SuDo(this).execCmd(String.format(Consts.ToggleMode, selectedMode));
-                        NotifyHelper(this).notify("${getModName(selectedMode)} -> $parameterValue" , parameterValue)
-
-                        val intent = getPackageManager().getLaunchIntentForPackage(parameterValue);
-                        startActivity(intent);
-                    } catch (ex : Exception) {
-
-                    }
-                })
-                .setNegativeButton(R.string.btn_cancel, { dialog, which ->
-
-                })
-                .setNeutralButton("", { dialog, which ->
-
-                })
-                .setTitle(getAppName(parameterValue))
-                .setSingleChoiceItems(arrayOf("省电模式", "均衡模式", "游戏模式", "极速模式", "加入“忽略列表”"),index, { dialog, which ->
-                    index = which;
-                })
-                .create()
-                .show()
-    }
-
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         try {
@@ -270,20 +217,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
 
-    }
-
-    override fun onStart() {
-        super.onStart()
-        if (this.intent.extras != null && this.intent.extras.containsKey("packageName")) {
-            quickSwitchMode()
-            this.intent.extras.clear()
-        }
-    }
-    override fun onResume() {
-        super.onResume()
-    }
-    override fun onRestart() {
-        super.onRestart()
     }
 
     private fun checkPermission(permission: String): Boolean =

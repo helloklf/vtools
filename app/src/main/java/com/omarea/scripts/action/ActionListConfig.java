@@ -144,12 +144,18 @@ public class ActionListConfig {
                                                         final String[] itemSplit = item.split("\\|");
                                                         options.add(new HashMap<String, Object>(){{
                                                             put("title", itemSplit[1]);
-                                                            put("", itemSplit[0]);
+                                                            put("item", new ActionParamInfo.ActionParamOption(){{
+                                                                value = itemSplit[0];
+                                                                desc = itemSplit[1];
+                                                            }});
                                                         }});
                                                     } else {
                                                         options.add(new HashMap<String, Object>(){{
                                                             put("title", item);
-                                                            put("", item);
+                                                            put("item", new ActionParamInfo.ActionParamOption(){{
+                                                                value = item;
+                                                                desc = item;
+                                                            }});
                                                         }});
                                                     }
                                                 }
@@ -177,9 +183,8 @@ public class ActionListConfig {
                                         }
                                         if (valList.size() > 0) {
                                             for (int j = 0; j < valList.size(); j++) {
-                                                //Wran：当options和actionParamInfo.options长度或顺序不一致时，会出问题！！！
-                                                for (ActionParamInfo.ActionParamOption option : actionParamInfo.options) {
-                                                    if (option.value.equals(valList.get(j))) {
+                                                for (HashMap<String, Object> option: options) {
+                                                    if (((ActionParamInfo.ActionParamOption)option.get("item")).value.equals(valList.get(j))) {
                                                         selectedIndex = index;
                                                         break;
                                                     }
@@ -191,11 +196,17 @@ public class ActionListConfig {
                                         }
                                         spinner.setAdapter(new SimpleAdapter(context, options, R.layout.string_item, new String[]{"title"}, new int[]{R.id.text}));
                                         spinner.setTag(actionParamInfo);
+                                        if(options.size() > 6) {
+                                            //TODO:列表过长时切换为弹窗
+                                        }
+                                        if(actionParamInfo.desc != null && !actionParamInfo.desc.isEmpty()) {
+                                            spinner.setPrompt(actionParamInfo.desc);
+                                        }
                                         linearLayout.addView(spinner);
                                         LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) spinner.getLayoutParams();
                                         lp.setMargins(0, 10, 0, 20);
                                         spinner.setLayoutParams(lp);
-                                        if (selectedIndex > -1) {
+                                        if (selectedIndex > -1 && selectedIndex < options.size()) {
                                             spinner.setSelection(selectedIndex);
                                         }
                                     } else if (actionParamInfo.type != null && actionParamInfo.type.equals("bool")) {
@@ -237,8 +248,7 @@ public class ActionListConfig {
                                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialog, int which) {
-                                                readInput(actionParamInfos, linearLayout, cmds, action);
-                                                executeScript(action.title, action.root, cmds, finalStartPath, onExit);
+                                                executeScript(action.title, action.root, cmds, finalStartPath, onExit, readInput(actionParamInfos, linearLayout, cmds, action));
                                             }
                                         })
                                         .create()
@@ -253,10 +263,11 @@ public class ActionListConfig {
             }
         }
         cmds.append("\n\n");
-        executeScript(action.title, action.root, cmds, startPath, onExit);
+        executeScript(action.title, action.root, cmds, startPath, onExit, null);
     }
 
-    private void readInput(ArrayList<ActionParamInfo> actionParamInfos, LinearLayout linearLayout, StringBuilder cmds, ActionInfo actionInfo) {
+    private HashMap<String, String> readInput(ArrayList<ActionParamInfo> actionParamInfos, LinearLayout linearLayout, StringBuilder cmds, ActionInfo actionInfo) {
+        HashMap<String, String> params = new HashMap<>();
         for (ActionParamInfo actionParamInfo : actionParamInfos) {
             View view = linearLayout.findViewWithTag(actionParamInfo);
             if (view instanceof EditText) {
@@ -276,11 +287,13 @@ public class ActionListConfig {
                 cmds.append(" $");
                 cmds.append(actionParamInfo.name);
             }
+            params.put(actionParamInfo.name, actionParamInfo.value);
         }
         cmds.append("\n\n");
+        return params;
     }
 
-    private void executeScript(String title, Boolean root, StringBuilder cmds, String startPath, Runnable onExit) {
-        new SimpleShellExecutor(context).execute(root, title, cmds, startPath, onExit);
+    private void executeScript(String title, Boolean root, StringBuilder cmds, String startPath, Runnable onExit, HashMap<String, String> params) {
+        new SimpleShellExecutor(context, context.getWindow()).execute(root, title, cmds, startPath, onExit, params);
     }
 }

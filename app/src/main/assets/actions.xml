@@ -2,7 +2,7 @@
 <actions>
     <action root="true">
         <title>调整DPI</title>
-        <desc>快速调整手机DPI，不需要重启</desc>
+        <desc>快速调整手机DPI，不需要重启。请根据你的手机实际分辨率选！</desc>
         <script>
             wm size reset;
             wm density $dpi;
@@ -10,33 +10,59 @@
         </script>
         <params>
             <param name="dpi" value="440">
-                <option val="480">默认（480）</option>
-                <option val="440">适中（440）</option>
-                <option val="410">较小（410）</option>
-                <option val="380">很小（380）</option>
+                <option val="640">2K 小屏（640）</option>
+                <option val="560">2K 中屏（560）</option>
+                <option val="520">2K 大屏（520）</option>
+                <option val="480">1080P 小屏（480）</option>
+                <option val="440">1080P 中屏（440）</option>
+                <option val="410">1080P 大屏（410）</option>
+                <option val="380">1080P 巨屏（380）</option>
+                <option val="320">720P 小屏（320）</option>
+                <option val="280">720P 中屏（280）</option>
+                <option val="240">640P~480P（280）</option>
             </param>
         </params>
     </action>
     <action root="true">
         <title>王者荣耀配置修改</title>
-        <desc su="file:///android_asset/custom/actions/tmgp_get.sh"></desc>
+        <desc su="file:///android_asset/custom/actions/tmgp_get.sh" />
         <script>file:///android_asset/custom/actions/tmgp_set.sh</script>
         <params>
-            <param options-sh="file:///android_asset/custom/actions/tmgp_options.sh" name="action"></param>
+            <param options-sh="file:///android_asset/custom/actions/tmgp_options.sh" name="render" />
+            <param name="thread" value="0">
+                <option val="1">多线程优化</option>
+                <option val="3">默认</option>
+            </param>
         </params>
     </action>
     <action root="true">
         <title>谷歌相机HDR+</title>
-        <desc su="file:///android_asset/custom/actions/gcm_get.sh"></desc>
+        <desc su="file:///android_asset/custom/actions/gcm_get.sh" />
         <script>
-            setprop persist.camera.HAL3.enabled $option;
+            setprop persist.camera.HAL3.enabled $gcm;
             echo '已修改，可能需要重启才能生效！';
+            result=`getprop persist.camera.HAL3.enabled`
+            echo "persist.camera.HAL3.enabled=${result}"
         </script>
         <params>
-            <param name="option">
-                <option value="1">添加persist.camera.HAL3.enabled</option>
-                <option value="0">移除persist.camera.HAL3.enabled</option>
+            <param name="gcm">
+                <option value="1">启用Camera2 API</option>
+                <option value="0">禁用Camera2 API</option>
             </param>
         </params>
     </action>
+    <!--<action root="false">
+        <title>环境变量</title>
+        <desc>了解微工具箱提供的环境变量</desc>
+        <script>
+            echo "action=$action"
+            echo "TEMP_DIR=$TEMP_DIR"
+            echo "ANDROID_UID=$ANDROID_UID"
+            echo "ANDROID_SDK=$ANDROID_SDK"
+            echo "SDCARD_PATH=$SDCARD_PATH"
+        </script>
+        <params>
+            <param name="action" value="12123123" />
+        </params>
+    </action>-->
 </actions>
