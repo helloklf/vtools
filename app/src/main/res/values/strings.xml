@@ -372,4 +372,8 @@
         <item>截屏</item>
         <item>相机</item>
     </string-array>
+    <string-array name="vitual_touch_bar_map">
+        <item>返回-首页-任务</item>
+        <item>任务-首页-返回</item>
+    </string-array>
 </resources>

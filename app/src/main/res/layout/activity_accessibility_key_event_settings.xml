@@ -28,6 +28,60 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+                <LinearLayout
+                    android:padding="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <Switch
+                        android:layout_marginTop="10dp"
+                        style="@style/textTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:text="底部边缘触控" />
+                    <TextView
+                        android:layout_marginTop="6dp"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        style="@style/textSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:text="在全面屏手机上，轻触你的下巴（屏幕底部）即可操作你的手机，节省屏幕空间又简单易用" />
+                    <TextView
+                        android:layout_marginTop="16dp"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:text="触控区域高度"
+                        style="@style/textTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                    <SeekBar
+                        android:progress="25"
+                        android:layout_marginTop="6dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:max="100" />
+                    <TextView
+                        android:layout_marginTop="16dp"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:text="布局方式"
+                        style="@style/textTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <Spinner
+                        android:entries="@array/vitual_touch_bar_map"
+                        android:layout_marginTop="6dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_marginTop="30dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
                 <LinearLayout
                     android:padding="8dp"
