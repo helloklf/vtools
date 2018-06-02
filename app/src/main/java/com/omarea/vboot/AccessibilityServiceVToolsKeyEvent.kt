@@ -26,14 +26,16 @@ class AccessibilityServiceVToolsKeyEvent : AccessibilityService() {
     }
     private var eventHandlers: HashMap<Int, buttonEventHandler> = HashMap()
     private lateinit var sharedPreferences: SharedPreferences
+    private var floatVitualTouchBar: FloatVitualTouchBar? = null
 
     override fun onCreate() {
         super.onCreate()
         sharedPreferences = this.getSharedPreferences(SpfConfig.KEY_EVENT_SPF, Context.MODE_PRIVATE)
-        sharedPreferences.registerOnSharedPreferenceChangeListener(SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+        sharedPreferences.registerOnSharedPreferenceChangeListener({ sharedPreferences, key ->
             updateKeyEventProcess()
         })
         updateKeyEventProcess()
+        floatVitualTouchBar = FloatVitualTouchBar(this)
     }
 
     private fun updateKeyEventProcess() {
@@ -102,6 +104,13 @@ class AccessibilityServiceVToolsKeyEvent : AccessibilityService() {
             downTime = event.eventTime
             startTimer()
             val overrideKeyCode = spf.getInt("${keyCode}_click", Int.MIN_VALUE)
+            if (overrideKeyCode != Int.MIN_VALUE) {
+                return  true
+            }
+            val overrideKeyCode2 = spf.getInt("${keyCode}_long_click", Int.MIN_VALUE)
+            if (overrideKeyCode2 != Int.MIN_VALUE) {
+                return  true
+            }
             return false
         }
 
@@ -137,6 +146,13 @@ class AccessibilityServiceVToolsKeyEvent : AccessibilityService() {
                 return onUp(event)
             }
             return false
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if(floatVitualTouchBar != null) {
+            floatVitualTouchBar!!.hidePopupWindow()
         }
     }
 

@@ -31,6 +31,8 @@ function disabled_hotplug()
     set_value 0 /sys/devices/system/cpu/cpuhotplug/enabled;
 }
 
+cpuset
+
 if [ "$action" = "powersave" ]; then
     set_value 5 /sys/devices/system/cpu/cpuhotplug/max_online_cpu
     disabled_hotplug

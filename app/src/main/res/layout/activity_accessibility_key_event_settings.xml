@@ -34,6 +34,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
                     <Switch
+                        android:id="@+id/key_event_vitual_touch_bar"
                         android:layout_marginTop="10dp"
                         style="@style/textTitle"
                         android:layout_width="match_parent"
@@ -47,8 +48,8 @@
                         android:paddingRight="8dp"
                         style="@style/textSmall"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" android:text="在全面屏手机上，轻触你的下巴（屏幕底部）即可操作你的手机，节省屏幕空间又简单易用" />
-                    <TextView
+                        android:layout_height="wrap_content" android:text="在全面屏手机上，轻触你的下巴（屏幕底部）即可操作你的手机，节省屏幕空间又简单易用，需要为工具箱开启悬浮窗（在应用上层显示）权限！" />
+                    <!--<TextView
                         android:layout_marginTop="16dp"
                         android:paddingLeft="8dp"
                         android:paddingRight="8dp"
@@ -60,7 +61,7 @@
                         android:progress="25"
                         android:layout_marginTop="6dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" android:max="100" />
+                        android:layout_height="wrap_content" android:max="100" />-->
                     <TextView
                         android:layout_marginTop="16dp"
                         android:paddingLeft="8dp"
@@ -71,6 +72,7 @@
                         android:layout_height="wrap_content" />
 
                     <Spinner
+                        android:id="@+id/key_event_vitual_touch_bar_map"
                         android:entries="@array/vitual_touch_bar_map"
                         android:layout_marginTop="6dp"
                         android:layout_width="match_parent"

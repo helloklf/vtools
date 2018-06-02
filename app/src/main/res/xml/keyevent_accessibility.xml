@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
-    android:accessibilityEventTypes="typeViewClicked|typeViewLongClicked|typeWindowStateChanged|typeAllMask"
+    android:accessibilityEventTypes=""
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:accessibilityFlags="flagRequestFilterKeyEvents|flagRequestAccessibilityButton"
+    android:packageNames="@null"
+    android:settingsActivity="com.omarea.vboot.ActivityAccessibilityKeyEventSettings"
+    android:canRetrieveWindowContent="true"
+    android:canRequestFilterKeyEvents="true"
+    android:canRequestTouchExplorationMode="false"
+    android:description="@string/accessibility_keyevent_description"
+    android:notificationTimeout="0" />
+<!--<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityEventTypes="typeViewClicked|typeViewLongClicked|typeWindowStateChanged|typeAllMask|typeTouchInteractionStart|typeTouchInteractionEnd"
     android:accessibilityFeedbackType="feedbackGeneric"
     android:accessibilityFlags="flagDefault|flagRequestFilterKeyEvents|flagRetrieveInteractiveWindows|flagRequestAccessibilityButton"
     android:packageNames="@null"
@@ -9,4 +20,4 @@
     android:canRequestFilterKeyEvents="true"
     android:canRequestTouchExplorationMode="false"
     android:description="@string/accessibility_keyevent_description"
-    android:notificationTimeout="0" />
+    android:notificationTimeout="0" />-->

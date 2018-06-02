@@ -5,35 +5,23 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.view.KeyEvent
 import android.view.View
-import android.widget.AdapterView
-import android.widget.SimpleAdapter
-import android.widget.Spinner
-import android.widget.Switch
-import com.omarea.shared.Consts
-import com.omarea.shared.ServiceHelper
+import android.widget.*
 import com.omarea.shared.SpfConfig
-import com.omarea.shell.Platform
-import com.omarea.ui.ProgressBarDialog
 import kotlinx.android.synthetic.main.activity_accessibility_key_event_settings.*
-import java.io.File
-import java.util.ArrayList
-import java.util.HashMap
-import android.content.ComponentName
-import android.os.IBinder
-import android.content.ServiceConnection
-
+import java.util.*
 
 
 class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
     private lateinit var spf: SharedPreferences
+    private lateinit var spfOther: SharedPreferences
     private var myHandler = Handler()
 
     override fun onPostResume() {
@@ -44,6 +32,7 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
     @SuppressLint("ApplySharedPref")
     override fun onCreate(savedInstanceState: Bundle?) {
         spf = getSharedPreferences(SpfConfig.KEY_EVENT_SPF, Context.MODE_PRIVATE)
+        spfOther = getSharedPreferences(SpfConfig.KEY_EVENT_ONTHER_CONFIG_SPF, Context.MODE_PRIVATE)
         if (getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false))
             this.setTheme(R.style.AppTheme_NoActionBarNight)
 
@@ -56,10 +45,12 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
 
     @SuppressLint("ApplySharedPref")
     fun setSwitchClick() {
+        /*
         val accessibilityEnabled = Settings.Secure.getInt(getApplicationContext().getContentResolver(), android.provider.Settings.Secure.ACCESSIBILITY_ENABLED)
         if (accessibilityEnabled === 1) {
             val settingValue = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)
         }
+        */
         val tags = arrayListOf("3", "4", "82", "187")
         val listItem = getEventOverride()
         val adapter = SimpleAdapter(this, listItem,
@@ -75,6 +66,8 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
             val longClick = key_sets.findViewWithTag<Spinner>(propLongClick)
             click.adapter = adapter
             longClick.adapter = adapter
+            click.isEnabled = switch.isChecked
+            longClick.isEnabled = switch.isChecked
             switch.setOnClickListener {
                 if(switch.isChecked) {
                     val clickValue = (click.selectedItem as HashMap<*, *>).get("key") as Int
@@ -83,17 +76,51 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
                             .putInt(propClick, clickValue)
                             .putInt(propLongClick, longClickValue)
                             .commit()
+                    click.isEnabled = true
+                    longClick.isEnabled = true
                 } else {
                     spf.edit()
-                            .remove(switch.tag.toString() + "_click")
-                            .remove(switch.tag.toString() + "_long_click")
+                            .remove(propClick)
+                            .remove(propLongClick)
                             .commit()
+                    click.isEnabled = false
+                    longClick.isEnabled = false
                 }
             }
             click.setSelection(getIndex(listItem, spf.getInt(propClick, Int.MIN_VALUE)))
             longClick.setSelection(getIndex(listItem, spf.getInt(propLongClick, Int.MIN_VALUE)))
             click.onItemSelectedListener = onItemSelected(click, spf)
             longClick.onItemSelectedListener = onItemSelected(longClick, spf)
+        }
+
+        key_event_vitual_touch_bar.isChecked = spfOther.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR, false)
+        key_event_vitual_touch_bar.setOnClickListener {
+            val isChecked = (it as Switch).isChecked
+            if (Build.VERSION.SDK_INT >= 23 && isChecked) {
+                if (Settings.canDrawOverlays(this)) {
+                    spfOther.edit().putBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR, isChecked).commit()
+                } else {
+                    //若没有权限，提示获取
+                    //val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                    //startActivity(intent);
+                    val intent = Intent()
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    intent.action = "android.settings.APPLICATION_DETAILS_SETTINGS"
+                    intent.data = Uri.fromParts("package", this.packageName, null)
+                    Toast.makeText(this,"为微工具箱授权显示悬浮窗权限，从而在使用虚拟导航条！", Toast.LENGTH_SHORT).show();
+                    (it as Switch).isChecked = !isChecked
+                }
+            } else {
+                spfOther.edit().putBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR, isChecked).commit()
+            }
+        }
+        key_event_vitual_touch_bar_map.setSelection(if(spfOther.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_MAP, false)) 1 else 0)
+        key_event_vitual_touch_bar_map.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                spfOther.edit().putBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_MAP, key_event_vitual_touch_bar_map.selectedItemPosition == 1).commit()
+            }
         }
     }
 
@@ -104,7 +131,8 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
 
         @SuppressLint("ApplySharedPref")
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            spf.edit().putInt(spinner.tag.toString(), (spinner.selectedItem as HashMap<*, *>).get("key") as Int).commit()
+            if((parent as Spinner).isEnabled)
+                spf.edit().putInt(spinner.tag.toString(), (spinner.selectedItem as HashMap<*, *>).get("key") as Int).commit()
         }
     }
 

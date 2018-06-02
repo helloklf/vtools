@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="20dp"
+    android:layout_gravity="bottom"
+    android:fitsSystemWindows="true"
+    android:background="@android:color/transparent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <Button
+            android:minHeight="0dp"
+            android:id="@+id/vitual_touch_bar_1"
+            android:layout_weight="1"
+            android:background="#11888888"
+            android:layout_marginRight="6dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+        <Button
+            android:minHeight="0dp"
+            android:id="@+id/vitual_touch_bar_2"
+            android:layout_weight="1"
+            android:background="#11888888"
+            android:layout_marginRight="6dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+        <Button
+            android:minHeight="0dp"
+            android:id="@+id/vitual_touch_bar_3"
+            android:layout_weight="1"
+            android:background="#11888888"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+</LinearLayout>

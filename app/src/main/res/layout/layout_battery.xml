@@ -19,13 +19,38 @@
 
             <android.support.v7.widget.CardView android:layout_height="wrap_content"
                 android:layout_width="match_parent" android:paddingBottom="10dp">
-                <TextView
-                    android:padding="20dp"
-                    android:id="@+id/battrystatus"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="电池信息："
-                    android:textSize="11dp" />
+                    android:layout_height="wrap_content" android:orientation="vertical">
+                    <TextView
+                        android:textColor="@color/colorPrimary"
+                        android:padding="8dp"
+                        android:id="@+id/battrystatus"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="电池信息："
+                        android:textSize="11dp" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView android:layout_height="wrap_content"
+                android:layout_width="match_parent" android:layout_marginTop="10dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:orientation="vertical">
+                    <TextView
+                        style="@style/textSmall"
+                        android:padding="8dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:text="让工具箱保持后台运行，充电时可以自动校正充电速度限制，效果更佳！" />
+                    <TextView
+                        style="@style/textSmall"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:paddingBottom="8dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:text="使用电池保护功能，必须让工具箱保持后台运行（可以使用返回键关闭应用界面）" />
+                </LinearLayout>
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView android:layout_height="wrap_content"
@@ -56,19 +81,22 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                     <TextView
+                        style="@style/textSmall"
                         android:id="@+id/settings_qc_limit_desc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="8dp"
-                        android:text="@string/settings_qc_limit_desc"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
+                        android:paddingLeft="8dp"
+                        android:paddingBottom="4dp"
+                        android:paddingTop="8dp"
+                        android:text="@string/settings_qc_limit_desc"/>
                     <TextView
+                        style="@style/textSmall"
                         android:id="@+id/settings_qc_limit_current"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="8dp"
-                        android:text=""
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
+                        android:paddingLeft="8dp"
+                        android:paddingBottom="8dp"
+                        android:text="Current Limit:" />
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
@@ -144,16 +172,29 @@
             <android.support.v7.widget.CardView android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:layout_marginBottom="10dp">
-                <TextView
-                    android:layout_marginTop="16dp"
-                    android:id="@+id/battery_uevent"
+                <LinearLayout
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="16dp"
-                    android:layout_marginLeft="21dp"
-                    android:layout_marginRight="21dp"
-                    android:text="@string/battery_uevent_title"
-                    android:textSize="11sp" />
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:paddingTop="16dp"
+                        style="@style/textSmall"
+                        android:textColor="@color/colorPrimary"
+                        android:text="@string/battery_uevent_title"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:paddingBottom="8dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/battery_uevent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginLeft="21dp"
+                        android:layout_marginRight="21dp"
+                        android:textSize="11sp" />
+                </LinearLayout>
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView android:layout_marginTop="10dp"

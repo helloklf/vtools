@@ -41,7 +41,6 @@ class FragmentSwap : Fragment() {
     }
 
     internal var getSwaps = {
-
         val ret = KernelProrp.getProp("/proc/swaps")
         var txt = if (ret == null) "" else ret.replace("\t\t", "\t").replace("\t", " ")
         while (txt.contains("  ")) {
