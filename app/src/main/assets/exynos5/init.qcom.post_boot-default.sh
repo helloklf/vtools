@@ -8,21 +8,24 @@ function setvolt()
     freq=$2
     volt=$3
     if [[ -f "$cluster" ]]; then
-        valid="$(cat $cluster | grep $freq)"
-        if [[ -n "$valid" ]]; then
-            echo "$freq $volt" > "$cluster"
+        valid="$(cat $cluster | grep "$freq")"
+        if [[ -n "$valid" && ! -z "$valid" ]]; then
+            echo "$freq $volt"
+            #echo "$freq $volt" > "$cluster"
         fi;
     fi;
 }
-#setvolt $cluster1 "2600000 " "1090000"
+#cluster="/sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster1_volt_table"
+#setvolt $cluster "2600000 " "1090000"
+#setvolt $cluster "208000 " "1090000"
 
 function set_value()
 {
     value=$1
     path=$2
-    if [ -f $path ]; then
+    if [[ -f $path ]]; then
         current_value="$(cat $path)"
-        if [ ! "$current_value" = "$value" ]; then
+        if [[ ! "$current_value" = "$value" ]]; then
             chmod 0664 "$path"
             echo "$value" > "$path"
         fi;
@@ -151,12 +154,10 @@ case "$target" in
     ;;
 esac
 
-set_value 0 /dev/cpuset/background/cpus
-set_value 1 /dev/cpuset/background/cpus
-set_value '0-2' /dev/cpuset/system-background/cpus
-set_value '2-3' /dev/cpuset/system-background/cpus
+set_value '0' /dev/cpuset/system-background/cpus
+set_value '1' /dev/cpuset/background/cpus
 set_value '4-7' /dev/cpuset/foreground/boost/cpus
-set_value '0-7' /dev/cpuset/foreground/cpus
-set_value '0-7' /dev/cpuset/top-app/cpus
+set_value '2-7' /dev/cpuset/foreground/cpus
+set_value '2-7' /dev/cpuset/top-app/cpus
 set_value "4-7" /dev/cpuset/dex2oat/cpus
 set_value 0 /proc/sys/kernel/sched_boost

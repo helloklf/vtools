@@ -75,7 +75,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                                 "复制PackageName",
                                 "在应用商店查看"), { _, which ->
                     when (which) {
-                        0 -> uninstallAll()
+                        0 -> deleteAll()
                         1 -> uninstallKeepDataAll()
                         2 -> clearAll()
                         3 -> trimCachesAll()

@@ -52,6 +52,7 @@ class CheckRootStatus(var context: Context, private var next:Runnable? = null, p
 
     }
 
+
     var therad: Thread? = null
     fun forceGetRoot() {
         val pd = ProgressBarDialog(context)
@@ -127,5 +128,16 @@ class CheckRootStatus(var context: Context, private var next:Runnable? = null, p
                 alert.create().show()
             }
         }, 10000)
+    }
+
+
+    companion object {
+        public fun isMagisk(): Boolean {
+            return SysUtils.executeCommandWithOutput(false, "su -v").contains("MAGISKSU")
+        }
+
+        public fun isTmpfs(dir: String): Boolean {
+            return  SysUtils.executeCommandWithOutput(false, " df | grep tmpfs | grep \"$dir\"").trim().length > 0
+        }
     }
 }

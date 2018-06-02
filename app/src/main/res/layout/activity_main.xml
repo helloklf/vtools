@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:clipToPadding="true"
     android:fitsSystemWindows="true"
-    android:keepScreenOn="true"
+    android:keepScreenOn="false"
     android:backgroundTintMode="screen"
     tools:openDrawer="start">
 

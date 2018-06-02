@@ -15,6 +15,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.omarea.shared.Consts
 import com.omarea.shell.AsynSuShellUnit
+import com.omarea.shell.Props
 import com.omarea.vboot.R
 import java.util.*
 
@@ -173,7 +174,19 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
         }
 
         val arr = arrayOf("最快安装速度", "最佳性能（Speed）", "完整编译（Everything）", "永不编译", "恢复默认")
+        val intallMode = Props.getProp("pm.dexopt.install")
         var index = 0
+        when(intallMode) {
+            "speed" -> index = 1
+            "everything" -> index = 2
+            else -> {
+                if(Props.getProp("pm.dexopt.core-app") == "verify-none") {
+                    index = 3
+                }
+                else
+                    index = 0
+            }
+        }
         AlertDialog.Builder(context)
                 .setTitle("请选择pm.dexopt策略")
                 .setSingleChoiceItems(arr, index, { _, which ->

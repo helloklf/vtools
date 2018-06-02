@@ -20,6 +20,8 @@
         <item>com.sec.app.screenrecorder</item>
         <item>com.cyngn.screencast</item>
         <item>com.samsung.android.game.gametools</item>
+        <item>com.lbe.security.miui</item>
+        <item>com.bst.airmessage</item>
     </string-array>
     <string-array name="powercfg_game">
         <item>com.rarlab.rar</item>

@@ -301,7 +301,8 @@ class ServiceHelper(private var context: Context) {
 
     //杀死指定包名的应用
     private fun killApp(packageName: String, showMsg: Boolean = true) {
-        keepShell.doCmd("killall -9 $packageName;pkill -9 $packageName;pgrep $packageName |xargs kill -9;")
+        //keepShell.doCmd("killall -9 $packageName;pkill -9 $packageName;pgrep $packageName |xargs kill -9;")
+        keepShell.doCmd("am stop $packageName;")
         if (debugMode && showMsg)
             showMsg("结束 " + packageName)
     }
@@ -337,7 +338,8 @@ class ServiceHelper(private var context: Context) {
 
                 for (item in spfBlacklist.all) {
                     cmds.append("am set-inactive ${item.key} true")
-                    cmds.append("killall -9 ${item.key};pkill -9 ${item.key};pgrep ${item.key} |xargs kill -9;")
+                    keepShell.doCmd("am stop ${item.key};")
+                    //cmds.append("killall -9 ${item.key};pkill -9 ${item.key};pgrep ${item.key} |xargs kill -9;")
                 }
                 cmds.append("dumpsys deviceidle step\n")
                 cmds.append("dumpsys deviceidle step\n")
