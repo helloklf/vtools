@@ -58,7 +58,7 @@ class FragmentConfig : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        val serviceState = ServiceHelper.serviceIsRunning(context!!)
+        val serviceState = AccessibleServiceHelper().serviceIsRunning(context!!)
         btn_config_service_not_active.visibility = if (serviceState) View.GONE else View.VISIBLE
         btn_config_dynamicservice_not_active.visibility = if (!context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)) View.VISIBLE else View.GONE
     }
@@ -80,7 +80,7 @@ class FragmentConfig : Fragment() {
             val dialog = ProgressBarDialog(context!!)
             dialog.showDialog("尝试使用ROOT权限开启服务...")
             Thread(Runnable {
-                if(!ServiceHelper.startServiceUseRoot(context!!)) {
+                if(!AccessibleServiceHelper().startServiceUseRoot(context!!)) {
                     try {
                         myHandler.post {
                             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
@@ -96,7 +96,7 @@ class FragmentConfig : Fragment() {
                 } else {
                     myHandler.post {
                         dialog.hideDialog()
-                        btn_config_service_not_active.visibility = if (ServiceHelper.serviceIsRunning(context!!)) View.GONE else View.VISIBLE
+                        btn_config_service_not_active.visibility = if (AccessibleServiceHelper().serviceIsRunning(context!!)) View.GONE else View.VISIBLE
                     }
                 }
             }).start()

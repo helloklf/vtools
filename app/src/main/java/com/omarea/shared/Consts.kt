@@ -14,9 +14,9 @@ public object Consts {
     val AbsBackUpDir = SDCardDir + "/backups/apps/";
     val FastChangerBase =
             //"chmod 0777 /sys/class/power_supply/usb/pd_active;" +
-            //"chmod 0777 /sys/class/power_supply/usb/pd_allowed;" +
+            "chmod 0777 /sys/class/power_supply/usb/pd_allowed;" +
             //"echo 1 > /sys/class/power_supply/usb/pd_active;" +
-            //"echo 1 > /sys/class/power_supply/usb/pd_allowed;" +
+            "echo 1 > /sys/class/power_supply/usb/pd_allowed;" +
             "chmod 0777 /sys/class/power_supply/main/constant_charge_current_max;" +
             "chmod 0777 /sys/class/qcom-battery/restricted_current;" +
             "chmod 0777 /sys/class/qcom-battery/restricted_charging;" +
@@ -40,23 +40,6 @@ public object Consts {
             "echo 4500000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
             "echo 5000000 > /sys/class/power_supply/battery/constant_charge_current_max;"
 
-    /*
-    val FastChanger =
-            "if [ `cat /sys/class/power_supply/battery/capacity` -lt 85 ]; then " +
-                    "echo 0 > /sys/class/power_supply/battery/restricted_charging;" +
-                    "echo 0 > /sys/class/power_supply/battery/safety_timer_enabled;" +
-                    "chmod 0777 /sys/class/power_supply/bms/temp_warm;" +
-                    "echo 480 > /sys/class/power_supply/bms/temp_warm;" +
-                    "chmod 0777 /sys/class/power_supply/battery/constant_charge_current_max;" +
-                    "echo 2000000 >/sys/class/power_supply/battery/constant_charge_current_max;" +
-                    "echo 2500000 >/sys/class/power_supply/battery/constant_charge_current_max;" +
-                    "echo 3000000 >/sys/class/power_supply/battery/constant_charge_current_max;" +
-                    "echo 3500000 >/sys/class/power_supply/battery/constant_charge_current_max;" +
-                    "echo 4000000 >/sys/class/power_supply/battery/constant_charge_current_max;" +
-                    "echo 4500000 >/sys/class/power_supply/battery/constant_charge_current_max;" +
-                    "echo 5000000 >/sys/class/power_supply/battery/constant_charge_current_max;" +
-                    "fi;"
-    */
 
     val ClearCache = "echo 3 > /proc/sys/vm/drop_caches"
 

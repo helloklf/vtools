@@ -17,6 +17,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
+import com.omarea.shared.AccessibleServiceHelper
 import com.omarea.shared.AppListHelper
 import com.omarea.shared.ServiceHelper
 import com.omarea.shared.SpfConfig
@@ -36,7 +37,7 @@ class FragmentBooster : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        val serviceState = ServiceHelper.serviceIsRunning(context!!)
+        val serviceState = AccessibleServiceHelper().serviceIsRunning(context!!)
         btn_booster_service_not_active.visibility = if (serviceState) GONE else VISIBLE
         btn_booster_dynamicservice_not_active.visibility = if (serviceState && !context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, false)) VISIBLE else GONE
     }
@@ -91,7 +92,7 @@ class FragmentBooster : Fragment() {
             val dialog = ProgressBarDialog(context!!)
             dialog.showDialog("尝试使用ROOT权限开启服务...")
             Thread(Runnable {
-                if(!ServiceHelper.startServiceUseRoot(context!!)) {
+                if(!AccessibleServiceHelper().startServiceUseRoot(context!!)) {
                     try {
                         myHandler.post {
                             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
@@ -107,7 +108,7 @@ class FragmentBooster : Fragment() {
                 } else {
                     myHandler.post {
                         dialog.hideDialog()
-                        btn_booster_service_not_active.visibility = if (ServiceHelper.serviceIsRunning(context!!)) View.GONE else View.VISIBLE
+                        btn_booster_service_not_active.visibility = if (AccessibleServiceHelper().serviceIsRunning(context!!)) View.GONE else View.VISIBLE
                     }
                 }
             }).start()

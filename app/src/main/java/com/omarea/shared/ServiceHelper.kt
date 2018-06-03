@@ -1,5 +1,6 @@
 package com.omarea.shared
 
+import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.Context
 import android.content.SharedPreferences
@@ -10,13 +11,15 @@ import android.widget.Toast
 import com.omarea.shared.helper.*
 import com.omarea.shell.AsynSuShellUnit
 import com.omarea.shell.SuDo
+import com.omarea.shell.units.AccessibilityServiceStart
+import com.omarea.vboot.AccessibilityServiceVTools
 import java.io.File
 import java.util.*
 
 /**
  * Created by helloklf on 2016/10/1.
  */
-class ServiceHelper(private var context: Context) {
+class ServiceHelper(private var context: Context) : ModeList() {
     private var lastPackage: String? = null
     private var lastModePackage: String? = null
     private var lastMode = ""
@@ -27,13 +30,20 @@ class ServiceHelper(private var context: Context) {
     private var spfGlobal: SharedPreferences = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
     //标识是否已经加载完设置
     private var settingsLoaded = false
-    private var ignoredList = arrayListOf<String>("com.miui.securitycenter", "android", "com.android.systemui", "com.omarea.vboot", "com.miui.touchassistant", "com.miui.contentextension", "com.miui.systemAdSolution")
+    private var ignoredList = arrayListOf<String>(
+            "com.miui.securitycenter",
+            "android",
+            "com.android.systemui",
+            "com.omarea.vboot",
+            "com.miui.touchassistant",
+            "com.miui.contentextension",
+            "com.miui.systemAdSolution")
     private var autoBooster = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, false)
     private var dyamicCore = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
     private var debugMode = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
     private var delayStart = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DELAY, false)
     private var lockScreenOptimize = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE, false)
-    private var firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance")
+    private var firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
     private var screenOn: Boolean = true
     private var lastScreenOnOff:Long = 0
 
@@ -49,19 +59,11 @@ class ServiceHelper(private var context: Context) {
     //屏幕关闭时执行
     private fun onScreenOff () {
         screenOn = false
-        if (debugMode && autoBooster) {
-            handler.postDelayed({
-                if(!screenOn) {
-                    showMsg("屏幕关闭！")
-                    if(debugMode)
-                        showMsg("动态响应-锁屏优化 已息屏，自动切换省电模式")
-                }
-            }, 5000)
-        }
         lastScreenOnOff = System.currentTimeMillis()
         if (autoBooster) {
             screenHandler.postDelayed({
-                onScreenOffCloseNetwork()
+                if (!screenOn)
+                    onScreenOffCloseNetwork()
             }, SCREEN_OFF_SWITCH_NETWORK_DELAY)
         }
         clearTasks()
@@ -69,8 +71,10 @@ class ServiceHelper(private var context: Context) {
 
     //屏幕关闭后 - 关闭网络
     private fun onScreenOffCloseNetwork() {
-        if((settingsLoaded || settingsLoad()) && dyamicCore && lockScreenOptimize) {
-            toggleConfig("powersave")
+        if((settingsLoaded || settingsLoad()) && dyamicCore && lockScreenOptimize && screenOn == false) {
+            toggleConfig(POWERSAVE)
+            if(debugMode)
+                showMsg("动态响应-锁屏优化 已息屏，自动切换省电模式")
         }
         if (autoBooster && System.currentTimeMillis() - lastScreenOnOff >= SCREEN_OFF_SWITCH_NETWORK_DELAY && screenOn == false) {
             if (spfAutoConfig.getBoolean(SpfConfig.WIFI + SpfConfig.OFF, false))
@@ -109,8 +113,8 @@ class ServiceHelper(private var context: Context) {
             if(this.lastModePackage != null && !this.lastModePackage.isNullOrEmpty())
             {
                 handler.postDelayed({
-                    if(screenOn)
-                        autoToggleMode(this.lastModePackage)
+                    if(screenOn && this.lastModePackage != null && !this.lastModePackage.isNullOrEmpty())
+                        forceToggleMode(this.lastModePackage!!)
                     if(debugMode)
                         showMsg("动态响应-锁屏优化 已解锁，自动恢复配置")
                 }, 5000)
@@ -155,9 +159,9 @@ class ServiceHelper(private var context: Context) {
                     notifyHelper.notify("辅助服务已启动，动态响应未开启")
                 } else {
                     notifyHelper.notify("辅助服务已启动，动态响应已启动")
-                    if (dyamicCore && this.lastModePackage != null) {
+                    if (dyamicCore && this.lastModePackage != null && !this.lastModePackage.isNullOrEmpty()) {
                         lastMode = ""
-                        autoToggleMode(this.lastModePackage)
+                        forceToggleMode(this.lastModePackage!!)
                     } else if (dyamicCore) {
                         toggleConfig(firstMode)
                     }
@@ -172,7 +176,7 @@ class ServiceHelper(private var context: Context) {
         } else if (key == SpfConfig.BOOSTER_SPF_CFG_SPF_CLEAR_TASKS) {
 
         } else if (key == SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE) {
-            firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance")
+            firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
         }
     }
 
@@ -229,13 +233,17 @@ class ServiceHelper(private var context: Context) {
             notifyHelper.notify("${getModName(lastMode)} -> $lastModePackage")
     }
 
-    private fun getModName(mode:String) : String {
-        when(mode) {
-            "powersave" ->      return "省电模式"
-            "performance" ->      return "性能模式"
-            "fast" ->      return "极速模式"
-            "balance" ->   return "均衡模式"
-            else ->         return "未知模式"
+    //强制执行模式切换，无论当前应用是什么模式是什么
+    private fun forceToggleMode(packageName: String) {
+        val mode = spfPowercfg.getString(packageName, firstMode)
+        when (mode) {
+            IGONED ->     return
+            else ->{
+                toggleConfig(mode)
+                showModeToggleMsg(packageName, getModName(mode))
+                lastModePackage = packageName
+                updateModeNofity()
+            }
         }
     }
 
@@ -246,7 +254,7 @@ class ServiceHelper(private var context: Context) {
 
         val mode = spfPowercfg.getString(packageName, firstMode)
         when (mode) {
-            "igoned" ->     return
+            IGONED ->     return
             else ->{
                 if (lastMode != mode) {
                     toggleConfig(mode)
@@ -267,10 +275,6 @@ class ServiceHelper(private var context: Context) {
         if (lastPackage == "android" || lastPackage == "com.android.systemui" || lastPackage == "com.omarea.vboot" || lastPackage.equals(packageName))
             return
 
-        if (spfAutoConfig.getBoolean(SpfConfig.BOOSTER_SPF_CFG_SPF_CLEAR_CACHE, false)) {
-            keepShell.doCmd(Consts.ClearCache)
-        }
-
         if (spfBlacklist.contains(lastPackage)) {
             if (spfAutoConfig.getBoolean(SpfConfig.BOOSTER_SPF_CFG_SPF_DOZE_MOD, Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)) {
                 dozeApp(lastPackage!!)
@@ -278,6 +282,13 @@ class ServiceHelper(private var context: Context) {
                 //android.os.Process.killProcess(android.os.Process.myPid());//自杀
                 killApp(lastPackage!!)
             }
+        }
+
+        if (spfAutoConfig.getBoolean(SpfConfig.BOOSTER_SPF_CFG_SPF_CLEAR_CACHE, false)) {
+            keepShell.doCmd(Consts.ClearCache)
+            //HIDDEN、RUNNING_MODERATE、BACKGROUND、RUNNING_LOW、MODERATE、RUNNING_CRITICAL、COMPLETE
+            keepShell.doCmd("pids=`ps | grep $packageName | cut -f4 -d \" \"`;")
+            keepShell.doCmd("for item in \$pids; do am send-trim-memory \$item RUNNING_CRITICAL;done;")
         }
     }
 
@@ -302,7 +313,7 @@ class ServiceHelper(private var context: Context) {
     //杀死指定包名的应用
     private fun killApp(packageName: String, showMsg: Boolean = true) {
         //keepShell.doCmd("killall -9 $packageName;pkill -9 $packageName;pgrep $packageName |xargs kill -9;")
-        keepShell.doCmd("am stop $packageName;")
+        keepShell.doCmd("am stop $packageName;am force-stop $packageName;")
         if (debugMode && showMsg)
             showMsg("结束 " + packageName)
     }
@@ -337,8 +348,8 @@ class ServiceHelper(private var context: Context) {
                 cmds.append("\n\n")
 
                 for (item in spfBlacklist.all) {
-                    cmds.append("am set-inactive ${item.key} true")
-                    keepShell.doCmd("am stop ${item.key};")
+                    cmds.append("am set-inactive ${item.key} true;")
+                    keepShell.doCmd("am stop ${item.key};am force-stop ${item.key};")
                     //cmds.append("killall -9 ${item.key};pkill -9 ${item.key};pgrep ${item.key} |xargs kill -9;")
                 }
                 cmds.append("dumpsys deviceidle step\n")
@@ -386,34 +397,5 @@ class ServiceHelper(private var context: Context) {
         notifyHelper.hideNotify()
         ReciverLock.unRegister(context)
         keepShell.tryExit()
-    }
-
-    companion object {
-        //判断服务是否激活
-        fun serviceIsRunning(context: Context): Boolean {
-            val m = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
-            val serviceInfos = m.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
-            for (serviceInfo in serviceInfos) {
-                //if (serviceInfo.id == "${Consts.PACKAGE_NAME}/.AccessibilityServiceVTools") {
-                if (serviceInfo.id.endsWith("AccessibilityServiceVTools")) {
-                    return true
-                }
-            }
-            return false
-        }
-
-        fun startServiceUseRoot(context: Context) : Boolean {
-            return SuDo(context).execCmdSync(
-                "services=`settings get secure enabled_accessibility_services`;\n" +
-                        "service='com.omarea.vboot/com.omarea.vboot.AccessibilityServiceVTools';\n" +
-                        "echo \"\$services\" |grep -q \"\$service\"\n" +
-                        "if [ \$? -gt -1 ]\n" +
-                        "then\n" +
-                        "\tsettings put secure enabled_accessibility_services \"\$services:\$service\"; \n" +
-                        "fi\n" +
-                        "settings put secure accessibility_enabled 1;\n" +
-                        "am startservice -n \$service;\n"
-            )
-        }
     }
 }

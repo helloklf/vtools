@@ -33,6 +33,7 @@ class CheckRootStatus(var context: Context, private var next:Runnable? = null, p
             if (!(checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
                 out.write("pm grant com.omarea.vboot android.permission.READ_EXTERNAL_STORAGE;\n")
                 out.write("pm grant com.omarea.vboot android.permission.WRITE_EXTERNAL_STORAGE;\n")
+                out.write("pm grant com.omarea.vboot android.permission.SYSTEM_ALERT_WINDOW;\n")
             }
             out.write("exit;\n")
             out.write("exit;\n")

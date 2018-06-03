@@ -56,14 +56,10 @@ public class SpfConfig {
     public static String SWAP_SPF_ZRAM_SIZE = "zram_size";
     public static String SWAP_SPF_SWAPPINESS = "swappiness";
 
-    public static String XPOSED_DPI_SPF = "xposed_dpi"; //spf
-    public static String XPOSED_HIDETASK_SPF = "xposed_hidetask"; //spf
-
     public static String WHITE_LIST_SPF = "doze_white_list";
 
     public static String KEY_EVENT_SPF = "key_event_spf";
     public static String KEY_EVENT_ONTHER_CONFIG_SPF = "key_event_spf2";
     public static String CONFIG_SPF_TOUCH_BAR = "touch_bar";
     public static String CONFIG_SPF_TOUCH_BAR_MAP = "touch_bar_map";
-    public static String KEY_EVENT_SPF2_FAST_HOME = "fast_home";
 }

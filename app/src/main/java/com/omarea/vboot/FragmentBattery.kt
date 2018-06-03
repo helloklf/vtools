@@ -269,7 +269,7 @@ class FragmentBattery : Fragment() {
         try {
             val intent = Intent(context, ServiceBattery::class.java)
             context!!.startService(intent)
-            serviceRunning = ServiceBattery.serviceIsRunning(context)
+            serviceRunning = ServiceBattery.serviceIsRunning(context!!)
         } catch (ex: Exception) {
         }
     }

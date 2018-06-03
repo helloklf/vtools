@@ -90,7 +90,7 @@ case "$target" in
         set_value 2300 /sys/devices/battery/car_charge
         set_value 2300 /sys/devices/battery/car_input
         set_value 2300 /sys/devices/battery/wc_charge
-        set_value 2300 /sys/devices/battery/wc_input
+        set_value 1500 /sys/devices/battery/wc_input
         set_value 900 /sys/devices/battery/wpc_limit_charge
         set_value 900 /sys/devices/battery/otg_input
         set_value 900 /sys/devices/battery/otg_charge
@@ -148,8 +148,22 @@ case "$target" in
         setvolt $cluster0 "234000 " "512500"
         setvolt $cluster0 "130000 " "512500"
 
+        gpu="/sys/devices/14ac0000.mali/volt_table"
+        chmod 0644 $gpu
+        setvolt $gpu "806  " "737500"
+        setvolt $gpu "702  " "718750"
+        setvolt $gpu "650  " "687500"
+        setvolt $gpu "600  " "668750"
+        setvolt $gpu "546  " "650000"
+        setvolt $gpu "419  " "600000"
+        setvolt $gpu "338  " "575000"
+        setvolt $gpu "260  " "568750"
+
         set_value 130000 /sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster0_min_freq
         set_value 0 /sys/block/sda/queue/iostats
+        set_value 'row' /sys/block/sda/queue/scheduler
+        set_value 0 /sys/block/mmcblk0/queue/iostats
+        set_value 'row' /sys/block/mmcblk0/queue/scheduler
     ;;
 esac
 

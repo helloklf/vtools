@@ -76,7 +76,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val crashHandler = CrashHandler.instance
+        val crashHandler = CrashHandler()
         crashHandler.init(this)
 
         thisview = this

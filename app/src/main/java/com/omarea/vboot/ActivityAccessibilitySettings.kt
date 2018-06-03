@@ -10,6 +10,7 @@ import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.View
+import com.omarea.shared.AccessibleServiceHelper
 import com.omarea.shared.Consts
 import com.omarea.shared.ServiceHelper
 import com.omarea.shared.SpfConfig
@@ -26,7 +27,7 @@ class ActivityAccessibilitySettings : AppCompatActivity() {
         super.onPostResume()
         delegate.onPostResume()
 
-        val serviceState = ServiceHelper.serviceIsRunning(applicationContext)
+        val serviceState = AccessibleServiceHelper().serviceIsRunning(applicationContext)
         vbootserviceSettings!!.visibility = if (serviceState) View.VISIBLE else View.GONE
 
         vbootservice_state.text = if (serviceState) application.getString(R.string.accessibility_running) else application.getString(R.string.accessibility_stoped)
@@ -57,7 +58,7 @@ class ActivityAccessibilitySettings : AppCompatActivity() {
         }
 
         vbootservice_state.setOnClickListener {
-            if(ServiceHelper.serviceIsRunning(this)) {
+            if(AccessibleServiceHelper().serviceIsRunning(this)) {
                 try {
                     val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
                     startActivity(intent)
@@ -69,7 +70,7 @@ class ActivityAccessibilitySettings : AppCompatActivity() {
             val dialog = ProgressBarDialog(this)
             dialog.showDialog("尝试使用ROOT权限开启服务...")
             Thread(Runnable {
-                if(!ServiceHelper.startServiceUseRoot(this)) {
+                if(!AccessibleServiceHelper().startServiceUseRoot(this)) {
                     try {
                         myHandler.post {
                             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
@@ -85,7 +86,7 @@ class ActivityAccessibilitySettings : AppCompatActivity() {
                 } else {
                     myHandler.post {
                         dialog.hideDialog()
-                        val serviceState = ServiceHelper.serviceIsRunning(this)
+                        val serviceState = AccessibleServiceHelper().serviceIsRunning(this)
                         vbootserviceSettings!!.visibility = if (serviceState) View.VISIBLE else View.GONE
                         vbootservice_state.text = if (serviceState) getString(R.string.accessibility_running) else getString(R.string.accessibility_stoped)
                     }

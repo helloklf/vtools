@@ -15,10 +15,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.omarea.shared.ConfigInstaller
-import com.omarea.shared.Consts
-import com.omarea.shared.ServiceHelper
-import com.omarea.shared.SpfConfig
+import com.omarea.shared.*
 import com.omarea.shell.Files
 import com.omarea.shell.Platform
 import com.omarea.shell.Props
@@ -85,7 +82,7 @@ class FragmentHome : Fragment() {
         }
 
         vbootservice_state.setOnClickListener {
-            if(ServiceHelper.serviceIsRunning(context!!)) {
+            if(AccessibleServiceHelper().serviceIsRunning(context!!)) {
                 try {
                     val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
                     startActivity(intent)
@@ -97,7 +94,7 @@ class FragmentHome : Fragment() {
             val dialog = ProgressBarDialog(context!!)
             dialog.showDialog("尝试使用ROOT权限开启服务...")
             Thread(Runnable {
-                if(!ServiceHelper.startServiceUseRoot(context!!)) {
+                if(!AccessibleServiceHelper().startServiceUseRoot(context!!)) {
                     try {
                         myHandler.post {
                             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
@@ -113,7 +110,7 @@ class FragmentHome : Fragment() {
                 } else {
                     myHandler.post {
                         dialog.hideDialog()
-                        val serviceState = ServiceHelper.serviceIsRunning(context!!)
+                        val serviceState = AccessibleServiceHelper().serviceIsRunning(context!!)
                         vbootserviceSettings!!.visibility = if (serviceState) View.VISIBLE else View.GONE
                         vbootservice_state.text = if (serviceState) context!!.getString(R.string.accessibility_running) else context!!.getString(R.string.accessibility_stoped)
                     }
@@ -167,7 +164,7 @@ class FragmentHome : Fragment() {
         sdfree.text = "SDCard：" + Files.GetDirFreeSizeMB(Environment.getExternalStorageDirectory().absolutePath) + " MB"
         datafree.text = "Data：" + Files.GetDirFreeSizeMB(Environment.getDataDirectory().absolutePath) + " MB"
 
-        val serviceState = ServiceHelper.serviceIsRunning(context!!)
+        val serviceState = AccessibleServiceHelper().serviceIsRunning(context!!)
         vbootserviceSettings!!.visibility = if (serviceState) View.VISIBLE else View.GONE
 
         vbootservice_state.text = if (serviceState) getString(R.string.accessibility_running) else getString(R.string.accessibility_stoped)
@@ -196,7 +193,7 @@ class FragmentHome : Fragment() {
     }
 
     private fun installConfig(after: String, message: String) {
-        if(spf.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false) && ServiceHelper.serviceIsRunning(this.context!!)) {
+        if(spf.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false) && AccessibleServiceHelper().serviceIsRunning(this.context!!)) {
             AlertDialog.Builder(context)
                     .setTitle("")
                     .setMessage("检测到你已经开启“动态响应”，微工具箱将根据你的前台应用，自动调整CPU、GPU性能。\n如果你要更改全局性能，请先关闭“动态响应”！")
