@@ -3,7 +3,9 @@ package com.omarea.shared.helper
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Build
+import android.support.v4.app.NotificationCompat
 import com.omarea.vboot.ActivityMain
 import com.omarea.vboot.ActivityQuickSwitchMode
 import com.omarea.vboot.R
@@ -40,9 +42,9 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
     private fun getModIcon(mode: String): Int {
         when(mode) {
             "powersave" ->      return R.drawable.p1
-            "performance" ->     return R.drawable.p2
-            "fast" ->      return R.drawable.p3
-            "balance" ->   return R.drawable.p4
+            "balance" ->   return R.drawable.p2
+            "performance" ->     return R.drawable.p3
+            "fast" ->      return R.drawable.p4
             else ->         return R.drawable.p3
         }
     }
@@ -58,9 +60,9 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         notificationManager = context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationManager!!.createNotificationChannel(NotificationChannel("vtool", "微工具箱", NotificationManager.IMPORTANCE_LOW))
-            notification =
-                    Notification.Builder(context, "vtool")
+            notification = NotificationCompat.Builder(context, "vtool")
                             .setSmallIcon(R.drawable.fanbox)
+                            .setLargeIcon(BitmapFactory.decodeResource(context.resources,R.drawable.linux ))
                             .setContentTitle(context.getString(R.string.app_name))
                             .setContentText(msg)
                             .setWhen(System.currentTimeMillis())
@@ -70,8 +72,9 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
                             .build()
         } else {
             notification =
-                    Notification.Builder(context)
+                    NotificationCompat.Builder(context)
                             .setSmallIcon(R.drawable.fanbox)
+                            .setLargeIcon(BitmapFactory.decodeResource(context.resources,R.drawable.linux ))
                             .setContentTitle(context.applicationInfo.name)
                             .setContentText(msg)
                             .setWhen(System.currentTimeMillis())
@@ -99,8 +102,9 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationManager!!.createNotificationChannel(NotificationChannel("vtool", "微工具箱", NotificationManager.IMPORTANCE_LOW))
             notification =
-                    Notification.Builder(context, "vtool")
+                    NotificationCompat.Builder(context, "vtool")
                             .setSmallIcon(if(icon == null) R.drawable.fanbox else icon)
+                            .setLargeIcon(BitmapFactory.decodeResource(context.resources,R.drawable.linux ))
                             .setContentTitle(context.getString(R.string.app_name))
                             .setContentText(msg)
                             .setWhen(System.currentTimeMillis())
@@ -110,8 +114,9 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
                             .build()
         } else {
             notification =
-                    Notification.Builder(context)
+                    NotificationCompat.Builder(context)
                             .setSmallIcon(if(icon == null) R.drawable.fanbox else icon)
+                            .setLargeIcon(BitmapFactory.decodeResource(context.resources,R.drawable.linux ))
                             .setContentTitle(context.applicationInfo.name)
                             .setContentText(msg)
                             .setWhen(System.currentTimeMillis())
