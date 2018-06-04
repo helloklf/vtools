@@ -41,7 +41,6 @@ class ServiceHelper(private var context: Context) : ModeList() {
     private var autoBooster = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, false)
     private var dyamicCore = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
     private var debugMode = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
-    private var delayStart = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DELAY, false)
     private var lockScreenOptimize = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE, false)
     private var firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
     private var screenOn: Boolean = true
@@ -71,7 +70,7 @@ class ServiceHelper(private var context: Context) : ModeList() {
 
     //屏幕关闭后 - 关闭网络
     private fun onScreenOffCloseNetwork() {
-        if((settingsLoaded || settingsLoad()) && dyamicCore && lockScreenOptimize && screenOn == false) {
+        if((settingsLoaded) && dyamicCore && lockScreenOptimize && screenOn == false) {
             toggleConfig(POWERSAVE)
             if(debugMode)
                 showMsg("动态响应-锁屏优化 已息屏，自动切换省电模式")
@@ -109,7 +108,7 @@ class ServiceHelper(private var context: Context) : ModeList() {
 
         screenOn = true
 
-        if((settingsLoaded || settingsLoad()) && dyamicCore && lockScreenOptimize) {
+        if(settingsLoaded && dyamicCore && lockScreenOptimize) {
             if(this.lastModePackage != null && !this.lastModePackage.isNullOrEmpty())
             {
                 handler.postDelayed({
@@ -180,39 +179,8 @@ class ServiceHelper(private var context: Context) : ModeList() {
         }
     }
 
-    init {
-        spfGlobal.registerOnSharedPreferenceChangeListener(listener)
-
-        notifyHelper.notify("辅助服务已启动，" + if(dyamicCore) "动态响应已启动" else "动态响应未开启")
-
-        //添加输入法到忽略列表
-        Thread(Runnable {
-            ignoredList.addAll(InputHelper(context).getInputMethods())
-        }).start()
-
-        ReciverLock.autoRegister(context, screenHandler)
-    }
-
-    //加载设置
-    private fun settingsLoad(): Boolean {
-        if (delayStart && Date().time - serviceCreatedTime < 25000){
-            if(dyamicCore)
-                notifyHelper.notify("已开启延迟启动，动态响应暂时未生效")
-            return false
-        }
-
-        if(spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true))
-            keepShell.doCmd(Consts.DisableSELinux)
-
-        if  (dyamicCore)
-            keepShell.doCmd(Consts.ExecuteConfig)
-
-        settingsLoaded = true
-
-        return true
-    }
-
     private var keepShell: KeepShell = KeepShell(context)
+    private var keepShell2: KeepShell = KeepShell(context)
 
     //显示消息
     private fun showMsg(msg: String) {
@@ -228,7 +196,7 @@ class ServiceHelper(private var context: Context) : ModeList() {
     //更新通知
     private fun updateModeNofity(){
         if (lastModePackage != null && !lastModePackage.isNullOrEmpty()) {
-            notifyHelper.notify("${getModName(lastMode)} -> $lastModePackage", lastModePackage!!)
+            notifyHelper.notifyPowerModeChange(lastModePackage!!, lastMode)
         } else
             notifyHelper.notify("${getModName(lastMode)} -> $lastModePackage")
     }
@@ -285,10 +253,10 @@ class ServiceHelper(private var context: Context) : ModeList() {
         }
 
         if (spfAutoConfig.getBoolean(SpfConfig.BOOSTER_SPF_CFG_SPF_CLEAR_CACHE, false)) {
-            keepShell.doCmd(Consts.ClearCache)
+            keepShell2.doCmd(Consts.ClearCache)
             //HIDDEN、RUNNING_MODERATE、BACKGROUND、RUNNING_LOW、MODERATE、RUNNING_CRITICAL、COMPLETE
-            keepShell.doCmd("pids=`ps | grep $packageName | cut -f4 -d \" \"`;")
-            keepShell.doCmd("for item in \$pids; do am send-trim-memory \$item RUNNING_CRITICAL;done;")
+            keepShell2.doCmd("pids=`ps | grep $packageName | cut -f4 -d \" \"`;")
+            keepShell2.doCmd("for item in \$pids; do am send-trim-memory \$item RUNNING_CRITICAL;done;")
         }
     }
 
@@ -305,15 +273,15 @@ class ServiceHelper(private var context: Context) : ModeList() {
     //#region 工具方法
     //休眠指定包名的应用
     private fun dozeApp(packageName: String) {
-        keepShell.doCmd("dumpsys deviceidle whitelist -$packageName;\ndumpsys deviceidle enable;\ndumpsys deviceidle enable all;\nam set-inactive $packageName true")
+        keepShell2.doCmd("dumpsys deviceidle whitelist -$packageName;\ndumpsys deviceidle enable;\ndumpsys deviceidle enable all;\nam set-inactive $packageName true")
         if (debugMode)
             showMsg("休眠 " + packageName)
     }
 
     //杀死指定包名的应用
     private fun killApp(packageName: String, showMsg: Boolean = true) {
-        //keepShell.doCmd("killall -9 $packageName;pkill -9 $packageName;pgrep $packageName |xargs kill -9;")
-        keepShell.doCmd("am stop $packageName;am force-stop $packageName;")
+        //keepShell2.doCmd("killall -9 $packageName;pkill -9 $packageName;pgrep $packageName |xargs kill -9;")
+        keepShell2.doCmd("am stop $packageName;am force-stop $packageName;")
         if (debugMode && showMsg)
             showMsg("结束 " + packageName)
     }
@@ -321,42 +289,34 @@ class ServiceHelper(private var context: Context) : ModeList() {
 
     //清理后台
     private fun clearTasks(timeout: Long =  SCREEN_OFF_CLEAR_TASKS_DELAY) {
-        if (!autoBooster) {
+        if (!autoBooster || screenOn) {
             return
         }
         if (timeout == 0L) {
-            if (spfAutoConfig.getBoolean(SpfConfig.BOOSTER_SPF_CFG_SPF_CLEAR_CACHE, false)) {
-                keepShell.doCmd(Consts.ClearCache)
-            }
-
-            if (!screenOn && spfAutoConfig.getBoolean(SpfConfig.BOOSTER_SPF_CFG_SPF_CLEAR_TASKS, true)) {
+            if (spfAutoConfig.getBoolean(SpfConfig.BOOSTER_SPF_CFG_SPF_CLEAR_TASKS, true)) {
                 val cmds = StringBuilder()
                 cmds.append("dumpsys deviceidle enable all;\n")
                 cmds.append("dumpsys deviceidle force-idle;\n")
+                if (spfAutoConfig.getBoolean(SpfConfig.BOOSTER_SPF_CFG_SPF_CLEAR_CACHE, false)) {
+                    cmds.append(Consts.ClearCache)
+                }
 
 
                 cmds.append("\n\n")
                 val spf = context.getSharedPreferences(SpfConfig.WHITE_LIST_SPF, Context.MODE_PRIVATE)
-                for (item in spf.all) {
-                    if (item.value == true) {
-                        cmds.append("dumpsys deviceidle whitelist +${item.key}")
-                    } else {
-                        cmds.append("dumpsys deviceidle whitelist -${item.key}")
-                    }
-                    cmds.append(";\n")
-                }
-                cmds.append("\n\n")
 
                 for (item in spfBlacklist.all) {
-                    cmds.append("am set-inactive ${item.key} true;")
-                    keepShell.doCmd("am stop ${item.key};am force-stop ${item.key};")
-                    //cmds.append("killall -9 ${item.key};pkill -9 ${item.key};pgrep ${item.key} |xargs kill -9;")
+                    if(!spf.getBoolean(item.key, false)) {
+                        cmds.append("dumpsys deviceidle whitelist -${item.key}")
+                        cmds.append("am set-inactive ${item.key} true;")
+                        cmds.append("am stop ${item.key};am force-stop ${item.key};")
+                        //cmds.append("killall -9 ${item.key};pkill -9 ${item.key};pgrep ${item.key} |xargs kill -9;")
+                    }
                 }
-                cmds.append("dumpsys deviceidle step\n")
-                cmds.append("dumpsys deviceidle step\n")
-                cmds.append("dumpsys deviceidle step\n")
-                cmds.append("dumpsys deviceidle step\n")
-                var p:Process?
+                cmds.append("dumpsys deviceidle step;\n")
+                cmds.append("dumpsys deviceidle step;\n")
+                cmds.append("dumpsys deviceidle step;\n")
+                cmds.append("dumpsys deviceidle step;\n")
 
                 AsynSuShellUnit(Handler()).exec(cmds.toString()).waitFor()
                 if (debugMode)
@@ -376,7 +336,7 @@ class ServiceHelper(private var context: Context) : ModeList() {
     //焦点应用改变
     fun onFocusAppChanged(pkgName: String) {
         val packageName = pkgName
-        if (!settingsLoaded && !settingsLoad()) {
+        if (!settingsLoaded) {
             return
         }
 
@@ -389,7 +349,6 @@ class ServiceHelper(private var context: Context) : ModeList() {
 
         autoBoosterApp(packageName)
         autoToggleMode(packageName.toLowerCase())
-
         lastPackage = packageName
     }
 
@@ -397,5 +356,23 @@ class ServiceHelper(private var context: Context) : ModeList() {
         notifyHelper.hideNotify()
         ReciverLock.unRegister(context)
         keepShell.tryExit()
+    }
+
+    init {
+        spfGlobal.registerOnSharedPreferenceChangeListener(listener)
+        notifyHelper.notify("辅助服务已启动，" + if(dyamicCore) "动态响应已启动" else "动态响应未开启")
+
+        //添加输入法到忽略列表
+        Thread(Runnable {
+            ignoredList.addAll(InputHelper(context).getInputMethods())
+        }).start()
+        ReciverLock.autoRegister(context, screenHandler)
+        if(spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true))
+            keepShell.doCmd(Consts.DisableSELinux)
+
+        if  (dyamicCore)
+            keepShell.doCmd(Consts.ExecuteConfig)
+
+        settingsLoaded = true
     }
 }

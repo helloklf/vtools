@@ -111,7 +111,22 @@ override fun onCreate() {
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         if (event.packageName == null || event.className == null)
             return
+        //android.app.AlertDialog
+
+        val root = rootInActiveWindow
+        if(root == null) {
+            return
+        }
         /*
+        if(event.source != null && event.source.window != null)
+            if (event.source.window.type != -1) {
+
+            }
+        if(event.source.parent != null && event.source.window != null) {
+            if (event.source.window.type != -1) {
+
+            }
+        }
         val componentName = ComponentName(
                 event.packageName.toString(),
                 event.className.toString()
@@ -122,6 +137,7 @@ override fun onCreate() {
 
         }
         */
+
         val packageName = event.packageName.toString().toLowerCase()
         //修复傻逼一加桌面文件夹抢占焦点导致的问题
         if ((packageName == "net.oneplus.h2launcher" || packageName == "net.oneplus.launcher") && event.className == "android.widget.LinearLayout") {

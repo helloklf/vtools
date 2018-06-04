@@ -144,7 +144,7 @@ class FloatPowercfgSelector {
             spfPowercfg.edit().putString(packageName, selectedMode).commit()
             if(index != 4)
                 SuDo(context).execCmd(String.format(Consts.ToggleMode, selectedMode))
-            NotifyHelper(context, true)._notify(getModName(selectedMode) + " -> " + packageName, packageName)
+            NotifyHelper(context, true).notifyPowerModeChange(packageName, selectedMode)
 
             //Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);
             //context.startActivity(intent);

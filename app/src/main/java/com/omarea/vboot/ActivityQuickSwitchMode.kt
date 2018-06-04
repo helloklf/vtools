@@ -113,8 +113,7 @@ class ActivityQuickSwitchMode : Activity() {
                         }
                         spfPowercfg.edit().putString(parameterValue, selectedMode).commit()
                         SuDo(this).execCmd(String.format(Consts.ToggleMode, selectedMode));
-                        NotifyHelper(this).notify("${getModName(selectedMode)} -> $parameterValue" , parameterValue)
-
+                        NotifyHelper(this).notifyPowerModeChange(parameterValue, selectedMode)
                         val intent = getPackageManager().getLaunchIntentForPackage(parameterValue);
                         startActivity(intent);
                     } catch (ex : Exception) {
