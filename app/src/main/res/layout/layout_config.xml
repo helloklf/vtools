@@ -152,7 +152,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="10dp"
                                 android:paddingLeft="8dp"
-                                android:text="安装本应由内置的模式配置文件，这是应用开发者针对部分CPU定制的配置。当然，你也可以自定义配置文件，命名为powercfg，放到/data下，并设置权限为777。"
+                                android:text="安装本应用内置的模式配置文件，这是应用开发者针对部分CPU定制的配置。当然，你也可以自定义配置文件，命名为powercfg，放到/data下，并设置权限为777。"
                                 style="@style/textSmall" />
 
                             <LinearLayout

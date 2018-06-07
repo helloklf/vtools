@@ -26,22 +26,6 @@ public object Consts {
             "chmod 0777 /sys/class/power_supply/bms/temp_warm;" +
             "echo 480 > /sys/class/power_supply/bms/temp_warm;" +
             "chmod 0777 /sys/class/power_supply/battery/constant_charge_current_max;"
-    val FastChanger =
-            "echo 0 > /sys/class/power_supply/battery/restricted_charging;" +
-            "echo 0 > /sys/class/power_supply/battery/safety_timer_enabled;" +
-            "chmod 0777 /sys/class/power_supply/bms/temp_warm;" +
-            "echo 480 > /sys/class/power_supply/bms/temp_warm;" +
-            "chmod 0777 /sys/class/power_supply/battery/constant_charge_current_max;" +
-            "echo 2000000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
-            "echo 2500000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
-            "echo 3000000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
-            "echo 3500000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
-            "echo 4000000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
-            "echo 4500000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
-            "echo 5000000 > /sys/class/power_supply/battery/constant_charge_current_max;"
-
-
-    val ClearCache = "echo 3 > /proc/sys/vm/drop_caches"
 
     val MountSystemRW =
             "busybox mount -o rw,remount /system\n" +
@@ -62,29 +46,22 @@ public object Consts {
     val POWER_CFG_PATH = "/data/powercfg"
     val POWER_CFG_BASE = "/data/init.qcom.post_boot.sh"
 
-    val ExecuteConfig = "setprop vtools.powercfg null;${POWER_CFG_BASE};\n"
-    val ToggleMode = "setprop vtools.powercfg default;$POWER_CFG_PATH %s;\n"
-    val ToggleDefaultMode = "setprop vtools.powercfg default;$POWER_CFG_PATH balance;\n"
-    val ToggleGameMode = "setprop vtools.powercfg game;$POWER_CFG_PATH performance;\n"
-    val TogglePowersaveMode = "setprop vtools.powercfg powersave;$POWER_CFG_PATH powersave;\n"
-    val ToggleFastMode = "setprop vtools.powercfg fast;$POWER_CFG_PATH fast;\n"
+    val PowerModeState = "vtools.powercfg"
+    val PowerModeApp = "vtools.powercfg_app"
+    val ExecuteConfig = "setprop $PowerModeState '';setprop $PowerModeApp '';sh ${POWER_CFG_BASE};\n"
+    val ToggleMode = "sh $POWER_CFG_PATH %s;\n"
+    val SaveModeState = "setprop $PowerModeState %s;\n"
+    val SaveModeApp = "setprop $PowerModeApp %s;\n"
 
     val DisableSELinux = "setenforce 0;\n"
     val ResumeSELinux = "setenforce 0;\n"
 
     val DeleteLockPwd = "rm -f /data/system/*.key;rm -f /data/system/locksettings.db*;reboot;"
 
-    val ForceDoze = "dumpsys deviceidle force-idle\n"
-
-    public val DisableChanger = "if [ -f '/sys/class/power_supply/battery/battery_charging_enabled' ]; then echo 0 > /sys/class/power_supply/battery/battery_charging_enabled; else echo 1 > /sys/class/power_supply/battery/input_suspend; fi;setprop vtools.bp 1;\n"
+    val DisableChanger = "if [ -f '/sys/class/power_supply/battery/battery_charging_enabled' ]; then echo 0 > /sys/class/power_supply/battery/battery_charging_enabled; else echo 1 > /sys/class/power_supply/battery/input_suspend; fi;setprop vtools.bp 1;\n"
     val ResumeChanger = "if [ -f '/sys/class/power_supply/battery/battery_charging_enabled' ]; then echo 1 > /sys/class/power_supply/battery/battery_charging_enabled; else echo 0 > /sys/class/power_supply/battery/input_suspend; fi;setprop vtools.bp 0;\n"
     val DeleteBatteryHistory = "rm -f /data/system/batterystats-checkin.bin;rm -f /data/system/batterystats-daily.xml;rm -f /data/system/batterystats.bin;sync;sleep 2; reboot;";
-    val RebootShutdown = "reboot -p\n"
-    val RebootRecovery = "reboot recovery\n"
-    val RebootBootloader = "reboot bootloader\n"
-    val RebootOEM_EDL = "reboot edl\n"
     val Reboot = "sync;sleep 2;reboot\n"
-    val RebootHot = "busybox killall system_server\n"
 
     val RMThermal =
             "cp /system/vendor/bin/thermal-engine /system/vendor/bin/thermal-engine.bak\n" +

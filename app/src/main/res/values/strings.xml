@@ -26,6 +26,9 @@
         <item>com.samsung.android.app.assistantmenu</item>
         <item>com.samsung.android.app.aodservice</item>
         <item>com.samsung.android.MtpApplication</item>
+        <item>com.android.vpndialogs</item>
+        <item>com.android.documentsui</item>
+        <item>com.android.wallpapercropper</item>
     </string-array>
     <string-array name="powercfg_game">
         <item>com.rarlab.rar</item>
@@ -46,6 +49,9 @@
         <item>com.andromeda.androbench2</item>
         <item>com.xzr.La.bench</item>
         <item>com.ioncannon.cpuburn.gpugflops</item>
+        <item>com.android.packageinstaller</item>
+        <item>com.miui.packageinstaller</item>
+        <item>com.google.android.packageinstaller</item>
     </string-array>
 
     <string name="btn_cancel">取消</string>

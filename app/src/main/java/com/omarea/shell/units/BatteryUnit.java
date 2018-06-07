@@ -210,28 +210,6 @@ public class BatteryUnit {
         return "? mAh";
     }
 
-    //获取充电速度
-    public String getChangeMAH() {
-        // /sys/class/power_supply/battery/current_now
-        String path = "";
-        if (new File("/sys/class/power_supply/battery/current_now").exists()) {
-            path = "/sys/class/power_supply/battery/current_now";
-        } else if (new File("/sys/class/power_supply/battery/BatteryAverageCurrent").exists()) {
-            path = "/sys/class/power_supply/battery/BatteryAverageCurrent";
-        } else {
-            return "? mA";
-        }
-        String txt = KernelProrp.getProp(path);
-
-        try {
-            int ma = Math.abs(Integer.parseInt(txt));
-            if (ma < 1000)
-                return ma + " mA";
-            return (ma / 1000) + " mA";
-        } catch (Exception ex) {
-            return "? mA";
-        }
-    }
 
     //修改充电速度限制
     public void setChargeInputLimit(int limit) {

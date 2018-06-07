@@ -15,12 +15,12 @@ class DialogPower(var context:Context) {
             _,w ->
             val sudo = SuDo(context)
             when (w) {
-                0 -> sudo.execCmdSync(Consts.RebootShutdown)
-                1 -> sudo.execCmdSync(Consts.Reboot)
-                2 -> sudo.execCmdSync(Consts.RebootHot)
-                3 -> sudo.execCmdSync(Consts.RebootBootloader)
-                4 -> sudo.execCmdSync(Consts.RebootRecovery)
-                5 -> sudo.execCmdSync(Consts.RebootRecovery)
+                0 -> sudo.execCmdSync("sync;reboot -p;")
+                1 -> sudo.execCmdSync("sync;reboot;")
+                2 -> sudo.execCmdSync("sync;busybox killall system_server;")
+                3 -> sudo.execCmdSync("sync;reboot bootloader;")
+                4 -> sudo.execCmdSync("sync;reboot recovery;")
+                5 -> sudo.execCmdSync("sync;reboot edl;")
             }
         }).create().show()
     }

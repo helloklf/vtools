@@ -27,6 +27,7 @@ import com.omarea.shared.Consts
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.helper.NotifyHelper
 import com.omarea.shell.SuDo
+import java.lang.StringBuilder
 
 /**
  * 弹窗辅助类
@@ -143,7 +144,16 @@ class FloatPowercfgSelector {
             }
             spfPowercfg.edit().putString(packageName, selectedMode).commit()
             if(index != 4)
-                SuDo(context).execCmd(String.format(Consts.ToggleMode, selectedMode))
+                SuDo(context).execCmd(
+                        StringBuilder()
+                                .append(String.format(Consts.ToggleMode, selectedMode))
+                                .append("\n")
+                                .append(String.format(Consts.SaveModeState, selectedMode))
+                                .append("\n")
+                                .append(String.format(Consts.SaveModeApp, packageName))
+                                .append("\n")
+                                .toString()
+                )
             NotifyHelper(context, true).notifyPowerModeChange(packageName, selectedMode)
 
             //Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);

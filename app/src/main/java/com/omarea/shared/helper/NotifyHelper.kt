@@ -6,9 +6,13 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.support.v4.app.NotificationCompat
-import com.omarea.vboot.ActivityMain
+import android.widget.RemoteViews
+import com.omarea.shared.ModeList
+import com.omarea.shell.KernelProrp
+import com.omarea.shell.SysUtils
 import com.omarea.vboot.ActivityQuickSwitchMode
 import com.omarea.vboot.R
+import java.io.File
 
 
 /**
@@ -16,20 +20,10 @@ import com.omarea.vboot.R
  * Created by Hello on 2018/01/23.
  */
 
-internal class NotifyHelper(private var context: Context, notify: Boolean = false) {
-    private var showNofity:Boolean = false
+internal class NotifyHelper(private var context: Context, notify: Boolean = false) : ModeList() {
+    private var showNofity: Boolean = false
     private var notification: Notification? = null
     private var notificationManager: NotificationManager? = null
-
-    private fun getModName(mode:String) : String {
-        when(mode) {
-            "powersave" ->      return "省电模式"
-            "performance" ->      return "性能模式"
-            "fast" ->      return "极速模式"
-            "balance" ->   return "均衡模式"
-            else ->         return "未知模式"
-        }
-    }
 
     private fun getAppName(packageName: String): CharSequence? {
         try {
@@ -39,99 +33,132 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         }
     }
 
-    private fun getModIcon(mode: String): Int {
-        when(mode) {
-            "powersave" ->      return R.drawable.p1
-            "balance" ->   return R.drawable.p2
-            "performance" ->     return R.drawable.p3
-            "fast" ->      return R.drawable.p4
-            else ->         return R.drawable.p3
+    private var batteryUnit = Int.MIN_VALUE
+    private var batterySensor: String? = "init"
+    private fun getBatteryUnit(): Int {
+        if(batteryUnit == Int.MIN_VALUE) {
+            val full = KernelProrp.getProp("/sys/class/power_supply/battery/charge_full_design")
+            if (full != null && full.length > 0) {
+                return full.length - 4
+            }
+            return -1
         }
+        return  batteryUnit
+    }
+
+    private fun getCapacity(): String? {
+        return KernelProrp.getProp("/sys/class/power_supply/battery/capacity", false) + "%"
+    }
+
+    private fun getBatterySensor(): String? {
+        if (batterySensor == "init") {
+            batterySensor = SysUtils.executeCommandWithOutput(false, "for sensor in /sys/class/thermal/*; do\n" +
+                    "\ttype=\"\$(cat \$sensor/type)\"\n" +
+                    "\tif [[ \"\$type\" = \"battery\" && -f \"\$sensor/temp\" ]]; then\n" +
+                    "\t\techo \"\$sensor/temp\";\n" +
+                    "\t\texit 0;\n" +
+                    "\tfi;\n" +
+                    "done;")
+            if (batterySensor != null) {
+                batterySensor = batterySensor!!.trim()
+            }
+        }
+        return batterySensor
+    }
+
+    private fun getBatteryTemp(): String {
+        val sensor = getBatterySensor()
+        if(sensor != null) {
+            val temp = KernelProrp.getProp(sensor)
+            if(temp == null || (temp.length < 4)) {
+                return "? °C"
+            }
+            return  temp.substring(0, temp.length - 3) + "°C"
+        } else {
+            return "? °C"
+        }
+    }
+
+    private fun getBatteryIO(): String? {
+        var path = ""
+        if (File("/sys/class/power_supply/battery/current_now").exists()) {
+            path = "/sys/class/power_supply/battery/current_now"
+        } else if (File("/sys/class/power_supply/battery/BatteryAverageCurrent").exists()) {
+            path = "/sys/class/power_supply/battery/BatteryAverageCurrent"
+        } else {
+            return  "? mAh"
+        }
+
+        var  io = KernelProrp.getProp(path, false)
+        val unit = getBatteryUnit()
+        var start = ""
+        if(io.startsWith("+")) {
+            start = "-"
+            io = io.substring(1, io.length)
+        }
+        if(io.startsWith("-")) {
+            start = "+"
+            io = io.substring(1, io.length)
+        }
+        if (unit != -1 && io.length > unit) {
+            return start + io.substring(0, io.length - unit) + "mAh"
+        }
+        return start + io
     }
 
     //显示通知
-    internal fun notify(msg: String = "辅助服务正在后台运行") {
+    internal fun notify() {
+        var currentMode = getCurrentPowerMode()
+        if (currentMode == null || currentMode.length == 0) {
+            currentMode = ""
+        }
+
+        var currentApp = getCurrentPowermodeApp()
+        if (currentApp == null || currentApp.length == 0) {
+            currentApp = context.packageName
+        }
+
+        notifyPowerModeChange(currentApp!!, currentMode)
+    }
+
+    fun notifyPowerModeChange(packageName: String, mode: String) {
         if (!showNofity) {
             return
         }
-        //获取PendingIntent
-        val mainIntent = Intent(context, ActivityMain::class.java)
-        val mainPendingIntent = PendingIntent.getActivity(context, 0, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val remoteViews = RemoteViews(context.packageName, R.layout.notify0)
+        remoteViews.setTextViewText(R.id.notify_title, getAppName(packageName))
+        remoteViews.setTextViewText(R.id.notify_text, getModName(mode))
+        remoteViews.setTextViewText(R.id.notify_battery_title, "电池")
+        remoteViews.setTextViewText(R.id.notify_battery_text, getBatteryIO() + " " + getCapacity() + " " + getBatteryTemp())
+        remoteViews.setImageViewBitmap(R.id.notify_mode , BitmapFactory.decodeResource(context.resources, getModImage(mode) ))
+
+        val intent = PendingIntent.getActivity(
+            context,
+            0,
+            Intent(context, ActivityQuickSwitchMode::class.java).putExtra("packageName", packageName),
+            PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val icon = getModIcon(mode)
         notificationManager = context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
+        var builder: NotificationCompat.Builder? = null
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationManager!!.createNotificationChannel(NotificationChannel("vtool", "微工具箱", NotificationManager.IMPORTANCE_LOW))
-            notification = NotificationCompat.Builder(context, "vtool")
-                            .setSmallIcon(R.drawable.fanbox)
-                            .setLargeIcon(BitmapFactory.decodeResource(context.resources,R.drawable.linux ))
-                            .setContentTitle(context.getString(R.string.app_name))
-                            .setContentText(msg)
-                            .setWhen(System.currentTimeMillis())
-                            .setAutoCancel(true)
-                            //.setDefaults(Notification.DEFAULT_SOUND)
-                            .setContentIntent(mainPendingIntent)
-                            .build()
+            notificationManager!!.createNotificationChannel(NotificationChannel("vtool", "常驻通知", NotificationManager.IMPORTANCE_LOW))
+            builder = NotificationCompat.Builder(context, "vtool")
         } else {
-            notification =
-                    NotificationCompat.Builder(context)
-                            .setSmallIcon(R.drawable.fanbox)
-                            .setLargeIcon(BitmapFactory.decodeResource(context.resources,R.drawable.linux ))
-                            .setContentTitle(context.applicationInfo.name)
-                            .setContentText(msg)
-                            .setWhen(System.currentTimeMillis())
-                            .setAutoCancel(true)
-                            //.setDefaults(Notification.DEFAULT_SOUND)
-                            .setContentIntent(mainPendingIntent)
-                            .build()
+            builder = NotificationCompat.Builder(context)
         }
+        notification =
+                builder.setSmallIcon(if (false) R.drawable.fanbox else icon)
+                        .setContent(remoteViews)
+                        .setWhen(System.currentTimeMillis())
+                        .setAutoCancel(true)
+                        //.setDefaults(Notification.DEFAULT_SOUND)
+                        .setContentIntent(intent)
+                        .build()
 
         notification!!.flags = Notification.FLAG_NO_CLEAR or Notification.FLAG_ONGOING_EVENT
         notificationManager?.notify(0x100, notification)
-    }
-
-    //显示通知 方便快速切换配置模式
-    private fun notify(msg: String = "辅助服务正在后台运行", stringPackage: String, icon: Int? = null) {
-        if (!showNofity) {
-            return
-        }
-
-        //获取PendingIntent
-        val mainIntent = Intent(context, ActivityQuickSwitchMode::class.java)
-        mainIntent.putExtra("packageName", stringPackage)
-        val mainPendingIntent = PendingIntent.getActivity(context, 0, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-        notificationManager = context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationManager!!.createNotificationChannel(NotificationChannel("vtool", "微工具箱", NotificationManager.IMPORTANCE_LOW))
-            notification =
-                    NotificationCompat.Builder(context, "vtool")
-                            .setSmallIcon(if(icon == null) R.drawable.fanbox else icon)
-                            .setLargeIcon(BitmapFactory.decodeResource(context.resources,R.drawable.linux ))
-                            .setContentTitle(context.getString(R.string.app_name))
-                            .setContentText(msg)
-                            .setWhen(System.currentTimeMillis())
-                            .setAutoCancel(true)
-                            //.setDefaults(Notification.DEFAULT_SOUND)
-                            .setContentIntent(mainPendingIntent)
-                            .build()
-        } else {
-            notification =
-                    NotificationCompat.Builder(context)
-                            .setSmallIcon(if(icon == null) R.drawable.fanbox else icon)
-                            .setLargeIcon(BitmapFactory.decodeResource(context.resources,R.drawable.linux ))
-                            .setContentTitle(context.applicationInfo.name)
-                            .setContentText(msg)
-                            .setWhen(System.currentTimeMillis())
-                            .setAutoCancel(true)
-                            //.setDefaults(Notification.DEFAULT_SOUND)
-                            .setContentIntent(mainPendingIntent)
-                            .build()
-        }
-
-        notification!!.flags = Notification.FLAG_NO_CLEAR or Notification.FLAG_ONGOING_EVENT
-        notificationManager?.notify(0x100, notification)
-    }
-
-    public fun notifyPowerModeChange(packageName: String, mode: String) {
-        notify("${getAppName(packageName)} -> ${getModName(mode)}",packageName , getModIcon(mode))
     }
 
     //隐藏通知
@@ -143,7 +170,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         }
     }
 
-    internal fun setNotify(show:Boolean) {
+    internal fun setNotify(show: Boolean) {
         this.showNofity = show
         if (!show) {
             hideNotify()

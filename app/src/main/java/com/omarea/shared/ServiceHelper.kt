@@ -1,18 +1,12 @@
 package com.omarea.shared
 
-import android.accessibilityservice.AccessibilityService
-import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Handler
-import android.view.accessibility.AccessibilityManager
 import android.widget.Toast
 import com.omarea.shared.helper.*
 import com.omarea.shell.AsynSuShellUnit
-import com.omarea.shell.SuDo
-import com.omarea.shell.units.AccessibilityServiceStart
-import com.omarea.vboot.AccessibilityServiceVTools
 import java.io.File
 import java.util.*
 
@@ -55,6 +49,26 @@ class ServiceHelper(private var context: Context) : ModeList() {
 
     private var notifyHelper: NotifyHelper = NotifyHelper(context, spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))
 
+    private var timer: Timer? = null
+
+    private fun startTimer() {
+        if (timer == null) {
+            timer = Timer()
+            timer!!.schedule(object : TimerTask() {
+                override fun run() {
+                    notifyHelper.notify()
+                }
+            }, 0, 10000)
+        }
+    }
+
+    private fun stopTimer() {
+        if (timer != null) {
+            timer!!.cancel()
+            timer = null
+        }
+    }
+
     //屏幕关闭时执行
     private fun onScreenOff () {
         screenOn = false
@@ -66,6 +80,10 @@ class ServiceHelper(private var context: Context) : ModeList() {
             }, SCREEN_OFF_SWITCH_NETWORK_DELAY)
         }
         clearTasks()
+        screenHandler.postDelayed({
+            if (!screenOn)
+                stopTimer()
+        }, 5000)
     }
 
     //屏幕关闭后 - 关闭网络
@@ -107,6 +125,7 @@ class ServiceHelper(private var context: Context) : ModeList() {
         if (screenOn == true) return
 
         screenOn = true
+        startTimer()
 
         if(settingsLoaded && dyamicCore && lockScreenOptimize) {
             if(this.lastModePackage != null && !this.lastModePackage.isNullOrEmpty())
@@ -155,9 +174,9 @@ class ServiceHelper(private var context: Context) : ModeList() {
             handler.postDelayed({
                 if (!dyamicCore) {
                     notifyHelper.hideNotify()
-                    notifyHelper.notify("辅助服务已启动，动态响应未开启")
+                    notifyHelper.notify()
                 } else {
-                    notifyHelper.notify("辅助服务已启动，动态响应已启动")
+                    notifyHelper.notify()
                     if (dyamicCore && this.lastModePackage != null && !this.lastModePackage.isNullOrEmpty()) {
                         lastMode = ""
                         forceToggleMode(this.lastModePackage!!)
@@ -198,7 +217,7 @@ class ServiceHelper(private var context: Context) : ModeList() {
         if (lastModePackage != null && !lastModePackage.isNullOrEmpty()) {
             notifyHelper.notifyPowerModeChange(lastModePackage!!, lastMode)
         } else
-            notifyHelper.notify("${getModName(lastMode)} -> $lastModePackage")
+            notifyHelper.notify()
     }
 
     //强制执行模式切换，无论当前应用是什么模式是什么
@@ -233,6 +252,7 @@ class ServiceHelper(private var context: Context) : ModeList() {
                 updateModeNofity()
             }
         }
+        keepShell.doCmd(String.format(Consts.SaveModeApp, packageName))
     }
 
     //终止进程
@@ -253,7 +273,7 @@ class ServiceHelper(private var context: Context) : ModeList() {
         }
 
         if (spfAutoConfig.getBoolean(SpfConfig.BOOSTER_SPF_CFG_SPF_CLEAR_CACHE, false)) {
-            keepShell2.doCmd(Consts.ClearCache)
+            keepShell2.doCmd("echo 3 > /proc/sys/vm/drop_caches")
             //HIDDEN、RUNNING_MODERATE、BACKGROUND、RUNNING_LOW、MODERATE、RUNNING_CRITICAL、COMPLETE
             keepShell2.doCmd("pids=`ps | grep $packageName | cut -f4 -d \" \"`;")
             keepShell2.doCmd("for item in \$pids; do am send-trim-memory \$item RUNNING_CRITICAL;done;")
@@ -261,6 +281,11 @@ class ServiceHelper(private var context: Context) : ModeList() {
     }
 
     private fun toggleConfig(mode: String) {
+        if (!screenOn && lockScreenOptimize) {
+            keepShell.doCmd(String.format(Consts.ToggleMode, POWERSAVE))
+            keepShell.doCmd(String.format(Consts.SaveModeState, POWERSAVE))
+            return
+        }
         if (File(Consts.POWER_CFG_PATH).exists()) {
             keepShell.doCmd(String.format(Consts.ToggleMode, mode))
             lastMode = mode
@@ -268,6 +293,7 @@ class ServiceHelper(private var context: Context) : ModeList() {
             ConfigInstaller().installPowerConfig(context, String.format(Consts.ToggleMode, mode));
             lastMode = mode
         }
+        keepShell.doCmd(String.format(Consts.SaveModeState, mode))
     }
 
     //#region 工具方法
@@ -298,7 +324,7 @@ class ServiceHelper(private var context: Context) : ModeList() {
                 cmds.append("dumpsys deviceidle enable all;\n")
                 cmds.append("dumpsys deviceidle force-idle;\n")
                 if (spfAutoConfig.getBoolean(SpfConfig.BOOSTER_SPF_CFG_SPF_CLEAR_CACHE, false)) {
-                    cmds.append(Consts.ClearCache)
+                    cmds.append("echo 3 > /proc/sys/vm/drop_caches")
                 }
 
 
@@ -335,6 +361,7 @@ class ServiceHelper(private var context: Context) : ModeList() {
 
     //焦点应用改变
     fun onFocusAppChanged(pkgName: String) {
+        startTimer()
         val packageName = pkgName
         if (!settingsLoaded) {
             return
@@ -356,11 +383,12 @@ class ServiceHelper(private var context: Context) : ModeList() {
         notifyHelper.hideNotify()
         ReciverLock.unRegister(context)
         keepShell.tryExit()
+        stopTimer()
     }
 
     init {
         spfGlobal.registerOnSharedPreferenceChangeListener(listener)
-        notifyHelper.notify("辅助服务已启动，" + if(dyamicCore) "动态响应已启动" else "动态响应未开启")
+        notifyHelper.notify()
 
         //添加输入法到忽略列表
         Thread(Runnable {

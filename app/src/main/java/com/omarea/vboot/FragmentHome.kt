@@ -49,16 +49,16 @@ class FragmentHome : Fragment() {
         }
 
         btn_powersave.setOnClickListener {
-            installConfig(Consts.TogglePowersaveMode, getString(R.string.power_change_powersave))
+            installConfig(ModeList().POWERSAVE, getString(R.string.power_change_powersave))
         }
         btn_defaultmode.setOnClickListener {
-            installConfig(Consts.ToggleDefaultMode, getString(R.string.power_change_default))
+            installConfig(ModeList().DEFAULT, getString(R.string.power_change_default))
         }
         btn_gamemode.setOnClickListener {
-            installConfig(Consts.ToggleGameMode, getString(R.string.power_change_game))
+            installConfig(ModeList().PERFORMANCE, getString(R.string.power_change_game))
         }
         btn_fastmode.setOnClickListener {
-            installConfig(Consts.ToggleFastMode, getString(R.string.power_chagne_fast))
+            installConfig(ModeList().FAST, getString(R.string.power_chagne_fast))
         }
         home_hide_in_recents.setOnCheckedChangeListener({
             _,checked ->
@@ -192,7 +192,7 @@ class FragmentHome : Fragment() {
         }
     }
 
-    private fun installConfig(after: String, message: String) {
+    private fun installConfig(action: String, message: String) {
         if(spf.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false) && AccessibleServiceHelper().serviceIsRunning(this.context!!)) {
             AlertDialog.Builder(context)
                     .setTitle("")
@@ -203,10 +203,14 @@ class FragmentHome : Fragment() {
                     .create()
             return
         }
+        val stringBuilder = StringBuilder()
+        stringBuilder.append(String.format(Consts.ToggleMode, action))
+        stringBuilder.append(String.format(Consts.SaveModeState, action))
+        stringBuilder.append(String.format(Consts.SaveModeApp, context!!.packageName))
         if (File(Consts.POWER_CFG_PATH).exists()) {
-            SuDo(context).execCmdSync(after)
+            SuDo(context).execCmdSync(stringBuilder.toString())
         } else {
-            ConfigInstaller().installPowerConfig(context!!, after);
+            ConfigInstaller().installPowerConfig(context!!, stringBuilder.toString());
         }
         setModeState()
         showMsg(message)
