@@ -50,6 +50,16 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         return KernelProrp.getProp("/sys/class/power_supply/battery/capacity", false) + "%"
     }
 
+    private fun getBatteryIcon(capacity: Int): Int {
+        if (capacity < 20)
+            return R.drawable.b_0
+        if (capacity < 30)
+            return  R.drawable.b_1
+        if (capacity < 70)
+            return  R.drawable.b_2
+        return R.drawable.b_3
+    }
+
     private fun getBatterySensor(): String? {
         if (batterySensor == "init") {
             batterySensor = SysUtils.executeCommandWithOutput(false, "for sensor in /sys/class/thermal/*; do\n" +
@@ -129,7 +139,14 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         remoteViews.setTextViewText(R.id.notify_title, getAppName(packageName))
         remoteViews.setTextViewText(R.id.notify_text, getModName(mode))
         remoteViews.setTextViewText(R.id.notify_battery_title, "电池")
-        remoteViews.setTextViewText(R.id.notify_battery_text, getBatteryIO() + " " + getCapacity() + " " + getBatteryTemp())
+        val capacity =  getCapacity()
+        try {
+            if (capacity != null && !capacity.isNullOrEmpty()) {
+                remoteViews.setImageViewBitmap(R.id.notify_battery_icon , BitmapFactory.decodeResource(context.resources, getBatteryIcon(capacity.toInt()) ))
+            }
+        } catch (ex: Exception) {
+        }
+        remoteViews.setTextViewText(R.id.notify_battery_text, getBatteryIO() + " " + capacity + " " + getBatteryTemp())
         remoteViews.setImageViewBitmap(R.id.notify_mode , BitmapFactory.decodeResource(context.resources, getModImage(mode) ))
 
         val intent = PendingIntent.getActivity(
