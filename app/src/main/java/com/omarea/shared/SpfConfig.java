@@ -35,7 +35,6 @@ public class SpfConfig {
     public static String GLOBAL_SPF_DISABLE_ENFORCE_CHECKING = "enforce_checking";
     public static String GLOBAL_SPF_AUTO_BOOSTER = "is_auto_booster";
     public static String GLOBAL_SPF_DYNAMIC_CPU = "is_dynamic_cpu";
-    public static String GLOBAL_SPF_DYNAMIC_CPU_CONFIG = "dynamic_cpu_config";
     public static String GLOBAL_SPF_DEBUG = "is_debug";
     public static String GLOBAL_SPF_START_DELAY = "start_delay";
     public static String GLOBAL_SPF_DELAY = "is_delay_start";

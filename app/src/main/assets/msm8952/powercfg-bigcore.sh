@@ -209,6 +209,7 @@ function enable_core_control(){
 function config_8952(){
     # Apply Scheduler and Governor settings for 8952
     disable_thermal_core_control
+    online_cpus
     echo $cpu_max_freq > /sys/module/msm_performance/parameters/cpu_max_freq
 
     # enable governor for perf cluster
@@ -278,6 +279,7 @@ function config_8976() {
     echo $sched_downmigrate > /proc/sys/kernel/sched_downmigrate
 
     disable_thermal_core_control
+    online_cpus
     echo $cpu_max_freq > /sys/module/msm_performance/parameters/cpu_max_freq
 
     # enable governor for power cluster

@@ -131,8 +131,8 @@ class ServiceHelper(private var context: Context) : ModeList() {
             if(this.lastModePackage != null && !this.lastModePackage.isNullOrEmpty())
             {
                 handler.postDelayed({
-                    if(screenOn && this.lastModePackage != null && !this.lastModePackage.isNullOrEmpty())
-                        forceToggleMode(this.lastModePackage!!)
+                    if(screenOn)
+                        forceToggleMode(this.lastModePackage)
                     if(debugMode)
                         showMsg("动态响应-锁屏优化 已解锁，自动恢复配置")
                 }, 5000)
@@ -168,21 +168,17 @@ class ServiceHelper(private var context: Context) : ModeList() {
                 autoBoosterApp(this.lastPackage)
             }
             autoBooster = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, false)
-        } else if (key == SpfConfig.GLOBAL_SPF_DYNAMIC_CPU || key == SpfConfig.GLOBAL_SPF_DYNAMIC_CPU_CONFIG) {
+        } else if (key == SpfConfig.GLOBAL_SPF_DYNAMIC_CPU) {
             dyamicCore = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
             keepShell.doCmd(Consts.ExecuteConfig)
             handler.postDelayed({
                 if (!dyamicCore) {
-                    notifyHelper.hideNotify()
-                    notifyHelper.notify()
+                    lastModePackage = ""
+                    lastMode = ""
+                    updateModeNofity()
                 } else {
-                    notifyHelper.notify()
-                    if (dyamicCore && this.lastModePackage != null && !this.lastModePackage.isNullOrEmpty()) {
-                        lastMode = ""
-                        forceToggleMode(this.lastModePackage!!)
-                    } else if (dyamicCore) {
-                        toggleConfig(firstMode)
-                    }
+                    updateModeNofity()
+                    toggleConfig(firstMode)
                 }
             }, 2000)
         } else if (key == SpfConfig.GLOBAL_SPF_DEBUG) {
@@ -191,10 +187,20 @@ class ServiceHelper(private var context: Context) : ModeList() {
             lockScreenOptimize = spfGlobal.getBoolean(key, false)
         } else if (key == SpfConfig.GLOBAL_SPF_NOTIFY) {
             notifyHelper.setNotify(sharedPreferences.getBoolean(key, true))
-        } else if (key == SpfConfig.BOOSTER_SPF_CFG_SPF_CLEAR_TASKS) {
-
         } else if (key == SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE) {
             firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
+        } else if (key == lastModePackage) {
+            if (dyamicCore) {
+                val mode = spfPowercfg.getString(key, firstMode)
+                if (mode == IGONED) {
+                    lastMode = ""
+                    lastModePackage = ""
+                } else if (mode != lastMode) {
+                    forceToggleMode(key)
+                }
+            }
+        } else if(key == SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE) {
+            forceToggleMode(lastModePackage)
         }
     }
 
@@ -221,7 +227,9 @@ class ServiceHelper(private var context: Context) : ModeList() {
     }
 
     //强制执行模式切换，无论当前应用是什么模式是什么
-    private fun forceToggleMode(packageName: String) {
+    private fun forceToggleMode(packageName: String?) {
+        if (packageName == null || packageName.isNullOrEmpty())
+            return
         val mode = spfPowercfg.getString(packageName, firstMode)
         when (mode) {
             IGONED ->     return
@@ -247,7 +255,6 @@ class ServiceHelper(private var context: Context) : ModeList() {
                     toggleConfig(mode)
                     showModeToggleMsg(packageName, getModName(mode))
                 }
-
                 lastModePackage = packageName
                 updateModeNofity()
             }
@@ -388,6 +395,7 @@ class ServiceHelper(private var context: Context) : ModeList() {
 
     init {
         spfGlobal.registerOnSharedPreferenceChangeListener(listener)
+        spfPowercfg.registerOnSharedPreferenceChangeListener(listener)
         notifyHelper.notify()
 
         //添加输入法到忽略列表

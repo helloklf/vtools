@@ -11,7 +11,7 @@ function setvolt()
         valid="$(cat $cluster | grep "$freq")"
         if [[ -n "$valid" && ! -z "$valid" ]]; then
             echo "$freq $volt"
-            #echo "$freq $volt" > "$cluster"
+            echo "$freq $volt" > "$cluster"
         fi;
     fi;
 }

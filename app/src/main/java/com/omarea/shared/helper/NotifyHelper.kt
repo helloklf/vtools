@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Build
+import android.os.Handler
 import android.support.v4.app.NotificationCompat
 import android.widget.RemoteViews
 import com.omarea.shared.ModeList
@@ -24,6 +25,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
     private var showNofity: Boolean = false
     private var notification: Notification? = null
     private var notificationManager: NotificationManager? = null
+    private var handler = Handler()
 
     private fun getAppName(packageName: String): CharSequence? {
         try {
@@ -96,22 +98,25 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         } else if (File("/sys/class/power_supply/battery/BatteryAverageCurrent").exists()) {
             path = "/sys/class/power_supply/battery/BatteryAverageCurrent"
         } else {
-            return  "? mAh"
+            return  "? mA"
         }
 
         var  io = KernelProrp.getProp(path, false)
         val unit = getBatteryUnit()
         var start = ""
         if(io.startsWith("+")) {
-            start = "-"
-            io = io.substring(1, io.length)
-        }
-        if(io.startsWith("-")) {
             start = "+"
             io = io.substring(1, io.length)
+        } else if(io.startsWith("-")) {
+            start = "-"
+            io = io.substring(1, io.length)
+        } else {
+            start = ""
         }
         if (unit != -1 && io.length > unit) {
-            return start + io.substring(0, io.length - unit) + "mAh"
+            return start + io.substring(0, io.length - unit) + "mA"
+        } else if (io.length <= 4) {
+            return start + io + "mA"
         }
         return start + io
     }
@@ -142,7 +147,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         val capacity =  getCapacity()
         try {
             if (capacity != null && !capacity.isNullOrEmpty()) {
-                remoteViews.setImageViewBitmap(R.id.notify_battery_icon , BitmapFactory.decodeResource(context.resources, getBatteryIcon(capacity.toInt()) ))
+                remoteViews.setImageViewBitmap(R.id.notify_battery_icon , BitmapFactory.decodeResource(context.resources, getBatteryIcon(capacity.replace("%", "").toInt()) ))
             }
         } catch (ex: Exception) {
         }
