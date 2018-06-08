@@ -21,7 +21,7 @@ import java.util.Objects;
 public class SwitchConfigReader {
     private static final String ASSETS_FILE = "file:///android_asset/";
 
-    private static InputStream getConfig(Context context){
+    private static InputStream getConfig(Context context) {
         try {
             return context.getAssets().open("switchs.xml");
         } catch (Exception ex) {

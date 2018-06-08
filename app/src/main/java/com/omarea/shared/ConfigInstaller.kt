@@ -42,10 +42,10 @@ class ConfigInstaller {
         if (fileBase.exists() && (!fileBase.canExecute() || !fileBase.canRead())) {
             SuDo(context).execCmdSync("chmod 0775 ${Consts.POWER_CFG_BASE}")
         }
-        if(file.length() > 1024 * 1024) {
+        if (file.length() > 1024 * 1024) {
             return
         }
-        if(fileBase.length() > 1024 * 1024) {
+        if (fileBase.length() > 1024 * 1024) {
             return
         }
         val cmd = StringBuilder()
@@ -77,7 +77,7 @@ class ConfigInstaller {
                         .append("chmod 0777 ${Consts.POWER_CFG_BASE};")
             }
         }
-        if(cmd.length == 0)
+        if (cmd.length == 0)
             return
         SuDo(context).execCmdSync(cmd.toString())
     }

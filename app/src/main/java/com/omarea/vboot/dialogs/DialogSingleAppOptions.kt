@@ -16,7 +16,7 @@ import com.omarea.shared.model.Appinfo
 class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handler) : DialogAppOptions(context, arrayListOf<Appinfo>(app), handler) {
 
     fun showSingleAppOptions() {
-        when(app.appType) {
+        when (app.appType) {
             Appinfo.AppType.USER -> showUserAppOptions()
             Appinfo.AppType.SYSTEM -> showSystemAppOptions()
             Appinfo.AppType.BACKUPFILE -> showBackupAppOptions()
@@ -39,7 +39,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                                 "卸载（保留数据）",
                                 "清空数据",
                                 "清除缓存",
-                                (if(app.enabled)  "冻结" else "解冻"),
+                                (if (app.enabled) "冻结" else "解冻"),
                                 "应用详情",
                                 "复制PackageName",
                                 "在应用商店查看"), { _, which ->
@@ -70,7 +70,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                                 "禁用 + 隐藏",
                                 "清空数据",
                                 "清除缓存",
-                                (if(app.enabled)  "冻结" else "解冻"),
+                                (if (app.enabled) "冻结" else "解冻"),
                                 "应用详情",
                                 "复制PackageName",
                                 "在应用商店查看"), { _, which ->

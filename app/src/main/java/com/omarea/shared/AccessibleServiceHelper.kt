@@ -23,7 +23,7 @@ class AccessibleServiceHelper {
         return false
     }
 
-    fun startServiceUseRoot(context: Context) : Boolean {
-        return AccessibilityServiceStart().strartService(context,  "${context.packageName}/${AccessibilityServiceVTools::class.java.name}")
+    fun startServiceUseRoot(context: Context): Boolean {
+        return AccessibilityServiceStart().strartService(context, "${context.packageName}/${AccessibilityServiceVTools::class.java.name}")
     }
 }

@@ -3,7 +3,6 @@ package com.omarea.scripts.simple.shell;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.pm.ApplicationInfo;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Environment;
@@ -81,7 +80,7 @@ public class SimpleShellExecutor {
         envp.add("DISPLAY_W=" + point.x);
         try {
             //process = Runtime.getRuntime().exec(root ? "su" : "bash");
-            if(root) {
+            if (root) {
                 process = Runtime.getRuntime().exec("su");
             } else {
                 process = Runtime.getRuntime().exec("sh", envp.toArray(new String[envp.size()]));
@@ -108,10 +107,10 @@ public class SimpleShellExecutor {
                     start = context.getFilesDir().getAbsolutePath();
                 }
 
-                if(root) {
+                if (root) {
                     StringBuilder envpCmds = new StringBuilder();
-                    if(envp.size() > 0) {
-                        for (String param: envp) {
+                    if (envp.size() > 0) {
+                        for (String param : envp) {
                             envpCmds.append("export ").append(param).append("\n");
                         }
                     }

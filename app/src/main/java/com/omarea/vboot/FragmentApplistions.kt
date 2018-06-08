@@ -103,7 +103,7 @@ class FragmentApplistions : Fragment() {
     }
 
     private fun getSelectedAppShowOptions(apptype: Appinfo.AppType) {
-        var adapter:Adapter? = null
+        var adapter: Adapter? = null
         when (apptype) {
             Appinfo.AppType.USER -> adapter = apps_userlist.adapter
             Appinfo.AppType.SYSTEM -> adapter = apps_systemlist.adapter
@@ -120,12 +120,12 @@ class FragmentApplistions : Fragment() {
             return
         }
 
-        when(apptype) {
-            Appinfo.AppType.SYSTEM->
+        when (apptype) {
+            Appinfo.AppType.SYSTEM ->
                 DialogAppOptions(context!!, selectedItems, myHandler).selectSystemAppOptions()
             Appinfo.AppType.USER ->
                 DialogAppOptions(context!!, selectedItems, myHandler).selectUserAppOptions()
-            Appinfo.AppType.BACKUPFILE->
+            Appinfo.AppType.BACKUPFILE ->
                 DialogAppOptions(context!!, selectedItems, myHandler).selectBackupOptions()
             else -> {
             }

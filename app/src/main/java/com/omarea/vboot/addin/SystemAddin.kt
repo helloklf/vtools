@@ -8,7 +8,7 @@ import com.omarea.shared.Consts
  */
 
 class SystemAddin(private var context: Context) : AddinBase(context) {
-    fun deleteLockPwd(){
+    fun deleteLockPwd() {
         command = StringBuilder().append(Consts.DeleteLockPwd).toString()
         super.run()
     }

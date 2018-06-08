@@ -27,6 +27,7 @@ class FragmentImg : Fragment() {
         item.put("Desc", desc)
         return item
     }
+
     //获取SD卡可用空间
     fun GetSDFreeSizeMB(): Long {
         val stat = StatFs(Environment.getDataDirectory().path)

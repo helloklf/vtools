@@ -17,11 +17,12 @@ import com.omarea.vboot.R
  */
 
 class DialogCustomMAC(private var context: Context) {
-    private var spf:SharedPreferences? = null
+    private var spf: SharedPreferences? = null
 
     init {
         spf = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
     }
+
     @SuppressLint("ApplySharedPref")
     fun modifyMAC() {
         val layoutInflater = LayoutInflater.from(context)
@@ -30,8 +31,7 @@ class DialogCustomMAC(private var context: Context) {
         val autoChange = dialog.findViewById(R.id.dialog_addin_mac_autochange) as CheckBox
         macInput.setText(spf!!.getString(SpfConfig.GLOBAL_SPF_MAC, "ec:d0:9f:af:95:01"))
         autoChange.isChecked = spf!!.getBoolean(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE, false)
-        autoChange.setOnCheckedChangeListener({
-            buttonView, isChecked ->
+        autoChange.setOnCheckedChangeListener({ buttonView, isChecked ->
             spf!!.edit().putBoolean(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE, isChecked).commit()
         })
 

@@ -15,11 +15,13 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
+import android.widget.CheckBox
+import android.widget.Switch
+import android.widget.TabHost
+import android.widget.TextView
 import com.omarea.shared.AccessibleServiceHelper
 import com.omarea.shared.AppListHelper
-import com.omarea.shared.ServiceHelper
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.model.Appinfo
 import com.omarea.ui.AppListAdapter
@@ -50,8 +52,7 @@ class FragmentBooster : Fragment() {
     @SuppressLint("ApplySharedPref")
     private fun bindSPF(checkBox: Switch, spf: SharedPreferences, prop: String, defValue: Boolean = false) {
         checkBox.isChecked = spf.getBoolean(prop, defValue)
-        checkBox.setOnCheckedChangeListener{
-            _, isChecked ->
+        checkBox.setOnCheckedChangeListener { _, isChecked ->
             spf.edit().putBoolean(prop, isChecked).commit()
         }
     }
@@ -59,8 +60,7 @@ class FragmentBooster : Fragment() {
     @SuppressLint("ApplySharedPref")
     private fun bindSPF(checkBox: CheckBox, spf: SharedPreferences, prop: String, defValue: Boolean = false) {
         checkBox.isChecked = spf.getBoolean(prop, defValue)
-        checkBox.setOnCheckedChangeListener{
-            _, isChecked ->
+        checkBox.setOnCheckedChangeListener { _, isChecked ->
             spf.edit().putBoolean(prop, isChecked).commit()
         }
     }
@@ -92,7 +92,7 @@ class FragmentBooster : Fragment() {
             val dialog = ProgressBarDialog(context!!)
             dialog.showDialog("尝试使用ROOT权限开启服务...")
             Thread(Runnable {
-                if(!AccessibleServiceHelper().startServiceUseRoot(context!!)) {
+                if (!AccessibleServiceHelper().startServiceUseRoot(context!!)) {
                     try {
                         myHandler.post {
                             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)

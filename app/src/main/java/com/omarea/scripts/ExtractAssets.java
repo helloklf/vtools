@@ -5,7 +5,6 @@ import android.content.Context;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.nio.charset.Charset;
 
 import kotlin.text.Charsets;
 
@@ -35,7 +34,7 @@ public class ExtractAssets {
             byte[] cache = new byte[1024 * 1024];
             int length;
             while ((length = inputStream.read(cache)) > 0) {
-                fileOutputStream.write(new String(cache,0, length).replaceAll("\r\n", "\n").replaceAll("\r\t", "\t").getBytes(Charsets.UTF_8));
+                fileOutputStream.write(new String(cache, 0, length).replaceAll("\r\n", "\n").replaceAll("\r\t", "\t").getBytes(Charsets.UTF_8));
             }
             fileOutputStream.flush();
             fileOutputStream.close();

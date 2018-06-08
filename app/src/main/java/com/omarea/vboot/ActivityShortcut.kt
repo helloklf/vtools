@@ -15,9 +15,9 @@ class ActivityShortcut : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (Platform().dynamicSupport(this) ||  File(Consts.POWER_CFG_PATH).exists()) {
+        if (Platform().dynamicSupport(this) || File(Consts.POWER_CFG_PATH).exists()) {
             val action = intent.action
-            if(action != null && !action.isNullOrEmpty()) {
+            if (action != null && !action.isNullOrEmpty()) {
                 installConfig(action)
                 Toast.makeText(this, modeList.getModName(action), Toast.LENGTH_SHORT).show()
             }

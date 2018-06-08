@@ -29,6 +29,7 @@ class BatteryAddin(private var context: Context) : AddinBase(context) {
         command = StringBuilder().append(Consts.DisableChanger).toString()
         super.run()
     }
+
     fun resumeCharge() {
         if (File("/sys/class/power_supply/battery/battery_charging_enabled").exists() || File("/sys/class/power_supply/battery/input_suspend").exists()) {
         } else {

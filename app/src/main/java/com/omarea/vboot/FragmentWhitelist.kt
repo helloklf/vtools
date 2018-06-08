@@ -40,20 +40,18 @@ class FragmentWhitelist : Fragment() {
         whitelist_tabhost.currentTab = 0
 
         val spf = context!!.getSharedPreferences(SpfConfig.WHITE_LIST_SPF, Context.MODE_PRIVATE)
-        booster_whitelist.setOnItemClickListener({
-            parent, itemView, position, id ->
+        booster_whitelist.setOnItemClickListener({ parent, itemView, position, id ->
             val checkBox = itemView.findViewById(R.id.select_state) as CheckBox
             checkBox.isChecked = !checkBox.isChecked
 
             val item = (parent.adapter.getItem(position) as Appinfo)
             val packageName = item.packageName.toString()
             spf.edit().putBoolean(packageName, checkBox.isChecked).commit()
-            keepShell.doCmd((if(checkBox.isChecked) "dumpsys deviceidle whitelist +$packageName" else "dumpsys deviceidle whitelist -$packageName"))
+            keepShell.doCmd((if (checkBox.isChecked) "dumpsys deviceidle whitelist +$packageName" else "dumpsys deviceidle whitelist -$packageName"))
         })
         val globalSpf = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         doze_whitelist_autoset.isChecked = globalSpf.getBoolean(SpfConfig.GLOBAL_SPF_DOZELIST_AUTOSET, false)
-        doze_whitelist_autoset.setOnCheckedChangeListener({
-            buttonView, isChecked ->
+        doze_whitelist_autoset.setOnCheckedChangeListener({ buttonView, isChecked ->
             globalSpf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DOZELIST_AUTOSET, isChecked).commit()
         })
     }
@@ -74,7 +72,7 @@ class FragmentWhitelist : Fragment() {
         dialog.showDialog()
         Thread(Runnable {
             val apps = AppListHelper(context!!).getAll()
-            var whitelist = SysUtils.executeCommandWithOutput(true,"dumpsys deviceidle whitelist")
+            var whitelist = SysUtils.executeCommandWithOutput(true, "dumpsys deviceidle whitelist")
             if (whitelist == null) {
                 whitelist = "";
             }

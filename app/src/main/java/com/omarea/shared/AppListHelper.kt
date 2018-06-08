@@ -53,7 +53,7 @@ class AppListHelper(context: Context) {
         }
     }
 
-    private fun exclude(packageName: String):Boolean{
+    private fun exclude(packageName: String): Boolean {
         if (packageName.endsWith(".Pure")) {
             return true
         }
@@ -63,7 +63,7 @@ class AppListHelper(context: Context) {
     /**
      * 验证已备份版本
      */
-    fun checkBackup(packageInfo: ApplicationInfo) : String {
+    fun checkBackup(packageInfo: ApplicationInfo): String {
         try {
             val packageName = packageInfo.packageName
             val absPath = Consts.AbsBackUpDir + packageName + ".apk"
@@ -92,7 +92,7 @@ class AppListHelper(context: Context) {
     /**
      * 检查已安装版本
      */
-    fun checkInstall(backupInfo: PackageInfo) : String {
+    fun checkInstall(backupInfo: PackageInfo): String {
         try {
             val installInfo = packageManager.getPackageInfo(backupInfo.packageName, 0)
             if (installInfo == null)

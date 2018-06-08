@@ -37,8 +37,7 @@ class BackupRestoreUnit(var context: Context) {
 
     //显示文本消息
     fun ShowMsg(msg: String, longMsg: Boolean) {
-        if (context != null)
-            myHandler.post { Toast.makeText(context, msg, if (longMsg) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show() }
+        myHandler.post { Toast.makeText(context, msg, if (longMsg) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show() }
     }
 
     //刷入Boot

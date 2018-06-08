@@ -17,14 +17,13 @@ class ServiceHelper(private var context: Context) : ModeList() {
     private var lastPackage: String? = null
     private var lastModePackage: String? = null
     private var lastMode = ""
-    private val serviceCreatedTime = Date().time
     private var spfPowercfg: SharedPreferences = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
     private var spfBlacklist: SharedPreferences = context.getSharedPreferences(SpfConfig.BOOSTER_BLACKLIST_SPF, Context.MODE_PRIVATE)
     private var spfAutoConfig: SharedPreferences = context.getSharedPreferences(SpfConfig.BOOSTER_SPF_CFG_SPF, Context.MODE_PRIVATE)
     private var spfGlobal: SharedPreferences = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
     //标识是否已经加载完设置
     private var settingsLoaded = false
-    private var ignoredList = arrayListOf<String>(
+    private var ignoredList = arrayListOf(
             "com.miui.securitycenter",
             "android",
             "com.android.systemui",
@@ -38,12 +37,12 @@ class ServiceHelper(private var context: Context) : ModeList() {
     private var lockScreenOptimize = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE, false)
     private var firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
     private var screenOn: Boolean = true
-    private var lastScreenOnOff:Long = 0
+    private var lastScreenOnOff: Long = 0
 
     //屏幕关闭后切换网络延迟（ms）
-    private val SCREEN_OFF_SWITCH_NETWORK_DELAY:Long = 30000
+    private val SCREEN_OFF_SWITCH_NETWORK_DELAY: Long = 30000
     //屏幕关闭后清理任务延迟（ms）
-    private val SCREEN_OFF_CLEAR_TASKS_DELAY:Long = 60000
+    private val SCREEN_OFF_CLEAR_TASKS_DELAY: Long = 60000
     private var screenHandler = ScreenEventHandler({ onScreenOff() }, { onScreenOn() })
     private var handler = Handler()
 
@@ -70,7 +69,7 @@ class ServiceHelper(private var context: Context) : ModeList() {
     }
 
     //屏幕关闭时执行
-    private fun onScreenOff () {
+    private fun onScreenOff() {
         screenOn = false
         lastScreenOnOff = System.currentTimeMillis()
         if (autoBooster) {
@@ -88,9 +87,9 @@ class ServiceHelper(private var context: Context) : ModeList() {
 
     //屏幕关闭后 - 关闭网络
     private fun onScreenOffCloseNetwork() {
-        if((settingsLoaded) && dyamicCore && lockScreenOptimize && screenOn == false) {
+        if ((settingsLoaded) && dyamicCore && lockScreenOptimize && screenOn == false) {
             toggleConfig(POWERSAVE)
-            if(debugMode)
+            if (debugMode)
                 showMsg("动态响应-锁屏优化 已息屏，自动切换省电模式")
         }
         if (autoBooster && System.currentTimeMillis() - lastScreenOnOff >= SCREEN_OFF_SWITCH_NETWORK_DELAY && screenOn == false) {
@@ -117,7 +116,7 @@ class ServiceHelper(private var context: Context) : ModeList() {
     }
 
     //点亮屏幕且解锁后执行
-    private fun onScreenOn () {
+    private fun onScreenOn() {
         if (debugMode && autoBooster)
             showMsg("屏幕开启！")
 
@@ -127,13 +126,12 @@ class ServiceHelper(private var context: Context) : ModeList() {
         screenOn = true
         startTimer()
 
-        if(settingsLoaded && dyamicCore && lockScreenOptimize) {
-            if(this.lastModePackage != null && !this.lastModePackage.isNullOrEmpty())
-            {
+        if (settingsLoaded && dyamicCore && lockScreenOptimize) {
+            if (this.lastModePackage != null && !this.lastModePackage.isNullOrEmpty()) {
                 handler.postDelayed({
-                    if(screenOn)
+                    if (screenOn)
                         forceToggleMode(this.lastModePackage)
-                    if(debugMode)
+                    if (debugMode)
                         showMsg("动态响应-锁屏优化 已解锁，自动恢复配置")
                 }, 5000)
             }
@@ -199,7 +197,7 @@ class ServiceHelper(private var context: Context) : ModeList() {
                     forceToggleMode(key)
                 }
             }
-        } else if(key == SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE) {
+        } else if (key == SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE) {
             forceToggleMode(lastModePackage)
         }
     }
@@ -219,7 +217,7 @@ class ServiceHelper(private var context: Context) : ModeList() {
     }
 
     //更新通知
-    private fun updateModeNofity(){
+    private fun updateModeNofity() {
         if (lastModePackage != null && !lastModePackage.isNullOrEmpty()) {
             notifyHelper.notifyPowerModeChange(lastModePackage!!, lastMode)
         } else
@@ -232,8 +230,8 @@ class ServiceHelper(private var context: Context) : ModeList() {
             return
         val mode = spfPowercfg.getString(packageName, firstMode)
         when (mode) {
-            IGONED ->     return
-            else ->{
+            IGONED -> return
+            else -> {
                 toggleConfig(mode)
                 showModeToggleMsg(packageName, getModName(mode))
                 lastModePackage = packageName
@@ -249,8 +247,8 @@ class ServiceHelper(private var context: Context) : ModeList() {
 
         val mode = spfPowercfg.getString(packageName, firstMode)
         when (mode) {
-            IGONED ->     return
-            else ->{
+            IGONED -> return
+            else -> {
                 if (lastMode != mode) {
                     toggleConfig(mode)
                     showModeToggleMsg(packageName, getModName(mode))
@@ -321,7 +319,7 @@ class ServiceHelper(private var context: Context) : ModeList() {
     //#endregion
 
     //清理后台
-    private fun clearTasks(timeout: Long =  SCREEN_OFF_CLEAR_TASKS_DELAY) {
+    private fun clearTasks(timeout: Long = SCREEN_OFF_CLEAR_TASKS_DELAY) {
         if (!autoBooster || screenOn) {
             return
         }
@@ -339,7 +337,7 @@ class ServiceHelper(private var context: Context) : ModeList() {
                 val spf = context.getSharedPreferences(SpfConfig.WHITE_LIST_SPF, Context.MODE_PRIVATE)
 
                 for (item in spfBlacklist.all) {
-                    if(!spf.getBoolean(item.key, false)) {
+                    if (!spf.getBoolean(item.key, false)) {
                         cmds.append("dumpsys deviceidle whitelist -${item.key}")
                         cmds.append("am set-inactive ${item.key} true;")
                         cmds.append("am stop ${item.key};am force-stop ${item.key};")
@@ -355,8 +353,7 @@ class ServiceHelper(private var context: Context) : ModeList() {
                 if (debugMode)
                     showMsg("后台已自动清理...")
             }
-        }
-        else {
+        } else {
             //超时时间：1分钟
             screenHandler.postDelayed({
                 if (System.currentTimeMillis() - lastScreenOnOff >= SCREEN_OFF_CLEAR_TASKS_DELAY) {
@@ -403,10 +400,10 @@ class ServiceHelper(private var context: Context) : ModeList() {
             ignoredList.addAll(InputHelper(context).getInputMethods())
         }).start()
         ReciverLock.autoRegister(context, screenHandler)
-        if(spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true))
+        if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true))
             keepShell.doCmd(Consts.DisableSELinux)
 
-        if  (dyamicCore)
+        if (dyamicCore)
             keepShell.doCmd(Consts.ExecuteConfig)
 
         settingsLoaded = true

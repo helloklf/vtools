@@ -12,15 +12,4 @@ object Files {
         val size = stat.availableBytes
         return size / 1024 / 1024 //剩余空间
     }
-
-    fun getDirSize(dir: String): Long {
-        val stat = StatFs(dir)
-        val size = stat.totalBytes
-        return size / 1024 / 1024 //剩余空间
-    }
-
-    fun getFiles(dir:String): String? {
-        val cmdResult = SysUtils.executeCommandWithOutput(false, "ls -lh ${dir};")
-        return cmdResult;
-    }
 }

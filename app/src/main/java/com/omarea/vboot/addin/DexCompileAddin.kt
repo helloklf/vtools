@@ -81,7 +81,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                         this.postDelayed({
                             alert.dismiss()
                             alert.hide()
-                        },2000)
+                        }, 2000)
                     } else if (Regex("^\\[.*\\]\$").matches(obj)) {
                         progressBar.progress = msg.what
                         val txt = obj
@@ -168,6 +168,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
     override fun run() {
         run2()
     }
+
     fun modifyConfig() {
         if (!isSupport()) {
             return
@@ -176,14 +177,13 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
         val arr = arrayOf("最快安装速度", "最佳性能（Speed）", "完整编译（Everything）", "永不编译", "恢复默认")
         val intallMode = Props.getProp("pm.dexopt.install")
         var index = 0
-        when(intallMode) {
+        when (intallMode) {
             "speed" -> index = 1
             "everything" -> index = 2
             else -> {
-                if(Props.getProp("pm.dexopt.core-app") == "verify-none") {
+                if (Props.getProp("pm.dexopt.core-app") == "verify-none") {
                     index = 3
-                }
-                else
+                } else
                     index = 0
             }
         }

@@ -2,14 +2,13 @@ package com.omarea.shell.units
 
 import android.content.Context
 import com.omarea.shell.SuDo
-import com.omarea.vboot.AccessibilityServiceVTools
 
 /**
  * Created by Hello on 2018/06/03.
  */
 
 class AccessibilityServiceStart {
-    fun strartService(context: Context, serviceName: String) : Boolean {
+    fun strartService(context: Context, serviceName: String): Boolean {
         return SuDo(context).execCmdSync(
                 "services=`settings get secure enabled_accessibility_services`;\n" +
                         "service='$serviceName';\n" +

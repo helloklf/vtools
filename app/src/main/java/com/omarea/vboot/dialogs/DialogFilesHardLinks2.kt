@@ -93,20 +93,21 @@ class DialogFilesHardLinks2(private var context: Context) {
         }
     }
 
-    class AppInfosGetedHandler(private var context: Context,private var next:Runnable): Handler(){
+    class AppInfosGetedHandler(private var context: Context, private var next: Runnable) : Handler() {
         class DiskFileInfo {
-            var md5:String = "";
-            var inode:String = "";
-            var path:String = "";
-            var sizeKB:Int = 0;
+            var md5: String = "";
+            var inode: String = "";
+            var path: String = "";
+            var sizeKB: Int = 0;
         }
-        private fun splitAppinfos(appinfos:ArrayList<String>?): HashMap<String, HashMap<String, ArrayList<DiskFileInfo>>>? {
+
+        private fun splitAppinfos(appinfos: ArrayList<String>?): HashMap<String, HashMap<String, ArrayList<DiskFileInfo>>>? {
             if (appinfos == null || appinfos.size == 0)
                 return null
             //<MD5,<INode,Path[]>>
             val md5Map = HashMap<String, HashMap<String, ArrayList<DiskFileInfo>>>()
             for (appinfo in appinfos) {
-                val row = appinfo.substring("[fileinfo:".length, appinfo.length -1).split(";")
+                val row = appinfo.substring("[fileinfo:".length, appinfo.length - 1).split(";")
                 val inode = row[0]
                 val md5 = row[1]
                 val path = row[2]
@@ -133,7 +134,7 @@ class DialogFilesHardLinks2(private var context: Context) {
             return md5Map
         }
 
-        private fun getRedundancy(md5Map:HashMap<String, HashMap<String, ArrayList<DiskFileInfo>>>?){
+        private fun getRedundancy(md5Map: HashMap<String, HashMap<String, ArrayList<DiskFileInfo>>>?) {
             if (md5Map == null)
                 return
 
@@ -152,20 +153,18 @@ class DialogFilesHardLinks2(private var context: Context) {
             }
             AlertDialog.Builder(context)
                     .setTitle("文件检索完成")
-                    .setMessage("找到${redundancy}个冗余文件，处理以后可节省${mbSize/1024}MB存储空间\n\n但该功能是试验性的，可能会导致应用闪退、应用丢失甚至需要恢复出厂设置！！！")
-                    .setNegativeButton("处理", {
-                        _,_ ->
+                    .setMessage("找到${redundancy}个冗余文件，处理以后可节省${mbSize / 1024}MB存储空间\n\n但该功能是试验性的，可能会导致应用闪退、应用丢失甚至需要恢复出厂设置！！！")
+                    .setNegativeButton("处理", { _, _ ->
                         hardlinkMerge(md5Map)
                         next.run()
                     })
-                    .setNeutralButton("取消", {
-                        _,_ ->
+                    .setNeutralButton("取消", { _, _ ->
                     })
                     .create()
                     .show()
         }
 
-        class HardlinkMergeHandler(private var runnable: Runnable, dialog: AlertDialog): Handler(){
+        class HardlinkMergeHandler(private var runnable: Runnable, dialog: AlertDialog) : Handler() {
             private var textView: TextView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
 
             override fun handleMessage(msg: Message?) {
@@ -187,7 +186,7 @@ class DialogFilesHardLinks2(private var context: Context) {
             }
         }
 
-        private fun buildScript(md5map:HashMap<String, HashMap<String, ArrayList<DiskFileInfo>>>): StringBuilder {
+        private fun buildScript(md5map: HashMap<String, HashMap<String, ArrayList<DiskFileInfo>>>): StringBuilder {
             val stringBuilder = StringBuilder()
             for (group in md5map) {
                 //primary file
@@ -224,7 +223,7 @@ class DialogFilesHardLinks2(private var context: Context) {
             }, alert)).exec(sb.toString()).waitFor()
         }
 
-        private fun hardlinkMerge(md5map:HashMap<String, HashMap<String, ArrayList<DiskFileInfo>>>) {
+        private fun hardlinkMerge(md5map: HashMap<String, HashMap<String, ArrayList<DiskFileInfo>>>) {
             execShell(buildScript(md5map))
         }
 

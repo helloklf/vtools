@@ -11,8 +11,8 @@ class Platform {
     //获取CPU型号，如msm8996
     fun GetCPUName(): String {
         val cpu = Props.getProp("ro.board.platform")
-        if( cpu==null) {
-            return  ""
+        if (cpu == null) {
+            return ""
         } else {
             return cpu
         }

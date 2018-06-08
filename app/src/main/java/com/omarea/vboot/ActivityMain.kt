@@ -23,12 +23,10 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import com.omarea.shared.ConfigInstaller
 import com.omarea.shared.Consts
 import com.omarea.shared.CrashHandler
 import com.omarea.shared.SpfConfig
-import com.omarea.shared.helper.NotifyHelper
 import com.omarea.shell.Busybox
 import com.omarea.shell.CheckRootStatus
 import com.omarea.shell.SuDo
@@ -45,7 +43,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var globalSPF: SharedPreferences? = null
     private var myHandler = Handler()
 
-    private fun setExcludeFromRecents(exclude:Boolean? = null) {
+    private fun setExcludeFromRecents(exclude: Boolean? = null) {
         try {
             val service = this.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
             for (task in service.appTasks) {
@@ -63,8 +61,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //setMaxAspect()
         if (globalSPF == null) {
             globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-            val listener = SharedPreferences.OnSharedPreferenceChangeListener {
-                sharedPreferences, key ->
+            val listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
                 if (key == SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT) {
                     setExcludeFromRecents(sharedPreferences.getBoolean(key, false))
                 }
@@ -101,6 +98,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             startActivity(intent);
         }
     }
+
     public fun setMaxAspect() {
         var applicationInfo: ApplicationInfo? = null;
         try {
@@ -112,12 +110,13 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             throw IllegalArgumentException(" get application info = null, has no meta data! ");
         }
         val metaData = applicationInfo.metaData
-        if(metaData != null) {
+        if (metaData != null) {
             val aspect = metaData.getFloat("android.max_aspect")
-            if(aspect < 2.4f)
-            metaData.putFloat("android.max_aspect", 2.1f)
+            if (aspect < 2.4f)
+                metaData.putFloat("android.max_aspect", 2.1f)
         }
     }
+
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
         try {
@@ -189,7 +188,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     .show()
             return
         }
-        if(!globalConfig.contains(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE)) {
+        if (!globalConfig.contains(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE)) {
             CheckRootStatus(this, Runnable {
                 myHandler.post {
                     globalConfig.edit().putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE_CHECKING, true)
@@ -209,7 +208,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     }).start()
                 }
             }, skip, false).forceGetRoot()
-        } else{
+        } else {
             val disableSeLinux = globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true)
             CheckRootStatus(this, next, skip, disableSeLinux).forceGetRoot()
         }
@@ -254,7 +253,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onDestroy() {
         try {
             if (getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-                    .getBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, false)) {
+                            .getBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, false)) {
                 this.finishAndRemoveTask()
             }
         } catch (ex: Exception) {
@@ -312,8 +311,8 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     startActivity(Intent().setComponent(ComponentName("com.omarea.vaddin", "com.omarea.vaddin.MainActivity")))
                 } catch (e: Exception) {
                     AlertDialog.Builder(this).setTitle("Fail！")
-                            .setMessage( getString(R.string.xposed_cannot_openaddin))
-                            .setPositiveButton(R.string.btn_confirm, DialogInterface.OnClickListener { dialog, which ->  })
+                            .setMessage(getString(R.string.xposed_cannot_openaddin))
+                            .setPositiveButton(R.string.btn_confirm, DialogInterface.OnClickListener { dialog, which -> })
                             .create()
                             .show()
                 }

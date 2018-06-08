@@ -72,7 +72,7 @@ class DialogAddinWIFI(private var context: Context) {
                         if (node == null) {
                             continue
                         }
-                        if ( node.nodeValue == "SSID") {
+                        if (node.nodeValue == "SSID") {
                             stringBuild.append("网络：")
                             stringBuild.append(wifi.item(j).textContent)
                             stringBuild.append("\n")

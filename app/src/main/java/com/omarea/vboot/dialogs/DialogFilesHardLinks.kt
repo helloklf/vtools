@@ -15,7 +15,7 @@ import java.security.MessageDigest
  * 该类废弃，因为在java层没有权限读取底层文件
  */
 
-class DialogFilesHardLinks (private var handler: Handler, private var rootDir:String = "/raw/data/multiboot") {
+class DialogFilesHardLinks(private var handler: Handler, private var rootDir: String = "/raw/data/multiboot") {
     //检查文件列表
     fun checkFileList() {
         Thread(Runnable {
@@ -26,7 +26,7 @@ class DialogFilesHardLinks (private var handler: Handler, private var rootDir:St
                 val inodeGroups = groupByInode(fileGroups)
 
                 handler.sendMessage(handler.obtainMessage(1, inodeGroups))
-            } catch (ex:Exception) {
+            } catch (ex: Exception) {
                 handler.sendMessage(handler.obtainMessage(-1))
                 ex.stackTrace
             }
@@ -37,7 +37,7 @@ class DialogFilesHardLinks (private var handler: Handler, private var rootDir:St
     private fun getAppDirs(): ArrayList<File> {
         val root = File(rootDir)
         val dirs = root.listFiles({ pathname: File? ->
-            pathname !=null && pathname.isDirectory && pathname.canRead() && File(pathname.absolutePath + "/data/app").exists()
+            pathname != null && pathname.isDirectory && pathname.canRead() && File(pathname.absolutePath + "/data/app").exists()
         })
         val appDirs = ArrayList<File>()
         for (dir in dirs) {
@@ -56,19 +56,17 @@ class DialogFilesHardLinks (private var handler: Handler, private var rootDir:St
     }
 
     //获取单个目录下的apk文件
-    private fun getApkFiles(dir:File): ArrayList<File> {
+    private fun getApkFiles(dir: File): ArrayList<File> {
         val array = ArrayList<File>()
-        for (appDir in dir.listFiles({pathname: File? ->
+        for (appDir in dir.listFiles({ pathname: File? ->
             pathname != null && pathname.isDirectory
         })) {
-            val apks = appDir.listFiles({
-                pathname: File? ->
+            val apks = appDir.listFiles({ pathname: File? ->
                 pathname != null && pathname.extension.toLowerCase() == "apk"
             })
             array.addAll(apks)
         }
-        val apks = dir.listFiles({
-            pathname: File? ->
+        val apks = dir.listFiles({ pathname: File? ->
             pathname != null && pathname.isFile && pathname.extension.toLowerCase() == "apk"
         })
         array.addAll(apks)
@@ -76,8 +74,8 @@ class DialogFilesHardLinks (private var handler: Handler, private var rootDir:St
     }
 
     //按照文件md5值分组文件
-    private fun groupByMd5(files:ArrayList<File>): HashMap<String, ArrayList<File>> {
-        val hashMap = HashMap<String,ArrayList<File>>()
+    private fun groupByMd5(files: ArrayList<File>): HashMap<String, ArrayList<File>> {
+        val hashMap = HashMap<String, ArrayList<File>>()
         for (file in files) {
             val md5 = getMd5ByFile(file)
             if (md5 != null) {
@@ -114,7 +112,7 @@ class DialogFilesHardLinks (private var handler: Handler, private var rootDir:St
 
     //根据文件在磁盘上的inode分组相同md5的文件
     private fun groupByInode(fileGroups: HashMap<String, ArrayList<File>>): HashMap<String, HashMap<String, ArrayList<File>>> {
-        val filterFiles = HashMap<String,HashMap<String, ArrayList<File>>>()
+        val filterFiles = HashMap<String, HashMap<String, ArrayList<File>>>()
         for (group in fileGroups) {
             val md5 = group.key
             val inodeGroups = HashMap<String, ArrayList<File>>()
@@ -137,7 +135,7 @@ class DialogFilesHardLinks (private var handler: Handler, private var rootDir:St
     }
 
     //查找磁盘上inode相同的文件
-    private fun findInodeNumber(filename:String, filetype: String = "*.apk"): List<String> {
+    private fun findInodeNumber(filename: String, filetype: String = "*.apk"): List<String> {
         return SysUtils.executeCommandWithOutput(false,
                 "i=\$(ls -i \"${filename}\" |cut -f1 -d\" \") && find $rootDir -inum \$i -iname \"$filetype\""
         ).trim().split("\n")

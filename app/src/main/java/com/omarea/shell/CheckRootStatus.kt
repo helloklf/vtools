@@ -6,7 +6,6 @@ import android.content.Context
 import android.os.Handler
 import android.support.v4.content.PermissionChecker
 import com.omarea.shared.Consts
-import com.omarea.shared.SpfConfig
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.vboot.R
 
@@ -15,7 +14,7 @@ import com.omarea.vboot.R
  * Created by helloklf on 2017/6/3.
  */
 
-class CheckRootStatus(var context: Context, private var next:Runnable? = null, private var skip:Runnable?, private var disableSeLinux: Boolean = false) {
+class CheckRootStatus(var context: Context, private var next: Runnable? = null, private var skip: Runnable?, private var disableSeLinux: Boolean = false) {
     var myHandler: Handler = Handler()
 
     private fun checkPermission(permission: String): Boolean =
@@ -27,7 +26,7 @@ class CheckRootStatus(var context: Context, private var next:Runnable? = null, p
         try {
             process = Runtime.getRuntime().exec("su")
             val out = process!!.outputStream.bufferedWriter()
-            if(disableSeLinux)
+            if (disableSeLinux)
                 out.write(Consts.DisableSELinux)
             out.write("dumpsys deviceidle whitelist +com.omarea.vboot;\n")
             if (!(checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
@@ -68,7 +67,7 @@ class CheckRootStatus(var context: Context, private var next:Runnable? = null, p
                     alert.setCancelable(false)
                     alert.setTitle(R.string.error_root)
                     alert.setNegativeButton(R.string.btn_refresh, { _, _ ->
-                        if(therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
+                        if (therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
                             therad!!.interrupt()
                             therad = null
                         }
@@ -77,7 +76,7 @@ class CheckRootStatus(var context: Context, private var next:Runnable? = null, p
                     alert.setNeutralButton(R.string.btn_skip, { _, _ ->
                         //android.os.Process.killProcess(android.os.Process.myPid())
                         completed = true
-                        if(therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
+                        if (therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
                             therad!!.interrupt()
                             therad = null
                         }
@@ -107,14 +106,14 @@ class CheckRootStatus(var context: Context, private var next:Runnable? = null, p
                 alert.setTitle(R.string.error_root)
                 alert.setMessage(R.string.error_su_timeout)
                 alert.setNegativeButton(R.string.btn_refresh, { _, _ ->
-                    if(therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
+                    if (therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
                         therad!!.interrupt()
                         therad = null
                     }
                     forceGetRoot()
                 })
                 alert.setNeutralButton(R.string.btn_skip, { _, _ ->
-                    if(therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
+                    if (therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
                         therad!!.interrupt()
                         therad = null
                     }
@@ -138,7 +137,7 @@ class CheckRootStatus(var context: Context, private var next:Runnable? = null, p
         }
 
         public fun isTmpfs(dir: String): Boolean {
-            return  SysUtils.executeCommandWithOutput(false, " df | grep tmpfs | grep \"$dir\"").trim().length > 0
+            return SysUtils.executeCommandWithOutput(false, " df | grep tmpfs | grep \"$dir\"").trim().length > 0
         }
     }
 }

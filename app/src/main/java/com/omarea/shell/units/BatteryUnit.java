@@ -20,15 +20,15 @@ public class BatteryUnit {
         return new File("/sys/class/power_supply/battery/constant_charge_current_max").exists();
     }
 
-    public String getqcLimit () {
+    public String getqcLimit() {
         String limit = KernelProrp.getProp("/sys/class/power_supply/battery/constant_charge_current_max");
         if (limit.length() > 3) {
             limit = limit.substring(0, limit.length() - 3) + "mA";
         } else if (limit.length() > 0) {
             try {
-              if (Integer.parseInt(limit) == 0) {
-                  limit = "0";
-              }
+                if (Integer.parseInt(limit) == 0) {
+                    limit = "0";
+                }
             } catch (Exception ex) {
 
             }
@@ -60,7 +60,7 @@ public class BatteryUnit {
                         stringBuilder.append("充满容量 = ");
                         stringBuilder.append(info.substring(keyrowd.length(), keyrowd.length() + 4));
                         if (mahLength == 0) {
-                            String value = info.substring(keyrowd.length(),info.length());
+                            String value = info.substring(keyrowd.length(), info.length());
                             mahLength = value.length();
                         }
                         stringBuilder.append("mAh");
@@ -68,7 +68,7 @@ public class BatteryUnit {
                         stringBuilder.append("设计容量 = ");
                         stringBuilder.append(info.substring(keyrowd.length(), keyrowd.length() + 4));
                         stringBuilder.append("mAh");
-                        String value = info.substring(keyrowd.length(),info.length());
+                        String value = info.substring(keyrowd.length(), info.length());
                         mahLength = value.length();
                     } else if (info.startsWith(keyrowd = "POWER_SUPPLY_TEMP=")) {
                         stringBuilder.append("电池温度 = ");
@@ -131,8 +131,8 @@ public class BatteryUnit {
             }
 
             if (io.length() > 0 && mahLength != 0) {
-                int val = (mahLength < 5) ? (Integer.parseInt(io)):((int) (Integer.parseInt(io) / Math.pow(10, mahLength - 4)));
-                stringBuilder.insert(0, "放电速度 = "+ val +"mA\n");
+                int val = (mahLength < 5) ? (Integer.parseInt(io)) : ((int) (Integer.parseInt(io) / Math.pow(10, mahLength - 4)));
+                stringBuilder.insert(0, "放电速度 = " + val + "mA\n");
             }
 
             return stringBuilder.toString();
@@ -215,18 +215,18 @@ public class BatteryUnit {
     public void setChargeInputLimit(int limit) {
         String cmd =
                 "echo 0 > /sys/class/power_supply/battery/restricted_charging;" +
-                "echo 0 > /sys/class/power_supply/battery/safety_timer_enabled;" +
-                "chmod 644 /sys/class/power_supply/bms/temp_warm;" +
-                "echo 480 > /sys/class/power_supply/bms/temp_warm;" +
-                "chmod 644 /sys/class/power_supply/battery/constant_charge_current_max;" +
-                "echo 2000000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
-                "echo 2500000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
-                "echo 3000000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
-                "echo 3500000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
-                "echo 4000000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
-                "echo 4500000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
-                "echo 5000000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
-                "echo " + limit + "000 > /sys/class/power_supply/battery/constant_charge_current_max;";
+                        "echo 0 > /sys/class/power_supply/battery/safety_timer_enabled;" +
+                        "chmod 644 /sys/class/power_supply/bms/temp_warm;" +
+                        "echo 480 > /sys/class/power_supply/bms/temp_warm;" +
+                        "chmod 644 /sys/class/power_supply/battery/constant_charge_current_max;" +
+                        "echo 2000000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
+                        "echo 2500000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
+                        "echo 3000000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
+                        "echo 3500000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
+                        "echo 4000000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
+                        "echo 4500000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
+                        "echo 5000000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
+                        "echo " + limit + "000 > /sys/class/power_supply/battery/constant_charge_current_max;";
 
         new SuDo(null).execCmdSync(cmd);
     }

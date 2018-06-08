@@ -13,7 +13,7 @@ import android.os.Handler
  * Created by Hello on 2018/01/23.
  */
 
-class ReciverLock(private var callbacks: Handler): BroadcastReceiver() {
+class ReciverLock(private var callbacks: Handler) : BroadcastReceiver() {
     private var handler = Handler()
     private var lastChange = 0L
     override fun onReceive(p0: Context?, p1: Intent?) {

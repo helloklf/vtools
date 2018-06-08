@@ -17,7 +17,7 @@ class AsynSuShellUnit(var handler: Handler) {
 
             Thread(Runnable {
                 try {
-                    var line : String
+                    var line: String
                     val reader = process!!.inputStream.bufferedReader()
                     while (true) {
                         line = reader.readLine()
@@ -30,7 +30,7 @@ class AsynSuShellUnit(var handler: Handler) {
                             break
                         }
                     }
-                } catch (ex:Exception) {
+                } catch (ex: Exception) {
                     print(ex.message)
                 }
             }).start()
@@ -83,6 +83,7 @@ class AsynSuShellUnit(var handler: Handler) {
             handler.sendMessage(handler.obtainMessage(10, true))
         }).start()
     }
+
     fun waitFor(next: Runnable) {
         if (process == null)
             return

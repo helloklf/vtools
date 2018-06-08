@@ -18,11 +18,9 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.CheckBox
-import android.widget.ListView
 import com.omarea.shared.*
 import com.omarea.shared.model.Appinfo
 import com.omarea.shell.Platform
-import com.omarea.shell.SuDo
 import com.omarea.ui.AppListAdapter
 import com.omarea.ui.OverScrollListView
 import com.omarea.ui.ProgressBarDialog
@@ -80,7 +78,7 @@ class FragmentConfig : Fragment() {
             val dialog = ProgressBarDialog(context!!)
             dialog.showDialog("尝试使用ROOT权限开启服务...")
             Thread(Runnable {
-                if(!AccessibleServiceHelper().startServiceUseRoot(context!!)) {
+                if (!AccessibleServiceHelper().startServiceUseRoot(context!!)) {
                     try {
                         myHandler.post {
                             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
@@ -219,7 +217,7 @@ class FragmentConfig : Fragment() {
         loadList()
 
         val modeValue = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance")
-        when(modeValue) {
+        when (modeValue) {
             "powersave" -> first_mode.setSelection(0)
             "balance" -> first_mode.setSelection(1)
             "performance" -> first_mode.setSelection(2)
@@ -231,13 +229,14 @@ class FragmentConfig : Fragment() {
         })
     }
 
-    private class ModeOnItemSelectedListener(private var globalSPF: SharedPreferences, private var runnable: Runnable): AdapterView.OnItemSelectedListener {
+    private class ModeOnItemSelectedListener(private var globalSPF: SharedPreferences, private var runnable: Runnable) : AdapterView.OnItemSelectedListener {
         override fun onNothingSelected(parent: AdapterView<*>?) {
         }
 
         @SuppressLint("ApplySharedPref")
-        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {var mode = "balance";
-            when(position) {
+        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            var mode = "balance";
+            when (position) {
                 0 -> mode = "powersave";
                 1 -> mode = "balance";
                 2 -> mode = "performance";
@@ -380,7 +379,7 @@ class FragmentConfig : Fragment() {
             else ->
                 AlertDialog.Builder(context)
                         .setTitle(getString(R.string.not_support_config))
-                        .setMessage(String.format(getString(R.string.not_support_config_desc),Consts.POWER_CFG_PATH))
+                        .setMessage(String.format(getString(R.string.not_support_config_desc), Consts.POWER_CFG_PATH))
                         .setNegativeButton(getString(R.string.more), { _, _ ->
                             val intent = Intent()
                             //Intent intent = new Intent(Intent.ACTION_VIEW,uri);
@@ -389,7 +388,7 @@ class FragmentConfig : Fragment() {
                             intent.data = content_url
                             startActivity(intent)
                         })
-                        .setPositiveButton(getString(R.string.i_know),{ _, _ ->
+                        .setPositiveButton(getString(R.string.i_know), { _, _ ->
                         })
                         .create()
                         .show()

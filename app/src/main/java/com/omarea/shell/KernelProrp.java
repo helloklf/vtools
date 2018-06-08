@@ -67,34 +67,6 @@ public class KernelProrp {
         return null;
     }
 
-    /*
-    fun GetProp(prop: String, grep: String?): String? {
-        try {
-            val p = Runtime.getRuntime().exec("sh")
-            val out = DataOutputStream(p.outputStream)
-            out.writeBytes("if [ ! -f \"$prop\" ]; then echo \"\"; exit 1; fi;\n")
-            val cmd = "cat " + prop + if (grep != null && grep.length > 0) " | grep " + grep else ""
-            out.writeBytes(cmd)
-            out.writeBytes("\n")
-            out.writeBytes("exit\n")
-            out.flush()
-            out.close()
-
-            val bufferedreader = p.inputStream.bufferedReader()
-
-            val stringBuffer = StringBuilder()
-            bufferedreader.lineSequence().joinTo(stringBuffer,"\n")
-            bufferedreader.close()
-            p.destroy()
-            return stringBuffer.toString().trim { it <= ' ' }
-        } catch (e: Exception) {
-            e.stackTrace
-        }
-
-        return null
-    }
-    */
-
     /**
      * 保存属性
      *

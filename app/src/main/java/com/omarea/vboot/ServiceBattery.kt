@@ -8,8 +8,6 @@ import android.os.Build
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
 
-import com.omarea.shared.helper.NotifyHelper
-
 class ServiceBattery : Service() {
 
     internal var batteryChangedReciver: ReciverBatterychanged? = null

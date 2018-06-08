@@ -161,7 +161,7 @@ public class ActionConfigReader {
                                             break;
                                         }
                                         case "options-sh": {
-                                            if(actionParamInfo.options == null)
+                                            if (actionParamInfo.options == null)
                                                 actionParamInfo.options = new ArrayList<>();
                                             String script = parser.getAttributeValue(i);
                                             if (script.trim().startsWith(ASSETS_FILE)) {
@@ -173,7 +173,7 @@ public class ActionConfigReader {
                                             break;
                                         }
                                         case "options-su": {
-                                            if(actionParamInfo.options == null)
+                                            if (actionParamInfo.options == null)
                                                 actionParamInfo.options = new ArrayList<>();
                                             String script = parser.getAttributeValue(i);
                                             if (script.trim().startsWith(ASSETS_FILE)) {

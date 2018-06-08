@@ -37,23 +37,23 @@ class VToolsOnlineNative(var activity: ActivityAddinOnline, var webview: WebView
     private class VToolsWebClient : WebChromeClient() {
         private var processBarDialog: ProgressBarDialog? = null
         override fun onProgressChanged(view: WebView?, newProgress: Int) {
-            if(view == null) {
+            if (view == null) {
                 super.onProgressChanged(view, newProgress)
                 return
             }
-            if(newProgress != 100) {
-                if(processBarDialog == null)
+            if (newProgress != 100) {
+                if (processBarDialog == null)
                     processBarDialog = ProgressBarDialog(view.context)
                 processBarDialog!!.showDialog("正在加载页面 " + newProgress + "% ...")
-            } else if(newProgress == 100) {
-                if(processBarDialog != null)
+            } else if (newProgress == 100) {
+                if (processBarDialog != null)
                     processBarDialog!!.hideDialog()
             }
             super.onProgressChanged(view, newProgress)
         }
 
         override fun onJsAlert(view: WebView?, url: String?, message: String?, result: JsResult?): Boolean {
-            if(view == null || result == null)
+            if (view == null || result == null)
                 return false;
             AlertDialog.Builder(view.context)
                     .setTitle("提示").setMessage(message)
@@ -68,7 +68,7 @@ class VToolsOnlineNative(var activity: ActivityAddinOnline, var webview: WebView
         }
 
         override fun onJsConfirm(view: WebView?, url: String?, message: String?, result: JsResult?): Boolean {
-            if(view == null || result == null)
+            if (view == null || result == null)
                 return false;
             AlertDialog.Builder(view.context)
                     .setTitle("提示").setMessage(message)
@@ -232,11 +232,11 @@ class VToolsOnlineNative(var activity: ActivityAddinOnline, var webview: WebView
                             //actionParamInfo.maxLength =
                             //actionParamInfo.readonly = false
                             //actionParamInfo.type =
-                            if(item.has("type") && item.get("type") is String)
+                            if (item.has("type") && item.get("type") is String)
                                 actionParamInfo.type = item.getString("type")
-                            if(item.has("readonly") && item.get("readonly") is Boolean)
+                            if (item.has("readonly") && item.get("readonly") is Boolean)
                                 actionParamInfo.readonly = item.getBoolean("readonly")
-                            if(item.has("maxLength") && item.get("maxLength") is Int)
+                            if (item.has("maxLength") && item.get("maxLength") is Int)
                                 actionParamInfo.maxLength = item.getInt("maxLength")
                             if (item.has("value")) {
                                 val value = item.get("value")

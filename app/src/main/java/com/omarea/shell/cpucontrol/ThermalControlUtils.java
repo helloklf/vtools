@@ -9,7 +9,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 public class ThermalControlUtils {
-    public static Boolean isSupported () {
+    public static Boolean isSupported() {
         return new File(Constants.thermal_core_control).exists() ||
                 new File(Constants.thermal_vdd_restriction).exists() ||
                 new File(Constants.thermal_parameters).exists();
@@ -35,7 +35,7 @@ public class ThermalControlUtils {
 
         boolean success = SysUtils.executeRootCommand(commands);
         if (success) {
-           Toast.makeText(context, "OK!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "OK!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -47,7 +47,7 @@ public class ThermalControlUtils {
 
         boolean success = SysUtils.executeRootCommand(commands);
         if (success) {
-           Toast.makeText(context, "OK!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "OK!", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -59,7 +59,7 @@ public class ThermalControlUtils {
 
         boolean success = SysUtils.executeRootCommand(commands);
         if (success) {
-           Toast.makeText(context, "OK!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "OK!", Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -33,11 +33,12 @@ class FragmentHome : Fragment() {
 
     private var myHandler = Handler()
     private lateinit var globalSPF: SharedPreferences
-    private fun showMsg(msg:String) {
+    private fun showMsg(msg: String) {
         this.view?.let { Snackbar.make(it, msg, Snackbar.LENGTH_LONG).show() }
     }
 
     private lateinit var spf: SharedPreferences
+    private var modeList = ModeList()
     @SuppressLint("ApplySharedPref")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -49,23 +50,21 @@ class FragmentHome : Fragment() {
         }
 
         btn_powersave.setOnClickListener {
-            installConfig(ModeList().POWERSAVE, getString(R.string.power_change_powersave))
+            installConfig(modeList.POWERSAVE, getString(R.string.power_change_powersave))
         }
         btn_defaultmode.setOnClickListener {
-            installConfig(ModeList().DEFAULT, getString(R.string.power_change_default))
+            installConfig(modeList.DEFAULT, getString(R.string.power_change_default))
         }
         btn_gamemode.setOnClickListener {
-            installConfig(ModeList().PERFORMANCE, getString(R.string.power_change_game))
+            installConfig(modeList.PERFORMANCE, getString(R.string.power_change_game))
         }
         btn_fastmode.setOnClickListener {
-            installConfig(ModeList().FAST, getString(R.string.power_chagne_fast))
+            installConfig(modeList.FAST, getString(R.string.power_chagne_fast))
         }
-        home_hide_in_recents.setOnCheckedChangeListener({
-            _,checked ->
+        home_hide_in_recents.setOnCheckedChangeListener({ _, checked ->
             globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, checked).commit()
         })
-        home_app_nightmode.setOnCheckedChangeListener({
-            _,checked ->
+        home_app_nightmode.setOnCheckedChangeListener({ _, checked ->
             if (globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false) == checked) {
                 return@setOnCheckedChangeListener
             }
@@ -82,7 +81,7 @@ class FragmentHome : Fragment() {
         }
 
         vbootservice_state.setOnClickListener {
-            if(AccessibleServiceHelper().serviceIsRunning(context!!)) {
+            if (AccessibleServiceHelper().serviceIsRunning(context!!)) {
                 try {
                     val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
                     startActivity(intent)
@@ -94,7 +93,7 @@ class FragmentHome : Fragment() {
             val dialog = ProgressBarDialog(context!!)
             dialog.showDialog("尝试使用ROOT权限开启服务...")
             Thread(Runnable {
-                if(!AccessibleServiceHelper().startServiceUseRoot(context!!)) {
+                if (!AccessibleServiceHelper().startServiceUseRoot(context!!)) {
                     try {
                         myHandler.post {
                             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
@@ -118,32 +117,26 @@ class FragmentHome : Fragment() {
             }).start()
         }
 
-        settings_delaystart.setOnCheckedChangeListener({
-            _,checked ->
+        settings_delaystart.setOnCheckedChangeListener({ _, checked ->
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DELAY, checked).commit()
         })
-        settings_debugmode.setOnCheckedChangeListener({
-            _,checked ->
+        settings_debugmode.setOnCheckedChangeListener({ _, checked ->
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DEBUG, checked).commit()
         })
-        settings_autoinstall.setOnCheckedChangeListener({
-            _,checked ->
+        settings_autoinstall.setOnCheckedChangeListener({ _, checked ->
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_INSTALL, checked).commit()
         })
-        settings_autobooster.setOnCheckedChangeListener({
-            _,checked ->
+        settings_autobooster.setOnCheckedChangeListener({ _, checked ->
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, checked).commit()
         })
-        settings_dynamic.setOnCheckedChangeListener({
-            _,checked ->
+        settings_dynamic.setOnCheckedChangeListener({ _, checked ->
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, checked).commit()
         })
-        accessbility_notify.setOnCheckedChangeListener({
-            _,checked ->
+        accessbility_notify.setOnCheckedChangeListener({ _, checked ->
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, checked).commit()
         })
         settings_disable_selinux.setOnClickListener {
-            if(settings_disable_selinux.isChecked) {
+            if (settings_disable_selinux.isChecked) {
                 SuDo(context).execCmdSync(Consts.DisableSELinux)
                 myHandler.postDelayed({
                     spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true).commit()
@@ -185,15 +178,15 @@ class FragmentHome : Fragment() {
         btn_fastmode.text = "极速"
         val cfg = Props.getProp("vtools.powercfg")
         when (cfg) {
-            "default" -> btn_defaultmode.text = "均衡 √"
-            "game" -> btn_gamemode.text = "游戏 √"
-            "powersave" -> btn_powersave!!.text = "省电 √"
-            "fast" -> btn_fastmode!!.text = "极速 √"
+            modeList.BALANCE -> btn_defaultmode.text = "均衡 √"
+            modeList.PERFORMANCE -> btn_gamemode.text = "游戏 √"
+            modeList.POWERSAVE -> btn_powersave!!.text = "省电 √"
+            modeList.FAST -> btn_fastmode!!.text = "极速 √"
         }
     }
 
     private fun installConfig(action: String, message: String) {
-        if(spf.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false) && AccessibleServiceHelper().serviceIsRunning(this.context!!)) {
+        if (spf.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false) && AccessibleServiceHelper().serviceIsRunning(this.context!!)) {
             AlertDialog.Builder(context)
                     .setTitle("")
                     .setMessage("检测到你已经开启“动态响应”，微工具箱将根据你的前台应用，自动调整CPU、GPU性能。\n如果你要更改全局性能，请先关闭“动态响应”！")

@@ -2,27 +2,14 @@ package com.omarea.vboot
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
-import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
 import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.os.Build
-import android.view.Gravity
-import android.view.KeyEvent
-import android.view.LayoutInflater
-import android.view.MotionEvent
-import android.view.View
-import android.view.View.OnKeyListener
-import android.view.View.OnTouchListener
-import android.view.WindowManager
-import android.view.View.OnClickListener
+import android.view.*
 import android.view.WindowManager.LayoutParams
 import android.widget.Button
 import android.widget.Spinner
 import android.widget.TextView
-
 import com.omarea.shared.Consts
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.helper.NotifyHelper
@@ -143,7 +130,7 @@ class FloatPowercfgSelector {
                 4 -> selectedMode = "igoned"
             }
             spfPowercfg.edit().putString(packageName, selectedMode).commit()
-            if(index != 4)
+            if (index != 4)
                 SuDo(context).execCmd(
                         StringBuilder()
                                 .append(String.format(Consts.ToggleMode, selectedMode))

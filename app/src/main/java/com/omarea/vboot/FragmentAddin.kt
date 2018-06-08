@@ -28,7 +28,6 @@ import com.omarea.vboot.dialogs.DialogAddinWIFI
 import com.omarea.vboot.dialogs.DialogCustomMAC
 import kotlinx.android.synthetic.main.layout_addin.*
 import java.io.File
-import java.io.InputStream
 import java.util.*
 
 
@@ -44,7 +43,7 @@ class FragmentAddin : Fragment() {
         return item
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =inflater.inflate(R.layout.layout_addin, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.layout_addin, container, false)
 
     private fun getIP(): String {
         var r = SysUtils.executeCommandWithOutput(false, "ifconfig wlan0 | grep \"inet addr\" | awk '{ print \$2}' | awk -F: '{print \$2}'")
@@ -112,15 +111,15 @@ class FragmentAddin : Fragment() {
         progressBarDialog.showDialog("读取配置，稍等...")
         Thread(Runnable {
             val actions = ActionConfigReader.readActionConfigXml(this.activity!!)
-            val onlineAddinDir = File(FileWrite.getPrivateFileDir(this.context !!) + "online-addin/")
-            if(onlineAddinDir.exists() && onlineAddinDir.isDirectory) {
+            val onlineAddinDir = File(FileWrite.getPrivateFileDir(this.context!!) + "online-addin/")
+            if (onlineAddinDir.exists() && onlineAddinDir.isDirectory) {
                 val onlineAddins = onlineAddinDir.list { dir, name ->
                     name.endsWith(".xml")
                 }
                 for (addinFile in onlineAddins) {
                     try {
                         val result = ActionConfigReader.readActionConfigXml(this.activity, File("$onlineAddinDir/$addinFile").inputStream())
-                        if(result != null && result.size > 0)
+                        if (result != null && result.size > 0)
                             actions.addAll(result)
                     } catch (ex: Exception) {
                         myHandler.post {
@@ -145,8 +144,7 @@ class FragmentAddin : Fragment() {
         tabHost.addTab(tabHost.newTabSpec("tab_2").setContent(R.id.tab1).setIndicator("自定义"))
         tabHost.addTab(tabHost.newTabSpec("tab_3").setContent(R.id.tab2).setIndicator("开关"))
         tabHost.currentTab = 0
-        tabHost.setOnTabChangedListener(TabHost.OnTabChangeListener {
-            tabId ->
+        tabHost.setOnTabChangedListener(TabHost.OnTabChangeListener { tabId ->
             if (tabId != "tab_1") {
                 loadConfig()
             }

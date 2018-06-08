@@ -93,6 +93,7 @@ class FragmentSwap : Fragment() {
         super.onResume()
         getSwaps()
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         processBarDialog = ProgressBarDialog(this.context!!)
@@ -101,7 +102,7 @@ class FragmentSwap : Fragment() {
         chk_swap_autostart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)
         chk_zram_autostart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)
 
-        txt_swap_size.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, if (File("/data/swapfile").exists()) (File("/data/swapfile").length() / 1024 /1024).toInt() else 0)
+        txt_swap_size.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, if (File("/data/swapfile").exists()) (File("/data/swapfile").length() / 1024 / 1024).toInt() else 0)
         txt_swap_size_display.text = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 0).toString() + "MB"
 
         txt_zram_size.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0)
@@ -181,7 +182,7 @@ class FragmentSwap : Fragment() {
                 val time = System.currentTimeMillis() - startTime
                 myHandler.post({
                     processBarDialog.hideDialog()
-                    Toast.makeText(context, "Swapfile创建完毕，耗时${time/1000}s，平均写入速度：${(size * 1000.0 / time).toInt()}MB/s", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Swapfile创建完毕，耗时${time / 1000}s，平均写入速度：${(size * 1000.0 / time).toInt()}MB/s", Toast.LENGTH_LONG).show()
                 })
             }
             Thread(run).start()
@@ -253,7 +254,7 @@ class FragmentSwap : Fragment() {
         }
     }
 
-    class  OnSeekBarChangeListener(private var next:Runnable, private var spf: SharedPreferences, private var spfProp:String) : SeekBar.OnSeekBarChangeListener {
+    class OnSeekBarChangeListener(private var next: Runnable, private var spf: SharedPreferences, private var spfProp: String) : SeekBar.OnSeekBarChangeListener {
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
         }
 

@@ -46,22 +46,4 @@ public class Props {
         return null;
     }
 
-    /**
-     * 保存属性
-     *
-     * @param propName 属性名称（要永久保存，请以persist.开头）
-     * @param value    属性值,值尽量是简单的数字或字母，避免出现错误
-     */
-    public static boolean setProp(String propName, String value) {
-        try {
-            Process p = Runtime.getRuntime().exec("sh");
-            DataOutputStream out = new DataOutputStream(p.getOutputStream());
-            out.writeBytes("setprop " + propName + " " + value);
-            out.writeBytes("\n");
-            out.flush();
-            return true;
-        } catch (Exception ex) {
-            return false;
-        }
-    }
 }

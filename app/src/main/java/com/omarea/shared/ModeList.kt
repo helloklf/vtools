@@ -15,13 +15,13 @@ open class ModeList {
     internal var BALANCE = "balance";
     internal var IGONED = "igoned";
 
-    internal fun getModName(mode:String) : String {
-        when(mode) {
-            POWERSAVE ->      return "省电模式"
-            PERFORMANCE ->      return "性能模式"
-            FAST ->      return "极速模式"
-            BALANCE ->   return "均衡模式"
-            else ->         return "未知模式"
+    internal fun getModName(mode: String): String {
+        when (mode) {
+            POWERSAVE -> return "省电模式"
+            PERFORMANCE -> return "性能模式"
+            FAST -> return "极速模式"
+            BALANCE -> return "均衡模式"
+            else -> return "未知模式"
         }
     }
 
@@ -48,6 +48,7 @@ open class ModeList {
     internal fun getCurrentPowerMode(): String? {
         return Props.getProp(Consts.PowerModeState)
     }
+
     internal fun getCurrentPowermodeApp(): String? {
         return Props.getProp(Consts.PowerModeApp)
     }

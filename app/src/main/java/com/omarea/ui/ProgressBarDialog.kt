@@ -16,9 +16,9 @@ import com.omarea.vboot.R
  */
 
 open class ProgressBarDialog(private var context: Context) {
-    private var alert:AlertDialog? = null
+    private var alert: AlertDialog? = null
 
-    class defaultHandler(private var alertDialog: AlertDialog?): Handler() {
+    class defaultHandler(private var alertDialog: AlertDialog?) : Handler() {
         override fun handleMessage(msg: Message?) {
             super.handleMessage(msg)
 
@@ -71,7 +71,7 @@ open class ProgressBarDialog(private var context: Context) {
         }
     }
 
-    public fun showDialog(text:String = "正在加载，请稍等...") : AlertDialog? {
+    public fun showDialog(text: String = "正在加载，请稍等..."): AlertDialog? {
         hideDialog()
         val layoutInflater = LayoutInflater.from(context)
         val dialog = layoutInflater.inflate(R.layout.dialog_app_options, null)

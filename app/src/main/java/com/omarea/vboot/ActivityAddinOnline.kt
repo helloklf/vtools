@@ -2,23 +2,16 @@ package com.omarea.vboot
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.View
-import android.webkit.*
-import android.widget.EditText
-import android.widget.TextView
+import android.view.WindowManager
 import com.omarea.scripts.VToolsOnlineNative
 import com.omarea.shared.SpfConfig
 import kotlinx.android.synthetic.main.activity_addin_online.*
-import android.view.WindowManager
-
-
 
 
 class ActivityAddinOnline : AppCompatActivity() {
@@ -44,7 +37,7 @@ class ActivityAddinOnline : AppCompatActivity() {
         window.navigationBarColor = Color.WHITE
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-        } else if(Build.VERSION.SDK_INT >= 23) {
+        } else if (Build.VERSION.SDK_INT >= 23) {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
     }

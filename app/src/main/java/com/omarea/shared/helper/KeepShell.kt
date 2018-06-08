@@ -15,7 +15,7 @@ class KeepShell(private var context: Context) {
     private var out: BufferedWriter? = null
     private var handler: Handler = Handler()
 
-    private fun showMsg(msg:String) {
+    private fun showMsg(msg: String) {
         handler.post { Toast.makeText(context, msg, Toast.LENGTH_SHORT).show() }
     }
 
@@ -78,7 +78,7 @@ class KeepShell(private var context: Context) {
         try {
             //tryExit()
             if (p == null || isRedo || out == null) {
-                getRuntimeShell(cmd, Runnable{
+                getRuntimeShell(cmd, Runnable {
                     //重试一次
                     if (!isRedo)
                         doCmd(cmd, true)

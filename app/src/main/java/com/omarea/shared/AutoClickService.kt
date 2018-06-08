@@ -30,7 +30,7 @@ class AutoClickService {
 
     fun packageinstallerAutoClick(context: Context, event: AccessibilityEvent) {
         if (!context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-                .getBoolean(SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false) || event.source == null)
+                        .getBoolean(SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false) || event.source == null)
             return
 
         for (ki in autoClickKeyWords.indices) {

@@ -3,7 +3,6 @@ package com.omarea.vboot
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
@@ -85,10 +84,10 @@ class FragmentCpuControl : Fragment() {
         if (arr.contains(value)) {
             return value
         } else {
-            var approximation = if ( arr.size > 0 ) arr[0] else ""
+            var approximation = if (arr.size > 0) arr[0] else ""
             for (item in arr) {
                 if (item <= value) {
-                    approximation  = item
+                    approximation = item
                 } else {
                     break
                 }
@@ -216,13 +215,14 @@ class FragmentCpuControl : Fragment() {
 
     class OnSeekBarChangeListener(private var up: Boolean) : SeekBar.OnSeekBarChangeListener {
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
-            if(seekBar != null) {
-                if(up)
+            if (seekBar != null) {
+                if (up)
                     CpuFrequencyUtils.setExynosHmpUP(seekBar.progress)
                 else
                     CpuFrequencyUtils.setExynosHmpDown(seekBar.progress)
             }
         }
+
         override fun onStartTrackingTouch(seekBar: SeekBar?) {
         }
 
@@ -276,7 +276,8 @@ class FragmentCpuControl : Fragment() {
                         CpuFrequencyUtils.setGovernor(freq, 1, parent.context)
                     }
                 }
-            } catch (ex: Exception) { }
+            } catch (ex: Exception) {
+            }
         }
 
         override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -313,7 +314,7 @@ class FragmentCpuControl : Fragment() {
         Thread(Runnable {
             try {
                 status.cluster_little_min_freq = littleFreqs.indexOf(getApproximation(littleFreqs, CpuFrequencyUtils.getCurrentMinFrequency(0)))
-                status.cluster_little_max_freq = littleFreqs.indexOf(getApproximation(littleFreqs,CpuFrequencyUtils.getCurrentMaxFrequency(0)))
+                status.cluster_little_max_freq = littleFreqs.indexOf(getApproximation(littleFreqs, CpuFrequencyUtils.getCurrentMaxFrequency(0)))
                 status.cluster_little_governor = littleGovernor.indexOf(CpuFrequencyUtils.getCurrentScalingGovernor(0))
                 status.coreControl = ThermalControlUtils.getCoreControlState()
                 status.vdd = ThermalControlUtils.getVDDRestrictionState()
@@ -327,8 +328,8 @@ class FragmentCpuControl : Fragment() {
                 status.exynosHotplug = CpuFrequencyUtils.getExynosHotplug()
 
                 if (hasBigCore) {
-                    status.cluster_big_min_freq = bigFreqs.indexOf(getApproximation(bigFreqs,CpuFrequencyUtils.getCurrentMinFrequency(1)))
-                    status.cluster_big_max_freq = bigFreqs.indexOf(getApproximation(bigFreqs,CpuFrequencyUtils.getCurrentMaxFrequency(1)))
+                    status.cluster_big_min_freq = bigFreqs.indexOf(getApproximation(bigFreqs, CpuFrequencyUtils.getCurrentMinFrequency(1)))
+                    status.cluster_big_max_freq = bigFreqs.indexOf(getApproximation(bigFreqs, CpuFrequencyUtils.getCurrentMaxFrequency(1)))
                     status.cluster_big_governor = bigGovernor.indexOf(CpuFrequencyUtils.getCurrentScalingGovernor(1))
                 }
 
@@ -399,7 +400,8 @@ class FragmentCpuControl : Fragment() {
             for (i in 0..coreCount - 1) {
                 cores[i].isChecked = status.coreOnline.get(i)
             }
-        } catch (ex: Exception) { }
+        } catch (ex: Exception) {
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

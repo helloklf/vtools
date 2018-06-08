@@ -1,17 +1,16 @@
 package com.omarea.vboot
 
 import android.accessibilityservice.AccessibilityService
-import android.app.ActivityManager
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
-import android.view.accessibility.AccessibilityEvent
-import com.omarea.shared.AutoClickService
-import com.omarea.shared.ServiceHelper
-import android.content.pm.PackageManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
 import android.os.Build
+import android.view.accessibility.AccessibilityEvent
+import com.omarea.shared.AutoClickService
+import com.omarea.shared.ServiceHelper
 
 /**
  * Created by helloklf on 2016/8/27.
@@ -67,7 +66,7 @@ override fun onCreate() {
         initServiceHelper()
     }
 
-    private fun initServiceHelper(){
+    private fun initServiceHelper() {
         if (serviceHelper == null)
             serviceHelper = ServiceHelper(applicationContext)
     }
@@ -83,9 +82,9 @@ override fun onCreate() {
     fun topAppPackageName(): String {
         var packageName = "";
 
-        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP){
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             val end = System.currentTimeMillis();
-            val usageStatsManager =  getSystemService( Context.USAGE_STATS_SERVICE) as UsageStatsManager?
+            val usageStatsManager = getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager?
             if (null == usageStatsManager) {
                 return packageName;
             }
@@ -94,7 +93,7 @@ override fun onCreate() {
                 return packageName;
             }
             val usageEvent = UsageEvents.Event();
-            var lastMoveToFGEvent:UsageEvents.Event? = null;
+            var lastMoveToFGEvent: UsageEvents.Event? = null;
             while (events.hasNextEvent()) {
                 events.getNextEvent(usageEvent);
                 if (usageEvent.getEventType() == UsageEvents.Event.MOVE_TO_FOREGROUND) {
@@ -114,7 +113,7 @@ override fun onCreate() {
         //android.app.AlertDialog
 
         val root = rootInActiveWindow
-        if(root == null) {
+        if (root == null) {
             return
         }
         /*
@@ -173,7 +172,7 @@ override fun onCreate() {
     }
 
     override fun onDestroy() {
-        if (serviceHelper != null){
+        if (serviceHelper != null) {
             serviceHelper!!.onInterrupt()
             serviceHelper = null
         }

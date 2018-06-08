@@ -79,11 +79,10 @@ class ReciverBatterychanged : BroadcastReceiver() {
         doCmd(computeLeves(qcLimit).toString())
     }
 
-    private fun computeLeves(qcLimit:Int): StringBuilder {
+    private fun computeLeves(qcLimit: Int): StringBuilder {
         val arr = StringBuilder()
-        if(qcLimit < 500) {
-        }
-        else {
+        if (qcLimit < 500) {
+        } else {
             var level = 500
             while (level < qcLimit) {
                 arr.append("echo ${level}000 > /sys/class/power_supply/battery/constant_charge_current_max;")
@@ -105,7 +104,7 @@ class ReciverBatterychanged : BroadcastReceiver() {
         if (sharedPreferences == null) {
             sharedPreferences = context.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
             listener = SharedPreferences.OnSharedPreferenceChangeListener { spf, key ->
-                if(key == SpfConfig.CHARGE_SPF_QC_LIMIT) {
+                if (key == SpfConfig.CHARGE_SPF_QC_LIMIT) {
                     qcLimit = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000)
                 }
             }

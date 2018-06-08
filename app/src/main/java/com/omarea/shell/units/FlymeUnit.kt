@@ -23,14 +23,4 @@ class FlymeUnit {
         }
         return SysUtils.executeRootCommand(commands)
     }
-
-    fun DisableMtkLog(): Boolean {
-        val commands = object : ArrayList<String>() {
-            init {
-                add("rm -rf ${Consts.SDCardDir}/mtklog")
-                add("echo 0 > ${Consts.SDCardDir}/mtklog")
-            }
-        }
-        return SysUtils.executeRootCommand(commands)
-    }
 }

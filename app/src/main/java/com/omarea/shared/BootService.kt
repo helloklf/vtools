@@ -1,6 +1,5 @@
 package com.omarea.shared
 
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
@@ -22,9 +21,9 @@ import com.omarea.vboot.ServiceBattery
 class BootService : Service() {
 
     private var handler = Handler()
-    private lateinit var chargeConfig:SharedPreferences
-    private lateinit var swapConfig:SharedPreferences
-    private lateinit var globalConfig:SharedPreferences
+    private lateinit var chargeConfig: SharedPreferences
+    private lateinit var swapConfig: SharedPreferences
+    private lateinit var globalConfig: SharedPreferences
 
     private fun autoBoot() {
         //判断是否开启了充电加速和充电保护，如果开启了，自动启动后台服务
@@ -37,7 +36,7 @@ class BootService : Service() {
         }
 
         val sb = StringBuilder()
-        if(globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true)) {
+        if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true)) {
             sb.append(Consts.DisableSELinux)
             sb.append("\n\n")
         }
@@ -99,11 +98,11 @@ class BootService : Service() {
 
         sb.append("\n\n")
         SuDo(this).execCmdSync(sb.toString())
-        val nm =  getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             nm.createNotificationChannel(NotificationChannel("vtool-boot", "微工具箱", NotificationManager.IMPORTANCE_LOW))
-            nm.notify(1, NotificationCompat.Builder(this,  "vtool-boot").setSmallIcon(R.drawable.ic_menu_digital).setSubText("微工具箱").setContentText("已完成开机自启动").build())
+            nm.notify(1, NotificationCompat.Builder(this, "vtool-boot").setSmallIcon(R.drawable.ic_menu_digital).setSubText("微工具箱").setContentText("已完成开机自启动").build())
         } else {
             nm.notify(1, NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_menu_digital).setSubText("微工具箱").setContentText("已完成开机自启动").build())
         }

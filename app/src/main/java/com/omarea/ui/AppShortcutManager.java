@@ -20,9 +20,11 @@ import java.util.ArrayList;
 
 public class AppShortcutManager {
     private Context context;
+
     public AppShortcutManager(Context context) {
         this.context = context;
     }
+
     public void initMenu() {
         SharedPreferences sharedPreferences = context.getSharedPreferences("shortcut", Context.MODE_PRIVATE);
         if (!sharedPreferences.getBoolean("init", false)) {

@@ -12,7 +12,6 @@ import android.support.v7.widget.Toolbar
 import android.view.View
 import com.omarea.shared.AccessibleServiceHelper
 import com.omarea.shared.Consts
-import com.omarea.shared.ServiceHelper
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.Platform
 import com.omarea.ui.ProgressBarDialog
@@ -58,7 +57,7 @@ class ActivityAccessibilitySettings : AppCompatActivity() {
         }
 
         vbootservice_state.setOnClickListener {
-            if(AccessibleServiceHelper().serviceIsRunning(this)) {
+            if (AccessibleServiceHelper().serviceIsRunning(this)) {
                 try {
                     val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
                     startActivity(intent)
@@ -70,7 +69,7 @@ class ActivityAccessibilitySettings : AppCompatActivity() {
             val dialog = ProgressBarDialog(this)
             dialog.showDialog("尝试使用ROOT权限开启服务...")
             Thread(Runnable {
-                if(!AccessibleServiceHelper().startServiceUseRoot(this)) {
+                if (!AccessibleServiceHelper().startServiceUseRoot(this)) {
                     try {
                         myHandler.post {
                             val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
@@ -94,28 +93,22 @@ class ActivityAccessibilitySettings : AppCompatActivity() {
             }).start()
         }
 
-        settings_delaystart.setOnCheckedChangeListener({
-            _,checked ->
+        settings_delaystart.setOnCheckedChangeListener({ _, checked ->
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DELAY, checked).commit()
         })
-        settings_debugmode.setOnCheckedChangeListener({
-            _,checked ->
+        settings_debugmode.setOnCheckedChangeListener({ _, checked ->
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DEBUG, checked).commit()
         })
-        settings_autoinstall.setOnCheckedChangeListener({
-            _,checked ->
+        settings_autoinstall.setOnCheckedChangeListener({ _, checked ->
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_INSTALL, checked).commit()
         })
-        settings_autobooster.setOnCheckedChangeListener({
-            _,checked ->
+        settings_autobooster.setOnCheckedChangeListener({ _, checked ->
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, checked).commit()
         })
-        settings_dynamic.setOnCheckedChangeListener({
-            _,checked ->
+        settings_dynamic.setOnCheckedChangeListener({ _, checked ->
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, checked).commit()
         })
-        accessbility_notify.setOnCheckedChangeListener({
-            _,checked ->
+        accessbility_notify.setOnCheckedChangeListener({ _, checked ->
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, checked).commit()
         })
     }

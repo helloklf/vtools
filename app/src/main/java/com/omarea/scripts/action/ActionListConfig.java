@@ -123,7 +123,7 @@ public class ActionListConfig {
                                 progressBarDialog.hideDialog();
                                 for (ActionParamInfo actionParamInfo : actionParamInfos) {
                                     if ((actionParamInfo.options != null && actionParamInfo.options.size() > 0) || (actionParamInfo.optionsSh != null && !actionParamInfo.optionsSh.isEmpty()) || (actionParamInfo.optionsSU != null && !actionParamInfo.optionsSU.isEmpty())) {
-                                        if(actionParamInfo.options == null)
+                                        if (actionParamInfo.options == null)
                                             actionParamInfo.options = new ArrayList<>();
                                         Spinner spinner = new Spinner(context);
                                         ArrayList<HashMap<String, Object>> options = new ArrayList<>();
@@ -131,35 +131,35 @@ public class ActionListConfig {
                                         int index = 0;
                                         ArrayList<String> valList = new ArrayList<>();
 
-                                        if((actionParamInfo.optionsSh != null && !actionParamInfo.optionsSh.isEmpty()) || (actionParamInfo.optionsSU != null && !actionParamInfo.optionsSU.isEmpty())) {
+                                        if ((actionParamInfo.optionsSh != null && !actionParamInfo.optionsSh.isEmpty()) || (actionParamInfo.optionsSU != null && !actionParamInfo.optionsSU.isEmpty())) {
                                             String shellResult = "";
-                                            if(actionParamInfo.optionsSh != null && !actionParamInfo.optionsSh.isEmpty()) {
-                                                shellResult =  ExecuteCommandWithOutput.executeCommandWithOutput(false, actionParamInfo.optionsSh);
+                                            if (actionParamInfo.optionsSh != null && !actionParamInfo.optionsSh.isEmpty()) {
+                                                shellResult = ExecuteCommandWithOutput.executeCommandWithOutput(false, actionParamInfo.optionsSh);
                                             } else {
-                                                shellResult =  ExecuteCommandWithOutput.executeCommandWithOutput(true, actionParamInfo.optionsSU);
+                                                shellResult = ExecuteCommandWithOutput.executeCommandWithOutput(true, actionParamInfo.optionsSU);
                                             }
                                             if (shellResult != null && !shellResult.isEmpty()) {
                                                 for (final String item : shellResult.split("\n")) {
                                                     if (item.contains("|")) {
                                                         final String[] itemSplit = item.split("\\|");
-                                                        options.add(new HashMap<String, Object>(){{
+                                                        options.add(new HashMap<String, Object>() {{
                                                             put("title", itemSplit[1]);
-                                                            put("item", new ActionParamInfo.ActionParamOption(){{
+                                                            put("item", new ActionParamInfo.ActionParamOption() {{
                                                                 value = itemSplit[0];
                                                                 desc = itemSplit[1];
                                                             }});
                                                         }});
                                                     } else {
-                                                        options.add(new HashMap<String, Object>(){{
+                                                        options.add(new HashMap<String, Object>() {{
                                                             put("title", item);
-                                                            put("item", new ActionParamInfo.ActionParamOption(){{
+                                                            put("item", new ActionParamInfo.ActionParamOption() {{
                                                                 value = item;
                                                                 desc = item;
                                                             }});
                                                         }});
                                                     }
                                                 }
-                                            } else  {
+                                            } else {
                                                 for (ActionParamInfo.ActionParamOption option : actionParamInfo.options) {
                                                     HashMap<String, Object> opt = new HashMap<>();
                                                     opt.put("title", option.desc);
@@ -183,8 +183,8 @@ public class ActionListConfig {
                                         }
                                         if (valList.size() > 0) {
                                             for (int j = 0; j < valList.size(); j++) {
-                                                for (HashMap<String, Object> option: options) {
-                                                    if (((ActionParamInfo.ActionParamOption)option.get("item")).value.equals(valList.get(j))) {
+                                                for (HashMap<String, Object> option : options) {
+                                                    if (((ActionParamInfo.ActionParamOption) option.get("item")).value.equals(valList.get(j))) {
                                                         selectedIndex = index;
                                                         break;
                                                     }
@@ -196,10 +196,10 @@ public class ActionListConfig {
                                         }
                                         spinner.setAdapter(new SimpleAdapter(context, options, R.layout.string_item, new String[]{"title"}, new int[]{R.id.text}));
                                         spinner.setTag(actionParamInfo);
-                                        if(options.size() > 6) {
+                                        if (options.size() > 6) {
                                             //TODO:列表过长时切换为弹窗
                                         }
-                                        if(actionParamInfo.desc != null && !actionParamInfo.desc.isEmpty()) {
+                                        if (actionParamInfo.desc != null && !actionParamInfo.desc.isEmpty()) {
                                             spinner.setPrompt(actionParamInfo.desc);
                                         }
                                         linearLayout.addView(spinner);

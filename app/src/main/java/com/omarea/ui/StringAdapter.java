@@ -17,7 +17,7 @@ public class StringAdapter extends BaseAdapter {
     private String[] arr;
     private Context context;
 
-    public StringAdapter(Context context,String[] arr) {
+    public StringAdapter(Context context, String[] arr) {
         this.arr = arr;
         this.context = context;
     }
@@ -43,7 +43,7 @@ public class StringAdapter extends BaseAdapter {
             convertView = View.inflate(context, R.layout.text_item, null);
         }
         String text = getItem(position).toString();
-        ((TextView)convertView).setText(text);
+        ((TextView) convertView).setText(text);
         return convertView;
     }
 }

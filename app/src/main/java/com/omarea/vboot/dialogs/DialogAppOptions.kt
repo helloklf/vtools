@@ -363,12 +363,11 @@ open class DialogAppOptions(protected final var context: Context, protected var 
      */
     protected fun deleteAll() {
         confirm("删除应用", "删除系统应用可能导致功能不正常，甚至无法开机，确定要继续删除？", Runnable {
-            if(CheckRootStatus.isMagisk() && (CheckRootStatus.isTmpfs("/system/app") || CheckRootStatus.isTmpfs("/system/priv-app"))) {
+            if (CheckRootStatus.isMagisk() && (CheckRootStatus.isTmpfs("/system/app") || CheckRootStatus.isTmpfs("/system/priv-app"))) {
                 android.support.v7.app.AlertDialog.Builder(context)
                         .setTitle("Magisk 副作用警告")
                         .setMessage("检测到你正在使用Magisk作为ROOT权限管理器，并且/system/app和/system/priv-app目录已被某些模块修改，这可能导致这些目录被Magisk覆盖并且无法写入！！")
-                        .setPositiveButton(R.string.btn_confirm,  {
-                            _,_ ->
+                        .setPositiveButton(R.string.btn_confirm, { _, _ ->
                             _deleteAll()
                         })
                         .create()

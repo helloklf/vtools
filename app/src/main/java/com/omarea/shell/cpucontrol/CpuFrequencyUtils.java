@@ -12,22 +12,23 @@ import java.util.Objects;
 public class CpuFrequencyUtils {
     public static String[] getAvailableFrequencies(Integer cluster) {
         if (cluster >= getClusterInfo().size()) {
-            return new String[]{  };
+            return new String[]{};
         }
         String cpu = "cpu" + getClusterInfo().get(cluster)[0];
         String[] frequencies;
         if (new File(Constants.scaling_available_freq.replace("cpu0", cpu)).exists()) {
             frequencies = SysUtils.readOutputFromFile(Constants.scaling_available_freq.replace("cpu0", cpu)).split(" ");
             return frequencies;
-        } else if(new File("/sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster" + cluster +"_freq_table").exists()) {
+        } else if (new File("/sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster" + cluster + "_freq_table").exists()) {
             frequencies = SysUtils
-                    .readOutputFromFile("/sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster" + cluster +"_freq_table")
+                    .readOutputFromFile("/sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster" + cluster + "_freq_table")
                     .split(" ");
             return frequencies;
         } else {
             return new String[]{};
         }
     }
+
     public static String getCurrentMaxFrequency(Integer cluster) {
         if (cluster >= getClusterInfo().size()) {
             return "";
@@ -35,6 +36,7 @@ public class CpuFrequencyUtils {
         String cpu = "cpu" + getClusterInfo().get(cluster)[0];
         return SysUtils.readOutputFromFile(Constants.scaling_max_freq.replace("cpu0", cpu));
     }
+
     public static String getCurrentMinFrequency(Integer cluster) {
         if (cluster >= getClusterInfo().size()) {
             return "";
@@ -42,13 +44,15 @@ public class CpuFrequencyUtils {
         String cpu = "cpu" + getClusterInfo().get(cluster)[0];
         return SysUtils.readOutputFromFile(Constants.scaling_min_freq.replace("cpu0", cpu));
     }
+
     public static String[] getAvailableGovernors(Integer cluster) {
         if (cluster >= getClusterInfo().size()) {
-            return new String[]{  };
+            return new String[]{};
         }
         String cpu = "cpu" + getClusterInfo().get(cluster)[0];
         return SysUtils.readOutputFromFile(Constants.scaling_available_governors.replace("cpu0", cpu)).split(" ");
     }
+
     public static String getCurrentScalingGovernor(Integer cluster) {
         if (cluster >= getClusterInfo().size()) {
             return "";
@@ -66,7 +70,7 @@ public class CpuFrequencyUtils {
         ArrayList<String> commands = new ArrayList<>();
         /*
          * prepare commands for each core
-		 */
+         */
         if (minFrequency != null) {
             for (String core : cores) {
                 commands.add("chmod 0664 " + Constants.scaling_min_freq.replace("cpu0", "cpu" + core));
@@ -89,13 +93,13 @@ public class CpuFrequencyUtils {
         ArrayList<String> commands = new ArrayList<>();
         /*
          * prepare commands for each core
-		 */
+         */
         if (maxFrequency != null) {
             commands.add("chmod 0664 /sys/module/msm_performance/parameters/cpu_max_freq");
             for (String core : cores) {
                 commands.add("chmod 0664 " + Constants.scaling_max_freq.replace("cpu0", "cpu" + core));
                 commands.add("echo " + maxFrequency + " > " + Constants.scaling_max_freq.replace("cpu0", "cpu" + core));
-                commands.add("echo " + core + ":" + maxFrequency +"> /sys/module/msm_performance/parameters/cpu_max_freq");
+                commands.add("echo " + core + ":" + maxFrequency + "> /sys/module/msm_performance/parameters/cpu_max_freq");
             }
 
             boolean success = SysUtils.executeRootCommand(commands);
@@ -114,7 +118,7 @@ public class CpuFrequencyUtils {
         ArrayList<String> commands = new ArrayList<>();
         /*
          * prepare commands for each core
-		 */
+         */
         if (governor != null) {
             for (String core : cores) {
                 commands.add("chmod 0644 " + Constants.scaling_governor.replace("cpu0", "cpu" + core));
@@ -139,7 +143,7 @@ public class CpuFrequencyUtils {
     public static void setInputBoosterTime(String time) {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0644 /sys/module/cpu_boost/parameters/input_boost_ms");
-        commands.add("echo "+ time +" > /sys/module/cpu_boost/parameters/input_boost_ms");
+        commands.add("echo " + time + " > /sys/module/cpu_boost/parameters/input_boost_ms");
 
         SysUtils.executeRootCommand(commands);
     }
@@ -150,25 +154,25 @@ public class CpuFrequencyUtils {
 
     public static void setCoreOnlineState(int coreIndex, boolean online) {
         ArrayList<String> commands = new ArrayList<>();
-        if(exynosCpuhotplugSupport() && getExynosHotplug()) {
+        if (exynosCpuhotplugSupport() && getExynosHotplug()) {
             commands.add("echo 0 > /sys/devices/system/cpu/cpuhotplug/enabled;");
         }
         commands.add("chmod 0644 /sys/devices/system/cpu/cpu0/online".replace("cpu0", "cpu" + coreIndex));
-        commands.add("echo "+ (online ? "1" : "0") +" > /sys/devices/system/cpu/cpu0/online".replace("cpu0", "cpu" + coreIndex));
+        commands.add("echo " + (online ? "1" : "0") + " > /sys/devices/system/cpu/cpu0/online".replace("cpu0", "cpu" + coreIndex));
         SysUtils.executeRootCommand(commands);
     }
 
     public static void setInputBoosterFreq(String freqs) {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0644 /sys/module/cpu_boost/parameters/input_boost_freq");
-        commands.add("echo "+ freqs +" > /sys/module/cpu_boost/parameters/input_boost_freq");
+        commands.add("echo " + freqs + " > /sys/module/cpu_boost/parameters/input_boost_freq");
 
         SysUtils.executeRootCommand(commands);
     }
 
     public static int getExynosHmpUP() {
         String up = SysUtils.executeCommandWithOutput(false, "cat /sys/kernel/hmp/up_threshold;").trim();
-        if(Objects.equals(up, "")) {
+        if (Objects.equals(up, "")) {
             return 0;
         }
         try {
@@ -177,7 +181,8 @@ public class CpuFrequencyUtils {
             return 0;
         }
     }
-    public static void setExynosHmpUP(int up){
+
+    public static void setExynosHmpUP(int up) {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/kernel/hmp/up_threshold;");
         commands.add("echo " + up + " > /sys/kernel/hmp/up_threshold;");
@@ -186,7 +191,7 @@ public class CpuFrequencyUtils {
 
     public static int getExynosHmpDown() {
         String value = SysUtils.executeCommandWithOutput(false, "cat /sys/kernel/hmp/down_threshold;").trim();
-        if(Objects.equals(value, "")) {
+        if (Objects.equals(value, "")) {
             return 0;
         }
         try {
@@ -195,7 +200,8 @@ public class CpuFrequencyUtils {
             return 0;
         }
     }
-    public static void setExynosHmpDown(int down){
+
+    public static void setExynosHmpDown(int down) {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/kernel/hmp/down_threshold;");
         commands.add("echo " + down + " > /sys/kernel/hmp/down_threshold;");
@@ -206,6 +212,7 @@ public class CpuFrequencyUtils {
         String value = SysUtils.executeCommandWithOutput(false, "cat /sys/kernel/hmp/boost;").trim().toLowerCase();
         return Objects.equals(value, "1") || Objects.equals(value, "true") || Objects.equals(value, "enabled");
     }
+
     public static void setExynosBooster(boolean hotplug) {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/kernel/hmp/boost");
@@ -238,6 +245,7 @@ public class CpuFrequencyUtils {
     }
 
     private static ArrayList<String[]> cpuClusterInfo;
+
     public static ArrayList<String[]> getClusterInfo() {
         if (cpuClusterInfo != null) {
             return cpuClusterInfo;
@@ -249,16 +257,16 @@ public class CpuFrequencyUtils {
         while (true) {
             File file = new File("/sys/devices/system/cpu/cpu0/cpufreq/related_cpus".replace("cpu0", "cpu" + cores));
             if (file.exists()) {
-                String  relatedCpus = SysUtils.executeCommandWithOutput(false, "cat /sys/devices/system/cpu/cpu0/cpufreq/related_cpus".replace("cpu0", "cpu" + cores)).trim();
+                String relatedCpus = SysUtils.executeCommandWithOutput(false, "cat /sys/devices/system/cpu/cpu0/cpufreq/related_cpus".replace("cpu0", "cpu" + cores)).trim();
                 if (!clusters.contains(relatedCpus) && !relatedCpus.isEmpty()) {
                     clusters.add(relatedCpus);
                 }
             } else {
                 break;
             }
-            cores ++;
+            cores++;
         }
-        for (int i=0;i<clusters.size();i++) {
+        for (int i = 0; i < clusters.size(); i++) {
             cpuClusterInfo.add(clusters.get(i).split(" "));
         }
 
@@ -269,7 +277,7 @@ public class CpuFrequencyUtils {
         return SysUtils.readOutputFromFile(Constants.sched_boost);
     }
 
-    public static void setSechedBoostState(boolean enabled ,Context context) {
+    public static void setSechedBoostState(boolean enabled, Context context) {
         String val = enabled ? "1" : "0";
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 " + Constants.sched_boost);

@@ -69,7 +69,7 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
             click.isEnabled = switch.isChecked
             longClick.isEnabled = switch.isChecked
             switch.setOnClickListener {
-                if(switch.isChecked) {
+                if (switch.isChecked) {
                     val clickValue = (click.selectedItem as HashMap<*, *>).get("key") as Int
                     val longClickValue = (longClick.selectedItem as HashMap<*, *>).get("key") as Int
                     spf.edit()
@@ -107,31 +107,32 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     intent.action = "android.settings.APPLICATION_DETAILS_SETTINGS"
                     intent.data = Uri.fromParts("package", this.packageName, null)
-                    Toast.makeText(this,"为微工具箱授权显示悬浮窗权限，从而在使用虚拟导航条！", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "为微工具箱授权显示悬浮窗权限，从而在使用虚拟导航条！", Toast.LENGTH_SHORT).show();
                     (it as Switch).isChecked = !isChecked
                 }
             } else {
                 spfOther.edit().putBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR, isChecked).commit()
             }
         }
-        key_event_vitual_touch_bar_map.setSelection(if(spfOther.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_MAP, false)) 1 else 0)
+        key_event_vitual_touch_bar_map.setSelection(if (spfOther.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_MAP, false)) 1 else 0)
         key_event_vitual_touch_bar_map.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
+
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 spfOther.edit().putBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_MAP, key_event_vitual_touch_bar_map.selectedItemPosition == 1).commit()
             }
         }
     }
 
-    private class onItemSelected(private var spinner: Spinner, private var spf: SharedPreferences): AdapterView.OnItemSelectedListener {
+    private class onItemSelected(private var spinner: Spinner, private var spf: SharedPreferences) : AdapterView.OnItemSelectedListener {
         override fun onNothingSelected(parent: AdapterView<*>?) {
             //
         }
 
         @SuppressLint("ApplySharedPref")
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            if((parent as Spinner).isEnabled)
+            if ((parent as Spinner).isEnabled)
                 spf.edit().putInt(spinner.tag.toString(), (spinner.selectedItem as HashMap<*, *>).get("key") as Int).commit()
         }
     }
@@ -173,9 +174,9 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
         }
     }
 
-    private fun getIndex(items:ArrayList<HashMap<String, Any>>, value: Int): Int {
+    private fun getIndex(items: ArrayList<HashMap<String, Any>>, value: Int): Int {
         for (index in 0..items.size - 1) {
-            if(items[index].get("key") == value) return index
+            if (items[index].get("key") == value) return index
         }
         return 0
     }

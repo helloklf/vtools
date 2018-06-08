@@ -107,14 +107,14 @@ class FloatVitualTouchBar// 获取应用的Context
         btn1.setOnClickListener {
             val vibrator = context.getSystemService(VIBRATOR_SERVICE) as Vibrator
             vibrator.vibrate(200)
-            if(!reversalLayout) {
+            if (!reversalLayout) {
                 context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
             } else {
                 context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS)
             }
         }
         btn1.setOnLongClickListener {
-            if(reversalLayout) {
+            if (reversalLayout) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_TOGGLE_SPLIT_SCREEN)
                 }
@@ -128,14 +128,14 @@ class FloatVitualTouchBar// 获取应用的Context
             context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS)
         }
         btn3.setOnClickListener {
-            if(!reversalLayout) {
+            if (!reversalLayout) {
                 context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS)
             } else {
                 context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
             }
         }
         btn3.setOnLongClickListener {
-            if(!reversalLayout) {
+            if (!reversalLayout) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_TOGGLE_SPLIT_SCREEN)
                 }
@@ -157,8 +157,8 @@ class FloatVitualTouchBar// 获取应用的Context
             override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
                 if (key == SpfConfig.CONFIG_SPF_TOUCH_BAR_MAP) {
                     reversalLayout = sharedPreferences!!.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_MAP, false)
-                } else if(key == SpfConfig.CONFIG_SPF_TOUCH_BAR) {
-                    if(!sharedPreferences!!.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR, false)){
+                } else if (key == SpfConfig.CONFIG_SPF_TOUCH_BAR) {
+                    if (!sharedPreferences!!.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR, false)) {
                         hidePopupWindow()
                     } else {
                         showPopupWindow()
@@ -166,7 +166,7 @@ class FloatVitualTouchBar// 获取应用的Context
                 }
             }
         })
-        if(!sharedPreferences!!.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR, false)) {
+        if (!sharedPreferences!!.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR, false)) {
             hidePopupWindow()
         } else {
             showPopupWindow()

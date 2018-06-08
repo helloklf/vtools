@@ -38,14 +38,14 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
     private var batteryUnit = Int.MIN_VALUE
     private var batterySensor: String? = "init"
     private fun getBatteryUnit(): Int {
-        if(batteryUnit == Int.MIN_VALUE) {
+        if (batteryUnit == Int.MIN_VALUE) {
             val full = KernelProrp.getProp("/sys/class/power_supply/battery/charge_full_design")
             if (full != null && full.length > 0) {
                 return full.length - 4
             }
             return -1
         }
-        return  batteryUnit
+        return batteryUnit
     }
 
     private fun getCapacity(): String? {
@@ -56,9 +56,9 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         if (capacity < 20)
             return R.drawable.b_0
         if (capacity < 30)
-            return  R.drawable.b_1
+            return R.drawable.b_1
         if (capacity < 70)
-            return  R.drawable.b_2
+            return R.drawable.b_2
         return R.drawable.b_3
     }
 
@@ -80,12 +80,12 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
 
     private fun getBatteryTemp(): String {
         val sensor = getBatterySensor()
-        if(sensor != null) {
+        if (sensor != null) {
             val temp = KernelProrp.getProp(sensor)
-            if(temp == null || (temp.length < 4)) {
+            if (temp == null || (temp.length < 4)) {
                 return "? °C"
             }
-            return  temp.substring(0, temp.length - 3) + "°C"
+            return temp.substring(0, temp.length - 3) + "°C"
         } else {
             return "? °C"
         }
@@ -98,16 +98,16 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         } else if (File("/sys/class/power_supply/battery/BatteryAverageCurrent").exists()) {
             path = "/sys/class/power_supply/battery/BatteryAverageCurrent"
         } else {
-            return  "? mA"
+            return "? mA"
         }
 
-        var  io = KernelProrp.getProp(path, false)
+        var io = KernelProrp.getProp(path, false)
         val unit = getBatteryUnit()
         var start = ""
-        if(io.startsWith("+")) {
+        if (io.startsWith("+")) {
             start = "+"
             io = io.substring(1, io.length)
-        } else if(io.startsWith("-")) {
+        } else if (io.startsWith("-")) {
             start = "-"
             io = io.substring(1, io.length)
         } else {
@@ -144,21 +144,21 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         remoteViews.setTextViewText(R.id.notify_title, getAppName(packageName))
         remoteViews.setTextViewText(R.id.notify_text, getModName(mode))
         remoteViews.setTextViewText(R.id.notify_battery_title, "电池")
-        val capacity =  getCapacity()
+        val capacity = getCapacity()
         try {
             if (capacity != null && !capacity.isNullOrEmpty()) {
-                remoteViews.setImageViewBitmap(R.id.notify_battery_icon , BitmapFactory.decodeResource(context.resources, getBatteryIcon(capacity.replace("%", "").toInt()) ))
+                remoteViews.setImageViewBitmap(R.id.notify_battery_icon, BitmapFactory.decodeResource(context.resources, getBatteryIcon(capacity.replace("%", "").toInt())))
             }
         } catch (ex: Exception) {
         }
         remoteViews.setTextViewText(R.id.notify_battery_text, getBatteryIO() + " " + capacity + " " + getBatteryTemp())
-        remoteViews.setImageViewBitmap(R.id.notify_mode , BitmapFactory.decodeResource(context.resources, getModImage(mode) ))
+        remoteViews.setImageViewBitmap(R.id.notify_mode, BitmapFactory.decodeResource(context.resources, getModImage(mode)))
 
         val intent = PendingIntent.getActivity(
-            context,
-            0,
-            Intent(context, ActivityQuickSwitchMode::class.java).putExtra("packageName", packageName),
-            PendingIntent.FLAG_UPDATE_CURRENT
+                context,
+                0,
+                Intent(context, ActivityQuickSwitchMode::class.java).putExtra("packageName", packageName),
+                PendingIntent.FLAG_UPDATE_CURRENT
         )
 
         val icon = getModIcon(mode)

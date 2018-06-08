@@ -40,8 +40,7 @@ public class SysUtils {
             }
 
             data = buffer.toString();
-        }
-        else {
+        } else {
             InputStream inputStream;
             DataOutputStream dos;
 
