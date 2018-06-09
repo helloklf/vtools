@@ -218,10 +218,7 @@ class ServiceHelper(private var context: Context) : ModeList(context) {
 
     //更新通知
     private fun updateModeNofity() {
-        if (lastModePackage != null && !lastModePackage.isNullOrEmpty()) {
-            notifyHelper.notifyPowerModeChange(lastModePackage!!, lastMode)
-        } else
-            notifyHelper.notify()
+        notifyHelper.notify()
     }
 
     //强制执行模式切换，无论当前应用是什么模式是什么
@@ -254,10 +251,10 @@ class ServiceHelper(private var context: Context) : ModeList(context) {
                     showModeToggleMsg(packageName, getModName(mode))
                 }
                 lastModePackage = packageName
-                updateModeNofity()
             }
         }
         setCurrentPowercfgApp(packageName)
+        updateModeNofity()
     }
 
     //终止进程

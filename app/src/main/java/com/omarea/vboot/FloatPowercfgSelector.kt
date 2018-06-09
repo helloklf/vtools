@@ -131,13 +131,13 @@ class FloatPowercfgSelector {
                 3 -> selectedMode = modeList.FAST
                 4 -> selectedMode = modeList.IGONED
             }
-            spfPowercfg.edit().putString(packageName, selectedMode).commit()
             if (index != 4) {
                 modeList.executePowercfgMode(selectedMode, packageName).densityKeepShell()
             } else {
                 modeList.setCurrent(selectedMode, packageName)
             }
             NotifyHelper(context, true).notify()
+            spfPowercfg.edit().putString(packageName, selectedMode).commit()
 
             //Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);
             //context.startActivity(intent);

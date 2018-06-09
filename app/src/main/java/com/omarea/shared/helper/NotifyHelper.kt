@@ -25,6 +25,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
     private var showNofity: Boolean = false
     private var notification: Notification? = null
     private var notificationManager: NotificationManager? = null
+    private var handler = Handler()
 
     private fun getAppName(packageName: String): CharSequence? {
         try {
@@ -122,6 +123,12 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
 
     //显示通知
     internal fun notify() {
+        handler.postDelayed({
+            updateNotic()
+        }, 1500)
+    }
+
+    private fun updateNotic () {
         var currentMode = getCurrentPowerMode()
         if (currentMode == null || currentMode.length == 0) {
             currentMode = ""
@@ -135,7 +142,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         notifyPowerModeChange(currentApp!!, currentMode)
     }
 
-    fun notifyPowerModeChange(packageName: String, mode: String) {
+    private fun notifyPowerModeChange(packageName: String, mode: String) {
         if (!showNofity) {
             return
         }

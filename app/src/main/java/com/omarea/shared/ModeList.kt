@@ -83,9 +83,9 @@ open class ModeList {
     internal fun executePowercfgMode(mode: String): ModeList {
         if(keepShell == null) {
             keepShell = KeepShell(context)
-            keepShell!!.doCmd("sh ${Consts.POWER_CFG_PATH} " + mode)
-            setCurrentPowercfg(mode)
         }
+        keepShell!!.doCmd("sh ${Consts.POWER_CFG_PATH} " + mode)
+        setCurrentPowercfg(mode)
         return this
     }
 
