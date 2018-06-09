@@ -42,7 +42,8 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                                 (if (app.enabled) "冻结" else "解冻"),
                                 "应用详情",
                                 "复制PackageName",
-                                "在应用商店查看"), { _, which ->
+                                "在应用商店查看",
+                                "禁用 + 隐藏"), { _, which ->
                     when (which) {
                         0 -> backupAll(true, true)
                         1 -> backupAll(true, false)
@@ -54,6 +55,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                         7 -> openDetails()
                         8 -> copyPackageName()
                         9 -> showInMarket()
+                        10 -> hideAll()
                     }
                 })
                 .show()

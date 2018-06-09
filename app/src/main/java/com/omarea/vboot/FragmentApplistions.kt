@@ -1,6 +1,9 @@
 package com.omarea.vboot
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
+import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
@@ -14,7 +17,9 @@ import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
 import com.omarea.shared.AppListHelper
 import com.omarea.shared.Consts
+import com.omarea.shared.SpfConfig
 import com.omarea.shared.model.Appinfo
+import com.omarea.shell.SuDo
 import com.omarea.ui.AppListAdapter
 import com.omarea.ui.OverScrollListView
 import com.omarea.ui.ProgressBarDialog
@@ -23,6 +28,7 @@ import com.omarea.vboot.dialogs.DialogAppOptions
 import com.omarea.vboot.dialogs.DialogSingleAppOptions
 import kotlinx.android.synthetic.main.layout_applictions.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class FragmentApplistions : Fragment() {
@@ -100,6 +106,54 @@ class FragmentApplistions : Fragment() {
         apps_search_box.addTextChangedListener(SearchTextWatcher(Runnable {
             searchApp()
         }))
+
+        app_btn_hide.setOnClickListener {
+            showHideAppDialog()
+        }
+    }
+
+    @SuppressLint("ApplySharedPref")
+    private fun showHideAppDialog() {
+        val spf = context!!.getSharedPreferences(SpfConfig.APP_HIDE_HISTORY_SPF, Context.MODE_PRIVATE)
+        val all = spf.all
+        val apps = ArrayList<String>()
+        val selected = ArrayList<Boolean>()
+        for (item in all.values) {
+            apps.add(item as String)
+            selected.add(false)
+        }
+        AlertDialog.Builder(context).setTitle("应用隐藏记录")
+            .setMultiChoiceItems(apps.toTypedArray(), selected.toBooleanArray(), { dialog, which, isChecked ->
+                selected[which] = isChecked
+            })
+            .setPositiveButton(R.string.btn_confirm, { dialog, which ->
+                val keys = all.keys.toList()
+                val cmds = StringBuffer()
+                val edit = spf.edit()
+                for (i in selected.indices) {
+                    if (selected[i]) {
+                        cmds.append("pm unhide ")
+                        cmds.append(keys.get(i))
+                        cmds.append("\n")
+                        cmds.append("pm enable ")
+                        cmds.append(keys.get(i))
+                        cmds.append("\n")
+                        edit.remove(keys.get(i))
+                    }
+                }
+                if (cmds.length > 0) {
+                    processBarDialog.showDialog("正在恢复应用，稍等...")
+                    Thread(Runnable {
+                        SuDo(context).execCmdSync(cmds.toString())
+                        myHandler.post {
+                            processBarDialog.hideDialog()
+                            setList()
+                            edit.commit()
+                        }
+                    }).start()
+                }
+            })
+            .create().show()
     }
 
     private fun getSelectedAppShowOptions(apptype: Appinfo.AppType) {

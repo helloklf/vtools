@@ -30,11 +30,9 @@ class ActivityShortcut : Activity() {
     private fun installConfig(action: String) {
         val stringBuilder = StringBuilder()
         stringBuilder.append(String.format(Consts.ToggleMode, action))
-        stringBuilder.append(String.format(Consts.SaveModeState, action))
-        stringBuilder.append(String.format(Consts.SaveModeApp, packageName))
 
         if (File(Consts.POWER_CFG_PATH).exists()) {
-            SuDo(this).execCmdSync(stringBuilder.toString())
+            modeList.executePowercfgMode(action, packageName)
         } else {
             ConfigInstaller().installPowerConfig(this, stringBuilder.toString());
         }

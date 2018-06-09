@@ -194,15 +194,12 @@ class FragmentHome : Fragment() {
                     })
                     .show()
                     .create()
-            return
         }
-        val stringBuilder = StringBuilder()
-        stringBuilder.append(String.format(Consts.ToggleMode, action))
-        stringBuilder.append(String.format(Consts.SaveModeState, action))
-        stringBuilder.append(String.format(Consts.SaveModeApp, context!!.packageName))
         if (File(Consts.POWER_CFG_PATH).exists()) {
-            SuDo(context).execCmdSync(stringBuilder.toString())
+            modeList.executePowercfgMode(action, context!!.packageName).densityKeepShell()
         } else {
+            val stringBuilder = StringBuilder()
+            stringBuilder.append(String.format(Consts.ToggleMode, action))
             ConfigInstaller().installPowerConfig(context!!, stringBuilder.toString());
         }
         setModeState()

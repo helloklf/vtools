@@ -46,12 +46,8 @@ public object Consts {
     val POWER_CFG_PATH = "/data/powercfg"
     val POWER_CFG_BASE = "/data/init.qcom.post_boot.sh"
 
-    val PowerModeState = "vtools.powercfg"
-    val PowerModeApp = "vtools.powercfg_app"
-    val ExecuteConfig = "setprop $PowerModeState '';setprop $PowerModeApp '';sh ${POWER_CFG_BASE};\n"
+    val ExecuteConfig = "sh ${POWER_CFG_BASE};\n"
     val ToggleMode = "sh $POWER_CFG_PATH %s;\n"
-    val SaveModeState = "setprop $PowerModeState %s;\n"
-    val SaveModeApp = "setprop $PowerModeApp %s;\n"
 
     val DisableSELinux = "setenforce 0;\n"
     val ResumeSELinux = "setenforce 0;\n"

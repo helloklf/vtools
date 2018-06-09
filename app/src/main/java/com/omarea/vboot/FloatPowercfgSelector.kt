@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.Spinner
 import android.widget.TextView
 import com.omarea.shared.Consts
+import com.omarea.shared.ModeList
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.helper.NotifyHelper
 import com.omarea.shell.SuDo
@@ -24,6 +25,7 @@ import java.lang.StringBuilder
 class FloatPowercfgSelector {
     private var mView: View? = null
     private var mContext: Context? = null
+    private var modeList = ModeList()
 
     /**
      * 显示弹出框
@@ -95,14 +97,14 @@ class FloatPowercfgSelector {
 
         val spfPowercfg = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         val mode = spfPowercfg.getString(packageName, "balance")
-        var index = 0
+        var index: Int
 
         when (mode) {
-            "powersave" -> index = 0
-            "balance" -> index = 1
-            "performance" -> index = 2
-            "fast" -> index = 3
-            "igoned" -> index = 4
+            modeList.POWERSAVE -> index = 0
+            modeList.BALANCE -> index = 1
+            modeList.PERFORMANCE -> index = 2
+            modeList.FAST -> index = 3
+            modeList.IGONED -> index = 4
             else -> index = 1
         }
         val spinner = view.findViewById<View>(R.id.fw_powercfg_selector_spinner) as Spinner
@@ -123,25 +125,19 @@ class FloatPowercfgSelector {
             var selectedMode = ""
             index = spinner.selectedItemPosition
             when (index) {
-                0 -> selectedMode = "powersave"
-                1 -> selectedMode = "balance"
-                2 -> selectedMode = "performance"
-                3 -> selectedMode = "fast"
-                4 -> selectedMode = "igoned"
+                0 -> selectedMode = modeList.POWERSAVE
+                1 -> selectedMode = modeList.BALANCE
+                2 -> selectedMode = modeList.PERFORMANCE
+                3 -> selectedMode = modeList.FAST
+                4 -> selectedMode = modeList.IGONED
             }
             spfPowercfg.edit().putString(packageName, selectedMode).commit()
-            if (index != 4)
-                SuDo(context).execCmd(
-                        StringBuilder()
-                                .append(String.format(Consts.ToggleMode, selectedMode))
-                                .append("\n")
-                                .append(String.format(Consts.SaveModeState, selectedMode))
-                                .append("\n")
-                                .append(String.format(Consts.SaveModeApp, packageName))
-                                .append("\n")
-                                .toString()
-                )
-            NotifyHelper(context, true).notifyPowerModeChange(packageName, selectedMode)
+            if (index != 4) {
+                modeList.executePowercfgMode(selectedMode, packageName).densityKeepShell()
+            } else {
+                modeList.setCurrent(selectedMode, packageName)
+            }
+            NotifyHelper(context, true).notify()
 
             //Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);
             //context.startActivity(intent);
@@ -163,7 +159,6 @@ class FloatPowercfgSelector {
             if (!rect.contains(x, y)) {
                 hidePopupWindow()
             }
-
             false
         }
 
@@ -180,24 +175,8 @@ class FloatPowercfgSelector {
         return view
 
     }
-
-
-    private fun getModName(mode: String): String {
-        when (mode) {
-            "powersave" -> return "省电模式"
-            "performance" -> return "性能模式"
-            "fast" -> return "极速模式"
-            "balance" -> return "均衡模式"
-            "igoned" -> return "已加入忽略"
-            else -> return "未知模式"
-        }
-    }
-
     companion object {
-
-        private val LOG_TAG = "WindowUtils"
         private var mWindowManager: WindowManager? = null
-
         var isShown: Boolean? = false
     }
 }

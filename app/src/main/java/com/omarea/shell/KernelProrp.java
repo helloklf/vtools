@@ -79,7 +79,12 @@ public class KernelProrp {
             DataOutputStream out = new DataOutputStream(p.getOutputStream());
             out.writeBytes("echo " + value + " > " + propName);
             out.writeBytes("\n");
+            out.writeBytes("\n\n\n");
+            out.writeBytes("exit 0\n");
+            out.writeBytes("exit 0\n");
+            out.writeBytes("\n\n\n");
             out.flush();
+            p.waitFor();
             return true;
         } catch (Exception ex) {
             return false;

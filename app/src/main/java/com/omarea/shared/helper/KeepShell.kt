@@ -10,13 +10,16 @@ import java.io.IOException
  * Created by Hello on 2018/01/23.
  */
 
-class KeepShell(private var context: Context) {
+class KeepShell(private var context: Context?) {
     private var p: Process? = null
     private var out: BufferedWriter? = null
     private var handler: Handler = Handler()
 
     private fun showMsg(msg: String) {
-        handler.post { Toast.makeText(context, msg, Toast.LENGTH_SHORT).show() }
+        if (context != null)
+            handler.post {
+                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+            }
     }
 
     //尝试退出命令行程序

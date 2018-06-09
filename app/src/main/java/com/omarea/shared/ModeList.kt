@@ -1,5 +1,7 @@
 package com.omarea.shared
 
+import android.content.Context
+import com.omarea.shared.helper.KeepShell
 import com.omarea.shell.Props
 import com.omarea.vboot.R
 
@@ -14,6 +16,15 @@ open class ModeList {
     internal var FAST = "fast";
     internal var BALANCE = "balance";
     internal var IGONED = "igoned";
+    internal var keepShell: KeepShell? = null
+    private var context: Context? = null
+
+    constructor() {
+    }
+
+    constructor(context: Context) {
+        this.context = context
+    }
 
     internal fun getModName(mode: String): String {
         when (mode) {
@@ -27,29 +38,68 @@ open class ModeList {
 
     internal fun getModIcon(mode: String): Int {
         when (mode) {
-            "powersave" -> return R.drawable.p1
-            "balance" -> return R.drawable.p2
-            "performance" -> return R.drawable.p3
-            "fast" -> return R.drawable.p4
+            POWERSAVE -> return R.drawable.p1
+            BALANCE -> return R.drawable.p2
+            PERFORMANCE -> return R.drawable.p3
+            FAST -> return R.drawable.p4
             else -> return R.drawable.p3
         }
     }
 
     internal fun getModImage(mode: String): Int {
         when (mode) {
-            "powersave" -> return R.drawable.shortcut_p0
-            "balance" -> return R.drawable.shortcut_p1
-            "performance" -> return R.drawable.shortcut_p2
-            "fast" -> return R.drawable.shortcut_p3
+            POWERSAVE -> return R.drawable.shortcut_p0
+            BALANCE -> return R.drawable.shortcut_p1
+            PERFORMANCE -> return R.drawable.shortcut_p2
+            FAST -> return R.drawable.shortcut_p3
             else -> return R.drawable.shortcut_p2
         }
     }
 
     internal fun getCurrentPowerMode(): String? {
-        return Props.getProp(Consts.PowerModeState)
+        return Props.getProp("vtools.powercfg")
     }
 
     internal fun getCurrentPowermodeApp(): String? {
-        return Props.getProp(Consts.PowerModeApp)
+        return Props.getProp("vtools.powercfg_app")
+    }
+
+    internal fun setCurrent(powerCfg: String, app: String): ModeList {
+        Props.setPorp("vtools.powercfg", powerCfg)
+        Props.setPorp("vtools.powercfg_app", app)
+        return this
+    }
+
+    internal fun setCurrentPowercfg(powerCfg: String): ModeList {
+        Props.setPorp("vtools.powercfg", powerCfg)
+        return this
+    }
+
+    internal fun setCurrentPowercfgApp(app: String): ModeList {
+        Props.setPorp("vtools.powercfg_app", app)
+        return this
+    }
+
+    internal fun executePowercfgMode(mode: String): ModeList {
+        if(keepShell == null) {
+            keepShell = KeepShell(context)
+            keepShell!!.doCmd("sh ${Consts.POWER_CFG_PATH} " + mode)
+            setCurrentPowercfg(mode)
+        }
+        return this
+    }
+
+    internal fun executePowercfgMode(mode: String, app: String): ModeList {
+        executePowercfgMode(mode)
+        setCurrentPowercfgApp(app)
+        return this
+    }
+
+    internal fun densityKeepShell (): ModeList {
+        if (keepShell != null) {
+            keepShell!!.tryExit()
+            keepShell = null
+        }
+        return this
     }
 }

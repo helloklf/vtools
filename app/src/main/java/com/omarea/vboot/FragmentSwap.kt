@@ -33,7 +33,7 @@ class FragmentSwap : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        view = inflater!!.inflate(R.layout.layout_swap, container, false)
+        view = inflater.inflate(R.layout.layout_swap, container, false)
 
         myHandler = Handler()
         swapConfig = context!!.getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)

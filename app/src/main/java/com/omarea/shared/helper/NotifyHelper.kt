@@ -25,7 +25,6 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
     private var showNofity: Boolean = false
     private var notification: Notification? = null
     private var notificationManager: NotificationManager? = null
-    private var handler = Handler()
 
     private fun getAppName(packageName: String): CharSequence? {
         try {

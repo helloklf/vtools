@@ -46,4 +46,16 @@ public class Props {
         return null;
     }
 
+    public static boolean setPorp(String propName, String value) {
+        try {
+            Process p = Runtime.getRuntime().exec("sh");
+            DataOutputStream out = new DataOutputStream(p.getOutputStream());
+            out.writeBytes("setprop " + propName + " \"" + value + "\"");
+            out.writeBytes("\n");
+            out.flush();
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
+    }
 }

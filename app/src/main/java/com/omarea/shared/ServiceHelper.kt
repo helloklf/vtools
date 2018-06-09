@@ -13,7 +13,7 @@ import java.util.*
 /**
  * Created by helloklf on 2016/10/1.
  */
-class ServiceHelper(private var context: Context) : ModeList() {
+class ServiceHelper(private var context: Context) : ModeList(context) {
     private var lastPackage: String? = null
     private var lastModePackage: String? = null
     private var lastMode = ""
@@ -94,19 +94,19 @@ class ServiceHelper(private var context: Context) : ModeList() {
         }
         if (autoBooster && System.currentTimeMillis() - lastScreenOnOff >= SCREEN_OFF_SWITCH_NETWORK_DELAY && screenOn == false) {
             if (spfAutoConfig.getBoolean(SpfConfig.WIFI + SpfConfig.OFF, false))
-                keepShell.doCmd("svc wifi disable")
+                keepShell2.doCmd("svc wifi disable")
 
             if (spfAutoConfig.getBoolean(SpfConfig.NFC + SpfConfig.OFF, false))
-                keepShell.doCmd("svc nfc disable")
+                keepShell2.doCmd("svc nfc disable")
 
             if (spfAutoConfig.getBoolean(SpfConfig.DATA + SpfConfig.OFF, false))
-                keepShell.doCmd("svc data disable")
+                keepShell2.doCmd("svc data disable")
 
             if (spfAutoConfig.getBoolean(SpfConfig.GPS + SpfConfig.OFF, false)) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    keepShell.doCmd("settings put secure location_providers_allowed -gps;")
+                    keepShell2.doCmd("settings put secure location_providers_allowed -gps;")
                 } else {
-                    keepShell.doCmd("settings put secure location_providers_allowed network")
+                    keepShell2.doCmd("settings put secure location_providers_allowed network")
                 }
             }
 
@@ -137,21 +137,21 @@ class ServiceHelper(private var context: Context) : ModeList() {
             }
         }
         if (autoBooster && screenOn == true) {
-            keepShell.doCmd("dumpsys deviceidle unforce;dumpsys deviceidle enable all;")
+            keepShell2.doCmd("dumpsys deviceidle unforce;dumpsys deviceidle enable all;")
             if (spfAutoConfig.getBoolean(SpfConfig.WIFI + SpfConfig.ON, false))
-                keepShell.doCmd("svc wifi enable")
+                keepShell2.doCmd("svc wifi enable")
 
             if (spfAutoConfig.getBoolean(SpfConfig.NFC + SpfConfig.ON, false))
-                keepShell.doCmd("svc nfc enable")
+                keepShell2.doCmd("svc nfc enable")
 
             if (spfAutoConfig.getBoolean(SpfConfig.DATA + SpfConfig.ON, false))
-                keepShell.doCmd("svc data enable")
+                keepShell2.doCmd("svc data enable")
 
             if (spfAutoConfig.getBoolean(SpfConfig.GPS + SpfConfig.ON, false)) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    keepShell.doCmd("settings put secure location_providers_allowed -gps;settings put secure location_providers_allowed +gps")
+                    keepShell2.doCmd("settings put secure location_providers_allowed -gps;settings put secure location_providers_allowed +gps")
                 } else {
-                    keepShell.doCmd("settings put secure location_providers_allowed gps,network")
+                    keepShell2.doCmd("settings put secure location_providers_allowed gps,network")
                 }
             }
 
@@ -168,7 +168,8 @@ class ServiceHelper(private var context: Context) : ModeList() {
             autoBooster = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, false)
         } else if (key == SpfConfig.GLOBAL_SPF_DYNAMIC_CPU) {
             dyamicCore = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
-            keepShell.doCmd(Consts.ExecuteConfig)
+            keepShell2.doCmd(Consts.ExecuteConfig)
+            setCurrent("", "")
             handler.postDelayed({
                 if (!dyamicCore) {
                     lastModePackage = ""
@@ -202,7 +203,6 @@ class ServiceHelper(private var context: Context) : ModeList() {
         }
     }
 
-    private var keepShell: KeepShell = KeepShell(context)
     private var keepShell2: KeepShell = KeepShell(context)
 
     //显示消息
@@ -257,7 +257,7 @@ class ServiceHelper(private var context: Context) : ModeList() {
                 updateModeNofity()
             }
         }
-        keepShell.doCmd(String.format(Consts.SaveModeApp, packageName))
+        setCurrentPowercfgApp(packageName)
     }
 
     //终止进程
@@ -287,18 +287,14 @@ class ServiceHelper(private var context: Context) : ModeList() {
 
     private fun toggleConfig(mode: String) {
         if (!screenOn && lockScreenOptimize) {
-            keepShell.doCmd(String.format(Consts.ToggleMode, POWERSAVE))
-            keepShell.doCmd(String.format(Consts.SaveModeState, POWERSAVE))
+            executePowercfgMode(POWERSAVE)
             return
         }
-        if (File(Consts.POWER_CFG_PATH).exists()) {
-            keepShell.doCmd(String.format(Consts.ToggleMode, mode))
-            lastMode = mode
-        } else {
-            ConfigInstaller().installPowerConfig(context, String.format(Consts.ToggleMode, mode));
-            lastMode = mode
+        if (!File(Consts.POWER_CFG_PATH).exists()) {
+            ConfigInstaller().installPowerConfig(context, "")
         }
-        keepShell.doCmd(String.format(Consts.SaveModeState, mode))
+        executePowercfgMode(mode)
+        lastMode = mode
     }
 
     //#region 工具方法
@@ -386,7 +382,8 @@ class ServiceHelper(private var context: Context) : ModeList() {
     fun onInterrupt() {
         notifyHelper.hideNotify()
         ReciverLock.unRegister(context)
-        keepShell.tryExit()
+        densityKeepShell()
+        keepShell2.tryExit()
         stopTimer()
     }
 
@@ -401,10 +398,10 @@ class ServiceHelper(private var context: Context) : ModeList() {
         }).start()
         ReciverLock.autoRegister(context, screenHandler)
         if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true))
-            keepShell.doCmd(Consts.DisableSELinux)
+            keepShell2.doCmd(Consts.DisableSELinux)
 
         if (dyamicCore)
-            keepShell.doCmd(Consts.ExecuteConfig)
+            keepShell2.doCmd(Consts.ExecuteConfig)
 
         settingsLoaded = true
     }

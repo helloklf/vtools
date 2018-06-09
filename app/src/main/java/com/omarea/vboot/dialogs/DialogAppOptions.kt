@@ -1,5 +1,6 @@
 package com.omarea.vboot.dialogs
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Handler
@@ -10,6 +11,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import com.omarea.shared.Consts
+import com.omarea.shared.SpfConfig
 import com.omarea.shared.model.Appinfo
 import com.omarea.shell.AsynSuShellUnit
 import com.omarea.shell.CheckRootStatus
@@ -43,7 +45,8 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                                 "清空数据",
                                 "清除缓存",
                                 "冻结",
-                                "解冻"), { _, which ->
+                                "解冻",
+                                "禁用+隐藏"), { _, which ->
                     when (which) {
                         0 -> backupAll(true, true)
                         1 -> backupAll(true, false)
@@ -53,6 +56,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                         5 -> trimCachesAll()
                         6 -> disableAll()
                         7 -> enableAll()
+                        8 -> hideAll()
                     }
                 })
                 .show()
@@ -345,17 +349,22 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         })
     }
 
+    @SuppressLint("ApplySharedPref")
     private fun _hideAll() {
+        val spf = context.getSharedPreferences(SpfConfig.APP_HIDE_HISTORY_SPF, Context.MODE_PRIVATE).edit()
         val sb = StringBuilder()
         for (item in apps) {
             val packageName = item.packageName.toString()
             sb.append("echo '[hide $packageName]';")
 
             sb.append("pm hide $packageName;")
+
+            spf.putString(packageName, if(item.appName != null) item.appName as String? else packageName)
         }
 
         sb.append("echo '[operation completed]';")
         execShell(sb)
+        spf.commit()
     }
 
     /**

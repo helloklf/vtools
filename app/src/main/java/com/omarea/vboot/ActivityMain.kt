@@ -37,7 +37,6 @@ import com.omarea.vboot.dialogs.DialogPower
 import kotlinx.android.synthetic.main.activity_main.*
 
 class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-
     lateinit internal var thisview: AppCompatActivity
     private var hasRoot = false
     private var globalSPF: SharedPreferences? = null
@@ -80,6 +79,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //checkFileWrite()
         checkRoot(Runnable {
             hasRoot = true
+            checkFileWrite()
             checkBusybox()
         }, Runnable {
             next()
@@ -87,33 +87,12 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setExcludeFromRecents()
         AppShortcutManager(thisview).removeMenu()
         //checkUseState()
-
-        val intent = Intent(this, ActivityAddinOnline::class.java)
-        //startActivity(intent)
     }
 
     fun checkUseState() {
         if (!(checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(Manifest.permission.PACKAGE_USAGE_STATS))) {
             val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
             startActivity(intent);
-        }
-    }
-
-    public fun setMaxAspect() {
-        var applicationInfo: ApplicationInfo? = null;
-        try {
-            applicationInfo = getPackageManager().getApplicationInfo(getPackageName(), PackageManager.GET_META_DATA);
-        } catch (e: PackageManager.NameNotFoundException) {
-            e.printStackTrace();
-        }
-        if (applicationInfo == null) {
-            throw IllegalArgumentException(" get application info = null, has no meta data! ");
-        }
-        val metaData = applicationInfo.metaData
-        if (metaData != null) {
-            val aspect = metaData.getFloat("android.max_aspect")
-            if (aspect < 2.4f)
-                metaData.putFloat("android.max_aspect", 2.1f)
         }
     }
 

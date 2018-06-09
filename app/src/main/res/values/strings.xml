@@ -248,7 +248,7 @@
     <string name="home_hide_in_recents_desc">不要在多任务界面显示微工具箱</string>
     <string name="home_app_night">辣眼睛</string>
     <string name="home_app_night_desc">开启暗色主题</string>
-    <string name="applist_help">✔ 已备份\n✘ 备份的版本比安装的版本更高\n★ 已安装的版本比备份的版本旧\n☆ 已备份数据未备份APK\n\n目前所提供的应用数据备份功能，需要系统集成busybox、toybox，使用tar+gz压缩数据（如果系统支持，将使用pigz提高压缩速度），仅备份 “/data/data/应用包名” 下的数据，且不保证兼容所有系统和应用。\n\n“系统”应用栏提供“禁用+隐藏”选项，被隐藏的应用将被从已安装应用列表移除（不同于冻结，应用被隐藏后你无法运行也不会在应用管理中看到）</string>
+    <string name="applist_help">✔ 已备份\n✘ 备份的版本比安装的版本更高\n★ 已安装的版本比备份的版本旧\n☆ 已备份数据未备份APK\n\n目前所提供的应用数据备份功能，需要系统集成busybox、toybox，使用tar+gz压缩数据（如果系统支持，将使用pigz提高压缩速度），仅备份 “/data/data/应用包名” 下的数据，且不保证兼容所有系统和应用。\n\n“禁用+隐藏”非常适合精简ROM，但是应用一旦被设为隐藏你将无法通过其它应用管理工具来恢复或启动（除非恢复出厂设置或在工具箱里手动解除隐藏），工具箱会自动保存隐藏记录，你可以通过下面的按钮来解除隐藏。\n如果你卸载了工具箱，则隐藏记录也会丢失，则无法再恢复！！</string>
     <string name="title_activity_core_contrl">CPU控制</string>
     <string name="dialog_addin_device_warn">请不要输入[英文 数字 空格]以外的内容！！！</string>
     <string name="dialog_addin_device_inner">预设模板</string>
