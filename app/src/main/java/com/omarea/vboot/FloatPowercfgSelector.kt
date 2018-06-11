@@ -132,7 +132,7 @@ class FloatPowercfgSelector {
                 4 -> selectedMode = modeList.IGONED
             }
             if (index != 4) {
-                modeList.executePowercfgMode(selectedMode, packageName).densityKeepShell()
+                modeList.executePowercfgModeOnce(selectedMode, packageName)
             } else {
                 modeList.setCurrent(selectedMode, packageName)
             }

@@ -40,6 +40,7 @@ if [ "$action" = "powersave" ]; then
 	echo 0 > /sys/module/msm_thermal/core_control/enabled
 	echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
 	echo N > /sys/module/msm_thermal/parameters/enabled
+    echo 0 > /sys/devices/system/cpu/cpu7/online
 	exit 0
 fi
 

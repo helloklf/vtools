@@ -279,9 +279,9 @@
     <string name="addin_flyme_static_blur_desc">禁用Flyme6下拉通知中心的实时模糊效果，以减少魅族低端机在游戏或视频播放时下拉通知中心的卡顿，或许还能省电，需要重启。</string>
     <string name="addin_miui_hide_search">MIUI9去通知中心搜索</string>
     <string name="addin_miui_hide_search_desc">默认隐藏MIUI9系统下拉通知中心的搜索框，重启后生效</string>
-    <string name="addin_disable_x">修复!和×</string>
+    <string name="addin_disable_x">修复 ! 和 ×</string>
     <string name="addin_disable_x_desc">将网络可用性检测地址设为国内服务器，从而去除类原生系统状态栏上WIFI、4G图标的!和x</string>
-    <string name="addin_disable_google">冻结/解冻 谷歌套件</string>
+    <string name="addin_disable_google">冻结/解冻 Google套件</string>
     <string name="addin_disable_google_desc">冻结谷歌服务基础4件套，可以减少待机耗电</string>
     <string name="addin_qq_clear">QQ净化</string>
     <string name="addin_qq_clear_desc">干掉/恢复QQ个性气泡、字体、头像挂件，会重启QQ</string>
@@ -291,10 +291,10 @@
     <string name="addin_deviceinfo_desc">通过更改build.prop，把机型修改成别的手机，可能会导致部分系统不能开机或出现Bug</string>
     <string name="addin_mac">修改MAC地址</string>
     <string name="addin_mac_desc">自定义手机WIFI网卡MAC地址，仅支持部分设备</string>
-    <string name="addin_force_dex_compile">强制编译Dex</string>
-    <string name="addin_force_dex_compile_desc">适用于Android N+，对已安装应用进行完整的dex2oat编译，从而提高运行性能。首次执行此操作，可能需要几十分钟，并增加应用空间占用30%左右，期间手机可能会卡顿，会消耗大量电量！！！</string>
-    <string name="addin_pm_dexopt">调整Dex编译策略</string>
-    <string name="addin_pm_dexopt_desc">适用于Android N+，调整应用编译策略，可以选择更快的安装应用或缓慢的安装更流畅的运行。</string>
+    <string name="addin_force_dex_compile">强制odex2oat</string>
+    <string name="addin_force_dex_compile_desc">适用于Android N+，对已安装的应用进行dex2oat编译，从而降低运行时的CPU占用，此过程可能需要半小时甚至更久（期间会占用大量CPU、RAM资源），并增加10%~30%的磁盘占用！\n系统更新后可能需要重新进行此操作！</string>
+    <string name="addin_pm_dexopt">调整默认odex2oat策略</string>
+    <string name="addin_pm_dexopt_desc">适用于Android N+，调整PackageManageer应用安装时的dex2oat编译级别，选择更快的安装（运行时编译）或安装时完整的编译，重启后生效，更新系统后需要重新设置</string>
     <string name="addin_drop_caches">内存清理</string>
     <string name="addin_drop_caches_desc"><![CDATA[Linux标准缓存清理命令：echo 3 > /proc/sys/vm/drop_caches]]></string>
     <string name="addin_thermal_remove">删除、恢复、禁用温控</string>

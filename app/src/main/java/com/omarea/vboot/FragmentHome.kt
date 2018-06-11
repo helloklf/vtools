@@ -196,7 +196,7 @@ class FragmentHome : Fragment() {
                     .create()
         }
         if (File(Consts.POWER_CFG_PATH).exists()) {
-            modeList.executePowercfgMode(action, context!!.packageName).densityKeepShell()
+            modeList.executePowercfgModeOnce(action, context!!.packageName)
         } else {
             val stringBuilder = StringBuilder()
             stringBuilder.append(String.format(Consts.ToggleMode, action))

@@ -52,7 +52,11 @@ public class Props {
             DataOutputStream out = new DataOutputStream(p.getOutputStream());
             out.writeBytes("setprop " + propName + " \"" + value + "\"");
             out.writeBytes("\n");
+            out.writeBytes("exit 0\n");
+            out.writeBytes("exit 0\n");
+            out.writeBytes("\n");
             out.flush();
+            p.waitFor();
             return true;
         } catch (Exception ex) {
             return false;

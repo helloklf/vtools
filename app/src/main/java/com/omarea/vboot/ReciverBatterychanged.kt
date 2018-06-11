@@ -9,49 +9,14 @@ import android.os.Handler
 import android.widget.Toast
 import com.omarea.shared.Consts
 import com.omarea.shared.SpfConfig
+import com.omarea.shared.helper.KeepShell
 import java.io.DataOutputStream
-import java.io.IOException
 
 class ReciverBatterychanged : BroadcastReceiver() {
     private var p: Process? = null
     internal var out: DataOutputStream? = null
     private var bp: Boolean = false
-
-    internal fun tryExit() {
-        try {
-            if (out != null)
-                out!!.close()
-        } catch (ex: Exception) {
-        }
-
-        try {
-            p!!.destroy()
-        } catch (ex: Exception) {
-        }
-    }
-
-    private fun doCmd(cmd: String, isRedo: Boolean = false) {
-        Thread(Runnable {
-            try {
-                if (p == null || isRedo || out == null) {
-                    tryExit()
-                    p = Runtime.getRuntime().exec("su")
-                    out = DataOutputStream(p!!.outputStream)
-                }
-                out!!.writeBytes("\n")
-                out!!.writeBytes(cmd)
-                out!!.writeBytes("\n")
-                out!!.flush()
-                //out!!.close()
-            } catch (e: IOException) {
-                //重试一次
-                if (!isRedo)
-                    doCmd(cmd, true)
-                else
-                    showMsg("Failed execution action!\nError message : " + e.message + "\n\n\ncommand : \r\n" + cmd, true)
-            }
-        }).start()
-    }
+    private var keepShell: KeepShell? = null
 
     internal var context: Context? = null
     private var sharedPreferences: SharedPreferences? = null
@@ -59,7 +24,6 @@ class ReciverBatterychanged : BroadcastReceiver() {
     private var listener: SharedPreferences.OnSharedPreferenceChangeListener? = null
     private val myHandler = Handler()
     private var qcLimit = 50000
-
     //显示文本消息
     private fun showMsg(msg: String, longMsg: Boolean) {
         if (context != null)
@@ -73,10 +37,10 @@ class ReciverBatterychanged : BroadcastReceiver() {
 
         if (globalSharedPreferences!!.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false))
             showMsg(context!!.getString(R.string.power_connected), false)
-        doCmd(Consts.FastChangerBase)
+        keepShell!!.doCmd(Consts.FastChangerBase)
         // /sys/class/qcom-battery/restricted_charging
         //doCmd("echo ${qcLimit}000 > /sys/class/power_supply/battery/constant_charge_current_max;")
-        doCmd(computeLeves(qcLimit).toString())
+        keepShell!!.doCmd(computeLeves(qcLimit).toString())
     }
 
     private fun computeLeves(qcLimit: Int): StringBuilder {
@@ -101,6 +65,11 @@ class ReciverBatterychanged : BroadcastReceiver() {
     private var lastChangerState = false
 
     override fun onReceive(context: Context, intent: Intent) {
+        if (keepShell == null) {
+            keepShell = KeepShell(context)
+        } else {
+            keepShell!!.setContext(context)
+        }
         if (sharedPreferences == null) {
             sharedPreferences = context.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
             listener = SharedPreferences.OnSharedPreferenceChangeListener { spf, key ->
@@ -130,17 +99,17 @@ class ReciverBatterychanged : BroadcastReceiver() {
                 if (onChanger) {
                     if (batteryLevel >= sharedPreferences!!.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85)) {
                         bp = true
-                        doCmd(Consts.DisableChanger)
+                        keepShell!!.doCmd(Consts.DisableChanger)
                     }
                 }
                 //电量不足，恢复充电功能
                 else if (action == Intent.ACTION_BATTERY_LOW) {
-                    doCmd(Consts.ResumeChanger)
+                    keepShell!!.doCmd(Consts.ResumeChanger)
                     Toast.makeText(this.context, context.getString(R.string.battery_low), Toast.LENGTH_SHORT).show()
                     bp = false
                 } else if (bp && batteryLevel != -1 && batteryLevel < sharedPreferences!!.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85) - 20) {
                     //电量低于保护级别20
-                    doCmd(Consts.ResumeChanger)
+                    keepShell!!.doCmd(Consts.ResumeChanger)
                     bp = false
                 }
             }

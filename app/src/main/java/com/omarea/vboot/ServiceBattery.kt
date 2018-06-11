@@ -1,12 +1,12 @@
 package com.omarea.vboot
 
-import android.app.*
+import android.app.ActivityManager
+import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.os.Build
 import android.os.IBinder
-import android.support.v4.app.NotificationCompat
+import android.widget.Toast
 
 class ServiceBattery : Service() {
 
@@ -41,30 +41,14 @@ class ServiceBattery : Service() {
     }
 
     override fun onDestroy() {
-        val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        val mainIntent = Intent(applicationContext, ActivityQuickSwitchMode::class.java)
-        val mainPendingIntent = PendingIntent.getActivity(applicationContext, 0, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            nm.createNotificationChannel(NotificationChannel("vtool-battery-service", applicationContext.applicationInfo.loadLabel(packageManager), NotificationManager.IMPORTANCE_LOW))
-            nm.notify(5, NotificationCompat.Builder(this, "vtool-boot")
-                    .setSmallIcon(R.drawable.ic_menu_digital)
-                    .setSubText(applicationContext.applicationInfo.loadLabel(packageManager))
-                    .setContentIntent(mainPendingIntent)
-                    .setContentText("充电加速服务后台已被终止！")
-                    .build()
-            )
-        } else {
-            nm.notify(5, NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_menu_digital)
-                    .setSubText(applicationContext.applicationInfo.loadLabel(packageManager))
-                    .setContentIntent(mainPendingIntent)
-                    .setContentText("充电加速服务后台已被终止！")
-                    .build()
-            )
-        }
+        try {
+            if (batteryChangedReciver != null) {
+                unregisterReceiver(batteryChangedReciver)
+                batteryChangedReciver = null
+            }
+            Toast.makeText(this, "充电加速服务已被结束！", Toast.LENGTH_LONG).show()
+        } catch (igoned: Exception) {
 
-        if (batteryChangedReciver != null) {
-            unregisterReceiver(batteryChangedReciver)
-            batteryChangedReciver = null
         }
     }
 

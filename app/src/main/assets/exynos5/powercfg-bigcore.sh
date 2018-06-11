@@ -85,26 +85,26 @@ if [ "$action" = "performance" ]; then
 	set_value 100000 /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq
 	set_value 2080000 /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq
 	set_value 1378000 /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
-	set_value 1248000 /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
+	set_value 1456000 /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
 
-    set_value 175 /sys/kernel/hmp/down_threshold
-    set_value 400 /sys/kernel/hmp/up_threshold
+    set_value 170 /sys/kernel/hmp/down_threshold
+    set_value 310 /sys/kernel/hmp/up_threshold
     set_value 0 /sys/kernel/hmp/boost
 
 	exit 0
 fi
 
 if [ "$action" = "fast" ]; then
-	set_value 50000 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+	set_value 1456000 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 	set_value 3000000 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
 	set_value 1248000 /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq
 	set_value 2900000 /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq
 	set_value 1872000 /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
 	set_value 2035200 /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
 
-    set_value 0 /sys/kernel/hmp/down_threshold
-    set_value 1 /sys/kernel/hmp/up_threshold
-    set_value 1 /sys/kernel/hmp/boost
+    set_value 170 /sys/kernel/hmp/down_threshold
+    set_value 310 /sys/kernel/hmp/up_threshold
+    set_value 0 /sys/kernel/hmp/boost
 
 	exit 0
 fi

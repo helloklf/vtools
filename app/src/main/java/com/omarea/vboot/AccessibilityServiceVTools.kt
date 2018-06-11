@@ -1,6 +1,7 @@
 package com.omarea.vboot
 
 import android.accessibilityservice.AccessibilityService
+import android.app.ActivityManager
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
 import android.content.ComponentName
@@ -8,8 +9,10 @@ import android.content.Context
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Build
+import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import com.omarea.shared.AutoClickService
+import com.omarea.shared.CrashHandler
 import com.omarea.shared.ServiceHelper
 
 /**
@@ -63,6 +66,10 @@ override fun onCreate() {
         setServiceInfo(info);
         */
         super.onServiceConnected()
+
+        //val crashHandler = CrashHandler()
+        //crashHandler.init(this)
+
         initServiceHelper()
     }
 

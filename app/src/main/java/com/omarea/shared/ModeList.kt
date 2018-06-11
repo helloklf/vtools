@@ -3,6 +3,7 @@ package com.omarea.shared
 import android.content.Context
 import com.omarea.shared.helper.KeepShell
 import com.omarea.shell.Props
+import com.omarea.shell.SuDo
 import com.omarea.vboot.R
 
 /**
@@ -100,6 +101,19 @@ open class ModeList {
             keepShell!!.tryExit()
             keepShell = null
         }
+        return this
+    }
+
+
+    internal fun executePowercfgModeOnce(mode: String): ModeList {
+        SuDo(context).execCmdSync("sh ${Consts.POWER_CFG_PATH} " + mode)
+        setCurrentPowercfg(mode)
+        return this
+    }
+
+    internal fun executePowercfgModeOnce(mode: String, app: String): ModeList {
+        SuDo(context).execCmdSync("sh ${Consts.POWER_CFG_PATH} " + mode)
+        setCurrent(mode, app)
         return this
     }
 }
