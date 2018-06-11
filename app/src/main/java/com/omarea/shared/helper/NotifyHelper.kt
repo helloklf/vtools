@@ -74,6 +74,8 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
             if (batterySensor != null) {
                 batterySensor = batterySensor!!.trim()
             }
+        } else {
+            batterySensor = null
         }
         return batterySensor
     }

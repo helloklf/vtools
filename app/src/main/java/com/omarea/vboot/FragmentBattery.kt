@@ -27,7 +27,7 @@ class FragmentBattery : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        view = inflater!!.inflate(R.layout.layout_battery, container, false)
+        view = inflater.inflate(R.layout.layout_battery, container, false)
         return view
     }
 

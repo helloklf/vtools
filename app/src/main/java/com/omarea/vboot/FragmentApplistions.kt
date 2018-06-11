@@ -68,9 +68,9 @@ class FragmentApplistions : Fragment() {
         tabHost.addTab(tabHost.newTabSpec("tab_3").setContent(R.id.tab_apps_helper).setIndicator(getString(R.string.help)))
         tabHost.currentTab = 3
 
-        apps_userlist.addHeaderView(this.getLayoutInflater().inflate(R.layout.app_list_headerview, null))
-        apps_systemlist.addHeaderView(this.getLayoutInflater().inflate(R.layout.app_list_headerview, null))
-        apps_backupedlist.addHeaderView(this.getLayoutInflater().inflate(R.layout.app_list_headerview, null))
+        apps_userlist.addHeaderView(this.layoutInflater.inflate(R.layout.app_list_headerview, null))
+        apps_systemlist.addHeaderView(this.layoutInflater.inflate(R.layout.app_list_headerview, null))
+        apps_backupedlist.addHeaderView(this.layoutInflater.inflate(R.layout.app_list_headerview, null))
 
         val onItemLongClick = AdapterView.OnItemLongClickListener { parent, _, position, id ->
             if (position < 1)
@@ -81,9 +81,9 @@ class FragmentApplistions : Fragment() {
             true
         }
 
-        apps_userlist.setOnItemLongClickListener(onItemLongClick)
-        apps_systemlist.setOnItemLongClickListener(onItemLongClick)
-        apps_backupedlist.setOnItemLongClickListener(onItemLongClick)
+        apps_userlist.onItemLongClickListener = onItemLongClick
+        apps_systemlist.onItemLongClickListener = onItemLongClick
+        apps_backupedlist.onItemLongClickListener = onItemLongClick
 
         fab_apps_user.setOnClickListener({
             getSelectedAppShowOptions(Appinfo.AppType.USER)
@@ -233,6 +233,11 @@ class FragmentApplistions : Fragment() {
             } catch (ex: Exception) {
             }
         }
+    }
+
+    override fun onDetach() {
+        processBarDialog.hideDialog()
+        super.onDetach()
     }
 
     companion object {

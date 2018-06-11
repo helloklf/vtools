@@ -96,6 +96,11 @@ class FragmentWhitelist : Fragment() {
         }).start()
     }
 
+    override fun onDetach() {
+        dialog.hideDialog()
+        super.onDetach()
+    }
+
     companion object {
         fun createPage(): Fragment {
             val fragment = FragmentWhitelist()

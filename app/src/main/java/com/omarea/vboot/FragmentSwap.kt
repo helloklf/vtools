@@ -271,6 +271,12 @@ class FragmentSwap : Fragment() {
         }
     }
 
+
+    override fun onDetach() {
+        processBarDialog.hideDialog()
+        super.onDetach()
+    }
+
     companion object {
         fun createPage(): Fragment {
             val fragment = FragmentSwap()
