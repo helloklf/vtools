@@ -115,6 +115,7 @@
             android:enabled="true"
             android:permission="" />
         <service
+            android:process=":boot"
             android:name="com.omarea.shared.BootService"
             android:enabled="true"
             android:permission="" />

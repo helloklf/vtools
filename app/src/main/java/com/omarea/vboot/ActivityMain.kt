@@ -4,8 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.ActivityManager
 import android.content.*
-import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -72,8 +70,8 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //val crashHandler = CrashHandler()
-        //crashHandler.init(this)
+        val crashHandler = CrashHandler()
+        crashHandler.init(this)
 
         thisview = this
         //checkFileWrite()
@@ -221,11 +219,20 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     //返回键事件
     override fun onBackPressed() {
-        val drawer = findViewById(R.id.drawer_layout) as DrawerLayout
-        when {
-            drawer.isDrawerOpen(GravityCompat.START) -> drawer.closeDrawer(GravityCompat.START)
-            supportFragmentManager.backStackEntryCount > 0 -> supportFragmentManager.popBackStack()
-            else -> super.onBackPressed()
+        try {
+            val drawer = findViewById(R.id.drawer_layout) as DrawerLayout
+            when {
+                drawer.isDrawerOpen(GravityCompat.START) ->
+                    drawer.closeDrawer(GravityCompat.START)
+                supportFragmentManager.backStackEntryCount > 0 ->
+                    supportFragmentManager.popBackStack()
+                else ->{
+                    super.onBackPressed()
+                    this.finishActivity(0)
+                }
+            }
+        } catch (ex: Exception) {
+            ex.stackTrace
         }
     }
 
@@ -233,7 +240,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         try {
             if (getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
                             .getBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, false)) {
-                this.finishAndRemoveTask()
+                //this.finishAndRemoveTask()
             }
         } catch (ex: Exception) {
         }
@@ -301,6 +308,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (fragment != null) {
             //transaction.disallowAddToBackStack()
             transaction.replace(R.id.main_content, fragment)
+            transaction.addToBackStack(null);
             transaction.commit()
             title = item.title
             //item.isChecked = true
@@ -319,6 +327,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             menu.findItem(R.id.nav_battery).isEnabled = false
             menu.findItem(R.id.nav_img).isEnabled = false
             menu.findItem(R.id.nav_profile).isEnabled = false
+            menu.findItem(R.id.nav_whitelist).isEnabled = false
             menu.findItem(R.id.nav_additional).isEnabled = false
         } catch (ex: Exception) {
 

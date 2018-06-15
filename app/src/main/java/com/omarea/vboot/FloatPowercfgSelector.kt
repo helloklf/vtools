@@ -10,12 +10,9 @@ import android.view.WindowManager.LayoutParams
 import android.widget.Button
 import android.widget.Spinner
 import android.widget.TextView
-import com.omarea.shared.Consts
 import com.omarea.shared.ModeList
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.helper.NotifyHelper
-import com.omarea.shell.SuDo
-import java.lang.StringBuilder
 
 /**
  * 弹窗辅助类

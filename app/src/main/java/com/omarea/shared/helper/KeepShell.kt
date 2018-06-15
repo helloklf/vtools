@@ -1,12 +1,10 @@
 package com.omarea.shared.helper
 
 import android.content.Context
-import android.os.Build
 import android.os.Handler
 import android.widget.Toast
 import java.io.BufferedWriter
 import java.io.IOException
-import java.util.concurrent.TimeUnit
 
 /**
  * Created by Hello on 2018/01/23.

@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
+import com.omarea.shell.Props
 import com.omarea.shell.SuDo
 import com.omarea.vboot.R
 import com.omarea.vboot.ServiceBattery
@@ -33,6 +34,14 @@ class BootService : Service() {
                 this.startService(i)
             } catch (ex: Exception) {
             }
+        }
+
+        val booted = Props.getProp("vtools.boot")
+        if (booted == null || booted.isBlank()) {
+            handler.postDelayed({
+                stopSelf()
+            }, 2000)
+            return
         }
 
         val sb = StringBuilder()
@@ -96,6 +105,8 @@ class BootService : Service() {
             sb.append("\n\n")
         }
 
+        sb.append("\n\n")
+        sb.append("setprop vtools.boot 1")
         sb.append("\n\n")
         SuDo(this).execCmdSync(sb.toString())
         val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager

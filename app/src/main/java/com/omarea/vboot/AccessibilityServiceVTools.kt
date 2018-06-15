@@ -1,17 +1,18 @@
 package com.omarea.vboot
 
 import android.accessibilityservice.AccessibilityService
-import android.app.ActivityManager
+import android.app.Service
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Build
-import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import com.omarea.shared.AutoClickService
+import com.omarea.shared.BootService
 import com.omarea.shared.CrashHandler
 import com.omarea.shared.ServiceHelper
 
@@ -67,15 +68,22 @@ override fun onCreate() {
         */
         super.onServiceConnected()
 
-        //val crashHandler = CrashHandler()
-        //crashHandler.init(this)
+        val crashHandler = CrashHandler()
+        crashHandler.init(this)
 
         initServiceHelper()
+
+        try {
+            val service = Intent(this, BootService::class.java)
+            //service.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startService(service)
+        } catch (ex: Exception) {
+        }
     }
 
     private fun initServiceHelper() {
         if (serviceHelper == null)
-            serviceHelper = ServiceHelper(applicationContext)
+            serviceHelper = ServiceHelper(this)
     }
 
     private fun tryGetActivity(componentName: ComponentName): ActivityInfo? {
@@ -168,21 +176,25 @@ override fun onCreate() {
         inst.sendKeyDownUpSync(event.keyCode) }).start()
         */
 
-    override fun onInterrupt() {
-        /*
+    private fun deestory () {
         if (serviceHelper != null){
             serviceHelper!!.onInterrupt()
             serviceHelper = null
+            stopSelf()
         }
-        */
         //android.os.Process.killProcess(android.os.Process.myPid());
     }
 
+    override fun onUnbind(intent: Intent?): Boolean {
+        deestory()
+        return super.onUnbind(intent)
+    }
+
+    override fun onInterrupt() {
+        //this.deestory()
+    }
+
     override fun onDestroy() {
-        if (serviceHelper != null) {
-            serviceHelper!!.onInterrupt()
-            serviceHelper = null
-        }
-        //android.os.Process.killProcess(android.os.Process.myPid());
+        this.deestory()
     }
 }

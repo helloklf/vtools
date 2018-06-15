@@ -46,7 +46,6 @@ class ServiceBattery : Service() {
                 unregisterReceiver(batteryChangedReciver)
                 batteryChangedReciver = null
             }
-            Toast.makeText(this, "充电加速服务已被结束！", Toast.LENGTH_LONG).show()
         } catch (igoned: Exception) {
 
         }

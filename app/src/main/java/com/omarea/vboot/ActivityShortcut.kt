@@ -7,7 +7,6 @@ import com.omarea.shared.ConfigInstaller
 import com.omarea.shared.Consts
 import com.omarea.shared.ModeList
 import com.omarea.shell.Platform
-import com.omarea.shell.SuDo
 import java.io.File
 
 class ActivityShortcut : Activity() {

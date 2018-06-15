@@ -3,7 +3,6 @@ package com.omarea.vboot
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
@@ -27,8 +26,6 @@ import com.omarea.ui.SearchTextWatcher
 import com.omarea.vboot.dialogs.DialogAppOptions
 import com.omarea.vboot.dialogs.DialogSingleAppOptions
 import kotlinx.android.synthetic.main.layout_applictions.*
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 class FragmentApplistions : Fragment() {

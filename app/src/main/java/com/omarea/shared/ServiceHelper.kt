@@ -1,5 +1,7 @@
 package com.omarea.shared
 
+import android.accessibilityservice.AccessibilityService
+import android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_HOME
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
@@ -13,7 +15,7 @@ import java.util.*
 /**
  * Created by helloklf on 2016/10/1.
  */
-class ServiceHelper(private var context: Context) : ModeList(context) {
+class ServiceHelper(private var context: AccessibilityService) : ModeList(context) {
     private var lastPackage: String? = null
     private var lastModePackage: String? = null
     private var lastMode = ""
@@ -80,8 +82,9 @@ class ServiceHelper(private var context: Context) : ModeList(context) {
         }
         clearTasks()
         screenHandler.postDelayed({
-            if (!screenOn)
+            if (!screenOn) {
                 stopTimer()
+            }
         }, 5000)
     }
 
@@ -318,6 +321,7 @@ class ServiceHelper(private var context: Context) : ModeList(context) {
         }
         if (timeout == 0L) {
             if (spfAutoConfig.getBoolean(SpfConfig.BOOSTER_SPF_CFG_SPF_CLEAR_TASKS, true)) {
+                context.performGlobalAction(GLOBAL_ACTION_HOME)
                 val cmds = StringBuilder()
                 cmds.append("dumpsys deviceidle enable all;\n")
                 cmds.append("dumpsys deviceidle force-idle;\n")

@@ -10,6 +10,7 @@ import android.widget.Toast
 import com.omarea.shared.Consts
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.helper.KeepShell
+import com.omarea.shared.helper.NotifyHelper
 import java.io.DataOutputStream
 
 class ReciverBatterychanged : BroadcastReceiver() {
@@ -24,6 +25,7 @@ class ReciverBatterychanged : BroadcastReceiver() {
     private var listener: SharedPreferences.OnSharedPreferenceChangeListener? = null
     private val myHandler = Handler()
     private var qcLimit = 50000
+
     //显示文本消息
     private fun showMsg(msg: String, longMsg: Boolean) {
         if (context != null)
@@ -38,8 +40,6 @@ class ReciverBatterychanged : BroadcastReceiver() {
         if (globalSharedPreferences!!.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false))
             showMsg(context!!.getString(R.string.power_connected), false)
         keepShell!!.doCmd(Consts.FastChangerBase)
-        // /sys/class/qcom-battery/restricted_charging
-        //doCmd("echo ${qcLimit}000 > /sys/class/power_supply/battery/constant_charge_current_max;")
         keepShell!!.doCmd(computeLeves(qcLimit).toString())
     }
 
@@ -100,6 +100,9 @@ class ReciverBatterychanged : BroadcastReceiver() {
                     if (batteryLevel >= sharedPreferences!!.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85)) {
                         bp = true
                         keepShell!!.doCmd(Consts.DisableChanger)
+                    } else if (batteryLevel < sharedPreferences!!.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85) - 20) {
+                        bp = false
+                        keepShell!!.doCmd(Consts.ResumeChanger)
                     }
                 }
                 //电量不足，恢复充电功能
