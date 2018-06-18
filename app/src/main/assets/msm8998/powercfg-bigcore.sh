@@ -69,10 +69,10 @@ if [ "$action" = "powersave" ]; then
 
 	set_cpu_freq 5000 1420800 5000 1497600
 
-	echo "99 1248000:73" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
+	echo "65 1248000:73 1670400:85 1747200:90" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
 	echo 672000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
 
-	echo "99 979200:78" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
+	echo "68 1248000:73" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
 	echo 729600 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
 
 	echo 8 > /sys/class/kgsl/kgsl-3d0/default_pwrlevel

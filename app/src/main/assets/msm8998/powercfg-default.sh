@@ -106,10 +106,10 @@ if [ "$action" = "balance" ]; then
     echo "0:1248000 1:1248000 2:1248000 3:1248000 4:0 5:0 6:0 7:0" > /sys/module/cpu_boost/parameters/input_boost_freq
     echo 40 > /sys/module/cpu_boost/parameters/input_boost_ms
 
-	echo "95 1248000:73 1670400:85 1747200:90" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
+	echo "65 1248000:73 1670400:85 1747200:90" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
 	echo 672000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
 
-	echo "95 1248000:73" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
+	echo "68 1248000:73" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
 	echo 729600 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
 
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
