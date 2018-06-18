@@ -6,11 +6,19 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import com.omarea.shared.helper.*
 import com.omarea.shell.AsynSuShellUnit
 import java.io.File
 import java.util.*
+import android.R.attr.name
+import android.content.ComponentName
+import android.content.ContentValues.TAG
+import android.content.pm.ResolveInfo
+import android.content.Intent
+
+
 
 /**
  * Created by helloklf on 2016/10/1.
@@ -46,7 +54,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
     //屏幕关闭后清理任务延迟（ms）
     private val SCREEN_OFF_CLEAR_TASKS_DELAY: Long = 60000
     private var screenHandler = ScreenEventHandler({ onScreenOff() }, { onScreenOn() })
-    private var handler = Handler()
+    private var handler = Handler(Looper.getMainLooper())
 
     private var notifyHelper: NotifyHelper = NotifyHelper(context, spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))
 
@@ -72,6 +80,8 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
 
     //屏幕关闭时执行
     private fun onScreenOff() {
+        if (screenOn == false)
+            return
         screenOn = false
         lastScreenOnOff = System.currentTimeMillis()
         if (autoBooster) {
@@ -314,6 +324,24 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
     }
     //#endregion
 
+    private fun backToHome() {
+        try {
+            // context.performGlobalAction(GLOBAL_ACTION_HOME)
+            val intent = Intent(Intent.ACTION_MAIN)
+            intent.addCategory(Intent.CATEGORY_HOME)
+            val res = context.getPackageManager().resolveActivity(intent, 0)
+            if (res.activityInfo == null) {
+                // should not happen. A home is always installed, isn't it?
+            } else if (res.activityInfo.packageName == "android") {
+                // No default selected
+            } else {
+                // res.activityInfo.packageName and res.activityInfo.name gives
+                // you the default app
+                //Log.d(TAG, "默认桌面为：" + res.activityInfo.packageName + "."  + res.activityInfo.name)
+                context.startActivity(Intent().setComponent(ComponentName(res.activityInfo.packageName, res.activityInfo.name)))
+            }
+        } catch (ex: Exception) { }
+    }
     //清理后台
     private fun clearTasks(timeout: Long = SCREEN_OFF_CLEAR_TASKS_DELAY) {
         if (!autoBooster || screenOn) {
@@ -321,14 +349,13 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         }
         if (timeout == 0L) {
             if (spfAutoConfig.getBoolean(SpfConfig.BOOSTER_SPF_CFG_SPF_CLEAR_TASKS, true)) {
-                context.performGlobalAction(GLOBAL_ACTION_HOME)
+                backToHome()
                 val cmds = StringBuilder()
                 cmds.append("dumpsys deviceidle enable all;\n")
                 cmds.append("dumpsys deviceidle force-idle;\n")
                 if (spfAutoConfig.getBoolean(SpfConfig.BOOSTER_SPF_CFG_SPF_CLEAR_CACHE, false)) {
                     cmds.append("echo 3 > /proc/sys/vm/drop_caches")
                 }
-
 
                 cmds.append("\n\n")
                 val spf = context.getSharedPreferences(SpfConfig.WHITE_LIST_SPF, Context.MODE_PRIVATE)

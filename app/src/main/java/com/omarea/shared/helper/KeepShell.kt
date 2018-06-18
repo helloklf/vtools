@@ -5,6 +5,7 @@ import android.os.Handler
 import android.widget.Toast
 import java.io.BufferedWriter
 import java.io.IOException
+import java.nio.charset.Charset
 
 /**
  * Created by Hello on 2018/01/23.
@@ -43,9 +44,16 @@ class KeepShell(private var context: Context?) {
     }
 
     //获取ROOT超时时间
-    private val GET_ROOT_TIMEOUT = 10000L
+    private val GET_ROOT_TIMEOUT = 20000L
+    private var threadStarted = false
+    private var cmdsCache = StringBuilder()
 
     private fun getRuntimeShell(cmd: String?, error: Runnable?) {
+        if (threadStarted) {
+            cmdsCache.append(cmd)
+            cmdsCache.append("\n\n")
+            return
+        }
         val thread = Thread(Runnable {
             try {
                 tryExit()
@@ -56,6 +64,10 @@ class KeepShell(private var context: Context?) {
                 } else if (cmd != null) {
                     out!!.write(cmd)
                     out!!.write("\n\n")
+                    if (cmdsCache.length > 0) {
+                        out!!.write(cmdsCache.toString())
+                        cmdsCache = StringBuilder()
+                    }
                     out!!.flush()
                 }
             } catch (e: Exception) {
@@ -64,11 +76,14 @@ class KeepShell(private var context: Context?) {
                 } else {
                     showMsg("获取ROOT权限失败！")
                 }
+            } finally {
+                threadStarted = false
             }
         })
         thread.start()
+        threadStarted = true
         handler.postDelayed({
-            if (p == null && thread.isAlive) {
+            if (p == null && thread.isAlive && !thread.isInterrupted) {
                 thread.interrupt()
                 tryExit()
                 if (error != null) {
@@ -76,6 +91,7 @@ class KeepShell(private var context: Context?) {
                 } else {
                     showMsg("获取Root权限超时！")
                 }
+                threadStarted = false
             }
         }, GET_ROOT_TIMEOUT)
     }

@@ -6,95 +6,115 @@ action=$1
 #	sh /system/etc/init.qcom.post_boot.sh
 #fi
 
-#powersave 1.6Ghz
+# /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
+# 300000 364800 441600 518400 595200 672000 748800 825600 883200 960000 1036800 1094400 1171200 1248000 1324800 1401600 1478400 1555200 1670400 1747200 1824000 1900800
+
+# /sys/devices/system/cpu/cpu4/cpufreq/scaling_available_frequencies
+# 300000 345600 422400 499200 576000 652800 729600 806400 902400 979200 1056000 1132800 1190400 1267200 1344000 1420800 1497600 1574400 1651200 1728000 1804800 1881600 1958400 2035200 2112000 2208000 2265600 2323200 2342400 2361600 2457600
+
+echo 0 > /dev/cpuset/background/cpus
+echo 0-2 > /dev/cpuset/system-background/cpus
+echo 4-7 > /dev/cpuset/foreground/boost/cpus
+echo 0-7 > /dev/cpuset/foreground/cpus
+
+echo 1 > /sys/devices/system/cpu/cpu0/online
+echo 1 > /sys/devices/system/cpu/cpu1/online
+echo 1 > /sys/devices/system/cpu/cpu2/online
+echo 1 > /sys/devices/system/cpu/cpu3/online
+echo 1 > /sys/devices/system/cpu/cpu4/online
+echo 1 > /sys/devices/system/cpu/cpu5/online
+
+function gpu_config()
+{
+    gpu_freqs=`cat /sys/class/kgsl/kgsl-3d0/devfreq/available_frequencies`
+    gpu_min_pl=0
+    max_freq='710000000'
+    for freq in $gpu_freqs; do
+        gpu_min_pl=`expr $gpu_min_pl + 1`
+        if [[ $max_freq -gt $freq ]]; then
+            max_freq=$freq
+        fi;
+    done
+
+    echo "msm-adreno-tz" > /sys/class/kgsl/kgsl-3d0/devfreq/governor
+    #echo 710000000 > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
+    echo $max_freq > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
+    #echo 257000000 > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
+    echo 100000000 > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
+    echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
+    echo 0 > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
+}
+
+gpu_config
+
+echo 0 > /sys/module/msm_thermal/core_control/enabled
+echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
+echo N > /sys/module/msm_thermal/parameters/enabled
+
+function set_cpu_freq()
+{
+	echo "0:$2 1:$2 2:$2 3:$2 4:$4 5:$4 6:$4 7:$4" > /sys/module/msm_performance/parameters/cpu_max_freq
+	echo $1 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
+	echo $2 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
+	echo $3 > /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq
+	echo $4 > /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq
+}
+
 if [ "$action" = "powersave" ]; then
-	echo "0" > /sys/module/cpu_boost/parameters/input_boost_freq
-	echo 0 > /sys/module/cpu_boost/parameters/input_boost_ms
+	#echo "0" > /sys/module/cpu_boost/parameters/input_boost_freq
+	#echo 0 > /sys/module/cpu_boost/parameters/input_boost_ms
 
-	echo 0 > /dev/cpuset/background/cpus
-	echo 0 > /dev/cpuset/system-background/cpus
-	echo 0-7 > /dev/cpuset/foreground/cpus
-	echo 4-7 > /dev/cpuset/foreground/boost/cpus
-	echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
-	echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/max_cpus
-	echo 82 > /sys/devices/system/cpu/cpu4/core_ctl/busy_up_thres
-	echo 55 > /sys/devices/system/cpu/cpu4/core_ctl/busy_down_thres
+    echo "0:1248000 1:1248000 2:1248000 3:1248000 4:0 5:0 6:0 7:0" > /sys/module/cpu_boost/parameters/input_boost_freq
+    echo 40 > /sys/module/cpu_boost/parameters/input_boost_ms
 
-	echo "75 960000:95" > /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
-	echo "87 700000:95" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
-	echo "0:2750000 1:2750000 2:2750000 3:2750000 4:1056000 5:1056000 6:1056000 7:1056000" > /sys/module/msm_performance/parameters/cpu_max_freq
-	echo 50000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
-	echo 2750000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
-	echo 50000 > /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq
-	echo 1056000 > /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq
+	set_cpu_freq 5000 1420800 5000 1497600
 
-	echo 1036800 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
+	echo "99 1248000:73" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
+	echo 672000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
+
+	echo "99 979200:78" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
 	echo 729600 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
 
-	echo "msm-adreno-tz" > /sys/class/kgsl/kgsl-3d0/devfreq/governor
-	echo 710000000 > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
-	echo 100000000 > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
-	echo 8 > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
-	echo 6 > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 	echo 8 > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 
 	echo 0 > /proc/sys/kernel/sched_boost
 
-	echo 0 > /sys/module/msm_thermal/core_control/enabled
-	echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
-	echo N > /sys/module/msm_thermal/parameters/enabled
-
-    echo 1 > /sys/devices/system/cpu/cpu4/online
-    echo 1 > /sys/devices/system/cpu/cpu5/online
     echo 0 > /sys/devices/system/cpu/cpu6/online
     echo 0 > /sys/devices/system/cpu/cpu7/online
+
+	echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/use_sched_load
+	echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/use_sched_load
+
+    echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy
+    echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
 
 	exit 0
 fi
 
-
-echo 1 > /sys/devices/system/cpu/cpu4/online
-echo 1 > /sys/devices/system/cpu/cpu5/online
 echo 1 > /sys/devices/system/cpu/cpu6/online
 echo 1 > /sys/devices/system/cpu/cpu7/online
 
-echo "78 1804800:95" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
-echo "83 1939200:90 2016000:95" > /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
-echo 0-1 > /dev/cpuset/background/cpus
-echo 0-3 > /dev/cpuset/system-background/cpus
-echo 0-7 > /dev/cpuset/foreground/cpus
-echo 4-7 > /dev/cpuset/foreground/boost/cpus
+echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/use_sched_load
+echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/use_sched_load
+
+echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy
+echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
+
+echo "67 1804800:95" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
+echo "73 1497600:78 2016000:95" > /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
 
 if [ "$action" = "balance" ]; then
     echo "0:1248000 1:1248000 2:1248000 3:1248000 4:0 5:0 6:0 7:0" > /sys/module/cpu_boost/parameters/input_boost_freq
     echo 40 > /sys/module/cpu_boost/parameters/input_boost_ms
-	
-	echo "0:2750000 1:2750000 2:2750000 3:2750000 4:2208000 5:2208000 6:2208000 7:2208000" > /sys/module/msm_performance/parameters/cpu_max_freq
-	echo 300000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
-	echo 2750000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
-	echo 300000 > /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq
-	echo 2208000 > /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq
+
+	set_cpu_freq 5000 2750000 5000 1804800
 	
 	echo 1747200 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
 	echo 1267200 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
 	
-	echo "msm-adreno-tz" > /sys/class/kgsl/kgsl-3d0/devfreq/governor
-	echo 710000000 > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
-	echo 257000000 > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
-	echo 8 > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
-	echo 0 > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 	echo 6 > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 
 	echo 0 > /proc/sys/kernel/sched_boost
-
-    echo 1 > /sys/module/msm_thermal/core_control/enabled
-    echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
-    echo Y > /sys/module/msm_thermal/parameters/enabled
-
-    echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
-    echo 2 > /sys/devices/system/cpu/cpu4/core_ctl/max_cpus
-    echo 80 > /sys/devices/system/cpu/cpu4/core_ctl/busy_up_thres
-    echo 52 > /sys/devices/system/cpu/cpu4/core_ctl/busy_down_thres
 
 	exit 0
 fi
@@ -103,32 +123,14 @@ if [ "$action" = "performance" ]; then
     echo "0:0 1:0 2:0 3:0 4:1267200 5:1267200 6:1267200 7:1267200" > /sys/module/cpu_boost/parameters/input_boost_freq
     echo 40 > /sys/module/cpu_boost/parameters/input_boost_ms
 
-	echo "0:2750000 1:2750000 2:2750000 3:2750000 4:2457600 5:2457600 6:2457600 7:2457600" > /sys/module/msm_performance/parameters/cpu_max_freq
-	echo 300000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
-	echo 2750000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
-	echo 100000 > /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq
-	echo 2457600 > /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq
+	set_cpu_freq 5000 2750000 5000 2457600
 	
 	echo 1747200 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
 	echo 1728000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
 	
-	echo "msm-adreno-tz" > /sys/class/kgsl/kgsl-3d0/devfreq/governor
-	echo 710000000 > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
-	echo 257000000 > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
-	echo 8 > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
-	echo 0 > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
-	echo 6 > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
+	echo 5 > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 
 	echo 1 > /proc/sys/kernel/sched_boost
-
-    echo 0 > /sys/module/msm_thermal/core_control/enabled
-    echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
-    echo N > /sys/module/msm_thermal/parameters/enabled
-
-    echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
-    echo 2 > /sys/devices/system/cpu/cpu4/core_ctl/max_cpus
-    echo 73 > /sys/devices/system/cpu/cpu4/core_ctl/busy_up_thres
-    echo 45 > /sys/devices/system/cpu/cpu4/core_ctl/busy_down_thres
 	
 	exit 0
 fi
@@ -137,30 +139,12 @@ if [ "$action" = "fast" ]; then
     echo "0:0 1:0 2:0 3:0 4:1804800 5:1804800 6:1804800 7:1804800" > /sys/module/cpu_boost/parameters/input_boost_freq
     echo 40 > /sys/module/cpu_boost/parameters/input_boost_ms
 
-	echo "0:2750000 1:2750000 2:2750000 3:2750000 4:2750000 5:2750000 6:2750000 7:2750000" > /sys/module/msm_performance/parameters/cpu_max_freq
-	echo 50000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
-	echo 2750000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
-	echo 1267200 > /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq
-	echo 2750000 > /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq
+	set_cpu_freq 5000 2750000 1267200 2750000
 	
 	echo 1747200 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
 	echo 2035200 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
 	
-	echo "msm-adreno-tz" > /sys/class/kgsl/kgsl-3d0/devfreq/governor
-	echo 850000000 > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
-	echo 257000000 > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
-	echo 8 > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
-	echo 0 > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 	echo 5 > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
-
-    echo 0 > /sys/module/msm_thermal/core_control/enabled
-    echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
-    echo Y > /sys/module/msm_thermal/parameters/enabled
-
-    echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
-    echo 2 > /sys/devices/system/cpu/cpu4/core_ctl/max_cpus
-    echo 65 > /sys/devices/system/cpu/cpu4/core_ctl/busy_up_thres
-    echo 45 > /sys/devices/system/cpu/cpu4/core_ctl/busy_down_thres
 
 	echo 1 > /proc/sys/kernel/sched_boost
 	

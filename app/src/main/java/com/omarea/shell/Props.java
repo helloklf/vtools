@@ -28,22 +28,24 @@ public class Props {
             InputStreamReader inputstreamreader = new InputStreamReader(inputstream);
             BufferedReader bufferedreader = new BufferedReader(inputstreamreader);
 
+            out.writeBytes("exit\n");
+            out.writeBytes("exit\n");
+            out.flush();
+            out.close();
+            StringBuilder lines = new StringBuilder();
             String line;
             while ((line = bufferedreader.readLine()) != null) {
-                out.writeBytes("exit\n");
-                out.flush();
-                out.close();
-                bufferedreader.close();
-                inputstream.close();
-                inputstreamreader.close();
-                p.destroy();
-                return line;
+                lines.append(line);
             }
+            bufferedreader.close();
+            inputstream.close();
+            inputstreamreader.close();
             p.destroy();
+            return lines.toString().trim();
         } catch (Exception e) {
 
         }
-        return null;
+        return "";
     }
 
     public static boolean setPorp(String propName, String value) {

@@ -36,7 +36,7 @@
         </params>
     </action>
     <action root="true">
-        <title>谷歌相机HDR+</title>
+        <title>Camera2 API【启用\禁用】</title>
         <desc su="file:///android_asset/custom/actions/gcm_get.sh" />
         <script>
             setprop persist.camera.HAL3.enabled $gcm;
@@ -65,4 +65,15 @@
             <param name="action" value="12123123" />
         </params>
     </action>-->
+    <action root="true">
+        <title>Performance Boost Config【启用\禁用】</title>
+        <desc su="file:///android_asset/custom/actions/msm_booster_get.sh" />
+        <script>file:///android_asset/custom/actions/msm_booster_set.sh</script>
+        <params>
+            <param name="config">
+                <option value="1">启用</option>
+                <option value="0">禁用</option>
+            </param>
+        </params>
+    </action>
 </actions>

@@ -63,10 +63,10 @@ case "$target" in
         set_value 1 /sys/devices/system/cpu/cpu0/cpufreq/interactive/boost
         set_value 1 /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy
 
-        set_value 80 /sys/devices/system/cpu/cpu0/cpufreq/interactive/go_hispeed_load
-        set_value 1170000 /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
-        set_value 1 /sys/devices/system/cpu/cpu0/cpufreq/interactive/boost
-        set_value 1 /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy
+        set_value 80 /sys/devices/system/cpu/cpu4/cpufreq/interactive/go_hispeed_load
+        set_value 1170000 /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
+        set_value 1 /sys/devices/system/cpu/cpu4/cpufreq/interactive/boost
+        set_value 1 /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
 
         #
         set_value 1 /sys/power/cpuhotplug/enabled
@@ -100,31 +100,30 @@ case "$target" in
         cluster1="/sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster1_volt_table"
         chmod 0664 $cluster1
         setvolt $cluster1 "2704000 " "1161250"
-
-        setvolt $cluster1 "2600000 " "1118750"
-        setvolt $cluster1 "2496000 " "1081250"
-        setvolt $cluster1 "2392000 " "1056250"
-        setvolt $cluster1 "2288000 " "1018750"
-        setvolt $cluster1 "2184000 " "981250"
-        setvolt $cluster1 "2080000 " "956250"
-        setvolt $cluster1 "1976000 " "931250"
-        setvolt $cluster1 "1872000 " "900000"
-        setvolt $cluster1 "1768000 " "875000"
-        setvolt $cluster1 "1664000 " "850000"
-        setvolt $cluster1 "1560000 " "812500"
-        setvolt $cluster1 "1456000 " "781250"
-        setvolt $cluster1 "1352000 " "756250"
-        setvolt $cluster1 "1248000 " "731250"
+        setvolt $cluster1 "2600000 " "1087500"
+        setvolt $cluster1 "2496000 " "1050000"
+        setvolt $cluster1 "2392000 " "1025000"
+        setvolt $cluster1 "2288000 " "987500"
+        setvolt $cluster1 "2184000 " "950000"
+        setvolt $cluster1 "2080000 " "925000"
+        setvolt $cluster1 "1976000 " "900000"
+        setvolt $cluster1 "1872000 " "868750"
+        setvolt $cluster1 "1768000 " "843750"
+        setvolt $cluster1 "1664000 " "818750"
+        setvolt $cluster1 "1560000 " "781250"
+        setvolt $cluster1 "1456000 " "750000"
+        setvolt $cluster1 "1352000 " "725000"
+        setvolt $cluster1 "1248000 " "700000"
         setvolt $cluster1 "1144000 " "712500"
-        setvolt $cluster1 "1040000 " "687500"
-        setvolt $cluster1 "936000 " "662500"
-        setvolt $cluster1 "832000 " "637500"
-        setvolt $cluster1 "728000 " "612500"
-        setvolt $cluster1 "624000 " "593750"
-        setvolt $cluster1 "520000 " "575000"
-        setvolt $cluster1 "416000 " "575000"
-        setvolt $cluster1 "312000 " "575000"
-        setvolt $cluster1 "208000 " "575000"
+        setvolt $cluster1 "1040000 " "681250"
+        setvolt $cluster1 "936000 " "656250"
+        setvolt $cluster1 "832000 " "631250"
+        setvolt $cluster1 "728000 " "606250"
+        setvolt $cluster1 "624000 " "581250"
+        setvolt $cluster1 "520000 " "562500"
+        setvolt $cluster1 "416000 " "543750"
+        setvolt $cluster1 "312000 " "543750"
+        setvolt $cluster1 "208000 " "543750"
 
         set_value 130000 /sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster1_min_freq
 
@@ -151,21 +150,23 @@ case "$target" in
 
         gpu="/sys/devices/14ac0000.mali/volt_table"
         chmod 0644 $gpu
-        setvolt $gpu "806  " "737500"
-        setvolt $gpu "702  " "718750"
-        setvolt $gpu "650  " "687500"
-        setvolt $gpu "600  " "668750"
-        setvolt $gpu "546  " "650000"
-        setvolt $gpu "419  " "600000"
-        setvolt $gpu "338  " "575000"
-        setvolt $gpu "260  " "568750"
+        setvolt $gpu "806 " "737500"
+        setvolt $gpu "702 " "718750"
+        setvolt $gpu "650 " "687500"
+        setvolt $gpu "600 " "668750"
+        setvolt $gpu "546 " "650000"
+        setvolt $gpu "419 " "600000"
+        setvolt $gpu "338 " "575000"
+        setvolt $gpu "260 " "568750"
 
         set_value 130000 /sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster0_min_freq
         set_value 0 /sys/block/sda/queue/iostats
+        set_value 'row' /sys/block/sda/queue/scheduler
         set_value 0 /sys/block/mmcblk0/queue/iostats
+        set_value 'row' /sys/block/mmcblk0/queue/scheduler
 
         echo 'coarse_demand' > /sys/devices/14ac0000.mali/power_policy
-        echo 'always_on' > /sys/devices/14ac0000.mali/power_policy
+        #echo 'always_on' > /sys/devices/14ac0000.mali/power_policy
         echo '78' > /sys/devices/14ac0000.mali/highspeed_load
         echo '806' > /sys/devices/14ac0000.mali/max_clock
         echo '100' > /sys/devices/14ac0000.mali/min_clock

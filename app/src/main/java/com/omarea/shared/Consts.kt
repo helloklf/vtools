@@ -32,7 +32,9 @@ public object Consts {
                     "busybox mount -f -o rw,remount /system\n" +
                     "mount -o rw,remount /system\n" +
                     "busybox mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
-                    "mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n"
+                    "mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
+                    "busybox mount -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
+                    "mount -o remount,rw /dev/block/bootdevice/by-name/system /system\n"
     val MountSystemRW2 =
             "/cache/busybox mount -o rw,remount /system\n" +
                     "/cache/busybox mount -f -o rw,remount /system\n" +

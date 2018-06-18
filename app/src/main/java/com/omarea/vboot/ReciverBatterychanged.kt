@@ -14,8 +14,6 @@ import com.omarea.shared.helper.NotifyHelper
 import java.io.DataOutputStream
 
 class ReciverBatterychanged : BroadcastReceiver() {
-    private var p: Process? = null
-    internal var out: DataOutputStream? = null
     private var bp: Boolean = false
     private var keepShell: KeepShell? = null
 

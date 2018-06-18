@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Handler
+import android.os.Looper
 import android.support.v4.app.NotificationCompat
 import android.widget.RemoteViews
 import com.omarea.shared.ModeList
@@ -25,7 +26,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
     private var showNofity: Boolean = false
     private var notification: Notification? = null
     private var notificationManager: NotificationManager? = null
-    private var handler = Handler()
+    private var handler = Handler(Looper.getMainLooper())
 
     private fun getAppName(packageName: String): CharSequence? {
         try {
