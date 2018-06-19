@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.*
+import com.omarea.shared.AccessibleServiceHelper
 import com.omarea.shared.SpfConfig
 import kotlinx.android.synthetic.main.activity_accessibility_key_event_settings.*
 import java.util.*
@@ -41,6 +42,19 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
         setSwitchClick()
+        key_event_state.setOnClickListener {
+            try {
+                val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                startActivity(intent)
+                Toast.makeText(this, "请在无障碍设置中找到“微工具箱-按键辅助”并激活，从而使用按键辅助功能！", Toast.LENGTH_LONG).show()
+            } catch (ex: Exception) {
+
+            }
+        }
+        val serviceState = AccessibleServiceHelper().serviceIsRunning(this, "AccessibilityServiceVToolsKeyEvent")
+        // key_event_state!!.visibility = if (serviceState) View.VISIBLE else View.GONE
+
+        key_event_state.text = if (serviceState) getString(R.string.accessibility_running) else getString(R.string.accessibility_stoped)
     }
 
     @SuppressLint("ApplySharedPref")

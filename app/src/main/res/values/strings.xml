@@ -165,6 +165,7 @@
     <string name="menu_battery">电池充电</string>
     <string name="menu_xposed">Xposed功能</string>
     <string name="menu_autobooster">自动行为</string>
+    <string name="menu_keymap">按键辅助</string>
     <string name="menu_whitelist">阻止休眠</string>
     <string name="menu_img">备份还原</string>
     <string name="menu_settings">软件设置</string>
@@ -294,7 +295,7 @@
     <string name="addin_force_dex_compile">强制odex2oat</string>
     <string name="addin_force_dex_compile_desc">适用于Android N+，对已安装的应用进行dex2oat编译，从而降低运行时的CPU占用，此过程可能需要半小时甚至更久（期间会占用大量CPU、RAM资源），并增加10%~30%的磁盘占用！\n系统更新后可能需要重新进行此操作！</string>
     <string name="addin_pm_dexopt">调整默认odex2oat策略</string>
-    <string name="addin_pm_dexopt_desc">适用于Android N+，调整PackageManageer应用安装时的dex2oat编译级别，选择更快的安装（运行时编译）或安装时完整的编译，重启后生效，更新系统后需要重新设置</string>
+    <string name="addin_pm_dexopt_desc">适用于Android N+，调整PackageManager应用安装时的dex2oat编译级别，选择更快的安装（运行时编译）或安装时完整的编译，重启后生效，更新系统后需要重新设置</string>
     <string name="addin_drop_caches">内存清理</string>
     <string name="addin_drop_caches_desc"><![CDATA[Linux标准缓存清理命令：echo 3 > /proc/sys/vm/drop_caches]]></string>
     <string name="addin_thermal_remove">删除、恢复、禁用温控</string>

@@ -16,6 +16,10 @@
                 android:id="@+id/nav_booster"
                 android:icon="@drawable/ic_menu_booster"
                 android:title="@string/menu_autobooster" />
+            <item
+                android:id="@+id/nav_keyevent"
+                android:icon="@drawable/ic_menu_task"
+                android:title="@string/menu_keymap" />
         </menu>
     </item>
     <item android:title="常用功能">

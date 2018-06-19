@@ -13,10 +13,13 @@ import com.omarea.vboot.AccessibilityServiceVTools
 class AccessibleServiceHelper {
     //判断服务是否激活
     fun serviceIsRunning(context: Context): Boolean {
+        return serviceIsRunning(context, "AccessibilityServiceVTools")
+    }
+    fun serviceIsRunning(context: Context, serviceName: String): Boolean {
         val m = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
         val serviceInfos = m.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
         for (serviceInfo in serviceInfos) {
-            if (serviceInfo.id.endsWith("AccessibilityServiceVTools")) {
+            if (serviceInfo.id.endsWith(serviceName)) {
                 return true
             }
         }

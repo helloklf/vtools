@@ -291,6 +291,12 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_profile -> fragment = FragmentConfig.createPage()
             R.id.nav_additional -> fragment = FragmentAddin.createPage()
             R.id.nav_reward -> fragment = FragmentReward.createPage()
+            R.id.nav_keyevent -> {
+                try {
+                    val intent = Intent(this, ActivityAccessibilityKeyEventSettings::class.java)
+                    startActivity(intent)
+                } catch (ex: Exception){}
+            }
             R.id.nav_xposed -> {
                 //fragment = FragmentXposed.Create()
                 try {

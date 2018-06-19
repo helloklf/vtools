@@ -7,6 +7,9 @@ import android.content.Context.VIBRATOR_SERVICE
 import android.content.SharedPreferences
 import android.graphics.PixelFormat
 import android.os.Build
+import android.os.VibrationEffect
+import android.os.VibrationEffect.DEFAULT_AMPLITUDE
+import android.os.VibrationEffect.createOneShot
 import android.os.Vibrator
 import android.provider.Settings
 import android.view.Gravity
@@ -96,6 +99,7 @@ class FloatVitualTouchBar// 获取应用的Context
         }
     }
 
+
     @SuppressLint("ApplySharedPref")
     private fun setUpView(context: AccessibilityService): View {
         val view = LayoutInflater.from(context).inflate(R.layout.fw_vitual_touch_bar, null)
@@ -104,9 +108,17 @@ class FloatVitualTouchBar// 获取应用的Context
         val btn2 = view.findViewById<Button>(R.id.vitual_touch_bar_2)
         val btn3 = view.findViewById<Button>(R.id.vitual_touch_bar_3)
 
-        btn1.setOnClickListener {
+        val vibrator = Runnable {
             val vibrator = context.getSystemService(VIBRATOR_SERVICE) as Vibrator
-            vibrator.vibrate(200)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(20, 10), DEFAULT_AMPLITUDE))
+            } else {
+                vibrator.vibrate(longArrayOf(20, 10), -1)
+            }
+        }
+
+        btn1.setOnClickListener {
+            vibrator.run()
             if (!reversalLayout) {
                 context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
             } else {
@@ -114,20 +126,25 @@ class FloatVitualTouchBar// 获取应用的Context
             }
         }
         btn1.setOnLongClickListener {
+            vibrator.run()
             if (reversalLayout) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_TOGGLE_SPLIT_SCREEN)
                 }
             }
-            false
+            true
         }
         btn2.setOnClickListener {
+            vibrator.run()
             context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
         }
         btn2.setOnLongClickListener {
+            vibrator.run()
             context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS)
+            true
         }
         btn3.setOnClickListener {
+            vibrator.run()
             if (!reversalLayout) {
                 context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS)
             } else {
@@ -135,12 +152,13 @@ class FloatVitualTouchBar// 获取应用的Context
             }
         }
         btn3.setOnLongClickListener {
+            vibrator.run()
             if (!reversalLayout) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_TOGGLE_SPLIT_SCREEN)
                 }
             }
-            false
+            true
         }
         return view
     }
