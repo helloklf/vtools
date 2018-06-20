@@ -64,7 +64,7 @@ public class KernelProrp {
             }
         } catch (Exception e) {
         }
-        return null;
+        return "";
     }
 
     /**

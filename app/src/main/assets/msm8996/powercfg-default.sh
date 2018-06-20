@@ -1,6 +1,7 @@
 #!/system/bin/sh
 
 action=$1
+stop perfd
 
 if [ ! `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor` = "interactive" ]; then 
 	sh /system/etc/init.qcom.post_boot.sh
@@ -12,6 +13,36 @@ echo 0 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/max_freq_hysteresis
 echo 45 > /proc/sys/kernel/sched_downmigrate
 echo 45 > /proc/sys/kernel/sched_upmigrate
 
+function gpu_config()
+{
+    gpu_freqs=`cat /sys/class/kgsl/kgsl-3d0/devfreq/available_frequencies`
+    max_freq='710000000'
+    for freq in $gpu_freqs; do
+        if [[ $freq -gt $max_freq ]]; then
+            max_freq=$freq
+        fi;
+    done
+    gpu_min_pl=6
+    if [[ -f /sys/class/kgsl/kgsl-3d0//num_pwrlevels ]];then
+        gpu_min_pl=`cat /sys/class/kgsl/kgsl-3d0//num_pwrlevels`
+        gpu_min_pl=`expr $gpu_min_pl - 1`
+    fi;
+
+    if [[ "$gpu_min_pl" = "-1" ]];then
+        $gpu_min_pl=1
+    fi;
+
+    echo "msm-adreno-tz" > /sys/class/kgsl/kgsl-3d0/devfreq/governor
+    #echo 710000000 > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
+    echo $max_freq > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
+    #echo 257000000 > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
+    echo 100000000 > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
+    echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
+    echo 0 > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
+}
+
+gpu_config
+
 if [ "$action" = "powersave" ]; then
 	echo "0:850000 1:850000 2:960000 3:960000" > /sys/module/msm_performance/parameters/cpu_max_freq
 	echo 300000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
@@ -21,13 +52,10 @@ if [ "$action" = "powersave" ]; then
 	
 	echo 480000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
 	echo 480000 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/hispeed_freq
-	
-	echo "msm-adreno-tz" > /sys/class/kgsl/kgsl-3d0/devfreq/governor
-	echo 133000000 > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
-	echo 133000000 > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
-	echo 6 > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
-	echo 6 > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
-	echo 6 > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
+
+	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
+	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
+
 	echo 0 > /proc/sys/kernel/sched_boost
 
 	exit 0
@@ -42,13 +70,10 @@ if [ "$action" = "balance" ]; then
 	
 	echo 600000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
 	echo 700000 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/hispeed_freq
-	
-	echo "msm-adreno-tz" > /sys/class/kgsl/kgsl-3d0/devfreq/governor
-	echo 315000000 > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
-	echo 133000000 > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
-	echo 6 > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
-	echo 4 > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
-	echo 6 > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
+
+	echo 0 > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
+	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
+
 	echo 0 > /proc/sys/kernel/sched_boost
 
 	exit 0
@@ -63,13 +88,10 @@ if [ "$action" = "performance" ]; then
 	
 	echo 1228800 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
 	echo 1036800 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/hispeed_freq
-	
-	echo "msm-adreno-tz" > /sys/class/kgsl/kgsl-3d0/devfreq/governor
-	echo 510000000 > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
-	echo 133000000 > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
-	echo 6 > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
-	echo 2 > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
-	echo 6 > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
+
+	echo 0 > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
+	echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
+
 	echo 0 > /proc/sys/kernel/sched_boost
 	
 	exit 0
@@ -82,15 +104,11 @@ if [ "$action" = "fast" ]; then
 	echo 1248000 > /sys/devices/system/cpu/cpu2/cpufreq/scaling_min_freq
 	echo 2500000 > /sys/devices/system/cpu/cpu2/cpufreq/scaling_max_freq
 	
-	echo 2500000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
-	echo 2500000 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/hispeed_freq
-	
-	echo "msm-adreno-tz" > /sys/class/kgsl/kgsl-3d0/devfreq/governor
-	echo 750000000 > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
-	echo 133000000 > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
-	echo 6 > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
+	echo 1150000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
+	echo 1248000 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/hispeed_freq
+
 	echo 0 > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
-	echo 2 > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
+	echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	
 	echo 1 > /proc/sys/kernel/sched_boost
 	

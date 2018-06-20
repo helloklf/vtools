@@ -2,6 +2,7 @@ package com.omarea.shared.helper
 
 import android.content.Context
 import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import java.io.BufferedWriter
 import java.io.IOException
@@ -14,17 +15,21 @@ import java.nio.charset.Charset
 class KeepShell(private var context: Context?) {
     private var p: Process? = null
     private var out: BufferedWriter? = null
-    private var handler: Handler = Handler()
+    private var handler: Handler = Handler(Looper.getMainLooper())
 
     fun setContext(context: Context?) {
         this.context = context
     }
 
     private fun showMsg(msg: String) {
-        if (context != null)
-            handler.post {
-                Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-            }
+        try {
+            if (context != null)
+                handler.post {
+                    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+                }
+        } catch (ex: Exception) {
+
+        }
     }
 
     //尝试退出命令行程序

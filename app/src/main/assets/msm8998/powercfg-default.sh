@@ -1,6 +1,8 @@
 #!/system/bin/sh
 
 action=$1
+stop perfd
+
 #if [ ! `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor` = "interactive" ]; then
 #	sh /system/etc/init.qcom.post_boot.sh
 #fi
@@ -24,14 +26,21 @@ echo 1 > /sys/devices/system/cpu/cpu5/online
 function gpu_config()
 {
     gpu_freqs=`cat /sys/class/kgsl/kgsl-3d0/devfreq/available_frequencies`
-    gpu_min_pl=0
     max_freq='710000000'
     for freq in $gpu_freqs; do
-        gpu_min_pl=`expr $gpu_min_pl + 1`
-        if [[ $max_freq -gt $freq ]]; then
+        if [[ $freq -gt $max_freq ]]; then
             max_freq=$freq
         fi;
     done
+    gpu_min_pl=6
+    if [[ -f /sys/class/kgsl/kgsl-3d0//num_pwrlevels ]];then
+        gpu_min_pl=`cat /sys/class/kgsl/kgsl-3d0//num_pwrlevels`
+        gpu_min_pl=`expr $gpu_min_pl - 1`
+    fi;
+
+    if [[ "$gpu_min_pl" = "-1" ]];then
+        $gpu_min_pl=1
+    fi;
 
     echo "msm-adreno-tz" > /sys/class/kgsl/kgsl-3d0/devfreq/governor
     #echo 710000000 > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
@@ -41,7 +50,6 @@ function gpu_config()
     echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
     echo 0 > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 }
-
 gpu_config
 
 echo 0 > /sys/module/msm_thermal/core_control/enabled

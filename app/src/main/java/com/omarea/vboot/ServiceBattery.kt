@@ -14,13 +14,14 @@ class ServiceBattery : Service() {
 
     override fun onBind(intent: Intent): IBinder? {
         // TODO: Return the communication channel to the service.
-        throw UnsupportedOperationException("Not yet implemented")
+        // throw UnsupportedOperationException("Not yet implemented")
+        return null
     }
 
     override fun onCreate() {
         if (batteryChangedReciver == null) {
             //监听电池改变
-            batteryChangedReciver = ReciverBatterychanged()
+            batteryChangedReciver = ReciverBatterychanged(this)
             //启动完成
             val ACTION_BOOT_COMPLETED = IntentFilter(Intent.ACTION_BOOT_COMPLETED)
             registerReceiver(batteryChangedReciver, ACTION_BOOT_COMPLETED)
@@ -36,12 +37,15 @@ class ServiceBattery : Service() {
             //电量不足
             val ACTION_BATTERY_LOW = IntentFilter(Intent.ACTION_BATTERY_LOW)
             registerReceiver(batteryChangedReciver, ACTION_BATTERY_LOW)
+            batteryChangedReciver!!.resumeCharge()
+            batteryChangedReciver!!.entryFastChanger(true)
         }
     }
 
     override fun onDestroy() {
         try {
             if (batteryChangedReciver != null) {
+                batteryChangedReciver!!.onDestroy()
                 unregisterReceiver(batteryChangedReciver)
                 batteryChangedReciver = null
             }

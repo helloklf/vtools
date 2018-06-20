@@ -41,7 +41,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
     private fun getBatteryUnit(): Int {
         if (batteryUnit == Int.MIN_VALUE) {
             val full = KernelProrp.getProp("/sys/class/power_supply/battery/charge_full_design")
-            if (full != null && full.length > 0) {
+            if (full != null && full.length >= 4) {
                 return full.length - 4
             }
             return -1
@@ -83,7 +83,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
 
     private fun getBatteryTemp(): String {
         val sensor = getBatterySensor()
-        if (sensor != null) {
+        if (sensor != null && !sensor.isNullOrEmpty()) {
             val temp = KernelProrp.getProp(sensor)
             if (temp == null || (temp.length < 4)) {
                 return "? °C"
@@ -105,23 +105,30 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         }
 
         var io = KernelProrp.getProp(path, false)
-        val unit = getBatteryUnit()
-        var start = ""
-        if (io.startsWith("+")) {
-            start = "+"
-            io = io.substring(1, io.length)
-        } else if (io.startsWith("-")) {
-            start = "-"
-            io = io.substring(1, io.length)
-        } else {
-            start = ""
+        if (io == null || io.isNullOrEmpty()) {
+            return "? mA"
         }
-        if (unit != -1 && io.length > unit) {
-            return start + io.substring(0, io.length - unit) + "mA"
-        } else if (io.length <= 4) {
-            return start + io + "mA"
+        try {
+            val unit = getBatteryUnit()
+            var start = ""
+            if (io.startsWith("+")) {
+                start = "+"
+                io = io.substring(1, io.length)
+            } else if (io.startsWith("-")) {
+                start = "-"
+                io = io.substring(1, io.length)
+            } else {
+                start = ""
+            }
+            if (unit != -1 && io.length > unit) {
+                return start + io.substring(0, io.length - unit) + "mA"
+            } else if (io.length <= 4) {
+                return start + io + "mA"
+            }
+            return start + io
+        } catch (ex: Exception) {
+            return "? mA"
         }
-        return start + io
     }
 
     //显示通知
