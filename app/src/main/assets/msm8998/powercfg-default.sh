@@ -67,11 +67,8 @@ function set_cpu_freq()
 }
 
 if [ "$action" = "powersave" ]; then
-	#echo "0" > /sys/module/cpu_boost/parameters/input_boost_freq
-	#echo 0 > /sys/module/cpu_boost/parameters/input_boost_ms
-
-    echo "0:1248000 1:1248000 2:1248000 3:1248000 4:0 5:0 6:0 7:0" > /sys/module/cpu_boost/parameters/input_boost_freq
-    echo 40 > /sys/module/cpu_boost/parameters/input_boost_ms
+	echo "0" > /sys/module/cpu_boost/parameters/input_boost_freq
+	echo 0 > /sys/module/cpu_boost/parameters/input_boost_ms
 
 	set_cpu_freq 5000 1420800 5000 1497600
 
@@ -102,7 +99,6 @@ echo 1 > /sys/devices/system/cpu/cpu6/online
 echo 1 > /sys/devices/system/cpu/cpu7/online
 
 echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy
-echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
 
 echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/use_sched_load
 echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/use_sched_load
@@ -125,20 +121,22 @@ if [ "$action" = "balance" ]; then
 
     echo 0-1 > /dev/cpuset/background/cpus
     echo 0-3 > /dev/cpuset/system-background/cpus
+    echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
 
 	exit 0
 fi
 
+echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
 if [ "$action" = "performance" ]; then
 	set_cpu_freq 5000 2750000 5000 2035200
 
     echo "0:1248000 1:1248000 2:1248000 3:1248000 4:0 5:0 6:0 7:0" > /sys/module/cpu_boost/parameters/input_boost_freq
     echo 40 > /sys/module/cpu_boost/parameters/input_boost_ms
 
-    echo "67 1804800:95" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
+    echo "67 1804800:87" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
     echo 1555200 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
 
-    echo "73 1497600:78 2016000:95" > /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
+    echo "73 1497600:78 2016000:92" > /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
     echo 1267200 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
 
 	echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
@@ -153,8 +151,8 @@ fi
 if [ "$action" = "fast" ]; then
 	set_cpu_freq 5000 2750000 1267200 2750000
 
-    echo "0:0 1:0 2:0 3:0 4:1267200 5:1267200 6:1267200 7:1267200" > /sys/module/cpu_boost/parameters/input_boost_freq
-    echo 40 > /sys/module/cpu_boost/parameters/input_boost_ms
+    echo "0:0 1:0 2:0 3:0 4:1804800 5:1804800 6:1804800 7:1804800" > /sys/module/cpu_boost/parameters/input_boost_freq
+    echo 80 > /sys/module/cpu_boost/parameters/input_boost_ms
 
     echo "67 1804800:95" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
 	echo 1747200 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq

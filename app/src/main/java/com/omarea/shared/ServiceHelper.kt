@@ -72,9 +72,14 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
     }
 
     private fun stopTimer() {
-        if (timer != null) {
-            timer!!.cancel()
-            timer = null
+        try{
+            if (timer != null) {
+                timer!!.cancel()
+                timer!!.purge()
+                timer = null
+            }
+        } catch (ex: Exception) {
+
         }
     }
 

@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.support.v4.app.NotificationCompat
+import android.util.Log
 import android.widget.RemoteViews
 import com.omarea.shared.ModeList
 import com.omarea.shell.KernelProrp
@@ -135,21 +136,25 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
     internal fun notify() {
         handler.postDelayed({
             updateNotic()
-        }, 1500)
+        }, 500)
     }
 
     private fun updateNotic () {
-        var currentMode = getCurrentPowerMode()
-        if (currentMode == null || currentMode.length == 0) {
-            currentMode = ""
-        }
+        try {
+            var currentMode = getCurrentPowerMode()
+            if (currentMode == null || currentMode.length == 0) {
+                currentMode = ""
+            }
 
-        var currentApp = getCurrentPowermodeApp()
-        if (currentApp == null || currentApp.length == 0) {
-            currentApp = context.packageName
-        }
+            var currentApp = getCurrentPowermodeApp()
+            if (currentApp == null || currentApp.length == 0) {
+                currentApp = context.packageName
+            }
 
-        notifyPowerModeChange(currentApp!!, currentMode)
+            notifyPowerModeChange(currentApp!!, currentMode)
+        } catch (ex: Exception) {
+            Log.e("NotifyHelper", ex.localizedMessage)
+        }
     }
 
     private fun notifyPowerModeChange(packageName: String, mode: String) {
