@@ -71,7 +71,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
-                android:text="Battery"
+                android:text="电池"
                 android:textAlignment="textEnd" />
 
             <TextView

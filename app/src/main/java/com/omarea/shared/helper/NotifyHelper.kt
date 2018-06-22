@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.support.v4.app.NotificationCompat
+import android.util.Log
 import android.widget.RemoteViews
 import com.omarea.shared.ModeList
 import com.omarea.shell.KernelProrp
@@ -159,16 +160,20 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         val remoteViews = RemoteViews(context.packageName, R.layout.notify0)
         remoteViews.setTextViewText(R.id.notify_title, getAppName(packageName))
         remoteViews.setTextViewText(R.id.notify_text, getModName(mode))
-        remoteViews.setTextViewText(R.id.notify_battery_title, "电池")
         val capacity = getCapacity()
         try {
             if (capacity != null && !capacity.isNullOrEmpty()) {
                 remoteViews.setImageViewBitmap(R.id.notify_battery_icon, BitmapFactory.decodeResource(context.resources, getBatteryIcon(capacity.replace("%", "").toInt())))
             }
         } catch (ex: Exception) {
+            Log.e("NotifyHelper", ex.message)
         }
-        remoteViews.setTextViewText(R.id.notify_battery_text, getBatteryIO() + " " + capacity + " " + getBatteryTemp())
-        remoteViews.setImageViewBitmap(R.id.notify_mode, BitmapFactory.decodeResource(context.resources, getModImage(mode)))
+        try {
+            remoteViews.setTextViewText(R.id.notify_battery_text, getBatteryIO() + " " + capacity + " " + getBatteryTemp())
+            remoteViews.setImageViewBitmap(R.id.notify_mode, BitmapFactory.decodeResource(context.resources, getModImage(mode)))
+        } catch (ex: Exception) {
+            Log.e("NotifyHelper", ex.message)
+        }
 
         val intent = PendingIntent.getActivity(
                 context,
@@ -181,8 +186,10 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         notificationManager = context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
         var builder: NotificationCompat.Builder? = null
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationManager!!.createNotificationChannel(NotificationChannel("vtool", "常驻通知", NotificationManager.IMPORTANCE_LOW))
-            builder = NotificationCompat.Builder(context, "vtool")
+            if (notificationManager!!.getNotificationChannel("vtool-long-time") == null) {
+                notificationManager!!.createNotificationChannel(NotificationChannel("vtool-long-time", "常驻通知", NotificationManager.IMPORTANCE_LOW))
+            }
+            builder = NotificationCompat.Builder(context, "vtool-long-time")
         } else {
             builder = NotificationCompat.Builder(context)
         }

@@ -2,7 +2,7 @@
 
 path=/system/vendor/bin/perfd
 
-echo 'perfd的作用不知道怎么解锁，总之在MIUI（9）上与上面的Performance Boost Config作用类似！'
+echo 'perfd的作用不知道怎么解释，总之在MIUI（9）上与上面的Performance Boost Config作用类似！'
 
 if [[ -f $path ]]; then
     echo '当前状态：已启用'
