@@ -136,21 +136,25 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
     internal fun notify() {
         handler.postDelayed({
             updateNotic()
-        }, 1500)
+        }, 500)
     }
 
     private fun updateNotic () {
-        var currentMode = getCurrentPowerMode()
-        if (currentMode == null || currentMode.length == 0) {
-            currentMode = ""
-        }
+        try {
+            var currentMode = getCurrentPowerMode()
+            if (currentMode == null || currentMode.length == 0) {
+                currentMode = ""
+            }
 
-        var currentApp = getCurrentPowermodeApp()
-        if (currentApp == null || currentApp.length == 0) {
-            currentApp = context.packageName
-        }
+            var currentApp = getCurrentPowermodeApp()
+            if (currentApp == null || currentApp.length == 0) {
+                currentApp = context.packageName
+            }
 
-        notifyPowerModeChange(currentApp!!, currentMode)
+            notifyPowerModeChange(currentApp!!, currentMode)
+        } catch (ex: Exception) {
+            Log.e("NotifyHelper", ex.localizedMessage)
+        }
     }
 
     private fun notifyPowerModeChange(packageName: String, mode: String) {
