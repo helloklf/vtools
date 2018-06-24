@@ -1,5 +1,7 @@
 package com.omarea.shell;
 
+import com.omarea.shared.helper.KeepShell;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStream;
@@ -10,6 +12,11 @@ import java.io.InputStreamReader;
  */
 
 public class Props {
+    private static boolean isSeLinuxEnforcing() {
+        String r = SysUtils.executeCommandWithOutput(false, "getenforce");
+        return r.isEmpty() || r.equals("Enforcing") || r.equals("1");
+    }
+
     /**
      * 获取属性
      *
@@ -19,30 +26,32 @@ public class Props {
     public static String getProp(String propName) {
         try {
             Process p = Runtime.getRuntime().exec("sh");
+
             DataOutputStream out = new DataOutputStream(p.getOutputStream());
             out.writeBytes("getprop " + propName);
             out.writeBytes("\n");
-            out.flush();
+            out.writeBytes("\n");
 
-            InputStream inputstream = p.getInputStream();
-            InputStreamReader inputstreamreader = new InputStreamReader(inputstream);
-            BufferedReader bufferedreader = new BufferedReader(inputstreamreader);
-
-            out.writeBytes("exit\n");
-            out.writeBytes("exit\n");
+            out.writeBytes("exit 0\n\n");
+            out.writeBytes("exit 0\n\n");
+            out.writeBytes("exit 0\n\n");
             out.flush();
             out.close();
+
             StringBuilder lines = new StringBuilder();
-            String line;
-            while ((line = bufferedreader.readLine()) != null) {
-                lines.append(line);
+            if (p.waitFor() == 0) {
+                String line;
+
+                InputStream inputstream = p.getInputStream();
+                InputStreamReader inputstreamreader = new InputStreamReader(inputstream);
+                BufferedReader bufferedreader = new BufferedReader(inputstreamreader);
+                while ((line = bufferedreader.readLine()) != null) {
+                    lines.append(line);
+                }
             }
-            bufferedreader.close();
-            inputstream.close();
-            inputstreamreader.close();
             p.destroy();
             return lines.toString().trim();
-        } catch (Exception e) {
+        } catch (Exception ignored) {
 
         }
         return "";
@@ -50,16 +59,20 @@ public class Props {
 
     public static boolean setPorp(String propName, String value) {
         try {
-            Process p = Runtime.getRuntime().exec("sh");
-            DataOutputStream out = new DataOutputStream(p.getOutputStream());
-            out.writeBytes("setprop " + propName + " \"" + value + "\"");
-            out.writeBytes("\n");
-            out.writeBytes("exit 0\n");
-            out.writeBytes("exit 0\n");
-            out.writeBytes("\n");
-            out.flush();
-            p.waitFor();
-            return true;
+            if(isSeLinuxEnforcing()) {
+                return false;
+            } else {
+                Process p = Runtime.getRuntime().exec("sh");
+                DataOutputStream out = new DataOutputStream(p.getOutputStream());
+                out.writeBytes("setprop " + propName + " \"" + value + "\"");
+                out.writeBytes("\n");
+                out.writeBytes("exit\n");
+                out.writeBytes("exit\n");
+                out.writeBytes("\n");
+                out.flush();
+                p.waitFor();
+                return true;
+            }
         } catch (Exception ex) {
             return false;
         }

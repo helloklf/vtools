@@ -27,17 +27,6 @@ class BootService : Service() {
     private lateinit var globalConfig: SharedPreferences
 
     private fun autoBoot() {
-        val booted = Props.getProp("vtools.boot")
-        if (!(booted == null || booted.isBlank())) {
-            handler.postDelayed({
-                try {
-                    stopSelf()
-                    val service = Intent(this, BootService::class.java)
-                    stopService(Intent(service))
-                } catch (ex: Exception) {}
-            }, 2000)
-            return
-        }
 
         //判断是否开启了充电加速和充电保护，如果开启了，自动启动后台服务
         if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) || chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_BP, false)) {
@@ -46,6 +35,19 @@ class BootService : Service() {
                 this.startService(i)
             } catch (ex: Exception) {
             }
+        }
+
+        val booted = Props.getProp("vtools.boot")
+        if (!(booted == null || booted.isBlank())) {
+            handler.postDelayed({
+                try {
+                    stopSelf()
+                    val service = Intent(this, BootService::class.java)
+                    stopService(Intent(service))
+                    System.exit(0)
+                } catch (ex: Exception) {}
+            }, 2000)
+            return
         }
 
         val sb = StringBuilder()

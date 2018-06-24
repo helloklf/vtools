@@ -1,5 +1,7 @@
 package com.omarea.shell;
 
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -36,33 +38,34 @@ public class KernelProrp {
             DataOutputStream out = new DataOutputStream(p.getOutputStream());
             out.write(("cat " + propName).getBytes("UTF-8"));
             out.writeBytes("\n");
-            out.writeBytes("exit\n");
-            out.writeBytes("exit\n");
-            out.flush();
-
-            InputStream inputstream = p.getInputStream();
-            InputStreamReader inputstreamreader = new InputStreamReader(inputstream);
-            BufferedReader bufferedreader = new BufferedReader(inputstreamreader);
-
-            String line;
-            StringBuilder stringBuilder = new StringBuilder();
-            while ((line = bufferedreader.readLine()) != null) {
-                stringBuilder.append(line);
-                stringBuilder.append("\n");
-            }
+            out.writeBytes("\n");
+            out.writeBytes("exit 0\n\n");
+            out.writeBytes("exit 0\n\n");
+            out.writeBytes("exit 0\n\n");
             out.flush();
             out.close();
-            bufferedreader.close();
-            inputstream.close();
-            inputstreamreader.close();
-            if (p.waitFor() != 0) {
+            if (!root && p.waitFor() != 0) {
                 p.destroy();
+                Log.w("KernelProrp", propName + "read error！");
                 return getProp(propName, true);
             } else  {
+                String line;
+                StringBuilder stringBuilder = new StringBuilder();
+                InputStream inputstream = p.getInputStream();
+                InputStreamReader inputstreamreader = new InputStreamReader(inputstream);
+                BufferedReader bufferedreader = new BufferedReader(inputstreamreader);
+                while ((line = bufferedreader.readLine()) != null) {
+                    stringBuilder.append(line);
+                    stringBuilder.append("\n");
+                }
+                out.close();
+                bufferedreader.close();
+                inputstream.close();
+                inputstreamreader.close();
                 p.destroy();
                 return stringBuilder.toString().trim();
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return "";
     }

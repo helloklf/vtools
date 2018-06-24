@@ -318,4 +318,106 @@ public class CpuFrequencyUtils {
     public static boolean exynosHMP() {
         return new File("/sys/kernel/hmp/down_threshold").exists() && new File("/sys/kernel/hmp/up_threshold").exists() && new File("/sys/kernel/hmp/boost").exists();
     }
+
+    public static String[] adrenoGPUFreqs() {
+        String freqs = SysUtils.readOutputFromFile("/sys/class/kgsl/kgsl-3d0/devfreq/available_frequencies");
+        if(null != freqs) {
+            return freqs.split(" ");
+        }
+        return new String[]{};
+    }
+
+    public static boolean isAdrenoGPU() {
+        return new File("/sys/class/kgsl/kgsl-3d0").exists();
+    }
+
+    public static String[] getAdrenoGPUGovernors() {
+        String g = SysUtils.readOutputFromFile("/sys/class/kgsl/kgsl-3d0/devfreq/available_governors");
+        if (null != g) {
+            return g.split(" ");
+        }
+        return new String[]{};
+    }
+
+    public static String getAdrenoGPUMinFreq() {
+        return SysUtils.readOutputFromFile("/sys/class/kgsl/kgsl-3d0/devfreq/min_freq");
+    }
+
+    public static void setAdrenoGPUMinFreq(String value) {
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/devfreq/min_freq;");
+        commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq;");
+        SysUtils.executeRootCommand(commands);
+    }
+
+    public static String getAdrenoGPUMaxFreq() {
+        return SysUtils.readOutputFromFile("/sys/class/kgsl/kgsl-3d0/devfreq/max_freq");
+    }
+
+    public static void setAdrenoGPUMaxFreq(String value) {
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/devfreq/max_freq;");
+        commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq;");
+        SysUtils.executeRootCommand(commands);
+    }
+
+    public static String getAdrenoGPUGovernor() {
+        return SysUtils.readOutputFromFile("/sys/class/kgsl/kgsl-3d0/devfreq/governor");
+    }
+
+    public static void setAdrenoGPUGovernor(String value) {
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/devfreq/governor;");
+        commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/devfreq/governor;");
+        SysUtils.executeRootCommand(commands);
+    }
+
+    public static String getAdrenoGPUMinPowerLevel() {
+        return SysUtils.readOutputFromFile("/sys/class/kgsl/kgsl-3d0/min_pwrlevel");
+    }
+
+    public static void setAdrenoGPUMinPowerLevel(String value) {
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/min_pwrlevel;");
+        commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/min_pwrlevel;");
+        SysUtils.executeRootCommand(commands);
+    }
+
+    public static String getAdrenoGPUMaxPowerLevel() {
+        return SysUtils.readOutputFromFile("/sys/class/kgsl/kgsl-3d0/max_pwrlevel");
+    }
+
+    public static void setAdrenoGPUMaxPowerLevel(String value) {
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/max_pwrlevel;");
+        commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/max_pwrlevel;");
+        SysUtils.executeRootCommand(commands);
+    }
+
+    public static String getAdrenoGPUDefaultPowerLevel() {
+        return SysUtils.readOutputFromFile("/sys/class/kgsl/kgsl-3d0/default_pwrlevel");
+    }
+
+    public static void setAdrenoGPUDefaultPowerLevel(String value) {
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/default_pwrlevel;");
+        commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/default_pwrlevel;");
+        SysUtils.executeRootCommand(commands);
+    }
+
+    public static String[] getAdrenoGPUPowerLevels() {
+        String leves = SysUtils.readOutputFromFile("/sys/class/kgsl/kgsl-3d0/num_pwrlevels");
+        try {
+            if (leves != null) {
+                int max = Integer.parseInt(leves);
+                ArrayList<String> arr = new ArrayList<>();
+                for (int i = 0; i < max; i++) {
+                    arr.add("" + i);
+                }
+                return arr.toArray(new String[arr.size()]);
+            }
+        } catch (Exception ignored) {
+        }
+        return new String[]{};
+    }
 }

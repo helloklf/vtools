@@ -71,12 +71,12 @@ if [ "$action" = "powersave" ]; then
 	echo "0" > /sys/module/cpu_boost/parameters/input_boost_freq
 	echo 0 > /sys/module/cpu_boost/parameters/input_boost_ms
 
-	set_cpu_freq 5000 1420800 5000 1497600
+	set_cpu_freq 5000 1401600 5000 1497600
 
-	echo "65 1248000:73 1670400:85 1747200:90" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
-	echo 672000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
+	echo "95 1248000:73" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
+	echo 883200 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
 
-	echo "68 1248000:73" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
+	echo "95 979200:78" > /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
 	echo 729600 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
 
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
@@ -85,9 +85,6 @@ if [ "$action" = "powersave" ]; then
 
     echo 0 > /sys/devices/system/cpu/cpu6/online
     echo 0 > /sys/devices/system/cpu/cpu7/online
-
-	echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/use_sched_load
-	echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/use_sched_load
 
     echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy
     echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
@@ -98,22 +95,19 @@ fi
 echo 1 > /sys/devices/system/cpu/cpu6/online
 echo 1 > /sys/devices/system/cpu/cpu7/online
 
-echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/use_sched_load
-echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/use_sched_load
-
 echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy
 
-echo "67 1804800:87" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
-echo "73 1497600:73 2016000:92" > /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
+echo "67 960000:72 1478400:78 1804800:87" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
+echo "73 1497600:73 2016000:87" > /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
 
 if [ "$action" = "balance" ]; then
     echo "0:1248000 1:1248000 2:1248000 3:1248000 4:0 5:0 6:0 7:0" > /sys/module/cpu_boost/parameters/input_boost_freq
     echo 40 > /sys/module/cpu_boost/parameters/input_boost_ms
 
-	set_cpu_freq 5000 2750000 5000 1804800
+	set_cpu_freq 5000 1401600 5000 1651200
 	
-	echo 1747200 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
-	echo 1267200 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
+	echo 1248000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
+	echo 1056000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
 	
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 
@@ -130,7 +124,7 @@ if [ "$action" = "performance" ]; then
     echo "0:0 1:0 2:0 3:0 4:1267200 5:1267200 6:1267200 7:1267200" > /sys/module/cpu_boost/parameters/input_boost_freq
     echo 40 > /sys/module/cpu_boost/parameters/input_boost_ms
 
-	set_cpu_freq 5000 2750000 5000 2457600
+	set_cpu_freq 5000 1900800 5000 2457600
 	
 	echo 1747200 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
 	echo 1728000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq

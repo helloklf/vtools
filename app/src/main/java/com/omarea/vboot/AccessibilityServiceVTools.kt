@@ -10,11 +10,13 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Build
+import android.util.Log
 import android.view.accessibility.AccessibilityEvent
 import com.omarea.shared.AutoClickService
 import com.omarea.shared.BootService
 import com.omarea.shared.CrashHandler
 import com.omarea.shared.ServiceHelper
+import java.io.OutputStream
 
 /**
  * Created by helloklf on 2016/8/27.
@@ -192,6 +194,7 @@ override fun onCreate() {
 
     override fun onInterrupt() {
         //this.deestory()
+        Log.e("onInterrupt", "Service Interrupt")
     }
 
     override fun onDestroy() {

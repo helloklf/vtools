@@ -83,14 +83,19 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
     }
 
     private fun getBatteryTemp(): String {
-        val sensor = getBatterySensor()
-        if (sensor != null && !sensor.isNullOrEmpty()) {
-            val temp = KernelProrp.getProp(sensor)
-            if (temp == null || (temp.length < 4)) {
+        try {
+            val sensor = getBatterySensor()
+            if (sensor != null && !sensor.isNullOrEmpty()) {
+                val temp = KernelProrp.getProp(sensor)
+                if (temp == null || (temp.length < 4)) {
+                    return "? °C"
+                }
+                return temp.substring(0, temp.length - 3) + "°C"
+            } else {
                 return "? °C"
             }
-            return temp.substring(0, temp.length - 3) + "°C"
-        } else {
+        } catch (ex: Exception) {
+            Log.e("NotifyHelper", "getBatteryTemp, " + ex.message)
             return "? °C"
         }
     }
@@ -157,7 +162,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         }
     }
 
-    private fun notifyPowerModeChange(packageName: String, mode: String) {
+    fun notifyPowerModeChange(packageName: String, mode: String) {
         if (!showNofity) {
             return
         }

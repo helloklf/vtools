@@ -25,7 +25,6 @@
     -->
 
     <application
-        android:allowBackup="true"
         android:icon="@drawable/linux"
         android:label="@string/app_name"
         android:persistent="true"

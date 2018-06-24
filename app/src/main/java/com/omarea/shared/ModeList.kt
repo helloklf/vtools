@@ -66,26 +66,39 @@ open class ModeList {
     }
 
     internal fun setCurrent(powerCfg: String, app: String): ModeList {
-        Props.setPorp("vtools.powercfg", powerCfg)
-        Props.setPorp("vtools.powercfg_app", app)
+        if(!Props.setPorp("vtools.powercfg", powerCfg) || !Props.setPorp("vtools.powercfg_app", app)) {
+            keepShellExec("setpropvtools.powercfg ${powerCfg}")
+            keepShellExec("setprop vtools.powercfg_app ${app}")
+            Thread.sleep(100)
+        }
         return this
     }
 
     internal fun setCurrentPowercfg(powerCfg: String): ModeList {
-        Props.setPorp("vtools.powercfg", powerCfg)
+        if(!Props.setPorp("vtools.powercfg", powerCfg)) {
+            keepShellExec("setpropvtools.powercfg ${powerCfg}")
+            Thread.sleep(60)
+        }
         return this
     }
 
     internal fun setCurrentPowercfgApp(app: String): ModeList {
-        Props.setPorp("vtools.powercfg_app", app)
+        if(!Props.setPorp("vtools.powercfg_app", app)) {
+            keepShellExec("setprop vtools.powercfg_app ${app}")
+            Thread.sleep(60)
+        }
         return this
     }
 
-    internal fun executePowercfgMode(mode: String): ModeList {
+    internal fun keepShellExec(cmd: String) {
         if(keepShell == null) {
             keepShell = KeepShell(context)
         }
-        keepShell!!.doCmd("sh ${Consts.POWER_CFG_PATH} " + mode)
+        keepShell!!.doCmd(cmd)
+    }
+
+    internal fun executePowercfgMode(mode: String): ModeList {
+        keepShellExec("sh ${Consts.POWER_CFG_PATH} " + mode)
         setCurrentPowercfg(mode)
         return this
     }

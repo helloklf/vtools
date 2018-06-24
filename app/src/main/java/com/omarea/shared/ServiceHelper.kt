@@ -1,8 +1,9 @@
 package com.omarea.shared
 
 import android.accessibilityservice.AccessibilityService
-import android.accessibilityservice.AccessibilityService.GLOBAL_ACTION_HOME
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Handler
@@ -10,14 +11,11 @@ import android.os.Looper
 import android.widget.Toast
 import com.omarea.shared.helper.*
 import com.omarea.shell.AsynSuShellUnit
+import com.omarea.shell.SuDo
+import com.omarea.shell.SysUtils
 import java.io.File
+import java.io.OutputStream
 import java.util.*
-import android.R.attr.name
-import android.content.ComponentName
-import android.content.ContentValues.TAG
-import android.content.pm.ResolveInfo
-import android.content.Intent
-
 
 
 /**
@@ -46,6 +44,8 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
     private var debugMode = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
     private var lockScreenOptimize = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE, false)
     private var firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
+    private var accuSwitch: Boolean = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
+    private var batteryMonitro: Boolean = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
     private var screenOn: Boolean = true
     private var lastScreenOnOff: Long = 0
 
@@ -61,13 +61,16 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
     private var timer: Timer? = null
 
     private fun startTimer() {
+        if (!batteryMonitro) {
+            return
+        }
         if (timer == null) {
-            timer = Timer()
-            timer!!.schedule(object : TimerTask() {
+            timer = Timer(true)
+            timer!!.scheduleAtFixedRate(object : TimerTask() {
                 override fun run() {
                     notifyHelper.notify()
                 }
-            }, 0, 10000)
+            }, 0, 1000)
         }
     }
 
@@ -96,11 +99,12 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             }, SCREEN_OFF_SWITCH_NETWORK_DELAY)
         }
         clearTasks()
+        // fixme:似乎有bug?
         screenHandler.postDelayed({
             if (!screenOn) {
                 stopTimer()
             }
-        }, 5000)
+        }, 10000)
     }
 
     //屏幕关闭后 - 关闭网络
@@ -142,6 +146,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         if (screenOn == true) return
 
         screenOn = true
+        // fixme:似乎有bug?
         startTimer()
 
         if (settingsLoaded && dyamicCore && lockScreenOptimize) {
@@ -192,11 +197,10 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
                 if (!dyamicCore) {
                     lastModePackage = ""
                     lastMode = ""
-                    updateModeNofity()
                 } else {
-                    updateModeNofity()
                     toggleConfig(firstMode)
                 }
+                updateModeNofity()
             }, 2000)
         } else if (key == SpfConfig.GLOBAL_SPF_DEBUG) {
             debugMode = sharedPreferences.getBoolean(key, false)
@@ -204,8 +208,17 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             lockScreenOptimize = spfGlobal.getBoolean(key, false)
         } else if (key == SpfConfig.GLOBAL_SPF_NOTIFY) {
             notifyHelper.setNotify(sharedPreferences.getBoolean(key, true))
+        } else if (key == SpfConfig.GLOBAL_SPF_BATTERY_MONITORY) {
+            batteryMonitro = spfGlobal.getBoolean(key, false)
+            if (!batteryMonitro) {
+
+            } else {
+
+            }
         } else if (key == SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE) {
-            firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
+            firstMode = spfGlobal.getString(key, BALANCE)
+        } else if (key == SpfConfig.GLOBAL_SPF_ACCU_SWITCH) {
+            accuSwitch = spfGlobal.getBoolean(key, false)
         } else if (key == lastModePackage) {
             if (dyamicCore) {
                 val mode = spfPowercfg.getString(key, firstMode)
@@ -250,7 +263,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
                 toggleConfig(mode)
                 showModeToggleMsg(packageName, getModName(mode))
                 lastModePackage = packageName
-                updateModeNofity()
+                notifyHelper.notifyPowerModeChange(packageName, mode)
             }
         }
     }
@@ -392,6 +405,27 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         }
     }
 
+    private var dumpTopActivityProcess: Process? = null
+    private var dumpTopActivityOutputStream: OutputStream? = null
+    private fun dumpsysTopActivity(packageName: String) {
+        if (dumpTopActivityProcess == null) {
+            try {
+                dumpTopActivityProcess = Runtime.getRuntime().exec("su")
+                dumpTopActivityOutputStream = dumpTopActivityProcess!!.outputStream
+            } catch (ex: Exception) {
+            }
+        }
+        if (dumpTopActivityProcess != null) {
+            try {
+
+            } catch (ex: Exception) {
+
+            }
+        } else {
+            autoToggleMode(packageName)
+        }
+    }
+
     //焦点应用改变
     fun onFocusAppChanged(pkgName: String) {
         startTimer()
@@ -405,10 +439,23 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
 
         if (lastPackage == null) {
             lastPackage = "com.android.systemui"
+        } else if (accuSwitch) {
+            val r = SysUtils.executeCommandWithOutput(true, "dumpsys activity top | grep TASK")
+            if (r != null) {
+                val rows = r.split("\n")
+                var last = ""
+                for (item in rows.listIterator()) {
+                    if (!item.isEmpty())
+                        last = item
+                }
+                if (!last.contains(packageName)) {
+                    return
+                }
+            }
         }
 
         autoBoosterApp(packageName)
-        autoToggleMode(packageName.toLowerCase())
+        autoToggleMode(packageName)
         lastPackage = packageName
     }
 
@@ -433,8 +480,9 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true))
             keepShell2.doCmd(Consts.DisableSELinux)
 
-        if (dyamicCore)
+        if (dyamicCore) {
             keepShell2.doCmd(Consts.ExecuteConfig)
+        }
 
         settingsLoaded = true
     }

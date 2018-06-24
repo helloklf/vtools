@@ -202,17 +202,31 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun checkFileWrite() {
         Thread(Runnable {
             if (!(checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
-                ActivityCompat.requestPermissions(
-                        this@ActivityMain,
-                        arrayOf(
-                                Manifest.permission.READ_EXTERNAL_STORAGE,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,
-                                Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
-                                Manifest.permission.WAKE_LOCK
-                        ),
-                        0x11
-                )
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    ActivityCompat.requestPermissions(
+                            this@ActivityMain,
+                            arrayOf(
+                                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                    Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,
+                                    Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                                    Manifest.permission.WAKE_LOCK
+                            ),
+                            0x11
+                    )
+                } else {
+                    ActivityCompat.requestPermissions(
+                            this@ActivityMain,
+                            arrayOf(
+                                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                    Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,
+                                    Manifest.permission.WAKE_LOCK
+                            ),
+                            0x11
+                    )
+                }
+                CheckRootStatus.grantPermission(this)
             }
         }).start()
     }

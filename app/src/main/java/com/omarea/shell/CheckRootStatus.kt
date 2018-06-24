@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Handler
+import android.os.Looper
 import android.support.v4.content.PermissionChecker
 import com.omarea.shared.Consts
 import com.omarea.ui.ProgressBarDialog
@@ -15,10 +16,7 @@ import com.omarea.vboot.R
  */
 
 class CheckRootStatus(var context: Context, private var next: Runnable? = null, private var skip: Runnable?, private var disableSeLinux: Boolean = false) {
-    var myHandler: Handler = Handler()
-
-    private fun checkPermission(permission: String): Boolean =
-            PermissionChecker.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED
+    var myHandler: Handler = Handler(Looper.getMainLooper())
 
     //是否已经Root
     private fun isRoot(disableSeLinux: Boolean): Boolean {
@@ -28,14 +26,8 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
             val out = process!!.outputStream.bufferedWriter()
             if (disableSeLinux)
                 out.write(Consts.DisableSELinux)
-            out.write("dumpsys deviceidle whitelist +com.omarea.vboot;\n")
-            if (!(checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
-                out.write("pm grant com.omarea.vboot android.permission.READ_EXTERNAL_STORAGE;\n")
-                out.write("pm grant com.omarea.vboot android.permission.WRITE_EXTERNAL_STORAGE;\n")
-                out.write("pm grant com.omarea.vboot android.permission.SYSTEM_ALERT_WINDOW;\n")
-            }
-            out.write("exit;\n")
-            out.write("exit;\n")
+            out.write("exit 0\n")
+            out.write("exit 0\n")
             out.flush()
 
             process.waitFor()
@@ -127,11 +119,21 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
                 })
                 alert.create().show()
             }
-        }, 10000)
+        }, 15000)
     }
 
-
     companion object {
+        private fun checkPermission(context: Context, permission: String): Boolean = PermissionChecker.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED
+        fun grantPermission(context: Context) {
+            val cmds = StringBuilder()
+            cmds.append("dumpsys deviceidle whitelist +com.omarea.vboot;\n")
+            if (!(checkPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
+                cmds.append("pm grant com.omarea.vboot android.permission.READ_EXTERNAL_STORAGE;\n")
+                cmds.append("pm grant com.omarea.vboot android.permission.WRITE_EXTERNAL_STORAGE;\n")
+                cmds.append("pm grant com.omarea.vboot android.permission.SYSTEM_ALERT_WINDOW;\n")
+            }
+            SuDo(context).execCmdSync(cmds.toString())
+        }
         public fun isMagisk(): Boolean {
             return SysUtils.executeCommandWithOutput(false, "su -v").contains("MAGISKSU")
         }

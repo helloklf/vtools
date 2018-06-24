@@ -8,6 +8,7 @@ import android.content.SharedPreferences
 import android.os.BatteryManager
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 import com.omarea.shared.Consts
 import com.omarea.shared.SpfConfig
@@ -17,7 +18,6 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
     private var bp: Boolean = false
     private var keepShell: KeepShell? = null
 
-    internal var context: Context? = null
     private var sharedPreferences: SharedPreferences
     private var globalSharedPreferences: SharedPreferences
     private var listener: SharedPreferences.OnSharedPreferenceChangeListener
@@ -26,21 +26,24 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
 
     //显示文本消息
     private fun showMsg(msg: String, longMsg: Boolean) {
-        if (context != null)
-            myHandler.post {
-                Toast.makeText(context, msg, if (longMsg) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show()
-            }
+        myHandler.post {
+            Toast.makeText(service, msg, if (longMsg) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show()
+        }
     }
 
     //快速充电
     private fun fastCharger() {
-        if (!sharedPreferences.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false))
-            return
+        try {
+            if (!sharedPreferences.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false))
+                return
 
-        if (globalSharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false))
-            showMsg(context!!.getString(R.string.power_connected), false)
-        keepShell!!.doCmd(Consts.FastChangerBase)
-        keepShell!!.doCmd(computeLeves(qcLimit).toString())
+            if (globalSharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false))
+                showMsg(service.getString(R.string.power_connected), false)
+            keepShell!!.doCmd(Consts.FastChangerBase)
+            keepShell!!.doCmd(computeLeves(qcLimit).toString())
+        } catch (ex: Exception) {
+            Log.e("ChargeService", ex.stackTrace.toString())
+        }
     }
 
     private fun computeLeves(qcLimit: Int): StringBuilder {
@@ -62,7 +65,6 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        this.context = context
         try {
             val action = intent.action
             val onChanger = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1) == BatteryManager.BATTERY_STATUS_CHARGING

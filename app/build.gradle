@@ -17,8 +17,8 @@ android {
         applicationId "com.omarea.vboot"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 475
-        versionName "8.6.19 Beta"
+        versionCode 476
+        versionName "8.6.22"
     }
     buildTypes {
         release {

@@ -35,7 +35,7 @@ class FragmentConfig : Fragment() {
     private lateinit var spfPowercfg: SharedPreferences
     private lateinit var globalSPF: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
-    private var hasSystemApp = true
+    private var hasSystemApp = false
     private lateinit var applistHelper: AppListHelper
 
     internal val myHandler: Handler = Handler()
@@ -119,8 +119,8 @@ class FragmentConfig : Fragment() {
             when (configlist_tabhost.currentTab) {
                 0 -> {
                     val builder = AlertDialog.Builder(context)
-                    val items = arrayOf(getString(R.string.addto_performance), getString(R.string.addto_powersave), getString(R.string.addto_fast), getString(R.string.addto_ignore))
-                    val configses = arrayOf(Configs.Game, Configs.PowerSave, Configs.Fast, Configs.Ignored)
+                    val items = arrayOf(getString(R.string.addto_performance), getString(R.string.addto_powersave), getString(R.string.addto_fast), getString(R.string.addto_ignore), "清除设定")
+                    val configses = arrayOf(Configs.Game, Configs.PowerSave, Configs.Fast, Configs.Ignored, Configs.Unkonow)
                     builder.setItems(items) { _, which ->
                         val listadapter = config_defaultlist.adapter as AppListAdapter
                         addToList(defaultList!!, listadapter.states, configses[which])
@@ -129,8 +129,8 @@ class FragmentConfig : Fragment() {
                 }
                 1 -> {
                     val builder = AlertDialog.Builder(context)
-                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_powersave), getString(R.string.addto_fast), getString(R.string.addto_ignore))
-                    val configses = arrayOf(Configs.Default, Configs.PowerSave, Configs.Fast, Configs.Ignored)
+                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_powersave), getString(R.string.addto_fast), getString(R.string.addto_ignore), "清除设定")
+                    val configses = arrayOf(Configs.Default, Configs.PowerSave, Configs.Fast, Configs.Ignored, Configs.Unkonow)
                     builder.setItems(items) { _, which ->
                         val listadapter = config_gamelist.adapter as AppListAdapter
                         addToList(gameList!!, listadapter.states, configses[which])
@@ -139,8 +139,8 @@ class FragmentConfig : Fragment() {
                 }
                 2 -> {
                     val builder = AlertDialog.Builder(context)
-                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_performance), getString(R.string.addto_fast), getString(R.string.addto_ignore))
-                    val configses = arrayOf(Configs.Default, Configs.Game, Configs.Fast, Configs.Ignored)
+                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_performance), getString(R.string.addto_fast), getString(R.string.addto_ignore), "清除设定")
+                    val configses = arrayOf(Configs.Default, Configs.Game, Configs.Fast, Configs.Ignored, Configs.Unkonow)
                     builder.setItems(items) { _, which ->
                         val listadapter = config_powersavelist.adapter as AppListAdapter
                         addToList(powersaveList!!, listadapter.states, configses[which])
@@ -149,8 +149,8 @@ class FragmentConfig : Fragment() {
                 }
                 3 -> {
                     val builder = AlertDialog.Builder(context)
-                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_performance), getString(R.string.addto_powersave), getString(R.string.addto_ignore))
-                    val configses = arrayOf(Configs.Default, Configs.Game, Configs.PowerSave, Configs.Ignored)
+                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_performance), getString(R.string.addto_powersave), getString(R.string.addto_ignore), "清除设定")
+                    val configses = arrayOf(Configs.Default, Configs.Game, Configs.PowerSave, Configs.Ignored, Configs.Unkonow)
                     builder.setItems(items) { _, which ->
                         val listadapter = config_fastlist.adapter as AppListAdapter
                         addToList(fastList!!, listadapter.states, configses[which])
@@ -159,8 +159,8 @@ class FragmentConfig : Fragment() {
                 }
                 4 -> {
                     val builder = AlertDialog.Builder(context)
-                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_performance), getString(R.string.addto_powersave), getString(R.string.addto_fast))
-                    val configses = arrayOf(Configs.Default, Configs.Game, Configs.PowerSave, Configs.Fast)
+                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_performance), getString(R.string.addto_powersave), getString(R.string.addto_fast), "清除设定")
+                    val configses = arrayOf(Configs.Default, Configs.Game, Configs.PowerSave, Configs.Fast, Configs.Unkonow)
                     builder.setItems(items) { _, which ->
                         val listadapter = config_ignoredlist.adapter as AppListAdapter
                         addToList(ignoredList!!, listadapter.states, configses[which])
@@ -178,6 +178,14 @@ class FragmentConfig : Fragment() {
         lock_screen_optimize.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE, false)
         lock_screen_optimize.setOnClickListener {
             globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE, lock_screen_optimize.isChecked).apply()
+        }
+        accu_switch.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
+        accu_switch.setOnClickListener {
+            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, lock_screen_optimize.isChecked).apply()
+        }
+        battery_monitor.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
+        battery_monitor.setOnClickListener {
+            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, lock_screen_optimize.isChecked).apply()
         }
 
         config_defaultlist.onItemClickListener = OnItemClickListener { _, current, position, _ ->
@@ -320,7 +328,7 @@ class FragmentConfig : Fragment() {
                 if (search && !(packageName.contains(keyword) || item.appName.toString().contains(keyword))) {
                     continue
                 }
-                val config = spfPowercfg.getString(packageName.toLowerCase(), firstMode)
+                val config = spfPowercfg.getString(packageName, firstMode)
                 when (config) {
                     "powersave" -> powersaveList!!.add(installedList!![i])
                     "performance" -> gameList!!.add(installedList!![i])
@@ -425,11 +433,12 @@ class FragmentConfig : Fragment() {
                 .map { list[it] }
                 .forEach {
                     when (config) {
-                        Configs.Default -> editor.putString(it.packageName.toString().toLowerCase(), "balance")
-                        Configs.Game -> editor.putString(it.packageName.toString().toLowerCase(), "performance")
-                        Configs.PowerSave -> editor.putString(it.packageName.toString().toLowerCase(), "powersave")
-                        Configs.Fast -> editor.putString(it.packageName.toString().toLowerCase(), "fast")
-                        Configs.Ignored -> editor.putString(it.packageName.toString().toLowerCase(), "igoned")
+                        Configs.Default -> editor.putString(it.packageName.toString(), "balance")
+                        Configs.Game -> editor.putString(it.packageName.toString(), "performance")
+                        Configs.PowerSave -> editor.putString(it.packageName.toString(), "powersave")
+                        Configs.Fast -> editor.putString(it.packageName.toString(), "fast")
+                        Configs.Ignored -> editor.putString(it.packageName.toString(), "igoned")
+                        Configs.Unkonow -> editor.remove(it.packageName.toString())
                     }
                 }
         editor.commit()
@@ -449,7 +458,8 @@ class FragmentConfig : Fragment() {
         Game,
         PowerSave,
         Fast,
-        Ignored
+        Ignored,
+        Unkonow
     }
 
     companion object {

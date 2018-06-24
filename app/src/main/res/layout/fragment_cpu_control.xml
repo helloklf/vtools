@@ -62,13 +62,17 @@
                         android:textSize="16dp" />
 
                     <TextView
+                        style="@style/textTitle"
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="1"
                         android:gravity="center_vertical"
                         android:text="最小频率" />
 
-                    <Spinner android:spinnerMode="dialog"
+                    <TextView
+                        android:padding="5dp"
+                        android:textAlignment="textEnd"
+                        android:text="Min Freq"
                         android:id="@+id/cluster_little_min_freq"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
@@ -76,13 +80,17 @@
                         android:layout_row="1" />
 
                     <TextView
+                        style="@style/textTitle"
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="2"
                         android:gravity="center_vertical"
                         android:text="最大频率" />
 
-                    <Spinner android:spinnerMode="dialog"
+                    <TextView
+                        android:padding="5dp"
+                        android:textAlignment="textEnd"
+                        android:text="Max Freq"
                         android:id="@+id/cluster_little_max_freq"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
@@ -90,13 +98,17 @@
                         android:layout_row="2" />
 
                     <TextView
+                        style="@style/textTitle"
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="3"
                         android:gravity="center_vertical"
                         android:text="调度模式" />
 
-                    <Spinner android:spinnerMode="dialog"
+                    <TextView
+                        android:padding="5dp"
+                        android:textAlignment="textEnd"
+                        android:text="Governor"
                         android:id="@+id/cluster_little_governor"
                         android:layout_width="150dp"
                         android:layout_column="1"
@@ -127,13 +139,17 @@
                         android:textSize="16dp" />
 
                     <TextView
+                        style="@style/textTitle"
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="1"
                         android:gravity="center_vertical"
                         android:text="最小频率" />
 
-                    <Spinner android:spinnerMode="dialog"
+                    <TextView
+                        android:padding="5dp"
+                        android:textAlignment="textEnd"
+                        android:text="Min  Freq"
                         android:id="@+id/cluster_big_min_freq"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
@@ -141,13 +157,17 @@
                         android:layout_row="1" />
 
                     <TextView
+                        style="@style/textTitle"
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="2"
                         android:gravity="center_vertical"
                         android:text="最大频率" />
 
-                    <Spinner android:spinnerMode="dialog"
+                    <TextView
+                        android:padding="5dp"
+                        android:textAlignment="textEnd"
+                        android:text="Max Freq"
                         android:id="@+id/cluster_big_max_freq"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
@@ -155,17 +175,162 @@
                         android:layout_row="2" />
 
                     <TextView
+                        style="@style/textTitle"
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="3"
                         android:gravity="center_vertical"
                         android:text="调度模式" />
 
-                    <Spinner android:spinnerMode="dialog"
+                    <TextView
+                        android:padding="5dp"
+                        android:textAlignment="textEnd"
+                        android:text="Governor"
                         android:id="@+id/cluster_big_governor"
                         android:layout_width="150dp"
                         android:layout_column="1"
                         android:layout_row="3" />
+
+                </GridLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/adreno_gpu"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                app:cardCornerRadius="4dp">
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_columnSpan="2"
+                        android:layout_gravity="fill"
+                        android:layout_marginBottom="10dp"
+                        android:layout_row="0"
+                        android:text="Adreno GPU"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        style="@style/textTitle"
+                        android:layout_column="0"
+                        android:layout_gravity="fill"
+                        android:layout_row="1"
+                        android:gravity="center_vertical"
+                        android:text="最小频率" />
+
+                    <TextView
+                        android:padding="5dp"
+                        android:textAlignment="textEnd"
+                        android:text="Min  Freq"
+                        android:id="@+id/adreno_gpu_min_freq"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:layout_row="1" />
+
+                    <TextView
+                        style="@style/textTitle"
+                        android:layout_column="0"
+                        android:layout_gravity="fill"
+                        android:layout_row="2"
+                        android:gravity="center_vertical"
+                        android:text="最大频率" />
+
+                    <TextView
+                        android:padding="5dp"
+                        android:textAlignment="textEnd"
+                        android:text="Max Freq"
+                        android:id="@+id/adreno_gpu_max_freq"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:layout_row="2" />
+
+                    <TextView
+                        style="@style/textTitle"
+                        android:layout_column="0"
+                        android:layout_gravity="fill"
+                        android:layout_row="3"
+                        android:gravity="center_vertical"
+                        android:text="最小功耗级别" />
+
+                    <TextView
+                        android:padding="5dp"
+                        android:textAlignment="textEnd"
+                        android:text="Min PL"
+                        android:id="@+id/adreno_gpu_min_pl"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:layout_row="3" />
+
+                    <TextView
+                        style="@style/textTitle"
+                        android:layout_column="0"
+                        android:layout_gravity="fill"
+                        android:layout_row="4"
+                        android:gravity="center_vertical"
+                        android:text="最大功耗级别" />
+
+                    <TextView
+                        android:padding="5dp"
+                        android:textAlignment="textEnd"
+                        android:text="Max PL"
+                        android:id="@+id/adreno_gpu_max_pl"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:layout_row="4" />
+
+
+                    <TextView
+                        style="@style/textTitle"
+                        android:layout_column="0"
+                        android:layout_gravity="fill"
+                        android:layout_row="5"
+                        android:gravity="center_vertical"
+                        android:text="默认功耗级别" />
+
+                    <TextView
+                        android:padding="5dp"
+                        android:textAlignment="textEnd"
+                        android:text="Default PL"
+                        android:id="@+id/adreno_gpu_default_pl"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:layout_row="5" />
+
+                    <TextView
+                        style="@style/textTitle"
+                        android:layout_column="0"
+                        android:layout_gravity="fill"
+                        android:layout_row="6"
+                        android:gravity="center_vertical"
+                        android:text="调度模式" />
+
+                    <TextView
+                        android:padding="5dp"
+                        android:textAlignment="textEnd"
+                        android:text="Governor"
+                        android:id="@+id/adreno_gpu_governor"
+                        android:layout_width="150dp"
+                        android:layout_column="1"
+                        android:layout_row="6" />
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_marginTop="4dp"
+                        android:layout_column="0"
+                        android:layout_columnSpan="2"
+                        android:layout_row="7"
+                        android:text="大多数时候，GPU性能受功耗级别（Power Level）限制而不是频率设定。\n注意：功耗级别0表示最大高性能，数值越大则性能越低" />
 
                 </GridLayout>
             </android.support.v7.widget.CardView>
@@ -191,6 +356,7 @@
                         android:textSize="16dp" />
 
                     <TextView
+                        style="@style/textTitle"
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="1"
@@ -203,6 +369,7 @@
                         android:layout_row="1" />
 
                     <TextView
+                        style="@style/textTitle"
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="2"
@@ -215,6 +382,7 @@
                         android:layout_row="2" />
 
                     <TextView
+                        style="@style/textTitle"
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="3"
@@ -249,6 +417,7 @@
                         android:textSize="16dp" />
 
                     <TextView
+                        style="@style/textTitle"
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="1"
@@ -256,23 +425,27 @@
                         android:text="Cpu Hot Plug" />
 
                     <CheckBox
+                        style="@style/textTitle"
                         android:enabled="false"
                         android:id="@+id/exynos_cpuhotplug"
                         android:layout_column="1"
                         android:layout_row="1" />
 
-                    <TextView android:layout_marginTop="8dp" android:layout_marginBottom="4dp" android:layout_row="2" android:text="Up Threshold" android:layout_columnSpan="2" android:layout_column="0" android:layout_gravity="left" />
+                    <TextView
+                        style="@style/textTitle" android:layout_marginTop="8dp" android:layout_marginBottom="4dp" android:layout_row="2" android:text="Up Threshold" android:layout_columnSpan="2" android:layout_column="0" android:layout_gravity="left" />
                     <SeekBar
                         android:enabled="false" android:min="0" android:max="1000" android:layout_row="3" android:layout_column="0" android:layout_gravity="fill_horizontal" android:id="@+id/exynos_hmp_up" />
-                    <TextView android:layout_row="3" android:layout_column="1" android:id="@+id/exynos_hmp_up_text" />
+                    <TextView android:layout_row="3" android:layout_column="1" android:id="@+id/exynos_hmp_up_text" android:textAlignment="center" />
 
-                    <TextView android:layout_marginTop="8dp" android:layout_marginBottom="4dp" android:layout_row="4" android:text="Down Threshold" android:layout_columnSpan="2" android:layout_column="0" android:layout_gravity="left" />
+                    <TextView
+                        style="@style/textTitle" android:layout_marginTop="8dp" android:layout_marginBottom="4dp" android:layout_row="4" android:text="Down Threshold" android:layout_columnSpan="2" android:layout_column="0" android:layout_gravity="left" />
                     <SeekBar
                         android:enabled="false" android:min="0" android:max="1000" android:layout_row="5" android:layout_column="0" android:layout_gravity="fill_horizontal" android:id="@+id/exynos_hmp_down" />
-                    <TextView android:layout_row="5" android:layout_column="1" android:id="@+id/exynos_hmp_down_text" />
+                    <TextView android:layout_row="5" android:layout_column="1" android:id="@+id/exynos_hmp_down_text" android:textAlignment="center" />
 
 
                     <TextView
+                        style="@style/textTitle"
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="6"
@@ -280,18 +453,19 @@
                         android:text="Booster" />
 
                     <CheckBox
+                        style="@style/textTitle"
                         android:enabled="false"
                         android:id="@+id/exynos_hmp_booster"
                         android:layout_column="1"
                         android:layout_row="6" />
 
                     <TextView
+                        style="@style/textSmall"
                         android:layout_marginTop="4dp"
                         android:layout_column="0"
                         android:layout_columnSpan="2"
                         android:layout_row="7"
-                        android:text="Up/Down Threshold决定使用高性能核心的积极程度（数值越低越积极），Booster则表示永远优先使用高性能核心"
-                        android:textColor="?android:attr/textColorSecondary" />
+                        android:text="Up/Down Threshold决定使用高性能核心的积极程度（数值越低越积极），Booster则表示永远优先使用高性能核心" />
 
                 </GridLayout>
             </android.support.v7.widget.CardView>
@@ -319,6 +493,7 @@
                         android:textSize="16dp" />
 
                     <TextView
+                        style="@style/textTitle"
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="1"
@@ -337,6 +512,7 @@
                         android:maxLength="4" />
 
                     <TextView
+                        style="@style/textTitle"
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="2"
@@ -354,6 +530,7 @@
                         android:focusable="false" />
 
                     <TextView
+                        style="@style/textTitle"
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="3"
