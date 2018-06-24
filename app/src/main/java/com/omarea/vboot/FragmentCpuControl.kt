@@ -6,6 +6,7 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,10 +15,12 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.CheckBox
 import android.widget.SeekBar
 import android.widget.Spinner
+import android.widget.TextView
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import com.omarea.shell.cpucontrol.ThermalControlUtils
 import com.omarea.ui.StringAdapter
 import kotlinx.android.synthetic.main.fragment_cpu_control.*
+import kotlinx.android.synthetic.main.text_item.view.*
 import java.util.*
 
 
@@ -63,8 +66,8 @@ class FragmentCpuControl : Fragment() {
                 exynos_hmp_up.isEnabled = exynosHMP
                 exynos_hmp_down.isEnabled = exynosHMP
                 exynos_hmp_booster.isEnabled = exynosHMP
-                if(adrenoGPU) {
-                    adreno_gpu.visibility = View.VISIBLE
+                if(!adrenoGPU) {
+                    adreno_gpu.visibility = View.GONE
                 }
 
                 cores = arrayListOf<CheckBox>(core_0, core_1, core_2, core_3, core_4, core_5, core_6, core_7)
@@ -74,6 +77,8 @@ class FragmentCpuControl : Fragment() {
                         cores[i].isEnabled = false
                     }
                 }
+
+                bindEvent()
             } catch (ex: Exception) {
 
             }
@@ -106,366 +111,369 @@ class FragmentCpuControl : Fragment() {
 
     @SuppressLint("InflateParams")
     private fun bindEvent() {
-        thermal_core_control.setOnCheckedChangeListener({ buttonView, isChecked ->
-            ThermalControlUtils.setCoreControlState(isChecked, this.context)
-        })
-        thermal_vdd.setOnCheckedChangeListener({ buttonView, isChecked ->
-            ThermalControlUtils.setVDDRestrictionState(isChecked, this.context)
-        })
-        thermal_paramters.setOnCheckedChangeListener({ buttonView, isChecked ->
-            ThermalControlUtils.setTheramlState(isChecked, this.context)
-        })
-        cpu_sched_boost.setOnCheckedChangeListener({ buttonView, isChecked ->
-            CpuFrequencyUtils.setSechedBoostState(isChecked, this.context)
-        })
+        try {
+            thermal_core_control.setOnClickListener {
+                ThermalControlUtils.setCoreControlState((it as CheckBox).isChecked, this.context)
+            }
+            thermal_vdd.setOnClickListener {
+                ThermalControlUtils.setVDDRestrictionState((it as CheckBox).isChecked, this.context)
+            }
+            thermal_paramters.setOnClickListener {
+                ThermalControlUtils.setTheramlState((it as CheckBox).isChecked, this.context)
+            }
+            cpu_sched_boost.setOnClickListener {
+                CpuFrequencyUtils.setSechedBoostState((it as CheckBox).isChecked, this.context)
+            }
 
-        cluster_little_min_freq.setOnClickListener {
-            var index = status.cluster_little_min_freq
-            AlertDialog.Builder(context)
-                    .setTitle("选择Cluster0最小频率")
-                    .setSingleChoiceItems(StringAdapter(this.context, littleFreqs), status.cluster_little_min_freq, {
-                        dialog, which ->
-                        index = which
-                    })
-                    .setPositiveButton(R.string.btn_confirm, {
-                        _,_ ->
-                        if (index != status.cluster_little_min_freq) {
-                            val g = littleFreqs[index]
-                            if (CpuFrequencyUtils.getCurrentMinFrequency(0) == g) {
-                                return@setPositiveButton
-                            }
-                            CpuFrequencyUtils.setMaxFrequency(g, 0, context)
-                        }
-                    })
-                    .create()
-                    .show()
-        }
-        cluster_little_max_freq.setOnClickListener {
-            var index = status.cluster_little_max_freq
-            AlertDialog.Builder(context)
-                    .setTitle("选择Cluster0最小频率")
-                    .setSingleChoiceItems(StringAdapter(this.context, littleFreqs), status.cluster_little_max_freq, {
-                        dialog, which ->
-                        index = which
-                    })
-                    .setPositiveButton(R.string.btn_confirm, {
-                        _,_ ->
-                        if (index != status.cluster_little_max_freq) {
-                            val g = littleFreqs[index]
-                            if (CpuFrequencyUtils.getCurrentMinFrequency(0) == g) {
-                                return@setPositiveButton
-                            }
-                            CpuFrequencyUtils.setMaxFrequency(g, 0, context)
-                        }
-                    })
-                    .create()
-                    .show()
-        }
-        // cluster_little_governor.onItemSelectedListener = ItemSelected(R.id.cluster_little_governor, next)
-        cluster_little_governor.setOnClickListener {
-            var governor = status.cluster_little_governor
-            AlertDialog.Builder(context)
-                .setTitle("选择Cluster0调度模式")
-                .setSingleChoiceItems(StringAdapter(this.context, littleGovernor), status.cluster_little_governor, {
-                    dialog, which ->
-                    governor = which
-                })
-                .setPositiveButton(R.string.btn_confirm, {
-                    _,_ ->
-                    if (governor != status.cluster_little_governor) {
-                        val g = littleGovernor[governor]
-                        if (CpuFrequencyUtils.getCurrentScalingGovernor(0) == g) {
-                            return@setPositiveButton
-                        }
-                        CpuFrequencyUtils.setGovernor(g, 0, context)
-                    }
-                })
-                .create()
-                .show()
-            return@setOnClickListener
-        }
-
-        if (hasBigCore) {
-            cluster_big_min_freq.setOnClickListener {
-                var index = status.cluster_big_min_freq
+            cluster_little_min_freq.setOnClickListener {
+                var index = status.cluster_little_min_freq
                 AlertDialog.Builder(context)
-                        .setTitle("选择Cluster1最小频率")
-                        .setSingleChoiceItems(StringAdapter(this.context, bigFreqs), status.cluster_big_min_freq, {
+                        .setTitle("选择Cluster0最小频率")
+                        .setSingleChoiceItems(StringAdapter(this.context, littleFreqs), status.cluster_little_min_freq, {
                             dialog, which ->
                             index = which
                         })
                         .setPositiveButton(R.string.btn_confirm, {
                             _,_ ->
-                            if (index != status.cluster_big_min_freq) {
-                                val g = bigFreqs[index]
-                                if (CpuFrequencyUtils.getCurrentMinFrequency(1) == g) {
+                            if (index != status.cluster_little_min_freq) {
+                                val g = littleFreqs[index]
+                                if (CpuFrequencyUtils.getCurrentMinFrequency(0) == g) {
                                     return@setPositiveButton
                                 }
-                                CpuFrequencyUtils.setMaxFrequency(g, 1, context)
+                                CpuFrequencyUtils.setMaxFrequency(g, 0, context)
                             }
                         })
                         .create()
                         .show()
             }
-            cluster_big_max_freq.setOnClickListener {
-                var index = status.cluster_big_max_freq
+            cluster_little_max_freq.setOnClickListener {
+                var index = status.cluster_little_max_freq
                 AlertDialog.Builder(context)
-                        .setTitle("选择Cluster1最大频率")
-                        .setSingleChoiceItems(StringAdapter(this.context, bigFreqs), status.cluster_big_max_freq, {
+                        .setTitle("选择Cluster0最小频率")
+                        .setSingleChoiceItems(StringAdapter(this.context, littleFreqs), status.cluster_little_max_freq, {
                             dialog, which ->
                             index = which
                         })
                         .setPositiveButton(R.string.btn_confirm, {
                             _,_ ->
-                            if (index != status.cluster_big_max_freq) {
-                                val g = bigFreqs[index]
-                                if (CpuFrequencyUtils.getCurrentMaxFrequency(1) == g) {
+                            if (index != status.cluster_little_max_freq) {
+                                val g = littleFreqs[index]
+                                if (CpuFrequencyUtils.getCurrentMinFrequency(0) == g) {
                                     return@setPositiveButton
                                 }
-                                CpuFrequencyUtils.setMaxFrequency(g, 1, context)
+                                CpuFrequencyUtils.setMaxFrequency(g, 0, context)
                             }
                         })
                         .create()
                         .show()
             }
-            cluster_big_governor.setOnClickListener {
-                var governor = status.cluster_big_governor
+            // cluster_little_governor.onItemSelectedListener = ItemSelected(R.id.cluster_little_governor, next)
+            cluster_little_governor.setOnClickListener {
+                var governor = status.cluster_little_governor
                 AlertDialog.Builder(context)
-                    .setTitle("选择Cluster1调度模式")
-                    .setSingleChoiceItems(StringAdapter(this.context, bigGovernor), status.cluster_big_governor, {
-                        dialog, which ->
-                        governor = which
-                    })
-                    .setPositiveButton(R.string.btn_confirm, {
-                        _,_ ->
-                        if (governor != status.cluster_big_governor) {
-                            val g = bigGovernor[governor]
-                            if (CpuFrequencyUtils.getCurrentScalingGovernor(1) == g) {
-                                return@setPositiveButton
-                            }
-                            CpuFrequencyUtils.setGovernor(g, 1, context)
-                        }
-                    })
-                    .create()
-                    .show()
-            }
-        }
-
-        if (adrenoGPU) {
-            adreno_gpu_min_freq.setOnClickListener {
-                var index = status.adrenoMinFreq
-                AlertDialog.Builder(context)
-                        .setTitle("选择Adreno GPU最小频率")
-                        .setSingleChoiceItems(StringAdapter(this.context, adrenoFreqs), status.adrenoMinFreq, {
-                            dialog, which ->
-                            index = which
-                        })
-                        .setPositiveButton(R.string.btn_confirm, {
-                            _,_ ->
-                            if (index != status.adrenoMinFreq) {
-                                val g = adrenoFreqs[index]
-                                if (CpuFrequencyUtils.getAdrenoGPUMinFreq() == g) {
-                                    return@setPositiveButton
-                                }
-                                CpuFrequencyUtils.setAdrenoGPUMinFreq(g)
-                            }
-                        })
-                        .create()
-                        .show()
-            }
-            adreno_gpu_max_freq.setOnClickListener {
-                var index = status.adrenoMaxFreq
-                AlertDialog.Builder(context)
-                        .setTitle("选择Adreno GPU最大频率")
-                        .setSingleChoiceItems(StringAdapter(this.context, adrenoFreqs), status.adrenoMaxFreq, {
-                            dialog, which ->
-                            index = which
-                        })
-                        .setPositiveButton(R.string.btn_confirm, {
-                            _,_ ->
-                            if (index != status.adrenoMaxFreq) {
-                                val g = adrenoFreqs[index]
-                                if (CpuFrequencyUtils.getAdrenoGPUMaxFreq() == g) {
-                                    return@setPositiveButton
-                                }
-                                CpuFrequencyUtils.setAdrenoGPUMaxFreq(g)
-                            }
-                        })
-                        .create()
-                        .show()
-            }
-            adreno_gpu_governor.setOnClickListener {
-                var governor = status.adrenoGovernor
-                AlertDialog.Builder(context)
-                        .setTitle("选择Adreno GPU调度")
-                        .setSingleChoiceItems(StringAdapter(this.context, adrenoGovernors), status.adrenoGovernor, {
+                        .setTitle("选择Cluster0调度模式")
+                        .setSingleChoiceItems(StringAdapter(this.context, littleGovernor), status.cluster_little_governor, {
                             dialog, which ->
                             governor = which
                         })
                         .setPositiveButton(R.string.btn_confirm, {
                             _,_ ->
-                            if (governor != status.adrenoGovernor) {
-                                val g = adrenoGovernors[governor]
-                                if (CpuFrequencyUtils.getAdrenoGPUGovernor() == g) {
+                            if (governor != status.cluster_little_governor) {
+                                val g = littleGovernor[governor]
+                                if (CpuFrequencyUtils.getCurrentScalingGovernor(0) == g) {
                                     return@setPositiveButton
                                 }
-                                CpuFrequencyUtils.setAdrenoGPUGovernor(g)
+                                CpuFrequencyUtils.setGovernor(g, 0, context)
                             }
                         })
                         .create()
                         .show()
-            }
-            adreno_gpu_min_pl.setOnClickListener {
-                var index = status.adrenoMinPL
-                AlertDialog.Builder(context)
-                        .setTitle("选择GPU最小功耗级别")
-                        .setSingleChoiceItems(StringAdapter(this.context, adrenoPLevels), status.adrenoMinPL, {
-                            dialog, which ->
-                            index = which
-                        })
-                        .setPositiveButton(R.string.btn_confirm, {
-                            _,_ ->
-                            if (index != status.adrenoMinPL) {
-                                val g = adrenoPLevels[index]
-                                if (CpuFrequencyUtils.getAdrenoGPUMinPowerLevel() == g) {
-                                    return@setPositiveButton
-                                }
-                                CpuFrequencyUtils.setAdrenoGPUMinPowerLevel(g)
-                            }
-                        })
-                        .create()
-                        .show()
-            }
-            adreno_gpu_max_pl.setOnClickListener {
-                var index = status.adrenoMaxPL
-                AlertDialog.Builder(context)
-                        .setTitle("选择GPU最大功耗级别")
-                        .setSingleChoiceItems(StringAdapter(this.context, adrenoPLevels), status.adrenoMaxPL, {
-                            dialog, which ->
-                            index = which
-                        })
-                        .setPositiveButton(R.string.btn_confirm, {
-                            _,_ ->
-                            if (index != status.adrenoMaxPL) {
-                                val g = adrenoPLevels[index]
-                                if (CpuFrequencyUtils.getAdrenoGPUMaxPowerLevel() == g) {
-                                    return@setPositiveButton
-                                }
-                                CpuFrequencyUtils.setAdrenoGPUMaxPowerLevel(g)
-                            }
-                        })
-                        .create()
-                        .show()
-            }
-            adreno_gpu_default_pl.setOnClickListener {
-                var index = status.adrenoDefaultPL
-                AlertDialog.Builder(context)
-                        .setTitle("选择GPU默认功耗级别")
-                        .setSingleChoiceItems(StringAdapter(this.context, adrenoPLevels), status.adrenoDefaultPL, {
-                            dialog, which ->
-                            index = which
-                        })
-                        .setPositiveButton(R.string.btn_confirm, {
-                            _,_ ->
-                            if (index != status.adrenoDefaultPL) {
-                                val g = adrenoPLevels[index]
-                                if (CpuFrequencyUtils.getAdrenoGPUDefaultPowerLevel() == g) {
-                                    return@setPositiveButton
-                                }
-                                CpuFrequencyUtils.setAdrenoGPUDefaultPowerLevel(g)
-                            }
-                        })
-                        .create()
-                        .show()
-            }
-        }
-
-        cpu_inputboost_freq.setOnClickListener({ view ->
-            val dialogView = layoutInflater.inflate(R.layout.cpu_inputboost_dialog, null)
-            val currentValues = cpu_inputboost_freq.text.toString().split(" ")
-
-            val clusterInfos = CpuFrequencyUtils.getClusterInfo()
-            if (clusterInfos.size == 0)
                 return@setOnClickListener
+            }
 
-            val cluster0 = dialogView.findViewById<Spinner>(R.id.boost_cluster0)
-            val cluster1 = dialogView.findViewById<Spinner>(R.id.boost_cluster1)
-            cluster0.adapter = StringAdapter(context, littleFreqs)
-            for (value in currentValues) {
-                for (cpu in clusterInfos.get(0)) {
-                    if (value.startsWith(cpu + ":")) {
-                        cluster0.setSelection(littleFreqs.indexOf(value.substring(2, value.length)), true)
-                    }
+            if (hasBigCore) {
+                cluster_big_min_freq.setOnClickListener {
+                    var index = status.cluster_big_min_freq
+                    AlertDialog.Builder(context)
+                            .setTitle("选择Cluster1最小频率")
+                            .setSingleChoiceItems(StringAdapter(this.context, bigFreqs), status.cluster_big_min_freq, {
+                                dialog, which ->
+                                index = which
+                            })
+                            .setPositiveButton(R.string.btn_confirm, {
+                                _,_ ->
+                                if (index != status.cluster_big_min_freq) {
+                                    val g = bigFreqs[index]
+                                    if (CpuFrequencyUtils.getCurrentMinFrequency(1) == g) {
+                                        return@setPositiveButton
+                                    }
+                                    CpuFrequencyUtils.setMaxFrequency(g, 1, context)
+                                }
+                            })
+                            .create()
+                            .show()
+                }
+                cluster_big_max_freq.setOnClickListener {
+                    var index = status.cluster_big_max_freq
+                    AlertDialog.Builder(context)
+                            .setTitle("选择Cluster1最大频率")
+                            .setSingleChoiceItems(StringAdapter(this.context, bigFreqs), status.cluster_big_max_freq, {
+                                dialog, which ->
+                                index = which
+                            })
+                            .setPositiveButton(R.string.btn_confirm, {
+                                _,_ ->
+                                if (index != status.cluster_big_max_freq) {
+                                    val g = bigFreqs[index]
+                                    if (CpuFrequencyUtils.getCurrentMaxFrequency(1) == g) {
+                                        return@setPositiveButton
+                                    }
+                                    CpuFrequencyUtils.setMaxFrequency(g, 1, context)
+                                }
+                            })
+                            .create()
+                            .show()
+                }
+                cluster_big_governor.setOnClickListener {
+                    var governor = status.cluster_big_governor
+                    AlertDialog.Builder(context)
+                            .setTitle("选择Cluster1调度模式")
+                            .setSingleChoiceItems(StringAdapter(this.context, bigGovernor), status.cluster_big_governor, {
+                                dialog, which ->
+                                governor = which
+                            })
+                            .setPositiveButton(R.string.btn_confirm, {
+                                _,_ ->
+                                if (governor != status.cluster_big_governor) {
+                                    val g = bigGovernor[governor]
+                                    if (CpuFrequencyUtils.getCurrentScalingGovernor(1) == g) {
+                                        return@setPositiveButton
+                                    }
+                                    CpuFrequencyUtils.setGovernor(g, 1, context)
+                                }
+                            })
+                            .create()
+                            .show()
                 }
             }
 
-            if (clusterInfos.size == 1) {
-                cluster1.isEnabled = false
-            } else {
-                cluster1.adapter = StringAdapter(context, bigFreqs)
+            if (adrenoGPU) {
+                adreno_gpu_min_freq.setOnClickListener {
+                    var index = status.adrenoMinFreq
+                    AlertDialog.Builder(context)
+                            .setTitle("选择Adreno GPU最小频率")
+                            .setSingleChoiceItems(StringAdapter(this.context, adrenoFreqs), status.adrenoMinFreq, {
+                                dialog, which ->
+                                index = which
+                            })
+                            .setPositiveButton(R.string.btn_confirm, {
+                                _,_ ->
+                                if (index != status.adrenoMinFreq) {
+                                    val g = adrenoFreqs[index]
+                                    if (CpuFrequencyUtils.getAdrenoGPUMinFreq() == g) {
+                                        return@setPositiveButton
+                                    }
+                                    CpuFrequencyUtils.setAdrenoGPUMinFreq(g)
+                                }
+                            })
+                            .create()
+                            .show()
+                }
+                adreno_gpu_max_freq.setOnClickListener {
+                    var index = status.adrenoMaxFreq
+                    AlertDialog.Builder(context)
+                            .setTitle("选择Adreno GPU最大频率")
+                            .setSingleChoiceItems(StringAdapter(this.context, adrenoFreqs), status.adrenoMaxFreq, {
+                                dialog, which ->
+                                index = which
+                            })
+                            .setPositiveButton(R.string.btn_confirm, {
+                                _,_ ->
+                                if (index != status.adrenoMaxFreq) {
+                                    val g = adrenoFreqs[index]
+                                    if (CpuFrequencyUtils.getAdrenoGPUMaxFreq() == g) {
+                                        return@setPositiveButton
+                                    }
+                                    CpuFrequencyUtils.setAdrenoGPUMaxFreq(g)
+                                }
+                            })
+                            .create()
+                            .show()
+                }
+                adreno_gpu_governor.setOnClickListener {
+                    var governor = status.adrenoGovernor
+                    AlertDialog.Builder(context)
+                            .setTitle("选择Adreno GPU调度")
+                            .setSingleChoiceItems(StringAdapter(this.context, adrenoGovernors), status.adrenoGovernor, {
+                                dialog, which ->
+                                governor = which
+                            })
+                            .setPositiveButton(R.string.btn_confirm, {
+                                _,_ ->
+                                if (governor != status.adrenoGovernor) {
+                                    val g = adrenoGovernors[governor]
+                                    if (CpuFrequencyUtils.getAdrenoGPUGovernor() == g) {
+                                        return@setPositiveButton
+                                    }
+                                    CpuFrequencyUtils.setAdrenoGPUGovernor(g)
+                                }
+                            })
+                            .create()
+                            .show()
+                }
+                adreno_gpu_min_pl.setOnClickListener {
+                    var index = status.adrenoMinPL
+                    AlertDialog.Builder(context)
+                            .setTitle("选择GPU最小功耗级别")
+                            .setSingleChoiceItems(StringAdapter(this.context, adrenoPLevels), status.adrenoMinPL, {
+                                dialog, which ->
+                                index = which
+                            })
+                            .setPositiveButton(R.string.btn_confirm, {
+                                _,_ ->
+                                if (index != status.adrenoMinPL) {
+                                    val g = adrenoPLevels[index]
+                                    if (CpuFrequencyUtils.getAdrenoGPUMinPowerLevel() == g) {
+                                        return@setPositiveButton
+                                    }
+                                    CpuFrequencyUtils.setAdrenoGPUMinPowerLevel(g)
+                                }
+                            })
+                            .create()
+                            .show()
+                }
+                adreno_gpu_max_pl.setOnClickListener {
+                    var index = status.adrenoMaxPL
+                    AlertDialog.Builder(context)
+                            .setTitle("选择GPU最大功耗级别")
+                            .setSingleChoiceItems(StringAdapter(this.context, adrenoPLevels), status.adrenoMaxPL, {
+                                dialog, which ->
+                                index = which
+                            })
+                            .setPositiveButton(R.string.btn_confirm, {
+                                _,_ ->
+                                if (index != status.adrenoMaxPL) {
+                                    val g = adrenoPLevels[index]
+                                    if (CpuFrequencyUtils.getAdrenoGPUMaxPowerLevel() == g) {
+                                        return@setPositiveButton
+                                    }
+                                    CpuFrequencyUtils.setAdrenoGPUMaxPowerLevel(g)
+                                }
+                            })
+                            .create()
+                            .show()
+                }
+                adreno_gpu_default_pl.setOnClickListener {
+                    var index = status.adrenoDefaultPL
+                    AlertDialog.Builder(context)
+                            .setTitle("选择GPU默认功耗级别")
+                            .setSingleChoiceItems(StringAdapter(this.context, adrenoPLevels), status.adrenoDefaultPL, {
+                                dialog, which ->
+                                index = which
+                            })
+                            .setPositiveButton(R.string.btn_confirm, {
+                                _,_ ->
+                                if (index != status.adrenoDefaultPL) {
+                                    val g = adrenoPLevels[index]
+                                    if (CpuFrequencyUtils.getAdrenoGPUDefaultPowerLevel() == g) {
+                                        return@setPositiveButton
+                                    }
+                                    CpuFrequencyUtils.setAdrenoGPUDefaultPowerLevel(g)
+                                }
+                            })
+                            .create()
+                            .show()
+                }
+            }
+
+            cpu_inputboost_freq.setOnClickListener({ view ->
+                val dialogView = layoutInflater.inflate(R.layout.cpu_inputboost_dialog, null)
+                val currentValues = cpu_inputboost_freq.text.toString().split(" ")
+
+                val clusterInfos = CpuFrequencyUtils.getClusterInfo()
+                if (clusterInfos.size == 0)
+                    return@setOnClickListener
+
+                val cluster0 = dialogView.findViewById<Spinner>(R.id.boost_cluster0)
+                val cluster1 = dialogView.findViewById<Spinner>(R.id.boost_cluster1)
+                cluster0.adapter = StringAdapter(context, littleFreqs)
                 for (value in currentValues) {
-                    for (cpu in clusterInfos.get(1)) {
+                    for (cpu in clusterInfos.get(0)) {
                         if (value.startsWith(cpu + ":")) {
-                            cluster1.setSelection(bigFreqs.indexOf(value.substring(2, value.length)), true)
+                            cluster0.setSelection(littleFreqs.indexOf(value.substring(2, value.length)), true)
                         }
                     }
                 }
-            }
 
-            AlertDialog.Builder(context)
-                    .setTitle("input_boost_freq")
-                    .setView(dialogView)
-                    .setNegativeButton("确定", { dialog, which ->
-                        val config = StringBuilder()
-                        val c0 = cluster0.selectedItem.toString()
-                        val c1 = cluster1.selectedItem.toString()
-                        for (core in clusterInfos.get(0)) {
-                            config.append(core)
-                            config.append(":")
-                            config.append(c0)
-                            config.append(" ")
+                if (clusterInfos.size == 1) {
+                    cluster1.isEnabled = false
+                } else {
+                    cluster1.adapter = StringAdapter(context, bigFreqs)
+                    for (value in currentValues) {
+                        for (cpu in clusterInfos.get(1)) {
+                            if (value.startsWith(cpu + ":")) {
+                                cluster1.setSelection(bigFreqs.indexOf(value.substring(2, value.length)), true)
+                            }
                         }
-                        if (clusterInfos.size > 1) {
-                            for (core in clusterInfos.get(1)) {
+                    }
+                }
+
+                AlertDialog.Builder(context)
+                        .setTitle("input_boost_freq")
+                        .setView(dialogView)
+                        .setNegativeButton("确定", { dialog, which ->
+                            val config = StringBuilder()
+                            val c0 = cluster0.selectedItem.toString()
+                            val c1 = cluster1.selectedItem.toString()
+                            for (core in clusterInfos.get(0)) {
                                 config.append(core)
                                 config.append(":")
-                                config.append(c1)
+                                config.append(c0)
                                 config.append(" ")
                             }
-                        }
-                        CpuFrequencyUtils.setInputBoosterFreq(config.toString().trim())
-                        updateState()
-                    })
-                    .create()
-                    .show()
-        })
-        cpu_inputboost_time.setOnEditorActionListener { v, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
-                CpuFrequencyUtils.setInputBoosterTime(v.text.toString())
-                val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                // 得到InputMethodManager的实例
-                if (imm.isActive()) {
-                    // 如果开启
-                    imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS)
+                            if (clusterInfos.size > 1) {
+                                for (core in clusterInfos.get(1)) {
+                                    config.append(core)
+                                    config.append(":")
+                                    config.append(c1)
+                                    config.append(" ")
+                                }
+                            }
+                            CpuFrequencyUtils.setInputBoosterFreq(config.toString().trim())
+                        })
+                        .create()
+                        .show()
+            })
+            cpu_inputboost_time.setOnEditorActionListener { v, actionId, event ->
+                if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
+                    CpuFrequencyUtils.setInputBoosterTime(v.text.toString())
+                    val imm = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    // 得到InputMethodManager的实例
+                    if (imm.isActive()) {
+                        // 如果开启
+                        imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS)
+                    }
+                }
+                true
+            }
+            for (i in 0..cores.size - 1) {
+                val core = i
+                cores[core].setOnClickListener {
+                    CpuFrequencyUtils.setCoreOnlineState(core, (it as CheckBox).isChecked)
                 }
             }
-            true
-        }
-        for (i in 0..cores.size - 1) {
-            val core = i
-            cores[core].setOnClickListener {
-                CpuFrequencyUtils.setCoreOnlineState(core, (it as CheckBox).isChecked)
-            }
-        }
 
-        exynos_cpuhotplug.setOnClickListener {
-            CpuFrequencyUtils.setExynosHotplug((it as CheckBox).isChecked)
+            exynos_cpuhotplug.setOnClickListener {
+                CpuFrequencyUtils.setExynosHotplug((it as CheckBox).isChecked)
+            }
+            exynos_hmp_booster.setOnClickListener {
+                CpuFrequencyUtils.setExynosBooster((it as CheckBox).isChecked)
+            }
+            exynos_hmp_up.setOnSeekBarChangeListener(OnSeekBarChangeListener(true))
+            exynos_hmp_down.setOnSeekBarChangeListener(OnSeekBarChangeListener(false))
+        } catch (ex: Exception) {
+            Log.e("bindEvent", ex.message)
         }
-        exynos_hmp_booster.setOnClickListener {
-            CpuFrequencyUtils.setExynosBooster((it as CheckBox).isChecked)
-        }
-        exynos_hmp_up.setOnSeekBarChangeListener(OnSeekBarChangeListener(true))
-        exynos_hmp_down.setOnSeekBarChangeListener(OnSeekBarChangeListener(false))
     }
 
     class OnSeekBarChangeListener(private var up: Boolean) : SeekBar.OnSeekBarChangeListener {
@@ -579,11 +587,17 @@ class FragmentCpuControl : Fragment() {
         }
     }
 
+    private fun setText(view: TextView, text: String) {
+        if (view.text != text) {
+            view.setText(text)
+        }
+    }
+
     private fun updateUI() {
         try {
-            cluster_little_min_freq.setText(subFreqStr(littleFreqs[status.cluster_little_min_freq]))
-            cluster_little_max_freq.setText(subFreqStr(littleFreqs[status.cluster_little_max_freq]))
-            cluster_little_governor.setText(littleGovernor[status.cluster_little_governor])
+            setText(cluster_little_min_freq, subFreqStr(littleFreqs[status.cluster_little_min_freq]))
+            setText(cluster_little_max_freq, subFreqStr(littleFreqs[status.cluster_little_max_freq]))
+            setText(cluster_little_governor, littleGovernor[status.cluster_little_governor])
 
             if (hasBigCore) {
                 cluster_big_min_freq.setText(subFreqStr(bigFreqs[status.cluster_big_min_freq]))
@@ -663,10 +677,6 @@ class FragmentCpuControl : Fragment() {
 
         Thread(Runnable {
             initData()
-            updateState()
-            handler.postDelayed({
-                bindEvent()
-            }, 1000)
         }).start()
     }
 

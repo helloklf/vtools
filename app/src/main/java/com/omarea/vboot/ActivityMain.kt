@@ -294,17 +294,32 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_img -> fragment = FragmentImg.createPage(this)
             R.id.nav_core_control -> fragment = FragmentCpuControl.newInstance()
             R.id.nav_whitelist -> fragment = FragmentWhitelist.createPage()
+            R.id.nav_paypal -> {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.me/duduski")))
+            }
+            R.id.nav_qq -> {
+                val key = "e-XL2In7CgIpeK_sG75s-vAiu7n5DnlS"
+                val intent = Intent()
+                intent.setData(Uri.parse("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26k%3D" + key));
+                // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面    //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                try {
+                    startActivity(intent);
+                    return true;
+                } catch (e: Exception) {
+                    // 未安装手Q或安装的版本不支持
+                    return false;
+                }
+            }
             R.id.nav_share -> {
                 val sendIntent = Intent()
                 sendIntent.action = Intent.ACTION_SEND
-                sendIntent.putExtra(Intent.EXTRA_TEXT, application.getString(R.string.share_link))
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "https://www.paypal.me/duduski")
                 sendIntent.type = "text/plain"
                 startActivity(sendIntent)
             }
             R.id.nav_feedback -> startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(application.getString(R.string.feedback_link))))
             R.id.nav_profile -> fragment = FragmentConfig.createPage()
             R.id.nav_additional -> fragment = FragmentAddin.createPage()
-            R.id.nav_reward -> fragment = FragmentReward.createPage()
             R.id.nav_keyevent -> {
                 try {
                     val intent = Intent(this, ActivityAccessibilityKeyEventSettings::class.java)

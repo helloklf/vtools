@@ -8,14 +8,16 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 import com.omarea.shared.helper.*
 import com.omarea.shell.AsynSuShellUnit
 import com.omarea.shell.SuDo
 import com.omarea.shell.SysUtils
-import java.io.File
-import java.io.OutputStream
+import java.io.*
+import java.nio.charset.Charset
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 /**
@@ -406,23 +408,69 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
     }
 
     private var dumpTopActivityProcess: Process? = null
-    private var dumpTopActivityOutputStream: OutputStream? = null
     private fun dumpsysTopActivity(packageName: String) {
-        if (dumpTopActivityProcess == null) {
+        var process = dumpTopActivityProcess
+        if (process == null) {
             try {
                 dumpTopActivityProcess = Runtime.getRuntime().exec("su")
-                dumpTopActivityOutputStream = dumpTopActivityProcess!!.outputStream
+                process = dumpTopActivityProcess
             } catch (ex: Exception) {
             }
         }
-        if (dumpTopActivityProcess != null) {
+        if (process != null) {
             try {
-
+                process.outputStream!!.write("echo 'dump-start'\n\ndumpsys activity top | grep TASK\n\necho 'dump-end'\n\n".toByteArray(Charset.defaultCharset()))
+                process.outputStream!!.flush()
+                val reader = BufferedReader(InputStreamReader(process.inputStream))
+                var line: String
+                val rows = ArrayList<String>()
+                while (true) {
+                    line = reader.readLine()
+                    if (line == null || line.contains("dump-end")) {
+                        break
+                    } else {
+                        if (!line.contains("dump-start") && !line.isEmpty()) {
+                            rows.add(line)
+                        }
+                    }
+                }
+                Log.d("vtools-dump", rows.toString())
+                var last = ""
+                for (item in rows) {
+                    if (!item.isEmpty())
+                        last = item
+                }
+                if (!last.contains(packageName)) {
+                    return
+                }
+                cancelDump(packageName)
             } catch (ex: Exception) {
-
+                dumpTopActivityProcess = null
+                cancelDump(packageName)
             }
         } else {
-            autoToggleMode(packageName)
+            cancelDump(packageName)
+        }
+    }
+
+    private fun cancelDump(packageName: String) {
+        autoBoosterApp(packageName)
+        autoToggleMode(packageName)
+        lastPackage = packageName
+    }
+
+    private fun onDumpTopActivityProcessEcho(packageName: String) {
+        val r = SysUtils.executeCommandWithOutput(true, "dumpsys activity top | grep TASK")
+        if (r != null) {
+            val rows = r.split("\n")
+            var last = ""
+            for (item in rows.listIterator()) {
+                if (!item.isEmpty())
+                    last = item
+            }
+            if (!last.contains(packageName)) {
+                return
+            }
         }
     }
 
@@ -439,24 +487,17 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
 
         if (lastPackage == null) {
             lastPackage = "com.android.systemui"
-        } else if (accuSwitch) {
-            val r = SysUtils.executeCommandWithOutput(true, "dumpsys activity top | grep TASK")
-            if (r != null) {
-                val rows = r.split("\n")
-                var last = ""
-                for (item in rows.listIterator()) {
-                    if (!item.isEmpty())
-                        last = item
-                }
-                if (!last.contains(packageName)) {
-                    return
-                }
-            }
         }
 
         autoBoosterApp(packageName)
-        autoToggleMode(packageName)
-        lastPackage = packageName
+
+        if (accuSwitch) {
+            dumpsysTopActivity(packageName)
+        } else {
+            autoBoosterApp(packageName)
+            autoToggleMode(packageName)
+            lastPackage = packageName
+        }
     }
 
     fun onInterrupt() {

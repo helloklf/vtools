@@ -5,6 +5,11 @@
         android:checked="false"
         android:icon="@drawable/ic_menu_home"
         android:title="@string/menu_home" />
+    <item
+        android:id="@+id/nav_paypal"
+        android:checked="false"
+        android:icon="@drawable/ic_menu_reward"
+        android:title="@string/menu_paypal" />
 
     <item android:title="辅助功能">
         <menu>
@@ -89,6 +94,11 @@
                 android:icon="@drawable/ic_menu_config"
                 android:title="@string/menu_settings"
                 android:visible="false" />
+            <item
+                android:id="@+id/nav_qq"
+                android:icon="@drawable/ic_menu_config"
+                android:title="@string/menu_qq"
+                android:visible="true" />
             <item
                 android:id="@+id/nav_help"
                 android:icon="@drawable/ic_menu_help"
