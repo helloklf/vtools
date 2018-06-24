@@ -26,8 +26,8 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
             val out = process!!.outputStream.bufferedWriter()
             if (disableSeLinux)
                 out.write(Consts.DisableSELinux)
-            out.write("exit 0\n")
-            out.write("exit 0\n")
+            out.write("exit\n")
+            out.write("exit\n")
             out.flush()
 
             process.waitFor()

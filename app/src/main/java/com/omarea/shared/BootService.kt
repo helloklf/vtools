@@ -1,5 +1,6 @@
 package com.omarea.shared
 
+import android.app.IntentService
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
@@ -9,6 +10,7 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
 import android.support.v4.app.NotificationCompat
 import com.omarea.shell.Props
 import com.omarea.shell.SuDo
@@ -19,12 +21,28 @@ import com.omarea.vboot.ServiceBattery
  * Created by Hello on 2017/12/27.
  */
 
-class BootService : Service() {
+class BootService : IntentService("vtools-boot") {
 
-    private var handler = Handler()
+    private var handler = Handler(Looper.getMainLooper())
     private lateinit var chargeConfig: SharedPreferences
     private lateinit var swapConfig: SharedPreferences
     private lateinit var globalConfig: SharedPreferences
+
+    override fun onHandleIntent(intent: Intent?) {
+        chargeConfig = this.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
+        swapConfig = this.getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)
+        globalConfig = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+
+        if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_START_DELAY, false)) {
+            handler.postDelayed({
+                autoBoot()
+            }, 25000)
+        } else {
+            handler.postDelayed({
+                autoBoot()
+            }, 5000)
+        }
+    }
 
     private fun autoBoot() {
 
@@ -126,26 +144,5 @@ class BootService : Service() {
         handler.postDelayed({
             stopSelf()
         }, 2000)
-    }
-
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        chargeConfig = this.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
-        swapConfig = this.getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)
-        globalConfig = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-
-        if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_START_DELAY, false)) {
-            handler.postDelayed({
-                autoBoot()
-            }, 25000)
-        } else {
-            handler.postDelayed({
-                autoBoot()
-            }, 5000)
-        }
-        return super.onStartCommand(intent, flags, startId)
-    }
-
-    override fun onBind(intent: Intent): IBinder? {
-        return null
     }
 }

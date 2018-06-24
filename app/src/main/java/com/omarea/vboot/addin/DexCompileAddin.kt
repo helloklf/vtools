@@ -37,7 +37,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
             return
         }
 
-        val arr = arrayOf("Speed编译", "Everything编译", "强制Speed编译", "强制Everything编译", "Reset")
+        val arr = arrayOf("Speed编译 - 推荐", "Everything编译", "强制Speed编译", "强制Everything编译", "Reset")
         var index = 0
         AlertDialog.Builder(context)
                 .setTitle("请选择执行方式")
@@ -122,7 +122,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
             return
         }
 
-        val arr = arrayOf("Speed编译", "Everything编译", "强制Speed编译", "强制Everything编译", "Reset")
+        val arr = arrayOf("Speed编译 - 推荐", "Everything编译", "强制Speed编译", "强制Everything编译", "Reset")
         var index = 0
         AlertDialog.Builder(context)
                 .setTitle("请选择执行方式")
@@ -174,7 +174,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
             return
         }
 
-        val arr = arrayOf("最快安装速度", "最佳性能（Speed）", "完整编译（Everything）", "永不编译", "恢复默认")
+        val arr = arrayOf("最快安装速度", "最佳性能（Speed） - 推荐", "完整编译（Everything）", "永不编译", "恢复默认")
         val intallMode = Props.getProp("pm.dexopt.install")
         var index = 0
         when (intallMode) {

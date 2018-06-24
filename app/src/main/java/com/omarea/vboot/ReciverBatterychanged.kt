@@ -13,6 +13,9 @@ import android.widget.Toast
 import com.omarea.shared.Consts
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.helper.KeepShell
+import android.os.AsyncTask
+
+
 
 class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() {
     private var bp: Boolean = false
@@ -26,8 +29,12 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
 
     //显示文本消息
     private fun showMsg(msg: String, longMsg: Boolean) {
-        myHandler.post {
-            Toast.makeText(service, msg, if (longMsg) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show()
+        try {
+            myHandler.post {
+                Toast.makeText(service, msg, if (longMsg) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show()
+            }
+        } catch (ex: Exception) {
+            Log.e("BatteryService", ex.message)
         }
     }
 
@@ -48,14 +55,13 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
 
     private fun computeLeves(qcLimit: Int): StringBuilder {
         val arr = StringBuilder()
-        if (qcLimit < 500) {
-        } else {
-            var level = 500
+        if (qcLimit > 300) {
+            var level = 300
             while (level < qcLimit) {
                 arr.append("echo ${level}000 > /sys/class/power_supply/battery/constant_charge_current_max\n")
                 arr.append("echo ${level}000 > /sys/class/power_supply/main/constant_charge_current_max\n")
                 arr.append("echo ${level}000 > /sys/class/qcom-battery/restricted_current\n")
-                level += 500
+                level += 300
             }
         }
         arr.append("echo ${qcLimit}000 > /sys/class/power_supply/battery/constant_charge_current_max\n")
@@ -65,6 +71,14 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
     }
 
     override fun onReceive(context: Context, intent: Intent) {
+        val pendingResult = goAsync()
+        val asyncTask = TaskAsync()
+        asyncTask.execute(Runnable {
+            onReceiveAsync(intent, pendingResult)
+        })
+    }
+
+    private fun onReceiveAsync(intent: Intent, pendingResult: PendingResult) {
         try {
             val action = intent.action
             val onChanger = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1) == BatteryManager.BATTERY_STATUS_CHARGING
@@ -82,7 +96,7 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
                 }
                 //电量不足，恢复充电功能
                 else if (action == Intent.ACTION_BATTERY_LOW) {
-                    showMsg(context.getString(R.string.battery_low), false)
+                    showMsg(service.getString(R.string.battery_low), false)
                     resumeCharge()
                 } else if (bp && batteryLevel != -1 && batteryLevel < sharedPreferences.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85) - 20) {
                     //电量低于保护级别20
@@ -93,6 +107,15 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
             entryFastChanger(onChanger)
         } catch (ex: Exception) {
             showMsg("充电加速服务：\n" + ex.message, true);
+        } finally {
+            pendingResult.finish()
+        }
+    }
+
+
+    internal class TaskAsync : AsyncTask<Runnable, Int, Unit>() {
+        override fun doInBackground(vararg params: Runnable) {
+            params[0].run()
         }
     }
 

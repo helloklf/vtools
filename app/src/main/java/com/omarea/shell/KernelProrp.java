@@ -39,9 +39,8 @@ public class KernelProrp {
             out.write(("cat " + propName).getBytes("UTF-8"));
             out.writeBytes("\n");
             out.writeBytes("\n");
-            out.writeBytes("exit 0\n\n");
-            out.writeBytes("exit 0\n\n");
-            out.writeBytes("exit 0\n\n");
+            out.writeBytes("exit\n\n");
+            out.writeBytes("exit\n\n");
             out.flush();
             out.close();
             if (!root && p.waitFor() != 0) {
@@ -62,7 +61,19 @@ public class KernelProrp {
                 bufferedreader.close();
                 inputstream.close();
                 inputstreamreader.close();
+                BufferedReader errorReader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+                StringBuilder errors = new StringBuilder();
+                while ((line = errorReader.readLine()) != null) {
+                    errors.append(line);
+                    errors.append("\n");
+                }
+                errorReader.close();
+
                 p.destroy();
+                if (errors.length() > 0) {
+                    Log.e("KernelProps", "reader ["+propName+"] " + errors.toString());
+                    return "";
+                }
                 return stringBuilder.toString().trim();
             }
         } catch (Exception ignored) {
@@ -83,9 +94,9 @@ public class KernelProrp {
             out.writeBytes("echo " + value + " > " + propName);
             out.writeBytes("\n");
             out.writeBytes("\n\n\n");
-            out.writeBytes("exit 0\n");
-            out.writeBytes("exit 0\n");
-            out.writeBytes("\n\n\n");
+            out.writeBytes("exit\n");
+            out.writeBytes("exit\n");
+            out.writeBytes("\n");
             out.flush();
             p.waitFor();
             return true;

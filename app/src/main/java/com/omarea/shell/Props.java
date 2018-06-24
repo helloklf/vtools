@@ -32,9 +32,8 @@ public class Props {
             out.writeBytes("\n");
             out.writeBytes("\n");
 
-            out.writeBytes("exit 0\n\n");
-            out.writeBytes("exit 0\n\n");
-            out.writeBytes("exit 0\n\n");
+            out.writeBytes("exit\n\n");
+            out.writeBytes("exit\n\n");
             out.flush();
             out.close();
 
