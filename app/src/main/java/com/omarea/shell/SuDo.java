@@ -1,6 +1,8 @@
 package com.omarea.shell;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -14,6 +16,7 @@ import java.io.IOException;
 
 public class SuDo {
     private Context context;
+    private Handler handler;
 
     public SuDo(Context context) {
         this.context = context;
@@ -21,7 +24,17 @@ public class SuDo {
 
     private void noRoot() {
         if (context != null)
-            Toast.makeText(context, "没有ROOT权限无法运行", Toast.LENGTH_SHORT).show();
+        {
+            if (this.handler == null) {
+                this.handler = new Handler(Looper.getMainLooper());
+            }
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(context, "没有ROOT权限无法运行", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     //执行命令

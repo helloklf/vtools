@@ -1,5 +1,6 @@
 package com.omarea.ui
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Handler
@@ -39,6 +40,7 @@ open class ProgressBarDialog(private var context: Context) {
         }
     }
 
+    @SuppressLint("InflateParams")
     public fun execShell(cmd: String, handler: Handler? = null) {
         hideDialog()
 
@@ -71,6 +73,7 @@ open class ProgressBarDialog(private var context: Context) {
         }
     }
 
+    @SuppressLint("InflateParams")
     public fun showDialog(text: String = "正在加载，请稍等..."): AlertDialog? {
         hideDialog()
         val layoutInflater = LayoutInflater.from(context)

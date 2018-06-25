@@ -29,8 +29,7 @@ public class BatteryUnit {
                 if (Integer.parseInt(limit) == 0) {
                     limit = "0";
                 }
-            } catch (Exception ex) {
-
+            } catch (Exception ignored) {
             }
         } else {
             return "?mA";
