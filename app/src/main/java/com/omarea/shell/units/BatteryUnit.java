@@ -21,7 +21,7 @@ public class BatteryUnit {
     }
 
     public String getqcLimit() {
-        String limit = KernelProrp.getProp("/sys/class/power_supply/battery/constant_charge_current_max");
+        String limit = KernelProrp.INSTANCE.getProp("/sys/class/power_supply/battery/constant_charge_current_max");
         if (limit.length() > 3) {
             limit = limit.substring(0, limit.length() - 3) + "mA";
         } else if (limit.length() > 0) {
@@ -45,9 +45,7 @@ public class BatteryUnit {
     //获取电池信息
     public String getBatteryInfo() {
         if (new File("/sys/class/power_supply/bms/uevent").exists()) {
-            String batteryInfos = KernelProrp.getProp("/sys/class/power_supply/bms/uevent");
-            if (batteryInfos == null)
-                batteryInfos = "";
+            String batteryInfos = KernelProrp.INSTANCE.getProp("/sys/class/power_supply/bms/uevent");
             String[] infos = batteryInfos.split("\n");
             StringBuilder stringBuilder = new StringBuilder();
             String io = "";
@@ -171,7 +169,7 @@ public class BatteryUnit {
             POWER_SUPPLY_CC_STEP=0
             POWER_SUPPLY_CC_STEP_SEL=0
             */
-            String batteryInfos = KernelProrp.getProp("/sys/class/power_supply/bms/uevent");
+            String batteryInfos = KernelProrp.INSTANCE.getProp("/sys/class/power_supply/bms/uevent");
             if (batteryInfos != null) {
                 String[] arr = batteryInfos.split("\n");
                 String[] keywords = new String[]{"POWER_SUPPLY_CHARGE_FULL=", "POWER_SUPPLY_CHARGE_FULL_DESIGN="};
@@ -199,8 +197,8 @@ public class BatteryUnit {
             } else {
                 return "? mAh";
             }
-            String txt = KernelProrp.getProp(path);
-            if (txt == null || txt.trim().length() == 0)
+            String txt = KernelProrp.INSTANCE.getProp(path);
+            if (txt.trim().length() == 0)
                 return "? mAh";
             if (txt.length() > 4)
                 return txt.substring(0, 4) + " mAh";
