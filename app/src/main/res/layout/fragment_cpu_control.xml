@@ -329,8 +329,8 @@
                         android:layout_column="0"
                         android:layout_columnSpan="2"
                         android:layout_row="7"
+                        android:layout_gravity="fill_horizontal"
                         android:text="大多数时候，GPU性能受功耗级别（Power Level）限制而不是频率设定。\n注意：功耗级别0表示最大高性能，数值越大则性能越低" />
-
                 </GridLayout>
             </android.support.v7.widget.CardView>
 
@@ -464,6 +464,7 @@
                         android:layout_column="0"
                         android:layout_columnSpan="2"
                         android:layout_row="7"
+                        android:layout_gravity="fill_horizontal"
                         android:text="Up/Down Threshold决定使用高性能核心的积极程度（数值越低越积极），Booster则表示永远优先使用高性能核心" />
 
                 </GridLayout>

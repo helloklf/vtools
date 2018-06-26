@@ -129,7 +129,7 @@ class FragmentCpuControl : Fragment() {
                 var index = status.cluster_little_min_freq
                 AlertDialog.Builder(context)
                         .setTitle("选择Cluster0最小频率")
-                        .setSingleChoiceItems(StringAdapter(this.context, littleFreqs), status.cluster_little_min_freq, {
+                        .setSingleChoiceItems(littleFreqs, status.cluster_little_min_freq, {
                             dialog, which ->
                             index = which
                         })
@@ -140,7 +140,7 @@ class FragmentCpuControl : Fragment() {
                                 if (CpuFrequencyUtils.getCurrentMinFrequency(0) == g) {
                                     return@setPositiveButton
                                 }
-                                CpuFrequencyUtils.setMaxFrequency(g, 0, context)
+                                CpuFrequencyUtils.setMinFrequency(g, 0, context)
                             }
                         })
                         .create()
@@ -150,7 +150,7 @@ class FragmentCpuControl : Fragment() {
                 var index = status.cluster_little_max_freq
                 AlertDialog.Builder(context)
                         .setTitle("选择Cluster0最小频率")
-                        .setSingleChoiceItems(StringAdapter(this.context, littleFreqs), status.cluster_little_max_freq, {
+                        .setSingleChoiceItems(littleFreqs, status.cluster_little_max_freq, {
                             dialog, which ->
                             index = which
                         })
@@ -172,7 +172,7 @@ class FragmentCpuControl : Fragment() {
                 var governor = status.cluster_little_governor
                 AlertDialog.Builder(context)
                         .setTitle("选择Cluster0调度模式")
-                        .setSingleChoiceItems(StringAdapter(this.context, littleGovernor), status.cluster_little_governor, {
+                        .setSingleChoiceItems(littleGovernor, status.cluster_little_governor, {
                             dialog, which ->
                             governor = which
                         })
@@ -196,7 +196,7 @@ class FragmentCpuControl : Fragment() {
                     var index = status.cluster_big_min_freq
                     AlertDialog.Builder(context)
                             .setTitle("选择Cluster1最小频率")
-                            .setSingleChoiceItems(StringAdapter(this.context, bigFreqs), status.cluster_big_min_freq, {
+                            .setSingleChoiceItems(bigFreqs, status.cluster_big_min_freq, {
                                 dialog, which ->
                                 index = which
                             })
@@ -207,7 +207,7 @@ class FragmentCpuControl : Fragment() {
                                     if (CpuFrequencyUtils.getCurrentMinFrequency(1) == g) {
                                         return@setPositiveButton
                                     }
-                                    CpuFrequencyUtils.setMaxFrequency(g, 1, context)
+                                    CpuFrequencyUtils.setMinFrequency(g, 1, context)
                                 }
                             })
                             .create()
@@ -217,7 +217,7 @@ class FragmentCpuControl : Fragment() {
                     var index = status.cluster_big_max_freq
                     AlertDialog.Builder(context)
                             .setTitle("选择Cluster1最大频率")
-                            .setSingleChoiceItems(StringAdapter(this.context, bigFreqs), status.cluster_big_max_freq, {
+                            .setSingleChoiceItems(bigFreqs, status.cluster_big_max_freq, {
                                 dialog, which ->
                                 index = which
                             })
@@ -238,7 +238,7 @@ class FragmentCpuControl : Fragment() {
                     var governor = status.cluster_big_governor
                     AlertDialog.Builder(context)
                             .setTitle("选择Cluster1调度模式")
-                            .setSingleChoiceItems(StringAdapter(this.context, bigGovernor), status.cluster_big_governor, {
+                            .setSingleChoiceItems(bigGovernor, status.cluster_big_governor, {
                                 dialog, which ->
                                 governor = which
                             })
@@ -262,7 +262,7 @@ class FragmentCpuControl : Fragment() {
                     var index = status.adrenoMinFreq
                     AlertDialog.Builder(context)
                             .setTitle("选择Adreno GPU最小频率")
-                            .setSingleChoiceItems(StringAdapter(this.context, adrenoFreqs), status.adrenoMinFreq, {
+                            .setSingleChoiceItems(adrenoFreqs, status.adrenoMinFreq, {
                                 dialog, which ->
                                 index = which
                             })
@@ -283,7 +283,7 @@ class FragmentCpuControl : Fragment() {
                     var index = status.adrenoMaxFreq
                     AlertDialog.Builder(context)
                             .setTitle("选择Adreno GPU最大频率")
-                            .setSingleChoiceItems(StringAdapter(this.context, adrenoFreqs), status.adrenoMaxFreq, {
+                            .setSingleChoiceItems(adrenoFreqs, status.adrenoMaxFreq, {
                                 dialog, which ->
                                 index = which
                             })
@@ -304,7 +304,7 @@ class FragmentCpuControl : Fragment() {
                     var governor = status.adrenoGovernor
                     AlertDialog.Builder(context)
                             .setTitle("选择Adreno GPU调度")
-                            .setSingleChoiceItems(StringAdapter(this.context, adrenoGovernors), status.adrenoGovernor, {
+                            .setSingleChoiceItems(adrenoGovernors, status.adrenoGovernor, {
                                 dialog, which ->
                                 governor = which
                             })
@@ -325,7 +325,7 @@ class FragmentCpuControl : Fragment() {
                     var index = status.adrenoMinPL
                     AlertDialog.Builder(context)
                             .setTitle("选择GPU最小功耗级别")
-                            .setSingleChoiceItems(StringAdapter(this.context, adrenoPLevels), status.adrenoMinPL, {
+                            .setSingleChoiceItems(adrenoPLevels, status.adrenoMinPL, {
                                 dialog, which ->
                                 index = which
                             })
@@ -346,7 +346,7 @@ class FragmentCpuControl : Fragment() {
                     var index = status.adrenoMaxPL
                     AlertDialog.Builder(context)
                             .setTitle("选择GPU最大功耗级别")
-                            .setSingleChoiceItems(StringAdapter(this.context, adrenoPLevels), status.adrenoMaxPL, {
+                            .setSingleChoiceItems(adrenoPLevels, status.adrenoMaxPL, {
                                 dialog, which ->
                                 index = which
                             })
@@ -367,7 +367,7 @@ class FragmentCpuControl : Fragment() {
                     var index = status.adrenoDefaultPL
                     AlertDialog.Builder(context)
                             .setTitle("选择GPU默认功耗级别")
-                            .setSingleChoiceItems(StringAdapter(this.context, adrenoPLevels), status.adrenoDefaultPL, {
+                            .setSingleChoiceItems(adrenoPLevels, status.adrenoDefaultPL, {
                                 dialog, which ->
                                 index = which
                             })

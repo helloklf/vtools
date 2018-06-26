@@ -3,6 +3,7 @@ package com.omarea.shared.helper
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Handler
@@ -50,7 +51,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         return batteryUnit
     }
 
-    private fun getCapacity(): String? {
+    private fun getCapacity(): String {
         return KernelProrp.getProp("/sys/class/power_supply/battery/capacity", false) + "%"
     }
 
@@ -139,9 +140,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
 
     //显示通知
     internal fun notify() {
-        handler.postDelayed({
-            updateNotic()
-        }, 500)
+        updateNotic()
     }
 
     private fun updateNotic () {
@@ -162,26 +161,36 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         }
     }
 
-    fun notifyPowerModeChange(packageName: String, mode: String) {
+    private fun notifyPowerModeChange(packageName: String, mode: String) {
         if (!showNofity) {
             return
         }
-        val remoteViews = RemoteViews(context.packageName, R.layout.notify0)
-        remoteViews.setTextViewText(R.id.notify_title, getAppName(packageName))
-        remoteViews.setTextViewText(R.id.notify_text, getModName(mode))
-        val capacity = getCapacity()
+        var batteryImage:Bitmap? = null
+        var batteryIO = getBatteryIO()
+        var batteryTemp = ""
+        var capacity = ""
+        var modeImage = BitmapFactory.decodeResource(context.resources, getModImage(mode))
         try {
-            if (capacity != null && !capacity.isNullOrEmpty()) {
-                remoteViews.setImageViewBitmap(R.id.notify_battery_icon, BitmapFactory.decodeResource(context.resources, getBatteryIcon(capacity.replace("%", "").toInt())))
+            batteryIO = getBatteryIO()
+            batteryTemp = getBatteryTemp()
+            capacity = getCapacity()
+            modeImage = BitmapFactory.decodeResource(context.resources, getModImage(mode))
+            if (!capacity.isEmpty()) {
+                batteryImage = BitmapFactory.decodeResource(context.resources, getBatteryIcon(capacity.replace("%", "").toInt()))
             }
         } catch (ex: Exception) {
             Log.e("NotifyHelper", ex.message)
         }
-        try {
-            remoteViews.setTextViewText(R.id.notify_battery_text, getBatteryIO() + " " + capacity + " " + getBatteryTemp())
-            remoteViews.setImageViewBitmap(R.id.notify_mode, BitmapFactory.decodeResource(context.resources, getModImage(mode)))
-        } catch (ex: Exception) {
-            Log.e("NotifyHelper", ex.message)
+
+        val remoteViews = RemoteViews(context.packageName, R.layout.notify0)
+        remoteViews.setTextViewText(R.id.notify_title, getAppName(packageName))
+        remoteViews.setTextViewText(R.id.notify_text, getModName(mode))
+        remoteViews.setTextViewText(R.id.notify_battery_text, batteryIO + " " + capacity + " " + batteryTemp)
+        if (modeImage != null) {
+            remoteViews.setImageViewBitmap(R.id.notify_mode, modeImage)
+        }
+        if (batteryImage != null) {
+            remoteViews.setImageViewBitmap(R.id.notify_battery_icon, batteryImage)
         }
 
         val intent = PendingIntent.getActivity(
