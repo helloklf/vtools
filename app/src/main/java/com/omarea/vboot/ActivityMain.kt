@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.provider.Settings
 import android.support.design.widget.NavigationView
 import android.support.v4.app.ActivityCompat
@@ -19,6 +20,7 @@ import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import com.omarea.shared.ConfigInstaller
@@ -39,6 +41,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var hasRoot = false
     private var globalSPF: SharedPreferences? = null
     private var myHandler = Handler()
+    private lateinit var processDialog: ProgressBarDialog
 
     private fun setExcludeFromRecents(exclude: Boolean? = null) {
         try {
@@ -50,12 +53,13 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
         } catch (ex: Exception) {
-            ex.stackTrace
+            Log.e("excludeRecent", ex.message)
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         //setMaxAspect()
+        processDialog = ProgressBarDialog(this)
         if (globalSPF == null) {
             globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
             val listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
@@ -77,14 +81,28 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //checkFileWrite()
         checkRoot(Runnable {
             hasRoot = true
+
+            processDialog.showDialog("正在检查Busybox是否安装...")
             checkFileWrite()
-            checkBusybox()
+
+            Busybox(this).forceInstall(Runnable {
+                processDialog.showDialog("正在检查模式文件格式...")
+
+                configInstallerThread = Thread(Runnable {
+                    ConfigInstaller().configCodeVerify(this)
+                    Looper.getMainLooper().run {
+                        processDialog.hideDialog()
+                    }
+                })
+                configInstallerThread!!.start()
+                next()
+            })
         }, Runnable {
             next()
         })
         setExcludeFromRecents()
-        AppShortcutManager(thisview).removeMenu()
-        //checkUseState()
+        // AppShortcutManager(thisview).removeMenu()
+        // checkUseState()
     }
 
     fun checkUseState() {
@@ -124,6 +142,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val intent = Intent(this.applicationContext, ServiceBattery::class.java)
                 this.applicationContext.startService(intent)
             } catch (ex: Exception) {
+                Log.e("startChargeService", ex.message)
             }
         }
 
@@ -139,12 +158,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             hideRootMenu(navigationView.menu);
     }
 
-    private fun checkBusybox() {
-        ConfigInstaller().configCodeVerify(this)
-        Busybox(this).forceInstall(Runnable {
-            next()
-        })
-    }
+    private var configInstallerThread: Thread? = null
 
     @SuppressLint("ApplySharedPref", "CommitPrefEdits")
     private fun checkRoot(next: Runnable, skip: Runnable) {
@@ -192,7 +206,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-
     }
 
     private fun checkPermission(permission: String): Boolean =
@@ -255,6 +268,9 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             if (getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
                             .getBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, false)) {
                 //this.finishAndRemoveTask()
+            }
+            if (this.configInstallerThread != null && !this.configInstallerThread!!.isInterrupted) {
+                this.configInstallerThread!!.destroy()
             }
         } catch (ex: Exception) {
         }

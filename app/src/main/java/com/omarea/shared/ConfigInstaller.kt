@@ -1,6 +1,7 @@
 package com.omarea.shared
 
 import android.content.Context
+import android.util.Log
 import com.omarea.shell.Platform
 import com.omarea.shell.SuDo
 import com.omarea.shell.SysUtils
@@ -22,7 +23,9 @@ class ConfigInstaller {
             //SuDo(context).execCmdSync(Consts.InstallPowerToggleConfigToCache + "\n\n" + Consts.ExecuteConfig + "\n" + after)
             SuDo(context).execCmdSync(cmd.toString())
             ModeList(context).setCurrentPowercfg("")
-        } catch (ex: Exception) {}
+        } catch (ex: Exception) {
+            Log.e("script-parse", ex.message)
+        }
     }
 
     //Dos转Unix，避免\r\n导致的脚本无法解析
@@ -36,6 +39,7 @@ class ConfigInstaller {
             val codes = String(datas, 0, len).replace(Regex("\r\n"), "\n").replace(Regex("\r\t"), "\t")
             return codes.toByteArray(Charsets.UTF_8)
         } catch (ex: Exception) {
+            Log.e("script-parse", ex.message)
             return "".toByteArray()
         }
     }
@@ -58,7 +62,7 @@ class ConfigInstaller {
             }
             val cmd = StringBuilder()
             if (file.exists()) {
-                val powercfg = SysUtils.executeCommandWithOutput(false, "cat ${Consts.POWER_CFG_PATH}")
+                val powercfg = SysUtils.readOutputFromFile(Consts.POWER_CFG_PATH)
                 if (powercfg.contains(Regex("\r\n")) || powercfg.contains(Regex("\r\t"))) {
                     FileWrite.WritePrivateFile(
                             powercfg
@@ -72,7 +76,7 @@ class ConfigInstaller {
                 }
             }
             if (fileBase.exists()) {
-                val powercfgBase = SysUtils.executeCommandWithOutput(false, "cat ${Consts.POWER_CFG_BASE}")
+                val powercfgBase = SysUtils.readOutputFromFile(Consts.POWER_CFG_BASE)
                 if (powercfgBase.contains(Regex("\r\n")) || powercfgBase.contains(Regex("\r\t"))) {
                     FileWrite.WritePrivateFile(
                             powercfgBase
@@ -89,7 +93,7 @@ class ConfigInstaller {
                 return
             SuDo(context).execCmdSync(cmd.toString())
         } catch (ex: Exception) {
-
+            Log.e("script-parse", ex.message)
         }
     }
 }
