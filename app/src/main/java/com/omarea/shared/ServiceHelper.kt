@@ -72,7 +72,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
                 override fun run() {
                     notifyHelper.notify()
                 }
-            }, 0, 5000)
+            }, 0, 10000)
         }
     }
 

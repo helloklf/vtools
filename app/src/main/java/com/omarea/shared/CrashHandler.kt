@@ -2,6 +2,7 @@ package com.omarea.shared
 
 import android.content.Context
 import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 
 /**
@@ -18,8 +19,6 @@ class CrashHandler constructor() : Thread.UncaughtExceptionHandler {
     }
 
     override fun uncaughtException(thread: Thread, ex: Throwable) {
-        Looper.getMainLooper().run {
-            Toast.makeText(mContext, "发生了异常：\n\n" + ex.localizedMessage, Toast.LENGTH_LONG).show()
-        }
+        Log.e("uncaughtException", ex.message)
     }
 }

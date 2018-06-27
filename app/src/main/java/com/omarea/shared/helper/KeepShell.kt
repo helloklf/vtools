@@ -4,8 +4,10 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
+import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.IOException
+import java.io.InputStreamReader
 import java.nio.charset.Charset
 
 /**
@@ -16,9 +18,14 @@ class KeepShell(private var context: Context?) {
     private var p: Process? = null
     private var out: BufferedWriter? = null
     private var handler: Handler = Handler(Looper.getMainLooper())
+    private var processHandler: Handler? = null
+    public var PROCESS_EVENT_STAR = 0;
+    public var PROCESS_EVENT_CONTENT = 1;
+    public var PROCESS_EVENT_ERROR_CONTENT = 2;
+    public var PROCESS_EVENT_EXIT = -1;
 
-    fun setContext(context: Context?) {
-        this.context = context
+    fun setHandler(handler: Handler) {
+        this.processHandler = handler
     }
 
     private fun showMsg(msg: String) {
@@ -63,6 +70,48 @@ class KeepShell(private var context: Context?) {
             try {
                 tryExit()
                 p = Runtime.getRuntime().exec("su")
+
+                if (processHandler != null) {
+                    processHandler!!.sendMessage(processHandler!!.obtainMessage(PROCESS_EVENT_STAR))
+                }
+                if (p != null) {
+                    Thread(Runnable {
+                        val bufferedreader = BufferedReader(InputStreamReader(p!!.inputStream))
+                        try {
+                            while (true) {
+                                val line = bufferedreader.readLine()
+                                if (line != null) {
+                                    if (processHandler != null) {
+                                        processHandler!!.sendMessage(processHandler!!.obtainMessage(PROCESS_EVENT_CONTENT, line))
+                                    }
+                                } else {
+                                    break
+                                }
+                            }
+                        } catch (ex: Exception) {
+                        } finally {
+                            bufferedreader.close()
+                        }
+                    }).start()
+                    Thread(Runnable {
+                        val bufferedreader = BufferedReader(InputStreamReader(p!!.errorStream))
+                        try {
+                            while (true) {
+                                val line = bufferedreader.readLine()
+                                if (line != null) {
+                                    if (processHandler != null) {
+                                        processHandler!!.sendMessage(processHandler!!.obtainMessage(PROCESS_EVENT_ERROR_CONTENT, line))
+                                    }
+                                } else {
+                                    break
+                                }
+                            }
+                        } catch (ex: Exception) {
+                        } finally {
+                            bufferedreader.close()
+                        }
+                    }).start()
+                }
                 out = p!!.outputStream.bufferedWriter()
                 if (out == null) {
                     error?.run()

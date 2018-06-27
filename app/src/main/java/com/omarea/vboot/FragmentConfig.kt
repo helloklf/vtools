@@ -177,15 +177,15 @@ class FragmentConfig : Fragment() {
         }
         lock_screen_optimize.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE, false)
         lock_screen_optimize.setOnClickListener {
-            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE, lock_screen_optimize.isChecked).apply()
+            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE, lock_screen_optimize.isChecked).commit()
         }
         accu_switch.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
         accu_switch.setOnClickListener {
-            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, lock_screen_optimize.isChecked).apply()
+            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, lock_screen_optimize.isChecked).commit()
         }
         battery_monitor.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
         battery_monitor.setOnClickListener {
-            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, lock_screen_optimize.isChecked).apply()
+            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, lock_screen_optimize.isChecked).commit()
         }
 
         config_defaultlist.onItemClickListener = OnItemClickListener { _, current, position, _ ->

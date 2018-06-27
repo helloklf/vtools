@@ -67,7 +67,7 @@ open class ModeList {
 
     internal fun setCurrent(powerCfg: String, app: String): ModeList {
         if(!Props.setPorp("vtools.powercfg", powerCfg) || !Props.setPorp("vtools.powercfg_app", app)) {
-            keepShellExec("setpropvtools.powercfg ${powerCfg}")
+            keepShellExec("setprop vtools.powercfg ${powerCfg}")
             keepShellExec("setprop vtools.powercfg_app ${app}")
             Thread.sleep(100)
         }
@@ -76,7 +76,7 @@ open class ModeList {
 
     internal fun setCurrentPowercfg(powerCfg: String): ModeList {
         if(!Props.setPorp("vtools.powercfg", powerCfg)) {
-            keepShellExec("setpropvtools.powercfg ${powerCfg}")
+            keepShellExec("setprop vtools.powercfg ${powerCfg}")
             Thread.sleep(60)
         }
         return this

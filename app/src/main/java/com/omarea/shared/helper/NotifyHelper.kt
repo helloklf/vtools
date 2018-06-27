@@ -28,7 +28,6 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
     private var showNofity: Boolean = false
     private var notification: Notification? = null
     private var notificationManager: NotificationManager? = null
-    private var handler = Handler(Looper.getMainLooper())
 
     private fun getAppName(packageName: String): CharSequence? {
         try {
@@ -43,7 +42,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
     private fun getBatteryUnit(): Int {
         if (batteryUnit == Int.MIN_VALUE) {
             val full = KernelProrp.getProp("/sys/class/power_supply/battery/charge_full_design")
-            if (full != null && full.length >= 4) {
+            if (full.length >= 4) {
                 return full.length - 4
             }
             return -1
@@ -112,7 +111,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         }
 
         var io = KernelProrp.getProp(path, false)
-        if (io == null || io.isNullOrEmpty()) {
+        if (io.isEmpty()) {
             return "? mA"
         }
         try {

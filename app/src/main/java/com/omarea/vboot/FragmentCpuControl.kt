@@ -12,10 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.CheckBox
-import android.widget.SeekBar
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import com.omarea.shell.cpucontrol.ThermalControlUtils
 import com.omarea.ui.StringAdapter
@@ -141,6 +138,8 @@ class FragmentCpuControl : Fragment() {
                                     return@setPositiveButton
                                 }
                                 CpuFrequencyUtils.setMinFrequency(g, 0, context)
+                                status.cluster_little_min_freq = index
+                                updateUI()
                             }
                         })
                         .create()
@@ -162,6 +161,8 @@ class FragmentCpuControl : Fragment() {
                                     return@setPositiveButton
                                 }
                                 CpuFrequencyUtils.setMaxFrequency(g, 0, context)
+                                status.cluster_little_max_freq = index
+                                updateUI()
                             }
                         })
                         .create()
@@ -184,6 +185,8 @@ class FragmentCpuControl : Fragment() {
                                     return@setPositiveButton
                                 }
                                 CpuFrequencyUtils.setGovernor(g, 0, context)
+                                status.cluster_little_governor = governor
+                                updateUI()
                             }
                         })
                         .create()
@@ -208,6 +211,8 @@ class FragmentCpuControl : Fragment() {
                                         return@setPositiveButton
                                     }
                                     CpuFrequencyUtils.setMinFrequency(g, 1, context)
+                                    status.cluster_big_min_freq = index
+                                    updateUI()
                                 }
                             })
                             .create()
@@ -229,6 +234,8 @@ class FragmentCpuControl : Fragment() {
                                         return@setPositiveButton
                                     }
                                     CpuFrequencyUtils.setMaxFrequency(g, 1, context)
+                                    status.cluster_big_max_freq = index
+                                    updateUI()
                                 }
                             })
                             .create()
@@ -250,6 +257,8 @@ class FragmentCpuControl : Fragment() {
                                         return@setPositiveButton
                                     }
                                     CpuFrequencyUtils.setGovernor(g, 1, context)
+                                    status.cluster_big_governor = governor
+                                    updateUI()
                                 }
                             })
                             .create()
@@ -274,6 +283,8 @@ class FragmentCpuControl : Fragment() {
                                         return@setPositiveButton
                                     }
                                     CpuFrequencyUtils.setAdrenoGPUMinFreq(g)
+                                    status.adrenoMinFreq = index
+                                    updateUI()
                                 }
                             })
                             .create()
@@ -295,6 +306,8 @@ class FragmentCpuControl : Fragment() {
                                         return@setPositiveButton
                                     }
                                     CpuFrequencyUtils.setAdrenoGPUMaxFreq(g)
+                                    status.adrenoMaxFreq = index
+                                    updateUI()
                                 }
                             })
                             .create()
@@ -316,6 +329,8 @@ class FragmentCpuControl : Fragment() {
                                         return@setPositiveButton
                                     }
                                     CpuFrequencyUtils.setAdrenoGPUGovernor(g)
+                                    status.adrenoGovernor = governor
+                                    updateUI()
                                 }
                             })
                             .create()
@@ -337,6 +352,8 @@ class FragmentCpuControl : Fragment() {
                                         return@setPositiveButton
                                     }
                                     CpuFrequencyUtils.setAdrenoGPUMinPowerLevel(g)
+                                    status.adrenoMinPL = index
+                                    updateUI()
                                 }
                             })
                             .create()
@@ -358,6 +375,8 @@ class FragmentCpuControl : Fragment() {
                                         return@setPositiveButton
                                     }
                                     CpuFrequencyUtils.setAdrenoGPUMaxPowerLevel(g)
+                                    status.adrenoMaxPL = index
+                                    updateUI()
                                 }
                             })
                             .create()
@@ -379,6 +398,8 @@ class FragmentCpuControl : Fragment() {
                                         return@setPositiveButton
                                     }
                                     CpuFrequencyUtils.setAdrenoGPUDefaultPowerLevel(g)
+                                    status.adrenoDefaultPL = index
+                                    updateUI()
                                 }
                             })
                             .create()

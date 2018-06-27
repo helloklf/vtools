@@ -232,7 +232,7 @@ class FragmentBattery : Fragment() {
             if (spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, Int.MIN_VALUE) == progress) {
                 return
             }
-            spf.edit().putInt(SpfConfig.CHARGE_SPF_BP_LEVEL, progress).apply()
+            spf.edit().putInt(SpfConfig.CHARGE_SPF_BP_LEVEL, progress).commit()
             next.run()
         }
 
@@ -251,7 +251,7 @@ class FragmentBattery : Fragment() {
             if (spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, Int.MIN_VALUE) == progress) {
                 return
             }
-            spf.edit().putInt(SpfConfig.CHARGE_SPF_QC_LIMIT, progress).apply()
+            spf.edit().putInt(SpfConfig.CHARGE_SPF_QC_LIMIT, progress).commit()
             next.run()
         }
 

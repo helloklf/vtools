@@ -82,15 +82,19 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         checkRoot(Runnable {
             hasRoot = true
 
-            processDialog.showDialog("正在检查Busybox是否安装...")
+            myHandler.post {
+                processDialog.showDialog("正在检查Busybox是否安装...")
+            }
             checkFileWrite()
 
             Busybox(this).forceInstall(Runnable {
-                processDialog.showDialog("正在检查模式文件格式...")
+                myHandler.post {
+                    processDialog.showDialog("正在检查模式文件格式...")
+                }
 
                 configInstallerThread = Thread(Runnable {
                     ConfigInstaller().configCodeVerify(this)
-                    Looper.getMainLooper().run {
+                    myHandler.post {
                         processDialog.hideDialog()
                     }
                 })

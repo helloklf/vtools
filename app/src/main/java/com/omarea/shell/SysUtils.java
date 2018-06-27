@@ -123,7 +123,7 @@ public class SysUtils {
                 String line;
                 while ((line = br.readLine()) != null)
                     builder.append(line.trim()).append("\n");
-                return builder.toString();
+                return builder.toString().trim();
             } else {
                 is = process.getErrorStream();
                 BufferedReader br = new BufferedReader(new InputStreamReader(is));
