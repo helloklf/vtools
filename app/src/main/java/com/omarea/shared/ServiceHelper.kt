@@ -441,6 +441,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
                         last = item
                 }
                 if (!last.contains(packageName)) {
+                    Log.d("dump-ignore", packageName)
                     return
                 }
                 cancelDump(packageName)
@@ -457,21 +458,6 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         autoBoosterApp(packageName)
         autoToggleMode(packageName)
         lastPackage = packageName
-    }
-
-    private fun onDumpTopActivityProcessEcho(packageName: String) {
-        val r = SysUtils.executeCommandWithOutput(true, "dumpsys activity top | grep TASK")
-        if (r != null) {
-            val rows = r.split("\n")
-            var last = ""
-            for (item in rows.listIterator()) {
-                if (!item.isEmpty())
-                    last = item
-            }
-            if (!last.contains(packageName)) {
-                return
-            }
-        }
     }
 
     //焦点应用改变

@@ -46,51 +46,15 @@ class ConfigInstaller {
 
     public fun configCodeVerify(context: Context) {
         try {
-            val file = File(Consts.POWER_CFG_PATH)
-            val fileBase = File(Consts.POWER_CFG_PATH)
-            if (file.exists() && (!file.canExecute() || !file.canRead())) {
-                SuDo(context).execCmdSync("chmod 0775 ${Consts.POWER_CFG_PATH}")
-            }
-            if (fileBase.exists() && (!fileBase.canExecute() || !fileBase.canRead())) {
-                SuDo(context).execCmdSync("chmod 0775 ${Consts.POWER_CFG_BASE}")
-            }
-            if (file.length() > 1024 * 1024) {
-                return
-            }
-            if (fileBase.length() > 1024 * 1024) {
-                return
-            }
             val cmd = StringBuilder()
-            if (file.exists()) {
-                val powercfg = SysUtils.readOutputFromFile(Consts.POWER_CFG_PATH)
-                if (powercfg.contains(Regex("\r\n")) || powercfg.contains(Regex("\r\t"))) {
-                    FileWrite.WritePrivateFile(
-                            powercfg
-                                    .replace(Regex("\r\n"), "\n")
-                                    .replace(Regex("\r\t"), "\t")
-                                    .toByteArray(Charsets.UTF_8), "powercfg.sh",
-                            context)
-                    cmd
-                            .append("cp ${FileWrite.getPrivateFilePath(context, "powercfg.sh")} ${Consts.POWER_CFG_PATH};")
-                            .append("chmod 0777 ${Consts.POWER_CFG_PATH};")
-                }
-            }
-            if (fileBase.exists()) {
-                val powercfgBase = SysUtils.readOutputFromFile(Consts.POWER_CFG_BASE)
-                if (powercfgBase.contains(Regex("\r\n")) || powercfgBase.contains(Regex("\r\t"))) {
-                    FileWrite.WritePrivateFile(
-                            powercfgBase
-                                    .replace(Regex("\r\n"), "\n")
-                                    .replace(Regex("\r\t"), "\t")
-                                    .toByteArray(Charsets.UTF_8), "init.qcom.post_boot.sh",
-                            context)
-                    cmd
-                            .append("cp ${FileWrite.getPrivateFilePath(context, "init.qcom.post_boot.sh")} ${Consts.POWER_CFG_BASE};")
-                            .append("chmod 0777 ${Consts.POWER_CFG_BASE};")
-                }
-            }
-            if (cmd.length == 0)
-                return
+            cmd.append("if [[ -f ${Consts.POWER_CFG_PATH} ]]; then \n")
+                cmd.append("chmod 0775 ${Consts.POWER_CFG_PATH};")
+                cmd.append("busybox sed -i 's/^M//g' ${Consts.POWER_CFG_PATH};")
+            cmd.append("fi;")
+            cmd.append("if [[ -f ${Consts.POWER_CFG_BASE} ]]; then \n")
+                cmd.append("chmod 0775 ${Consts.POWER_CFG_BASE};")
+                cmd.append("busybox sed -i 's/^M//g' ${Consts.POWER_CFG_BASE};")
+            cmd.append("fi;")
             SuDo(context).execCmdSync(cmd.toString())
         } catch (ex: Exception) {
             Log.e("script-parse", ex.message)

@@ -1,7 +1,11 @@
 #!/system/bin/sh
 
 action=$1
+
 stop perfd
+echo 0 > /sys/module/msm_thermal/core_control/enabled
+echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
+echo N > /sys/module/msm_thermal/parameters/enabled
 
 #if [ ! `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor` = "interactive" ]; then
 #	sh /system/etc/init.qcom.post_boot.sh
@@ -54,9 +58,6 @@ function gpu_config()
 }
 gpu_config
 
-echo 0 > /sys/module/msm_thermal/core_control/enabled
-echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
-echo N > /sys/module/msm_thermal/parameters/enabled
 
 function set_cpu_freq()
 {

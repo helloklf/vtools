@@ -56,7 +56,7 @@ class BootService : IntentService("vtools-boot") {
         }
 
         val booted = Props.getProp("vtools.boot")
-        if (!(booted == null || booted.isBlank())) {
+        if (!(booted.isBlank())) {
             handler.postDelayed({
                 try {
                     stopSelf()
