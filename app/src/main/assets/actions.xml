@@ -6,7 +6,7 @@
         <script>
             wm size reset;
             wm density $dpi;
-            busybox killall com.android.systemui;
+            $BUSYBOX killall com.android.systemui;
         </script>
         <params>
             <param name="dpi" value="440">

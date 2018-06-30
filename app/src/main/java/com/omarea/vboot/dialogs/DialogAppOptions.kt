@@ -359,7 +359,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
 
             sb.append("pm hide $packageName;")
 
-            spf.putString(packageName, if(item.appName != null) item.appName as String? else packageName)
+            spf.putString(packageName, if (item.appName != null) item.appName as String? else packageName)
         }
 
         sb.append("echo '[operation completed]';")

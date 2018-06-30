@@ -10,11 +10,15 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
-import com.omarea.shared.helper.*
+import com.omarea.shared.helper.InputHelper
+import com.omarea.shared.helper.NotifyHelper
+import com.omarea.shared.helper.ReciverLock
+import com.omarea.shared.helper.ScreenEventHandler
 import com.omarea.shell.AsynSuShellUnit
-import com.omarea.shell.SuDo
-import com.omarea.shell.SysUtils
-import java.io.*
+import com.omarea.shell.KeepShell
+import java.io.BufferedReader
+import java.io.File
+import java.io.InputStreamReader
 import java.nio.charset.Charset
 import java.util.*
 import kotlin.collections.ArrayList
@@ -77,7 +81,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
     }
 
     private fun stopTimer() {
-        try{
+        try {
             if (timer != null) {
                 timer!!.cancel()
                 timer!!.purge()
@@ -360,8 +364,10 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
                 //Log.d(TAG, "默认桌面为：" + res.activityInfo.packageName + "."  + res.activityInfo.name)
                 context.startActivity(Intent().setComponent(ComponentName(res.activityInfo.packageName, res.activityInfo.name)))
             }
-        } catch (ex: Exception) { }
+        } catch (ex: Exception) {
+        }
     }
+
     //清理后台
     private fun clearTasks(timeout: Long = SCREEN_OFF_CLEAR_TASKS_DELAY) {
         if (!autoBooster || screenOn) {
@@ -372,7 +378,8 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
                 backToHome()
                 val cmds = StringBuilder()
                 cmds.append("dumpsys deviceidle enable all;\n")
-                cmds.append("dumpsys deviceidle force-idle;\n")
+                // 强制doze 可能导致时钟不更新
+                // cmds.append("dumpsys deviceidle force-idle;\n")
                 if (spfAutoConfig.getBoolean(SpfConfig.BOOSTER_SPF_CFG_SPF_CLEAR_CACHE, false)) {
                     cmds.append("echo 3 > /proc/sys/vm/drop_caches")
                 }
@@ -383,15 +390,17 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
                 for (item in spfBlacklist.all) {
                     if (!spf.getBoolean(item.key, false)) {
                         cmds.append("dumpsys deviceidle whitelist -${item.key}")
-                        cmds.append("am set-inactive ${item.key} true;")
-                        cmds.append("am stop ${item.key};am force-stop ${item.key};")
+                        //cmds.append("am set-inactive ${item.key} true\n")
+                        //cmds.append("am stop ${item.key}\n")
+                        cmds.append("am kill ${item.key}\n")
+                        cmds.append("am force-stop ${item.key}\n")
                         //cmds.append("killall -9 ${item.key};pkill -9 ${item.key};pgrep ${item.key} |xargs kill -9;")
                     }
                 }
-                cmds.append("dumpsys deviceidle step;\n")
-                cmds.append("dumpsys deviceidle step;\n")
-                cmds.append("dumpsys deviceidle step;\n")
-                cmds.append("dumpsys deviceidle step;\n")
+                cmds.append("dumpsys deviceidle step\n")
+                cmds.append("dumpsys deviceidle step\n")
+                cmds.append("dumpsys deviceidle step\n")
+                cmds.append("dumpsys deviceidle step\n")
 
                 AsynSuShellUnit(Handler()).exec(cmds.toString()).waitFor()
                 if (debugMode)
@@ -510,6 +519,14 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         if (dyamicCore) {
             keepShell2.doCmd(Consts.ExecuteConfig)
         }
+        handler.postDelayed(Runnable {
+            if (lastMode.isEmpty()) {
+                if (lastModePackage.isNullOrEmpty()) {
+                    lastModePackage = "com.system.ui"
+                }
+                toggleConfig(DEFAULT)
+            }
+        }, 5000)
 
         settingsLoaded = true
     }

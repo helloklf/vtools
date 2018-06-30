@@ -14,6 +14,7 @@ import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.omarea.shared.FileWrite;
 import com.omarea.vboot.R;
 
 import java.io.BufferedReader;
@@ -78,8 +79,8 @@ public class SimpleShellExecutor {
         envp.add("DISPLAY_DPI=" + dm.densityDpi);
         envp.add("DISPLAY_H=" + point.y);
         envp.add("DISPLAY_W=" + point.x);
+        envp.add("BUSYBOX=" + FileWrite.INSTANCE.getPrivateFilePath(context, "busybox"));
         try {
-            //process = Runtime.getRuntime().exec(root ? "su" : "bash");
             if (root) {
                 process = Runtime.getRuntime().exec("su");
             } else {

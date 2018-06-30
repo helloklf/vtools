@@ -1,7 +1,6 @@
 package com.omarea.vboot
 
 import android.accessibilityservice.AccessibilityService
-import android.app.Service
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
 import android.content.ComponentName
@@ -16,7 +15,6 @@ import com.omarea.shared.AutoClickService
 import com.omarea.shared.BootService
 import com.omarea.shared.CrashHandler
 import com.omarea.shared.ServiceHelper
-import java.io.OutputStream
 
 /**
  * Created by helloklf on 2016/8/27.
@@ -178,8 +176,8 @@ override fun onCreate() {
         inst.sendKeyDownUpSync(event.keyCode) }).start()
         */
 
-    private fun deestory () {
-        if (serviceHelper != null){
+    private fun deestory() {
+        if (serviceHelper != null) {
             serviceHelper!!.onInterrupt()
             serviceHelper = null
             stopSelf()

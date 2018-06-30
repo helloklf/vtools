@@ -6,8 +6,6 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import android.support.v4.app.NotificationCompat
 import android.util.Log
 import android.widget.RemoteViews
@@ -130,6 +128,10 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
                 return start + io.substring(0, io.length - unit) + "mA"
             } else if (io.length <= 4) {
                 return start + io + "mA"
+            } else if (io.length >= 8) {
+                return start + io.substring(0, io.length - 6) + "mA"
+            } else if (io.length >= 5) {
+                return start + io.substring(0, io.length - 3) + "mA"
             }
             return start + io
         } catch (ex: Exception) {
@@ -142,7 +144,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         updateNotic()
     }
 
-    private fun updateNotic () {
+    private fun updateNotic() {
         try {
             var currentMode = getCurrentPowerMode()
             if (currentMode == null || currentMode.length == 0) {
@@ -164,7 +166,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         if (!showNofity) {
             return
         }
-        var batteryImage:Bitmap? = null
+        var batteryImage: Bitmap? = null
         var batteryIO = getBatteryIO()
         var batteryTemp = ""
         var capacity = ""

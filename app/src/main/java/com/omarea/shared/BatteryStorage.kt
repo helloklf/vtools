@@ -8,10 +8,10 @@ import android.database.sqlite.SQLiteDatabase
  */
 
 class BatteryStorage(private var context: Context) {
-    private var db:SQLiteDatabase? = null
+    private var db: SQLiteDatabase? = null
     private fun createDB(): Boolean {
         try {
-            db = SQLiteDatabase.openOrCreateDatabase( context.filesDir.absolutePath + "./databases/vtools.db",null)
+            db = SQLiteDatabase.openOrCreateDatabase(context.filesDir.absolutePath + "./databases/vtools.db", null)
             return true
         } catch (ex: Exception) {
             return false

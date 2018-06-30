@@ -11,8 +11,8 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import com.omarea.shared.AppListHelper
 import com.omarea.shared.SpfConfig
-import com.omarea.shared.helper.KeepShell
 import com.omarea.shared.model.Appinfo
+import com.omarea.shell.KeepShell
 import com.omarea.shell.SysUtils
 import com.omarea.ui.AppListAdapter
 import com.omarea.ui.ProgressBarDialog
@@ -51,9 +51,9 @@ class FragmentWhitelist : Fragment() {
         })
         val globalSpf = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         doze_whitelist_autoset.isChecked = globalSpf.getBoolean(SpfConfig.GLOBAL_SPF_DOZELIST_AUTOSET, false)
-        doze_whitelist_autoset.setOnCheckedChangeListener({ buttonView, isChecked ->
-            globalSpf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DOZELIST_AUTOSET, isChecked).commit()
-        })
+        doze_whitelist_autoset.setOnClickListener {
+            globalSpf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DOZELIST_AUTOSET, (it as CheckBox).isChecked).commit()
+        }
     }
 
     override fun onResume() {

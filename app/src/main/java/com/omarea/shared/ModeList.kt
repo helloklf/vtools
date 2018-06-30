@@ -1,7 +1,7 @@
 package com.omarea.shared
 
 import android.content.Context
-import com.omarea.shared.helper.KeepShell
+import com.omarea.shell.KeepShell
 import com.omarea.shell.Props
 import com.omarea.shell.SuDo
 import com.omarea.vboot.R
@@ -66,7 +66,7 @@ open class ModeList {
     }
 
     internal fun setCurrent(powerCfg: String, app: String): ModeList {
-        if(!Props.setPorp("vtools.powercfg", powerCfg) || !Props.setPorp("vtools.powercfg_app", app)) {
+        if (!Props.setPorp("vtools.powercfg", powerCfg) || !Props.setPorp("vtools.powercfg_app", app)) {
             keepShellExec("setprop vtools.powercfg ${powerCfg}")
             keepShellExec("setprop vtools.powercfg_app ${app}")
             Thread.sleep(100)
@@ -75,7 +75,7 @@ open class ModeList {
     }
 
     internal fun setCurrentPowercfg(powerCfg: String): ModeList {
-        if(!Props.setPorp("vtools.powercfg", powerCfg)) {
+        if (!Props.setPorp("vtools.powercfg", powerCfg)) {
             keepShellExec("setprop vtools.powercfg ${powerCfg}")
             Thread.sleep(60)
         }
@@ -83,7 +83,7 @@ open class ModeList {
     }
 
     internal fun setCurrentPowercfgApp(app: String): ModeList {
-        if(!Props.setPorp("vtools.powercfg_app", app)) {
+        if (!Props.setPorp("vtools.powercfg_app", app)) {
             keepShellExec("setprop vtools.powercfg_app ${app}")
             Thread.sleep(60)
         }
@@ -91,7 +91,7 @@ open class ModeList {
     }
 
     internal fun keepShellExec(cmd: String) {
-        if(keepShell == null) {
+        if (keepShell == null) {
             keepShell = KeepShell(context)
         }
         keepShell!!.doCmd(cmd)
@@ -109,7 +109,7 @@ open class ModeList {
         return this
     }
 
-    internal fun densityKeepShell (): ModeList {
+    internal fun densityKeepShell(): ModeList {
         if (keepShell != null) {
             keepShell!!.tryExit()
             keepShell = null

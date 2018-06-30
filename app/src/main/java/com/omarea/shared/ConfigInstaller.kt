@@ -4,8 +4,6 @@ import android.content.Context
 import android.util.Log
 import com.omarea.shell.Platform
 import com.omarea.shell.SuDo
-import com.omarea.shell.SysUtils
-import java.io.File
 
 class ConfigInstaller {
     fun installPowerConfig(context: Context, afterCmds: String, biCore: Boolean = false) {
@@ -48,12 +46,12 @@ class ConfigInstaller {
         try {
             val cmd = StringBuilder()
             cmd.append("if [[ -f ${Consts.POWER_CFG_PATH} ]]; then \n")
-                cmd.append("chmod 0775 ${Consts.POWER_CFG_PATH};")
-                cmd.append("busybox sed -i 's/^M//g' ${Consts.POWER_CFG_PATH};")
+            cmd.append("chmod 0775 ${Consts.POWER_CFG_PATH};")
+            cmd.append("busybox sed -i 's/^M//g' ${Consts.POWER_CFG_PATH};")
             cmd.append("fi;")
             cmd.append("if [[ -f ${Consts.POWER_CFG_BASE} ]]; then \n")
-                cmd.append("chmod 0775 ${Consts.POWER_CFG_BASE};")
-                cmd.append("busybox sed -i 's/^M//g' ${Consts.POWER_CFG_BASE};")
+            cmd.append("chmod 0775 ${Consts.POWER_CFG_BASE};")
+            cmd.append("busybox sed -i 's/^M//g' ${Consts.POWER_CFG_BASE};")
             cmd.append("fi;")
             SuDo(context).execCmdSync(cmd.toString())
         } catch (ex: Exception) {

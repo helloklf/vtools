@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.os.Looper
 import android.provider.Settings
 import android.support.design.widget.NavigationView
 import android.support.v4.app.ActivityCompat
@@ -31,7 +30,6 @@ import com.omarea.shell.Busybox
 import com.omarea.shell.CheckRootStatus
 import com.omarea.shell.SuDo
 import com.omarea.shell.units.BatteryUnit
-import com.omarea.ui.AppShortcutManager
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.vboot.dialogs.DialogPower
 import kotlinx.android.synthetic.main.activity_main.*
@@ -41,7 +39,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private var hasRoot = false
     private var globalSPF: SharedPreferences? = null
     private var myHandler = Handler()
-    private lateinit var processDialog: ProgressBarDialog
 
     private fun setExcludeFromRecents(exclude: Boolean? = null) {
         try {
@@ -59,7 +56,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onCreate(savedInstanceState: Bundle?) {
         //setMaxAspect()
-        processDialog = ProgressBarDialog(this)
         if (globalSPF == null) {
             globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
             val listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
@@ -81,22 +77,11 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //checkFileWrite()
         checkRoot(Runnable {
             hasRoot = true
-
-            myHandler.post {
-                processDialog.showDialog("正在检查Busybox是否安装...")
-            }
             checkFileWrite()
 
             Busybox(this).forceInstall(Runnable {
-                myHandler.post {
-                    processDialog.showDialog("正在检查模式文件格式...")
-                }
-
                 configInstallerThread = Thread(Runnable {
                     ConfigInstaller().configCodeVerify(this)
-                    myHandler.post {
-                        processDialog.hideDialog()
-                    }
                 })
                 configInstallerThread!!.start()
                 next()
@@ -257,7 +242,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     drawer.closeDrawer(GravityCompat.START)
                 supportFragmentManager.backStackEntryCount > 0 ->
                     supportFragmentManager.popBackStack()
-                else ->{
+                else -> {
                     super.onBackPressed()
                     this.finishActivity(0)
                 }
@@ -315,7 +300,9 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_core_control -> fragment = FragmentCpuControl.newInstance()
             R.id.nav_whitelist -> fragment = FragmentWhitelist.createPage()
             R.id.nav_paypal -> {
-                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.me/duduski")))
+                fragment = FragmentPay.createPage()
+                // Alipay(this).jumpAlipay()
+                // startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.me/duduski")))
             }
             R.id.nav_qq -> {
                 val key = "e-XL2In7CgIpeK_sG75s-vAiu7n5DnlS"
@@ -344,7 +331,8 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 try {
                     val intent = Intent(this, ActivityAccessibilityKeyEventSettings::class.java)
                     startActivity(intent)
-                } catch (ex: Exception){}
+                } catch (ex: Exception) {
+                }
             }
             R.id.nav_xposed -> {
                 //fragment = FragmentXposed.Create()

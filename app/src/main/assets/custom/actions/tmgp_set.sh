@@ -20,46 +20,47 @@ if [ ! -f "$prefs" ]; then
 fi
 
 echo '>>> 1.移除配置';
-busybox sed -i '/.*<int name="VulkanTryCount" value=".*" \/>/'d "$prefs"
-busybox sed -i '/.*<int name="EnableVulkan" value=".*" \/>/'d "$prefs"
-busybox sed -i '/.*<int name="EnableGLES3" value=".*" \/>/'d "$prefs"
-busybox sed -i '/.*<int name="EnableMTR" value=".*" \/>/'d "$prefs"
-busybox sed -i '/.*<int name="DisableMTR" value=".*" \/>/'d "$prefs"
+$BUSYBOX sed -i '/.*<int name="VulkanTryCount" value=".*" \/>/'d "$prefs"
+$BUSYBOX sed -i '/.*<int name="EnableVulkan" value=".*" \/>/'d "$prefs"
+$BUSYBOX sed -i '/.*<int name="EnableGLES3" value=".*" \/>/'d "$prefs"
+$BUSYBOX sed -i '/.*<int name="EnableMTR" value=".*" \/>/'d "$prefs"
+$BUSYBOX sed -i '/.*<int name="DisableMTR" value=".*" \/>/'d "$prefs"
 
 echo '>>> 2.更新配置...';
 
 if [[ "$render" = 'VT' ]]; then
-    busybox sed  -i '2a \ \ \ \ <int name="VulkanTryCount" value="1" \/>' "$prefs";
-    busybox sed  -i '3a \ \ \ \ <int name="EnableVulkan" value="1" \/>' "$prefs";
-    busybox sed  -i '4a \ \ \ \ <int name="EnableGLES3" value="3" \/>' "$prefs";
+    $BUSYBOX sed  -i '2a \ \ \ \ <int name="VulkanTryCount" value="1" \/>' "$prefs";
+    $BUSYBOX sed  -i '3a \ \ \ \ <int name="EnableVulkan" value="1" \/>' "$prefs";
+    $BUSYBOX sed  -i '4a \ \ \ \ <int name="EnableGLES3" value="3" \/>' "$prefs";
 elif [[ "$render" = 'VTF' ]]; then
-    busybox sed  -i '2a \ \ \ \ <int name="VulkanTryCount" value="1" \/>' "$prefs";
-    busybox sed  -i '3a \ \ \ \ <int name="EnableVulkan" value="2" \/>' "$prefs";
-    busybox sed  -i '4a \ \ \ \ <int name="EnableGLES3" value="3" \/>' "$prefs";
+    $BUSYBOX sed  -i '2a \ \ \ \ <int name="VulkanTryCount" value="1" \/>' "$prefs";
+    $BUSYBOX sed  -i '3a \ \ \ \ <int name="EnableVulkan" value="2" \/>' "$prefs";
+    $BUSYBOX sed  -i '4a \ \ \ \ <int name="EnableGLES3" value="3" \/>' "$prefs";
 elif [[ "$render" = 'O3T' ]]; then
-    busybox sed  -i '2a \ \ \ \ <int name="VulkanTryCount" value="1" \/>' "$prefs";
-    busybox sed  -i '3a \ \ \ \ <int name="EnableVulkan" value="3" \/>' "$prefs";
-    busybox sed  -i '4a \ \ \ \ <int name="EnableGLES3" value="1" \/>' "$prefs";
+    $BUSYBOX sed  -i '2a \ \ \ \ <int name="VulkanTryCount" value="1" \/>' "$prefs";
+    $BUSYBOX sed  -i '3a \ \ \ \ <int name="EnableVulkan" value="3" \/>' "$prefs";
+    $BUSYBOX sed  -i '4a \ \ \ \ <int name="EnableGLES3" value="1" \/>' "$prefs";
 elif [[ "$render" = 'O3TF' ]]; then
-    busybox sed  -i '2a \ \ \ \ <int name="VulkanTryCount" value="1" \/>' "$prefs";
-    busybox sed  -i '3a \ \ \ \ <int name="EnableVulkan" value="3" \/>' "$prefs";
-    busybox sed  -i '4a \ \ \ \ <int name="EnableGLES3" value="2" \/>' "$prefs";
+    $BUSYBOX sed  -i '2a \ \ \ \ <int name="VulkanTryCount" value="1" \/>' "$prefs";
+    $BUSYBOX sed  -i '3a \ \ \ \ <int name="EnableVulkan" value="3" \/>' "$prefs";
+    $BUSYBOX sed  -i '4a \ \ \ \ <int name="EnableGLES3" value="2" \/>' "$prefs";
 elif [ "$render" = 'O2T' ]; then
-    busybox sed  -i '2a \ \ \ \ <int name="VulkanTryCount" value="3" \/>' "$prefs";
-    busybox sed  -i '3a \ \ \ \ <int name="EnableVulkan" value="3" \/>' "$prefs";
-    busybox sed  -i '4a \ \ \ \ <int name="EnableGLES3" value="3" \/>' "$prefs";
+    $BUSYBOX sed  -i '2a \ \ \ \ <int name="VulkanTryCount" value="3" \/>' "$prefs";
+    $BUSYBOX sed  -i '3a \ \ \ \ <int name="EnableVulkan" value="3" \/>' "$prefs";
+    $BUSYBOX sed  -i '4a \ \ \ \ <int name="EnableGLES3" value="3" \/>' "$prefs";
 fi
 
 if [[ "$thread" = "1" ]]; then
-    busybox sed  -i '5a \ \ \ \ <int name="EnableMTR" value="1" \/>' "$prefs";
-    busybox sed  -i '6a \ \ \ \ <int name="DisableMTR" value="3" \/>' "$prefs";
+    $BUSYBOX sed  -i '5a \ \ \ \ <int name="EnableMTR" value="1" \/>' "$prefs";
+    $BUSYBOX sed  -i '6a \ \ \ \ <int name="DisableMTR" value="3" \/>' "$prefs";
 else
-    busybox sed  -i '5a \ \ \ \ <int name="EnableMTR" value="3" \/>' "$prefs";
-    busybox sed  -i '6a \ \ \ \ <int name="DisableMTR" value="1" \/>' "$prefs";
+    $BUSYBOX sed  -i '5a \ \ \ \ <int name="EnableMTR" value="3" \/>' "$prefs";
+    $BUSYBOX sed  -i '6a \ \ \ \ <int name="DisableMTR" value="1" \/>' "$prefs";
 fi;
 
 echo '>>> 3.修正权限...'
 cd $dir
+chown -R -L `ls -ld|cut -f3 -d ' '`:`toybox ls -ld|cut -f4 -d ' '` "$prefs";
 chown -R -L `toybox ls -ld|cut -f3 -d ' '`:`toybox ls -ld|cut -f4 -d ' '` "$prefs";
 chmod 660 $prefs;
 

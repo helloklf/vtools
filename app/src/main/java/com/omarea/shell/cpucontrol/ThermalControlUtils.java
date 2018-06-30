@@ -3,7 +3,8 @@ package com.omarea.shell.cpucontrol;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.omarea.shell.SysUtils;
+import com.omarea.shell.KernelProrp;
+import com.omarea.shell.SuDo;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -16,15 +17,15 @@ public class ThermalControlUtils {
     }
 
     public static String getCoreControlState() {
-        return SysUtils.readOutputFromFile(Constants.thermal_core_control).trim();
+        return KernelProrp.INSTANCE.getProp(Constants.thermal_core_control).trim();
     }
 
     public static String getVDDRestrictionState() {
-        return SysUtils.readOutputFromFile(Constants.thermal_vdd_restriction).trim();
+        return KernelProrp.INSTANCE.getProp(Constants.thermal_vdd_restriction).trim();
     }
 
     public static String getTheramlState() {
-        return SysUtils.readOutputFromFile(Constants.thermal_parameters).trim();
+        return KernelProrp.INSTANCE.getProp(Constants.thermal_parameters).trim();
     }
 
     public static void setCoreControlState(Boolean online, Context context) {
@@ -33,7 +34,7 @@ public class ThermalControlUtils {
         commands.add("chmod 0664 " + Constants.thermal_core_control);
         commands.add("echo " + val + " > " + Constants.thermal_core_control);
 
-        boolean success = SysUtils.executeRootCommand(commands);
+        boolean success = SuDo.Companion.execCmdSync(commands);
         if (success) {
             Toast.makeText(context, "OK!", Toast.LENGTH_SHORT).show();
         }
@@ -45,7 +46,7 @@ public class ThermalControlUtils {
         commands.add("chmod 0664 " + Constants.thermal_vdd_restriction);
         commands.add("echo " + val + " > " + Constants.thermal_vdd_restriction);
 
-        boolean success = SysUtils.executeRootCommand(commands);
+        boolean success = SuDo.Companion.execCmdSync(commands);
         if (success) {
             Toast.makeText(context, "OK!", Toast.LENGTH_SHORT).show();
         }
@@ -57,7 +58,7 @@ public class ThermalControlUtils {
         commands.add("chmod 0664 " + Constants.thermal_parameters);
         commands.add("echo " + val + " > " + Constants.thermal_parameters);
 
-        boolean success = SysUtils.executeRootCommand(commands);
+        boolean success = SuDo.Companion.execCmdSync(commands);
         if (success) {
             Toast.makeText(context, "OK!", Toast.LENGTH_SHORT).show();
         }

@@ -9,7 +9,6 @@ import android.graphics.PixelFormat
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.VibrationEffect.DEFAULT_AMPLITUDE
-import android.os.VibrationEffect.createOneShot
 import android.os.Vibrator
 import android.provider.Settings
 import android.view.Gravity

@@ -1,4 +1,4 @@
-package com.omarea.shared.helper
+package com.omarea.shell
 
 import android.content.Context
 import android.os.Handler
@@ -8,21 +8,15 @@ import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.IOException
 import java.io.InputStreamReader
-import java.nio.charset.Charset
 
 /**
  * Created by Hello on 2018/01/23.
  */
 
-class KeepShell(private var context: Context?) {
+class KeepShell(private var context: Context?) : ShellEvents() {
     private var p: Process? = null
     private var out: BufferedWriter? = null
     private var handler: Handler = Handler(Looper.getMainLooper())
-    private var processHandler: Handler? = null
-    public var PROCESS_EVENT_STAR = 0;
-    public var PROCESS_EVENT_CONTENT = 1;
-    public var PROCESS_EVENT_ERROR_CONTENT = 2;
-    public var PROCESS_EVENT_EXIT = -1;
 
     fun setHandler(handler: Handler) {
         this.processHandler = handler

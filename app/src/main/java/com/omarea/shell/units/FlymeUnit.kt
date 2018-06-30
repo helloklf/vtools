@@ -1,7 +1,7 @@
 package com.omarea.shell.units
 
 import com.omarea.shared.Consts
-import com.omarea.shell.SysUtils
+import com.omarea.shell.SuDo
 import java.util.*
 
 /**
@@ -21,6 +21,6 @@ class FlymeUnit {
                 add(Consts.Reboot)
             }
         }
-        return SysUtils.executeRootCommand(commands)
+        return SuDo.execCmdSync(commands)
     }
 }

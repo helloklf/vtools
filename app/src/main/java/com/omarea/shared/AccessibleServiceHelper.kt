@@ -15,6 +15,7 @@ class AccessibleServiceHelper {
     fun serviceIsRunning(context: Context): Boolean {
         return serviceIsRunning(context, "AccessibilityServiceVTools")
     }
+
     fun serviceIsRunning(context: Context, serviceName: String): Boolean {
         val m = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
         val serviceInfos = m.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)

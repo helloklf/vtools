@@ -1,9 +1,7 @@
 package com.omarea.shared
 
 import android.content.Context
-import android.os.Looper
 import android.util.Log
-import android.widget.Toast
 
 /**
  * Created by Hello on 2017/5/24.
@@ -19,6 +17,6 @@ class CrashHandler constructor() : Thread.UncaughtExceptionHandler {
     }
 
     override fun uncaughtException(thread: Thread, ex: Throwable) {
-        Log.e("uncaughtException", ex.message)
+        Log.e("vtools-Exception", ex.message)
     }
 }

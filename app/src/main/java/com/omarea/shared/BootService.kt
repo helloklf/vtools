@@ -1,15 +1,14 @@
 package com.omarea.shared
 
 import android.app.IntentService
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Handler
-import android.os.IBinder
 import android.os.Looper
 import android.support.v4.app.NotificationCompat
 import com.omarea.shell.Props
@@ -63,7 +62,8 @@ class BootService : IntentService("vtools-boot") {
                     val service = Intent(this, BootService::class.java)
                     stopService(Intent(service))
                     System.exit(0)
-                } catch (ex: Exception) {}
+                } catch (ex: Exception) {
+                }
             }, 2000)
             return
         }
@@ -93,16 +93,16 @@ class BootService : IntentService("vtools-boot") {
             if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) {
                 val sizeVal = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0)
                 sb.append("if [ `cat /sys/block/zram0/disksize` != '" + sizeVal + "000000' ] ; then ")
-                sb.append("swapoff /dev/block/zram0 >/dev/null 2>&1;")
+                sb.append("swapoff /dev/block/zram0 2>/dev/null;")
                 sb.append("echo 1 > /sys/block/zram0/reset;")
                 sb.append("echo " + sizeVal + "000000 > /sys/block/zram0/disksize;")
-                sb.append("mkswap /dev/block/zram0 >/dev/null 2>&1;")
+                sb.append("mkswap /dev/block/zram0 2>/dev/null;")
                 sb.append("fi;")
                 sb.append("\n")
-                sb.append("swapon /dev/block/zram0 >/dev/null 2>&1;")
+                sb.append("swapon /dev/block/zram0 2>/dev/null;")
             }
-            sb.append("mkswap /dev/block/zram0 >/dev/null 2>&1;")
-            sb.append("swapon /dev/block/zram0 >/dev/null 2>&1;")
+            sb.append("mkswap /dev/block/zram0 2>/dev/null;")
+            sb.append("swapon /dev/block/zram0 2>/dev/null;")
 
             //sb.append("swapon /data/swapfile -p 32767;")
             if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, false))
@@ -115,34 +115,60 @@ class BootService : IntentService("vtools-boot") {
             sb.append("echo " + swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65) + " > /proc/sys/vm/swappiness;")
         }
 
-        if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DOZELIST_AUTOSET, false)) {
-            sb.append("\n\n")
-            val spf = getSharedPreferences(SpfConfig.WHITE_LIST_SPF, Context.MODE_PRIVATE)
-            for (item in spf.all) {
-                if (item.value == true) {
-                    sb.append("dumpsys deviceidle whitelist +${item.key}")
-                } else {
-                    sb.append("dumpsys deviceidle whitelist -${item.key}")
-                }
-                sb.append(";\n")
-            }
-            sb.append("\n\n")
-        }
-
         sb.append("\n\n")
         sb.append("setprop vtools.boot 1")
         sb.append("\n\n")
         SuDo(this).execCmdSync(sb.toString())
-        val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
+        if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DOZELIST_AUTOSET, false)) {
+            val sb2 = StringBuilder("")
+            sb2.append("\n\n")
+            val spf = getSharedPreferences(SpfConfig.WHITE_LIST_SPF, Context.MODE_PRIVATE)
+            for (item in spf.all) {
+                if (item.value == true) {
+                    sb2.append("dumpsys deviceidle whitelist +${item.key} > null\n")
+                } else {
+                    sb2.append("dumpsys deviceidle whitelist -${item.key} > null\n")
+                }
+                sb2.append("\n")
+            }
+            sb2.append("\n\n")
+            sb2.append("\n\n")
+            sb2.append("setprop vtools.boot 2")
+            sb2.append("\n\n")
+
+            Thread.sleep(120 * 1000)
+            SuDo(this).execCmdSync(sb2.toString())
+            stopSelf()
+        } else {
+            stopSelf()
+        }
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+
+        val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            nm.createNotificationChannel(NotificationChannel("vtool-boot", "微工具箱", NotificationManager.IMPORTANCE_LOW))
+            nm.createNotificationChannel(NotificationChannel("vtool-boot", "自启动提示", NotificationManager.IMPORTANCE_LOW))
+            val notification = NotificationCompat.Builder(this, "vtool-boot").setSmallIcon(R.drawable.ic_menu_digital).setAutoCancel(false).setSubText("微工具箱").setContentText("正在执行开机动作...").build()
+            notification!!.flags = Notification.FLAG_NO_CLEAR or Notification.FLAG_ONGOING_EVENT
+            nm.notify(1, notification)
+        } else {
+            val notification = NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_menu_digital).setAutoCancel(false).setSubText("微工具箱").setContentText("正在执行开机动作...").build()
+            notification!!.flags = Notification.FLAG_NO_CLEAR or Notification.FLAG_ONGOING_EVENT
+            nm.notify(1, notification)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            nm.createNotificationChannel(NotificationChannel("vtool-boot", "自启动提示", NotificationManager.IMPORTANCE_LOW))
             nm.notify(1, NotificationCompat.Builder(this, "vtool-boot").setSmallIcon(R.drawable.ic_menu_digital).setSubText("微工具箱").setContentText("已完成开机自启动").build())
         } else {
             nm.notify(1, NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_menu_digital).setSubText("微工具箱").setContentText("已完成开机自启动").build())
         }
-        handler.postDelayed({
-            stopSelf()
-        }, 2000)
     }
 }

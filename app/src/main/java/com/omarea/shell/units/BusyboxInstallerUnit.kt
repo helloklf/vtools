@@ -1,6 +1,6 @@
 package com.omarea.shell.units
 
-import java.io.DataOutputStream
+import com.omarea.shell.SuDo
 
 /**
  * Created by Hello on 2017/11/01.
@@ -9,25 +9,8 @@ import java.io.DataOutputStream
 class BusyboxInstallerUnit {
     //安装Shell工具
     fun InstallShellTools() {
-        InstallShellToolsThread().start()
-    }
-
-    internal inner class InstallShellToolsThread : Thread() {
-        override fun run() {
-            try {
-                val process = Runtime.getRuntime().exec("su")
-                val out = DataOutputStream(process.outputStream)
-                out.writeBytes("busybox --install /system/xbin\n")
-                out.writeBytes("\n")
-                out.writeBytes("exit\n")
-                out.writeBytes("exit\n")
-                out.flush()
-                process.waitFor()
-                process.destroy()
-            } catch (e: Exception) {
-
-            }
-
-        }
+        Thread(Runnable {
+            SuDo(null).execCmdSync("busybox --install /system/xbin\n")
+        }).start()
     }
 }

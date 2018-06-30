@@ -27,14 +27,5 @@ class FullScreenAddin(private var context: Context) : AddinBase(context) {
                     Toast.makeText(context, "腾讯系列聊天软件不兼容状态栏隐藏，自动加入忽略列表！", Toast.LENGTH_LONG).show()
                 })
                 .create().show()
-        /*
-        val commands = object : ArrayList<String>() {
-            init {
-                //stringBuilder.append("settings put global policy_control immersive.full=*")
-                add("settings put global policy_control immersive.full=apps,-android,-com.android.systemui,-com.tencent.mobileqq,-com.tencent.tim,-com.tencent.mm")
-            }
-        }
-        return SysUtils.executeRootCommand(commands)
-        */
     }
 }

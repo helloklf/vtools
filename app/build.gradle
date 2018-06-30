@@ -17,8 +17,8 @@ android {
         applicationId "com.omarea.vboot"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 482
-        versionName "8.6.27"
+        versionCode 483
+        versionName "8.6.30 dev"
     }
     buildTypes {
         release {
@@ -38,7 +38,7 @@ android {
 }
 
 dependencies {
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     //compileOnly 'de.robv.android.xposed:api:82'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

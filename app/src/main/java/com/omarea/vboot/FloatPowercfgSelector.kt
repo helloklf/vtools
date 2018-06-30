@@ -172,6 +172,7 @@ class FloatPowercfgSelector {
         return view
 
     }
+
     companion object {
         private var mWindowManager: WindowManager? = null
         var isShown: Boolean? = false

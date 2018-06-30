@@ -75,8 +75,8 @@ object Props {
                             break
                         }
                     }
-                } catch (ex: Exception) {}
-                finally {
+                } catch (ex: Exception) {
+                } finally {
                     bufferedreader.close()
                 }
             }).start()

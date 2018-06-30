@@ -44,6 +44,10 @@ object FileWrite {
             fileOutputStream.write(datas, 0, len)
             fileOutputStream.close()
             inputStream.close()
+            val writedFile = File(filePath)
+            writedFile.setWritable(true)
+            writedFile.setExecutable(true)
+            writedFile.setReadable(true)
             //getApplicationContext().getClassLoader().getResourceAsStream("");
         } catch (e: FileNotFoundException) {
             e.printStackTrace()
@@ -71,6 +75,10 @@ object FileWrite {
             fileOutputStream.write(datas, 0, len)
             fileOutputStream.close()
             inputStream.close()
+            val writedFile = File(filePath)
+            writedFile.setWritable(true)
+            writedFile.setExecutable(true)
+            writedFile.setReadable(true)
             //getApplicationContext().getClassLoader().getResourceAsStream("");
         } catch (e: IOException) {
             e.printStackTrace()
@@ -103,6 +111,10 @@ object FileWrite {
             fileOutputStream.write(datas, 0, len)
             fileOutputStream.close()
             inputStream.close()
+            val writedFile = File(filePath)
+            writedFile.setWritable(true)
+            writedFile.setExecutable(true)
+            writedFile.setReadable(true)
             //getApplicationContext().getClassLoader().getResourceAsStream("");
         } catch (e: IOException) {
             e.printStackTrace()
@@ -124,6 +136,10 @@ object FileWrite {
             fileOutputStream.close()
             File(filePath).setExecutable(true, false)
             //getApplicationContext().getClassLoader().getResourceAsStream("");
+            val writedFile = File(filePath)
+            writedFile.setWritable(true)
+            writedFile.setExecutable(true)
+            writedFile.setReadable(true)
             return true
         } catch (e: IOException) {
             e.printStackTrace()

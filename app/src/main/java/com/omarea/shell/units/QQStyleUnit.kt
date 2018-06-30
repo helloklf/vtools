@@ -3,7 +3,7 @@ package com.omarea.shell.units
 import android.app.AlertDialog
 import android.content.Context
 import com.omarea.shared.Consts
-import com.omarea.shell.SysUtils
+import com.omarea.shell.SuDo
 import java.util.*
 
 /**
@@ -52,7 +52,7 @@ class QQStyleUnit(var context: Context) {
             }
         }
 
-        return SysUtils.executeRootCommand(commands)
+        return SuDo.execCmdSync(commands)
     }
 
     private fun RestoreQQStyle(): Boolean {
@@ -70,6 +70,6 @@ class QQStyleUnit(var context: Context) {
             }
         }
 
-        return SysUtils.executeRootCommand(commands)
+        return SuDo.execCmdSync(commands)
     }
 }

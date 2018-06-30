@@ -10,10 +10,10 @@ fi;
 
 echo 'Step1.挂载System为读写...'
 
-busybox mount -o rw,remount /system
+$BUSYBOX mount -o rw,remount /system
 mount -o rw,remount /system
-busybox mount -o remount,rw /dev/block/bootdevice/by-name/system /system
-mount -o remount,rw /dev/block/bootdevice/by-name/system /system
+$BUSYBOX mount -o remount,rw /dev/block/bootdevice/by-name/system /system
+mount -o remount,rw /dev/block/bootdevice/by-name/system /system 2> /dev/null
 
 
 if [[ "$config" = "1" ]]; then

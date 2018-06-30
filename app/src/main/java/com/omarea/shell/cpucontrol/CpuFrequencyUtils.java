@@ -3,7 +3,8 @@ package com.omarea.shell.cpucontrol;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.omarea.shell.SysUtils;
+import com.omarea.shell.KernelProrp;
+import com.omarea.shell.SuDo;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -17,11 +18,10 @@ public class CpuFrequencyUtils {
         String cpu = "cpu" + getClusterInfo().get(cluster)[0];
         String[] frequencies;
         if (new File(Constants.scaling_available_freq.replace("cpu0", cpu)).exists()) {
-            frequencies = SysUtils.readOutputFromFile(Constants.scaling_available_freq.replace("cpu0", cpu)).split(" ");
+            frequencies = KernelProrp.INSTANCE.getProp(Constants.scaling_available_freq.replace("cpu0", cpu)).split(" ");
             return frequencies;
         } else if (new File("/sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster" + cluster + "_freq_table").exists()) {
-            frequencies = SysUtils
-                    .readOutputFromFile("/sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster" + cluster + "_freq_table")
+            frequencies = KernelProrp.INSTANCE.getProp("/sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster" + cluster + "_freq_table")
                     .split(" ");
             return frequencies;
         } else {
@@ -34,7 +34,7 @@ public class CpuFrequencyUtils {
             return "";
         }
         String cpu = "cpu" + getClusterInfo().get(cluster)[0];
-        return SysUtils.readOutputFromFile(Constants.scaling_max_freq.replace("cpu0", cpu));
+        return KernelProrp.INSTANCE.getProp(Constants.scaling_max_freq.replace("cpu0", cpu));
     }
 
     public static String getCurrentMinFrequency(Integer cluster) {
@@ -42,7 +42,7 @@ public class CpuFrequencyUtils {
             return "";
         }
         String cpu = "cpu" + getClusterInfo().get(cluster)[0];
-        return SysUtils.readOutputFromFile(Constants.scaling_min_freq.replace("cpu0", cpu));
+        return KernelProrp.INSTANCE.getProp(Constants.scaling_min_freq.replace("cpu0", cpu));
     }
 
     public static String[] getAvailableGovernors(Integer cluster) {
@@ -50,7 +50,7 @@ public class CpuFrequencyUtils {
             return new String[]{};
         }
         String cpu = "cpu" + getClusterInfo().get(cluster)[0];
-        return SysUtils.readOutputFromFile(Constants.scaling_available_governors.replace("cpu0", cpu)).split(" ");
+        return KernelProrp.INSTANCE.getProp(Constants.scaling_available_governors.replace("cpu0", cpu)).split(" ");
     }
 
     public static String getCurrentScalingGovernor(Integer cluster) {
@@ -58,7 +58,7 @@ public class CpuFrequencyUtils {
             return "";
         }
         String cpu = "cpu" + getClusterInfo().get(cluster)[0];
-        return SysUtils.readOutputFromFile(Constants.scaling_governor.replace("cpu0", cpu));
+        return KernelProrp.INSTANCE.getProp(Constants.scaling_governor.replace("cpu0", cpu));
     }
 
     public static void setMinFrequency(String minFrequency, Integer cluster, Context context) {
@@ -77,7 +77,7 @@ public class CpuFrequencyUtils {
                 commands.add("echo " + minFrequency + " > " + Constants.scaling_min_freq.replace("cpu0", "cpu" + core));
             }
 
-            boolean success = SysUtils.executeRootCommand(commands);
+            boolean success = SuDo.Companion.execCmdSync(commands);
             if (success) {
                 Toast.makeText(context, "OK!", Toast.LENGTH_SHORT).show();
             }
@@ -102,7 +102,7 @@ public class CpuFrequencyUtils {
                 commands.add("echo " + core + ":" + maxFrequency + "> /sys/module/msm_performance/parameters/cpu_max_freq");
             }
 
-            boolean success = SysUtils.executeRootCommand(commands);
+            boolean success = SuDo.Companion.execCmdSync(commands);
             if (success) {
                 Toast.makeText(context, "OK!", Toast.LENGTH_SHORT).show();
             }
@@ -125,7 +125,7 @@ public class CpuFrequencyUtils {
                 commands.add("echo " + governor + " > " + Constants.scaling_governor.replace("cpu0", "cpu" + core));
             }
 
-            boolean success = SysUtils.executeRootCommand(commands);
+            boolean success = SuDo.Companion.execCmdSync(commands);
             if (success) {
                 Toast.makeText(context, "OK!", Toast.LENGTH_SHORT).show();
             }
@@ -133,11 +133,11 @@ public class CpuFrequencyUtils {
     }
 
     public static String getInputBoosterFreq() {
-        return SysUtils.readOutputFromFile("/sys/module/cpu_boost/parameters/input_boost_freq");
+        return KernelProrp.INSTANCE.getProp("/sys/module/cpu_boost/parameters/input_boost_freq");
     }
 
     public static String getInputBoosterTime() {
-        return SysUtils.readOutputFromFile("/sys/module/cpu_boost/parameters/input_boost_ms");
+        return KernelProrp.INSTANCE.getProp("/sys/module/cpu_boost/parameters/input_boost_ms");
     }
 
     public static void setInputBoosterTime(String time) {
@@ -145,11 +145,11 @@ public class CpuFrequencyUtils {
         commands.add("chmod 0644 /sys/module/cpu_boost/parameters/input_boost_ms");
         commands.add("echo " + time + " > /sys/module/cpu_boost/parameters/input_boost_ms");
 
-        SysUtils.executeRootCommand(commands);
+        SuDo.Companion.execCmdSync(commands);
     }
 
     public static boolean getCoreOnlineState(int coreIndex) {
-        return SysUtils.readOutputFromFile("/sys/devices/system/cpu/cpu0/online".replace("cpu0", "cpu" + coreIndex)).equals("1");
+        return KernelProrp.INSTANCE.getProp("/sys/devices/system/cpu/cpu0/online".replace("cpu0", "cpu" + coreIndex)).equals("1");
     }
 
     public static void setCoreOnlineState(int coreIndex, boolean online) {
@@ -159,7 +159,7 @@ public class CpuFrequencyUtils {
         }
         commands.add("chmod 0644 /sys/devices/system/cpu/cpu0/online".replace("cpu0", "cpu" + coreIndex));
         commands.add("echo " + (online ? "1" : "0") + " > /sys/devices/system/cpu/cpu0/online".replace("cpu0", "cpu" + coreIndex));
-        SysUtils.executeRootCommand(commands);
+        SuDo.Companion.execCmdSync(commands);
     }
 
     public static void setInputBoosterFreq(String freqs) {
@@ -167,11 +167,11 @@ public class CpuFrequencyUtils {
         commands.add("chmod 0644 /sys/module/cpu_boost/parameters/input_boost_freq");
         commands.add("echo " + freqs + " > /sys/module/cpu_boost/parameters/input_boost_freq");
 
-        SysUtils.executeRootCommand(commands);
+        SuDo.Companion.execCmdSync(commands);
     }
 
     public static int getExynosHmpUP() {
-        String up = SysUtils.executeCommandWithOutput(false, "cat /sys/kernel/hmp/up_threshold;").trim();
+        String up = KernelProrp.INSTANCE.getProp("/sys/kernel/hmp/up_threshold;").trim();
         if (Objects.equals(up, "")) {
             return 0;
         }
@@ -186,11 +186,11 @@ public class CpuFrequencyUtils {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/kernel/hmp/up_threshold;");
         commands.add("echo " + up + " > /sys/kernel/hmp/up_threshold;");
-        SysUtils.executeRootCommand(commands);
+        SuDo.Companion.execCmdSync(commands);
     }
 
     public static int getExynosHmpDown() {
-        String value = SysUtils.executeCommandWithOutput(false, "cat /sys/kernel/hmp/down_threshold;").trim();
+        String value = KernelProrp.INSTANCE.getProp("/sys/kernel/hmp/down_threshold;").trim();
         if (Objects.equals(value, "")) {
             return 0;
         }
@@ -205,11 +205,11 @@ public class CpuFrequencyUtils {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/kernel/hmp/down_threshold;");
         commands.add("echo " + down + " > /sys/kernel/hmp/down_threshold;");
-        SysUtils.executeRootCommand(commands);
+        SuDo.Companion.execCmdSync(commands);
     }
 
     public static boolean getExynosBooster() {
-        String value = SysUtils.executeCommandWithOutput(false, "cat /sys/kernel/hmp/boost;").trim().toLowerCase();
+        String value = KernelProrp.INSTANCE.getProp("/sys/kernel/hmp/boost;").trim().toLowerCase();
         return Objects.equals(value, "1") || Objects.equals(value, "true") || Objects.equals(value, "enabled");
     }
 
@@ -217,11 +217,11 @@ public class CpuFrequencyUtils {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/kernel/hmp/boost");
         commands.add("echo " + (hotplug ? 1 : 0) + " > /sys/kernel/hmp/boost");
-        SysUtils.executeRootCommand(commands);
+        SuDo.Companion.execCmdSync(commands);
     }
 
     public static boolean getExynosHotplug() {
-        String value = SysUtils.executeCommandWithOutput(false, "cat /sys/devices/system/cpu/cpuhotplug/enabled;").trim().toLowerCase();
+        String value = KernelProrp.INSTANCE.getProp("/sys/devices/system/cpu/cpuhotplug/enabled;").trim().toLowerCase();
         return Objects.equals(value, "1") || Objects.equals(value, "true") || Objects.equals(value, "enabled");
     }
 
@@ -229,7 +229,7 @@ public class CpuFrequencyUtils {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/devices/system/cpu/cpuhotplug/enabled;");
         commands.add("echo " + (hotplug ? 1 : 0) + " > /sys/devices/system/cpu/cpuhotplug/enabled;");
-        SysUtils.executeRootCommand(commands);
+        SuDo.Companion.execCmdSync(commands);
     }
 
     public static int getCoreCount() {
@@ -257,7 +257,7 @@ public class CpuFrequencyUtils {
         while (true) {
             File file = new File("/sys/devices/system/cpu/cpu0/cpufreq/related_cpus".replace("cpu0", "cpu" + cores));
             if (file.exists()) {
-                String relatedCpus = SysUtils.executeCommandWithOutput(false, "cat /sys/devices/system/cpu/cpu0/cpufreq/related_cpus".replace("cpu0", "cpu" + cores)).trim();
+                String relatedCpus = KernelProrp.INSTANCE.getProp("/sys/devices/system/cpu/cpu0/cpufreq/related_cpus".replace("cpu0", "cpu" + cores)).trim();
                 if (!clusters.contains(relatedCpus) && !relatedCpus.isEmpty()) {
                     clusters.add(relatedCpus);
                 }
@@ -274,7 +274,7 @@ public class CpuFrequencyUtils {
     }
 
     public static String getSechedBoostState() {
-        return SysUtils.readOutputFromFile(Constants.sched_boost);
+        return KernelProrp.INSTANCE.getProp(Constants.sched_boost);
     }
 
     public static void setSechedBoostState(boolean enabled, Context context) {
@@ -283,14 +283,14 @@ public class CpuFrequencyUtils {
         commands.add("chmod 0664 " + Constants.sched_boost);
         commands.add("echo " + val + " > " + Constants.sched_boost);
 
-        boolean success = SysUtils.executeRootCommand(commands);
+        boolean success = SuDo.Companion.execCmdSync(commands);
         if (success) {
             Toast.makeText(context, "OK!", Toast.LENGTH_SHORT).show();
         }
     }
 
     public static String getParametersCpuMaxFreq() {
-        return SysUtils.readOutputFromFile("/sys/module/msm_performance/parameters/cpu_max_freq");
+        return KernelProrp.INSTANCE.getProp("/sys/module/msm_performance/parameters/cpu_max_freq");
     }
 
     public static void setParametersCpuMaxFreq() {
@@ -320,8 +320,8 @@ public class CpuFrequencyUtils {
     }
 
     public static String[] adrenoGPUFreqs() {
-        String freqs = SysUtils.readOutputFromFile("/sys/class/kgsl/kgsl-3d0/devfreq/available_frequencies");
-        if(null != freqs) {
+        String freqs = KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/devfreq/available_frequencies");
+        if (null != freqs) {
             return freqs.split(" ");
         }
         return new String[]{};
@@ -332,7 +332,7 @@ public class CpuFrequencyUtils {
     }
 
     public static String[] getAdrenoGPUGovernors() {
-        String g = SysUtils.readOutputFromFile("/sys/class/kgsl/kgsl-3d0/devfreq/available_governors");
+        String g = KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/devfreq/available_governors");
         if (null != g) {
             return g.split(" ");
         }
@@ -340,82 +340,80 @@ public class CpuFrequencyUtils {
     }
 
     public static String getAdrenoGPUMinFreq() {
-        return SysUtils.readOutputFromFile("/sys/class/kgsl/kgsl-3d0/devfreq/min_freq");
+        return KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/devfreq/min_freq");
     }
 
     public static void setAdrenoGPUMinFreq(String value) {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/devfreq/min_freq;");
         commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq;");
-        SysUtils.executeRootCommand(commands);
+        SuDo.Companion.execCmdSync(commands);
     }
 
     public static String getAdrenoGPUMaxFreq() {
-        return SysUtils.readOutputFromFile("/sys/class/kgsl/kgsl-3d0/devfreq/max_freq");
+        return KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/devfreq/max_freq");
     }
 
     public static void setAdrenoGPUMaxFreq(String value) {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/devfreq/max_freq;");
         commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq;");
-        SysUtils.executeRootCommand(commands);
+        SuDo.Companion.execCmdSync(commands);
     }
 
     public static String getAdrenoGPUGovernor() {
-        return SysUtils.readOutputFromFile("/sys/class/kgsl/kgsl-3d0/devfreq/governor");
+        return KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/devfreq/governor");
     }
 
     public static void setAdrenoGPUGovernor(String value) {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/devfreq/governor;");
         commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/devfreq/governor;");
-        SysUtils.executeRootCommand(commands);
+        SuDo.Companion.execCmdSync(commands);
     }
 
     public static String getAdrenoGPUMinPowerLevel() {
-        return SysUtils.readOutputFromFile("/sys/class/kgsl/kgsl-3d0/min_pwrlevel");
+        return KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/min_pwrlevel");
     }
 
     public static void setAdrenoGPUMinPowerLevel(String value) {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/min_pwrlevel;");
         commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/min_pwrlevel;");
-        SysUtils.executeRootCommand(commands);
+        SuDo.Companion.execCmdSync(commands);
     }
 
     public static String getAdrenoGPUMaxPowerLevel() {
-        return SysUtils.readOutputFromFile("/sys/class/kgsl/kgsl-3d0/max_pwrlevel");
+        return KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/max_pwrlevel");
     }
 
     public static void setAdrenoGPUMaxPowerLevel(String value) {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/max_pwrlevel;");
         commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/max_pwrlevel;");
-        SysUtils.executeRootCommand(commands);
+        SuDo.Companion.execCmdSync(commands);
     }
 
     public static String getAdrenoGPUDefaultPowerLevel() {
-        return SysUtils.readOutputFromFile("/sys/class/kgsl/kgsl-3d0/default_pwrlevel");
+        return KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/default_pwrlevel");
     }
 
     public static void setAdrenoGPUDefaultPowerLevel(String value) {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/default_pwrlevel;");
         commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/default_pwrlevel;");
-        SysUtils.executeRootCommand(commands);
+        SuDo.Companion.execCmdSync(commands);
     }
 
     public static String[] getAdrenoGPUPowerLevels() {
-        String leves = SysUtils.readOutputFromFile("/sys/class/kgsl/kgsl-3d0/num_pwrlevels");
+        String leves = KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/num_pwrlevels");
         try {
-            if (leves != null) {
-                int max = Integer.parseInt(leves);
-                ArrayList<String> arr = new ArrayList<>();
-                for (int i = 0; i < max; i++) {
-                    arr.add("" + i);
-                }
-                return arr.toArray(new String[arr.size()]);
+            int max = Integer.parseInt(leves);
+            ArrayList<String> arr = new ArrayList<>();
+            for (int i = 0; i < max; i++) {
+                arr.add("" + i);
             }
+            return arr.toArray(new String[arr.size()]);
         } catch (Exception ignored) {
         }
         return new String[]{};

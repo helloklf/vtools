@@ -155,7 +155,7 @@
     <string name="settings_disable_selinux_desc">自动开启SELinux宽容模式，部分设备会卡死重启。如果不开有些功能会用不了。部分系统开启本功能会死机重启！</string>
 
     <string name="menu_home">概况</string>
-    <string name="menu_paypal">PayPal捐赠</string>
+    <string name="menu_paypal">捐赠打赏</string>
     <string name="menu_vboot">双系统工具</string>
     <string name="menu_cofig">动态响应</string>
     <string name="menu_core_control">CPU 控制</string>

@@ -120,37 +120,37 @@ class FragmentApplistions : Fragment() {
             selected.add(false)
         }
         AlertDialog.Builder(context).setTitle("应用隐藏记录")
-            .setMultiChoiceItems(apps.toTypedArray(), selected.toBooleanArray(), { dialog, which, isChecked ->
-                selected[which] = isChecked
-            })
-            .setPositiveButton(R.string.btn_confirm, { dialog, which ->
-                val keys = all.keys.toList()
-                val cmds = StringBuffer()
-                val edit = spf.edit()
-                for (i in selected.indices) {
-                    if (selected[i]) {
-                        cmds.append("pm unhide ")
-                        cmds.append(keys.get(i))
-                        cmds.append("\n")
-                        cmds.append("pm enable ")
-                        cmds.append(keys.get(i))
-                        cmds.append("\n")
-                        edit.remove(keys.get(i))
-                    }
-                }
-                if (cmds.length > 0) {
-                    processBarDialog.showDialog("正在恢复应用，稍等...")
-                    Thread(Runnable {
-                        SuDo(context).execCmdSync(cmds.toString())
-                        myHandler.post {
-                            processBarDialog.hideDialog()
-                            setList()
-                            edit.commit()
+                .setMultiChoiceItems(apps.toTypedArray(), selected.toBooleanArray(), { dialog, which, isChecked ->
+                    selected[which] = isChecked
+                })
+                .setPositiveButton(R.string.btn_confirm, { dialog, which ->
+                    val keys = all.keys.toList()
+                    val cmds = StringBuffer()
+                    val edit = spf.edit()
+                    for (i in selected.indices) {
+                        if (selected[i]) {
+                            cmds.append("pm unhide ")
+                            cmds.append(keys.get(i))
+                            cmds.append("\n")
+                            cmds.append("pm enable ")
+                            cmds.append(keys.get(i))
+                            cmds.append("\n")
+                            edit.remove(keys.get(i))
                         }
-                    }).start()
-                }
-            })
-            .create().show()
+                    }
+                    if (cmds.length > 0) {
+                        processBarDialog.showDialog("正在恢复应用，稍等...")
+                        Thread(Runnable {
+                            SuDo(context).execCmdSync(cmds.toString())
+                            myHandler.post {
+                                processBarDialog.hideDialog()
+                                setList()
+                                edit.commit()
+                            }
+                        }).start()
+                    }
+                })
+                .create().show()
     }
 
     private fun getSelectedAppShowOptions(apptype: Appinfo.AppType) {

@@ -134,6 +134,7 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
             }
             SuDo(context).execCmdSync(cmds.toString())
         }
+
         public fun isMagisk(): Boolean {
             return SysUtils.executeCommandWithOutput(false, "su -v").contains("MAGISKSU")
         }
