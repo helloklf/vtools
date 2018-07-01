@@ -6,6 +6,7 @@ import com.omarea.shared.Consts
 import com.omarea.shared.FileWrite
 import com.omarea.shell.units.BusyboxInstallerUnit
 import com.omarea.vboot.R
+import java.io.File
 
 /** 检查并安装Busybox
  * Created by helloklf on 2017/6/3.
@@ -23,6 +24,10 @@ class Busybox(private var context: Context) {
     }
 
     fun forceInstall(next: Runnable? = null) {
+        val privateBusybox = FileWrite.getPrivateFilePath(context, "busybox")
+        if (!File(privateBusybox).exists()) {
+            FileWrite.WritePrivateFile(context.assets, "busybox.zip", "busybox", context)
+        }
         if (!busyboxInstalled()) {
             AlertDialog.Builder(context)
                     .setTitle(R.string.question_install_busybox)
@@ -36,21 +41,19 @@ class Busybox(private var context: Context) {
                     .setPositiveButton(
                             R.string.btn_confirm,
                             { _, _ ->
-                                FileWrite.WritePrivateFile(context.assets, "busybox.zip", "busybox", context)
-                                val path = "${FileWrite.getPrivateFileDir(context)}busybox"
-                                val cmd = StringBuilder("cp $path /cache/busybox;\n")
-                                cmd.append("chmod 7777 $path;\n")
-                                cmd.append("$path chmod 7777 /cache/busybox;\n")
+                                val cmd = StringBuilder("cp $privateBusybox /cache/busybox;\n")
+                                cmd.append("chmod 7777 $privateBusybox;\n")
+                                cmd.append("$privateBusybox chmod 7777 /cache/busybox;\n")
                                 cmd.append("chmod 7777 /cache/busybox;\n")
                                 cmd.append(Consts.MountSystemRW2)
-                                cmd.append("cp $path /system/xbin/busybox;")
-                                cmd.append("$path chmod 0777 /system/xbin/busybox;")
+                                cmd.append("cp $privateBusybox /system/xbin/busybox;")
+                                cmd.append("$privateBusybox chmod 0777 /system/xbin/busybox;")
                                 cmd.append("chmod 0777 /system/xbin/busybox;")
-                                cmd.append("$path chown root:root /system/xbin/busybox;")
+                                cmd.append("$privateBusybox chown root:root /system/xbin/busybox;")
                                 cmd.append("chown root:root /system/xbin/busybox;")
                                 cmd.append("/system/xbin/busybox --install /system/xbin;")
 
-                                SuDo(context).execCmdSync(cmd.toString())
+                                KeepShellSync.doCmdSync(cmd.toString())
                                 next?.run()
                             }
                     )

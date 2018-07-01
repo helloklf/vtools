@@ -9,7 +9,7 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
 import com.omarea.shared.SpfConfig
-import com.omarea.shell.SuDo
+import com.omarea.shell.KeepShellSync
 import com.omarea.vboot.R
 
 /**
@@ -42,7 +42,7 @@ class DialogCustomMAC(private var context: Context) {
                 return@setNegativeButton
             }
             spf!!.edit().putString(SpfConfig.GLOBAL_SPF_MAC, mac).commit()
-            SuDo(context).execCmdSync("chmod 0644 /sys/class/net/wlan0/address\n" +
+            KeepShellSync.doCmdSync("chmod 0644 /sys/class/net/wlan0/address\n" +
                     "svc wifi disable\n" +
                     "ifconfig wlan0 down\n" +
                     "echo '$mac' > /sys/class/net/wlan0/address\n" +

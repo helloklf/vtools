@@ -32,36 +32,6 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
         return true
     }
 
-    private fun run1() {
-        if (!isSupport()) {
-            return
-        }
-
-        val arr = arrayOf("Speed编译 - 推荐", "Everything编译", "强制Speed编译", "强制Everything编译", "Reset")
-        var index = 0
-        AlertDialog.Builder(context)
-                .setTitle("请选择执行方式")
-                .setSingleChoiceItems(arr, index, { _, which ->
-                    index = which
-                })
-                .setNegativeButton("确定", { _, _ ->
-                    when (index) {
-                        0 -> execShell("cmd package compile -m speed -a;")
-                        1 -> execShell("cmd package compile -m everything -a;")
-                        2 -> execShell("cmd package compile -m speed -a -f;")
-                        3 -> execShell("cmd package compile -m everything -a -f;")
-                        4 -> execShell("cmd package compile --reset -a;")
-                    }
-                })
-                .setNeutralButton("查看说明", { _, _ ->
-                    AlertDialog.Builder(context).setTitle("说明").setMessage("在Android N以后，为了减少应用程序空间占用和提高安装效率，引入了新的机制。在安装应用时，不再像6.0时代一样将整个应用编译成本地代码，同时增加了cmd package compile命令，可用于手动触发编译。\n\nSpeed：尽可能的提高运行效率\nEverything：编译可以被编译的一切\n\nReset命令用于清除配置文件和已编译过的代码\n\n选择强制编译时，将重新编译已经编译过的应用。Reset命令用于重置所有应用的Dex编译状态。").setNegativeButton("了解更多", { dialog, which ->
-                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://source.android.com/devices/tech/dalvik/jit-compiler?hl=zh-cn")))
-                    }).create().show()
-                })
-                .create().show()
-    }
-
-
     class ProgressHandler(context: Context) : Handler() {
         protected var dialog: View
         protected var alert: android.app.AlertDialog

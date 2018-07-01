@@ -74,7 +74,7 @@ class AsynSuShellUnit(var handler: Handler) {
 
         val outputStream = process!!.outputStream
         val writer = outputStream.bufferedWriter()
-        writer.write("exit;exit;exit;")
+        writer.write("exit\nexit\nexit\n")
         writer.write("\n\n")
         writer.flush()
         Thread(Runnable {
@@ -90,7 +90,7 @@ class AsynSuShellUnit(var handler: Handler) {
 
         val outputStream = process!!.outputStream
         val writer = outputStream.bufferedWriter()
-        writer.write("exit;exit;exit;")
+        writer.write("exit\nexit\nexit\n")
         writer.write("\n\n")
         writer.flush()
         Thread(Runnable {

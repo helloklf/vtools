@@ -16,6 +16,7 @@ import com.omarea.shared.helper.ReciverLock
 import com.omarea.shared.helper.ScreenEventHandler
 import com.omarea.shell.AsynSuShellUnit
 import com.omarea.shell.KeepShell
+import com.omarea.shell.KeepShellSync
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
@@ -244,7 +245,9 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
 
     //显示消息
     private fun showMsg(msg: String) {
-        screenHandler.post { Toast.makeText(context, msg, Toast.LENGTH_SHORT).show() }
+        screenHandler.post {
+            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+        }
     }
 
     //显示模式切换通知
@@ -416,50 +419,20 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         }
     }
 
-    private var dumpTopActivityProcess: Process? = null
     private fun dumpsysTopActivity(packageName: String) {
-        var process = dumpTopActivityProcess
-        if (process == null) {
-            try {
-                dumpTopActivityProcess = Runtime.getRuntime().exec("su")
-                process = dumpTopActivityProcess
-            } catch (ex: Exception) {
-            }
-        }
-        if (process != null) {
-            try {
-                process.outputStream!!.write("echo 'dump-start'\n\ndumpsys activity top | grep TASK\n\necho 'dump-end'\n\n".toByteArray(Charset.defaultCharset()))
-                process.outputStream!!.flush()
-                val reader = BufferedReader(InputStreamReader(process.inputStream))
-                var line: String
-                val rows = ArrayList<String>()
-                while (true) {
-                    line = reader.readLine()
-                    if (line == null || line.contains("dump-end")) {
-                        break
-                    } else {
-                        if (!line.contains("dump-start") && !line.isEmpty()) {
-                            rows.add(line)
-                        }
-                    }
-                }
-                Log.d("vtools-dump", rows.toString())
-                var last = ""
-                for (item in rows) {
-                    if (!item.isEmpty())
-                        last = item
-                }
-                if (!last.contains(packageName)) {
-                    Log.d("dump-ignore", packageName)
-                    return
-                }
-                cancelDump(packageName)
-            } catch (ex: Exception) {
-                dumpTopActivityProcess = null
-                cancelDump(packageName)
-            }
-        } else {
+        //
+        /*
+        if(KeepShellSync.doCmdSync("dumpsys activity top | grep TASK").contains(packageName)) {
             cancelDump(packageName)
+        } else {
+            return
+        }
+        */
+        // 精准切换2.0
+        if(KeepShellSync.doCmdSync("dumpsys activity top | grep ACTIVITY | grep '$packageName'").contains(packageName)) {
+            cancelDump(packageName)
+        } else {
+            return
         }
     }
 
@@ -487,7 +460,9 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         autoBoosterApp(packageName)
 
         if (accuSwitch) {
-            dumpsysTopActivity(packageName)
+            Thread(Runnable {
+                dumpsysTopActivity(packageName)
+            }).start()
         } else {
             autoBoosterApp(packageName)
             autoToggleMode(packageName)

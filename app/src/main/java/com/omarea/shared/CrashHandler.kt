@@ -18,5 +18,6 @@ class CrashHandler constructor() : Thread.UncaughtExceptionHandler {
 
     override fun uncaughtException(thread: Thread, ex: Throwable) {
         Log.e("vtools-Exception", ex.message)
+        System.exit(-1)
     }
 }

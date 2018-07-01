@@ -5,7 +5,7 @@ import android.content.Context
 import android.os.Handler
 import android.widget.Toast
 import com.omarea.shared.Consts
-import com.omarea.shell.SuDo
+import com.omarea.shell.KeepShellSync
 import com.omarea.ui.ProgressBarDialog
 import java.io.IOException
 
@@ -67,7 +67,7 @@ class BackupRestoreUnit(var context: Context) {
             ShowProgressBar()
             try {
                 ShowProgressBar()
-                if (SuDo(context).execCmdSync("dd if=$path of=/dev/block/bootdevice/by-name/boot")) {
+                if (KeepShellSync.doCmdSync("dd if=$path of=/dev/block/bootdevice/by-name/boot") != "error") {
                     ShowMsg("操作成功！", true)
                 } else {
                     ShowMsg("镜像刷入失败！", true)
@@ -96,7 +96,7 @@ class BackupRestoreUnit(var context: Context) {
             ShowProgressBar()
             try {
                 ShowProgressBar()
-                if (SuDo(context).execCmdSync("dd if=$path of=/dev/block/bootdevice/by-name/recovery")) {
+                if (KeepShellSync.doCmdSync("dd if=$path of=/dev/block/bootdevice/by-name/recovery") != "error") {
                     ShowMsg("操作成功！", true)
                 } else {
                     ShowMsg("镜像刷入失败", true)
@@ -122,10 +122,10 @@ class BackupRestoreUnit(var context: Context) {
         override fun run() {
             try {
                 ShowProgressBar()
-                if (SuDo(context).execCmdSync("dd if=/dev/block/bootdevice/by-name/boot of=${Consts.SDCardDir}/boot.img;\n")) {
-                    ShowMsg("Boot导出失败！", true)
-                } else {
+                if (KeepShellSync.doCmdSync("dd if=/dev/block/bootdevice/by-name/boot of=${Consts.SDCardDir}/boot.img;\n") != "error") {
                     ShowMsg("Boot导出成功，保存在${Consts.SDCardDir}/boot.img ！", true)
+                } else {
+                    ShowMsg("Boot导出失败！", true)
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -147,7 +147,7 @@ class BackupRestoreUnit(var context: Context) {
     internal inner class SaveRecoveryThread : Thread() {
         override fun run() {
             ShowProgressBar()
-            if (SuDo(context).execCmdSync("dd if=/dev/block/bootdevice/by-name/recovery of=${Consts.SDCardDir}/recovery.img\n")!!) {
+            if (KeepShellSync.doCmdSync("dd if=/dev/block/bootdevice/by-name/recovery of=${Consts.SDCardDir}/recovery.img\n") != "error") {
                 ShowMsg("Recovery导出成功，已保存为${Consts.SDCardDir}/recovery.img ！", true)
             } else {
                 ShowMsg("Recovery导出失败！", true)

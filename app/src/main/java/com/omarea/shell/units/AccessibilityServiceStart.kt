@@ -1,7 +1,7 @@
 package com.omarea.shell.units
 
 import android.content.Context
-import com.omarea.shell.SuDo
+import com.omarea.shell.KeepShellSync
 
 /**
  * Created by Hello on 2018/06/03.
@@ -9,7 +9,7 @@ import com.omarea.shell.SuDo
 
 class AccessibilityServiceStart {
     fun strartService(context: Context, serviceName: String): Boolean {
-        return SuDo(context).execCmdSync(
+        return KeepShellSync.doCmdSync(
                 "services=`settings get secure enabled_accessibility_services`;\n" +
                         "service='$serviceName';\n" +
                         "echo \"\$services\" |grep -q \"\$service\"\n" +
@@ -19,6 +19,6 @@ class AccessibilityServiceStart {
                         "fi\n" +
                         "settings put secure accessibility_enabled 1;\n" +
                         "am startservice -n \$service;\n"
-        )
+        ) != ""
     }
 }

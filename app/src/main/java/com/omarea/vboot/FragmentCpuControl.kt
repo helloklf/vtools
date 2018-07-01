@@ -18,6 +18,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import com.omarea.shell.cpucontrol.ThermalControlUtils
+import com.omarea.ui.ProgressBarDialog
 import com.omarea.ui.StringAdapter
 import kotlinx.android.synthetic.main.fragment_cpu_control.*
 import java.util.*
@@ -611,6 +612,7 @@ class FragmentCpuControl : Fragment() {
     }
 
     private fun updateUI() {
+        progressBarDialog.hideDialog()
         try {
             setText(cluster_little_min_freq, subFreqStr(littleFreqs[status.cluster_little_min_freq]))
             setText(cluster_little_max_freq, subFreqStr(littleFreqs[status.cluster_little_max_freq]))
@@ -689,9 +691,10 @@ class FragmentCpuControl : Fragment() {
         }
     }
 
+    private lateinit var progressBarDialog: ProgressBarDialog
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        progressBarDialog = ProgressBarDialog(this.context!!)
         Thread(Runnable {
             initData()
         }).start()
@@ -700,6 +703,7 @@ class FragmentCpuControl : Fragment() {
     private var timer: Timer? = null
     override fun onResume() {
         super.onResume()
+        progressBarDialog.showDialog("正在读取信息...")
         if (timer == null) {
             timer = Timer()
             timer!!.schedule(object : TimerTask() {

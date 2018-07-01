@@ -321,10 +321,7 @@ public class CpuFrequencyUtils {
 
     public static String[] adrenoGPUFreqs() {
         String freqs = KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/devfreq/available_frequencies");
-        if (null != freqs) {
-            return freqs.split(" ");
-        }
-        return new String[]{};
+        return freqs.split(" ");
     }
 
     public static boolean isAdrenoGPU() {
@@ -333,10 +330,7 @@ public class CpuFrequencyUtils {
 
     public static String[] getAdrenoGPUGovernors() {
         String g = KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/devfreq/available_governors");
-        if (null != g) {
-            return g.split(" ");
-        }
-        return new String[]{};
+        return g.split(" ");
     }
 
     public static String getAdrenoGPUMinFreq() {

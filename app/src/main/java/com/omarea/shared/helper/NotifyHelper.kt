@@ -49,7 +49,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
     }
 
     private fun getCapacity(): String {
-        return KernelProrp.getProp("/sys/class/power_supply/battery/capacity", false) + "%"
+        return KernelProrp.getProp("/sys/class/power_supply/battery/capacity") + "%"
     }
 
     private fun getBatteryIcon(capacity: Int): Int {
@@ -108,7 +108,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
             return "? mA"
         }
 
-        var io = KernelProrp.getProp(path, false)
+        var io = KernelProrp.getProp(path)
         if (io.isEmpty()) {
             return "? mA"
         }

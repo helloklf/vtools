@@ -22,16 +22,15 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import com.omarea.shared.ConfigInstaller
-import com.omarea.shared.Consts
-import com.omarea.shared.CrashHandler
-import com.omarea.shared.SpfConfig
+import com.omarea.shared.*
 import com.omarea.shell.Busybox
 import com.omarea.shell.CheckRootStatus
+import com.omarea.shell.KeepShellSync
 import com.omarea.shell.SuDo
 import com.omarea.shell.units.BatteryUnit
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.vboot.dialogs.DialogPower
+import kotlinx.android.synthetic.main.action_row_item.*
 import kotlinx.android.synthetic.main.activity_main.*
 
 class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -92,6 +91,14 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setExcludeFromRecents()
         // AppShortcutManager(thisview).removeMenu()
         // checkUseState()
+        supportFragmentManager.addOnBackStackChangedListener {
+            if (supportFragmentManager.backStackEntryCount > 0) {
+                val item = supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 1)
+                title = item.name
+            } else {
+                title = getString(R.string.app_name)
+            }
+        }
     }
 
     fun checkUseState() {
@@ -117,6 +124,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val transaction = fragmentManager.beginTransaction()
         val fragment = FragmentHome()
         transaction.replace(R.id.main_content, fragment)
+        // transaction.addToBackStack(getString(R.string.app_name))
         transaction.commit()
     }
 
@@ -176,7 +184,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     val dialog = ProgressBarDialog(this)
                     dialog.showDialog("兼容性检测，稍等10几秒...")
                     Thread(Runnable {
-                        SuDo(this).execCmdSync(Consts.DisableSELinux + "\n sleep 10; \n")
+                        KeepShellSync.doCmdSync(Consts.DisableSELinux + "\n sleep 10; \n")
                         myHandler.post {
                             dialog.hideDialog()
                             next.run()
@@ -238,10 +246,10 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         try {
             val drawer = findViewById(R.id.drawer_layout) as DrawerLayout
             when {
-                drawer.isDrawerOpen(GravityCompat.START) ->
-                    drawer.closeDrawer(GravityCompat.START)
-                supportFragmentManager.backStackEntryCount > 0 ->
+                drawer.isDrawerOpen(GravityCompat.START) -> drawer.closeDrawer(GravityCompat.START)
+                supportFragmentManager.backStackEntryCount > 0 -> {
                     supportFragmentManager.popBackStack()
+                }
                 else -> {
                     super.onBackPressed()
                     this.finishActivity(0)
@@ -351,7 +359,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (fragment != null) {
             //transaction.disallowAddToBackStack()
             transaction.replace(R.id.main_content, fragment)
-            transaction.addToBackStack(null);
+            transaction.addToBackStack(item.title.toString());
             transaction.commit()
             title = item.title
             //item.isChecked = true

@@ -6,6 +6,7 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.support.v4.content.PermissionChecker
+import android.util.Log
 import com.omarea.shared.Consts
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.vboot.R
@@ -20,28 +21,28 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
 
     //是否已经Root
     private fun isRoot(disableSeLinux: Boolean): Boolean {
-        var process: java.lang.Process? = null
-        try {
-            process = Runtime.getRuntime().exec("su")
-            val out = process!!.outputStream.bufferedWriter()
+        val r = KeepShellSync.doCmdSync(
+                "if [[ `id -u 2>&1` = '0' ]]; then\n" +
+                        "\techo 'root';\n" +
+                        "elif [[ `\$UID` = '0' ]]; then\n" +
+                        "\techo 'root';\n" +
+                        "elif [[ `whoami 2>&1` = 'root' ]]; then\n" +
+                        "\techo 'root';\n" +
+                        "elif [[ `set | grep 'USER_ID=0'` = 'USER_ID=0' ]]; then\n" +
+                        "\techo 'root';\n" +
+                        "else\n" +
+                        "\texit -1;\n" +
+                        "fi;")
+        Log.d("getsu", r)
+        if (r == "error" || r.contains("permission denied") || r.contains("not allowed") || r.equals("not found")) {
+            return false
+        } else if (r == "root") {
             if (disableSeLinux)
-                out.write(Consts.DisableSELinux)
-            out.write("exit\n")
-            out.write("exit\n")
-            out.flush()
-
-            process.waitFor()
-            val r = process.exitValue() == 0
-            process.destroy()
-            return r
-            //if (msg == "permission denied" || msg.contains("not allowed") || msg == "not found")
-        } catch (e: Exception) {
-            if (process != null)
-                process.destroy()
-            e.stackTrace
+                KeepShellSync.doCmdSync(Consts.DisableSELinux)
+            return true
+        } else {
             return false
         }
-
     }
 
 
@@ -132,7 +133,7 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
                 cmds.append("pm grant com.omarea.vboot android.permission.WRITE_EXTERNAL_STORAGE;\n")
                 cmds.append("pm grant com.omarea.vboot android.permission.SYSTEM_ALERT_WINDOW;\n")
             }
-            SuDo(context).execCmdSync(cmds.toString())
+            KeepShellSync.doCmdSync(cmds.toString())
         }
 
         public fun isMagisk(): Boolean {

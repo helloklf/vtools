@@ -17,9 +17,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.omarea.shared.*
 import com.omarea.shell.Files
+import com.omarea.shell.KeepShellSync
 import com.omarea.shell.Platform
 import com.omarea.shell.Props
-import com.omarea.shell.SuDo
 import com.omarea.ui.ProgressBarDialog
 import kotlinx.android.synthetic.main.layout_home.*
 import java.io.File
@@ -137,12 +137,12 @@ class FragmentHome : Fragment() {
         })
         settings_disable_selinux.setOnClickListener {
             if (settings_disable_selinux.isChecked) {
-                SuDo(context).execCmdSync(Consts.DisableSELinux)
+                KeepShellSync.doCmdSync(Consts.DisableSELinux)
                 myHandler.postDelayed({
                     spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true).commit()
                 }, 10000)
             } else {
-                SuDo(context).execCmdSync(Consts.ResumeSELinux)
+                KeepShellSync.doCmdSync(Consts.ResumeSELinux)
                 spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false).commit()
             }
         }

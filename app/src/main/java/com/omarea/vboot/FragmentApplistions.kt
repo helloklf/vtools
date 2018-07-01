@@ -18,7 +18,7 @@ import com.omarea.shared.AppListHelper
 import com.omarea.shared.Consts
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.model.Appinfo
-import com.omarea.shell.SuDo
+import com.omarea.shell.KeepShellSync
 import com.omarea.ui.AppListAdapter
 import com.omarea.ui.OverScrollListView
 import com.omarea.ui.ProgressBarDialog
@@ -141,7 +141,7 @@ class FragmentApplistions : Fragment() {
                     if (cmds.length > 0) {
                         processBarDialog.showDialog("正在恢复应用，稍等...")
                         Thread(Runnable {
-                            SuDo(context).execCmdSync(cmds.toString())
+                            KeepShellSync.doCmdSync(cmds.toString())
                             myHandler.post {
                                 processBarDialog.hideDialog()
                                 setList()

@@ -2,8 +2,8 @@ package com.omarea.shared
 
 import android.content.Context
 import android.util.Log
+import com.omarea.shell.KeepShellSync
 import com.omarea.shell.Platform
-import com.omarea.shell.SuDo
 
 class ConfigInstaller {
     fun installPowerConfig(context: Context, afterCmds: String, biCore: Boolean = false) {
@@ -18,8 +18,8 @@ class ConfigInstaller {
                     .append("chmod 0777 ${Consts.POWER_CFG_PATH};")
                     .append("chmod 0777 ${Consts.POWER_CFG_BASE};")
                     .append(afterCmds)
-            //SuDo(context).execCmdSync(Consts.InstallPowerToggleConfigToCache + "\n\n" + Consts.ExecuteConfig + "\n" + after)
-            SuDo(context).execCmdSync(cmd.toString())
+            //KeepShellSync.doCmdSync(Consts.InstallPowerToggleConfigToCache + "\n\n" + Consts.ExecuteConfig + "\n" + after)
+            KeepShellSync.doCmdSync(cmd.toString())
             ModeList(context).setCurrentPowercfg("")
         } catch (ex: Exception) {
             Log.e("script-parse", ex.message)
@@ -53,7 +53,7 @@ class ConfigInstaller {
             cmd.append("chmod 0775 ${Consts.POWER_CFG_BASE};")
             cmd.append("busybox sed -i 's/^M//g' ${Consts.POWER_CFG_BASE};")
             cmd.append("fi;")
-            SuDo(context).execCmdSync(cmd.toString())
+            KeepShellSync.doCmdSync(cmd.toString())
         } catch (ex: Exception) {
             Log.e("script-parse", ex.message)
         }

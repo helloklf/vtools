@@ -8,11 +8,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import android.support.v4.app.NotificationCompat
 import com.omarea.shell.Props
-import com.omarea.shell.SuDo
+import com.omarea.shell.SysUtils
 import com.omarea.vboot.R
 import com.omarea.vboot.ServiceBattery
 
@@ -21,54 +19,28 @@ import com.omarea.vboot.ServiceBattery
  */
 
 class BootService : IntentService("vtools-boot") {
-
-    private var handler = Handler(Looper.getMainLooper())
-    private lateinit var chargeConfig: SharedPreferences
     private lateinit var swapConfig: SharedPreferences
     private lateinit var globalConfig: SharedPreferences
 
     override fun onHandleIntent(intent: Intent?) {
-        chargeConfig = this.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
         swapConfig = this.getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)
         globalConfig = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
         if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_START_DELAY, false)) {
-            handler.postDelayed({
-                autoBoot()
-            }, 25000)
+            Thread.sleep(25 * 1000)
         } else {
-            handler.postDelayed({
-                autoBoot()
-            }, 5000)
+            Thread.sleep(2000)
         }
+        autoBoot()
     }
 
+
+
     private fun autoBoot() {
-
-        //判断是否开启了充电加速和充电保护，如果开启了，自动启动后台服务
-        if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) || chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_BP, false)) {
-            try {
-                val i = Intent(this, ServiceBattery::class.java)
-                this.startService(i)
-            } catch (ex: Exception) {
-            }
-        }
-
-        val booted = Props.getProp("vtools.boot")
-        if (!(booted.isBlank())) {
-            handler.postDelayed({
-                try {
-                    stopSelf()
-                    val service = Intent(this, BootService::class.java)
-                    stopService(Intent(service))
-                    System.exit(0)
-                } catch (ex: Exception) {
-                }
-            }, 2000)
-            return
-        }
-
         val sb = StringBuilder()
+        sb.append("if [[ `getprop vtools.boot` = '1' ]] then exit 0; exit 0; fi;\n")
+        sb.append("if [[ `getprop vtools.boot` = '2' ]] then exit 0; exit 0; fi;\n")
+
         if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true)) {
             sb.append(Consts.DisableSELinux)
             sb.append("\n\n")
@@ -77,15 +49,15 @@ class BootService : IntentService("vtools-boot") {
         if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE, false)) {
             val mac = globalConfig.getString(SpfConfig.GLOBAL_SPF_MAC, "")
             if (mac != "") {
-                sb.append("chmod 0644 /sys/class/net/wlan0/address;" +
-                        "svc wifi disable;" +
-                        "ifconfig wlan0 down;" +
-                        "echo '$mac' > /sys/class/net/wlan0/address;" +
-                        "ifconfig wlan0 hw ether '$mac';" +
+                sb.append("chmod 0644 /sys/class/net/wlan0/address\n" +
+                        "svc wifi disable\n" +
+                        "ifconfig wlan0 down\n" +
+                        "echo '$mac' > /sys/class/net/wlan0/address\n" +
+                        "ifconfig wlan0 hw ether '$mac'\n" +
                         "chmod 0644 /sys/devices/soc/a000000.qcom,wcnss-wlan/wcnss_mac_addr\n" +
                         "echo '$mac' > /sys/devices/soc/a000000.qcom,wcnss-wlan/wcnss_mac_addr\n" +
-                        "ifconfig wlan0 up;" +
-                        "svc wifi enable;\n\n")
+                        "ifconfig wlan0 up\n" +
+                        "svc wifi enable\n\n")
             }
         }
 
@@ -96,13 +68,13 @@ class BootService : IntentService("vtools-boot") {
                 sb.append("swapoff /dev/block/zram0 2>/dev/null;")
                 sb.append("echo 1 > /sys/block/zram0/reset;")
                 sb.append("echo " + sizeVal + "000000 > /sys/block/zram0/disksize;")
-                sb.append("mkswap /dev/block/zram0 2>/dev/null;")
+                sb.append("mkswap /dev/block/zram0 2> /dev/null;")
                 sb.append("fi;")
                 sb.append("\n")
-                sb.append("swapon /dev/block/zram0 2>/dev/null;")
+                sb.append("swapon /dev/block/zram0 2> /dev/null;")
             }
-            sb.append("mkswap /dev/block/zram0 2>/dev/null;")
-            sb.append("swapon /dev/block/zram0 2>/dev/null;")
+            sb.append("mkswap /dev/block/zram0 2> /dev/null;")
+            sb.append("swapon /dev/block/zram0 2> /dev/null;")
 
             //sb.append("swapon /data/swapfile -p 32767;")
             if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, false))
@@ -118,7 +90,7 @@ class BootService : IntentService("vtools-boot") {
         sb.append("\n\n")
         sb.append("setprop vtools.boot 1")
         sb.append("\n\n")
-        SuDo(this).execCmdSync(sb.toString())
+        SysUtils.executeCommandWithOutput(true, sb.toString())
 
         if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DOZELIST_AUTOSET, false)) {
             val sb2 = StringBuilder("")
@@ -138,7 +110,7 @@ class BootService : IntentService("vtools-boot") {
             sb2.append("\n\n")
 
             Thread.sleep(120 * 1000)
-            SuDo(this).execCmdSync(sb2.toString())
+            SysUtils.executeCommandWithOutput(true, sb2.toString())
             stopSelf()
         } else {
             stopSelf()
@@ -151,13 +123,9 @@ class BootService : IntentService("vtools-boot") {
         val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             nm.createNotificationChannel(NotificationChannel("vtool-boot", "自启动提示", NotificationManager.IMPORTANCE_LOW))
-            val notification = NotificationCompat.Builder(this, "vtool-boot").setSmallIcon(R.drawable.ic_menu_digital).setAutoCancel(false).setSubText("微工具箱").setContentText("正在执行开机动作...").build()
-            notification!!.flags = Notification.FLAG_NO_CLEAR or Notification.FLAG_ONGOING_EVENT
-            nm.notify(1, notification)
+            nm.notify(1, NotificationCompat.Builder(this, "vtool-boot").setSmallIcon(R.drawable.ic_menu_digital).setSubText("微工具箱").setContentText("正在执行自启动脚本...").build())
         } else {
-            val notification = NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_menu_digital).setAutoCancel(false).setSubText("微工具箱").setContentText("正在执行开机动作...").build()
-            notification!!.flags = Notification.FLAG_NO_CLEAR or Notification.FLAG_ONGOING_EVENT
-            nm.notify(1, notification)
+            nm.notify(1, NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_menu_digital).setSubText("微工具箱").setContentText("正在执行自启动脚本...").build())
         }
     }
 
@@ -170,5 +138,6 @@ class BootService : IntentService("vtools-boot") {
         } else {
             nm.notify(1, NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_menu_digital).setSubText("微工具箱").setContentText("已完成开机自启动").build())
         }
+        System.exit(0)
     }
 }

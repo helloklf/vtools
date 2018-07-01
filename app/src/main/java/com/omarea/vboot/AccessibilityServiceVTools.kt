@@ -51,7 +51,24 @@ override fun onCreate() {
     }
     */
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val crashHandler = CrashHandler()
+        crashHandler.init(this)
+
+        initServiceHelper()
+
+        try {
+            val service = Intent(this, BootService::class.java)
+            //service.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startService(service)
+        } catch (ex: Exception) {
+        }
+
+        return super.onStartCommand(intent, flags, startId)
+    }
+
     internal var serviceHelper: ServiceHelper? = null
+
 
     public override fun onServiceConnected() {
         /*
@@ -67,18 +84,6 @@ override fun onCreate() {
         setServiceInfo(info);
         */
         super.onServiceConnected()
-
-        val crashHandler = CrashHandler()
-        crashHandler.init(this)
-
-        initServiceHelper()
-
-        try {
-            val service = Intent(this, BootService::class.java)
-            //service.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startService(service)
-        } catch (ex: Exception) {
-        }
     }
 
     private fun initServiceHelper() {

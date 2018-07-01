@@ -8,15 +8,16 @@ import java.io.BufferedReader
 import java.io.BufferedWriter
 import java.io.IOException
 import java.io.InputStreamReader
+import java.util.concurrent.locks.ReentrantLock
 
 /**
  * Created by Hello on 2018/01/23.
  */
-
 class KeepShell(private var context: Context?) : ShellEvents() {
     private var p: Process? = null
     private var out: BufferedWriter? = null
     private var handler: Handler = Handler(Looper.getMainLooper())
+    private val mLock = ReentrantLock()
 
     fun setHandler(handler: Handler) {
         this.processHandler = handler
@@ -146,6 +147,32 @@ class KeepShell(private var context: Context?) : ShellEvents() {
 
     //执行脚本
     internal fun doCmd(cmd: String, isRedo: Boolean = false) {
+        try {
+            //tryExit()
+            if (p == null || isRedo || out == null) {
+                getRuntimeShell(cmd, Runnable {
+                    //重试一次
+                    if (!isRedo)
+                        doCmd(cmd, true)
+                    else
+                        showMsg("Failed execution action!\nError message : Unable to obtain Root permissions\n\n\ncommand : \r\n$cmd")
+                })
+            } else {
+                out!!.write(cmd)
+                out!!.write("\n\n")
+                out!!.flush()
+            }
+        } catch (e: IOException) {
+            //重试一次
+            if (!isRedo)
+                doCmd(cmd, true)
+            else
+                showMsg("Failed execution action!\nError message : " + e.message + "\n\n\ncommand : \r\n" + cmd)
+        }
+    }
+
+    //执行脚本
+    internal fun doCmdSync(cmd: String, isRedo: Boolean = false) {
         try {
             //tryExit()
             if (p == null || isRedo || out == null) {

@@ -52,7 +52,7 @@ public object Consts {
     val ToggleMode = "sh $POWER_CFG_PATH %s;\n"
 
     val DisableSELinux = "setenforce 0;\n"
-    val ResumeSELinux = "setenforce 0;\n"
+    val ResumeSELinux = "setenforce 1;\n"
 
     val DeleteLockPwd = "rm -f /data/system/*.key;rm -f /data/system/locksettings.db*;reboot;"
 

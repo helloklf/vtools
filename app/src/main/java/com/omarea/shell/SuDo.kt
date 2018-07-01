@@ -27,11 +27,6 @@ class SuDo(private val context: Context?) : ShellEvents() {
         }
     }
 
-    //执行命令
-    fun execCmdSync(cmd: String): Boolean {
-        return execCmd(cmd, true)
-    }
-
     fun execCmd(cmd: String, sync: Boolean = false): Boolean {
         try {
             val p = Runtime.getRuntime().exec("su")
@@ -110,10 +105,7 @@ class SuDo(private val context: Context?) : ShellEvents() {
                 stringBuilder.append(cmd)
                 stringBuilder.append("\n\n")
             }
-            if (suDo == null) {
-                suDo = SuDo(null)
-            }
-            return suDo!!.execCmdSync(stringBuilder.toString())
+            return KeepShellSync.doCmdSync(stringBuilder.toString()) != "error"
         }
     }
 }

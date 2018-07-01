@@ -2,8 +2,8 @@ package com.omarea.shared
 
 import android.content.Context
 import com.omarea.shell.KeepShell
+import com.omarea.shell.KeepShellSync
 import com.omarea.shell.Props
-import com.omarea.shell.SuDo
 import com.omarea.vboot.R
 
 /**
@@ -66,35 +66,29 @@ open class ModeList {
     }
 
     internal fun setCurrent(powerCfg: String, app: String): ModeList {
-        if (!Props.setPorp("vtools.powercfg", powerCfg) || !Props.setPorp("vtools.powercfg_app", app)) {
-            keepShellExec("setprop vtools.powercfg ${powerCfg}")
-            keepShellExec("setprop vtools.powercfg_app ${app}")
-            Thread.sleep(100)
-        }
+        Props.setPorp("vtools.powercfg", powerCfg)
+        Props.setPorp("vtools.powercfg_app", app)
         return this
     }
 
     internal fun setCurrentPowercfg(powerCfg: String): ModeList {
-        if (!Props.setPorp("vtools.powercfg", powerCfg)) {
-            keepShellExec("setprop vtools.powercfg ${powerCfg}")
-            Thread.sleep(60)
-        }
+        Props.setPorp("vtools.powercfg", powerCfg)
         return this
     }
 
     internal fun setCurrentPowercfgApp(app: String): ModeList {
-        if (!Props.setPorp("vtools.powercfg_app", app)) {
-            keepShellExec("setprop vtools.powercfg_app ${app}")
-            Thread.sleep(60)
-        }
+        Props.setPorp("vtools.powercfg_app", app)
         return this
     }
 
     internal fun keepShellExec(cmd: String) {
+        /*
         if (keepShell == null) {
             keepShell = KeepShell(context)
         }
         keepShell!!.doCmd(cmd)
+        */
+        KeepShellSync.doCmdSync(cmd)
     }
 
     internal fun executePowercfgMode(mode: String): ModeList {
@@ -119,13 +113,13 @@ open class ModeList {
 
 
     internal fun executePowercfgModeOnce(mode: String): ModeList {
-        SuDo(context).execCmdSync("sh ${Consts.POWER_CFG_PATH} " + mode)
+        KeepShellSync.doCmdSync("sh ${Consts.POWER_CFG_PATH} " + mode)
         setCurrentPowercfg(mode)
         return this
     }
 
     internal fun executePowercfgModeOnce(mode: String, app: String): ModeList {
-        SuDo(context).execCmdSync("sh ${Consts.POWER_CFG_PATH} " + mode)
+        KeepShellSync.doCmdSync("sh ${Consts.POWER_CFG_PATH} " + mode)
         setCurrent(mode, app)
         return this
     }

@@ -13,8 +13,10 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.Toast
 import com.omarea.shared.SpfConfig
+import com.omarea.shell.KeepShellSync
 import com.omarea.shell.KernelProrp
 import com.omarea.shell.SuDo
+import com.omarea.shell.SysUtils
 import com.omarea.shell.units.ChangeZRAM
 import com.omarea.ui.AdapterSwaplist
 import com.omarea.ui.ProgressBarDialog
@@ -42,7 +44,7 @@ class FragmentSwap : Fragment() {
 
     internal var getSwaps = {
         val ret = KernelProrp.getProp("/proc/swaps")
-        var txt = if (ret == null) "" else ret.replace("\t\t", "\t").replace("\t", " ")
+        var txt = ret.replace("\t\t", "\t").replace("\t", " ")
         while (txt.contains("  ")) {
             txt = txt.replace("  ", " ")
         }
@@ -85,12 +87,10 @@ class FragmentSwap : Fragment() {
         list_swaps2.adapter = datas
 
         txt_mem.text = KernelProrp.getProp("/proc/meminfo")
-
         btn_swap_create.isEnabled = !File("/data/swapfile").exists()
-        btn_swap_start.isEnabled = !txt.contains("/data/swapfile") && File("/data/swapfile").exists()
+        btn_swap_start.isEnabled = !txt.contains("/data/swapfile") && !txt.contains("/swapfile") && File("/data/swapfile").exists()
         btn_swap_close.isEnabled = txt.contains("/data/swapfile")
         btn_swap_delete.isEnabled = File("/data/swapfile").exists()
-
     }
 
     override fun onResume() {
@@ -108,12 +108,9 @@ class FragmentSwap : Fragment() {
 
         txt_swap_size.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, if (File("/data/swapfile").exists()) (File("/data/swapfile").length() / 1024 / 1024).toInt() else 0)
         txt_swap_size_display.text = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 0).toString() + "MB"
-
         txt_zram_size.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0)
         txt_zram_size_display.text = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0).toString() + "MB"
-
         txt_swap_swappiness.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65)
-
         txt_swap_size.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
             txt_swap_size_display.text = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 0).toString() + "MB"
         }, swapConfig, SpfConfig.SWAP_SPF_SWAP_SWAPSIZE))
@@ -123,15 +120,14 @@ class FragmentSwap : Fragment() {
         txt_swap_swappiness.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
             val swappiness = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 0)
             txt_zramstus_swappiness.text = swappiness.toString()
-            SuDo(context).execCmd("echo $swappiness > /proc/sys/vm/swappiness;")
+            KeepShellSync.doCmdSync("echo $swappiness > /proc/sys/vm/swappiness;")
+            swap_swappiness_display.text = "Swappiness: " + KernelProrp.getProp("/proc/sys/vm/swappiness")
         }, swapConfig, SpfConfig.SWAP_SPF_SWAPPINESS))
 
         btn_swap_close.setOnClickListener {
             processBarDialog.showDialog(getString(R.string.swap_on_close))
             val run = Runnable {
-                val sb = StringBuilder()
-                sb.append("swapoff /data/swapfile > /dev/null 2>&1;")
-                SuDo(context).execCmdSync(sb.toString())
+                SysUtils.executeCommandWithOutput(true, "sync\necho 3 > /proc/sys/vm/drop_caches\nbusybox swapoff /data/swapfile > /dev/null 2>&1")
                 myHandler.post({
                     processBarDialog.hideDialog()
                     getSwaps()
@@ -143,9 +139,9 @@ class FragmentSwap : Fragment() {
             processBarDialog.showDialog(getString(R.string.swap_on_close))
             val run = Runnable {
                 val sb = StringBuilder()
-                sb.append("swapoff /data/swapfile >/dev/null 2>&1;")
+                sb.append("sync\necho 3 > /proc/sys/vm/drop_caches\nswapoff /data/swapfile >/dev/null 2>&1;")
                 sb.append("rm -f /data/swapfile;")
-                SuDo(context).execCmdSync(sb.toString())
+                SysUtils.executeCommandWithOutput(true, sb.toString())
                 myHandler.post({
                     processBarDialog.hideDialog()
                     getSwaps()
@@ -212,13 +208,13 @@ class FragmentSwap : Fragment() {
             Thread(Runnable {
                 if (disablezram)
                     myHandler.post(showWait)
-                SuDo(context).execCmdSync(sb.toString())
+                SysUtils.executeCommandWithOutput(true, sb.toString())
                 myHandler.post(getSwaps)
                 myHandler.post(showSwapOpened)
             }).start()
         }
         btn_zram_resize.setOnClickListener {
-            var sizeVal = txt_zram_size.progress
+            val sizeVal = txt_zram_size.progress
 
             if (sizeVal < 2049 && sizeVal > -1) {
                 processBarDialog.showDialog(getString(R.string.zram_resizing))
@@ -226,7 +222,10 @@ class FragmentSwap : Fragment() {
                 val run = Thread({
                     val sb = StringBuilder()
                     sb.append("if [ `cat /sys/block/zram0/disksize` != '" + sizeVal + "000000' ] ; then ")
-                    sb.append("swapoff /dev/block/zram0 >/dev/null 2>&1;")
+                    sb.append(
+                            "sync\n" +
+                            "echo 3 > /proc/sys/vm/drop_caches\n" +
+                            "swapoff /dev/block/zram0 >/dev/null 2>&1;")
                     sb.append("echo 1 > /sys/block/zram0/reset;")
                     sb.append("echo " + sizeVal + "000000 > /sys/block/zram0/disksize;")
                     sb.append("mkswap /dev/block/zram0 >/dev/null 2>&1;")
@@ -234,7 +233,7 @@ class FragmentSwap : Fragment() {
                     sb.append("\n")
                     sb.append("swapon /dev/block/zram0 >/dev/null 2>&1;")
                     sb.append("sleep 2;")
-                    SuDo(context).execCmdSync(sb.toString())
+                    SysUtils.executeCommandWithOutput(true, sb.toString())
                     myHandler.post(getSwaps)
                     myHandler.post {
                         processBarDialog.hideDialog()
@@ -248,12 +247,19 @@ class FragmentSwap : Fragment() {
         }
 
         chk_swap_disablezram.setOnCheckedChangeListener { _, isChecked ->
+            Toast.makeText(context, "该选项会在下次启动Swap时生效，而不是现在！", Toast.LENGTH_SHORT).show()
             swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, isChecked).commit()
         }
         chk_zram_autostart.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                Toast.makeText(context, "注意：你需要允许工具箱自启动，下次开机才会生效！", Toast.LENGTH_SHORT).show()
+            }
             swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_ZRAM, isChecked).commit()
         }
         chk_swap_autostart.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                Toast.makeText(context, "注意：你需要允许工具箱自启动，下次开机才会生效！", Toast.LENGTH_SHORT).show()
+            }
             swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP, isChecked).commit()
         }
     }
