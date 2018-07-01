@@ -135,6 +135,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
             }
             return start + io
         } catch (ex: Exception) {
+            Log.e("parse-battery-io", "$io -> mAh" + ex.message)
             return "? mA"
         }
     }

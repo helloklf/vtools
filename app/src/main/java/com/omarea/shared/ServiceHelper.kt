@@ -68,16 +68,14 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
     private var timer: Timer? = null
 
     private fun startTimer() {
-        if (!batteryMonitro) {
-            return
-        }
+        val time = if(batteryMonitro) 1000L else 10000L
         if (timer == null) {
             timer = Timer(true)
             timer!!.scheduleAtFixedRate(object : TimerTask() {
                 override fun run() {
                     notifyHelper.notify()
                 }
-            }, 0, 10000)
+            }, 0, time)
         }
     }
 
@@ -217,11 +215,8 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             notifyHelper.setNotify(sharedPreferences.getBoolean(key, true))
         } else if (key == SpfConfig.GLOBAL_SPF_BATTERY_MONITORY) {
             batteryMonitro = spfGlobal.getBoolean(key, false)
-            if (!batteryMonitro) {
-
-            } else {
-
-            }
+            stopTimer()
+            startTimer()
         } else if (key == SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE) {
             firstMode = spfGlobal.getString(key, BALANCE)
         } else if (key == SpfConfig.GLOBAL_SPF_ACCU_SWITCH) {

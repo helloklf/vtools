@@ -228,7 +228,6 @@
                                     android:text="切换配置模式严格检查当前前台应用，避免悬浮窗抢占焦点导致意外的模式切换，但这会在频繁切换应用时增加耗电" />
 
                                 <Switch
-                                    android:visibility="gone"
                                     android:id="@+id/battery_monitor"
                                     style="@style/textTitle"
                                     android:layout_width="match_parent"
@@ -236,17 +235,16 @@
                                     android:layout_marginTop="20dp"
                                     android:paddingLeft="8dp"
                                     android:paddingRight="8dp"
-                                    android:text="耗电统计" />
+                                    android:text="耗电检测" />
 
                                 <TextView
-                                    android:visibility="gone"
                                     style="@style/textSmall"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="5dp"
                                     android:paddingLeft="8dp"
                                     android:paddingRight="8dp"
-                                    android:text="记录电池耗电情况，帮助分析各个模式耗电差异，但统计功能会增加额外耗电（尤其是待机）" />
+                                    android:text="加快常驻通知电流显示刷新，获得更精准的耗电速度信息，会增加亮屏时后台耗电（待机自动暂停）" />
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
