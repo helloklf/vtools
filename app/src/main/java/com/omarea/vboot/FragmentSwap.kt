@@ -165,7 +165,7 @@ class FragmentSwap : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        if (!File("/dev/block/zram0").exists()) {
+        if (!KeepShellSync.doCmdSync("if [[ -e /dev/block/zram0 ]]; then echo 1; else echo 0; fi;").equals("1")) {
             swap_config_zram.visibility = View.GONE
         }
 
