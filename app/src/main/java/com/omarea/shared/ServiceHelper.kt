@@ -23,6 +23,14 @@ import java.io.InputStreamReader
 import java.nio.charset.Charset
 import java.util.*
 import kotlin.collections.ArrayList
+import android.os.PowerManager
+import android.view.Display
+import android.content.Context.WINDOW_SERVICE
+import android.view.WindowManager
+
+
+
+
 
 
 /**
@@ -68,8 +76,15 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
     private var timer: Timer? = null
 
     private fun startTimer() {
-        val time = if(batteryMonitro) 1000L else 10000L
         if (timer == null) {
+            val windowManager = this.context.getSystemService(WINDOW_SERVICE) as WindowManager
+            val display = windowManager.defaultDisplay
+            this.screenOn = display.state == Display.STATE_ON
+
+            if (screenOn) {
+                return
+            }
+            val time = if(batteryMonitro) 1000L else 10000L
             timer = Timer(true)
             timer!!.scheduleAtFixedRate(object : TimerTask() {
                 override fun run() {
@@ -116,6 +131,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
     private fun onScreenOffCloseNetwork() {
         if ((settingsLoaded) && dyamicCore && lockScreenOptimize && screenOn == false) {
             toggleConfig(POWERSAVE)
+            updateModeNofity()
             if (debugMode)
                 showMsg("动态响应-锁屏优化 已息屏，自动切换省电模式")
         }
@@ -424,10 +440,37 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         }
         */
         // 精准切换2.0
+        /*
         if(KeepShellSync.doCmdSync("dumpsys activity top | grep ACTIVITY | grep '$packageName'").contains(packageName)) {
             cancelDump(packageName)
         } else {
             return
+        }
+        */
+        val topActivityResult = KeepShellSync.doCmdSync("dumpsys activity top | grep ACTIVITY")
+        if (topActivityResult == "error") {
+            Log.e("dumpsysTopActivity", "result is error")
+        } else {
+            val topActivitys = topActivityResult.split("\n");
+            var lastActivity = ""
+            for (item in topActivitys) {
+                if (!item.isEmpty())
+                    lastActivity = item.trim()
+            }
+            if (lastActivity.contains(packageName)) {
+                cancelDump(packageName)
+            } else {
+                Log.e("dumpsysTopActivity", "dump result [$topActivityResult]，packageName is：$packageName")
+                //  ACTIVITY com.miui.home/.launcher.Launcher 1f45bb pid=3103
+
+                if (lastActivity.indexOf("/") > 8 && lastActivity.startsWith("ACTIVITY")) {
+                    val dumpPackageName = lastActivity.substring(8, lastActivity.indexOf("/"))
+                    Log.w("dumpsysTopActivity", "dumpPackageName $dumpPackageName")
+                    cancelDump(dumpPackageName)
+                } else {
+                    Log.e("dumpsysTopActivity", "lastActivity $lastActivity")
+                }
+            }
         }
     }
 
@@ -439,7 +482,9 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
 
     //焦点应用改变
     fun onFocusAppChanged(pkgName: String) {
-        startTimer()
+        if (screenOn) {
+            startTimer()
+        }
         val packageName = pkgName
         if (!settingsLoaded) {
             return
@@ -478,6 +523,12 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         spfPowercfg.registerOnSharedPreferenceChangeListener(listener)
         notifyHelper.notify()
 
+        // val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
+        // this.screenOn = pm.isScreenOn
+        val windowManager = this.context.getSystemService(WINDOW_SERVICE) as WindowManager
+        val display = windowManager.defaultDisplay
+        this.screenOn = display.state == Display.STATE_ON
+
         //添加输入法到忽略列表
         Thread(Runnable {
             ignoredList.addAll(InputHelper(context).getInputMethods())
@@ -494,7 +545,14 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
                 if (lastModePackage.isNullOrEmpty()) {
                     lastModePackage = "com.system.ui"
                 }
-                toggleConfig(DEFAULT)
+                if (dyamicCore && lastMode.isEmpty()) {
+                    if (!this.screenOn) {
+                        toggleConfig(POWERSAVE)
+                    } else {
+                        startTimer()
+                        toggleConfig(DEFAULT)
+                    }
+                }
             }
         }, 5000)
 

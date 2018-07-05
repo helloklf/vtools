@@ -57,13 +57,26 @@ object KeepShellSync {
     private fun getRuntimeShell() {
         if (p != null) return
         val getSu = Thread(Runnable {
-            mLock.lockInterruptibly()
             try {
+                mLock.lockInterruptibly()
                 p = Runtime.getRuntime().exec("su")
                 out = p!!.outputStream
                 reader = p!!.inputStream.bufferedReader()
                 out!!.write(checkRootState.toByteArray(Charset.defaultCharset()))
+                out!!.flush()
+                Thread(Runnable {
+                    try {
+                        val errorReader =
+                                p!!.errorStream.bufferedReader()
+                        while (true) {
+                            Log.e("KeepShellSync", errorReader.readLine())
+                        }
+                    } catch (ex: Exception) {
+                        Log.e("KeepShellSync", ex.message)
+                    }
+                }).start()
             } catch (ex: Exception) {
+                Log.e("getRuntime", ex.message)
             } finally {
                 mLock.unlock()
             }
@@ -75,6 +88,7 @@ object KeepShellSync {
                 getSu.interrupt()
             }
         }).start()
+        Thread.sleep(1000)
     }
 
     private var br = "\n\n".toByteArray(Charset.defaultCharset())
@@ -83,12 +97,11 @@ object KeepShellSync {
     internal fun doCmdSync(cmd: String): String {
         val uuid = UUID.randomUUID().toString()
         getRuntimeShell()
-        mLock.lock()
-        try {
-            if (out != null) {
-                val startTag = "--start-$uuid--"
-                val endTag = "--end-$uuid--"
+        if (out != null) {
+            val startTag = "--start-$uuid--"
+            val endTag = "--end-$uuid--"
 
+            try {
                 out!!.write(br)
                 out!!.write("echo '$startTag'".toByteArray(Charset.defaultCharset()))
                 out!!.write(br)
@@ -97,29 +110,42 @@ object KeepShellSync {
                 out!!.write("echo '$endTag'".toByteArray(Charset.defaultCharset()))
                 out!!.write(br)
                 out!!.flush()
-                val results = StringBuilder()
-                var unstart = true
-                while (true && reader != null) {
-                    val line = reader!!.readLine()
-                    if (line == null || line == endTag) {
-                        break
-                    } else if (line == startTag) {
-                        unstart = false
-                    } else if (!unstart) {
-                        results.append(line)
-                        results.append("\n")
-                    }
-                }
-                return results.toString().trim()
-            } else {
+            } catch (ex: Exception) {
+                tryExit()
                 return "error"
             }
-        } catch (e: IOException) {
+
+            mLock.lock()
+            try {
+                if (out != null) {
+                    val results = StringBuilder()
+                    var unstart = true
+                    while (true && reader != null) {
+                        val line = reader!!.readLine()
+                        if (line == null || line == endTag) {
+                            break
+                        } else if (line == startTag) {
+                            unstart = false
+                        } else if (!unstart) {
+                            results.append(line)
+                            results.append("\n")
+                        }
+                    }
+                    // Log.d("Shell", cmd.toString() + "\n" + "Result:"+results.toString().trim())
+                    return results.toString().trim()
+                } else {
+                    return "error"
+                }
+            } catch (e: IOException) {
+                tryExit()
+                Log.e("KeepShellAsync", e.message)
+                return "error"
+            } finally {
+                mLock.unlock()
+            }
+        } else {
             tryExit()
-            Log.e("KeepShellAsync", e.message)
             return "error"
-        } finally {
-            mLock.unlock()
         }
     }
 }

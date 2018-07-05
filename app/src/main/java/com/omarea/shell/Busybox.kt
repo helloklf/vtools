@@ -2,6 +2,7 @@ package com.omarea.shell
 
 import android.app.AlertDialog
 import android.content.Context
+import android.widget.Toast
 import com.omarea.shared.Consts
 import com.omarea.shared.FileWrite
 import com.omarea.shell.units.BusyboxInstallerUnit
@@ -54,6 +55,9 @@ class Busybox(private var context: Context) {
                                 cmd.append("/system/xbin/busybox --install /system/xbin;")
 
                                 KeepShellSync.doCmdSync(cmd.toString())
+                                if (!busyboxInstalled()) {
+                                    Toast.makeText(context, "已尝试自动安装Busybox但依然不可用，也许System分区没被解锁。因此，部分功能可能无法使用！", Toast.LENGTH_LONG).show()
+                                }
                                 next?.run()
                             }
                     )

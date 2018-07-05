@@ -36,7 +36,7 @@
         </params>
     </action>
     <action root="true">
-        <title>Camera2 API【启用\禁用】</title>
+        <title>HAL3【启用\禁用】</title>
         <desc su="file:///android_asset/custom/actions/gcm_get.sh" />
         <script>
             setprop persist.camera.HAL3.enabled $gcm;

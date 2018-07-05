@@ -128,7 +128,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                     AsynSuShellUnit(ProgressHandler(context)).exec(commands.toString()).waitFor()
                 })
                 .setNeutralButton("查看说明", { _, _ ->
-                    AlertDialog.Builder(context).setTitle("说明").setMessage("在Android N以后，为了减少应用程序空间占用和提高安装效率，引入了新的机制。在安装应用时，不再像6.0时代一样将整个应用编译成本地代码，同时增加了cmd package compile命令，可用于手动触发编译。\n\nSpeed：尽可能的提高运行效率\nEverything：编译可以被编译的一切\n\nReset命令用于清除配置文件和已编译过的代码\n\n选择强制编译时，将重新编译已经编译过的应用。Reset命令用于重置所有应用的Dex编译状态。").setNegativeButton("了解更多", { dialog, which ->
+                    AlertDialog.Builder(context).setTitle("说明").setMessage("在Android N以后，为了减少应用程序空间占用和提高安装效率，引入了新的机制。在安装应用时，不再像6.0时代一样将整个应用编译成本地代码，同时增加了cmd package compile命令，可用于手动触发编译，具有以下几种编译模式：\n\nSpeed：尽可能的提高运行效率\nEverything：编译可以被编译的一切\nReset命令用于清除配置文件和已编译过的代码\n选择强制编译时，将重新编译已经编译过的应用。\nReset命令用于重置所有应用的Dex编译状态。\n\n 以8.0系统下斗鱼TV客户端为例，权限安装时base.odex仅为6.8MB，使用Speed模式编译后，base.odex文件增大到103MB。\n\n由于国内许多应用均使用了热更新技术，或使用其它自定义引擎（Weex、React等）来提高开发效率，但需要在运行时才解析并生成原生组件来渲染，甚至功能代码被托管在服务器端（每次运行都可能需要重新下载并解析）。这是导致应用启动慢或启动后卡顿的主要原因。因此Speed、Everything模式编译均不能为这类应用带来明显的性能提升！").setNegativeButton("了解更多", { dialog, which ->
                         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://source.android.com/devices/tech/dalvik/jit-compiler?hl=zh-cn")))
                     }).create().show()
                 })
@@ -255,7 +255,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                     Toast.makeText(context, "配置已修改，但需要重启才能生效！", Toast.LENGTH_SHORT).show()
                 })
                 .setNeutralButton("查看说明", { _, _ ->
-                    AlertDialog.Builder(context).setTitle("说明").setMessage("在Android N以后，为了减少应用程序空间占用和提高安装效率，引入了新的机制。在安装应用时，不再像6.0时代一样将整个应用编译成本地代码，仅在设备空闲时编译优化常用的代码块。\n\n我们可以改变这种策略，让PM程序在安装应用时编译更多内容，降低在运行时的CPU占用提高流畅度。\n\n建议修改后重启手机，并进行一次“强制编译Dex”操作！\n\n注意：很不推荐使用“永不编译”模式，除非你的手机真的非常缺存储空间，而且你不关心运行速度！").setNegativeButton("了解更多", { dialog, which ->
+                    AlertDialog.Builder(context).setTitle("说明").setMessage("在Android N以后，为了减少应用程序空间占用和提高安装效率，引入了新的机制。在安装应用时，不再像6.0时代一样将整个应用编译成本地代码，仅在设备空闲时编译优化常用的代码块。\n\n我们可以改变这种策略，让PM程序在安装应用时编译更多内容，降低在运行时的CPU占用提高流畅度。\n\n建议修改后重启手机，并进行一次“强制编译Dex”操作！\n\n以8.0系统下斗鱼TV客户端为例，权限安装时base.odex仅为6.8MB，使用Speed模式编译后，base.odex文件增大到103MB。\n\n由于国内许多应用均使用了热更新技术，或使用其它自定义引擎（Weex、React等）来提高开发效率，但需要在运行时才解析并生成原生组件来渲染，甚至功能代码被托管在服务器端（每次运行都可能需要重新下载并解析）。这是导致应用启动慢或启动后卡顿的主要原因。因此Speed、Everything模式编译均不能为这类应用带来明显的性能提升！").setNegativeButton("了解更多", { dialog, which ->
                         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://source.android.com/devices/tech/dalvik/configure?hl=zh-cn")))
                     }).create().show()
                 })

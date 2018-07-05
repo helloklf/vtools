@@ -42,9 +42,9 @@
         <item>com.tencent.cldts</item>
     </string-array>
     <string-array name="powercfg_fast">
-        <item>com.antutu.abenchmark</item>
-        <item>com.antutu.benchmark.full</item>
-        <item>com.keramidas.titaniumbackup</item>
+        <item>com.Antutu.abenchmark</item>
+        <item>com.Antutu.benchmark.full</item>
+        <item>com.keramidas.TitaniumBackup</item>
         <item>com.primatelabs.geekbench</item>
         <item>com.andromeda.androbench2</item>
         <item>com.xzr.La.bench</item>

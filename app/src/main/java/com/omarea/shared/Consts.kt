@@ -86,4 +86,16 @@ public object Consts {
 
                     "cp /system/vendor/lib/libthermalclient.so.bak /system/vendor/lib/libthermalclient.so\n" +
                     "rm -f /system/vendor/lib/libthermalclient.so.bak\n"
+
+    val isRootUser = "if [[ `id -u 2>&1` = '0' ]]; then\n" +
+            "\techo 'root';\n" +
+            "elif [[ `\$UID` = '0' ]]; then\n" +
+            "\techo 'root';\n" +
+            "elif [[ `whoami 2>&1` = 'root' ]]; then\n" +
+            "\techo 'root';\n" +
+            "elif [[ `set | grep 'USER_ID=0'` = 'USER_ID=0' ]]; then\n" +
+            "\techo 'root';\n" +
+            "else\n" +
+            "\texit -1;\n" +
+            "fi;"
 }

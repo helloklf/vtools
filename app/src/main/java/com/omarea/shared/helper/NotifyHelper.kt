@@ -10,6 +10,7 @@ import android.support.v4.app.NotificationCompat
 import android.util.Log
 import android.widget.RemoteViews
 import com.omarea.shared.ModeList
+import com.omarea.shell.KeepShellSync
 import com.omarea.shell.KernelProrp
 import com.omarea.shell.SysUtils
 import com.omarea.vboot.ActivityQuickSwitchMode
@@ -35,6 +36,11 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         }
     }
 
+    private var batteryTemp = "?°C"
+    private var batteryCapacity = ""
+    private var batteryStatus = "0"
+    private var batteryIO = "0"
+
     private var batteryUnit = Int.MIN_VALUE
     private var batterySensor: String? = "init"
     private fun getBatteryUnit(): Int {
@@ -43,13 +49,18 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
             if (full.length >= 4) {
                 return full.length - 4
             }
-            return -1
+            batteryUnit = -1
         }
         return batteryUnit
     }
 
     private fun getCapacity(): String {
-        return KernelProrp.getProp("/sys/class/power_supply/battery/capacity") + "%"
+        if (batteryCapacity.isEmpty() || batteryCapacity == "%?") {
+            return ""
+        } else {
+            return batteryCapacity
+        }
+        // return KernelProrp.getProp("/sys/class/power_supply/battery/capacity") + "%"
     }
 
     private fun getBatteryIcon(capacity: Int): Int {
@@ -80,7 +91,35 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         return batterySensor
     }
 
+    private fun updateBatteryInfo () {
+        val batteryInfo = KeepShellSync.doCmdSync("dumpsys battery")
+        val batteryInfos = batteryInfo.split("\n")
+        for(item in batteryInfos) {
+            val info = item.trim()
+            val index = info.indexOf(":")
+            if (index > -1 && index < info.length) {
+                val value = info.substring(info.indexOf(":") + 1).trim()
+                if (info.startsWith("status")) {
+                    batteryStatus = value
+                } else if (info.startsWith("level")) {
+                    batteryCapacity = value
+                } else if(info.startsWith("temperature")) {
+                    batteryTemp = value
+                }
+            }
+        }
+    }
+
     private fun getBatteryTemp(): String {
+        if (batteryTemp == "?°C" || batteryTemp.isEmpty()) {
+            return "?°C"
+        }
+        try {
+            return (batteryTemp.toInt() / 10.0).toString() + "°C"
+        } catch (ex:Exception) {
+            return "?°C"
+        }
+        /*
         try {
             val sensor = getBatterySensor()
             if (sensor != null && !sensor.isNullOrEmpty()) {
@@ -96,6 +135,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
             Log.e("NotifyHelper", "getBatteryTemp, " + ex.message)
             return "? °C"
         }
+        */
     }
 
     private fun getBatteryIO(): String? {
@@ -173,11 +213,14 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         var capacity = ""
         var modeImage = BitmapFactory.decodeResource(context.resources, getModImage(mode))
         try {
+            updateBatteryInfo()
             batteryIO = getBatteryIO()
             batteryTemp = getBatteryTemp()
             capacity = getCapacity()
             modeImage = BitmapFactory.decodeResource(context.resources, getModImage(mode))
-            if (!capacity.isEmpty()) {
+            if (batteryStatus == "2") {
+                batteryImage = BitmapFactory.decodeResource(context.resources, R.drawable.b_4)
+            } else if (!capacity.isEmpty()) {
                 batteryImage = BitmapFactory.decodeResource(context.resources, getBatteryIcon(capacity.replace("%", "").toInt()))
             }
         } catch (ex: Exception) {
@@ -187,7 +230,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         val remoteViews = RemoteViews(context.packageName, R.layout.notify0)
         remoteViews.setTextViewText(R.id.notify_title, getAppName(packageName))
         remoteViews.setTextViewText(R.id.notify_text, getModName(mode))
-        remoteViews.setTextViewText(R.id.notify_battery_text, batteryIO + " " + capacity + " " + batteryTemp)
+        remoteViews.setTextViewText(R.id.notify_battery_text, batteryIO + " " + capacity + "% " + batteryTemp)
         if (modeImage != null) {
             remoteViews.setImageViewBitmap(R.id.notify_mode, modeImage)
         }

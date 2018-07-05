@@ -11,6 +11,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.util.Log
 import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityWindowInfo
 import com.omarea.shared.AutoClickService
 import com.omarea.shared.BootService
 import com.omarea.shared.CrashHandler
@@ -127,15 +128,16 @@ override fun onCreate() {
         return packageName;
     }
 
+    var lastPackage = ""
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         if (event.packageName == null || event.className == null)
             return
         //android.app.AlertDialog
 
-        val root = rootInActiveWindow
-        if (root == null) {
-            return
-        }
+        //val root = rootInActiveWindow
+        //if (root == null) {
+        //    return
+        //}
         /*
         if(event.source != null && event.source.window != null)
             if (event.source.window.type != -1) {
@@ -171,9 +173,23 @@ override fun onCreate() {
             AutoClickService().miuiUsbInstallAutoClick(event)
             return
         }
-        if (serviceHelper == null)
-            initServiceHelper()
-        serviceHelper?.onFocusAppChanged(event.packageName.toString())
+
+        if (lastPackage == packageName)
+            return
+        val source = rootInActiveWindow //event.source
+        if (source == null) {
+            return
+        }
+        val windowInfo = source.window
+
+        if (windowInfo != null && windowInfo.type == AccessibilityWindowInfo.TYPE_APPLICATION && windowInfo.isActive) {
+            lastPackage = packageName
+            if (serviceHelper == null)
+                initServiceHelper()
+            serviceHelper?.onFocusAppChanged(event.packageName.toString())
+        } else {
+
+        }
     }
     /*
     Thread(Runnable {

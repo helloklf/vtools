@@ -21,18 +21,7 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
 
     //是否已经Root
     private fun isRoot(disableSeLinux: Boolean): Boolean {
-        val r = KeepShellSync.doCmdSync(
-                "if [[ `id -u 2>&1` = '0' ]]; then\n" +
-                        "\techo 'root';\n" +
-                        "elif [[ `\$UID` = '0' ]]; then\n" +
-                        "\techo 'root';\n" +
-                        "elif [[ `whoami 2>&1` = 'root' ]]; then\n" +
-                        "\techo 'root';\n" +
-                        "elif [[ `set | grep 'USER_ID=0'` = 'USER_ID=0' ]]; then\n" +
-                        "\techo 'root';\n" +
-                        "else\n" +
-                        "\texit -1;\n" +
-                        "fi;")
+        val r = KeepShellSync.doCmdSync(Consts.isRootUser)
         Log.d("getsu", r)
         if (r == "error" || r.contains("permission denied") || r.contains("not allowed") || r.equals("not found")) {
             return false
