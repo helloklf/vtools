@@ -83,7 +83,7 @@ object KeepShellSync {
         })
         getSu.start()
         Thread(Runnable {
-            Thread.sleep(20 * 1000)
+            Thread.sleep(10 * 1000)
             if (p == null && getSu.state != Thread.State.TERMINATED) {
                 getSu.interrupt()
             }
@@ -98,8 +98,8 @@ object KeepShellSync {
         val uuid = UUID.randomUUID().toString()
         getRuntimeShell()
         if (out != null) {
-            val startTag = "--start-$uuid--"
-            val endTag = "--end-$uuid--"
+            val startTag = "--start--$uuid--"
+            val endTag = "--end--$uuid--"
 
             try {
                 out!!.write(br)
@@ -115,14 +115,15 @@ object KeepShellSync {
                 return "error"
             }
 
-            mLock.lock()
+            // Log.e("shell-lock", cmd)
             try {
+                mLock.lockInterruptibly()
                 if (out != null) {
                     val results = StringBuilder()
                     var unstart = true
                     while (true && reader != null) {
                         val line = reader!!.readLine()
-                        if (line == null || line == endTag) {
+                        if (line == null || line.contains("--end--")) {
                             break
                         } else if (line == startTag) {
                             unstart = false
@@ -131,6 +132,7 @@ object KeepShellSync {
                             results.append("\n")
                         }
                     }
+                    // Log.e("shell-unlock", cmd)
                     // Log.d("Shell", cmd.toString() + "\n" + "Result:"+results.toString().trim())
                     return results.toString().trim()
                 } else {

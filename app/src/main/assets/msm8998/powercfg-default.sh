@@ -26,6 +26,8 @@ echo 1 > /sys/devices/system/cpu/cpu2/online
 echo 1 > /sys/devices/system/cpu/cpu3/online
 echo 1 > /sys/devices/system/cpu/cpu4/online
 echo 1 > /sys/devices/system/cpu/cpu5/online
+echo 1 > /sys/devices/system/cpu/cpu6/online
+echo 1 > /sys/devices/system/cpu/cpu7/online
 
 function gpu_config()
 {
@@ -72,15 +74,13 @@ if [ "$action" = "powersave" ]; then
 
 	set_cpu_freq 5000 1401600 5000 1497600
 
-	echo "95 1248000:73" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
+	echo "95 652800:73 1248000:73" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
 	echo 883200 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
 
-	echo "95 979200:78" > /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
+	echo "95 806400:78" > /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
 	echo 729600 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
 
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
-    echo 0 > /sys/devices/system/cpu/cpu6/online
-    echo 0 > /sys/devices/system/cpu/cpu7/online
 	echo 0 > /proc/sys/kernel/sched_boost
 
     echo 0-2 > /dev/cpuset/background/cpus
@@ -92,8 +92,6 @@ if [ "$action" = "powersave" ]; then
 	exit 0
 fi
 
-echo 1 > /sys/devices/system/cpu/cpu6/online
-echo 1 > /sys/devices/system/cpu/cpu7/online
 
 echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy
 

@@ -8,7 +8,6 @@ import java.util.*
 /**
  * Created by Hello on 2017/4/8.
  */
-
 class AutoClickService {
     internal var autoClickKeyWords: ArrayList<String> = object : ArrayList<String>() {
         init {

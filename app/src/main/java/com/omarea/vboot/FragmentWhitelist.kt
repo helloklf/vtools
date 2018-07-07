@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.Switch
 import com.omarea.shared.AppListHelper
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.model.Appinfo
@@ -52,7 +53,7 @@ class FragmentWhitelist : Fragment() {
         val globalSpf = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         doze_whitelist_autoset.isChecked = globalSpf.getBoolean(SpfConfig.GLOBAL_SPF_DOZELIST_AUTOSET, false)
         doze_whitelist_autoset.setOnClickListener {
-            globalSpf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DOZELIST_AUTOSET, (it as CheckBox).isChecked).commit()
+            globalSpf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DOZELIST_AUTOSET, (it as Switch).isChecked).commit()
         }
     }
 

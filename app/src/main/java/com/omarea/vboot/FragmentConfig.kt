@@ -18,6 +18,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.CheckBox
+import android.widget.Switch
 import com.omarea.shared.*
 import com.omarea.shared.model.Appinfo
 import com.omarea.shell.Platform
@@ -177,15 +178,15 @@ class FragmentConfig : Fragment() {
         }
         lock_screen_optimize.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE, false)
         lock_screen_optimize.setOnClickListener {
-            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE, lock_screen_optimize.isChecked).commit()
+            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE, (it as Switch).isChecked).commit()
         }
         accu_switch.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
         accu_switch.setOnClickListener {
-            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, lock_screen_optimize.isChecked).commit()
+            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, (it as Switch).isChecked).commit()
         }
         battery_monitor.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
         battery_monitor.setOnClickListener {
-            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, lock_screen_optimize.isChecked).commit()
+            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, (it as Switch).isChecked).commit()
         }
 
         config_defaultlist.onItemClickListener = OnItemClickListener { _, current, position, _ ->

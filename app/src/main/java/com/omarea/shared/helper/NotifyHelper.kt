@@ -12,6 +12,7 @@ import android.widget.RemoteViews
 import com.omarea.shared.ModeList
 import com.omarea.shell.KeepShellSync
 import com.omarea.shell.KernelProrp
+import com.omarea.shell.RootFile
 import com.omarea.shell.SysUtils
 import com.omarea.vboot.ActivityQuickSwitchMode
 import com.omarea.vboot.R
@@ -94,17 +95,35 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
     private fun updateBatteryInfo () {
         val batteryInfo = KeepShellSync.doCmdSync("dumpsys battery")
         val batteryInfos = batteryInfo.split("\n")
+
+        // 由于部分手机相同名称的参数重复出现，并且值不同，为了避免这种情况，加个额外处理，同名参数只读一次
+        var levelReaded = false
+        var tempReaded = false
+        var statusReaded = false
+
         for(item in batteryInfos) {
             val info = item.trim()
             val index = info.indexOf(":")
             if (index > -1 && index < info.length) {
                 val value = info.substring(info.indexOf(":") + 1).trim()
                 if (info.startsWith("status")) {
-                    batteryStatus = value
+                    if (!statusReaded) {
+                        batteryStatus = value
+                        statusReaded = true
+                    } else {
+                        continue
+                    }
                 } else if (info.startsWith("level")) {
-                    batteryCapacity = value
+                    if (!levelReaded) {
+                        batteryCapacity = value
+                        levelReaded = true
+                    }
+                    else continue
                 } else if(info.startsWith("temperature")) {
-                    batteryTemp = value
+                    if (!tempReaded) {
+                        tempReaded = true
+                        batteryTemp = value
+                    } else continue
                 }
             }
         }
@@ -138,17 +157,23 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         */
     }
 
+    var path: String? = null
     private fun getBatteryIO(): String? {
-        var path = ""
-        if (File("/sys/class/power_supply/battery/current_now").exists()) {
-            path = "/sys/class/power_supply/battery/current_now"
-        } else if (File("/sys/class/power_supply/battery/BatteryAverageCurrent").exists()) {
-            path = "/sys/class/power_supply/battery/BatteryAverageCurrent"
-        } else {
+        if (path == null) {
+            if (RootFile.itemExists("/sys/class/power_supply/battery/current_now")) {
+                path = "/sys/class/power_supply/battery/current_now"
+            } else if (RootFile.itemExists("/sys/class/power_supply/battery/BatteryAverageCurrent")) {
+                path = "/sys/class/power_supply/battery/BatteryAverageCurrent"
+            } else {
+                path = ""
+            }
+        }
+
+        if (path.isNullOrEmpty()) {
             return "? mA"
         }
 
-        var io = KernelProrp.getProp(path)
+        var io = KernelProrp.getProp(path!!)
         if (io.isEmpty()) {
             return "? mA"
         }

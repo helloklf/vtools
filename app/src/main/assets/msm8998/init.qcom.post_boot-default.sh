@@ -44,7 +44,7 @@ case "$target" in
 	echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/use_sched_load
 	echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/use_migration_notif
 	echo 19000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/above_hispeed_delay
-	echo 90 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/go_hispeed_load
+	echo 86 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/go_hispeed_load
 	echo 20000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
 	echo 1248000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
 	echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy
@@ -124,7 +124,7 @@ case "$target" in
     echo "0:1324800" > /sys/module/cpu_boost/parameters/input_boost_freq
     echo 40 > /sys/module/cpu_boost/parameters/input_boost_ms
     echo "0:0 1:0 2:0 3:0 4:2208000 5:0 6:0 7:0" > /sys/module/cpu_boost/parameters/powerkey_input_boost_freq
-    echo "40" > /sys/module/cpu_boost/parameters/powerkey_input_boost_ms
+    echo "500" > /sys/module/cpu_boost/parameters/powerkey_input_boost_ms
     echo 'Y' > /sys/module/cpu_boost/parameters/sched_boost_on_powerkey_input
     #echo 'Y' > /sys/module/cpu_boost/parameters/sched_boost_on_input
 

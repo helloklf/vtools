@@ -161,10 +161,11 @@ override fun onCreate() {
 
         val packageName = event.packageName.toString().toLowerCase()
         //修复傻逼一加桌面文件夹抢占焦点导致的问题
+        /*
         if ((packageName == "net.oneplus.h2launcher" || packageName == "net.oneplus.launcher") && event.className == "android.widget.LinearLayout") {
             return
         }
-
+        */
         if (packageName.contains("packageinstaller")) {
             if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity")
                 return
