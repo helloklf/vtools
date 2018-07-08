@@ -369,14 +369,13 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             intent.addCategory(Intent.CATEGORY_HOME)
             val res = context.getPackageManager().resolveActivity(intent, 0)
             if (res.activityInfo == null) {
-                // should not happen. A home is always installed, isn't it?
             } else if (res.activityInfo.packageName == "android") {
-                // No default selected
             } else {
-                // res.activityInfo.packageName and res.activityInfo.name gives
-                // you the default app
-                //Log.d(TAG, "默认桌面为：" + res.activityInfo.packageName + "."  + res.activityInfo.name)
-                context.startActivity(Intent().setComponent(ComponentName(res.activityInfo.packageName, res.activityInfo.name)))
+                val home = res.activityInfo.packageName
+                context.startActivity(Intent().setComponent(ComponentName(home, res.activityInfo.name)))
+                if (lockScreenOptimize) {
+                    lastModePackage = home
+                }
             }
         } catch (ex: Exception) {
         }
@@ -448,8 +447,10 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         }
         */
         val topActivityResult = KeepShellSync.doCmdSync("dumpsys activity top | grep ACTIVITY")
+        Log.d("vtool-dump", "[dump:${topActivityResult}] - [active app:${packageName}]")
         if (topActivityResult == "error") {
             Log.e("dumpsysTopActivity", "result is error")
+            showMsg("精准切换 - 获取前台应用失败！")
         } else {
             val topActivitys = topActivityResult.split("\n");
             var lastActivity = ""
@@ -460,12 +461,15 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             if (lastActivity.contains(packageName)) {
                 cancelDump(packageName)
             } else {
+                // showMsg("精准切换 - ${packageName}并非前台应用但企图占据焦点，已自动添加到临时黑名单！")
+                // ignoredList.add(packageName)
+
                 Log.e("dumpsysTopActivity", "dump result [$topActivityResult]，packageName is：$packageName")
                 //  ACTIVITY com.miui.home/.launcher.Launcher 1f45bb pid=3103
 
                 if (lastActivity.indexOf("/") > 8 && lastActivity.startsWith("ACTIVITY")) {
-                    val dumpPackageName = lastActivity.substring(8, lastActivity.indexOf("/"))
-                    Log.w("dumpsysTopActivity", "dumpPackageName $dumpPackageName")
+                    val dumpPackageName = lastActivity.substring(8, lastActivity.indexOf("/")).trim()
+                    Log.d("dumpsysTopActivity", "dumpPackageName $dumpPackageName，active app $packageName")
                     cancelDump(dumpPackageName)
                 } else {
                     Log.e("dumpsysTopActivity", "lastActivity $lastActivity")
@@ -477,7 +481,6 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
     private fun cancelDump(packageName: String) {
         autoBoosterApp(packageName)
         autoToggleMode(packageName)
-        lastPackage = packageName
     }
 
     //焦点应用改变

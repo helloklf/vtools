@@ -1,6 +1,7 @@
 package com.omarea.vboot
 
 import android.accessibilityservice.AccessibilityService
+import android.app.ActivityManager
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
 import android.content.ComponentName
@@ -128,7 +129,6 @@ override fun onCreate() {
         return packageName;
     }
 
-    var lastPackage = ""
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         if (event.packageName == null || event.className == null)
             return
@@ -160,6 +160,9 @@ override fun onCreate() {
         */
 
         val packageName = event.packageName.toString().toLowerCase()
+        if (packageName == "android" || packageName == "com.android.systemui") {
+            return
+        }
         //修复傻逼一加桌面文件夹抢占焦点导致的问题
         /*
         if ((packageName == "net.oneplus.h2launcher" || packageName == "net.oneplus.launcher") && event.className == "android.widget.LinearLayout") {
@@ -175,21 +178,33 @@ override fun onCreate() {
             return
         }
 
-        if (packageName == "com.android.systemui" || lastPackage == packageName)
-            return
-        val source = rootInActiveWindow //event.source
-        if (source == null) {
+        /*
+        val rootWindow = rootInActiveWindow
+        val source = event.source //rootInActiveWindow //event.source
+
+        if (source == null || rootWindow.windowId != source.windowId) {
             return
         }
+
         val windowInfo = source.window
+        */
+
+        val windowInfo = windows.last()
+        val source = event.source
+        if (source == null || source.windowId != windows.last().id) {
+            return
+        }
 
         if (windowInfo != null && windowInfo.type == AccessibilityWindowInfo.TYPE_APPLICATION && windowInfo.isActive) {
-            lastPackage = packageName
             if (serviceHelper == null)
                 initServiceHelper()
             serviceHelper?.onFocusAppChanged(event.packageName.toString())
+            for (i in 0..windowInfo.childCount - 1) {
+                val item = windowInfo.getChild(i)
+                Log.d("w", item.describeContents().toString())
+            }
         } else {
-
+            Log.d("vtool-dump", "[skip app:${packageName}]")
         }
     }
     /*

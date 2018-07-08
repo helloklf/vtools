@@ -3,9 +3,7 @@
 action=$1
 stop perfd
 
-if [ ! `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor` = "interactive" ]; then 
-	sh /system/etc/init.qcom.post_boot.sh
-fi
+echo 1 > /proc/sys/kernel/sched_prefer_sync_wakee_to_waker
 
 echo "0" > /sys/module/cpu_boost/parameters/input_boost_freq
 echo 0 > /sys/module/cpu_boost/parameters/input_boost_ms
@@ -93,6 +91,8 @@ if [ "$action" = "performance" ]; then
 	echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 
 	echo 0 > /proc/sys/kernel/sched_boost
+    stop thermanager
+    stop thermal-engine
 	
 	exit 0
 fi
