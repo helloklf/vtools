@@ -175,7 +175,7 @@ override fun onCreate() {
             return
         }
 
-        if (lastPackage == packageName)
+        if (packageName == "com.android.systemui" || lastPackage == packageName)
             return
         val source = rootInActiveWindow //event.source
         if (source == null) {

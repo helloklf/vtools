@@ -125,7 +125,7 @@ object KeepShellSync {
                         val line = reader!!.readLine()
                         if (line == null || line.contains("--end--")) {
                             break
-                        } else if (line == startTag) {
+                        } else if (line.equals(startTag)) {
                             unstart = false
                         } else if (!unstart) {
                             results.append(line)

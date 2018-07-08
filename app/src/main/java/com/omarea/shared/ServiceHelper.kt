@@ -81,7 +81,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             val display = windowManager.defaultDisplay
             this.screenOn = display.state == Display.STATE_ON
 
-            if (screenOn) {
+            if (!screenOn) {
                 return
             }
             val time = if(batteryMonitro) 1000L else 10000L
