@@ -17,10 +17,11 @@ class ConfigInstaller {
                     .append("cp ${FileWrite.getPrivateFilePath(context, "init.qcom.post_boot.sh")} ${Consts.POWER_CFG_BASE};")
                     .append("chmod 0777 ${Consts.POWER_CFG_PATH};")
                     .append("chmod 0777 ${Consts.POWER_CFG_BASE};")
-                    .append(afterCmds)
             //KeepShellSync.doCmdSync(Consts.InstallPowerToggleConfigToCache + "\n\n" + Consts.ExecuteConfig + "\n" + after)
             KeepShellSync.doCmdSync(cmd.toString())
+            configCodeVerify(context)
             ModeList(context).setCurrentPowercfg("")
+            KeepShellSync.doCmdSync(afterCmds)
         } catch (ex: Exception) {
             Log.e("script-parse", ex.message)
         }

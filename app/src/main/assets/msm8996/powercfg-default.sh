@@ -10,6 +10,7 @@ echo 0 > /sys/module/cpu_boost/parameters/input_boost_ms
 echo 0 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/max_freq_hysteresis
 echo 45 > /proc/sys/kernel/sched_downmigrate
 echo 45 > /proc/sys/kernel/sched_upmigrate
+echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/boost
 echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/boost
 
 function gpu_config()

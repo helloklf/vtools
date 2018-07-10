@@ -72,7 +72,7 @@ if [ "$action" = "powersave" ]; then
 
 	set_cpu_freq 5000 1401600 5000 1804800
 
-	echo "85 300000:85 518400:57 748800:75 1248000:78" > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/target_loads
+	echo "85 300000:85 518400:67 748800:75 1248000:78" > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/target_loads
 	echo 518400 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
 
 	echo "87 345600:89 1056000:89 1344000:92" > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/target_loads
@@ -103,7 +103,7 @@ if [ "$action" = "balance" ]; then
     echo "0:1248000 1:1248000 2:1248000 3:1248000 4:0 5:0 6:0 7:0" > /sys/module/cpu_boost/parameters/input_boost_freq
     echo 40 > /sys/module/cpu_boost/parameters/input_boost_ms
 
-    echo "83 300000:85 595200:57 825600:75 1248000:78" > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/target_loads
+    echo "83 300000:85 595200:67 825600:75 1248000:78" > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/target_loads
 	echo 960000 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
 
     echo "83 300000:89 1056000:89 1344000:92" > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/target_loads

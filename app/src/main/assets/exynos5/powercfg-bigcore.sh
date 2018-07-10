@@ -32,6 +32,7 @@ function disabled_hotplug()
 }
 
 cpuset
+set_value 0 /sys/devices/system/cpu/cpu0/cpufreq/interactive/boost
 set_value 0 /sys/devices/system/cpu/cpu4/cpufreq/interactive/boost
 
 if [ "$action" = "powersave" ]; then

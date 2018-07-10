@@ -3,12 +3,15 @@ package com.omarea.shared
 import android.accessibilityservice.AccessibilityService
 import android.content.ComponentName
 import android.content.Context
+import android.content.Context.WINDOW_SERVICE
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.Display
+import android.view.WindowManager
 import android.widget.Toast
 import com.omarea.shared.helper.InputHelper
 import com.omarea.shared.helper.NotifyHelper
@@ -17,21 +20,8 @@ import com.omarea.shared.helper.ScreenEventHandler
 import com.omarea.shell.AsynSuShellUnit
 import com.omarea.shell.KeepShell
 import com.omarea.shell.KeepShellSync
-import java.io.BufferedReader
 import java.io.File
-import java.io.InputStreamReader
-import java.nio.charset.Charset
 import java.util.*
-import kotlin.collections.ArrayList
-import android.os.PowerManager
-import android.view.Display
-import android.content.Context.WINDOW_SERVICE
-import android.view.WindowManager
-
-
-
-
-
 
 /**
  * Created by helloklf on 2016/10/1.
@@ -84,7 +74,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             if (!screenOn) {
                 return
             }
-            val time = if(batteryMonitro) 1000L else 10000L
+            val time = if(batteryMonitro) 2000L else 10000L
             timer = Timer(true)
             timer!!.scheduleAtFixedRate(object : TimerTask() {
                 override fun run() {
@@ -111,6 +101,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         if (screenOn == false)
             return
         screenOn = false
+        notifyHelper.hideNotify()
         lastScreenOnOff = System.currentTimeMillis()
         if (autoBooster) {
             screenHandler.postDelayed({
@@ -169,6 +160,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         screenOn = true
         // fixme:似乎有bug?
         startTimer()
+        notifyHelper.notify()
 
         if (settingsLoaded && dyamicCore && lockScreenOptimize) {
             if (this.lastModePackage != null && !this.lastModePackage.isNullOrEmpty()) {
@@ -212,6 +204,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             autoBooster = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, false)
         } else if (key == SpfConfig.GLOBAL_SPF_DYNAMIC_CPU) {
             dyamicCore = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
+            ConfigInstaller().configCodeVerify(context)
             keepShell2.doCmd(Consts.ExecuteConfig)
             setCurrent("", "")
             handler.postDelayed({
@@ -549,9 +542,10 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             keepShell2.doCmd(Consts.DisableSELinux)
 
         if (dyamicCore) {
+            ConfigInstaller().configCodeVerify(context)
             keepShell2.doCmd(Consts.ExecuteConfig)
         }
-        handler.postDelayed(Runnable {
+        handler.postDelayed({
             if (lastMode.isEmpty()) {
                 if (lastModePackage.isNullOrEmpty()) {
                     lastModePackage = "com.system.ui"
