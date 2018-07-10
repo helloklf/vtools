@@ -15,7 +15,6 @@ import android.widget.Toast
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.KeepShellSync
 import com.omarea.shell.KernelProrp
-import com.omarea.shell.SuDo
 import com.omarea.shell.SysUtils
 import com.omarea.shell.units.ChangeZRAM
 import com.omarea.ui.AdapterSwaplist

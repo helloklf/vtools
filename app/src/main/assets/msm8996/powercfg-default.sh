@@ -10,8 +10,22 @@ echo 0 > /sys/module/cpu_boost/parameters/input_boost_ms
 echo 0 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/max_freq_hysteresis
 echo 45 > /proc/sys/kernel/sched_downmigrate
 echo 45 > /proc/sys/kernel/sched_upmigrate
-echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/boost
-echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/boost
+
+function lock_value()
+{
+    value=$1
+    path=$2
+    if [[ -f $path ]]; then
+        current_value="$(cat $path)"
+        if [[ ! "$current_value" = "$value" ]]; then
+            chmod 0664 "$path"
+            echo "$value" > "$path"
+            chmod 0444 "$path"
+        fi;
+    fi;
+}
+lock_value 0 /sys/devices/system/cpu/cpu0/cpufreq/interactive/boost
+lock_value 0 /sys/devices/system/cpu/cpu4/cpufreq/interactive/boost
 
 function gpu_config()
 {

@@ -2,7 +2,6 @@ package com.omarea.shell
 
 import android.util.Log
 import java.io.BufferedReader
-import java.io.BufferedWriter
 import java.io.IOException
 import java.io.OutputStream
 import java.nio.charset.Charset

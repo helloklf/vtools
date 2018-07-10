@@ -1,7 +1,6 @@
 package com.omarea.shared
 
 import android.app.IntentService
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
@@ -9,11 +8,9 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.support.v4.app.NotificationCompat
-import com.omarea.shell.KeepShellSync
 import com.omarea.shell.Props
 import com.omarea.shell.SysUtils
 import com.omarea.vboot.R
-import com.omarea.vboot.ServiceBattery
 
 /**
  * Created by Hello on 2017/12/27.

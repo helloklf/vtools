@@ -1,7 +1,6 @@
 package com.omarea.vboot
 
 import android.accessibilityservice.AccessibilityService
-import android.app.ActivityManager
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
 import android.content.ComponentName
@@ -189,13 +188,13 @@ override fun onCreate() {
         val windowInfo = source.window
         */
 
-        val windowInfo = windows.last()
+        val windowInfo = windows.lastOrNull()
         val source = event.source
-        if (source == null || source.windowId != windows.last().id) {
+        if (source == null || windowInfo == null || source.windowId != windowInfo.id) {
             return
         }
 
-        if (windowInfo != null && windowInfo.type == AccessibilityWindowInfo.TYPE_APPLICATION && windowInfo.isActive) {
+        if (windowInfo.type == AccessibilityWindowInfo.TYPE_APPLICATION && windowInfo.isActive) {
             if (serviceHelper == null)
                 initServiceHelper()
             serviceHelper?.onFocusAppChanged(event.packageName.toString())
