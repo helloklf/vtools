@@ -334,9 +334,12 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
     }
 
     private fun toggleConfig(mode: String) {
-        if (!screenOn && lockScreenOptimize) {
-            executePowercfgMode(POWERSAVE)
-            return
+        if (!screenOn) {
+            if (lockScreenOptimize) {
+                executePowercfgMode(POWERSAVE)
+            } else {
+                return
+            }
         }
         if (!File(Consts.POWER_CFG_PATH).exists()) {
             ConfigInstaller().installPowerConfig(context, "")
@@ -502,6 +505,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
 
         autoBoosterApp(packageName)
 
+        /*
         if (accuSwitch) {
             Thread(Runnable {
                 dumpsysTopActivity(packageName)
@@ -511,6 +515,10 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             autoToggleMode(packageName)
             lastPackage = packageName
         }
+        */
+        autoBoosterApp(packageName)
+        autoToggleMode(packageName)
+        lastPackage = packageName
     }
 
     fun onInterrupt() {

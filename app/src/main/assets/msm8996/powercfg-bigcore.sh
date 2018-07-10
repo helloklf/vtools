@@ -4,6 +4,7 @@ action=$1
 stop perfd
 
 echo 1 > /proc/sys/kernel/sched_prefer_sync_wakee_to_waker
+echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/boost
 
 function gpu_config()
 {

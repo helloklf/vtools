@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.support.v4.app.NotificationCompat
+import com.omarea.shell.KeepShellSync
 import com.omarea.shell.Props
 import com.omarea.shell.SysUtils
 import com.omarea.vboot.R
@@ -21,6 +22,7 @@ import com.omarea.vboot.ServiceBattery
 class BootService : IntentService("vtools-boot") {
     private lateinit var swapConfig: SharedPreferences
     private lateinit var globalConfig: SharedPreferences
+    private var isFirstBoot = true
 
     override fun onHandleIntent(intent: Intent?) {
         swapConfig = this.getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)
@@ -31,6 +33,20 @@ class BootService : IntentService("vtools-boot") {
         } else {
             Thread.sleep(2000)
         }
+        val r = Props.getProp("vtools.boot")
+        if (!r.isEmpty()) {
+            isFirstBoot = false
+            return
+        }
+        Thread(Runnable {
+            val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                nm.createNotificationChannel(NotificationChannel("vtool-boot", "自启动提示", NotificationManager.IMPORTANCE_LOW))
+                nm.notify(1, NotificationCompat.Builder(this, "vtool-boot").setSmallIcon(R.drawable.ic_menu_digital).setSubText("微工具箱").setContentText("正在执行自启动脚本...").build())
+            } else {
+                nm.notify(1, NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_menu_digital).setSubText("微工具箱").setContentText("正在执行自启动脚本...").build())
+            }
+        }).start()
         autoBoot()
     }
 
@@ -38,8 +54,6 @@ class BootService : IntentService("vtools-boot") {
 
     private fun autoBoot() {
         val sb = StringBuilder()
-        sb.append("if [[ `getprop vtools.boot` = '1' ]] then exit 0; exit 0; fi;\n")
-        sb.append("if [[ `getprop vtools.boot` = '2' ]] then exit 0; exit 0; fi;\n")
 
         if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true)) {
             sb.append(Consts.DisableSELinux)
@@ -119,14 +133,6 @@ class BootService : IntentService("vtools-boot") {
 
     override fun onCreate() {
         super.onCreate()
-
-        val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            nm.createNotificationChannel(NotificationChannel("vtool-boot", "自启动提示", NotificationManager.IMPORTANCE_LOW))
-            nm.notify(1, NotificationCompat.Builder(this, "vtool-boot").setSmallIcon(R.drawable.ic_menu_digital).setSubText("微工具箱").setContentText("正在执行自启动脚本...").build())
-        } else {
-            nm.notify(1, NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_menu_digital).setSubText("微工具箱").setContentText("正在执行自启动脚本...").build())
-        }
     }
 
     override fun onDestroy() {
