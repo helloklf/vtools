@@ -90,7 +90,7 @@ if [ "$action" = "powersave" ]; then
 	echo "0" > /sys/module/cpu_boost/parameters/input_boost_freq
 	echo 0 > /sys/module/cpu_boost/parameters/input_boost_ms
 
-	set_cpu_freq 5000 1401600 5000 1420800
+	set_cpu_freq 5000 1401600 5000 1344000
 
 	echo "85 300000:85 595200:67 825600:75 1248000:78" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
 	echo 518400 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq

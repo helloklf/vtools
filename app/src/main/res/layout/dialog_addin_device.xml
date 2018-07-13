@@ -88,7 +88,7 @@
             android:layout_marginRight="6dp" />
         <Button
             android:id="@+id/dialog_addin_default"
-            android:text="默认"
+            android:text="还原"
             android:textSize="12dp"
             android:layout_width="wrap_content"
             android:layout_height="32dp"

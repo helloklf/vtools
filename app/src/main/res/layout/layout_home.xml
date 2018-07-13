@@ -42,7 +42,7 @@
         <TableRow
             android:id="@+id/powermode_toggles"
             android:layout_marginBottom="4dp"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <Button
                 android:id="@+id/btn_powersave"
@@ -70,238 +70,377 @@
                 android:text="极速" />
         </TableRow>
 
-        <TableRow>
+        <TableRow android:paddingLeft="5dp" android:paddingRight="5dp">
+
             <LinearLayout
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_span="4"
+                android:layout_marginRight="5dp"
+                android:layout_span="2"
                 android:orientation="vertical">
 
-                <TextView android:layout_marginLeft="4dp" android:layout_marginRight="4dp"
-                    android:layout_marginTop="20dp"
-                    android:id="@+id/vbootservice_state"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#22888888"
-                    android:gravity="center_horizontal"
-                    android:padding="13dp"
-                    android:text="" />
-                <TextView
-                    android:textColor="@color/colorAccent"
-                    android:layout_marginTop="8dp"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:paddingBottom="4dp"
-                    android:textStyle="bold"
-                    android:textSize="11dp"
-                    android:text="@string/service_helper"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-                <GridLayout
-                    android:id="@+id/vbootserviceSettings"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <Switch
-                        android:textColor="?android:attr/textColorPrimary"
-                        android:textStyle="bold"
-                        android:id="@+id/settings_autobooster"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_column="0"
-                        android:layout_row="1"
-                        android:gravity="left"
-                        android:padding="8dp"
-                        android:text="@string/accessbility_autobooster" />
+                    android:orientation="horizontal"
+                    android:padding="5dp">
 
                     <TextView
+                        style="@style/textSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_column="0"
-                        android:layout_row="2"
-                        android:paddingBottom="8dp"
-                        android:paddingLeft="8dp"
-                        android:paddingRight="8dp"
-                        android:text="@string/accessbility_autobooster_desc"
-                        android:textSize="10dp"
-                        android:textColor="?android:attr/textColorSecondary" />
-
-                    <Switch
-                        android:textColor="?android:attr/textColorPrimary"
-                        android:textStyle="bold"
-                        android:id="@+id/settings_dynamic"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_column="0"
-                        android:layout_marginTop="10dp"
-                        android:layout_row="3"
-                        android:gravity="left"
-                        android:padding="8dp"
-                        android:text="@string/accessbility_dynconfig" />
+                        android:text="CPU-0" />
 
                     <TextView
+                        style="@style/textSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_column="0"
-                        android:layout_row="4"
-                        android:paddingBottom="8dp"
-                        android:paddingLeft="8dp"
-                        android:paddingRight="8dp"
-                        android:text="@string/accessbility_dynconfig_desc"
-                        android:textSize="10dp"
-                        android:textColor="?android:attr/textColorSecondary" />
-
-                    <Switch
-                        android:textColor="?android:attr/textColorPrimary"
-                        android:textStyle="bold"
-                        android:id="@+id/settings_autoinstall"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_column="0"
-                        android:layout_marginTop="10dp"
-                        android:layout_row="5"
-                        android:gravity="left"
-                        android:padding="8dp"
-                        android:text="@string/accessbility_autoclick" />
+                        android:layout_weight="1"
+                        android:text="200Mhz 90%"
+                        android:textAlignment="textEnd" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#22888888"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
 
                     <TextView
-                        android:id="@+id/textView11"
+                        style="@style/textSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_column="0"
-                        android:layout_row="6"
-                        android:paddingBottom="8dp"
-                        android:paddingLeft="8dp"
-                        android:paddingRight="8dp"
-                        android:text="@string/accessbility_autoclick_desc"
-                        android:textSize="10dp"
-                        android:textColor="?android:attr/textColorSecondary" />
-                </GridLayout>
+                        android:text="CPU-1" />
 
-                <Switch
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:textStyle="bold"
-                    android:id="@+id/home_hide_in_recents"
-                    android:layout_marginTop="30dp"
-                    android:gravity="left"
-                    android:padding="8dp"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:text="@string/home_hide_in_recents" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="8dp"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:text="@string/home_hide_in_recents_desc"
-                    android:textSize="10dp"
-                    android:textColor="?android:attr/textColorSecondary" />
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="200Mhz 90%"
+                        android:textAlignment="textEnd" />
+                </LinearLayout>
 
-                <Switch
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:textStyle="bold"
-                    android:id="@+id/home_app_nightmode"
-                    android:layout_marginTop="10dp"
-                    android:padding="8dp"
-                    android:text="@string/home_app_night"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="8dp"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:text="@string/home_app_night_desc"
-                    android:textSize="10dp"
-                    android:textColor="?android:attr/textColorSecondary" />
-
-                <Switch
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:textStyle="bold"
-                    android:id="@+id/settings_debugmode"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:padding="8dp"
-                    android:text="@string/accessbility_debug" />
+                    android:background="#22888888"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="8dp"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:text="@string/accessbility_debug_desc"
-                    android:textSize="10dp"
-                    android:textColor="?android:attr/textColorSecondary"/>
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="CPU-2" />
 
-                <Switch
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:textStyle="bold"
-                    android:id="@+id/accessbility_notify"
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="200Mhz 90%"
+                        android:textAlignment="textEnd" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginBottom="5dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:padding="8dp"
-                    android:text="@string/accessbility_notify" />
+                    android:background="#22888888"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="8dp"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:text="@string/accessbility_notify_desc"
-                    android:textSize="10dp"
-                    android:textColor="?android:attr/textColorSecondary" />
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="CPU-3" />
 
-                <Switch
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:textStyle="bold"
-                    android:id="@+id/settings_delaystart"
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="200Mhz 90%"
+                        android:textAlignment="textEnd" />
+                </LinearLayout>
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:padding="8dp"
-                    android:text="@string/accessbility_delay" />
+                    android:background="#22888888"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="8dp"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:text="@string/accessbility_delay_desc"
-                    android:textSize="10dp"
-                    android:textColor="?android:attr/textColorSecondary" />
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="CPU-4" />
 
-
-                <Switch
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:textStyle="bold"
-                    android:id="@+id/settings_disable_selinux"
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="200Mhz 90%"
+                        android:textAlignment="textEnd" />
+                </LinearLayout>
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:gravity="left"
-                    android:padding="8dp"
-                    android:text="@string/settings_disable_selinux" />
+                    android:background="#22888888"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="CPU-5" />
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="200Mhz 90%"
+                        android:textAlignment="textEnd" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="8dp"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:text="@string/settings_disable_selinux_desc"
-                    android:textSize="10dp"
-                    android:textColor="?android:attr/textColorSecondary" />
+                    android:background="#22888888"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="CPU-6" />
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="200Mhz 90%"
+                        android:textAlignment="textEnd" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#22888888"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="CPU-7" />
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="200Mhz 90%"
+                        android:textAlignment="textEnd" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_span="2"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#22888888"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="GPU" />
+
+                    <TextView
+                        android:id="@+id/home_info_gpu"
+                        android:paddingRight="10dp"
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text=""
+                        android:textAlignment="textEnd" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#22888888"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="RAM" />
+
+                    <TextView
+                        android:id="@+id/home_info_mem"
+                        android:paddingRight="10dp"
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text=""
+                        android:textAlignment="textEnd" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#22888888"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SWAP" />
+
+                    <TextView
+                        android:id="@+id/home_info_swap"
+                        android:paddingRight="10dp"
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text=""
+                        android:textAlignment="textEnd" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#22888888"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Battery" />
+
+                    <TextView
+                        android:paddingRight="10dp"
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="+327mAh 37° 25%"
+                        android:textAlignment="textEnd" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_marginTop="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#22888888"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Android" />
+
+                    <TextView
+                        android:id="@+id/home_info_android"
+                        android:paddingRight="10dp"
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text=""
+                        android:textAlignment="textEnd" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#22888888"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Kernel" />
+
+                    <TextView
+                        android:paddingRight="10dp"
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="sdm845"
+                        android:textAlignment="textEnd" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#22888888"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Platform" />
+
+                    <TextView
+                        android:id="@+id/home_info_platform"
+                        android:paddingRight="10dp"
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text=""
+                        android:textAlignment="textEnd" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#22888888"
+                    android:orientation="horizontal"
+                    android:padding="5dp">
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="动态响应" />
+
+                    <TextView
+                        android:id="@+id/home_info_dynamic"
+                        android:paddingRight="10dp"
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text=""
+                        android:textAlignment="textEnd" />
+                </LinearLayout>
+
             </LinearLayout>
         </TableRow>
+
     </TableLayout>
 </com.omarea.ui.OverScrollView>

@@ -122,6 +122,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun setHomePage() {
         val fragmentManager = supportFragmentManager
+        fragmentManager.fragments.clear()
         val transaction = fragmentManager.beginTransaction()
         val fragment = FragmentHome()
         transaction.replace(R.id.main_content, fragment)

@@ -15,7 +15,7 @@
         android:orderInCategory="100"
         app:showAsAction="ifRoom" />
     <item
-        android:visible="false"
+        android:visible="true"
         android:title=""
         android:icon="@drawable/settings"
         android:id="@+id/action_settings"
