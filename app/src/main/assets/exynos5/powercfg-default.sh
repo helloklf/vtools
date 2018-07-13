@@ -65,7 +65,7 @@ if [ "$action" = "powersave" ]; then
 
     echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
 	echo 10000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
-    echo 40000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_rate
+    echo 10000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_rate
 
 	exit 0
 fi
@@ -93,8 +93,8 @@ if [ "$action" = "balance" ]; then
     set_value "84 312000:92 520000:95 832000:93 1040000:75 1456000:87 1872000:89 2080000:90 2392000：92" /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
 
     echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
-	echo 19000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
-    echo 20000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_rate
+	echo 10000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
+    echo 10000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_rate
 
 	exit 0
 fi
@@ -114,8 +114,8 @@ if [ "$action" = "performance" ]; then
     set_value "76 338000:90 650000:70 1066000:80 1274000:83 1482000:85" /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
     set_value "80 312000:92 520000:87 832000:88 1040000:75 1456000:87 1872000:89 2080000:90 2392000：92" /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
 
-	echo 15000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
-    echo 50000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
+	echo 10000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
+    echo 30000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
     echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
 
 	exit 0
@@ -136,9 +136,9 @@ if [ "$action" = "fast" ]; then
     set_value "76 338000:90 650000:70 1066000:80 1274000:83 1482000:85" /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
     set_value "79 312000:92 520000:77 832000:78 1040000:75 1456000:85 1872000:88 2080000:90 2392000：92" /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
 
-	echo 15000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
-    echo 20000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
     echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
+	echo 8000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
+    echo 24000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
 	
 	exit 0
 fi

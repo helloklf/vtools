@@ -14,9 +14,8 @@
         android:layout_height="wrap_content">
         <RelativeLayout
             android:id="@+id/popup_window"
-            android:layout_width="270dp"
-            android:layout_height="190dp"
-            android:background="@android:color/white"
+            android:layout_width="280dp"
+            android:layout_height="220dp"
             android:orientation="vertical" >
 
             <TextView
@@ -25,26 +24,84 @@
                 android:layout_height="wrap_content"
                 android:gravity="left"
                 android:text="@string/app_name"
-                android:textColor="@android:color/black"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:paddingTop="20dp"
-                android:paddingBottom="20dp"
+                android:paddingBottom="16dp"
                 android:lines="1"
                 style="@style/textTitle" />
-
-            <Spinner
-                android:spinnerMode="dropdown"
-                android:id="@+id/fw_powercfg_selector_spinner"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="25dp"
                 android:layout_below="@id/fw_title"
-                android:layout_gravity="center"
-                android:theme="@style/AppTheme"
-                android:layout_marginLeft="35dp"
-                android:entries="@array/powercfg_modes"
-                android:padding="16dp" />
-
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:layout_marginBottom="5dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/textTitle"
+                        android:id="@+id/btn_powersave"
+                        android:background="#448888cc"
+                        android:layout_marginRight="5dp"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:textAlignment="center"
+                        android:text="@string/powersave"
+                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        style="@style/textTitle"
+                        android:id="@+id/btn_defaultmode"
+                        android:background="#4488cc88"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:textAlignment="center"
+                        android:text="@string/balance"
+                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        style="@style/textTitle"
+                        android:id="@+id/btn_gamemode"
+                        android:background="#44cccc88"
+                        android:layout_marginRight="5dp"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:textAlignment="center"
+                        android:text="@string/performance"
+                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        style="@style/textTitle"
+                        android:id="@+id/btn_fastmode"
+                        android:background="#44cc8888"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp"
+                        android:textAlignment="center"
+                        android:text="@string/fast"
+                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+                <CheckBox
+                    android:id="@+id/save_config"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:layout_marginTop="5dp"
+                    android:text="保存(动态响应)"
+                    android:layout_gravity="end"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

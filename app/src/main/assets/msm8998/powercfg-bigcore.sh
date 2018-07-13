@@ -92,7 +92,7 @@ if [ "$action" = "powersave" ]; then
     echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
 	echo 10000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
 	echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
-    echo 40000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_rate
+    echo 10000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_rate
 
 	exit 0
 fi
@@ -119,9 +119,9 @@ if [ "$action" = "balance" ]; then
     echo 0-3 > /dev/cpuset/system-background/cpus
 
     echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
-	echo 19000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
+	echo 10000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
 	echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
-    echo 20000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_rate
+    echo 10000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_rate
 
 	exit 0
 fi
@@ -144,8 +144,8 @@ if [ "$action" = "performance" ]; then
     echo 0-1 > /dev/cpuset/background/cpus
     echo 0-1 > /dev/cpuset/system-background/cpus
 
-    echo 15000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
-    echo 50000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
+    echo 10000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
+    echo 30000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
     echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
     echo 79000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
 
@@ -176,8 +176,8 @@ if [ "$action" = "fast" ]; then
     echo 0 > /dev/cpuset/background/cpus
     echo 0-1 > /dev/cpuset/system-background/cpus
 
-    echo 15000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
-    echo 20000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
+	echo 8000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
+    echo 24000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
     echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
     echo 79000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
 	

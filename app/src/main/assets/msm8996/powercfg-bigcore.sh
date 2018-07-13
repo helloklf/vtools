@@ -56,6 +56,11 @@ if [ "$action" = "powersave" ]; then
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 
+    echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
+	echo 10000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
+	echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
+    echo 10000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_rate
+
 	echo 0 > /proc/sys/kernel/sched_boost
 
 	exit 0
@@ -74,6 +79,11 @@ if [ "$action" = "balance" ]; then
 	echo 0 > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 
+    echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
+	echo 10000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
+	echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
+    echo 10000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_rate
+
 	echo 0 > /proc/sys/kernel/sched_boost
 
 	exit 0
@@ -91,6 +101,11 @@ if [ "$action" = "performance" ]; then
 
 	echo 0 > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 	echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
+
+	echo 10000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
+    echo 30000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
+    echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
+    echo 79000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
 
 	echo 0 > /proc/sys/kernel/sched_boost
     stop thermanager
@@ -111,6 +126,11 @@ if [ "$action" = "fast" ]; then
 
 	echo 0 > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 	echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
+
+	echo 8000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
+    echo 24000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
+    echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
+    echo 79000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
 
 	echo 1 > /proc/sys/kernel/sched_boost
 	

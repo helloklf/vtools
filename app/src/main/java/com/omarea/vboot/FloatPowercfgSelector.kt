@@ -7,9 +7,7 @@ import android.graphics.Rect
 import android.os.Build
 import android.view.*
 import android.view.WindowManager.LayoutParams
-import android.widget.Button
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
 import com.omarea.shared.ModeList
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.helper.NotifyHelper
@@ -94,18 +92,6 @@ class FloatPowercfgSelector {
 
         val spfPowercfg = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         val mode = spfPowercfg.getString(packageName, "balance")
-        var index: Int
-
-        when (mode) {
-            modeList.POWERSAVE -> index = 0
-            modeList.BALANCE -> index = 1
-            modeList.PERFORMANCE -> index = 2
-            modeList.FAST -> index = 3
-            modeList.IGONED -> index = 4
-            else -> index = 1
-        }
-        val spinner = view.findViewById<View>(R.id.fw_powercfg_selector_spinner) as Spinner
-        spinner.setSelection(index)
 
         try {
             val pm = context.packageManager
@@ -115,26 +101,54 @@ class FloatPowercfgSelector {
             (view.findViewById<View>(R.id.fw_title) as TextView).text = packageName
         }
 
+        val btn_powersave = view.findViewById<TextView>(R.id.btn_powersave)
+        val btn_defaultmode = view.findViewById<TextView>(R.id.btn_defaultmode)
+        val btn_gamemode = view.findViewById<TextView>(R.id.btn_gamemode)
+        val btn_fastmode = view.findViewById<TextView>(R.id.btn_fastmode)
+
+        var selectedMode = mode
+        val updateUI = Runnable {
+            btn_powersave.text = "省电"
+            btn_defaultmode.text = "均衡"
+            btn_gamemode.text = "游戏"
+            btn_fastmode.text = "极速"
+            when (selectedMode) {
+                modeList.BALANCE -> btn_defaultmode.text = "均衡 √"
+                modeList.PERFORMANCE -> btn_gamemode.text = "游戏 √"
+                modeList.POWERSAVE -> btn_powersave!!.text = "省电 √"
+                modeList.FAST -> btn_fastmode!!.text = "极速 √"
+            }
+        }
+        btn_powersave.setOnClickListener {
+            selectedMode = modeList.POWERSAVE
+            updateUI.run()
+        }
+        btn_defaultmode.setOnClickListener {
+            selectedMode = modeList.BALANCE
+            updateUI.run()
+        }
+        btn_gamemode.setOnClickListener {
+            selectedMode = modeList.PERFORMANCE
+            updateUI.run()
+        }
+        btn_fastmode.setOnClickListener {
+            selectedMode = modeList.FAST
+            updateUI.run()
+        }
+
+
         val positiveBtn = view.findViewById<View>(R.id.positiveBtn) as Button
         positiveBtn.setOnClickListener {
             // 隐藏弹窗
             hidePopupWindow()
-            var selectedMode = ""
-            index = spinner.selectedItemPosition
-            when (index) {
-                0 -> selectedMode = modeList.POWERSAVE
-                1 -> selectedMode = modeList.BALANCE
-                2 -> selectedMode = modeList.PERFORMANCE
-                3 -> selectedMode = modeList.FAST
-                4 -> selectedMode = modeList.IGONED
-            }
-            if (index != 4) {
+            if (selectedMode != mode) {
                 modeList.executePowercfgModeOnce(selectedMode, packageName)
-            } else {
-                modeList.setCurrent(selectedMode, packageName)
+                modeList.setCurrent(mode, packageName)
             }
             NotifyHelper(context, true).notify()
-            spfPowercfg.edit().putString(packageName, selectedMode).commit()
+            if (view.findViewById<CheckBox>(R.id.save_config).isChecked) {
+                spfPowercfg.edit().putString(packageName, selectedMode).commit()
+            }
 
             //Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);
             //context.startActivity(intent);
@@ -169,6 +183,7 @@ class FloatPowercfgSelector {
                 else -> false
             }
         }
+        updateUI.run()
         return view
 
     }
