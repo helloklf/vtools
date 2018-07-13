@@ -34,7 +34,9 @@
 
             <TextView
                 android:id="@+id/notify_title"
-                style="@style/textTitle"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"
+                android:textSize="14dp"
+                android:textStyle="bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
@@ -43,7 +45,8 @@
 
             <TextView
                 android:id="@+id/notify_text"
-                style="@style/textSmall"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification.Line2"
+                android:textSize="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
@@ -67,7 +70,9 @@
 
             <TextView
                 android:id="@+id/notify_battery_title"
-                style="@style/textTitle"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"
+                android:textSize="14dp"
+                android:textStyle="bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
@@ -76,7 +81,8 @@
 
             <TextView
                 android:id="@+id/notify_battery_text"
-                style="@style/textSmall"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification.Line2"
+                android:textSize="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"

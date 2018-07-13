@@ -7,8 +7,6 @@ echo 0 > /sys/module/msm_thermal/core_control/enabled
 echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
 echo N > /sys/module/msm_thermal/parameters/enabled
 echo 1 > /proc/sys/kernel/sched_prefer_sync_wakee_to_waker
-echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/boost
-echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/boost
 
 #if [ ! `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor` = "interactive" ]; then
 #	sh /system/etc/init.qcom.post_boot.sh
@@ -31,6 +29,22 @@ echo 1 > /sys/devices/system/cpu/cpu4/online
 echo 1 > /sys/devices/system/cpu/cpu5/online
 echo 1 > /sys/devices/system/cpu/cpu6/online
 echo 1 > /sys/devices/system/cpu/cpu7/online
+
+function lock_value()
+{
+    value=$1
+    path=$2
+    if [[ -f $path ]]; then
+        current_value="$(cat $path)"
+        if [[ ! "$current_value" = "$value" ]]; then
+            chmod 0664 "$path"
+            echo "$value" > "$path"
+            chmod 0444 "$path"
+        fi;
+    fi;
+}
+lock_value 0 /sys/devices/system/cpu/cpu0/cpufreq/interactive/boost
+lock_value 0 /sys/devices/system/cpu/cpu4/cpufreq/interactive/boost
 
 function gpu_config()
 {
@@ -75,7 +89,7 @@ if [ "$action" = "powersave" ]; then
 	echo "0" > /sys/module/cpu_boost/parameters/input_boost_freq
 	echo 0 > /sys/module/cpu_boost/parameters/input_boost_ms
 
-	set_cpu_freq 5000 1401600 5000 1420800
+	set_cpu_freq 5000 1401600 5000 1344000
 
 	echo "85 300000:85 595200:67 825600:75 1248000:78" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
 	echo 518400 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq

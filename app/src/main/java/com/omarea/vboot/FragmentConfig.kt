@@ -120,7 +120,7 @@ class FragmentConfig : Fragment() {
             when (configlist_tabhost.currentTab) {
                 0 -> {
                     val builder = AlertDialog.Builder(context)
-                    val items = arrayOf(getString(R.string.addto_performance), getString(R.string.addto_powersave), getString(R.string.addto_fast), getString(R.string.addto_ignore), "清除设定")
+                    val items = arrayOf(getString(R.string.addto_performance), getString(R.string.addto_powersave), getString(R.string.addto_fast), getString(R.string.addto_ignore), "恢复默认模式")
                     val configses = arrayOf(Configs.Game, Configs.PowerSave, Configs.Fast, Configs.Ignored, Configs.Unkonow)
                     builder.setItems(items) { _, which ->
                         val listadapter = config_defaultlist.adapter as AppListAdapter
@@ -130,7 +130,7 @@ class FragmentConfig : Fragment() {
                 }
                 1 -> {
                     val builder = AlertDialog.Builder(context)
-                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_powersave), getString(R.string.addto_fast), getString(R.string.addto_ignore), "清除设定")
+                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_powersave), getString(R.string.addto_fast), getString(R.string.addto_ignore), "恢复默认模式")
                     val configses = arrayOf(Configs.Default, Configs.PowerSave, Configs.Fast, Configs.Ignored, Configs.Unkonow)
                     builder.setItems(items) { _, which ->
                         val listadapter = config_gamelist.adapter as AppListAdapter
@@ -140,7 +140,7 @@ class FragmentConfig : Fragment() {
                 }
                 2 -> {
                     val builder = AlertDialog.Builder(context)
-                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_performance), getString(R.string.addto_fast), getString(R.string.addto_ignore), "清除设定")
+                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_performance), getString(R.string.addto_fast), getString(R.string.addto_ignore), "恢复默认模式")
                     val configses = arrayOf(Configs.Default, Configs.Game, Configs.Fast, Configs.Ignored, Configs.Unkonow)
                     builder.setItems(items) { _, which ->
                         val listadapter = config_powersavelist.adapter as AppListAdapter
@@ -150,7 +150,7 @@ class FragmentConfig : Fragment() {
                 }
                 3 -> {
                     val builder = AlertDialog.Builder(context)
-                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_performance), getString(R.string.addto_powersave), getString(R.string.addto_ignore), "清除设定")
+                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_performance), getString(R.string.addto_powersave), getString(R.string.addto_ignore), "恢复默认模式")
                     val configses = arrayOf(Configs.Default, Configs.Game, Configs.PowerSave, Configs.Ignored, Configs.Unkonow)
                     builder.setItems(items) { _, which ->
                         val listadapter = config_fastlist.adapter as AppListAdapter
@@ -160,7 +160,7 @@ class FragmentConfig : Fragment() {
                 }
                 4 -> {
                     val builder = AlertDialog.Builder(context)
-                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_performance), getString(R.string.addto_powersave), getString(R.string.addto_fast), "清除设定")
+                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_performance), getString(R.string.addto_powersave), getString(R.string.addto_fast), "恢复默认模式")
                     val configses = arrayOf(Configs.Default, Configs.Game, Configs.PowerSave, Configs.Fast, Configs.Unkonow)
                     builder.setItems(items) { _, which ->
                         val listadapter = config_ignoredlist.adapter as AppListAdapter

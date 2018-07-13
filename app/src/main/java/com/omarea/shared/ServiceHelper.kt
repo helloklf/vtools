@@ -498,7 +498,6 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
 
         autoBoosterApp(packageName)
 
-        /*
         if (accuSwitch) {
             Thread(Runnable {
                 dumpsysTopActivity(packageName)
@@ -508,10 +507,6 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             autoToggleMode(packageName)
             lastPackage = packageName
         }
-        */
-        autoBoosterApp(packageName)
-        autoToggleMode(packageName)
-        lastPackage = packageName
     }
 
     fun onInterrupt() {

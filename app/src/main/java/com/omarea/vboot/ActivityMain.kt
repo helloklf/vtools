@@ -22,15 +22,16 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import com.omarea.shared.*
+import com.omarea.shared.ConfigInstaller
+import com.omarea.shared.Consts
+import com.omarea.shared.CrashHandler
+import com.omarea.shared.SpfConfig
 import com.omarea.shell.Busybox
 import com.omarea.shell.CheckRootStatus
 import com.omarea.shell.KeepShellSync
-import com.omarea.shell.SuDo
 import com.omarea.shell.units.BatteryUnit
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.vboot.dialogs.DialogPower
-import kotlinx.android.synthetic.main.action_row_item.*
 import kotlinx.android.synthetic.main.activity_main.*
 
 class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -121,6 +122,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     private fun setHomePage() {
         val fragmentManager = supportFragmentManager
+        fragmentManager.fragments.clear()
         val transaction = fragmentManager.beginTransaction()
         val fragment = FragmentHome()
         transaction.replace(R.id.main_content, fragment)

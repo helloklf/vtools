@@ -2,7 +2,6 @@ package com.omarea.shell
 
 import android.util.Log
 import java.io.BufferedReader
-import java.io.BufferedWriter
 import java.io.IOException
 import java.io.OutputStream
 import java.nio.charset.Charset
@@ -100,25 +99,20 @@ object KeepShellSync {
         if (out != null) {
             val startTag = "--start--$uuid--"
             val endTag = "--end--$uuid--"
-
-            try {
-                out!!.write(br)
-                out!!.write("echo '$startTag'".toByteArray(Charset.defaultCharset()))
-                out!!.write(br)
-                out!!.write(cmd.toByteArray(Charset.defaultCharset()))
-                out!!.write(br)
-                out!!.write("echo '$endTag'".toByteArray(Charset.defaultCharset()))
-                out!!.write(br)
-                out!!.flush()
-            } catch (ex: Exception) {
-                tryExit()
-                return "error"
-            }
-
             // Log.e("shell-lock", cmd)
             try {
                 mLock.lockInterruptibly()
+
                 if (out != null) {
+                    out!!.write(br)
+                    out!!.write("echo '$startTag'".toByteArray(Charset.defaultCharset()))
+                    out!!.write(br)
+                    out!!.write(cmd.toByteArray(Charset.defaultCharset()))
+                    out!!.write(br)
+                    out!!.write("echo '$endTag'".toByteArray(Charset.defaultCharset()))
+                    out!!.write(br)
+                    out!!.flush()
+
                     val results = StringBuilder()
                     var unstart = true
                     while (true && reader != null) {

@@ -20,6 +20,20 @@ function set_value()
     fi;
 }
 
+function lock_value()
+{
+    value=$1
+    path=$2
+    if [[ -f $path ]]; then
+        current_value="$(cat $path)"
+        if [[ ! "$current_value" = "$value" ]]; then
+            chmod 0664 "$path"
+            echo "$value" > "$path"
+            chmod 0444 "$path"
+        fi;
+    fi;
+}
+
 function cpuset()
 {
     set_value '0' /dev/cpuset/system-background/cpus
@@ -38,8 +52,8 @@ function disabled_hotplug()
 }
 
 cpuset
-set_value 0 /sys/devices/system/cpu/cpu0/cpufreq/interactive/boost
-set_value 0 /sys/devices/system/cpu/cpu4/cpufreq/interactive/boost
+lock_value 0 /sys/devices/system/cpu/cpu0/cpufreq/interactive/boost
+lock_value 0 /sys/devices/system/cpu/cpu4/cpufreq/interactive/boost
 
 if [ "$action" = "powersave" ]; then
     set_value 5 /sys/devices/system/cpu/cpuhotplug/max_online_cpu

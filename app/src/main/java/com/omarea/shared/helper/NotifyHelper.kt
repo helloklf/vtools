@@ -16,7 +16,6 @@ import com.omarea.shell.RootFile
 import com.omarea.shell.SysUtils
 import com.omarea.vboot.ActivityQuickSwitchMode
 import com.omarea.vboot.R
-import java.io.File
 
 
 /**

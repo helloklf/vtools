@@ -19,6 +19,8 @@ open class ModeList {
     internal var IGONED = "igoned";
     internal var keepShell: KeepShell? = null
     private var context: Context? = null
+    private var currentPowercfg: String = ""
+    private var currentPowercfgApp: String = ""
 
     constructor() {
     }
@@ -58,25 +60,33 @@ open class ModeList {
     }
 
     internal fun getCurrentPowerMode(): String? {
+        if (!this.currentPowercfg.isEmpty()) {
+            return this.currentPowercfg
+        }
         return Props.getProp("vtools.powercfg")
     }
 
     internal fun getCurrentPowermodeApp(): String? {
+        if (!this.currentPowercfgApp.isEmpty()) {
+            return this.currentPowercfgApp
+        }
         return Props.getProp("vtools.powercfg_app")
     }
 
     internal fun setCurrent(powerCfg: String, app: String): ModeList {
-        Props.setPorp("vtools.powercfg", powerCfg)
-        Props.setPorp("vtools.powercfg_app", app)
+        setCurrentPowercfg(powerCfg)
+        setCurrentPowercfgApp(app)
         return this
     }
 
     internal fun setCurrentPowercfg(powerCfg: String): ModeList {
+        currentPowercfg = powerCfg
         Props.setPorp("vtools.powercfg", powerCfg)
         return this
     }
 
     internal fun setCurrentPowercfgApp(app: String): ModeList {
+        currentPowercfgApp = app
         Props.setPorp("vtools.powercfg_app", app)
         return this
     }
