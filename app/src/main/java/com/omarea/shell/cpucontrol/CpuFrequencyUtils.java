@@ -37,6 +37,10 @@ public class CpuFrequencyUtils {
         return KernelProrp.INSTANCE.getProp(Constants.scaling_max_freq.replace("cpu0", cpu));
     }
 
+    public static String getCurrentFrequency(Integer cluster) {
+        return KernelProrp.INSTANCE.getProp(Constants.scaling_cur_freq.replace("cpu0", "cpu" + cluster));
+    }
+
     public static String getCurrentMinFrequency(Integer cluster) {
         if (cluster >= getClusterInfo().size()) {
             return "";

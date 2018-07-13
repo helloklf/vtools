@@ -91,6 +91,7 @@
                         android:text="CPU-0" />
 
                     <TextView
+                        android:id="@+id/home_info_cpu0"
                         style="@style/textSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -112,6 +113,7 @@
                         android:text="CPU-1" />
 
                     <TextView
+                        android:id="@+id/home_info_cpu1"
                         style="@style/textSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -134,6 +136,7 @@
                         android:text="CPU-2" />
 
                     <TextView
+                        android:id="@+id/home_info_cpu2"
                         style="@style/textSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -157,6 +160,7 @@
                         android:text="CPU-3" />
 
                     <TextView
+                        android:id="@+id/home_info_cpu3"
                         style="@style/textSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -178,6 +182,7 @@
                         android:text="CPU-4" />
 
                     <TextView
+                        android:id="@+id/home_info_cpu4"
                         style="@style/textSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -199,6 +204,7 @@
                         android:text="CPU-5" />
 
                     <TextView
+                        android:id="@+id/home_info_cpu5"
                         style="@style/textSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -220,6 +226,7 @@
                         android:text="CPU-6" />
 
                     <TextView
+                        android:id="@+id/home_info_cpu6"
                         style="@style/textSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -241,6 +248,7 @@
                         android:text="CPU-7" />
 
                     <TextView
+                        android:id="@+id/home_info_cpu7"
                         style="@style/textSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
