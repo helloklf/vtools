@@ -46,7 +46,7 @@ public object Consts {
                     "mount -o rw,remount /system/xbin\n"
 
     val POWER_CFG_PATH = "/data/powercfg"
-    val POWER_CFG_BASE = "/data/init.qcom.post_boot.sh"
+    val POWER_CFG_BASE = "/data/powercfg-base.sh"
 
     val ExecuteConfig = "sh ${POWER_CFG_BASE};\n"
     val ToggleMode = "sh $POWER_CFG_PATH %s;\n"

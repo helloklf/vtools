@@ -171,9 +171,17 @@ override fun onCreate() {
         if (packageName.contains("packageinstaller")) {
             if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity")
                 return
-            AutoClickService().packageinstallerAutoClick(this.applicationContext, event)
+            try {
+                AutoClickService().packageinstallerAutoClick(this.applicationContext, event)
+            } catch(ex: Exception) {
+
+            }
         } else if (packageName == "com.miui.securitycenter") {
-            AutoClickService().miuiUsbInstallAutoClick(event)
+            try {
+                AutoClickService().miuiUsbInstallAutoClick(event)
+            } catch (ex: Exception) {
+
+            }
             return
         }
 
@@ -188,7 +196,11 @@ override fun onCreate() {
         val windowInfo = source.window
         */
 
-        val windowInfo = windows.lastOrNull()
+        val windows_ = windows
+        if (windows_ == null || windows_.isEmpty()) {
+            return
+        }
+        val windowInfo = windows_.lastOrNull()
         val source = event.source
         if (source == null || windowInfo == null || source.windowId != windowInfo.id) {
             return
@@ -198,10 +210,6 @@ override fun onCreate() {
             if (serviceHelper == null)
                 initServiceHelper()
             serviceHelper?.onFocusAppChanged(event.packageName.toString())
-            for (i in 0..windowInfo.childCount - 1) {
-                val item = windowInfo.getChild(i)
-                Log.d("w", item.describeContents().toString())
-            }
         } else {
             Log.d("vtool-dump", "[skip app:${packageName}]")
         }
@@ -217,6 +225,7 @@ override fun onCreate() {
             serviceHelper!!.onInterrupt()
             serviceHelper = null
             stopSelf()
+            System.exit(0)
         }
         //android.os.Process.killProcess(android.os.Process.myPid());
     }

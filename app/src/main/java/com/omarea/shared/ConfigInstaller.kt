@@ -9,12 +9,12 @@ class ConfigInstaller {
     fun installPowerConfig(context: Context, afterCmds: String, biCore: Boolean = false) {
         try {
             val powercfg = parseText(context, Platform().GetCPUName() + (if (biCore) "/powercfg-bigcore.sh" else "/powercfg-default.sh"))
-            val powercfgBase = parseText(context, Platform().GetCPUName() + (if (biCore) "/init.qcom.post_boot-bigcore.sh" else "/init.qcom.post_boot-default.sh"))
+            val powercfgBase = parseText(context, Platform().GetCPUName() + (if (biCore) "/powercfg-base-bigcore.sh" else "/powercfg-base-default.sh"))
             FileWrite.WritePrivateFile(powercfg, "powercfg.sh", context)
-            FileWrite.WritePrivateFile(powercfgBase, "init.qcom.post_boot.sh", context)
+            FileWrite.WritePrivateFile(powercfgBase, "powercfg-base.sh", context)
             val cmd = StringBuilder()
                     .append("cp ${FileWrite.getPrivateFilePath(context, "powercfg.sh")} ${Consts.POWER_CFG_PATH};")
-                    .append("cp ${FileWrite.getPrivateFilePath(context, "init.qcom.post_boot.sh")} ${Consts.POWER_CFG_BASE};")
+                    .append("cp ${FileWrite.getPrivateFilePath(context, "powercfg-base.sh")} ${Consts.POWER_CFG_BASE};")
                     .append("chmod 0777 ${Consts.POWER_CFG_PATH};")
                     .append("chmod 0777 ${Consts.POWER_CFG_BASE};")
             //KeepShellSync.doCmdSync(Consts.InstallPowerToggleConfigToCache + "\n\n" + Consts.ExecuteConfig + "\n" + after)

@@ -70,385 +70,166 @@
                 android:text="极速" />
         </TableRow>
 
-        <TableRow android:paddingLeft="5dp" android:paddingRight="5dp">
-
-            <LinearLayout
-                android:layout_marginRight="5dp"
-                android:layout_span="2"
-                android:orientation="vertical">
-
-                <LinearLayout
+        <TableRow
+            android:layout_marginBottom="4dp"
+            android:visibility="visible">
+            <LinearLayout android:padding="10dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:layout_span="4">
+                <TextView
+                    style="@style/textTitle"
+                    android:textColor="@color/colorPrimary"
+                    android:text="使用本工具前，确保你已经掌握以下技能："
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#22888888"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="CPU-0" />
-
-                    <TextView
-                        android:id="@+id/home_info_cpu0"
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="200Mhz 90%"
-                        android:textAlignment="textEnd" />
-                </LinearLayout>
-                <LinearLayout
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="1. 解锁BootLoader"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#22888888"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="CPU-1" />
-
-                    <TextView
-                        android:id="@+id/home_info_cpu1"
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="200Mhz 90%"
-                        android:textAlignment="textEnd" />
-                </LinearLayout>
-
-                <LinearLayout
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="2. TWRP或其它Recovery工具卡刷完整包（别跟我说卡刷是啥都不知道！）"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#22888888"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="CPU-2" />
-
-                    <TextView
-                        android:id="@+id/home_info_cpu2"
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="200Mhz 90%"
-                        android:textAlignment="textEnd" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_marginBottom="5dp"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="3. Fastboot模式线刷官方完整包"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#22888888"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="CPU-3" />
-
-                    <TextView
-                        android:id="@+id/home_info_cpu3"
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="200Mhz 90%"
-                        android:textAlignment="textEnd" />
-                </LinearLayout>
-                <LinearLayout
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginTop="20dp"
+                    style="@style/textTitle"
+                    android:textColor="@color/colorPrimary"
+                    android:text="使用本工具前，确保你已经做好以下准备："
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#22888888"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="CPU-4" />
-
-                    <TextView
-                        android:id="@+id/home_info_cpu4"
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="200Mhz 90%"
-                        android:textAlignment="textEnd" />
-                </LinearLayout>
-                <LinearLayout
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="1. ROOT你的手机（必需）"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#22888888"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="CPU-5" />
-
-                    <TextView
-                        android:id="@+id/home_info_cpu5"
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="200Mhz 90%"
-                        android:textAlignment="textEnd" />
-                </LinearLayout>
-                <LinearLayout
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="2. 已解锁System（部分功能需要）"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#22888888"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="CPU-6" />
-
-                    <TextView
-                        android:id="@+id/home_info_cpu6"
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="200Mhz 90%"
-                        android:textAlignment="textEnd" />
-                </LinearLayout>
-                <LinearLayout
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="3. 已安装Busybox（必需）"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#22888888"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="CPU-7" />
-
-                    <TextView
-                        android:id="@+id/home_info_cpu7"
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="200Mhz 90%"
-                        android:textAlignment="textEnd" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_span="2"
-                android:orientation="vertical">
-
-                <LinearLayout
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginTop="20dp"
+                    style="@style/textTitle"
+                    android:text="问：功能设置都去哪了？"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#22888888"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="GPU" />
-
-                    <TextView
-                        android:id="@+id/home_info_gpu"
-                        android:paddingRight="10dp"
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text=""
-                        android:textAlignment="textEnd" />
-                </LinearLayout>
-
-                <LinearLayout
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="答：软件右上角那个齿轮按钮，点一下"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#22888888"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="RAM" />
-
-                    <TextView
-                        android:id="@+id/home_info_mem"
-                        android:paddingRight="10dp"
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text=""
-                        android:textAlignment="textEnd" />
-                </LinearLayout>
-                <LinearLayout
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginTop="20dp"
+                    style="@style/textTitle"
+                    android:text="问：调整了CPU、GPU配置如何还原？"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#22888888"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="SWAP" />
-
-                    <TextView
-                        android:id="@+id/home_info_swap"
-                        android:paddingRight="10dp"
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text=""
-                        android:textAlignment="textEnd" />
-                </LinearLayout>
-                <LinearLayout
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="答：关了动态响应，重启手机"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#22888888"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Battery" />
-
-                    <TextView
-                        android:paddingRight="10dp"
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="+327mAh 37° 25%"
-                        android:textAlignment="textEnd" />
-                </LinearLayout>
-                <LinearLayout
-                    android:layout_marginTop="5dp"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginTop="20dp"
+                    style="@style/textTitle"
+                    android:text="问：修改了机型信息如何还原？"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#22888888"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Android" />
-
-                    <TextView
-                        android:id="@+id/home_info_android"
-                        android:paddingRight="10dp"
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text=""
-                        android:textAlignment="textEnd" />
-                </LinearLayout>
-                <LinearLayout
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="答：在卸载工具箱前，再次进入机型修改界面点“还原”然后“确定”。如果已经卸载过了？那就刷个完整包吧，或者去找别人问原本的机型信息！"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#22888888"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Kernel" />
-
-                    <TextView
-                        android:paddingRight="10dp"
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="sdm845"
-                        android:textAlignment="textEnd" />
-                </LinearLayout>
-                <LinearLayout
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginTop="20dp"
+                    style="@style/textTitle"
+                    android:text="问：软件后台耗电吗？"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#22888888"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Platform" />
-
-                    <TextView
-                        android:id="@+id/home_info_platform"
-                        android:paddingRight="10dp"
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text=""
-                        android:textAlignment="textEnd" />
-                </LinearLayout>
-                <LinearLayout
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="答：开启辅助服会有一点点的后台耗电，充电加速功能也会有轻微后台耗电。"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#22888888"
-                    android:orientation="horizontal"
-                    android:padding="5dp">
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="动态响应" />
-
-                    <TextView
-                        android:id="@+id/home_info_dynamic"
-                        android:paddingRight="10dp"
-                        style="@style/textSmall"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text=""
-                        android:textAlignment="textEnd" />
-                </LinearLayout>
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginTop="20dp"
+                    style="@style/textTitle"
+                    android:text="问：软件需要后台吗？"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="答：自动行为、充电加速、动态响应、按键模拟功能需要，其它的不需要"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginTop="20dp"
+                    style="@style/textTitle"
+                    android:text="问：动态响应啥原理？"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="答：工具箱通过辅助服务监测应用切换行为，并通过执行配置脚本来调整CPU、GPU频率。\n你可以为每个应用指定一个模式（省电、均衡、性能、极速），已为骁龙625、820、821、835、710、845及Exynos 8890提供了配置脚本，如果你有能力也可以自己定义配置脚本。"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginTop="20dp"
+                    style="@style/textTitle"
+                    android:text="问：内置的配置文件的4种模式有啥不同？"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="省电模式 -> 牺牲流畅度尽量延长续航，适于音乐视频播放、小说阅读\n均衡模式 -> 适用于绝大部分应用场景，续航和体验兼顾\n性能模式 -> 持续稳定高性能输出和更激进的调度，适于大型游戏、修图、转码\n极速模式 -> 短时间内发挥极致性能，适于安装应用、跑分、压缩解压"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginTop="20dp"
+                    style="@style/textTitle"
+                    android:text="问：动态响应对延长待机有帮助吗？"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="答：没帮助！动态响应只是对CPU性能的调节，是在CPU唤醒状态下有效的。而待机过程中，CPU一般处于深度休眠状态，因此控制后台减少唤醒才是延长续航的根本办法！"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginTop="20dp"
+                    style="@style/textTitle"
+                    android:text="问：我的手机卡顿怎么办？"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="答：我不确定这个软件能不能帮到你，一般来说解决卡顿只有三种办法，减少后台自启动、删掉温控、换手机"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginTop="20dp"
+                    style="@style/textTitle"
+                    android:text="问：动态响应用不了咋办？"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:autoLink="web"
+                    android:text="答：感谢yc9559大佬已为多款soc提供了工具箱可用的配置脚本，点这个链接，了解一下：\nhttps://github.com/yc9559/cpufreq-interactive-opt/blob/master/20180603-description.md"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
             </LinearLayout>
         </TableRow>
-
     </TableLayout>
 </com.omarea.ui.OverScrollView>

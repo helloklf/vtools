@@ -72,83 +72,24 @@ class FragmentHome : Fragment() {
 
         spf = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
-        home_info_android.text = "${Build.VERSION.RELEASE} (SDK ${Build.VERSION.SDK_INT})"
-        home_info_platform.text = Platform().GetCPUName()
-        home_info_dynamic.text = if(Platform().dynamicSupport(context!!)) "支持" else (if(File(Consts.POWER_CFG_PATH).exists()) "自定义" else "不支持")
     }
 
-    private var timer: Timer? = null
     override fun onResume() {
         super.onResume()
         setModeState()
-
-        if (timer == null) {
-            timer = Timer()
-            timer!!.schedule(object : TimerTask() {
-                override fun run() {
-                    myHandler.post {
-                        updateInfo()
-                    }
-                }
-            }, 0, 3000)
-        }
-    }
-
-    private fun cancel() {
-        try {
-            if (timer != null) {
-                timer!!.cancel()
-                timer = null
-            }
-        } catch (ex: Exception) {
-
-        }
+        updateInfo()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        cancel()
     }
 
     private fun updateInfo () {
         sdfree.text = "SDCard：" + Files.GetDirFreeSizeMB(Environment.getExternalStorageDirectory().absolutePath) + " MB"
         datafree.text = "Data：" + Files.GetDirFreeSizeMB(Environment.getDataDirectory().absolutePath) + " MB"
-        val activityManager = context!!.getSystemService(ACTIVITY_SERVICE) as ActivityManager
-        val info = ActivityManager.MemoryInfo()
-        activityManager.getMemoryInfo(info)
-        home_info_mem.text = "${(info.availMem / 1024 / 1024)} / ${(info.totalMem / 1024 / 1024)}MB"
-        val swapInfo = KeepShellSync.doCmdSync("cat /proc/meminfo | grep Swap").split("\n")
-        var totalSwap = "0"
-        var freeSwap = "0"
-        for (row in swapInfo) {
-            if (row.startsWith("SwapTotal:")) {
-                totalSwap = row.substring("SwapTotal:".length).trim()
-            } else if(row.startsWith("SwapFree:")) {
-                freeSwap = row.substring("SwapFree:".length).trim()
-            }
-        }
-        home_info_swap.text = "${freeSwap} / ${totalSwap}"
-        var gpuFreq = KeepShellSync.doCmdSync("cat /sys/class/kgsl/kgsl-3d0/clock_mhz")
-        var gpuLoad = KeepShellSync.doCmdSync("cat /sys/class/kgsl/kgsl-3d0/devfreq/gpu_load")
-        if (gpuFreq.isEmpty()) gpuFreq = "?"
-        if (gpuLoad.isEmpty()) gpuLoad = "?"
-        home_info_gpu.text = "${gpuFreq}Mhz ${gpuLoad}%"
-
-        val coreCount = CpuFrequencyUtils.getCoreCount()
-        home_info_cpu0.text = CpuFrequencyUtils.getCurrentFrequency(0)
-        home_info_cpu1.text = CpuFrequencyUtils.getCurrentFrequency(1)
-        if (coreCount > 2) {
-            home_info_cpu2.text = CpuFrequencyUtils.getCurrentFrequency(2)
-            home_info_cpu3.text = CpuFrequencyUtils.getCurrentFrequency(3)
-        }
-        if (coreCount > 4) {
-            home_info_cpu4.text = CpuFrequencyUtils.getCurrentFrequency(4)
-            home_info_cpu5.text = CpuFrequencyUtils.getCurrentFrequency(5)
-        }
-        if (coreCount > 6) {
-            home_info_cpu6.text = CpuFrequencyUtils.getCurrentFrequency(6)
-            home_info_cpu7.text = CpuFrequencyUtils.getCurrentFrequency(7)
-        }
+        // val activityManager = context!!.getSystemService(ACTIVITY_SERVICE) as ActivityManager
+        // val info = ActivityManager.MemoryInfo()
+        // activityManager.getMemoryInfo(info)
     }
 
     private fun setModeState() {

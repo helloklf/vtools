@@ -143,9 +143,11 @@ class FloatPowercfgSelector {
             hidePopupWindow()
             if (selectedMode != mode) {
                 modeList.executePowercfgModeOnce(selectedMode, packageName)
-                modeList.setCurrent(mode, packageName)
+                modeList.setCurrent(selectedMode, packageName)
             }
-            NotifyHelper(context, true).notify()
+            it.postDelayed(Runnable {
+                NotifyHelper(context, true).notify()
+            }, 1000)
             if (view.findViewById<CheckBox>(R.id.save_config).isChecked) {
                 spfPowercfg.edit().putString(packageName, selectedMode).commit()
             }

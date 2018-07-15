@@ -541,20 +541,18 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             keepShell2.doCmd(Consts.ExecuteConfig)
         }
         handler.postDelayed({
-            if (lastMode.isEmpty()) {
-                if (lastModePackage.isNullOrEmpty()) {
-                    lastModePackage = "com.system.ui"
-                }
-                if (dyamicCore && lastMode.isEmpty()) {
-                    if (!this.screenOn) {
-                        toggleConfig(POWERSAVE)
-                    } else {
-                        startTimer()
-                        toggleConfig(DEFAULT)
-                    }
+            if (lastModePackage.isNullOrEmpty()) {
+                lastModePackage = "com.system.ui"
+            }
+            if (dyamicCore && lastMode.isEmpty()) {
+                if (!this.screenOn) {
+                    toggleConfig(POWERSAVE)
+                } else {
+                    startTimer()
+                    toggleConfig(DEFAULT)
                 }
             }
-        }, 5000)
+        }, 20000)
 
         settingsLoaded = true
     }
