@@ -10,3 +10,6 @@
 /captures
 app/release/app-release.apk
 app/build.gradle
+app/src/main/AndroidManifest.xml
+app/src/main/AndroidManifest.xml
+app/src/main/AndroidManifest.xml

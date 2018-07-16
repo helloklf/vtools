@@ -159,7 +159,15 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AppDetailsActivity"
-            android:label="@string/title_activity_app_details"></activity>
-    </application>
+            android:label="@string/title_activity_app_details">
+            android:name=".ActivityFileSelector"
+            android:theme="@style/AppTheme"
+            android:label="@string/title_activity_file_selector">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+    </application>
 </manifest>

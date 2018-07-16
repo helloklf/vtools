@@ -391,4 +391,5 @@
         <item>任务-首页-返回</item>
     </string-array>
     <string name="title_activity_app_details">应用详情</string>
+    <string name="title_activity_file_selector">请选择文件</string>
 </resources>
