@@ -5,7 +5,13 @@ import android.app.Activity
 
 import kotlinx.android.synthetic.main.activity_app_details.*
 
-class AppDetailsActivity(appPackageName: String) : Activity() {
+class AppDetailsActivity : Activity {
+    constructor(){
+        
+    }
+    constructor(appPackageName: String) {
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
