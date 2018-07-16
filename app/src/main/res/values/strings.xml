@@ -390,4 +390,5 @@
         <item>返回-首页-任务</item>
         <item>任务-首页-返回</item>
     </string-array>
+    <string name="title_activity_file_selector">请选择文件</string>
 </resources>
