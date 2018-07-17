@@ -194,6 +194,15 @@ class FragmentConfig : Fragment() {
             selectState.isChecked = !selectState.isChecked
             defaultList!![position].selectState = !selectState.isChecked
         }
+        //TODO:
+        config_defaultlist.setOnItemClickListener { parent, view, position, id ->
+            try {
+                val intent = Intent(this.context, AppDetailsActivity::class.java)
+                intent.putExtra("app", (parent.adapter.getItem(position) as Appinfo).packageName)
+                startActivity(intent)
+            } catch (ex: Exception) {
+            }
+        }
 
         config_gamelist.onItemClickListener = OnItemClickListener { _, current, position, _ ->
             val selectState = current.findViewById(R.id.select_state) as CheckBox

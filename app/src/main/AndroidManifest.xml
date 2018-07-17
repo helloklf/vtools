@@ -19,7 +19,8 @@
     <uses-permission
         android:name="android.permission.WRITE_SECURE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION"
+        tools:ignore="ProtectedPermissions" />
 
     <!--
     <uses-permission android:name="android.permission.BATTERY_STATS" />
@@ -158,17 +159,16 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AppDetailsActivity"
-            android:theme="@style/AppTheme"
+            android:theme="@style/AppTheme.NoActionBar"
             android:label="应用场景">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
             android:name=".ActivityFileSelector"
-            android:theme="@style/AppTheme"
+            android:theme="@style/AppTheme.NoActionBar"
             android:label="@string/title_activity_file_selector">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

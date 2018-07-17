@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="true"
     android:fitsSystemWindows="true"
-    tools:context="com.omarea.vboot.AppDetailsActivity">
+    android:keepScreenOn="false"
+    android:backgroundTintMode="screen"
+    tools:openDrawer="start">
+
     <com.omarea.ui.OverScrollView
         android:paddingTop="56dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -72,6 +77,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
                         <TextView
+                            style="@style/textTitle"
                             android:text="应用版本"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
@@ -88,6 +94,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
                         <TextView
+                            style="@style/textTitle"
                             android:text="版本号"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
@@ -95,7 +102,7 @@
                             android:id="@+id/app_details_versioncode"
                             android:textAlignment="textEnd"
                             android:layout_weight="1"
-                            android:text="290"
+                            android:text=""
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
@@ -104,6 +111,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
                         <TextView
+                            style="@style/textTitle"
                             android:text="安装时间"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
@@ -120,17 +128,19 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
                         <TextView
-                            android:text="空间占用"
+                            style="@style/textTitle"
+                            android:text="应用大小"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                         <TextView
                             android:id="@+id/app_details_size"
                             android:textAlignment="textEnd"
                             android:layout_weight="1"
-                            android:text="290MB"
+                            android:text=""
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
                         <TextView
+                            style="@style/textTitle"
                             android:layout_marginLeft="40dp"
                             android:text="内存占用"
                             android:layout_width="wrap_content"
@@ -139,7 +149,7 @@
                             android:id="@+id/app_details_ram"
                             android:textAlignment="textEnd"
                             android:layout_weight="1"
-                            android:text="290MB"
+                            android:text="\? MB"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
@@ -148,6 +158,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
                         <TextView
+                            style="@style/textTitle"
                             android:text="平均耗电"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
@@ -155,7 +166,7 @@
                             android:id="@+id/app_details_battery"
                             android:textAlignment="textEnd"
                             android:layout_weight="1"
-                            android:text="290mA/h"
+                            android:text="\? mA/h"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
@@ -199,6 +210,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
                     <Switch
+                        android:enabled="false"
                         android:id="@+id/app_details_disdoze"
                         android:textAlignment="textEnd"
                         android:layout_weight="1"
@@ -345,17 +357,29 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" android:orientation="vertical">
-                    <TextView
-                        android:padding="10dp"
-                        style="@style/textTitle"
-                        android:text="屏幕亮度"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                    <SeekBar
-                        android:id="@+id/app_details_light"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginBottom="10dp"
+                        android:layout_height="wrap_content" android:orientation="vertical">
+                        <TextView
+                            android:padding="10dp"
+                            style="@style/textTitle"
+                            android:text="屏幕亮度"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                        <SeekBar
+                            android:id="@+id/app_details_light"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                    <TextView
+                        android:paddingLeft="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="10dp"
+                        android:text="为应用单独设置亮度，适合玩游戏或观看视频"
+                        style="@style/textSmall"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                 </LinearLayout>
@@ -628,8 +652,9 @@
             </android.support.v7.widget.CardView>
         </LinearLayout>
     </com.omarea.ui.OverScrollView>
+
     <include
         layout="@layout/app_bar_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-</android.support.constraint.ConstraintLayout>
+        android:layout_height="match_parent" />
+</android.support.v4.widget.DrawerLayout>
