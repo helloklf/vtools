@@ -4,17 +4,16 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.view.WindowManager
+import android.util.Log
 import android.widget.Switch
 import android.widget.Toast
 import com.omarea.shared.ModeList
+import com.omarea.shared.PolicyControl
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.KeepShellSync
 import kotlinx.android.synthetic.main.activity_app_details.*
@@ -23,6 +22,7 @@ import java.util.*
 
 class AppDetailsActivity : AppCompatActivity() {
     var app = ""
+    lateinit var policyControl: PolicyControl
 
     @SuppressLint("ApplySharedPref")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,6 +38,7 @@ class AppDetailsActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
 
         app = this.intent.extras.getString("app")
+        policyControl = PolicyControl(contentResolver)
 
         app_details_dynamic.setOnClickListener {
             val modeList = ModeList(this)
@@ -68,6 +69,7 @@ class AppDetailsActivity : AppCompatActivity() {
                                 4 -> modeName = modeList.IGONED
                             }
                             powercfg.edit().putString(app, modeName).commit()
+                            app_details_dynamic.text = modeList.getModName(modeName)
                         }
                     })
                     .setNegativeButton(R.string.btn_cancel, DialogInterface.OnClickListener { dialog, which -> })
@@ -118,122 +120,54 @@ class AppDetailsActivity : AppCompatActivity() {
 
         app_details_hidenav.setOnClickListener {
             val isSelected = (it as Switch).isChecked
-            val policyControl = Settings.Global.getString(contentResolver, "policy_control").split("\n")
-            var hideNav = ""
-            var hideFull = ""
-            var hideStatus = ""
-            for (item in policyControl) {
-                if (item.startsWith("immersive.full")) {
-                    hideFull = item
-                } else if (item.startsWith("immersive.navigation")) {
-                    hideNav = item
-                } else if (item.startsWith("immersive.status")) {
-                    hideStatus = item
-                }
+            if (isSelected && app_details_hidestatus.isChecked) {
+                policyControl.hideAll(app)
+            } else if (isSelected) {
+                policyControl.hideNavBar(app)
+            } else {
+                policyControl.showNavBar(app)
             }
-            if (isSelected) {
-                if (hideNav.isEmpty()) {
-                    hideNav = "immersive.navigation=$app"
-                } else {
-                    if (hideNav.contains(",-$app")) {
-                        hideNav.replace(",-$app", "")
-                    }
-                    if (hideNav.contains("-$app")) {
-                        hideNav.replace("-$app", "")
-                    }
-                    hideNav = hideNav + ",$app"
-                }
-            } else if (!hideNav.isEmpty()) {
-                if (hideNav.contains("+$app")) {
-                    hideNav.replace("+$app", "")
-                }
-                if (hideNav.contains(",+$app")) {
-                    hideNav.replace(",+$app", "")
-                }
-                if (hideNav.contains(",$app")) {
-                    hideNav.replace(",$app", "")
-                }
-                if (hideNav.contains(app)) {
-                    hideNav.replace(app, "")
-                }
-            }
-            val stringBuild = StringBuilder()
-            if (!hideFull.isEmpty()) {
-                stringBuild.append(hideFull)
-            }
-            if (!hideNav.isEmpty()) {
-                if (!stringBuild.isEmpty()) {
-                    stringBuild.append(":")
-                }
-                stringBuild.append(hideNav)
-            }
-            if (!hideStatus.isEmpty()) {
-                if (!stringBuild.isEmpty()) {
-                    stringBuild.append(":")
-                }
-                stringBuild.append(hideStatus)
-            }
-            Settings.Global.putString(contentResolver, "policy_control", stringBuild.toString().trim())
         }
         app_details_hidestatus.setOnClickListener {
             val isSelected = (it as Switch).isChecked
-            val policyControl = Settings.Global.getString(contentResolver, "policy_control").split("\n")
-            var hideNav = ""
-            var hideFull = ""
-            var hideStatus = ""
-            for (item in policyControl) {
-                if (item.startsWith("immersive.full")) {
-                    hideFull = item
-                } else if (item.startsWith("immersive.navigation")) {
-                    hideNav = item
-                } else if (item.startsWith("immersive.status")) {
-                    hideStatus = item
-                }
+            if (isSelected && app_details_hidenav.isChecked) {
+                policyControl.hideAll(app)
+            } else if (isSelected) {
+                policyControl.hideStatusBar(app)
+            } else {
+                policyControl.showStatusBar(app)
             }
-            if (isSelected) {
-                if (hideStatus.isEmpty()) {
-                    hideStatus = "immersive.status=$app"
-                } else {
-                    if (hideStatus.contains(",-$app")) {
-                        hideStatus.replace(",-$app", "")
-                    }
-                    if (hideStatus.contains("-$app")) {
-                        hideStatus.replace("-$app", "")
-                    }
-                    hideStatus = hideStatus + ",$app"
-                }
-            } else if (!hideStatus.isEmpty()) {
-                if (hideStatus.contains("+$app")) {
-                    hideStatus.replace("+$app", "")
-                }
-                if (hideStatus.contains(",+$app")) {
-                    hideStatus.replace(",+$app", "")
-                }
-                if (hideStatus.contains(",$app")) {
-                    hideStatus.replace(",$app", "")
-                }
-                if (hideStatus.contains(app)) {
-                    hideStatus.replace(app, "")
-                }
-            }
-            val stringBuild = StringBuilder()
-            if (!hideFull.isEmpty()) {
-                stringBuild.append(hideFull)
-            }
-            if (!hideNav.isEmpty()) {
-                if (!stringBuild.isEmpty()) {
-                    stringBuild.append(":")
-                }
-                stringBuild.append(hideNav)
-            }
-            if (!hideStatus.isEmpty()) {
-                if (!stringBuild.isEmpty()) {
-                    stringBuild.append(":")
-                }
-                stringBuild.append(hideStatus)
-            }
-            Settings.Global.putString(contentResolver, "policy_control", stringBuild.toString().trim())
         }
+
+        app_details_disdoze.setOnClickListener {
+            if ((it as Switch).isChecked) {
+                KeepShellSync.doCmdSync("dumpsys deviceidle whitelist +$app")
+            } else {
+                KeepShellSync.doCmdSync("dumpsys deviceidle whitelist -$app")
+            }
+        }
+        app_details_icon.setOnClickListener {
+            try {
+                val intent = getPackageManager().getLaunchIntentForPackage(app)
+                startActivity(intent)
+            } catch (ex: Exception) {
+                Toast.makeText(this, "启动应用失败！", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun getTotalSizeOfFilesInDir(file: File): Long {
+        if (!file.exists()) {
+            return 0
+        }
+        if (file.isFile)
+            return file.length()
+        val children = file.listFiles()
+        var total: Long = 0
+        if (children != null)
+            for (child in children)
+                total += getTotalSizeOfFilesInDir(child)
+        return total
     }
 
     private fun checkPermission(permissionName: String, app: String): Boolean {
@@ -263,41 +197,57 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_versionname.text = packageInfo.versionName
         app_details_versioncode.text = packageInfo.versionCode.toString()
         app_details_time.text = Date(packageInfo.lastUpdateTime).toLocaleString()
-        app_details_size.text = String.format("%.2f", File(applicationInfo.publicSourceDir).length() / 1024.0 / 1024) + "MB"
-        val mem = KeepShellSync.doCmdSync("dumpsys meminfo $app | grep Realtime")
-        if (mem.contains("Realtime:")) {
-            app_details_ram.text = mem.substring(mem.lastIndexOf(":") + 1)
-        }
+        Thread(Runnable {
+            var size = getTotalSizeOfFilesInDir(File(applicationInfo.sourceDir).parentFile)
+            size += getTotalSizeOfFilesInDir(File(applicationInfo.dataDir))
+            val dumpR = KeepShellSync.doCmdSync("dumpsys meminfo --S --package $app | grep TOTAL")
+            var memSize = 0
+            if (dumpR.isEmpty() || dumpR == "error") {
+
+            } else {
+                val mem = KeepShellSync.doCmdSync("dumpsys meminfo --package $app | grep TOTAL").split("\n", ignoreCase = true)
+                for (rowIndex in 0..mem.size - 1) {
+                    if (rowIndex % 2 == 0) {
+                        //TOTAL    17651    11740      672        0    18832    16424     2407
+                        val row = mem[rowIndex].trim().split("    ", ignoreCase = true)
+                        try {
+                            memSize += row[1].toInt()
+                        } catch (ex: Exception) {}
+                        Log.d("", row.toString())
+                    }
+                }
+            }
+            app_details_size.post {
+                app_details_size.text = String.format("%.2f", size / 1024.0 / 1024) + "MB"
+                app_details_ram.text = String.format("%.2f", memSize / 1024.0) + "MB"
+            }
+        }).start()
 
         app_details_dynamic.text = ModeList(this).getModName(powercfg.getString(app, spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeList(this).BALANCE)))
         app_details_floatwindow.isChecked = checkPermission("android.permission.SYSTEM_ALERT_WINDOW", app)
         app_details_usagedata.isChecked = checkPermission("android.permission.PACKAGE_USAGE_STATS", app)
         app_details_modifysettings.isChecked = checkPermission("android.permission.WRITE_SECURE_SETTINGS", app)
 
-        val policyControl = Settings.Global.getString(contentResolver, "policy_control").split(":")
-        for (item in policyControl) {
-            if (item.startsWith("immersive.full")) {
-                if (item.contains(app) && !item.contains("-$app")) {
-                    app_details_hidenav.isChecked = true
-                    app_details_hidestatus.isChecked = true
-                }
-            } else if (item.startsWith("immersive.navigation")) {
-                if (item.contains(app) && !item.contains("-$app")) {
-                    app_details_hidenav.isChecked = true
-                }
-            } else if (item.startsWith("immersive.status")) {
-                if (item.contains(app) && !item.contains("-$app")) {
-                    app_details_hidestatus.isChecked = true
-                }
-            }
+        if (policyControl.isFullScreen(app)) {
+            app_details_hidenav.isChecked = true
+            app_details_hidestatus.isChecked = true
+        } else {
+            app_details_hidenav.isChecked = policyControl.isHideNavbarOnly(app)
+            app_details_hidestatus.isChecked = policyControl.isHideStatusOnly(app)
         }
+
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             app_details_disdoze.isEnabled = true
             val disDoze = KeepShellSync.doCmdSync("dumpsys deviceidle whitelist | grep $app")
-            if (disDoze != "error" && !disDoze.isEmpty()) {
+            if (disDoze.contains(app)) {
                 app_details_disdoze.isChecked = true
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        finish()
     }
 }

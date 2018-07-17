@@ -59,6 +59,7 @@
                             android:layout_height="wrap_content" />
                     </LinearLayout>
                     <ImageView
+                        android:background="#f8f8f8"
                         android:src="@drawable/settings"
                         android:layout_margin="10dp"
                         android:layout_width="30dp"

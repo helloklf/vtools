@@ -159,6 +159,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".AppDetailsActivity"
+            android:excludeFromRecents="true"
             android:theme="@style/AppTheme.NoActionBar"
             android:label="应用场景">
             <intent-filter>
@@ -167,8 +168,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:launchMode="standard"
             android:name=".ActivityFileSelector"
             android:theme="@style/AppTheme.NoActionBar"
+            android:excludeFromRecents="true"
             android:label="@string/title_activity_file_selector">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
