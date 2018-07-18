@@ -12,7 +12,9 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Build
+import android.os.Handler
 import android.util.Log
+import android.view.KeyEvent
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityWindowInfo
 import com.omarea.shared.AutoClickService
@@ -232,6 +234,40 @@ override fun onCreate() {
             System.exit(0)
         }
         //android.os.Process.killProcess(android.os.Process.myPid());
+    }
+
+    private var handler = Handler()
+    private var downTime: Long = -1
+    private var longClickTime: Long = 300;
+    override fun onKeyEvent(event: KeyEvent): Boolean {
+        if (serviceHelper == null)
+            initServiceHelper()
+
+        val keyCode = event.keyCode
+        // 只阻止四大金刚键
+        if (!(keyCode == KeyEvent.KEYCODE_HOME || keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_APP_SWITCH || keyCode == KeyEvent.KEYCODE_MENU || keyCode == KeyEvent.KEYCODE_SEARCH)) {
+            return false
+        }
+        if (event.action == KeyEvent.ACTION_DOWN) {
+            downTime = event.eventTime
+                val currentDownTime = downTime
+                handler.postDelayed({
+                    if (downTime == currentDownTime) {
+                        if (keyCode == KeyEvent.KEYCODE_HOME) {
+                            performGlobalAction(GLOBAL_ACTION_HOME)
+                        } else if (keyCode == KeyEvent.KEYCODE_BACK) {
+                            performGlobalAction(GLOBAL_ACTION_BACK)
+                        } else if (keyCode == KeyEvent.KEYCODE_APP_SWITCH || keyCode == KeyEvent.KEYCODE_MENU) {
+                            performGlobalAction(GLOBAL_ACTION_RECENTS)
+                        }
+                    }
+                }, longClickTime)
+            return serviceHelper!!.onKeyDown()
+        } else if (event.action == KeyEvent.ACTION_UP) {
+            return serviceHelper!!.onKeyDown()
+        } else {
+            return false
+        }
     }
 
     override fun onUnbind(intent: Intent?): Boolean {

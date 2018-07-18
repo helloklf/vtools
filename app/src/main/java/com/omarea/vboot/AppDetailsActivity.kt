@@ -181,6 +181,7 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_light.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             var mode = -1;
             var screenBrightness = 100;
+            var onMove = false
 
             fun getScreenMode(): Int {
                 try {
@@ -203,27 +204,23 @@ class AppDetailsActivity : AppCompatActivity() {
 
             fun setScreenMode() {
                 try {
-                    Settings.System.putInt(getContentResolver(),
-                            Settings.System.SCREEN_BRIGHTNESS_MODE, mode)
-                    val uri = Settings.System.getUriFor("screen_brightness_mode")
-                    getContentResolver().notifyChange(uri, null)
+                    Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, mode)
+                    getContentResolver().notifyChange(Settings.System.getUriFor("screen_brightness_mode"), null)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
 
             fun setScreenBrightness() {
-                Settings.System.putInt(getContentResolver(),
-                        Settings.System.SCREEN_BRIGHTNESS, screenBrightness)
-                val uri = Settings.System
-                        .getUriFor("screen_brightness")
-                getContentResolver().notifyChange(uri, null)
+                Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, screenBrightness)
+                getContentResolver().notifyChange(Settings.System.getUriFor("screen_brightness_mode"), null)
             }
 
 
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                onMove = false
                 setScreenMode()
-                setScreenBrightness();
+                setScreenBrightness()
                 if (seekBar != null) {
                     if (seekBar.progress < 20) {
                         seekBar.progress = 20
@@ -234,13 +231,6 @@ class AppDetailsActivity : AppCompatActivity() {
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
                 getScreenMode()
                 getScreenBrightness()
-            }
-
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                if (progress < 10) {
-                    return
-                }
-                appConfigInfo.aloneLightValue = progress
                 try {
                     Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, 0)
                     val uri = Settings.System.getUriFor("screen_brightness_mode")
@@ -248,6 +238,14 @@ class AppDetailsActivity : AppCompatActivity() {
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
+                onMove = true
+            }
+
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                if (!onMove || progress < 10) {
+                    return
+                }
+                appConfigInfo.aloneLightValue = progress
                 try {
                     Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, progress)
                     val uri = Settings.System.getUriFor("screen_brightness")
