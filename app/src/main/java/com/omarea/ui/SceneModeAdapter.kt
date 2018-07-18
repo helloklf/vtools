@@ -9,6 +9,8 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
@@ -112,8 +114,8 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
             viewHolder!!.itemTitle = convertView!!.findViewById(R.id.ItemTitle)
             viewHolder!!.enabledStateText = convertView.findViewById(R.id.ItemEnabledStateText)
             viewHolder!!.itemText = convertView.findViewById(R.id.ItemText)
+            viewHolder!!.itemDesc = convertView.findViewById(R.id.ItemDesc)
             viewHolder!!.imgView = convertView.findViewById(R.id.ItemIcon)
-            viewHolder!!.wranStateText = convertView.findViewById(R.id.ItemWranText)
             viewHolder!!.imgView!!.setTag(getItem(position).packageName)
             convertView.tag = viewHolder
         } else {
@@ -129,14 +131,39 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
             viewHolder!!.imgView!!.setImageDrawable(item.icon)
         }
         if (item.enabledState != null)
-            viewHolder!!.enabledStateText!!.text = item.enabledState
+        {
+            val config = item.enabledState
+            var enabledState = ""
+            when (config) {
+                "powersave" -> {
+                    enabledState = "省电模式"
+                    viewHolder!!.enabledStateText!!.setTextColor(Color.parseColor("#0091D5"))
+                }
+                "performance" -> {
+                    enabledState = "性能模式"
+                    viewHolder!!.enabledStateText!!.setTextColor(Color.parseColor("#6ECB00"))
+                }
+                "fast" -> {
+                    enabledState = "极速模式"
+                    viewHolder!!.enabledStateText!!.setTextColor(Color.parseColor("#FF7E00"))
+                }
+                "igoned" -> {
+                    enabledState = ""
+                    viewHolder!!.enabledStateText!!.setTextColor(Color.parseColor("#888888"))
+                }
+                else -> {
+                    enabledState = "均衡模式"
+                    viewHolder!!.enabledStateText!!.setTextColor(Color.parseColor("#00B78A"))
+                }
+            }
+            viewHolder!!.enabledStateText!!.visibility = VISIBLE
+            viewHolder!!.enabledStateText!!.text = enabledState
+        }
         else
-            viewHolder!!.enabledStateText!!.text = ""
+            viewHolder!!.enabledStateText!!.visibility = GONE
 
-        if (item.wranState != null)
-            viewHolder!!.wranStateText!!.text = item.wranState
-        else
-            viewHolder!!.wranStateText!!.text = ""
+        if (viewHolder!!.itemDesc != null)
+            viewHolder!!.itemDesc!!.text = item.desc
 
         return convertView
     }
@@ -145,7 +172,7 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
         internal var itemTitle: TextView? = null
         internal var imgView: ImageView? = null
         internal var itemText: TextView? = null
+        internal var itemDesc: TextView? = null
         internal var enabledStateText: TextView? = null
-        internal var wranStateText: TextView? = null
     }
 }

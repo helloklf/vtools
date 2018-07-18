@@ -52,7 +52,7 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_dynamic.setOnClickListener {
             val modeList = ModeList(this)
             val powercfg = getSharedPreferences(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, Context.MODE_PRIVATE)
-            val currentMode = powercfg.getString(app, modeList.BALANCE)
+            val currentMode = powercfg.getString(app, getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, modeList.BALANCE))
             var index = 0
             when (currentMode) {
                 modeList.POWERSAVE -> index = 0
@@ -64,7 +64,7 @@ class AppDetailsActivity : AppCompatActivity() {
             var selectedIndex = index
             AlertDialog.Builder(this)
                     .setTitle("性能调节")
-                    .setSingleChoiceItems(R.array.powercfg_modes, 0, DialogInterface.OnClickListener { dialog, which ->
+                    .setSingleChoiceItems(R.array.powercfg_modes, index, DialogInterface.OnClickListener { dialog, which ->
                         selectedIndex = which
                     })
                     .setPositiveButton(R.string.btn_confirm, DialogInterface.OnClickListener { dialog, which ->
@@ -177,10 +177,6 @@ class AppDetailsActivity : AppCompatActivity() {
         }
         app_details_aloowlight.setOnClickListener {
             appConfigInfo.aloneLight = (it as CheckBox).isChecked
-        }
-        // TODO: 监听滑动
-        if (appConfigInfo.aloneLightValue > 0) {
-            app_details_light.setProgress(appConfigInfo.aloneLightValue)
         }
         app_details_light.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             var mode = -1;
@@ -302,6 +298,7 @@ class AppDetailsActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        val modeList = ModeList(this)
         val powercfg = getSharedPreferences(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, Context.MODE_PRIVATE)
         val spfGlobal = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
@@ -340,7 +337,8 @@ class AppDetailsActivity : AppCompatActivity() {
             }
         }).start()
 
-        app_details_dynamic.text = ModeList(this).getModName(powercfg.getString(app, spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeList(this).BALANCE)))
+        val firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, modeList.BALANCE))
+        app_details_dynamic.text = modeList.getModName(powercfg.getString(app, firstMode))
         app_details_floatwindow.isChecked = checkPermission("android.permission.SYSTEM_ALERT_WINDOW", app)
         app_details_usagedata.isChecked = checkPermission("android.permission.PACKAGE_USAGE_STATS", app)
         app_details_modifysettings.isChecked = checkPermission("android.permission.WRITE_SECURE_SETTINGS", app)
@@ -378,9 +376,8 @@ class AppDetailsActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         if (AppConfigStore(this).setAppConfig(appConfigInfo)) {
-            Toast.makeText(this, "配置已更新", Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(this, "配置保存失败！", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, getString(R.string.config_save_fail), Toast.LENGTH_LONG).show()
         }
         super.onDestroy()
     }

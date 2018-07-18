@@ -39,6 +39,7 @@ class FragmentConfig : Fragment() {
     internal val myHandler: Handler = Handler()
     private var installedList: ArrayList<Appinfo>? = null
     private var packageManager: PackageManager? = null
+    private lateinit var appConfigStore: AppConfigStore
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.layout_config, container, false)
@@ -58,6 +59,7 @@ class FragmentConfig : Fragment() {
         spfPowercfg = context!!.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         editor = spfPowercfg.edit()
+        appConfigStore = AppConfigStore(this.context)
 
         if (spfPowercfg.all.isEmpty()) {
             initDefaultConfig()
@@ -231,13 +233,30 @@ class FragmentConfig : Fragment() {
                 if (search && !(packageName.contains(keyword) || item.appName.toString().contains(keyword))) {
                     continue
                 }
-                val config = spfPowercfg.getString(packageName, firstMode)
-                when (config) {
-                    "powersave" -> installedList!![i].enabledState = "省电"
-                    "performance" -> installedList!![i].enabledState = "性能"
-                    "fast" -> installedList!![i].enabledState = "极速"
-                    "igoned" -> installedList!![i].enabledState = ""
-                    else -> installedList!![i].enabledState = "均衡"
+                installedList!![i].enabledState = spfPowercfg.getString(packageName, firstMode)
+                val configInfo = appConfigStore.getAppConfig(packageName)
+                installedList!![i].appConfigInfo = configInfo
+                val desc = StringBuilder()
+                if (configInfo.aloneLight && configInfo.aloneLightValue > 0) {
+                    desc.append("亮度：${configInfo.aloneLightValue}  ")
+                }
+                if (configInfo.disNotice) {
+                    desc.append("屏蔽通知  ")
+                }
+                if (configInfo.disButton) {
+                    desc.append("屏蔽按键  ")
+                }
+                if (configInfo.disBackgroundRun) {
+                    desc.append("阻止后台 ")
+                }
+                if (configInfo.dpi > 0) {
+                    desc.append("DPI:${configInfo.dpi}  ")
+                }
+                if (configInfo.excludeRecent) {
+                    desc.append("隐藏后台  ")
+                }
+                if (configInfo.smoothScroll) {
+                    desc.append("滚动优化  ")
                 }
             }
             sortAppList(installedList!!)

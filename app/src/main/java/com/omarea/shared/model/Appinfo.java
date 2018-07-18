@@ -2,6 +2,8 @@ package com.omarea.shared.model;
 
 import android.graphics.drawable.Drawable;
 
+import com.omarea.shared.AppConfigStore;
+
 /**
  * 应用信息
  * Created by Hello on 2018/01/26.
@@ -24,6 +26,8 @@ public class Appinfo {
     public String versionName = "";
     public int versionCode = 0;
     public AppType appType = AppType.UNKNOW;
+    public AppConfigStore.AppConfigInfo appConfigInfo;
+    public CharSequence desc;
 
     public enum AppType {
         UNKNOW,
