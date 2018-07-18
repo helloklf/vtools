@@ -63,6 +63,8 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
 
     private var notifyHelper: NotifyHelper = NotifyHelper(context, spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))
 
+    private val screenLight: SceneMode = SceneMode.getInstanceOrInit(context.contentResolver, AppConfigStore(context))!!
+
     private var timer: Timer? = null
 
     private fun startTimer() {
@@ -477,6 +479,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
     private fun cancelDump(packageName: String) {
         autoBoosterApp(packageName)
         autoToggleMode(packageName)
+        screenLight.onFocusdAppChange(packageName)
     }
 
     //焦点应用改变
@@ -506,6 +509,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             autoBoosterApp(packageName)
             autoToggleMode(packageName)
             lastPackage = packageName
+            screenLight.onFocusdAppChange(packageName)
         }
     }
 

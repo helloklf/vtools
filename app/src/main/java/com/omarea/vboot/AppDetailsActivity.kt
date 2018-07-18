@@ -6,12 +6,16 @@ import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
+import android.widget.CheckBox
+import android.widget.SeekBar
 import android.widget.Switch
 import android.widget.Toast
+import com.omarea.shared.AppConfigStore
 import com.omarea.shared.ModeList
 import com.omarea.shared.PolicyControl
 import com.omarea.shared.SpfConfig
@@ -19,10 +23,15 @@ import com.omarea.shell.KeepShellSync
 import kotlinx.android.synthetic.main.activity_app_details.*
 import java.io.File
 import java.util.*
+import android.provider.Settings.SettingNotFoundException
+import android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE
+
+
 
 class AppDetailsActivity : AppCompatActivity() {
     var app = ""
     lateinit var policyControl: PolicyControl
+    lateinit var appConfigInfo: AppConfigStore.AppConfigInfo
 
     @SuppressLint("ApplySharedPref")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -154,6 +163,114 @@ class AppDetailsActivity : AppCompatActivity() {
                 Toast.makeText(this, "启动应用失败！", Toast.LENGTH_SHORT).show()
             }
         }
+
+        appConfigInfo = AppConfigStore(this).getAppConfig(app)
+
+        app_details_hidebtn.setOnClickListener {
+            appConfigInfo.disButton = (it as Switch).isChecked
+        }
+        app_details_hidenotice.setOnClickListener {
+            appConfigInfo.disNotice = (it as Switch).isChecked
+        }
+        app_details_disbackground.setOnClickListener {
+            appConfigInfo.disBackgroundRun = (it as Switch).isChecked
+        }
+        app_details_aloowlight.setOnClickListener {
+            appConfigInfo.aloneLight = (it as CheckBox).isChecked
+        }
+        // TODO: 监听滑动
+        if (appConfigInfo.aloneLightValue > 0) {
+            app_details_light.setProgress(appConfigInfo.aloneLightValue)
+        }
+        app_details_light.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            var mode = -1;
+            var screenBrightness = 100;
+
+            fun getScreenMode(): Int {
+                try {
+                    mode = Settings.System.getInt(getContentResolver(),
+                            Settings.System.SCREEN_BRIGHTNESS_MODE)
+                } catch (e: Settings.SettingNotFoundException) {
+                    e.printStackTrace()
+                }
+                return mode
+            }
+
+            fun getScreenBrightness() {
+                try {
+                    screenBrightness = Settings.System.getInt(getContentResolver(),
+                            Settings.System.SCREEN_BRIGHTNESS)
+                } catch (e: Settings.SettingNotFoundException) {
+                    e.printStackTrace()
+                }
+            }
+
+            fun setScreenMode() {
+                try {
+                    Settings.System.putInt(getContentResolver(),
+                            Settings.System.SCREEN_BRIGHTNESS_MODE, mode)
+                    val uri = Settings.System.getUriFor("screen_brightness_mode")
+                    getContentResolver().notifyChange(uri, null)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+
+            fun setScreenBrightness() {
+                Settings.System.putInt(getContentResolver(),
+                        Settings.System.SCREEN_BRIGHTNESS, screenBrightness)
+                val uri = Settings.System
+                        .getUriFor("screen_brightness")
+                getContentResolver().notifyChange(uri, null)
+            }
+
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                setScreenMode()
+                setScreenBrightness();
+                if (seekBar != null) {
+                    if (seekBar.progress < 20) {
+                        seekBar.progress = 20
+                    }
+                }
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                getScreenMode()
+                getScreenBrightness()
+            }
+
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                if (progress < 10) {
+                    return
+                }
+                appConfigInfo.aloneLightValue = progress
+                try {
+                    Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, 0)
+                    val uri = Settings.System.getUriFor("screen_brightness_mode")
+                    getContentResolver().notifyChange(uri, null)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+                try {
+                    Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, progress)
+                    val uri = Settings.System.getUriFor("screen_brightness")
+                    getContentResolver().notifyChange(uri, null)
+                } catch (ex: Exception) {
+
+                }
+            }
+        })
+        // TODO: 输入DPI
+        if (appConfigInfo.dpi > -1) {
+            app_details_dpi.text = appConfigInfo.dpi.toString()
+        }
+        app_details_excludetask.setOnClickListener {
+            appConfigInfo.excludeRecent = (it as Switch).isChecked
+        }
+        app_details_scrollopt.setOnClickListener {
+            appConfigInfo.smoothScroll = (it as Switch).isChecked
+        }
     }
 
     private fun getTotalSizeOfFilesInDir(file: File): Long {
@@ -244,6 +361,28 @@ class AppDetailsActivity : AppCompatActivity() {
                 app_details_disdoze.isChecked = true
             }
         }
+
+        app_details_hidebtn.isChecked = appConfigInfo.disButton
+        app_details_hidenotice.isChecked = appConfigInfo.disNotice
+        app_details_disbackground.isChecked = appConfigInfo.disBackgroundRun
+        app_details_aloowlight.isChecked = appConfigInfo.aloneLight
+        if (appConfigInfo.aloneLightValue > 0) {
+            app_details_light.setProgress(appConfigInfo.aloneLightValue)
+        }
+        if (appConfigInfo.dpi > -1) {
+            app_details_dpi.text = appConfigInfo.dpi.toString()
+        }
+        app_details_excludetask.isChecked = appConfigInfo.excludeRecent
+        app_details_scrollopt.isChecked = appConfigInfo.smoothScroll
+    }
+
+    override fun onDestroy() {
+        if (AppConfigStore(this).setAppConfig(appConfigInfo)) {
+            Toast.makeText(this, "配置已更新", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(this, "配置保存失败！", Toast.LENGTH_LONG).show()
+        }
+        super.onDestroy()
     }
 
     override fun onPause() {

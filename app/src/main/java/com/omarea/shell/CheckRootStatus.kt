@@ -123,6 +123,7 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
                 cmds.append("pm grant com.omarea.vboot android.permission.SYSTEM_ALERT_WINDOW;\n")
                 cmds.append("pm grant com.omarea.vboot android.permission.WRITE_SECURE_SETTINGS;\n")
                 cmds.append("pm grant com.omarea.vboot android.permission.CHANGE_CONFIGURATION;\n")
+                cmds.append("pm grant com.omarea.vboot android.permission.BIND_NOTIFICATION_LISTENER_SERVICE;\n")
             }
             KeepShellSync.doCmdSync(cmds.toString())
         }

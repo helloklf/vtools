@@ -16,15 +16,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.AdapterView.OnItemClickListener
-import android.widget.CheckBox
 import android.widget.Switch
 import com.omarea.shared.*
 import com.omarea.shared.model.Appinfo
 import com.omarea.shell.Platform
-import com.omarea.ui.AppListAdapter
 import com.omarea.ui.OverScrollListView
 import com.omarea.ui.ProgressBarDialog
+import com.omarea.ui.SceneModeAdapter
 import com.omarea.ui.SearchTextWatcher
 import kotlinx.android.synthetic.main.layout_config.*
 import java.io.File
@@ -38,18 +36,9 @@ class FragmentConfig : Fragment() {
     private lateinit var editor: SharedPreferences.Editor
     private var hasSystemApp = false
     private lateinit var applistHelper: AppListHelper
-
     internal val myHandler: Handler = Handler()
-
-    private var defaultList: ArrayList<Appinfo>? = null
-    private var gameList: ArrayList<Appinfo>? = null
-    private var powersaveList: ArrayList<Appinfo>? = null
-    private var fastList: ArrayList<Appinfo>? = null
-    private var ignoredList: ArrayList<Appinfo>? = null
     private var installedList: ArrayList<Appinfo>? = null
-
     private var packageManager: PackageManager? = null
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.layout_config, container, false)
@@ -107,69 +96,9 @@ class FragmentConfig : Fragment() {
 
         configlist_tabhost.setup()
 
-        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("def_tab").setContent(R.id.configlist_tab0).setIndicator("均衡"))
-        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("game_tab").setContent(R.id.configlist_tab1).setIndicator("性能"))
-        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("power_tab").setContent(R.id.configlist_tab2).setIndicator("省电"))
-        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("fast_tab").setContent(R.id.configlist_tab3).setIndicator("极速"))
-        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("fast_tab").setContent(R.id.configlist_tab4).setIndicator("忽略"))
+        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("def_tab").setContent(R.id.configlist_tab0).setIndicator("应用场景"))
         configlist_tabhost.addTab(configlist_tabhost.newTabSpec("confg_tab").setContent(R.id.configlist_tab5).setIndicator("设置"))
         configlist_tabhost.currentTab = 0
-        configlist_tabhost.setOnTabChangedListener { config_addtodefaultlist.visibility = if (configlist_tabhost.currentTab > 4) View.GONE else View.VISIBLE }
-
-        config_addtodefaultlist.setOnClickListener {
-            when (configlist_tabhost.currentTab) {
-                0 -> {
-                    val builder = AlertDialog.Builder(context)
-                    val items = arrayOf(getString(R.string.addto_performance), getString(R.string.addto_powersave), getString(R.string.addto_fast), getString(R.string.addto_ignore), "恢复默认模式")
-                    val configses = arrayOf(Configs.Game, Configs.PowerSave, Configs.Fast, Configs.Ignored, Configs.Unkonow)
-                    builder.setItems(items) { _, which ->
-                        val listadapter = config_defaultlist.adapter as AppListAdapter
-                        addToList(defaultList!!, listadapter.states, configses[which])
-                    }
-                    builder.setIcon(R.drawable.ic_menu_profile).setTitle(getString(R.string.set_power_mode)).create().show()
-                }
-                1 -> {
-                    val builder = AlertDialog.Builder(context)
-                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_powersave), getString(R.string.addto_fast), getString(R.string.addto_ignore), "恢复默认模式")
-                    val configses = arrayOf(Configs.Default, Configs.PowerSave, Configs.Fast, Configs.Ignored, Configs.Unkonow)
-                    builder.setItems(items) { _, which ->
-                        val listadapter = config_gamelist.adapter as AppListAdapter
-                        addToList(gameList!!, listadapter.states, configses[which])
-                    }
-                    builder.setIcon(R.drawable.ic_menu_profile).setTitle(getString(R.string.set_power_mode)).create().show()
-                }
-                2 -> {
-                    val builder = AlertDialog.Builder(context)
-                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_performance), getString(R.string.addto_fast), getString(R.string.addto_ignore), "恢复默认模式")
-                    val configses = arrayOf(Configs.Default, Configs.Game, Configs.Fast, Configs.Ignored, Configs.Unkonow)
-                    builder.setItems(items) { _, which ->
-                        val listadapter = config_powersavelist.adapter as AppListAdapter
-                        addToList(powersaveList!!, listadapter.states, configses[which])
-                    }
-                    builder.setIcon(R.drawable.ic_menu_profile).setTitle(getString(R.string.set_power_mode)).create().show()
-                }
-                3 -> {
-                    val builder = AlertDialog.Builder(context)
-                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_performance), getString(R.string.addto_powersave), getString(R.string.addto_ignore), "恢复默认模式")
-                    val configses = arrayOf(Configs.Default, Configs.Game, Configs.PowerSave, Configs.Ignored, Configs.Unkonow)
-                    builder.setItems(items) { _, which ->
-                        val listadapter = config_fastlist.adapter as AppListAdapter
-                        addToList(fastList!!, listadapter.states, configses[which])
-                    }
-                    builder.setIcon(R.drawable.ic_menu_profile).setTitle(getString(R.string.set_power_mode)).create().show()
-                }
-                4 -> {
-                    val builder = AlertDialog.Builder(context)
-                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_performance), getString(R.string.addto_powersave), getString(R.string.addto_fast), "恢复默认模式")
-                    val configses = arrayOf(Configs.Default, Configs.Game, Configs.PowerSave, Configs.Fast, Configs.Unkonow)
-                    builder.setItems(items) { _, which ->
-                        val listadapter = config_ignoredlist.adapter as AppListAdapter
-                        addToList(ignoredList!!, listadapter.states, configses[which])
-                    }
-                    builder.setIcon(R.drawable.ic_menu_profile).setTitle(getString(R.string.set_power_mode)).create().show()
-                }
-            }
-        }
 
         config_showSystemApp.isChecked = hasSystemApp
         config_showSystemApp.setOnClickListener {
@@ -188,44 +117,14 @@ class FragmentConfig : Fragment() {
         battery_monitor.setOnClickListener {
             globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, (it as Switch).isChecked).commit()
         }
-
-        config_defaultlist.onItemClickListener = OnItemClickListener { _, current, position, _ ->
-            val selectState = current.findViewById(R.id.select_state) as CheckBox
-            selectState.isChecked = !selectState.isChecked
-            defaultList!![position].selectState = !selectState.isChecked
-        }
         //TODO:
-        config_defaultlist.setOnItemClickListener { parent, view, position, id ->
+        config_defaultlist.setOnItemClickListener { parent, _, position, id ->
             try {
                 val intent = Intent(this.context, AppDetailsActivity::class.java)
                 intent.putExtra("app", (parent.adapter.getItem(position) as Appinfo).packageName)
                 startActivity(intent)
             } catch (ex: Exception) {
             }
-        }
-
-        config_gamelist.onItemClickListener = OnItemClickListener { _, current, position, _ ->
-            val selectState = current.findViewById(R.id.select_state) as CheckBox
-            selectState.isChecked = !selectState.isChecked
-            gameList!![position].selectState = !selectState.isChecked
-        }
-
-        config_powersavelist.onItemClickListener = OnItemClickListener { _, current, position, _ ->
-            val selectState = current.findViewById(R.id.select_state) as CheckBox
-            selectState.isChecked = !selectState.isChecked
-            powersaveList!![position].selectState = !selectState.isChecked
-        }
-
-        config_fastlist.onItemClickListener = OnItemClickListener { _, current, position, _ ->
-            val selectState = current.findViewById(R.id.select_state) as CheckBox
-            selectState.isChecked = !selectState.isChecked
-            fastList!![position].selectState = !selectState.isChecked
-        }
-
-        config_ignoredlist.onItemClickListener = OnItemClickListener { _, current, position, _ ->
-            val selectState = current.findViewById(R.id.select_state) as CheckBox
-            selectState.isChecked = !selectState.isChecked
-            ignoredList!![position].selectState = !selectState.isChecked
         }
 
         config_search_box.addTextChangedListener(SearchTextWatcher(Runnable {
@@ -253,13 +152,13 @@ class FragmentConfig : Fragment() {
 
         @SuppressLint("ApplySharedPref")
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            var mode = "balance";
+            var mode = "balance"
             when (position) {
-                0 -> mode = "powersave";
-                1 -> mode = "balance";
-                2 -> mode = "performance";
-                3 -> mode = "fast";
-                4 -> mode = "igoned";
+                0 -> mode = "powersave"
+                1 -> mode = "balance"
+                2 -> mode = "performance"
+                3 -> mode = "fast"
+                4 -> mode = "igoned"
             }
             globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, mode).commit()
             runnable.run()
@@ -303,7 +202,7 @@ class FragmentConfig : Fragment() {
 
     private fun setListData(dl: ArrayList<Appinfo>?, lv: OverScrollListView) {
         myHandler.post {
-            lv.adapter = AppListAdapter(context!!, dl!!)
+            lv.adapter = SceneModeAdapter(context!!, dl!!)
             processBarDialog.hideDialog()
         }
     }
@@ -320,13 +219,7 @@ class FragmentConfig : Fragment() {
                 installedList = ArrayList()/*在数组中存放数据*/
                 val hasSystemApp = hasSystemApp
                 installedList = if (hasSystemApp) applistHelper.getAll() else applistHelper.getUserAppList()
-                sortAppList(installedList!!)
             }
-            defaultList = ArrayList()
-            gameList = ArrayList()
-            powersaveList = ArrayList()
-            fastList = ArrayList()
-            ignoredList = ArrayList()
 
             val keyword = config_search_box.text.toString()
             val search = keyword.isNotEmpty()
@@ -340,28 +233,17 @@ class FragmentConfig : Fragment() {
                 }
                 val config = spfPowercfg.getString(packageName, firstMode)
                 when (config) {
-                    "powersave" -> powersaveList!!.add(installedList!![i])
-                    "performance" -> gameList!!.add(installedList!![i])
-                    "game" -> {
-                        gameList!!.add(installedList!![i])
-                        spfPowercfg.edit().putString(installedList!![i].packageName.toString(), "performance").commit()
-                    }
-                    "default" -> {
-                        defaultList!!.add(installedList!![i])
-                        spfPowercfg.edit().remove(installedList!![i].packageName.toString()).commit()
-                    }
-                    "fast" -> fastList!!.add(installedList!![i])
-                    "igoned" -> ignoredList!!.add(installedList!![i])
-                    else -> defaultList!!.add(installedList!![i])
+                    "powersave" -> installedList!![i].enabledState = "省电"
+                    "performance" -> installedList!![i].enabledState = "性能"
+                    "fast" -> installedList!![i].enabledState = "极速"
+                    "igoned" -> installedList!![i].enabledState = ""
+                    else -> installedList!![i].enabledState = "均衡"
                 }
             }
+            sortAppList(installedList!!)
             myHandler.post {
                 processBarDialog.hideDialog()
-                setListData(defaultList, config_defaultlist)
-                setListData(gameList, config_gamelist)
-                setListData(powersaveList, config_powersavelist)
-                setListData(fastList, config_fastlist)
-                setListData(ignoredList, config_ignoredlist)
+                setListData(installedList, config_defaultlist)
             }
         }).start()
     }
@@ -430,46 +312,9 @@ class FragmentConfig : Fragment() {
         }
     }
 
-    /**
-     * 从当前列表中获取已选中的应用，添加到指定模式
-     *
-     * @param list     当前列表
-     * @param postions 各个序号的选中状态
-     * @param config   指定的新模式
-     */
-    private fun addToList(list: ArrayList<Appinfo>, postions: HashMap<Int, Boolean>, config: Configs) {
-        postions.keys
-                .filter { postions[it] == true }
-                .map { list[it] }
-                .forEach {
-                    when (config) {
-                        Configs.Default -> editor.putString(it.packageName.toString(), "balance")
-                        Configs.Game -> editor.putString(it.packageName.toString(), "performance")
-                        Configs.PowerSave -> editor.putString(it.packageName.toString(), "powersave")
-                        Configs.Fast -> editor.putString(it.packageName.toString(), "fast")
-                        Configs.Ignored -> editor.putString(it.packageName.toString(), "igoned")
-                        Configs.Unkonow -> editor.remove(it.packageName.toString())
-                    }
-                }
-        editor.commit()
-        try {
-            loadList()
-        } catch (ex: Exception) {
-        }
-    }
-
     override fun onDestroy() {
         processBarDialog.hideDialog()
         super.onDestroy()
-    }
-
-    internal enum class Configs {
-        Default,
-        Game,
-        PowerSave,
-        Fast,
-        Ignored,
-        Unkonow
     }
 
     companion object {

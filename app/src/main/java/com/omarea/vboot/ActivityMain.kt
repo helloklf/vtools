@@ -238,8 +238,8 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             0x11
                     )
                 }
-                CheckRootStatus.grantPermission(this)
             }
+            CheckRootStatus.grantPermission(this)
         }).start()
     }
 

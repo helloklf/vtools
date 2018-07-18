@@ -50,54 +50,6 @@
                 </FrameLayout>
 
                 <FrameLayout
-                    android:id="@+id/configlist_tab1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <com.omarea.ui.OverScrollListView
-                        android:id="@+id/config_gamelist"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-                </FrameLayout>
-
-                <FrameLayout
-                    android:id="@+id/configlist_tab2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <com.omarea.ui.OverScrollListView
-                        android:id="@+id/config_powersavelist"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-                </FrameLayout>
-
-                <FrameLayout
-                    android:id="@+id/configlist_tab3"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <com.omarea.ui.OverScrollListView
-                        android:id="@+id/config_fastlist"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-                </FrameLayout>
-
-                <FrameLayout
-                    android:id="@+id/configlist_tab4"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <com.omarea.ui.OverScrollListView
-                        android:id="@+id/config_ignoredlist"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-                </FrameLayout>
-
-                <FrameLayout
                     android:id="@+id/configlist_tab5"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
@@ -299,15 +251,6 @@
             android:layout_height="wrap_content"
             android:background="#eee"
             android:text="动态响应功能未开启 - 点击去激活" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/config_addtodefaultlist"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
-            android:layout_margin="@dimen/fab_margin"
-            android:src="@drawable/check"
-            android:visibility="visible" />
     </TabHost>
 
 </LinearLayout>

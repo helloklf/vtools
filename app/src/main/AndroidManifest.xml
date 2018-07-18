@@ -14,14 +14,17 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission
+        android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
     <uses-permission
         android:name="android.permission.WRITE_SECURE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION"
+    <uses-permission
+        android:name="android.permission.CHANGE_CONFIGURATION"
         tools:ignore="ProtectedPermissions" />
-
     <!--
     <uses-permission android:name="android.permission.BATTERY_STATS" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
@@ -54,6 +57,13 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/phone_accessibility" />
         </service>
+        <service android:name=".NotificationService"
+            android:label="通知过滤服务"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+                <intent-filter>
+                    <action android:name="android.service.notification.NotificationListenerService"/>
+                </intent-filter>
+            </service>
         <service
             android:name=".AccessibilityServiceVToolsKeyEvent"
             android:label="微工具箱-按键辅助"
@@ -82,6 +92,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -160,24 +171,32 @@
         <activity
             android:name=".AppDetailsActivity"
             android:excludeFromRecents="true"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="应用场景">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:launchMode="standard"
-            android:name=".ActivityFileSelector"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:excludeFromRecents="true"
-            android:label="@string/title_activity_file_selector">
+            android:label="应用场景"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ActivityFileSelector"
+            android:excludeFromRecents="true"
+            android:label="@string/title_activity_file_selector"
+            android:launchMode="standard"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <provider
+            android:name="com.omarea.shared.AppConfigContentProvider"
+            android:authorities="app_config"
+            android:enabled="true"
+            android:exported="true"></provider>
     </application>
+
 </manifest>
