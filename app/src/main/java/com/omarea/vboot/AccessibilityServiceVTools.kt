@@ -238,7 +238,7 @@ override fun onCreate() {
 
     private var handler = Handler()
     private var downTime: Long = -1
-    private var longClickTime: Long = 300;
+    private var longClickTime: Long = 500;
     override fun onKeyEvent(event: KeyEvent): Boolean {
         if (serviceHelper == null)
             initServiceHelper()
@@ -264,6 +264,7 @@ override fun onCreate() {
                 }, longClickTime)
             return serviceHelper!!.onKeyDown()
         } else if (event.action == KeyEvent.ACTION_UP) {
+            downTime = -1
             return serviceHelper!!.onKeyDown()
         } else {
             return false
