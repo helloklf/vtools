@@ -1,15 +1,11 @@
 package com.omarea.shared
 
 import android.accessibilityservice.AccessibilityService
-import android.content.ComponentName
 import android.content.Context
 import android.content.Context.WINDOW_SERVICE
-import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.Display
 import android.view.WindowManager
 import android.widget.Toast
@@ -17,25 +13,23 @@ import com.omarea.shared.helper.InputHelper
 import com.omarea.shared.helper.NotifyHelper
 import com.omarea.shared.helper.ReciverLock
 import com.omarea.shared.helper.ScreenEventHandler
-import com.omarea.shell.AsynSuShellUnit
+import com.omarea.shell.DumpTopAppliction
 import com.omarea.shell.KeepShell
-import com.omarea.shell.KeepShellSync
 import java.io.File
 import java.util.*
 
 /**
+ *
  * Created by helloklf on 2016/10/1.
  */
 class ServiceHelper(private var context: AccessibilityService) : ModeList(context) {
+    private var systemScene: SystemScene = SystemScene(context)
     private var lastPackage: String? = null
-    private var lastModePackage: String? = null
+    private var lastModePackage: String? = "com.system.ui"
     private var lastMode = ""
     private var spfPowercfg: SharedPreferences = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
-    private var spfBlacklist: SharedPreferences = context.getSharedPreferences(SpfConfig.BOOSTER_BLACKLIST_SPF, Context.MODE_PRIVATE)
-    private var spfAutoConfig: SharedPreferences = context.getSharedPreferences(SpfConfig.BOOSTER_SPF_CFG_SPF, Context.MODE_PRIVATE)
     private var spfGlobal: SharedPreferences = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-    //标识是否已经加载完设置
-    private var settingsLoaded = false
+    private var dumpTopAppliction: DumpTopAppliction = DumpTopAppliction()
     private var ignoredList = arrayListOf(
             "com.miui.securitycenter",
             "android",
@@ -53,18 +47,14 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
     private var batteryMonitro: Boolean = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
     private var screenOn: Boolean = true
     private var lastScreenOnOff: Long = 0
-
     //屏幕关闭后切换网络延迟（ms）
     private val SCREEN_OFF_SWITCH_NETWORK_DELAY: Long = 30000
     //屏幕关闭后清理任务延迟（ms）
     private val SCREEN_OFF_CLEAR_TASKS_DELAY: Long = 60000
     private var screenHandler = ScreenEventHandler({ onScreenOff() }, { onScreenOn() })
     private var handler = Handler(Looper.getMainLooper())
-
     private var notifyHelper: NotifyHelper = NotifyHelper(context, spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))
-
     private val screenLight: SceneMode = SceneMode.getInstanceOrInit(context.contentResolver, AppConfigStore(context))!!
-
     private var timer: Timer? = null
 
     private fun startTimer() {
@@ -72,10 +62,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             val windowManager = this.context.getSystemService(WINDOW_SERVICE) as WindowManager
             val display = windowManager.defaultDisplay
             this.screenOn = display.state == Display.STATE_ON
-
-            if (!screenOn) {
-                return
-            }
+            if (!screenOn) return
             val time = if(batteryMonitro) 2000L else 10000L
             timer = Timer(true)
             timer!!.scheduleAtFixedRate(object : TimerTask() {
@@ -94,7 +81,6 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
                 timer = null
             }
         } catch (ex: Exception) {
-
         }
     }
 
@@ -111,43 +97,20 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
                     onScreenOffCloseNetwork()
             }, SCREEN_OFF_SWITCH_NETWORK_DELAY)
         }
-        clearTasks()
-        // fixme:似乎有bug?
+        // clearTasks()
         screenHandler.postDelayed({
-            if (!screenOn) {
-                stopTimer()
-            }
+            if (!screenOn) stopTimer()
         }, 10000)
     }
 
     //屏幕关闭后 - 关闭网络
     private fun onScreenOffCloseNetwork() {
-        if ((settingsLoaded) && dyamicCore && lockScreenOptimize && screenOn == false) {
+        if (dyamicCore && lockScreenOptimize && !screenOn) {
             toggleConfig(POWERSAVE)
             updateModeNofity()
-            if (debugMode)
-                showMsg("动态响应-锁屏优化 已息屏，自动切换省电模式")
         }
-        if (autoBooster && System.currentTimeMillis() - lastScreenOnOff >= SCREEN_OFF_SWITCH_NETWORK_DELAY && screenOn == false) {
-            if (spfAutoConfig.getBoolean(SpfConfig.WIFI + SpfConfig.OFF, false))
-                keepShell2.doCmd("svc wifi disable")
-
-            if (spfAutoConfig.getBoolean(SpfConfig.NFC + SpfConfig.OFF, false))
-                keepShell2.doCmd("svc nfc disable")
-
-            if (spfAutoConfig.getBoolean(SpfConfig.DATA + SpfConfig.OFF, false))
-                keepShell2.doCmd("svc data disable")
-
-            if (spfAutoConfig.getBoolean(SpfConfig.GPS + SpfConfig.OFF, false)) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    keepShell2.doCmd("settings put secure location_providers_allowed -gps;")
-                } else {
-                    keepShell2.doCmd("settings put secure location_providers_allowed network")
-                }
-            }
-
-            //if (debugMode)
-            //    showMsg("屏幕关闭 - 网络模式已切换！")
+        if (autoBooster && System.currentTimeMillis() - lastScreenOnOff >= SCREEN_OFF_SWITCH_NETWORK_DELAY && !screenOn) {
+            systemScene.onScreenOff()
         }
     }
 
@@ -160,91 +123,19 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         if (screenOn == true) return
 
         screenOn = true
-        // fixme:似乎有bug?
         startTimer()
         notifyHelper.notify()
 
-        if (settingsLoaded && dyamicCore && lockScreenOptimize) {
+        if (dyamicCore && lockScreenOptimize) {
             if (this.lastModePackage != null && !this.lastModePackage.isNullOrEmpty()) {
                 handler.postDelayed({
                     if (screenOn)
                         forceToggleMode(this.lastModePackage)
-                    if (debugMode)
-                        showMsg("动态响应-锁屏优化 已解锁，自动恢复配置")
                 }, 5000)
             }
         }
-        if (autoBooster && screenOn == true) {
-            keepShell2.doCmd("dumpsys deviceidle unforce;dumpsys deviceidle enable all;")
-            if (spfAutoConfig.getBoolean(SpfConfig.WIFI + SpfConfig.ON, false))
-                keepShell2.doCmd("svc wifi enable")
-
-            if (spfAutoConfig.getBoolean(SpfConfig.NFC + SpfConfig.ON, false))
-                keepShell2.doCmd("svc nfc enable")
-
-            if (spfAutoConfig.getBoolean(SpfConfig.DATA + SpfConfig.ON, false))
-                keepShell2.doCmd("svc data enable")
-
-            if (spfAutoConfig.getBoolean(SpfConfig.GPS + SpfConfig.ON, false)) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    keepShell2.doCmd("settings put secure location_providers_allowed -gps;settings put secure location_providers_allowed +gps")
-                } else {
-                    keepShell2.doCmd("settings put secure location_providers_allowed gps,network")
-                }
-            }
-
-            //if (debugMode)
-            //    showMsg("屏幕开启 - 网络模式已切换！")
-        }
-    }
-
-    private var listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
-        if (key == SpfConfig.GLOBAL_SPF_AUTO_BOOSTER) {
-            if (this.lastPackage != null) {
-                autoBoosterApp(this.lastPackage)
-            }
-            autoBooster = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, false)
-        } else if (key == SpfConfig.GLOBAL_SPF_DYNAMIC_CPU) {
-            dyamicCore = sharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
-            ConfigInstaller().configCodeVerify(context)
-            keepShell2.doCmd(Consts.ExecuteConfig)
-            setCurrent("", "")
-            handler.postDelayed({
-                if (!dyamicCore) {
-                    lastModePackage = ""
-                    lastMode = ""
-                } else {
-                    toggleConfig(firstMode)
-                }
-                updateModeNofity()
-            }, 2000)
-        } else if (key == SpfConfig.GLOBAL_SPF_DEBUG) {
-            debugMode = sharedPreferences.getBoolean(key, false)
-        } else if (key == SpfConfig.GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE) {
-            lockScreenOptimize = spfGlobal.getBoolean(key, false)
-        } else if (key == SpfConfig.GLOBAL_SPF_NOTIFY) {
-            notifyHelper.setNotify(sharedPreferences.getBoolean(key, true))
-        } else if (key == SpfConfig.GLOBAL_SPF_BATTERY_MONITORY) {
-            batteryMonitro = spfGlobal.getBoolean(key, false)
-            stopTimer()
-            startTimer()
-        } else if (key == SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE) {
-            firstMode = spfGlobal.getString(key, BALANCE)
-        } else if (key == SpfConfig.GLOBAL_SPF_ACCU_SWITCH) {
-            accuSwitch = spfGlobal.getBoolean(key, false)
-        } else if (key == lastModePackage) {
-            if (dyamicCore) {
-                val mode = spfPowercfg.getString(key, firstMode)
-                if (mode == IGONED) {
-                    lastMode = ""
-                    lastModePackage = ""
-                } else if (mode != lastMode) {
-                    forceToggleMode(key)
-                }
-            }
-        } else if (key == SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE) {
-            forceToggleMode(lastModePackage)
-        }
+        if (autoBooster && screenOn == true)
+            systemScene.onScreenOn()
     }
 
     private var keepShell2: KeepShell = KeepShell(context)
@@ -267,6 +158,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         notifyHelper.notify()
     }
 
+    //#region 模式切换
     //强制执行模式切换，无论当前应用是什么模式是什么
     private fun forceToggleMode(packageName: String?) {
         if (packageName == null || packageName.isNullOrEmpty())
@@ -303,31 +195,6 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         updateModeNofity()
     }
 
-    //终止进程
-    private fun autoBoosterApp(packageName: String?) {
-        if (!autoBooster || lastPackage == null || packageName == null)
-            return
-
-        if (lastPackage == "android" || lastPackage == "com.android.systemui" || lastPackage == "com.omarea.vboot" || lastPackage.equals(packageName))
-            return
-
-        if (spfBlacklist.contains(lastPackage)) {
-            if (spfAutoConfig.getBoolean(SpfConfig.BOOSTER_SPF_CFG_SPF_DOZE_MOD, Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)) {
-                dozeApp(lastPackage!!)
-            } else {
-                //android.os.Process.killProcess(android.os.Process.myPid());//自杀
-                killApp(lastPackage!!)
-            }
-        }
-
-        if (spfAutoConfig.getBoolean(SpfConfig.BOOSTER_SPF_CFG_SPF_CLEAR_CACHE, false)) {
-            keepShell2.doCmd("echo 3 > /proc/sys/vm/drop_caches")
-            //HIDDEN、RUNNING_MODERATE、BACKGROUND、RUNNING_LOW、MODERATE、RUNNING_CRITICAL、COMPLETE
-            keepShell2.doCmd("pids=`ps | grep $packageName | cut -f4 -d \" \"`;")
-            keepShell2.doCmd("for item in \$pids; do am send-trim-memory \$item RUNNING_CRITICAL;done;")
-        }
-    }
-
     private fun toggleConfig(mode: String) {
         if (!screenOn) {
             if (lockScreenOptimize) {
@@ -342,175 +209,27 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         executePowercfgMode(mode)
         lastMode = mode
     }
-
-    //#region 工具方法
-    //休眠指定包名的应用
-    private fun dozeApp(packageName: String) {
-        keepShell2.doCmd("dumpsys deviceidle whitelist -$packageName;\ndumpsys deviceidle enable;\ndumpsys deviceidle enable all;\nam set-inactive $packageName true")
-        if (debugMode)
-            showMsg("休眠 " + packageName)
-    }
-
-    //杀死指定包名的应用
-    private fun killApp(packageName: String, showMsg: Boolean = true) {
-        //keepShell2.doCmd("killall -9 $packageName;pkill -9 $packageName;pgrep $packageName |xargs kill -9;")
-        keepShell2.doCmd("am stop $packageName;am force-stop $packageName;")
-        if (debugMode && showMsg)
-            showMsg("结束 " + packageName)
-    }
     //#endregion
 
-    private fun backToHome() {
-        try {
-            // context.performGlobalAction(GLOBAL_ACTION_HOME)
-            val intent = Intent(Intent.ACTION_MAIN)
-            intent.addCategory(Intent.CATEGORY_HOME)
-            val res = context.getPackageManager().resolveActivity(intent, 0)
-            if (res.activityInfo == null) {
-            } else if (res.activityInfo.packageName == "android") {
-            } else {
-                val home = res.activityInfo.packageName
-                context.startActivity(Intent().setComponent(ComponentName(home, res.activityInfo.name)))
-                if (lockScreenOptimize) {
-                    lastModePackage = home
-                }
-            }
-        } catch (ex: Exception) {
-        }
-    }
-
-    //清理后台
-    private fun clearTasks(timeout: Long = SCREEN_OFF_CLEAR_TASKS_DELAY) {
-        if (!autoBooster || screenOn) {
-            return
-        }
-        if (timeout == 0L) {
-            if (spfAutoConfig.getBoolean(SpfConfig.BOOSTER_SPF_CFG_SPF_CLEAR_TASKS, true)) {
-                backToHome()
-                val cmds = StringBuilder()
-                cmds.append("dumpsys deviceidle enable all;\n")
-                // 强制doze 可能导致时钟不更新
-                // cmds.append("dumpsys deviceidle force-idle;\n")
-                if (spfAutoConfig.getBoolean(SpfConfig.BOOSTER_SPF_CFG_SPF_CLEAR_CACHE, false)) {
-                    cmds.append("echo 3 > /proc/sys/vm/drop_caches")
-                }
-
-                cmds.append("\n\n")
-                val spf = context.getSharedPreferences(SpfConfig.WHITE_LIST_SPF, Context.MODE_PRIVATE)
-
-                for (item in spfBlacklist.all) {
-                    if (!spf.getBoolean(item.key, false)) {
-                        cmds.append("dumpsys deviceidle whitelist -${item.key}")
-                        //cmds.append("am set-inactive ${item.key} true\n")
-                        //cmds.append("am stop ${item.key}\n")
-                        cmds.append("am kill ${item.key}\n")
-                        cmds.append("am force-stop ${item.key}\n")
-                        //cmds.append("killall -9 ${item.key};pkill -9 ${item.key};pgrep ${item.key} |xargs kill -9;")
-                    }
-                }
-                cmds.append("dumpsys deviceidle step\n")
-                cmds.append("dumpsys deviceidle step\n")
-                cmds.append("dumpsys deviceidle step\n")
-                cmds.append("dumpsys deviceidle step\n")
-
-                AsynSuShellUnit(Handler()).exec(cmds.toString()).waitFor()
-                if (debugMode)
-                    showMsg("后台已自动清理...")
-            }
-        } else {
-            //超时时间：1分钟
-            screenHandler.postDelayed({
-                if (System.currentTimeMillis() - lastScreenOnOff >= SCREEN_OFF_CLEAR_TASKS_DELAY) {
-                    clearTasks(0)
-                }
-            }, SCREEN_OFF_CLEAR_TASKS_DELAY)
-        }
-    }
-
-    private fun dumpsysTopActivity(packageName: String) {
-        //
-        /*
-        if(KeepShellSync.doCmdSync("dumpsys activity top | grep TASK").contains(packageName)) {
-            cancelDump(packageName)
-        } else {
-            return
-        }
-        */
-        // 精准切换2.0
-        /*
-        if(KeepShellSync.doCmdSync("dumpsys activity top | grep ACTIVITY | grep '$packageName'").contains(packageName)) {
-            cancelDump(packageName)
-        } else {
-            return
-        }
-        */
-        val topActivityResult = KeepShellSync.doCmdSync("dumpsys activity top | grep ACTIVITY")
-        Log.d("vtool-dump", "[dump:${topActivityResult}] - [active app:${packageName}]")
-        if (topActivityResult == "error") {
-            Log.e("dumpsysTopActivity", "result is error")
-            showMsg("精准切换 - 获取前台应用失败！")
-        } else {
-            val topActivitys = topActivityResult.split("\n");
-            var lastActivity = ""
-            for (item in topActivitys) {
-                if (!item.isEmpty())
-                    lastActivity = item.trim()
-            }
-            if (lastActivity.contains(packageName)) {
-                cancelDump(packageName)
-            } else {
-                // showMsg("精准切换 - ${packageName}并非前台应用但企图占据焦点，已自动添加到临时黑名单！")
-                // ignoredList.add(packageName)
-
-                Log.e("dumpsysTopActivity", "dump result [$topActivityResult]，packageName is：$packageName")
-                //  ACTIVITY com.miui.home/.launcher.Launcher 1f45bb pid=3103
-
-                if (lastActivity.indexOf("/") > 8 && lastActivity.startsWith("ACTIVITY")) {
-                    val dumpPackageName = lastActivity.substring(8, lastActivity.indexOf("/")).trim()
-                    Log.d("dumpsysTopActivity", "dumpPackageName $dumpPackageName，active app $packageName")
-                    cancelDump(dumpPackageName)
-                } else {
-                    Log.e("dumpsysTopActivity", "lastActivity $lastActivity")
-                }
-            }
-        }
-    }
-
-    private fun cancelDump(packageName: String) {
-        autoBoosterApp(packageName)
+    private fun dumpSuccess(packageName: String) {
         autoToggleMode(packageName)
         screenLight.onFocusdAppChange(packageName)
+        lastPackage = packageName
     }
 
     //焦点应用改变
-    fun onFocusAppChanged(pkgName: String) {
-        if (screenOn) {
-            startTimer()
-        }
-        val packageName = pkgName
-        if (!settingsLoaded) {
-            return
-        }
+    fun onFocusAppChanged(packageName: String) {
+        if (screenOn) startTimer()
+        if (lastPackage == packageName || ignoredList.contains(packageName)) return
+        if (lastPackage == null) lastPackage = "com.android.systemui"
 
-        if (lastPackage == packageName || ignoredList.contains(packageName))
-            return
-
-        if (lastPackage == null) {
-            lastPackage = "com.android.systemui"
-        }
-
-        autoBoosterApp(packageName)
-
-        if (accuSwitch) {
+        if (accuSwitch)
             Thread(Runnable {
-                dumpsysTopActivity(packageName)
+                if (dumpTopAppliction.dumpsysTopActivity(packageName) == packageName)
+                    dumpSuccess(packageName)
             }).start()
-        } else {
-            autoBoosterApp(packageName)
-            autoToggleMode(packageName)
-            lastPackage = packageName
-            screenLight.onFocusdAppChange(packageName)
-        }
+        else
+            dumpSuccess(packageName)
     }
 
     fun onKeyDown(): Boolean {
@@ -526,21 +245,15 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
     }
 
     init {
-        spfGlobal.registerOnSharedPreferenceChangeListener(listener)
-        spfPowercfg.registerOnSharedPreferenceChangeListener(listener)
         notifyHelper.notify()
 
-        // val pm = context.getSystemService(Context.POWER_SERVICE) as PowerManager
-        // this.screenOn = pm.isScreenOn
         val windowManager = this.context.getSystemService(WINDOW_SERVICE) as WindowManager
         val display = windowManager.defaultDisplay
         this.screenOn = display.state == Display.STATE_ON
 
-        //添加输入法到忽略列表
-        Thread(Runnable {
-            ignoredList.addAll(InputHelper(context).getInputMethods())
-        }).start()
+        // 监听锁屏状态变化
         ReciverLock.autoRegister(context, screenHandler)
+        // 禁用SeLinux
         if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true))
             keepShell2.doCmd(Consts.DisableSELinux)
 
@@ -548,20 +261,20 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             ConfigInstaller().configCodeVerify(context)
             keepShell2.doCmd(Consts.ExecuteConfig)
         }
-        handler.postDelayed({
-            if (lastModePackage.isNullOrEmpty()) {
-                lastModePackage = "com.system.ui"
-            }
+        Thread(Runnable {
+            // 添加输入法到忽略列表
+            ignoredList.addAll(InputHelper(context).getInputMethods())
+            // 启动完成后初始化模式状态
+            Thread.sleep(20 * 1000)
             if (dyamicCore && lastMode.isEmpty()) {
-                if (!this.screenOn) {
+                if (!this.screenOn)
                     toggleConfig(POWERSAVE)
-                } else {
+                else {
                     startTimer()
                     toggleConfig(DEFAULT)
                 }
-            }
-        }, 20000)
-
-        settingsLoaded = true
+            } else
+                toggleConfig(lastMode)
+        }).start()
     }
 }

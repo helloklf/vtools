@@ -1,7 +1,9 @@
 package com.omarea.shared
 
 import android.content.ContentResolver
+import android.os.Build
 import android.provider.Settings
+import com.omarea.shell.KeepShellSync
 
 class SceneMode private constructor(private var contentResolver: ContentResolver, private var store: AppConfigStore) {
 
@@ -73,11 +75,35 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
         return false
     }
 
+    //休眠指定包名的应用
+    private fun dozeApp(packageName: String) {
+        KeepShellSync.doCmdSync("dumpsys deviceidle whitelist -$packageName;\ndumpsys deviceidle enable;\ndumpsys deviceidle enable all;\nam set-inactive $packageName true")
+        // if (debugMode) showMsg("休眠 " + packageName)
+    }
+
+    //杀死指定包名的应用
+    private fun killApp(packageName: String, showMsg: Boolean = true) {
+        //keepShell2.doCmd("killall -9 $packageName;pkill -9 $packageName;pgrep $packageName |xargs kill -9;")
+        KeepShellSync.doCmdSync("am stop $packageName;am force-stop $packageName;")
+        //if (debugMode && showMsg) showMsg("结束 " + packageName)
+    }
+
+    private fun autoBoosterApp(packageName: String) {
+        if (config!!.disBackgroundRun) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                dozeApp(packageName)
+            } else {
+                killApp(packageName)
+            }
+        }
+    }
+
     fun onFocusdAppChange (packageName: String) {
         if (lastAppPackageName == packageName) {
             return
         }
         config = store.getAppConfig(packageName)
+        autoBoosterApp(lastAppPackageName)
         if (config == null)
             return
         if (config!!.aloneLight && config!!.aloneLightValue > 0) {
@@ -92,5 +118,6 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
             resumeState()
             mode = -1
         }
+        lastAppPackageName = packageName
     }
 }
