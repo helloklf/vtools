@@ -3,6 +3,7 @@ package com.omarea.shared
 import android.content.ContentResolver
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
 import com.omarea.shell.KeepShellSync
 
 class SceneMode private constructor(private var contentResolver: ContentResolver, private var store: AppConfigStore) {
@@ -54,11 +55,22 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
         }
     }
 
-    private fun setScreenLight(level: Byte) {
-        Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, 0)
-        contentResolver.notifyChange(Settings.System.getUriFor("screen_brightness_mode"), null)
-        Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, level.toInt())
-        contentResolver.notifyChange(Settings.System.getUriFor("screen_brightness"), null)
+    private fun setScreenLight(level: Int): Boolean {
+        try {
+            var l = level
+            if (l > 255) {
+                l = 255
+            } else if (l < 1) {
+                l = 1
+            }
+            Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, 0)
+            contentResolver.notifyChange(Settings.System.getUriFor("screen_brightness_mode"), null)
+            Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, l)
+            contentResolver.notifyChange(Settings.System.getUriFor("screen_brightness"), null)
+        } catch (ex: Exception) {
+            return false
+        }
+        return true
     }
 
     /**
@@ -117,26 +129,30 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
      * 前台应用切换
      */
     fun onFocusdAppChange (packageName: String) {
-        if (lastAppPackageName == packageName) {
-            return
-        }
-        config = store.getAppConfig(packageName)
-        autoBoosterApp(lastAppPackageName)
-        if (config == null)
-            return
-        if (config!!.aloneLight && config!!.aloneLightValue > 0) {
-            if (mode < 0) {
-                backupState()
+        try {
+            if (lastAppPackageName == packageName) {
+                return
             }
-            if (config!!.aloneLightValue > 255) {
-                config!!.aloneLightValue = 255
+            config = store.getAppConfig(packageName)
+            autoBoosterApp(lastAppPackageName)
+            if (config == null)
+                return
+            if (config!!.aloneLight && config!!.aloneLightValue > 0) {
+                if (mode < 0) {
+                    backupState()
+                }
+                if (config!!.aloneLightValue > 255) {
+                    config!!.aloneLightValue = 255
+                }
+                setScreenLight(config!!.aloneLightValue)
+            } else if (mode > -1) {
+                resumeState()
+                mode = -1
             }
-            setScreenLight(config!!.aloneLightValue.toByte())
-        } else if (mode > -1) {
-            resumeState()
-            mode = -1
+            lastAppPackageName = packageName
+        } catch (ex: Exception) {
+            Log.e("onFocusdAppChange", ex.message)
         }
-        lastAppPackageName = packageName
     }
 
     /**
