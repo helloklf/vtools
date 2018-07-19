@@ -36,9 +36,8 @@ class AppDetailsActivity : AppCompatActivity() {
     @SuppressLint("ApplySharedPref")
     override fun onCreate(savedInstanceState: Bundle?) {
         val spf = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-        if (spf.getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false))
+        if (spf.getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false)) {
             this.setTheme(R.style.AppTheme_NoActionBarNight)
-        else {
         }
 
         super.onCreate(savedInstanceState)
@@ -51,7 +50,7 @@ class AppDetailsActivity : AppCompatActivity() {
 
         app_details_dynamic.setOnClickListener {
             val modeList = ModeList(this)
-            val powercfg = getSharedPreferences(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, Context.MODE_PRIVATE)
+            val powercfg = getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
             val currentMode = powercfg.getString(app, getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, modeList.BALANCE))
             var index = 0
             when (currentMode) {
@@ -299,7 +298,7 @@ class AppDetailsActivity : AppCompatActivity() {
         super.onResume()
 
         val modeList = ModeList(this)
-        val powercfg = getSharedPreferences(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, Context.MODE_PRIVATE)
+        val powercfg = getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         val spfGlobal = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
         val packageInfo = packageManager.getPackageInfo(app, 0)

@@ -27,6 +27,7 @@ import com.omarea.ui.SearchTextWatcher
 import kotlinx.android.synthetic.main.layout_config.*
 import java.io.File
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class FragmentConfig : Fragment() {
@@ -38,6 +39,7 @@ class FragmentConfig : Fragment() {
     private lateinit var applistHelper: AppListHelper
     internal val myHandler: Handler = Handler()
     private var installedList: ArrayList<Appinfo>? = null
+    private var displayList: ArrayList<Appinfo>? = null
     private var packageManager: PackageManager? = null
     private lateinit var appConfigStore: AppConfigStore
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -226,12 +228,15 @@ class FragmentConfig : Fragment() {
             val keyword = config_search_box.text.toString()
             val search = keyword.isNotEmpty()
             val firstMode = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance")
+            displayList = ArrayList()
             for (i in installedList!!.indices) {
                 val item = installedList!![i]
                 item.selectState = false
                 val packageName = item.packageName.toString()
                 if (search && !(packageName.contains(keyword) || item.appName.toString().contains(keyword))) {
                     continue
+                } else {
+                    displayList!!.add(installedList!![i])
                 }
                 installedList!![i].enabledState = spfPowercfg.getString(packageName, firstMode)
                 val configInfo = appConfigStore.getAppConfig(packageName)
@@ -259,10 +264,10 @@ class FragmentConfig : Fragment() {
                     desc.append("滚动优化  ")
                 }
             }
-            sortAppList(installedList!!)
+            sortAppList(displayList!!)
             myHandler.post {
                 processBarDialog.hideDialog()
-                setListData(installedList, config_defaultlist)
+                setListData(displayList, config_defaultlist)
             }
         }).start()
     }
