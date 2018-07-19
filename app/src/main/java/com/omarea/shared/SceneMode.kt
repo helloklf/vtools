@@ -66,6 +66,13 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
         return false
     }
 
+    fun onKeyDown(): Boolean {
+        if (config != null) {
+            return config!!.disButton
+        }
+        return false
+    }
+
     fun onFocusdAppChange (packageName: String) {
         if (lastAppPackageName == packageName) {
             return

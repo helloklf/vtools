@@ -513,6 +513,10 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         }
     }
 
+    fun onKeyDown(): Boolean {
+        return screenLight.onKeyDown()
+    }
+
     fun onInterrupt() {
         notifyHelper.hideNotify()
         ReciverLock.unRegister(context)
