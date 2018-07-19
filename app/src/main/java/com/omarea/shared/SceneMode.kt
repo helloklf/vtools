@@ -61,6 +61,10 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
         contentResolver.notifyChange(Settings.System.getUriFor("screen_brightness"), null)
     }
 
+    /**
+     * 收到了通知时
+     * @return 是否拦截
+     */
     fun onNotificationPosted(): Boolean {
         if (config != null) {
             return config!!.disNotice
@@ -68,6 +72,10 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
         return false
     }
 
+    /**
+     * 按键按下
+     * @return 是否阻拦按键事件
+     */
     fun onKeyDown(): Boolean {
         if (config != null) {
             return config!!.disButton
@@ -75,19 +83,26 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
         return false
     }
 
-    //休眠指定包名的应用
+    /**
+     * 休眠指定包名的应用
+     */
     private fun dozeApp(packageName: String) {
         KeepShellSync.doCmdSync("dumpsys deviceidle whitelist -$packageName;\ndumpsys deviceidle enable;\ndumpsys deviceidle enable all;\nam set-inactive $packageName true")
         // if (debugMode) showMsg("休眠 " + packageName)
     }
 
-    //杀死指定包名的应用
+    /**
+     * 杀死指定包名的应用
+     */
     private fun killApp(packageName: String, showMsg: Boolean = true) {
         //keepShell2.doCmd("killall -9 $packageName;pkill -9 $packageName;pgrep $packageName |xargs kill -9;")
         KeepShellSync.doCmdSync("am stop $packageName;am force-stop $packageName;")
         //if (debugMode && showMsg) showMsg("结束 " + packageName)
     }
 
+    /**
+     * 自动清理前一个应用后台
+     */
     private fun autoBoosterApp(packageName: String) {
         if (config!!.disBackgroundRun) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -98,6 +113,9 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
         }
     }
 
+    /**
+     * 前台应用切换
+     */
     fun onFocusdAppChange (packageName: String) {
         if (lastAppPackageName == packageName) {
             return
@@ -119,5 +137,12 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
             mode = -1
         }
         lastAppPackageName = packageName
+    }
+
+    /**
+     * 清理后台
+     */
+    fun clearTask () {
+
     }
 }

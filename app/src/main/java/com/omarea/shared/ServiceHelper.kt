@@ -54,7 +54,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
     private var screenHandler = ScreenEventHandler({ onScreenOff() }, { onScreenOn() })
     private var handler = Handler(Looper.getMainLooper())
     private var notifyHelper: NotifyHelper = NotifyHelper(context, spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))
-    private val screenLight: SceneMode = SceneMode.getInstanceOrInit(context.contentResolver, AppConfigStore(context))!!
+    private val sceneMode: SceneMode = SceneMode.getInstanceOrInit(context.contentResolver, AppConfigStore(context))!!
     private var timer: Timer? = null
 
     private fun startTimer() {
@@ -84,7 +84,9 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         }
     }
 
-    //屏幕关闭时执行
+    /**
+     * 屏幕关闭时执行
+     */
     private fun onScreenOff() {
         if (screenOn == false)
             return
@@ -97,13 +99,15 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
                     onScreenOffCloseNetwork()
             }, SCREEN_OFF_SWITCH_NETWORK_DELAY)
         }
-        // clearTasks()
+        sceneMode.clearTask()
         screenHandler.postDelayed({
             if (!screenOn) stopTimer()
         }, 10000)
     }
 
-    //屏幕关闭后 - 关闭网络
+    /**
+     * 屏幕关闭后 - 关闭网络
+     */
     private fun onScreenOffCloseNetwork() {
         if (dyamicCore && lockScreenOptimize && !screenOn) {
             toggleConfig(POWERSAVE)
@@ -114,7 +118,9 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         }
     }
 
-    //点亮屏幕且解锁后执行
+    /**
+     * 点亮屏幕且解锁后执行
+     */
     private fun onScreenOn() {
         if (debugMode && autoBooster)
             showMsg("屏幕开启！")
@@ -140,20 +146,26 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
 
     private var keepShell2: KeepShell = KeepShell(context)
 
-    //显示消息
+    /**
+     * 显示消息
+     */
     private fun showMsg(msg: String) {
         screenHandler.post {
             Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
         }
     }
 
-    //显示模式切换通知
+    /**
+     * 显示模式切换通知
+     */
     private fun showModeToggleMsg(packageName: String, modeName: String) {
         if (debugMode)
             showMsg("$modeName \n$packageName")
     }
 
-    //更新通知
+    /**
+     * 更新通知
+     */
     private fun updateModeNofity() {
         notifyHelper.notify()
     }
@@ -213,7 +225,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
 
     private fun dumpSuccess(packageName: String) {
         autoToggleMode(packageName)
-        screenLight.onFocusdAppChange(packageName)
+        sceneMode.onFocusdAppChange(packageName)
         lastPackage = packageName
     }
 
@@ -233,7 +245,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
     }
 
     fun onKeyDown(): Boolean {
-        return screenLight.onKeyDown()
+        return sceneMode.onKeyDown()
     }
 
     fun onInterrupt() {
