@@ -12,7 +12,7 @@
     tools:openDrawer="start">
 
     <com.omarea.ui.OverScrollView
-        android:paddingTop="56dp"
+        android:paddingTop="66dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
@@ -61,7 +61,8 @@
                             android:layout_height="wrap_content" />
                     </LinearLayout>
                     <ImageView
-                        android:background="#f8f8f8"
+                        android:visibility="gone"
+                        android:background="#aaa"
                         android:src="@drawable/settings"
                         android:layout_margin="10dp"
                         android:layout_width="30dp"
@@ -122,7 +123,7 @@
                             android:id="@+id/app_details_time"
                             android:textAlignment="textEnd"
                             android:layout_weight="1"
-                            android:text="2018-09-12 12:22:10"
+                            android:text=""
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
@@ -152,11 +153,12 @@
                             android:id="@+id/app_details_ram"
                             android:textAlignment="textEnd"
                             android:layout_weight="1"
-                            android:text="\? MB"
+                            android:text=""
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
                     <LinearLayout
+                        android:visibility="gone"
                         android:padding="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
@@ -169,7 +171,7 @@
                             android:id="@+id/app_details_battery"
                             android:textAlignment="textEnd"
                             android:layout_weight="1"
-                            android:text="\? mA/h"
+                            android:text=""
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
@@ -179,45 +181,89 @@
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
                 <LinearLayout
-                    android:padding="10dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content" android:orientation="vertical">
+                    <LinearLayout
+                        android:padding="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            style="@style/textTitle"
+                            android:text="动态响应"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:id="@+id/app_details_dynamic"
+                            android:textAlignment="textEnd"
+                            android:layout_weight="1"
+                            android:paddingTop="5dp"
+                            android:paddingBottom="5dp"
+                            android:text="@string/powersave"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:padding="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            style="@style/textTitle"
+                            android:text="阻止后台"
+                            android:layout_weight="1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <Switch
+                            android:id="@+id/app_details_disbackground"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:orientation="vertical">
+                        <TextView
+                            android:padding="10dp"
+                            style="@style/textTitle"
+                            android:text="屏幕亮度"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                        <LinearLayout
+                            android:layout_marginBottom="10dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" android:orientation="horizontal">
+                            <CheckBox
+                                android:id="@+id/app_details_aloowlight"
+                                android:layout_marginLeft="10dp"
+                                android:layout_gravity="center_vertical"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            <SeekBar
+                                android:max="255"
+                                android:min="0"
+                                android:layout_gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:id="@+id/app_details_light"
+                                android:layout_marginRight="10dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+                    </LinearLayout>
                     <TextView
-                        style="@style/textTitle"
-                        android:text="动态响应"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                    <TextView
-                        android:id="@+id/app_details_dynamic"
-                        android:textAlignment="textEnd"
-                        android:layout_weight="1"
-                        android:paddingTop="5dp"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
                         android:paddingBottom="5dp"
-                        android:text="@string/powersave"
+                        android:text="为了照顾部分（辣鸡）设备，亮度最低只能调到20"
+                        style="@style/textSmall"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-            <android.support.v7.widget.CardView
-                android:layout_marginTop="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:padding="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
                     <TextView
-                        style="@style/textTitle"
-                        android:text="禁止Doze"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                    <Switch
-                        android:enabled="false"
-                        android:id="@+id/app_details_disdoze"
-                        android:textAlignment="textEnd"
-                        android:layout_weight="1"
-                        android:layout_width="wrap_content"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:paddingBottom="10dp"
+                        android:text="为应用单独设置亮度，适合玩游戏或观看视频"
+                        style="@style/textSmall"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                 </LinearLayout>
             </android.support.v7.widget.CardView>
@@ -280,26 +326,22 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-            <android.support.v7.widget.CardView
-                android:layout_marginTop="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:padding="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        style="@style/textTitle"
-                        android:text="阻止后台"
-                        android:layout_weight="1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                    <Switch
-                        android:id="@+id/app_details_disbackground"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                    <LinearLayout
+                        android:padding="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:text="禁止Doze"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <Switch
+                            android:enabled="false"
+                            android:id="@+id/app_details_disdoze"
+                            android:textAlignment="textEnd"
+                            android:layout_weight="1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
             <android.support.v7.widget.CardView
@@ -355,7 +397,7 @@
                         android:paddingLeft="16dp"
                         android:paddingRight="16dp"
                         android:paddingBottom="5dp"
-                        android:text="屏蔽通知时工具箱会自动清除新通知，可能错失通知？"
+                        android:text="屏蔽通知时工具箱会自动清除新通知，可能错失消息？"
                         style="@style/textSmall"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
@@ -364,61 +406,6 @@
                         android:paddingRight="16dp"
                         android:paddingBottom="10dp"
                         android:text="按键屏蔽状态下，将使用长按替代短按操作"
-                        style="@style/textSmall"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-            <android.support.v7.widget.CardView
-                android:layout_marginTop="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:orientation="vertical">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" android:orientation="vertical">
-                        <TextView
-                            android:padding="10dp"
-                            style="@style/textTitle"
-                            android:text="屏幕亮度"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                        <LinearLayout
-                            android:layout_marginBottom="10dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" android:orientation="horizontal">
-                            <CheckBox
-                                android:id="@+id/app_details_aloowlight"
-                                android:layout_marginLeft="10dp"
-                                android:layout_gravity="center_vertical"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-                            <SeekBar
-                                android:max="255"
-                                android:min="0"
-                                android:layout_gravity="center_vertical"
-                                android:layout_weight="1"
-                                android:id="@+id/app_details_light"
-                                android:layout_marginRight="10dp"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
-                        </LinearLayout>
-                    </LinearLayout>
-                    <TextView
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
-                        android:paddingBottom="5dp"
-                        android:text="为了照顾部分（辣鸡）设备，亮度最低只能调到20"
-                        style="@style/textSmall"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                    <TextView
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
-                        android:paddingBottom="10dp"
-                        android:text="为应用单独设置亮度，适合玩游戏或观看视频"
                         style="@style/textSmall"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
@@ -492,6 +479,7 @@
             </android.support.v7.widget.CardView>
             <!--王者荣耀-->
             <android.support.v7.widget.CardView
+                android:visibility="gone"
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -535,6 +523,7 @@
             </android.support.v7.widget.CardView>
             <!--QQ-->
             <android.support.v7.widget.CardView
+                android:visibility="gone"
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -590,6 +579,7 @@
             </android.support.v7.widget.CardView>
             <!--刺激战场-->
             <android.support.v7.widget.CardView
+                android:visibility="gone"
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
@@ -645,6 +635,7 @@
             </android.support.v7.widget.CardView>
             <!--QQ飞车-->
             <android.support.v7.widget.CardView
+                android:visibility="gone"
                 android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
