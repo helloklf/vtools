@@ -117,13 +117,19 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
         fun grantPermission(context: Context) {
             val cmds = StringBuilder()
             cmds.append("dumpsys deviceidle whitelist +com.omarea.vboot;\n")
-            if (!(checkPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
+            if (!checkPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 cmds.append("pm grant com.omarea.vboot android.permission.READ_EXTERNAL_STORAGE;\n")
+            }
+            if (!checkPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 cmds.append("pm grant com.omarea.vboot android.permission.WRITE_EXTERNAL_STORAGE;\n")
-                cmds.append("pm grant com.omarea.vboot android.permission.SYSTEM_ALERT_WINDOW;\n")
-                cmds.append("pm grant com.omarea.vboot android.permission.WRITE_SECURE_SETTINGS;\n")
+            }
+            if (!checkPermission(context, Manifest.permission.CHANGE_CONFIGURATION)) {
                 cmds.append("pm grant com.omarea.vboot android.permission.CHANGE_CONFIGURATION;\n")
+            }
+            if (!checkPermission(context, Manifest.permission.BIND_NOTIFICATION_LISTENER_SERVICE)) {
                 cmds.append("pm grant com.omarea.vboot android.permission.BIND_NOTIFICATION_LISTENER_SERVICE;\n")
+            }
+            if (!checkPermission(context, Manifest.permission.WRITE_SETTINGS)) {
                 cmds.append("pm grant com.omarea.vboot android.permission.WRITE_SETTINGS;\n")
             }
             KeepShellSync.doCmdSync(cmds.toString())
