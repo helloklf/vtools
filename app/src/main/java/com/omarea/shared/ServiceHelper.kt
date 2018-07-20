@@ -38,7 +38,6 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             "com.miui.touchassistant",
             "com.miui.contentextension",
             "com.miui.systemAdSolution")
-    private var autoBooster = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_BOOSTER, false)
     private var dyamicCore = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
     private var debugMode = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
     private var lockScreenOptimize = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE, false)
@@ -93,12 +92,11 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         screenOn = false
         notifyHelper.hideNotify()
         lastScreenOnOff = System.currentTimeMillis()
-        if (autoBooster) {
-            screenHandler.postDelayed({
-                if (!screenOn)
-                    onScreenOffCloseNetwork()
-            }, SCREEN_OFF_SWITCH_NETWORK_DELAY)
-        }
+
+        screenHandler.postDelayed({
+            if (!screenOn)
+                onScreenOffCloseNetwork()
+        }, SCREEN_OFF_SWITCH_NETWORK_DELAY)
         sceneMode.clearTask()
         screenHandler.postDelayed({
             if (!screenOn) stopTimer()
@@ -113,7 +111,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             toggleConfig(POWERSAVE)
             updateModeNofity()
         }
-        if (autoBooster && System.currentTimeMillis() - lastScreenOnOff >= SCREEN_OFF_SWITCH_NETWORK_DELAY && !screenOn) {
+        if (System.currentTimeMillis() - lastScreenOnOff >= SCREEN_OFF_SWITCH_NETWORK_DELAY && !screenOn) {
             systemScene.onScreenOff()
         }
     }
@@ -122,7 +120,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
      * 点亮屏幕且解锁后执行
      */
     private fun onScreenOn() {
-        if (debugMode && autoBooster)
+        if (debugMode)
             showMsg("屏幕开启！")
 
         lastScreenOnOff = System.currentTimeMillis()
@@ -140,7 +138,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
                 }, 5000)
             }
         }
-        if (autoBooster && screenOn == true)
+        if (screenOn == true)
             systemScene.onScreenOn()
     }
 

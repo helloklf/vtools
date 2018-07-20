@@ -14,13 +14,7 @@ public class SpfConfig {
     public static String CHARGE_SPF_BP = "bp"; //bool
     public static String CHARGE_SPF_BP_LEVEL = "bp_level"; //int
 
-    public static String BOOSTER_BLACKLIST_SPF = "boostercfg";
-
     public static String BOOSTER_SPF_CFG_SPF = "boostercfg2";
-    public static String BOOSTER_SPF_CFG_SPF_CLEAR_CACHE = "auto_clear_cache";
-    public static String BOOSTER_SPF_CFG_SPF_DOZE_MOD = "use_doze_mod";
-    public static String BOOSTER_SPF_CFG_SPF_CLEAR_TASKS = "auto_clear_tasks";
-
     public static String DATA = "data";
     public static String WIFI = "wifi";
     public static String NFC = "nfc";
@@ -33,7 +27,6 @@ public class SpfConfig {
     public static String GLOBAL_SPF_AUTO_INSTALL = "is_auto_install";
     public static String GLOBAL_SPF_DISABLE_ENFORCE = "enforce_0";
     public static String GLOBAL_SPF_DISABLE_ENFORCE_CHECKING = "enforce_checking";
-    public static String GLOBAL_SPF_AUTO_BOOSTER = "is_auto_booster";
     public static String GLOBAL_SPF_DYNAMIC_CPU = "is_dynamic_cpu";
     public static String GLOBAL_SPF_DEBUG = "is_debug";
     public static String GLOBAL_SPF_START_DELAY = "start_delay";

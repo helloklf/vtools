@@ -402,4 +402,7 @@
     <string name="title_activity_app_details">应用详情</string>
     <string name="title_activity_file_selector">请选择文件</string>
     <string name="config_save_fail">配置保存失败！</string>
+    <string name="boot_success">已完成开机自启动</string>
+    <string name="notice_channel_boot">自启动提示</string>
+    <string name="boot_script_running">正在执行自启动脚本...</string>
 </resources>

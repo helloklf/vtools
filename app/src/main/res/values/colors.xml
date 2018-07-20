@@ -3,5 +3,9 @@
     <color name="colorPrimary">#138ed6</color>
     <color name="colorPrimaryDark">#138ed6</color>
     <color name="colorAccent">#138ed6</color>
+    <color name="color_powersave">#0091D5</color>
+    <color name="color_balance">#00B78A</color>
+    <color name="color_perf">#6ECB00</color>
+    <color name="color_fast">#FF7E00</color>
     <!--<color name="colorAccent">#FF4081</color>-->
 </resources>

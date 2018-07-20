@@ -29,6 +29,11 @@ import android.app.ActivityManager
 import android.content.Context.ACTIVITY_SERVICE
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import java.util.*
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
+
+
 
 
 class FragmentHome : Fragment() {
@@ -90,6 +95,17 @@ class FragmentHome : Fragment() {
         // val activityManager = context!!.getSystemService(ACTIVITY_SERVICE) as ActivityManager
         // val info = ActivityManager.MemoryInfo()
         // activityManager.getMemoryInfo(info)
+        val entries = ArrayList<PieEntry>()
+
+        entries.add(PieEntry(18.5f, "Green"))
+        entries.add(PieEntry(26.7f, "Yellow"))
+        entries.add(PieEntry(24.0f, "Red"))
+        entries.add(PieEntry(30.8f, "Blue"))
+
+        val set = PieDataSet(entries, "Election Results")
+        val data = PieData(set)
+        pieChart.setData(data)
+        pieChart.invalidate() // refresh
     }
 
     private fun setModeState() {
