@@ -15,7 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.omarea.shared.FileWrite;
-import com.omarea.vboot.R;
+import com.omarea.vtools.R;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;

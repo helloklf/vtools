@@ -18,10 +18,6 @@
                 android:icon="@drawable/ic_menu_profile"
                 android:title="@string/menu_cofig" />
             <item
-                android:id="@+id/nav_booster"
-                android:icon="@drawable/ic_menu_booster"
-                android:title="@string/menu_autobooster" />
-            <item
                 android:id="@+id/nav_keyevent"
                 android:icon="@drawable/ic_menu_task"
                 android:title="@string/menu_keymap" />
@@ -38,6 +34,7 @@
                 android:icon="@drawable/ic_menu_vboot"
                 android:title="@string/menu_additional" />
             <item
+                android:visible="false"
                 android:id="@+id/nav_xposed"
                 android:icon="@drawable/ic_menu_config"
                 android:title="@string/menu_xposed" />
@@ -54,6 +51,7 @@
                 android:icon="@drawable/cpu"
                 android:title="@string/menu_core_control" />
             <item
+                android:visible="false"
                 android:id="@+id/nav_whitelist"
                 android:icon="@drawable/ic_menu_task"
                 android:title="@string/menu_whitelist" />

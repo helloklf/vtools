@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.omarea.scripts.action.ActionInfo;
 import com.omarea.scripts.simple.shell.ExecuteCommandWithOutput;
-import com.omarea.vboot.R;
+import com.omarea.vtools.R;
 
 import java.util.ArrayList;
 import java.util.Timer;

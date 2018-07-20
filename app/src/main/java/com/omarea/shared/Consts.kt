@@ -7,7 +7,7 @@ import android.os.Environment
  */
 
 public object Consts {
-    val PACKAGE_NAME = "com.omarea.vboot"
+    val PACKAGE_NAME = "com.omarea.vtools"
     public val SDCardDir = Environment.getExternalStorageDirectory().absolutePath
 
     val BackUpDir = "/backups/apps/";

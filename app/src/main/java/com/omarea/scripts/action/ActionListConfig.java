@@ -19,7 +19,7 @@ import com.omarea.scripts.simple.shell.ExecuteCommandWithOutput;
 import com.omarea.scripts.simple.shell.SimpleShellExecutor;
 import com.omarea.ui.OverScrollListView;
 import com.omarea.ui.ProgressBarDialog;
-import com.omarea.vboot.R;
+import com.omarea.vtools.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;

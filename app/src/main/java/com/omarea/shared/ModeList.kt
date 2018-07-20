@@ -4,7 +4,7 @@ import android.content.Context
 import com.omarea.shell.KeepShell
 import com.omarea.shell.KeepShellSync
 import com.omarea.shell.Props
-import com.omarea.vboot.R
+import com.omarea.vtools.R
 
 /**
  * Created by Hello on 2018/06/03.

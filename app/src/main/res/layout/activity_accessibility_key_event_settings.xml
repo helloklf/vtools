@@ -41,7 +41,7 @@
                 <TextView
                     android:padding="8dp"
                     style="@style/textSmall"
-                    android:text="这是一个比较简单的按键映射程序，也不会增加更多可设置的按键，因为它通过辅助服务实现，只支持这么多按键事件！\n\n你需要保持“微工具箱 - 按键辅助”持续后台运行才能使用按键自定义功能！\n\n修改配置以后，需要重新启动“微工具箱 - 按键辅助”才会生效！"
+                    android:text="这是一个比较简单的按键映射程序，也不会增加更多可设置的按键，因为它通过辅助服务实现，只支持这么多按键事件！\n\n你需要保持“Scene - 按键辅助”持续后台运行才能使用按键自定义功能！\n\n修改配置以后，需要重新启动“Scene - 按键辅助”才会生效！"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </android.support.v7.widget.CardView>

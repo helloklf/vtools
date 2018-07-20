@@ -14,8 +14,8 @@ import com.omarea.shared.Consts
 import com.omarea.shared.FileWrite
 import com.omarea.shell.KeepShellSync
 import com.omarea.ui.ProgressBarDialog
-import com.omarea.vboot.ActivityAddinOnline
-import com.omarea.vboot.R
+import com.omarea.vtools.ActivityAddinOnline
+import com.omarea.vtools.R
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.ByteArrayInputStream

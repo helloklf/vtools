@@ -10,7 +10,7 @@ import android.os.Build
 import android.support.v4.app.NotificationCompat
 import com.omarea.shell.Props
 import com.omarea.shell.SysUtils
-import com.omarea.vboot.R
+import com.omarea.vtools.R
 
 /**
  * Created by Hello on 2017/12/27.
@@ -39,9 +39,9 @@ class BootService : IntentService("vtools-boot") {
             val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 nm.createNotificationChannel(NotificationChannel("vtool-boot", "自启动提示", NotificationManager.IMPORTANCE_LOW))
-                nm.notify(1, NotificationCompat.Builder(this, "vtool-boot").setSmallIcon(R.drawable.ic_menu_digital).setSubText("微工具箱").setContentText("正在执行自启动脚本...").build())
+                nm.notify(1, NotificationCompat.Builder(this, "vtool-boot").setSmallIcon(R.drawable.ic_menu_digital).setSubText("Scene").setContentText("正在执行自启动脚本...").build())
             } else {
-                nm.notify(1, NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_menu_digital).setSubText("微工具箱").setContentText("正在执行自启动脚本...").build())
+                nm.notify(1, NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_menu_digital).setSubText("Scene").setContentText("正在执行自启动脚本...").build())
             }
         }).start()
         autoBoot()
@@ -137,9 +137,9 @@ class BootService : IntentService("vtools-boot") {
         val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             nm.createNotificationChannel(NotificationChannel("vtool-boot", "自启动提示", NotificationManager.IMPORTANCE_LOW))
-            nm.notify(1, NotificationCompat.Builder(this, "vtool-boot").setSmallIcon(R.drawable.ic_menu_digital).setSubText("微工具箱").setContentText("已完成开机自启动").build())
+            nm.notify(1, NotificationCompat.Builder(this, "vtool-boot").setSmallIcon(R.drawable.ic_menu_digital).setSubText("Scene").setContentText("已完成开机自启动").build())
         } else {
-            nm.notify(1, NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_menu_digital).setSubText("微工具箱").setContentText("已完成开机自启动").build())
+            nm.notify(1, NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_menu_digital).setSubText("Scene").setContentText("已完成开机自启动").build())
         }
         System.exit(0)
     }

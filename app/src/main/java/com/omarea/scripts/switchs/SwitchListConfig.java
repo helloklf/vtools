@@ -10,7 +10,7 @@ import android.widget.ListView;
 import com.omarea.scripts.SwitchAdapter;
 import com.omarea.scripts.simple.shell.SimpleShellExecutor;
 import com.omarea.ui.OverScrollListView;
-import com.omarea.vboot.R;
+import com.omarea.vtools.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;

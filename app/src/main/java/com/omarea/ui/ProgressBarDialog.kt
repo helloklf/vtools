@@ -9,7 +9,7 @@ import android.view.LayoutInflater
 import android.widget.TextView
 import android.widget.Toast
 import com.omarea.shell.AsynSuShellUnit
-import com.omarea.vboot.R
+import com.omarea.vtools.R
 
 /**
  * Loading弹窗

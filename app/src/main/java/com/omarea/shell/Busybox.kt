@@ -6,7 +6,7 @@ import android.widget.Toast
 import com.omarea.shared.Consts
 import com.omarea.shared.FileWrite
 import com.omarea.shell.units.BusyboxInstallerUnit
-import com.omarea.vboot.R
+import com.omarea.vtools.R
 import java.io.File
 
 /** 检查并安装Busybox

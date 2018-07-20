@@ -72,11 +72,11 @@
     <string name="question_install_busybox">安装Busybox吗？</string>
     <string name="question_install_busybox_desc">你的手机似乎没有安装busybox，这会导致微工具箱无法使用，是否要立即安装（需要修改System）？</string>
 
-    <string name="share_link">你也来试试微工具箱吧，我觉得还不错：\n http://www.coolapk.com/apk/com.omarea.vboot</string>
+    <string name="share_link">你也来试试微工具箱吧，我觉得还不错：\n http://www.coolapk.com/apk/com.omarea.vtools</string>
     <string name="feedback_link">mqqwpa://im/chat?chat_type=wpa&amp;uin=1191634433</string>
 
-    <string name="app_name">微工具箱</string>
-    <string name="app_name_mode_switch">微工具箱 - 快速切换模式</string>
+    <string name="app_name">Scene</string>
+    <string name="app_name_mode_switch">Scene-快速切换模式</string>
 
     <string name="accessibility_service_description">微工具箱增强服务\n你需要激活本服务，才能使用以下功能：\n\n1.动态响应（根据前台应用自动调整性能）.\n\n2.自动行为（在开关屏幕时切换网络或切换应用时回收进程）.\n\n3.自动安装（安装第三方应用时自动点击下一步）</string>
     <string name="accessibility_keyevent_description">微工具箱按键辅助程序\n\n你需要开启本服务并保持持续运行，才能实现按键模拟\n\n注意：本功能目前还在实验阶段，可能会有很多问题！</string>
@@ -123,8 +123,6 @@
     <string name="autobooster_cacheclear_desc">每次切换应用都进行缓存回收，可以保持内存处于较高可用状态，但可能会减缓运行速度增加耗电。</string>
     <string name="autoboster_dozemode">休眠模式（Android 6.0+）</string>
     <string name="autobooster_dozemode_desc">使用休眠模式替代强制停止，适合内存比较充足的设备，但是有些比较流氓的软件可能无法休眠！</string>
-    <string name="auto_clear_tasks">黑屏清理</string>
-    <string name="auto_clear_tasks_desc">在关闭屏幕后，自动结束运行中的黑名单应用</string>
     <string name="auto_clear_ignore_chager">充电状态忽略</string>
     <string name="auto_clear_ignore_chager_desc">充电状态下，息屏动作延迟到充电完成才执行</string>
     <string name="autobooster_service_unactive">未激活辅助服务 - 点击去激活</string>
@@ -156,8 +154,7 @@
 
     <string name="menu_home">概况</string>
     <string name="menu_paypal">捐赠打赏</string>
-    <string name="menu_vboot">双系统工具</string>
-    <string name="menu_cofig">动态响应</string>
+    <string name="menu_cofig">场景模式</string>
     <string name="menu_core_control">CPU 控制</string>
     <string name="menu_additional">附加功能</string>
     <string name="menu_applictions">应用管理</string>
@@ -165,7 +162,6 @@
     <string name="menu_swap">SWAP设置</string>
     <string name="menu_battery">电池充电</string>
     <string name="menu_xposed">Xposed功能</string>
-    <string name="menu_autobooster">自动行为</string>
     <string name="menu_keymap">按键辅助</string>
     <string name="menu_whitelist">阻止休眠</string>
     <string name="menu_img">备份还原</string>
@@ -244,7 +240,7 @@
         "<br />"
         "<br />"
         "<spna>详情：</spna>"
-        "<span>http://coolapk.com/apk/com.omarea.vboot</span>"
+        "<span>http://coolapk.com/apk/com.omarea.vtools</span>"
     </string>
     <string name="battery_uevent_title">$ cat /sys/class/power_supply/bms/uevent</string>
     <string name="home_hide_in_recents">强迫症</string>
@@ -257,7 +253,7 @@
     <string name="dialog_addin_device_desc">修改后可点击“还原”->“确认”恢复修改前的机型，卸载工具箱会导致备份的机型信息丢失，请务必还原后再卸载！\n\n或者，你也可以通过重新刷入完整ROM来恢复机型信息！\n\n使用DualBootPatcher多软件切勿使用本功能修改机型！！！</string>
     <string name="dialog_addin_device_inner">预设模板</string>
     <string name="title_activity_shortcut">ActivityShortcut</string>
-    <string name="title_activity_online">微工具箱 - Online</string>
+    <string name="title_activity_online">Scene-Online</string>
 
     <string name="shortcut_disabled">暂不可用</string>
     <string name="shortcut_p0">省电模式</string>
@@ -375,6 +371,19 @@
         <item>性能模式</item>
         <item>极速模式</item>
         <item>忽略切换</item>
+    </string-array>
+    <string-array name="powercfg_modes_filter">
+        <item>全部模式</item>
+        <item>省电模式</item>
+        <item>均衡模式</item>
+        <item>性能模式</item>
+        <item>极速模式</item>
+        <item>忽略切换</item>
+    </string-array>
+    <string-array name="powercfg_apptype_filter">
+        <item>所有应用</item>
+        <item>用户</item>
+        <item>系统</item>
     </string-array>
     <string-array name="key_event">
         <item>默认动作</item>

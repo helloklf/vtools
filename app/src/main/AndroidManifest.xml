@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.omarea.vboot"
+    package="com.omarea.vtools"
     android:installLocation="internalOnly">
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
@@ -22,7 +22,8 @@
     <uses-permission
         android:name="android.permission.WRITE_SECURE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
     <uses-permission
         android:name="android.permission.CHANGE_CONFIGURATION"
         tools:ignore="ProtectedPermissions" />
@@ -45,7 +46,7 @@
 
         <service
             android:name=".AccessibilityServiceVTools"
-            android:label="微工具箱-增强服务"
+            android:label="Scene-增强服务"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -67,7 +68,7 @@
             </service>
         <service
             android:name=".AccessibilityServiceVToolsKeyEvent"
-            android:label="微工具箱-按键辅助"
+            android:label="Scene-按键辅助"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -106,7 +107,7 @@
             android:name=".ActivityAccessibilitySettings"
             android:configChanges="keyboardHidden|orientation"
             android:excludeFromRecents="true"
-            android:label="微工具箱 - 增强服务"
+            android:label="Scene-增强服务"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -114,7 +115,7 @@
             android:name=".ActivityAccessibilityKeyEventSettings"
             android:configChanges="keyboardHidden|orientation"
             android:excludeFromRecents="true"
-            android:label="微工具箱 - 按键辅助"
+            android:label="Scene-按键辅助"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />

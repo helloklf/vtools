@@ -14,8 +14,8 @@ import com.omarea.shell.KeepShellSync
 import com.omarea.shell.KernelProrp
 import com.omarea.shell.RootFile
 import com.omarea.shell.SysUtils
-import com.omarea.vboot.ActivityQuickSwitchMode
-import com.omarea.vboot.R
+import com.omarea.vtools.ActivityQuickSwitchMode
+import com.omarea.vtools.R
 
 
 /**

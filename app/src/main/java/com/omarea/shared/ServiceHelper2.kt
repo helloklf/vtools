@@ -40,7 +40,7 @@ class ServiceHelper2(private var context: AccessibilityService) : ModeList(conte
             "com.miui.securitycenter",
             "android",
             "com.android.systemui",
-            "com.omarea.vboot",
+            "com.omarea.vtools",
             "com.miui.touchassistant",
             "com.miui.contentextension",
             "com.miui.systemAdSolution")
