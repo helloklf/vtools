@@ -201,7 +201,7 @@
                             android:paddingTop="5dp"
                             android:paddingBottom="5dp"
                             android:text="@string/powersave"
-                            android:layout_width="match_parent"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
                     <LinearLayout
@@ -212,7 +212,7 @@
                             style="@style/textTitle"
                             android:text="阻止后台"
                             android:layout_weight="1"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content" />
                         <Switch
                             android:id="@+id/app_details_disbackground"
@@ -245,7 +245,7 @@
                                 android:layout_weight="1"
                                 android:id="@+id/app_details_light"
                                 android:layout_marginRight="10dp"
-                                android:layout_width="match_parent"
+                                android:layout_width="0dp"
                                 android:layout_height="wrap_content" />
                         </LinearLayout>
                     </LinearLayout>
@@ -302,7 +302,7 @@
                             android:id="@+id/app_details_floatwindow"
                             android:textAlignment="textEnd"
                             android:layout_weight="1"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
                     <LinearLayout
@@ -317,7 +317,7 @@
                             android:id="@+id/app_details_usagedata"
                             android:textAlignment="textEnd"
                             android:layout_weight="1"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
                     <LinearLayout
@@ -332,7 +332,7 @@
                             android:id="@+id/app_details_modifysettings"
                             android:textAlignment="textEnd"
                             android:layout_weight="1"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
                     <LinearLayout
@@ -348,7 +348,7 @@
                             android:id="@+id/app_details_disdoze"
                             android:textAlignment="textEnd"
                             android:layout_weight="1"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
                 </LinearLayout>
@@ -440,7 +440,7 @@
                         <TextView
                             android:layout_weight="1"
                             android:text="DPI"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content" />
                         <TextView
                             android:id="@+id/app_details_dpi"
@@ -455,7 +455,7 @@
                         <TextView
                             android:layout_weight="1"
                             android:text="从后台列表隐藏"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content" />
                         <Switch
                             android:id="@+id/app_details_excludetask"
@@ -469,7 +469,7 @@
                         <TextView
                             android:layout_weight="1"
                             android:text="滚动优化"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content" />
                         <Switch
                             android:id="@+id/app_details_scrollopt"
@@ -508,7 +508,7 @@
                         <TextView
                             android:layout_weight="1"
                             android:text="多线程模式"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content" />
                         <Switch
                             android:layout_width="wrap_content"
@@ -521,7 +521,7 @@
                         <TextView
                             android:layout_weight="1"
                             android:text="渲染方式"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content" />
                         <TextView
                             android:text="OpenglES3"
@@ -552,7 +552,7 @@
                         <TextView
                             android:layout_weight="1"
                             android:text="个性字体"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content" />
                         <Switch
                             android:layout_width="wrap_content"
@@ -565,7 +565,7 @@
                         <TextView
                             android:layout_weight="1"
                             android:text="头像挂件"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content" />
                         <Switch
                             android:layout_width="wrap_content"
@@ -621,7 +621,7 @@
                         <TextView
                             android:layout_weight="1"
                             android:text="HDR+"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content" />
                         <Switch
                             android:layout_width="wrap_content"
@@ -634,7 +634,7 @@
                         <TextView
                             android:layout_weight="1"
                             android:text="Vulkan"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content" />
                         <Switch
                             android:layout_width="wrap_content"
@@ -664,7 +664,7 @@
                         <TextView
                             android:layout_weight="1"
                             android:text="高帧率"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content" />
                         <Switch
                             android:layout_width="wrap_content"
@@ -677,7 +677,7 @@
                         <TextView
                             android:layout_weight="1"
                             android:text="HDR+"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content" />
                         <Switch
                             android:layout_width="wrap_content"
@@ -690,7 +690,7 @@
                         <TextView
                             android:layout_weight="1"
                             android:text="Vulkan"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content" />
                         <Switch
                             android:layout_width="wrap_content"

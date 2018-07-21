@@ -1,9 +1,6 @@
 package com.omarea.vtools
 
 import android.accessibilityservice.AccessibilityService
-import android.app.Notification
-import android.app.NotificationManager
-import android.app.Service
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
 import android.content.ComponentName
@@ -179,7 +176,7 @@ override fun onCreate() {
                 return
             try {
                 AutoClickService().packageinstallerAutoClick(this.applicationContext, event)
-            } catch(ex: Exception) {
+            } catch (ex: Exception) {
 
             }
         } else if (packageName == "com.miui.securitycenter") {
@@ -250,18 +247,18 @@ override fun onCreate() {
         }
         if (event.action == KeyEvent.ACTION_DOWN) {
             downTime = event.eventTime
-                val currentDownTime = downTime
-                handler.postDelayed({
-                    if (downTime == currentDownTime) {
-                        if (keyCode == KeyEvent.KEYCODE_HOME) {
-                            performGlobalAction(GLOBAL_ACTION_HOME)
-                        } else if (keyCode == KeyEvent.KEYCODE_BACK) {
-                            performGlobalAction(GLOBAL_ACTION_BACK)
-                        } else if (keyCode == KeyEvent.KEYCODE_APP_SWITCH || keyCode == KeyEvent.KEYCODE_MENU) {
-                            performGlobalAction(GLOBAL_ACTION_RECENTS)
-                        }
+            val currentDownTime = downTime
+            handler.postDelayed({
+                if (downTime == currentDownTime) {
+                    if (keyCode == KeyEvent.KEYCODE_HOME) {
+                        performGlobalAction(GLOBAL_ACTION_HOME)
+                    } else if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        performGlobalAction(GLOBAL_ACTION_BACK)
+                    } else if (keyCode == KeyEvent.KEYCODE_APP_SWITCH || keyCode == KeyEvent.KEYCODE_MENU) {
+                        performGlobalAction(GLOBAL_ACTION_RECENTS)
                     }
-                }, longClickTime)
+                }
+            }, longClickTime)
             return serviceHelper!!.onKeyDown()
         } else if (event.action == KeyEvent.ACTION_UP) {
             downTime = -1

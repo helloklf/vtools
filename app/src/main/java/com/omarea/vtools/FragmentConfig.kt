@@ -101,14 +101,10 @@ class FragmentConfig : Fragment() {
         configlist_tabhost.setup()
 
         configlist_tabhost.addTab(configlist_tabhost.newTabSpec("def_tab").setContent(R.id.configlist_tab0).setIndicator("应用场景"))
-        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("tab_3").setContent(R.id.blacklist_tab3).setIndicator(context!!.getString(R.string.autobooster_tab_screen)))
+        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("tab_3").setContent(R.id.blacklist_tab3).setIndicator(context!!.getString(R.string.autobooster_tab_system_scene)))
         configlist_tabhost.addTab(configlist_tabhost.newTabSpec("confg_tab").setContent(R.id.configlist_tab5).setIndicator("设置"))
         configlist_tabhost.currentTab = 0
 
-        lock_screen_optimize.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE, false)
-        lock_screen_optimize.setOnClickListener {
-            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE, (it as Switch).isChecked).commit()
-        }
         accu_switch.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
         accu_switch.setOnClickListener {
             globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, (it as Switch).isChecked).commit()
@@ -134,6 +130,7 @@ class FragmentConfig : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
+
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 loadList()
             }
@@ -142,6 +139,7 @@ class FragmentConfig : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {
                 //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
+
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 loadList()
             }
@@ -326,8 +324,7 @@ class FragmentConfig : Fragment() {
                 if (search && !(packageName.contains(keyword) || item.appName.toString().contains(keyword))) {
                     continue
                 } else {
-                    if (filterMode == "*" || filterMode == spfPowercfg.getString(packageName, firstMode))
-                    {
+                    if (filterMode == "*" || filterMode == spfPowercfg.getString(packageName, firstMode)) {
                         if (filterAppType == "*" || item.path.startsWith(filterAppType)) {
                             displayList!!.add(installedList!![i])
                         }

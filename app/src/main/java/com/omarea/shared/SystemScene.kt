@@ -14,7 +14,7 @@ class SystemScene(private var context: Context) {
     private var spfGlobal: SharedPreferences = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
     private var keepShell = KeepShell(context)
 
-    fun onScreenOn () {
+    fun onScreenOn() {
         keepShell.doCmd("dumpsys deviceidle unforce;dumpsys deviceidle enable all;")
         if (spfAutoConfig.getBoolean(SpfConfig.WIFI + SpfConfig.ON, false))
             keepShell.doCmd("svc wifi enable")
@@ -33,7 +33,7 @@ class SystemScene(private var context: Context) {
         }
     }
 
-    fun onScreenOff () {
+    fun onScreenOff() {
         if (spfAutoConfig.getBoolean(SpfConfig.WIFI + SpfConfig.OFF, false))
             keepShell.doCmd("svc wifi disable")
 

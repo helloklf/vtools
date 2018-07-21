@@ -18,9 +18,7 @@ import android.widget.TextView
 import com.omarea.shared.model.Appinfo
 import com.omarea.vtools.R
 import java.io.File
-import java.util.ArrayList
-import java.util.HashMap
-import kotlin.Comparator
+import java.util.*
 
 /**
  * Created by Hello on 2018/01/26.
@@ -130,8 +128,7 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
         } else {
             viewHolder!!.imgView!!.setImageDrawable(item.icon)
         }
-        if (item.enabledState != null)
-        {
+        if (item.enabledState != null) {
             val config = item.enabledState
             var enabledState = ""
             when (config) {
@@ -158,8 +155,7 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
             }
             viewHolder!!.enabledStateText!!.visibility = VISIBLE
             viewHolder!!.enabledStateText!!.text = enabledState
-        }
-        else
+        } else
             viewHolder!!.enabledStateText!!.visibility = GONE
 
         if (viewHolder!!.itemDesc != null)

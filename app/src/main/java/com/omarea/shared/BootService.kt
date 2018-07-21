@@ -48,7 +48,6 @@ class BootService : IntentService("vtools-boot") {
     }
 
 
-
     private fun autoBoot() {
         val sb = StringBuilder()
 

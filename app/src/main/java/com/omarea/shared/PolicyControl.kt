@@ -29,29 +29,29 @@ class PolicyControl(private var contentResolver: ContentResolver) {
         }
     }
 
-    private fun isHide (prop: String, packageName: String): Boolean {
+    private fun isHide(prop: String, packageName: String): Boolean {
         if (prop.contains("-$packageName")) {
             return false
-        } else if (prop.contains(packageName)){
+        } else if (prop.contains(packageName)) {
             return true
         } else if (prop.contains("$STATUS=*")) {
             return true
-        } else if (prop.contains("$STATUS=apps")){
+        } else if (prop.contains("$STATUS=apps")) {
             return true
         } else {
             return false
         }
     }
 
-    fun isHideStatusOnly (packageName: String): Boolean {
+    fun isHideStatusOnly(packageName: String): Boolean {
         return isHide(status, packageName)
     }
 
-    fun isHideNavbarOnly (packageName: String): Boolean {
+    fun isHideNavbarOnly(packageName: String): Boolean {
         return isHide(nav, packageName)
     }
 
-    fun isFullScreen (packageName: String): Boolean {
+    fun isFullScreen(packageName: String): Boolean {
         return isHide(full, packageName)
     }
 
@@ -78,7 +78,7 @@ class PolicyControl(private var contentResolver: ContentResolver) {
         }
         if (nav.contains("$NAV=*") || nav.contains("$NAV=apps")) {
             nav = "$nav,-$packageName"
-        } else if (nav.contains(packageName)){
+        } else if (nav.contains(packageName)) {
             nav = nav.replace(",$packageName", "").replace(packageName, "")
         }
         return saveChange()
@@ -107,7 +107,7 @@ class PolicyControl(private var contentResolver: ContentResolver) {
         }
         if (status.contains("$STATUS=*") || status.contains("$STATUS=apps")) {
             status = "$status,-$packageName"
-        } else if (status.contains(packageName)){
+        } else if (status.contains(packageName)) {
             status = status.replace(",$packageName", "").replace(packageName, "")
         }
         return saveChange()
@@ -134,13 +134,13 @@ class PolicyControl(private var contentResolver: ContentResolver) {
         }
         if (full.contains("$FULL=*") || status.contains("$FULL=apps")) {
             full = "$full,-$packageName"
-        } else if (full.contains(packageName)){
+        } else if (full.contains(packageName)) {
             full = full.replace(",$packageName", "").replace(packageName, "")
         }
         return saveChange()
     }
 
-    fun saveChange (): Boolean {
+    fun saveChange(): Boolean {
         val stringBuilder = StringBuilder()
         if (!status.isEmpty()) {
             stringBuilder.append(status)

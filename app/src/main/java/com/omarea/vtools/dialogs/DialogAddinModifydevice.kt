@@ -86,7 +86,7 @@ class DialogAddinModifydevice(var context: Context) {
                 Toast.makeText(context, "什么也没有修改！", Toast.LENGTH_SHORT).show()
             }
         }).setPositiveButton("使用帮助", DialogInterface.OnClickListener { dialog, which ->
-            AlertDialog.Builder(context).setMessage(R.string.dialog_addin_device_desc).setNegativeButton(R.string.btn_confirm, {_,_ -> }).create().show()
+            AlertDialog.Builder(context).setMessage(R.string.dialog_addin_device_desc).setNegativeButton(R.string.btn_confirm, { _, _ -> }).create().show()
         }).create().show()
         loadCurrent()
     }

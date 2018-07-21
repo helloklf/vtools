@@ -40,7 +40,6 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             "com.miui.systemAdSolution")
     private var dyamicCore = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
     private var debugMode = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
-    private var lockScreenOptimize = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE, false)
     private var firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
     private var accuSwitch: Boolean = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
     private var batteryMonitro: Boolean = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
@@ -62,7 +61,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             val display = windowManager.defaultDisplay
             this.screenOn = display.state == Display.STATE_ON
             if (!screenOn) return
-            val time = if(batteryMonitro) 2000L else 10000L
+            val time = if (batteryMonitro) 2000L else 10000L
             timer = Timer(true)
             timer!!.scheduleAtFixedRate(object : TimerTask() {
                 override fun run() {
@@ -107,7 +106,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
      * 屏幕关闭后 - 关闭网络
      */
     private fun onScreenOffCloseNetwork() {
-        if (dyamicCore && lockScreenOptimize && !screenOn) {
+        if (dyamicCore && !screenOn) {
             toggleConfig(POWERSAVE)
             updateModeNofity()
         }
@@ -130,7 +129,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         startTimer()
         notifyHelper.notify()
 
-        if (dyamicCore && lockScreenOptimize) {
+        if (dyamicCore) {
             if (this.lastModePackage != null && !this.lastModePackage.isNullOrEmpty()) {
                 handler.postDelayed({
                     if (screenOn)
@@ -207,11 +206,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
 
     private fun toggleConfig(mode: String) {
         if (!screenOn) {
-            if (lockScreenOptimize) {
-                executePowercfgMode(POWERSAVE)
-            } else {
-                return
-            }
+            executePowercfgMode(POWERSAVE)
         }
         if (!File(Consts.POWER_CFG_PATH).exists()) {
             ConfigInstaller().installPowerConfig(context, "")

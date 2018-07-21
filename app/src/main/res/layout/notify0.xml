@@ -34,7 +34,7 @@
 
             <TextView
                 android:id="@+id/notify_title"
-                android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"
+                style="@style/NotificationTitle"
                 android:textSize="14dp"
                 android:textStyle="bold"
                 android:layout_width="match_parent"
@@ -45,7 +45,7 @@
 
             <TextView
                 android:id="@+id/notify_text"
-                android:textAppearance="@android:style/TextAppearance.Material.Notification.Line2"
+                style="@style/NotificationInfo"
                 android:textSize="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -69,8 +69,9 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/notify_battery_title"
                 android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"
+                android:id="@+id/notify_battery_title"
+                style="@style/NotificationTitle"
                 android:textSize="14dp"
                 android:textStyle="bold"
                 android:layout_width="match_parent"
@@ -81,7 +82,7 @@
 
             <TextView
                 android:id="@+id/notify_battery_text"
-                android:textAppearance="@android:style/TextAppearance.Material.Notification.Line2"
+                style="@style/NotificationInfo"
                 android:textSize="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

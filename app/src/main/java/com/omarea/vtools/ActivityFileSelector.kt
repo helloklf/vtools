@@ -1,8 +1,7 @@
 package com.omarea.vtools
 
-import android.os.Bundle
-import android.app.Activity
 import android.content.Context
+import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.KeyEvent
@@ -47,7 +46,7 @@ class ActivityFileSelector : AppCompatActivity() {
                 return
             }
             adapterFileSelector = AdapterFileSelector(sdcard, Runnable {
-                val file:File? = adapterFileSelector!!.selectedFile
+                val file: File? = adapterFileSelector!!.selectedFile
                 if (file != null) {
                     this.setResult(1, android.content.Intent().putExtra("file", file))
                     this.finish()

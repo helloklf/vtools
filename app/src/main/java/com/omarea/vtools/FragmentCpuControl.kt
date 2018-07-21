@@ -40,6 +40,7 @@ class FragmentCpuControl : Fragment() {
     private var adrenoFreqs = arrayOf("")
     private var adrenoGovernors = arrayOf("")
     private var adrenoPLevels = arrayOf("")
+    private var inited = false
 
     private fun initData() {
         hasBigCore = CpuFrequencyUtils.getClusterInfo().size > 1
@@ -80,6 +81,7 @@ class FragmentCpuControl : Fragment() {
                 }
 
                 bindEvent()
+                inited = true
             } catch (ex: Exception) {
 
             }
@@ -709,10 +711,13 @@ class FragmentCpuControl : Fragment() {
             timer!!.schedule(object : TimerTask() {
                 override fun run() {
                     handler.post({
+                        if (!inited) {
+                            return@post
+                        }
                         updateState()
                     })
                 }
-            }, 3000, 3000)
+            }, 1000, 3000)
         }
     }
 

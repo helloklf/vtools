@@ -1,4 +1,10 @@
 <resources>
+    <style
+        name="NotificationInfo"
+        parent="android:TextAppearance.Material.Notification.Info" />
+    <style
+        name="NotificationTitle"
+        parent="android:TextAppearance.Material.Notification.Title" />
     <style name="AppTheme" parent="Base.Theme.AppCompat.Light">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowTranslucentStatus">false</item>

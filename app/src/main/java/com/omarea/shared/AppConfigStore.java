@@ -32,11 +32,11 @@ public class AppConfigStore extends SQLiteOpenHelper {
 
     }
 
-    public AppConfigInfo getAppConfig (String app) {
+    public AppConfigInfo getAppConfig(String app) {
         AppConfigInfo appConfigInfo = new AppConfigInfo();
         appConfigInfo.packageName = app;
         try {
-            Cursor cursor = this.getReadableDatabase().rawQuery("select * from app_config where id = ?", new String[]{ app });
+            Cursor cursor = this.getReadableDatabase().rawQuery("select * from app_config where id = ?", new String[]{app});
             if (cursor.moveToNext()) {
                 appConfigInfo.aloneLight = cursor.getInt(cursor.getColumnIndex("alone_light")) == 1;
                 appConfigInfo.aloneLightValue = cursor.getInt(cursor.getColumnIndex("light"));
@@ -50,7 +50,7 @@ public class AppConfigStore extends SQLiteOpenHelper {
 
         }
         try {
-            Cursor cursor = this.getReadableDatabase().rawQuery("select * from app_xposed_config where id = ?", new String[]{ app });
+            Cursor cursor = this.getReadableDatabase().rawQuery("select * from app_xposed_config where id = ?", new String[]{app});
             if (cursor.moveToNext()) {
                 appConfigInfo.dpi = cursor.getInt(cursor.getColumnIndex("dpi"));
                 appConfigInfo.excludeRecent = cursor.getInt(cursor.getColumnIndex("exclude_recent")) == 1;
@@ -67,8 +67,8 @@ public class AppConfigStore extends SQLiteOpenHelper {
         SQLiteDatabase database = getWritableDatabase();
         getWritableDatabase().beginTransaction();
         try {
-            database.execSQL("delete from  app_config where id = ?", new String[] { appConfigInfo.packageName });
-            database.execSQL("delete from  app_xposed_config where id = ?", new String[] { appConfigInfo.packageName });
+            database.execSQL("delete from  app_config where id = ?", new String[]{appConfigInfo.packageName});
+            database.execSQL("delete from  app_xposed_config where id = ?", new String[]{appConfigInfo.packageName});
             database.execSQL("insert into app_config(id, alone_light, light, dis_notice, dis_button, gps_on, dis_background_run) values (?, ?, ?, ?, ?, ?, ?)", new Object[]{
                     appConfigInfo.packageName,
                     appConfigInfo.aloneLight ? 1 : 0,
@@ -88,8 +88,7 @@ public class AppConfigStore extends SQLiteOpenHelper {
             return true;
         } catch (Exception ignored) {
             return false;
-        }
-        finally {
+        } finally {
             database.endTransaction();
         }
     }

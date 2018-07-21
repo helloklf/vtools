@@ -16,7 +16,7 @@ public class RamChatView extends View {
     //-------------必须给的数据相关-------------
     private String[] str = new String[]{"已用", "可用"};
     //分配比例大小，总比例大小为100,由于经过运算后最后会是99.55左右的数值，导致圆不能够重合，会留出点空白，所以这里的总比例大小我们用101
-    private int[] strPercent = new int[]{ 10, 25 };
+    private int[] strPercent = new int[]{10, 25};
     //圆的直径
     private float mRadius = 300;
     //圆的粗细
@@ -32,7 +32,7 @@ public class RamChatView extends View {
     private Paint labelPaint;
     //-------------颜色相关-------------
     //边框颜色和标注颜色
-    private int[] mColor = new int[]{ 0xFF138ed6, 0x55888888, 0xFFE57373, 0xFF4FC3F7, 0xFFFFF176, 0xFF81C784};
+    private int[] mColor = new int[]{0xFF138ed6, 0x55888888, 0xFFE57373, 0xFF4FC3F7, 0xFFFFF176, 0xFF81C784};
     // private int[] mColor = new int[]{0xFFF06292, 0xFF9575CD, 0xFFE57373, 0xFF4FC3F7, 0xFFFFF176, 0xFF81C784};
     //文字颜色
     private int textColor = 0xFF888888;
@@ -44,9 +44,9 @@ public class RamChatView extends View {
     /**
      * dp转换成px
      */
-    private int dp2px(Context context,float dpValue){
-        float scale=context.getResources().getDisplayMetrics().density;
-        return (int)(dpValue*scale+0.5f);
+    private int dp2px(Context context, float dpValue) {
+        float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
     }
 
     public RamChatView(Context context) {
@@ -55,21 +55,21 @@ public class RamChatView extends View {
 
     public RamChatView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        @SuppressLint("CustomViewStyleable") TypedArray array=context.obtainStyledAttributes(attrs, R.styleable.RamInfo);
+        @SuppressLint("CustomViewStyleable") TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.RamInfo);
         int total = array.getInteger(R.styleable.RamInfo_total, 1);
         int fee = array.getInteger(R.styleable.RamInfo_free, 1);
-        int feeRatio = (int)(fee * 100.0 / total);
-        strPercent = new int[]{ 100 - feeRatio, feeRatio };
+        int feeRatio = (int) (fee * 100.0 / total);
+        strPercent = new int[]{100 - feeRatio, feeRatio};
         array.recycle();
     }
 
     public RamChatView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        @SuppressLint("CustomViewStyleable") TypedArray array=context.obtainStyledAttributes(attrs, R.styleable.RamInfo);
+        @SuppressLint("CustomViewStyleable") TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.RamInfo);
         int total = array.getInteger(R.styleable.RamInfo_total, 1);
         int fee = array.getInteger(R.styleable.RamInfo_free, 1);
-        int feeRatio = (int)(fee * 100.0 / total);
-        strPercent = new int[]{ 100 - feeRatio, feeRatio };
+        int feeRatio = (int) (fee * 100.0 / total);
+        strPercent = new int[]{100 - feeRatio, feeRatio};
         array.recycle();
     }
 
@@ -82,9 +82,9 @@ public class RamChatView extends View {
         this.mStrokeWidth = mStrokeWidth;
         this.textSize = dp2px(getContext(), 18);
         if (w > h) {
-            this.mRadius = (int)(h * 0.9 - mStrokeWidth);
+            this.mRadius = (int) (h * 0.9 - mStrokeWidth);
         } else {
-            this.mRadius = (int)(w * 0.9 - mStrokeWidth);
+            this.mRadius = (int) (w * 0.9 - mStrokeWidth);
         }
     }
 
@@ -99,9 +99,9 @@ public class RamChatView extends View {
         drawCycle(canvas);
     }
 
-    public void setData (float total, float fee) {
-        int feeRatio = (int)(fee * 100.0 / total);
-        strPercent = new int[]{ 100 - feeRatio, feeRatio };
+    public void setData(float total, float fee) {
+        int feeRatio = (int) (fee * 100.0 / total);
+        strPercent = new int[]{100 - feeRatio, feeRatio};
         invalidate();
     }
 

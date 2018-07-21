@@ -1,7 +1,6 @@
 package com.omarea.ui;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.support.design.widget.Snackbar;
@@ -13,7 +12,6 @@ import android.widget.TextView;
 import com.omarea.vtools.R;
 
 import java.io.File;
-import java.util.ArrayList;
 
 public class AdapterFileSelector extends BaseAdapter {
     private File[] fileArray;
@@ -29,7 +27,7 @@ public class AdapterFileSelector extends BaseAdapter {
         loadDir(rootDir);
     }
 
-    private void loadDir (final File dir) {
+    private void loadDir(final File dir) {
         progressBarDialog.showDialog("加载中...");
         new Thread(new Runnable() {
             @Override
@@ -37,12 +35,12 @@ public class AdapterFileSelector extends BaseAdapter {
                 if (dir.exists() && dir.canRead()) {
                     File[] files = dir.listFiles();
                     for (int i = 0; i < files.length; i++) {
-                        for (int j = i + 1; j < files.length; j ++) {
+                        for (int j = i + 1; j < files.length; j++) {
                             if ((files[j].isDirectory() && files[i].isFile())) {
                                 File t = files[i];
                                 files[i] = files[j];
                                 files[j] = t;
-                            } else if (files[j].isDirectory() == files[i].isDirectory()&& (files[j].getName().compareTo(files[i].getName()) < 0)) {
+                            } else if (files[j].isDirectory() == files[i].isDirectory() && (files[j].getName().compareTo(files[i].getName()) < 0)) {
                                 File t = files[i];
                                 files[i] = files[j];
                                 files[j] = t;
@@ -63,7 +61,7 @@ public class AdapterFileSelector extends BaseAdapter {
         }).start();
     }
 
-    public boolean goParent () {
+    public boolean goParent() {
         File parent = new File(currentDir.getParent());
         if (parent.exists() && parent.canRead()) {
             loadDir(parent);
@@ -135,7 +133,7 @@ public class AdapterFileSelector extends BaseAdapter {
         return view;
     }
 
-    public File getSelectedFile () {
+    public File getSelectedFile() {
         return this.selectedFile;
     }
 }

@@ -1,40 +1,30 @@
 package com.omarea.vtools
 
 import android.annotation.SuppressLint
+import android.app.ActivityManager
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Context.ACTIVITY_SERVICE
 import android.content.DialogInterface
-import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
-import android.provider.Settings
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import com.github.mikephil.charting.data.PieEntry
 import com.omarea.shared.*
 import com.omarea.shell.Files
 import com.omarea.shell.KeepShellSync
 import com.omarea.shell.Platform
 import com.omarea.shell.Props
-import com.omarea.ui.ProgressBarDialog
 import kotlinx.android.synthetic.main.layout_home.*
 import java.io.File
-import android.os.Debug.getMemoryInfo
-import android.app.ActivityManager
-import android.content.Context.ACTIVITY_SERVICE
-import android.graphics.Color
-import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import java.util.*
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
-
-
 
 
 class FragmentHome : Fragment() {
@@ -78,6 +68,24 @@ class FragmentHome : Fragment() {
 
         spf = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
+        home_clear_ram.setOnClickListener {
+            home_raminfo_text.text = "稍等一下"
+            Thread(Runnable {
+                KeepShellSync.doCmdSync("echo 3 > /proc/sys/vm/drop_caches")
+                myHandler.postDelayed({
+                    val activityManager = context!!.getSystemService(ACTIVITY_SERVICE) as ActivityManager
+                    val info = ActivityManager.MemoryInfo()
+                    activityManager.getMemoryInfo(info)
+                    val totalMem = (info.totalMem / 1024 / 1024f).toInt()
+                    home_raminfo.setData(totalMem.toFloat(), 0f)
+                    val availMem = (info.availMem / 1024 / 1024f).toInt()
+                    Toast.makeText(context, "缓存已清理...", Toast.LENGTH_SHORT).show()
+                    home_raminfo_text.text = "${availMem} / ${totalMem}MB"
+                    home_raminfo.setData(totalMem.toFloat(), availMem.toFloat())
+
+                }, 1000)
+            }).start()
+        }
     }
 
     override fun onResume() {
@@ -90,18 +98,17 @@ class FragmentHome : Fragment() {
         super.onDestroy()
     }
 
-    private fun updateInfo () {
+    private fun updateInfo() {
         sdfree.text = "SDCard：" + Files.GetDirFreeSizeMB(Environment.getExternalStorageDirectory().absolutePath) + " MB"
         datafree.text = "Data：" + Files.GetDirFreeSizeMB(Environment.getDataDirectory().absolutePath) + " MB"
         val activityManager = context!!.getSystemService(ACTIVITY_SERVICE) as ActivityManager
         val info = ActivityManager.MemoryInfo()
         activityManager.getMemoryInfo(info)
-        val entries = ArrayList<PieEntry>()
 
         val totalMem = (info.totalMem / 1024 / 1024f).toInt()
         val availMem = (info.availMem / 1024 / 1024f).toInt()
 
-        home_raminfo_text.text = "${availMem}/${totalMem}MB"
+        home_raminfo_text.text = "${availMem} / ${totalMem}MB"
         home_raminfo.setData(totalMem.toFloat(), availMem.toFloat())
     }
 

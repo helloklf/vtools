@@ -118,7 +118,7 @@
     <string name="autobooster_tab_disDoze">Doze白名单</string>
     <string name="autobooster_tab_blacklist">后台黑名单</string>
     <string name="autobooster_tab_details">黑名单设置</string>
-    <string name="autobooster_tab_screen">开关屏幕</string>
+    <string name="autobooster_tab_system_scene">系统场景</string>
     <string name="autobooster_cacheclear">缓存回收</string>
     <string name="autobooster_cacheclear_desc">每次切换应用都进行缓存回收，可以保持内存处于较高可用状态，但可能会减缓运行速度增加耗电。</string>
     <string name="autoboster_dozemode">休眠模式（Android 6.0+）</string>

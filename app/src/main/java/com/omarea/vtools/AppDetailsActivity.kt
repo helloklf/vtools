@@ -23,9 +23,6 @@ import com.omarea.shell.KeepShellSync
 import kotlinx.android.synthetic.main.activity_app_details.*
 import java.io.File
 import java.util.*
-import android.provider.Settings.SettingNotFoundException
-import android.provider.Settings.System.SCREEN_BRIGHTNESS_MODE
-
 
 
 class AppDetailsActivity : AppCompatActivity() {
@@ -326,7 +323,8 @@ class AppDetailsActivity : AppCompatActivity() {
                         val row = mem[rowIndex].trim().split("    ", ignoreCase = true)
                         try {
                             memSize += row[1].toInt()
-                        } catch (ex: Exception) {}
+                        } catch (ex: Exception) {
+                        }
                         Log.d("", row.toString())
                     }
                 }

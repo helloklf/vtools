@@ -12,7 +12,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
         @Volatile
         var instance: SceneMode? = null
 
-        fun getInstanceOrInit (contentResolver: ContentResolver? = null, store: AppConfigStore? = null) : SceneMode?{
+        fun getInstanceOrInit(contentResolver: ContentResolver? = null, store: AppConfigStore? = null): SceneMode? {
             if (instance == null) {
                 if (contentResolver == null || store == null) {
                     return null
@@ -134,15 +134,15 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
     }
 
     private var locationMode = -1
-    private fun backupLocationModeState () {
-        if (locationMode > -1) {
-            locationMode = Settings.Secure.getInt(contentResolver, Settings.Secure.LOCATION_MODE)
-        }
+    private fun backupLocationModeState() {
+        locationMode = Settings.Secure.getInt(contentResolver, Settings.Secure.LOCATION_MODE)
+        contentResolver.notifyChange(Settings.System.getUriFor(Settings.Secure.LOCATION_MODE), null)
     }
 
-    private fun restoreLocationModeState () {
+    private fun restoreLocationModeState() {
         if (locationMode > -1) {
             Settings.Secure.putInt(contentResolver, Settings.Secure.LOCATION_MODE, locationMode)
+            contentResolver.notifyChange(Settings.System.getUriFor(Settings.Secure.LOCATION_MODE), null)
             locationMode = -1
         }
     }
@@ -150,7 +150,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
     /**
      * 前台应用切换
      */
-    fun onFocusdAppChange (packageName: String) {
+    fun onFocusdAppChange(packageName: String) {
         try {
             if (lastAppPackageName == packageName) {
                 return
@@ -191,7 +191,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
     /**
      * 清理后台
      */
-    fun clearTask () {
+    fun clearTask() {
 
     }
 }

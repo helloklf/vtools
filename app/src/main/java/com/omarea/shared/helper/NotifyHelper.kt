@@ -91,7 +91,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         return batterySensor
     }
 
-    private fun updateBatteryInfo () {
+    private fun updateBatteryInfo() {
         val batteryInfo = KeepShellSync.doCmdSync("dumpsys battery")
         val batteryInfos = batteryInfo.split("\n")
 
@@ -100,7 +100,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         var tempReaded = false
         var statusReaded = false
 
-        for(item in batteryInfos) {
+        for (item in batteryInfos) {
             val info = item.trim()
             val index = info.indexOf(":")
             if (index > -1 && index < info.length) {
@@ -116,9 +116,8 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
                     if (!levelReaded) {
                         batteryCapacity = value
                         levelReaded = true
-                    }
-                    else continue
-                } else if(info.startsWith("temperature")) {
+                    } else continue
+                } else if (info.startsWith("temperature")) {
                     if (!tempReaded) {
                         tempReaded = true
                         batteryTemp = value
@@ -134,7 +133,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         }
         try {
             return (batteryTemp.toInt() / 10.0).toString() + "°C"
-        } catch (ex:Exception) {
+        } catch (ex: Exception) {
             return "?°C"
         }
         /*

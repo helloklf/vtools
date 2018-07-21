@@ -26,7 +26,7 @@ class DumpTopAppliction {
             } else {
                 if (lastActivity.indexOf("/") > 8 && lastActivity.startsWith("ACTIVITY")) {
                     val dumpPackageName = lastActivity.substring(8, lastActivity.indexOf("/")).trim()
-                    return(dumpPackageName)
+                    return (dumpPackageName)
                 }
             }
         }
