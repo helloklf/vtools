@@ -175,7 +175,7 @@
 
     <string name="system">系统</string>
 
-    <string name="title_vbootresize">VBOOT容量调整</string>
+    <string name="title_vtoolsresize">vtools容量调整</string>
     <string name="title_activity_rom2zip">打包当前ROM</string>
 
     <string name="action_shutdown">关闭手机</string>

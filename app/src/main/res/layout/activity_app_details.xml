@@ -265,6 +265,15 @@
                         style="@style/textSmall"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
+                    <Switch
+                        android:id="@+id/app_details_gps"
+                        android:paddingBottom="10dp"
+                        style="@style/textTitle"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:text="自动打开GPS（离开后还原）"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
             </android.support.v7.widget.CardView>
             <android.support.v7.widget.CardView

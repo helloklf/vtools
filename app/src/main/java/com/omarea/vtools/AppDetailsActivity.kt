@@ -264,6 +264,9 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_scrollopt.setOnClickListener {
             appConfigInfo.smoothScroll = (it as Switch).isChecked
         }
+        app_details_gps.setOnClickListener {
+            appConfigInfo.gpsOn = (it as Switch).isChecked
+        }
     }
 
     private fun getTotalSizeOfFilesInDir(file: File): Long {
@@ -369,6 +372,7 @@ class AppDetailsActivity : AppCompatActivity() {
         }
         app_details_excludetask.isChecked = appConfigInfo.excludeRecent
         app_details_scrollopt.isChecked = appConfigInfo.smoothScroll
+        app_details_gps.isChecked = appConfigInfo.gpsOn
     }
 
     override fun onDestroy() {

@@ -197,24 +197,6 @@
                             android:orientation="vertical"
                             android:padding="8dp">
 
-                            <Switch
-                                android:id="@+id/config_showSystemApp"
-                                style="@style/textTitle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="3dp"
-                                android:padding="8dp"
-                                android:text="显示系统应用" />
-
-                            <TextView
-                                style="@style/textSmall"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="10dp"
-                                android:layout_marginTop="5dp"
-                                android:paddingLeft="8dp"
-                                android:text="在列表中显示系统应用" />
-
                             <LinearLayout
                                 android:id="@+id/config_cfg_select"
                                 android:layout_width="match_parent"

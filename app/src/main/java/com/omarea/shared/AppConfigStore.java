@@ -18,6 +18,7 @@ public class AppConfigStore extends SQLiteOpenHelper {
                 "light int default(-1), " +
                 "dis_notice int default(0)," +
                 "dis_button int default(0)," +
+                "gps_on int default(0)," +
                 "dis_background_run int default(0))");
         db.execSQL("create table app_xposed_config(" +
                 "id text primary key, " +
@@ -41,6 +42,7 @@ public class AppConfigStore extends SQLiteOpenHelper {
                 appConfigInfo.aloneLightValue = cursor.getInt(cursor.getColumnIndex("light"));
                 appConfigInfo.disNotice = cursor.getInt(cursor.getColumnIndex("dis_notice")) == 1;
                 appConfigInfo.disButton = cursor.getInt(cursor.getColumnIndex("dis_button")) == 1;
+                appConfigInfo.gpsOn = cursor.getInt(cursor.getColumnIndex("gps_on")) == 1;
                 appConfigInfo.disBackgroundRun = cursor.getInt(cursor.getColumnIndex("dis_background_run")) == 1;
             }
             cursor.close();
@@ -67,12 +69,13 @@ public class AppConfigStore extends SQLiteOpenHelper {
         try {
             database.execSQL("delete from  app_config where id = ?", new String[] { appConfigInfo.packageName });
             database.execSQL("delete from  app_xposed_config where id = ?", new String[] { appConfigInfo.packageName });
-            database.execSQL("insert into app_config(id, alone_light, light, dis_notice, dis_button, dis_background_run) values (?, ?, ?, ?, ?, ?)", new Object[]{
+            database.execSQL("insert into app_config(id, alone_light, light, dis_notice, dis_button, gps_on, dis_background_run) values (?, ?, ?, ?, ?, ?, ?)", new Object[]{
                     appConfigInfo.packageName,
                     appConfigInfo.aloneLight ? 1 : 0,
                     appConfigInfo.aloneLightValue,
                     appConfigInfo.disNotice ? 1 : 0,
                     appConfigInfo.disButton ? 1 : 0,
+                    appConfigInfo.gpsOn ? 1 : 0,
                     appConfigInfo.disBackgroundRun ? 1 : 0
             });
             database.execSQL("insert into app_xposed_config(id, dpi, exclude_recent, smooth_scroll) values (?, ?, ?, ?)", new Object[]{
@@ -100,6 +103,7 @@ public class AppConfigStore extends SQLiteOpenHelper {
         public boolean disNotice = false;
         public boolean disButton = false;
         public boolean disBackgroundRun = false;
+        public boolean gpsOn = false;
 
         // Xposed
         public int dpi = -1;

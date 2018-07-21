@@ -27,6 +27,7 @@ import java.io.File
 import android.os.Debug.getMemoryInfo
 import android.app.ActivityManager
 import android.content.Context.ACTIVITY_SERVICE
+import android.graphics.Color
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import java.util.*
 import com.github.mikephil.charting.data.PieData
@@ -92,20 +93,16 @@ class FragmentHome : Fragment() {
     private fun updateInfo () {
         sdfree.text = "SDCard：" + Files.GetDirFreeSizeMB(Environment.getExternalStorageDirectory().absolutePath) + " MB"
         datafree.text = "Data：" + Files.GetDirFreeSizeMB(Environment.getDataDirectory().absolutePath) + " MB"
-        // val activityManager = context!!.getSystemService(ACTIVITY_SERVICE) as ActivityManager
-        // val info = ActivityManager.MemoryInfo()
-        // activityManager.getMemoryInfo(info)
+        val activityManager = context!!.getSystemService(ACTIVITY_SERVICE) as ActivityManager
+        val info = ActivityManager.MemoryInfo()
+        activityManager.getMemoryInfo(info)
         val entries = ArrayList<PieEntry>()
 
-        entries.add(PieEntry(18.5f, "Green"))
-        entries.add(PieEntry(26.7f, "Yellow"))
-        entries.add(PieEntry(24.0f, "Red"))
-        entries.add(PieEntry(30.8f, "Blue"))
+        val totalMem = (info.totalMem / 1024 / 1024f).toInt()
+        val availMem = (info.availMem / 1024 / 1024f).toInt()
 
-        val set = PieDataSet(entries, "Election Results")
-        val data = PieData(set)
-        pieChart.setData(data)
-        pieChart.invalidate() // refresh
+        home_raminfo_text.text = "${availMem}/${totalMem}MB"
+        home_raminfo.setData(totalMem.toFloat(), availMem.toFloat())
     }
 
     private fun setModeState() {

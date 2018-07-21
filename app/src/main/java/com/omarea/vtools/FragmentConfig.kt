@@ -36,7 +36,6 @@ class FragmentConfig : Fragment() {
     private lateinit var spfPowercfg: SharedPreferences
     private lateinit var globalSPF: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
-    private var hasSystemApp = false
     private lateinit var applistHelper: AppListHelper
     internal val myHandler: Handler = Handler()
     private var installedList: ArrayList<Appinfo>? = null
@@ -106,11 +105,6 @@ class FragmentConfig : Fragment() {
         configlist_tabhost.addTab(configlist_tabhost.newTabSpec("confg_tab").setContent(R.id.configlist_tab5).setIndicator("设置"))
         configlist_tabhost.currentTab = 0
 
-        config_showSystemApp.isChecked = hasSystemApp
-        config_showSystemApp.setOnClickListener {
-            hasSystemApp = config_showSystemApp.isChecked
-            loadList(true)
-        }
         lock_screen_optimize.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE, false)
         lock_screen_optimize.setOnClickListener {
             globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE, (it as Switch).isChecked).commit()
@@ -278,8 +272,7 @@ class FragmentConfig : Fragment() {
             onLoading = true
             if (foreceReload || installedList == null || installedList!!.size == 0) {
                 installedList = ArrayList()/*在数组中存放数据*/
-                val hasSystemApp = hasSystemApp
-                installedList = if (hasSystemApp) applistHelper.getAll() else applistHelper.getUserAppList()
+                installedList = applistHelper.getAll()
             }
 
             val keyword = config_search_box.text.toString()

@@ -73,7 +73,7 @@
             android:title="@string/menu_img" />
         <item
             android:id="@+id/nav_additional"
-            android:icon="@drawable/ic_menu_vboot"
+            android:icon="@drawable/ic_menu_vtools"
             android:title="@string/menu_additional" />
         <item
             android:id="@+id/nav_xposed"

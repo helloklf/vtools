@@ -33,9 +33,9 @@ class ActivityAccessibilitySettings : AppCompatActivity() {
         home_hide_in_recents.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, false)
 
         val serviceState = AccessibleServiceHelper().serviceIsRunning(this)
-        vbootserviceSettings!!.visibility = if (serviceState) View.VISIBLE else View.GONE
+        vtoolsserviceSettings!!.visibility = if (serviceState) View.VISIBLE else View.GONE
 
-        vbootservice_state.text = if (serviceState) getString(R.string.accessibility_running) else getString(R.string.accessibility_stoped)
+        vtoolsservice_state.text = if (serviceState) getString(R.string.accessibility_running) else getString(R.string.accessibility_stoped)
 
         settings_autoinstall.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false)
         settings_dynamic.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
@@ -77,7 +77,7 @@ class ActivityAccessibilitySettings : AppCompatActivity() {
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false).commit()
         }
 
-        vbootservice_state.setOnClickListener {
+        vtoolsservice_state.setOnClickListener {
             if (AccessibleServiceHelper().serviceIsRunning(this)) {
                 try {
                     val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
@@ -107,8 +107,8 @@ class ActivityAccessibilitySettings : AppCompatActivity() {
                     myHandler.post {
                         dialog.hideDialog()
                         val serviceState = AccessibleServiceHelper().serviceIsRunning(this)
-                        vbootserviceSettings!!.visibility = if (serviceState) View.VISIBLE else View.GONE
-                        vbootservice_state.text = if (serviceState) this.getString(R.string.accessibility_running) else this.getString(R.string.accessibility_stoped)
+                        vtoolsserviceSettings!!.visibility = if (serviceState) View.VISIBLE else View.GONE
+                        vtoolsservice_state.text = if (serviceState) this.getString(R.string.accessibility_running) else this.getString(R.string.accessibility_stoped)
                     }
                 }
             }).start()

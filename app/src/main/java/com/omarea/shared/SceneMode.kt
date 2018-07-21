@@ -63,10 +63,18 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
             } else if (l < 1) {
                 l = 1
             }
-            Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, 0)
-            contentResolver.notifyChange(Settings.System.getUriFor("screen_brightness_mode"), null)
-            Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, l)
-            contentResolver.notifyChange(Settings.System.getUriFor("screen_brightness"), null)
+            if (Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, 0)) {
+                contentResolver.notifyChange(Settings.System.getUriFor(Settings.System.SCREEN_BRIGHTNESS_MODE), null)
+            } else {
+                Log.e("screen_brightness", "修改亮度失败！")
+                return false
+            }
+            if (Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, l)) {
+                contentResolver.notifyChange(Settings.System.getUriFor(Settings.System.SCREEN_BRIGHTNESS), null)
+            } else {
+                Log.e("screen_brightness", "修改亮度失败！")
+                return false
+            }
         } catch (ex: Exception) {
             return false
         }
@@ -125,6 +133,20 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
         }
     }
 
+    private var locationMode = -1
+    private fun backupLocationModeState () {
+        if (locationMode > -1) {
+            locationMode = Settings.Secure.getInt(contentResolver, Settings.Secure.LOCATION_MODE)
+        }
+    }
+
+    private fun restoreLocationModeState () {
+        if (locationMode > -1) {
+            Settings.Secure.putInt(contentResolver, Settings.Secure.LOCATION_MODE, locationMode)
+            locationMode = -1
+        }
+    }
+
     /**
      * 前台应用切换
      */
@@ -149,6 +171,17 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
                 resumeState()
                 mode = -1
             }
+
+            if (config!!.gpsOn) {
+                val mode = Settings.Secure.getInt(contentResolver, Settings.Secure.LOCATION_MODE)
+                backupLocationModeState()
+                if (mode != Settings.Secure.LOCATION_MODE_HIGH_ACCURACY) {
+                    Settings.Secure.putInt(contentResolver, Settings.Secure.LOCATION_MODE, Settings.Secure.LOCATION_MODE_HIGH_ACCURACY)
+                }
+            } else {
+                restoreLocationModeState()
+            }
+
             lastAppPackageName = packageName
         } catch (ex: Exception) {
             Log.e("onFocusdAppChange", ex.message)
