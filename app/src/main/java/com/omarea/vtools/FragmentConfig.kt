@@ -1,6 +1,7 @@
 package com.omarea.vtools
 
 import android.annotation.SuppressLint
+import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -50,7 +51,6 @@ class FragmentConfig : Fragment() {
 
         val serviceState = AccessibleServiceHelper().serviceIsRunning(context!!)
         btn_config_service_not_active.visibility = if (serviceState) View.GONE else View.VISIBLE
-        btn_config_dynamicservice_not_active.visibility = if (!context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)) View.VISIBLE else View.GONE
     }
 
     @SuppressLint("CommitPrefEdits", "ApplySharedPref")
@@ -93,10 +93,6 @@ class FragmentConfig : Fragment() {
                 }
             }).start()
         }
-        btn_config_dynamicservice_not_active.setOnClickListener {
-            val intent = Intent(context, ActivityAccessibilitySettings::class.java)
-            startActivity(intent)
-        }
 
         configlist_tabhost.setup()
 
@@ -116,9 +112,10 @@ class FragmentConfig : Fragment() {
         //TODO:
         config_defaultlist.setOnItemClickListener { parent, _, position, id ->
             try {
+                val item = (parent.adapter.getItem(position) as Appinfo)
                 val intent = Intent(this.context, AppDetailsActivity::class.java)
-                intent.putExtra("app", (parent.adapter.getItem(position) as Appinfo).packageName)
-                startActivity(intent)
+                intent.putExtra("app", item.packageName)
+                startActivityForResult(intent, 0)
             } catch (ex: Exception) {
             }
         }
@@ -173,6 +170,14 @@ class FragmentConfig : Fragment() {
         bindSPF(auto_switch_network_off_gps, spfAutoConfig, SpfConfig.GPS + SpfConfig.OFF, false)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 0) {
+            if (resultCode == RESULT_OK) {
+                loadList(false)
+            }
+        }
+    }
 
     @SuppressLint("ApplySharedPref")
     private fun bindSPF(checkBox: Switch, spf: SharedPreferences, prop: String, defValue: Boolean = false) {

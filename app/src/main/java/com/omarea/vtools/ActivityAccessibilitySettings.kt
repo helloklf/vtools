@@ -38,7 +38,6 @@ class ActivityAccessibilitySettings : AppCompatActivity() {
         vtoolsservice_state.text = if (serviceState) getString(R.string.accessibility_running) else getString(R.string.accessibility_stoped)
 
         settings_autoinstall.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false)
-        settings_dynamic.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
         settings_debugmode.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
         settings_delaystart.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DELAY, false)
         accessbility_notify.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true)
@@ -70,12 +69,6 @@ class ActivityAccessibilitySettings : AppCompatActivity() {
         })
 
         spf = this.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-
-        if (!Platform().dynamicSupport(this) && !File(Consts.POWER_CFG_PATH).exists()) {
-            settings_dynamic.isEnabled = false
-            settings_dynamic.isChecked = false
-            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false).commit()
-        }
 
         vtoolsservice_state.setOnClickListener {
             if (AccessibleServiceHelper().serviceIsRunning(this)) {
@@ -122,9 +115,6 @@ class ActivityAccessibilitySettings : AppCompatActivity() {
         })
         settings_autoinstall.setOnCheckedChangeListener({ _, checked ->
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_INSTALL, checked).commit()
-        })
-        settings_dynamic.setOnCheckedChangeListener({ _, checked ->
-            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, checked).commit()
         })
         accessbility_notify.setOnCheckedChangeListener({ _, checked ->
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, checked).commit()

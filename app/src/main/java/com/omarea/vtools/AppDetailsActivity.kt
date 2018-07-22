@@ -7,19 +7,21 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
+import android.view.KeyEvent
 import android.widget.CheckBox
 import android.widget.SeekBar
 import android.widget.Switch
 import android.widget.Toast
-import com.omarea.shared.AppConfigStore
-import com.omarea.shared.ModeList
-import com.omarea.shared.PolicyControl
-import com.omarea.shared.SpfConfig
+import com.omarea.shared.*
 import com.omarea.shell.KeepShellSync
+import com.omarea.shell.NoticeListing
+import com.omarea.shell.Platform
+import com.omarea.shell.WriteSettings
 import kotlinx.android.synthetic.main.activity_app_details.*
 import java.io.File
 import java.util.*
@@ -29,6 +31,8 @@ class AppDetailsActivity : AppCompatActivity() {
     var app = ""
     lateinit var policyControl: PolicyControl
     lateinit var appConfigInfo: AppConfigStore.AppConfigInfo
+    private var dynamicCpu: Boolean = false
+    private var _result = RESULT_CANCELED
 
     @SuppressLint("ApplySharedPref")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +49,13 @@ class AppDetailsActivity : AppCompatActivity() {
         app = this.intent.extras.getString("app")
         policyControl = PolicyControl(contentResolver)
 
+        dynamicCpu = (Platform().dynamicSupport(this) || File(Consts.POWER_CFG_PATH).exists())
+
         app_details_dynamic.setOnClickListener {
+            if (!dynamicCpu) {
+                Snackbar.make(it, "未安装模式配置脚本，无法使用动态响应！", Snackbar.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             val modeList = ModeList(this)
             val powercfg = getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
             val currentMode = powercfg.getString(app, getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, modeList.BALANCE))
@@ -75,6 +85,7 @@ class AppDetailsActivity : AppCompatActivity() {
                             }
                             powercfg.edit().putString(app, modeName).commit()
                             app_details_dynamic.text = modeList.getModName(modeName)
+                            _result = RESULT_OK
                         }
                     })
                     .setNegativeButton(R.string.btn_cancel, DialogInterface.OnClickListener { dialog, which -> })
@@ -124,6 +135,12 @@ class AppDetailsActivity : AppCompatActivity() {
         //immersive.preconfirms=*
 
         app_details_hidenav.setOnClickListener {
+            if (!WriteSettings().getPermission(this)) {
+                WriteSettings().setPermission(this)
+                Toast.makeText(this, "请先授权允许工具箱“修改系统设置”！", Toast.LENGTH_SHORT).show()
+                (it as Switch).isChecked = !(it as Switch).isChecked
+                return@setOnClickListener
+            }
             val isSelected = (it as Switch).isChecked
             if (isSelected && app_details_hidestatus.isChecked) {
                 policyControl.hideAll(app)
@@ -134,6 +151,12 @@ class AppDetailsActivity : AppCompatActivity() {
             }
         }
         app_details_hidestatus.setOnClickListener {
+            if (!WriteSettings().getPermission(this)) {
+                WriteSettings().setPermission(this)
+                Toast.makeText(this, "请先授权允许工具箱“修改系统设置”！", Toast.LENGTH_SHORT).show()
+                (it as Switch).isChecked = !(it as Switch).isChecked
+                return@setOnClickListener
+            }
             val isSelected = (it as Switch).isChecked
             if (isSelected && app_details_hidenav.isChecked) {
                 policyControl.hideAll(app)
@@ -165,13 +188,29 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_hidebtn.setOnClickListener {
             appConfigInfo.disButton = (it as Switch).isChecked
         }
-        app_details_hidenotice.setOnClickListener {
-            appConfigInfo.disNotice = (it as Switch).isChecked
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
+            app_details_hidebtn.isEnabled = false
+        } else {
+            app_details_hidebtn.setOnClickListener {
+                if (!NoticeListing().getPermission(this)) {
+                    NoticeListing().setPermission(this)
+                    Toast.makeText(this, "请先授权允许工具箱“通知使用权限”！", Toast.LENGTH_SHORT).show()
+                    (it as Switch).isChecked = !it.isChecked
+                    return@setOnClickListener
+                }
+                appConfigInfo.disNotice = (it as Switch).isChecked
+            }
         }
         app_details_disbackground.setOnClickListener {
             appConfigInfo.disBackgroundRun = (it as Switch).isChecked
         }
         app_details_aloowlight.setOnClickListener {
+            if (!WriteSettings().getPermission(this)) {
+                WriteSettings().setPermission(this)
+                Toast.makeText(this, "请先授权允许工具箱“修改系统设置”！", Toast.LENGTH_SHORT).show()
+                (it as CheckBox).isChecked = false
+                return@setOnClickListener
+            }
             appConfigInfo.aloneLight = (it as CheckBox).isChecked
         }
         app_details_light.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -299,6 +338,8 @@ class AppDetailsActivity : AppCompatActivity() {
         val powercfg = getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         val spfGlobal = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
+        dynamicCpu = (Platform().dynamicSupport(this) || File(Consts.POWER_CFG_PATH).exists())
+
         val packageInfo = packageManager.getPackageInfo(app, 0)
         val applicationInfo = packageInfo.applicationInfo
         app_details_name.text = applicationInfo.loadLabel(packageManager)
@@ -373,16 +414,38 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_gps.isChecked = appConfigInfo.gpsOn
     }
 
-    override fun onDestroy() {
-        if (AppConfigStore(this).setAppConfig(appConfigInfo)) {
-        } else {
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            val originConfig = AppConfigStore(this).getAppConfig(appConfigInfo.packageName)
+            if (
+                    appConfigInfo.aloneLight != originConfig.aloneLight ||
+                    appConfigInfo.aloneLightValue != originConfig.aloneLightValue ||
+                    appConfigInfo.disNotice != originConfig.disNotice ||
+                    appConfigInfo.disButton != originConfig.disButton ||
+                    appConfigInfo.disBackgroundRun != originConfig.disBackgroundRun ||
+                    appConfigInfo.gpsOn != originConfig.gpsOn ||
+                    appConfigInfo.dpi != originConfig.dpi ||
+                    appConfigInfo.excludeRecent != originConfig.excludeRecent ||
+                    appConfigInfo.smoothScroll != originConfig.smoothScroll
+            ) {
+                setResult(RESULT_OK, this.intent)
+            } else {
+                setResult(_result, this.intent)
+            }
+            this.finishAndRemoveTask()
+        }
+        return true
+    }
+
+    override fun finish() {
+        if (!AppConfigStore(this).setAppConfig(appConfigInfo)) {
             Toast.makeText(this, getString(R.string.config_save_fail), Toast.LENGTH_LONG).show()
         }
-        super.onDestroy()
+        super.finish()
     }
 
     override fun onPause() {
         super.onPause()
-        finish()
+        finishAndRemoveTask()
     }
 }

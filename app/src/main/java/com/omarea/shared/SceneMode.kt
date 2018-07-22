@@ -155,6 +155,20 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
             if (lastAppPackageName == packageName) {
                 return
             }
+            if (config != null) {
+                try {
+                    if (config!!.aloneLight && config!!.aloneLightValue > 0) {
+                        val currentConfig = store.getAppConfig(config!!.packageName)
+                        val sb = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS)
+                        if (currentConfig.aloneLightValue != sb){
+                            currentConfig.aloneLightValue = sb
+                        }
+                        store.setAppConfig(currentConfig)
+                    }
+                } catch (ex: Exception) {
+
+                }
+            }
             config = store.getAppConfig(packageName)
             autoBoosterApp(lastAppPackageName)
             if (config == null)

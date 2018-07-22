@@ -56,7 +56,14 @@ class Busybox(private var context: Context) {
 
                                 KeepShellSync.doCmdSync(cmd.toString())
                                 if (!busyboxInstalled()) {
-                                    Toast.makeText(context, "已尝试自动安装Busybox但依然不可用，也许System分区没被解锁。因此，部分功能可能无法使用！", Toast.LENGTH_LONG).show()
+                                    AlertDialog.Builder(context)
+                                            .setTitle("安装Busybox失败")
+                                            .setMessage("已尝试自动安装Busybox，但它依然不可用。也许System分区没被解锁。因此，部分功能可能无法使用！")
+                                            .setPositiveButton(R.string.btn_confirm, {
+                                                _,_ ->
+                                            })
+                                            .create()
+                                            .show()
                                 }
                                 next?.run()
                             }

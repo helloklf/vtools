@@ -16,7 +16,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.github.mikephil.charting.data.PieEntry
 import com.omarea.shared.*
 import com.omarea.shell.Files
 import com.omarea.shell.KeepShellSync
@@ -24,7 +23,6 @@ import com.omarea.shell.Platform
 import com.omarea.shell.Props
 import kotlinx.android.synthetic.main.layout_home.*
 import java.io.File
-import java.util.*
 
 
 class FragmentHome : Fragment() {
@@ -71,7 +69,8 @@ class FragmentHome : Fragment() {
         home_clear_ram.setOnClickListener {
             home_raminfo_text.text = "稍等一下"
             Thread(Runnable {
-                KeepShellSync.doCmdSync("echo 3 > /proc/sys/vm/drop_caches")
+                KeepShellSync.doCmdSync("sync\n" +
+                        "echo 3 > /proc/sys/vm/drop_caches")
                 myHandler.postDelayed({
                     val activityManager = context!!.getSystemService(ACTIVITY_SERVICE) as ActivityManager
                     val info = ActivityManager.MemoryInfo()
@@ -127,15 +126,6 @@ class FragmentHome : Fragment() {
     }
 
     private fun installConfig(action: String, message: String) {
-        if (spf.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false) && AccessibleServiceHelper().serviceIsRunning(this.context!!)) {
-            AlertDialog.Builder(context)
-                    .setTitle("")
-                    .setMessage("检测到你已经开启“动态响应”，微工具箱将根据你的前台应用，自动调整CPU、GPU性能。\n如果你要更改全局性能，请先关闭“动态响应”！")
-                    .setPositiveButton(R.string.btn_confirm, DialogInterface.OnClickListener { dialog, which ->
-                    })
-                    .show()
-                    .create()
-        }
         if (File(Consts.POWER_CFG_PATH).exists()) {
             modeList.executePowercfgModeOnce(action, context!!.packageName)
         } else {

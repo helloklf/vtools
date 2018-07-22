@@ -15,6 +15,7 @@ import com.omarea.shared.helper.ReciverLock
 import com.omarea.shared.helper.ScreenEventHandler
 import com.omarea.shell.DumpTopAppliction
 import com.omarea.shell.KeepShell
+import com.omarea.shell.Platform
 import java.io.File
 import java.util.*
 
@@ -38,7 +39,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             "com.miui.touchassistant",
             "com.miui.contentextension",
             "com.miui.systemAdSolution")
-    private var dyamicCore = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)
+    private var dyamicCore = (Platform().dynamicSupport(context) || File(Consts.POWER_CFG_PATH).exists())
     private var debugMode = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
     private var firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
     private var accuSwitch: Boolean = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)

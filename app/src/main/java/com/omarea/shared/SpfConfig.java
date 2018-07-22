@@ -27,7 +27,6 @@ public class SpfConfig {
     public static String GLOBAL_SPF_AUTO_INSTALL = "is_auto_install";
     public static String GLOBAL_SPF_DISABLE_ENFORCE = "enforce_0";
     public static String GLOBAL_SPF_DISABLE_ENFORCE_CHECKING = "enforce_checking";
-    public static String GLOBAL_SPF_DYNAMIC_CPU = "is_dynamic_cpu";
     public static String GLOBAL_SPF_DEBUG = "is_debug";
     public static String GLOBAL_SPF_START_DELAY = "start_delay";
     public static String GLOBAL_SPF_DELAY = "is_delay_start";
@@ -37,7 +36,6 @@ public class SpfConfig {
     public static String GLOBAL_SPF_MAC = "wifi_mac";
     public static String GLOBAL_SPF_MAC_AUTOCHANGE = "wifi_mac_autochange";
     public static String GLOBAL_SPF_DOZELIST_AUTOSET = "doze_whitelist_auto_resume";
-    public static String GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE = "power_config_screen_omtimize";
     public static String GLOBAL_SPF_ACCU_SWITCH = "power_config_accu_switch";
     public static String GLOBAL_SPF_BATTERY_MONITORY = "power_config_battery_monitor";
     public static String GLOBAL_SPF_POWERCFG_FIRST_MODE = "powercfg_first_mode";

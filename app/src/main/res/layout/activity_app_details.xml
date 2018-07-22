@@ -430,7 +430,7 @@
                     <TextView
                         android:padding="10dp"
                         style="@style/textTitle"
-                        android:text="高级设定（需要Xposed）"
+                        android:text="高级设定（敬请期待）"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" />
                     <LinearLayout
