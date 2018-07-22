@@ -4,7 +4,7 @@ import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.Context
 import android.view.accessibility.AccessibilityManager
 import com.omarea.shell.units.AccessibilityServiceStart
-import com.omarea.vtools.AccessibilityServiceVTools
+import com.omarea.vtools.AccessibilityServiceScence
 
 /**
  * Created by Hello on 2018/06/03.
@@ -13,7 +13,7 @@ import com.omarea.vtools.AccessibilityServiceVTools
 class AccessibleServiceHelper {
     //判断服务是否激活
     fun serviceIsRunning(context: Context): Boolean {
-        return serviceIsRunning(context, "AccessibilityServiceVTools")
+        return serviceIsRunning(context, "AccessibilityServiceScence")
     }
 
     fun serviceIsRunning(context: Context, serviceName: String): Boolean {
@@ -28,6 +28,6 @@ class AccessibleServiceHelper {
     }
 
     fun startServiceUseRoot(context: Context): Boolean {
-        return AccessibilityServiceStart().strartService(context, "${context.packageName}/${AccessibilityServiceVTools::class.java.name}")
+        return AccessibilityServiceStart().strartService(context, "${context.packageName}/${AccessibilityServiceScence::class.java.name}")
     }
 }

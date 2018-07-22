@@ -51,7 +51,7 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
 
             }
         }
-        val serviceState = AccessibleServiceHelper().serviceIsRunning(this, "AccessibilityServiceVToolsKeyEvent")
+        val serviceState = AccessibleServiceHelper().serviceIsRunning(this, "AccessibilityServiceSceneKeyEvent")
         // key_event_state!!.visibility = if (serviceState) View.VISIBLE else View.GONE
 
         key_event_state.text = if (serviceState) getString(R.string.accessibility_running) else getString(R.string.accessibility_stoped)

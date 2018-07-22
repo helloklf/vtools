@@ -46,7 +46,7 @@
             android:value="2.4" />
 
         <service
-            android:name=".AccessibilityServiceVTools"
+            android:name=".AccessibilityServiceScence"
             android:label="Scene-增强服务"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
@@ -69,7 +69,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".AccessibilityServiceVToolsKeyEvent"
+            android:name=".AccessibilityServiceSceneKeyEvent"
             android:label="Scene-按键辅助"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>

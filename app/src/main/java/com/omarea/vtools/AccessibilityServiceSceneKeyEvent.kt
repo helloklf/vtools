@@ -15,7 +15,7 @@ import com.omarea.shared.SpfConfig
 /**
  * Created by helloklf on 2016/8/27.
  */
-class AccessibilityServiceVToolsKeyEvent : AccessibilityService() {
+class AccessibilityServiceSceneKeyEvent : AccessibilityService() {
     override fun onInterrupt() {
         //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }

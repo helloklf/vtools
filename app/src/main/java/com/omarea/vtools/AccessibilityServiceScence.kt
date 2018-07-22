@@ -22,7 +22,7 @@ import com.omarea.shared.ServiceHelper
 /**
  * Created by helloklf on 2016/8/27.
  */
-class AccessibilityServiceVTools : AccessibilityService() {
+class AccessibilityServiceScence : AccessibilityService() {
 
     /*
 override fun onCreate() {
