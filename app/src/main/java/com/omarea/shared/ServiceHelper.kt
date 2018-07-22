@@ -455,7 +455,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
                     lastActivity = item.trim()
             }
             if (lastActivity.contains(packageName)) {
-                cancelDump(packageName)
+                dumpTopActivitySuccess(packageName)
             } else {
                 // showMsg("精准切换 - ${packageName}并非前台应用但企图占据焦点，已自动添加到临时黑名单！")
                 // ignoredList.add(packageName)
@@ -466,7 +466,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
                 if (lastActivity.indexOf("/") > 8 && lastActivity.startsWith("ACTIVITY")) {
                     val dumpPackageName = lastActivity.substring(8, lastActivity.indexOf("/")).trim()
                     Log.d("dumpsysTopActivity", "dumpPackageName $dumpPackageName，active app $packageName")
-                    cancelDump(dumpPackageName)
+                    dumpTopActivitySuccess(dumpPackageName)
                 } else {
                     Log.e("dumpsysTopActivity", "lastActivity $lastActivity")
                 }
@@ -474,9 +474,10 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         }
     }
 
-    private fun cancelDump(packageName: String) {
+    private fun dumpTopActivitySuccess(packageName: String) {
         autoBoosterApp(packageName)
         autoToggleMode(packageName)
+        lastPackage = packageName
     }
 
     //焦点应用改变
