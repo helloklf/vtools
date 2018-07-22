@@ -357,6 +357,7 @@ class FragmentConfig : Fragment() {
         if (configInfo.smoothScroll) {
             desc.append("滚动优化  ")
         }
+        item.desc = desc.toString()
     }
 
     //检查配置文件是否已经安装
