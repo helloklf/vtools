@@ -102,24 +102,21 @@
                     android:background="@color/color_powersave"
                     android:text="省电"
                     android:textColor="@android:color/white"
-                    android:textSize="15dp"
-                    tools:ignore="ButtonStyle" />
+                    android:textSize="15dp" />
 
                 <Button
                     android:id="@+id/btn_defaultmode"
                     android:layout_marginLeft="4dp"
                     android:background="@color/color_balance"
                     android:text="均衡"
-                    android:textColor="@android:color/white"
-                    tools:ignore="ButtonStyle" />
+                    android:textColor="@android:color/white" />
 
                 <Button
                     android:id="@+id/btn_gamemode"
                     android:layout_marginLeft="4dp"
                     android:background="@color/color_perf"
                     android:text="性能"
-                    android:textColor="@android:color/white"
-                    tools:ignore="ButtonStyle" />
+                    android:textColor="@android:color/white" />
 
                 <Button
                     android:id="@+id/btn_fastmode"
@@ -127,8 +124,7 @@
                     android:layout_marginRight="4dp"
                     android:background="@color/color_fast"
                     android:text="极速"
-                    android:textColor="@android:color/white"
-                    tools:ignore="ButtonStyle" />
+                    android:textColor="@android:color/white" />
             </TableRow>
         </TableLayout>
     </LinearLayout>
