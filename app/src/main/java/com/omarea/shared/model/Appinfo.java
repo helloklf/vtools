@@ -10,10 +10,6 @@ import com.omarea.shared.AppConfigStore;
  */
 
 public class Appinfo {
-    public static Appinfo getItem() {
-        return new Appinfo();
-    }
-
     public CharSequence appName = "";
     public CharSequence packageName = "";
     public Drawable icon = null;
@@ -28,6 +24,10 @@ public class Appinfo {
     public AppType appType = AppType.UNKNOW;
     public AppConfigStore.AppConfigInfo appConfigInfo;
     public CharSequence desc;
+
+    public static Appinfo getItem() {
+        return new Appinfo();
+    }
 
     public enum AppType {
         UNKNOW,

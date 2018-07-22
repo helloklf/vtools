@@ -3,105 +3,115 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:gravity="center"
-    android:fitsSystemWindows="true"
     android:background="#50000000"
+    android:fitsSystemWindows="true"
+    android:gravity="center"
     android:orientation="vertical">
 
     <android.support.v7.widget.CardView
-        android:layout_margin="6dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp">
+
         <RelativeLayout
             android:id="@+id/popup_window"
             android:layout_width="280dp"
             android:layout_height="220dp"
-            android:orientation="vertical" >
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/fw_title"
+                style="@style/textTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="left"
-                android:text="@string/app_name"
+                android:lines="1"
+                android:paddingBottom="16dp"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:paddingTop="20dp"
-                android:paddingBottom="16dp"
-                android:lines="1"
-                style="@style/textTitle" />
+                android:text="@string/app_name" />
+
             <LinearLayout
-                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/fw_title"
                 android:layout_marginLeft="25dp"
                 android:layout_marginRight="25dp"
-                android:layout_below="@id/fw_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:orientation="vertical">
+
                 <LinearLayout
-                    android:layout_marginBottom="5dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp">
+
                     <TextView
-                        style="@style/textTitle"
                         android:id="@+id/btn_powersave"
-                        android:background="#448888cc"
-                        android:layout_marginRight="5dp"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:textAlignment="center"
-                        android:text="@string/powersave"
-                        android:layout_weight="1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                    <TextView
                         style="@style/textTitle"
-                        android:id="@+id/btn_defaultmode"
-                        android:background="#4488cc88"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:textAlignment="center"
-                        android:text="@string/balance"
-                        android:layout_weight="1"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="#448888cc"
+                        android:paddingBottom="10dp"
+                        android:paddingTop="10dp"
+                        android:text="@string/powersave"
+                        android:textAlignment="center" />
+
+                    <TextView
+                        android:id="@+id/btn_defaultmode"
+                        style="@style/textTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="#4488cc88"
+                        android:paddingBottom="10dp"
+                        android:paddingTop="10dp"
+                        android:text="@string/balance"
+                        android:textAlignment="center" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+
                     <TextView
-                        style="@style/textTitle"
                         android:id="@+id/btn_gamemode"
-                        android:background="#44cccc88"
-                        android:layout_marginRight="5dp"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:textAlignment="center"
-                        android:text="@string/performance"
-                        android:layout_weight="1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                    <TextView
                         style="@style/textTitle"
-                        android:id="@+id/btn_fastmode"
-                        android:background="#44cc8888"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:textAlignment="center"
-                        android:text="@string/fast"
-                        android:layout_weight="1"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
+                        android:layout_weight="1"
+                        android:background="#44cccc88"
+                        android:paddingBottom="10dp"
+                        android:paddingTop="10dp"
+                        android:text="@string/performance"
+                        android:textAlignment="center" />
+
+                    <TextView
+                        android:id="@+id/btn_fastmode"
+                        style="@style/textTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="#44cc8888"
+                        android:paddingBottom="10dp"
+                        android:paddingTop="10dp"
+                        android:text="@string/fast"
+                        android:textAlignment="center" />
                 </LinearLayout>
+
                 <CheckBox
                     android:id="@+id/save_config"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_marginTop="5dp"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
-                    android:layout_marginTop="5dp"
-                    android:text="保存(动态响应)"
-                    android:layout_gravity="end"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:text="保存(动态响应)" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -109,18 +119,18 @@
                 android:orientation="horizontal"
                 android:paddingBottom="6dp"
                 android:paddingLeft="6dp"
-                android:paddingRight="6dp" >
+                android:paddingRight="6dp">
 
                 <Button
-                    android:textColor="@color/colorAccent"
-                    android:background="@android:color/transparent"
                     android:id="@+id/negativeBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="35dp"
                     android:layout_weight="1"
+                    android:background="@android:color/transparent"
                     android:focusable="true"
                     android:padding="6dp"
-                    android:text="@string/btn_cancel" />
+                    android:text="@string/btn_cancel"
+                    android:textColor="@color/colorAccent" />
 
                 <Button
                     android:id="@+id/positiveBtn"
@@ -128,11 +138,11 @@
                     android:layout_height="35dp"
                     android:layout_marginLeft="18dp"
                     android:layout_weight="1"
+                    android:background="@android:color/transparent"
                     android:focusable="true"
                     android:padding="6dp"
                     android:text="@string/btn_confirm"
                     android:textColor="@color/colorAccent"
-                    android:background="@android:color/transparent"
                     android:textSize="12dp" />
             </LinearLayout>
         </RelativeLayout>

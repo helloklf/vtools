@@ -41,14 +41,6 @@ public class RamChatView extends View {
     private int mHeight;
     private int mWidth;
 
-    /**
-     * dp转换成px
-     */
-    private int dp2px(Context context, float dpValue) {
-        float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (dpValue * scale + 0.5f);
-    }
-
     public RamChatView(Context context) {
         super(context);
     }
@@ -71,6 +63,14 @@ public class RamChatView extends View {
         int feeRatio = (int) (fee * 100.0 / total);
         strPercent = new int[]{100 - feeRatio, feeRatio};
         array.recycle();
+    }
+
+    /**
+     * dp转换成px
+     */
+    private int dp2px(Context context, float dpValue) {
+        float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
     }
 
     @Override

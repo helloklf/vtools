@@ -1,61 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.omarea.vtools.FragmentHome">
 
     <LinearLayout
-        android:paddingBottom="70dp"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="70dp">
+
         <FrameLayout
-            android:layout_marginTop="56dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="fill_vertical"
             android:layout_marginBottom="56dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
-            android:layout_gravity="fill_vertical"
-            android:layout_width="match_parent"
-            android:layout_height="0dp" android:layout_weight="1">
+            android:layout_marginTop="56dp"
+            android:layout_weight="1">
+
             <com.omarea.ui.RamChatView
                 android:id="@+id/home_raminfo"
-                app:total="8192"
-                app:free="3323"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent"
+                app:free="3323"
+                app:total="8192" />
+
             <LinearLayout
                 android:id="@+id/home_clear_ram"
-                android:layout_gravity="center"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
                 <TextView
-                    android:textStyle="bold"
-                    android:textSize="60dp"
-                    android:text="RAM"
-                    android:layout_gravity="center"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="RAM"
+                    android:textSize="60dp"
+                    android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/home_raminfo_text"
-                    android:textStyle="bold"
-                    android:textSize="18dp"
-                    android:text="0 / 0MB"
-                    android:layout_gravity="center"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="0 / 0MB"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
             </LinearLayout>
         </FrameLayout>
+
         <TableLayout
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:showDividers="beginning"
             android:shrinkColumns="0,1,2"
             android:stretchColumns="0,1,2,3">
+
             <TableRow android:layout_marginTop="5dp">
 
                 <TextView
@@ -88,37 +97,37 @@
                 android:visibility="visible">
 
                 <Button
-                    android:textSize="15dp"
-                    android:textColor="@android:color/white"
                     android:id="@+id/btn_powersave"
                     android:layout_marginLeft="4dp"
                     android:background="@color/color_powersave"
                     android:text="省电"
+                    android:textColor="@android:color/white"
+                    android:textSize="15dp"
                     tools:ignore="ButtonStyle" />
 
                 <Button
-                    android:textColor="@android:color/white"
                     android:id="@+id/btn_defaultmode"
                     android:layout_marginLeft="4dp"
                     android:background="@color/color_balance"
                     android:text="均衡"
+                    android:textColor="@android:color/white"
                     tools:ignore="ButtonStyle" />
 
                 <Button
-                    android:textColor="@android:color/white"
                     android:id="@+id/btn_gamemode"
                     android:layout_marginLeft="4dp"
                     android:background="@color/color_perf"
                     android:text="性能"
+                    android:textColor="@android:color/white"
                     tools:ignore="ButtonStyle" />
 
                 <Button
-                    android:textColor="@android:color/white"
                     android:id="@+id/btn_fastmode"
                     android:layout_marginLeft="4dp"
                     android:layout_marginRight="4dp"
                     android:background="@color/color_fast"
                     android:text="极速"
+                    android:textColor="@android:color/white"
                     tools:ignore="ButtonStyle" />
             </TableRow>
         </TableLayout>

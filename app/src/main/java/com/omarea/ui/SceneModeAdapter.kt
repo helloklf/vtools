@@ -119,7 +119,26 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
         } else {
             viewHolder = convertView.tag as ViewHolder
         }
+        updateRow(position, convertView)
+        return convertView
+    }
 
+    fun updateRow(position: Int, listView: OverScrollListView, appinfo: Appinfo) {
+        try {
+            val visibleFirstPosi = listView.firstVisiblePosition
+            val visibleLastPosi = listView.lastVisiblePosition
+
+            if (position >= visibleFirstPosi && position <= visibleLastPosi) {
+                list!![position] = appinfo
+                val view = listView.getChildAt(position - visibleFirstPosi)
+                updateRow(position, view)
+            }
+        } catch (ex: Exception) {
+
+        }
+    }
+
+    private fun updateRow(position: Int, convertView: View) {
         val item = getItem(position)
         viewHolder!!.itemTitle!!.text = keywordHightLight(item.appName.toString())
         viewHolder!!.itemText!!.text = keywordHightLight(item.packageName.toString())
@@ -161,7 +180,6 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
         if (viewHolder!!.itemDesc != null)
             viewHolder!!.itemDesc!!.text = item.desc
 
-        return convertView
     }
 
     inner class ViewHolder {

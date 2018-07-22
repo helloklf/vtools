@@ -1,585 +1,695 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTintMode="screen"
     android:clipToPadding="true"
     android:fitsSystemWindows="true"
     android:keepScreenOn="false"
-    android:backgroundTintMode="screen"
     tools:openDrawer="start">
 
     <com.omarea.ui.OverScrollView
-        android:paddingTop="66dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingTop="66dp">
+
         <LinearLayout
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
             <android.support.v7.widget.CardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:orientation="horizontal">
-                    <ImageView
-                        android:id="@+id/app_details_icon"
-                        android:src="@drawable/linux"
-                        android:layout_margin="10dp"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp" />
-                    <LinearLayout
-                        android:layout_weight="1"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:paddingRight="10dp"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content" android:orientation="vertical">
-                        <TextView
-                            android:id="@+id/app_details_name"
-                            android:text="@string/app_name"
-                            style="@style/textTitle"
-                            android:layout_marginBottom="5dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                        <TextView
-                            android:id="@+id/app_details_packagename"
-                            android:text="@string/app_name"
-                            style="@style/textSmall"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                        <TextView
-                            android:id="@+id/app_details_path"
-                            android:text="@string/app_name"
-                            style="@style/textSmall"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-                    <ImageView
-                        android:visibility="gone"
-                        android:background="#aaa"
-                        android:src="@drawable/settings"
-                        android:layout_margin="10dp"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp" />
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-            <android.support.v7.widget.CardView
-                android:layout_marginTop="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:orientation="vertical">
-                    <LinearLayout
-                        android:padding="10dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                        <TextView
-                            style="@style/textTitle"
-                            android:text="应用版本"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                        <TextView
-                            android:id="@+id/app_details_versionname"
-                            android:textAlignment="textEnd"
-                            android:layout_weight="1"
-                            android:text="v2.0.0"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-                    <LinearLayout
-                        android:padding="10dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                        <TextView
-                            style="@style/textTitle"
-                            android:text="版本号"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                        <TextView
-                            android:id="@+id/app_details_versioncode"
-                            android:textAlignment="textEnd"
-                            android:layout_weight="1"
-                            android:text=""
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-                    <LinearLayout
-                        android:padding="10dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                        <TextView
-                            style="@style/textTitle"
-                            android:text="安装时间"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                        <TextView
-                            android:id="@+id/app_details_time"
-                            android:textAlignment="textEnd"
-                            android:layout_weight="1"
-                            android:text=""
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-                    <LinearLayout
-                        android:padding="10dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                        <TextView
-                            style="@style/textTitle"
-                            android:text="应用大小"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                        <TextView
-                            android:id="@+id/app_details_size"
-                            android:textAlignment="textEnd"
-                            android:layout_weight="1"
-                            android:text=""
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                        <TextView
-                            style="@style/textTitle"
-                            android:layout_marginLeft="40dp"
-                            android:text="内存占用"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                        <TextView
-                            android:id="@+id/app_details_ram"
-                            android:textAlignment="textEnd"
-                            android:layout_weight="1"
-                            android:text=""
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-                    <LinearLayout
-                        android:visibility="gone"
-                        android:padding="10dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                        <TextView
-                            style="@style/textTitle"
-                            android:text="平均耗电"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                        <TextView
-                            android:id="@+id/app_details_battery"
-                            android:textAlignment="textEnd"
-                            android:layout_weight="1"
-                            android:text=""
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-            <android.support.v7.widget.CardView
-                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/app_details_icon"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_margin="10dp"
+                        android:src="@drawable/linux" />
+
                     <LinearLayout
-                        android:padding="10dp"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:paddingBottom="10dp"
+                        android:paddingRight="10dp"
+                        android:paddingTop="10dp">
+
+                        <TextView
+                            android:id="@+id/app_details_name"
+                            style="@style/textTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            android:text="@string/app_name" />
+
+                        <TextView
+                            android:id="@+id/app_details_packagename"
+                            style="@style/textSmall"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/app_name" />
+
+                        <TextView
+                            android:id="@+id/app_details_path"
+                            style="@style/textSmall"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/app_name" />
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_margin="10dp"
+                        android:background="#aaa"
+                        android:src="@drawable/settings"
+                        android:visibility="gone" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
                         <TextView
                             style="@style/textTitle"
-                            android:text="动态响应"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:text="应用版本" />
+
+                        <TextView
+                            android:id="@+id/app_details_versionname"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="v2.0.0"
+                            android:textAlignment="textEnd" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
+                        <TextView
+                            style="@style/textTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="版本号" />
+
+                        <TextView
+                            android:id="@+id/app_details_versioncode"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text=""
+                            android:textAlignment="textEnd" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
+                        <TextView
+                            style="@style/textTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="安装时间" />
+
+                        <TextView
+                            android:id="@+id/app_details_time"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text=""
+                            android:textAlignment="textEnd" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
+                        <TextView
+                            style="@style/textTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="应用大小" />
+
+                        <TextView
+                            android:id="@+id/app_details_size"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text=""
+                            android:textAlignment="textEnd" />
+
+                        <TextView
+                            style="@style/textTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="40dp"
+                            android:text="内存占用" />
+
+                        <TextView
+                            android:id="@+id/app_details_ram"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text=""
+                            android:textAlignment="textEnd" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:visibility="gone">
+
+                        <TextView
+                            style="@style/textTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="平均耗电" />
+
+                        <TextView
+                            android:id="@+id/app_details_battery"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text=""
+                            android:textAlignment="textEnd" />
+                    </LinearLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
+                        <TextView
+                            style="@style/textTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="动态响应" />
+
                         <TextView
                             android:id="@+id/app_details_dynamic"
-                            android:textAlignment="textEnd"
-                            android:layout_weight="1"
-                            android:paddingTop="5dp"
-                            android:paddingBottom="5dp"
-                            android:text="@string/powersave"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:paddingBottom="5dp"
+                            android:paddingTop="5dp"
+                            android:text="@string/powersave"
+                            android:textAlignment="textEnd" />
                     </LinearLayout>
+
                     <LinearLayout
-                        android:padding="10dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
                         <TextView
                             style="@style/textTitle"
-                            android:text="阻止后台"
-                            android:layout_weight="1"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="阻止后台" />
+
                         <Switch
                             android:id="@+id/app_details_disbackground"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
+
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" android:orientation="vertical">
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
                         <TextView
-                            android:padding="10dp"
                             style="@style/textTitle"
-                            android:text="屏幕亮度"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:text="屏幕亮度" />
+
                         <LinearLayout
-                            android:layout_marginBottom="10dp"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" android:orientation="horizontal">
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:orientation="horizontal">
+
                             <CheckBox
                                 android:id="@+id/app_details_aloowlight"
-                                android:layout_marginLeft="10dp"
-                                android:layout_gravity="center_vertical"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
-                            <SeekBar
-                                android:max="255"
-                                android:min="0"
+                                android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
-                                android:layout_weight="1"
+                                android:layout_marginLeft="10dp" />
+
+                            <SeekBar
                                 android:id="@+id/app_details_light"
-                                android:layout_marginRight="10dp"
                                 android:layout_width="0dp"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginRight="10dp"
+                                android:layout_weight="1"
+                                android:max="255"
+                                android:min="0" />
                         </LinearLayout>
                     </LinearLayout>
+
                     <TextView
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
+                        style="@style/textSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:paddingBottom="5dp"
-                        android:text="为了照顾部分（辣鸡）设备，亮度最低只能调到20"
-                        style="@style/textSmall"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                    <TextView
                         android:paddingLeft="16dp"
                         android:paddingRight="16dp"
-                        android:paddingBottom="10dp"
-                        android:text="为应用单独设置亮度，适合玩游戏或观看视频"
+                        android:text="为了照顾部分（辣鸡）设备，亮度最低只能调到20" />
+
+                    <TextView
                         style="@style/textSmall"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="10dp"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:text="为应用单独设置亮度，适合玩游戏或观看视频" />
+
                     <Switch
                         android:id="@+id/app_details_gps"
-                        android:paddingBottom="10dp"
                         style="@style/textTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="10dp"
                         android:paddingLeft="16dp"
                         android:paddingRight="16dp"
-                        android:text="自动打开GPS（离开后还原）"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:text="自动打开GPS（离开后还原）" />
                 </LinearLayout>
             </android.support.v7.widget.CardView>
+
             <android.support.v7.widget.CardView
-                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
+
                     <TextView
-                        android:padding="10dp"
                         style="@style/textTitle"
-                        android:text="特殊权限"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                    <LinearLayout
+                        android:layout_height="wrap_content"
                         android:padding="10dp"
+                        android:text="特殊权限" />
+
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
                         <TextView
-                            android:text="显示悬浮窗"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:text="显示悬浮窗" />
+
                         <Switch
                             android:id="@+id/app_details_floatwindow"
-                            android:textAlignment="textEnd"
-                            android:layout_weight="1"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textAlignment="textEnd" />
                     </LinearLayout>
+
                     <LinearLayout
-                        android:padding="10dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
                         <TextView
-                            android:text="获取应用使用记录"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:text="获取应用使用记录" />
+
                         <Switch
                             android:id="@+id/app_details_usagedata"
-                            android:textAlignment="textEnd"
-                            android:layout_weight="1"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textAlignment="textEnd" />
                     </LinearLayout>
+
                     <LinearLayout
-                        android:padding="10dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
                         <TextView
-                            android:text="修改系统安全设置"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:text="修改系统安全设置" />
+
                         <Switch
                             android:id="@+id/app_details_modifysettings"
-                            android:textAlignment="textEnd"
-                            android:layout_weight="1"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textAlignment="textEnd" />
                     </LinearLayout>
+
                     <LinearLayout
-                        android:padding="10dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
                         <TextView
-                            android:text="禁止Doze"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:text="禁止Doze" />
+
                         <Switch
-                            android:enabled="false"
                             android:id="@+id/app_details_disdoze"
-                            android:textAlignment="textEnd"
-                            android:layout_weight="1"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:enabled="false"
+                            android:textAlignment="textEnd" />
                     </LinearLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
+
             <android.support.v7.widget.CardView
-                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
                     <TextView
-                        android:padding="10dp"
                         style="@style/textTitle"
-                        android:text="专注模式"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                    <LinearLayout
+                        android:layout_height="wrap_content"
                         android:padding="10dp"
+                        android:text="专注模式" />
+
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
                         <Switch
                             android:id="@+id/app_details_hidenav"
-                            android:layout_weight="1"
-                            android:text="隐藏导航栏"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="隐藏导航栏" />
+
                         <Switch
                             android:id="@+id/app_details_hidestatus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_marginLeft="50dp"
                             android:layout_weight="1"
-                            android:text="隐藏状态栏"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:text="隐藏状态栏" />
                     </LinearLayout>
+
                     <LinearLayout
-                        android:padding="10dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
                         <Switch
                             android:id="@+id/app_details_hidenotice"
-                            android:layout_weight="1"
-                            android:text="屏蔽通知"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="屏蔽通知" />
+
                         <Switch
                             android:id="@+id/app_details_hidebtn"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_marginLeft="50dp"
                             android:layout_weight="1"
-                            android:text="屏蔽按键"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:text="屏蔽按键" />
                     </LinearLayout>
+
                     <TextView
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
+                        style="@style/textSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:paddingBottom="5dp"
-                        android:text="屏蔽通知时工具箱会自动清除新通知，可能错失消息？"
-                        style="@style/textSmall"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                    <TextView
                         android:paddingLeft="16dp"
                         android:paddingRight="16dp"
-                        android:paddingBottom="10dp"
-                        android:text="按键屏蔽状态下，将使用长按替代短按操作"
+                        android:text="屏蔽通知时工具箱会自动清除新通知，可能错失消息？" />
+
+                    <TextView
                         style="@style/textSmall"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="10dp"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:text="按键屏蔽状态下，将使用长按替代短按操作" />
                 </LinearLayout>
             </android.support.v7.widget.CardView>
+
             <android.support.v7.widget.CardView
-                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
                     <TextView
-                        android:padding="10dp"
                         style="@style/textTitle"
-                        android:text="高级设定（敬请期待）"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                    <LinearLayout
+                        android:layout_height="wrap_content"
                         android:padding="10dp"
+                        android:text="高级设定（敬请期待）" />
+
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
                         <TextView
-                            android:layout_weight="1"
-                            android:text="DPI"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="DPI" />
+
                         <TextView
                             android:id="@+id/app_details_dpi"
-                            android:text="默认"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:text="默认" />
                     </LinearLayout>
+
                     <LinearLayout
-                        android:padding="10dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
                         <TextView
-                            android:layout_weight="1"
-                            android:text="从后台列表隐藏"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="从后台列表隐藏" />
+
                         <Switch
                             android:id="@+id/app_details_excludetask"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
+
                     <LinearLayout
-                        android:padding="10dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
                         <TextView
-                            android:layout_weight="1"
-                            android:text="滚动优化"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="滚动优化" />
+
                         <Switch
                             android:id="@+id/app_details_scrollopt"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
+
                     <TextView
-                        android:paddingLeft="16dp"
-                        android:paddingRight="16dp"
-                        android:paddingBottom="10dp"
-                        android:text="由于Android N以后，系统对于共享数据变得管理更加严格，工具箱改变了Xposed数据提供方式\n应用启动时，需要通过工具箱的ContentProvider获取相关配置，因此务必允许工具箱后台自启动！"
                         style="@style/textSmall"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="10dp"
+                        android:paddingLeft="16dp"
+                        android:paddingRight="16dp"
+                        android:text="由于Android N以后，系统对于共享数据变得管理更加严格，工具箱改变了Xposed数据提供方式\n应用启动时，需要通过工具箱的ContentProvider获取相关配置，因此务必允许工具箱后台自启动！" />
                 </LinearLayout>
             </android.support.v7.widget.CardView>
             <!--王者荣耀-->
             <android.support.v7.widget.CardView
-                android:visibility="gone"
-                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:visibility="gone">
+
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
                     <TextView
-                        android:padding="10dp"
                         style="@style/textTitle"
-                        android:text="（王者荣耀）专属设置"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                    <LinearLayout
+                        android:layout_height="wrap_content"
                         android:padding="10dp"
+                        android:text="（王者荣耀）专属设置" />
+
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
                         <TextView
-                            android:layout_weight="1"
-                            android:text="多线程模式"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="多线程模式" />
+
                         <Switch
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
+
                     <LinearLayout
-                        android:padding="10dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
                         <TextView
-                            android:layout_weight="1"
-                            android:text="渲染方式"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="渲染方式" />
+
                         <TextView
-                            android:text="OpenglES3"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:text="OpenglES3" />
                     </LinearLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
             <!--QQ-->
             <android.support.v7.widget.CardView
-                android:visibility="gone"
-                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:visibility="gone">
+
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
                     <TextView
-                        android:padding="10dp"
                         style="@style/textTitle"
-                        android:text="（QQ）专属设置"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                    <LinearLayout
+                        android:layout_height="wrap_content"
                         android:padding="10dp"
+                        android:text="（QQ）专属设置" />
+
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
                         <TextView
-                            android:layout_weight="1"
-                            android:text="个性字体"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="个性字体" />
+
                         <Switch
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
+
                     <LinearLayout
-                        android:padding="10dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
                         <TextView
-                            android:layout_weight="1"
-                            android:text="头像挂件"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="头像挂件" />
+
                         <Switch
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
+
                     <LinearLayout
-                        android:padding="10dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
                         <TextView
-                            android:layout_weight="1"
-                            android:text="消息气泡"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="消息气泡" />
+
                         <Switch
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
@@ -588,54 +698,66 @@
             </android.support.v7.widget.CardView>
             <!--刺激战场-->
             <android.support.v7.widget.CardView
-                android:visibility="gone"
-                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:visibility="gone">
+
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
                     <TextView
-                        android:padding="10dp"
                         style="@style/textTitle"
-                        android:text="（刺激战场）专属设置"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                    <LinearLayout
+                        android:layout_height="wrap_content"
                         android:padding="10dp"
+                        android:text="（刺激战场）专属设置" />
+
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
                         <TextView
-                            android:layout_weight="1"
-                            android:text="高帧率"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="高帧率" />
+
                         <Switch
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
+
                     <LinearLayout
-                        android:padding="10dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
                         <TextView
-                            android:layout_weight="1"
-                            android:text="HDR+"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="HDR+" />
+
                         <Switch
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
+
                     <LinearLayout
-                        android:padding="10dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
                         <TextView
-                            android:layout_weight="1"
-                            android:text="Vulkan"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Vulkan" />
+
                         <Switch
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
@@ -644,54 +766,66 @@
             </android.support.v7.widget.CardView>
             <!--QQ飞车-->
             <android.support.v7.widget.CardView
-                android:visibility="gone"
-                android:layout_marginTop="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:visibility="gone">
+
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
                     <TextView
-                        android:padding="10dp"
                         style="@style/textTitle"
-                        android:text="（QQ飞车）专属设置"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                    <LinearLayout
+                        android:layout_height="wrap_content"
                         android:padding="10dp"
+                        android:text="（QQ飞车）专属设置" />
+
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
                         <TextView
-                            android:layout_weight="1"
-                            android:text="高帧率"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="高帧率" />
+
                         <Switch
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
+
                     <LinearLayout
-                        android:padding="10dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
                         <TextView
-                            android:layout_weight="1"
-                            android:text="HDR+"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="HDR+" />
+
                         <Switch
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                     </LinearLayout>
+
                     <LinearLayout
-                        android:padding="10dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:padding="10dp">
+
                         <TextView
-                            android:layout_weight="1"
-                            android:text="Vulkan"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Vulkan" />
+
                         <Switch
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />

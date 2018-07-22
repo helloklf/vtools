@@ -7,12 +7,13 @@
     android:paddingRight="26dp">
 
     <TextView
-        android:layout_marginTop="20dp"
-        android:textColor="#888"
-        android:textSize="12dp"
-        android:text="MAC"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="MAC"
+        android:textColor="#888"
+        android:textSize="12dp" />
+
     <EditText
         android:id="@+id/dialog_addin_mac_input"
         android:layout_width="match_parent"
@@ -21,13 +22,19 @@
         android:maxLength="18" />
 
     <TextView
-        android:layout_marginTop="20dp"
-        android:textColor="#888"
-        android:textSize="12dp"
-        android:text="@string/auto_start"
-        android:hint="min:96"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <CheckBox android:layout_marginTop="20dp" android:layout_marginBottom="10dp" android:id="@+id/dialog_addin_mac_autochange" android:text="@string/boot_after_auto_modify"
-        android:layout_height="wrap_content" android:layout_width="match_parent" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:hint="min:96"
+        android:text="@string/auto_start"
+        android:textColor="#888"
+        android:textSize="12dp" />
+
+    <CheckBox
+        android:id="@+id/dialog_addin_mac_autochange"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="20dp"
+        android:text="@string/boot_after_auto_modify" />
 </LinearLayout>

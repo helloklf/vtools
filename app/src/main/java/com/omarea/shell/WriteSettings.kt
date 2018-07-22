@@ -1,6 +1,5 @@
 package com.omarea.shell
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -15,8 +14,8 @@ import android.support.v4.content.PermissionChecker
 class WriteSettings {
     private fun checkPermission(context: Context, permission: String): Boolean = PermissionChecker.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED
     fun getPermission(context: Context): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Settings.System.canWrite(context)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return Settings.System.canWrite(context)
         } else {
             // TODO("VERSION.SDK_INT < M")
             return true

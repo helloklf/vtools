@@ -2,10 +2,8 @@ package com.omarea.vtools
 
 import android.annotation.SuppressLint
 import android.app.ActivityManager
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
-import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Environment
@@ -16,7 +14,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.omarea.shared.*
+import com.omarea.shared.ConfigInstaller
+import com.omarea.shared.Consts
+import com.omarea.shared.ModeList
+import com.omarea.shared.SpfConfig
 import com.omarea.shell.Files
 import com.omarea.shell.KeepShellSync
 import com.omarea.shell.Platform

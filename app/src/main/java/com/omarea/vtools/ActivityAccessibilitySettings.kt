@@ -15,10 +15,8 @@ import com.omarea.shared.AccessibleServiceHelper
 import com.omarea.shared.Consts
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.KeepShellSync
-import com.omarea.shell.Platform
 import com.omarea.ui.ProgressBarDialog
 import kotlinx.android.synthetic.main.activity_accessibility_settings.*
-import java.io.File
 
 class ActivityAccessibilitySettings : AppCompatActivity() {
     private lateinit var spf: SharedPreferences

@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class CpuFrequencyUtils {
+    private static ArrayList<String[]> cpuClusterInfo;
+
     public static String[] getAvailableFrequencies(Integer cluster) {
         if (cluster >= getClusterInfo().size()) {
             return new String[]{};
@@ -140,6 +142,14 @@ public class CpuFrequencyUtils {
         return KernelProrp.INSTANCE.getProp("/sys/module/cpu_boost/parameters/input_boost_freq");
     }
 
+    public static void setInputBoosterFreq(String freqs) {
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add("chmod 0644 /sys/module/cpu_boost/parameters/input_boost_freq");
+        commands.add("echo " + freqs + " > /sys/module/cpu_boost/parameters/input_boost_freq");
+
+        SuDo.Companion.execCmdSync(commands);
+    }
+
     public static String getInputBoosterTime() {
         return KernelProrp.INSTANCE.getProp("/sys/module/cpu_boost/parameters/input_boost_ms");
     }
@@ -163,14 +173,6 @@ public class CpuFrequencyUtils {
         }
         commands.add("chmod 0644 /sys/devices/system/cpu/cpu0/online".replace("cpu0", "cpu" + coreIndex));
         commands.add("echo " + (online ? "1" : "0") + " > /sys/devices/system/cpu/cpu0/online".replace("cpu0", "cpu" + coreIndex));
-        SuDo.Companion.execCmdSync(commands);
-    }
-
-    public static void setInputBoosterFreq(String freqs) {
-        ArrayList<String> commands = new ArrayList<>();
-        commands.add("chmod 0644 /sys/module/cpu_boost/parameters/input_boost_freq");
-        commands.add("echo " + freqs + " > /sys/module/cpu_boost/parameters/input_boost_freq");
-
         SuDo.Companion.execCmdSync(commands);
     }
 
@@ -247,8 +249,6 @@ public class CpuFrequencyUtils {
             }
         }
     }
-
-    private static ArrayList<String[]> cpuClusterInfo;
 
     public static ArrayList<String[]> getClusterInfo() {
         if (cpuClusterInfo != null) {

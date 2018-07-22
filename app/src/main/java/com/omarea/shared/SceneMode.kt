@@ -160,7 +160,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
                     if (config!!.aloneLight && config!!.aloneLightValue > 0) {
                         val currentConfig = store.getAppConfig(config!!.packageName)
                         val sb = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS)
-                        if (currentConfig.aloneLightValue != sb){
+                        if (currentConfig.aloneLightValue != sb) {
                             currentConfig.aloneLightValue = sb
                         }
                         store.setAppConfig(currentConfig)

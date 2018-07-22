@@ -1,30 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.omarea.vtools.FragmentAddin">
 
     <TabHost
         android:id="@+id/addin_tabhost"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <TabWidget
                 android:id="@android:id/tabs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
+
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+
                 <FrameLayout
                     android:id="@+id/tab0"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
+
                     <com.omarea.ui.OverScrollListView
                         android:id="@+id/addin_system_listview"
                         android:layout_width="match_parent"
@@ -35,10 +40,12 @@
                     android:id="@+id/tab1"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
+
                     <com.omarea.ui.OverScrollListView
+                        android:id="@+id/list_actions"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:id="@+id/list_actions" />
+                        android:layout_height="match_parent" />
+
                     <android.support.design.widget.FloatingActionButton
                         android:id="@+id/addin_online"
                         android:layout_width="wrap_content"
@@ -47,14 +54,16 @@
                         android:layout_margin="@dimen/fab_margin"
                         android:src="@drawable/add" />
                 </FrameLayout>
+
                 <FrameLayout
                     android:id="@+id/tab2"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
+
                     <com.omarea.ui.OverScrollListView
+                        android:id="@+id/list_switchs"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:id="@+id/list_switchs" />
+                        android:layout_height="match_parent" />
                 </FrameLayout>
             </FrameLayout>
         </LinearLayout>

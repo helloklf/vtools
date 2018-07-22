@@ -28,7 +28,8 @@
         <desc su="file:///android_asset/custom/actions/tmgp_get.sh" />
         <script>file:///android_asset/custom/actions/tmgp_set.sh</script>
         <params>
-            <param options-sh="file:///android_asset/custom/actions/tmgp_options.sh" name="render" />
+            <param name="render"
+                options-sh="file:///android_asset/custom/actions/tmgp_options.sh" />
             <param name="thread" value="0">
                 <option val="1">多线程优化</option>
                 <option val="3">默认</option>

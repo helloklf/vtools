@@ -34,148 +34,167 @@
                     android:layout_height="match_parent">
 
                     <LinearLayout
-                        android:background="#22dddddd"
                         android:layout_width="match_parent"
-                        android:layout_height="50dp">
+                        android:layout_height="50dp"
+                        android:background="#22dddddd">
+
                         <EditText
-                            android:background="@android:color/transparent"
                             android:id="@+id/config_search_box"
-                            android:layout_weight="1"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
                             android:hint="搜索应用名"
-                            android:textSize="16dp"
                             android:inputType="textFilter"
                             android:padding="8dp"
-                            android:singleLine="true" />
+                            android:singleLine="true"
+                            android:textSize="16dp" />
 
                         <Spinner
-                            android:focusable="false"
                             android:id="@+id/configlist_type"
-                            android:padding="0dp"
                             android:layout_width="110dp"
                             android:layout_height="match_parent"
-                            android:entries="@array/powercfg_apptype_filter" />
-                        <Spinner
+                            android:entries="@array/powercfg_apptype_filter"
                             android:focusable="false"
+                            android:padding="0dp" />
+
+                        <Spinner
                             android:id="@+id/configlist_modes"
-                            android:padding="0dp"
                             android:layout_width="110dp"
                             android:layout_height="match_parent"
-                            android:entries="@array/powercfg_modes_filter" />
+                            android:entries="@array/powercfg_modes_filter"
+                            android:focusable="false"
+                            android:padding="0dp" />
                     </LinearLayout>
+
                     <com.omarea.ui.OverScrollListView
-                        android:layout_marginTop="50dp"
                         android:id="@+id/config_defaultlist"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="50dp" />
                 </FrameLayout>
 
                 <FrameLayout
                     android:id="@+id/blacklist_tab3"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
+
                     <LinearLayout
-                        android:padding="12dp"
-                        android:orientation="vertical"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
                         <TextView
-                            android:text="亮屏时开启（解锁后）"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:text="亮屏时开启（解锁后）" />
+
                         <LinearLayout
-                            android:layout_marginTop="5dp"
-                            android:layout_marginBottom="30dp"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" android:orientation="horizontal">
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="30dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
                             <CheckBox
                                 android:id="@+id/auto_switch_network_on_wifi"
-                                android:padding="5dp"
-                                android:text="WIFI"
-                                android:layout_weight="1"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                android:text="WIFI" />
+
                             <CheckBox
                                 android:id="@+id/auto_switch_network_on_data"
-                                android:padding="5dp"
-                                android:text="Data"
-                                android:layout_weight="1"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                android:text="Data" />
+
                             <CheckBox
                                 android:id="@+id/auto_switch_network_on_nfc"
-                                android:padding="5dp"
-                                android:text="NFC"
-                                android:layout_weight="1"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                android:text="NFC" />
+
                             <CheckBox
                                 android:id="@+id/auto_switch_network_on_gps"
-                                android:padding="5dp"
-                                android:text="GPS"
-                                android:layout_weight="1"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                android:text="GPS" />
                         </LinearLayout>
 
                         <TextView
-                            android:text="息屏后关闭（延迟30秒）"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:text="息屏后关闭（延迟30秒）" />
+
                         <LinearLayout
-                            android:layout_marginTop="5dp"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" android:orientation="horizontal">
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
                             <CheckBox
                                 android:id="@+id/auto_switch_network_off_wifi"
-                                android:padding="5dp"
-                                android:text="WIFI"
-                                android:layout_weight="1"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                android:text="WIFI" />
+
                             <CheckBox
                                 android:id="@+id/auto_switch_network_off_data"
-                                android:padding="5dp"
-                                android:text="Data"
-                                android:layout_weight="1"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                android:text="Data" />
+
                             <CheckBox
                                 android:id="@+id/auto_switch_network_off_nfc"
-                                android:padding="5dp"
-                                android:text="NFC"
-                                android:layout_weight="1"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                android:text="NFC" />
+
                             <CheckBox
                                 android:id="@+id/auto_switch_network_off_gps"
-                                android:padding="5dp"
-                                android:text="GPS"
-                                android:layout_weight="1"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                android:text="GPS" />
                         </LinearLayout>
 
                         <Switch
-                            android:visibility="gone"
-                            android:layout_marginTop="12dp"
                             android:id="@+id/auto_clear_ignore_chager"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
                             android:padding="8dp"
-                            android:text="@string/auto_clear_ignore_chager"/>
+                            android:text="@string/auto_clear_ignore_chager"
+                            android:visibility="gone" />
+
                         <TextView
-                            android:visibility="gone"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="8dp"
                             android:layout_marginTop="8dp"
                             android:paddingLeft="8dp"
                             android:text="@string/auto_clear_ignore_chager_desc"
-                            android:textAppearance="?android:attr/textAppearanceSmall"/>
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:visibility="gone" />
                     </LinearLayout>
                 </FrameLayout>
+
                 <FrameLayout
                     android:id="@+id/configlist_tab5"
                     android:layout_width="match_parent"
@@ -193,6 +212,7 @@
                     <com.omarea.ui.OverScrollView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -270,7 +290,6 @@
                                     android:text="切换配置模式严格检查当前前台应用，避免悬浮窗抢占焦点导致意外的模式切换，但这会在频繁切换应用时增加耗电" />
 
                                 <Switch
-                                    android:visibility="gone"
                                     android:id="@+id/battery_monitor"
                                     style="@style/textTitle"
                                     android:layout_width="match_parent"
@@ -278,17 +297,18 @@
                                     android:layout_marginTop="20dp"
                                     android:paddingLeft="8dp"
                                     android:paddingRight="8dp"
-                                    android:text="耗电检测" />
+                                    android:text="耗电检测"
+                                    android:visibility="gone" />
 
                                 <TextView
-                                    android:visibility="gone"
                                     style="@style/textSmall"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="5dp"
                                     android:paddingLeft="8dp"
                                     android:paddingRight="8dp"
-                                    android:text="加快常驻通知电流显示刷新，获得更精准的耗电速度信息，会增加亮屏时后台耗电（待机自动暂停）" />
+                                    android:text="加快常驻通知电流显示刷新，获得更精准的耗电速度信息，会增加亮屏时后台耗电（待机自动暂停）"
+                                    android:visibility="gone" />
 
                                 <LinearLayout
                                     android:layout_width="match_parent"

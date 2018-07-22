@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <TabHost
         android:id="@+id/whitelist_tabhost"
@@ -32,6 +31,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
+
                     <com.omarea.ui.OverScrollListView
                         android:id="@+id/booster_whitelist"
                         android:layout_width="match_parent"
@@ -49,19 +49,22 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:padding="8dp">
+
                         <TextView
-                            android:text="@string/android_m_doze_doze"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="30dp"
                             android:layout_marginLeft="8dp"
                             android:layout_marginRight="8dp"
-                            android:layout_marginBottom="30dp"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:text="@string/android_m_doze_doze" />
+
                         <Switch
                             android:id="@+id/doze_whitelist_autoset"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="8dp"
-                            android:text="@string/auto_resume"/>
+                            android:text="@string/auto_resume" />
+
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -69,7 +72,7 @@
                             android:layout_marginTop="8dp"
                             android:paddingLeft="8dp"
                             android:text="@string/doze_list_auto_resume"
-                            android:textAppearance="?android:attr/textAppearanceSmall"/>、
+                            android:textAppearance="?android:attr/textAppearanceSmall" />、
                     </LinearLayout>
                 </FrameLayout>
             </FrameLayout>

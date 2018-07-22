@@ -45,7 +45,6 @@ class AppDetailsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_app_details)
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
-
         app = this.intent.extras.getString("app")
         policyControl = PolicyControl(contentResolver)
 
@@ -189,9 +188,9 @@ class AppDetailsActivity : AppCompatActivity() {
             appConfigInfo.disButton = (it as Switch).isChecked
         }
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
-            app_details_hidebtn.isEnabled = false
+            app_details_hidenotice.isEnabled = false
         } else {
-            app_details_hidebtn.setOnClickListener {
+            app_details_hidenotice.setOnClickListener {
                 if (!NoticeListing().getPermission(this)) {
                     NoticeListing().setPermission(this)
                     Toast.makeText(this, "请先授权允许工具箱“通知使用权限”！", Toast.LENGTH_SHORT).show()
@@ -432,15 +431,15 @@ class AppDetailsActivity : AppCompatActivity() {
             } else {
                 setResult(_result, this.intent)
             }
+            if (!AppConfigStore(this).setAppConfig(appConfigInfo)) {
+                Toast.makeText(this, getString(R.string.config_save_fail), Toast.LENGTH_LONG).show()
+            }
             this.finishAndRemoveTask()
         }
         return true
     }
 
     override fun finish() {
-        if (!AppConfigStore(this).setAppConfig(appConfigInfo)) {
-            Toast.makeText(this, getString(R.string.config_save_fail), Toast.LENGTH_LONG).show()
-        }
         super.finish()
     }
 

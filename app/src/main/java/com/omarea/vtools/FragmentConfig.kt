@@ -13,6 +13,7 @@ import android.os.Handler
 import android.provider.Settings
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,6 +44,8 @@ class FragmentConfig : Fragment() {
     private var displayList: ArrayList<Appinfo>? = null
     private var packageManager: PackageManager? = null
     private lateinit var appConfigStore: AppConfigStore
+    private var firstMode = "balance"
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.layout_config, container, false)
     private lateinit var modeList: ModeList
 
@@ -61,6 +64,7 @@ class FragmentConfig : Fragment() {
         spfPowercfg = context!!.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         editor = spfPowercfg.edit()
+        firstMode = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance")
         appConfigStore = AppConfigStore(this.context)
 
         if (spfPowercfg.all.isEmpty()) {
@@ -115,7 +119,7 @@ class FragmentConfig : Fragment() {
                 val item = (parent.adapter.getItem(position) as Appinfo)
                 val intent = Intent(this.context, AppDetailsActivity::class.java)
                 intent.putExtra("app", item.packageName)
-                startActivityForResult(intent, 0)
+                startActivityForResult(intent, position)
             } catch (ex: Exception) {
             }
         }
@@ -172,10 +176,16 @@ class FragmentConfig : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 0) {
+        try {
             if (resultCode == RESULT_OK) {
-                loadList(false)
+                val adapter = (config_defaultlist.adapter as SceneModeAdapter)
+                val item = adapter.getItem(requestCode)
+                setAppRowDesc(item)
+                (config_defaultlist.adapter as SceneModeAdapter).updateRow(requestCode, config_defaultlist, item)
+                //loadList(false)
             }
+        } catch (ex: Exception) {
+            Log.e("update-list", ex.message)
         }
     }
 
@@ -280,7 +290,6 @@ class FragmentConfig : Fragment() {
 
             val keyword = config_search_box.text.toString()
             val search = keyword.isNotEmpty()
-            val firstMode = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance")
             var filterMode = ""
             var filterAppType = ""
             when (configlist_type.selectedItemPosition) {
@@ -299,39 +308,14 @@ class FragmentConfig : Fragment() {
             displayList = ArrayList()
             for (i in installedList!!.indices) {
                 val item = installedList!![i]
-                item.selectState = false
+                setAppRowDesc(item)
                 val packageName = item.packageName.toString()
-                installedList!![i].enabledState = spfPowercfg.getString(packageName, firstMode)
-                val configInfo = appConfigStore.getAppConfig(packageName)
-                installedList!![i].appConfigInfo = configInfo
-                val desc = StringBuilder()
-                if (configInfo.aloneLight && configInfo.aloneLightValue > 0) {
-                    desc.append("亮度：${configInfo.aloneLightValue}  ")
-                }
-                if (configInfo.disNotice) {
-                    desc.append("屏蔽通知  ")
-                }
-                if (configInfo.disButton) {
-                    desc.append("屏蔽按键  ")
-                }
-                if (configInfo.disBackgroundRun) {
-                    desc.append("阻止后台 ")
-                }
-                if (configInfo.dpi > 0) {
-                    desc.append("DPI:${configInfo.dpi}  ")
-                }
-                if (configInfo.excludeRecent) {
-                    desc.append("隐藏后台  ")
-                }
-                if (configInfo.smoothScroll) {
-                    desc.append("滚动优化  ")
-                }
                 if (search && !(packageName.contains(keyword) || item.appName.toString().contains(keyword))) {
                     continue
                 } else {
                     if (filterMode == "*" || filterMode == spfPowercfg.getString(packageName, firstMode)) {
                         if (filterAppType == "*" || item.path.startsWith(filterAppType)) {
-                            displayList!!.add(installedList!![i])
+                            displayList!!.add(item)
                         }
                     }
                 }
@@ -343,6 +327,36 @@ class FragmentConfig : Fragment() {
             }
             onLoading = false
         }).start()
+    }
+
+    private fun setAppRowDesc(item: Appinfo) {
+        item.selectState = false
+        val packageName = item.packageName.toString()
+        item.enabledState = spfPowercfg.getString(packageName, firstMode)
+        val configInfo = appConfigStore.getAppConfig(packageName)
+        item.appConfigInfo = configInfo
+        val desc = StringBuilder()
+        if (configInfo.aloneLight && configInfo.aloneLightValue > 0) {
+            desc.append("亮度：${configInfo.aloneLightValue}  ")
+        }
+        if (configInfo.disNotice) {
+            desc.append("屏蔽通知  ")
+        }
+        if (configInfo.disButton) {
+            desc.append("屏蔽按键  ")
+        }
+        if (configInfo.disBackgroundRun) {
+            desc.append("阻止后台 ")
+        }
+        if (configInfo.dpi > 0) {
+            desc.append("DPI:${configInfo.dpi}  ")
+        }
+        if (configInfo.excludeRecent) {
+            desc.append("隐藏后台  ")
+        }
+        if (configInfo.smoothScroll) {
+            desc.append("滚动优化  ")
+        }
     }
 
     //检查配置文件是否已经安装

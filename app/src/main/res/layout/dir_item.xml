@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="6dp">
 
     <ImageView
-        android:src="@drawable/folder"
         android:id="@+id/ItemIcon"
         android:layout_width="45dp"
         android:layout_height="45dp"
@@ -14,16 +13,17 @@
         android:maxHeight="45dp"
         android:maxWidth="45dp"
         android:minHeight="45dp"
-        android:minWidth="45dp" />
+        android:minWidth="45dp"
+        android:src="@drawable/folder" />
 
     <LinearLayout
-        android:layout_weight="1"
         android:id="@+id/center"
-        android:layout_gravity="fill_horizontal|center_vertical"
-        android:orientation="vertical"
-        android:paddingStart="7dp"
         android:layout_width="0dp"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal|center_vertical"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingStart="7dp">
 
         <TextView
             android:id="@+id/ItemTitle"
@@ -32,11 +32,10 @@
             android:lines="1"
             android:text=""
             android:textColor="?android:attr/textColorPrimary"
-            android:textStyle="bold"
-            android:textSize="14dp" />
+            android:textSize="14dp"
+            android:textStyle="bold" />
 
         <TextView
-            android:visibility="gone"
             android:id="@+id/ItemText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,18 +43,19 @@
             android:lines="1"
             android:text=""
             android:textColor="#8888"
-            android:textSize="11dp" />
+            android:textSize="11dp"
+            android:visibility="gone" />
     </LinearLayout>
 
 
     <TextView
-        android:visibility="gone"
-        android:layout_toLeftOf="@+id/ItemEnabledStateText"
         android:id="@+id/ItemPath"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/ItemEnabledStateText"
         android:paddingLeft="7dp"
         android:text=""
         android:textColor="#aaa"
-        android:textSize="11dp" />
+        android:textSize="11dp"
+        android:visibility="gone" />
 </LinearLayout>

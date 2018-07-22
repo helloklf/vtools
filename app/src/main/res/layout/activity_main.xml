@@ -5,10 +5,10 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTintMode="screen"
     android:clipToPadding="true"
     android:fitsSystemWindows="true"
     android:keepScreenOn="false"
-    android:backgroundTintMode="screen"
     tools:openDrawer="start">
 
     <LinearLayout
@@ -18,10 +18,10 @@
         android:orientation="vertical">
 
         <FrameLayout
-            android:layout_marginTop="56dp"
+            android:id="@+id/main_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/main_content" />
+            android:layout_marginTop="56dp" />
     </LinearLayout>
 
     <include

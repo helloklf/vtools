@@ -35,22 +35,22 @@
             <TextView
                 android:id="@+id/notify_title"
                 style="@style/NotificationTitle"
-                android:textSize="14dp"
-                android:textStyle="bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
                 android:maxLines="1"
-                android:text="@string/app_name" />
+                android:text="@string/app_name"
+                android:textSize="14dp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/notify_text"
                 style="@style/NotificationInfo"
-                android:textSize="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:text="均衡模式" />
+                android:text="均衡模式"
+                android:textSize="10dp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -69,26 +69,26 @@
             android:orientation="vertical">
 
             <TextView
-                android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"
                 android:id="@+id/notify_battery_title"
                 style="@style/NotificationTitle"
-                android:textSize="14dp"
-                android:textStyle="bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
                 android:text="电池"
-                android:textAlignment="textEnd" />
+                android:textAlignment="textEnd"
+                android:textAppearance="@android:style/TextAppearance.Material.Notification.Title"
+                android:textSize="14dp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/notify_battery_text"
                 style="@style/NotificationInfo"
-                android:textSize="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:text="(mAh)"
-                android:textAlignment="textEnd" />
+                android:textAlignment="textEnd"
+                android:textSize="10dp" />
         </LinearLayout>
 
         <ImageView

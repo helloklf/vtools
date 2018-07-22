@@ -20,31 +20,34 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="4dp">
+
                 <LinearLayout
-                    android:padding="16dp"
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
                     <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
                         android:text="@string/help"
                         android:textColor="@color/colorPrimary"
-                        android:textSize="16dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:textSize="16dp" />
+
                     <TextView
-                        android:textSize="12dp"
-                        android:textColor="#aaa"
-                        android:text="@string/core_control_helpinfo"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="@string/core_control_helpinfo"
+                        android:textColor="#aaa"
+                        android:textSize="12dp" />
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_marginTop="20dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
                 app:cardCornerRadius="4dp">
 
                 <GridLayout
@@ -70,14 +73,14 @@
                         android:text="最小频率" />
 
                     <TextView
-                        android:padding="5dp"
-                        android:textAlignment="textEnd"
-                        android:text="Min Freq"
                         android:id="@+id/cluster_little_min_freq"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:layout_column="1"
-                        android:layout_row="1" />
+                        android:layout_row="1"
+                        android:padding="5dp"
+                        android:text="Min Freq"
+                        android:textAlignment="textEnd" />
 
                     <TextView
                         style="@style/textTitle"
@@ -88,14 +91,14 @@
                         android:text="最大频率" />
 
                     <TextView
-                        android:padding="5dp"
-                        android:textAlignment="textEnd"
-                        android:text="Max Freq"
                         android:id="@+id/cluster_little_max_freq"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:layout_column="1"
-                        android:layout_row="2" />
+                        android:layout_row="2"
+                        android:padding="5dp"
+                        android:text="Max Freq"
+                        android:textAlignment="textEnd" />
 
                     <TextView
                         style="@style/textTitle"
@@ -106,13 +109,13 @@
                         android:text="调度模式" />
 
                     <TextView
-                        android:padding="5dp"
-                        android:textAlignment="textEnd"
-                        android:text="Governor"
                         android:id="@+id/cluster_little_governor"
                         android:layout_width="150dp"
                         android:layout_column="1"
-                        android:layout_row="3" />
+                        android:layout_row="3"
+                        android:padding="5dp"
+                        android:text="Governor"
+                        android:textAlignment="textEnd" />
 
                 </GridLayout>
             </android.support.v7.widget.CardView>
@@ -147,14 +150,14 @@
                         android:text="最小频率" />
 
                     <TextView
-                        android:padding="5dp"
-                        android:textAlignment="textEnd"
-                        android:text="Min  Freq"
                         android:id="@+id/cluster_big_min_freq"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:layout_column="1"
-                        android:layout_row="1" />
+                        android:layout_row="1"
+                        android:padding="5dp"
+                        android:text="Min  Freq"
+                        android:textAlignment="textEnd" />
 
                     <TextView
                         style="@style/textTitle"
@@ -165,14 +168,14 @@
                         android:text="最大频率" />
 
                     <TextView
-                        android:padding="5dp"
-                        android:textAlignment="textEnd"
-                        android:text="Max Freq"
                         android:id="@+id/cluster_big_max_freq"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:layout_column="1"
-                        android:layout_row="2" />
+                        android:layout_row="2"
+                        android:padding="5dp"
+                        android:text="Max Freq"
+                        android:textAlignment="textEnd" />
 
                     <TextView
                         style="@style/textTitle"
@@ -183,13 +186,13 @@
                         android:text="调度模式" />
 
                     <TextView
-                        android:padding="5dp"
-                        android:textAlignment="textEnd"
-                        android:text="Governor"
                         android:id="@+id/cluster_big_governor"
                         android:layout_width="150dp"
                         android:layout_column="1"
-                        android:layout_row="3" />
+                        android:layout_row="3"
+                        android:padding="5dp"
+                        android:text="Governor"
+                        android:textAlignment="textEnd" />
 
                 </GridLayout>
             </android.support.v7.widget.CardView>
@@ -224,14 +227,14 @@
                         android:text="最小频率" />
 
                     <TextView
-                        android:padding="5dp"
-                        android:textAlignment="textEnd"
-                        android:text="Min  Freq"
                         android:id="@+id/adreno_gpu_min_freq"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:layout_column="1"
-                        android:layout_row="1" />
+                        android:layout_row="1"
+                        android:padding="5dp"
+                        android:text="Min  Freq"
+                        android:textAlignment="textEnd" />
 
                     <TextView
                         style="@style/textTitle"
@@ -242,14 +245,14 @@
                         android:text="最大频率" />
 
                     <TextView
-                        android:padding="5dp"
-                        android:textAlignment="textEnd"
-                        android:text="Max Freq"
                         android:id="@+id/adreno_gpu_max_freq"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:layout_column="1"
-                        android:layout_row="2" />
+                        android:layout_row="2"
+                        android:padding="5dp"
+                        android:text="Max Freq"
+                        android:textAlignment="textEnd" />
 
                     <TextView
                         style="@style/textTitle"
@@ -260,14 +263,14 @@
                         android:text="最小功耗级别" />
 
                     <TextView
-                        android:padding="5dp"
-                        android:textAlignment="textEnd"
-                        android:text="Min PL"
                         android:id="@+id/adreno_gpu_min_pl"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:layout_column="1"
-                        android:layout_row="3" />
+                        android:layout_row="3"
+                        android:padding="5dp"
+                        android:text="Min PL"
+                        android:textAlignment="textEnd" />
 
                     <TextView
                         style="@style/textTitle"
@@ -278,14 +281,14 @@
                         android:text="最大功耗级别" />
 
                     <TextView
-                        android:padding="5dp"
-                        android:textAlignment="textEnd"
-                        android:text="Max PL"
                         android:id="@+id/adreno_gpu_max_pl"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:layout_column="1"
-                        android:layout_row="4" />
+                        android:layout_row="4"
+                        android:padding="5dp"
+                        android:text="Max PL"
+                        android:textAlignment="textEnd" />
 
 
                     <TextView
@@ -297,14 +300,14 @@
                         android:text="默认功耗级别" />
 
                     <TextView
-                        android:padding="5dp"
-                        android:textAlignment="textEnd"
-                        android:text="Default PL"
                         android:id="@+id/adreno_gpu_default_pl"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:layout_column="1"
-                        android:layout_row="5" />
+                        android:layout_row="5"
+                        android:padding="5dp"
+                        android:text="Default PL"
+                        android:textAlignment="textEnd" />
 
                     <TextView
                         style="@style/textTitle"
@@ -315,21 +318,21 @@
                         android:text="调度模式" />
 
                     <TextView
-                        android:padding="5dp"
-                        android:textAlignment="textEnd"
-                        android:text="Governor"
                         android:id="@+id/adreno_gpu_governor"
                         android:layout_width="150dp"
                         android:layout_column="1"
-                        android:layout_row="6" />
+                        android:layout_row="6"
+                        android:padding="5dp"
+                        android:text="Governor"
+                        android:textAlignment="textEnd" />
 
                     <TextView
                         style="@style/textSmall"
-                        android:layout_marginTop="4dp"
                         android:layout_column="0"
                         android:layout_columnSpan="2"
-                        android:layout_row="7"
                         android:layout_gravity="fill_horizontal"
+                        android:layout_marginTop="4dp"
+                        android:layout_row="7"
                         android:text="大多数时候，GPU性能受功耗级别（Power Level）限制而不是频率设定。\n注意：功耗级别0表示最大高性能，数值越大则性能越低" />
                 </GridLayout>
             </android.support.v7.widget.CardView>
@@ -406,6 +409,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="16dp">
+
                     <TextView
                         android:layout_columnSpan="2"
                         android:layout_gravity="fill"
@@ -424,23 +428,61 @@
                         android:text="Cpu Hot Plug" />
 
                     <CheckBox
-                        style="@style/textTitle"
-                        android:enabled="false"
                         android:id="@+id/exynos_cpuhotplug"
+                        style="@style/textTitle"
                         android:layout_column="1"
-                        android:layout_row="1" />
+                        android:layout_row="1"
+                        android:enabled="false" />
 
                     <TextView
-                        style="@style/textTitle" android:layout_marginTop="8dp" android:layout_marginBottom="4dp" android:layout_row="2" android:text="Up Threshold" android:layout_columnSpan="2" android:layout_column="0" android:layout_gravity="left" />
+                        style="@style/textTitle"
+                        android:layout_column="0"
+                        android:layout_columnSpan="2"
+                        android:layout_gravity="left"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_row="2"
+                        android:text="Up Threshold" />
+
                     <SeekBar
-                        android:enabled="false" android:min="0" android:max="1000" android:layout_row="3" android:layout_column="0" android:layout_gravity="fill_horizontal" android:id="@+id/exynos_hmp_up" />
-                    <TextView android:layout_row="3" android:layout_column="1" android:id="@+id/exynos_hmp_up_text" android:textAlignment="center" />
+                        android:id="@+id/exynos_hmp_up"
+                        android:layout_column="0"
+                        android:layout_gravity="fill_horizontal"
+                        android:layout_row="3"
+                        android:enabled="false"
+                        android:max="1000"
+                        android:min="0" />
 
                     <TextView
-                        style="@style/textTitle" android:layout_marginTop="8dp" android:layout_marginBottom="4dp" android:layout_row="4" android:text="Down Threshold" android:layout_columnSpan="2" android:layout_column="0" android:layout_gravity="left" />
+                        android:id="@+id/exynos_hmp_up_text"
+                        android:layout_column="1"
+                        android:layout_row="3"
+                        android:textAlignment="center" />
+
+                    <TextView
+                        style="@style/textTitle"
+                        android:layout_column="0"
+                        android:layout_columnSpan="2"
+                        android:layout_gravity="left"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_row="4"
+                        android:text="Down Threshold" />
+
                     <SeekBar
-                        android:enabled="false" android:min="0" android:max="1000" android:layout_row="5" android:layout_column="0" android:layout_gravity="fill_horizontal" android:id="@+id/exynos_hmp_down" />
-                    <TextView android:layout_row="5" android:layout_column="1" android:id="@+id/exynos_hmp_down_text" android:textAlignment="center" />
+                        android:id="@+id/exynos_hmp_down"
+                        android:layout_column="0"
+                        android:layout_gravity="fill_horizontal"
+                        android:layout_row="5"
+                        android:enabled="false"
+                        android:max="1000"
+                        android:min="0" />
+
+                    <TextView
+                        android:id="@+id/exynos_hmp_down_text"
+                        android:layout_column="1"
+                        android:layout_row="5"
+                        android:textAlignment="center" />
 
 
                     <TextView
@@ -452,19 +494,19 @@
                         android:text="Booster" />
 
                     <CheckBox
-                        style="@style/textTitle"
-                        android:enabled="false"
                         android:id="@+id/exynos_hmp_booster"
+                        style="@style/textTitle"
                         android:layout_column="1"
-                        android:layout_row="6" />
+                        android:layout_row="6"
+                        android:enabled="false" />
 
                     <TextView
                         style="@style/textSmall"
-                        android:layout_marginTop="4dp"
                         android:layout_column="0"
                         android:layout_columnSpan="2"
-                        android:layout_row="7"
                         android:layout_gravity="fill_horizontal"
+                        android:layout_marginTop="4dp"
+                        android:layout_row="7"
                         android:text="Up/Down Threshold决定使用高性能核心的积极程度（数值越低越积极），Booster则表示永远优先使用高性能核心" />
 
                 </GridLayout>
@@ -501,7 +543,6 @@
                         android:text="InputBoost 持续时间（ms）" />
 
                     <EditText
-                        android:textAlignment="textEnd"
                         android:id="@+id/cpu_inputboost_time"
                         android:layout_width="60dp"
                         android:layout_height="wrap_content"
@@ -509,7 +550,8 @@
                         android:layout_row="1"
                         android:hint="毫秒"
                         android:inputType="number"
-                        android:maxLength="4" />
+                        android:maxLength="4"
+                        android:textAlignment="textEnd" />
 
                     <TextView
                         style="@style/textTitle"
@@ -525,9 +567,9 @@
                         android:layout_height="wrap_content"
                         android:layout_column="1"
                         android:layout_row="2"
-                        android:inputType="text"
                         android:editable="false"
-                        android:focusable="false" />
+                        android:focusable="false"
+                        android:inputType="text" />
 
                     <TextView
                         style="@style/textTitle"
@@ -568,50 +610,70 @@
                         android:textColor="@color/colorPrimary"
                         android:textSize="16dp" />
 
-                    <LinearLayout android:layout_columnSpan="2" android:layout_column="0" android:layout_row="1" android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="0"
+                        android:layout_columnSpan="2"
+                        android:layout_row="1"
+                        android:orientation="horizontal">
+
                         <CheckBox
                             android:id="@+id/core_0"
-                            android:text="CPU0"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:text="CPU0" />
+
                         <CheckBox
                             android:id="@+id/core_1"
-                            android:text="CPU1"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:text="CPU1" />
+
                         <CheckBox
                             android:id="@+id/core_2"
-                            android:text="CPU2"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:text="CPU2" />
+
                         <CheckBox
                             android:id="@+id/core_3"
-                            android:text="CPU3"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:text="CPU3" />
                     </LinearLayout>
 
-                    <LinearLayout android:layout_columnSpan="2" android:layout_column="0" android:layout_row="2" android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_column="0"
+                        android:layout_columnSpan="2"
+                        android:layout_row="2"
+                        android:orientation="horizontal">
+
                         <CheckBox
                             android:id="@+id/core_4"
-                            android:text="CPU4"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:text="CPU4" />
+
                         <CheckBox
                             android:id="@+id/core_5"
-                            android:text="CPU5"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:text="CPU5" />
+
                         <CheckBox
                             android:id="@+id/core_6"
-                            android:text="CPU6"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:text="CPU6" />
+
                         <CheckBox
                             android:id="@+id/core_7"
-                            android:text="CPU7"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:text="CPU7" />
                     </LinearLayout>
                 </GridLayout>
             </android.support.v7.widget.CardView>

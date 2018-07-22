@@ -17,14 +17,14 @@ android {
         applicationId "com.omarea.vtools"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 498
-        versionName "8.7.17"
+        versionCode 500
+        versionName "8.7.22 preview"
     }
     buildTypes {
         release {
             zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            minifyEnabled true
+            minifyEnabled false
             debuggable false
             signingConfig signingConfigs.omarea_Signing
         }

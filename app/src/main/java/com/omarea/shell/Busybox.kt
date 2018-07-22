@@ -2,7 +2,6 @@ package com.omarea.shell
 
 import android.app.AlertDialog
 import android.content.Context
-import android.widget.Toast
 import com.omarea.shared.Consts
 import com.omarea.shared.FileWrite
 import com.omarea.shell.units.BusyboxInstallerUnit
@@ -59,8 +58,7 @@ class Busybox(private var context: Context) {
                                     AlertDialog.Builder(context)
                                             .setTitle("安装Busybox失败")
                                             .setMessage("已尝试自动安装Busybox，但它依然不可用。也许System分区没被解锁。因此，部分功能可能无法使用！")
-                                            .setPositiveButton(R.string.btn_confirm, {
-                                                _,_ ->
+                                            .setPositiveButton(R.string.btn_confirm, { _, _ ->
                                             })
                                             .create()
                                             .show()
