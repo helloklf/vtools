@@ -2,6 +2,7 @@ package com.omarea.shared.model;
 
 import android.graphics.drawable.Drawable;
 
+import com.omarea.AppConfigInfo;
 import com.omarea.shared.AppConfigStore;
 
 /**
@@ -22,7 +23,7 @@ public class Appinfo {
     public String versionName = "";
     public int versionCode = 0;
     public AppType appType = AppType.UNKNOW;
-    public AppConfigStore.AppConfigInfo appConfigInfo;
+    public AppConfigInfo appConfigInfo;
     public CharSequence desc;
 
     public static Appinfo getItem() {

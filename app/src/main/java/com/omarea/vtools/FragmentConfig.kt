@@ -20,6 +20,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.CheckBox
 import android.widget.Switch
+import android.widget.Toast
 import com.omarea.shared.*
 import com.omarea.shared.model.Appinfo
 import com.omarea.shell.Platform
@@ -183,6 +184,19 @@ class FragmentConfig : Fragment() {
                 setAppRowDesc(item)
                 (config_defaultlist.adapter as SceneModeAdapter).updateRow(requestCode, config_defaultlist, item)
                 //loadList(false)
+                //创建Intent
+                try {
+                    val intent = Intent()
+                    intent.action = "com.omarea.vaddin.ConfigChanged"
+                    intent.putExtra("packageName", item.appConfigInfo.packageName)
+                    intent.putExtra("dpi", item.appConfigInfo.dpi)
+                    intent.putExtra("hide_recent", item.appConfigInfo.excludeRecent)
+                    intent.putExtra("scroll", item.appConfigInfo.smoothScroll)
+                    //发送广播
+                    context!!.sendBroadcast(intent)
+                } catch (ex: Exception) {
+                    Toast.makeText(context!!, "更新Xposed配置信息失败！", Toast.LENGTH_SHORT).show()
+                }
             }
         } catch (ex: Exception) {
             Log.e("update-list", ex.message)

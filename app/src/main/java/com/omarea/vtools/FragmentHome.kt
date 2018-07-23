@@ -22,6 +22,7 @@ import com.omarea.shell.Files
 import com.omarea.shell.KeepShellSync
 import com.omarea.shell.Platform
 import com.omarea.shell.Props
+import com.omarea.xposed.AppConfigLoader
 import kotlinx.android.synthetic.main.layout_home.*
 import java.io.File
 
@@ -92,6 +93,7 @@ class FragmentHome : Fragment() {
         super.onResume()
         setModeState()
         updateInfo()
+        // AppConfigLoader().getAppConfig("de.robv.android.xposed.installer", context!!.contentResolver)
     }
 
     override fun onDestroy() {

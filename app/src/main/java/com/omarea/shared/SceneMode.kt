@@ -4,6 +4,7 @@ import android.content.ContentResolver
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
+import com.omarea.AppConfigInfo
 import com.omarea.shell.KeepShellSync
 
 class SceneMode private constructor(private var contentResolver: ContentResolver, private var store: AppConfigStore) {
@@ -28,7 +29,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
     var mode = -1;
     var screenBrightness = 100;
     var lastAppPackageName = "com.android.systemui"
-    var config: AppConfigStore.AppConfigInfo? = null
+    var config: AppConfigInfo? = null
 
     private fun backupState(): Int {
         try {

@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.omarea.AppConfigInfo;
+
 public class AppConfigStore extends SQLiteOpenHelper {
     public AppConfigStore(Context context) {
         super(context, "app-settings", null, 1);
@@ -63,6 +65,10 @@ public class AppConfigStore extends SQLiteOpenHelper {
         return appConfigInfo;
     }
 
+    public  Cursor getAppConfigStore(String app) {
+        return this.getReadableDatabase().rawQuery("select * from app_xposed_config where id = ?", new String[]{app});
+    }
+
     public boolean setAppConfig(AppConfigInfo appConfigInfo) {
         SQLiteDatabase database = getWritableDatabase();
         getWritableDatabase().beginTransaction();
@@ -91,22 +97,5 @@ public class AppConfigStore extends SQLiteOpenHelper {
         } finally {
             database.endTransaction();
         }
-    }
-
-    public class AppConfigInfo {
-        public String packageName;
-
-        // AppConfig
-        public boolean aloneLight = false;
-        public int aloneLightValue = -1;
-        public boolean disNotice = false;
-        public boolean disButton = false;
-        public boolean disBackgroundRun = false;
-        public boolean gpsOn = false;
-
-        // Xposed
-        public int dpi = -1;
-        public boolean excludeRecent = false;
-        public boolean smoothScroll = false;
     }
 }

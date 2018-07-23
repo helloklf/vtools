@@ -42,6 +42,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data
+            android:name="xposedmodule"
+            android:value="true" />
+        <meta-data
+            android:name="xposeddescription"
+            android:value="激活此模块，才能使用场景模式中的“高级设定”选项" />
+        <meta-data
+            android:name="xposedminversion"
+            android:value="54" />
+        <meta-data
             android:name="android.max_aspect"
             android:value="2.4" />
 
@@ -96,7 +105,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -197,10 +206,10 @@
         </activity>
 
         <provider
-            android:name="com.omarea.shared.AppConfigContentProvider"
-            android:authorities="app_config"
+            android:name=".AppConfigContentProvider"
+            android:authorities="com.omarea.vtools.appconfig"
             android:enabled="true"
-            android:exported="true"></provider>
+            android:exported="true" />
     </application>
 
 </manifest>

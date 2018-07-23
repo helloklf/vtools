@@ -17,6 +17,7 @@ import android.widget.CheckBox
 import android.widget.SeekBar
 import android.widget.Switch
 import android.widget.Toast
+import com.omarea.AppConfigInfo
 import com.omarea.shared.*
 import com.omarea.shell.KeepShellSync
 import com.omarea.shell.NoticeListing
@@ -30,7 +31,7 @@ import java.util.*
 class AppDetailsActivity : AppCompatActivity() {
     var app = ""
     lateinit var policyControl: PolicyControl
-    lateinit var appConfigInfo: AppConfigStore.AppConfigInfo
+    lateinit var appConfigInfo: AppConfigInfo
     private var dynamicCpu: Boolean = false
     private var _result = RESULT_CANCELED
 

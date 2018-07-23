@@ -138,6 +138,9 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
         }
     }
 
+    /**
+     * FIXME:这个有问题
+     */
     private fun updateRow(position: Int, convertView: View) {
         val item = getItem(position)
         viewHolder!!.itemTitle!!.text = keywordHightLight(item.appName.toString())
