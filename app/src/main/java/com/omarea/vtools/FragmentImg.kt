@@ -1,5 +1,7 @@
 package com.omarea.vtools
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.os.StatFs
@@ -11,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.SimpleAdapter
+import android.widget.Toast
 import com.omarea.shared.Consts
 import com.omarea.shell.units.BackupRestoreUnit
 import kotlinx.android.synthetic.main.layout_img.*
@@ -19,8 +22,6 @@ import java.util.*
 
 
 class FragmentImg : Fragment() {
-    internal var thisview: ActivityMain? = null
-
     fun createItem(title: String, desc: String): HashMap<String, Any> {
         val item = HashMap<String, Any>()
         item.put("Title", title)
@@ -64,7 +65,7 @@ class FragmentImg : Fragment() {
                         return@OnItemClickListener
                     }
                     if (File("${Consts.SDCardDir}/boot.img").exists()) {
-                        val builder = AlertDialog.Builder(thisview!!)
+                        val builder = AlertDialog.Builder(context!!)
                         builder.setTitle(context!!.getString(R.string.backup_file_exists))
                         builder.setNegativeButton(android.R.string.cancel, null)
                         builder.setPositiveButton(android.R.string.yes) { _, _ ->
@@ -79,27 +80,9 @@ class FragmentImg : Fragment() {
                     }
                 }
                 1 -> {
-                    //刷入boot
-                    if (File("${Consts.SDCardDir}/boot.img").exists()) {
-                        val builder = AlertDialog.Builder(thisview!!)
-                        builder.setTitle("确定刷入${Consts.SDCardDir}/boot.img？")
-                        builder.setNegativeButton(android.R.string.cancel, null)
-                        builder.setPositiveButton(android.R.string.yes) { _, _ ->
-                            BackupRestoreUnit(activity!!).FlashBoot("${Consts.SDCardDir}/boot.img")
-                        }
-                        builder.setMessage("此操作将刷入${Consts.SDCardDir}/boot.img到系统Boot分区，我十分不推荐你这么做，刷入无效的Boot文件可能导致你的设备无法启动。如果你没有办法在设备无法启动时紧急恢复。")
-                        builder.create().show()
-                    } else {
-                        val builder = AlertDialog.Builder(thisview!!)
-                        builder.setTitle("")
-                        builder.setNegativeButton("", null)
-                        builder.setPositiveButton(android.R.string.yes) { _, _ ->
-                        }
-                        builder.setMessage("由于安卓系统的文件选择器兼容性差异，现在做文件选择变得非常困难，因此不再支持自选文件刷入。请将你要刷入的Boot文件放到以下位置：\n" +
-                                "${Consts.SDCardDir}/boot.img\n" +
-                                "路径和文件名区分大小写")
-                        builder.create().show()
-                    }
+                    val intent = Intent(this.context, ActivityFileSelector::class.java)
+                    intent.putExtra("extension", "img")
+                    startActivityForResult(intent, BOOT_IMG_SELECTOR)
                 }
                 2 -> {
                     if (GetSDFreeSizeMB() < 100) {
@@ -107,7 +90,7 @@ class FragmentImg : Fragment() {
                         return@OnItemClickListener
                     }
                     if (File("${Consts.SDCardDir}/recovery.img").exists()) {
-                        val builder = AlertDialog.Builder(thisview!!)
+                        val builder = AlertDialog.Builder(context!!)
                         builder.setTitle(context!!.getString(R.string.backup_file_exists))
                         builder.setNegativeButton(android.R.string.cancel, null)
                         builder.setPositiveButton(android.R.string.yes) { _, _ ->
@@ -122,27 +105,9 @@ class FragmentImg : Fragment() {
                     }
                 }
                 3 -> {
-                    //刷入recovery
-                    if (File("${Consts.SDCardDir}/recovery.img").exists()) {
-                        val builder = AlertDialog.Builder(thisview!!)
-                        builder.setTitle("确认刷入${Consts.SDCardDir}/recovery.img？")
-                        builder.setNegativeButton(android.R.string.cancel, null)
-                        builder.setPositiveButton(android.R.string.yes) { _, _ ->
-                            BackupRestoreUnit(context!!).FlashRecovery("${Consts.SDCardDir}/recovery.img")
-                        }
-                        builder.setMessage("此操作将刷入${Consts.SDCardDir}/reovery.img到系统Recovery分区，应用无法验证该文件是否有效，你需要自己确保该recovery镜像适合本设备使用！")
-                        builder.create().show()
-                    } else {
-                        val builder = AlertDialog.Builder(thisview!!)
-                        builder.setTitle("")
-                        builder.setNegativeButton("", null)
-                        builder.setPositiveButton(android.R.string.yes) { _, _ ->
-                        }
-                        builder.setMessage("由于安卓系统的文件选择器兼容性差异，现在做文件选择变得非常困难，因此不再支持自选文件刷入。请将你要刷入的recovery文件放到以下位置：\n" +
-                                "${Consts.SDCardDir}/recovery.img\n" +
-                                "路径和文件名区分大小写")
-                        builder.create().show()
-                    }
+                    val intent = Intent(this.context, ActivityFileSelector::class.java)
+                    intent.putExtra("extension", "img")
+                    startActivityForResult(intent, RECOVERY_IMG_SELECTOR)
 
                     //刷入rec
                     //val intent = Intent(Intent.ACTION_GET_CONTENT)
@@ -156,10 +121,49 @@ class FragmentImg : Fragment() {
         }
     }
 
+    val BOOT_IMG_SELECTOR = 0
+    val RECOVERY_IMG_SELECTOR = 1
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == RECOVERY_IMG_SELECTOR) {
+            if (resultCode == Activity.RESULT_OK && data != null && data.extras.containsKey("file")) {
+                val path = data.extras.getString("file")
+                //刷入recovery
+                if (File(path).exists()) {
+                    AlertDialog.Builder(context!!)
+                            .setTitle(getString(R.string.flash_confirm))
+                            .setNegativeButton(android.R.string.cancel, null)
+                            .setPositiveButton(android.R.string.yes) { _, _ ->
+                                BackupRestoreUnit(context!!).FlashRecovery(path)
+                            }
+                            .setMessage("此操作将刷入${path}到系统Recovery分区，应用无法验证该文件是否有效，你需要自己确保该recovery镜像适合本设备使用！")
+                            .create().show()
+                } else {
+                    Toast.makeText(context!!, "所选的文件没找到！", Toast.LENGTH_SHORT).show()
+                }
+            }
+        } else if (requestCode == BOOT_IMG_SELECTOR) {
+            if (resultCode == Activity.RESULT_OK && data != null && data.extras.containsKey("file")) {
+                val path = data.extras.getString("file")
+                //刷入recovery
+                if (File(path).exists()) {
+                    AlertDialog.Builder(context!!)
+                            .setTitle(getString(R.string.flash_confirm))
+                            .setNegativeButton(android.R.string.cancel, null)
+                            .setPositiveButton(android.R.string.yes) { _, _ ->
+                                BackupRestoreUnit(activity!!).FlashBoot(path)
+                            }
+                            .setMessage("此操作将刷入${path}到系统Boot分区，我十分不推荐你这么做，刷入无效的Boot文件可能导致你的设备无法启动。如果你没有办法在设备无法启动时紧急恢复。")
+                            .create().show()
+                }
+            }
+        }
+    }
+
     companion object {
-        fun createPage(thisView: ActivityMain): Fragment {
+        fun createPage(): Fragment {
             val fragment = FragmentImg()
-            fragment.thisview = thisView
             return fragment
         }
     }

@@ -405,4 +405,5 @@
     <string name="boot_success">已完成开机自启动</string>
     <string name="notice_channel_boot">自启动提示</string>
     <string name="boot_script_running">正在执行自启动脚本...</string>
+    <string name="flash_confirm">确认刷入？</string>
 </resources>

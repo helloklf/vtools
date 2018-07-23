@@ -29,6 +29,7 @@ import com.omarea.shared.SpfConfig
 import com.omarea.shell.Busybox
 import com.omarea.shell.CheckRootStatus
 import com.omarea.shell.KeepShellSync
+import com.omarea.shell.units.BackupRestoreUnit
 import com.omarea.shell.units.BatteryUnit
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.vtools.dialogs.DialogPower
@@ -78,7 +79,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         checkRoot(Runnable {
             hasRoot = true
             checkFileWrite()
-
             Busybox(this).forceInstall(Runnable {
                 configInstallerThread = Thread(Runnable {
                     ConfigInstaller().configCodeVerify(this)
@@ -155,6 +155,9 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         if (!hasRoot)
             hideRootMenu(navigationView.menu);
+        else if (!BackupRestoreUnit.isSupport()) {
+            navigationView.menu.findItem(R.id.nav_img).isEnabled = false
+        }
     }
 
     private var configInstallerThread: Thread? = null
@@ -305,7 +308,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_applictions -> fragment = FragmentApplistions.createPage()
             R.id.nav_swap -> fragment = FragmentSwap.createPage()
             R.id.nav_battery -> fragment = FragmentBattery.createPage()
-            R.id.nav_img -> fragment = FragmentImg.createPage(this)
+            R.id.nav_img -> fragment = FragmentImg.createPage()
             R.id.nav_core_control -> fragment = FragmentCpuControl.newInstance()
             R.id.nav_whitelist -> fragment = FragmentWhitelist.createPage()
             R.id.nav_paypal -> {

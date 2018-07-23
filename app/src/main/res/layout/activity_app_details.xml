@@ -583,7 +583,7 @@
                         android:paddingBottom="10dp"
                         android:paddingLeft="16dp"
                         android:paddingRight="16dp"
-                        android:text="由于Android N以后，系统对于共享数据变得管理更加严格，工具箱改变了Xposed数据提供方式\n应用启动时，需要通过工具箱的ContentProvider获取相关配置，因此务必允许工具箱后台自启动！" />
+                        android:text="高级设定功能需要额外的插件（Scene-高级设定）支持。\n如果你使用了黑域、绿色运行、阻止运行等软件，请从手动设置，允许它自启动！\n否则工具箱无法连接到插件。" />
                 </LinearLayout>
             </android.support.v7.widget.CardView>
             <!--王者荣耀-->

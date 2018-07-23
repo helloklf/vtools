@@ -8,10 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.omarea.vtools.R;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
 
 public class AdapterFileSelector extends BaseAdapter {
     private File[] fileArray;
@@ -20,10 +23,18 @@ public class AdapterFileSelector extends BaseAdapter {
     private File selectedFile;
     private Handler handler = new Handler();
     private ProgressBarDialog progressBarDialog;
+    private String extension;
 
-    public AdapterFileSelector(File rootDir, Runnable fileSelected, ProgressBarDialog progressBarDialog) {
+    public AdapterFileSelector(File rootDir, Runnable fileSelected, ProgressBarDialog progressBarDialog, String extension) {
         this.fileSelected = fileSelected;
         this.progressBarDialog = progressBarDialog;
+        if (extension != null) {
+            if (extension.startsWith(".")) {
+                this.extension = extension;
+            } else {
+                this.extension = "." + extension;
+            }
+        }
         loadDir(rootDir);
     }
 
@@ -33,7 +44,20 @@ public class AdapterFileSelector extends BaseAdapter {
             @Override
             public void run() {
                 if (dir.exists() && dir.canRead()) {
-                    File[] files = dir.listFiles();
+                    File[] files = dir.listFiles(new FileFilter() {
+                        @Override
+                        public boolean accept(File pathname) {
+                            if (!pathname.exists()) {
+                                return false;
+                            }
+                            if(pathname.isFile() && extension != null && !extension.isEmpty()) {
+                                return pathname.getName().endsWith(extension);
+                            } else {
+                                return true;
+                            }
+                        }
+                    });
+
                     for (int i = 0; i < files.length; i++) {
                         for (int j = i + 1; j < files.length; j++) {
                             if ((files[j].isDirectory() && files[i].isFile())) {
@@ -97,6 +121,10 @@ public class AdapterFileSelector extends BaseAdapter {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (!file.exists()) {
+                        Toast.makeText(view.getContext(), "所选的文件已被删除，请重新选择！", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     File[] files = file.listFiles();
                     if (files != null && files.length > 0) {
                         loadDir(file);
@@ -116,6 +144,10 @@ public class AdapterFileSelector extends BaseAdapter {
                             .setPositiveButton(R.string.btn_confirm, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    if (!file.exists()) {
+                                        Toast.makeText(view.getContext(), "所选的文件已被删除，请重新选择！", Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
                                     selectedFile = file;
                                     fileSelected.run();
                                 }

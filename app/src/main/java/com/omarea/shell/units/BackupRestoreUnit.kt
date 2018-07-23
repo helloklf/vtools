@@ -6,6 +6,7 @@ import android.os.Handler
 import android.widget.Toast
 import com.omarea.shared.Consts
 import com.omarea.shell.KeepShellSync
+import com.omarea.shell.RootFile
 import com.omarea.ui.ProgressBarDialog
 import java.io.IOException
 
@@ -16,6 +17,12 @@ import java.io.IOException
 class BackupRestoreUnit(var context: Context) {
     val dialog: ProgressBarDialog
     internal var myHandler: Handler = Handler()
+
+    companion object {
+        fun isSupport(): Boolean {
+            return RootFile.fileExists("/dev/block/bootdevice/by-name/boot") || RootFile.fileExists("/dev/block/bootdevice/by-name/recovery")
+        }
+    }
 
     init {
         dialog = ProgressBarDialog(context)
@@ -37,7 +44,9 @@ class BackupRestoreUnit(var context: Context) {
 
     //显示文本消息
     fun ShowMsg(msg: String, longMsg: Boolean) {
-        myHandler.post { Toast.makeText(context, msg, if (longMsg) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show() }
+        myHandler.post {
+            Toast.makeText(context, msg, if (longMsg) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show()
+        }
     }
 
     //刷入Boot
@@ -67,7 +76,7 @@ class BackupRestoreUnit(var context: Context) {
             ShowProgressBar()
             try {
                 ShowProgressBar()
-                if (KeepShellSync.doCmdSync("dd if=$path of=/dev/block/bootdevice/by-name/boot") != "error") {
+                if (KeepShellSync.doCmdSync("dd if=\"$path\" of=/dev/block/bootdevice/by-name/boot") != "error") {
                     ShowMsg("操作成功！", true)
                 } else {
                     ShowMsg("镜像刷入失败！", true)
@@ -96,7 +105,7 @@ class BackupRestoreUnit(var context: Context) {
             ShowProgressBar()
             try {
                 ShowProgressBar()
-                if (KeepShellSync.doCmdSync("dd if=$path of=/dev/block/bootdevice/by-name/recovery") != "error") {
+                if (KeepShellSync.doCmdSync("dd if=\"$path\" of=/dev/block/bootdevice/by-name/recovery") != "error") {
                     ShowMsg("操作成功！", true)
                 } else {
                     ShowMsg("镜像刷入失败", true)
