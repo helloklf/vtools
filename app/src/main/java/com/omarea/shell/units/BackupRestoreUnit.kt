@@ -20,7 +20,7 @@ class BackupRestoreUnit(var context: Context) {
 
     companion object {
         fun isSupport(): Boolean {
-            return RootFile.fileExists("/dev/block/bootdevice/by-name/boot") || RootFile.fileExists("/dev/block/bootdevice/by-name/recovery")
+            return RootFile.itemExists("/dev/block/bootdevice/by-name/boot") || RootFile.itemExists("/dev/block/bootdevice/by-name/recovery")
         }
     }
 
