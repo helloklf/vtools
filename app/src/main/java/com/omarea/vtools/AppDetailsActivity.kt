@@ -3,6 +3,7 @@ package com.omarea.vtools
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -11,18 +12,21 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.text.InputFilter
 import android.util.Log
 import android.view.KeyEvent
-import android.widget.CheckBox
-import android.widget.SeekBar
-import android.widget.Switch
-import android.widget.Toast
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.*
 import com.omarea.AppConfigInfo
 import com.omarea.shared.*
 import com.omarea.shell.KeepShellSync
 import com.omarea.shell.NoticeListing
 import com.omarea.shell.Platform
 import com.omarea.shell.WriteSettings
+import com.omarea.ui.IntInputFilter
+import com.omarea.xposed.XposedCheck
+import de.robv.android.xposed.XSharedPreferences
 import kotlinx.android.synthetic.main.activity_app_details.*
 import java.io.File
 import java.util.*
@@ -34,6 +38,7 @@ class AppDetailsActivity : AppCompatActivity() {
     lateinit var appConfigInfo: AppConfigInfo
     private var dynamicCpu: Boolean = false
     private var _result = RESULT_CANCELED
+    private var vAddinsInstalled = false
 
     @SuppressLint("ApplySharedPref")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -303,6 +308,54 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_gps.setOnClickListener {
             appConfigInfo.gpsOn = (it as Switch).isChecked
         }
+        if(XposedCheck.xposedIsRunning()) {
+            if (appConfigInfo.dpi >= 96) {
+                app_details_dpi.text = appConfigInfo.dpi.toString()
+            } else {
+                app_details_dpi.text = "默认"
+            }
+            app_details_dpi.setOnClickListener {
+                var dialog: AlertDialog? = null
+                val view = layoutInflater.inflate(R.layout.dpi_input, null)
+                val inputDpi = view.findViewById<EditText>(R.id.input_dpi)
+                inputDpi.setFilters( arrayOf(IntInputFilter()) );
+                if (appConfigInfo.dpi >= 96) {
+                    inputDpi.setText(appConfigInfo.dpi.toString())
+                }
+                view.findViewById<Button>(R.id.btn_confirm).setOnClickListener {
+                    val dpiText = inputDpi.text.toString()
+                    if (dpiText.isEmpty()) {
+                        appConfigInfo.dpi = 0
+                        return@setOnClickListener
+                    } else {
+                        try {
+                            val dpi = dpiText.toInt()
+                            if (dpi < 96) {
+                                Toast.makeText(this, "DPI的值必须大于96", Toast.LENGTH_SHORT).show()
+                                return@setOnClickListener
+                            }
+                            appConfigInfo.dpi = dpi
+                            app_details_dpi.text = dpi.toString()
+                        } catch (ex: Exception) {
+
+                        }
+                    }
+                    if (dialog != null) {
+                        dialog!!.dismiss()
+                    }
+                }
+                view.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
+                    if (dialog != null) {
+                        dialog!!.dismiss()
+                    }
+                }
+                dialog = AlertDialog.Builder(this)
+                        .setTitle("请输入DPI")
+                    .setView(view)
+                    .create()
+                    dialog.show()
+            }
+        }
     }
 
     private fun getTotalSizeOfFilesInDir(file: File): Long {
@@ -412,6 +465,20 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_excludetask.isChecked = appConfigInfo.excludeRecent
         app_details_scrollopt.isChecked = appConfigInfo.smoothScroll
         app_details_gps.isChecked = appConfigInfo.gpsOn
+
+        var allowXposedConfig = XposedCheck.xposedIsRunning()
+        try {
+            allowXposedConfig = allowXposedConfig && packageManager.getPackageInfo("com.omarea.vaddin", 0) != null
+            vAddinsInstalled = true
+            app_details_vaddins_notinstall.visibility = View.GONE
+        } catch (ex: Exception) {
+            allowXposedConfig = false
+            vAddinsInstalled = false
+            app_details_vaddins_notinstall.visibility = View.VISIBLE
+        }
+        app_details_dpi.isEnabled = allowXposedConfig
+        app_details_excludetask.isEnabled = allowXposedConfig
+        app_details_scrollopt.isEnabled = allowXposedConfig
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
