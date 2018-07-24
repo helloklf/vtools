@@ -1,6 +1,7 @@
 package com.omarea.vtools
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.Context
@@ -23,6 +24,7 @@ import android.widget.Switch
 import android.widget.Toast
 import com.omarea.shared.*
 import com.omarea.shared.model.Appinfo
+import com.omarea.shell.KeepShellSync
 import com.omarea.shell.Platform
 import com.omarea.ui.OverScrollListView
 import com.omarea.ui.ProgressBarDialog
@@ -30,6 +32,7 @@ import com.omarea.ui.SceneModeAdapter
 import com.omarea.ui.SearchTextWatcher
 import kotlinx.android.synthetic.main.layout_config.*
 import java.io.File
+import java.nio.charset.Charset
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -173,33 +176,99 @@ class FragmentConfig : Fragment() {
         bindSPF(auto_switch_network_off_data, spfAutoConfig, SpfConfig.DATA + SpfConfig.OFF, false)
         bindSPF(auto_switch_network_off_nfc, spfAutoConfig, SpfConfig.NFC + SpfConfig.OFF, false)
         bindSPF(auto_switch_network_off_gps, spfAutoConfig, SpfConfig.GPS + SpfConfig.OFF, false)
+        config_customer_powercfg.setOnClickListener {
+            try {
+                val intent = Intent(this.context, ActivityFileSelector::class.java)
+                intent.putExtra("extension", "sh")
+                startActivityForResult(intent, REQUEST_POWERCFG_FILE)
+            } catch (ex: Exception) {
+                Toast.makeText(context!!, "启动内置文件选择器失败！", Toast.LENGTH_SHORT).show()
+            }
+        }
+        config_customer_powercfg_online.setOnClickListener {
+            try {
+                val intent = Intent(this.context, ActivityAddinOnline::class.java)
+                intent.putExtra("url", "https://github.com/yc9559/cpufreq-interactive-opt/tree/master/vtools-powercfg")
+                startActivityForResult(intent, REQUEST_POWERCFG_FILE)
+            } catch (ex: Exception) {
+                Toast.makeText(context!!, "启动在线页面失败！", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
+
+    private val REQUEST_POWERCFG_FILE = 1
+    private val REQUEST_POWERCFG_ONLINE = 2
+    private val REQUEST_APP_CONFIG = 0
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        try {
-            if (resultCode == RESULT_OK) {
-                val adapter = (config_defaultlist.adapter as SceneModeAdapter)
-                val item = adapter.getItem(requestCode)
-                setAppRowDesc(item)
-                (config_defaultlist.adapter as SceneModeAdapter).updateRow(requestCode, config_defaultlist, item)
-                //loadList(false)
-                //创建Intent
-                try {
-                    val intent = Intent()
-                    intent.action = "com.omarea.vaddin.ConfigChanged"
-                    intent.putExtra("packageName", item.appConfigInfo.packageName)
-                    intent.putExtra("dpi", item.appConfigInfo.dpi)
-                    intent.putExtra("hide_recent", item.appConfigInfo.excludeRecent)
-                    intent.putExtra("scroll", item.appConfigInfo.smoothScroll)
-                    //发送广播
-                    context!!.sendBroadcast(intent)
-                } catch (ex: Exception) {
-                    Toast.makeText(context!!, "更新Xposed配置信息失败！", Toast.LENGTH_SHORT).show()
+        if (requestCode == REQUEST_POWERCFG_FILE) {
+            if (resultCode == Activity.RESULT_OK && data != null && data.extras.containsKey("file")) {
+                val path = data.extras.getString("file")
+                val file = File(path)
+                if (file.exists()) {
+                    if (file.length() > 200 * 1024) {
+                        Toast.makeText(context, "这个文件也太大了，配置脚本大小不能超过200KB！", Toast.LENGTH_LONG).show()
+                        return
+                    }
+                    val lines = file.readLines(Charset.defaultCharset())
+                    val configStar = if (lines.size > 0) lines[0] else ""
+                    if (configStar.startsWith("#!/") && configStar.endsWith("sh")) {
+                        val cmds = StringBuilder("cp '$path' ${Consts.POWER_CFG_PATH}\n")
+                        cmds.append("chmod 0755 ${Consts.POWER_CFG_PATH}\n\n")
+                        cmds.append("if [[ -f ${Consts.POWER_CFG_PATH} ]]; then \n")
+                            cmds.append("chmod 0775 ${Consts.POWER_CFG_PATH};")
+                            cmds.append("busybox sed -i 's/^M//g' ${Consts.POWER_CFG_PATH};")
+                        cmds.append("fi;")
+                        //cmds.append("if [[ -f ${Consts.POWER_CFG_BASE} ]]; then \n")
+                        //  cmds.append("chmod 0775 ${Consts.POWER_CFG_BASE};")
+                        //  cmds.append("busybox sed -i 's/^M//g' ${Consts.POWER_CFG_BASE};")
+                        //cmds.append("fi;")
+                        KeepShellSync.doCmdSync(cmds.toString())
+                    } else {
+                        Toast.makeText(context, "这似乎是个无效的脚本文件！", Toast.LENGTH_LONG).show()
+                    }
+                } else {
+                    Toast.makeText(context!!, "所选的文件没找到！", Toast.LENGTH_LONG).show()
                 }
             }
-        } catch (ex: Exception) {
-            Log.e("update-list", ex.message)
+            return
+        }
+        else if (requestCode == REQUEST_APP_CONFIG && data != null && displayList != null) {
+            try {
+                if (resultCode == RESULT_OK) {
+                    val adapter = (config_defaultlist.adapter as SceneModeAdapter)
+                    var index = -1
+                    val packageName = data.extras.getString("app")
+                    for (i in 0..displayList!!.size - 1) {
+                        if (displayList!![i].packageName == packageName) {
+                            index = i
+                        }
+                    }
+                    if (index < 0) {
+                        return
+                    }
+                    val item = adapter.getItem(index)
+                    setAppRowDesc(item)
+                    (config_defaultlist.adapter as SceneModeAdapter).updateRow(index, config_defaultlist, item)
+                    //loadList(false)
+                    //创建Intent
+                    try {
+                        val intent = Intent()
+                        intent.action = "com.omarea.vaddin.ConfigChanged"
+                        intent.putExtra("packageName", item.appConfigInfo.packageName)
+                        intent.putExtra("dpi", item.appConfigInfo.dpi)
+                        intent.putExtra("hide_recent", item.appConfigInfo.excludeRecent)
+                        intent.putExtra("scroll", item.appConfigInfo.smoothScroll)
+                        //发送广播
+                        context!!.sendBroadcast(intent)
+                    } catch (ex: Exception) {
+                        Toast.makeText(context!!, "更新Xposed配置信息失败！", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (ex: Exception) {
+                Log.e("update-list", ex.message)
+            }
         }
     }
 
@@ -374,7 +443,7 @@ class FragmentConfig : Fragment() {
         item.desc = desc.toString()
     }
 
-    //检查配置文件是否已经安装
+    //检查配置脚本是否已经安装
     private fun checkConfig() {
         val support = Platform().dynamicSupport(context!!)
         if (support) {

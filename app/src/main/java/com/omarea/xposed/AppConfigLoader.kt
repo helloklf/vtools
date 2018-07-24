@@ -14,8 +14,7 @@ class AppConfigLoader {
             // uri columns ...
             val cursor = resolver.query(uri, arrayOf(packageName), null, null, null)
 
-            if (cursor == null)
-            {
+            if (cursor == null) {
                 XposedBridge.log("APP设置返回空")
                 return appConfigInfo;
             }

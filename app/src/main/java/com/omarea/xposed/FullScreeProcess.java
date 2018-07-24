@@ -1,25 +1,21 @@
 package com.omarea.xposed;
 
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.Display;
-import android.view.Surface;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
-import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 public class FullScreeProcess {
     public void addMarginBottom() {
-        XposedHelpers.findAndHookMethod(Application.class, "attach", Context.class , new XC_MethodHook() {
+        XposedHelpers.findAndHookMethod(Application.class, "attach", Context.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                try{
+                try {
                     //Application application = (Application)param.thisObject;
                     Context context = (Context) param.args[0];
                     ApplicationInfo applicationInfo = null;
@@ -28,13 +24,13 @@ public class FullScreeProcess {
                     } catch (PackageManager.NameNotFoundException e) {
                         e.printStackTrace();
                     }
-                    if(applicationInfo != null){
-                        if(applicationInfo.metaData == null)
+                    if (applicationInfo != null) {
+                        if (applicationInfo.metaData == null)
                             applicationInfo.metaData = new Bundle();
                         applicationInfo.metaData.putFloat("android.max_aspect", 2.4f);
                     }
                 } catch (Exception ex) {
-                    XposedBridge.log("VAddin Error：" + this.getClass().getName() +"\n" + ex.getMessage());
+                    XposedBridge.log("VAddin Error：" + this.getClass().getName() + "\n" + ex.getMessage());
                 }
                 super.beforeHookedMethod(param);
             }

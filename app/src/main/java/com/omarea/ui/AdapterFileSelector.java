@@ -14,7 +14,6 @@ import com.omarea.vtools.R;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FilenameFilter;
 
 public class AdapterFileSelector extends BaseAdapter {
     private File[] fileArray;
@@ -50,7 +49,7 @@ public class AdapterFileSelector extends BaseAdapter {
                             if (!pathname.exists()) {
                                 return false;
                             }
-                            if(pathname.isFile() && extension != null && !extension.isEmpty()) {
+                            if (pathname.isFile() && extension != null && !extension.isEmpty()) {
                                 return pathname.getName().endsWith(extension);
                             } else {
                                 return true;

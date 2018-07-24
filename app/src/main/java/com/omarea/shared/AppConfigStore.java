@@ -65,7 +65,7 @@ public class AppConfigStore extends SQLiteOpenHelper {
         return appConfigInfo;
     }
 
-    public  Cursor getAppConfigStore(String app) {
+    public Cursor getAppConfigStore(String app) {
         return this.getReadableDatabase().rawQuery("select * from app_xposed_config where id = ?", new String[]{app});
     }
 

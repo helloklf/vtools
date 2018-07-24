@@ -3,7 +3,6 @@ package com.omarea.vtools
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
-import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -12,10 +11,8 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.text.InputFilter
 import android.util.Log
 import android.view.KeyEvent
-import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
 import com.omarea.AppConfigInfo
@@ -26,7 +23,6 @@ import com.omarea.shell.Platform
 import com.omarea.shell.WriteSettings
 import com.omarea.ui.IntInputFilter
 import com.omarea.xposed.XposedCheck
-import de.robv.android.xposed.XSharedPreferences
 import kotlinx.android.synthetic.main.activity_app_details.*
 import java.io.File
 import java.util.*
@@ -308,7 +304,7 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_gps.setOnClickListener {
             appConfigInfo.gpsOn = (it as Switch).isChecked
         }
-        if(XposedCheck.xposedIsRunning()) {
+        if (XposedCheck.xposedIsRunning()) {
             if (appConfigInfo.dpi >= 96) {
                 app_details_dpi.text = appConfigInfo.dpi.toString()
             } else {
@@ -318,7 +314,7 @@ class AppDetailsActivity : AppCompatActivity() {
                 var dialog: AlertDialog? = null
                 val view = layoutInflater.inflate(R.layout.dpi_input, null)
                 val inputDpi = view.findViewById<EditText>(R.id.input_dpi)
-                inputDpi.setFilters( arrayOf(IntInputFilter()) );
+                inputDpi.setFilters(arrayOf(IntInputFilter()));
                 if (appConfigInfo.dpi >= 96) {
                     inputDpi.setText(appConfigInfo.dpi.toString())
                 }
@@ -351,9 +347,9 @@ class AppDetailsActivity : AppCompatActivity() {
                 }
                 dialog = AlertDialog.Builder(this)
                         .setTitle("请输入DPI")
-                    .setView(view)
-                    .create()
-                    dialog.show()
+                        .setView(view)
+                        .create()
+                dialog.show()
             }
         }
     }

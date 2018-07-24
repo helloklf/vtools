@@ -18,6 +18,7 @@ import java.io.File
 class ActivityFileSelector : AppCompatActivity() {
 
     private var adapterFileSelector: AdapterFileSelector? = null
+    var extension = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         val spf = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         if (spf.getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false))
@@ -27,6 +28,13 @@ class ActivityFileSelector : AppCompatActivity() {
         setContentView(R.layout.activity_file_selector)
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
+        if (intent.extras.containsKey("extension")) {
+            extension = intent.extras.getString("extension")
+            if (!extension.startsWith(".")) {
+                this.extension = ".$extension"
+            }
+        }
+        this.title = this.title.toString() + "($extension)"
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -46,10 +54,6 @@ class ActivityFileSelector : AppCompatActivity() {
             if (list == null) {
                 Toast.makeText(this, "没有读取文件的权限！", Toast.LENGTH_LONG).show()
                 return
-            }
-            var extension = ""
-            if (intent.extras.containsKey("extension")) {
-                extension = intent.extras.getString("extension")
             }
             adapterFileSelector = AdapterFileSelector(sdcard, Runnable {
                 val file: File? = adapterFileSelector!!.selectedFile

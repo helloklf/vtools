@@ -200,15 +200,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <android.support.design.widget.FloatingActionButton
-                        android:id="@+id/config_addconfig"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom|center"
-                        android:layout_margin="@dimen/fab_margin"
-                        android:src="@drawable/add"
-                        android:visibility="gone" />
-
                     <com.omarea.ui.OverScrollView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
@@ -223,127 +214,222 @@
                                 android:id="@+id/config_cfg_select"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="vertical"
+                                android:layout_marginTop="20dp"
+                                android:orientation="horizontal"
                                 android:visibility="gone">
 
-                                <TextView
-                                    style="@style/textTitle"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginBottom="10dp"
-                                    android:layout_marginTop="20dp"
-                                    android:paddingLeft="8dp"
-                                    android:text="安装内置配置文件" />
-
-                                <TextView
-                                    style="@style/textSmall"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginBottom="10dp"
-                                    android:paddingLeft="8dp"
-                                    android:text="安装本应用内置的模式配置文件，这是应用开发者针对部分CPU定制的配置。当然，你也可以自定义配置文件，命名为powercfg，放到/data下，并设置权限为0755。" />
-
                                 <LinearLayout
-                                    android:layout_width="match_parent"
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:orientation="horizontal"
-                                    android:paddingLeft="8dp"
-                                    android:paddingRight="8dp">
-
-                                    <Button
-                                        android:id="@+id/config_cfg_select_0"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="36dp"
-                                        android:layout_marginRight="10dp"
-                                        android:background="@drawable/btn_bg"
-                                        android:paddingLeft="10dp"
-                                        android:paddingRight="10dp"
-                                        android:text="保守（偏重省电）" />
-
-                                    <Button
-                                        android:id="@+id/config_cfg_select_1"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="36dp"
-                                        android:background="@drawable/btn_bg"
-                                        android:paddingLeft="10dp"
-                                        android:paddingRight="10dp"
-                                        android:text="激进（更加流畅）" />
-                                </LinearLayout>
-
-                                <Switch
-                                    android:id="@+id/accu_switch"
-                                    style="@style/textTitle"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="20dp"
-                                    android:paddingLeft="8dp"
-                                    android:paddingRight="8dp"
-                                    android:text="精准切换" />
-
-                                <TextView
-                                    style="@style/textSmall"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    android:paddingLeft="8dp"
-                                    android:paddingRight="8dp"
-                                    android:text="切换配置模式严格检查当前前台应用，避免悬浮窗抢占焦点导致意外的模式切换，但这会在频繁切换应用时增加耗电" />
-
-                                <Switch
-                                    android:id="@+id/battery_monitor"
-                                    style="@style/textTitle"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="20dp"
-                                    android:paddingLeft="8dp"
-                                    android:paddingRight="8dp"
-                                    android:text="耗电检测"
-                                    android:visibility="gone" />
-
-                                <TextView
-                                    style="@style/textSmall"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    android:paddingLeft="8dp"
-                                    android:paddingRight="8dp"
-                                    android:text="加快常驻通知电流显示刷新，获得更精准的耗电速度信息，会增加亮屏时后台耗电（待机自动暂停）"
-                                    android:visibility="gone" />
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="20dp"
-                                    android:orientation="horizontal">
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
 
                                     <TextView
                                         style="@style/textTitle"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_gravity="center_vertical"
+                                        android:layout_marginBottom="10dp"
                                         android:paddingLeft="8dp"
-                                        android:paddingRight="8dp"
-                                        android:text="默认模式" />
+                                        android:text="安装内置配置脚本" />
 
-                                    <Spinner
-                                        android:id="@+id/first_mode"
+                                    <TextView
+                                        style="@style/textSmall"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:layout_gravity="center_vertical|right"
-                                        android:layout_marginLeft="38dp"
-                                        android:layout_marginRight="8dp"
-                                        android:entries="@array/powercfg_modes" />
+                                        android:layout_marginBottom="10dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="安装本应用内置的模式配置脚本，由本应用开发者提供" />
                                 </LinearLayout>
 
-                                <TextView
-                                    style="@style/textSmall"
-                                    android:layout_width="match_parent"
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:orientation="vertical">
+
+                                    <Button
+                                        android:id="@+id/config_cfg_select_0"
+                                        android:layout_width="55dp"
+                                        android:layout_height="30dp"
+                                        android:layout_gravity="center"
+                                        android:layout_marginLeft="20dp"
+                                        android:background="@android:color/transparent"
+                                        android:textColor="@color/colorPrimary"
+                                        android:text="保守" />
+
+                                    <Button
+                                        android:id="@+id/config_cfg_select_1"
+                                        android:layout_width="55dp"
+                                        android:layout_height="30dp"
+                                        android:layout_gravity="center"
+                                        android:layout_marginLeft="20dp"
+                                        android:background="@android:color/transparent"
+                                        android:textColor="@color/colorPrimary"
+                                        android:text="激进" />
+                                </LinearLayout>
+                            </LinearLayout>
+
+                            <Switch
+                                android:id="@+id/accu_switch"
+                                style="@style/textTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="20dp"
+                                android:paddingLeft="8dp"
+                                android:text="精准切换" />
+
+                            <TextView
+                                style="@style/textSmall"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="70dp"
+                                android:text="切换配置模式严格检查当前前台应用，避免悬浮窗抢占焦点导致意外的模式切换，但这会在频繁切换应用时增加耗电" />
+
+                            <Switch
+                                android:id="@+id/battery_monitor"
+                                style="@style/textTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="30dp"
+                                android:paddingLeft="8dp"
+                                android:text="耗电检测"
+                                android:visibility="gone" />
+
+                            <TextView
+                                style="@style/textSmall"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp"
+                                android:text="加快常驻通知电流显示刷新，获得更精准的耗电速度信息，会增加亮屏时后台耗电（待机自动暂停）"
+                                android:visibility="gone" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="30dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    style="@style/textTitle"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
                                     android:paddingLeft="8dp"
                                     android:paddingRight="8dp"
-                                    android:text="新安装的应用默认使用的模式" />
+                                    android:layout_weight="1"
+                                    android:text="首选模式" />
+
+                                <Spinner
+                                    android:id="@+id/first_mode"
+                                    android:paddingRight="0dp"
+                                    android:layout_width="110dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical|right"
+                                    android:entries="@array/powercfg_modes" />
                             </LinearLayout>
+
+                            <TextView
+                                style="@style/textSmall"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp"
+                                android:text="新安装的应用默认使用的模式" />
+
+                            <LinearLayout
+                                android:layout_marginTop="30dp"
+                                android:gravity="center_vertical"
+                                android:id="@+id/config_cfg_customer"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        style="@style/textTitle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="10dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="自选配置脚本" />
+
+                                    <TextView
+                                        style="@style/textSmall"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="10dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="从SDCard下选择配置脚本，或在线获取YC提供的配置脚本" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:layout_gravity="center_vertical"
+                                    android:orientation="vertical">
+
+                                    <Button
+                                        android:id="@+id/config_customer_powercfg"
+                                        android:layout_width="55dp"
+                                        android:layout_height="30dp"
+                                        android:layout_gravity="center"
+                                        android:layout_marginLeft="20dp"
+                                        android:background="@android:color/transparent"
+                                        android:text="本地"
+                                        android:textColor="@color/colorPrimary" />
+
+                                    <Button
+                                        android:id="@+id/config_customer_powercfg_online"
+                                        android:layout_width="55dp"
+                                        android:layout_height="30dp"
+                                        android:layout_gravity="center"
+                                        android:layout_marginLeft="20dp"
+                                        android:background="@android:color/transparent"
+                                        android:textColor="@color/colorPrimary"
+                                        android:text="在线" />
+                                </LinearLayout>
+                            </LinearLayout>
+
+                            <android.support.v7.widget.CardView
+                                android:layout_marginTop="30dp"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginRight="8dp"
+                                android:layout_marginBottom="20dp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+                                <LinearLayout
+                                    android:padding="8dp"
+                                    android:orientation="vertical"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content">
+                                    <TextView
+                                        style="@style/textSmall"
+                                        android:textColor="@color/colorPrimary"
+                                        android:text="改动说明："
+                                        android:layout_marginBottom="10dp"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content" />
+                                    <TextView
+                                        android:text="基于微·工具箱改进，锁屏优化选项现已默认开启不再提供手动控制\n\n此外，相对于老版本，动态响应的配置脚本位置有所变化，同时你也不再需要手动放置，可直接在工具箱里选择文件即可自动安装配置\n\n非常感谢yc发布的适用于工具箱的配置脚本，让更多的设备能够用上动态响应，现在你也可以在本界面点击“在线”按钮来快速获取配置脚本"
+                                        style="@style/textSmall"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content" />
+                                </LinearLayout>
+                            </android.support.v7.widget.CardView>
                         </LinearLayout>
                     </com.omarea.ui.OverScrollView>
                 </FrameLayout>

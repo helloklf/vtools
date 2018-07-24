@@ -338,13 +338,13 @@
     <string name="set_power_mode">设置配置模式</string>
     <string name="i_know">知道了</string>
     <string name="more">了解更多</string>
-    <string name="not_support_config">未找到可用的模式配置文件</string>
-    <string name="not_support_config_desc">本应用目前还没有为您当前Soc提供性能配置文件，但你可以自己创建配置文件，并放到/data目录下，文件命名为powercfg，权限设为0755.</string>
+    <string name="not_support_config">未找到可用的模式配置脚本</string>
+    <string name="not_support_config_desc">本应用目前还没有为您当前Soc提供性能配置脚本，但你可以自己创建配置脚本，并放到/data目录下，文件命名为powercfg，权限设为0755.</string>
     <string name="first_start_select_config">首次使用，先选择配置偏好</string>
     <string name="conservative">保守 - 更加省电</string>
     <string name="radicalness">激进 - 性能优先</string>
     <string name="config_installed">配置安装成功！</string>
-    <string name="config_install_fail">安装配置文件失败!\n</string>
+    <string name="config_install_fail">安装配置脚本失败!\n</string>
     <string name="ro_product_model">ro.product.model=</string>
     <string name="ro_product_brand">ro.product.brand=</string>
     <string name="ro_product_name">ro.product.name=</string>

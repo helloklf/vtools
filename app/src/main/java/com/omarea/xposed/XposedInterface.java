@@ -168,7 +168,7 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
 
             //用于检查xposed是否激活
             case "com.omarea.vtools":
-            //case "com.omarea.vaddin":
+                //case "com.omarea.vaddin":
                 new ActiveCheck().isActive(loadPackageParam);
                 break;
 

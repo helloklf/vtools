@@ -45,7 +45,7 @@ public object Consts {
                     "/cache/busybox mount -f -o rw,remount /system/xbin\n" +
                     "mount -o rw,remount /system/xbin\n"
 
-    val POWER_CFG_PATH = "/data/powercfg"
+    val POWER_CFG_PATH = "/data/powercfg.sh"
     val POWER_CFG_BASE = "/data/powercfg-base.sh"
 
     val ExecuteConfig = "sh ${POWER_CFG_BASE};\n"

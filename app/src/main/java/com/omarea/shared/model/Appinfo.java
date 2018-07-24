@@ -3,7 +3,6 @@ package com.omarea.shared.model;
 import android.graphics.drawable.Drawable;
 
 import com.omarea.AppConfigInfo;
-import com.omarea.shared.AppConfigStore;
 
 /**
  * 应用信息

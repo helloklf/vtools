@@ -107,7 +107,7 @@ public class ViewConfig {
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 if (!isEnabled()) return;
                 final int raw_friction = Common.DEFAULT_SCROLLING_FRICTION;
-                final float actual_friction = ((float)raw_friction) / MULTIPLIER_SCROLL_FRICTION;
+                final float actual_friction = ((float) raw_friction) / MULTIPLIER_SCROLL_FRICTION;
                 param.setResult(actual_friction);
             }
         });
