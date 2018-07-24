@@ -69,7 +69,10 @@ class AppDetailsActivity : AppCompatActivity() {
                 if (getVersion() > aidlConn!!.version) {
                     // TODO:自动安装
                     Toast.makeText(this, "“Scene-高级设定”插件版本过低！", Toast.LENGTH_SHORT).show()
-                    unbindService(conn)
+                    if (aidlConn != null) {
+                        unbindService(conn)
+                        aidlConn = null
+                    }
                     installVAddin()
                 } else {
                     val configJson = aidlConn!!.getAppConfig(app)
@@ -610,7 +613,7 @@ class AppDetailsActivity : AppCompatActivity() {
             if (!AppConfigStore(this).setAppConfig(appConfigInfo)) {
                 Toast.makeText(this, getString(R.string.config_save_fail), Toast.LENGTH_LONG).show()
             }
-            this.finishAndRemoveTask()
+            this.finish()
         }
         return true
     }
@@ -621,7 +624,9 @@ class AppDetailsActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        unbindService(conn)
-        finishAndRemoveTask()
+        if (aidlConn != null) {
+            unbindService(conn)
+            aidlConn = null
+        }
     }
 }
