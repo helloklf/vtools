@@ -1,6 +1,7 @@
 package com.omarea.vboot
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -19,8 +20,10 @@ import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.CheckBox
 import android.widget.Switch
+import android.widget.Toast
 import com.omarea.shared.*
 import com.omarea.shared.model.Appinfo
+import com.omarea.shell.KeepShellSync
 import com.omarea.shell.Platform
 import com.omarea.ui.AppListAdapter
 import com.omarea.ui.OverScrollListView
@@ -28,6 +31,7 @@ import com.omarea.ui.ProgressBarDialog
 import com.omarea.ui.SearchTextWatcher
 import kotlinx.android.synthetic.main.layout_config.*
 import java.io.File
+import java.nio.charset.Charset
 import java.util.*
 
 
@@ -236,6 +240,61 @@ class FragmentConfig : Fragment() {
         first_mode.onItemSelectedListener = ModeOnItemSelectedListener(globalSPF, Runnable {
             loadList()
         })
+
+        config_customer_powercfg.setOnClickListener {
+            try {
+                val intent = Intent(this.context, ActivityFileSelector::class.java)
+                intent.putExtra("extension", "sh")
+                startActivityForResult(intent, REQUEST_POWERCFG_FILE)
+            } catch (ex: Exception) {
+                Toast.makeText(context!!, "启动内置文件选择器失败！", Toast.LENGTH_SHORT).show()
+            }
+        }
+        config_customer_powercfg_online.setOnClickListener {
+            getOnlineConfig()
+        }
+    }
+
+    private val REQUEST_POWERCFG_FILE = 1
+    private val REQUEST_POWERCFG_ONLINE = 2
+    private val REQUEST_APP_CONFIG = 0
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_POWERCFG_FILE) {
+            if (resultCode == Activity.RESULT_OK && data != null && data.extras.containsKey("file")) {
+                val path = data.extras.getString("file")
+                val file = File(path)
+                if (file.exists()) {
+                    if (file.length() > 200 * 1024) {
+                        Toast.makeText(context, "这个文件也太大了，配置脚本大小不能超过200KB！", Toast.LENGTH_LONG).show()
+                        return
+                    }
+                    val lines = file.readLines(Charset.defaultCharset())
+                    val configStar = if (lines.size > 0) lines[0] else ""
+                    if (configStar.startsWith("#!/") && configStar.endsWith("sh")) {
+                        val cmds = StringBuilder("cp '$path' ${Consts.POWER_CFG_PATH}\n")
+                        cmds.append("chmod 0755 ${Consts.POWER_CFG_PATH}\n\n")
+                        cmds.append("if [[ -f ${Consts.POWER_CFG_PATH} ]]; then \n")
+                        cmds.append("chmod 0775 ${Consts.POWER_CFG_PATH};")
+                        cmds.append("busybox sed -i 's/^M//g' ${Consts.POWER_CFG_PATH};")
+                        cmds.append("fi;")
+                        //cmds.append("if [[ -f ${Consts.POWER_CFG_BASE} ]]; then \n")
+                        //  cmds.append("chmod 0775 ${Consts.POWER_CFG_BASE};")
+                        //  cmds.append("busybox sed -i 's/^M//g' ${Consts.POWER_CFG_BASE};")
+                        //cmds.append("fi;")
+                        KeepShellSync.doCmdSync(cmds.toString())
+                    } else {
+                        Toast.makeText(context, "这似乎是个无效的脚本文件！", Toast.LENGTH_LONG).show()
+                    }
+                } else {
+                    Toast.makeText(context!!, "所选的文件没找到！", Toast.LENGTH_LONG).show()
+                }
+            }
+            return
+        } else if (requestCode == REQUEST_POWERCFG_ONLINE) {
+
+        }
     }
 
     private class ModeOnItemSelectedListener(private var globalSPF: SharedPreferences, private var runnable: Runnable) : AdapterView.OnItemSelectedListener {
@@ -357,6 +416,16 @@ class FragmentConfig : Fragment() {
         }).start()
     }
 
+    private fun getOnlineConfig() {
+        try {
+            val intent = Intent(this.context, ActivityAddinOnline::class.java)
+            intent.putExtra("url", "https://github.com/yc9559/cpufreq-interactive-opt/tree/master/vtools-powercfg")
+            startActivityForResult(intent, REQUEST_POWERCFG_ONLINE)
+        } catch (ex: Exception) {
+            Toast.makeText(context!!, "启动在线页面失败！", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     //检查配置文件是否已经安装
     private fun checkConfig() {
         val support = Platform().dynamicSupport(context!!)
@@ -378,11 +447,15 @@ class FragmentConfig : Fragment() {
                 AlertDialog.Builder(context)
                         .setTitle(getString(R.string.first_start_select_config))
                         .setCancelable(false)
-                        .setSingleChoiceItems(arrayOf(getString(R.string.conservative), getString(R.string.radicalness)), 0, { _, which ->
+                        .setSingleChoiceItems(arrayOf(getString(R.string.conservative), getString(R.string.radicalness), getString(R.string.get_online_config)), 0, { _, which ->
                             i = which
                         })
                         .setNegativeButton(R.string.btn_confirm, { _, _ ->
-                            installConfig(i > 0)
+                            if (i > 1) {
+                                getOnlineConfig()
+                                return@setNegativeButton
+                            }
+                            installConfig(i == 1)
                         }).create().show()
             }
             else ->
@@ -397,7 +470,8 @@ class FragmentConfig : Fragment() {
                             intent.data = content_url
                             startActivity(intent)
                         })
-                        .setPositiveButton(getString(R.string.i_know), { _, _ ->
+                        .setPositiveButton(getString(R.string.get_online_config), { _, _ ->
+                            getOnlineConfig()
                         })
                         .create()
                         .show()

@@ -70,6 +70,7 @@ class ActivityAddinOnline : AppCompatActivity() {
             try {
                 val myURL = URL(url)
                 val conn = myURL.openConnection()
+                conn.connectTimeout = 30 * 1000
                 conn.connect()
                 conn.getInputStream()
                 val reader = conn.getInputStream().bufferedReader(Charset.forName("UTF-8"))
@@ -131,7 +132,7 @@ class ActivityAddinOnline : AppCompatActivity() {
                         val configPath = url.substring(url.indexOf("vtools-powercfg"))
                         AlertDialog.Builder(vtools_online.context)
                                 .setTitle("可用的配置脚本")
-                                .setMessage("在当前页面上检测到可用于动态响应的配置脚本，是否立即将其安装到本地？\n\n配置名称：$configPath")
+                                .setMessage("在当前页面上检测到可用于动态响应的配置脚本，是否立即将其安装到本地？\n\n配置：$configPath\n\n作者：yc9559")
                                 .setPositiveButton(R.string.btn_confirm, {
                                     _, _ ->
                                     val configAbsPath = "https://github.com/yc9559/cpufreq-interactive-opt/raw/master/$configPath"

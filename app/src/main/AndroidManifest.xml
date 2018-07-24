@@ -149,6 +149,18 @@
             android:finishOnTaskLaunch="false"
             android:label="@string/title_activity_online"
             android:launchMode="standard" />
+        <activity
+            android:name=".ActivityFileSelector"
+            android:excludeFromRecents="true"
+            android:label="@string/title_activity_file_selector"
+            android:launchMode="standard"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

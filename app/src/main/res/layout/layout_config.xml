@@ -142,51 +142,59 @@
                                 android:id="@+id/config_cfg_select"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="vertical"
+                                android:layout_marginTop="20dp"
+                                android:orientation="horizontal"
                                 android:visibility="gone">
 
-                                <TextView
-                                    style="@style/textTitle"
-                                    android:layout_width="match_parent"
+                                <LinearLayout
+                                    android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginBottom="10dp"
-                                    android:layout_marginTop="20dp"
-                                    android:paddingLeft="8dp"
-                                    android:text="安装内置配置文件" />
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
 
-                                <TextView
-                                    style="@style/textSmall"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginBottom="10dp"
-                                    android:paddingLeft="8dp"
-                                    android:text="安装本应用内置的模式配置文件，这是应用开发者针对部分CPU定制的配置。当然，你也可以自定义配置文件，命名为powercfg，放到/data下，并设置权限为0755。" />
+                                    <TextView
+                                        style="@style/textTitle"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="10dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="安装内置配置脚本" />
+
+                                    <TextView
+                                        style="@style/textSmall"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="10dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="安装本应用内置的模式配置脚本，由本应用开发者提供" />
+                                </LinearLayout>
 
                                 <LinearLayout
-                                    android:layout_width="match_parent"
+                                    android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:orientation="horizontal"
-                                    android:paddingLeft="8dp"
-                                    android:paddingRight="8dp">
+                                    android:layout_gravity="center_vertical"
+                                    android:orientation="vertical">
 
                                     <Button
                                         android:id="@+id/config_cfg_select_0"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="36dp"
-                                        android:layout_marginRight="10dp"
-                                        android:background="@drawable/btn_bg"
-                                        android:paddingLeft="10dp"
-                                        android:paddingRight="10dp"
-                                        android:text="保守（偏重省电）" />
+                                        android:layout_width="55dp"
+                                        android:layout_height="30dp"
+                                        android:layout_gravity="center"
+                                        android:layout_marginLeft="20dp"
+                                        android:background="@android:color/transparent"
+                                        android:textColor="@color/colorPrimary"
+                                        android:text="保守" />
 
                                     <Button
                                         android:id="@+id/config_cfg_select_1"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="36dp"
-                                        android:background="@drawable/btn_bg"
-                                        android:paddingLeft="10dp"
-                                        android:paddingRight="10dp"
-                                        android:text="激进（更加流畅）" />
+                                        android:layout_width="55dp"
+                                        android:layout_height="30dp"
+                                        android:layout_gravity="center"
+                                        android:layout_marginLeft="20dp"
+                                        android:background="@android:color/transparent"
+                                        android:textColor="@color/colorPrimary"
+                                        android:text="激进" />
                                 </LinearLayout>
                             </LinearLayout>
 
@@ -280,6 +288,69 @@
                                 android:paddingLeft="8dp"
                                 android:paddingRight="8dp"
                                 android:text="新安装的应用默认使用的模式" />
+
+                            <LinearLayout
+                                android:layout_marginTop="30dp"
+                                android:gravity="center_vertical"
+                                android:id="@+id/config_cfg_customer"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        style="@style/textTitle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="10dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="自选配置脚本" />
+
+                                    <TextView
+                                        style="@style/textSmall"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="10dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="从SDCard下选择配置脚本，或在线获取YC提供的配置脚本" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:layout_gravity="center_vertical"
+                                    android:orientation="vertical">
+
+                                    <Button
+                                        android:id="@+id/config_customer_powercfg"
+                                        android:layout_width="55dp"
+                                        android:layout_height="30dp"
+                                        android:layout_gravity="center"
+                                        android:layout_marginLeft="20dp"
+                                        android:background="@android:color/transparent"
+                                        android:text="本地"
+                                        android:textColor="@color/colorPrimary" />
+
+                                    <Button
+                                        android:id="@+id/config_customer_powercfg_online"
+                                        android:layout_width="55dp"
+                                        android:layout_height="30dp"
+                                        android:layout_gravity="center"
+                                        android:layout_marginLeft="20dp"
+                                        android:background="@android:color/transparent"
+                                        android:textColor="@color/colorPrimary"
+                                        android:text="在线" />
+                                </LinearLayout>
+                            </LinearLayout>
+
                         </LinearLayout>
                     </com.omarea.ui.OverScrollView>
                 </FrameLayout>

@@ -6,6 +6,7 @@ import android.os.Handler
 import android.widget.Toast
 import com.omarea.shared.Consts
 import com.omarea.shell.KeepShellSync
+import com.omarea.shell.RootFile
 import com.omarea.ui.ProgressBarDialog
 import java.io.IOException
 
@@ -16,6 +17,12 @@ import java.io.IOException
 class BackupRestoreUnit(var context: Context) {
     val dialog: ProgressBarDialog
     internal var myHandler: Handler = Handler()
+
+    companion object {
+        fun isSupport(): Boolean {
+            return RootFile.itemExists("/dev/block/bootdevice/by-name/boot") || RootFile.itemExists("/dev/block/bootdevice/by-name/recovery")
+        }
+    }
 
     init {
         dialog = ProgressBarDialog(context)

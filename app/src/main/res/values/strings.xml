@@ -341,9 +341,10 @@
     <string name="addto_balance"><![CDATA[添加选中到 -> 均衡模式]]></string>
     <string name="set_power_mode">设置配置模式</string>
     <string name="i_know">知道了</string>
+    <string name="get_online_config">在线获取</string>
     <string name="more">了解更多</string>
     <string name="not_support_config">未找到可用的模式配置文件</string>
-    <string name="not_support_config_desc">本应用目前还没有为您当前Soc提供性能配置文件，但你可以自己创建配置文件，并放到/data目录下，文件命名为powercfg，权限设为0755.</string>
+    <string name="not_support_config_desc">本应用目前还没有为您当前Soc提供性能配置文件，但你可以自己创建配置文件，并放到/data目录下，文件命名为powercfg，权限设为0755.\n\n或者，试试YC大佬是否有为你的设备提供可用的配置文件，找到适用的配置，点击powercfg.apk，工具箱会自动帮你安装！</string>
     <string name="first_start_select_config">首次使用，先选择配置偏好</string>
     <string name="conservative">保守 - 更加省电</string>
     <string name="radicalness">激进 - 性能优先</string>
@@ -390,4 +391,6 @@
         <item>返回-首页-任务</item>
         <item>任务-首页-返回</item>
     </string-array>
+    <string name="flash_confirm">确认刷入？</string>
+    <string name="title_activity_file_selector">请选择文件</string>
 </resources>
