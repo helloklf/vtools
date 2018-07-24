@@ -188,98 +188,98 @@
                                         android:paddingRight="10dp"
                                         android:text="激进（更加流畅）" />
                                 </LinearLayout>
-
-                                <Switch
-                                    android:id="@+id/lock_screen_optimize"
-                                    style="@style/textTitle"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="20dp"
-                                    android:paddingLeft="8dp"
-                                    android:paddingRight="8dp"
-                                    android:text="锁屏优化" />
-
-                                <TextView
-                                    style="@style/textSmall"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    android:paddingLeft="8dp"
-                                    android:paddingRight="8dp"
-                                    android:text="锁屏后自动切换省电模式，息屏后自动恢复" />
-
-                                <Switch
-                                    android:id="@+id/accu_switch"
-                                    style="@style/textTitle"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="20dp"
-                                    android:paddingLeft="8dp"
-                                    android:paddingRight="8dp"
-                                    android:text="精准切换" />
-
-                                <TextView
-                                    style="@style/textSmall"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    android:paddingLeft="8dp"
-                                    android:paddingRight="8dp"
-                                    android:text="切换配置模式严格检查当前前台应用，避免悬浮窗抢占焦点导致意外的模式切换，但这会在频繁切换应用时增加耗电" />
-
-                                <Switch
-                                    android:id="@+id/battery_monitor"
-                                    style="@style/textTitle"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="20dp"
-                                    android:paddingLeft="8dp"
-                                    android:paddingRight="8dp"
-                                    android:text="耗电检测" />
-
-                                <TextView
-                                    style="@style/textSmall"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    android:paddingLeft="8dp"
-                                    android:paddingRight="8dp"
-                                    android:text="加快常驻通知电流显示刷新，获得更精准的耗电速度信息，会增加亮屏时后台耗电（待机自动暂停）" />
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="20dp"
-                                    android:orientation="horizontal">
-
-                                    <TextView
-                                        style="@style/textTitle"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center_vertical"
-                                        android:paddingLeft="8dp"
-                                        android:paddingRight="8dp"
-                                        android:text="默认模式" />
-
-                                    <Spinner
-                                        android:id="@+id/first_mode"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_gravity="center_vertical|right"
-                                        android:layout_marginLeft="38dp"
-                                        android:layout_marginRight="8dp"
-                                        android:entries="@array/powercfg_modes" />
-                                </LinearLayout>
-
-                                <TextView
-                                    style="@style/textSmall"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="5dp"
-                                    android:paddingLeft="8dp"
-                                    android:paddingRight="8dp"
-                                    android:text="新安装的应用默认使用的模式" />
                             </LinearLayout>
+
+                            <Switch
+                                android:id="@+id/lock_screen_optimize"
+                                style="@style/textTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="20dp"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp"
+                                android:text="锁屏优化" />
+
+                            <TextView
+                                style="@style/textSmall"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp"
+                                android:text="锁屏后自动切换省电模式，息屏后自动恢复" />
+
+                            <Switch
+                                android:id="@+id/accu_switch"
+                                style="@style/textTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="20dp"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp"
+                                android:text="精准切换" />
+
+                            <TextView
+                                style="@style/textSmall"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp"
+                                android:text="切换配置模式严格检查当前前台应用，避免悬浮窗抢占焦点导致意外的模式切换，但这会在频繁切换应用时增加耗电" />
+
+                            <Switch
+                                android:id="@+id/battery_monitor"
+                                style="@style/textTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="20dp"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp"
+                                android:text="耗电检测" />
+
+                            <TextView
+                                style="@style/textSmall"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp"
+                                android:text="加快常驻通知电流显示刷新，获得更精准的耗电速度信息，会增加亮屏时后台耗电（待机自动暂停）" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="20dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    style="@style/textTitle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:paddingLeft="8dp"
+                                    android:paddingRight="8dp"
+                                    android:text="默认模式" />
+
+                                <Spinner
+                                    android:id="@+id/first_mode"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical|right"
+                                    android:layout_marginLeft="38dp"
+                                    android:layout_marginRight="8dp"
+                                    android:entries="@array/powercfg_modes" />
+                            </LinearLayout>
+
+                            <TextView
+                                style="@style/textSmall"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp"
+                                android:text="新安装的应用默认使用的模式" />
                         </LinearLayout>
                     </com.omarea.ui.OverScrollView>
                 </FrameLayout>
