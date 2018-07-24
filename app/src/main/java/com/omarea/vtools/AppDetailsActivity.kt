@@ -604,7 +604,7 @@ class AppDetailsActivity : AppCompatActivity() {
                 setResult(_result, this.intent)
             }
             if (aidlConn != null) {
-                aidlConn!!.updateAppConfig(packageName, appConfigInfo.dpi, appConfigInfo.excludeRecent, appConfigInfo.smoothScroll)
+                aidlConn!!.updateAppConfig(app, appConfigInfo.dpi, appConfigInfo.excludeRecent, appConfigInfo.smoothScroll)
             } else {
             }
             if (!AppConfigStore(this).setAppConfig(appConfigInfo)) {
