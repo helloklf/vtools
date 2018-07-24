@@ -48,8 +48,6 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
     private var lastScreenOnOff: Long = 0
     //屏幕关闭后切换网络延迟（ms）
     private val SCREEN_OFF_SWITCH_NETWORK_DELAY: Long = 30000
-    //屏幕关闭后清理任务延迟（ms）
-    private val SCREEN_OFF_CLEAR_TASKS_DELAY: Long = 60000
     private var screenHandler = ScreenEventHandler({ onScreenOff() }, { onScreenOn() })
     private var handler = Handler(Looper.getMainLooper())
     private var notifyHelper: NotifyHelper = NotifyHelper(context, spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))
@@ -97,7 +95,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             if (!screenOn)
                 onScreenOffCloseNetwork()
         }, SCREEN_OFF_SWITCH_NETWORK_DELAY)
-        sceneMode.clearTask()
+        // TODO: 关闭屏幕后清理后台
         screenHandler.postDelayed({
             if (!screenOn) stopTimer()
         }, 10000)

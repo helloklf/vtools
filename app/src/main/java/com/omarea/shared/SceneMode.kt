@@ -202,11 +202,4 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
             Log.e("onFocusdAppChange", ex.message)
         }
     }
-
-    /**
-     * 清理后台
-     */
-    fun clearTask() {
-
-    }
 }

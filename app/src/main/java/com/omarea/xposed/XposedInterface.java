@@ -45,8 +45,7 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
-                String packageName = AndroidAppHelper.currentPackageName();
-                String key = packageName + "_dpi";
+                String key = AndroidAppHelper.currentPackageName() + "_dpi";
                 if (prefs.contains(key)) {
                     param.setResult(prefs.getInt(key, defaultDpi));
                 }
@@ -56,8 +55,7 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
         XposedHelpers.findAndHookMethod(Display.class, "updateDisplayInfoLocked", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                String packageName = AndroidAppHelper.currentPackageName();
-                String key = packageName + "_dpi";
+                String key = AndroidAppHelper.currentPackageName() + "_dpi";
                 if (prefs.contains(key)) {
                     Object mDisplayInfo = XposedHelpers.getObjectField(param.thisObject, "mDisplayInfo");
                     XposedHelpers.setIntField(mDisplayInfo, "logicalDensityDpi", prefs.getInt(key, defaultDpi));
@@ -67,8 +65,7 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
         XposedHelpers.findAndHookMethod(Display.class, "getMetrics", DisplayMetrics.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                String packageName = AndroidAppHelper.currentPackageName();
-                String key = packageName + "_dpi";
+                String key = AndroidAppHelper.currentPackageName() + "_dpi";
                 if (prefs.contains(key)) {
                     Object mDisplayInfo = XposedHelpers.getObjectField(param.thisObject, "mDisplayInfo");
                     int dpi = prefs.getInt(key, defaultDpi);
@@ -203,19 +200,20 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
             });
         }
         final String keyDPI = packageName + "_dpi";
-        if (prefs.getInt(keyDPI, 0) >= 96) {
+        final int dpi = prefs.getInt(keyDPI, defaultDpi);
+        if (dpi >= 96) {
             XposedHelpers.findAndHookMethod("android.app.Application", loadPackageParam.classLoader, "attach", Context.class, new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     super.beforeHookedMethod(param);
                     prefs.reload();
 
-                    if (prefs.getInt(keyDPI, 0) > 0) {
-                        Context context = (Context) param.args[0];
-                        context.getResources().getDisplayMetrics().density = prefs.getInt(keyDPI, defaultDpi) / 160.0f;
-                        context.getResources().getDisplayMetrics().densityDpi = prefs.getInt(keyDPI, defaultDpi);
-                        context.getResources().getDisplayMetrics().scaledDensity = prefs.getInt(keyDPI, defaultDpi) / 160.0f;
-                    }
+                    Context context = (Context) param.args[0];
+                    if (context == null)
+                        return;
+                    context.getResources().getDisplayMetrics().density = dpi / 160.0f;
+                    context.getResources().getDisplayMetrics().densityDpi = dpi;
+                    context.getResources().getDisplayMetrics().scaledDensity = dpi / 160.0f;
                 }
             });
 
@@ -223,14 +221,11 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     super.beforeHookedMethod(param);
-                    if (prefs.contains(keyDPI)) {
-                        DisplayMetrics displayMetrics = (DisplayMetrics) (param.args[0]);
-                        if (displayMetrics != null) {
-                            int dpi = prefs.getInt(keyDPI, defaultDpi);
-                            displayMetrics.density = dpi / 160.0f;
-                            displayMetrics.densityDpi = dpi;
-                            displayMetrics.scaledDensity = dpi / 160.0f;
-                        }
+                    DisplayMetrics displayMetrics = (DisplayMetrics) (param.args[0]);
+                    if (displayMetrics != null) {
+                        displayMetrics.density = dpi / 160.0f;
+                        displayMetrics.densityDpi = dpi;
+                        displayMetrics.scaledDensity = dpi / 160.0f;
                     }
                 }
             });
@@ -238,14 +233,11 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                     super.beforeHookedMethod(param);
-                    if (prefs.contains(keyDPI)) {
-                        DisplayMetrics displayMetrics = (DisplayMetrics) (param.args[0]);
-                        if (displayMetrics != null) {
-                            int dpi = prefs.getInt(keyDPI, defaultDpi);
-                            displayMetrics.density = dpi / 160.0f;
-                            displayMetrics.densityDpi = dpi;
-                            displayMetrics.scaledDensity = dpi / 160.0f;
-                        }
+                    DisplayMetrics displayMetrics = (DisplayMetrics) (param.args[0]);
+                    if (displayMetrics != null) {
+                        displayMetrics.density = dpi / 160.0f;
+                        displayMetrics.densityDpi = dpi;
+                        displayMetrics.scaledDensity = dpi / 160.0f;
                     }
                 }
             });

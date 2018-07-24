@@ -56,6 +56,7 @@ class AppDetailsActivity : AppCompatActivity() {
     private var conn = object: ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             aidlConn = IAppConfigAidlInterface.Stub.asInterface(service)
+            updateXposedConfigFromAddin()
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
@@ -125,7 +126,6 @@ class AppDetailsActivity : AppCompatActivity() {
             intent.setComponent(ComponentName("com.omarea.vaddin","com.omarea.vaddin.ConfigUpdateService"));
             //绑定的时候服务端自动创建
             if (bindService(intent,conn, Context.BIND_AUTO_CREATE)) {
-                updateXposedConfigFromAddin()
             } else {
                 throw Exception("")
             }
@@ -449,12 +449,15 @@ class AppDetailsActivity : AppCompatActivity() {
                     } else {
                         try {
                             val dpi = dpiText.toInt()
-                            if (dpi < 96) {
+                            if (dpi < 96 && dpi != 0) {
                                 Toast.makeText(this, "DPI的值必须大于96", Toast.LENGTH_SHORT).show()
                                 return@setOnClickListener
                             }
                             appConfigInfo.dpi = dpi
-                            app_details_dpi.text = dpi.toString()
+                            if (dpi == 0) {
+                                app_details_dpi.text = "默认"
+                            } else
+                                app_details_dpi.text = dpi.toString()
                         } catch (ex: Exception) {
 
                         }
