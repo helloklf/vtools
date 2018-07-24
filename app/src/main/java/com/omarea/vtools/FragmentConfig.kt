@@ -252,19 +252,6 @@ class FragmentConfig : Fragment() {
                     setAppRowDesc(item)
                     (config_defaultlist.adapter as SceneModeAdapter).updateRow(index, config_defaultlist, item)
                     //loadList(false)
-                    //创建Intent
-                    try {
-                        val intent = Intent()
-                        intent.action = "com.omarea.vaddin.ConfigChanged"
-                        intent.putExtra("packageName", item.appConfigInfo.packageName)
-                        intent.putExtra("dpi", item.appConfigInfo.dpi)
-                        intent.putExtra("hide_recent", item.appConfigInfo.excludeRecent)
-                        intent.putExtra("scroll", item.appConfigInfo.smoothScroll)
-                        //发送广播
-                        context!!.sendBroadcast(intent)
-                    } catch (ex: Exception) {
-                        Toast.makeText(context!!, "更新Xposed配置信息失败！", Toast.LENGTH_SHORT).show()
-                    }
                 }
             } catch (ex: Exception) {
                 Log.e("update-list", ex.message)
@@ -371,7 +358,7 @@ class FragmentConfig : Fragment() {
                 installedList = applistHelper.getAll()
             }
 
-            val keyword = config_search_box.text.toString()
+            val keyword = config_search_box.text.toString().toLowerCase()
             val search = keyword.isNotEmpty()
             var filterMode = ""
             var filterAppType = ""
@@ -393,7 +380,7 @@ class FragmentConfig : Fragment() {
                 val item = installedList!![i]
                 setAppRowDesc(item)
                 val packageName = item.packageName.toString()
-                if (search && !(packageName.contains(keyword) || item.appName.toString().contains(keyword))) {
+                if (search && !(packageName.toLowerCase().contains(keyword) || item.appName.toString().toLowerCase().contains(keyword))) {
                     continue
                 } else {
                     if (filterMode == "*" || filterMode == spfPowercfg.getString(packageName, firstMode)) {

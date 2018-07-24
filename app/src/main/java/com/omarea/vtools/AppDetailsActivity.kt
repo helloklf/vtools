@@ -1,11 +1,12 @@
 package com.omarea.vtools
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.DialogInterface
+import android.content.*
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.IBinder
 import android.provider.Settings
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
@@ -26,6 +27,8 @@ import com.omarea.xposed.XposedCheck
 import kotlinx.android.synthetic.main.activity_app_details.*
 import java.io.File
 import java.util.*
+import com.omarea.vaddin.IAppConfigAidlInterface
+import org.json.JSONObject
 
 
 class AppDetailsActivity : AppCompatActivity() {
@@ -35,6 +38,126 @@ class AppDetailsActivity : AppCompatActivity() {
     private var dynamicCpu: Boolean = false
     private var _result = RESULT_CANCELED
     private var vAddinsInstalled = false
+    private var aidlConn: IAppConfigAidlInterface? = null
+
+    fun getVersion(): Int {
+        val manager = getPackageManager()
+        var code = 0
+        try {
+            val info = manager.getPackageInfo(getPackageName(), 0)
+            code = info.versionCode
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
+
+        return code
+    }
+
+    private var conn = object: ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            aidlConn = IAppConfigAidlInterface.Stub.asInterface(service)
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            aidlConn = null
+        }
+    }
+
+    private fun updateXposedConfigFromAddin () {
+        if (aidlConn != null) {
+            try {
+                if (getVersion() > aidlConn!!.version) {
+                    // TODO:自动安装
+                    Toast.makeText(this, "“Scene-高级设定”插件版本过低！", Toast.LENGTH_SHORT).show()
+                    unbindService(conn)
+                    installVAddin()
+                } else {
+                    val configJson = aidlConn!!.getAppConfig(app)
+                    val config = JSONObject(configJson)
+                    for (key in config.keys()) {
+                        when (key) {
+                            "dpi" -> {
+                                appConfigInfo.dpi = config.getInt(key)
+                            }
+                            "excludeRecent" -> {
+                                appConfigInfo.excludeRecent = config.getBoolean(key)
+                            }
+                            "smoothScroll" -> {
+                                appConfigInfo.smoothScroll = config.getBoolean(key)
+                            }
+                        }
+                    }
+                }
+            } catch (ex: Exception) {
+                Toast.makeText(this, "从“Scene-高级设定”插件同步Xposed设定失败！", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun installVAddin() {
+        val addinPath = FileWrite.WritePrivateFile(assets, "addin/xposed-addin.apk", "addin/xposed-addin.apk", this)
+        if (addinPath == null) {
+            Toast.makeText(this, "插件未集成到应用包，请单独下载！", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (KeepShellSync.doCmdSync("pm install -r '$addinPath'") !== "error") {
+            checkXposedState()
+        } else {
+            val intent = Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(Uri.fromFile(File(addinPath)),"application/vnd.android.package-archive");
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+    }
+
+    private fun bindService() {
+        if (aidlConn != null) {
+            return
+        }
+        try {
+            val intent = Intent();
+            //绑定服务端的service
+            intent.setAction("com.omarea.vaddin.ConfigUpdateService");
+            //新版本（5.0后）必须显式intent启动 绑定服务
+            intent.setComponent(ComponentName("com.omarea.vaddin","com.omarea.vaddin.ConfigUpdateService"));
+            //绑定的时候服务端自动创建
+            if (bindService(intent,conn, Context.BIND_AUTO_CREATE)) {
+                updateXposedConfigFromAddin()
+            } else {
+                throw Exception("")
+            }
+        } catch (ex: Exception) {
+            Toast.makeText(this, "连接到“Scene-高级设定”插件失败，请不要阻止插件自启动！", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    private fun checkXposedState() {
+        var allowXposedConfig = XposedCheck.xposedIsRunning()
+        try {
+            vAddinsInstalled = packageManager.getPackageInfo("com.omarea.vaddin", 0) != null
+            allowXposedConfig = allowXposedConfig && vAddinsInstalled
+            app_details_vaddins_notinstall.visibility = View.GONE
+        } catch (ex: Exception) {
+            allowXposedConfig = false
+            vAddinsInstalled = false
+            app_details_vaddins_notinstall.visibility = View.VISIBLE
+            app_details_vaddins_notinstall.setOnClickListener {
+                installVAddin()
+            }
+        }
+        app_details_dpi.isEnabled = allowXposedConfig
+        app_details_excludetask.isEnabled = allowXposedConfig
+        app_details_scrollopt.isEnabled = allowXposedConfig
+
+        if (vAddinsInstalled) {
+            if (aidlConn == null) {
+                bindService()
+            } else {
+                updateXposedConfigFromAddin()
+            }
+        }
+    }
+
 
     @SuppressLint("ApplySharedPref")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -292,7 +415,7 @@ class AppDetailsActivity : AppCompatActivity() {
             }
         })
         // TODO: 输入DPI
-        if (appConfigInfo.dpi > -1) {
+        if (appConfigInfo.dpi >= 96) {
             app_details_dpi.text = appConfigInfo.dpi.toString()
         }
         app_details_excludetask.setOnClickListener {
@@ -315,9 +438,6 @@ class AppDetailsActivity : AppCompatActivity() {
                 val view = layoutInflater.inflate(R.layout.dpi_input, null)
                 val inputDpi = view.findViewById<EditText>(R.id.input_dpi)
                 inputDpi.setFilters(arrayOf(IntInputFilter()));
-                if (appConfigInfo.dpi >= 96) {
-                    inputDpi.setText(appConfigInfo.dpi.toString())
-                }
                 view.findViewById<Button>(R.id.btn_confirm).setOnClickListener {
                     val dpiText = inputDpi.text.toString()
                     if (dpiText.isEmpty()) {
@@ -382,6 +502,8 @@ class AppDetailsActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     override fun onResume() {
         super.onResume()
+
+        checkXposedState()
 
         val modeList = ModeList(this)
         val powercfg = getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
@@ -455,26 +577,12 @@ class AppDetailsActivity : AppCompatActivity() {
         if (appConfigInfo.aloneLightValue > 0) {
             app_details_light.setProgress(appConfigInfo.aloneLightValue)
         }
-        if (appConfigInfo.dpi > -1) {
+        if (appConfigInfo.dpi >= 96) {
             app_details_dpi.text = appConfigInfo.dpi.toString()
         }
         app_details_excludetask.isChecked = appConfigInfo.excludeRecent
         app_details_scrollopt.isChecked = appConfigInfo.smoothScroll
         app_details_gps.isChecked = appConfigInfo.gpsOn
-
-        var allowXposedConfig = XposedCheck.xposedIsRunning()
-        try {
-            allowXposedConfig = allowXposedConfig && packageManager.getPackageInfo("com.omarea.vaddin", 0) != null
-            vAddinsInstalled = true
-            app_details_vaddins_notinstall.visibility = View.GONE
-        } catch (ex: Exception) {
-            allowXposedConfig = false
-            vAddinsInstalled = false
-            app_details_vaddins_notinstall.visibility = View.VISIBLE
-        }
-        app_details_dpi.isEnabled = allowXposedConfig
-        app_details_excludetask.isEnabled = allowXposedConfig
-        app_details_scrollopt.isEnabled = allowXposedConfig
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -495,6 +603,10 @@ class AppDetailsActivity : AppCompatActivity() {
             } else {
                 setResult(_result, this.intent)
             }
+            if (aidlConn != null) {
+                aidlConn!!.updateAppConfig(packageName, appConfigInfo.dpi, appConfigInfo.excludeRecent, appConfigInfo.smoothScroll)
+            } else {
+            }
             if (!AppConfigStore(this).setAppConfig(appConfigInfo)) {
                 Toast.makeText(this, getString(R.string.config_save_fail), Toast.LENGTH_LONG).show()
             }
@@ -509,6 +621,7 @@ class AppDetailsActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
+        unbindService(conn)
         finishAndRemoveTask()
     }
 }
