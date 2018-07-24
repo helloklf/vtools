@@ -154,7 +154,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navigationView.menu.findItem(R.id.nav_battery).isEnabled = BatteryUnit().isSupport
 
         if (!hasRoot)
-            hideRootMenu(navigationView.menu);
+            hideRootMenu(navigationView.menu)
         else if (!BackupRestoreUnit.isSupport()) {
             navigationView.menu.findItem(R.id.nav_img).isEnabled = false
         }

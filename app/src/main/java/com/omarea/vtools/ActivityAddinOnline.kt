@@ -12,19 +12,18 @@ import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
-import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import com.omarea.scripts.VToolsOnlineNative
 import com.omarea.shared.ConfigInstaller
-import com.omarea.shared.FileWrite
 import com.omarea.shared.SpfConfig
 import com.omarea.ui.ProgressBarDialog
 import kotlinx.android.synthetic.main.activity_addin_online.*
 import java.net.URL
 import java.nio.charset.Charset
+import com.omarea.vtools.R
 
 
 class ActivityAddinOnline : AppCompatActivity() {
@@ -131,7 +130,7 @@ class ActivityAddinOnline : AppCompatActivity() {
                         val configPath = url.substring(url.indexOf("vtools-powercfg"))
                         AlertDialog.Builder(vtools_online.context)
                                 .setTitle("可用的配置脚本")
-                                .setMessage("在当前页面上检测到可用于动态响应的配置脚本，是否立即将其安装到本地？\n\n配置名称：$configPath")
+                                .setMessage("在当前页面上检测到可用于动态响应的配置脚本，是否立即将其安装到本地？\n\n配置：$configPath\n\n作者：yc9559")
                                 .setPositiveButton(R.string.btn_confirm, {
                                     _, _ ->
                                     val configAbsPath = "https://github.com/yc9559/cpufreq-interactive-opt/raw/master/$configPath"

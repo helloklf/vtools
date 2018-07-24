@@ -189,7 +189,7 @@ class FragmentConfig : Fragment() {
             try {
                 val intent = Intent(this.context, ActivityAddinOnline::class.java)
                 intent.putExtra("url", "https://github.com/yc9559/cpufreq-interactive-opt/tree/master/vtools-powercfg")
-                startActivityForResult(intent, REQUEST_POWERCFG_FILE)
+                startActivityForResult(intent, REQUEST_POWERCFG_ONLINE)
             } catch (ex: Exception) {
                 Toast.makeText(context!!, "启动在线页面失败！", Toast.LENGTH_SHORT).show()
             }
