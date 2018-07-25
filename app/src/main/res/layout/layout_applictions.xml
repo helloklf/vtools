@@ -18,11 +18,12 @@
             <EditText
                 android:id="@+id/apps_search_box"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="48dp"
                 android:background="#33dddddd"
                 android:hint="搜索 应用名或PackageName"
                 android:inputType="textFilter"
                 android:padding="8dp"
+                android:textSize="16dp"
                 android:singleLine="true" />
 
             <TabWidget

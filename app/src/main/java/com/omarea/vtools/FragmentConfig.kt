@@ -226,7 +226,10 @@ class FragmentConfig : Fragment() {
                         //  cmds.append("chmod 0775 ${Consts.POWER_CFG_BASE};")
                         //  cmds.append("busybox sed -i 's/^M//g' ${Consts.POWER_CFG_BASE};")
                         //cmds.append("fi;")
-                        KeepShellSync.doCmdSync(cmds.toString())
+                        if (KeepShellSync.doCmdSync(cmds.toString()) != "error") {
+                            Toast.makeText(context, "动态响应配置脚本已安装！", Toast.LENGTH_SHORT).show()
+                            reStartService()
+                        }
                     } else {
                         Toast.makeText(context, "这似乎是个无效的脚本文件！", Toast.LENGTH_LONG).show()
                     }
@@ -235,6 +238,11 @@ class FragmentConfig : Fragment() {
                 }
             }
             return
+        }
+        else if (requestCode == REQUEST_POWERCFG_ONLINE) {
+            if (resultCode == Activity.RESULT_OK) {
+                reStartService()
+            }
         }
         else if (requestCode == REQUEST_APP_CONFIG && data != null && displayList != null) {
             try {
@@ -258,6 +266,42 @@ class FragmentConfig : Fragment() {
             } catch (ex: Exception) {
                 Log.e("update-list", ex.message)
             }
+        }
+    }
+
+    /**
+     * 重启辅助服务
+     */
+    private fun reStartService () {
+        if (AccessibleServiceHelper().serviceIsRunning(context!!)) {
+            processBarDialog.showDialog("正在重启辅助服务...")
+            Thread(Runnable {
+                try {
+                    val contentResolver = context!!.contentResolver
+                    val serviceName = "${context!!.packageName}/${AccessibilityServiceScence::class.java.name}"
+                    var services = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)
+                    services = services.replace(":$serviceName", "").replace(serviceName, "")
+                    if (Settings.Secure.putString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES, services)) {
+                        contentResolver.notifyChange(Settings.System.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES), null)
+                        AccessibleServiceHelper().startServiceUseRoot(context!!)
+                    } else {
+                        throw Exception("")
+                    }
+                } catch (ex: Exception) {
+                    AlertDialog.Builder(context!!)
+                            .setTitle("需要重启辅助服务")
+                            .setMessage("请手动重启辅助服务，使配置脚本生效！")
+                            .setPositiveButton(R.string.btn_confirm, {
+                                _,_ ->
+                            })
+                            .create()
+                            .show()
+                } finally {
+                    configlist_tabhost.post {
+                        processBarDialog.hideDialog()
+                    }
+                }
+            }).start()
         }
     }
 
@@ -491,6 +535,7 @@ class FragmentConfig : Fragment() {
         try {
             ConfigInstaller().installPowerConfig(context!!, "", useBigCore)
             Snackbar.make(view!!, getString(R.string.config_installed), Snackbar.LENGTH_LONG).show()
+            reStartService()
         } catch (ex: Exception) {
             Snackbar.make(view!!, getString(R.string.config_install_fail) + ex.message, Snackbar.LENGTH_LONG).show()
         }

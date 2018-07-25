@@ -20,6 +20,7 @@ class BootService : IntentService("vtools-boot") {
     private lateinit var swapConfig: SharedPreferences
     private lateinit var globalConfig: SharedPreferences
     private var isFirstBoot = true
+    private var bootCancel = false
 
     override fun onHandleIntent(intent: Intent?) {
         swapConfig = this.getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)
@@ -33,6 +34,7 @@ class BootService : IntentService("vtools-boot") {
         val r = Props.getProp("vtools.boot")
         if (!r.isEmpty()) {
             isFirstBoot = false
+            bootCancel = true
             return
         }
         Thread(Runnable {
@@ -129,12 +131,14 @@ class BootService : IntentService("vtools-boot") {
 
     override fun onDestroy() {
         super.onDestroy()
-        val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            nm.createNotificationChannel(NotificationChannel("vtool-boot", getString(R.string.notice_channel_boot), NotificationManager.IMPORTANCE_LOW))
-            nm.notify(1, NotificationCompat.Builder(this, "vtool-boot").setSmallIcon(R.drawable.ic_menu_digital).setSubText(getString(R.string.app_name)).setContentText(getString(R.string.boot_success)).build())
-        } else {
-            nm.notify(1, NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_menu_digital).setSubText(getString(R.string.app_name)).setContentText(getString(R.string.boot_success)).build())
+        if (!bootCancel) {
+            val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                nm.createNotificationChannel(NotificationChannel("vtool-boot", getString(R.string.notice_channel_boot), NotificationManager.IMPORTANCE_LOW))
+                nm.notify(1, NotificationCompat.Builder(this, "vtool-boot").setSmallIcon(R.drawable.ic_menu_digital).setSubText(getString(R.string.app_name)).setContentText(getString(R.string.boot_success)).build())
+            } else {
+                nm.notify(1, NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_menu_digital).setSubText(getString(R.string.app_name)).setContentText(getString(R.string.boot_success)).build())
+            }
         }
         System.exit(0)
     }

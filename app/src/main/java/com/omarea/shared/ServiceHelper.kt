@@ -16,6 +16,7 @@ import com.omarea.shared.helper.ScreenEventHandler
 import com.omarea.shell.DumpTopAppliction
 import com.omarea.shell.KeepShell
 import com.omarea.shell.Platform
+import com.omarea.shell.RootFile
 import java.io.File
 import java.util.*
 
@@ -39,7 +40,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             "com.miui.touchassistant",
             "com.miui.contentextension",
             "com.miui.systemAdSolution")
-    private var dyamicCore = (Platform().dynamicSupport(context) || File(Consts.POWER_CFG_PATH).exists())
+    private var dyamicCore = false
     private var debugMode = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
     private var firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
     private var accuSwitch: Boolean = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
@@ -261,11 +262,19 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true))
             keepShell2.doCmd(Consts.DisableSELinux)
 
-        if (dyamicCore) {
-            ConfigInstaller().configCodeVerify(context)
-            keepShell2.doCmd(Consts.ExecuteConfig)
-        }
         Thread(Runnable {
+            if (!RootFile.fileExists(Consts.POWER_CFG_PATH)) {
+                if (Platform().dynamicSupport(context)) {
+                    ConfigInstaller().installPowerConfig(context, Consts.ExecuteConfig, false)
+                    dyamicCore = true
+                } else {
+                    dyamicCore = false
+                }
+            } else {
+                dyamicCore = true
+                ConfigInstaller().configCodeVerify(context)
+                keepShell2.doCmd(Consts.ExecuteConfig)
+            }
             // 添加输入法到忽略列表
             ignoredList.addAll(InputHelper(context).getInputMethods())
             // 启动完成后初始化模式状态

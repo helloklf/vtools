@@ -101,8 +101,6 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
                                 try {
                                     packageName = XResources.getPackageNameDuringConstruction();
                                 } catch (IllegalStateException e) {
-                                    // That's ok, we might have been called for
-                                    // non-standard resources
                                     return;
                                 }
                             }

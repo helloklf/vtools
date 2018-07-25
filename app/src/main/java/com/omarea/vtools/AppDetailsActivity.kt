@@ -174,6 +174,14 @@ class AppDetailsActivity : AppCompatActivity() {
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
         app = this.intent.extras.getString("app")
+
+        if (app == "android" || app == "com.android.systemui" || app == "com.android.webview" || app == "mokee.platform" || app == "com.miui.rom") {
+            app_details_permission.visibility = View.GONE
+            app_details_auto.visibility = View.GONE
+            app_details_assist.visibility = View.GONE
+            app_details_version.visibility = View.GONE
+        }
+
         policyControl = PolicyControl(contentResolver)
 
         dynamicCpu = (Platform().dynamicSupport(this) || File(Consts.POWER_CFG_PATH).exists())
