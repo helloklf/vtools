@@ -365,9 +365,9 @@ class FragmentConfig : Fragment() {
             var filterMode = ""
             var filterAppType = ""
             when (configlist_type.selectedItemPosition) {
-                0 -> filterAppType = "*"
-                1 -> filterAppType = "/data"
-                2 -> filterAppType = "/system"
+                0 -> filterAppType = "/data"
+                1 -> filterAppType = "/system"
+                2 -> filterAppType = "*"
             }
             when (configlist_modes.selectedItemPosition) {
                 0 -> filterMode = "*"

@@ -114,13 +114,13 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="说明"
-                            android:textSize="18dp" />
+                            style="@style/textTitle" android:layout_marginBottom="10dp"/>
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/applist_help"
-                            android:textSize="14dp" />
+                            style="@style/textSmall" />
 
                         <Button
                             android:id="@+id/app_btn_hide"

@@ -381,9 +381,9 @@
         <item>忽略切换</item>
     </string-array>
     <string-array name="powercfg_apptype_filter">
-        <item>所有应用</item>
         <item>用户</item>
         <item>系统</item>
+        <item>所有应用</item>
     </string-array>
     <string-array name="key_event">
         <item>默认动作</item>

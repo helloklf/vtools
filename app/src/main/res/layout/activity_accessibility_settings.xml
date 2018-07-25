@@ -29,8 +29,8 @@
                 android:layout_marginLeft="4dp"
                 android:layout_marginRight="4dp"
                 android:layout_marginTop="20dp"
-                android:background="#22888888"
-                android:gravity="center_horizontal"
+                android:background="@drawable/btn_bg"
+                android:gravity="center"
                 android:padding="13dp"
                 android:text="" />
 

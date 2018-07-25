@@ -12,13 +12,15 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="10dp">
+            android:orientation="vertical">
 
             <android.support.v7.widget.CardView
                 android:id="@+id/help_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
                 app:cardCornerRadius="4dp">
 
                 <LinearLayout
@@ -47,7 +49,9 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="10dp"
                 app:cardCornerRadius="4dp">
 
                 <GridLayout
@@ -65,7 +69,7 @@
                         android:textSize="16dp" />
 
                     <TextView
-                        style="@style/textTitle"
+
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="1"
@@ -83,7 +87,7 @@
                         android:textAlignment="textEnd" />
 
                     <TextView
-                        style="@style/textTitle"
+
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="2"
@@ -101,7 +105,7 @@
                         android:textAlignment="textEnd" />
 
                     <TextView
-                        style="@style/textTitle"
+
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="3"
@@ -124,7 +128,9 @@
                 android:id="@+id/big_core_configs"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="10dp"
                 app:cardCornerRadius="4dp">
 
                 <GridLayout
@@ -142,7 +148,7 @@
                         android:textSize="16dp" />
 
                     <TextView
-                        style="@style/textTitle"
+
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="1"
@@ -160,7 +166,7 @@
                         android:textAlignment="textEnd" />
 
                     <TextView
-                        style="@style/textTitle"
+
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="2"
@@ -178,7 +184,7 @@
                         android:textAlignment="textEnd" />
 
                     <TextView
-                        style="@style/textTitle"
+
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="3"
@@ -201,7 +207,9 @@
                 android:id="@+id/adreno_gpu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="10dp"
                 app:cardCornerRadius="4dp">
 
                 <GridLayout
@@ -219,7 +227,7 @@
                         android:textSize="16dp" />
 
                     <TextView
-                        style="@style/textTitle"
+
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="1"
@@ -237,7 +245,7 @@
                         android:textAlignment="textEnd" />
 
                     <TextView
-                        style="@style/textTitle"
+
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="2"
@@ -255,7 +263,7 @@
                         android:textAlignment="textEnd" />
 
                     <TextView
-                        style="@style/textTitle"
+
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="3"
@@ -273,7 +281,7 @@
                         android:textAlignment="textEnd" />
 
                     <TextView
-                        style="@style/textTitle"
+
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="4"
@@ -292,7 +300,7 @@
 
 
                     <TextView
-                        style="@style/textTitle"
+
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="5"
@@ -310,7 +318,7 @@
                         android:textAlignment="textEnd" />
 
                     <TextView
-                        style="@style/textTitle"
+
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="6"
@@ -340,7 +348,9 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="10dp"
                 app:cardCornerRadius="4dp">
 
                 <GridLayout
@@ -358,7 +368,7 @@
                         android:textSize="16dp" />
 
                     <TextView
-                        style="@style/textTitle"
+
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="1"
@@ -371,7 +381,7 @@
                         android:layout_row="1" />
 
                     <TextView
-                        style="@style/textTitle"
+
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="2"
@@ -384,7 +394,7 @@
                         android:layout_row="2" />
 
                     <TextView
-                        style="@style/textTitle"
+
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="3"
@@ -402,7 +412,9 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="10dp"
                 app:cardCornerRadius="4dp">
 
                 <GridLayout
@@ -420,7 +432,7 @@
                         android:textSize="16dp" />
 
                     <TextView
-                        style="@style/textTitle"
+
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="1"
@@ -429,13 +441,13 @@
 
                     <CheckBox
                         android:id="@+id/exynos_cpuhotplug"
-                        style="@style/textTitle"
+
                         android:layout_column="1"
                         android:layout_row="1"
                         android:enabled="false" />
 
                     <TextView
-                        style="@style/textTitle"
+
                         android:layout_column="0"
                         android:layout_columnSpan="2"
                         android:layout_gravity="left"
@@ -460,7 +472,7 @@
                         android:textAlignment="center" />
 
                     <TextView
-                        style="@style/textTitle"
+
                         android:layout_column="0"
                         android:layout_columnSpan="2"
                         android:layout_gravity="left"
@@ -486,7 +498,7 @@
 
 
                     <TextView
-                        style="@style/textTitle"
+
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="6"
@@ -495,7 +507,7 @@
 
                     <CheckBox
                         android:id="@+id/exynos_hmp_booster"
-                        style="@style/textTitle"
+
                         android:layout_column="1"
                         android:layout_row="6"
                         android:enabled="false" />
@@ -515,7 +527,9 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="10dp"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 app:cardCornerRadius="4dp">
@@ -535,7 +549,7 @@
                         android:textSize="16dp" />
 
                     <TextView
-                        style="@style/textTitle"
+
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="1"
@@ -554,7 +568,7 @@
                         android:textAlignment="textEnd" />
 
                     <TextView
-                        style="@style/textTitle"
+
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="2"
@@ -572,7 +586,7 @@
                         android:inputType="text" />
 
                     <TextView
-                        style="@style/textTitle"
+
                         android:layout_column="0"
                         android:layout_gravity="fill"
                         android:layout_row="3"
@@ -590,8 +604,10 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="10dp"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
                 app:cardCornerRadius="4dp">

@@ -28,20 +28,18 @@
 
         <Button
             android:id="@+id/btn_cancel"
-            android:background="@android:color/transparent"
-            android:textColor="@color/colorPrimary"
+            style="?android:buttonBarButtonStyle"
             android:text="@string/btn_cancel"
             android:layout_weight="1"
             android:layout_width="wrap_content"
-            android:layout_height="40dp" />
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/btn_confirm"
-            android:background="@android:color/transparent"
-            android:textColor="@color/colorPrimary"
+            style="?android:buttonBarButtonStyle"
             android:text="@string/btn_confirm"
             android:layout_weight="1"
             android:layout_width="wrap_content"
-            android:layout_height="40dp" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </LinearLayout>
