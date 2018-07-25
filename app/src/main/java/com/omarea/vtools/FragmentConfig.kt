@@ -118,12 +118,13 @@ class FragmentConfig : Fragment() {
             globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, (it as Switch).isChecked).commit()
         }
         //TODO:
-        config_defaultlist.setOnItemClickListener { parent, _, position, id ->
+        config_defaultlist.setOnItemClickListener { parent, view, position, id ->
             try {
                 val item = (parent.adapter.getItem(position) as Appinfo)
                 val intent = Intent(this.context, AppDetailsActivity::class.java)
                 intent.putExtra("app", item.packageName)
-                startActivityForResult(intent, position)
+                startActivityForResult(intent, REQUEST_APP_CONFIG)
+                lastClickRow = view
             } catch (ex: Exception) {
             }
         }
@@ -199,6 +200,7 @@ class FragmentConfig : Fragment() {
     private val REQUEST_POWERCFG_FILE = 1
     private val REQUEST_POWERCFG_ONLINE = 2
     private val REQUEST_APP_CONFIG = 0
+    private var lastClickRow: View? = null
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -250,7 +252,7 @@ class FragmentConfig : Fragment() {
                     }
                     val item = adapter.getItem(index)
                     setAppRowDesc(item)
-                    (config_defaultlist.adapter as SceneModeAdapter).updateRow(index, config_defaultlist, item)
+                    (config_defaultlist.adapter as SceneModeAdapter).updateRow(index, lastClickRow!!)
                     //loadList(false)
                 }
             } catch (ex: Exception) {

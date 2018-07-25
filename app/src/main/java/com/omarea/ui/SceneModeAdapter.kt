@@ -29,8 +29,6 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
     @SuppressLint("UseSparseArrays")
     var states = HashMap<Int, Boolean>()
 
-    private var viewHolder: SceneModeAdapter.ViewHolder? = null
-
     init {
         this.list = filterAppList(apps, keywords)
         for (i in this.list.indices) {
@@ -107,19 +105,9 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
         var convertView = view
         if (convertView == null) {
-            viewHolder = ViewHolder()
             convertView = View.inflate(context, R.layout.scene_mode_item, null)
-            viewHolder!!.itemTitle = convertView!!.findViewById(R.id.ItemTitle)
-            viewHolder!!.enabledStateText = convertView.findViewById(R.id.ItemEnabledStateText)
-            viewHolder!!.itemText = convertView.findViewById(R.id.ItemText)
-            viewHolder!!.itemDesc = convertView.findViewById(R.id.ItemDesc)
-            viewHolder!!.imgView = convertView.findViewById(R.id.ItemIcon)
-            viewHolder!!.imgView!!.setTag(getItem(position).packageName)
-            convertView.tag = viewHolder
-        } else {
-            viewHolder = convertView.tag as ViewHolder
         }
-        updateRow(position, convertView)
+        updateRow(position, convertView!!)
         return convertView
     }
 
@@ -141,14 +129,22 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
     /**
      * FIXME:这个有问题
      */
-    private fun updateRow(position: Int, convertView: View) {
+    fun updateRow(position: Int, convertView: View) {
         val item = getItem(position)
-        viewHolder!!.itemTitle!!.text = keywordHightLight(item.appName.toString())
-        viewHolder!!.itemText!!.text = keywordHightLight(item.packageName.toString())
+        val viewHolder = ViewHolder()
+        viewHolder.itemTitle = convertView.findViewById(R.id.ItemTitle)
+        viewHolder.enabledStateText = convertView.findViewById(R.id.ItemEnabledStateText)
+        viewHolder.itemText = convertView.findViewById(R.id.ItemText)
+        viewHolder.itemDesc = convertView.findViewById(R.id.ItemDesc)
+        viewHolder.imgView = convertView.findViewById(R.id.ItemIcon)
+        viewHolder.imgView!!.setTag(getItem(position).packageName)
+        // convertView.tag = viewHolder
+        viewHolder.itemTitle!!.text = keywordHightLight(item.appName.toString())
+        viewHolder.itemText!!.text = keywordHightLight(item.packageName.toString())
         if (item.icon == null) {
-            loadIcon(viewHolder!!, item)
+            loadIcon(viewHolder, item)
         } else {
-            viewHolder!!.imgView!!.setImageDrawable(item.icon)
+            viewHolder.imgView!!.setImageDrawable(item.icon)
         }
         if (item.enabledState != null) {
             val config = item.enabledState
@@ -156,32 +152,32 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
             when (config) {
                 "powersave" -> {
                     enabledState = "省电模式"
-                    viewHolder!!.enabledStateText!!.setTextColor(Color.parseColor("#0091D5"))
+                    viewHolder.enabledStateText!!.setTextColor(Color.parseColor("#0091D5"))
                 }
                 "performance" -> {
                     enabledState = "性能模式"
-                    viewHolder!!.enabledStateText!!.setTextColor(Color.parseColor("#6ECB00"))
+                    viewHolder.enabledStateText!!.setTextColor(Color.parseColor("#6ECB00"))
                 }
                 "fast" -> {
                     enabledState = "极速模式"
-                    viewHolder!!.enabledStateText!!.setTextColor(Color.parseColor("#FF7E00"))
+                    viewHolder.enabledStateText!!.setTextColor(Color.parseColor("#FF7E00"))
                 }
                 "igoned" -> {
                     enabledState = ""
-                    viewHolder!!.enabledStateText!!.setTextColor(Color.parseColor("#888888"))
+                    viewHolder.enabledStateText!!.setTextColor(Color.parseColor("#888888"))
                 }
                 else -> {
                     enabledState = "均衡模式"
-                    viewHolder!!.enabledStateText!!.setTextColor(Color.parseColor("#00B78A"))
+                    viewHolder.enabledStateText!!.setTextColor(Color.parseColor("#00B78A"))
                 }
             }
-            viewHolder!!.enabledStateText!!.visibility = VISIBLE
-            viewHolder!!.enabledStateText!!.text = enabledState
+            viewHolder.enabledStateText!!.visibility = VISIBLE
+            viewHolder.enabledStateText!!.text = enabledState
         } else
-            viewHolder!!.enabledStateText!!.visibility = GONE
+            viewHolder.enabledStateText!!.visibility = GONE
 
-        if (viewHolder!!.itemDesc != null)
-            viewHolder!!.itemDesc!!.text = item.desc
+        if (viewHolder.itemDesc != null)
+            viewHolder.itemDesc!!.text = item.desc
 
     }
 
