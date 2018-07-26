@@ -119,7 +119,7 @@ class ActivityAddinOnline : AppCompatActivity() {
         //vtools_online.setWebChromeClient(object : WebChromeClient() { })
 
         vtools_online.setWebViewClient(object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+            private fun tryGetPowercfg(view: WebView?, url: String?): Boolean {
                 if (url != null && view != null) {
                     // https://github.com/yc9559/cpufreq-interactive-opt/blob/master/vtools-powercfg/20180603/sd_845/powercfg.apk 源码地址
                     // https://github.com/yc9559/cpufreq-interactive-opt/raw/master/vtools-powercfg/20180603/sd_845/powercfg.apk 点击raw指向的链接
@@ -146,13 +146,17 @@ class ActivityAddinOnline : AppCompatActivity() {
                     }
                     return true
                 }
-                return super.shouldOverrideUrlLoading(view, url)
+                return false
+            }
+
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                return tryGetPowercfg(view, url)
             }
 
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                 if (view != null && request != null) {
                     val url = request.url.toString()
-                    this.shouldOverrideUrlLoading(view, url)
+                    return this.tryGetPowercfg(view, url)
                 }
                 return super.shouldOverrideUrlLoading(view, request)
             }
