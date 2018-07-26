@@ -13,12 +13,12 @@ case "$target" in
     chmod 0644 /sys/devices/system/cpu/cpu6/online
     chmod 0644 /sys/devices/system/cpu/cpu7/online
 
-	#echo 2 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
-	#echo 60 > /sys/devices/system/cpu/cpu4/core_ctl/busy_up_thres
-	#echo 30 > /sys/devices/system/cpu/cpu4/core_ctl/busy_down_thres
-	#echo 100 > /sys/devices/system/cpu/cpu4/core_ctl/offline_delay_ms
-	#echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/is_big_cluster
-	#echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/task_thres
+	#echo 2 > /sys/devices/system/cpu/cpu6/core_ctl/min_cpus
+	#echo 60 > /sys/devices/system/cpu/cpu6/core_ctl/busy_up_thres
+	#echo 30 > /sys/devices/system/cpu/cpu6/core_ctl/busy_down_thres
+	#echo 100 > /sys/devices/system/cpu/cpu6/core_ctl/offline_delay_ms
+	#echo 1 > /sys/devices/system/cpu/cpu6/core_ctl/is_big_cluster
+	#echo 4 > /sys/devices/system/cpu/cpu6/core_ctl/task_thres
 
     # Enable input boost configuration
     echo "0:1324800" > /sys/module/cpu_boost/parameters/input_boost_freq
@@ -39,10 +39,10 @@ case "$target" in
     echo 1 > /sys/devices/system/cpu/cpu6/online
     echo 1 > /sys/devices/system/cpu/cpu7/online
 
-	#echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
-	#echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/max_cpus
-	#echo 95 > /sys/devices/system/cpu/cpu4/core_ctl/busy_up_thres
-	#echo 60 > /sys/devices/system/cpu/cpu4/core_ctl/busy_down_thres
+	#echo 0 > /sys/devices/system/cpu/cpu6/core_ctl/min_cpus
+	#echo 4 > /sys/devices/system/cpu/cpu6/core_ctl/max_cpus
+	#echo 95 > /sys/devices/system/cpu/cpu6/core_ctl/busy_up_thres
+	#echo 60 > /sys/devices/system/cpu/cpu6/core_ctl/busy_down_thres
 
 	echo 5 > /proc/sys/vm/dirty_background_ratio
 	echo 50 > /proc/sys/vm/overcommit_ratio
