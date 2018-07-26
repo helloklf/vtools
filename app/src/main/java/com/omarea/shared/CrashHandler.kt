@@ -3,6 +3,7 @@ package com.omarea.shared
 import android.app.AlertDialog
 import android.content.Context
 import android.util.Log
+import com.omarea.shared.helper.NotifyHelper
 
 /**
  * Created by Hello on 2017/5/24.
@@ -19,12 +20,13 @@ class CrashHandler constructor() : Thread.UncaughtExceptionHandler {
 
     override fun uncaughtException(thread: Thread, ex: Throwable) {
         Log.e("vtools-Exception", ex.message)
-        AlertDialog.Builder(mContext).setTitle("哎呀，崩溃了...")
-                .setMessage(ex.toString())
-                .setPositiveButton("确定", { _, _ ->
-                    System.exit(-1)
-                })
-                .create()
-                .show()
+        try {
+            if (mContext!= null) {
+                NotifyHelper(mContext!!, true).hideNotify()
+            }
+        } catch (ex: Exception) {
+
+        }
+        System.exit(0)
     }
 }
