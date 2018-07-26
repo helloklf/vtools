@@ -1,5 +1,6 @@
 package com.omarea.shared
 
+import android.app.AlertDialog
 import android.content.Context
 import android.util.Log
 
@@ -18,6 +19,13 @@ class CrashHandler constructor() : Thread.UncaughtExceptionHandler {
 
     override fun uncaughtException(thread: Thread, ex: Throwable) {
         Log.e("vtools-Exception", ex.message)
-        System.exit(-1)
+        AlertDialog.Builder(mContext).setTitle("哎呀，崩溃了...")
+                .setMessage(ex.toString())
+                .setPositiveButton("确定", {
+                    _,_ ->
+                    System.exit(-1)
+                })
+                .create()
+                .show()
     }
 }

@@ -1,6 +1,7 @@
 package com.omarea.vtools
 
 import android.accessibilityservice.AccessibilityService
+import android.accessibilityservice.AccessibilityServiceInfo
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
 import android.content.ComponentName
@@ -23,6 +24,10 @@ import com.omarea.shared.ServiceHelper
  * Created by helloklf on 2016/8/27.
  */
 class AccessibilityServiceScence : AccessibilityService() {
+    private var flagReportViewIds = true
+    private var flagRequestKeyEvent = true
+    private var flagRetriveWindow = true
+    private var flagRequestAccessbilityButton = false
 
     /*
 override fun onCreate() {
@@ -74,18 +79,36 @@ override fun onCreate() {
 
 
     public override fun onServiceConnected() {
-        /*
-        AccessibilityServiceInfo info = new AccessibilityServiceInfo();
+        val spf = getSharedPreferences("adv", Context.MODE_PRIVATE)
+        flagReportViewIds = spf.getBoolean("adv_find_viewid", true)
+        flagRequestKeyEvent = spf.getBoolean("adv_keyevent", true)
+        flagRetriveWindow = spf.getBoolean("adv_retrieve_window", true)
+
+        val info = serviceInfo // AccessibilityServiceInfo();
         // We are interested in all types of accessibility events.
-        info.eventTypes = AccessibilityEvent.TYPE_WINDOWS_CHANGED;
+        info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
         // We want to provide specific type of feedback.
-        info.feedbackType = AccessibilityServiceInfo.FEEDBACK_VISUAL;
+        info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
         // We want to receive events in a certain interval.
-        info.notificationTimeout = 100;
+        info.notificationTimeout = 0;
         // We want to receive accessibility events only from certain packages.
         info.packageNames = null;
+
+        info.flags = AccessibilityServiceInfo.DEFAULT
+        if (flagRetriveWindow) {
+            info.flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS
+        }
+        if (flagReportViewIds) {
+            info.flags = info.flags or  AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS
+        }
+        if (flagRequestKeyEvent) {
+            info.flags = info.flags or  AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && flagRequestAccessbilityButton) {
+            info.flags = info.flags or AccessibilityServiceInfo.FLAG_REQUEST_ACCESSIBILITY_BUTTON
+        }
+
         setServiceInfo(info);
-        */
         super.onServiceConnected()
     }
 
@@ -165,27 +188,26 @@ override fun onCreate() {
         if (packageName == "android" || packageName == "com.android.systemui") {
             return
         }
-        //修复傻逼一加桌面文件夹抢占焦点导致的问题
-        /*
+        // 针对一加部分系统的修复
         if ((packageName == "net.oneplus.h2launcher" || packageName == "net.oneplus.launcher") && event.className == "android.widget.LinearLayout") {
             return
         }
-        */
-        if (packageName.contains("packageinstaller")) {
-            if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity")
+
+        if (flagRetriveWindow) {
+            if (packageName.contains("packageinstaller")) {
+                if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity")
+                    return
+                try {
+                    AutoClickService().packageinstallerAutoClick(this.applicationContext, event)
+                } catch (ex: Exception) {
+                }
+            } else if (packageName == "com.miui.securitycenter") {
+                try {
+                    AutoClickService().miuiUsbInstallAutoClick(event)
+                } catch (ex: Exception) {
+                }
                 return
-            try {
-                AutoClickService().packageinstallerAutoClick(this.applicationContext, event)
-            } catch (ex: Exception) {
-
             }
-        } else if (packageName == "com.miui.securitycenter") {
-            try {
-                AutoClickService().miuiUsbInstallAutoClick(event)
-            } catch (ex: Exception) {
-
-            }
-            return
         }
 
         /*
@@ -198,30 +220,46 @@ override fun onCreate() {
 
         val windowInfo = source.window
         */
+        if (flagReportViewIds) {
+            val windows_ = windows
+            if (windows_ == null || windows_.isEmpty()) {
+                return
+            }
+            val windowInfo = windows_.lastOrNull()
 
-        val windows_ = windows
-        if (windows_ == null || windows_.isEmpty()) {
-            return
-        }
-        val windowInfo = windows_.lastOrNull()
-        val source = event.source
-        if (source == null || windowInfo == null || source.windowId != windowInfo.id) {
-            return
-        }
+            /**
+            Window          层级(zOrder)
+            --------------------------
+            应用Window	    1~99
+            子Window	    1000~1999
+            系统Window	    2000~2999
+             */
 
-        if (windowInfo.type == AccessibilityWindowInfo.TYPE_APPLICATION && windowInfo.isActive) {
+            val source = event.source
+            if (source == null || windowInfo == null || source.windowId != windowInfo.id) {
+                return
+            }
+
+            if (windowInfo.type == AccessibilityWindowInfo.TYPE_APPLICATION && windowInfo.isActive) {
+                if (serviceHelper == null)
+                    initServiceHelper()
+                serviceHelper?.onFocusAppChanged(event.packageName.toString())
+            } else {
+                Log.d("vtool-dump", "[skip app:${packageName}]")
+            }
+        } else {
             if (serviceHelper == null)
                 initServiceHelper()
             serviceHelper?.onFocusAppChanged(event.packageName.toString())
-        } else {
-            Log.d("vtool-dump", "[skip app:${packageName}]")
         }
+        // event.recycle()
     }
     /*
     Thread(Runnable {
-        val inst = Instrumentation()
-        inst.sendKeyDownUpSync(event.keyCode) }).start()
-        */
+    val inst = Instrumentation()
+    inst.sendKeyDownUpSync(event.keyCode)
+    }).start()
+    */
 
     private fun deestory() {
         if (serviceHelper != null) {

@@ -123,6 +123,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
+            android:name=".ActivityAdvSettings"
+            android:configChanges="keyboardHidden|orientation"
+            android:excludeFromRecents="true"
+            android:label="辅助功能逻辑"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".ActivityAccessibilityKeyEventSettings"
             android:configChanges="keyboardHidden|orientation"
             android:excludeFromRecents="true"

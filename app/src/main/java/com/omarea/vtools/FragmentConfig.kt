@@ -195,6 +195,14 @@ class FragmentConfig : Fragment() {
                 Toast.makeText(context!!, "启动在线页面失败！", Toast.LENGTH_SHORT).show()
             }
         }
+
+        config_adv.setOnClickListener {
+            try {
+                val intent = Intent(this.context, ActivityAdvSettings::class.java)
+                startActivity(intent)
+            } catch (ex: Exception) {
+            }
+        }
     }
 
     private val REQUEST_POWERCFG_FILE = 1

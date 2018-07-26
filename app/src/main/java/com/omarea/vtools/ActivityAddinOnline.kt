@@ -117,10 +117,8 @@ class ActivityAddinOnline : AppCompatActivity() {
         }
         //vtools_online.setWebChromeClient(object : WebChromeClient() { })
         vtools_online.setWebViewClient(object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-                if (view != null && request != null) {
-                    val url = request.url.toString()
-
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                if (url != null && view != null) {
                     // https://github.com/yc9559/cpufreq-interactive-opt/blob/master/vtools-powercfg/20180603/sd_845/powercfg.apk 源码地址
                     // https://github.com/yc9559/cpufreq-interactive-opt/raw/master/vtools-powercfg/20180603/sd_845/powercfg.apk 点击raw指向的链接
                     // https://raw.githubusercontent.com/yc9559/cpufreq-interactive-opt/master/vtools-powercfg/20180603/sd_845/powercfg.apk 然后重定向到具体文件
@@ -136,14 +134,22 @@ class ActivityAddinOnline : AppCompatActivity() {
                                 })
                                 .setCancelable(false)
                                 .setNeutralButton(R.string.btn_cancel, { _, _ ->
-                                    view.loadUrl(request.url.toString())
+                                    view.loadUrl(url)
                                 })
                                 .create()
                                 .show()
                     } else {
-                        view.loadUrl(request.url.toString())
+                        view.loadUrl(url)
                     }
                     return true
+                }
+                return super.shouldOverrideUrlLoading(view, url)
+            }
+
+            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+                if (view != null && request != null) {
+                    val url = request.url.toString()
+                    this.shouldOverrideUrlLoading(view, url)
                 }
                 return super.shouldOverrideUrlLoading(view, request)
             }
