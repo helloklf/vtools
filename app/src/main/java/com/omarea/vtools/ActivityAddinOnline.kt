@@ -72,7 +72,7 @@ class ActivityAddinOnline : AppCompatActivity() {
                 conn.getInputStream()
                 val reader = conn.getInputStream().bufferedReader(Charset.forName("UTF-8"))
                 val powercfg = reader.readText()
-                if (powercfg.startsWith("#!/") && ConfigInstaller().installPowerConfig(this, powercfg)) {
+                if (powercfg.startsWith("#!/") && ConfigInstaller().installPowerConfigByText(this, powercfg)) {
                     vtools_online.post {
                         AlertDialog.Builder(this)
                                 .setTitle("配置文件已安装")
