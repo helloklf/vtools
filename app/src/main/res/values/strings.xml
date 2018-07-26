@@ -70,16 +70,16 @@
     <string name="error_not_img">所选文件不是镜像格式（.img）</string>
     <string name="unknow_action">不支持的操作！</string>
     <string name="question_install_busybox">安装Busybox吗？</string>
-    <string name="question_install_busybox_desc">你的手机似乎没有安装busybox，这会导致微工具箱无法使用，是否要立即安装（需要修改System）？</string>
+    <string name="question_install_busybox_desc">你的手机似乎没有安装busybox，这会导致Scene无法使用，是否要立即安装（需要修改System）？</string>
 
-    <string name="share_link">你也来试试微工具箱吧，我觉得还不错：\n http://www.coolapk.com/apk/com.omarea.vtools</string>
+    <string name="share_link">你也来试试Scene吧，我觉得还不错：\n http://www.coolapk.com/apk/com.omarea.vtools</string>
     <string name="feedback_link">mqqwpa://im/chat?chat_type=wpa&amp;uin=1191634433</string>
 
     <string name="app_name">Scene</string>
     <string name="app_name_mode_switch">Scene-快速切换模式</string>
 
-    <string name="accessibility_service_description">微工具箱增强服务\n你需要激活本服务，才能使用以下功能：\n\n1.动态响应（根据前台应用自动调整性能）.\n\n2.自动行为（在开关屏幕时切换网络或切换应用时回收进程）.\n\n3.自动安装（安装第三方应用时自动点击下一步）</string>
-    <string name="accessibility_keyevent_description">微工具箱按键辅助程序\n\n你需要开启本服务并保持持续运行，才能实现按键模拟\n\n注意：本功能目前还在实验阶段，可能会有很多问题！</string>
+    <string name="accessibility_service_description">Scene增强服务\n你需要激活本服务，才能使用以下功能：\n\n1.动态响应（根据前台应用自动调整性能）.\n\n2.自动行为（在开关屏幕时切换网络或切换应用时回收进程）.\n\n3.自动安装（安装第三方应用时自动点击下一步）</string>
+    <string name="accessibility_keyevent_description">Scene按键辅助程序\n\n你需要开启本服务并保持持续运行，才能实现按键模拟\n\n注意：本功能目前还在实验阶段，可能会有很多问题！</string>
 
     <string name="backup_action_title_boot">导出Boot</string>
     <string name="backup_action_desc_boot">备份当前使用中的Boot为img，复制到/sdcard/boot.img</string>
@@ -138,17 +138,17 @@
     <string name="accessbility_autobooster">自动行为 - 总开关</string>
     <string name="accessbility_autobooster_desc">特定事件执行特定操作，具体设置请在本应用自动行为中配</string>
     <string name="accessbility_dynconfig">动态响应 - 总开关</string>
-    <string name="accessbility_dynconfig_desc">开启此功能时，你的设备性能将受微工具箱控制</string>
+    <string name="accessbility_dynconfig_desc">开启此功能时，你的设备性能将受Scene控制</string>
     <string name="accessbility_bp">充电保护</string>
     <string name="accessbility_bp_desc">充电到指定百分比时自动禁止充电功能，浅充浅放有助于保护电池。但可能导致电量显示不精准。</string>
     <string name="accessbility_bp_level_desc">电量限制值（%）</string>
     <string name="settings_qc_limit_desc">充电速度限制(mA)</string>
     <string name="accessbility_debug">吼吼吼！！！</string>
-    <string name="accessbility_debug_desc">让微工具箱在后台执行动作时显示通知</string>
+    <string name="accessbility_debug_desc">让Scene在后台执行动作时显示通知</string>
     <string name="accessbility_notify">阴魂不散</string>
-    <string name="accessbility_notify_desc">在下拉通知中心显示微工具箱</string>
+    <string name="accessbility_notify_desc">在下拉通知中心显示Scene</string>
     <string name="accessbility_delay">慢点儿</string>
-    <string name="accessbility_delay_desc">微工具箱自启动完成25秒后再应用配置</string>
+    <string name="accessbility_delay_desc">Scene自启动完成25秒后再应用配置</string>
     <string name="settings_disable_selinux">自动SeLinux宽容模式</string>
     <string name="settings_disable_selinux_desc">自动开启SELinux宽容模式，部分设备会卡死重启。如果不开有些功能会用不了。部分系统开启本功能会死机重启！</string>
 
@@ -194,7 +194,7 @@
     <string name="xposed_actived">模块已激活-工作正常</string>
     <string name="xposed_unactive">Xposed模块未激活</string>
     <string name="xposed_cannot_openxposed">Xposed管理器似乎还没有安装？</string>
-    <string name="xposed_cannot_openaddin">现在，Xposed相关功能已经从微工具箱移除并独立，如果你还没安装独立插件，请到 酷安市场搜索“微插件”下载并安装激活？</string>
+    <string name="xposed_cannot_openaddin">现在，Xposed相关功能已经从Scene移除并独立，如果你还没安装独立插件，请到 酷安市场搜索“微插件”下载并安装激活？</string>
 
     <string name="dataresize_waring">
 "<big>注意：</big>"
@@ -244,7 +244,7 @@
     </string>
     <string name="battery_uevent_title">$ cat /sys/class/power_supply/bms/uevent</string>
     <string name="home_hide_in_recents">强迫症</string>
-    <string name="home_hide_in_recents_desc">不要在多任务界面显示微工具箱</string>
+    <string name="home_hide_in_recents_desc">不要在多任务界面显示Scene</string>
     <string name="home_app_night">辣眼睛</string>
     <string name="home_app_night_desc">开启暗色主题</string>
     <string name="applist_help">✔ 已备份\n✘ 备份的版本比安装的版本更高\n★ 已安装的版本比备份的版本旧\n☆ 已备份数据未备份APK\n\n目前所提供的应用数据备份功能，需要系统集成busybox、toybox，使用tar+gz压缩数据（如果系统支持，将使用pigz提高压缩速度），仅备份 “/data/data/应用包名” 下的数据，且不保证兼容所有系统和应用。\n\n“禁用+隐藏”非常适合精简ROM，但是应用一旦被设为隐藏你将无法通过其它应用管理工具来恢复或启动（除非恢复出厂设置或在工具箱里手动解除隐藏），工具箱会自动保存隐藏记录，你可以通过下面的按钮来解除隐藏。\n如果你卸载了工具箱，则隐藏记录也会丢失，则无法再恢复！！</string>
@@ -270,7 +270,7 @@
     <string name="power_change_game">已切换为游戏（性能）模式，但受温度影响并不一定会更快，你可以考虑删除温控！</string>
     <string name="power_change_powersave">已切换为省电模式，适合长时间媒体播放或阅读，综合使用时并不效率也不会省电太多！</string>
     <string name="power_chagne_fast">已切换为极速模式，这会大幅增加发热，如果不删除温控性能并不稳定！</string>
-    <string name="change_need_reboot">此设置将在下次启动微工具箱时生效！</string>
+    <string name="change_need_reboot">此设置将在下次启动Scene时生效！</string>
     <string name="device_unsupport">该功能暂不支持您的设备！</string>
 
     <string name="addin_fullscreen_on">沉浸式体验</string>

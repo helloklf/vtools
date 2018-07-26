@@ -219,8 +219,8 @@ class FragmentConfig : Fragment() {
                         val cmds = StringBuilder("cp '$path' ${Consts.POWER_CFG_PATH}\n")
                         cmds.append("chmod 0755 ${Consts.POWER_CFG_PATH}\n\n")
                         cmds.append("if [[ -f ${Consts.POWER_CFG_PATH} ]]; then \n")
-                            cmds.append("chmod 0775 ${Consts.POWER_CFG_PATH};")
-                            cmds.append("busybox sed -i 's/^M//g' ${Consts.POWER_CFG_PATH};")
+                        cmds.append("chmod 0775 ${Consts.POWER_CFG_PATH};")
+                        cmds.append("busybox sed -i 's/^M//g' ${Consts.POWER_CFG_PATH};")
                         cmds.append("fi;")
                         //cmds.append("if [[ -f ${Consts.POWER_CFG_BASE} ]]; then \n")
                         //  cmds.append("chmod 0775 ${Consts.POWER_CFG_BASE};")
@@ -238,13 +238,11 @@ class FragmentConfig : Fragment() {
                 }
             }
             return
-        }
-        else if (requestCode == REQUEST_POWERCFG_ONLINE) {
+        } else if (requestCode == REQUEST_POWERCFG_ONLINE) {
             if (resultCode == Activity.RESULT_OK) {
                 reStartService()
             }
-        }
-        else if (requestCode == REQUEST_APP_CONFIG && data != null && displayList != null) {
+        } else if (requestCode == REQUEST_APP_CONFIG && data != null && displayList != null) {
             try {
                 if (resultCode == RESULT_OK) {
                     val adapter = (config_defaultlist.adapter as SceneModeAdapter)
@@ -272,36 +270,16 @@ class FragmentConfig : Fragment() {
     /**
      * 重启辅助服务
      */
-    private fun reStartService () {
+    private fun reStartService() {
         if (AccessibleServiceHelper().serviceIsRunning(context!!)) {
-            processBarDialog.showDialog("正在重启辅助服务...")
-            Thread(Runnable {
-                try {
-                    val contentResolver = context!!.contentResolver
-                    val serviceName = "${context!!.packageName}/${AccessibilityServiceScence::class.java.name}"
-                    var services = Settings.Secure.getString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES)
-                    services = services.replace(":$serviceName", "").replace(serviceName, "")
-                    if (Settings.Secure.putString(contentResolver, Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES, services)) {
-                        contentResolver.notifyChange(Settings.System.getUriFor(Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES), null)
-                        AccessibleServiceHelper().startServiceUseRoot(context!!)
-                    } else {
-                        throw Exception("")
-                    }
-                } catch (ex: Exception) {
-                    AlertDialog.Builder(context!!)
-                            .setTitle("需要重启辅助服务")
-                            .setMessage("请手动重启辅助服务，使配置脚本生效！")
-                            .setPositiveButton(R.string.btn_confirm, {
-                                _,_ ->
-                            })
-                            .create()
-                            .show()
-                } finally {
-                    configlist_tabhost.post {
-                        processBarDialog.hideDialog()
-                    }
-                }
-            }).start()
+            AlertDialog.Builder(context!!)
+                    .setTitle("需要重启辅助服务")
+                    .setMessage("请手动重启辅助服务，使配置脚本生效！")
+                    .setPositiveButton(R.string.btn_confirm, { _, _ ->
+
+                    })
+                    .create()
+                    .show()
         }
     }
 

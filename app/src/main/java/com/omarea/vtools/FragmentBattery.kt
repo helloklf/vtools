@@ -146,7 +146,7 @@ class FragmentBattery : Fragment() {
             } else {
                 //启用电池服务
                 startBatteryService()
-                Snackbar.make(this.view, "OK！如果你要手机重启后自动开启本功能，请允许微工具箱开机自启！", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(this.view, "OK！如果你要手机重启后自动开启本功能，请允许Scene开机自启！", Snackbar.LENGTH_SHORT).show()
             }
         }
         settings_bp.setOnClickListener {
@@ -157,7 +157,7 @@ class FragmentBattery : Fragment() {
             } else {
                 //启用电池服务
                 startBatteryService()
-                Snackbar.make(this.view, "OK！如果你要手机重启后自动开启本功能，请允许微工具箱开机自启！", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(this.view, "OK！如果你要手机重启后自动开启本功能，请允许Scene开机自启！", Snackbar.LENGTH_SHORT).show()
             }
         }
 

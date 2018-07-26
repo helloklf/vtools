@@ -198,7 +198,7 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
 
             //王者荣耀 高帧率模式
             case "com.tencent.tmgp.sgame":
-                if (prefs.getBoolean( packageName +"_hight_fps", false)) {
+                if (prefs.getBoolean(packageName + "_hight_fps", false)) {
                     new DeviceInfo().simulationR11(loadPackageParam);
                 }
                 break;

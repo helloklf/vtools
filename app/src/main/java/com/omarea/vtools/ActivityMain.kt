@@ -56,6 +56,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        CrashHandler().init(this)
         //setMaxAspect()
         if (globalSPF == null) {
             globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)

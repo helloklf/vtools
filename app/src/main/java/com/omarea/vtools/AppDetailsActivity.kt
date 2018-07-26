@@ -14,6 +14,8 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.KeyEvent
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import com.omarea.AppConfigInfo
@@ -23,12 +25,12 @@ import com.omarea.shell.NoticeListing
 import com.omarea.shell.Platform
 import com.omarea.shell.WriteSettings
 import com.omarea.ui.IntInputFilter
+import com.omarea.vaddin.IAppConfigAidlInterface
 import com.omarea.xposed.XposedCheck
 import kotlinx.android.synthetic.main.activity_app_details.*
+import org.json.JSONObject
 import java.io.File
 import java.util.*
-import com.omarea.vaddin.IAppConfigAidlInterface
-import org.json.JSONObject
 
 
 class AppDetailsActivity : AppCompatActivity() {
@@ -53,7 +55,7 @@ class AppDetailsActivity : AppCompatActivity() {
         return code
     }
 
-    private var conn = object: ServiceConnection {
+    private var conn = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             aidlConn = IAppConfigAidlInterface.Stub.asInterface(service)
             updateXposedConfigFromAddin()
@@ -64,7 +66,7 @@ class AppDetailsActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateXposedConfigFromAddin () {
+    private fun updateXposedConfigFromAddin() {
         if (aidlConn != null) {
             try {
                 if (getVersion() > aidlConn!!.version) {
@@ -104,11 +106,12 @@ class AppDetailsActivity : AppCompatActivity() {
             Toast.makeText(this, "插件未集成到应用包，请单独下载！", Toast.LENGTH_SHORT).show()
             return
         }
+        Toast.makeText(this, "稍等，正在安装“Scene - 高级设定”插件...", Toast.LENGTH_SHORT).show()
         if (KeepShellSync.doCmdSync("pm install -r '$addinPath'") !== "error") {
             checkXposedState()
         } else {
             val intent = Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(Uri.fromFile(File(addinPath)),"application/vnd.android.package-archive");
+            intent.setDataAndType(Uri.fromFile(File(addinPath)), "application/vnd.android.package-archive");
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
         }
@@ -123,9 +126,9 @@ class AppDetailsActivity : AppCompatActivity() {
             //绑定服务端的service
             intent.setAction("com.omarea.vaddin.ConfigUpdateService");
             //新版本（5.0后）必须显式intent启动 绑定服务
-            intent.setComponent(ComponentName("com.omarea.vaddin","com.omarea.vaddin.ConfigUpdateService"));
+            intent.setComponent(ComponentName("com.omarea.vaddin", "com.omarea.vaddin.ConfigUpdateService"));
             //绑定的时候服务端自动创建
-            if (bindService(intent,conn, Context.BIND_AUTO_CREATE)) {
+            if (bindService(intent, conn, Context.BIND_AUTO_CREATE)) {
             } else {
                 throw Exception("")
             }
@@ -140,14 +143,17 @@ class AppDetailsActivity : AppCompatActivity() {
             vAddinsInstalled = packageManager.getPackageInfo("com.omarea.vaddin", 0) != null
             allowXposedConfig = allowXposedConfig && vAddinsInstalled
             app_details_vaddins_notinstall.visibility = View.GONE
+            app_details_vaddins_notactive.visibility = if (allowXposedConfig) View.GONE else View.VISIBLE
         } catch (ex: Exception) {
             allowXposedConfig = false
             vAddinsInstalled = false
             app_details_vaddins_notinstall.visibility = View.VISIBLE
+            app_details_vaddins_notactive.visibility = View.GONE
             app_details_vaddins_notinstall.setOnClickListener {
                 installVAddin()
             }
         }
+        app_details_vaddins_notactive.visibility = if (allowXposedConfig) View.GONE else View.VISIBLE
         app_details_dpi.isEnabled = allowXposedConfig
         app_details_excludetask.isEnabled = allowXposedConfig
         app_details_scrollopt.isEnabled = allowXposedConfig
@@ -311,6 +317,7 @@ class AppDetailsActivity : AppCompatActivity() {
         }
         app_details_icon.setOnClickListener {
             try {
+                saveConfig()
                 val intent = getPackageManager().getLaunchIntentForPackage(app)
                 startActivity(intent)
             } catch (ex: Exception) {
@@ -513,6 +520,21 @@ class AppDetailsActivity : AppCompatActivity() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.save, menu)
+        return true
+    }
+
+    //右上角菜单
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_save -> {
+                saveConfigAndFinish()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     @SuppressLint("SetTextI18n")
     override fun onResume() {
         super.onResume()
@@ -534,6 +556,7 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_versionname.text = packageInfo.versionName
         app_details_versioncode.text = packageInfo.versionCode.toString()
         app_details_time.text = Date(packageInfo.lastUpdateTime).toLocaleString()
+        app_details_light.isEnabled = WriteSettings().getPermission(this)
         Thread(Runnable {
             var size = getTotalSizeOfFilesInDir(File(applicationInfo.sourceDir).parentFile)
             size += getTotalSizeOfFilesInDir(File(applicationInfo.dataDir))
@@ -601,32 +624,40 @@ class AppDetailsActivity : AppCompatActivity() {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            val originConfig = AppConfigStore(this).getAppConfig(appConfigInfo.packageName)
-            if (
-                    appConfigInfo.aloneLight != originConfig.aloneLight ||
-                    appConfigInfo.aloneLightValue != originConfig.aloneLightValue ||
-                    appConfigInfo.disNotice != originConfig.disNotice ||
-                    appConfigInfo.disButton != originConfig.disButton ||
-                    appConfigInfo.disBackgroundRun != originConfig.disBackgroundRun ||
-                    appConfigInfo.gpsOn != originConfig.gpsOn ||
-                    appConfigInfo.dpi != originConfig.dpi ||
-                    appConfigInfo.excludeRecent != originConfig.excludeRecent ||
-                    appConfigInfo.smoothScroll != originConfig.smoothScroll
-            ) {
-                setResult(RESULT_OK, this.intent)
-            } else {
-                setResult(_result, this.intent)
-            }
-            if (aidlConn != null) {
-                aidlConn!!.updateAppConfig(app, appConfigInfo.dpi, appConfigInfo.excludeRecent, appConfigInfo.smoothScroll)
-            } else {
-            }
-            if (!AppConfigStore(this).setAppConfig(appConfigInfo)) {
-                Toast.makeText(this, getString(R.string.config_save_fail), Toast.LENGTH_LONG).show()
-            }
-            this.finish()
+            saveConfigAndFinish()
         }
         return true
+    }
+
+    private fun saveConfigAndFinish() {
+        saveConfig()
+        this.finish()
+    }
+
+    private fun saveConfig() {
+        val originConfig = AppConfigStore(this).getAppConfig(appConfigInfo.packageName)
+        if (
+                appConfigInfo.aloneLight != originConfig.aloneLight ||
+                appConfigInfo.aloneLightValue != originConfig.aloneLightValue ||
+                appConfigInfo.disNotice != originConfig.disNotice ||
+                appConfigInfo.disButton != originConfig.disButton ||
+                appConfigInfo.disBackgroundRun != originConfig.disBackgroundRun ||
+                appConfigInfo.gpsOn != originConfig.gpsOn ||
+                appConfigInfo.dpi != originConfig.dpi ||
+                appConfigInfo.excludeRecent != originConfig.excludeRecent ||
+                appConfigInfo.smoothScroll != originConfig.smoothScroll
+        ) {
+            setResult(RESULT_OK, this.intent)
+        } else {
+            setResult(_result, this.intent)
+        }
+        if (aidlConn != null) {
+            aidlConn!!.updateAppConfig(app, appConfigInfo.dpi, appConfigInfo.excludeRecent, appConfigInfo.smoothScroll)
+        } else {
+        }
+        if (!AppConfigStore(this).setAppConfig(appConfigInfo)) {
+            Toast.makeText(this, getString(R.string.config_save_fail), Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun finish() {

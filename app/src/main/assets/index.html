@@ -1,6 +1,6 @@
 <html style="font-size:2.66666667vw;padding-top: 1.5em;">
 <head>
-    <title>微工具箱Online示例</title>
+    <title>SceneOnline示例</title>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -120,7 +120,7 @@
                 var configXml = document.getElementById('configXml').value;
                 VToolsNative.registerAddin(encodeURIComponent(addinID), configXml.trim(), 'addCallback')
             } else {
-                document.getElementById('result').innerHTML = 'JSBridge调用失败，请在微工具箱中打开本页面！';
+                document.getElementById('result').innerHTML = 'JSBridge调用失败，请在Scene中打开本页面！';
             }
         }
         function addCallback(result) {

@@ -23,7 +23,6 @@ import com.omarea.ui.ProgressBarDialog
 import kotlinx.android.synthetic.main.activity_addin_online.*
 import java.net.URL
 import java.nio.charset.Charset
-import com.omarea.vtools.R
 
 
 class ActivityAddinOnline : AppCompatActivity() {
@@ -76,15 +75,14 @@ class ActivityAddinOnline : AppCompatActivity() {
                 if (powercfg.startsWith("#!/") && ConfigInstaller().installPowerConfig(this, powercfg)) {
                     vtools_online.post {
                         AlertDialog.Builder(this)
-                            .setTitle("配置文件已安装")
-                            .setPositiveButton(R.string.btn_confirm, {
-                                _,_ ->
-                                setResult(Activity.RESULT_OK)
-                                finish()
-                            })
-                            .setCancelable(false)
-                            .create()
-                            .show()
+                                .setTitle("配置文件已安装")
+                                .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                                    setResult(Activity.RESULT_OK)
+                                    finish()
+                                })
+                                .setCancelable(false)
+                                .create()
+                                .show()
                     }
                 } else {
                     vtools_online.post {
@@ -131,15 +129,13 @@ class ActivityAddinOnline : AppCompatActivity() {
                         AlertDialog.Builder(vtools_online.context)
                                 .setTitle("可用的配置脚本")
                                 .setMessage("在当前页面上检测到可用于动态响应的配置脚本，是否立即将其安装到本地？\n\n配置：$configPath\n\n作者：yc9559")
-                                .setPositiveButton(R.string.btn_confirm, {
-                                    _, _ ->
+                                .setPositiveButton(R.string.btn_confirm, { _, _ ->
                                     val configAbsPath = "https://github.com/yc9559/cpufreq-interactive-opt/raw/master/$configPath"
                                     // view.loadUrl(configAbsPath)
                                     downloadPowercfg(configAbsPath)
                                 })
                                 .setCancelable(false)
-                                .setNeutralButton(R.string.btn_cancel, {
-                                    _, _ ->
+                                .setNeutralButton(R.string.btn_cancel, { _, _ ->
                                     view.loadUrl(request.url.toString())
                                 })
                                 .create()

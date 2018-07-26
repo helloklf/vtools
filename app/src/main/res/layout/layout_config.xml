@@ -270,6 +270,68 @@
                                 </LinearLayout>
                             </LinearLayout>
 
+                            <LinearLayout
+                                android:layout_marginTop="20dp"
+                                android:gravity="center_vertical"
+                                android:id="@+id/config_cfg_customer"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        style="@style/textTitle"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="10dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="自选配置脚本" />
+
+                                    <TextView
+                                        style="@style/textSmall"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="10dp"
+                                        android:paddingLeft="8dp"
+                                        android:text="从SDCard下选择配置脚本，或在线获取YC提供的配置脚本" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_vertical"
+                                    android:layout_gravity="center_vertical"
+                                    android:orientation="vertical">
+
+                                    <Button
+                                        android:id="@+id/config_customer_powercfg"
+                                        android:layout_width="55dp"
+                                        android:layout_height="30dp"
+                                        android:layout_gravity="center"
+                                        android:layout_marginLeft="20dp"
+                                        android:background="@android:color/transparent"
+                                        android:text="本地"
+                                        android:textColor="@color/colorPrimary" />
+
+                                    <Button
+                                        android:id="@+id/config_customer_powercfg_online"
+                                        android:layout_width="55dp"
+                                        android:layout_height="30dp"
+                                        android:layout_gravity="center"
+                                        android:layout_marginLeft="20dp"
+                                        android:background="@android:color/transparent"
+                                        android:textColor="@color/colorPrimary"
+                                        android:text="在线" />
+                                </LinearLayout>
+                            </LinearLayout>
+
                             <Switch
                                 android:id="@+id/accu_switch"
                                 style="@style/textTitle"
@@ -341,68 +403,6 @@
                                 android:paddingLeft="8dp"
                                 android:paddingRight="8dp"
                                 android:text="新安装的应用默认使用的模式" />
-
-                            <LinearLayout
-                                android:layout_marginTop="30dp"
-                                android:gravity="center_vertical"
-                                android:id="@+id/config_cfg_customer"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="horizontal">
-
-                                <LinearLayout
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center_vertical"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="1"
-                                    android:orientation="vertical">
-
-                                    <TextView
-                                        style="@style/textTitle"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginBottom="10dp"
-                                        android:paddingLeft="8dp"
-                                        android:text="自选配置脚本" />
-
-                                    <TextView
-                                        style="@style/textSmall"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginBottom="10dp"
-                                        android:paddingLeft="8dp"
-                                        android:text="从SDCard下选择配置脚本，或在线获取YC提供的配置脚本" />
-                                </LinearLayout>
-
-                                <LinearLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:gravity="center_vertical"
-                                    android:layout_gravity="center_vertical"
-                                    android:orientation="vertical">
-
-                                    <Button
-                                        android:id="@+id/config_customer_powercfg"
-                                        android:layout_width="55dp"
-                                        android:layout_height="30dp"
-                                        android:layout_gravity="center"
-                                        android:layout_marginLeft="20dp"
-                                        android:background="@android:color/transparent"
-                                        android:text="本地"
-                                        android:textColor="@color/colorPrimary" />
-
-                                    <Button
-                                        android:id="@+id/config_customer_powercfg_online"
-                                        android:layout_width="55dp"
-                                        android:layout_height="30dp"
-                                        android:layout_gravity="center"
-                                        android:layout_marginLeft="20dp"
-                                        android:background="@android:color/transparent"
-                                        android:textColor="@color/colorPrimary"
-                                        android:text="在线" />
-                                </LinearLayout>
-                            </LinearLayout>
 
                             <android.support.v7.widget.CardView
                                 android:layout_marginTop="30dp"

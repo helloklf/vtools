@@ -59,6 +59,7 @@ class FloatPowercfgSelector {
         // 设置flag
 
         val flags = WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
+        flags.and(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         // | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         // 如果设置了WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE，弹出的View收不到Back键的事件
         params.flags = flags

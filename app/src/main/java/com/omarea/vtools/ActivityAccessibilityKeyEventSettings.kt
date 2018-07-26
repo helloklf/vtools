@@ -121,7 +121,7 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     intent.action = "android.settings.APPLICATION_DETAILS_SETTINGS"
                     intent.data = Uri.fromParts("package", this.packageName, null)
-                    Toast.makeText(this, "为微工具箱授权显示悬浮窗权限，从而在使用虚拟导航条！", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "为Scene授权显示悬浮窗权限，从而在使用虚拟导航条！", Toast.LENGTH_SHORT).show();
                     (it as Switch).isChecked = !isChecked
                 }
             } else {

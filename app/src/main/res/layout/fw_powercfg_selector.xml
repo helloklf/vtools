@@ -15,8 +15,8 @@
 
         <RelativeLayout
             android:id="@+id/popup_window"
-            android:layout_width="280dp"
-            android:layout_height="220dp"
+            android:layout_width="290dp"
+            android:layout_height="230dp"
             android:orientation="vertical">
 
             <TextView
@@ -48,11 +48,11 @@
                     <TextView
                         android:id="@+id/btn_powersave"
                         style="@style/textTitle"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="5dp"
                         android:layout_weight="1"
-                        android:background="#448888cc"
+                        android:background="@color/color_powersave"
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp"
                         android:text="@string/powersave"
@@ -61,10 +61,10 @@
                     <TextView
                         android:id="@+id/btn_defaultmode"
                         style="@style/textTitle"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:background="#4488cc88"
+                        android:background="@color/color_balance"
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp"
                         android:text="@string/balance"
@@ -78,11 +78,11 @@
                     <TextView
                         android:id="@+id/btn_gamemode"
                         style="@style/textTitle"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginRight="5dp"
                         android:layout_weight="1"
-                        android:background="#44cccc88"
+                        android:background="@color/color_perf"
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp"
                         android:text="@string/performance"
@@ -91,10 +91,10 @@
                     <TextView
                         android:id="@+id/btn_fastmode"
                         style="@style/textTitle"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:background="#44cc8888"
+                        android:background="@color/color_fast"
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp"
                         android:text="@string/fast"
@@ -102,6 +102,8 @@
                 </LinearLayout>
 
                 <CheckBox
+                    android:checked="true"
+                    android:textSize="14dp"
                     android:id="@+id/save_config"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -122,11 +124,11 @@
                 android:paddingRight="6dp">
 
                 <Button
+                    style="?android:buttonBarButtonStyle"
                     android:id="@+id/negativeBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
                     android:focusable="true"
                     android:padding="6dp"
                     android:text="@string/btn_cancel"
@@ -134,11 +136,11 @@
 
                 <Button
                     android:id="@+id/positiveBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="35dp"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="18dp"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
+                    style="?android:buttonBarButtonStyle"
                     android:focusable="true"
                     android:padding="6dp"
                     android:text="@string/btn_confirm"

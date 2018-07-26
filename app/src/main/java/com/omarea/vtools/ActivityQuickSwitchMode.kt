@@ -34,7 +34,7 @@ class ActivityQuickSwitchMode : Activity() {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     intent.action = "android.settings.APPLICATION_DETAILS_SETTINGS"
                     intent.data = Uri.fromParts("package", this.packageName, null)
-                    Toast.makeText(this, "为微工具箱授权显示悬浮窗权限，从而在应用中快速切换模式！", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "为Scene授权显示悬浮窗权限，从而在应用中快速切换模式！", Toast.LENGTH_SHORT).show();
                 }
             } else {
                 FloatPowercfgSelector().showPopupWindow(this, parameterValue)

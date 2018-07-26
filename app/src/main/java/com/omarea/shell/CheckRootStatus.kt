@@ -129,9 +129,6 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
             if (!checkPermission(context, Manifest.permission.WRITE_SECURE_SETTINGS)) {
                 cmds.append("pm grant com.omarea.vtools android.permission.WRITE_SECURE_SETTINGS;\n")
             }
-            if (!(WriteSettings().getPermission(context))) {
-                WriteSettings().setPermission(context)
-            }
             /*
             // 不支持使用ROOT权限进行设置
             if (!checkPermission(context, Manifest.permission.BIND_NOTIFICATION_LISTENER_SERVICE)) {
