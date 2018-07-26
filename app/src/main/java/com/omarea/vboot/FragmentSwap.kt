@@ -223,8 +223,8 @@ class FragmentSwap : Fragment() {
                     sb.append("if [ `cat /sys/block/zram0/disksize` != '" + sizeVal + "000000' ] ; then ")
                     sb.append(
                             "sync\n" +
-                            "echo 3 > /proc/sys/vm/drop_caches\n" +
-                            "swapoff /dev/block/zram0 >/dev/null 2>&1;")
+                                    "echo 3 > /proc/sys/vm/drop_caches\n" +
+                                    "swapoff /dev/block/zram0 >/dev/null 2>&1;")
                     sb.append("echo 1 > /sys/block/zram0/reset;")
                     sb.append("echo " + sizeVal + "000000 > /sys/block/zram0/disksize;")
                     sb.append("mkswap /dev/block/zram0 >/dev/null 2>&1;")

@@ -173,7 +173,7 @@ override fun onCreate() {
                 return
             try {
                 AutoClickService().packageinstallerAutoClick(this.applicationContext, event)
-            } catch(ex: Exception) {
+            } catch (ex: Exception) {
 
             }
         } else if (packageName == "com.miui.securitycenter") {
