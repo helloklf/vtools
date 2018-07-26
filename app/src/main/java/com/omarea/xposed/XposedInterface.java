@@ -3,6 +3,8 @@ package com.omarea.xposed;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AndroidAppHelper;
+import android.app.Notification;
+import android.app.Service;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -21,6 +23,7 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
+import static de.robv.android.xposed.XposedHelpers.callMethod;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 import static de.robv.android.xposed.XposedHelpers.setIntField;
 
@@ -37,6 +40,23 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
 
         //强制绕开权限限制读取配置 因为SharedPreferences在Android N中不能设置为MODE_WORLD_READABLE
         prefs.makeWorldReadable();
+
+        XposedHelpers.findAndHookMethod(Service.class, "setForeground", boolean.class , new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                param.args[0] = false;
+                super.afterHookedMethod(param);
+                XposedBridge.log("禁止前台模式");
+            }
+        });
+        XposedHelpers.findAndHookMethod(Service.class, "startForeground", int.class, Notification.class, new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                callMethod(param.thisObject, "stopForeground", true);
+                XposedBridge.log("禁止前台模式");
+            }
+        });
 
         XposedHelpers.findAndHookMethod(DisplayMetrics.class, "getDeviceDensity", new XC_MethodHook() {
             @Override

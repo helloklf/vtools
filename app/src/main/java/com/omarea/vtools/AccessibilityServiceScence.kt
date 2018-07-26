@@ -99,10 +99,10 @@ override fun onCreate() {
             info.flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS
         }
         if (flagReportViewIds) {
-            info.flags = info.flags or  AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS
+            info.flags = info.flags or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS
         }
         if (flagRequestKeyEvent) {
-            info.flags = info.flags or  AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS
+            info.flags = info.flags or AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && flagRequestAccessbilityButton) {
             info.flags = info.flags or AccessibilityServiceInfo.FLAG_REQUEST_ACCESSIBILITY_BUTTON

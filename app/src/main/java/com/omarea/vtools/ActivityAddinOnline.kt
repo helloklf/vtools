@@ -117,7 +117,7 @@ class ActivityAddinOnline : AppCompatActivity() {
         }
         //vtools_online.setWebChromeClient(object : WebChromeClient() { })
         vtools_online.setWebViewClient(object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+            private fun tryGetPowercfg(view: WebView?, url: String?): Boolean {
                 if (url != null && view != null) {
                     // https://github.com/yc9559/cpufreq-interactive-opt/blob/master/vtools-powercfg/20180603/sd_845/powercfg.apk 源码地址
                     // https://github.com/yc9559/cpufreq-interactive-opt/raw/master/vtools-powercfg/20180603/sd_845/powercfg.apk 点击raw指向的链接
@@ -126,7 +126,7 @@ class ActivityAddinOnline : AppCompatActivity() {
                         val configPath = url.substring(url.indexOf("vtools-powercfg"))
                         AlertDialog.Builder(vtools_online.context)
                                 .setTitle("可用的配置脚本")
-                                .setMessage("在当前页面上检测到可用于动态响应的配置脚本，是否立即将其安装到本地？\n\n配置：$configPath\n\n作者：yc9559")
+                                .setMessage("在当前页面上检测到可用于动态响应的配置脚本，是否立即将其安装到本地？\n\n配置：$configPath\n\n作者：yc9559\n\n")
                                 .setPositiveButton(R.string.btn_confirm, { _, _ ->
                                     val configAbsPath = "https://github.com/yc9559/cpufreq-interactive-opt/raw/master/$configPath"
                                     // view.loadUrl(configAbsPath)
@@ -143,13 +143,17 @@ class ActivityAddinOnline : AppCompatActivity() {
                     }
                     return true
                 }
-                return super.shouldOverrideUrlLoading(view, url)
+                return false
+            }
+
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                return tryGetPowercfg(view, url)
             }
 
             override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
                 if (view != null && request != null) {
                     val url = request.url.toString()
-                    this.shouldOverrideUrlLoading(view, url)
+                    return this.tryGetPowercfg(view, url)
                 }
                 return super.shouldOverrideUrlLoading(view, request)
             }

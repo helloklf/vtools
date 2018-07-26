@@ -8,7 +8,6 @@ import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.widget.Switch
-import com.omarea.shared.SpfConfig
 import kotlinx.android.synthetic.main.activity_adv_settings.*
 
 class ActivityAdvSettings : AppCompatActivity() {

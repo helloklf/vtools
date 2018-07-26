@@ -11,13 +11,20 @@ class NotificationService : NotificationListenerService() {
         if (sbn == null) {
             return
         }
-        val instance = SceneMode.getInstanceOrInit(null, null)
-        if (instance == null) {
-            Log.e("vtool-disnotice", "辅助服务未启动")
-            return
-        } else {
-            if (instance.onNotificationPosted()) {
-                cancelNotification(sbn.key)
+        if (sbn.isClearable) {
+            val instance = SceneMode.getInstanceOrInit(null, null)
+            if (instance == null) {
+                Log.e("vtool-disnotice", "辅助服务未启动")
+                return
+            } else {
+                /*
+                if (sbn.isOngoing) {
+                    // 正在前台运行！！？
+                }
+                */
+                if (instance.onNotificationPosted()) {
+                    cancelNotification(sbn.key)
+                }
             }
         }
     }

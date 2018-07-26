@@ -21,8 +21,7 @@ class CrashHandler constructor() : Thread.UncaughtExceptionHandler {
         Log.e("vtools-Exception", ex.message)
         AlertDialog.Builder(mContext).setTitle("哎呀，崩溃了...")
                 .setMessage(ex.toString())
-                .setPositiveButton("确定", {
-                    _,_ ->
+                .setPositiveButton("确定", { _, _ ->
                     System.exit(-1)
                 })
                 .create()
