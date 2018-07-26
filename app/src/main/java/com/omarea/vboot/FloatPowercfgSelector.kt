@@ -7,7 +7,9 @@ import android.graphics.Rect
 import android.os.Build
 import android.view.*
 import android.view.WindowManager.LayoutParams
-import android.widget.*
+import android.widget.Button
+import android.widget.CheckBox
+import android.widget.TextView
 import com.omarea.shared.ModeList
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.helper.NotifyHelper

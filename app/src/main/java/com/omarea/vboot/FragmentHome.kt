@@ -4,13 +4,10 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
-import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
-import android.provider.Settings
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -18,17 +15,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.omarea.shared.*
 import com.omarea.shell.Files
-import com.omarea.shell.KeepShellSync
 import com.omarea.shell.Platform
 import com.omarea.shell.Props
-import com.omarea.ui.ProgressBarDialog
 import kotlinx.android.synthetic.main.layout_home.*
 import java.io.File
-import android.os.Debug.getMemoryInfo
-import android.app.ActivityManager
-import android.content.Context.ACTIVITY_SERVICE
-import com.omarea.shell.cpucontrol.CpuFrequencyUtils
-import java.util.*
 
 
 class FragmentHome : Fragment() {
@@ -84,7 +74,7 @@ class FragmentHome : Fragment() {
         super.onDestroy()
     }
 
-    private fun updateInfo () {
+    private fun updateInfo() {
         sdfree.text = "SDCard：" + Files.GetDirFreeSizeMB(Environment.getExternalStorageDirectory().absolutePath) + " MB"
         datafree.text = "Data：" + Files.GetDirFreeSizeMB(Environment.getDataDirectory().absolutePath) + " MB"
         // val activityManager = context!!.getSystemService(ACTIVITY_SERVICE) as ActivityManager

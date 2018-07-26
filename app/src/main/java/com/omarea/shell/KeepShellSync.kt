@@ -41,17 +41,17 @@ object KeepShellSync {
 
     private var checkRootState =
             "if [[ `id -u 2>&1` = '0' ]]; then\n" +
-                "echo 'root';\n" +
-            "elif [[ `\$UID` = '0' ]]; then\n" +
-                "echo 'root';\n" +
-            "elif [[ `whoami 2>&1` = 'root' ]]; then\n" +
-                "echo 'root';\n" +
-            "elif [[ `set | grep 'USER_ID=0'` = 'USER_ID=0' ]]; then\n" +
-                "echo 'root';\n" +
-            "else\n" +
-                "exit 1\n" +
-                "exit 1\n" +
-            "fi;\n"
+                    "echo 'root';\n" +
+                    "elif [[ `\$UID` = '0' ]]; then\n" +
+                    "echo 'root';\n" +
+                    "elif [[ `whoami 2>&1` = 'root' ]]; then\n" +
+                    "echo 'root';\n" +
+                    "elif [[ `set | grep 'USER_ID=0'` = 'USER_ID=0' ]]; then\n" +
+                    "echo 'root';\n" +
+                    "else\n" +
+                    "exit 1\n" +
+                    "exit 1\n" +
+                    "fi;\n"
 
     private fun getRuntimeShell() {
         if (p != null) return
