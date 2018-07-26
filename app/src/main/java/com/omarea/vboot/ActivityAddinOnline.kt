@@ -12,14 +12,12 @@ import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
-import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import com.omarea.scripts.VToolsOnlineNative
 import com.omarea.shared.ConfigInstaller
-import com.omarea.shared.FileWrite
 import com.omarea.shared.SpfConfig
 import com.omarea.ui.ProgressBarDialog
 import kotlinx.android.synthetic.main.activity_addin_online.*
@@ -79,8 +77,7 @@ class ActivityAddinOnline : AppCompatActivity() {
                     vtools_online.post {
                         AlertDialog.Builder(this)
                                 .setTitle("配置文件已安装")
-                                .setPositiveButton(R.string.btn_confirm, {
-                                    _,_ ->
+                                .setPositiveButton(R.string.btn_confirm, { _, _ ->
                                     setResult(Activity.RESULT_OK)
                                     finish()
                                 })
@@ -120,11 +117,10 @@ class ActivityAddinOnline : AppCompatActivity() {
             vtools_online.loadUrl("https://helloklf.github.io/vtools-online.html#/scripts")
         }
         //vtools_online.setWebChromeClient(object : WebChromeClient() { })
-        vtools_online.setWebViewClient(object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-                if (view != null && request != null) {
-                    val url = request.url.toString()
 
+        vtools_online.setWebViewClient(object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                if (url != null && view != null) {
                     // https://github.com/yc9559/cpufreq-interactive-opt/blob/master/vtools-powercfg/20180603/sd_845/powercfg.apk 源码地址
                     // https://github.com/yc9559/cpufreq-interactive-opt/raw/master/vtools-powercfg/20180603/sd_845/powercfg.apk 点击raw指向的链接
                     // https://raw.githubusercontent.com/yc9559/cpufreq-interactive-opt/master/vtools-powercfg/20180603/sd_845/powercfg.apk 然后重定向到具体文件
@@ -133,23 +129,29 @@ class ActivityAddinOnline : AppCompatActivity() {
                         AlertDialog.Builder(vtools_online.context)
                                 .setTitle("可用的配置脚本")
                                 .setMessage("在当前页面上检测到可用于动态响应的配置脚本，是否立即将其安装到本地？\n\n配置：$configPath\n\n作者：yc9559")
-                                .setPositiveButton(R.string.btn_confirm, {
-                                    _, _ ->
+                                .setPositiveButton(R.string.btn_confirm, { _, _ ->
                                     val configAbsPath = "https://github.com/yc9559/cpufreq-interactive-opt/raw/master/$configPath"
                                     // view.loadUrl(configAbsPath)
                                     downloadPowercfg(configAbsPath)
                                 })
                                 .setCancelable(false)
-                                .setNeutralButton(R.string.btn_cancel, {
-                                    _, _ ->
-                                    view.loadUrl(request.url.toString())
+                                .setNeutralButton(R.string.btn_cancel, { _, _ ->
+                                    view.loadUrl(url)
                                 })
                                 .create()
                                 .show()
                     } else {
-                        view.loadUrl(request.url.toString())
+                        view.loadUrl(url)
                     }
                     return true
+                }
+                return super.shouldOverrideUrlLoading(view, url)
+            }
+
+            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+                if (view != null && request != null) {
+                    val url = request.url.toString()
+                    this.shouldOverrideUrlLoading(view, url)
                 }
                 return super.shouldOverrideUrlLoading(view, request)
             }
