@@ -452,9 +452,9 @@
                                         android:id="@+id/config_adv"
                                         style="@style/textTitle"
                                         android:textColor="@color/colorPrimary"
-                                        android:text="高能选项 >>"
+                                        android:text="专家选项 >>"
                                         android:layout_marginBottom="10dp"
-                                        android:layout_width="match_parent"
+                                        android:layout_width="wrap_content"
                                         android:layout_height="wrap_content" />
 
                                     <TextView

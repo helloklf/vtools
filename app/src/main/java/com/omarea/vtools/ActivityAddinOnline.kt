@@ -169,6 +169,13 @@ class ActivityAddinOnline : AppCompatActivity() {
         vtools_online.addJavascriptInterface(VToolsOnlineNative(this, vtools_online), "VToolsNative")
     }
 
+    override fun onDestroy() {
+        vtools_online.clearCache(true)
+        vtools_online.removeAllViews()
+        vtools_online.destroy()
+        super.onDestroy()
+    }
+
     public override fun onPause() {
         super.onPause()
     }

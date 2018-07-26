@@ -38,6 +38,15 @@ class ActivityAdvSettings : AppCompatActivity() {
         adv_find_viewid.setOnClickListener {
             spf.edit().putBoolean("adv_find_viewid", (it as Switch).isChecked).commit()
         }
+        adv_event_window_state.setOnClickListener {
+            spf.edit().putBoolean("adv_event_window_state", (it as Switch).isChecked).commit()
+        }
+        adv_event_content_change.setOnClickListener {
+            spf.edit().putBoolean("adv_event_content_change", (it as Switch).isChecked).commit()
+        }
+        adv_event_view_click.setOnClickListener {
+            spf.edit().putBoolean("adv_event_view_click", (it as Switch).isChecked).commit()
+        }
     }
 
     override fun onResume() {
@@ -46,6 +55,9 @@ class ActivityAdvSettings : AppCompatActivity() {
         adv_retrieve_window.isChecked = spf.getBoolean("adv_retrieve_window", true)
         adv_keyevent.isChecked = spf.getBoolean("adv_keyevent", true)
         adv_find_viewid.isChecked = spf.getBoolean("adv_find_viewid", true)
+        adv_event_window_state.isChecked = spf.getBoolean("adv_event_window_state", true)
+        adv_event_content_change.isChecked = spf.getBoolean("adv_event_content_change", false)
+        adv_event_view_click.isChecked = spf.getBoolean("adv_event_view_click", false)
     }
 
     public override fun onPause() {

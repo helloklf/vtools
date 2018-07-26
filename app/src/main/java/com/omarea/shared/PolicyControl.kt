@@ -17,14 +17,17 @@ class PolicyControl(private var contentResolver: ContentResolver) {
     var full = ""
 
     init {
-        val policyControl = Settings.Global.getString(contentResolver, "policy_control").split(":")
-        for (item in policyControl) {
-            if (item.startsWith("immersive.full")) {
-                full = item
-            } else if (item.startsWith("immersive.navigation")) {
-                nav = item
-            } else if (item.startsWith("immersive.status")) {
-                status = item
+        val r = Settings.Global.getString(contentResolver, "policy_control")
+        if (r != null) {
+            val policyControl = r.split(":")
+            for (item in policyControl) {
+                if (item.startsWith("immersive.full")) {
+                    full = item
+                } else if (item.startsWith("immersive.navigation")) {
+                    nav = item
+                } else if (item.startsWith("immersive.status")) {
+                    status = item
+                }
             }
         }
     }

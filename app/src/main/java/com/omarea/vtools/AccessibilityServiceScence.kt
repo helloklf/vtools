@@ -29,6 +29,11 @@ class AccessibilityServiceScence : AccessibilityService() {
     private var flagRetriveWindow = true
     private var flagRequestAccessbilityButton = false
 
+    private var eventWindowStateChange = true
+    private var eventWindowContentChange = false
+    private var eventViewClick = false
+
+
     /*
 override fun onCreate() {
     super.onCreate()
@@ -80,13 +85,26 @@ override fun onCreate() {
 
     public override fun onServiceConnected() {
         val spf = getSharedPreferences("adv", Context.MODE_PRIVATE)
-        flagReportViewIds = spf.getBoolean("adv_find_viewid", true)
-        flagRequestKeyEvent = spf.getBoolean("adv_keyevent", true)
-        flagRetriveWindow = spf.getBoolean("adv_retrieve_window", true)
+        flagReportViewIds = spf.getBoolean("adv_find_viewid", flagReportViewIds)
+        flagRequestKeyEvent = spf.getBoolean("adv_keyevent", flagRequestKeyEvent)
+        flagRetriveWindow = spf.getBoolean("adv_retrieve_window", flagRetriveWindow)
+
+        eventWindowStateChange = spf.getBoolean("adv_event_window_state", eventWindowStateChange)
+        eventWindowContentChange = spf.getBoolean("adv_event_content_change", eventWindowContentChange)
+        eventViewClick = spf.getBoolean("adv_event_view_click", eventViewClick)
 
         val info = serviceInfo // AccessibilityServiceInfo();
         // We are interested in all types of accessibility events.
-        info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
+        info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+        if (eventWindowStateChange) {
+            info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+        }
+        if (eventWindowContentChange) {
+            info.eventTypes = info.eventTypes or AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
+        }
+        if (eventViewClick) {
+            info.eventTypes = info.eventTypes or AccessibilityEvent.TYPE_VIEW_CLICKED
+        }
         // We want to provide specific type of feedback.
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
         // We want to receive events in a certain interval.
@@ -128,7 +146,7 @@ override fun onCreate() {
     fun topAppPackageName(): String {
         var packageName = "";
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             val end = System.currentTimeMillis();
             val usageStatsManager = getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager?
             if (null == usageStatsManager) {
@@ -155,104 +173,110 @@ override fun onCreate() {
 
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
-        if (event.packageName == null || event.className == null)
-            return
-        //android.app.AlertDialog
+        try {
+            if (event.packageName == null || event.className == null)
+                return
+            //android.app.AlertDialog
 
-        //val root = rootInActiveWindow
-        //if (root == null) {
-        //    return
-        //}
-        /*
-        if(event.source != null && event.source.window != null)
-            if (event.source.window.type != -1) {
+            //val root = rootInActiveWindow
+            //if (root == null) {
+            //    return
+            //}
+            /*
+            if(event.source != null && event.source.window != null)
+                if (event.source.window.type != -1) {
+
+                }
+            if(event.source.parent != null && event.source.window != null) {
+                if (event.source.window.type != -1) {
+
+                }
+            }
+            val componentName = ComponentName(
+                    event.packageName.toString(),
+                    event.className.toString()
+            )
+            val activityInfo = tryGetActivity(componentName)
+            val isActivity = activityInfo != null
+            if(isActivity) {
 
             }
-        if(event.source.parent != null && event.source.window != null) {
-            if (event.source.window.type != -1) {
+            */
 
+            val packageName = event.packageName.toString().toLowerCase()
+            if (packageName == "android" || packageName == "com.android.systemui") {
+                return
             }
-        }
-        val componentName = ComponentName(
-                event.packageName.toString(),
-                event.className.toString()
-        )
-        val activityInfo = tryGetActivity(componentName)
-        val isActivity = activityInfo != null
-        if(isActivity) {
+            // 针对一加部分系统的修复
+            if ((packageName == "net.oneplus.h2launcher" || packageName == "net.oneplus.launcher") && event.className == "android.widget.LinearLayout") {
+                return
+            }
 
-        }
-        */
-
-        val packageName = event.packageName.toString().toLowerCase()
-        if (packageName == "android" || packageName == "com.android.systemui") {
-            return
-        }
-        // 针对一加部分系统的修复
-        if ((packageName == "net.oneplus.h2launcher" || packageName == "net.oneplus.launcher") && event.className == "android.widget.LinearLayout") {
-            return
-        }
-
-        if (flagRetriveWindow) {
-            if (packageName.contains("packageinstaller")) {
-                if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity")
+            if (flagRetriveWindow) {
+                if (packageName.contains("packageinstaller")) {
+                    if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity")
+                        return
+                    try {
+                        AutoClickService().packageinstallerAutoClick(this.applicationContext, event)
+                    } catch (ex: Exception) {
+                    }
+                } else if (packageName == "com.miui.securitycenter") {
+                    try {
+                        AutoClickService().miuiUsbInstallAutoClick(event)
+                    } catch (ex: Exception) {
+                    }
                     return
-                try {
-                    AutoClickService().packageinstallerAutoClick(this.applicationContext, event)
-                } catch (ex: Exception) {
                 }
-            } else if (packageName == "com.miui.securitycenter") {
-                try {
-                    AutoClickService().miuiUsbInstallAutoClick(event)
-                } catch (ex: Exception) {
+            }
+
+            /*
+            val rootWindow = rootInActiveWindow
+            val source = event.source //rootInActiveWindow //event.source
+
+            if (source == null || rootWindow.windowId != source.windowId) {
+                return
+            }
+
+            val windowInfo = source.window
+            */
+            if (flagReportViewIds) {
+                val windows_ = windows
+                if (windows_ == null || windows_.isEmpty()) {
+                    return
                 }
-                return
-            }
-        }
+                val windowInfo = windows_.lastOrNull()
 
-        /*
-        val rootWindow = rootInActiveWindow
-        val source = event.source //rootInActiveWindow //event.source
+                /**
+                Window          层级(zOrder)
+                --------------------------
+                应用Window	    1~99
+                子Window	    1000~1999
+                系统Window	    2000~2999
+                 */
 
-        if (source == null || rootWindow.windowId != source.windowId) {
-            return
-        }
+                val source = event.source
+                if (source == null || windowInfo == null || source.windowId != windowInfo.id) {
+                    return
+                }
 
-        val windowInfo = source.window
-        */
-        if (flagReportViewIds) {
-            val windows_ = windows
-            if (windows_ == null || windows_.isEmpty()) {
-                return
-            }
-            val windowInfo = windows_.lastOrNull()
-
-            /**
-            Window          层级(zOrder)
-            --------------------------
-            应用Window	    1~99
-            子Window	    1000~1999
-            系统Window	    2000~2999
-             */
-
-            val source = event.source
-            if (source == null || windowInfo == null || source.windowId != windowInfo.id) {
-                return
-            }
-
-            if (windowInfo.type == AccessibilityWindowInfo.TYPE_APPLICATION && windowInfo.isActive) {
+                if (windowInfo.type == AccessibilityWindowInfo.TYPE_APPLICATION && windowInfo.isActive) {
+                    if (serviceHelper == null)
+                        initServiceHelper()
+                    serviceHelper?.onFocusAppChanged(event.packageName.toString())
+                } else {
+                    Log.d("vtool-dump", "[skip app:${packageName}]")
+                }
+            } else {
                 if (serviceHelper == null)
                     initServiceHelper()
                 serviceHelper?.onFocusAppChanged(event.packageName.toString())
-            } else {
-                Log.d("vtool-dump", "[skip app:${packageName}]")
             }
-        } else {
-            if (serviceHelper == null)
-                initServiceHelper()
-            serviceHelper?.onFocusAppChanged(event.packageName.toString())
+            // event.recycle()
+        } finally {
+            try {
+                event.recycle()
+            } catch (ex: Exception) {}
         }
-        // event.recycle()
     }
     /*
     Thread(Runnable {

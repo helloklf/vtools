@@ -85,6 +85,73 @@
                 android:textColor="?android:attr/textColorSecondary"
                 android:textSize="10dp" />
 
+            <Switch
+                android:enabled="false"
+                android:id="@+id/adv_event_window_state"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="left"
+                android:padding="8dp"
+                android:checked="true"
+                android:text="检测窗口状态变化(必需)"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="监测窗口状态变化，从而判断应用程序切换，此项是必须开启的！"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="10dp" />
+
+            <Switch
+                android:id="@+id/adv_event_content_change"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="left"
+                android:padding="8dp"
+                android:checked="true"
+                android:text="窗口内容变化"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="监测窗口内容的变化，从而判断应用程序切换"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="10dp" />
+
+            <Switch
+                android:id="@+id/adv_event_view_click"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="left"
+                android:padding="8dp"
+                android:checked="true"
+                android:text="视图内容点击"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="监测视图内容点击事件，从而判定前台应用程序活动状态"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="10dp" />
+
            <android.support.v7.widget.CardView
                android:layout_marginTop="20dp"
                android:layout_marginBottom="20dp"
