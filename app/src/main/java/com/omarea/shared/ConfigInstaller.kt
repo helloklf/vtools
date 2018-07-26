@@ -21,14 +21,14 @@ class ConfigInstaller {
             //KeepShellSync.doCmdSync(Consts.InstallPowerToggleConfigToCache + "\n\n" + Consts.ExecuteConfig + "\n" + after)
             KeepShellSync.doCmdSync(cmd.toString())
             configCodeVerify(context)
-            ModeList(context).setCurrentPowercfg("")
             KeepShellSync.doCmdSync(afterCmds)
+            ModeList(context).setCurrentPowercfg("")
         } catch (ex: Exception) {
             Log.e("script-parse", ex.message)
         }
     }
 
-    fun installPowerConfig(context: Context, powercfg: String): Boolean {
+    fun installPowerConfigByText(context: Context, powercfg: String): Boolean {
         try {
             FileWrite.WritePrivateFile(powercfg.replace("\r", "").toByteArray(Charset.forName("UTF-8")), "powercfg.sh", context)
             val cmd = StringBuilder()
