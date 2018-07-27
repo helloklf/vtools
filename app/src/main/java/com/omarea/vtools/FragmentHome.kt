@@ -10,9 +10,11 @@ import android.os.Environment
 import android.os.Handler
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentPagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SimpleAdapter
 import android.widget.Toast
 import com.omarea.shared.ConfigInstaller
 import com.omarea.shared.Consts
@@ -32,12 +34,12 @@ class FragmentHome : Fragment() {
         return inflater.inflate(R.layout.layout_home, container, false)
     }
 
-    private var myHandler = Handler()
     private lateinit var globalSPF: SharedPreferences
     private fun showMsg(msg: String) {
         this.view?.let { Snackbar.make(it, msg, Snackbar.LENGTH_LONG).show() }
     }
 
+    private val fragmentList = ArrayList<Fragment>()
     private lateinit var spf: SharedPreferences
     private var modeList = ModeList()
     @SuppressLint("ApplySharedPref")
@@ -67,25 +69,18 @@ class FragmentHome : Fragment() {
 
         spf = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
-        home_clear_ram.setOnClickListener {
-            home_raminfo_text.text = "稍等一下"
-            Thread(Runnable {
-                KeepShellSync.doCmdSync("sync\n" +
-                        "echo 3 > /proc/sys/vm/drop_caches")
-                myHandler.postDelayed({
-                    val activityManager = context!!.getSystemService(ACTIVITY_SERVICE) as ActivityManager
-                    val info = ActivityManager.MemoryInfo()
-                    activityManager.getMemoryInfo(info)
-                    val totalMem = (info.totalMem / 1024 / 1024f).toInt()
-                    home_raminfo.setData(totalMem.toFloat(), 0f)
-                    val availMem = (info.availMem / 1024 / 1024f).toInt()
-                    Toast.makeText(context, "缓存已清理...", Toast.LENGTH_SHORT).show()
-                    home_raminfo_text.text = "${availMem} / ${totalMem}MB"
-                    home_raminfo.setData(totalMem.toFloat(), availMem.toFloat())
+        fragmentList.add(RamFragment())
+        fragmentList.add(CpuFragment())
+        home_viewpager.adapter = object : FragmentPagerAdapter(fragmentManager) {
+            override fun getCount(): Int {
+                return fragmentList.size
+            }
 
-                }, 1000)
-            }).start()
+            override fun getItem(position: Int): Fragment {
+                return fragmentList.get(position)
+            }
         }
+        home_viewpager.setCurrentItem(0, true)
     }
 
     override fun onResume() {
@@ -102,15 +97,6 @@ class FragmentHome : Fragment() {
     private fun updateInfo() {
         sdfree.text = "SDCard：" + Files.GetDirFreeSizeMB(Environment.getExternalStorageDirectory().absolutePath) + " MB"
         datafree.text = "Data：" + Files.GetDirFreeSizeMB(Environment.getDataDirectory().absolutePath) + " MB"
-        val activityManager = context!!.getSystemService(ACTIVITY_SERVICE) as ActivityManager
-        val info = ActivityManager.MemoryInfo()
-        activityManager.getMemoryInfo(info)
-
-        val totalMem = (info.totalMem / 1024 / 1024f).toInt()
-        val availMem = (info.availMem / 1024 / 1024f).toInt()
-
-        home_raminfo_text.text = "${availMem} / ${totalMem}MB"
-        home_raminfo.setData(totalMem.toFloat(), availMem.toFloat())
     }
 
     private fun setModeState() {

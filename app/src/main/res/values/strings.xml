@@ -406,4 +406,18 @@
     <string name="notice_channel_boot">自启动提示</string>
     <string name="boot_script_running">正在执行自启动脚本...</string>
     <string name="flash_confirm">确认刷入？</string>
+    <string name="scene_addin_installing">稍等，正在安装“Scene - 高级设定”插件...</string>
+    <string name="scene_addin_miss">插件未集成到应用包，请单独下载！</string>
+    <string name="scene_addin_installed">“Scene - 高级设定”插件已自动更新！</string>
+    <string name="scene_addin_sync_fail">从“Scene-高级设定”插件同步Xposed设定失败！</string>
+    <string name="scene_addin_version_toolow">“Scene-高级设定”插件版本过低！</string>
+    <string name="dynamic_config_notinstalled">未安装模式配置脚本，无法使用动态响应！</string>
+    <string name="perf_opt">性能调节</string>
+    <string name="permission_modify_fail">修改权限失败！</string>
+    <string name="scene_need_write_sys_settings">请先授权允许Scene“修改系统设置”！</string>
+    <string name="start_app_fail">启动应用失败！</string>
+    <string name="scene_need_notic_listing">请先授权允许工具箱“通知使用权限”！</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

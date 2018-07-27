@@ -1,13 +1,16 @@
 package com.omarea.shell.cpucontrol;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.omarea.shell.KeepShellSync;
 import com.omarea.shell.KernelProrp;
 import com.omarea.shell.SuDo;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 public class CpuFrequencyUtils {
@@ -40,7 +43,11 @@ public class CpuFrequencyUtils {
     }
 
     public static String getCurrentFrequency(Integer cluster) {
-        return KernelProrp.INSTANCE.getProp(Constants.scaling_cur_freq.replace("cpu0", "cpu" + cluster));
+        if (cluster >= getClusterInfo().size()) {
+            return "";
+        }
+        String cpu = "cpu" + getClusterInfo().get(cluster)[0];
+        return KernelProrp.INSTANCE.getProp(Constants.scaling_cur_freq.replace("cpu0", cpu));
     }
 
     public static String getCurrentMinFrequency(Integer cluster) {
@@ -415,5 +422,71 @@ public class CpuFrequencyUtils {
         } catch (Exception ignored) {
         }
         return new String[]{};
+    }
+
+    private static String lastCpuState = "";
+
+    private static int getCpuIndex(String[] cols) {
+        int cpuIndex = -1;
+        if (cols[0].equals("cpu")) {
+            cpuIndex = -1;
+        } else {
+            cpuIndex = Integer.parseInt(cols[0].substring(3));
+        }
+        return cpuIndex;
+    }
+
+    private static long cpuTotalTime(String[] cols) {
+        long totalTime = 0;
+        for (int i = 1; i < cols.length; i++) {
+            totalTime += Long.parseLong(cols[i]);
+        }
+        return totalTime;
+    }
+
+    private static long cpuIdelTime(String[] cols) {
+        return Long.parseLong(cols[4]);
+    }
+
+    public static HashMap<Integer, Double> getCpuLoad() {
+        @SuppressLint("UseSparseArrays") HashMap<Integer, Double> loads = new HashMap<>();
+        String times = KernelProrp.INSTANCE.getProp("/proc/stat", "'^cpu'");
+        if (!times.equals("error") && times.startsWith("cpu")) {
+            try {
+                if (lastCpuState.isEmpty()) {
+                    lastCpuState = times;
+                    Thread.sleep(100);
+                    return getCpuLoad();
+                } else {
+                    String[] cpus = times.split("\n");
+                    String[] cpus0 = lastCpuState.split("\n");
+                    if (cpus.length != cpus0.length) {
+                        return loads;
+                    }
+                    for (int rowIndex=0; rowIndex < cpus.length; rowIndex++) {
+                        String[] cols1 = cpus[rowIndex].replaceAll("  ", " ").split(" ");
+                        String[] cols0 = cpus0[rowIndex].replaceAll("  ", " ").split(" ");
+                        long total1 = cpuTotalTime(cols1);
+                        long idel1 = cpuIdelTime(cols1);
+                        long total0 = cpuTotalTime(cols0);
+                        long idel0 = cpuIdelTime(cols0);
+                        long timePoor = total1 - total0;
+                        long idelTimePoor = idel1 - idel0;
+                        if (idelTimePoor < 1) {
+                            loads.put(getCpuIndex(cols1), 100d);
+                        } else {
+                            double load = (100 - (idelTimePoor * 100.0 / timePoor));
+                            loads.put(getCpuIndex(cols1), load);
+                        }
+                    }
+                    lastCpuState = times;
+                    return loads;
+                }
+            } catch (Exception ex) {
+                return loads;
+            }
+        } else {
+            return loads;
+        }
     }
 }

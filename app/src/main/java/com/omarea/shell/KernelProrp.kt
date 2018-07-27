@@ -13,6 +13,9 @@ object KernelProrp {
     fun getProp(propName: String): String {
         return KeepShellSync.doCmdSync("cat $propName")
     }
+    fun getProp(propName: String, grep: String): String {
+        return KeepShellSync.doCmdSync("cat $propName | grep $grep")
+    }
 
     /**
      * 保存属性

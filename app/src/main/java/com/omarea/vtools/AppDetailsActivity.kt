@@ -71,7 +71,7 @@ class AppDetailsActivity : AppCompatActivity() {
             try {
                 if (getVersion() > aidlConn!!.version) {
                     // TODO:自动安装
-                    Toast.makeText(this, "“Scene-高级设定”插件版本过低！", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.scene_addin_version_toolow), Toast.LENGTH_SHORT).show()
                     if (aidlConn != null) {
                         unbindService(conn)
                         aidlConn = null
@@ -99,7 +99,7 @@ class AppDetailsActivity : AppCompatActivity() {
                     app_details_force_scale.isChecked = aidlConn!!.getBooleanValue( app + "_force_scale", false)
                 }
             } catch (ex: Exception) {
-                Toast.makeText(this, "从“Scene-高级设定”插件同步Xposed设定失败！", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.scene_addin_sync_fail), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -107,13 +107,13 @@ class AppDetailsActivity : AppCompatActivity() {
     private fun installVAddin() {
         val addinPath = FileWrite.WritePrivateFile(assets, "addin/xposed-addin.apk", "addin/xposed-addin.apk", this)
         if (addinPath == null) {
-            Toast.makeText(this, "插件未集成到应用包，请单独下载！", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.scene_addin_miss), Toast.LENGTH_SHORT).show()
             return
         }
-        Toast.makeText(this, "稍等，正在安装“Scene - 高级设定”插件...", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.scene_addin_installing), Toast.LENGTH_SHORT).show()
         val installResult = KeepShellSync.doCmdSync("pm install -r '$addinPath'")
         if (installResult !== "error" && installResult.contains("Success")) {
-            Toast.makeText(this, "“Scene - 高级设定”插件已自动更新！", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.scene_addin_installed), Toast.LENGTH_SHORT).show()
             checkXposedState()
         } else {
             val intent = Intent(Intent.ACTION_VIEW);
@@ -204,7 +204,7 @@ class AppDetailsActivity : AppCompatActivity() {
 
         app_details_dynamic.setOnClickListener {
             if (!dynamicCpu) {
-                Snackbar.make(it, "未安装模式配置脚本，无法使用动态响应！", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(it, getString(R.string.dynamic_config_notinstalled), Snackbar.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             val modeList = ModeList(this)
@@ -220,7 +220,7 @@ class AppDetailsActivity : AppCompatActivity() {
             }
             var selectedIndex = index
             AlertDialog.Builder(this)
-                    .setTitle("性能调节")
+                    .setTitle(getString(R.string.perf_opt))
                     .setSingleChoiceItems(R.array.powercfg_modes, index, DialogInterface.OnClickListener { dialog, which ->
                         selectedIndex = which
                     })
@@ -253,7 +253,7 @@ class AppDetailsActivity : AppCompatActivity() {
             }
             if (r == "error") {
                 (it as Switch).isChecked = !isChecked
-                Toast.makeText(this, "修改权限失败！", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.permission_modify_fail), Toast.LENGTH_SHORT).show()
             }
         }
         app_details_usagedata.setOnClickListener {
@@ -266,7 +266,7 @@ class AppDetailsActivity : AppCompatActivity() {
             }
             if (r == "error") {
                 (it as Switch).isChecked = !isChecked
-                Toast.makeText(this, "修改权限失败！", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.permission_modify_fail), Toast.LENGTH_SHORT).show()
             }
         }
         app_details_modifysettings.setOnClickListener {
@@ -279,7 +279,7 @@ class AppDetailsActivity : AppCompatActivity() {
             }
             if (r == "error") {
                 (it as Switch).isChecked = !isChecked
-                Toast.makeText(this, "修改权限失败！", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.permission_modify_fail), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -288,7 +288,7 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_hidenav.setOnClickListener {
             if (!WriteSettings().getPermission(this)) {
                 WriteSettings().setPermission(this)
-                Toast.makeText(this, "请先授权允许工具箱“修改系统设置”！", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.scene_need_write_sys_settings), Toast.LENGTH_SHORT).show()
                 (it as Switch).isChecked = !(it as Switch).isChecked
                 return@setOnClickListener
             }
@@ -304,7 +304,7 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_hidestatus.setOnClickListener {
             if (!WriteSettings().getPermission(this)) {
                 WriteSettings().setPermission(this)
-                Toast.makeText(this, "请先授权允许工具箱“修改系统设置”！", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.scene_need_write_sys_settings), Toast.LENGTH_SHORT).show()
                 (it as Switch).isChecked = !(it as Switch).isChecked
                 return@setOnClickListener
             }
@@ -331,7 +331,7 @@ class AppDetailsActivity : AppCompatActivity() {
                 val intent = getPackageManager().getLaunchIntentForPackage(app)
                 startActivity(intent)
             } catch (ex: Exception) {
-                Toast.makeText(this, "启动应用失败！", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.start_app_fail), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -346,7 +346,7 @@ class AppDetailsActivity : AppCompatActivity() {
             app_details_hidenotice.setOnClickListener {
                 if (!NoticeListing().getPermission(this)) {
                     NoticeListing().setPermission(this)
-                    Toast.makeText(this, "请先授权允许工具箱“通知使用权限”！", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, getString(R.string.scene_need_notic_listing), Toast.LENGTH_SHORT).show()
                     (it as Switch).isChecked = !it.isChecked
                     return@setOnClickListener
                 }
@@ -359,7 +359,7 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_aloowlight.setOnClickListener {
             if (!WriteSettings().getPermission(this)) {
                 WriteSettings().setPermission(this)
-                Toast.makeText(this, "请先授权允许工具箱“修改系统设置”！", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.scene_need_write_sys_settings), Toast.LENGTH_SHORT).show()
                 (it as CheckBox).isChecked = false
                 return@setOnClickListener
             }
