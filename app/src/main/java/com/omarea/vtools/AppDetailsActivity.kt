@@ -93,6 +93,10 @@ class AppDetailsActivity : AppCompatActivity() {
                             }
                         }
                     }
+                    app_details_hide_su.isChecked = aidlConn!!.getBooleanValue("com.android.systemui_hide_su", false)
+                    app_details_webview_debug.isChecked = aidlConn!!.getBooleanValue("android_webdebug", false)
+                    app_details_service_running.isChecked = aidlConn!!.getBooleanValue("android_dis_service_foreground", false)
+                    app_details_force_scale.isChecked = aidlConn!!.getBooleanValue( app + "_force_scale", false)
                 }
             } catch (ex: Exception) {
                 Toast.makeText(this, "从“Scene-高级设定”插件同步Xposed设定失败！", Toast.LENGTH_SHORT).show()
@@ -157,6 +161,10 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_dpi.isEnabled = allowXposedConfig
         app_details_excludetask.isEnabled = allowXposedConfig
         app_details_scrollopt.isEnabled = allowXposedConfig
+        app_details_hide_su.isEnabled = allowXposedConfig
+        app_details_webview_debug.isEnabled = allowXposedConfig
+        app_details_service_running.isEnabled = allowXposedConfig
+        app_details_force_scale.isEnabled = allowXposedConfig
 
         if (vAddinsInstalled) {
             if (aidlConn == null) {
@@ -653,6 +661,10 @@ class AppDetailsActivity : AppCompatActivity() {
         }
         if (aidlConn != null) {
             aidlConn!!.updateAppConfig(app, appConfigInfo.dpi, appConfigInfo.excludeRecent, appConfigInfo.smoothScroll)
+            aidlConn!!.setBooleanValue("com.android.systemui_hide_su", app_details_hide_su.isChecked)
+            aidlConn!!.setBooleanValue("android_webdebug", app_details_webview_debug.isChecked)
+            aidlConn!!.setBooleanValue("android_dis_service_foreground", app_details_service_running.isChecked)
+            aidlConn!!.setBooleanValue( app + "_force_scale", app_details_force_scale.isChecked)
         } else {
         }
         if (!AppConfigStore(this).setAppConfig(appConfigInfo)) {

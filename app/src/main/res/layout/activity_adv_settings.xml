@@ -39,7 +39,7 @@
                 android:paddingBottom="8dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:text="获得更完整的界面信息，Scene将通过windowId及window列表来判断当前活动窗口是否是悬浮窗"
+                android:text="获得更完整的界面信息，Scene将通过windowId及window列表来判断当前活动窗口是否是悬浮窗\n规避悬浮窗导致模式切换需要开启此项"
                 android:textColor="?android:attr/textColorSecondary"
                 android:textSize="10dp" />
 
@@ -60,7 +60,7 @@
                 android:paddingBottom="8dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:text="允许辅助服务在后台捕获按键事件。如果Scene在后台运行时卡死，会导致按键没反应！！！"
+                android:text="允许辅助服务在后台捕获按键事件。如果Scene在后台运行时卡死，会导致按键没反应！！！\n屏蔽按键功能需要开启此选项"
                 android:textColor="?android:attr/textColorSecondary"
                 android:textSize="10dp" />
 
@@ -81,7 +81,7 @@
                 android:paddingBottom="8dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:text="允许辅助服务检索窗口内容，正常情况下推荐开启此选项！"
+                android:text="允许辅助服务检索窗口内容，正常情况下推荐开启此选项！\n应用安装自动点击服务需要开启此项"
                 android:textColor="?android:attr/textColorSecondary"
                 android:textSize="10dp" />
 
@@ -126,7 +126,7 @@
                 android:paddingBottom="8dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:text="监测窗口内容的变化，从而判断应用程序切换"
+                android:text="监测窗口内容的变化，从而判断应用程序切换\n开启可提高前台应用检测精确度，增加耗电"
                 android:textColor="?android:attr/textColorSecondary"
                 android:textSize="10dp" />
 
@@ -148,7 +148,7 @@
                 android:paddingBottom="8dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
-                android:text="监测视图内容点击事件，从而判定前台应用程序活动状态"
+                android:text="监测视图内容点击事件，从而判定前台应用程序活动状态\n开启可提高前台应用检测精确度，增加耗电"
                 android:textColor="?android:attr/textColorSecondary"
                 android:textSize="10dp" />
 

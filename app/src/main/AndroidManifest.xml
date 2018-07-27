@@ -212,12 +212,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
-        <provider
-            android:name=".AppConfigContentProvider"
-            android:authorities="com.omarea.vtools.appconfig"
-            android:enabled="true"
-            android:exported="true" />
     </application>
 
 </manifest>

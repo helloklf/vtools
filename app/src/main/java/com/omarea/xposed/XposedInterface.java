@@ -32,7 +32,6 @@ import static de.robv.android.xposed.XposedHelpers.setIntField;
  */
 public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygoteInit {
     private static XSharedPreferences prefs;
-    private boolean useDefaultConfig = false;
 
     @Override
     public void initZygote(IXposedHookZygoteInit.StartupParam startupParam) throws Throwable {
@@ -40,21 +39,26 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
 
         //强制绕开权限限制读取配置 因为SharedPreferences在Android N中不能设置为MODE_WORLD_READABLE
         prefs.makeWorldReadable();
+        final boolean disServiceForeground = prefs.getBoolean("android_dis_service_foreground", false);
 
         XposedHelpers.findAndHookMethod(Service.class, "setForeground", boolean.class , new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                param.args[0] = false;
+                if (disServiceForeground) {
+                    XposedBridge.log("禁止前台模式");
+                    param.args[0] = false;
+                }
                 super.afterHookedMethod(param);
-                XposedBridge.log("禁止前台模式");
             }
         });
         XposedHelpers.findAndHookMethod(Service.class, "startForeground", int.class, Notification.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                if (disServiceForeground) {
+                    callMethod(param.thisObject, "stopForeground", true);
+                    XposedBridge.log("禁止前台模式");
+                }
                 super.afterHookedMethod(param);
-                callMethod(param.thisObject, "stopForeground", true);
-                XposedBridge.log("禁止前台模式");
             }
         });
 
@@ -173,7 +177,7 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
         final String packageName = loadPackageParam.packageName;
 
         // 平滑滚动
-        if (prefs.getBoolean(packageName + "_scroll", false)) {
+        if (prefs.getBoolean(packageName + "_scroll", false) || prefs.getBoolean("android_scroll", false)) {
             new ViewConfig().handleLoadPackage(loadPackageParam);
         }
 
@@ -206,7 +210,7 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
         switch (packageName) {
             // 隐藏状态栏ROOT图标
             case "com.android.systemui":
-                if (prefs.getBoolean(packageName + "_hide_su", false)) {
+                if (prefs.getBoolean(packageName + "com.android.systemui_hide_su", false)) {
                     new SystemUI().hideSUIcon(loadPackageParam);
                 }
                 break;
@@ -224,13 +228,13 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
                 break;
         }
 
-        // WebView 调试
-        if (prefs.getBoolean(packageName + "_webdebug", false)) {
+        // WebView 调试（全局）
+        if (prefs.getBoolean("android_webdebug", false)) {
             new WebView().allowDebug();
         }
 
         // 全面屏优化
-        if (prefs.getBoolean(packageName + "_full_screen", true)) {
+        if (prefs.getBoolean(packageName + "_force_scale", true)) {
             new FullScreeProcess().addMarginBottom();
         }
 
