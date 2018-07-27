@@ -195,8 +195,8 @@ public class ViewConfig {
         //滚动回弹距离
         static final int DEFAULT_SCROLLING_OVERFLING = 160;
         //滚动惯性
-        static final int DEFAULT_SCROLLING_FRICTION = 128;
+        static final int DEFAULT_SCROLLING_FRICTION = 60;
         //最大滚动速度
-        static final int DEFAULT_SCROLLING_VELOCITY = 2000;
+        static final int DEFAULT_SCROLLING_VELOCITY = 180;
     }
 }

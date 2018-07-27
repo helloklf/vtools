@@ -15,6 +15,7 @@ import android.util.Log
 import android.view.KeyEvent
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityWindowInfo
+import android.widget.Toast
 import com.omarea.shared.AutoClickService
 import com.omarea.shared.BootService
 import com.omarea.shared.CrashHandler
@@ -84,6 +85,8 @@ override fun onCreate() {
 
 
     public override fun onServiceConnected() {
+        CrashHandler().init(this)
+
         val spf = getSharedPreferences("adv", Context.MODE_PRIVATE)
         flagReportViewIds = spf.getBoolean("adv_find_viewid", flagReportViewIds)
         flagRequestKeyEvent = spf.getBoolean("adv_keyevent", flagRequestKeyEvent)
@@ -173,110 +176,104 @@ override fun onCreate() {
 
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
-        try {
-            if (event.packageName == null || event.className == null)
-                return
-            //android.app.AlertDialog
+        if (event.packageName == null || event.className == null)
+            return
+        //android.app.AlertDialog
 
-            //val root = rootInActiveWindow
-            //if (root == null) {
-            //    return
-            //}
-            /*
-            if(event.source != null && event.source.window != null)
-                if (event.source.window.type != -1) {
-
-                }
-            if(event.source.parent != null && event.source.window != null) {
-                if (event.source.window.type != -1) {
-
-                }
-            }
-            val componentName = ComponentName(
-                    event.packageName.toString(),
-                    event.className.toString()
-            )
-            val activityInfo = tryGetActivity(componentName)
-            val isActivity = activityInfo != null
-            if(isActivity) {
+        //val root = rootInActiveWindow
+        //if (root == null) {
+        //    return
+        //}
+        /*
+        if(event.source != null && event.source.window != null)
+            if (event.source.window.type != -1) {
 
             }
-            */
+        if(event.source.parent != null && event.source.window != null) {
+            if (event.source.window.type != -1) {
 
-            val packageName = event.packageName.toString().toLowerCase()
-            if (packageName == "android" || packageName == "com.android.systemui") {
-                return
             }
-            // 针对一加部分系统的修复
-            if ((packageName == "net.oneplus.h2launcher" || packageName == "net.oneplus.launcher") && event.className == "android.widget.LinearLayout") {
-                return
-            }
+        }
+        val componentName = ComponentName(
+                event.packageName.toString(),
+                event.className.toString()
+        )
+        val activityInfo = tryGetActivity(componentName)
+        val isActivity = activityInfo != null
+        if(isActivity) {
 
-            if (flagRetriveWindow) {
-                if (packageName.contains("packageinstaller")) {
-                    if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity")
-                        return
-                    try {
-                        AutoClickService().packageinstallerAutoClick(this.applicationContext, event)
-                    } catch (ex: Exception) {
-                    }
-                } else if (packageName == "com.miui.securitycenter") {
-                    try {
-                        AutoClickService().miuiUsbInstallAutoClick(event)
-                    } catch (ex: Exception) {
-                    }
+        }
+        */
+
+        val packageName = event.packageName.toString().toLowerCase()
+        if (packageName == "android" || packageName == "com.android.systemui") {
+            return
+        }
+        // 针对一加部分系统的修复
+        if ((packageName == "net.oneplus.h2launcher" || packageName == "net.oneplus.launcher") && event.className == "android.widget.LinearLayout") {
+            return
+        }
+
+        if (flagRetriveWindow) {
+            if (packageName.contains("packageinstaller")) {
+                if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity")
                     return
+                try {
+                    AutoClickService().packageinstallerAutoClick(this.applicationContext, event)
+                } catch (ex: Exception) {
                 }
+            } else if (packageName == "com.miui.securitycenter") {
+                try {
+                    AutoClickService().miuiUsbInstallAutoClick(event)
+                } catch (ex: Exception) {
+                }
+                return
             }
+        }
 
-            /*
-            val rootWindow = rootInActiveWindow
-            val source = event.source //rootInActiveWindow //event.source
+        /*
+        val rootWindow = rootInActiveWindow
+        val source = event.source //rootInActiveWindow //event.source
 
-            if (source == null || rootWindow.windowId != source.windowId) {
+        if (source == null || rootWindow.windowId != source.windowId) {
+            return
+        }
+
+        val windowInfo = source.window
+        */
+        if (flagReportViewIds) {
+            val windows_ = windows
+            if (windows_ == null || windows_.isEmpty()) {
+                return
+            }
+            val windowInfo = windows_.lastOrNull()
+
+            /**
+            Window          层级(zOrder)
+            --------------------------
+            应用Window	    1~99
+            子Window	    1000~1999
+            系统Window	    2000~2999
+             */
+
+            val source = event.source
+            if (source == null || windowInfo == null || source.windowId != windowInfo.id) {
                 return
             }
 
-            val windowInfo = source.window
-            */
-            if (flagReportViewIds) {
-                val windows_ = windows
-                if (windows_ == null || windows_.isEmpty()) {
-                    return
-                }
-                val windowInfo = windows_.lastOrNull()
-
-                /**
-                Window          层级(zOrder)
-                --------------------------
-                应用Window	    1~99
-                子Window	    1000~1999
-                系统Window	    2000~2999
-                 */
-
-                val source = event.source
-                if (source == null || windowInfo == null || source.windowId != windowInfo.id) {
-                    return
-                }
-
-                if (windowInfo.type == AccessibilityWindowInfo.TYPE_APPLICATION && windowInfo.isActive) {
-                    if (serviceHelper == null)
-                        initServiceHelper()
-                    serviceHelper?.onFocusAppChanged(event.packageName.toString())
-                } else {
-                    Log.d("vtool-dump", "[skip app:${packageName}]")
-                }
-            } else {
+            if (windowInfo.type == AccessibilityWindowInfo.TYPE_APPLICATION && windowInfo.isActive) {
                 if (serviceHelper == null)
                     initServiceHelper()
                 serviceHelper?.onFocusAppChanged(event.packageName.toString())
+            } else {
+                Log.d("vtool-dump", "[skip app:${packageName}]")
             }
-            // event.recycle()
-        } finally {
-            try {
-                event.recycle()
-            } catch (ex: Exception) {}
+        } else {
+            if (serviceHelper == null)
+                initServiceHelper()
+            serviceHelper?.onFocusAppChanged(event.packageName.toString())
         }
+        // event.recycle()
     }
     /*
     Thread(Runnable {
@@ -286,6 +283,7 @@ override fun onCreate() {
     */
 
     private fun deestory() {
+        Toast.makeText(this, "Scene - 辅助服务已关闭！", Toast.LENGTH_SHORT).show()
         if (serviceHelper != null) {
             serviceHelper!!.onInterrupt()
             serviceHelper = null
@@ -305,7 +303,7 @@ override fun onCreate() {
         val keyCode = event.keyCode
         // 只阻止四大金刚键
         if (!(keyCode == KeyEvent.KEYCODE_HOME || keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_APP_SWITCH || keyCode == KeyEvent.KEYCODE_MENU || keyCode == KeyEvent.KEYCODE_SEARCH)) {
-            return false
+            return super.onKeyEvent(event)
         }
         if (event.action == KeyEvent.ACTION_DOWN) {
             downTime = event.eventTime
@@ -326,11 +324,12 @@ override fun onCreate() {
             downTime = -1
             return serviceHelper!!.onKeyDown()
         } else {
-            return false
+            return super.onKeyEvent(event)
         }
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
+        stopSelf()
         deestory()
         return super.onUnbind(intent)
     }

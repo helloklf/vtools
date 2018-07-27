@@ -20,6 +20,11 @@ class NotificationService : NotificationListenerService() {
                 /*
                 if (sbn.isOngoing) {
                     // 正在前台运行！！？
+                    cancelNotification(sbn.key)
+                } else {
+                    if (instance.onNotificationPosted()) {
+                        cancelNotification(sbn.key)
+                    }
                 }
                 */
                 if (instance.onNotificationPosted()) {
