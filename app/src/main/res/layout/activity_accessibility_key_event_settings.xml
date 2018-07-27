@@ -18,7 +18,7 @@
             android:id="@+id/key_sets"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="56dp"
+            android:paddingTop="56dp"
             android:orientation="vertical">
 
             <Button
