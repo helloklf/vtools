@@ -55,13 +55,14 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 if (disServiceForeground) {
-                    callMethod(param.thisObject, "stopForeground", true);
+                    callMethod(param.thisObject, "stopForeground", false);
                     XposedBridge.log("禁止前台模式");
                 }
                 super.afterHookedMethod(param);
             }
         });
 
+        /*
         XposedHelpers.findAndHookMethod(DisplayMetrics.class, "getDeviceDensity", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -166,6 +167,7 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
         } catch (Throwable t) {
             XposedBridge.log(t);
         }
+        */
     }
 
     @Override
@@ -272,6 +274,7 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
                     }
                 }
             });
+            /*
             XposedHelpers.findAndHookMethod("android.util.DisplayMetrics", loadPackageParam.classLoader, "getRealMetrics", DisplayMetrics.class, new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -284,6 +287,7 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
                     }
                 }
             });
+            */
         }
     }
 }

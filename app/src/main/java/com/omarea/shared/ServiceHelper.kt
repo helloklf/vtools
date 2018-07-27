@@ -242,6 +242,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
     }
 
     fun onInterrupt() {
+        sceneMode.clearState()
         notifyHelper.hideNotify()
         ReciverLock.unRegister(context)
         densityKeepShell()

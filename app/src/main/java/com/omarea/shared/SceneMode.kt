@@ -202,4 +202,11 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
             Log.e("onFocusdAppChange", ex.message)
         }
     }
+
+    fun clearState() {
+        lastAppPackageName = "com.android.systemui"
+        restoreLocationModeState()
+        resumeState()
+        config = null
+    }
 }

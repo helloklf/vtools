@@ -636,7 +636,7 @@ class AppDetailsActivity : AppCompatActivity() {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             saveConfigAndFinish()
         }
-        return true
+        return false
     }
 
     private fun saveConfigAndFinish() {

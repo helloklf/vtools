@@ -23,7 +23,6 @@ public class ViewConfig {
 
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
         hookViewConfiguration(ViewConfiguration.class);
-        hookScrollbarNoFading(ViewConfiguration.class);
         hookOverscrollDistance(ViewConfiguration.class);
         hookOverflingDistance(ViewConfiguration.class);
         hookMaxFlingVelocity(ViewConfiguration.class);
@@ -195,8 +194,8 @@ public class ViewConfig {
         //滚动回弹距离
         static final int DEFAULT_SCROLLING_OVERFLING = 160;
         //滚动惯性
-        static final int DEFAULT_SCROLLING_FRICTION = 60;
+        static final int DEFAULT_SCROLLING_FRICTION = 100;
         //最大滚动速度
-        static final int DEFAULT_SCROLLING_VELOCITY = 180;
+        static final int DEFAULT_SCROLLING_VELOCITY = 2000;
     }
 }

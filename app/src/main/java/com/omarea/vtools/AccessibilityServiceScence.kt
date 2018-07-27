@@ -329,8 +329,8 @@ override fun onCreate() {
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
-        stopSelf()
         deestory()
+        stopSelf()
         return super.onUnbind(intent)
     }
 

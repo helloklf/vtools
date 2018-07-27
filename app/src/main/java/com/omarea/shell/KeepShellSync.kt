@@ -30,6 +30,7 @@ object KeepShellSync {
             p!!.destroy()
         } catch (ex: Exception) {
         }
+        enterLockTime = 0L
         out = null
         reader = null
         p = null
@@ -38,6 +39,8 @@ object KeepShellSync {
     //获取ROOT超时时间
     private val GET_ROOT_TIMEOUT = 20000L
     private val mLock = ReentrantLock()
+    private val LOCK_TIMEOUT = 10000L
+    private var enterLockTime = 0L
 
     private var checkRootState =
             "if [[ `id -u 2>&1` = '0' ]]; then\n" +
@@ -58,6 +61,7 @@ object KeepShellSync {
         val getSu = Thread(Runnable {
             try {
                 mLock.lockInterruptibly()
+                enterLockTime = System.currentTimeMillis()
                 p = Runtime.getRuntime().exec("su")
                 out = p!!.outputStream
                 reader = p!!.inputStream.bufferedReader()
@@ -77,6 +81,7 @@ object KeepShellSync {
             } catch (ex: Exception) {
                 Log.e("getRuntime", ex.message)
             } finally {
+                enterLockTime = 0L
                 mLock.unlock()
             }
         })
@@ -84,6 +89,7 @@ object KeepShellSync {
         Thread(Runnable {
             Thread.sleep(10 * 1000)
             if (p == null && getSu.state != Thread.State.TERMINATED) {
+                enterLockTime = 0L
                 getSu.interrupt()
             }
         }).start()
@@ -94,6 +100,10 @@ object KeepShellSync {
 
     //执行脚本
     internal fun doCmdSync(cmd: String): String {
+        if (mLock.isLocked && enterLockTime > 0 && System.currentTimeMillis() - enterLockTime > LOCK_TIMEOUT) {
+            tryExit()
+            Log.e("doCmdSync-Lock", "线程等待超时${System.currentTimeMillis()} - $enterLockTime > $LOCK_TIMEOUT")
+        }
         val uuid = UUID.randomUUID().toString()
         getRuntimeShell()
         if (out != null) {
@@ -137,6 +147,7 @@ object KeepShellSync {
                 Log.e("KeepShellAsync", e.message)
                 return "error"
             } finally {
+                enterLockTime = 0L
                 mLock.unlock()
             }
         } else {
