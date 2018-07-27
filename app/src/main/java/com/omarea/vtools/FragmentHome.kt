@@ -11,6 +11,7 @@ import android.os.Handler
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.app.FragmentStatePagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,6 +46,11 @@ class FragmentHome : Fragment() {
     @SuppressLint("ApplySharedPref")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
 
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
@@ -69,9 +75,10 @@ class FragmentHome : Fragment() {
 
         spf = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
+        fragmentList.clear()
         fragmentList.add(RamFragment())
         fragmentList.add(CpuFragment())
-        home_viewpager.adapter = object : FragmentPagerAdapter(fragmentManager) {
+        home_viewpager.adapter = object : FragmentStatePagerAdapter(fragmentManager) {
             override fun getCount(): Int {
                 return fragmentList.size
             }
@@ -80,6 +87,7 @@ class FragmentHome : Fragment() {
                 return fragmentList.get(position)
             }
         }
+        home_viewpager.adapter!!.notifyDataSetChanged()
         home_viewpager.setCurrentItem(0, true)
     }
 

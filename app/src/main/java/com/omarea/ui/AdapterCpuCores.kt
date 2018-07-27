@@ -60,7 +60,7 @@ class AdapterCpuCores(private val context: Context, private val list: ArrayList<
         currentFreq.text = subFreqStr(coreInfo.currentFreq) + " Mhz"
 
         val freqRanage = convertView.findViewById<TextView>(R.id.cpu_core_freq_ranage)
-        freqRanage.text = subFreqStr(coreInfo.minFreq) + " ~ " + subFreqStr(coreInfo.maxFreq)
+        freqRanage.text = subFreqStr(coreInfo.minFreq) + " ~ " + subFreqStr(coreInfo.maxFreq) + " Mhz"
         return convertView
     }
 }

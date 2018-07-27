@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="6dp">
+    android:padding="8dp">
 
     <FrameLayout
         android:layout_gravity="center_vertical"
@@ -42,11 +42,10 @@
             android:lines="1"
             android:text="2048Mhz"
             android:textColor="?android:attr/textColorPrimary"
-            android:textSize="14dp"
-            android:textStyle="bold" />
+            android:textSize="13dp" />
 
         <TextView
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="4dp"
             android:id="@+id/cpu_core_freq_ranage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -54,6 +53,6 @@
             android:lines="1"
             android:text="300Mhz ~ 2048Mhz"
             android:textColor="#8888"
-            android:textSize="11dp" />
+            android:textSize="10dp" />
     </LinearLayout>
 </LinearLayout>

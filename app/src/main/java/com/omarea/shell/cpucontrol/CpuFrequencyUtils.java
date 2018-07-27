@@ -42,6 +42,10 @@ public class CpuFrequencyUtils {
         return KernelProrp.INSTANCE.getProp(Constants.scaling_max_freq.replace("cpu0", cpu));
     }
 
+    public static String getCurrentMaxFrequency(String core) {
+        return KernelProrp.INSTANCE.getProp(Constants.scaling_max_freq.replace("cpu0", core));
+    }
+
     public static String getCurrentFrequency(Integer cluster) {
         if (cluster >= getClusterInfo().size()) {
             return "";
@@ -50,12 +54,20 @@ public class CpuFrequencyUtils {
         return KernelProrp.INSTANCE.getProp(Constants.scaling_cur_freq.replace("cpu0", cpu));
     }
 
+    public static String getCurrentFrequency(String core) {
+        return KernelProrp.INSTANCE.getProp(Constants.scaling_cur_freq.replace("cpu0", core));
+    }
+
     public static String getCurrentMinFrequency(Integer cluster) {
         if (cluster >= getClusterInfo().size()) {
             return "";
         }
         String cpu = "cpu" + getClusterInfo().get(cluster)[0];
         return KernelProrp.INSTANCE.getProp(Constants.scaling_min_freq.replace("cpu0", cpu));
+    }
+
+    public static String getCurrentMinFrequency(String core) {
+        return KernelProrp.INSTANCE.getProp(Constants.scaling_min_freq.replace("cpu0", core));
     }
 
     public static String[] getAvailableGovernors(Integer cluster) {
@@ -72,6 +84,10 @@ public class CpuFrequencyUtils {
         }
         String cpu = "cpu" + getClusterInfo().get(cluster)[0];
         return KernelProrp.INSTANCE.getProp(Constants.scaling_governor.replace("cpu0", cpu));
+    }
+
+    public static String getCurrentScalingGovernor(String core) {
+        return KernelProrp.INSTANCE.getProp(Constants.scaling_governor.replace("cpu0", core));
     }
 
     public static void setMinFrequency(String minFrequency, Integer cluster, Context context) {

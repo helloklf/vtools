@@ -73,35 +73,28 @@ class CpuFragment : Fragment() {
     cpu7 7780 880 2128 312684 58 0 49 0 0 0
     */
     private var coreCount = -1;
-    private var clusterCount = -1;
-    private var clusterInfo = ArrayList<Array<String>>();
     private fun updateInfo() {
-        if (coreCount == -1 || clusterCount == -1) {
+        if (coreCount < 1) {
             coreCount = CpuFrequencyUtils.getCoreCount()
-            clusterInfo = CpuFrequencyUtils.getClusterInfo()
-            clusterCount = clusterInfo.size
         }
         val cores = ArrayList<CpuCoreInfo>()
         val loads = CpuFrequencyUtils.getCpuLoad()
         for (coreIndex in 0..coreCount - 1) {
-            for (clusterIndex in 0..clusterCount - 1) {
-                if (clusterInfo[clusterIndex].contains(coreIndex.toString())) {
-                    val core = CpuCoreInfo()
-                    core.maxFreq = CpuFrequencyUtils.getCurrentMaxFrequency(clusterIndex)
-                    core.minFreq = CpuFrequencyUtils.getCurrentMinFrequency(clusterIndex)
-                    core.currentFreq = CpuFrequencyUtils.getCurrentFrequency(clusterIndex)
-                    if (coreIndex == 4 && clusterIndex == 1) {
-                        Log.e("freq", core.currentFreq)
-                    }
-                    core.cpuGovernor = CpuFrequencyUtils.getCurrentScalingGovernor(clusterIndex)
-                    if (loads.containsKey(coreIndex)) {
-                        core.loadRatio = loads.get(coreIndex)!!
-                    }
-                    cores.add(core)
-                }
+            val core = CpuCoreInfo()
+            core.maxFreq = CpuFrequencyUtils.getCurrentMaxFrequency("cpu" + coreIndex)
+            core.minFreq = CpuFrequencyUtils.getCurrentMinFrequency("cpu" + coreIndex)
+            core.currentFreq = CpuFrequencyUtils.getCurrentFrequency("cpu" + coreIndex)
+            core.cpuGovernor = CpuFrequencyUtils.getCurrentScalingGovernor("cpu" + coreIndex)
+            if (loads.containsKey(coreIndex)) {
+                core.loadRatio = loads.get(coreIndex)!!
             }
+            cores.add(core)
         }
         myHandler.post {
+            cpu_core_count.text = "核心数：" + coreCount
+            if (loads.containsKey(-1)) {
+                cpu_core_total_load.text = "负载：" + loads.get(-1)!!.toInt().toString() + "%"
+            }
             if (cpu_core_list.adapter == null) {
                 cpu_core_list.adapter = AdapterCpuCores(context!!, cores)
             } else {
