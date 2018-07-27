@@ -3,6 +3,12 @@
 action=$1
 stop perfd
 
+if [ ! `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor` = "interactive" ]; then
+	echo 'interactive' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+fi
+if [ ! `cat /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor` = "interactive" ]; then
+	echo 'interactive' > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
+fi
 echo 1 > /proc/sys/kernel/sched_prefer_sync_wakee_to_waker
 
 function lock_value()

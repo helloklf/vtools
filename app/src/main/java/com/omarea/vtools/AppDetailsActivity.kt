@@ -111,7 +111,9 @@ class AppDetailsActivity : AppCompatActivity() {
             return
         }
         Toast.makeText(this, "稍等，正在安装“Scene - 高级设定”插件...", Toast.LENGTH_SHORT).show()
-        if (KeepShellSync.doCmdSync("pm install -r '$addinPath'") !== "error") {
+        val installResult = KeepShellSync.doCmdSync("pm install -r '$addinPath'")
+        if (installResult !== "error" && installResult.contains("Success")) {
+            Toast.makeText(this, "“Scene - 高级设定”插件已自动更新！", Toast.LENGTH_SHORT).show()
             checkXposedState()
         } else {
             val intent = Intent(Intent.ACTION_VIEW);

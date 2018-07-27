@@ -197,6 +197,6 @@ public class ViewConfig {
         //滚动惯性
         static final int DEFAULT_SCROLLING_FRICTION = 256;
         //最大滚动速度
-        static final int DEFAULT_SCROLLING_VELOCITY = 4000;
+        static final int DEFAULT_SCROLLING_VELOCITY = 2000;
     }
 }

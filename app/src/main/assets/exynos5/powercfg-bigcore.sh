@@ -1,6 +1,12 @@
 #!/system/bin/sh
 action=$1
 
+if [ ! `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor` = "interactive" ]; then
+	echo 'interactive' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+fi
+if [ ! `cat /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor` = "interactive" ]; then
+	echo 'interactive' > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
+fi
 function set_value()
 {
     value=$1

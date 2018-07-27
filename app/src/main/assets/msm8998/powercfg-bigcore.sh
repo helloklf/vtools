@@ -8,9 +8,12 @@ echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
 echo N > /sys/module/msm_thermal/parameters/enabled
 echo 1 > /proc/sys/kernel/sched_prefer_sync_wakee_to_waker
 
-#if [ ! `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor` = "interactive" ]; then
-#	sh /system/etc/init.qcom.post_boot.sh
-#fi
+if [ ! `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor` = "interactive" ]; then
+	echo 'interactive' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+fi
+if [ ! `cat /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor` = "interactive" ]; then
+	echo 'interactive' > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
+fi
 
 # /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
 # 300000 364800 441600 518400 595200 672000 748800 825600 883200 960000 1036800 1094400 1171200 1248000 1324800 1401600 1478400 1555200 1670400 1747200 1824000 1900800

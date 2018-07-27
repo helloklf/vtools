@@ -7,6 +7,12 @@ action=$1
 # /sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster1_freq_table
 # 2600000 2496000 2392000 2288000 2184000 2080000 1976000 1872000 1768000 1664000 1560000 1456000 1352000 1248000 1144000 1040000 936000 832000 728000 624000 520000 416000 312000
 
+if [ ! `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor` = "interactive" ]; then
+	echo 'interactive' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+fi
+if [ ! `cat /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor` = "interactive" ]; then
+	echo 'interactive' > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
+fi
 function set_value()
 {
     value=$1
