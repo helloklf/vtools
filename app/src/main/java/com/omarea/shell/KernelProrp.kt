@@ -11,10 +11,10 @@ object KernelProrp {
      * @return
      */
     fun getProp(propName: String): String {
-        return KeepShellSync.doCmdSync("cat $propName")
+        return KeepShellSync.doCmdSync("if [ -e \"$propName\" ]; then\ncat \"$propName\";\nfi;")
     }
     fun getProp(propName: String, grep: String): String {
-        return KeepShellSync.doCmdSync("cat $propName | grep $grep")
+        return KeepShellSync.doCmdSync("if [ -e \"$propName\" ]; then\ncat $propName | grep \"$grep\";\nfi;")
     }
 
     /**

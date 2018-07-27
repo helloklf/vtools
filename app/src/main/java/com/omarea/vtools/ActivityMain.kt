@@ -362,9 +362,9 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         if (fragment != null) {
-            //transaction.disallowAddToBackStack()
+            transaction.disallowAddToBackStack()
             transaction.replace(R.id.main_content, fragment)
-            transaction.addToBackStack(item.title.toString());
+            //transaction.addToBackStack(item.title.toString());
             transaction.commit()
             title = item.title
             //item.isChecked = true

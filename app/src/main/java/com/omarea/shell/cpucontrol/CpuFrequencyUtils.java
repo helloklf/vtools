@@ -466,7 +466,7 @@ public class CpuFrequencyUtils {
 
     public static HashMap<Integer, Double> getCpuLoad() {
         @SuppressLint("UseSparseArrays") HashMap<Integer, Double> loads = new HashMap<>();
-        String times = KernelProrp.INSTANCE.getProp("/proc/stat", "'^cpu'");
+        String times = KernelProrp.INSTANCE.getProp("/proc/stat", "^cpu");
         if (!times.equals("error") && times.startsWith("cpu")) {
             try {
                 if (lastCpuState.isEmpty()) {
@@ -476,9 +476,12 @@ public class CpuFrequencyUtils {
                 } else {
                     String[] cpus = times.split("\n");
                     String[] cpus0 = lastCpuState.split("\n");
+                    // region 这个不能这么写，因为有时候会有CPU离线的情况...导致取不到数据
+                    /*
                     if (cpus.length != cpus0.length) {
                         return loads;
                     }
+                    // 由于核心的离线或上线，导致两个时间段内，核心出现的顺序并不一定一致...所以，不能用顺序来读取行
                     for (int rowIndex=0; rowIndex < cpus.length; rowIndex++) {
                         String[] cols1 = cpus[rowIndex].replaceAll("  ", " ").split(" ");
                         String[] cols0 = cpus0[rowIndex].replaceAll("  ", " ").split(" ");
@@ -493,6 +496,39 @@ public class CpuFrequencyUtils {
                         } else {
                             double load = (100 - (idelTimePoor * 100.0 / timePoor));
                             loads.put(getCpuIndex(cols1), load);
+                        }
+                    }
+                    lastCpuState = times;
+                    return loads;
+                    */
+                    // endregion
+
+                    for (String cpuCurrentTime : cpus) {
+                        String[] cols1 = cpuCurrentTime.replaceAll("  ", " ").split(" ");
+                        String[] cols0 = null;
+                        // 根据前缀匹配上一个时段的cpu时间数据
+                        for (String cpu : cpus0) {
+                            // startsWith条件必须加个空格，因为搜索cpu的时候 "cpu0 ..."、"cpu1 ..."等都会匹配
+                            if (cpu.startsWith(cols1[0] + " ")) {
+                                cols0 = cpu.replaceAll("  ", " ").split(" ");
+                                break;
+                            }
+                        }
+                        if (cols0 != null && cols0.length != 0) {
+                            long total1 = cpuTotalTime(cols1);
+                            long idel1 = cpuIdelTime(cols1);
+                            long total0 = cpuTotalTime(cols0);
+                            long idel0 = cpuIdelTime(cols0);
+                            long timePoor = total1 - total0;
+                            long idelTimePoor = idel1 - idel0;
+                            if (idelTimePoor < 1) {
+                                loads.put(getCpuIndex(cols1), 100d);
+                            } else {
+                                double load = (100 - (idelTimePoor * 100.0 / timePoor));
+                                loads.put(getCpuIndex(cols1), load);
+                            }
+                        } else {
+                            loads.put(getCpuIndex(cols1), 0d);
                         }
                     }
                     lastCpuState = times;

@@ -30,6 +30,8 @@ class AdapterCpuCores(private val context: Context, private val list: ArrayList<
     private fun subFreqStr(freq: String): String {
         if (freq.length > 3) {
             return freq.substring(0, freq.length - 3)
+        } else if (freq.isEmpty()) {
+            return "0"
         } else {
             return freq
         }
