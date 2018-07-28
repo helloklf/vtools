@@ -51,6 +51,7 @@ public class AppConfigStore extends SQLiteOpenHelper {
         } catch (Exception ignored) {
 
         }
+        /*
         try {
             Cursor cursor = this.getReadableDatabase().rawQuery("select * from app_xposed_config where id = ?", new String[]{app});
             if (cursor.moveToNext()) {
@@ -62,6 +63,7 @@ public class AppConfigStore extends SQLiteOpenHelper {
         } catch (Exception ignored) {
 
         }
+        */
         return appConfigInfo;
     }
 
@@ -74,7 +76,6 @@ public class AppConfigStore extends SQLiteOpenHelper {
         getWritableDatabase().beginTransaction();
         try {
             database.execSQL("delete from  app_config where id = ?", new String[]{appConfigInfo.packageName});
-            database.execSQL("delete from  app_xposed_config where id = ?", new String[]{appConfigInfo.packageName});
             database.execSQL("insert into app_config(id, alone_light, light, dis_notice, dis_button, gps_on, dis_background_run) values (?, ?, ?, ?, ?, ?, ?)", new Object[]{
                     appConfigInfo.packageName,
                     appConfigInfo.aloneLight ? 1 : 0,
@@ -84,12 +85,15 @@ public class AppConfigStore extends SQLiteOpenHelper {
                     appConfigInfo.gpsOn ? 1 : 0,
                     appConfigInfo.disBackgroundRun ? 1 : 0
             });
+            /*
+            database.execSQL("delete from  app_xposed_config where id = ?", new String[]{appConfigInfo.packageName});
             database.execSQL("insert into app_xposed_config(id, dpi, exclude_recent, smooth_scroll) values (?, ?, ?, ?)", new Object[]{
                     appConfigInfo.packageName,
                     appConfigInfo.dpi,
                     appConfigInfo.excludeRecent ? 1 : 0,
                     appConfigInfo.smoothScroll ? 1 : 0
             });
+            */
             database.setTransactionSuccessful();
             return true;
         } catch (Exception ignored) {

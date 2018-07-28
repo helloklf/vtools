@@ -46,7 +46,7 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
             try {
                 val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
                 startActivity(intent)
-                Toast.makeText(this, "请在无障碍设置中找到“Scene-按键辅助”并激活，从而使用按键辅助功能！", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, "请在无障碍设置中找到“Scene-按键辅助”并激活，从而使用按键辅助功能！", Toast.LENGTH_LONG).show()
             } catch (ex: Exception) {
 
             }
@@ -121,7 +121,7 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     intent.action = "android.settings.APPLICATION_DETAILS_SETTINGS"
                     intent.data = Uri.fromParts("package", this.packageName, null)
-                    Toast.makeText(this, "为Scene授权显示悬浮窗权限，从而在使用虚拟导航条！", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(applicationContext, "为Scene授权显示悬浮窗权限，从而在使用虚拟导航条！", Toast.LENGTH_SHORT).show();
                     (it as Switch).isChecked = !isChecked
                 }
             } else {

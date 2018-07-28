@@ -86,7 +86,7 @@ class ActivityAddinOnline : AppCompatActivity() {
                     }
                 } else {
                     vtools_online.post {
-                        Toast.makeText(this, "下载配置文件失败或文件无效！", Toast.LENGTH_LONG).show()
+                        Toast.makeText(applicationContext, "下载配置文件失败或文件无效！", Toast.LENGTH_LONG).show()
                     }
                 }
                 vtools_online.post {
@@ -95,7 +95,7 @@ class ActivityAddinOnline : AppCompatActivity() {
             } catch (ex: Exception) {
                 vtools_online.post {
                     progressBarDialog.hideDialog()
-                    Toast.makeText(this, "下载配置文件失败！", Toast.LENGTH_LONG).show()
+                    Toast.makeText(applicationContext, "下载配置文件失败！", Toast.LENGTH_LONG).show()
                 }
             }
         }).start()

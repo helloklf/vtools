@@ -280,7 +280,7 @@ override fun onCreate() {
     */
 
     private fun deestory() {
-        Toast.makeText(this, "Scene - 辅助服务已关闭！", Toast.LENGTH_SHORT).show()
+        Toast.makeText(applicationContext, "Scene - 辅助服务已关闭！", Toast.LENGTH_SHORT).show()
         if (serviceHelper != null) {
             serviceHelper!!.onInterrupt()
             serviceHelper = null

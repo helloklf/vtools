@@ -43,9 +43,9 @@ class AppDetailsActivity : AppCompatActivity() {
     private var aidlConn: IAppConfigAidlInterface? = null
 
     fun getAddinVersion(): Int {
-        val manager = getPackageManager()
         var code = 0
         try {
+            val manager = getPackageManager()
             val info = manager.getPackageInfo("com.omarea.vaddin", 0)
             code = info.versionCode
         } catch (e: PackageManager.NameNotFoundException) {
@@ -56,9 +56,9 @@ class AppDetailsActivity : AppCompatActivity() {
     }
 
     fun getVersion(): Int {
-        val manager = getPackageManager()
         var code = 0
         try {
+            val manager = getPackageManager()
             val info = manager.getPackageInfo(getPackageName(), 0)
             code = info.versionCode
         } catch (e: PackageManager.NameNotFoundException) {
@@ -84,7 +84,7 @@ class AppDetailsActivity : AppCompatActivity() {
             try {
                 if (getVersion() > getAddinVersion()) {
                     // TODO:自动安装
-                    Toast.makeText(this, getString(R.string.scene_addin_version_toolow), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, getString(R.string.scene_addin_version_toolow), Toast.LENGTH_SHORT).show()
                     if (aidlConn != null) {
                         unbindService(conn)
                         aidlConn = null
@@ -112,7 +112,7 @@ class AppDetailsActivity : AppCompatActivity() {
                     app_details_force_scale.isChecked = aidlConn!!.getBooleanValue( app + "_force_scale", false)
                 }
             } catch (ex: Exception) {
-                Toast.makeText(this, getString(R.string.scene_addin_sync_fail), Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, getString(R.string.scene_addin_sync_fail), Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -120,23 +120,34 @@ class AppDetailsActivity : AppCompatActivity() {
     private fun installVAddin() {
         val addinPath = FileWrite.WritePrivateFile(assets, "addin/xposed-addin.apk", "addin/xposed-addin.apk", this)
         if (addinPath == null) {
-            Toast.makeText(this, getString(R.string.scene_addin_miss), Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, getString(R.string.scene_addin_miss), Toast.LENGTH_SHORT).show()
             return
         }
-        if (packageManager.getPackageArchiveInfo(addinPath, PackageManager.GET_ACTIVITIES).versionCode < getVersion()) {
-            Toast.makeText(this, getString(R.string.scene_inner_addin_invalid), Toast.LENGTH_SHORT).show()
+        try {
+            if (packageManager.getPackageArchiveInfo(addinPath, PackageManager.GET_ACTIVITIES).versionCode < getVersion()) {
+                Toast.makeText(applicationContext, getString(R.string.scene_inner_addin_invalid), Toast.LENGTH_SHORT).show()
+                return
+            }
+        } catch (ex: Exception) {
+            Toast.makeText(applicationContext, getString(R.string.scene_addin_install_fail), Toast.LENGTH_SHORT).show()
             return
         }
-        Toast.makeText(this, getString(R.string.scene_addin_installing), Toast.LENGTH_SHORT).show()
+        Toast.makeText(applicationContext, getString(R.string.scene_addin_installing), Toast.LENGTH_SHORT).show()
         val installResult = KeepShellSync.doCmdSync("pm install -r '$addinPath'")
         if (installResult !== "error" && installResult.contains("Success") && getAddinVersion() == getVersion()) {
-            Toast.makeText(this, getString(R.string.scene_addin_installed), Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, getString(R.string.scene_addin_installed), Toast.LENGTH_SHORT).show()
             checkXposedState()
         } else {
-            val intent = Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(Uri.fromFile(File(addinPath)), "application/vnd.android.package-archive");
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
+            try {
+                val intent = Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(Uri.fromFile(File(addinPath)), "application/vnd.android.package-archive");
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            } catch (ex: Exception) {
+
+            }
+            Toast.makeText(applicationContext, getString(R.string.scene_addin_install_fail), Toast.LENGTH_SHORT).show()
+            return
         }
     }
 
@@ -156,22 +167,21 @@ class AppDetailsActivity : AppCompatActivity() {
                 throw Exception("")
             }
         } catch (ex: Exception) {
-            Toast.makeText(this, "连接到“Scene-高级设定”插件失败，请不要阻止插件自启动！", Toast.LENGTH_LONG).show()
+            Toast.makeText(applicationContext, "连接到“Scene-高级设定”插件失败，请不要阻止插件自启动！", Toast.LENGTH_LONG).show()
         }
     }
 
     private fun checkXposedState() {
         var allowXposedConfig = XposedCheck.xposedIsRunning()
+        app_details_vaddins_notactive.visibility = if (allowXposedConfig) View.GONE else View.VISIBLE
         try {
             vAddinsInstalled = packageManager.getPackageInfo("com.omarea.vaddin", 0) != null
             allowXposedConfig = allowXposedConfig && vAddinsInstalled
             app_details_vaddins_notinstall.visibility = View.GONE
-            app_details_vaddins_notactive.visibility = if (allowXposedConfig) View.GONE else View.VISIBLE
         } catch (ex: Exception) {
             allowXposedConfig = false
             vAddinsInstalled = false
             app_details_vaddins_notinstall.visibility = View.VISIBLE
-            app_details_vaddins_notactive.visibility = View.GONE
             app_details_vaddins_notinstall.setOnClickListener {
                 installVAddin()
             }
@@ -270,7 +280,7 @@ class AppDetailsActivity : AppCompatActivity() {
             }
             if (r == "error") {
                 (it as Switch).isChecked = !isChecked
-                Toast.makeText(this, getString(R.string.permission_modify_fail), Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, getString(R.string.permission_modify_fail), Toast.LENGTH_SHORT).show()
             }
         }
         app_details_usagedata.setOnClickListener {
@@ -283,7 +293,7 @@ class AppDetailsActivity : AppCompatActivity() {
             }
             if (r == "error") {
                 (it as Switch).isChecked = !isChecked
-                Toast.makeText(this, getString(R.string.permission_modify_fail), Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, getString(R.string.permission_modify_fail), Toast.LENGTH_SHORT).show()
             }
         }
         app_details_modifysettings.setOnClickListener {
@@ -296,7 +306,7 @@ class AppDetailsActivity : AppCompatActivity() {
             }
             if (r == "error") {
                 (it as Switch).isChecked = !isChecked
-                Toast.makeText(this, getString(R.string.permission_modify_fail), Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, getString(R.string.permission_modify_fail), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -305,7 +315,7 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_hidenav.setOnClickListener {
             if (!WriteSettings().getPermission(this)) {
                 WriteSettings().setPermission(this)
-                Toast.makeText(this, getString(R.string.scene_need_write_sys_settings), Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, getString(R.string.scene_need_write_sys_settings), Toast.LENGTH_SHORT).show()
                 (it as Switch).isChecked = !(it as Switch).isChecked
                 return@setOnClickListener
             }
@@ -321,7 +331,7 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_hidestatus.setOnClickListener {
             if (!WriteSettings().getPermission(this)) {
                 WriteSettings().setPermission(this)
-                Toast.makeText(this, getString(R.string.scene_need_write_sys_settings), Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, getString(R.string.scene_need_write_sys_settings), Toast.LENGTH_SHORT).show()
                 (it as Switch).isChecked = !(it as Switch).isChecked
                 return@setOnClickListener
             }
@@ -348,7 +358,7 @@ class AppDetailsActivity : AppCompatActivity() {
                 val intent = getPackageManager().getLaunchIntentForPackage(app)
                 startActivity(intent)
             } catch (ex: Exception) {
-                Toast.makeText(this, getString(R.string.start_app_fail), Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, getString(R.string.start_app_fail), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -363,7 +373,7 @@ class AppDetailsActivity : AppCompatActivity() {
             app_details_hidenotice.setOnClickListener {
                 if (!NoticeListing().getPermission(this)) {
                     NoticeListing().setPermission(this)
-                    Toast.makeText(this, getString(R.string.scene_need_notic_listing), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, getString(R.string.scene_need_notic_listing), Toast.LENGTH_SHORT).show()
                     (it as Switch).isChecked = !it.isChecked
                     return@setOnClickListener
                 }
@@ -376,7 +386,7 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_aloowlight.setOnClickListener {
             if (!WriteSettings().getPermission(this)) {
                 WriteSettings().setPermission(this)
-                Toast.makeText(this, getString(R.string.scene_need_write_sys_settings), Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, getString(R.string.scene_need_write_sys_settings), Toast.LENGTH_SHORT).show()
                 (it as CheckBox).isChecked = false
                 return@setOnClickListener
             }
@@ -492,7 +502,7 @@ class AppDetailsActivity : AppCompatActivity() {
                         try {
                             val dpi = dpiText.toInt()
                             if (dpi < 96 && dpi != 0) {
-                                Toast.makeText(this, "DPI的值必须大于96", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(applicationContext, "DPI的值必须大于96", Toast.LENGTH_SHORT).show()
                                 return@setOnClickListener
                             }
                             appConfigInfo.dpi = dpi
@@ -687,7 +697,7 @@ class AppDetailsActivity : AppCompatActivity() {
         } else {
         }
         if (!AppConfigStore(this).setAppConfig(appConfigInfo)) {
-            Toast.makeText(this, getString(R.string.config_save_fail), Toast.LENGTH_LONG).show()
+            Toast.makeText(applicationContext, getString(R.string.config_save_fail), Toast.LENGTH_LONG).show()
         }
     }
 

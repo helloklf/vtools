@@ -52,7 +52,7 @@ class ActivityFileSelector : AppCompatActivity() {
         if (sdcard.exists() && sdcard.isDirectory) {
             val list = sdcard.listFiles()
             if (list == null) {
-                Toast.makeText(this, "没有读取文件的权限！", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, "没有读取文件的权限！", Toast.LENGTH_LONG).show()
                 return
             }
             adapterFileSelector = AdapterFileSelector(sdcard, Runnable {
