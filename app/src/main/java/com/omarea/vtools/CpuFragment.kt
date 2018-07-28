@@ -91,14 +91,18 @@ class CpuFragment : Fragment() {
             cores.add(core)
         }
         myHandler.post {
-            cpu_core_count.text = "核心数：" + coreCount
-            if (loads.containsKey(-1)) {
-                cpu_core_total_load.text = "负载：" + loads.get(-1)!!.toInt().toString() + "%"
-            }
-            if (cpu_core_list.adapter == null) {
-                cpu_core_list.adapter = AdapterCpuCores(context!!, cores)
-            } else {
-                (cpu_core_list.adapter as AdapterCpuCores).setData(cores)
+            try {
+                cpu_core_count.text = "核心数：" + coreCount
+                if (loads.containsKey(-1)) {
+                    cpu_core_total_load.text = "负载：" + loads.get(-1)!!.toInt().toString() + "%"
+                }
+                if (cpu_core_list.adapter == null) {
+                    cpu_core_list.adapter = AdapterCpuCores(context!!, cores)
+                } else {
+                    (cpu_core_list.adapter as AdapterCpuCores).setData(cores)
+                }
+            } catch (ex: Exception) {
+
             }
         }
     }

@@ -161,7 +161,6 @@ class FragmentConfig : Fragment() {
         battery_monitor.setOnClickListener {
             globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, (it as Switch).isChecked).commit()
         }
-        //TODO:
         config_defaultlist.setOnItemClickListener { parent, view, position, id ->
             try {
                 val item = (parent.adapter.getItem(position) as Appinfo)
@@ -171,6 +170,42 @@ class FragmentConfig : Fragment() {
                 lastClickRow = view
             } catch (ex: Exception) {
             }
+        }
+        config_defaultlist.setOnItemLongClickListener { parent, view, position, id ->
+            val item = (parent.adapter.getItem(position) as Appinfo)
+            var originIndex = 0
+            when (spfPowercfg.getString(item.packageName.toString(), firstMode)) {
+                modeList.POWERSAVE -> originIndex = 0
+                modeList.BALANCE -> originIndex = 1
+                modeList.PERFORMANCE -> originIndex = 2
+                modeList.FAST -> originIndex = 3
+                else -> originIndex = 4
+            }
+            var currentMode =originIndex
+            AlertDialog.Builder(context)
+                    .setTitle(item.appName.toString())
+                    .setSingleChoiceItems(arrayOf("省电模式（阅读）", "均衡模式（日常）", "性能模式（游戏）", "极速模式（跑分）", "跟随默认模式"), originIndex, DialogInterface.OnClickListener { dialog, which ->
+                        currentMode = which
+                    })
+                    .setPositiveButton(R.string.btn_confirm, {
+                        _, _ ->
+                        if (currentMode != originIndex) {
+                            when (currentMode) {
+                                0 -> spfPowercfg.edit().putString(item.packageName.toString(), modeList.POWERSAVE).commit()
+                                1 -> spfPowercfg.edit().putString(item.packageName.toString(), modeList.BALANCE).commit()
+                                2 -> spfPowercfg.edit().putString(item.packageName.toString(), modeList.PERFORMANCE).commit()
+                                3 -> spfPowercfg.edit().putString(item.packageName.toString(), modeList.FAST).commit()
+                                4 -> spfPowercfg.edit().remove(item.packageName.toString()).commit()
+                            }
+
+                            setAppRowDesc(item)
+                            (config_defaultlist.adapter as SceneModeAdapter).updateRow(position, view)
+                        }
+                    })
+                    .setNeutralButton(R.string.btn_cancel, null)
+                    .create()
+                    .show()
+            true
         }
 
         config_search_box.addTextChangedListener(SearchTextWatcher(Runnable {

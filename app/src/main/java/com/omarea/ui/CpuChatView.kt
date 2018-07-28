@@ -127,21 +127,19 @@ class CpuChatView : View {
      * @param canvas
      */
     private fun drawCycle(canvas: Canvas) {
-        cyclePaint!!.color = Color.parseColor("#dddddd")
+        cyclePaint!!.color = 0x22888888
         canvas.drawArc(RectF(0f, 0f, mRadius, mRadius), 0f, 360f, false, cyclePaint)
         if (ratio == 0) {
             return
         }
-        if (ratioState > 80) {
+        if (ratioState > 85) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_veryhight)
-        } else if (ratioState > 60) {
+        } else if (ratioState > 65) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_hight)
-        } else if (ratioState > 40) {
-            cyclePaint!!.color = resources.getColor(R.color.color_load_mid)
         } else if (ratioState > 20) {
-            cyclePaint!!.color = resources.getColor(R.color.color_load_low)
+            cyclePaint!!.color = resources.getColor(R.color.color_load_mid)
         } else {
-            cyclePaint!!.color = resources.getColor(R.color.color_load_none)
+            cyclePaint!!.color = resources.getColor(R.color.color_load_low)
         }
         canvas.drawArc(RectF(0f, 0f, mRadius, mRadius), -90f, (ratioState * 3.6f) + 1f, false, cyclePaint!!)
         if (ratioState < ratio - 1) {

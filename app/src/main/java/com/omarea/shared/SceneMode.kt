@@ -136,8 +136,8 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
 
     private var locationMode = -1
     private fun backupLocationModeState() {
+        // TODO:优化
         locationMode = Settings.Secure.getInt(contentResolver, Settings.Secure.LOCATION_MODE)
-        contentResolver.notifyChange(Settings.System.getUriFor(Settings.Secure.LOCATION_MODE), null)
     }
 
     private fun restoreLocationModeState() {
@@ -145,6 +145,21 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
             Settings.Secure.putInt(contentResolver, Settings.Secure.LOCATION_MODE, locationMode)
             contentResolver.notifyChange(Settings.System.getUriFor(Settings.Secure.LOCATION_MODE), null)
             locationMode = -1
+        }
+    }
+
+    private var headsup = -1
+    private fun backupHeadUp() {
+        if (headsup < 0) {
+            headsup = Settings.Global.getInt(contentResolver, "heads_up_notifications_enabled")
+        }
+    }
+
+    private fun restoreHeaddUp() {
+        if (headsup > -1) {
+            Settings.Global.putInt(contentResolver, "heads_up_notifications_enabled", headsup)
+            contentResolver.notifyChange(Settings.System.getUriFor("heads_up_notifications_enabled"), null)
+            headsup = -1
         }
     }
 
@@ -192,9 +207,21 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
                 backupLocationModeState()
                 if (mode != Settings.Secure.LOCATION_MODE_HIGH_ACCURACY) {
                     Settings.Secure.putInt(contentResolver, Settings.Secure.LOCATION_MODE, Settings.Secure.LOCATION_MODE_HIGH_ACCURACY)
+                    contentResolver.notifyChange(Settings.System.getUriFor(Settings.Secure.LOCATION_MODE), null)
                 }
             } else {
                 restoreLocationModeState()
+            }
+
+            if (config!!.disNotice) {
+                val mode = Settings.Global.getInt(contentResolver, "heads_up_notifications_enabled")
+                backupHeadUp()
+                if (mode != 0) {
+                    Settings.Global.putInt(contentResolver, "heads_up_notifications_enabled", 0)
+                    contentResolver.notifyChange(Settings.System.getUriFor("heads_up_notifications_enabled"), null)
+                }
+            } else {
+                restoreHeaddUp()
             }
 
             lastAppPackageName = packageName

@@ -384,7 +384,7 @@
                                     android:paddingLeft="8dp"
                                     android:paddingRight="8dp"
                                     android:layout_weight="1"
-                                    android:text="首选模式" />
+                                    android:text="默认模式" />
 
                                 <Spinner
                                     android:id="@+id/first_mode"
@@ -402,7 +402,7 @@
                                 android:layout_marginTop="5dp"
                                 android:paddingLeft="8dp"
                                 android:paddingRight="8dp"
-                                android:text="新安装的应用默认使用的模式" />
+                                android:text="没有单独设置模式的应用，将默认使用此模式" />
 
                             <android.support.v7.widget.CardView
                                 android:layout_marginTop="30dp"
@@ -427,10 +427,18 @@
                                         android:layout_height="wrap_content" />
 
                                     <TextView
-                                        android:text="基于微·工具箱改进，锁屏优化选项现已默认开启不再提供手动控制\n\n此外，相对于老版本，动态响应的配置脚本位置有所变化，同时你也不再需要手动放置，可直接在Scene里选择文件即可自动安装配置\n\n非常感谢yc发布的适用于Scene的配置脚本，让更多的设备能够用上动态响应，现在你也可以在本界面点击“在线”按钮来快速获取配置脚本"
+                                        android:text="原微工具箱中的锁屏优化选项，现已默认开启不再提供手动控制\n\n此外，相对于老版本，动态响应配置脚本位置有所变化，也不再需要手动放置，可直接在Scene里选择脚本即可自动安装\n\n另外，非常感谢yc对Scene适配，提供了更多机型的配置脚本文件，你也可以在本界面点击“在线”去安装"
                                         style="@style/textSmall"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content" />
+                                    <TextView
+                                        android:textColor="@color/colorPrimary"
+                                        android:layout_marginTop="10dp"
+                                        android:text="长按应用可快速选择配置模式哦！"
+                                        style="@style/textSmall"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content" />
+
                                 </LinearLayout>
                             </android.support.v7.widget.CardView>
 
@@ -458,7 +466,7 @@
                                         android:layout_height="wrap_content" />
 
                                     <TextView
-                                        android:text="改变“场景模式”辅助功能基本运作逻辑的选项。反正，一般保持默认就好了！！！"
+                                        android:text="改变“场景模式”辅助功能基本运作逻辑的选项。一般保持默认就好了！！！"
                                         style="@style/textSmall"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content" />

@@ -30,6 +30,15 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
         delegate.onPostResume()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        val serviceState = AccessibleServiceHelper().serviceIsRunning(this, "AccessibilityServiceSceneKeyEvent")
+        // key_event_state!!.visibility = if (serviceState) View.VISIBLE else View.GONE
+
+        key_event_state.text = if (serviceState) getString(R.string.accessibility_running) else getString(R.string.accessibility_stoped)
+    }
+
     @SuppressLint("ApplySharedPref")
     override fun onCreate(savedInstanceState: Bundle?) {
         spf = getSharedPreferences(SpfConfig.KEY_EVENT_SPF, Context.MODE_PRIVATE)
@@ -51,10 +60,6 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
 
             }
         }
-        val serviceState = AccessibleServiceHelper().serviceIsRunning(this, "AccessibilityServiceSceneKeyEvent")
-        // key_event_state!!.visibility = if (serviceState) View.VISIBLE else View.GONE
-
-        key_event_state.text = if (serviceState) getString(R.string.accessibility_running) else getString(R.string.accessibility_stoped)
     }
 
     @SuppressLint("ApplySharedPref")
