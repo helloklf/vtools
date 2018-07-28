@@ -101,7 +101,7 @@
                     <CheckBox
                         android:id="@+id/chk_swap_autostart"
                         android:layout_marginBottom="12dp"
-                        android:text="开机自启（需要允许工具箱自启动）" />
+                        android:text="开机自启（需要允许Scene自启动）" />
 
                     <CheckBox
                         android:id="@+id/chk_swap_disablezram"
@@ -162,7 +162,7 @@
                         <CheckBox
                             android:id="@+id/chk_zram_autostart"
                             android:layout_gravity="center_vertical"
-                            android:text="开机自启（需要允许工具箱自启动）" />
+                            android:text="开机自启（需要允许Scene自启动）" />
 
                         <Button
                             android:id="@+id/btn_zram_resize"

@@ -104,6 +104,7 @@ class BootService : IntentService("vtools-boot") {
         sb.append("\n\n")
         SysUtils.executeCommandWithOutput(true, sb.toString())
 
+        /*
         if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DOZELIST_AUTOSET, false)) {
             val sb2 = StringBuilder("")
             sb2.append("\n\n")
@@ -123,10 +124,9 @@ class BootService : IntentService("vtools-boot") {
 
             Thread.sleep(120 * 1000)
             SysUtils.executeCommandWithOutput(true, sb2.toString())
-            stopSelf()
-        } else {
-            stopSelf()
         }
+        */
+        stopSelf()
     }
 
     override fun onDestroy() {

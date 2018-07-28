@@ -4,13 +4,12 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.IBinder
 import android.provider.Settings
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -30,7 +29,9 @@ import com.omarea.ui.OverScrollListView
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.ui.SceneModeAdapter
 import com.omarea.ui.SearchTextWatcher
+import com.omarea.vaddin.IAppConfigAidlInterface
 import kotlinx.android.synthetic.main.layout_config.*
+import org.json.JSONObject
 import java.io.File
 import java.nio.charset.Charset
 import java.util.*
@@ -49,19 +50,62 @@ class FragmentConfig : Fragment() {
     private var packageManager: PackageManager? = null
     private lateinit var appConfigStore: AppConfigStore
     private var firstMode = "balance"
+    private var vAddinsInstalled = false
+    private var aidlConn: IAppConfigAidlInterface? = null
+
+    private var conn = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            aidlConn = IAppConfigAidlInterface.Stub.asInterface(service)
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            aidlConn = null
+        }
+    }
+
+    private fun bindService() {
+        try {
+            if (packageManager!!.getPackageInfo("com.omarea.vaddin", 0) == null) {
+                return
+            }
+        } catch (ex: Exception) {
+            return
+        }
+        if (aidlConn != null) {
+            return
+        }
+        try {
+            val intent = Intent();
+            //绑定服务端的service
+            intent.setAction("com.omarea.vaddin.ConfigUpdateService");
+            //新版本（5.0后）必须显式intent启动 绑定服务
+            intent.setComponent(ComponentName("com.omarea.vaddin", "com.omarea.vaddin.ConfigUpdateService"));
+            //绑定的时候服务端自动创建
+            if (context!!.bindService(intent, conn, Context.BIND_AUTO_CREATE)) {
+            } else {
+                throw Exception("")
+            }
+        } catch (ex: Exception) {
+            Toast.makeText(this.context, "连接到“Scene-高级设定”插件失败，请不要阻止插件自启动！", Toast.LENGTH_LONG).show()
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.layout_config, container, false)
     private lateinit var modeList: ModeList
 
     override fun onResume() {
         super.onResume()
-
+        bindService()
         val serviceState = AccessibleServiceHelper().serviceIsRunning(context!!)
         btn_config_service_not_active.visibility = if (serviceState) View.GONE else View.VISIBLE
     }
 
     @SuppressLint("CommitPrefEdits", "ApplySharedPref")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        if (packageManager == null) {
+            packageManager = context!!.packageManager
+        }
+
         modeList = ModeList(context!!)
         processBarDialog = ProgressBarDialog(context!!)
         applistHelper = AppListHelper(context!!)
@@ -379,9 +423,6 @@ class FragmentConfig : Fragment() {
             return
         }
         processBarDialog.showDialog()
-        if (packageManager == null) {
-            packageManager = context!!.packageManager
-        }
 
         Thread(Runnable {
             onLoading = true
@@ -449,6 +490,27 @@ class FragmentConfig : Fragment() {
         }
         if (configInfo.disBackgroundRun) {
             desc.append("阻止后台 ")
+        }
+        if (aidlConn != null) {
+            try {
+                val configJson = aidlConn!!.getAppConfig(configInfo.packageName)
+                val config = JSONObject(configJson)
+                for (key in config.keys()) {
+                    when (key) {
+                        "dpi" -> {
+                            configInfo.dpi = config.getInt(key)
+                        }
+                        "excludeRecent" -> {
+                            configInfo.excludeRecent = config.getBoolean(key)
+                        }
+                        "smoothScroll" -> {
+                            configInfo.smoothScroll = config.getBoolean(key)
+                        }
+                    }
+                }
+            } catch (ex: Exception) {
+
+            }
         }
         if (configInfo.dpi > 0) {
             desc.append("DPI:${configInfo.dpi}  ")
@@ -528,6 +590,10 @@ class FragmentConfig : Fragment() {
     }
 
     override fun onDestroy() {
+        if (aidlConn != null) {
+            context!!.unbindService(conn)
+            aidlConn = null
+        }
         processBarDialog.hideDialog()
         super.onDestroy()
     }

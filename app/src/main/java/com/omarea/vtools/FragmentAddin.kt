@@ -56,13 +56,13 @@ class FragmentAddin : Fragment() {
     private fun initAddin(view: View) {
         val listItem = ArrayList<HashMap<String, Any>>().apply {
             add(createItem(getString(R.string.addin_qq_clear), getString(R.string.addin_qq_clear_desc), Runnable { QQStyleUnit(context!!).showOption() }, false))
-            add(createItem(getString(R.string.addin_fullscreen_on), getString(R.string.addin_fullscreen_on_desc), Runnable { FullScreenAddin(context!!).FullScreen() }, false))
+            // add(createItem(getString(R.string.addin_fullscreen_on), getString(R.string.addin_fullscreen_on_desc), Runnable { FullScreenAddin(context!!).FullScreen() }, false))
             add(createItem(getString(R.string.addin_flyme_static_blur), getString(R.string.addin_flyme_static_blur_desc), Runnable { FlymeUnit().StaticBlur() }))
             add(createItem(getString(R.string.addin_miui_hide_search), getString(R.string.addin_miui_hide_search_desc), Runnable { MiuiAddin(context!!).hideSearch() }))
             add(createItem(getString(R.string.addin_disable_x), getString(R.string.addin_disable_x_desc), Runnable { NetworkChecker(context!!).disableNetworkChecker() }))
             add(createItem(getString(R.string.addin_disable_google), getString(R.string.addin_disable_google_desc), Runnable { GoogleFrameworkAddin(context!!).showOption() }, false))
 
-            add(createItem(getString(R.string.addin_drop_caches), getString(R.string.addin_drop_caches_desc), Runnable { SystemAddin(context!!).dropCache() }))
+            // add(createItem(getString(R.string.addin_drop_caches), getString(R.string.addin_drop_caches_desc), Runnable { SystemAddin(context!!).dropCache() }))
             add(createItem(getString(R.string.addin_thermal_remove), getString(R.string.addin_thermal_remove_desc), Runnable { ThermalAddin(context!!).showOption() }, false))
             add(createItem(getString(R.string.addin_del_pwd), getString(R.string.addin_del_pwd_desc), Runnable { SystemAddin(context!!).deleteLockPwd() }))
             add(createItem(getString(R.string.addin_adb_network), String.format(getString(R.string.addin_adb_network_desc), getIP()), Runnable { AdbAddin(context!!).openNetworkDebug() }))

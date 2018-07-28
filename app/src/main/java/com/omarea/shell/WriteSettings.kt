@@ -36,7 +36,7 @@ class WriteSettings {
             context.startActivity(intent)
             Toast.makeText(context, "请为Scene授予“修改系统设置”权限！", Toast.LENGTH_SHORT).show()
         } else {
-            KeepShellSync.doCmdSync("pm grant com.omarea.vtools android.permission.WRITE_SETTINGS")
+            KeepShellSync.doCmdSync("pm grant ${context.packageName} android.permission.WRITE_SETTINGS")
         }
     }
 }

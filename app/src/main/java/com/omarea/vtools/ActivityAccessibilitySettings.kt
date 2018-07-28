@@ -63,7 +63,7 @@ class ActivityAccessibilitySettings : AppCompatActivity() {
                 return@setOnCheckedChangeListener
             }
             globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, checked).commit()
-            Toast.makeText(this, "此设置将在下次启动工具箱时生效！", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "此设置将在下次启动Scene时生效！", Toast.LENGTH_SHORT).show()
         })
 
         spf = this.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)

@@ -42,6 +42,19 @@ class AppDetailsActivity : AppCompatActivity() {
     private var vAddinsInstalled = false
     private var aidlConn: IAppConfigAidlInterface? = null
 
+    fun getAddinVersion(): Int {
+        val manager = getPackageManager()
+        var code = 0
+        try {
+            val info = manager.getPackageInfo("com.omarea.vaddin", 0)
+            code = info.versionCode
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
+
+        return code
+    }
+
     fun getVersion(): Int {
         val manager = getPackageManager()
         var code = 0
@@ -69,7 +82,7 @@ class AppDetailsActivity : AppCompatActivity() {
     private fun updateXposedConfigFromAddin() {
         if (aidlConn != null) {
             try {
-                if (getVersion() > aidlConn!!.version) {
+                if (getVersion() > getAddinVersion()) {
                     // TODO:自动安装
                     Toast.makeText(this, getString(R.string.scene_addin_version_toolow), Toast.LENGTH_SHORT).show()
                     if (aidlConn != null) {
@@ -110,9 +123,13 @@ class AppDetailsActivity : AppCompatActivity() {
             Toast.makeText(this, getString(R.string.scene_addin_miss), Toast.LENGTH_SHORT).show()
             return
         }
+        if (packageManager.getPackageArchiveInfo(addinPath, PackageManager.GET_ACTIVITIES).versionCode < getVersion()) {
+            Toast.makeText(this, getString(R.string.scene_inner_addin_invalid), Toast.LENGTH_SHORT).show()
+            return
+        }
         Toast.makeText(this, getString(R.string.scene_addin_installing), Toast.LENGTH_SHORT).show()
         val installResult = KeepShellSync.doCmdSync("pm install -r '$addinPath'")
-        if (installResult !== "error" && installResult.contains("Success")) {
+        if (installResult !== "error" && installResult.contains("Success") && getAddinVersion() == getVersion()) {
             Toast.makeText(this, getString(R.string.scene_addin_installed), Toast.LENGTH_SHORT).show()
             checkXposedState()
         } else {

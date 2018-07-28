@@ -4,16 +4,19 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AndroidAppHelper;
 import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.XModuleResources;
 import android.content.res.XResources;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Display;
+import android.widget.TextView;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
@@ -45,20 +48,39 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 if (disServiceForeground) {
-                    XposedBridge.log("禁止前台模式");
+                    XposedBridge.log("禁止前台模式，hook setForeground in" + AndroidAppHelper.currentPackageName());
                     param.args[0] = false;
                 }
                 super.afterHookedMethod(param);
+            }
+
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                super.afterHookedMethod(param);
+                try {
+                    XposedBridge.log("param.args[0]：" + param.args[0]);
+                    if ((Boolean) param.args[0]) {
+                        callMethod(param.thisObject, "setForeground", false);
+                    }
+                } catch (Exception ex) {
+                }
             }
         });
         XposedHelpers.findAndHookMethod(Service.class, "startForeground", int.class, Notification.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                if (disServiceForeground) {
-                    callMethod(param.thisObject, "stopForeground", false);
-                    XposedBridge.log("禁止前台模式");
-                }
                 super.afterHookedMethod(param);
+                if (disServiceForeground) {
+                    callMethod(param.thisObject, "stopForeground", true);
+                    try {
+                        Service service = (Service) param.thisObject;
+                        NotificationManager notificationManager = (NotificationManager) service.getSystemService(Service.NOTIFICATION_SERVICE);
+                        notificationManager.cancel((Integer) param.args[0]);
+                    } catch (Exception ex) {
+
+                    }
+                    XposedBridge.log("禁止前台模式，hook startForeground in " + AndroidAppHelper.currentPackageName());
+                }
             }
         });
 
@@ -212,13 +234,32 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
         switch (packageName) {
             // 隐藏状态栏ROOT图标
             case "com.android.systemui":
-                if (prefs.getBoolean(packageName + "com.android.systemui_hide_su", false)) {
+                if (prefs.getBoolean("com.android.systemui_hide_su", false)) {
                     new SystemUI().hideSUIcon(loadPackageParam);
                 }
+                /*
+                // 修改状态栏时间
+                XposedHelpers.findAndHookMethod(
+                        "com.android.systemui.statusbar.policy.Clock", loadPackageParam.classLoader, "updateClock", new XC_MethodHook() {
+                            @Override
+                            protected void afterHookedMethod(MethodHookParam param)
+                                    throws Throwable {
+                                System.out.println("replaceHookedMethod---updateClock");
+                                XposedBridge.log("replaceHookedMethod---updateClock-->>");
+                                TextView tv = (TextView) param.thisObject;
+                                String text = tv.getText().toString();
+                                tv.setText(text + " :)-->");
+                                tv.setTextColor(Color.RED);
+                            }
+                        });
+                */
                 break;
 
             // 用于检查xposed是否激活
             case "com.omarea.vtools":
+                new ActiveCheck().isActive(loadPackageParam);
+                break;
+            case "com.omarea.vboot":
                 new ActiveCheck().isActive(loadPackageParam);
                 break;
 
@@ -253,15 +294,20 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
                     if (context == null)
                         return;
 
-                    Configuration origConfig = context.getResources().getConfiguration();
-                    origConfig.densityDpi = dpi;//获取手机出厂时默认的densityDpi
-                    context.getResources().updateConfiguration(origConfig, context.getResources().getDisplayMetrics());
-                    context.getResources().getDisplayMetrics().density = dpi / 160.0f;
-                    context.getResources().getDisplayMetrics().densityDpi = dpi;
-                    context.getResources().getDisplayMetrics().scaledDensity = dpi / 160.0f;
+                    try {
+                        Configuration origConfig = context.getResources().getConfiguration();
+                        origConfig.densityDpi = dpi;//获取手机出厂时默认的densityDpi
+                        context.getResources().updateConfiguration(origConfig, context.getResources().getDisplayMetrics());
+                        context.getResources().getDisplayMetrics().density = dpi / 160.0f;
+                        context.getResources().getDisplayMetrics().densityDpi = dpi;
+                        context.getResources().getDisplayMetrics().scaledDensity = dpi / 160.0f;
+                    } catch (Exception ex) {
+                        XposedBridge.log(ex);
+                    }
                 }
             });
 
+            /*
             XposedHelpers.findAndHookMethod("android.util.DisplayMetrics", loadPackageParam.classLoader, "setTo", DisplayMetrics.class, new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -274,7 +320,6 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
                     }
                 }
             });
-            /*
             XposedHelpers.findAndHookMethod("android.util.DisplayMetrics", loadPackageParam.classLoader, "getRealMetrics", DisplayMetrics.class, new XC_MethodHook() {
                 @Override
                 protected void beforeHookedMethod(MethodHookParam param) throws Throwable {

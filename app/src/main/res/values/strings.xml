@@ -167,7 +167,7 @@
     <string name="menu_img">备份还原</string>
     <string name="menu_settings">软件设置</string>
     <string name="menu_help">使用帮助</string>
-    <string name="menu_qq">微·实验室</string>
+    <string name="menu_qq">Scene实验室</string>
     <string name="menu_menu_title">反馈交流</string>
     <string name="menu_share">分享</string>
     <string name="menu_feedback">反馈</string>
@@ -247,10 +247,10 @@
     <string name="home_hide_in_recents_desc">不要在多任务界面显示Scene</string>
     <string name="home_app_night">辣眼睛</string>
     <string name="home_app_night_desc">开启暗色主题</string>
-    <string name="applist_help">✔ 已备份\n✘ 备份的版本比安装的版本更高\n★ 已安装的版本比备份的版本旧\n☆ 已备份数据未备份APK\n\n目前所提供的应用数据备份功能，需要系统集成busybox、toybox，使用tar+gz压缩数据（如果系统支持，将使用pigz提高压缩速度），仅备份 “/data/data/应用包名” 下的数据，且不保证兼容所有系统和应用。\n\n“禁用+隐藏”非常适合精简ROM，但是应用一旦被设为隐藏你将无法通过其它应用管理工具来恢复或启动（除非恢复出厂设置或在工具箱里手动解除隐藏），工具箱会自动保存隐藏记录，你可以通过下面的按钮来解除隐藏。\n如果你卸载了工具箱，则隐藏记录也会丢失，则无法再恢复！！</string>
+    <string name="applist_help">✔ 已备份\n✘ 备份的版本比安装的版本更高\n★ 已安装的版本比备份的版本旧\n☆ 已备份数据未备份APK\n\n目前所提供的应用数据备份功能，需要系统集成busybox、toybox，使用tar+gz压缩数据（如果系统支持，将使用pigz提高压缩速度），仅备份 “/data/data/应用包名” 下的数据，且不保证兼容所有系统和应用。\n\n“禁用+隐藏”非常适合精简ROM，但是应用一旦被设为隐藏你将无法通过其它应用管理工具来恢复或启动（除非恢复出厂设置或在Scene里手动解除隐藏），Scene会自动保存隐藏记录，你可以通过下面的按钮来解除隐藏。\n如果你卸载了Scene，则隐藏记录也会丢失，则无法再恢复！！</string>
     <string name="title_activity_core_contrl">CPU控制</string>
-    <string name="dialog_addin_device_warn">请不要输入特殊符号，卸载工具箱后备份的机型信息也会丢失！</string>
-    <string name="dialog_addin_device_desc">修改后可点击“还原”->“确认”恢复修改前的机型，卸载工具箱会导致备份的机型信息丢失，请务必还原后再卸载！\n\n或者，你也可以通过重新刷入完整ROM来恢复机型信息！\n\n使用DualBootPatcher多软件切勿使用本功能修改机型！！！</string>
+    <string name="dialog_addin_device_warn">请不要输入特殊符号，卸载Scene后备份的机型信息也会丢失！</string>
+    <string name="dialog_addin_device_desc">修改后可点击“还原”->“确认”恢复修改前的机型，卸载Scene会导致备份的机型信息丢失，请务必还原后再卸载！\n\n或者，你也可以通过重新刷入完整ROM来恢复机型信息！\n\n使用DualBootPatcher多软件切勿使用本功能修改机型！！！</string>
     <string name="dialog_addin_device_inner">预设模板</string>
     <string name="title_activity_shortcut">ActivityShortcut</string>
     <string name="title_activity_online">Scene-Online</string>
@@ -381,8 +381,8 @@
         <item>忽略切换</item>
     </string-array>
     <string-array name="powercfg_apptype_filter">
-        <item>用户</item>
-        <item>系统</item>
+        <item>用户程序</item>
+        <item>系统应用</item>
         <item>所有应用</item>
     </string-array>
     <string-array name="key_event">
@@ -408,6 +408,7 @@
     <string name="flash_confirm">确认刷入？</string>
     <string name="scene_addin_installing">稍等，正在安装“Scene - 高级设定”插件...</string>
     <string name="scene_addin_miss">插件未集成到应用包，请单独下载！</string>
+    <string name="scene_inner_addin_invalid">Scene中集成的“高级设置”插件版本过低，请联系系开发者报告错误！</string>
     <string name="scene_addin_installed">“Scene - 高级设定”插件已自动更新！</string>
     <string name="scene_addin_sync_fail">从“Scene-高级设定”插件同步Xposed设定失败！</string>
     <string name="scene_addin_version_toolow">“Scene-高级设定”插件版本过低！</string>
@@ -416,7 +417,7 @@
     <string name="permission_modify_fail">修改权限失败！</string>
     <string name="scene_need_write_sys_settings">请先授权允许Scene“修改系统设置”！</string>
     <string name="start_app_fail">启动应用失败！</string>
-    <string name="scene_need_notic_listing">请先授权允许工具箱“通知使用权限”！</string>
+    <string name="scene_need_notic_listing">请先授权允许Scene“通知使用权限”！</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

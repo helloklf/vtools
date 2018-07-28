@@ -279,7 +279,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             // 添加输入法到忽略列表
             ignoredList.addAll(InputHelper(context).getInputMethods())
             // 启动完成后初始化模式状态
-            Thread.sleep(20 * 1000)
+            Thread.sleep(5 * 1000)
             if (dyamicCore && lastMode.isEmpty()) {
                 if (!this.screenOn)
                     toggleConfig(POWERSAVE)

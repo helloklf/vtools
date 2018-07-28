@@ -427,7 +427,7 @@
                                         android:layout_height="wrap_content" />
 
                                     <TextView
-                                        android:text="基于微·工具箱改进，锁屏优化选项现已默认开启不再提供手动控制\n\n此外，相对于老版本，动态响应的配置脚本位置有所变化，同时你也不再需要手动放置，可直接在工具箱里选择文件即可自动安装配置\n\n非常感谢yc发布的适用于工具箱的配置脚本，让更多的设备能够用上动态响应，现在你也可以在本界面点击“在线”按钮来快速获取配置脚本"
+                                        android:text="基于微·工具箱改进，锁屏优化选项现已默认开启不再提供手动控制\n\n此外，相对于老版本，动态响应的配置脚本位置有所变化，同时你也不再需要手动放置，可直接在Scene里选择文件即可自动安装配置\n\n非常感谢yc发布的适用于Scene的配置脚本，让更多的设备能够用上动态响应，现在你也可以在本界面点击“在线”按钮来快速获取配置脚本"
                                         style="@style/textSmall"
                                         android:layout_width="match_parent"
                                         android:layout_height="wrap_content" />

@@ -251,13 +251,13 @@ class FragmentSwap : Fragment() {
         }
         chk_zram_autostart.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                Toast.makeText(context, "注意：你需要允许工具箱自启动，下次开机才会生效！", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "注意：你需要允许Scene自启动，下次开机才会生效！", Toast.LENGTH_SHORT).show()
             }
             swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_ZRAM, isChecked).commit()
         }
         chk_swap_autostart.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                Toast.makeText(context, "注意：你需要允许工具箱自启动，下次开机才会生效！", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "注意：你需要允许Scene自启动，下次开机才会生效！", Toast.LENGTH_SHORT).show()
             }
             swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP, isChecked).commit()
         }

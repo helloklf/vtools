@@ -66,8 +66,6 @@ override fun onCreate() {
     */
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val crashHandler = CrashHandler()
-        crashHandler.init(this)
 
         initServiceHelper()
 
@@ -85,7 +83,6 @@ override fun onCreate() {
 
 
     public override fun onServiceConnected() {
-        CrashHandler().init(this)
 
         val spf = getSharedPreferences("adv", Context.MODE_PRIVATE)
         flagReportViewIds = spf.getBoolean("adv_find_viewid", flagReportViewIds)
@@ -308,18 +305,21 @@ override fun onCreate() {
         if (event.action == KeyEvent.ACTION_DOWN) {
             downTime = event.eventTime
             val currentDownTime = downTime
-            handler.postDelayed({
-                if (downTime == currentDownTime) {
-                    if (keyCode == KeyEvent.KEYCODE_HOME) {
-                        performGlobalAction(GLOBAL_ACTION_HOME)
-                    } else if (keyCode == KeyEvent.KEYCODE_BACK) {
-                        performGlobalAction(GLOBAL_ACTION_BACK)
-                    } else if (keyCode == KeyEvent.KEYCODE_APP_SWITCH || keyCode == KeyEvent.KEYCODE_MENU) {
-                        performGlobalAction(GLOBAL_ACTION_RECENTS)
+            val stopEvent = serviceHelper!!.onKeyDown()
+            if (stopEvent) {
+                handler.postDelayed({
+                    if (downTime == currentDownTime) {
+                        if (keyCode == KeyEvent.KEYCODE_HOME) {
+                            performGlobalAction(GLOBAL_ACTION_HOME)
+                        } else if (keyCode == KeyEvent.KEYCODE_BACK) {
+                            performGlobalAction(GLOBAL_ACTION_BACK)
+                        } else if (keyCode == KeyEvent.KEYCODE_APP_SWITCH || keyCode == KeyEvent.KEYCODE_MENU) {
+                            performGlobalAction(GLOBAL_ACTION_RECENTS)
+                        }
                     }
-                }
-            }, longClickTime)
-            return serviceHelper!!.onKeyDown()
+                }, longClickTime)
+            }
+            return stopEvent
         } else if (event.action == KeyEvent.ACTION_UP) {
             downTime = -1
             return serviceHelper!!.onKeyDown()

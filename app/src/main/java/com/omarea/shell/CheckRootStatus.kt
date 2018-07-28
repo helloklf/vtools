@@ -116,26 +116,26 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
         private fun checkPermission(context: Context, permission: String): Boolean = PermissionChecker.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED
         fun grantPermission(context: Context) {
             val cmds = StringBuilder()
-            cmds.append("dumpsys deviceidle whitelist +com.omarea.vtools;\n")
+            cmds.append("dumpsys deviceidle whitelist +${context.packageName};\n")
             if (!checkPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                cmds.append("pm grant com.omarea.vtools android.permission.READ_EXTERNAL_STORAGE;\n")
+                cmds.append("pm grant ${context.packageName} android.permission.READ_EXTERNAL_STORAGE;\n")
             }
             if (!checkPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                cmds.append("pm grant com.omarea.vtools android.permission.WRITE_EXTERNAL_STORAGE;\n")
+                cmds.append("pm grant ${context.packageName} android.permission.WRITE_EXTERNAL_STORAGE;\n")
             }
             if (!checkPermission(context, Manifest.permission.CHANGE_CONFIGURATION)) {
-                cmds.append("pm grant com.omarea.vtools android.permission.CHANGE_CONFIGURATION;\n")
+                cmds.append("pm grant ${context.packageName} android.permission.CHANGE_CONFIGURATION;\n")
             }
             if (!checkPermission(context, Manifest.permission.WRITE_SECURE_SETTINGS)) {
-                cmds.append("pm grant com.omarea.vtools android.permission.WRITE_SECURE_SETTINGS;\n")
+                cmds.append("pm grant ${context.packageName} android.permission.WRITE_SECURE_SETTINGS;\n")
             }
             /*
             // 不支持使用ROOT权限进行设置
             if (!checkPermission(context, Manifest.permission.BIND_NOTIFICATION_LISTENER_SERVICE)) {
-                cmds.append("pm grant com.omarea.vtools android.permission.BIND_NOTIFICATION_LISTENER_SERVICE;\n")
+                cmds.append("pm grant ${context.packageName} android.permission.BIND_NOTIFICATION_LISTENER_SERVICE;\n")
             }
             if (!checkPermission(context, Manifest.permission.WRITE_SETTINGS)) {
-                cmds.append("pm grant com.omarea.vtools android.permission.WRITE_SETTINGS;\n")
+                cmds.append("pm grant ${context.packageName} android.permission.WRITE_SETTINGS;\n")
             }
             */
             KeepShellSync.doCmdSync(cmds.toString())

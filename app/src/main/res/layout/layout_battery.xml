@@ -54,7 +54,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="8dp"
-                        android:text="让工具箱保持后台运行，充电时可以自动校正充电速度限制，效果更佳！" />
+                        android:text="让Scene保持后台运行，充电时可以自动校正充电速度限制，效果更佳！" />
 
                     <TextView
                         style="@style/textSmall"
@@ -63,7 +63,7 @@
                         android:paddingBottom="8dp"
                         android:paddingLeft="8dp"
                         android:paddingRight="8dp"
-                        android:text="使用电池保护功能，必须让工具箱保持后台运行（可以使用返回键关闭应用界面）" />
+                        android:text="使用电池保护功能，必须让Scene保持后台运行（可以使用返回键关闭应用界面）" />
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 

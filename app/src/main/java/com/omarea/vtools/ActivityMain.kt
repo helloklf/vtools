@@ -56,7 +56,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        CrashHandler().init(this)
+        //CrashHandler().init(this)
         //setMaxAspect()
         if (globalSPF == null) {
             globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
@@ -71,9 +71,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             this.setTheme(R.style.AppTheme_NoActionBarNight)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        val crashHandler = CrashHandler()
-        crashHandler.init(this)
 
         thisview = this
         //checkFileWrite()
@@ -318,7 +315,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 // startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.me/duduski")))
             }
             R.id.nav_qq -> {
-                val key = "e-XL2In7CgIpeK_sG75s-vAiu7n5DnlS"
+                val key = "6ffXO4eTZVN0eeKmp-2XClxizwIc7UIu" //""e-XL2In7CgIpeK_sG75s-vAiu7n5DnlS"
                 val intent = Intent()
                 intent.setData(Uri.parse("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26k%3D" + key));
                 // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面    //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
