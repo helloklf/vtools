@@ -24,14 +24,18 @@ echo 'Step2.更新配置'
 if [[ -n $boot ]]; then
     $BUSYBOX sed -i "\$adalvik.vm.boot-dex2oat-threads=$boot" /data/build.prop;
     $BUSYBOX sed -i "\$aro.sys.fw.dex2oat_thread_count=$boot" /data/build.prop;
+    setprop dalvik.vm.boot-dex2oat-threads $boot
+    setprop ro.sys.fw.dex2oat_thread_count $boot
 fi;
 
 if [[ -n $dex2oat ]]; then
-    $BUSYBOX sed -i "\$adalvik.vm.dex2oat-threads=$boot" /data/build.prop;
+    $BUSYBOX sed -i "\$adalvik.vm.dex2oat-threads=$dex2oat" /data/build.prop;
+    setprop dalvik.vm.dex2oat-threads $dex2oat
 fi;
 
 if [[ -n $image ]]; then
-    $BUSYBOX sed -i "\$adalvik.vm.image-dex2oat-threads=$boot" /data/build.prop;
+    $BUSYBOX sed -i "\$adalvik.vm.image-dex2oat-threads=$image" /data/build.prop;
+    setprop dalvik.vm.image-dex2oat-threads $image
 fi;
 
 echo 'Step3.写入文件'
