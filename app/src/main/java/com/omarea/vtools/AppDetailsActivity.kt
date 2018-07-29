@@ -2,6 +2,7 @@ package com.omarea.vtools
 
 import android.annotation.SuppressLint
 import android.content.*
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -118,7 +119,9 @@ class AppDetailsActivity : AppCompatActivity() {
     }
 
     private fun installVAddin() {
-        val addinPath = FileWrite.WritePrivateFile(assets, "addin/xposed-addin.apk", "addin/xposed-addin.apk", this)
+        val addin = "addin/xposed-addin.apk"
+        val addinPath = FileWrite.WritePrivateFile(assets, addin, "addin/xposed-addin.apk", this)
+
         if (addinPath == null) {
             Toast.makeText(applicationContext, getString(R.string.scene_addin_miss), Toast.LENGTH_SHORT).show()
             return
@@ -139,8 +142,10 @@ class AppDetailsActivity : AppCompatActivity() {
             checkXposedState()
         } else {
             try {
+                val apk = FileWrite.WriteFile(assets, addin, true)
+
                 val intent = Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.fromFile(File(addinPath)), "application/vnd.android.package-archive");
+                intent.setDataAndType(Uri.fromFile(File(if (apk != null) apk else addinPath)), "application/vnd.android.package-archive");
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             } catch (ex: Exception) {
@@ -176,8 +181,12 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_vaddins_notactive.visibility = if (allowXposedConfig) View.GONE else View.VISIBLE
         try {
             vAddinsInstalled = packageManager.getPackageInfo("com.omarea.vaddin", 0) != null
-            allowXposedConfig = allowXposedConfig && vAddinsInstalled
-            app_details_vaddins_notinstall.visibility = View.GONE
+            if (getAddinVersion() < getVersion()) {
+                throw Exception("插件版本过低！")
+            } else {
+                allowXposedConfig = allowXposedConfig && vAddinsInstalled
+                app_details_vaddins_notinstall.visibility = View.GONE
+            }
         } catch (ex: Exception) {
             allowXposedConfig = false
             vAddinsInstalled = false
@@ -236,14 +245,14 @@ class AppDetailsActivity : AppCompatActivity() {
             }
             val modeList = ModeList(this)
             val powercfg = getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
-            val currentMode = powercfg.getString(app, getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, modeList.BALANCE))
+            val currentMode = powercfg.getString(app, getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeList.BALANCE))
             var index = 0
             when (currentMode) {
-                modeList.POWERSAVE -> index = 0
-                modeList.BALANCE -> index = 1
-                modeList.PERFORMANCE -> index = 2
-                modeList.FAST -> index = 3
-                modeList.IGONED -> index = 4
+                ModeList.POWERSAVE -> index = 0
+                ModeList.BALANCE -> index = 1
+                ModeList.PERFORMANCE -> index = 2
+                ModeList.FAST -> index = 3
+                ModeList.IGONED -> index = 4
             }
             var selectedIndex = index
             AlertDialog.Builder(this)
@@ -253,16 +262,16 @@ class AppDetailsActivity : AppCompatActivity() {
                     })
                     .setPositiveButton(R.string.btn_confirm, DialogInterface.OnClickListener { dialog, which ->
                         if (index != selectedIndex) {
-                            var modeName = modeList.BALANCE
+                            var modeName = ModeList.BALANCE
                             when (selectedIndex) {
-                                0 -> modeName = modeList.POWERSAVE
-                                1 -> modeName = modeList.BALANCE
-                                2 -> modeName = modeList.PERFORMANCE
-                                3 -> modeName = modeList.FAST
-                                4 -> modeName = modeList.IGONED
+                                0 -> modeName = ModeList.POWERSAVE
+                                1 -> modeName = ModeList.BALANCE
+                                2 -> modeName = ModeList.PERFORMANCE
+                                3 -> modeName = ModeList.FAST
+                                4 -> modeName = ModeList.IGONED
                             }
                             powercfg.edit().putString(app, modeName).commit()
-                            app_details_dynamic.text = modeList.getModName(modeName)
+                            app_details_dynamic.text = ModeList.getModName(modeName)
                             _result = RESULT_OK
                         }
                     })
@@ -584,7 +593,16 @@ class AppDetailsActivity : AppCompatActivity() {
 
         dynamicCpu = (Platform().dynamicSupport(this) || File(Consts.POWER_CFG_PATH).exists())
 
-        val packageInfo = packageManager.getPackageInfo(app, 0)
+        var packageInfo: PackageInfo? = null
+        try {
+            packageInfo = packageManager.getPackageInfo(app, 0)
+        } catch (ex: Exception) {
+            Toast.makeText(applicationContext, "所选的应用已被卸载！", Toast.LENGTH_SHORT).show()
+        }
+        if (packageInfo == null) {
+            finish()
+            return
+        }
         val applicationInfo = packageInfo.applicationInfo
         app_details_name.text = applicationInfo.loadLabel(packageManager)
         app_details_packagename.text = packageInfo.packageName
@@ -621,8 +639,8 @@ class AppDetailsActivity : AppCompatActivity() {
             }
         }).start()
 
-        val firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, modeList.BALANCE))
-        app_details_dynamic.text = modeList.getModName(powercfg.getString(app, firstMode))
+        val firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeList.BALANCE))
+        app_details_dynamic.text = ModeList.getModName(powercfg.getString(app, firstMode))
         app_details_floatwindow.isChecked = checkPermission("android.permission.SYSTEM_ALERT_WINDOW", app)
         app_details_usagedata.isChecked = checkPermission("android.permission.PACKAGE_USAGE_STATS", app)
         app_details_modifysettings.isChecked = checkPermission("android.permission.WRITE_SECURE_SETTINGS", app)

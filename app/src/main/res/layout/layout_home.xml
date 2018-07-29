@@ -43,7 +43,10 @@
                     android:layout_marginLeft="5dp"
                     android:layout_span="2"
                     android:background="#22888888"
-                    android:padding="20dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
                     android:textSize="12dp" />
 
                 <TextView
@@ -55,7 +58,10 @@
                     android:layout_marginRight="5dp"
                     android:layout_span="2"
                     android:background="#22888888"
-                    android:padding="20dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp"
+                    android:paddingLeft="15dp"
+                    android:paddingRight="15dp"
                     android:textSize="12dp" />
             </TableRow>
 

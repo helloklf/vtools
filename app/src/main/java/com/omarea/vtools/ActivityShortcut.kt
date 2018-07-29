@@ -18,7 +18,7 @@ class ActivityShortcut : Activity() {
             val action = intent.action
             if (action != null && !action.isNullOrEmpty()) {
                 installConfig(action)
-                Toast.makeText(applicationContext, modeList.getModName(action), Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, ModeList.getModName(action), Toast.LENGTH_SHORT).show()
             }
         } else {
             Toast.makeText(applicationContext, getString(R.string.device_unsupport), Toast.LENGTH_LONG).show()

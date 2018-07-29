@@ -116,26 +116,26 @@ class FloatPowercfgSelector {
             btn_gamemode.text = "游戏"
             btn_fastmode.text = "极速"
             when (selectedMode) {
-                modeList.BALANCE -> btn_defaultmode.text = "均衡 √"
-                modeList.PERFORMANCE -> btn_gamemode.text = "游戏 √"
-                modeList.POWERSAVE -> btn_powersave!!.text = "省电 √"
-                modeList.FAST -> btn_fastmode!!.text = "极速 √"
+                ModeList.BALANCE -> btn_defaultmode.text = "均衡 √"
+                ModeList.PERFORMANCE -> btn_gamemode.text = "游戏 √"
+                ModeList.POWERSAVE -> btn_powersave!!.text = "省电 √"
+                ModeList.FAST -> btn_fastmode!!.text = "极速 √"
             }
         }
         btn_powersave.setOnClickListener {
-            selectedMode = modeList.POWERSAVE
+            selectedMode = ModeList.POWERSAVE
             updateUI.run()
         }
         btn_defaultmode.setOnClickListener {
-            selectedMode = modeList.BALANCE
+            selectedMode = ModeList.BALANCE
             updateUI.run()
         }
         btn_gamemode.setOnClickListener {
-            selectedMode = modeList.PERFORMANCE
+            selectedMode = ModeList.PERFORMANCE
             updateUI.run()
         }
         btn_fastmode.setOnClickListener {
-            selectedMode = modeList.FAST
+            selectedMode = ModeList.FAST
             updateUI.run()
         }
 

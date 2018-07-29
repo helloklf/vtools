@@ -117,18 +117,14 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
         fun grantPermission(context: Context) {
             val cmds = StringBuilder()
             cmds.append("dumpsys deviceidle whitelist +${context.packageName};\n")
-            if (!checkPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                cmds.append("pm grant ${context.packageName} android.permission.READ_EXTERNAL_STORAGE;\n")
+            // 必需的权限
+            val requiredPermission = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CHANGE_CONFIGURATION, Manifest.permission.WRITE_SECURE_SETTINGS, Manifest.permission.SYSTEM_ALERT_WINDOW)
+            requiredPermission.forEach {
+                if (!checkPermission(context, it)) {
+                    cmds.append("pm grant ${context.packageName} $it;\n")
+                }
             }
-            if (!checkPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                cmds.append("pm grant ${context.packageName} android.permission.WRITE_EXTERNAL_STORAGE;\n")
-            }
-            if (!checkPermission(context, Manifest.permission.CHANGE_CONFIGURATION)) {
-                cmds.append("pm grant ${context.packageName} android.permission.CHANGE_CONFIGURATION;\n")
-            }
-            if (!checkPermission(context, Manifest.permission.WRITE_SECURE_SETTINGS)) {
-                cmds.append("pm grant ${context.packageName} android.permission.WRITE_SECURE_SETTINGS;\n")
-            }
+
             /*
             // 不支持使用ROOT权限进行设置
             if (!checkPermission(context, Manifest.permission.BIND_NOTIFICATION_LISTENER_SERVICE)) {

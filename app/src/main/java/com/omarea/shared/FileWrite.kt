@@ -14,7 +14,7 @@ import java.io.IOException
 object FileWrite {
     var baseUrl = "${Consts.SDCardDir}/Android/data/${Consts.PACKAGE_NAME}/"
 
-    fun WriteFile(ass: AssetManager, file: String, hasExtName: Boolean) {
+    fun WriteFile(ass: AssetManager, file: String, hasExtName: Boolean): String? {
         try {
             val inputStream = ass.open(file)
             val datas = ByteArray(2 * 1024 * 1024)
@@ -49,15 +49,16 @@ object FileWrite {
             writedFile.setExecutable(true)
             writedFile.setReadable(true)
             //getApplicationContext().getClassLoader().getResourceAsStream("");
+            return filePath
         } catch (e: FileNotFoundException) {
             e.printStackTrace()
         } catch (e: IOException) {
             e.printStackTrace()
         }
-
+        return null
     }
 
-    fun WriteFile(assetManager: AssetManager, file: String, outName: String) {
+    fun WriteFile(assetManager: AssetManager, file: String, outName: String): String? {
         try {
             val inputStream = assetManager.open(file)
             val datas = ByteArray(2 * 1024 * 1024)
@@ -80,9 +81,11 @@ object FileWrite {
             writedFile.setExecutable(true)
             writedFile.setReadable(true)
             //getApplicationContext().getClassLoader().getResourceAsStream("");
+            return filePath
         } catch (e: IOException) {
             e.printStackTrace()
         }
+        return null
     }
 
     fun getPrivateFileDir(context: Context): String {

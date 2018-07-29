@@ -175,10 +175,10 @@ class FragmentConfig : Fragment() {
             val item = (parent.adapter.getItem(position) as Appinfo)
             var originIndex = 0
             when (spfPowercfg.getString(item.packageName.toString(), firstMode)) {
-                modeList.POWERSAVE -> originIndex = 0
-                modeList.BALANCE -> originIndex = 1
-                modeList.PERFORMANCE -> originIndex = 2
-                modeList.FAST -> originIndex = 3
+                ModeList.POWERSAVE -> originIndex = 0
+                ModeList.BALANCE -> originIndex = 1
+                ModeList.PERFORMANCE -> originIndex = 2
+                ModeList.FAST -> originIndex = 3
                 else -> originIndex = 4
             }
             var currentMode =originIndex
@@ -191,10 +191,10 @@ class FragmentConfig : Fragment() {
                         _, _ ->
                         if (currentMode != originIndex) {
                             when (currentMode) {
-                                0 -> spfPowercfg.edit().putString(item.packageName.toString(), modeList.POWERSAVE).commit()
-                                1 -> spfPowercfg.edit().putString(item.packageName.toString(), modeList.BALANCE).commit()
-                                2 -> spfPowercfg.edit().putString(item.packageName.toString(), modeList.PERFORMANCE).commit()
-                                3 -> spfPowercfg.edit().putString(item.packageName.toString(), modeList.FAST).commit()
+                                0 -> spfPowercfg.edit().putString(item.packageName.toString(), ModeList.POWERSAVE).commit()
+                                1 -> spfPowercfg.edit().putString(item.packageName.toString(), ModeList.BALANCE).commit()
+                                2 -> spfPowercfg.edit().putString(item.packageName.toString(), ModeList.PERFORMANCE).commit()
+                                3 -> spfPowercfg.edit().putString(item.packageName.toString(), ModeList.FAST).commit()
                                 4 -> spfPowercfg.edit().remove(item.packageName.toString()).commit()
                             }
 
@@ -266,13 +266,7 @@ class FragmentConfig : Fragment() {
             }
         }
         config_customer_powercfg_online.setOnClickListener {
-            try {
-                val intent = Intent(this.context, ActivityAddinOnline::class.java)
-                intent.putExtra("url", "https://github.com/yc9559/cpufreq-interactive-opt/tree/master/vtools-powercfg")
-                startActivityForResult(intent, REQUEST_POWERCFG_ONLINE)
-            } catch (ex: Exception) {
-                Toast.makeText(context!!, "启动在线页面失败！", Toast.LENGTH_SHORT).show()
-            }
+            getOnlineConfig()
         }
 
         config_adv.setOnClickListener {
@@ -477,11 +471,11 @@ class FragmentConfig : Fragment() {
             }
             when (configlist_modes.selectedItemPosition) {
                 0 -> filterMode = "*"
-                1 -> filterMode = modeList.POWERSAVE
-                2 -> filterMode = modeList.BALANCE
-                3 -> filterMode = modeList.PERFORMANCE
-                4 -> filterMode = modeList.FAST
-                5 -> filterMode = modeList.IGONED
+                1 -> filterMode = ModeList.POWERSAVE
+                2 -> filterMode = ModeList.BALANCE
+                3 -> filterMode = ModeList.PERFORMANCE
+                4 -> filterMode = ModeList.FAST
+                5 -> filterMode = ModeList.IGONED
             }
             displayList = ArrayList()
             for (i in installedList!!.indices) {
@@ -510,7 +504,7 @@ class FragmentConfig : Fragment() {
     private fun setAppRowDesc(item: Appinfo) {
         item.selectState = false
         val packageName = item.packageName.toString()
-        item.enabledState = spfPowercfg.getString(packageName, firstMode)
+        item.enabledState = spfPowercfg.getString(packageName, "")
         val configInfo = appConfigStore.getAppConfig(packageName)
         item.appConfigInfo = configInfo
         val desc = StringBuilder()
@@ -580,17 +574,24 @@ class FragmentConfig : Fragment() {
                 AlertDialog.Builder(context)
                         .setTitle(getString(R.string.first_start_select_config))
                         .setCancelable(false)
-                        .setSingleChoiceItems(arrayOf(getString(R.string.conservative), getString(R.string.radicalness)), 0, { _, which ->
+                        .setSingleChoiceItems(arrayOf(getString(R.string.conservative), getString(R.string.radicalness), getString(R.string.get_online_config)), 0, { _, which ->
                             i = which
                         })
                         .setNegativeButton(R.string.btn_confirm, { _, _ ->
-                            installConfig(i > 0)
+                            if (i > 1) {
+                                getOnlineConfig()
+                                return@setNegativeButton
+                            }
+                            installConfig(i == 1)
                         }).create().show()
             }
             else ->
                 AlertDialog.Builder(context)
                         .setTitle(getString(R.string.not_support_config))
                         .setMessage(String.format(getString(R.string.not_support_config_desc), Consts.POWER_CFG_PATH))
+                        .setPositiveButton(getString(R.string.get_online_config), { _, _ ->
+                            getOnlineConfig()
+                        })
                         .setNegativeButton(getString(R.string.more), { _, _ ->
                             val intent = Intent()
                             //Intent intent = new Intent(Intent.ACTION_VIEW,uri);
@@ -599,10 +600,19 @@ class FragmentConfig : Fragment() {
                             intent.data = content_url
                             startActivity(intent)
                         })
-                        .setPositiveButton(getString(R.string.i_know), { _, _ ->
-                        })
                         .create()
                         .show()
+        }
+    }
+
+
+    private fun getOnlineConfig() {
+        try {
+            val intent = Intent(this.context, ActivityAddinOnline::class.java)
+            intent.putExtra("url", "https://github.com/yc9559/cpufreq-interactive-opt/tree/master/vtools-powercfg")
+            startActivityForResult(intent, REQUEST_POWERCFG_ONLINE)
+        } catch (ex: Exception) {
+            Toast.makeText(context!!, "启动在线页面失败！", Toast.LENGTH_SHORT).show()
         }
     }
 

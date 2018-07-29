@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import com.omarea.shared.ModeList
 import com.omarea.shared.model.Appinfo
 import com.omarea.vtools.R
 import java.io.File
@@ -26,14 +27,9 @@ import java.util.*
 
 class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, private var keywords: String = "") : BaseAdapter() {
     private val list: ArrayList<Appinfo>?
-    @SuppressLint("UseSparseArrays")
-    var states = HashMap<Int, Boolean>()
 
     init {
         this.list = filterAppList(apps, keywords)
-        for (i in this.list.indices) {
-            states[i] = !(this.list[i].enabledState == null || !this.list[i].selectState)
-        }
     }
 
     override fun getCount(): Int {
@@ -149,25 +145,28 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
         if (item.enabledState != null) {
             val config = item.enabledState
             var enabledState = ""
+            enabledState = ModeList.getModName(config.toString())
             when (config) {
-                "powersave" -> {
-                    enabledState = "省电模式"
+                ModeList.POWERSAVE -> {
                     viewHolder.enabledStateText!!.setTextColor(Color.parseColor("#0091D5"))
                 }
-                "performance" -> {
-                    enabledState = "性能模式"
+                ModeList.PERFORMANCE -> {
+                    enabledState = ModeList.getModName(config.toString())
                     viewHolder.enabledStateText!!.setTextColor(Color.parseColor("#6ECB00"))
                 }
-                "fast" -> {
-                    enabledState = "极速模式"
+                ModeList.FAST -> {
+                    enabledState = ModeList.getModName(config.toString())
                     viewHolder.enabledStateText!!.setTextColor(Color.parseColor("#FF7E00"))
                 }
-                "igoned" -> {
-                    enabledState = ""
+                ModeList.IGONED -> {
+                    enabledState = ModeList.getModName(config.toString())
                     viewHolder.enabledStateText!!.setTextColor(Color.parseColor("#888888"))
                 }
+                ModeList.BALANCE -> {
+                    enabledState = ModeList.getModName(config.toString())
+                    viewHolder.enabledStateText!!.setTextColor(Color.parseColor("#00B78A"))
+                }
                 else -> {
-                    enabledState = "均衡模式"
                     viewHolder.enabledStateText!!.setTextColor(Color.parseColor("#00B78A"))
                 }
             }

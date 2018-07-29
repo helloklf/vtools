@@ -61,16 +61,16 @@ class FragmentHome : Fragment() {
         }
 
         btn_powersave.setOnClickListener {
-            installConfig(modeList.POWERSAVE, getString(R.string.power_change_powersave))
+            installConfig(ModeList.POWERSAVE, getString(R.string.power_change_powersave))
         }
         btn_defaultmode.setOnClickListener {
-            installConfig(modeList.DEFAULT, getString(R.string.power_change_default))
+            installConfig(ModeList.BALANCE, getString(R.string.power_change_default))
         }
         btn_gamemode.setOnClickListener {
-            installConfig(modeList.PERFORMANCE, getString(R.string.power_change_game))
+            installConfig(ModeList.PERFORMANCE, getString(R.string.power_change_game))
         }
         btn_fastmode.setOnClickListener {
-            installConfig(modeList.FAST, getString(R.string.power_chagne_fast))
+            installConfig(ModeList.FAST, getString(R.string.power_chagne_fast))
         }
 
         spf = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
@@ -114,10 +114,10 @@ class FragmentHome : Fragment() {
         btn_fastmode.text = "极速"
         val cfg = Props.getProp("vtools.powercfg")
         when (cfg) {
-            modeList.BALANCE -> btn_defaultmode.text = "均衡 √"
-            modeList.PERFORMANCE -> btn_gamemode.text = "性能 √"
-            modeList.POWERSAVE -> btn_powersave!!.text = "省电 √"
-            modeList.FAST -> btn_fastmode!!.text = "极速 √"
+            ModeList.BALANCE -> btn_defaultmode.text = "均衡 √"
+            ModeList.PERFORMANCE -> btn_gamemode.text = "性能 √"
+            ModeList.POWERSAVE -> btn_powersave!!.text = "省电 √"
+            ModeList.FAST -> btn_fastmode!!.text = "极速 √"
         }
     }
 

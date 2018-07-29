@@ -11,12 +11,26 @@ import com.omarea.vtools.R
  */
 
 open class ModeList {
-    internal var DEFAULT = "balance";
-    internal var POWERSAVE = "powersave";
-    internal var PERFORMANCE = "performance";
-    internal var FAST = "fast";
-    internal var BALANCE = "balance";
-    internal var IGONED = "igoned";
+    companion object {
+        internal var DEFAULT = "balance";
+        internal var POWERSAVE = "powersave";
+        internal var PERFORMANCE = "performance";
+        internal var FAST = "fast";
+        internal var BALANCE = "balance";
+        internal var IGONED = "igoned";
+
+        internal fun getModName(mode: String): String {
+            when (mode) {
+                POWERSAVE -> return "省电模式"
+                PERFORMANCE -> return "性能模式"
+                FAST -> return "极速模式"
+                BALANCE -> return "均衡模式"
+                IGONED -> return "忽略切换"
+                "" -> return "跟随默认"
+                else -> return "未知模式"
+            }
+        }
+    }
     internal var keepShell: KeepShell? = null
     private var context: Context? = null
     private var currentPowercfg: String = ""
@@ -27,16 +41,6 @@ open class ModeList {
 
     constructor(context: Context) {
         this.context = context
-    }
-
-    internal fun getModName(mode: String): String {
-        when (mode) {
-            POWERSAVE -> return "省电模式"
-            PERFORMANCE -> return "性能模式"
-            FAST -> return "极速模式"
-            BALANCE -> return "均衡模式"
-            else -> return "未知模式"
-        }
     }
 
     internal fun getModIcon(mode: String): Int {

@@ -240,7 +240,10 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     )
                 }
             }
-            CheckRootStatus.grantPermission(this)
+
+            Thread(Runnable {
+                CheckRootStatus.grantPermission(this)
+            }).start()
         }).start()
     }
 
