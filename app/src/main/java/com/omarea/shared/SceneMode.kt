@@ -151,15 +151,23 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
     private var headsup = -1
     private fun backupHeadUp() {
         if (headsup < 0) {
-            headsup = Settings.Global.getInt(contentResolver, "heads_up_notifications_enabled")
+            try {
+                headsup = Settings.Global.getInt(contentResolver, "heads_up_notifications_enabled")
+            } catch (ex: Exception) {
+
+            }
         }
     }
 
     private fun restoreHeaddUp() {
-        if (headsup > -1) {
-            Settings.Global.putInt(contentResolver, "heads_up_notifications_enabled", headsup)
-            contentResolver.notifyChange(Settings.System.getUriFor("heads_up_notifications_enabled"), null)
-            headsup = -1
+        try {
+            if (headsup > -1) {
+                Settings.Global.putInt(contentResolver, "heads_up_notifications_enabled", headsup)
+                contentResolver.notifyChange(Settings.System.getUriFor("heads_up_notifications_enabled"), null)
+                headsup = -1
+            }
+        } catch (ex: Exception) {
+
         }
     }
 
@@ -214,11 +222,15 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
             }
 
             if (config!!.disNotice) {
-                val mode = Settings.Global.getInt(contentResolver, "heads_up_notifications_enabled")
-                backupHeadUp()
-                if (mode != 0) {
-                    Settings.Global.putInt(contentResolver, "heads_up_notifications_enabled", 0)
-                    contentResolver.notifyChange(Settings.System.getUriFor("heads_up_notifications_enabled"), null)
+                try {
+                    val mode = Settings.Global.getInt(contentResolver, "heads_up_notifications_enabled")
+                    backupHeadUp()
+                    if (mode != 0) {
+                        Settings.Global.putInt(contentResolver, "heads_up_notifications_enabled", 0)
+                        contentResolver.notifyChange(Settings.System.getUriFor("heads_up_notifications_enabled"), null)
+                    }
+                } catch (ex: Exception) {
+
                 }
             } else {
                 restoreHeaddUp()
