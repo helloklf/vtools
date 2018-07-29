@@ -5,7 +5,7 @@
     android:paddingBottom="6dp"
     android:paddingLeft="26dp"
     android:paddingRight="26dp"
-    android:paddingTop="6dp">
+    android:paddingTop="12dp">
 
     <LinearLayout
         android:id="@+id/params_list"

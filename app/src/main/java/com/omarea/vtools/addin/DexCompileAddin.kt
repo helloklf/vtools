@@ -278,4 +278,13 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                 })
                 .create().show()
     }
+
+    fun modifyThreadConfig() {
+        /*
+        [dalvik.vm.boot-dex2oat-threads]: [8]
+        [dalvik.vm.dex2oat-threads]: [4]
+        [dalvik.vm.image-dex2oat-threads]: [4]
+        [ro.sys.fw.dex2oat_thread_count]: [4]
+        */
+    }
 }

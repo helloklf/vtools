@@ -111,6 +111,12 @@ class FragmentAddin : Fragment() {
         progressBarDialog.showDialog("读取配置，稍等...")
         Thread(Runnable {
             val actions = ActionConfigReader.readActionConfigXml(this.activity!!)
+            if (actions == null) {
+                myHandler.post {
+                    progressBarDialog.hideDialog()
+                }
+                return@Runnable
+            }
             val onlineAddinDir = File(FileWrite.getPrivateFileDir(this.context!!) + "online-addin/")
             if (onlineAddinDir.exists() && onlineAddinDir.isDirectory) {
                 val onlineAddins = onlineAddinDir.list { dir, name ->
@@ -118,7 +124,7 @@ class FragmentAddin : Fragment() {
                 }
                 for (addinFile in onlineAddins) {
                     try {
-                        val result = ActionConfigReader.readActionConfigXml(this.activity, File("$onlineAddinDir/$addinFile").inputStream())
+                        val result = ActionConfigReader.readActionConfigXml(this.activity!!, File("$onlineAddinDir/$addinFile").inputStream())
                         if (result != null && result.size > 0)
                             actions.addAll(result)
                     } catch (ex: Exception) {
