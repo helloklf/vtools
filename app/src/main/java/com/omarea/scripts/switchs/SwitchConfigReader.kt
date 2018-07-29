@@ -113,8 +113,8 @@ object SwitchConfigReader {
                         if (action.getState == null) {
                             action.getState = ""
                         } else {
-                            val shellResult = ExecuteCommandWithOutput.executeCommandWithOutput(action.root, action.getState)
-                            action.selected = shellResult != null && (shellResult == "1" || shellResult.toLowerCase() == "true")
+                            val shellResult =  KeepShellSync.doCmdSync(action.getState)
+                            action.selected = shellResult != "error" && (shellResult == "1" || shellResult.toLowerCase() == "true")
                         }
                         if (action.setState == null) {
                             action.setState = ""
