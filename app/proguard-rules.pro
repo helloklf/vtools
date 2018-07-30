@@ -16,6 +16,17 @@
 #   public *;
 #}
 
+-keepclassmembers public class * extends android.app.Activity
+-keepclassmembers public class * extends android.app.Application
+-keepclassmembers public class * extends android.app.Service
+-keepclassmembers public class * extends android.content.BroadcastReceiver
+#-keepclassmembers public class * extends android.content.ContentProvider
+#-keepclassmembers public class * extends android.app.backup.BackupAgentHelper
+#-keepclassmembers public class * extends android.preference.Preference
+#-keepclassmembers public class * extends android.view.View
+#-keepclassmembers public class com.android.vending.licensing.ILicensingService
+#-keepclassmembers class android.support.** {*;}
+
 -keep class com.omarea.xposed.XposedInterface{*;}
 -keep class com.omarea.xposed.XposedCheck{*;}
 -keep class com.omarea.vtools.ServiceBattery{*;}

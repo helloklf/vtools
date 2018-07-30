@@ -1,17 +1,14 @@
 package com.omarea.vtools
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
 import android.content.*
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.provider.Settings
 import android.support.design.widget.NavigationView
-import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.PermissionChecker
 import android.support.v4.view.GravityCompat
@@ -23,16 +20,9 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import com.omarea.shared.ConfigInstaller
-import com.omarea.shared.Consts
-import com.omarea.shared.CrashHandler
 import com.omarea.shared.SpfConfig
-import com.omarea.shell.Busybox
-import com.omarea.shell.CheckRootStatus
-import com.omarea.shell.KeepShellSync
 import com.omarea.shell.units.BackupRestoreUnit
 import com.omarea.shell.units.BatteryUnit
-import com.omarea.ui.ProgressBarDialog
 import com.omarea.vtools.dialogs.DialogPower
 import kotlinx.android.synthetic.main.activity_main.*
 

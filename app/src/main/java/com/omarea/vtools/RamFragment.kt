@@ -1,11 +1,11 @@
 package com.omarea.vtools
 
 import android.app.ActivityManager
-import android.support.v4.app.Fragment
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
 import android.os.Bundle
 import android.os.Handler
+import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

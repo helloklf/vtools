@@ -8,7 +8,6 @@ import android.os.Looper
 import android.support.v4.content.PermissionChecker
 import android.util.Log
 import com.omarea.shared.Consts
-import com.omarea.ui.ProgressBarDialog
 import com.omarea.vtools.R
 
 /**

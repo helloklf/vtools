@@ -1,6 +1,5 @@
 package com.omarea.shared
 
-import android.app.AlertDialog
 import android.content.Context
 import android.util.Log
 import com.omarea.shared.helper.NotifyHelper

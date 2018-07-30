@@ -5,7 +5,6 @@ import android.util.Log
 import android.util.Xml
 import android.widget.Toast
 import com.omarea.scripts.ExtractAssets
-import com.omarea.scripts.simple.shell.ExecuteCommandWithOutput
 import com.omarea.shell.KeepShellSync
 import org.xmlpull.v1.XmlPullParser
 import java.io.InputStream

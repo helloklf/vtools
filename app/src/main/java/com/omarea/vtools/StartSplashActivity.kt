@@ -9,12 +9,9 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.support.design.widget.NavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.PermissionChecker
-import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
-import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.View
 import com.omarea.shared.ConfigInstaller
@@ -24,10 +21,6 @@ import com.omarea.shell.Busybox
 import com.omarea.shell.CheckRootStatus
 import com.omarea.shell.KeepShellSync
 import com.omarea.shell.WriteSettings
-import com.omarea.shell.units.BackupRestoreUnit
-import com.omarea.shell.units.BatteryUnit
-import com.omarea.ui.ProgressBarDialog
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_start_splash.*
 
 /**

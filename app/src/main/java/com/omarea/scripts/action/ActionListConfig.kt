@@ -1,30 +1,17 @@
 package com.omarea.scripts.action
 
-import android.content.DialogInterface
 import android.os.Handler
 import android.support.v4.app.FragmentActivity
 import android.support.v7.app.AlertDialog
-import android.view.LayoutInflater
 import android.view.View
-import android.widget.AdapterView
-import android.widget.CheckBox
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.ListView
-import android.widget.SimpleAdapter
-import android.widget.Spinner
-import android.widget.TextView
-
+import android.widget.*
 import com.omarea.scripts.ActionAdapter
-import com.omarea.scripts.simple.shell.ExecuteCommandWithOutput
 import com.omarea.scripts.simple.shell.SimpleShellExecutor
 import com.omarea.shell.KeepShellSync
 import com.omarea.ui.OverScrollListView
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.vtools.R
-
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 class ActionListConfig(private val context: FragmentActivity) {
     private var listView: OverScrollListView? = null

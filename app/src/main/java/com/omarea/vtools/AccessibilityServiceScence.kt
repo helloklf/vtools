@@ -18,7 +18,6 @@ import android.view.accessibility.AccessibilityWindowInfo
 import android.widget.Toast
 import com.omarea.shared.AutoClickService
 import com.omarea.shared.BootService
-import com.omarea.shared.CrashHandler
 import com.omarea.shared.ServiceHelper
 
 /**

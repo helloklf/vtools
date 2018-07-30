@@ -1,6 +1,5 @@
 package com.omarea.xposed;
 
-import android.content.Context;
 import android.graphics.Paint;
 import android.view.View;
 

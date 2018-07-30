@@ -6,12 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
-
 import com.omarea.shared.model.CpuCoreInfo
 import com.omarea.vtools.R
-
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 class AdapterCpuCores(private val context: Context, private val list: ArrayList<CpuCoreInfo>?) : BaseAdapter() {
 
