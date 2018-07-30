@@ -17,8 +17,8 @@ android {
         applicationId "com.omarea.vtools"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 501
-        versionName "8.7.29 dev"
+        versionCode 505
+        versionName "1.0.0(20180730)"
     }
     buildTypes {
         release {
@@ -47,6 +47,7 @@ dependencies {
     implementation 'com.android.support:support-v4:27.1.1'
     implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support:cardview-v7:27.1.1'
+    //implementation 'com.jaredrummler:animated-svg-view:1.0.5'
 }
 repositories {
     mavenCentral()

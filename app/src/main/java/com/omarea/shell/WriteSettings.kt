@@ -30,11 +30,15 @@ class WriteSettings {
             // val intent = Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS, selfPackageUri)
             // intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             // context.startActivity(intent)
-            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-            val uri = Uri.fromParts("package", context.getPackageName(), null)
-            intent.setData(uri)
-            context.startActivity(intent)
-            Toast.makeText(context, "请为Scene授予“修改系统设置”权限！", Toast.LENGTH_SHORT).show()
+            try {
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                val uri = Uri.fromParts("package", context.getPackageName(), null)
+                intent.setData(uri)
+                context.startActivity(intent)
+                Toast.makeText(context, "请为Scene授予“修改系统设置”权限！", Toast.LENGTH_SHORT).show()
+            } catch (ex: Exception) {
+
+            }
         } else {
             KeepShellSync.doCmdSync("pm grant ${context.packageName} android.permission.WRITE_SETTINGS")
         }

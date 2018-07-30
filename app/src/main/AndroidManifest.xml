@@ -16,9 +16,11 @@
     <uses-permission
         android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
         tools:ignore="ProtectedPermissions" />
-    <!--<uses-permission
+    <!--
+        <uses-permission
         android:name="android.permission.PACKAGE_USAGE_STATS"
-        tools:ignore="ProtectedPermissions" />-->
+        tools:ignore="ProtectedPermissions" />
+    -->
     <uses-permission
         android:name="android.permission.WRITE_SECURE_SETTINGS"
         tools:ignore="ProtectedPermissions" />
@@ -28,6 +30,7 @@
     <uses-permission
         android:name="android.permission.CHANGE_CONFIGURATION"
         tools:ignore="ProtectedPermissions" />
+
     <!--
     <uses-permission android:name="android.permission.BATTERY_STATS" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
@@ -36,6 +39,7 @@
     <uses-permission android:name="android.permission.INJECT_EVENTS" />
     -->
     <application
+        android:hardwareAccelerated="true"
         android:icon="@drawable/linux"
         android:label="@string/app_name"
         android:persistent="true"
@@ -80,7 +84,8 @@
         <service
             android:name=".AccessibilityServiceSceneKeyEvent"
             android:label="Scene-按键辅助"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:process=":keyevent">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
 
@@ -105,6 +110,7 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -212,6 +218,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".StartSplashActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_start_splash"
+            android:theme="@style/FullscreenTheme"></activity>
     </application>
 
 </manifest>

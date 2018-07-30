@@ -2,6 +2,7 @@ package com.omarea.vtools
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.ActivityManager
 import android.content.*
 import android.net.Uri
@@ -36,10 +37,8 @@ import com.omarea.vtools.dialogs.DialogPower
 import kotlinx.android.synthetic.main.activity_main.*
 
 class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-    lateinit internal var thisview: AppCompatActivity
     private var hasRoot = false
     private var globalSPF: SharedPreferences? = null
-    private var myHandler = Handler()
 
     private fun setExcludeFromRecents(exclude: Boolean? = null) {
         try {
@@ -56,6 +55,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        startActivityForResult(Intent(this.applicationContext, StartSplashActivity::class.java), 999)
         //CrashHandler().init(this)
         //setMaxAspect()
         if (globalSPF == null) {
@@ -71,31 +71,39 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             this.setTheme(R.style.AppTheme_NoActionBarNight)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+    }
 
-        thisview = this
-        //checkFileWrite()
-        checkRoot(Runnable {
-            hasRoot = true
-            checkFileWrite()
-            Busybox(this).forceInstall(Runnable {
-                configInstallerThread = Thread(Runnable {
-                    ConfigInstaller().configCodeVerify(this)
-                })
-                configInstallerThread!!.start()
-                next()
-            })
-        }, Runnable {
-            next()
-        })
-        setExcludeFromRecents()
-        // AppShortcutManager(thisview).removeMenu()
-        // checkUseState()
-        supportFragmentManager.addOnBackStackChangedListener {
-            if (supportFragmentManager.backStackEntryCount > 0) {
-                val item = supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 1)
-                title = item.name
-            } else {
-                title = getString(R.string.app_name)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 999) {
+            hasRoot = resultCode == Activity.RESULT_OK
+            setExcludeFromRecents()
+            // AppShortcutManager(this.applicationContext).removeMenu()
+            // checkUseState()
+            supportFragmentManager.addOnBackStackChangedListener {
+                if (supportFragmentManager.backStackEntryCount > 0) {
+                    val item = supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 1)
+                    title = item.name
+                } else {
+                    title = getString(R.string.app_name)
+                }
+            }
+
+
+            val toolbar = findViewById(R.id.toolbar) as Toolbar
+            setSupportActionBar(toolbar)
+            val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+            drawer_layout.addDrawerListener(toggle)
+            toggle.syncState()
+
+            val navigationView = findViewById(R.id.nav_view) as NavigationView
+            navigationView.setNavigationItemSelectedListener(this)
+            navigationView.menu.findItem(R.id.nav_battery).isEnabled = BatteryUnit().isSupport
+
+            if (!hasRoot)
+                hideRootMenu(navigationView.menu)
+            else if (!BackupRestoreUnit.isSupport()) {
+                navigationView.menu.findItem(R.id.nav_img).isEnabled = false
             }
         }
     }
@@ -128,124 +136,12 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         transaction.commit()
     }
 
-    private fun next() {
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
-        setSupportActionBar(toolbar)
-
-        //判断是否开启了充电加速和充电保护，如果开启了，自动启动后台服务
-        val chargeConfig = getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
-        if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) || chargeConfig!!.getBoolean(SpfConfig.CHARGE_SPF_BP, false)) {
-            try {
-                val intent = Intent(this.applicationContext, ServiceBattery::class.java)
-                this.applicationContext.startService(intent)
-            } catch (ex: Exception) {
-                Log.e("startChargeService", ex.message)
-            }
-        }
-
-        val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        drawer_layout.addDrawerListener(toggle)
-        toggle.syncState()
-
-        val navigationView = findViewById(R.id.nav_view) as NavigationView
-        navigationView.setNavigationItemSelectedListener(this)
-        navigationView.menu.findItem(R.id.nav_battery).isEnabled = BatteryUnit().isSupport
-
-        if (!hasRoot)
-            hideRootMenu(navigationView.menu)
-        else if (!BackupRestoreUnit.isSupport()) {
-            navigationView.menu.findItem(R.id.nav_img).isEnabled = false
-        }
-    }
-
-    private var configInstallerThread: Thread? = null
-
-    @SuppressLint("ApplySharedPref", "CommitPrefEdits")
-    private fun checkRoot(next: Runnable, skip: Runnable) {
-        val globalConfig = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-        if (globalConfig.contains(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE_CHECKING)) {
-            AlertDialog.Builder(this)
-                    .setTitle("兼容性问题")
-                    .setMessage("检测到你的设备在上次“兼容性检测”过程中断，“自动SELinux宽容模式”将不会被开启！\n\n因此，有些功能可能无法使用！")
-                    .setPositiveButton(R.string.btn_confirm, DialogInterface.OnClickListener { dialog, which ->
-                        globalConfig.edit()
-                                .putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE_CHECKING, false)
-                                .remove(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE_CHECKING)
-                                .commit()
-                        CheckRootStatus(this, next, skip, false).forceGetRoot()
-                    })
-                    .setCancelable(false)
-                    .create()
-                    .show()
-            return
-        }
-        if (!globalConfig.contains(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE)) {
-            CheckRootStatus(this, Runnable {
-                myHandler.post {
-                    globalConfig.edit().putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE_CHECKING, true)
-                            .commit()
-                    val dialog = ProgressBarDialog(this)
-                    dialog.showDialog("兼容性检测，稍等10几秒...")
-                    Thread(Runnable {
-                        KeepShellSync.doCmdSync(Consts.DisableSELinux + "\n sleep 10; \n")
-                        myHandler.post {
-                            dialog.hideDialog()
-                            next.run()
-                        }
-                        globalConfig.edit()
-                                .putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true)
-                                .remove(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE_CHECKING)
-                                .commit()
-                    }).start()
-                }
-            }, skip, false).forceGetRoot()
-        } else {
-            val disableSeLinux = globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true)
-            CheckRootStatus(this, next, skip, disableSeLinux).forceGetRoot()
-        }
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
     }
 
     private fun checkPermission(permission: String): Boolean =
             PermissionChecker.checkSelfPermission(this@ActivityMain, permission) == PermissionChecker.PERMISSION_GRANTED
 
-    //检查权限 主要是文件读写权限
-    private fun checkFileWrite() {
-        Thread(Runnable {
-            if (!(checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    ActivityCompat.requestPermissions(
-                            this@ActivityMain,
-                            arrayOf(
-                                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                    Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,
-                                    Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
-                                    Manifest.permission.WAKE_LOCK
-                            ),
-                            0x11
-                    )
-                } else {
-                    ActivityCompat.requestPermissions(
-                            this@ActivityMain,
-                            arrayOf(
-                                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                                    Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,
-                                    Manifest.permission.WAKE_LOCK
-                            ),
-                            0x11
-                    )
-                }
-            }
-
-            Thread(Runnable {
-                CheckRootStatus.grantPermission(this)
-            }).start()
-        }).start()
-    }
 
     //返回键事件
     override fun onBackPressed() {
@@ -267,16 +163,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onDestroy() {
-        try {
-            if (getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-                            .getBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, false)) {
-                //this.finishAndRemoveTask()
-            }
-            if (this.configInstallerThread != null && !this.configInstallerThread!!.isInterrupted) {
-                this.configInstallerThread!!.destroy()
-            }
-        } catch (ex: Exception) {
-        }
         super.onDestroy()
     }
 
@@ -288,8 +174,8 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     //右上角菜单
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_settings -> startActivity(Intent(thisview, ActivityAccessibilitySettings::class.java))
-            R.id.action_power -> DialogPower(thisview).showPowerMenu()
+            R.id.action_settings -> startActivity(Intent(this.applicationContext, ActivityAccessibilitySettings::class.java))
+            R.id.action_power -> DialogPower(this.applicationContext).showPowerMenu()
         }
         return super.onOptionsItemSelected(item)
     }

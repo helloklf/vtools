@@ -37,14 +37,11 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
 
     var therad: Thread? = null
     fun forceGetRoot() {
-        val pd = ProgressBarDialog(context)
-        pd.showDialog("正在检查ROOT权限")
         var completed = false
         therad = Thread {
             if (!isRoot(disableSeLinux)) {
                 completed = true
                 myHandler.post {
-                    pd.hideDialog()
                     val alert = AlertDialog.Builder(context)
                     alert.setCancelable(false)
                     alert.setTitle(R.string.error_root)
@@ -63,7 +60,6 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
                             therad = null
                         }
                         myHandler.post {
-                            pd.hideDialog()
                             if (skip != null)
                                 skip!!.run()
                         }
@@ -73,7 +69,6 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
             } else {
                 completed = true
                 myHandler.post {
-                    pd.hideDialog()
                     if (next != null)
                         next!!.run()
                 }
@@ -82,7 +77,6 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
         therad!!.start()
         myHandler.postDelayed({
             if (!completed) {
-                pd.hideDialog()
                 val alert = AlertDialog.Builder(context)
                 alert.setCancelable(false)
                 alert.setTitle(R.string.error_root)
@@ -101,7 +95,6 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
                     }
                     completed = true
                     myHandler.post {
-                        pd.hideDialog()
                         if (skip != null)
                             skip!!.run()
                     }
@@ -118,7 +111,13 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
             val cmds = StringBuilder()
             cmds.append("dumpsys deviceidle whitelist +${context.packageName};\n")
             // 必需的权限
-            val requiredPermission = arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CHANGE_CONFIGURATION, Manifest.permission.WRITE_SECURE_SETTINGS, Manifest.permission.SYSTEM_ALERT_WINDOW)
+            val requiredPermission = arrayOf(
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.CHANGE_CONFIGURATION,
+                    Manifest.permission.WRITE_SECURE_SETTINGS,
+                    Manifest.permission.SYSTEM_ALERT_WINDOW
+            )
             requiredPermission.forEach {
                 if (!checkPermission(context, it)) {
                     cmds.append("pm grant ${context.packageName} $it;\n")

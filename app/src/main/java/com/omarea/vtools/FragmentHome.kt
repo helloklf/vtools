@@ -5,6 +5,7 @@ import android.app.ActivityManager
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
@@ -108,16 +109,24 @@ class FragmentHome : Fragment() {
     }
 
     private fun setModeState() {
-        btn_powersave.text = "省电"
-        btn_defaultmode.text = "均衡"
-        btn_gamemode.text = "性能"
-        btn_fastmode.text = "极速"
+        btn_powersave.setTextColor(0x66ffffff)
+        btn_defaultmode.setTextColor(0x66ffffff)
+        btn_gamemode.setTextColor(0x66ffffff)
+        btn_fastmode.setTextColor(0x66ffffff)
         val cfg = Props.getProp("vtools.powercfg")
         when (cfg) {
-            ModeList.BALANCE -> btn_defaultmode.text = "均衡 √"
-            ModeList.PERFORMANCE -> btn_gamemode.text = "性能 √"
-            ModeList.POWERSAVE -> btn_powersave!!.text = "省电 √"
-            ModeList.FAST -> btn_fastmode!!.text = "极速 √"
+            ModeList.BALANCE -> {
+                btn_defaultmode.setTextColor(Color.WHITE)
+            }
+            ModeList.PERFORMANCE -> {
+                btn_gamemode.setTextColor(Color.WHITE)
+            }
+            ModeList.POWERSAVE -> {
+                btn_powersave.setTextColor(Color.WHITE)
+            }
+            ModeList.FAST -> {
+                btn_fastmode.setTextColor(Color.WHITE)
+            }
         }
     }
 

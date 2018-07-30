@@ -38,9 +38,7 @@ public class ActionAdapter extends BaseAdapter {
     }
 
     public void update(int index, ListView listview) {
-        //得到第一个可见item项的位置
         int visiblePosition = listview.getFirstVisiblePosition();
-        //得到指定位置的视图，对listview的缓存机制不清楚的可以去了解下
         View view = listview.getChildAt(index - visiblePosition);
         ViewHolder holder = (ViewHolder) view.getTag();
         ActionInfo actionInfo = ((ActionInfo) getItem(index));

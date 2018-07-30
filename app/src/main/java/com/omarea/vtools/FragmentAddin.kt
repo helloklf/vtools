@@ -147,7 +147,7 @@ class FragmentAddin : Fragment() {
         val tabHost = view.findViewById(R.id.addin_tabhost) as TabHost
         tabHost.setup()
         tabHost.addTab(tabHost.newTabSpec("tab_1").setContent(R.id.tab0).setIndicator("内置"))
-        tabHost.addTab(tabHost.newTabSpec("tab_2").setContent(R.id.tab1).setIndicator("自定义"))
+        tabHost.addTab(tabHost.newTabSpec("tab_2").setContent(R.id.tab1).setIndicator("脚本"))
         tabHost.addTab(tabHost.newTabSpec("tab_3").setContent(R.id.tab2).setIndicator("开关"))
         tabHost.currentTab = 0
         tabHost.setOnTabChangedListener(TabHost.OnTabChangeListener { tabId ->
