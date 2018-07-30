@@ -118,48 +118,54 @@ class AppDetailsActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * 安装插件
+     */
     private fun installVAddin() {
         val addin = "addin/xposed-addin.apk"
+        // 解压应用内部集成的插件文件
         val addinPath = FileWrite.WritePrivateFile(assets, addin, "addin/xposed-addin.apk", this)
 
+        // 如果应用内部集成的插件文件获取失败
         if (addinPath == null) {
             Toast.makeText(applicationContext, getString(R.string.scene_addin_miss), Toast.LENGTH_SHORT).show()
             return
         }
         try {
+            // 判断应用内部集成的插件文件是否和应用版本匹配（不匹配则取消安装）
             if (packageManager.getPackageArchiveInfo(addinPath, PackageManager.GET_ACTIVITIES).versionCode < getVersion()) {
                 Toast.makeText(applicationContext, getString(R.string.scene_inner_addin_invalid), Toast.LENGTH_SHORT).show()
                 return
             }
         } catch (ex: Exception) {
+            // 异常
             Toast.makeText(applicationContext, getString(R.string.scene_addin_install_fail), Toast.LENGTH_SHORT).show()
             return
         }
         Toast.makeText(applicationContext, getString(R.string.scene_addin_installing), Toast.LENGTH_SHORT).show()
+        //使用ROOT权限安装插件
         val installResult = KeepShellSync.doCmdSync("pm install -r '$addinPath'")
+        // 如果使用ROOT权限自动安装成功（再次检查Xposed状态）
         if (installResult !== "error" && installResult.contains("Success") && getAddinVersion() == getVersion()) {
             Toast.makeText(applicationContext, getString(R.string.scene_addin_installed), Toast.LENGTH_SHORT).show()
-            checkXposedState()
+            checkXposedState(false)
         } else {
+            // 让用户手动安装
             try {
                 val apk = FileWrite.WriteFile(assets, addin, true)
 
                 val intent = Intent(Intent.ACTION_VIEW);
-                intent.setDataAndType(Uri.fromFile(File(if (apk != null) apk else addinPath)), "application/vnd.android.package-archive");
+                intent.setDataAndType(Uri.fromFile(File((if (apk != null) apk else addinPath))), "application/vnd.android.package-archive");
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             } catch (ex: Exception) {
-
+                Toast.makeText(applicationContext, getString(R.string.scene_addin_install_fail), Toast.LENGTH_SHORT).show()
             }
-            Toast.makeText(applicationContext, getString(R.string.scene_addin_install_fail), Toast.LENGTH_SHORT).show()
-            return
         }
     }
 
     private fun bindService() {
-        if (aidlConn != null) {
-            return
-        }
+        tryUnBindAddin()
         try {
             val intent = Intent();
             //绑定服务端的service
@@ -176,26 +182,50 @@ class AppDetailsActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkXposedState() {
+    private fun tryUnBindAddin() {
+        try {
+            if (aidlConn != null) {
+                unbindService(conn)
+                aidlConn = null
+            }
+        } catch (ex: Exception) {
+
+        }
+    }
+
+    /**
+     * 检查Xposed状态
+     */
+    private fun checkXposedState(autoUpdate: Boolean = true) {
         var allowXposedConfig = XposedCheck.xposedIsRunning()
         app_details_vaddins_notactive.visibility = if (allowXposedConfig) View.GONE else View.VISIBLE
         try {
             vAddinsInstalled = packageManager.getPackageInfo("com.omarea.vaddin", 0) != null
-            if (getAddinVersion() < getVersion()) {
-                throw Exception("插件版本过低！")
-            } else {
-                allowXposedConfig = allowXposedConfig && vAddinsInstalled
-                app_details_vaddins_notinstall.visibility = View.GONE
-            }
+            allowXposedConfig = allowXposedConfig && vAddinsInstalled
         } catch (ex: Exception) {
-            allowXposedConfig = false
             vAddinsInstalled = false
-            app_details_vaddins_notinstall.visibility = View.VISIBLE
-            app_details_vaddins_notinstall.setOnClickListener {
+        }
+        app_details_vaddins_notinstall.setOnClickListener {
+            installVAddin()
+        }
+        if (vAddinsInstalled && getAddinVersion() < getVersion()) {
+            // 版本过低（更新插件）
+            if (autoUpdate) {
                 installVAddin()
             }
+        } else if (vAddinsInstalled) {
+            // 已安装（获取配置）
+            app_details_vaddins_notinstall.visibility = View.GONE
+            if (aidlConn == null) {
+                bindService()
+            } else {
+                updateXposedConfigFromAddin()
+            }
+        } else {
+            // 未安装（显示未安装）
+            app_details_vaddins_notinstall.visibility = View.VISIBLE
         }
-        app_details_vaddins_notactive.visibility = if (allowXposedConfig) View.GONE else View.VISIBLE
+        app_details_vaddins_notactive.visibility = if (XposedCheck.xposedIsRunning()) View.GONE else View.VISIBLE
         app_details_dpi.isEnabled = allowXposedConfig
         app_details_excludetask.isEnabled = allowXposedConfig
         app_details_scrollopt.isEnabled = allowXposedConfig
@@ -203,14 +233,6 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_webview_debug.isEnabled = allowXposedConfig
         app_details_service_running.isEnabled = allowXposedConfig
         app_details_force_scale.isEnabled = allowXposedConfig
-
-        if (vAddinsInstalled) {
-            if (aidlConn == null) {
-                bindService()
-            } else {
-                updateXposedConfigFromAddin()
-            }
-        }
     }
 
 
@@ -721,13 +743,10 @@ class AppDetailsActivity : AppCompatActivity() {
 
     override fun finish() {
         super.finish()
+        tryUnBindAddin()
     }
 
     override fun onPause() {
         super.onPause()
-        if (aidlConn != null) {
-            unbindService(conn)
-            aidlConn = null
-        }
     }
 }

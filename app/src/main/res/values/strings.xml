@@ -309,11 +309,11 @@
     <string name="addin_adb_network_desc">开启网络adb前，请先连接wifi。开启后通过同一局域网下的电脑，使用adb connect %s:5555 命令连接</string>
     <string name="addin_execute">确定执行？</string>
     <string name="swap_on_close">正在关闭SWAP，这可能很慢</string>
-    <string name="on_execute_please_wait">正在执行操作，请稍等...</string>
+    <string name="on_execute_please_wait">正在执行操作，请稍等…</string>
     <string name="executed">操作已完成！</string>
     <string name="file_creating">创建文件中</string>
-    <string name="zram_resizing">正在调整ZRAM，请稍等...</string>
-    <string name="zram_size_area">请输入ZRAM大小，值应在0 - 2048之间！</string>
+    <string name="zram_resizing">正在调整ZRAM，请稍等…</string>
+    <string name="zram_size_area">请输入ZRAM大小，值应在0 – 2048之间！</string>
     <string name="priority">优先级</string>
     <string name="used">已用</string>
     <string name="size">大小</string>
@@ -404,9 +404,9 @@
     <string name="config_save_fail">配置保存失败！</string>
     <string name="boot_success">已完成开机自启动</string>
     <string name="notice_channel_boot">自启动提示</string>
-    <string name="boot_script_running">正在执行自启动脚本...</string>
+    <string name="boot_script_running">正在执行自启动脚本…</string>
     <string name="flash_confirm">确认刷入？</string>
-    <string name="scene_addin_installing">稍等，正在安装“Scene - 高级设定”插件...</string>
+    <string name="scene_addin_installing">稍等，正在安装“Scene - 高级设定”插件…</string>
     <string name="scene_addin_miss">插件未集成到应用包，请单独下载！</string>
     <string name="scene_inner_addin_invalid">Scene中集成的“高级设置”插件版本过低，请联系系开发者报告错误！</string>
     <string name="scene_addin_installed">“Scene - 高级设定”插件已安装完成！</string>

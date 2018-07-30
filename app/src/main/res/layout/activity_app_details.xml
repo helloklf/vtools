@@ -504,7 +504,7 @@
 
                 <TextView
                     android:padding="8dp"
-                    android:text="Xposed组件未安装，高级设定不可用（点击安装）！"
+                    android:text="高级设定组件未安装，请先点击此处安装！"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </android.support.v7.widget.CardView>
@@ -519,7 +519,7 @@
 
                 <TextView
                     android:padding="8dp"
-                    android:text="Xposed模块未激活，高级设定不可用！"
+                    android:text="使用高级设定，请在Xposed管理器中勾选本应用并重启手机！"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </android.support.v7.widget.CardView>
