@@ -116,6 +116,8 @@ class AppDetailsActivity : AppCompatActivity() {
                     app_details_webview_debug.isChecked = aidlConn!!.getBooleanValue("android_webdebug", false)
                     app_details_service_running.isChecked = aidlConn!!.getBooleanValue("android_dis_service_foreground", false)
                     app_details_force_scale.isChecked = aidlConn!!.getBooleanValue(app + "_force_scale", false)
+                    app_details_excludetask.isChecked = appConfigInfo.excludeRecent
+                    app_details_scrollopt.isChecked = appConfigInfo.smoothScroll
                 }
             } catch (ex: Exception) {
                 Toast.makeText(applicationContext, getString(R.string.scene_addin_sync_fail), Toast.LENGTH_SHORT).show()
@@ -637,30 +639,32 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_time.text = Date(packageInfo.lastUpdateTime).toLocaleString()
         app_details_light.isEnabled = WriteSettings().getPermission(this)
         Thread(Runnable {
-            var size = getTotalSizeOfFilesInDir(File(applicationInfo.sourceDir).parentFile)
-            size += getTotalSizeOfFilesInDir(File(applicationInfo.dataDir))
-            val dumpR = KeepShellPublic.doCmdSync("dumpsys meminfo --S --package $app | grep TOTAL")
-            var memSize = 0
-            if (dumpR.isEmpty() || dumpR == "error") {
+            try {
+                var size = getTotalSizeOfFilesInDir(File(applicationInfo.sourceDir).parentFile)
+                size += getTotalSizeOfFilesInDir(File(applicationInfo.dataDir))
+                val dumpR = KeepShellPublic.doCmdSync("dumpsys meminfo --S --package $app | grep TOTAL")
+                var memSize = 0
+                if (dumpR.isEmpty() || dumpR == "error") {
 
-            } else {
-                val mem = KeepShellPublic.doCmdSync("dumpsys meminfo --package $app | grep TOTAL").split("\n", ignoreCase = true)
-                for (rowIndex in 0 until mem.size) {
-                    if (rowIndex % 2 == 0) {
-                        //TOTAL    17651    11740      672        0    18832    16424     2407
-                        val row = mem[rowIndex].trim().split("    ", ignoreCase = true)
-                        try {
-                            memSize += row[1].toInt()
-                        } catch (ex: Exception) {
+                } else {
+                    val mem = KeepShellPublic.doCmdSync("dumpsys meminfo --package $app | grep TOTAL").split("\n", ignoreCase = true)
+                    for (rowIndex in 0 until mem.size) {
+                        if (rowIndex % 2 == 0) {
+                            //TOTAL    17651    11740      672        0    18832    16424     2407
+                            val row = mem[rowIndex].trim().split("    ", ignoreCase = true)
+                            try {
+                                memSize += row[1].toInt()
+                            } catch (ex: Exception) {
+                            }
+                            Log.d("", row.toString())
                         }
-                        Log.d("", row.toString())
                     }
                 }
-            }
-            app_details_size.post {
-                app_details_size.text = String.format("%.2f", size / 1024.0 / 1024) + "MB"
-                app_details_ram.text = String.format("%.2f", memSize / 1024.0) + "MB"
-            }
+                app_details_size.post {
+                    app_details_size.text = String.format("%.2f", size / 1024.0 / 1024) + "MB"
+                    app_details_ram.text = String.format("%.2f", memSize / 1024.0) + "MB"
+                }
+            } catch (ex: Exception) {}
         }).start()
 
         val firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeList.BALANCE))
