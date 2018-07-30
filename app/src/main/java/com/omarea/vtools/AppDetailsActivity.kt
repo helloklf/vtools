@@ -107,6 +107,11 @@ class AppDetailsActivity : AppCompatActivity() {
                             }
                         }
                     }
+                    if (appConfigInfo.dpi >= 96) {
+                        app_details_dpi.text = appConfigInfo.dpi.toString()
+                    } else {
+                        app_details_dpi.text = "默认"
+                    }
                     app_details_hide_su.isChecked = aidlConn!!.getBooleanValue("com.android.systemui_hide_su", false)
                     app_details_webview_debug.isChecked = aidlConn!!.getBooleanValue("android_webdebug", false)
                     app_details_service_running.isChecked = aidlConn!!.getBooleanValue("android_dis_service_foreground", false)
@@ -503,6 +508,8 @@ class AppDetailsActivity : AppCompatActivity() {
         // TODO: 输入DPI
         if (appConfigInfo.dpi >= 96) {
             app_details_dpi.text = appConfigInfo.dpi.toString()
+        } else {
+            app_details_dpi.text = "默认"
         }
         app_details_excludetask.setOnClickListener {
             appConfigInfo.excludeRecent = (it as Switch).isChecked
@@ -514,11 +521,6 @@ class AppDetailsActivity : AppCompatActivity() {
             appConfigInfo.gpsOn = (it as Switch).isChecked
         }
         if (XposedCheck.xposedIsRunning()) {
-            if (appConfigInfo.dpi >= 96) {
-                app_details_dpi.text = appConfigInfo.dpi.toString()
-            } else {
-                app_details_dpi.text = "默认"
-            }
             app_details_dpi.setOnClickListener {
                 var dialog: AlertDialog? = null
                 val view = layoutInflater.inflate(R.layout.dpi_input, null)

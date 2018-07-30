@@ -98,6 +98,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
      * @return 是否阻拦按键事件
      */
     fun onKeyDown(): Boolean {
+        Log.e("keyDown", (config != null && config!!.disButton).toString())
         if (config != null) {
             return config!!.disButton
         }

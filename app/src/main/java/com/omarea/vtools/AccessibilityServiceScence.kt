@@ -82,7 +82,7 @@ override fun onCreate() {
 
 
     public override fun onServiceConnected() {
-
+        serviceIsConnected = true
         val spf = getSharedPreferences("adv", Context.MODE_PRIVATE)
         flagReportViewIds = spf.getBoolean("adv_find_viewid", flagReportViewIds)
         flagRequestKeyEvent = spf.getBoolean("adv_keyevent", flagRequestKeyEvent)
@@ -292,7 +292,11 @@ override fun onCreate() {
     private var handler = Handler()
     private var downTime: Long = -1
     private var longClickTime: Long = 500;
+    private var serviceIsConnected = false
     override fun onKeyEvent(event: KeyEvent): Boolean {
+        if (!serviceIsConnected) {
+            return false
+        }
         if (serviceHelper == null)
             initServiceHelper()
 
@@ -328,6 +332,7 @@ override fun onCreate() {
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
+        serviceIsConnected = false
         deestory()
         stopSelf()
         return super.onUnbind(intent)
