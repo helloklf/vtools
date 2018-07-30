@@ -253,7 +253,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         val remoteViews = RemoteViews(context.packageName, R.layout.notify0)
         remoteViews.setTextViewText(R.id.notify_title, getAppName(packageName))
         remoteViews.setTextViewText(R.id.notify_text, getModName(mode))
-        remoteViews.setTextViewText(R.id.notify_battery_text, batteryIO + " " + capacity + "% " + batteryTemp)
+        remoteViews.setTextViewText(R.id.notify_battery_text, "$batteryIO $capacity% $batteryTemp")
         if (modeImage != null) {
             remoteViews.setImageViewBitmap(R.id.notify_mode, modeImage)
         }

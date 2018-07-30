@@ -74,7 +74,7 @@ class FragmentCpuControl : Fragment() {
 
                 cores = arrayListOf<CheckBox>(core_0, core_1, core_2, core_3, core_4, core_5, core_6, core_7)
                 if (coreCount > cores.size) coreCount = cores.size;
-                for (i in 0..cores.size - 1) {
+                for (i in 0 until cores.size) {
                     if (i >= coreCount) {
                         cores[i].isEnabled = false
                     }
@@ -96,7 +96,7 @@ class FragmentCpuControl : Fragment() {
             if (arr.contains(value)) {
                 return value
             } else {
-                var approximation = if (arr.size > 0) arr[0] else ""
+                var approximation = if (arr.isNotEmpty()) arr[0] else ""
                 for (item in arr) {
                     if (item.toInt() <= value.toInt()) {
                         approximation = item
@@ -402,7 +402,7 @@ class FragmentCpuControl : Fragment() {
                 cluster0.adapter = StringAdapter(context, littleFreqs)
                 for (value in currentValues) {
                     for (cpu in clusterInfos.get(0)) {
-                        if (value.startsWith(cpu + ":")) {
+                        if (value.startsWith("$cpu:")) {
                             cluster0.setSelection(littleFreqs.indexOf(value.substring(2, value.length)), true)
                         }
                     }
@@ -414,7 +414,7 @@ class FragmentCpuControl : Fragment() {
                     cluster1.adapter = StringAdapter(context, bigFreqs)
                     for (value in currentValues) {
                         for (cpu in clusterInfos.get(1)) {
-                            if (value.startsWith(cpu + ":")) {
+                            if (value.startsWith("$cpu:")) {
                                 cluster1.setSelection(bigFreqs.indexOf(value.substring(2, value.length)), true)
                             }
                         }
@@ -459,7 +459,7 @@ class FragmentCpuControl : Fragment() {
                 }
                 true
             }
-            for (i in 0..cores.size - 1) {
+            for (i in 0 until cores.size) {
                 val core = i
                 cores[core].setOnClickListener {
                     CpuFrequencyUtils.setCoreOnlineState(core, (it as CheckBox).isChecked)
@@ -562,7 +562,7 @@ class FragmentCpuControl : Fragment() {
                 }
 
                 status.coreOnline = arrayListOf()
-                for (i in 0..coreCount - 1) {
+                for (i in 0 until coreCount) {
                     status.coreOnline.add(CpuFrequencyUtils.getCoreOnlineState(i))
                 }
 
@@ -686,7 +686,7 @@ class FragmentCpuControl : Fragment() {
             if (!cpu_inputboost_time.isFocused)
                 cpu_inputboost_time.setText(status.boostTime)
 
-            for (i in 0..coreCount - 1) {
+            for (i in 0 until coreCount) {
                 cores[i].isChecked = status.coreOnline.get(i)
             }
         } catch (ex: Exception) {

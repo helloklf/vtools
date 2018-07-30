@@ -23,8 +23,8 @@
                 android:hint="搜索 应用名或PackageName"
                 android:inputType="textFilter"
                 android:padding="8dp"
-                android:textSize="16dp"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:textSize="16dp" />
 
             <TabWidget
                 android:id="@android:id/tabs"
@@ -112,16 +112,17 @@
                         android:orientation="vertical">
 
                         <TextView
+                            style="@style/textTitle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="说明"
-                            style="@style/textTitle" android:layout_marginBottom="10dp"/>
+                            android:layout_marginBottom="10dp"
+                            android:text="说明" />
 
                         <TextView
+                            style="@style/textSmall"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/applist_help"
-                            style="@style/textSmall" />
+                            android:text="@string/applist_help" />
 
                         <Button
                             android:id="@+id/app_btn_hide"

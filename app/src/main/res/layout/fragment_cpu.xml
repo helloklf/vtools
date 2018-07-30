@@ -8,35 +8,37 @@
     tools:context=".CpuFragment">
 
     <LinearLayout
-        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="30dp"
         android:layout_marginRight="34dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_marginTop="20dp">
+
         <TextView
-            android:layout_gravity="center_vertical"
             android:id="@+id/cpu_core_count"
-            android:text="核心数："
-            android:layout_weight="1"
             android:layout_width="0dp"
-            android:layout_height="wrap_content" />
-        <TextView
+            android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:text="核心数：" />
+
+        <TextView
             android:id="@+id/cpu_core_total_load"
-            android:text="负载："
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="负载：" />
     </LinearLayout>
 
-    <GridView android:numColumns="2"
-        android:layout_marginTop="6dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="22dp"
-        android:layout_marginBottom="20dp"
-        android:layout_gravity="center_vertical"
-        android:listSelector="@android:color/transparent"
+    <GridView
         android:id="@+id/cpu_core_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        />
+        android:layout_gravity="center_vertical"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="22dp"
+        android:layout_marginTop="6dp"
+        android:listSelector="@android:color/transparent"
+        android:numColumns="2" />
 </LinearLayout>

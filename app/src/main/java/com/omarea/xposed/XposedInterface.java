@@ -34,7 +34,7 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
         prefs.makeWorldReadable();
         final boolean disServiceForeground = prefs.getBoolean("android_dis_service_foreground", false);
 
-        XposedHelpers.findAndHookMethod(Service.class, "setForeground", boolean.class , new XC_MethodHook() {
+        XposedHelpers.findAndHookMethod(Service.class, "setForeground", boolean.class, new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 if (disServiceForeground) {

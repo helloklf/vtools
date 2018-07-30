@@ -181,14 +181,13 @@ class FragmentConfig : Fragment() {
                 ModeList.FAST -> originIndex = 3
                 else -> originIndex = 4
             }
-            var currentMode =originIndex
+            var currentMode = originIndex
             AlertDialog.Builder(context)
                     .setTitle(item.appName.toString())
                     .setSingleChoiceItems(arrayOf("省电模式（阅读）", "均衡模式（日常）", "性能模式（游戏）", "极速模式（跑分）", "跟随默认模式"), originIndex, DialogInterface.OnClickListener { dialog, which ->
                         currentMode = which
                     })
-                    .setPositiveButton(R.string.btn_confirm, {
-                        _, _ ->
+                    .setPositiveButton(R.string.btn_confirm, { _, _ ->
                         if (currentMode != originIndex) {
                             when (currentMode) {
                                 0 -> spfPowercfg.edit().putString(item.packageName.toString(), ModeList.POWERSAVE).commit()
@@ -295,7 +294,7 @@ class FragmentConfig : Fragment() {
                         return
                     }
                     val lines = file.readLines(Charset.defaultCharset())
-                    val configStar = if (lines.size > 0) lines[0] else ""
+                    val configStar = if (lines.isNotEmpty()) lines[0] else ""
                     if (configStar.startsWith("#!/") && configStar.endsWith("sh")) {
                         val cmds = StringBuilder("cp '$path' ${Consts.POWER_CFG_PATH}\n")
                         cmds.append("chmod 0755 ${Consts.POWER_CFG_PATH}\n\n")
@@ -329,7 +328,7 @@ class FragmentConfig : Fragment() {
                     val adapter = (config_defaultlist.adapter as SceneModeAdapter)
                     var index = -1
                     val packageName = data.extras.getString("app")
-                    for (i in 0..displayList!!.size - 1) {
+                    for (i in 0 until displayList!!.size) {
                         if (displayList!![i].packageName == packageName) {
                             index = i
                         }

@@ -26,7 +26,7 @@ class Busybox(private var context: Context) {
     fun forceInstall(next: Runnable? = null) {
         val privateBusybox = FileWrite.getPrivateFilePath(context, "busybox")
         if (!File(privateBusybox).exists()) {
-            FileWrite.WritePrivateFile(context.assets, "busybox.zip", "busybox", context)
+            FileWrite.writePrivateFile(context.assets, "busybox.zip", "busybox", context)
         }
         if (!busyboxInstalled()) {
             AlertDialog.Builder(context)
@@ -69,7 +69,7 @@ class Busybox(private var context: Context) {
                     .setCancelable(false)
                     .create().show()
         } else {
-            BusyboxInstallerUnit().InstallShellTools()
+            BusyboxInstallerUnit().installShellTools()
             next?.run()
         }
     }

@@ -110,7 +110,7 @@ class AppDetailsActivity : AppCompatActivity() {
                     app_details_hide_su.isChecked = aidlConn!!.getBooleanValue("com.android.systemui_hide_su", false)
                     app_details_webview_debug.isChecked = aidlConn!!.getBooleanValue("android_webdebug", false)
                     app_details_service_running.isChecked = aidlConn!!.getBooleanValue("android_dis_service_foreground", false)
-                    app_details_force_scale.isChecked = aidlConn!!.getBooleanValue( app + "_force_scale", false)
+                    app_details_force_scale.isChecked = aidlConn!!.getBooleanValue(app + "_force_scale", false)
                 }
             } catch (ex: Exception) {
                 Toast.makeText(applicationContext, getString(R.string.scene_addin_sync_fail), Toast.LENGTH_SHORT).show()
@@ -124,7 +124,7 @@ class AppDetailsActivity : AppCompatActivity() {
     private fun installVAddin() {
         val addin = "addin/xposed-addin.apk"
         // 解压应用内部集成的插件文件
-        val addinPath = FileWrite.WritePrivateFile(assets, addin, "addin/xposed-addin.apk", this)
+        val addinPath = FileWrite.writePrivateFile(assets, addin, "addin/xposed-addin.apk", this)
 
         // 如果应用内部集成的插件文件获取失败
         if (addinPath == null) {
@@ -152,7 +152,7 @@ class AppDetailsActivity : AppCompatActivity() {
         } else {
             // 让用户手动安装
             try {
-                val apk = FileWrite.WriteFile(assets, addin, true)
+                val apk = FileWrite.writeFile(assets, addin, true)
 
                 val intent = Intent(Intent.ACTION_VIEW);
                 intent.setDataAndType(Uri.fromFile(File((if (apk != null) apk else addinPath))), "application/vnd.android.package-archive");
@@ -245,7 +245,7 @@ class AppDetailsActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_details)
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         app = this.intent.extras.getString("app")
 
@@ -643,7 +643,7 @@ class AppDetailsActivity : AppCompatActivity() {
 
             } else {
                 val mem = KeepShellSync.doCmdSync("dumpsys meminfo --package $app | grep TOTAL").split("\n", ignoreCase = true)
-                for (rowIndex in 0..mem.size - 1) {
+                for (rowIndex in 0 until mem.size) {
                     if (rowIndex % 2 == 0) {
                         //TOTAL    17651    11740      672        0    18832    16424     2407
                         val row = mem[rowIndex].trim().split("    ", ignoreCase = true)
@@ -733,7 +733,7 @@ class AppDetailsActivity : AppCompatActivity() {
             aidlConn!!.setBooleanValue("com.android.systemui_hide_su", app_details_hide_su.isChecked)
             aidlConn!!.setBooleanValue("android_webdebug", app_details_webview_debug.isChecked)
             aidlConn!!.setBooleanValue("android_dis_service_foreground", app_details_service_running.isChecked)
-            aidlConn!!.setBooleanValue( app + "_force_scale", app_details_force_scale.isChecked)
+            aidlConn!!.setBooleanValue(app + "_force_scale", app_details_force_scale.isChecked)
         } else {
         }
         if (!AppConfigStore(this).setAppConfig(appConfigInfo)) {

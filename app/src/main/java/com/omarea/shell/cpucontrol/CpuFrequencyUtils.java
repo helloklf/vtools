@@ -14,6 +14,7 @@ import java.util.Objects;
 
 public class CpuFrequencyUtils {
     private static ArrayList<String[]> cpuClusterInfo;
+    private static String lastCpuState = "";
 
     public static String[] getAvailableFrequencies(Integer cluster) {
         if (cluster >= getClusterInfo().size()) {
@@ -439,8 +440,6 @@ public class CpuFrequencyUtils {
         return new String[]{};
     }
 
-    private static String lastCpuState = "";
-
     private static int getCpuIndex(String[] cols) {
         int cpuIndex = -1;
         if (cols[0].equals("cpu")) {
@@ -503,13 +502,13 @@ public class CpuFrequencyUtils {
                     // endregion
 
                     for (String cpuCurrentTime : cpus) {
-                        String[] cols1 = cpuCurrentTime.replaceAll("  ", " ").split(" ");
+                        String[] cols1 = cpuCurrentTime.replaceAll(" {2}", " ").split(" ");
                         String[] cols0 = null;
                         // 根据前缀匹配上一个时段的cpu时间数据
                         for (String cpu : cpus0) {
                             // startsWith条件必须加个空格，因为搜索cpu的时候 "cpu0 ..."、"cpu1 ..."等都会匹配
                             if (cpu.startsWith(cols1[0] + " ")) {
-                                cols0 = cpu.replaceAll("  ", " ").split(" ");
+                                cols0 = cpu.replaceAll(" {2}", " ").split(" ");
                                 break;
                             }
                         }

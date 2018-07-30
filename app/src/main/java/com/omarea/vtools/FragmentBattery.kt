@@ -23,7 +23,7 @@ import java.util.*
 
 
 class FragmentBattery : Fragment() {
-    lateinit internal var view: View
+    internal lateinit var view: View
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -41,16 +41,16 @@ class FragmentBattery : Fragment() {
     private var batteryUnits = BatteryUnit()
     private lateinit var spf: SharedPreferences
 
-    @SuppressLint("ApplySharedPref")
+    @SuppressLint("ApplySharedPref", "SetTextI18n")
     override fun onResume() {
         super.onResume()
 
         settings_qc.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)
         settings_bp.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_BP, false)
-        settings_bp_level.setProgress(spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85))
-        accessbility_bp_level_desc.setText("充电限制电量：" + spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85) + "%")
-        settings_qc_limit.setProgress(spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000))
-        settings_qc_limit_desc.setText("设定上限电流：" + spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000) + "mA")
+        settings_bp_level.progress = spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85)
+        accessbility_bp_level_desc.text = "充电限制电量：" + spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85) + "%"
+        settings_qc_limit.progress = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000)
+        settings_qc_limit_desc.text = "设定上限电流：" + spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000) + "mA"
 
 
         if (broadcast == null) {
@@ -167,7 +167,7 @@ class FragmentBattery : Fragment() {
         settings_qc_limit.setOnSeekBarChangeListener(OnSeekBarChangeListener2(Runnable {
             val level = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000)
             startBatteryService()
-            batteryUnits.setChargeInputLimit(level);
+            batteryUnits.setChargeInputLimit(level)
         }, spf, settings_qc_limit_desc))
 
         if (!qcSettingSuupport) {
@@ -189,7 +189,7 @@ class FragmentBattery : Fragment() {
         btn_battery_history.setOnClickListener {
             try {
                 val powerUsageIntent = Intent(Intent.ACTION_POWER_USAGE_SUMMARY)
-                val resolveInfo = context!!.getPackageManager().resolveActivity(powerUsageIntent, 0)
+                val resolveInfo = context!!.packageManager.resolveActivity(powerUsageIntent, 0)
                 // check that the Battery app exists on this device
                 if (resolveInfo != null) {
                     startActivity(powerUsageIntent)
@@ -241,7 +241,7 @@ class FragmentBattery : Fragment() {
         }
 
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-            accessbility_bp_level_desc.setText("充电限制电量：" + progress + "%")
+            accessbility_bp_level_desc.text = "充电限制电量：$progress%"
         }
     }
 
@@ -260,7 +260,7 @@ class FragmentBattery : Fragment() {
         }
 
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-            settings_qc_limit_desc.setText("充电上限电流：" + progress + "mA")
+            settings_qc_limit_desc.text = "充电上限电流：" + progress + "mA"
         }
     }
 

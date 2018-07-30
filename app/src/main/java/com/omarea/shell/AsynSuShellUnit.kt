@@ -23,7 +23,7 @@ class AsynSuShellUnit(var handler: Handler) {
                         line = reader.readLine()
                         if (line != null) {
                             line = line.trim()
-                            if (line.length > 0)
+                            if (line.isNotEmpty())
                                 handler.sendMessage(handler.obtainMessage(1, line))
                         } else {
                             destroy()

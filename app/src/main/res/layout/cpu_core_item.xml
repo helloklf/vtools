@@ -4,20 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
     android:paddingRight="16dp"
-    android:paddingBottom="8dp">
+    android:paddingTop="8dp">
 
     <FrameLayout
-        android:layout_gravity="center_vertical"
         android:layout_width="60dp"
-        android:layout_height="60dp">
+        android:layout_height="60dp"
+        android:layout_gravity="center_vertical">
+
         <com.omarea.ui.CpuChatView
             android:id="@+id/core_cpu_loading_chat"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:free="0"
             app:total="1" />
+
         <TextView
             android:id="@+id/cpu_core_load"
             android:layout_width="wrap_content"
@@ -31,9 +33,9 @@
     <LinearLayout
         android:id="@+id/center"
         android:layout_width="0dp"
-        android:layout_weight="3"
         android:layout_height="wrap_content"
         android:layout_gravity="fill_horizontal|center_vertical"
+        android:layout_weight="3"
         android:orientation="vertical"
         android:paddingLeft="7dp">
 
@@ -47,11 +49,11 @@
             android:textSize="13dp" />
 
         <TextView
-            android:layout_marginTop="4dp"
             android:id="@+id/cpu_core_freq_ranage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="fill_horizontal"
+            android:layout_marginTop="4dp"
             android:lines="1"
             android:text="300Mhz ~ 2048Mhz"
             android:textColor="#8888"

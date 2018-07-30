@@ -31,6 +31,7 @@ open class ModeList {
             }
         }
     }
+
     internal var keepShell: KeepShell? = null
     private var context: Context? = null
     private var currentPowercfg: String = ""

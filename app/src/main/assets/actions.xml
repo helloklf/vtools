@@ -93,7 +93,8 @@
         <desc>增加核心线程数（不超过CPU核心数量）可以提高应用安装效率，但会造成应用安装过程中卡顿！</desc>
         <script>file:///android_asset/custom/actions/dex2oat_threads_set.sh</script>
         <params>
-            <param name="boot" desc="启动时(boot-dex2oat-threads)" value-sh="getprop dalvik.vm.boot-dex2oat-threads">
+            <param name="boot" desc="启动时(boot-dex2oat-threads)"
+                value-sh="getprop dalvik.vm.boot-dex2oat-threads">
                 <option value="">自动（根据核心数）</option>
                 <option value="1">1 个线程</option>
                 <option value="2">2 个线程</option>
@@ -104,7 +105,8 @@
                 <option value="7">7 个线程</option>
                 <option value="8">8 个线程</option>
             </param>
-            <param name="dex2oat" desc="启动后(dex2oat-threads)" value-sh="getprop dalvik.vm.dex2oat-threads">
+            <param name="dex2oat" desc="启动后(dex2oat-threads)"
+                value-sh="getprop dalvik.vm.dex2oat-threads">
                 <option value="">自动（根据核心数）</option>
                 <option value="1">1 个线程</option>
                 <option value="2">2 个线程</option>
@@ -115,7 +117,8 @@
                 <option value="7">7 个线程</option>
                 <option value="8">8 个线程</option>
             </param>
-            <param name="image" desc="编译启动映像(image-dex2oat-threads)" value-sh="getprop dalvik.vm.image-dex2oat-threads">
+            <param name="image" desc="编译启动映像(image-dex2oat-threads)"
+                value-sh="getprop dalvik.vm.image-dex2oat-threads">
                 <option value="">自动（根据核心数）</option>
                 <option value="1">1 个线程</option>
                 <option value="2">2 个线程</option>

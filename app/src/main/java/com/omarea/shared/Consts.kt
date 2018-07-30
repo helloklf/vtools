@@ -7,12 +7,12 @@ import android.os.Environment
  */
 
 public object Consts {
-    val PACKAGE_NAME = "com.omarea.vtools"
+    const val PACKAGE_NAME = "com.omarea.vtools"
     public val SDCardDir = Environment.getExternalStorageDirectory().absolutePath
 
-    val BackUpDir = "/backups/apps/";
-    val AbsBackUpDir = SDCardDir + "/backups/apps/";
-    val FastChangerBase =
+    const val BackUpDir = "/backups/apps/";
+    val AbsBackUpDir = "$SDCardDir/backups/apps/";
+    const val FastChangerBase =
     //"chmod 0777 /sys/class/power_supply/usb/pd_active;" +
             "chmod 0777 /sys/class/power_supply/usb/pd_allowed;" +
                     //"echo 1 > /sys/class/power_supply/usb/pd_active;" +
@@ -27,7 +27,7 @@ public object Consts {
                     "echo 480 > /sys/class/power_supply/bms/temp_warm;" +
                     "chmod 0777 /sys/class/power_supply/battery/constant_charge_current_max;"
 
-    val MountSystemRW =
+    const val MountSystemRW =
             "busybox mount -o rw,remount /system\n" +
                     "busybox mount -f -o rw,remount /system\n" +
                     "mount -o rw,remount /system\n" +
@@ -35,7 +35,7 @@ public object Consts {
                     "mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
                     "busybox mount -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
                     "mount -o remount,rw /dev/block/bootdevice/by-name/system /system\n"
-    val MountSystemRW2 =
+    const val MountSystemRW2 =
             "/cache/busybox mount -o rw,remount /system\n" +
                     "/cache/busybox mount -f -o rw,remount /system\n" +
                     "mount -o rw,remount /system\n" +
@@ -45,23 +45,23 @@ public object Consts {
                     "/cache/busybox mount -f -o rw,remount /system/xbin\n" +
                     "mount -o rw,remount /system/xbin\n"
 
-    val POWER_CFG_PATH = "/data/powercfg.sh"
-    val POWER_CFG_BASE = "/data/powercfg-base.sh"
+    const val POWER_CFG_PATH = "/data/powercfg.sh"
+    const val POWER_CFG_BASE = "/data/powercfg-base.sh"
 
-    val ExecuteConfig = "sh ${POWER_CFG_BASE};\n"
-    val ToggleMode = "sh $POWER_CFG_PATH %s;\n"
+    const val ExecuteConfig = "sh ${POWER_CFG_BASE};\n"
+    const val ToggleMode = "sh $POWER_CFG_PATH %s;\n"
 
-    val DisableSELinux = "setenforce 0;\n"
-    val ResumeSELinux = "setenforce 1;\n"
+    const val DisableSELinux = "setenforce 0;\n"
+    const val ResumeSELinux = "setenforce 1;\n"
 
-    val DeleteLockPwd = "rm -f /data/system/*.key;rm -f /data/system/locksettings.db*;reboot;"
+    const val DeleteLockPwd = "rm -f /data/system/*.key;rm -f /data/system/locksettings.db*;reboot;"
 
-    val DisableChanger = "if [ -f '/sys/class/power_supply/battery/battery_charging_enabled' ]; then echo 0 > /sys/class/power_supply/battery/battery_charging_enabled; else echo 1 > /sys/class/power_supply/battery/input_suspend; fi;setprop vtools.bp 1;\n"
-    val ResumeChanger = "if [ -f '/sys/class/power_supply/battery/battery_charging_enabled' ]; then echo 1 > /sys/class/power_supply/battery/battery_charging_enabled; else echo 0 > /sys/class/power_supply/battery/input_suspend; fi;setprop vtools.bp 0;\n"
-    val DeleteBatteryHistory = "rm -f /data/system/batterystats-checkin.bin;rm -f /data/system/batterystats-daily.xml;rm -f /data/system/batterystats.bin;sync;sleep 2; reboot;";
-    val Reboot = "sync;sleep 2;reboot\n"
+    const val DisableChanger = "if [ -f '/sys/class/power_supply/battery/battery_charging_enabled' ]; then echo 0 > /sys/class/power_supply/battery/battery_charging_enabled; else echo 1 > /sys/class/power_supply/battery/input_suspend; fi;setprop vtools.bp 1;\n"
+    const val ResumeChanger = "if [ -f '/sys/class/power_supply/battery/battery_charging_enabled' ]; then echo 1 > /sys/class/power_supply/battery/battery_charging_enabled; else echo 0 > /sys/class/power_supply/battery/input_suspend; fi;setprop vtools.bp 0;\n"
+    const val DeleteBatteryHistory = "rm -f /data/system/batterystats-checkin.bin;rm -f /data/system/batterystats-daily.xml;rm -f /data/system/batterystats.bin;sync;sleep 2; reboot;";
+    const val Reboot = "sync;sleep 2;reboot\n"
 
-    val RMThermal =
+    const val RMThermal =
             "cp /system/vendor/bin/thermal-engine /system/vendor/bin/thermal-engine.bak\n" +
                     "rm -f /system/vendor/bin/thermal-engine\n" +
 
@@ -74,7 +74,7 @@ public object Consts {
                     "cp /system/vendor/lib/libthermalclient.so /system/vendor/lib/libthermalclient.so.bak\n" +
                     "rm -f /system/vendor/lib/libthermalclient.so\n"
 
-    val ResetThermal =
+    const val ResetThermal =
             "cp /system/vendor/bin/thermal-engine.bak /system/vendor/bin/thermal-engine\n" +
                     "rm -f /system/vendor/bin/thermal-engine.bak\n" +
 
@@ -87,7 +87,7 @@ public object Consts {
                     "cp /system/vendor/lib/libthermalclient.so.bak /system/vendor/lib/libthermalclient.so\n" +
                     "rm -f /system/vendor/lib/libthermalclient.so.bak\n"
 
-    val isRootUser = "if [[ `id -u 2>&1` = '0' ]]; then\n" +
+    const val isRootUser = "if [[ `id -u 2>&1` = '0' ]]; then\n" +
             "\techo 'root';\n" +
             "elif [[ `\$UID` = '0' ]]; then\n" +
             "\techo 'root';\n" +

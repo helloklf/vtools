@@ -140,7 +140,7 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
         }
 
         public fun isTmpfs(dir: String): Boolean {
-            return SysUtils.executeCommandWithOutput(false, " df | grep tmpfs | grep \"$dir\"").trim().length > 0
+            return SysUtils.executeCommandWithOutput(false, " df | grep tmpfs | grep \"$dir\"").trim().isNotEmpty()
         }
     }
 }

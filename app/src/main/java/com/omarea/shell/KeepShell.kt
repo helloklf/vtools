@@ -113,7 +113,7 @@ class KeepShell(private var context: Context?) : ShellEvents() {
                 } else if (cmd != null) {
                     out!!.write(cmd)
                     out!!.write("\n\n")
-                    if (cmdsCache.length > 0) {
+                    if (cmdsCache.isNotEmpty()) {
                         out!!.write(cmdsCache.toString())
                         cmdsCache = StringBuilder()
                     }

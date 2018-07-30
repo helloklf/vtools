@@ -170,19 +170,17 @@ class FloatVitualTouchBar// 获取应用的Context
     init {
         sharedPreferences = context.getSharedPreferences(SpfConfig.KEY_EVENT_ONTHER_CONFIG_SPF, Context.MODE_PRIVATE)
         reversalLayout = sharedPreferences!!.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_MAP, false)
-        sharedPreferences!!.registerOnSharedPreferenceChangeListener(object : SharedPreferences.OnSharedPreferenceChangeListener {
-            override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-                if (key == SpfConfig.CONFIG_SPF_TOUCH_BAR_MAP) {
-                    reversalLayout = sharedPreferences!!.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_MAP, false)
-                } else if (key == SpfConfig.CONFIG_SPF_TOUCH_BAR) {
-                    if (!sharedPreferences!!.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR, false)) {
-                        hidePopupWindow()
-                    } else {
-                        showPopupWindow()
-                    }
+        sharedPreferences!!.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
+            if (key == SpfConfig.CONFIG_SPF_TOUCH_BAR_MAP) {
+                reversalLayout = sharedPreferences!!.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_MAP, false)
+            } else if (key == SpfConfig.CONFIG_SPF_TOUCH_BAR) {
+                if (!sharedPreferences!!.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR, false)) {
+                    hidePopupWindow()
+                } else {
+                    showPopupWindow()
                 }
             }
-        })
+        }
         if (!sharedPreferences!!.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR, false)) {
             hidePopupWindow()
         } else {

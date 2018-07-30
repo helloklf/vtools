@@ -58,7 +58,7 @@ class FragmentSwap : Fragment() {
         }
         list.add(thr)
 
-        for (i in 1..rows.size - 1) {
+        for (i in 1 until rows.size) {
             val tr = LinkedHashMap<String, String>()
             val params = rows[i].split(" ").toMutableList()
             tr.put("path", params[0])
@@ -75,7 +75,7 @@ class FragmentSwap : Fragment() {
         }
 
         val swappiness = KernelProrp.getProp("/proc/sys/vm/swappiness")
-        swap_swappiness_display.text = "Swappiness: " + swappiness
+        swap_swappiness_display.text = "Swappiness: $swappiness"
         try {
             txt_swap_swappiness.progress = swappiness.toInt()
         } catch (ex: Exception) {

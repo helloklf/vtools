@@ -21,12 +21,12 @@
             android:orientation="vertical">
 
             <android.support.v7.widget.CardView
-                android:layout_marginTop="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_marginTop="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -86,9 +86,9 @@
                 android:id="@+id/app_details_version"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp">
+                android:layout_marginRight="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -217,9 +217,9 @@
                 android:id="@+id/app_details_auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp">
+                android:layout_marginRight="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -298,9 +298,8 @@
                                 android:layout_gravity="center_vertical"
                                 android:layout_marginRight="10dp"
                                 android:layout_weight="1"
-                                android:progress="128"
                                 android:max="255"
-                                android:min="0" />
+                                android:progress="128" />
                         </LinearLayout>
                     </LinearLayout>
 
@@ -321,9 +320,9 @@
                 android:id="@+id/app_details_permission"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp">
+                android:layout_marginRight="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -416,9 +415,9 @@
                 android:id="@+id/app_details_assist"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp">
+                android:layout_marginRight="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -498,38 +497,39 @@
                 android:id="@+id/app_details_vaddins_notinstall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp">
+                android:layout_marginRight="16dp">
 
                 <TextView
-                    android:padding="8dp"
-                    android:text="高级设定组件未安装，请先点击此处安装！"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:text="高级设定组件未安装，请先点击此处安装！" />
             </android.support.v7.widget.CardView>
+
             <android.support.v7.widget.CardView
-                android:visibility="gone"
                 android:id="@+id/app_details_vaddins_notactive"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp">
+                android:visibility="gone">
 
                 <TextView
-                    android:padding="8dp"
-                    android:text="使用高级设定，请在Xposed管理器中勾选本应用并重启手机！"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:text="使用高级设定，请在Xposed管理器中勾选本应用并重启手机！" />
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp">
+                android:layout_marginRight="16dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -679,9 +679,9 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp"
                 android:visibility="gone">
 
                 <LinearLayout

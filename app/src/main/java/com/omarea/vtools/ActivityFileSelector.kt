@@ -26,7 +26,7 @@ class ActivityFileSelector : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_file_selector)
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         if (intent.extras.containsKey("extension")) {
             extension = intent.extras.getString("extension")

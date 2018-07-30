@@ -1,5 +1,6 @@
 package com.omarea.vtools
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
@@ -16,7 +17,7 @@ import java.util.*
 class CpuFragment : Fragment() {
     private var myHandler = Handler()
     private var currentContext: Context? = null
-    private var timer:Timer? = null
+    private var timer: Timer? = null
 
     // Runtime.getRuntime().availableProcessors()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -38,11 +39,11 @@ class CpuFragment : Fragment() {
 
         stopTimer()
         timer = Timer()
-        timer!!.schedule(object: TimerTask() {
+        timer!!.schedule(object : TimerTask() {
             override fun run() {
                 updateInfo()
             }
-        },0, 1000)
+        }, 0, 1000)
     }
 
     /*
@@ -72,18 +73,20 @@ class CpuFragment : Fragment() {
     cpu7 7780 880 2128 312684 58 0 49 0 0 0
     */
     private var coreCount = -1;
+
+    @SuppressLint("SetTextI18n")
     private fun updateInfo() {
         if (coreCount < 1) {
             coreCount = CpuFrequencyUtils.getCoreCount()
         }
         val cores = ArrayList<CpuCoreInfo>()
         val loads = CpuFrequencyUtils.getCpuLoad()
-        for (coreIndex in 0..coreCount - 1) {
+        for (coreIndex in 0 until coreCount) {
             val core = CpuCoreInfo()
             core.maxFreq = CpuFrequencyUtils.getCurrentMaxFrequency("cpu" + coreIndex)
-            core.minFreq = CpuFrequencyUtils.getCurrentMinFrequency("cpu" + coreIndex)
-            core.currentFreq = CpuFrequencyUtils.getCurrentFrequency("cpu" + coreIndex)
-            core.cpuGovernor = CpuFrequencyUtils.getCurrentScalingGovernor("cpu" + coreIndex)
+            core.minFreq = CpuFrequencyUtils.getCurrentMinFrequency("cpu$coreIndex")
+            core.currentFreq = CpuFrequencyUtils.getCurrentFrequency("cpu$coreIndex")
+            core.cpuGovernor = CpuFrequencyUtils.getCurrentScalingGovernor("cpu$coreIndex")
             if (loads.containsKey(coreIndex)) {
                 core.loadRatio = loads.get(coreIndex)!!
             }
@@ -91,7 +94,7 @@ class CpuFragment : Fragment() {
         }
         myHandler.post {
             try {
-                cpu_core_count.text = "核心数：" + coreCount
+                cpu_core_count.text = "核心数：$coreCount"
                 if (loads.containsKey(-1)) {
                     cpu_core_total_load.text = "负载：" + loads.get(-1)!!.toInt().toString() + "%"
                 }

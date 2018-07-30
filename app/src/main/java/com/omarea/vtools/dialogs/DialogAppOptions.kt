@@ -102,7 +102,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
 
     protected fun checkRestoreData(): Boolean {
         val r = SysUtils.executeCommandWithOutput(false, "cd $userdataPath/${Consts.PACKAGE_NAME};echo `toybox ls -ld|cut -f3 -d ' '`; echo `ls -ld|cut -f3 -d ' '`;")
-        return r != null && r.trim().length > 0
+        return r != null && r.trim().isNotEmpty()
     }
 
     protected fun execShell(sb: StringBuilder) {
@@ -115,7 +115,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         alert.show()
     }
 
-    class ProgressHandler(dialog: View, protected var alert: AlertDialog, protected var handler: Handler) : Handler() {
+    open class ProgressHandler(dialog: View, protected var alert: AlertDialog, protected var handler: Handler) : Handler() {
         protected var textView: TextView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
         var progressBar: ProgressBar = (dialog.findViewById(R.id.dialog_app_details_progress) as ProgressBar)
 
@@ -134,7 +134,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                             alert.hide()
                         }, 2000)
                         handler.handleMessage(handler.obtainMessage(2))
-                    } else if (Regex("^\\[.*\\]\$").matches(obj)) {
+                    } else if (Regex("^\\[.*]\$").matches(obj)) {
                         progressBar.progress = msg.what
                         val txt = obj
                                 .replace("[copy ", "[复制 ")

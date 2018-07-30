@@ -22,14 +22,14 @@ class QQStyleUnit(var context: Context) {
                 })
                 .setNegativeButton("确定", { _, _ ->
                     when (index) {
-                        0 -> DisableQQStyle()
-                        1 -> RestoreQQStyle()
+                        0 -> disableQQStyle()
+                        1 -> restoreQQStyle()
                     }
                 })
                 .create().show()
     }
 
-    private fun DisableQQStyle(): Boolean {
+    private fun disableQQStyle(): Boolean {
         val commands = object : ArrayList<String>() {
             init {
                 add("rm -rf /storage/emulated/0/tencent/MobileQQ/.font_info\n" +
@@ -55,7 +55,7 @@ class QQStyleUnit(var context: Context) {
         return SuDo.execCmdSync(commands)
     }
 
-    private fun RestoreQQStyle(): Boolean {
+    private fun restoreQQStyle(): Boolean {
         val commands = object : ArrayList<String>() {
             init {
                 add("rm -rf /storage/emulated/0/tencent/MobileQQ/font_info\n" +

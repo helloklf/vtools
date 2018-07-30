@@ -15,7 +15,7 @@ import java.util.*
  */
 
 object SwitchConfigReader {
-    private val ASSETS_FILE = "file:///android_asset/"
+    private const val ASSETS_FILE = "file:///android_asset/"
 
     private fun getConfig(context: Context): InputStream? {
         try {
@@ -112,7 +112,7 @@ object SwitchConfigReader {
                         if (action.getState == null) {
                             action.getState = ""
                         } else {
-                            val shellResult =  KeepShellSync.doCmdSync(action.getState)
+                            val shellResult = KeepShellSync.doCmdSync(action.getState)
                             action.selected = shellResult != "error" && (shellResult == "1" || shellResult.toLowerCase() == "true")
                         }
                         if (action.setState == null) {

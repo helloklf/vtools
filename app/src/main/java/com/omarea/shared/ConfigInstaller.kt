@@ -9,10 +9,10 @@ import java.nio.charset.Charset
 class ConfigInstaller {
     fun installPowerConfig(context: Context, afterCmds: String, biCore: Boolean = false) {
         try {
-            val powercfg = parseText(context, Platform().GetCPUName() + (if (biCore) "/powercfg-bigcore.sh" else "/powercfg-default.sh"))
-            val powercfgBase = parseText(context, Platform().GetCPUName() + (if (biCore) "/powercfg-base-bigcore.sh" else "/powercfg-base-default.sh"))
-            FileWrite.WritePrivateFile(powercfg, "powercfg.sh", context)
-            FileWrite.WritePrivateFile(powercfgBase, "powercfg-base.sh", context)
+            val powercfg = parseText(context, Platform().getCPUName() + (if (biCore) "/powercfg-bigcore.sh" else "/powercfg-default.sh"))
+            val powercfgBase = parseText(context, Platform().getCPUName() + (if (biCore) "/powercfg-base-bigcore.sh" else "/powercfg-base-default.sh"))
+            FileWrite.writePrivateFile(powercfg, "powercfg.sh", context)
+            FileWrite.writePrivateFile(powercfgBase, "powercfg-base.sh", context)
             val cmd = StringBuilder()
                     .append("cp ${FileWrite.getPrivateFilePath(context, "powercfg.sh")} ${Consts.POWER_CFG_PATH};")
                     .append("cp ${FileWrite.getPrivateFilePath(context, "powercfg-base.sh")} ${Consts.POWER_CFG_BASE};")
@@ -30,7 +30,7 @@ class ConfigInstaller {
 
     fun installPowerConfigByText(context: Context, powercfg: String): Boolean {
         try {
-            FileWrite.WritePrivateFile(powercfg.replace("\r", "").toByteArray(Charset.forName("UTF-8")), "powercfg.sh", context)
+            FileWrite.writePrivateFile(powercfg.replace("\r", "").toByteArray(Charset.forName("UTF-8")), "powercfg.sh", context)
             val cmd = StringBuilder()
                     .append("cp ${FileWrite.getPrivateFilePath(context, "powercfg.sh")} ${Consts.POWER_CFG_PATH};")
                     .append("chmod 0777 ${Consts.POWER_CFG_PATH};")
@@ -67,12 +67,12 @@ class ConfigInstaller {
         try {
             val cmd = StringBuilder()
             cmd.append("if [[ -f ${Consts.POWER_CFG_PATH} ]]; then \n")
-                cmd.append("chmod 0775 ${Consts.POWER_CFG_PATH};\n")
-                cmd.append("busybox sed -i 's/^M//g' ${Consts.POWER_CFG_PATH};\n")
+            cmd.append("chmod 0775 ${Consts.POWER_CFG_PATH};\n")
+            cmd.append("busybox sed -i 's/^M//g' ${Consts.POWER_CFG_PATH};\n")
             cmd.append("fi;\n")
             cmd.append("if [[ -f ${Consts.POWER_CFG_BASE} ]]; then \n")
-                cmd.append("chmod 0775 ${Consts.POWER_CFG_BASE};\n")
-                cmd.append("busybox sed -i 's/^M//g' ${Consts.POWER_CFG_BASE};\n")
+            cmd.append("chmod 0775 ${Consts.POWER_CFG_BASE};\n")
+            cmd.append("busybox sed -i 's/^M//g' ${Consts.POWER_CFG_BASE};\n")
             cmd.append("fi;\n")
             KeepShellSync.doCmdSync(cmd.toString())
         } catch (ex: Exception) {

@@ -111,7 +111,7 @@ class BatteryUnit {
                     }
                 }
 
-                if (io.length > 0 && mahLength != 0) {
+                if (io.isNotEmpty() && mahLength != 0) {
                     val `val` = if (mahLength < 5) Integer.parseInt(io) else (Integer.parseInt(io) / Math.pow(10.0, (mahLength - 4).toDouble())).toInt()
                     stringBuilder.insert(0, "放电速度 = " + `val` + "mA\n")
                 }
@@ -180,7 +180,7 @@ class BatteryUnit {
                     return "? mAh"
                 }
                 val txt = KernelProrp.getProp(path)
-                if (txt.trim { it <= ' ' }.length == 0)
+                if (txt.trim { it <= ' ' }.isEmpty())
                     return "? mAh"
                 return if (txt.length > 4) txt.substring(0, 4) + " mAh" else "$txt mAh"
             }
@@ -196,7 +196,7 @@ class BatteryUnit {
         var limit = KernelProrp.getProp("/sys/class/power_supply/battery/constant_charge_current_max")
         if (limit.length > 3) {
             limit = limit.substring(0, limit.length - 3) + "mA"
-        } else if (limit.length > 0) {
+        } else if (limit.isNotEmpty()) {
             try {
                 if (Integer.parseInt(limit) == 0) {
                     limit = "0"

@@ -32,7 +32,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
         return true
     }
 
-    class ProgressHandler(context: Context) : Handler() {
+    open class ProgressHandler(context: Context) : Handler() {
         protected var dialog: View
         protected var alert: android.app.AlertDialog
         protected var textView: TextView
@@ -52,7 +52,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                             alert.dismiss()
                             alert.hide()
                         }, 2000)
-                    } else if (Regex("^\\[.*\\]\$").matches(obj)) {
+                    } else if (Regex("^\\[.*]\$").matches(obj)) {
                         progressBar.progress = msg.what
                         val txt = obj
                                 .replace("[compile ", "[编译 ")

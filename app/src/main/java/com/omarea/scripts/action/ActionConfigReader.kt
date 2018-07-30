@@ -15,7 +15,7 @@ import java.util.*
  */
 
 object ActionConfigReader {
-    private val ASSETS_FILE = "file:///android_asset/"
+    private const val ASSETS_FILE = "file:///android_asset/"
 
     fun readActionConfigXml(context: Context, fileInputStream: InputStream): ArrayList<ActionInfo>? {
         try {

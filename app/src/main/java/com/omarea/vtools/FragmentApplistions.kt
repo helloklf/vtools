@@ -123,7 +123,7 @@ class FragmentApplistions : Fragment() {
                 .setMultiChoiceItems(apps.toTypedArray(), selected.toBooleanArray(), { dialog, which, isChecked ->
                     selected[which] = isChecked
                 })
-                .setPositiveButton(R.string.btn_confirm, { dialog, which ->
+                .setPositiveButton(R.string.btn_confirm) { dialog, which ->
                     val keys = all.keys.toList()
                     val cmds = StringBuffer()
                     val edit = spf.edit()
@@ -149,7 +149,7 @@ class FragmentApplistions : Fragment() {
                             }
                         }).start()
                     }
-                })
+                }
                 .create().show()
     }
 

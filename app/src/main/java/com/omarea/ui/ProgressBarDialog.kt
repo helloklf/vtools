@@ -20,7 +20,7 @@ open class ProgressBarDialog(private var context: Context) {
     private var alert: AlertDialog? = null
     private var textView: TextView? = null
 
-    class defaultHandler(private var alertDialog: AlertDialog?) : Handler() {
+    class DefaultHandler(private var alertDialog: AlertDialog?) : Handler() {
         override fun handleMessage(msg: Message?) {
             super.handleMessage(msg)
 
@@ -51,7 +51,7 @@ open class ProgressBarDialog(private var context: Context) {
         textView.text = context.getString(R.string.execute_wait)
         alert = AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
         if (handler == null) {
-            AsynSuShellUnit(defaultHandler(alert)).exec(cmd).waitFor()
+            AsynSuShellUnit(DefaultHandler(alert)).exec(cmd).waitFor()
         } else {
             AsynSuShellUnit(handler).exec(cmd).waitFor()
         }

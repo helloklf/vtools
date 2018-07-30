@@ -48,7 +48,7 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_accessibility_key_event_settings)
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         setSwitchClick()
         key_event_state.setOnClickListener {
@@ -108,8 +108,8 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
             }
             click.setSelection(getIndex(listItem, spf.getInt(propClick, Int.MIN_VALUE)))
             longClick.setSelection(getIndex(listItem, spf.getInt(propLongClick, Int.MIN_VALUE)))
-            click.onItemSelectedListener = onItemSelected(click, spf)
-            longClick.onItemSelectedListener = onItemSelected(longClick, spf)
+            click.onItemSelectedListener = OnItemSelected(click, spf)
+            longClick.onItemSelectedListener = OnItemSelected(longClick, spf)
         }
 
         key_event_vitual_touch_bar.isChecked = spfOther.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR, false)
@@ -144,7 +144,7 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
         }
     }
 
-    private class onItemSelected(private var spinner: Spinner, private var spf: SharedPreferences) : AdapterView.OnItemSelectedListener {
+    private class OnItemSelected(private var spinner: Spinner, private var spf: SharedPreferences) : AdapterView.OnItemSelectedListener {
         override fun onNothingSelected(parent: AdapterView<*>?) {
             //
         }
@@ -194,7 +194,7 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
     }
 
     private fun getIndex(items: ArrayList<HashMap<String, Any>>, value: Int): Int {
-        for (index in 0..items.size - 1) {
+        for (index in 0 until items.size) {
             if (items[index].get("key") == value) return index
         }
         return 0

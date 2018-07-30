@@ -20,7 +20,7 @@ class CrashHandler constructor() : Thread.UncaughtExceptionHandler {
     override fun uncaughtException(thread: Thread, ex: Throwable) {
         Log.e("vtools-Exception", ex.message)
         try {
-            if (mContext!= null) {
+            if (mContext != null) {
                 NotifyHelper(mContext!!, true).hideNotify()
             }
         } catch (ex: Exception) {

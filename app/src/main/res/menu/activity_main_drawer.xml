@@ -62,8 +62,8 @@
             <item
                 android:id="@+id/nav_battery"
                 android:icon="@drawable/battery"
-                android:title="@string/menu_battery" />
-            android:visible="false" />
+                android:title="@string/menu_battery"
+                android:visible="false" />
         </menu>
     </item>
     <!--<group android:checkableBehavior="single">

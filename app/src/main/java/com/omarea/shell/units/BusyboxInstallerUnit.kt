@@ -8,7 +8,7 @@ import com.omarea.shell.KeepShellSync
 
 class BusyboxInstallerUnit {
     //安装Shell工具
-    fun InstallShellTools() {
+    fun installShellTools() {
         Thread(Runnable {
             KeepShellSync.doCmdSync("busybox --install /system/xbin\n")
         }).start()

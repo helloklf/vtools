@@ -17,6 +17,7 @@
             android:layout_height="0dp"
             android:layout_gravity="fill_vertical"
             android:layout_weight="1">
+
             <android.support.v4.view.ViewPager
                 android:id="@+id/home_viewpager"
                 android:layout_width="match_parent"
@@ -42,10 +43,10 @@
                     android:layout_marginLeft="5dp"
                     android:layout_span="2"
                     android:background="#22888888"
-                    android:paddingTop="20dp"
                     android:paddingBottom="20dp"
                     android:paddingLeft="15dp"
                     android:paddingRight="15dp"
+                    android:paddingTop="20dp"
                     android:textSize="12dp" />
 
                 <TextView
@@ -57,10 +58,10 @@
                     android:layout_marginRight="5dp"
                     android:layout_span="2"
                     android:background="#22888888"
-                    android:paddingTop="20dp"
                     android:paddingBottom="20dp"
                     android:paddingLeft="15dp"
                     android:paddingRight="15dp"
+                    android:paddingTop="20dp"
                     android:textSize="12dp" />
             </TableRow>
 
@@ -74,24 +75,24 @@
                     android:layout_marginLeft="4dp"
                     android:background="@color/color_powersave"
                     android:text="省电"
-                    android:textStyle="bold"
-                    android:textColor="#66ffffff" />
+                    android:textColor="#66ffffff"
+                    android:textStyle="bold" />
 
                 <Button
                     android:id="@+id/btn_defaultmode"
                     android:layout_marginLeft="4dp"
                     android:background="@color/color_balance"
                     android:text="均衡"
-                    android:textStyle="bold"
-                    android:textColor="#66ffffff" />
+                    android:textColor="#66ffffff"
+                    android:textStyle="bold" />
 
                 <Button
                     android:id="@+id/btn_gamemode"
                     android:layout_marginLeft="4dp"
                     android:background="@color/color_perf"
                     android:text="性能"
-                    android:textStyle="bold"
-                    android:textColor="#66ffffff"/>
+                    android:textColor="#66ffffff"
+                    android:textStyle="bold" />
 
                 <Button
                     android:id="@+id/btn_fastmode"
@@ -99,8 +100,8 @@
                     android:layout_marginRight="4dp"
                     android:background="@color/color_fast"
                     android:text="极速"
-                    android:textStyle="bold"
-                    android:textColor="#66ffffff" />
+                    android:textColor="#66ffffff"
+                    android:textStyle="bold" />
             </TableRow>
         </TableLayout>
     </LinearLayout>

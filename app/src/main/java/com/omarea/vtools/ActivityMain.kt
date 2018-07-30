@@ -80,13 +80,13 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
 
 
-            val toolbar = findViewById(R.id.toolbar) as Toolbar
+            val toolbar = findViewById<Toolbar>(R.id.toolbar)
             setSupportActionBar(toolbar)
             val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
             drawer_layout.addDrawerListener(toggle)
             toggle.syncState()
 
-            val navigationView = findViewById(R.id.nav_view) as NavigationView
+            val navigationView = findViewById<NavigationView>(R.id.nav_view)
             navigationView.setNavigationItemSelectedListener(this)
             navigationView.menu.findItem(R.id.nav_battery).isEnabled = BatteryUnit().isSupport
 
@@ -100,8 +100,8 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     fun checkUseState() {
         if (!(checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(Manifest.permission.PACKAGE_USAGE_STATS))) {
-            val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-            startActivity(intent);
+            val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
+            startActivity(intent)
         }
     }
 
@@ -136,7 +136,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     //返回键事件
     override fun onBackPressed() {
         try {
-            val drawer = findViewById(R.id.drawer_layout) as DrawerLayout
+            val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
             when {
                 drawer.isDrawerOpen(GravityCompat.START) -> drawer.closeDrawer(GravityCompat.START)
                 supportFragmentManager.backStackEntryCount > 0 -> {
@@ -150,10 +150,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } catch (ex: Exception) {
             ex.stackTrace
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -196,14 +192,14 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_qq -> {
                 val key = "6ffXO4eTZVN0eeKmp-2XClxizwIc7UIu" //""e-XL2In7CgIpeK_sG75s-vAiu7n5DnlS"
                 val intent = Intent()
-                intent.setData(Uri.parse("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26k%3D" + key));
+                intent.data = Uri.parse("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26k%3D" + key)
                 // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面    //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 try {
-                    startActivity(intent);
-                    return true;
+                    startActivity(intent)
+                    return true
                 } catch (e: Exception) {
                     // 未安装手Q或安装的版本不支持
-                    return false;
+                    return false
                 }
             }
             R.id.nav_share -> {

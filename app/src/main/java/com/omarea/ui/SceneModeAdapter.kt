@@ -86,7 +86,7 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
     private fun keywordHightLight(str: String): SpannableString {
         val spannableString = SpannableString(str)
         var index = 0
-        if (keywords.length == 0) {
+        if (keywords.isEmpty()) {
             return spannableString;
         }
         index = str.toLowerCase().indexOf(keywords.toLowerCase());

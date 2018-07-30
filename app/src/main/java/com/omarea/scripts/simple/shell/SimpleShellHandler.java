@@ -109,7 +109,7 @@ public class SimpleShellHandler extends ShellHandler {
             this.textView.post(new Runnable() {
                 @Override
                 public void run() {
-                    textView.append((CharSequence) msg);
+                    textView.append(msg);
                 }
             });
         }

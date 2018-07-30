@@ -255,8 +255,8 @@
                                         android:layout_gravity="center"
                                         android:layout_marginLeft="20dp"
                                         android:background="@android:color/transparent"
-                                        android:textColor="@color/colorPrimary"
-                                        android:text="保守" />
+                                        android:text="保守"
+                                        android:textColor="@color/colorPrimary" />
 
                                     <Button
                                         android:id="@+id/config_cfg_select_1"
@@ -265,25 +265,25 @@
                                         android:layout_gravity="center"
                                         android:layout_marginLeft="20dp"
                                         android:background="@android:color/transparent"
-                                        android:textColor="@color/colorPrimary"
-                                        android:text="激进" />
+                                        android:text="激进"
+                                        android:textColor="@color/colorPrimary" />
                                 </LinearLayout>
                             </LinearLayout>
 
                             <LinearLayout
-                                android:layout_marginTop="20dp"
-                                android:gravity="center_vertical"
                                 android:id="@+id/config_cfg_customer"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="20dp"
+                                android:gravity="center_vertical"
                                 android:orientation="horizontal">
 
                                 <LinearLayout
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:gravity="center_vertical"
                                     android:layout_gravity="center_vertical"
                                     android:layout_weight="1"
+                                    android:gravity="center_vertical"
                                     android:orientation="vertical">
 
                                     <TextView
@@ -306,8 +306,8 @@
                                 <LinearLayout
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:gravity="center_vertical"
                                     android:layout_gravity="center_vertical"
+                                    android:gravity="center_vertical"
                                     android:orientation="vertical">
 
                                     <Button
@@ -327,8 +327,8 @@
                                         android:layout_gravity="center"
                                         android:layout_marginLeft="20dp"
                                         android:background="@android:color/transparent"
-                                        android:textColor="@color/colorPrimary"
-                                        android:text="在线" />
+                                        android:text="在线"
+                                        android:textColor="@color/colorPrimary" />
                                 </LinearLayout>
                             </LinearLayout>
 
@@ -381,18 +381,18 @@
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_vertical"
+                                    android:layout_weight="1"
                                     android:paddingLeft="8dp"
                                     android:paddingRight="8dp"
-                                    android:layout_weight="1"
                                     android:text="默认模式" />
 
                                 <Spinner
                                     android:id="@+id/first_mode"
-                                    android:paddingRight="0dp"
                                     android:layout_width="110dp"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_vertical|right"
-                                    android:entries="@array/powercfg_modes" />
+                                    android:entries="@array/powercfg_modes"
+                                    android:paddingRight="0dp" />
                             </LinearLayout>
 
                             <TextView
@@ -405,71 +405,72 @@
                                 android:text="没有单独设置模式的应用，将默认使用此模式" />
 
                             <android.support.v7.widget.CardView
-                                android:layout_marginTop="30dp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="20dp"
                                 android:layout_marginLeft="8dp"
                                 android:layout_marginRight="8dp"
-                                android:layout_marginBottom="20dp"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content">
+                                android:layout_marginTop="30dp">
 
                                 <LinearLayout
-                                    android:padding="8dp"
-                                    android:orientation="vertical"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content">
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:padding="8dp">
 
                                     <TextView
                                         style="@style/textSmall"
-                                        android:textColor="@color/colorPrimary"
-                                        android:text="改动说明："
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
                                         android:layout_marginBottom="10dp"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content" />
+                                        android:text="改动说明："
+                                        android:textColor="@color/colorPrimary" />
 
                                     <TextView
-                                        android:text="原微工具箱中的锁屏优化选项，现已默认开启不再提供手动控制\n\n此外，相对于老版本，动态响应配置脚本位置有所变化，也不再需要手动放置，可直接在Scene里选择脚本即可自动安装\n\n另外，非常感谢yc对Scene适配，提供了更多机型的配置脚本文件，你也可以在本界面点击“在线”去安装"
                                         style="@style/textSmall"
                                         android:layout_width="match_parent"
-                                        android:layout_height="wrap_content" />
+                                        android:layout_height="wrap_content"
+                                        android:text="原微工具箱中的锁屏优化选项，现已默认开启不再提供手动控制\n\n此外，相对于老版本，动态响应配置脚本位置有所变化，也不再需要手动放置，可直接在Scene里选择脚本即可自动安装\n\n另外，非常感谢yc对Scene适配，提供了更多机型的配置脚本文件，你也可以在本界面点击“在线”去安装" />
+
                                     <TextView
-                                        android:textColor="@color/colorPrimary"
+                                        style="@style/textSmall"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
                                         android:layout_marginTop="10dp"
                                         android:text="长按应用可快速选择配置模式哦！"
-                                        style="@style/textSmall"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content" />
+                                        android:textColor="@color/colorPrimary" />
 
                                 </LinearLayout>
                             </android.support.v7.widget.CardView>
 
                             <android.support.v7.widget.CardView
-                                android:layout_marginTop="10dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="20dp"
                                 android:layout_marginLeft="8dp"
                                 android:layout_marginRight="8dp"
-                                android:layout_marginBottom="20dp"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
+                                android:layout_marginTop="10dp">
 
                                 <LinearLayout
-                                    android:padding="8dp"
-                                    android:orientation="vertical"
                                     android:layout_width="match_parent"
-                                    android:layout_height="wrap_content">
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:padding="8dp">
 
                                     <TextView
                                         android:id="@+id/config_adv"
                                         style="@style/textTitle"
-                                        android:textColor="@color/colorPrimary"
-                                        android:text="专家选项 >>"
-                                        android:layout_marginBottom="10dp"
                                         android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content" />
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="10dp"
+                                        android:text="专家选项 >>"
+                                        android:textColor="@color/colorPrimary" />
 
                                     <TextView
-                                        android:text="改变“场景模式”辅助功能基本运作逻辑的选项。一般保持默认就好了！！！"
                                         style="@style/textSmall"
                                         android:layout_width="match_parent"
-                                        android:layout_height="wrap_content" />
+                                        android:layout_height="wrap_content"
+                                        android:text="改变“场景模式”辅助功能基本运作逻辑的选项。一般保持默认就好了！！！" />
                                 </LinearLayout>
                             </android.support.v7.widget.CardView>
                         </LinearLayout>

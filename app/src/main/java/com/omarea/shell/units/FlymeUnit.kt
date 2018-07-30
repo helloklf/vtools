@@ -9,7 +9,7 @@ import java.util.*
  */
 
 class FlymeUnit {
-    fun StaticBlur(): Boolean {
+    fun staticBlur(): Boolean {
         val commands = object : ArrayList<String>() {
             init {
                 add("setprop persist.sys.static_blur_mode true")

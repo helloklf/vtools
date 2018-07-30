@@ -29,33 +29,33 @@ class BackupRestoreUnit(var context: Context) {
     }
 
     //显示进度条
-    fun ShowProgressBar() {
+    fun showProgressBar() {
         myHandler.post {
             dialog.showDialog("正在执行操作...")
         }
     }
 
     //隐藏进度条
-    fun HideProgressBar() {
+    fun hideProgressBar() {
         myHandler.post {
             dialog.hideDialog()
         }
     }
 
     //显示文本消息
-    fun ShowMsg(msg: String, longMsg: Boolean) {
+    fun showMsg(msg: String, longMsg: Boolean) {
         myHandler.post {
             Toast.makeText(context, msg, if (longMsg) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show()
         }
     }
 
     //刷入Boot
-    fun FlashBoot(path: String) {
+    fun flashBoot(path: String) {
         FlashBootThread(path).start()
     }
 
     //显示弹窗提示
-    fun ShowDialogMsg(title: String, msg: String) {
+    fun showDialogMsg(title: String, msg: String) {
         myHandler.post {
             val builder = AlertDialog.Builder(context)
             builder.setTitle(title)
@@ -65,103 +65,103 @@ class BackupRestoreUnit(var context: Context) {
         }
     }
 
-    internal fun NoRoot() {
-        ShowDialogMsg("请检查ROOT权限", "请检查是否已ROOT手机，并允许本应用访问ROOT权限！")
+    internal fun noRoot() {
+        showDialogMsg("请检查ROOT权限", "请检查是否已ROOT手机，并允许本应用访问ROOT权限！")
     }
 
     internal inner class FlashBootThread(var path: String) : Thread() {
 
         override fun run() {
-            ShowMsg("即将刷入\n$path\n请勿操作手机！", true)
-            ShowProgressBar()
+            showMsg("即将刷入\n$path\n请勿操作手机！", true)
+            showProgressBar()
             try {
-                ShowProgressBar()
+                showProgressBar()
                 if (KeepShellSync.doCmdSync("dd if=\"$path\" of=/dev/block/bootdevice/by-name/boot") != "error") {
-                    ShowMsg("操作成功！", true)
+                    showMsg("操作成功！", true)
                 } else {
-                    ShowMsg("镜像刷入失败！", true)
+                    showMsg("镜像刷入失败！", true)
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
-                NoRoot()
+                noRoot()
                 android.os.Process.killProcess(android.os.Process.myPid())
             } catch (e: InterruptedException) {
                 e.printStackTrace()
             } finally {
-                HideProgressBar()
+                hideProgressBar()
             }
         }
     }
 
     //刷入Recovery
-    fun FlashRecovery(path: String) {
+    fun flashRecovery(path: String) {
         FlashRecoveryThread(path).start()
     }
 
     internal inner class FlashRecoveryThread(var path: String) : Thread() {
 
         override fun run() {
-            ShowMsg("即将刷入\n$path\n请勿操作手机！", true)
-            ShowProgressBar()
+            showMsg("即将刷入\n$path\n请勿操作手机！", true)
+            showProgressBar()
             try {
-                ShowProgressBar()
+                showProgressBar()
                 if (KeepShellSync.doCmdSync("dd if=\"$path\" of=/dev/block/bootdevice/by-name/recovery") != "error") {
-                    ShowMsg("操作成功！", true)
+                    showMsg("操作成功！", true)
                 } else {
-                    ShowMsg("镜像刷入失败", true)
+                    showMsg("镜像刷入失败", true)
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
-                NoRoot()
+                noRoot()
                 android.os.Process.killProcess(android.os.Process.myPid())
             } catch (e: InterruptedException) {
                 e.printStackTrace()
             } finally {
-                HideProgressBar()
+                hideProgressBar()
             }
         }
     }
 
 
-    fun SaveBoot() {
+    fun saveBoot() {
         SaveBootThread().start()
     }
 
     internal inner class SaveBootThread : Thread() {
         override fun run() {
             try {
-                ShowProgressBar()
+                showProgressBar()
                 if (KeepShellSync.doCmdSync("dd if=/dev/block/bootdevice/by-name/boot of=${Consts.SDCardDir}/boot.img;\n") != "error") {
-                    ShowMsg("Boot导出成功，保存在${Consts.SDCardDir}/boot.img ！", true)
+                    showMsg("Boot导出成功，保存在${Consts.SDCardDir}/boot.img ！", true)
                 } else {
-                    ShowMsg("Boot导出失败！", true)
+                    showMsg("Boot导出失败！", true)
                 }
             } catch (e: IOException) {
                 e.printStackTrace()
-                NoRoot()
+                noRoot()
             } catch (e: InterruptedException) {
-                ShowMsg("Boot导出失败！", true)
+                showMsg("Boot导出失败！", true)
                 e.printStackTrace()
             } finally {
-                HideProgressBar()
+                hideProgressBar()
             }
         }
     }
 
 
-    fun SaveRecovery() {
+    fun saveRecovery() {
         SaveRecoveryThread().start()
     }
 
     internal inner class SaveRecoveryThread : Thread() {
         override fun run() {
-            ShowProgressBar()
+            showProgressBar()
             if (KeepShellSync.doCmdSync("dd if=/dev/block/bootdevice/by-name/recovery of=${Consts.SDCardDir}/recovery.img\n") != "error") {
-                ShowMsg("Recovery导出成功，已保存为${Consts.SDCardDir}/recovery.img ！", true)
+                showMsg("Recovery导出成功，已保存为${Consts.SDCardDir}/recovery.img ！", true)
             } else {
-                ShowMsg("Recovery导出失败！", true)
+                showMsg("Recovery导出失败！", true)
             }
-            HideProgressBar()
+            hideProgressBar()
         }
     }
 

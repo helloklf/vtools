@@ -14,7 +14,7 @@ import java.io.IOException
 object FileWrite {
     var baseUrl = "${Consts.SDCardDir}/Android/data/${Consts.PACKAGE_NAME}/"
 
-    fun WriteFile(ass: AssetManager, file: String, hasExtName: Boolean): String? {
+    fun writeFile(ass: AssetManager, file: String, hasExtName: Boolean): String? {
         try {
             val inputStream = ass.open(file)
             val datas = ByteArray(2 * 1024 * 1024)
@@ -58,7 +58,7 @@ object FileWrite {
         return null
     }
 
-    fun WriteFile(assetManager: AssetManager, file: String, outName: String): String? {
+    fun writeFile(assetManager: AssetManager, file: String, outName: String): String? {
         try {
             val inputStream = assetManager.open(file)
             val datas = ByteArray(2 * 1024 * 1024)
@@ -96,7 +96,7 @@ object FileWrite {
         return getPrivateFileDir(context) + (if (outName.startsWith("/")) outName.substring(1, outName.length) else outName)
     }
 
-    fun WritePrivateFile(assetManager: AssetManager, file: String, outName: String, context: Context): String? {
+    fun writePrivateFile(assetManager: AssetManager, file: String, outName: String, context: Context): String? {
         try {
             val inputStream = assetManager.open(file)
             val datas = ByteArray(2 * 1024 * 1024)
@@ -126,7 +126,7 @@ object FileWrite {
         return null
     }
 
-    fun WritePrivateFile(bytes: ByteArray, outName: String, context: Context): Boolean {
+    fun writePrivateFile(bytes: ByteArray, outName: String, context: Context): Boolean {
         try {
             val dir = File(getPrivateFileDir(context))
             if (!dir.exists())

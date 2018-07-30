@@ -10,7 +10,7 @@ import com.omarea.shared.FileWrite
 
 class MiuiAddin(private var context: Context) : AddinBase(context) {
     fun hideSearch() {
-        FileWrite.WritePrivateFile(context.assets, "com.android.systemui", "com.android.systemui", context)
+        FileWrite.writePrivateFile(context.assets, "com.android.systemui", "com.android.systemui", context)
         command = StringBuilder()
                 .append(Consts.MountSystemRW)
                 .append("cp ${FileWrite.getPrivateFileDir(context)}/com.android.systemui /system/media/theme/default/com.android.systemui\n")

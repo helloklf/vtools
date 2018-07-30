@@ -44,7 +44,7 @@ class VToolsOnlineNative(var activity: ActivityAddinOnline, var webview: WebView
             if (newProgress != 100) {
                 if (processBarDialog == null)
                     processBarDialog = ProgressBarDialog(view.context)
-                processBarDialog!!.showDialog("正在加载页面 " + newProgress + "% ...")
+                processBarDialog!!.showDialog("正在加载页面 $newProgress% ...")
             } else if (newProgress == 100) {
                 if (processBarDialog != null)
                     processBarDialog!!.hideDialog()
@@ -126,7 +126,7 @@ class VToolsOnlineNative(var activity: ActivityAddinOnline, var webview: WebView
                 if (actionInfos == null || actionInfos.size == 0) {
                     callback(callback, false, "xmlConfig解析失败或其中不包含任何action信息！")
                 } else {
-                    val result = FileWrite.WritePrivateFile(configXml.toByteArray(Charset.defaultCharset()), "/online-addin/${addinID}.sh", activity)
+                    val result = FileWrite.writePrivateFile(configXml.toByteArray(Charset.defaultCharset()), "/online-addin/${addinID}.sh", activity)
                     if (!result) {
                         callback(callback, false, "抱歉，存储文件失败！")
                         return@post;
@@ -365,7 +365,7 @@ class VToolsOnlineNative(var activity: ActivityAddinOnline, var webview: WebView
         if (powercfg != null && !powercfg.isEmpty()) {
             val shell = powercfg.replace(Regex("\\r"), "")
             val outPath = FileWrite.getPrivateFilePath(activity, "powercfg\temp.xml")
-            FileWrite.WritePrivateFile(shell.toByteArray(Charset.defaultCharset()), "powercfg\temp.xml", activity)
+            FileWrite.writePrivateFile(shell.toByteArray(Charset.defaultCharset()), "powercfg\temp.xml", activity)
             myHandler.post {
                 KeepShellSync.doCmdSync("cp '$outPath' ${Consts.POWER_CFG_PATH}; chmod 0777 ${Consts.POWER_CFG_PATH};sync;")
             }

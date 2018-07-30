@@ -16,12 +16,12 @@
             android:orientation="vertical">
 
             <android.support.v7.widget.CardView
-                android:layout_marginTop="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp">
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp">
 
                 <TableLayout
                     android:layout_width="match_parent"
@@ -31,17 +31,16 @@
                     android:stretchColumns="0">
 
                     <TextView
+                        style="@style/textTitle"
                         android:layout_marginBottom="20dp"
-                        android:text="SWAP"
-                        style="@style/textTitle" />
+                        android:text="SWAP" />
 
                     <TableRow>
 
                         <SeekBar
                             android:id="@+id/txt_swap_size"
                             android:layout_height="30dp"
-                            android:max="8192"
-                            android:min="0" />
+                            android:max="4096" />
 
                         <TextView
                             android:id="@+id/txt_swap_size_display"
@@ -109,18 +108,18 @@
                         android:text="优先使用（如果有多个SWAP或ZRAM）" />
 
                     <TextView
+                        style="@style/textSmall"
                         android:layout_marginBottom="6dp"
-                        android:text="说明：SWAP即磁盘交换技术，在RAM不足时，将一部分数据暂时转移到磁盘中，从而缓解RAM的压力，对性能影响大。SWAP建议设为RAM大小的25%-50%。"
-                        style="@style/textSmall" />
+                        android:text="说明：SWAP即磁盘交换技术，在RAM不足时，将一部分数据暂时转移到磁盘中，从而缓解RAM的压力，对性能影响大。SWAP建议设为RAM大小的25%-50%。" />
                 </TableLayout>
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp">
+                android:layout_marginRight="16dp">
 
                 <TableLayout
                     android:id="@+id/swap_config_zram"
@@ -131,9 +130,9 @@
                     android:stretchColumns="0">
 
                     <TextView
+                        style="@style/textTitle"
                         android:layout_marginBottom="20dp"
-                        android:text="ZRAM"
-                        style="@style/textTitle" />
+                        android:text="ZRAM" />
 
                     <TableRow
                         android:focusable="true"
@@ -143,8 +142,7 @@
                             android:id="@+id/txt_zram_size"
                             android:layout_width="match_parent"
                             android:layout_height="30dp"
-                            android:max="2048"
-                            android:min="1" />
+                            android:max="2048" />
 
                         <TextView
                             android:id="@+id/txt_zram_size_display"
@@ -175,18 +173,18 @@
 
 
                     <TextView
+                        style="@style/textSmall"
                         android:layout_marginBottom="6dp"
-                        android:text="说明：ZRAM即内存压缩技术，通过压缩RAM中的数据减少其空间占用。对性能影响小，但后台能力提升不大。"
-                        style="@style/textSmall" />
+                        android:text="说明：ZRAM即内存压缩技术，通过压缩RAM中的数据减少其空间占用。对性能影响小，但后台能力提升不大。" />
                 </TableLayout>
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp">
+                android:layout_marginRight="16dp">
 
                 <TableLayout
                     android:layout_width="match_parent"
@@ -196,9 +194,9 @@
                     android:stretchColumns="0">
 
                     <TextView
+                        style="@style/textTitle"
                         android:layout_marginBottom="20dp"
-                        android:text="Swappiness"
-                        style="@style/textTitle" />
+                        android:text="Swappiness" />
 
                     <TableRow
                         android:focusable="true"
@@ -210,18 +208,18 @@
                             android:layout_height="30dp" />
 
                         <TextView
-                            android:textAlignment="center"
                             android:id="@+id/txt_zramstus_swappiness"
                             android:layout_width="60dp"
                             android:layout_gravity="center_vertical"
-                            android:text="100" />
+                            android:text="100"
+                            android:textAlignment="center" />
                     </TableRow>
 
                     <TextView
-                        android:layout_marginTop="10dp"
+                        style="@style/textSmall"
                         android:layout_marginBottom="6dp"
-                        android:text="说明：Swappiness决定ZRAM/SWAP使用积极程度，0表示尽量不用，100表示尽量使用"
-                        style="@style/textSmall" />
+                        android:layout_marginTop="10dp"
+                        android:text="说明：Swappiness决定ZRAM/SWAP使用积极程度，0表示尽量不用，100表示尽量使用" />
 
                 </TableLayout>
             </android.support.v7.widget.CardView>
@@ -229,9 +227,9 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp">
+                android:layout_marginRight="16dp">
 
                 <TableLayout
                     android:layout_width="match_parent"
@@ -241,15 +239,15 @@
                     android:stretchColumns="0">
 
                     <TextView
+                        style="@style/textTitle"
                         android:layout_marginBottom="20dp"
-                        android:text="Swaps"
-                        style="@style/textTitle" />
+                        android:text="Swaps" />
 
                     <TextView
                         android:id="@+id/swap_swappiness_display"
+                        style="@style/textSmall"
                         android:layout_marginBottom="20dp"
-                        android:text="Swappiness"
-                        style="@style/textSmall" />
+                        android:text="Swappiness" />
 
                     <ListView
                         android:id="@+id/list_swaps2"
@@ -263,9 +261,9 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp">
+                android:layout_marginRight="16dp">
 
                 <TableLayout
                     android:layout_width="match_parent"
@@ -275,9 +273,9 @@
                     android:stretchColumns="0">
 
                     <TextView
+                        style="@style/textTitle"
                         android:layout_marginBottom="20dp"
-                        android:text="Memory Info"
-                        style="@style/textTitle"  />
+                        android:text="Memory Info" />
 
                     <TableRow
                         android:focusable="true"
@@ -285,9 +283,9 @@
 
                         <TextView
                             android:id="@+id/txt_mem"
+                            style="@style/textSmall"
                             android:layout_width="60dp"
-                            android:layout_gravity="center_vertical"
-                            style="@style/textSmall" />
+                            android:layout_gravity="center_vertical" />
                     </TableRow>
                 </TableLayout>
             </android.support.v7.widget.CardView>

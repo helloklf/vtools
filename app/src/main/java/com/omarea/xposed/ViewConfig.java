@@ -18,44 +18,8 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
  */
 
 public class ViewConfig {
-    static float mDensity = -1;
     static final float MULTIPLIER_SCROLL_FRICTION = 10000f;
-
-    public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
-        hookViewConfiguration(ViewConfiguration.class);
-        hookOverscrollDistance(ViewConfiguration.class);
-        hookOverflingDistance(ViewConfiguration.class);
-        hookMaxFlingVelocity(ViewConfiguration.class);
-        hookScrollFriction(ViewConfiguration.class);
-
-        // TODO velocity 0 to 100000 / def 8000 // try 2000
-        // overscroll dist 0 to 1000 / def 0
-        // overfling dist 0 to 1000 / def 6
-        // friction * 10000 // 0 to 2000 //def 150 // try 50
-
-        //overScrollBy(int deltaX, int deltaY, int scrollX, int scrollY, int scrollRangeX, int scrollRangeY, int maxOverScrollX, int maxOverScrollY, boolean isTouchEvent)
-        /*
-        XposedBridge.hookAllMethods(View.class, "overScrollBy", new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                if (param.args.length == 9) {
-                    //mMaxOverScrollY
-                    param.args[6] = 200;
-                    param.args[7] = 400;
-                }
-            }
-        });
-        XposedHelpers.findAndHookMethod(View.class, "overScrollBy",
-                int.class,int.class,int.class,int.class,int.class,int.class,int.class,int.class,boolean.class , new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                super.beforeHookedMethod(param);
-                //ListView
-            }
-        });
-        */
-    }
+    static float mDensity = -1;
 
     private static void hookViewConfiguration(final Class<?> clazz) {
         XposedBridge.hookAllConstructors(clazz, new XC_MethodHook() {
@@ -183,6 +147,41 @@ public class ViewConfig {
         return Common.DEFAULT_SCROLLING_ENABLE;
     }
 
+    public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
+        hookViewConfiguration(ViewConfiguration.class);
+        hookOverscrollDistance(ViewConfiguration.class);
+        hookOverflingDistance(ViewConfiguration.class);
+        hookMaxFlingVelocity(ViewConfiguration.class);
+        hookScrollFriction(ViewConfiguration.class);
+
+        // TODO velocity 0 to 100000 / def 8000 // try 2000
+        // overscroll dist 0 to 1000 / def 0
+        // overfling dist 0 to 1000 / def 6
+        // friction * 10000 // 0 to 2000 //def 150 // try 50
+
+        //overScrollBy(int deltaX, int deltaY, int scrollX, int scrollY, int scrollRangeX, int scrollRangeY, int maxOverScrollX, int maxOverScrollY, boolean isTouchEvent)
+        /*
+        XposedBridge.hookAllMethods(View.class, "overScrollBy", new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                if (param.args.length == 9) {
+                    //mMaxOverScrollY
+                    param.args[6] = 200;
+                    param.args[7] = 400;
+                }
+            }
+        });
+        XposedHelpers.findAndHookMethod(View.class, "overScrollBy",
+                int.class,int.class,int.class,int.class,int.class,int.class,int.class,int.class,boolean.class , new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                super.beforeHookedMethod(param);
+                //ListView
+            }
+        });
+        */
+    }
 
     public class Common {
         //是否启用

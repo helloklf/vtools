@@ -102,16 +102,16 @@
                 </LinearLayout>
 
                 <CheckBox
-                    android:checked="true"
-                    android:textSize="14dp"
                     android:id="@+id/save_config"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:layout_marginTop="5dp"
+                    android:checked="true"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
-                    android:text="保存(动态响应)" />
+                    android:text="保存(动态响应)"
+                    android:textSize="14dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -124,8 +124,8 @@
                 android:paddingRight="6dp">
 
                 <Button
-                    style="?android:buttonBarButtonStyle"
                     android:id="@+id/negativeBtn"
+                    style="?android:buttonBarButtonStyle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -136,11 +136,11 @@
 
                 <Button
                     android:id="@+id/positiveBtn"
+                    style="?android:buttonBarButtonStyle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="18dp"
                     android:layout_weight="1"
-                    style="?android:buttonBarButtonStyle"
                     android:focusable="true"
                     android:padding="6dp"
                     android:text="@string/btn_confirm"

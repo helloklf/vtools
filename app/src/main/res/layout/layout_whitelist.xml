@@ -72,7 +72,7 @@
                             android:layout_marginTop="8dp"
                             android:paddingLeft="8dp"
                             android:text="@string/doze_list_auto_resume"
-                            android:textAppearance="?android:attr/textAppearanceSmall" />、
+                            android:textAppearance="?android:attr/textAppearanceSmall" />
                     </LinearLayout>
                 </FrameLayout>
             </FrameLayout>

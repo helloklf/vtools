@@ -23,20 +23,15 @@ class ServiceBattery : Service() {
             //监听电池改变
             batteryChangedReciver = ReciverBatterychanged(this)
             //启动完成
-            val ACTION_BOOT_COMPLETED = IntentFilter(Intent.ACTION_BOOT_COMPLETED)
-            registerReceiver(batteryChangedReciver, ACTION_BOOT_COMPLETED)
+            registerReceiver(batteryChangedReciver, IntentFilter(Intent.ACTION_BOOT_COMPLETED))
             //电源连接
-            val ACTION_POWER_CONNECTED = IntentFilter(Intent.ACTION_POWER_CONNECTED)
-            registerReceiver(batteryChangedReciver, ACTION_POWER_CONNECTED)
+            registerReceiver(batteryChangedReciver, IntentFilter(Intent.ACTION_POWER_CONNECTED))
             //电源断开
-            val ACTION_POWER_DISCONNECTED = IntentFilter(Intent.ACTION_POWER_DISCONNECTED)
-            registerReceiver(batteryChangedReciver, ACTION_POWER_DISCONNECTED)
+            registerReceiver(batteryChangedReciver, IntentFilter(Intent.ACTION_POWER_DISCONNECTED))
             //电量变化
-            val ACTION_BATTERY_CHANGED = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
-            registerReceiver(batteryChangedReciver, ACTION_BATTERY_CHANGED)
+            registerReceiver(batteryChangedReciver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
             //电量不足
-            val ACTION_BATTERY_LOW = IntentFilter(Intent.ACTION_BATTERY_LOW)
-            registerReceiver(batteryChangedReciver, ACTION_BATTERY_LOW)
+            registerReceiver(batteryChangedReciver, IntentFilter(Intent.ACTION_BATTERY_LOW))
             batteryChangedReciver!!.resumeCharge()
             batteryChangedReciver!!.entryFastChanger(true)
         }

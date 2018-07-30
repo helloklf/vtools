@@ -37,9 +37,9 @@ object KeepShellSync {
     }
 
     //获取ROOT超时时间
-    private val GET_ROOT_TIMEOUT = 20000L
+    private const val GET_ROOT_TIMEOUT = 20000L
     private val mLock = ReentrantLock()
-    private val LOCK_TIMEOUT = 10000L
+    private const val LOCK_TIMEOUT = 10000L
     private var enterLockTime = 0L
 
     private var checkRootState =

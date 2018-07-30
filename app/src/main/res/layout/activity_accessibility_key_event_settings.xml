@@ -18,16 +18,16 @@
             android:id="@+id/key_sets"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="56dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingTop="56dp">
 
             <Button
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="16dp"
                 android:id="@+id/key_event_state"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
                 android:background="@drawable/btn_bg"
                 android:gravity="center"
                 android:padding="13dp"
