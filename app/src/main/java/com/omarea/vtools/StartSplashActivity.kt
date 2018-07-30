@@ -19,7 +19,7 @@ import com.omarea.shared.Consts
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.Busybox
 import com.omarea.shell.CheckRootStatus
-import com.omarea.shell.KeepShellSync
+import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.WriteSettings
 import kotlinx.android.synthetic.main.activity_start_splash.*
 
@@ -171,7 +171,7 @@ class StartSplashActivity : Activity() {
                             .commit()
                     start_state_text.text = "兼容性检测，稍等10秒..."
                     Thread(Runnable {
-                        KeepShellSync.doCmdSync(Consts.DisableSELinux + "\n sleep 10; \n")
+                        KeepShellPublic.doCmdSync(Consts.DisableSELinux + "\n sleep 10; \n")
                         myHandler.post {
                             next.run()
                         }

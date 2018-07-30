@@ -53,7 +53,7 @@ class Busybox(private var context: Context) {
                                 cmd.append("chown root:root /system/xbin/busybox;")
                                 cmd.append("/system/xbin/busybox --install /system/xbin;")
 
-                                KeepShellSync.doCmdSync(cmd.toString())
+                                KeepShellPublic.doCmdSync(cmd.toString())
                                 if (!busyboxInstalled()) {
                                     AlertDialog.Builder(context)
                                             .setTitle("安装Busybox失败")

@@ -21,7 +21,7 @@ import android.view.View
 import android.widget.*
 import com.omarea.AppConfigInfo
 import com.omarea.shared.*
-import com.omarea.shell.KeepShellSync
+import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.NoticeListing
 import com.omarea.shell.Platform
 import com.omarea.shell.WriteSettings
@@ -144,7 +144,7 @@ class AppDetailsActivity : AppCompatActivity() {
         }
         Toast.makeText(applicationContext, getString(R.string.scene_addin_installing), Toast.LENGTH_SHORT).show()
         //使用ROOT权限安装插件
-        val installResult = KeepShellSync.doCmdSync("pm install -r '$addinPath'")
+        val installResult = KeepShellPublic.doCmdSync("pm install -r '$addinPath'")
         // 如果使用ROOT权限自动安装成功（再次检查Xposed状态）
         if (installResult !== "error" && installResult.contains("Success") && getAddinVersion() == getVersion()) {
             Toast.makeText(applicationContext, getString(R.string.scene_addin_installed), Toast.LENGTH_SHORT).show()
@@ -305,9 +305,9 @@ class AppDetailsActivity : AppCompatActivity() {
             val isChecked = (it as Switch).isChecked
             var r = ""
             if (isChecked) {
-                r = KeepShellSync.doCmdSync("pm grant $app android.permission.SYSTEM_ALERT_WINDOW")
+                r = KeepShellPublic.doCmdSync("pm grant $app android.permission.SYSTEM_ALERT_WINDOW")
             } else {
-                r = KeepShellSync.doCmdSync("pm revoke $app android.permission.SYSTEM_ALERT_WINDOW")
+                r = KeepShellPublic.doCmdSync("pm revoke $app android.permission.SYSTEM_ALERT_WINDOW")
             }
             if (r == "error") {
                 (it as Switch).isChecked = !isChecked
@@ -318,9 +318,9 @@ class AppDetailsActivity : AppCompatActivity() {
             val isChecked = (it as Switch).isChecked
             var r = ""
             if (isChecked) {
-                r = KeepShellSync.doCmdSync("pm grant $app android.permission.PACKAGE_USAGE_STATS")
+                r = KeepShellPublic.doCmdSync("pm grant $app android.permission.PACKAGE_USAGE_STATS")
             } else {
-                r = KeepShellSync.doCmdSync("pm revoke $app android.permission.PACKAGE_USAGE_STATS")
+                r = KeepShellPublic.doCmdSync("pm revoke $app android.permission.PACKAGE_USAGE_STATS")
             }
             if (r == "error") {
                 (it as Switch).isChecked = !isChecked
@@ -331,9 +331,9 @@ class AppDetailsActivity : AppCompatActivity() {
             val isChecked = (it as Switch).isChecked
             var r = ""
             if (isChecked) {
-                r = KeepShellSync.doCmdSync("pm grant $app android.permission.WRITE_SECURE_SETTINGS")
+                r = KeepShellPublic.doCmdSync("pm grant $app android.permission.WRITE_SECURE_SETTINGS")
             } else {
-                r = KeepShellSync.doCmdSync("pm revoke $app android.permission.WRITE_SECURE_SETTINGS")
+                r = KeepShellPublic.doCmdSync("pm revoke $app android.permission.WRITE_SECURE_SETTINGS")
             }
             if (r == "error") {
                 (it as Switch).isChecked = !isChecked
@@ -378,9 +378,9 @@ class AppDetailsActivity : AppCompatActivity() {
 
         app_details_disdoze.setOnClickListener {
             if ((it as Switch).isChecked) {
-                KeepShellSync.doCmdSync("dumpsys deviceidle whitelist +$app")
+                KeepShellPublic.doCmdSync("dumpsys deviceidle whitelist +$app")
             } else {
-                KeepShellSync.doCmdSync("dumpsys deviceidle whitelist -$app")
+                KeepShellPublic.doCmdSync("dumpsys deviceidle whitelist -$app")
             }
         }
         app_details_icon.setOnClickListener {
@@ -637,12 +637,12 @@ class AppDetailsActivity : AppCompatActivity() {
         Thread(Runnable {
             var size = getTotalSizeOfFilesInDir(File(applicationInfo.sourceDir).parentFile)
             size += getTotalSizeOfFilesInDir(File(applicationInfo.dataDir))
-            val dumpR = KeepShellSync.doCmdSync("dumpsys meminfo --S --package $app | grep TOTAL")
+            val dumpR = KeepShellPublic.doCmdSync("dumpsys meminfo --S --package $app | grep TOTAL")
             var memSize = 0
             if (dumpR.isEmpty() || dumpR == "error") {
 
             } else {
-                val mem = KeepShellSync.doCmdSync("dumpsys meminfo --package $app | grep TOTAL").split("\n", ignoreCase = true)
+                val mem = KeepShellPublic.doCmdSync("dumpsys meminfo --package $app | grep TOTAL").split("\n", ignoreCase = true)
                 for (rowIndex in 0 until mem.size) {
                     if (rowIndex % 2 == 0) {
                         //TOTAL    17651    11740      672        0    18832    16424     2407
@@ -678,7 +678,7 @@ class AppDetailsActivity : AppCompatActivity() {
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
             app_details_disdoze.isEnabled = true
-            val disDoze = KeepShellSync.doCmdSync("dumpsys deviceidle whitelist | grep $app")
+            val disDoze = KeepShellPublic.doCmdSync("dumpsys deviceidle whitelist | grep $app")
             if (disDoze.contains(app)) {
                 app_details_disdoze.isChecked = true
             }

@@ -12,7 +12,7 @@ import java.util.concurrent.locks.ReentrantLock
 /**
  * Created by Hello on 2018/01/23.
  */
-object KeepShellSync {
+object KeepShellPublic {
     private var p: Process? = null
     private var out: OutputStream? = null
     private var reader: BufferedReader? = null
@@ -72,10 +72,10 @@ object KeepShellSync {
                         val errorReader =
                                 p!!.errorStream.bufferedReader()
                         while (true) {
-                            Log.e("KeepShellSync", errorReader.readLine())
+                            Log.e("KeepShellPublic", errorReader.readLine())
                         }
                     } catch (ex: Exception) {
-                        Log.e("KeepShellSync", ex.message)
+                        Log.e("KeepShellPublic", ex.message)
                     }
                 }).start()
             } catch (ex: Exception) {

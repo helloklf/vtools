@@ -40,7 +40,7 @@ class WriteSettings {
 
             }
         } else {
-            KeepShellSync.doCmdSync("pm grant ${context.packageName} android.permission.WRITE_SETTINGS")
+            KeepShellPublic.doCmdSync("pm grant ${context.packageName} android.permission.WRITE_SETTINGS")
         }
     }
 }

@@ -11,7 +11,7 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import com.omarea.shared.Consts
-import com.omarea.shell.KeepShellSync
+import com.omarea.shell.KeepShellPublic
 import com.omarea.vtools.R
 
 /**
@@ -107,7 +107,7 @@ class DialogAddinModifyDPI(var context: Context) {
                 cmd.append("reboot\n")
             }
             if (cmd.isNotEmpty())
-                KeepShellSync.doCmdSync(cmd.toString())
+                KeepShellPublic.doCmdSync(cmd.toString())
         }).create().show()
     }
 }

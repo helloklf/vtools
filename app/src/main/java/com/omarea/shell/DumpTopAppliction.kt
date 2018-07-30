@@ -11,7 +11,7 @@ class DumpTopAppliction {
      * 获取前台应用
      */
     fun dumpsysTopActivity(packageName: String): String {
-        val topActivityResult = KeepShellSync.doCmdSync("dumpsys activity top | grep ACTIVITY")
+        val topActivityResult = KeepShellPublic.doCmdSync("dumpsys activity top | grep ACTIVITY")
         if (topActivityResult == "error") {
             Log.e("dumpsysTopActivity", "精准切换 - 获取前台应用失败！")
         } else {

@@ -3,7 +3,7 @@ package com.omarea.shared
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
-import com.omarea.shell.KeepShell
+import com.omarea.shell.KeepShellAsync
 
 /**
  * Created by SYSTEM on 2018/07/19.
@@ -12,7 +12,7 @@ import com.omarea.shell.KeepShell
 class SystemScene(private var context: Context) {
     private var spfAutoConfig: SharedPreferences = context.getSharedPreferences(SpfConfig.BOOSTER_SPF_CFG_SPF, Context.MODE_PRIVATE)
     private var spfGlobal: SharedPreferences = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-    private var keepShell = KeepShell(context)
+    private var keepShell = KeepShellAsync(context)
 
     fun onScreenOn() {
         keepShell.doCmd("dumpsys deviceidle unforce;dumpsys deviceidle enable all;")

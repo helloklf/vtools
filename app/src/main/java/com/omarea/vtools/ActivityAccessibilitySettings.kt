@@ -14,7 +14,7 @@ import android.widget.Toast
 import com.omarea.shared.AccessibleServiceHelper
 import com.omarea.shared.Consts
 import com.omarea.shared.SpfConfig
-import com.omarea.shell.KeepShellSync
+import com.omarea.shell.KeepShellPublic
 import com.omarea.ui.ProgressBarDialog
 import kotlinx.android.synthetic.main.activity_accessibility_settings.*
 
@@ -119,12 +119,12 @@ class ActivityAccessibilitySettings : AppCompatActivity() {
         })
         settings_disable_selinux.setOnClickListener {
             if (settings_disable_selinux.isChecked) {
-                KeepShellSync.doCmdSync(Consts.DisableSELinux)
+                KeepShellPublic.doCmdSync(Consts.DisableSELinux)
                 myHandler.postDelayed({
                     spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true).commit()
                 }, 10000)
             } else {
-                KeepShellSync.doCmdSync(Consts.ResumeSELinux)
+                KeepShellPublic.doCmdSync(Consts.ResumeSELinux)
                 spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false).commit()
             }
         }

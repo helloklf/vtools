@@ -14,7 +14,7 @@ import com.omarea.shared.helper.NotifyHelper
 import com.omarea.shared.helper.ReciverLock
 import com.omarea.shared.helper.ScreenEventHandler
 import com.omarea.shell.DumpTopAppliction
-import com.omarea.shell.KeepShell
+import com.omarea.shell.KeepShellAsync
 import com.omarea.shell.Platform
 import com.omarea.shell.RootFile
 import java.io.File
@@ -141,7 +141,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             systemScene.onScreenOn()
     }
 
-    private var keepShell2: KeepShell = KeepShell(context)
+    private var keepShellAsync2: KeepShellAsync = KeepShellAsync(context)
 
     /**
      * 显示消息
@@ -246,7 +246,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         notifyHelper.hideNotify()
         ReciverLock.unRegister(context)
         densityKeepShell()
-        keepShell2.tryExit()
+        keepShellAsync2.tryExit()
         stopTimer()
     }
 
@@ -261,7 +261,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         ReciverLock.autoRegister(context, screenHandler)
         // 禁用SeLinux
         if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true))
-            keepShell2.doCmd(Consts.DisableSELinux)
+            keepShellAsync2.doCmd(Consts.DisableSELinux)
 
         Thread(Runnable {
             if (!RootFile.fileExists(Consts.POWER_CFG_PATH)) {
@@ -274,7 +274,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             } else {
                 dyamicCore = true
                 ConfigInstaller().configCodeVerify(context)
-                keepShell2.doCmd(Consts.ExecuteConfig)
+                keepShellAsync2.doCmd(Consts.ExecuteConfig)
             }
             // 添加输入法到忽略列表
             ignoredList.addAll(InputHelper(context).getInputMethods())

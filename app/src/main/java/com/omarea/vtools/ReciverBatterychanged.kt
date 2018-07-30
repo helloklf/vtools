@@ -13,12 +13,12 @@ import android.util.Log
 import android.widget.Toast
 import com.omarea.shared.Consts
 import com.omarea.shared.SpfConfig
-import com.omarea.shell.KeepShell
+import com.omarea.shell.KeepShellAsync
 
 
 class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() {
     private var bp: Boolean = false
-    private var keepShell: KeepShell? = null
+    private var keepShellAsync: KeepShellAsync? = null
 
     private var sharedPreferences: SharedPreferences
     private var globalSharedPreferences: SharedPreferences
@@ -45,8 +45,8 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
 
             if (globalSharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false))
                 showMsg(service.getString(R.string.power_connected), false)
-            keepShell!!.doCmd(Consts.FastChangerBase)
-            keepShell!!.doCmd(computeLeves(qcLimit).toString())
+            keepShellAsync!!.doCmd(Consts.FastChangerBase)
+            keepShellAsync!!.doCmd(computeLeves(qcLimit).toString())
         } catch (ex: Exception) {
             Log.e("ChargeService", ex.stackTrace.toString())
         }
@@ -88,7 +88,7 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
                 if (onChanger) {
                     if (batteryLevel >= sharedPreferences.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85)) {
                         bp = true
-                        keepShell!!.doCmd(Consts.DisableChanger)
+                        keepShellAsync!!.doCmd(Consts.DisableChanger)
                     } else if (batteryLevel < sharedPreferences.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85) - 20) {
                         resumeCharge()
                     }
@@ -119,8 +119,8 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
     }
 
     init {
-        if (keepShell == null) {
-            keepShell = KeepShell(service)
+        if (keepShellAsync == null) {
+            keepShellAsync = KeepShellAsync(service)
         }
         sharedPreferences = service.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
         listener = SharedPreferences.OnSharedPreferenceChangeListener { spf, key ->
@@ -136,13 +136,13 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
     internal fun onDestroy() {
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this.listener)
         this.resumeCharge()
-        keepShell!!.tryExit()
-        keepShell = null
+        keepShellAsync!!.tryExit()
+        keepShellAsync = null
     }
 
     internal fun resumeCharge() {
         bp = false
-        keepShell!!.doCmd(Consts.ResumeChanger)
+        keepShellAsync!!.doCmd(Consts.ResumeChanger)
     }
 
     internal fun entryFastChanger(onChanger: Boolean) {

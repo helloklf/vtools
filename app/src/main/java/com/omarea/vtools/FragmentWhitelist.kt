@@ -13,7 +13,7 @@ import android.widget.Switch
 import com.omarea.shared.AppListHelper
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.model.Appinfo
-import com.omarea.shell.KeepShell
+import com.omarea.shell.KeepShellAsync
 import com.omarea.shell.SysUtils
 import com.omarea.ui.AppListAdapter
 import com.omarea.ui.ProgressBarDialog
@@ -27,11 +27,11 @@ class FragmentWhitelist : Fragment() {
                               savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.layout_whitelist, container, false)
 
-    private lateinit var keepShell: KeepShell
+    private lateinit var keepShellAsync: KeepShellAsync
 
     @SuppressLint("ApplySharedPref")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        keepShell = KeepShell(context!!)
+        keepShellAsync = KeepShellAsync(context!!)
         dialog = ProgressBarDialog(context!!)
         whitelist_tabhost.setup()
         whitelist_tabhost.addTab(whitelist_tabhost.newTabSpec("tab_1")
@@ -48,7 +48,7 @@ class FragmentWhitelist : Fragment() {
             val item = (parent.adapter.getItem(position) as Appinfo)
             val packageName = item.packageName.toString()
             spf.edit().putBoolean(packageName, checkBox.isChecked).commit()
-            keepShell.doCmd((if (checkBox.isChecked) "dumpsys deviceidle whitelist +$packageName" else "dumpsys deviceidle whitelist -$packageName"))
+            keepShellAsync.doCmd((if (checkBox.isChecked) "dumpsys deviceidle whitelist +$packageName" else "dumpsys deviceidle whitelist -$packageName"))
         })
         val globalSpf = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         doze_whitelist_autoset.isChecked = globalSpf.getBoolean(SpfConfig.GLOBAL_SPF_DOZELIST_AUTOSET, false)
@@ -64,7 +64,7 @@ class FragmentWhitelist : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        keepShell.tryExit()
+        keepShellAsync.tryExit()
     }
 
     private var handler = Handler()

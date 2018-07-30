@@ -13,7 +13,7 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.Toast
 import com.omarea.shared.SpfConfig
-import com.omarea.shell.KeepShellSync
+import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.KernelProrp
 import com.omarea.shell.SysUtils
 import com.omarea.shell.units.ChangeZRAM
@@ -119,7 +119,7 @@ class FragmentSwap : Fragment() {
         txt_swap_swappiness.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
             val swappiness = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 0)
             txt_zramstus_swappiness.text = swappiness.toString()
-            KeepShellSync.doCmdSync("echo $swappiness > /proc/sys/vm/swappiness;")
+            KeepShellPublic.doCmdSync("echo $swappiness > /proc/sys/vm/swappiness;")
             swap_swappiness_display.text = "Swappiness: " + KernelProrp.getProp("/proc/sys/vm/swappiness")
         }, swapConfig, SpfConfig.SWAP_SPF_SWAPPINESS))
 
@@ -164,7 +164,7 @@ class FragmentSwap : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        if (!KeepShellSync.doCmdSync("if [[ -e /dev/block/zram0 ]]; then echo 1; else echo 0; fi;").equals("1")) {
+        if (!KeepShellPublic.doCmdSync("if [[ -e /dev/block/zram0 ]]; then echo 1; else echo 0; fi;").equals("1")) {
             swap_config_zram.visibility = View.GONE
         }
 

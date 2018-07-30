@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.*
 import com.omarea.scripts.ActionAdapter
 import com.omarea.scripts.simple.shell.SimpleShellExecutor
-import com.omarea.shell.KeepShellSync
+import com.omarea.shell.KeepShellPublic
 import com.omarea.ui.OverScrollListView
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.vtools.R
@@ -73,9 +73,9 @@ class ActionListConfig(private val context: FragmentActivity) {
                 Thread(Runnable {
                     for (actionParamInfo in actionParamInfos) {
                         if (actionParamInfo.valueSUShell != null) {
-                            actionParamInfo.valueFromShell = KeepShellSync.doCmdSync(actionParamInfo.valueSUShell)
+                            actionParamInfo.valueFromShell = KeepShellPublic.doCmdSync(actionParamInfo.valueSUShell)
                         } else if (actionParamInfo.valueShell != null) {
-                            actionParamInfo.valueFromShell = KeepShellSync.doCmdSync(actionParamInfo.valueShell)
+                            actionParamInfo.valueFromShell = KeepShellPublic.doCmdSync(actionParamInfo.valueShell)
                         }
                     }
                     handler.post {
@@ -93,9 +93,9 @@ class ActionListConfig(private val context: FragmentActivity) {
                                 if (actionParamInfo.optionsSh != null && !actionParamInfo.optionsSh.isEmpty() || actionParamInfo.optionsSU != null && !actionParamInfo.optionsSU.isEmpty()) {
                                     var shellResult: String? = ""
                                     if (actionParamInfo.optionsSh != null && !actionParamInfo.optionsSh.isEmpty()) {
-                                        shellResult = KeepShellSync.doCmdSync(actionParamInfo.optionsSh)
+                                        shellResult = KeepShellPublic.doCmdSync(actionParamInfo.optionsSh)
                                     } else {
-                                        shellResult = KeepShellSync.doCmdSync(actionParamInfo.optionsSU)
+                                        shellResult = KeepShellPublic.doCmdSync(actionParamInfo.optionsSU)
                                     }
                                     if (shellResult != "error" && !shellResult.isEmpty()) {
                                         for (item in shellResult.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {

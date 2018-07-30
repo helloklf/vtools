@@ -23,7 +23,7 @@ import android.widget.Switch
 import android.widget.Toast
 import com.omarea.shared.*
 import com.omarea.shared.model.Appinfo
-import com.omarea.shell.KeepShellSync
+import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.Platform
 import com.omarea.ui.OverScrollListView
 import com.omarea.ui.ProgressBarDialog
@@ -306,7 +306,7 @@ class FragmentConfig : Fragment() {
                         //  cmds.append("chmod 0775 ${Consts.POWER_CFG_BASE};")
                         //  cmds.append("busybox sed -i 's/^M//g' ${Consts.POWER_CFG_BASE};")
                         //cmds.append("fi;")
-                        if (KeepShellSync.doCmdSync(cmds.toString()) != "error") {
+                        if (KeepShellPublic.doCmdSync(cmds.toString()) != "error") {
                             Toast.makeText(context, "动态响应配置脚本已安装！", Toast.LENGTH_SHORT).show()
                             reStartService()
                         }

@@ -1,8 +1,8 @@
 package com.omarea.shared
 
 import android.content.Context
-import com.omarea.shell.KeepShell
-import com.omarea.shell.KeepShellSync
+import com.omarea.shell.KeepShellAsync
+import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.Props
 import com.omarea.vtools.R
 
@@ -32,7 +32,7 @@ open class ModeList {
         }
     }
 
-    internal var keepShell: KeepShell? = null
+    internal var keepShellAsync: KeepShellAsync? = null
     private var context: Context? = null
     private var currentPowercfg: String = ""
     private var currentPowercfgApp: String = ""
@@ -98,12 +98,12 @@ open class ModeList {
 
     internal fun keepShellExec(cmd: String) {
         /*
-        if (keepShell == null) {
-            keepShell = KeepShell(context)
+        if (keepShellAsync == null) {
+            keepShellAsync = KeepShellAsync(context)
         }
-        keepShell!!.doCmd(cmd)
+        keepShellAsync!!.doCmd(cmd)
         */
-        KeepShellSync.doCmdSync(cmd)
+        KeepShellPublic.doCmdSync(cmd)
     }
 
     internal fun executePowercfgMode(mode: String): ModeList {
@@ -119,22 +119,22 @@ open class ModeList {
     }
 
     internal fun densityKeepShell(): ModeList {
-        if (keepShell != null) {
-            keepShell!!.tryExit()
-            keepShell = null
+        if (keepShellAsync != null) {
+            keepShellAsync!!.tryExit()
+            keepShellAsync = null
         }
         return this
     }
 
 
     internal fun executePowercfgModeOnce(mode: String): ModeList {
-        KeepShellSync.doCmdSync("sh ${Consts.POWER_CFG_PATH} " + mode)
+        KeepShellPublic.doCmdSync("sh ${Consts.POWER_CFG_PATH} " + mode)
         setCurrentPowercfg(mode)
         return this
     }
 
     internal fun executePowercfgModeOnce(mode: String, app: String): ModeList {
-        KeepShellSync.doCmdSync("sh ${Consts.POWER_CFG_PATH} " + mode)
+        KeepShellPublic.doCmdSync("sh ${Consts.POWER_CFG_PATH} " + mode)
         setCurrent(mode, app)
         return this
     }

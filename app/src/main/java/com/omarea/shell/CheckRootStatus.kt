@@ -20,13 +20,13 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
 
     //是否已经Root
     private fun isRoot(disableSeLinux: Boolean): Boolean {
-        val r = KeepShellSync.doCmdSync(Consts.isRootUser)
+        val r = KeepShellPublic.doCmdSync(Consts.isRootUser)
         Log.d("getsu", r)
         if (r == "error" || r.contains("permission denied") || r.contains("not allowed") || r.equals("not found")) {
             return false
         } else if (r == "root") {
             if (disableSeLinux)
-                KeepShellSync.doCmdSync(Consts.DisableSELinux)
+                KeepShellPublic.doCmdSync(Consts.DisableSELinux)
             return true
         } else {
             return false
@@ -132,7 +132,7 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
                 cmds.append("pm grant ${context.packageName} android.permission.WRITE_SETTINGS;\n")
             }
             */
-            KeepShellSync.doCmdSync(cmds.toString())
+            KeepShellPublic.doCmdSync(cmds.toString())
         }
 
         public fun isMagisk(): Boolean {

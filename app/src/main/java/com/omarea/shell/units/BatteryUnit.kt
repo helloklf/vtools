@@ -1,6 +1,6 @@
 package com.omarea.shell.units
 
-import com.omarea.shell.KeepShellSync
+import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.KernelProrp
 import java.io.File
 
@@ -232,6 +232,6 @@ class BatteryUnit {
                 "echo 5000000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
                 "echo " + limit + "000 > /sys/class/power_supply/battery/constant_charge_current_max;"
 
-        KeepShellSync.doCmdSync(cmd)
+        KeepShellPublic.doCmdSync(cmd)
     }
 }

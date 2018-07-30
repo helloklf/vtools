@@ -9,7 +9,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import com.omarea.shared.Consts
-import com.omarea.shell.KeepShellSync
+import com.omarea.shell.KeepShellPublic
 import com.omarea.vtools.R
 
 /**
@@ -81,7 +81,7 @@ class DialogAddinModifydevice(var context: Context) {
                 sb.append("sync\n")
                 sb.append("reboot\n")
 
-                KeepShellSync.doCmdSync(sb.toString())
+                KeepShellPublic.doCmdSync(sb.toString())
             } else {
                 Toast.makeText(context, "什么也没有修改！", Toast.LENGTH_SHORT).show()
             }

@@ -10,7 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.omarea.shell.KeepShellSync
+import com.omarea.shell.KeepShellPublic
 import kotlinx.android.synthetic.main.fragment_ram.*
 
 
@@ -33,7 +33,7 @@ class RamFragment : Fragment() {
         home_clear_ram.setOnClickListener {
             home_raminfo_text.text = "稍等一下"
             Thread(Runnable {
-                KeepShellSync.doCmdSync("sync\n" +
+                KeepShellPublic.doCmdSync("sync\n" +
                         "echo 3 > /proc/sys/vm/drop_caches")
                 myHandler.postDelayed({
                     updateInfo()

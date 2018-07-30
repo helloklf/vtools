@@ -5,7 +5,7 @@ import android.util.Log
 import android.util.Xml
 import android.widget.Toast
 import com.omarea.scripts.ExtractAssets
-import com.omarea.shell.KeepShellSync
+import com.omarea.shell.KeepShellPublic
 import org.xmlpull.v1.XmlPullParser
 import java.io.InputStream
 import java.util.*
@@ -236,7 +236,7 @@ object ActionConfigReader {
             val path = ExtractAssets(context).extractToFilesDir(script.trim { it <= ' ' })
             script = "chmod 7777 $path\n$path"
         }
-        return KeepShellSync.doCmdSync(script)
+        return KeepShellPublic.doCmdSync(script)
     }
 
     private fun executeResultRoot(context: Context, script: String): String {
@@ -245,6 +245,6 @@ object ActionConfigReader {
             val path = ExtractAssets(context).extractToFilesDir(script.trim { it <= ' ' })
             script = "chmod 7777 $path\n$path"
         }
-        return KeepShellSync.doCmdSync(script)
+        return KeepShellPublic.doCmdSync(script)
     }
 }

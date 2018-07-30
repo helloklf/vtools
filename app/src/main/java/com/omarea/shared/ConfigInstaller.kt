@@ -2,7 +2,7 @@ package com.omarea.shared
 
 import android.content.Context
 import android.util.Log
-import com.omarea.shell.KeepShellSync
+import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.Platform
 import java.nio.charset.Charset
 
@@ -18,11 +18,11 @@ class ConfigInstaller {
                     .append("cp ${FileWrite.getPrivateFilePath(context, "powercfg-base.sh")} ${Consts.POWER_CFG_BASE};")
                     .append("chmod 0777 ${Consts.POWER_CFG_PATH};")
                     .append("chmod 0777 ${Consts.POWER_CFG_BASE};")
-            //KeepShellSync.doCmdSync(Consts.InstallPowerToggleConfigToCache + "\n\n" + Consts.ExecuteConfig + "\n" + after)
-            KeepShellSync.doCmdSync(cmd.toString())
+            //KeepShellPublic.doCmdSync(Consts.InstallPowerToggleConfigToCache + "\n\n" + Consts.ExecuteConfig + "\n" + after)
+            KeepShellPublic.doCmdSync(cmd.toString())
             configCodeVerify(context)
             ModeList(context).setCurrentPowercfg("")
-            KeepShellSync.doCmdSync(afterCmds)
+            KeepShellPublic.doCmdSync(afterCmds)
         } catch (ex: Exception) {
             Log.e("script-parse", ex.message)
         }
@@ -35,8 +35,8 @@ class ConfigInstaller {
                     .append("cp ${FileWrite.getPrivateFilePath(context, "powercfg.sh")} ${Consts.POWER_CFG_PATH};")
                     .append("chmod 0777 ${Consts.POWER_CFG_PATH};")
                     .append("chmod 0777 ${Consts.POWER_CFG_BASE};")
-            //KeepShellSync.doCmdSync(Consts.InstallPowerToggleConfigToCache + "\n\n" + Consts.ExecuteConfig + "\n" + after)
-            KeepShellSync.doCmdSync(cmd.toString())
+            //KeepShellPublic.doCmdSync(Consts.InstallPowerToggleConfigToCache + "\n\n" + Consts.ExecuteConfig + "\n" + after)
+            KeepShellPublic.doCmdSync(cmd.toString())
             configCodeVerify(context)
             ModeList(context).setCurrentPowercfg("")
             return true
@@ -74,7 +74,7 @@ class ConfigInstaller {
             cmd.append("chmod 0775 ${Consts.POWER_CFG_BASE};\n")
             cmd.append("busybox sed -i 's/^M//g' ${Consts.POWER_CFG_BASE};\n")
             cmd.append("fi;\n")
-            KeepShellSync.doCmdSync(cmd.toString())
+            KeepShellPublic.doCmdSync(cmd.toString())
         } catch (ex: Exception) {
             Log.e("script-parse", ex.message)
         }

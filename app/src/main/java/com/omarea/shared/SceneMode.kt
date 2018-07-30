@@ -5,7 +5,7 @@ import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import com.omarea.AppConfigInfo
-import com.omarea.shell.KeepShellSync
+import com.omarea.shell.KeepShellPublic
 
 class SceneMode private constructor(private var contentResolver: ContentResolver, private var store: AppConfigStore) {
 
@@ -108,7 +108,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
      * 休眠指定包名的应用
      */
     private fun dozeApp(packageName: String) {
-        KeepShellSync.doCmdSync("dumpsys deviceidle whitelist -$packageName;\ndumpsys deviceidle enable;\ndumpsys deviceidle enable all;\nam set-inactive $packageName true")
+        KeepShellPublic.doCmdSync("dumpsys deviceidle whitelist -$packageName;\ndumpsys deviceidle enable;\ndumpsys deviceidle enable all;\nam set-inactive $packageName true")
         // if (debugMode) showMsg("休眠 " + packageName)
     }
 
@@ -117,7 +117,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
      */
     private fun killApp(packageName: String, showMsg: Boolean = true) {
         //keepShell2.doCmd("killall -9 $packageName;pkill -9 $packageName;pgrep $packageName |xargs kill -9;")
-        KeepShellSync.doCmdSync("am stop $packageName;am force-stop $packageName;")
+        KeepShellPublic.doCmdSync("am stop $packageName;am force-stop $packageName;")
         //if (debugMode && showMsg) showMsg("结束 " + packageName)
     }
 
