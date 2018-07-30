@@ -124,7 +124,6 @@ override fun onCreate() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && flagRequestAccessbilityButton) {
             info.flags = info.flags or AccessibilityServiceInfo.FLAG_REQUEST_ACCESSIBILITY_BUTTON
         }
-
         setServiceInfo(info);
         super.onServiceConnected()
     }
