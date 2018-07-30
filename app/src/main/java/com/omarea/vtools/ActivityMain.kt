@@ -175,7 +175,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_settings -> startActivity(Intent(this.applicationContext, ActivityAccessibilitySettings::class.java))
-            R.id.action_power -> DialogPower(this.applicationContext).showPowerMenu()
+            R.id.action_power -> DialogPower(this).showPowerMenu()
         }
         return super.onOptionsItemSelected(item)
     }
