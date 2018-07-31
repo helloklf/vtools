@@ -310,7 +310,7 @@ class VToolsOnlineNative(var activity: ActivityAddinOnline, var webview: WebView
                                 val success = BuildConfigXml().build(actionInfo, addinID!!, activity)
                                 callback(callback, success, if (success) "添加成功" else "添加失败")
                             })
-                            .setNegativeButton(R.string.btn_cancel, DialogInterface.OnClickListener { dialog, which ->
+                            .setNegativeButton(R.string.btn_cancel, DialogInterface.OnClickListener { _, _ ->
                                 callback(callback, false, "已取消添加！")
                             })
                             .create()

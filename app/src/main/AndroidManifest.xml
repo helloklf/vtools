@@ -121,10 +121,10 @@
                 android:resource="@xml/shortcuts" />
         </activity>
         <activity
-            android:name=".ActivityAccessibilitySettings"
+            android:name=".ActivitySceneOtherSettings"
             android:configChanges="keyboardHidden|orientation"
             android:excludeFromRecents="true"
-            android:label="Scene-增强服务"
+            android:label="Scene 杂项设置"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />

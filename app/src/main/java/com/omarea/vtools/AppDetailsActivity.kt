@@ -19,7 +19,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
-import com.omarea.AppConfigInfo
+import com.omarea.shared.model.AppConfigInfo
 import com.omarea.shared.*
 import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.NoticeListing
@@ -107,17 +107,10 @@ class AppDetailsActivity : AppCompatActivity() {
                             }
                         }
                     }
-                    if (appConfigInfo.dpi >= 96) {
-                        app_details_dpi.text = appConfigInfo.dpi.toString()
-                    } else {
-                        app_details_dpi.text = "默认"
-                    }
                     app_details_hide_su.isChecked = aidlConn!!.getBooleanValue("com.android.systemui_hide_su", false)
                     app_details_webview_debug.isChecked = aidlConn!!.getBooleanValue("android_webdebug", false)
                     app_details_service_running.isChecked = aidlConn!!.getBooleanValue("android_dis_service_foreground", false)
                     app_details_force_scale.isChecked = aidlConn!!.getBooleanValue(app + "_force_scale", false)
-                    app_details_excludetask.isChecked = appConfigInfo.excludeRecent
-                    app_details_scrollopt.isChecked = appConfigInfo.smoothScroll
                 }
             } catch (ex: Exception) {
                 Toast.makeText(applicationContext, getString(R.string.scene_addin_sync_fail), Toast.LENGTH_SHORT).show()
@@ -510,8 +503,6 @@ class AppDetailsActivity : AppCompatActivity() {
         // TODO: 输入DPI
         if (appConfigInfo.dpi >= 96) {
             app_details_dpi.text = appConfigInfo.dpi.toString()
-        } else {
-            app_details_dpi.text = "默认"
         }
         app_details_excludetask.setOnClickListener {
             appConfigInfo.excludeRecent = (it as Switch).isChecked
@@ -523,6 +514,11 @@ class AppDetailsActivity : AppCompatActivity() {
             appConfigInfo.gpsOn = (it as Switch).isChecked
         }
         if (XposedCheck.xposedIsRunning()) {
+            if (appConfigInfo.dpi >= 96) {
+                app_details_dpi.text = appConfigInfo.dpi.toString()
+            } else {
+                app_details_dpi.text = "默认"
+            }
             app_details_dpi.setOnClickListener {
                 var dialog: AlertDialog? = null
                 val view = layoutInflater.inflate(R.layout.dpi_input, null)
@@ -639,32 +635,30 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_time.text = Date(packageInfo.lastUpdateTime).toLocaleString()
         app_details_light.isEnabled = WriteSettings().getPermission(this)
         Thread(Runnable {
-            try {
-                var size = getTotalSizeOfFilesInDir(File(applicationInfo.sourceDir).parentFile)
-                size += getTotalSizeOfFilesInDir(File(applicationInfo.dataDir))
-                val dumpR = KeepShellPublic.doCmdSync("dumpsys meminfo --S --package $app | grep TOTAL")
-                var memSize = 0
-                if (dumpR.isEmpty() || dumpR == "error") {
+            var size = getTotalSizeOfFilesInDir(File(applicationInfo.sourceDir).parentFile)
+            size += getTotalSizeOfFilesInDir(File(applicationInfo.dataDir))
+            val dumpR = KeepShellPublic.doCmdSync("dumpsys meminfo --S --package $app | grep TOTAL")
+            var memSize = 0
+            if (dumpR.isEmpty() || dumpR == "error") {
 
-                } else {
-                    val mem = KeepShellPublic.doCmdSync("dumpsys meminfo --package $app | grep TOTAL").split("\n", ignoreCase = true)
-                    for (rowIndex in 0 until mem.size) {
-                        if (rowIndex % 2 == 0) {
-                            //TOTAL    17651    11740      672        0    18832    16424     2407
-                            val row = mem[rowIndex].trim().split("    ", ignoreCase = true)
-                            try {
-                                memSize += row[1].toInt()
-                            } catch (ex: Exception) {
-                            }
-                            Log.d("", row.toString())
+            } else {
+                val mem = KeepShellPublic.doCmdSync("dumpsys meminfo --package $app | grep TOTAL").split("\n", ignoreCase = true)
+                for (rowIndex in 0 until mem.size) {
+                    if (rowIndex % 2 == 0) {
+                        //TOTAL    17651    11740      672        0    18832    16424     2407
+                        val row = mem[rowIndex].trim().split("    ", ignoreCase = true)
+                        try {
+                            memSize += row[1].toInt()
+                        } catch (ex: Exception) {
                         }
+                        Log.d("", row.toString())
                     }
                 }
-                app_details_size.post {
-                    app_details_size.text = String.format("%.2f", size / 1024.0 / 1024) + "MB"
-                    app_details_ram.text = String.format("%.2f", memSize / 1024.0) + "MB"
-                }
-            } catch (ex: Exception) {}
+            }
+            app_details_size.post {
+                app_details_size.text = String.format("%.2f", size / 1024.0 / 1024) + "MB"
+                app_details_ram.text = String.format("%.2f", memSize / 1024.0) + "MB"
+            }
         }).start()
 
         val firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeList.BALANCE))

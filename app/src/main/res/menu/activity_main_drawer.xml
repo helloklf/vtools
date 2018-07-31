@@ -34,11 +34,6 @@
                 android:icon="@drawable/ic_menu_vboot"
                 android:title="@string/menu_additional" />
             <item
-                android:id="@+id/nav_xposed"
-                android:icon="@drawable/ic_menu_config"
-                android:title="@string/menu_xposed"
-                android:visible="false" />
-            <item
                 android:id="@+id/nav_applictions"
                 android:icon="@drawable/ic_menu_modules"
                 android:title="@string/menu_applictions" />
@@ -51,11 +46,6 @@
                 android:icon="@drawable/cpu"
                 android:title="@string/menu_core_control" />
             <item
-                android:id="@+id/nav_whitelist"
-                android:icon="@drawable/ic_menu_task"
-                android:title="@string/menu_whitelist"
-                android:visible="false" />
-            <item
                 android:id="@+id/nav_swap"
                 android:icon="@drawable/ic_menu_digital"
                 android:title="@string/menu_swap" />
@@ -65,56 +55,18 @@
                 android:title="@string/menu_battery" />
         </menu>
     </item>
-    <!--<group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_img"
-            android:icon="@drawable/ic_menu_img"
-            android:title="@string/menu_img" />
-        <item
-            android:id="@+id/nav_additional"
-            android:icon="@drawable/ic_menu_vtools"
-            android:title="@string/menu_additional" />
-        <item
-            android:id="@+id/nav_xposed"
-            android:icon="@drawable/ic_menu_config"
-            android:title="@string/menu_xposed" />
-        <item
-            android:id="@+id/nav_applictions"
-            android:icon="@drawable/ic_menu_modules"
-            android:title="@string/menu_applictions" />
-    </group>-->
 
     <item android:title="@string/menu_menu_title">
         <menu>
-            <item
-                android:id="@+id/nav_settings"
-                android:icon="@drawable/ic_menu_config"
-                android:title="@string/menu_settings"
-                android:visible="false" />
             <item
                 android:id="@+id/nav_qq"
                 android:icon="@drawable/ic_menu_config"
                 android:title="@string/menu_qq"
                 android:visible="true" />
             <item
-                android:id="@+id/nav_help"
-                android:icon="@drawable/ic_menu_help"
-                android:title="@string/menu_help"
-                android:visible="false" />
-            <item
-                android:id="@+id/nav_reward"
-                android:icon="@drawable/ic_menu_reward"
-                android:title="@string/menu_reward"
-                android:visible="false" />
-            <item
                 android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
                 android:title="@string/menu_share" />
-            <item
-                android:id="@+id/nav_feedback"
-                android:icon="@drawable/ic_menu_send"
-                android:title="@string/menu_feedback"
-                android:visible="false" />
         </menu>
     </item>
 

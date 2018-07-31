@@ -1,4 +1,4 @@
-package com.omarea;
+package com.omarea.shared.model;
 
 public class AppConfigInfo {
     public String packageName;

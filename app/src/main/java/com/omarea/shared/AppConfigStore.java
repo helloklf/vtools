@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.omarea.AppConfigInfo;
+import com.omarea.shared.model.AppConfigInfo;
 
 public class AppConfigStore extends SQLiteOpenHelper {
     public AppConfigStore(Context context) {

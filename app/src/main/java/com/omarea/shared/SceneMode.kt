@@ -4,7 +4,7 @@ import android.content.ContentResolver
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
-import com.omarea.AppConfigInfo
+import com.omarea.shared.model.AppConfigInfo
 import com.omarea.shell.KeepShellPublic
 
 class SceneMode private constructor(private var contentResolver: ContentResolver, private var store: AppConfigStore) {
@@ -98,7 +98,6 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
      * @return 是否阻拦按键事件
      */
     fun onKeyDown(): Boolean {
-        Log.e("keyDown", (config != null && config!!.disButton).toString())
         if (config != null) {
             return config!!.disButton
         }

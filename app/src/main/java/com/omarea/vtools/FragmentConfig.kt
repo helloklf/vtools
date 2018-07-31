@@ -275,6 +275,10 @@ class FragmentConfig : Fragment() {
             } catch (ex: Exception) {
             }
         }
+        accessbility_notify.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true)
+        accessbility_notify.setOnCheckedChangeListener({ _, checked ->
+            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, checked).commit()
+        })
     }
 
     private val REQUEST_POWERCFG_FILE = 1

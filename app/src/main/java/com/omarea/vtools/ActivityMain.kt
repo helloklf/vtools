@@ -160,7 +160,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     //右上角菜单
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_settings -> startActivity(Intent(this.applicationContext, ActivityAccessibilitySettings::class.java))
+            R.id.action_settings -> startActivity(Intent(this.applicationContext, ActivitySceneOtherSettings::class.java))
             R.id.action_power -> DialogPower(this).showPowerMenu()
         }
         return super.onOptionsItemSelected(item)
@@ -183,7 +183,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_battery -> fragment = FragmentBattery.createPage()
             R.id.nav_img -> fragment = FragmentImg.createPage()
             R.id.nav_core_control -> fragment = FragmentCpuControl.newInstance()
-            R.id.nav_whitelist -> fragment = FragmentWhitelist.createPage()
             R.id.nav_paypal -> {
                 fragment = FragmentPay.createPage()
                 // Alipay(this).jumpAlipay()
@@ -209,7 +208,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 sendIntent.type = "text/plain"
                 startActivity(sendIntent)
             }
-            R.id.nav_feedback -> startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(application.getString(R.string.feedback_link))))
             R.id.nav_profile -> fragment = FragmentConfig.createPage()
             R.id.nav_additional -> fragment = FragmentAddin.createPage()
             R.id.nav_keyevent -> {
@@ -217,18 +215,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     val intent = Intent(this, ActivityAccessibilityKeyEventSettings::class.java)
                     startActivity(intent)
                 } catch (ex: Exception) {
-                }
-            }
-            R.id.nav_xposed -> {
-                //fragment = FragmentXposed.Create()
-                try {
-                    startActivity(Intent().setComponent(ComponentName("com.omarea.vaddin", "com.omarea.vaddin.MainActivity")))
-                } catch (e: Exception) {
-                    AlertDialog.Builder(this).setTitle("Fail！")
-                            .setMessage(getString(R.string.xposed_cannot_openaddin))
-                            .setPositiveButton(R.string.btn_confirm, DialogInterface.OnClickListener { dialog, which -> })
-                            .create()
-                            .show()
                 }
             }
         }
@@ -254,7 +240,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             menu.findItem(R.id.nav_battery).isEnabled = false
             menu.findItem(R.id.nav_img).isEnabled = false
             menu.findItem(R.id.nav_profile).isEnabled = false
-            menu.findItem(R.id.nav_whitelist).isEnabled = false
             menu.findItem(R.id.nav_additional).isEnabled = false
         } catch (ex: Exception) {
 

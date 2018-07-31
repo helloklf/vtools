@@ -2,7 +2,7 @@ package com.omarea.xposed
 
 import android.content.ContentResolver
 import android.net.Uri
-import com.omarea.AppConfigInfo
+import com.omarea.shared.model.AppConfigInfo
 import de.robv.android.xposed.XposedBridge
 
 class AppConfigLoader {

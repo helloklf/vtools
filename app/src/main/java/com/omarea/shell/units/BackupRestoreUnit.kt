@@ -8,6 +8,7 @@ import com.omarea.shared.Consts
 import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.RootFile
 import com.omarea.ui.ProgressBarDialog
+import java.io.File
 import java.io.IOException
 
 /**
@@ -19,8 +20,25 @@ class BackupRestoreUnit(var context: Context) {
     internal var myHandler: Handler = Handler()
 
     companion object {
+        private var bootPartPath = "/dev/block/bootdevice/by-name/boot"
+        private var recPartPath = "/dev/block/bootdevice/by-name/recovery"
         fun isSupport(): Boolean {
-            return RootFile.itemExists("/dev/block/bootdevice/by-name/boot") || RootFile.itemExists("/dev/block/bootdevice/by-name/recovery")
+            if (RootFile.itemExists(bootPartPath) || RootFile.itemExists(recPartPath)) {
+                return true
+            }
+
+            var r = false
+            val boots = KeepShellPublic.doCmdSync("ls /dev/block/platform/*/by-name/BOOT").split("\n")
+            if (boots.size > 0 && boots.first().startsWith("/dev/block/platform") && boots.first().endsWith("/by-name/BOOT")) {
+                bootPartPath = boots.first()
+                r = true
+            }
+            val recs = KeepShellPublic.doCmdSync("ls /dev/block/platform/*/by-name/RECOVERY").split("\n")
+            if (recs.size > 0 && recs.first().startsWith("/dev/block/platform") && recs.first().endsWith("/by-name/RECOVERY")) {
+                recPartPath = recs.first()
+                r = true
+            }
+            return r
         }
     }
 
@@ -70,26 +88,19 @@ class BackupRestoreUnit(var context: Context) {
     }
 
     internal inner class FlashBootThread(var path: String) : Thread() {
-
         override fun run() {
+            if (!isSupport() || !RootFile.itemExists(bootPartPath)) {
+                showMsg("暂不支持您的设备！", true)
+                return
+            }
             showMsg("即将刷入\n$path\n请勿操作手机！", true)
             showProgressBar()
-            try {
-                showProgressBar()
-                if (KeepShellPublic.doCmdSync("dd if=\"$path\" of=/dev/block/bootdevice/by-name/boot") != "error") {
-                    showMsg("操作成功！", true)
-                } else {
-                    showMsg("镜像刷入失败！", true)
-                }
-            } catch (e: IOException) {
-                e.printStackTrace()
-                noRoot()
-                android.os.Process.killProcess(android.os.Process.myPid())
-            } catch (e: InterruptedException) {
-                e.printStackTrace()
-            } finally {
-                hideProgressBar()
+            if (KeepShellPublic.doCmdSync("dd if=\"$path\" of=$bootPartPath") != "error") {
+                showMsg("操作成功！", true)
+            } else {
+                showMsg("镜像刷入失败！", true)
             }
+            hideProgressBar()
         }
     }
 
@@ -99,26 +110,19 @@ class BackupRestoreUnit(var context: Context) {
     }
 
     internal inner class FlashRecoveryThread(var path: String) : Thread() {
-
         override fun run() {
+            if (!isSupport() || !RootFile.itemExists(recPartPath)) {
+                showMsg("暂不支持您的设备！", true)
+                return
+            }
             showMsg("即将刷入\n$path\n请勿操作手机！", true)
             showProgressBar()
-            try {
-                showProgressBar()
-                if (KeepShellPublic.doCmdSync("dd if=\"$path\" of=/dev/block/bootdevice/by-name/recovery") != "error") {
-                    showMsg("操作成功！", true)
-                } else {
-                    showMsg("镜像刷入失败", true)
-                }
-            } catch (e: IOException) {
-                e.printStackTrace()
-                noRoot()
-                android.os.Process.killProcess(android.os.Process.myPid())
-            } catch (e: InterruptedException) {
-                e.printStackTrace()
-            } finally {
-                hideProgressBar()
+            if (KeepShellPublic.doCmdSync("dd if=\"$path\" of=$recPartPath") != "error") {
+                showMsg("操作成功！", true)
+            } else {
+                showMsg("镜像刷入失败", true)
             }
+            hideProgressBar()
         }
     }
 
@@ -129,22 +133,17 @@ class BackupRestoreUnit(var context: Context) {
 
     internal inner class SaveBootThread : Thread() {
         override fun run() {
-            try {
-                showProgressBar()
-                if (KeepShellPublic.doCmdSync("dd if=/dev/block/bootdevice/by-name/boot of=${Consts.SDCardDir}/boot.img;\n") != "error") {
-                    showMsg("Boot导出成功，保存在${Consts.SDCardDir}/boot.img ！", true)
-                } else {
-                    showMsg("Boot导出失败！", true)
-                }
-            } catch (e: IOException) {
-                e.printStackTrace()
-                noRoot()
-            } catch (e: InterruptedException) {
-                showMsg("Boot导出失败！", true)
-                e.printStackTrace()
-            } finally {
-                hideProgressBar()
+            if (!isSupport() || !RootFile.itemExists(bootPartPath)) {
+                showMsg("暂不支持您的设备！", true)
+                return
             }
+            showProgressBar()
+            if (KeepShellPublic.doCmdSync("dd if=$bootPartPath of=${Consts.SDCardDir}/boot.img;\n") != "error") {
+                showMsg("Boot导出成功，保存在${Consts.SDCardDir}/boot.img ！", true)
+            } else {
+                showMsg("Boot导出失败！", true)
+            }
+            hideProgressBar()
         }
     }
 
@@ -155,8 +154,12 @@ class BackupRestoreUnit(var context: Context) {
 
     internal inner class SaveRecoveryThread : Thread() {
         override fun run() {
+            if (!isSupport() || !RootFile.itemExists(recPartPath)) {
+                showMsg("暂不支持您的设备！", true)
+                return
+            }
             showProgressBar()
-            if (KeepShellPublic.doCmdSync("dd if=/dev/block/bootdevice/by-name/recovery of=${Consts.SDCardDir}/recovery.img\n") != "error") {
+            if (KeepShellPublic.doCmdSync("dd if=$recPartPath of=${Consts.SDCardDir}/recovery.img\n") != "error") {
                 showMsg("Recovery导出成功，已保存为${Consts.SDCardDir}/recovery.img ！", true)
             } else {
                 showMsg("Recovery导出失败！", true)

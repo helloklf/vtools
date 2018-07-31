@@ -2,11 +2,9 @@ package com.omarea.vtools
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
-import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.View
@@ -15,10 +13,9 @@ import com.omarea.shared.AccessibleServiceHelper
 import com.omarea.shared.Consts
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.KeepShellPublic
-import com.omarea.ui.ProgressBarDialog
-import kotlinx.android.synthetic.main.activity_accessibility_settings.*
+import kotlinx.android.synthetic.main.activity_other_settings.*
 
-class ActivityAccessibilitySettings : AppCompatActivity() {
+class ActivitySceneOtherSettings : AppCompatActivity() {
     private lateinit var spf: SharedPreferences
     private var myHandler = Handler()
     private lateinit var globalSPF: SharedPreferences
@@ -33,12 +30,8 @@ class ActivityAccessibilitySettings : AppCompatActivity() {
         val serviceState = AccessibleServiceHelper().serviceIsRunning(this)
         vtoolsserviceSettings!!.visibility = if (serviceState) View.VISIBLE else View.GONE
 
-        vtoolsservice_state.text = if (serviceState) getString(R.string.accessibility_running) else getString(R.string.accessibility_stoped)
-
         settings_autoinstall.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false)
-        settings_debugmode.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
         settings_delaystart.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DELAY, false)
-        accessbility_notify.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true)
         settings_disable_selinux.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true)
     }
 
@@ -49,7 +42,7 @@ class ActivityAccessibilitySettings : AppCompatActivity() {
             this.setTheme(R.style.AppTheme_NoActionBarNight)
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_accessibility_settings)
+        setContentView(R.layout.activity_other_settings)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
@@ -68,54 +61,11 @@ class ActivityAccessibilitySettings : AppCompatActivity() {
 
         spf = this.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
-        vtoolsservice_state.setOnClickListener {
-            if (AccessibleServiceHelper().serviceIsRunning(this)) {
-                try {
-                    val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                    startActivity(intent)
-                } catch (ex: Exception) {
-
-                }
-                return@setOnClickListener
-            }
-            val dialog = ProgressBarDialog(this)
-            dialog.showDialog("尝试使用ROOT权限开启服务...")
-            Thread(Runnable {
-                if (!AccessibleServiceHelper().startServiceUseRoot(this)) {
-                    try {
-                        myHandler.post {
-                            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                            startActivity(intent)
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    } finally {
-                        myHandler.post {
-                            dialog.hideDialog()
-                        }
-                    }
-                } else {
-                    myHandler.post {
-                        dialog.hideDialog()
-                        val serviceState = AccessibleServiceHelper().serviceIsRunning(this)
-                        vtoolsserviceSettings!!.visibility = if (serviceState) View.VISIBLE else View.GONE
-                        vtoolsservice_state.text = if (serviceState) this.getString(R.string.accessibility_running) else this.getString(R.string.accessibility_stoped)
-                    }
-                }
-            }).start()
-        }
-
         settings_delaystart.setOnCheckedChangeListener({ _, checked ->
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DELAY, checked).commit()
         })
-        settings_debugmode.setOnCheckedChangeListener({ _, checked ->
-            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DEBUG, checked).commit()
-        })
         settings_autoinstall.setOnCheckedChangeListener({ _, checked ->
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_INSTALL, checked).commit()
-        })
-        accessbility_notify.setOnCheckedChangeListener({ _, checked ->
-            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, checked).commit()
         })
         settings_disable_selinux.setOnClickListener {
             if (settings_disable_selinux.isChecked) {
