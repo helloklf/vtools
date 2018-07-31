@@ -8,8 +8,8 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.support.v4.app.NotificationCompat
+import com.omarea.shell.KeepShell
 import com.omarea.shell.Props
-import com.omarea.shell.SysUtils
 import com.omarea.vtools.R
 
 /**
@@ -102,7 +102,8 @@ class BootService : IntentService("vtools-boot") {
         sb.append("\n\n")
         sb.append("setprop vtools.boot 1")
         sb.append("\n\n")
-        SysUtils.executeCommandWithOutput(true, sb.toString())
+        val keepShell = KeepShell()
+        keepShell.doCmdSync(sb.toString())
 
         /*
         if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DOZELIST_AUTOSET, false)) {
@@ -123,9 +124,10 @@ class BootService : IntentService("vtools-boot") {
             sb2.append("\n\n")
 
             Thread.sleep(120 * 1000)
-            SysUtils.executeCommandWithOutput(true, sb2.toString())
+            keepShell.doCmdSync(sb2.toString())
         }
         */
+        keepShell.tryExit()
         stopSelf()
     }
 

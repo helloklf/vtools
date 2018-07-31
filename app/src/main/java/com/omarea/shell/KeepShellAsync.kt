@@ -14,6 +14,34 @@ import java.util.concurrent.locks.ReentrantLock
  * Created by Hello on 2018/01/23.
  */
 class KeepShellAsync(private var context: Context?) : ShellEvents() {
+    companion object {
+        val keepShells = HashMap<String, KeepShellAsync>()
+        fun getInstance(key: String): KeepShellAsync {
+            if (!keepShells.containsKey(key)) {
+                keepShells.put(key, KeepShellAsync(null))
+            }
+            return keepShells.get(key)!!
+        }
+
+        fun destoryInstance(key: String) {
+            if (!keepShells.containsKey(key)) {
+                return
+            } else {
+                val keepShell = keepShells.get(key)!!
+                keepShells.remove(key)
+                keepShell.tryExit()
+            }
+        }
+
+        fun destoryAll() {
+            while (keepShells.isNotEmpty()) {
+                val key = keepShells.keys.first()
+                val keepShell = keepShells.get(key)!!
+                keepShells.remove(key)
+                keepShell.tryExit()
+            }
+        }
+    }
     private var p: Process? = null
     private var out: BufferedWriter? = null
     private var handler: Handler = Handler(Looper.getMainLooper())
@@ -30,7 +58,6 @@ class KeepShellAsync(private var context: Context?) : ShellEvents() {
                     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                 }
         } catch (ex: Exception) {
-
         }
     }
 
