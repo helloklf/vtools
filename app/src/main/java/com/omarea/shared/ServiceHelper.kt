@@ -1,9 +1,8 @@
 package com.omarea.shared
 
 import android.accessibilityservice.AccessibilityService
-import android.content.Context
+import android.content.*
 import android.content.Context.WINDOW_SERVICE
-import android.content.SharedPreferences
 import android.os.Handler
 import android.os.Looper
 import android.view.Display
@@ -17,21 +16,23 @@ import com.omarea.shell.DumpTopAppliction
 import com.omarea.shell.KeepShellAsync
 import com.omarea.shell.Platform
 import com.omarea.shell.RootFile
+import com.omarea.vtools.R
 import java.io.File
 import java.util.*
+
 
 /**
  *
  * Created by helloklf on 2016/10/1.
  */
 class ServiceHelper(private var context: AccessibilityService) : ModeList(context) {
-    private var systemScene: SystemScene = SystemScene(context)
+    private var systemScene = SystemScene(context)
     private var lastPackage: String? = null
     private var lastModePackage: String? = "com.system.ui"
     private var lastMode = ""
-    private var spfPowercfg: SharedPreferences = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
-    private var spfGlobal: SharedPreferences = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-    private var dumpTopAppliction: DumpTopAppliction = DumpTopAppliction()
+    private var spfPowercfg = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
+    private var spfGlobal = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+    private var dumpTopAppliction = DumpTopAppliction()
     private var ignoredList = arrayListOf(
             "com.miui.securitycenter",
             "android",
@@ -43,17 +44,37 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
     private var dyamicCore = false
     private var debugMode = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
     private var firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
-    private var accuSwitch: Boolean = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
-    private var batteryMonitro: Boolean = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
-    private var screenOn: Boolean = true
+    private var accuSwitch = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
+    private var batteryMonitro = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
+    private var screenOn = true
     private var lastScreenOnOff: Long = 0
     //屏幕关闭后切换网络延迟（ms）
     private val SCREEN_OFF_SWITCH_NETWORK_DELAY: Long = 30000
     private var screenHandler = ScreenEventHandler({ onScreenOff() }, { onScreenOn() })
     private var handler = Handler(Looper.getMainLooper())
-    private var notifyHelper: NotifyHelper = NotifyHelper(context, spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))
-    private val sceneMode: SceneMode = SceneMode.getInstanceOrInit(context.contentResolver, AppConfigStore(context))!!
+    private var notifyHelper = NotifyHelper(context, spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))
+    private val sceneMode = SceneMode.getInstanceOrInit(context.contentResolver, AppConfigStore(context))!!
     private var timer: Timer? = null
+    private var sceneConfigChanged:BroadcastReceiver? = null
+
+    /**
+     * 更新设置
+     */
+    private fun updateConfig() {
+        debugMode = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
+        firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
+        accuSwitch = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
+        batteryMonitro = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
+        val windowManager = this.context.getSystemService(WINDOW_SERVICE) as WindowManager
+        val display = windowManager.defaultDisplay
+        screenOn = display.state == Display.STATE_ON
+        dyamicCore = RootFile.fileExists(Consts.POWER_CFG_PATH)
+        notifyHelper.setNotify(spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))
+        stopTimer()
+        if (screenOn) {
+            startTimer()
+        }
+    }
 
     private fun startTimer() {
         if (timer == null) {
@@ -248,6 +269,10 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         densityKeepShell()
         keepShellAsync2.tryExit()
         stopTimer()
+        if (sceneConfigChanged != null) {
+            context.unregisterReceiver(sceneConfigChanged)
+            sceneConfigChanged = null
+        }
     }
 
     init {
@@ -290,5 +315,13 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             } else
                 toggleConfig(lastMode)
         }).start()
+
+        sceneConfigChanged = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                updateConfig()
+                Toast.makeText(context, "动态响应配置参数已更新，将在下次切换应用时生效！", Toast.LENGTH_SHORT).show()
+            }
+        }
+        context.registerReceiver(sceneConfigChanged, IntentFilter(context.getString(R.string.scene_change_action)))
     }
 }

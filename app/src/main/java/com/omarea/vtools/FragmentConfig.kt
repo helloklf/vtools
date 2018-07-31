@@ -156,10 +156,12 @@ class FragmentConfig : Fragment() {
         accu_switch.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
         accu_switch.setOnClickListener {
             globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, (it as Switch).isChecked).commit()
+            context!!.sendBroadcast(Intent(context!!.getString(R.string.scene_change_action)))
         }
         battery_monitor.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
         battery_monitor.setOnClickListener {
             globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, (it as Switch).isChecked).commit()
+            context!!.sendBroadcast(Intent(context!!.getString(R.string.scene_change_action)))
         }
         config_defaultlist.setOnItemClickListener { parent, view, position, id ->
             try {
@@ -240,6 +242,7 @@ class FragmentConfig : Fragment() {
             "igoned" -> first_mode.setSelection(4)
         }
         first_mode.onItemSelectedListener = ModeOnItemSelectedListener(globalSPF, Runnable {
+            context!!.sendBroadcast(Intent(context!!.getString(R.string.scene_change_action)))
             loadList()
         })
 
@@ -278,6 +281,7 @@ class FragmentConfig : Fragment() {
         accessbility_notify.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true)
         accessbility_notify.setOnCheckedChangeListener({ _, checked ->
             globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, checked).commit()
+            context!!.sendBroadcast(Intent(context!!.getString(R.string.scene_change_action)))
         })
     }
 
@@ -356,14 +360,16 @@ class FragmentConfig : Fragment() {
      */
     private fun reStartService() {
         if (AccessibleServiceHelper().serviceIsRunning(context!!)) {
+            context!!.sendBroadcast(Intent(context!!.getString(R.string.scene_change_action)))
+            /*
             AlertDialog.Builder(context!!)
                     .setTitle("需要重启辅助服务")
                     .setMessage("请手动重启辅助服务，使配置脚本生效！")
                     .setPositiveButton(R.string.btn_confirm, { _, _ ->
-
                     })
                     .create()
                     .show()
+            */
         }
     }
 
@@ -451,6 +457,9 @@ class FragmentConfig : Fragment() {
     private var onLoading = false
     @SuppressLint("ApplySharedPref")
     private fun loadList(foreceReload: Boolean = false) {
+        if (this.isDetached) {
+            return
+        }
         if (onLoading) {
             return
         }

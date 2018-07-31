@@ -25,12 +25,12 @@ android {
             zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             minifyEnabled true
-            debuggable false
+            debuggable true
             signingConfig signingConfigs.omarea_Signing
         }
         debug {
             signingConfig signingConfigs.omarea_Signing
-            minifyEnabled true
+            minifyEnabled false
         }
     }
     productFlavors {

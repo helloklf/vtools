@@ -19,6 +19,7 @@ import android.widget.Toast
 import com.omarea.shared.AutoClickService
 import com.omarea.shared.BootService
 import com.omarea.shared.ServiceHelper
+import java.util.*
 
 /**
  * Created by helloklf on 2016/8/27.
@@ -126,6 +127,12 @@ override fun onCreate() {
         }
         setServiceInfo(info);
         super.onServiceConnected()
+        val timer = Timer()
+        timer.schedule(object: TimerTask() {
+            override fun run() {
+                Log.d("windows count", windows.size.toString())
+            }
+        }, 10000, 5000)
     }
 
     private fun initServiceHelper() {
@@ -241,28 +248,43 @@ override fun onCreate() {
             if (windows_ == null || windows_.isEmpty()) {
                 return
             }
-            val windowInfo = windows_.lastOrNull()
+            if (windows_.size > 1) {
+                var lastWindow: AccessibilityWindowInfo? = null
+                for (window in windows_.iterator()) {
+                    if (window.type == AccessibilityWindowInfo.TYPE_APPLICATION) {
+                        lastWindow = window
+                    } else {
+                        continue
+                    }
+                }
+                if (lastWindow == null) {
+                    return
+                }
+                val windowInfo = lastWindow
 
-            /**
-            Window          层级(zOrder)
-            --------------------------
-            应用Window	    1~99
-            子Window	    1000~1999
-            系统Window	    2000~2999
-             */
+                /**
+                Window          层级(zOrder - window.layer)
+                --------------------------
+                应用Window	    1~99
+                子Window	    1000~1999
+                系统Window	    2000~2999
+                 */
 
-            val source = event.source
-            if (source == null || windowInfo == null || source.windowId != windowInfo.id) {
-                return
+                val source = event.source
+                if (source == null) return
+
+                if (source.windowId != windowInfo.id) {
+                    return
+                }
+
+                if (windowInfo.type != AccessibilityWindowInfo.TYPE_APPLICATION) {
+                    Log.d("vtool-dump", "[skip app:${packageName}]")
+                    return
+                }
             }
-
-            if (windowInfo.type == AccessibilityWindowInfo.TYPE_APPLICATION && windowInfo.isActive) {
-                if (serviceHelper == null)
-                    initServiceHelper()
-                serviceHelper?.onFocusAppChanged(event.packageName.toString())
-            } else {
-                Log.d("vtool-dump", "[skip app:${packageName}]")
-            }
+            if (serviceHelper == null)
+                initServiceHelper()
+            serviceHelper?.onFocusAppChanged(event.packageName.toString())
         } else {
             if (serviceHelper == null)
                 initServiceHelper()
