@@ -27,7 +27,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
     }
 
     var mode = -1;
-    var screenBrightness = 100;
+    var screenBrightness = -1;
     var lastAppPackageName = "com.android.systemui"
     var config: AppConfigInfo? = null
 
@@ -42,15 +42,17 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
     }
 
     private fun resumeState() {
-        if (mode < 0)
-            return
         try {
-            Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, mode)
-            contentResolver.notifyChange(Settings.System.getUriFor("screen_brightness_mode"), null)
-            Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, screenBrightness)
-            contentResolver.notifyChange(Settings.System.getUriFor("screen_brightness"), null)
-            mode = -1
-            screenBrightness = 100
+            if (mode > -1) {
+                Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, mode)
+                contentResolver.notifyChange(Settings.System.getUriFor("screen_brightness_mode"), null)
+                mode = -1
+            }
+            if (screenBrightness > -1) {
+                Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, screenBrightness)
+                contentResolver.notifyChange(Settings.System.getUriFor("screen_brightness"), null)
+                screenBrightness = -1
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }

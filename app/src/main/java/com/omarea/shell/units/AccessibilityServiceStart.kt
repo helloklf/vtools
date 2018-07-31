@@ -12,13 +12,18 @@ class AccessibilityServiceStart {
         return KeepShellPublic.doCmdSync(
                 "services=`settings get secure enabled_accessibility_services`;\n" +
                         "service='$serviceName';\n" +
-                        "echo \"\$services\" |grep -q \"\$service\"\n" +
-                        "if [ \$? -gt -1 ]\n" +
+                        "include=\$(echo \"\$services\" |grep \"\$service\")\n" +
+
+                        "if [ ! -n \"\$services\" ]\n" +
                         "then\n" +
-                        "\tsettings put secure enabled_accessibility_services \"\$services:\$service\"; \n" +
+                            "   settings put secure enabled_accessibility_services \"\$service\"; \n" +
+                        "elif [ ! -n \"\$include\" ]\n" +
+                        "then\n" +
+                            "   settings put secure enabled_accessibility_services \"\$services:\$service\"; \n" +
+                        "else\n" +
+                            "   settings put secure enabled_accessibility_services \"\$services\"; \n" +
                         "fi\n" +
-                        "settings put secure accessibility_enabled 1;\n" +
-                        "am startservice -n \$service;\n"
-        ) != ""
+                        "settings put secure accessibility_enabled 1;\n"
+        ) != "error"
     }
 }
