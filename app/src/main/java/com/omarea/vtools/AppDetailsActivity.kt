@@ -56,17 +56,8 @@ class AppDetailsActivity : AppCompatActivity() {
         return code
     }
 
-    fun getVersion(): Int {
-        var code = 0
-        try {
-            val manager = getPackageManager()
-            val info = manager.getPackageInfo(getPackageName(), 0)
-            code = info.versionCode
-        } catch (e: PackageManager.NameNotFoundException) {
-            e.printStackTrace()
-        }
-
-        return code
+    fun getAddinMinimumVersion(): Int {
+        return resources.getInteger(R.integer.addin_minimum_version)
     }
 
     private var conn = object : ServiceConnection {
@@ -83,7 +74,7 @@ class AppDetailsActivity : AppCompatActivity() {
     private fun updateXposedConfigFromAddin() {
         if (aidlConn != null) {
             try {
-                if (getVersion() > getAddinVersion()) {
+                if (getAddinMinimumVersion() > getAddinVersion()) {
                     // TODO:自动安装
                     Toast.makeText(applicationContext, getString(R.string.scene_addin_version_toolow), Toast.LENGTH_SHORT).show()
                     if (aidlConn != null) {
@@ -133,7 +124,7 @@ class AppDetailsActivity : AppCompatActivity() {
         }
         try {
             // 判断应用内部集成的插件文件是否和应用版本匹配（不匹配则取消安装）
-            if (packageManager.getPackageArchiveInfo(addinPath, PackageManager.GET_ACTIVITIES).versionCode < getVersion()) {
+            if (packageManager.getPackageArchiveInfo(addinPath, PackageManager.GET_ACTIVITIES).versionCode < getAddinMinimumVersion()) {
                 Toast.makeText(applicationContext, getString(R.string.scene_inner_addin_invalid), Toast.LENGTH_SHORT).show()
                 return
             }
@@ -146,7 +137,7 @@ class AppDetailsActivity : AppCompatActivity() {
         //使用ROOT权限安装插件
         val installResult = KeepShellPublic.doCmdSync("pm install -r '$addinPath'")
         // 如果使用ROOT权限自动安装成功（再次检查Xposed状态）
-        if (installResult !== "error" && installResult.contains("Success") && getAddinVersion() == getVersion()) {
+        if (installResult !== "error" && installResult.contains("Success") && getAddinVersion() == getAddinMinimumVersion()) {
             Toast.makeText(applicationContext, getString(R.string.scene_addin_installed), Toast.LENGTH_SHORT).show()
             checkXposedState(false)
         } else {
@@ -208,7 +199,7 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_vaddins_notinstall.setOnClickListener {
             installVAddin()
         }
-        if (vAddinsInstalled && getAddinVersion() < getVersion()) {
+        if (vAddinsInstalled && getAddinVersion() < getAddinMinimumVersion()) {
             // 版本过低（更新插件）
             if (autoUpdate) {
                 installVAddin()

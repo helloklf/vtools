@@ -276,11 +276,6 @@ override fun onCreate() {
                 if (source.windowId != windowInfo.id) {
                     return
                 }
-
-                if (windowInfo.type != AccessibilityWindowInfo.TYPE_APPLICATION) {
-                    Log.d("vtool-dump", "[skip app:${packageName}]")
-                    return
-                }
             }
             if (serviceHelper == null)
                 initServiceHelper()
