@@ -3,6 +3,7 @@ package com.omarea.vtools
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.os.Build
@@ -10,6 +11,7 @@ import android.view.*
 import android.view.WindowManager.LayoutParams
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.omarea.shared.AccessibleServiceHelper
 import com.omarea.shared.ModeList
@@ -106,7 +108,6 @@ class FloatPowercfgSelector {
     private fun setUpView(context: Context, packageName: String): View {
         val view = LayoutInflater.from(context).inflate(R.layout.fw_powercfg_selector, null)
 
-
         val spfPowercfg = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         val mode = spfPowercfg.getString(packageName, "balance")
 
@@ -116,6 +117,12 @@ class FloatPowercfgSelector {
             (view.findViewById<View>(R.id.fw_title) as TextView).text = packageInfo.applicationInfo.loadLabel(pm).toString()
         } catch (ex: Exception) {
             (view.findViewById<View>(R.id.fw_title) as TextView).text = packageName
+        }
+
+
+        if (!context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false)) {
+            view.findViewById<RelativeLayout>(R.id.popup_window).setBackgroundColor(Color.WHITE)
+            view.findViewById<TextView>(R.id.fw_title).setTextColor(Color.BLACK)
         }
 
         val btn_powersave = view.findViewById<TextView>(R.id.btn_powersave)

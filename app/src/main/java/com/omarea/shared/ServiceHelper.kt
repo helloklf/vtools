@@ -42,7 +42,6 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             "com.miui.contentextension",
             "com.miui.systemAdSolution")
     private var dyamicCore = false
-    private var debugMode = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
     private var firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
     private var accuSwitch = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
     private var batteryMonitro = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
@@ -62,7 +61,6 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
      * 更新设置
      */
     private fun updateConfig() {
-        debugMode = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false)
         firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
         accuSwitch = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
         batteryMonitro = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
@@ -141,9 +139,6 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
      * 点亮屏幕且解锁后执行
      */
     private fun onScreenOn() {
-        if (debugMode)
-            showMsg("屏幕开启！")
-
         lastScreenOnOff = System.currentTimeMillis()
         if (screenOn == true) return
 
@@ -166,23 +161,6 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
     private var keepShellAsync2: KeepShellAsync = KeepShellAsync(context)
 
     /**
-     * 显示消息
-     */
-    private fun showMsg(msg: String) {
-        screenHandler.post {
-            Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    /**
-     * 显示模式切换通知
-     */
-    private fun showModeToggleMsg(packageName: String, modeName: String) {
-        if (debugMode)
-            showMsg("$modeName \n$packageName")
-    }
-
-    /**
      * 更新通知
      */
     private fun updateModeNofity() {
@@ -199,7 +177,6 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             IGONED -> return
             else -> {
                 toggleConfig(mode)
-                showModeToggleMsg(packageName, getModName(mode))
                 lastModePackage = packageName
                 updateModeNofity()
             }
@@ -217,7 +194,6 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             else -> {
                 if (lastMode != mode) {
                     toggleConfig(mode)
-                    showModeToggleMsg(packageName, getModName(mode))
                 }
                 lastModePackage = packageName
             }

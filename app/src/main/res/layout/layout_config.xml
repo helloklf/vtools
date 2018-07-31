@@ -250,22 +250,22 @@
 
                                     <Button
                                         android:id="@+id/config_cfg_select_0"
-                                        android:layout_width="55dp"
+                                        android:layout_width="75dp"
                                         android:layout_height="30dp"
                                         android:layout_gravity="center"
                                         android:layout_marginLeft="20dp"
                                         android:background="@android:color/transparent"
-                                        android:text="保守"
+                                        android:text="保守风格"
                                         android:textColor="@color/colorPrimary" />
 
                                     <Button
                                         android:id="@+id/config_cfg_select_1"
-                                        android:layout_width="55dp"
+                                        android:layout_width="75dp"
                                         android:layout_height="30dp"
                                         android:layout_gravity="center"
                                         android:layout_marginLeft="20dp"
                                         android:background="@android:color/transparent"
-                                        android:text="激进"
+                                        android:text="激进风格"
                                         android:textColor="@color/colorPrimary" />
                                 </LinearLayout>
                             </LinearLayout>
@@ -312,22 +312,22 @@
 
                                     <Button
                                         android:id="@+id/config_customer_powercfg"
-                                        android:layout_width="55dp"
+                                        android:layout_width="75dp"
                                         android:layout_height="30dp"
                                         android:layout_gravity="center"
                                         android:layout_marginLeft="20dp"
                                         android:background="@android:color/transparent"
-                                        android:text="本地"
+                                        android:text="本地选择"
                                         android:textColor="@color/colorPrimary" />
 
                                     <Button
                                         android:id="@+id/config_customer_powercfg_online"
-                                        android:layout_width="55dp"
+                                        android:layout_width="75dp"
                                         android:layout_height="30dp"
                                         android:layout_gravity="center"
                                         android:layout_marginLeft="20dp"
                                         android:background="@android:color/transparent"
-                                        android:text="在线"
+                                        android:text="在线获取"
                                         android:textColor="@color/colorPrimary" />
                                 </LinearLayout>
                             </LinearLayout>

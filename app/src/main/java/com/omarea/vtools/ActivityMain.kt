@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.Activity
 import android.app.ActivityManager
 import android.content.*
+import android.graphics.Point
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -45,6 +46,19 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        try {
+            val origConfig = getResources().getConfiguration()
+            var point = Point()
+            windowManager.defaultDisplay.getSize(point)
+            val dpi = ( point.x / 2.45).toInt()
+            origConfig.densityDpi = dpi
+            getResources().updateConfiguration(origConfig, getResources().getDisplayMetrics())
+            getResources().getDisplayMetrics().density = dpi / 160.0f
+            getResources().getDisplayMetrics().densityDpi = dpi
+            getResources().getDisplayMetrics().scaledDensity = dpi / 160.0f
+        } catch (ex: Exception) {
+        }
+
         startActivityForResult(Intent(this.applicationContext, StartSplashActivity::class.java), 999)
         //CrashHandler().init(this)
         //setMaxAspect()

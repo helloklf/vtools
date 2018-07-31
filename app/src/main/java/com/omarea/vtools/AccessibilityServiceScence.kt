@@ -66,9 +66,7 @@ override fun onCreate() {
     */
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-
         initServiceHelper()
-
         try {
             val service = Intent(this, BootService::class.java)
             //service.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -264,12 +262,11 @@ override fun onCreate() {
 
                 /**
                 Window          层级(zOrder - window.layer)
-                --------------------------
+                --------------------------------------------
                 应用Window	    1~99
                 子Window	    1000~1999
                 系统Window	    2000~2999
-                 */
-
+                */
                 val source = event.source
                 if (source == null) return
 
@@ -277,8 +274,7 @@ override fun onCreate() {
                     return
                 }
             }
-            if (serviceHelper == null)
-                initServiceHelper()
+            initServiceHelper()
             serviceHelper?.onFocusAppChanged(event.packageName.toString())
         } else {
             if (serviceHelper == null)

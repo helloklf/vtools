@@ -43,8 +43,6 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
             if (!sharedPreferences.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false))
                 return
 
-            if (globalSharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false))
-                showMsg(service.getString(R.string.power_connected), false)
             keepShellAsync!!.doCmd(Consts.FastChangerBase)
             keepShellAsync!!.doCmd(computeLeves(qcLimit).toString())
         } catch (ex: Exception) {
