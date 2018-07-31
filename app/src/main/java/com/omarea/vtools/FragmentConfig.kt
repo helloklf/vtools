@@ -156,12 +156,12 @@ class FragmentConfig : Fragment() {
         accu_switch.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
         accu_switch.setOnClickListener {
             globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, (it as Switch).isChecked).commit()
-            context!!.sendBroadcast(Intent(context!!.getString(R.string.scene_change_action)))
+            reStartService()
         }
         battery_monitor.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
         battery_monitor.setOnClickListener {
             globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, (it as Switch).isChecked).commit()
-            context!!.sendBroadcast(Intent(context!!.getString(R.string.scene_change_action)))
+            reStartService()
         }
         config_defaultlist.setOnItemClickListener { parent, view, position, id ->
             try {
@@ -242,7 +242,7 @@ class FragmentConfig : Fragment() {
             "igoned" -> first_mode.setSelection(4)
         }
         first_mode.onItemSelectedListener = ModeOnItemSelectedListener(globalSPF, Runnable {
-            context!!.sendBroadcast(Intent(context!!.getString(R.string.scene_change_action)))
+            reStartService()
             loadList()
         })
 
@@ -279,9 +279,10 @@ class FragmentConfig : Fragment() {
             }
         }
         accessbility_notify.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true)
-        accessbility_notify.setOnCheckedChangeListener({ _, checked ->
+        accessbility_notify.setOnClickListener({
+            val checked = (it as Switch).isChecked
             globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, checked).commit()
-            context!!.sendBroadcast(Intent(context!!.getString(R.string.scene_change_action)))
+            reStartService()
         })
     }
 
@@ -361,15 +362,6 @@ class FragmentConfig : Fragment() {
     private fun reStartService() {
         if (AccessibleServiceHelper().serviceIsRunning(context!!)) {
             context!!.sendBroadcast(Intent(context!!.getString(R.string.scene_change_action)))
-            /*
-            AlertDialog.Builder(context!!)
-                    .setTitle("需要重启辅助服务")
-                    .setMessage("请手动重启辅助服务，使配置脚本生效！")
-                    .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                    })
-                    .create()
-                    .show()
-            */
         }
     }
 
@@ -403,10 +395,11 @@ class FragmentConfig : Fragment() {
                 3 -> mode = "fast"
                 4 -> mode = "igoned"
             }
-            globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, mode).commit()
-            runnable.run()
+            if (globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "") != mode) {
+                globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, mode).commit()
+                runnable.run()
+            }
         }
-
     }
 
     private fun initDefaultConfig() {

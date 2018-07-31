@@ -2,6 +2,7 @@ package com.omarea.vtools
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
@@ -12,10 +13,7 @@ import android.support.v4.app.FragmentStatePagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.omarea.shared.ConfigInstaller
-import com.omarea.shared.Consts
-import com.omarea.shared.ModeList
-import com.omarea.shared.SpfConfig
+import com.omarea.shared.*
 import com.omarea.shell.Files
 import com.omarea.shell.Platform
 import com.omarea.shell.Props

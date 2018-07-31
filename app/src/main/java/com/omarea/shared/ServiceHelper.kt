@@ -56,6 +56,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
     private val sceneMode = SceneMode.getInstanceOrInit(context.contentResolver, AppConfigStore(context))!!
     private var timer: Timer? = null
     private var sceneConfigChanged:BroadcastReceiver? = null
+    private var sceneAppChanged:BroadcastReceiver? = null
 
     /**
      * 更新设置
@@ -273,6 +274,10 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             context.unregisterReceiver(sceneConfigChanged)
             sceneConfigChanged = null
         }
+        if (sceneAppChanged != null) {
+            context.unregisterReceiver(sceneAppChanged)
+            sceneAppChanged = null
+        }
     }
 
     init {
@@ -322,6 +327,19 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
                 Toast.makeText(context, "动态响应配置参数已更新，将在下次切换应用时生效！", Toast.LENGTH_SHORT).show()
             }
         }
+        sceneAppChanged = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                if (intent.extras != null) {
+                    if (intent.extras.containsKey("mode")) {
+                        lastMode = intent.getStringExtra("mode")
+                    }
+                    if (intent.extras.containsKey("app")) {
+                        //
+                    }
+                }
+            }
+        }
         context.registerReceiver(sceneConfigChanged, IntentFilter(context.getString(R.string.scene_change_action)))
+        context.registerReceiver(sceneAppChanged, IntentFilter(context.getString(R.string.scene_appchange_action)))
     }
 }

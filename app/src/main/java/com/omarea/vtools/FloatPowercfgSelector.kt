@@ -2,6 +2,7 @@ package com.omarea.vtools
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.os.Build
@@ -10,6 +11,7 @@ import android.view.WindowManager.LayoutParams
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
+import com.omarea.shared.AccessibleServiceHelper
 import com.omarea.shared.ModeList
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.helper.NotifyHelper
@@ -88,6 +90,18 @@ class FloatPowercfgSelector {
         }
     }
 
+    /**
+     * 重启辅助服务
+     */
+    private fun reStartService(app: String, mode: String) {
+        if (AccessibleServiceHelper().serviceIsRunning(mContext!!)) {
+            val intent = Intent(mContext!!.getString(R.string.scene_appchange_action))
+            intent.extras.putString("app", app)
+            intent.extras.putString("mode", mode)
+            mContext!!.sendBroadcast(intent)
+        }
+    }
+
     @SuppressLint("ApplySharedPref")
     private fun setUpView(context: Context, packageName: String): View {
         val view = LayoutInflater.from(context).inflate(R.layout.fw_powercfg_selector, null)
@@ -150,10 +164,9 @@ class FloatPowercfgSelector {
             }
             it.postDelayed(Runnable {
                 NotifyHelper(context, true).notify()
-            }, 1000)
-            if (view.findViewById<CheckBox>(R.id.save_config).isChecked) {
                 spfPowercfg.edit().putString(packageName, selectedMode).commit()
-            }
+                reStartService(packageName, selectedMode)
+            }, 1000)
 
             //Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);
             //context.startActivity(intent);

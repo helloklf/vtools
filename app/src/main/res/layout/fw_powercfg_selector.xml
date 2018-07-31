@@ -16,7 +16,7 @@
         <RelativeLayout
             android:id="@+id/popup_window"
             android:layout_width="290dp"
-            android:layout_height="230dp"
+            android:layout_height="210dp"
             android:orientation="vertical">
 
             <TextView
@@ -100,18 +100,6 @@
                         android:text="@string/fast"
                         android:textAlignment="center" />
                 </LinearLayout>
-
-                <CheckBox
-                    android:id="@+id/save_config"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="5dp"
-                    android:checked="true"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="5dp"
-                    android:text="保存(动态响应)"
-                    android:textSize="14dp" />
             </LinearLayout>
 
             <LinearLayout

@@ -299,6 +299,7 @@ override fun onCreate() {
         if (serviceHelper != null) {
             serviceHelper!!.onInterrupt()
             serviceHelper = null
+            // disableSelf()
             stopSelf()
             System.exit(0)
         }
