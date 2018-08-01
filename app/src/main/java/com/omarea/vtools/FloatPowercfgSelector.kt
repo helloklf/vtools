@@ -98,8 +98,8 @@ class FloatPowercfgSelector {
     private fun reStartService(app: String, mode: String) {
         if (AccessibleServiceHelper().serviceIsRunning(mContext!!)) {
             val intent = Intent(mContext!!.getString(R.string.scene_appchange_action))
-            intent.extras.putString("app", app)
-            intent.extras.putString("mode", mode)
+            intent.putExtra("app", app)
+            intent.putExtra("mode", mode)
             mContext!!.sendBroadcast(intent)
         }
     }
@@ -169,9 +169,9 @@ class FloatPowercfgSelector {
                 modeList.executePowercfgModeOnce(selectedMode, packageName)
                 modeList.setCurrent(selectedMode, packageName)
             }
+            spfPowercfg.edit().putString(packageName, selectedMode).commit()
             it.postDelayed(Runnable {
                 NotifyHelper(context, true).notify()
-                spfPowercfg.edit().putString(packageName, selectedMode).commit()
                 reStartService(packageName, selectedMode)
             }, 1000)
 
