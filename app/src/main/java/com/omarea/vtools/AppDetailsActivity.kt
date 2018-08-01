@@ -632,7 +632,9 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_light.isEnabled = WriteSettings().getPermission(this)
         Thread(Runnable {
             var size = getTotalSizeOfFilesInDir(File(applicationInfo.sourceDir).parentFile)
-            size += getTotalSizeOfFilesInDir(File(applicationInfo.dataDir))
+            if (applicationInfo.dataDir != null) {
+                // size += getTotalSizeOfFilesInDir(File(applicationInfo.dataDir))
+            }
             val dumpR = KeepShellPublic.doCmdSync("dumpsys meminfo --S --package $app | grep TOTAL")
             var memSize = 0
             if (dumpR.isEmpty() || dumpR == "error") {
