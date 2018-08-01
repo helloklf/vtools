@@ -127,6 +127,9 @@ if [ "$action" = "performance" ]; then
     echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
     echo 79000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
 
+    echo 0 > /sys/module/msm_thermal/core_control/enabled
+    echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
+    #echo N > /sys/module/msm_thermal/parameters/enabled
 	echo 0 > /proc/sys/kernel/sched_boost
     stop thermanager
     stop thermal-engine
