@@ -98,6 +98,13 @@ class AppDetailsActivity : AppCompatActivity() {
                             }
                         }
                     }
+                    app_details_scrollopt.isChecked = appConfigInfo.smoothScroll
+                    app_details_excludetask.isChecked = appConfigInfo.excludeRecent
+                    if (appConfigInfo.dpi >= 96) {
+                        app_details_dpi.text = appConfigInfo.dpi.toString()
+                    } else {
+                        app_details_dpi.text = "默认"
+                    }
                     app_details_hide_su.isChecked = aidlConn!!.getBooleanValue("com.android.systemui_hide_su", false)
                     app_details_webview_debug.isChecked = aidlConn!!.getBooleanValue("android_webdebug", false)
                     app_details_service_running.isChecked = aidlConn!!.getBooleanValue("android_dis_service_foreground", false)

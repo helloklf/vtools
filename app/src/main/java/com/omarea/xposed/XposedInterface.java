@@ -192,7 +192,9 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
 
         // 平滑滚动
         if (prefs.getBoolean(packageName + "_scroll", false) || prefs.getBoolean("android_scroll", false)) {
-            new ViewConfig().handleLoadPackage(loadPackageParam);
+            if (!packageName.equals("android") && !packageName.equals("com.android.systemui")) {
+                new ViewConfig().handleLoadPackage(loadPackageParam);
+            }
         }
 
         // 从最近任务列表隐藏
@@ -268,7 +270,9 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
 
         // 全面屏优化
         if (prefs.getBoolean(packageName + "_force_scale", true)) {
-            new FullScreeProcess().addMarginBottom();
+            if (!packageName.equals("android") && !packageName.equals("com.android.systemui")) {
+                new FullScreeProcess().addMarginBottom();
+            }
         }
 
         // DPI
