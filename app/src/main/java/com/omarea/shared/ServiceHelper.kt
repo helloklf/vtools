@@ -19,6 +19,10 @@ import com.omarea.shell.RootFile
 import com.omarea.vtools.R
 import java.io.File
 import java.util.*
+import android.content.Context.KEYGUARD_SERVICE
+import android.app.KeyguardManager
+
+
 
 
 /**
@@ -45,7 +49,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
     private var firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
     private var accuSwitch = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
     private var batteryMonitro = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
-    private var screenOn = true
+    private var screenOn = false
     private var lastScreenOnOff: Long = 0
     //屏幕关闭后切换网络延迟（ms）
     private val SCREEN_OFF_SWITCH_NETWORK_DELAY: Long = 30000
@@ -70,16 +74,31 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         dyamicCore = RootFile.fileExists(Consts.POWER_CFG_PATH)
         notifyHelper.setNotify(spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))
         stopTimer()
-        if (screenOn) {
-            startTimer()
+        startTimer() // 配置更新后开始定时更新任务
+    }
+
+    /**
+     * 判断是否黑屏
+     * @param c
+     * @return
+     */
+    fun isScreenLocked(): Boolean {
+        val windowManager = context.getSystemService(WINDOW_SERVICE) as WindowManager
+        val display = windowManager.defaultDisplay
+        if (display.state == Display.STATE_ON) {
+            return false
         }
+
+        val mKeyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        return mKeyguardManager.inKeyguardRestrictedInputMode()
     }
 
     private fun startTimer() {
+        if (!screenOn) {
+            return
+        }
         if (timer == null) {
-            val windowManager = this.context.getSystemService(WINDOW_SERVICE) as WindowManager
-            val display = windowManager.defaultDisplay
-            this.screenOn = display.state == Display.STATE_ON
+            this.screenOn = !isScreenLocked()
             if (!screenOn) return
             val time = if (batteryMonitro) 2000L else 10000L
             timer = Timer(true)
@@ -143,7 +162,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         if (screenOn == true) return
 
         screenOn = true
-        startTimer()
+        startTimer() // 屏幕开启后开始定时更新通知
         notifyHelper.notify()
 
         if (dyamicCore) {
@@ -164,7 +183,9 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
      * 更新通知
      */
     private fun updateModeNofity() {
-        notifyHelper.notify()
+        if (screenOn) {
+            notifyHelper.notify()
+        }
     }
 
     //#region 模式切换
@@ -222,7 +243,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
 
     //焦点应用改变
     fun onFocusAppChanged(packageName: String) {
-        if (screenOn) startTimer()
+        startTimer() // 前台应用改变后开始定时更新通知
         if (lastPackage == packageName || ignoredList.contains(packageName)) return
         if (lastPackage == null) lastPackage = "com.android.systemui"
 
@@ -259,9 +280,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
     init {
         notifyHelper.notify()
 
-        val windowManager = this.context.getSystemService(WINDOW_SERVICE) as WindowManager
-        val display = windowManager.defaultDisplay
-        this.screenOn = display.state == Display.STATE_ON
+        this.screenOn = !isScreenLocked()
 
         // 监听锁屏状态变化
         ReciverLock.autoRegister(context, screenHandler)
@@ -290,7 +309,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
                 if (!this.screenOn)
                     toggleConfig(POWERSAVE)
                 else {
-                    startTimer()
+                    startTimer() // 服务启动后开启定时更新通知任务
                     toggleConfig(DEFAULT)
                 }
             } else
