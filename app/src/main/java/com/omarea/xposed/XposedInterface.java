@@ -268,13 +268,6 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
             new WebView().allowDebug();
         }
 
-        // 全面屏优化
-        if (prefs.getBoolean(packageName + "_force_scale", true)) {
-            if (!packageName.equals("android") && !packageName.equals("com.android.systemui")) {
-                new FullScreeProcess().addMarginBottom();
-            }
-        }
-
         // DPI
         final String keyDPI = packageName + "_dpi";
         final int dpi = prefs.getInt(keyDPI, 0);

@@ -595,23 +595,6 @@
                             android:layout_height="wrap_content" />
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="10dp">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="允许全面屏比例（Oreo+）" />
-
-                        <Switch
-                            android:id="@+id/app_details_force_scale"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-
 
                     <LinearLayout
                         android:layout_width="match_parent"

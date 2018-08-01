@@ -108,7 +108,6 @@ class AppDetailsActivity : AppCompatActivity() {
                     app_details_hide_su.isChecked = aidlConn!!.getBooleanValue("com.android.systemui_hide_su", false)
                     app_details_webview_debug.isChecked = aidlConn!!.getBooleanValue("android_webdebug", false)
                     app_details_service_running.isChecked = aidlConn!!.getBooleanValue("android_dis_service_foreground", false)
-                    app_details_force_scale.isChecked = aidlConn!!.getBooleanValue(app + "_force_scale", false)
                 }
             } catch (ex: Exception) {
                 Toast.makeText(applicationContext, getString(R.string.scene_addin_sync_fail), Toast.LENGTH_SHORT).show()
@@ -230,7 +229,6 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_hide_su.isEnabled = allowXposedConfig
         app_details_webview_debug.isEnabled = allowXposedConfig
         app_details_service_running.isEnabled = allowXposedConfig
-        app_details_force_scale.isEnabled = allowXposedConfig
     }
 
 
@@ -731,7 +729,6 @@ class AppDetailsActivity : AppCompatActivity() {
             aidlConn!!.setBooleanValue("com.android.systemui_hide_su", app_details_hide_su.isChecked)
             aidlConn!!.setBooleanValue("android_webdebug", app_details_webview_debug.isChecked)
             aidlConn!!.setBooleanValue("android_dis_service_foreground", app_details_service_running.isChecked)
-            aidlConn!!.setBooleanValue(app + "_force_scale", app_details_force_scale.isChecked)
         } else {
         }
         if (!AppConfigStore(this).setAppConfig(appConfigInfo)) {
