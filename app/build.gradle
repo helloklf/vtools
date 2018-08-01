@@ -25,7 +25,7 @@ android {
             zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             minifyEnabled true
-            debuggable true
+            debuggable false
             signingConfig signingConfigs.omarea_Signing
         }
         debug {
