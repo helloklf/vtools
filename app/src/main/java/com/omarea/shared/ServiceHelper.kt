@@ -128,7 +128,6 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         if (screenOn == false)
             return
         screenOn = false
-        notifyHelper.hideNotify()
         lastScreenOnOff = System.currentTimeMillis()
 
         screenHandler.postDelayed({
@@ -138,6 +137,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         // TODO: 关闭屏幕后清理后台
         screenHandler.postDelayed({
             if (!screenOn) stopTimer()
+            notifyHelper.hideNotify()
         }, 10000)
     }
 
