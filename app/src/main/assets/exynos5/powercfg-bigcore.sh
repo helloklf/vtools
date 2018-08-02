@@ -75,7 +75,7 @@ if [ "$action" = "powersave" ]; then
     set_value 0 /sys/kernel/hmp/boost
 
     set_value "80 338000:90 650000:75 1066000:83 1274000:85 1482000:83" /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
-    set_value "84 312000:92 520000:95 832000:93 1040000:75 1456000:87 1872000:89 2080000:90 2392000：92" /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
+    set_value "90 312000:92 520000:95 832000:93 1040000:87 1456000:87 1872000:89 2080000:90 2392000：92" /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
 
     echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
 	echo 10000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time

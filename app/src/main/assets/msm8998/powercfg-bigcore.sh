@@ -97,7 +97,7 @@ if [ "$action" = "powersave" ]; then
 	echo "85 300000:85 595200:67 825600:75 1248000:78" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
 	echo 518400 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
 
-	echo "87 300000:89 1056000:89 1344000:92" > /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
+	echo "97" > /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
 	echo 499200 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
 
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
@@ -126,7 +126,7 @@ if [ "$action" = "balance" ]; then
 	echo "83 300000:85 595200:67 825600:75 1248000:78 1478400:83" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
 	echo 960000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
 
-	echo "83 300000:89 1056000:89 1344000:92 1651200:95" > /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
+	echo "84 300000:89 1056000:89 1344000:92 1651200:95" > /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
 	echo 1056000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
 
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
