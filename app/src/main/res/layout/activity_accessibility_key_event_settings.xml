@@ -166,7 +166,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:entries="@array/powercfg_modes"
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"
                             android:tag="3_click" />
@@ -175,7 +174,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:entries="@array/powercfg_modes"
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"
                             android:tag="3_long_click" />
@@ -238,7 +236,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:entries="@array/powercfg_modes"
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"
                             android:tag="4_click" />
@@ -247,7 +244,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:entries="@array/powercfg_modes"
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"
                             android:tag="4_long_click" />
@@ -310,7 +306,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:entries="@array/powercfg_modes"
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"
                             android:tag="82_click" />
@@ -319,7 +314,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:entries="@array/powercfg_modes"
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"
                             android:tag="82_long_click" />
@@ -383,7 +377,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:entries="@array/powercfg_modes"
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"
                             android:tag="187_click" />
@@ -392,7 +385,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:entries="@array/powercfg_modes"
                             android:paddingBottom="10dp"
                             android:paddingTop="10dp"
                             android:tag="187_long_click" />

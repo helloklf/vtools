@@ -275,7 +275,7 @@ class AppDetailsActivity : AppCompatActivity() {
             var selectedIndex = index
             AlertDialog.Builder(this)
                     .setTitle(getString(R.string.perf_opt))
-                    .setSingleChoiceItems(R.array.powercfg_modes, index, DialogInterface.OnClickListener { dialog, which ->
+                    .setSingleChoiceItems(R.array.powercfg_modes2, index, DialogInterface.OnClickListener { dialog, which ->
                         selectedIndex = which
                     })
                     .setPositiveButton(R.string.btn_confirm, DialogInterface.OnClickListener { dialog, which ->
@@ -286,9 +286,13 @@ class AppDetailsActivity : AppCompatActivity() {
                                 1 -> modeName = ModeList.BALANCE
                                 2 -> modeName = ModeList.PERFORMANCE
                                 3 -> modeName = ModeList.FAST
-                                4 -> modeName = ModeList.IGONED
+                                4 -> modeName = ""
                             }
-                            powercfg.edit().putString(app, modeName).commit()
+                            if (modeName.isEmpty()) {
+                                powercfg.edit().remove(app).commit()
+                            } else {
+                                powercfg.edit().putString(app, modeName).commit()
+                            }
                             app_details_dynamic.text = ModeList.getModName(modeName)
                             _result = RESULT_OK
                         }
@@ -602,10 +606,7 @@ class AppDetailsActivity : AppCompatActivity() {
     @SuppressLint("SetTextI18n")
     override fun onResume() {
         super.onResume()
-
         checkXposedState()
-
-        val modeList = ModeList(this)
         val powercfg = getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         val spfGlobal = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
@@ -632,9 +633,23 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_light.isEnabled = WriteSettings().getPermission(this)
         Thread(Runnable {
             var size = getTotalSizeOfFilesInDir(File(applicationInfo.sourceDir).parentFile)
-            if (applicationInfo.dataDir != null) {
-                // size += getTotalSizeOfFilesInDir(File(applicationInfo.dataDir))
-            }
+            try {
+                if (applicationInfo.dataDir != null) {
+                    // size += getTotalSizeOfFilesInDir(File(applicationInfo.dataDir))
+                }
+                val dataFile = File("${Consts.SDCardDir}/Android/data/$app")
+                val obbFile = File("${Consts.SDCardDir}/Android/obb/$app")
+                val sdFile = File("${Consts.SDCardDir}/$app")
+                if (dataFile.exists()) {
+                    size += getTotalSizeOfFilesInDir(dataFile)
+                }
+                if (obbFile.exists()) {
+                    size += getTotalSizeOfFilesInDir(obbFile)
+                }
+                if (sdFile.exists()) {
+                    size += getTotalSizeOfFilesInDir(sdFile)
+                }
+            } catch (ex: Exception) { }
             val dumpR = KeepShellPublic.doCmdSync("dumpsys meminfo --S --package $app | grep TOTAL")
             var memSize = 0
             if (dumpR.isEmpty() || dumpR == "error") {
@@ -653,9 +668,15 @@ class AppDetailsActivity : AppCompatActivity() {
                     }
                 }
             }
-            app_details_size.post {
-                app_details_size.text = String.format("%.2f", size / 1024.0 / 1024) + "MB"
-                app_details_ram.text = String.format("%.2f", memSize / 1024.0) + "MB"
+            // 由于这是个异步操作，执行完时界面可能已经被销毁，因此需要做这个判断
+            if (app_details_size != null) {
+                app_details_size.post {
+                    try {
+                        app_details_size.text = String.format("%.2f", size / 1024.0 / 1024) + "MB"
+                        app_details_ram.text = String.format("%.2f", memSize / 1024.0) + "MB"
+                    } catch (ex: Exception) {
+                    }
+                }
             }
         }).start()
 
@@ -689,11 +710,6 @@ class AppDetailsActivity : AppCompatActivity() {
         if (appConfigInfo.aloneLightValue > 0) {
             app_details_light.setProgress(appConfigInfo.aloneLightValue)
         }
-        if (appConfigInfo.dpi >= 96) {
-            app_details_dpi.text = appConfigInfo.dpi.toString()
-        }
-        app_details_excludetask.isChecked = appConfigInfo.excludeRecent
-        app_details_scrollopt.isChecked = appConfigInfo.smoothScroll
         app_details_gps.isChecked = appConfigInfo.gpsOn
     }
 

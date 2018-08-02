@@ -360,12 +360,18 @@
     <string name="doze_list_auto_resume">手机开机完成后，自动恢复当前设定状态（由于MIUI系统重启后会自动将系统应用全部添加到白名单中）</string>
     <string name="auto_resume">自动恢复设置</string>
     <string name="shell_executor">脚本执行</string>
+    <string-array name="powercfg_modes2">
+        <item>省电模式</item>
+        <item>均衡模式</item>
+        <item>性能模式</item>
+        <item>极速模式</item>
+        <item>跟随默认</item>
+    </string-array>
     <string-array name="powercfg_modes">
         <item>省电模式</item>
         <item>均衡模式</item>
         <item>性能模式</item>
         <item>极速模式</item>
-        <item>忽略切换</item>
     </string-array>
     <string-array name="powercfg_modes_filter">
         <item>全部模式</item>
@@ -373,7 +379,6 @@
         <item>均衡模式</item>
         <item>性能模式</item>
         <item>极速模式</item>
-        <item>忽略切换</item>
     </string-array>
     <string-array name="powercfg_apptype_filter">
         <item>用户程序</item>
