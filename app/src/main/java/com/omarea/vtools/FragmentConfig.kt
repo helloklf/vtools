@@ -191,16 +191,24 @@ class FragmentConfig : Fragment() {
                     })
                     .setPositiveButton(R.string.btn_confirm, { _, _ ->
                         if (currentMode != originIndex) {
+                            var modeName = ""
                             when (currentMode) {
-                                0 -> spfPowercfg.edit().putString(item.packageName.toString(), ModeList.POWERSAVE).commit()
-                                1 -> spfPowercfg.edit().putString(item.packageName.toString(), ModeList.BALANCE).commit()
-                                2 -> spfPowercfg.edit().putString(item.packageName.toString(), ModeList.PERFORMANCE).commit()
-                                3 -> spfPowercfg.edit().putString(item.packageName.toString(), ModeList.FAST).commit()
-                                4 -> spfPowercfg.edit().remove(item.packageName.toString()).commit()
+                                0 -> modeName = ModeList.POWERSAVE
+                                1 -> modeName = ModeList.BALANCE
+                                2 -> modeName = ModeList.PERFORMANCE
+                                3 -> modeName = ModeList.FAST
+                                4 -> modeName = ""
+                            }
+
+                            if (modeName.isEmpty()) {
+                                spfPowercfg.edit().remove(item.packageName.toString()).commit()
+                            } else {
+                                spfPowercfg.edit().putString(item.packageName.toString(), modeName).commit()
                             }
 
                             setAppRowDesc(item)
                             (config_defaultlist.adapter as SceneModeAdapter).updateRow(position, view)
+                            notifyService(item.packageName.toString(), modeName)
                         }
                     })
                     .setNeutralButton(R.string.btn_cancel, null)
@@ -353,6 +361,16 @@ class FragmentConfig : Fragment() {
             } catch (ex: Exception) {
                 Log.e("update-list", ex.message)
             }
+        }
+    }
+
+    // 通知辅助服务配置变化
+    private fun notifyService(app: String, mode: String) {
+        if (AccessibleServiceHelper().serviceIsRunning(context!!)) {
+            val intent = Intent(context!!.getString(R.string.scene_appchange_action))
+            intent.putExtra("app", app)
+            intent.putExtra("mode", mode)
+            context!!.sendBroadcast(intent)
         }
     }
 

@@ -8,7 +8,13 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.content.res.XModuleResources;
+import android.content.res.XResources;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
+import android.view.Display;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
@@ -74,7 +80,6 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
             }
         });
 
-        /*
         XposedHelpers.findAndHookMethod(DisplayMetrics.class, "getDeviceDensity", new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
@@ -121,7 +126,7 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
         });
 
         try {
-            findAndHookMethod(Resources.class, "updateConfiguration",
+            XposedHelpers.findAndHookMethod(Resources.class, "updateConfiguration",
                     Configuration.class, DisplayMetrics.class, "android.content.res.CompatibilityInfo",
                     new XC_MethodHook() {
                         @Override
@@ -168,7 +173,7 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
                                 newMetrics.densityDpi = (int) dpi;
                                 newMetrics.scaledDensity = dpi / 160f;
                                 if (Build.VERSION.SDK_INT >= 17) {
-                                    setIntField(newConfig, "densityDpi", (int) dpi);
+                                    XposedHelpers.setIntField(newConfig, "densityDpi", (int) dpi);
                                 }
                             }
 
@@ -179,7 +184,6 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
         } catch (Throwable t) {
             XposedBridge.log(t);
         }
-        */
     }
 
     @Override

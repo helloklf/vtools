@@ -295,6 +295,7 @@ class AppDetailsActivity : AppCompatActivity() {
                             }
                             app_details_dynamic.text = ModeList.getModName(modeName)
                             _result = RESULT_OK
+                            notifyService(app, modeName)
                         }
                     })
                     .setNegativeButton(R.string.btn_cancel, DialogInterface.OnClickListener { dialog, which -> })
@@ -560,6 +561,17 @@ class AppDetailsActivity : AppCompatActivity() {
                         .create()
                 dialog.show()
             }
+        }
+    }
+
+
+    // 通知辅助服务配置变化
+    private fun notifyService(app: String, mode: String) {
+        if (AccessibleServiceHelper().serviceIsRunning(this)) {
+            val intent = Intent(this.getString(R.string.scene_appchange_action))
+            intent.putExtra("app", app)
+            intent.putExtra("mode", mode)
+            sendBroadcast(intent)
         }
     }
 

@@ -73,6 +73,9 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         screenOn = display.state == Display.STATE_ON
         dyamicCore = RootFile.fileExists(Consts.POWER_CFG_PATH)
         notifyHelper.setNotify(spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))
+        if (screenOn) {
+            forceToggleMode(lastModePackage)
+        }
         stopTimer()
         startTimer() // 配置更新后开始定时更新任务
     }
@@ -325,11 +328,15 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         sceneAppChanged = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 if (intent.extras != null) {
-                    if (intent.extras.containsKey("mode")) {
-                        lastMode = intent.getStringExtra("mode")
-                    }
-                    if (intent.extras.containsKey("app")) {
-                        //
+                    if (intent.extras.containsKey("app") && intent.extras.containsKey("mode")) {
+                        val mode = intent.getStringExtra("mode")
+                        val app = intent.getStringExtra("app")
+                        if (app == lastModePackage) {
+                            if (lastMode != mode) {
+                                toggleConfig(mode)
+                            }
+                            lastMode = mode
+                        }
                     }
                 }
             }

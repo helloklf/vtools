@@ -31,6 +31,9 @@ class DialogCustomMAC(private var context: Context) {
         val autoChange = dialog.findViewById(R.id.dialog_addin_mac_autochange) as CheckBox
         macInput.setText(spf!!.getString(SpfConfig.GLOBAL_SPF_MAC, "ec:d0:9f:af:95:01"))
         autoChange.isChecked = spf!!.getBoolean(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE, false)
+        autoChange.setOnCheckedChangeListener({ buttonView, isChecked ->
+            spf!!.edit().putBoolean(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE, isChecked).commit()
+        })
 
         AlertDialog.Builder(context).setTitle("自定义WIFI MAC").setView(dialog).setNegativeButton("确定", { _, _ ->
             val mac = macInput.text.toString().toLowerCase()
