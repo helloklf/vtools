@@ -84,6 +84,9 @@ if [ "$action" = "powersave" ]; then
 
 	echo 0 > /proc/sys/kernel/sched_boost
 
+    echo 90 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
+    echo 99 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/target_loads
+
 	exit 0
 fi
 
@@ -107,9 +110,15 @@ if [ "$action" = "balance" ]; then
 
 	echo 0 > /proc/sys/kernel/sched_boost
 
+    echo 90 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
+    echo "87 1500000:90 1800000:87" > /sys/devices/system/cpu/cpu2/cpufreq/interactive/target_loads
+
 	exit 0
 fi
 
+
+echo 90 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
+echo "80 1500000:87 1800000:95" > /sys/devices/system/cpu/cpu2/cpufreq/interactive/target_loads
 if [ "$action" = "performance" ]; then
 	echo "0:2500000 1:2500000 2:2500000 3:2500000" > /sys/module/msm_performance/parameters/cpu_max_freq
 	echo 300000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
