@@ -7,10 +7,9 @@ echo 'MIUI自带的ROOT无法使用本功能'
 echo '1.挂载/system为读写(可能会报错，问题不大)'
 
 $BUSYBOX mount -o rw,remount /system
-$BUSYBOX mount -f -o rw,remount /system
 mount -o rw,remount /system
-$BUSYBOX mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system
-mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system
+$BUSYBOX mount -o remount,rw /dev/block/bootdevice/by-name/system /system
+mount -o remount,rw /dev/block/bootdevice/by-name/system /system 2> /dev/null
 
 $BUSYBOX sed '/qemu.hw.mainkeys=/'d /system/build.prop > /cache/build.prop
 if [ $state == 1 ];then

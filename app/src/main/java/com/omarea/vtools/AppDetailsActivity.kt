@@ -525,6 +525,9 @@ class AppDetailsActivity : AppCompatActivity() {
                 val view = layoutInflater.inflate(R.layout.dpi_input, null)
                 val inputDpi = view.findViewById<EditText>(R.id.input_dpi)
                 inputDpi.setFilters(arrayOf(IntInputFilter()));
+                if (appConfigInfo.dpi >= 96) {
+                    inputDpi.setText(appConfigInfo.dpi.toString())
+                }
                 view.findViewById<Button>(R.id.btn_confirm).setOnClickListener {
                     val dpiText = inputDpi.text.toString()
                     if (dpiText.isEmpty()) {
