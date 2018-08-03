@@ -770,9 +770,14 @@ class FragmentCpuControl : Fragment() {
         cancel()
     }
 
+    override fun onDetach() {
+        super.onDetach()
+    }
+
     override fun onDestroy() {
-        super.onDestroy()
+        saveBootConfig()
         cancel()
+        super.onDestroy()
     }
 
     private fun cancel() {
