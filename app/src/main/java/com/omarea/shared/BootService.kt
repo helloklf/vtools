@@ -10,6 +10,8 @@ import android.os.Build
 import android.support.v4.app.NotificationCompat
 import com.omarea.shell.KeepShell
 import com.omarea.shell.Props
+import com.omarea.shell.cpucontrol.CpuFrequencyUtils
+import com.omarea.shell.cpucontrol.ThermalControlUtils
 import com.omarea.vtools.R
 
 /**
@@ -56,6 +58,87 @@ class BootService : IntentService("vtools-boot") {
         if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true)) {
             sb.append(CommonCmds.DisableSELinux)
             sb.append("\n\n")
+        }
+
+        val context = this.applicationContext
+        val cpuState = CpuStatusHelp().loadBootConfig(context)
+        if (cpuState != null) {
+            // thermal
+            if (cpuState.coreControl.isNotEmpty()) {
+                ThermalControlUtils.setCoreControlState(cpuState.coreControl == "1",  context);
+            }
+            if (cpuState.msmThermal.isNotEmpty()) {
+                ThermalControlUtils.setTheramlState(cpuState.msmThermal == "Y",  context);
+            }
+            if (cpuState.vdd.isNotEmpty()) {
+                ThermalControlUtils.setVDDRestrictionState(cpuState.vdd == "1",  context);
+            }
+
+            // core online
+            if (cpuState.coreOnline != null && cpuState.coreOnline.size > 0) {
+                for (i in 0 until cpuState.coreOnline.size) {
+                    CpuFrequencyUtils.setCoreOnlineState(i, cpuState.coreOnline[i])
+                }
+            }
+
+            // CPU
+            if (cpuState.cluster_little_governor.isNotEmpty()) {
+                CpuFrequencyUtils.setGovernor(cpuState.cluster_little_governor, 0, context);
+            }
+            if (cpuState.cluster_little_min_freq.isNotEmpty()) {
+                CpuFrequencyUtils.setMinFrequency(cpuState.cluster_little_min_freq, 0, context);
+            }
+            if (cpuState.cluster_little_max_freq.isNotEmpty()) {
+                CpuFrequencyUtils.setMaxFrequency(cpuState.cluster_little_max_freq, 0, context);
+            }
+            if (cpuState.cluster_big_governor.isNotEmpty()) {
+                CpuFrequencyUtils.setGovernor(cpuState.cluster_big_governor, 1, context);
+            }
+            if (cpuState.cluster_big_min_freq.isNotEmpty()) {
+                CpuFrequencyUtils.setMinFrequency(cpuState.cluster_big_min_freq, 1, context);
+            }
+            if (cpuState.cluster_big_max_freq.isNotEmpty()) {
+                CpuFrequencyUtils.setMaxFrequency(cpuState.cluster_big_max_freq, 1, context);
+            }
+
+            // Boost
+            if (cpuState.boost.isNotEmpty()) {
+                CpuFrequencyUtils.setSechedBoostState(cpuState.boost == "1", context);
+            }
+            if (cpuState.boostFreq.isNotEmpty()) {
+                CpuFrequencyUtils.setInputBoosterFreq(cpuState.boostFreq);
+            }
+            if (cpuState.boostTime.isNotEmpty()) {
+                CpuFrequencyUtils.setInputBoosterTime(cpuState.boostTime);
+            }
+
+            // GPU
+            if (cpuState.adrenoGovernor.isNotEmpty()) {
+                CpuFrequencyUtils.setAdrenoGPUGovernor(cpuState.adrenoGovernor);
+            }
+            if (cpuState.adrenoMinFreq.isNotEmpty()) {
+                CpuFrequencyUtils.setAdrenoGPUMinFreq(cpuState.adrenoMinFreq);
+            }
+            if (cpuState.adrenoMaxFreq.isNotEmpty()) {
+                CpuFrequencyUtils.setAdrenoGPUMaxFreq(cpuState.adrenoMaxFreq);
+            }
+            if (cpuState.adrenoMinPL.isNotEmpty()) {
+                CpuFrequencyUtils.setAdrenoGPUMinPowerLevel(cpuState.adrenoMinPL);
+            }
+            if (cpuState.adrenoMaxPL.isNotEmpty()) {
+                CpuFrequencyUtils.setAdrenoGPUMaxPowerLevel(cpuState.adrenoMaxPL);
+            }
+            if (cpuState.adrenoDefaultPL.isNotEmpty()) {
+                CpuFrequencyUtils.setAdrenoGPUDefaultPowerLevel(cpuState.adrenoDefaultPL);
+            }
+
+            // exynos
+            if (CpuFrequencyUtils.exynosHMP()) {
+                CpuFrequencyUtils.setExynosHotplug(cpuState.exynosHotplug);
+                CpuFrequencyUtils.setExynosHmpDown(cpuState.exynosHmpDown);
+                CpuFrequencyUtils.setExynosHmpUP(cpuState.exynosHmpUP);
+                CpuFrequencyUtils.setExynosBooster(cpuState.exynosHmpBooster);
+            }
         }
 
         if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE, false)) {

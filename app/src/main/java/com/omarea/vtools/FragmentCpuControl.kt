@@ -13,13 +13,17 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import com.omarea.shared.CpuStatusHelp
+import com.omarea.shared.FileWrite
 import com.omarea.shared.model.CpuStatus
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import com.omarea.shell.cpucontrol.ThermalControlUtils
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.ui.StringAdapter
 import kotlinx.android.synthetic.main.fragment_cpu_control.*
+import java.io.*
 import java.util.*
+import java.util.concurrent.locks.ReentrantLock
 import kotlin.collections.ArrayList
 
 
@@ -39,6 +43,7 @@ class FragmentCpuControl : Fragment() {
     private var adrenoGovernors = arrayOf("")
     private var adrenoPLevels = arrayOf("")
     private var inited = false
+    private var statusOnBoot: CpuStatus? = null
 
     private fun initData() {
         hasBigCore = CpuFrequencyUtils.getClusterInfo().size > 1
@@ -527,6 +532,7 @@ class FragmentCpuControl : Fragment() {
                 if (exynosHMP || exynosCpuhotplug) {
                     switch.isChecked = false
                 } else {
+                    saveBootConfig()
                     // TODO:采集当前参数！
                 }
             }
@@ -587,9 +593,15 @@ class FragmentCpuControl : Fragment() {
                     status.cluster_big_governor = CpuFrequencyUtils.getCurrentScalingGovernor(1)
                 }
 
-                status.coreOnline = arrayListOf()
-                for (i in 0 until coreCount) {
-                    status.coreOnline.add(CpuFrequencyUtils.getCoreOnlineState(i))
+                status.coreOnline = arrayListOf<Boolean>()
+                try {
+                    mLock.lockInterruptibly()
+                    for (i in 0 until coreCount) {
+                        status.coreOnline.add(CpuFrequencyUtils.getCoreOnlineState(i))
+                    }
+                } catch (ex: Exception) {
+                } finally {
+                    mLock.unlock()
                 }
 
                 handler.post {
@@ -600,6 +612,7 @@ class FragmentCpuControl : Fragment() {
         }).start()
     }
 
+    private val mLock = ReentrantLock()
     private fun subFreqStr(freq: String): String {
         if (freq.length > 3) {
             return freq.substring(0, freq.length - 3) + " Mhz"
@@ -719,10 +732,23 @@ class FragmentCpuControl : Fragment() {
         }).start()
     }
 
+    private fun loadBootConfig () {
+        statusOnBoot = CpuStatusHelp().loadBootConfig(context!!)
+        cpu_apply_onboot.isChecked = statusOnBoot != null
+    }
+
+    private fun saveBootConfig () {
+        if(!CpuStatusHelp().saveBootConfig(context!!, if (cpu_apply_onboot.isChecked) status else null)) {
+            Toast.makeText(context!!, "更新配置为启动设置失败！", Toast.LENGTH_SHORT).show()
+            cpu_apply_onboot.isChecked = false
+        }
+    }
+
     private var timer: Timer? = null
     override fun onResume() {
         super.onResume()
         progressBarDialog.showDialog("正在读取信息...")
+        loadBootConfig()
         if (timer == null) {
             timer = Timer()
             timer!!.schedule(object : TimerTask() {
@@ -740,6 +766,7 @@ class FragmentCpuControl : Fragment() {
 
     override fun onPause() {
         super.onPause()
+        saveBootConfig()
         cancel()
     }
 

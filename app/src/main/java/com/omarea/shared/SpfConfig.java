@@ -27,7 +27,6 @@ public class SpfConfig {
     public static String GLOBAL_SPF_AUTO_INSTALL = "is_auto_install";
     public static String GLOBAL_SPF_DISABLE_ENFORCE = "enforce_0";
     public static String GLOBAL_SPF_DISABLE_ENFORCE_CHECKING = "enforce_checking";
-    public static String GLOBAL_SPF_DEBUG = "is_debug";
     public static String GLOBAL_SPF_START_DELAY = "start_delay";
     public static String GLOBAL_SPF_DELAY = "is_delay_start";
     public static String GLOBAL_SPF_NOTIFY = "accessbility_notify";
@@ -35,7 +34,6 @@ public class SpfConfig {
     public static String GLOBAL_SPF_NIGHT_MODE = "app_night_mode";
     public static String GLOBAL_SPF_MAC = "wifi_mac";
     public static String GLOBAL_SPF_MAC_AUTOCHANGE = "wifi_mac_autochange";
-    public static String GLOBAL_SPF_DOZELIST_AUTOSET = "doze_whitelist_auto_resume";
     public static String GLOBAL_SPF_ACCU_SWITCH = "power_config_accu_switch";
     public static String GLOBAL_SPF_BATTERY_MONITORY = "power_config_battery_monitor";
     public static String GLOBAL_SPF_POWERCFG_FIRST_MODE = "powercfg_first_mode";
@@ -47,8 +45,6 @@ public class SpfConfig {
     public static String SWAP_SPF_ZRAM = "zram";
     public static String SWAP_SPF_ZRAM_SIZE = "zram_size";
     public static String SWAP_SPF_SWAPPINESS = "swappiness";
-
-    public static String WHITE_LIST_SPF = "doze_white_list";
 
     public static String KEY_EVENT_SPF = "key_event_spf";
     public static String KEY_EVENT_ONTHER_CONFIG_SPF = "key_event_spf2";
