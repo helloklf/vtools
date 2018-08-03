@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="6dp">
@@ -8,10 +8,10 @@
         android:id="@+id/select_state"
         android:layout_width="40dp"
         android:layout_height="45dp"
+        android:layout_gravity="center"
         android:clickable="false"
         android:editable="false"
         android:focusable="false"
-        android:layout_gravity="center"
         android:focusableInTouchMode="false" />
 
     <ImageView
@@ -26,35 +26,35 @@
         android:minWidth="45dp" />
 
     <TextView
-        android:layout_alignParentRight="true"
         android:id="@+id/ItemEnabledStateText"
         android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
         android:minWidth="40dp"
         android:textAlignment="textEnd"
         android:textColor="#0094ff"
-        android:textSize="12dp"
-        android:layout_height="wrap_content" />
+        android:textSize="12dp" />
 
     <TextView
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/ItemEnabledStateText"
         android:id="@+id/ItemWranText"
         android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/ItemEnabledStateText"
         android:minWidth="40dp"
         android:textAlignment="textEnd"
         android:textColor="#d00"
-        android:textSize="12dp"
-        android:layout_height="wrap_content" />
+        android:textSize="12dp" />
 
     <LinearLayout
-        android:layout_toLeftOf="@+id/ItemEnabledStateText"
         android:id="@+id/center"
-        android:layout_toRightOf="@+id/ItemIcon"
-        android:layout_gravity="fill_horizontal"
-        android:orientation="vertical"
-        android:paddingLeft="7dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_gravity="fill_horizontal"
+        android:layout_toLeftOf="@+id/ItemEnabledStateText"
+        android:layout_toRightOf="@+id/ItemIcon"
+        android:orientation="vertical"
+        android:paddingLeft="7dp">
 
         <TextView
             android:id="@+id/ItemTitle"
@@ -63,8 +63,8 @@
             android:lines="1"
             android:text=""
             android:textColor="?android:attr/textColorPrimary"
-            android:textStyle="bold"
-            android:textSize="14dp" />
+            android:textSize="14dp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/ItemText"
@@ -79,12 +79,12 @@
 
 
     <TextView
-        android:layout_toLeftOf="@+id/ItemEnabledStateText"
-        android:layout_below="@id/center"
-        android:layout_alignLeft="@+id/center"
         android:id="@+id/ItemPath"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/center"
+        android:layout_below="@id/center"
+        android:layout_toLeftOf="@+id/ItemEnabledStateText"
         android:paddingLeft="7dp"
         android:text=""
         android:textColor="#aaa"

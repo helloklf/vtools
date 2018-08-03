@@ -1,7 +1,7 @@
 package com.omarea.shell.units
 
 import android.content.Context
-import com.omarea.shell.KeepShellSync
+import com.omarea.shell.KeepShellPublic
 
 /**
  * Created by Hello on 2017/11/01.
@@ -13,6 +13,6 @@ class ChangeZRAM(private var context: Context, private var swapfilePath: String 
         sb.append("swapoff $swapfilePath >/dev/null 2>&1;\n")
         sb.append("dd if=/dev/zero of=$swapfilePath bs=1048576 count=$size;\n")
         sb.append("mkswap $swapfilePath;\n")
-        KeepShellSync.doCmdSync(sb.toString())
+        KeepShellPublic.doCmdSync(sb.toString())
     }
 }

@@ -12,9 +12,9 @@ import java.io.IOException
  * Created by helloklf on 2016/8/27.
  */
 object FileWrite {
-    var baseUrl = "${Consts.SDCardDir}/Android/data/${Consts.PACKAGE_NAME}/"
+    var baseUrl = "${CommonCmds.SDCardDir}/Android/data/${CommonCmds.PACKAGE_NAME}/"
 
-    fun WriteFile(ass: AssetManager, file: String, hasExtName: Boolean) {
+    fun writeFile(ass: AssetManager, file: String, hasExtName: Boolean): String? {
         try {
             val inputStream = ass.open(file)
             val datas = ByteArray(2 * 1024 * 1024)
@@ -49,15 +49,16 @@ object FileWrite {
             writedFile.setExecutable(true)
             writedFile.setReadable(true)
             //getApplicationContext().getClassLoader().getResourceAsStream("");
+            return filePath
         } catch (e: FileNotFoundException) {
             e.printStackTrace()
         } catch (e: IOException) {
             e.printStackTrace()
         }
-
+        return null
     }
 
-    fun WriteFile(assetManager: AssetManager, file: String, outName: String) {
+    fun writeFile(assetManager: AssetManager, file: String, outName: String): String? {
         try {
             val inputStream = assetManager.open(file)
             val datas = ByteArray(2 * 1024 * 1024)
@@ -80,9 +81,11 @@ object FileWrite {
             writedFile.setExecutable(true)
             writedFile.setReadable(true)
             //getApplicationContext().getClassLoader().getResourceAsStream("");
+            return filePath
         } catch (e: IOException) {
             e.printStackTrace()
         }
+        return null
     }
 
     fun getPrivateFileDir(context: Context): String {
@@ -93,7 +96,7 @@ object FileWrite {
         return getPrivateFileDir(context) + (if (outName.startsWith("/")) outName.substring(1, outName.length) else outName)
     }
 
-    fun WritePrivateFile(assetManager: AssetManager, file: String, outName: String, context: Context) {
+    fun writePrivateFile(assetManager: AssetManager, file: String, outName: String, context: Context): String? {
         try {
             val inputStream = assetManager.open(file)
             val datas = ByteArray(2 * 1024 * 1024)
@@ -115,13 +118,15 @@ object FileWrite {
             writedFile.setWritable(true)
             writedFile.setExecutable(true)
             writedFile.setReadable(true)
+            return filePath
             //getApplicationContext().getClassLoader().getResourceAsStream("");
         } catch (e: IOException) {
             e.printStackTrace()
         }
+        return null
     }
 
-    fun WritePrivateFile(bytes: ByteArray, outName: String, context: Context): Boolean {
+    fun writePrivateFile(bytes: ByteArray, outName: String, context: Context): Boolean {
         try {
             val dir = File(getPrivateFileDir(context))
             if (!dir.exists())

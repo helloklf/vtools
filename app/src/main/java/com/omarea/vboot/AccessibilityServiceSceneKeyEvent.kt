@@ -15,12 +15,12 @@ import com.omarea.shared.SpfConfig
 /**
  * Created by helloklf on 2016/8/27.
  */
-class AccessibilityServiceVToolsKeyEvent : AccessibilityService() {
+class AccessibilityServiceSceneKeyEvent : AccessibilityService() {
     override fun onInterrupt() {
         //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    private var eventHandlers: HashMap<Int, buttonEventHandler> = HashMap()
+    private var eventHandlers: HashMap<Int, ButtonEventHandler> = HashMap()
     private lateinit var sharedPreferences: SharedPreferences
     private var floatVitualTouchBar: FloatVitualTouchBar? = null
 
@@ -43,10 +43,10 @@ class AccessibilityServiceVToolsKeyEvent : AccessibilityService() {
                 } catch (ex: Exception) {
                 }
                 if (keyCode != Int.MIN_VALUE && !eventHandlers.containsKey(keyCode))
-                    eventHandlers.put(keyCode, buttonEventHandler(this, keyCode, sharedPreferences))
+                    eventHandlers.put(keyCode, ButtonEventHandler(this, keyCode, sharedPreferences))
             }
         } catch (ex: Exception) {
-            Toast.makeText(this, ex.message, Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, ex.message, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -59,7 +59,7 @@ class AccessibilityServiceVToolsKeyEvent : AccessibilityService() {
         return false
     }
 
-    private class buttonEventHandler(private var accessibilityService: AccessibilityService, private var keyCode: Int, private var spf: SharedPreferences) {
+    private class ButtonEventHandler(private var accessibilityService: AccessibilityService, private var keyCode: Int, private var spf: SharedPreferences) {
         private var downTime: Long = -1
         private var downTimeDefault: Long = -1
         private var longClickTime: Long = 300;

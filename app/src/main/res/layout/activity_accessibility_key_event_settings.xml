@@ -18,59 +18,67 @@
             android:id="@+id/key_sets"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="56dp"
             android:orientation="vertical"
-            android:paddingBottom="20dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="20dp">
+            android:paddingTop="56dp">
 
-            <TextView android:layout_marginLeft="4dp" android:layout_marginRight="4dp"
+            <Button
                 android:id="@+id/key_event_state"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#22888888"
-                android:gravity="center_horizontal"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/btn_bg"
+                android:gravity="center"
                 android:padding="13dp"
                 android:text="" />
 
             <android.support.v7.widget.CardView
-                android:layout_marginTop="30dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp">
+
                 <TextView
-                    android:padding="8dp"
                     style="@style/textSmall"
-                    android:text="这是一个比较简单的按键映射程序，也不会增加更多可设置的按键，因为它通过辅助服务实现，只支持这么多按键事件！\n\n你需要保持“微工具箱 - 按键辅助”持续后台运行才能使用按键自定义功能！\n\n修改配置以后，需要重新启动“微工具箱 - 按键辅助”才会生效！"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    android:text="这是一个比较简单的按键映射程序，也不会增加更多可设置的按键，因为它通过辅助服务实现，只支持这么多按键事件！\n\n你需要保持“Scene - 按键辅助”持续后台运行才能使用按键自定义功能！\n\n修改配置以后，需要重新启动“Scene - 按键辅助”才会生效！" />
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
-                android:layout_marginTop="30dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp">
+
                 <LinearLayout
-                    android:padding="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
                     <Switch
                         android:id="@+id/key_event_vitual_touch_bar"
-                        android:layout_marginTop="10dp"
                         style="@style/textTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
                         android:paddingLeft="8dp"
                         android:paddingRight="8dp"
                         android:text="底部边缘触控" />
+
                     <TextView
+                        style="@style/textSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
                         android:paddingLeft="8dp"
                         android:paddingRight="8dp"
-                        style="@style/textSmall"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" android:text="在全面屏手机上，轻触你的下巴（屏幕底部）即可操作你的手机，节省屏幕空间又简单易用，需要为工具箱开启悬浮窗（在应用上层显示）权限！" />
+                        android:text="在全面屏手机上，轻触你的下巴（屏幕底部）即可操作你的手机，节省屏幕空间又简单易用，需要为Scene开启悬浮窗（在应用上层显示）权限！" />
                     <!--<TextView
                         android:layout_marginTop="16dp"
                         android:paddingLeft="8dp"
@@ -85,87 +93,90 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content" android:max="100" />-->
                     <TextView
+                        style="@style/textTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
                         android:paddingLeft="8dp"
                         android:paddingRight="8dp"
-                        android:text="布局方式"
-                        style="@style/textTitle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:text="布局方式" />
 
                     <Spinner
                         android:id="@+id/key_event_vitual_touch_bar_map"
-                        android:entries="@array/vitual_touch_bar_map"
-                        android:layout_marginTop="6dp"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:entries="@array/vitual_touch_bar_map" />
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
-                android:layout_marginTop="30dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp">
 
                 <LinearLayout
-                    android:padding="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="8dp">
 
                     <Switch
-                        android:tag="3"
                         android:id="@+id/key_home"
                         style="@style/textTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingLeft="8dp"
                         android:paddingRight="8dp"
+                        android:tag="3"
                         android:text="HOME" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+
                         <TextView
-                            android:text="单击"
+                            style="@style/textSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            style="@style/textSmall"
                             android:paddingLeft="10dp"
-                            android:paddingTop="10dp" />
+                            android:paddingTop="10dp"
+                            android:text="单击" />
+
                         <TextView
-                            android:text="长按"
+                            style="@style/textSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            style="@style/textSmall"
                             android:paddingLeft="10dp"
-                            android:paddingTop="10dp" />
+                            android:paddingTop="10dp"
+                            android:text="长按" />
                     </LinearLayout>
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
                         <Spinner
-                            android:tag="3_click"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:entries="@array/powercfg_modes"
                             android:paddingBottom="10dp"
-                            android:paddingTop="10dp" />
+                            android:paddingTop="10dp"
+                            android:tag="3_click" />
 
                         <Spinner
-                            android:tag="3_long_click"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:entries="@array/powercfg_modes"
                             android:paddingBottom="10dp"
-                            android:paddingTop="10dp" />
+                            android:paddingTop="10dp"
+                            android:tag="3_long_click" />
                     </LinearLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
@@ -173,43 +184,47 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp">
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp">
 
                 <LinearLayout
-                    android:padding="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="8dp">
 
                     <Switch
-                        android:tag="4"
                         style="@style/textTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingLeft="8dp"
                         android:paddingRight="8dp"
+                        android:tag="4"
                         android:text="BACK" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+
                         <TextView
-                            android:text="单击"
+                            style="@style/textSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            style="@style/textSmall"
                             android:paddingLeft="10dp"
-                            android:paddingTop="10dp" />
+                            android:paddingTop="10dp"
+                            android:text="单击" />
+
                         <TextView
-                            android:text="长按"
+                            style="@style/textSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            style="@style/textSmall"
                             android:paddingLeft="10dp"
-                            android:paddingTop="10dp" />
+                            android:paddingTop="10dp"
+                            android:text="长按" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -218,22 +233,20 @@
                         android:orientation="horizontal">
 
                         <Spinner
-                            android:tag="4_click"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:entries="@array/powercfg_modes"
                             android:paddingBottom="10dp"
-                            android:paddingTop="10dp" />
+                            android:paddingTop="10dp"
+                            android:tag="4_click" />
 
                         <Spinner
-                            android:tag="4_long_click"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:entries="@array/powercfg_modes"
                             android:paddingBottom="10dp"
-                            android:paddingTop="10dp" />
+                            android:paddingTop="10dp"
+                            android:tag="4_long_click" />
                     </LinearLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
@@ -241,43 +254,47 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp">
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp">
 
                 <LinearLayout
-                    android:padding="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="8dp">
 
                     <Switch
-                        android:tag="82"
                         style="@style/textTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingLeft="8dp"
                         android:paddingRight="8dp"
+                        android:tag="82"
                         android:text="MENU" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+
                         <TextView
-                            android:text="单击"
+                            style="@style/textSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            style="@style/textSmall"
                             android:paddingLeft="10dp"
-                            android:paddingTop="10dp" />
+                            android:paddingTop="10dp"
+                            android:text="单击" />
+
                         <TextView
-                            android:text="长按"
+                            style="@style/textSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            style="@style/textSmall"
                             android:paddingLeft="10dp"
-                            android:paddingTop="10dp" />
+                            android:paddingTop="10dp"
+                            android:text="长按" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -286,22 +303,20 @@
                         android:orientation="horizontal">
 
                         <Spinner
-                            android:tag="82_click"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:entries="@array/powercfg_modes"
                             android:paddingBottom="10dp"
-                            android:paddingTop="10dp" />
+                            android:paddingTop="10dp"
+                            android:tag="82_click" />
 
                         <Spinner
-                            android:tag="82_long_click"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:entries="@array/powercfg_modes"
                             android:paddingBottom="10dp"
-                            android:paddingTop="10dp" />
+                            android:paddingTop="10dp"
+                            android:tag="82_long_click" />
                     </LinearLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
@@ -309,42 +324,48 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp" android:layout_marginBottom="30dp">
+                android:layout_marginBottom="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp">
+
                 <LinearLayout
-                    android:padding="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="8dp">
 
                     <Switch
-                        android:tag="187"
                         style="@style/textTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingLeft="8dp"
                         android:paddingRight="8dp"
+                        android:tag="187"
                         android:text="APP_SWITCH" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+
                         <TextView
-                            android:text="单击"
+                            style="@style/textSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            style="@style/textSmall"
                             android:paddingLeft="10dp"
-                            android:paddingTop="10dp" />
+                            android:paddingTop="10dp"
+                            android:text="单击" />
+
                         <TextView
-                            android:text="长按"
+                            style="@style/textSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            style="@style/textSmall"
                             android:paddingLeft="10dp"
-                            android:paddingTop="10dp" />
+                            android:paddingTop="10dp"
+                            android:text="长按" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -353,22 +374,20 @@
                         android:orientation="horizontal">
 
                         <Spinner
-                            android:tag="187_click"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:entries="@array/powercfg_modes"
                             android:paddingBottom="10dp"
-                            android:paddingTop="10dp" />
+                            android:paddingTop="10dp"
+                            android:tag="187_click" />
 
                         <Spinner
-                            android:tag="187_long_click"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:entries="@array/powercfg_modes"
                             android:paddingBottom="10dp"
-                            android:paddingTop="10dp" />
+                            android:paddingTop="10dp"
+                            android:tag="187_long_click" />
                     </LinearLayout>
                 </LinearLayout>
             </android.support.v7.widget.CardView>

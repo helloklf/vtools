@@ -2,6 +2,8 @@ package com.omarea.vboot
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.os.Build
@@ -9,7 +11,9 @@ import android.view.*
 import android.view.WindowManager.LayoutParams
 import android.widget.Button
 import android.widget.CheckBox
+import android.widget.RelativeLayout
 import android.widget.TextView
+import com.omarea.shared.AccessibleServiceHelper
 import com.omarea.shared.ModeList
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.helper.NotifyHelper
@@ -59,6 +63,7 @@ class FloatPowercfgSelector {
         // 设置flag
 
         val flags = WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
+        flags.and(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         // | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         // 如果设置了WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE，弹出的View收不到Back键的事件
         params.flags = flags
@@ -87,13 +92,25 @@ class FloatPowercfgSelector {
         }
     }
 
+    /**
+     * 重启辅助服务
+     */
+    private fun reStartService(app: String, mode: String) {
+        if (AccessibleServiceHelper().serviceIsRunning(mContext!!)) {
+            val intent = Intent(mContext!!.getString(R.string.scene_appchange_action))
+            intent.putExtra("app", app)
+            intent.putExtra("mode", mode)
+            mContext!!.sendBroadcast(intent)
+        }
+    }
+
     @SuppressLint("ApplySharedPref")
     private fun setUpView(context: Context, packageName: String): View {
         val view = LayoutInflater.from(context).inflate(R.layout.fw_powercfg_selector, null)
 
-
         val spfPowercfg = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
-        val mode = spfPowercfg.getString(packageName, "balance")
+        val globalSPF = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+        val mode = spfPowercfg.getString(packageName, globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance"))
 
         try {
             val pm = context.packageManager
@@ -101,6 +118,12 @@ class FloatPowercfgSelector {
             (view.findViewById<View>(R.id.fw_title) as TextView).text = packageInfo.applicationInfo.loadLabel(pm).toString()
         } catch (ex: Exception) {
             (view.findViewById<View>(R.id.fw_title) as TextView).text = packageName
+        }
+
+
+        if (!context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false)) {
+            view.findViewById<RelativeLayout>(R.id.popup_window).setBackgroundColor(Color.WHITE)
+            view.findViewById<TextView>(R.id.fw_title).setTextColor(Color.BLACK)
         }
 
         val btn_powersave = view.findViewById<TextView>(R.id.btn_powersave)
@@ -115,26 +138,26 @@ class FloatPowercfgSelector {
             btn_gamemode.text = "游戏"
             btn_fastmode.text = "极速"
             when (selectedMode) {
-                modeList.BALANCE -> btn_defaultmode.text = "均衡 √"
-                modeList.PERFORMANCE -> btn_gamemode.text = "游戏 √"
-                modeList.POWERSAVE -> btn_powersave!!.text = "省电 √"
-                modeList.FAST -> btn_fastmode!!.text = "极速 √"
+                ModeList.BALANCE -> btn_defaultmode.text = "均衡 √"
+                ModeList.PERFORMANCE -> btn_gamemode.text = "游戏 √"
+                ModeList.POWERSAVE -> btn_powersave!!.text = "省电 √"
+                ModeList.FAST -> btn_fastmode!!.text = "极速 √"
             }
         }
         btn_powersave.setOnClickListener {
-            selectedMode = modeList.POWERSAVE
+            selectedMode = ModeList.POWERSAVE
             updateUI.run()
         }
         btn_defaultmode.setOnClickListener {
-            selectedMode = modeList.BALANCE
+            selectedMode = ModeList.BALANCE
             updateUI.run()
         }
         btn_gamemode.setOnClickListener {
-            selectedMode = modeList.PERFORMANCE
+            selectedMode = ModeList.PERFORMANCE
             updateUI.run()
         }
         btn_fastmode.setOnClickListener {
-            selectedMode = modeList.FAST
+            selectedMode = ModeList.FAST
             updateUI.run()
         }
 
@@ -147,12 +170,11 @@ class FloatPowercfgSelector {
                 modeList.executePowercfgModeOnce(selectedMode, packageName)
                 modeList.setCurrent(selectedMode, packageName)
             }
+            spfPowercfg.edit().putString(packageName, selectedMode).commit()
             it.postDelayed(Runnable {
                 NotifyHelper(context, true).notify()
+                reStartService(packageName, selectedMode)
             }, 1000)
-            if (view.findViewById<CheckBox>(R.id.save_config).isChecked) {
-                spfPowercfg.edit().putString(packageName, selectedMode).commit()
-            }
 
             //Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);
             //context.startActivity(intent);

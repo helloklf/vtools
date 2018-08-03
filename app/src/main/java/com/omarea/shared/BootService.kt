@@ -8,8 +8,8 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.support.v4.app.NotificationCompat
+import com.omarea.shell.KeepShell
 import com.omarea.shell.Props
-import com.omarea.shell.SysUtils
 import com.omarea.vboot.R
 
 /**
@@ -20,6 +20,7 @@ class BootService : IntentService("vtools-boot") {
     private lateinit var swapConfig: SharedPreferences
     private lateinit var globalConfig: SharedPreferences
     private var isFirstBoot = true
+    private var bootCancel = false
 
     override fun onHandleIntent(intent: Intent?) {
         swapConfig = this.getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)
@@ -33,15 +34,16 @@ class BootService : IntentService("vtools-boot") {
         val r = Props.getProp("vtools.boot")
         if (!r.isEmpty()) {
             isFirstBoot = false
+            bootCancel = true
             return
         }
         Thread(Runnable {
             val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                nm.createNotificationChannel(NotificationChannel("vtool-boot", "自启动提示", NotificationManager.IMPORTANCE_LOW))
-                nm.notify(1, NotificationCompat.Builder(this, "vtool-boot").setSmallIcon(R.drawable.ic_menu_digital).setSubText("微工具箱").setContentText("正在执行自启动脚本...").build())
+                nm.createNotificationChannel(NotificationChannel("vtool-boot", getString(R.string.notice_channel_boot), NotificationManager.IMPORTANCE_LOW))
+                nm.notify(1, NotificationCompat.Builder(this, "vtool-boot").setSmallIcon(R.drawable.ic_menu_digital).setSubText(getString(R.string.app_name)).setContentText(getString(R.string.boot_script_running)).build())
             } else {
-                nm.notify(1, NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_menu_digital).setSubText("微工具箱").setContentText("正在执行自启动脚本...").build())
+                nm.notify(1, NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_menu_digital).setSubText(getString(R.string.app_name)).setContentText(getString(R.string.boot_script_running)).build())
             }
         }).start()
         autoBoot()
@@ -52,7 +54,7 @@ class BootService : IntentService("vtools-boot") {
         val sb = StringBuilder()
 
         if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true)) {
-            sb.append(Consts.DisableSELinux)
+            sb.append(CommonCmds.DisableSELinux)
             sb.append("\n\n")
         }
 
@@ -100,8 +102,10 @@ class BootService : IntentService("vtools-boot") {
         sb.append("\n\n")
         sb.append("setprop vtools.boot 1")
         sb.append("\n\n")
-        SysUtils.executeCommandWithOutput(true, sb.toString())
+        val keepShell = KeepShell()
+        keepShell.doCmdSync(sb.toString())
 
+        /*
         if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DOZELIST_AUTOSET, false)) {
             val sb2 = StringBuilder("")
             sb2.append("\n\n")
@@ -120,25 +124,23 @@ class BootService : IntentService("vtools-boot") {
             sb2.append("\n\n")
 
             Thread.sleep(120 * 1000)
-            SysUtils.executeCommandWithOutput(true, sb2.toString())
-            stopSelf()
-        } else {
-            stopSelf()
+            keepShell.doCmdSync(sb2.toString())
         }
-    }
-
-    override fun onCreate() {
-        super.onCreate()
+        */
+        keepShell.tryExit()
+        stopSelf()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            nm.createNotificationChannel(NotificationChannel("vtool-boot", "自启动提示", NotificationManager.IMPORTANCE_LOW))
-            nm.notify(1, NotificationCompat.Builder(this, "vtool-boot").setSmallIcon(R.drawable.ic_menu_digital).setSubText("微工具箱").setContentText("已完成开机自启动").build())
-        } else {
-            nm.notify(1, NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_menu_digital).setSubText("微工具箱").setContentText("已完成开机自启动").build())
+        if (!bootCancel) {
+            val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                nm.createNotificationChannel(NotificationChannel("vtool-boot", getString(R.string.notice_channel_boot), NotificationManager.IMPORTANCE_LOW))
+                nm.notify(1, NotificationCompat.Builder(this, "vtool-boot").setSmallIcon(R.drawable.ic_menu_digital).setSubText(getString(R.string.app_name)).setContentText(getString(R.string.boot_success)).build())
+            } else {
+                nm.notify(1, NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_menu_digital).setSubText(getString(R.string.app_name)).setContentText(getString(R.string.boot_success)).build())
+            }
         }
         System.exit(0)
     }

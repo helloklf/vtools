@@ -8,8 +8,8 @@ import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import com.omarea.shared.Consts
-import com.omarea.shell.KeepShellSync
+import com.omarea.shared.CommonCmds
+import com.omarea.shell.KeepShellPublic
 import com.omarea.vboot.R
 
 /**
@@ -60,7 +60,7 @@ class DialogAddinModifydevice(var context: Context) {
             val manufacturer = editManufacturer.text.trim()
             if (model.isNotEmpty() || brand.isNotEmpty() || product.isNotEmpty() || device.isNotEmpty() || manufacturer.isNotEmpty()) {
                 backupDefault()
-                sb.append(Consts.MountSystemRW)
+                sb.append(CommonCmds.MountSystemRW)
                 sb.append("cp /system/build.prop /data/build.prop;chmod 0644 /data/build.prop;")
 
                 if (brand.isNotEmpty())
@@ -81,7 +81,7 @@ class DialogAddinModifydevice(var context: Context) {
                 sb.append("sync\n")
                 sb.append("reboot\n")
 
-                KeepShellSync.doCmdSync(sb.toString())
+                KeepShellPublic.doCmdSync(sb.toString())
             } else {
                 Toast.makeText(context, "什么也没有修改！", Toast.LENGTH_SHORT).show()
             }

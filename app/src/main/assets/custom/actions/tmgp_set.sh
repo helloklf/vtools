@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-#环境变量由微工具箱提供
+#环境变量由Scene提供
 #echo "TEMP_DIR=$TEMP_DIR"
 #echo "ANDROID_UID=$ANDROID_UID"
 #echo "ANDROID_SDK=$ANDROID_SDK"
@@ -15,7 +15,7 @@ dir="/data/user/${USER_ID}/com.tencent.tmgp.sgame/shared_prefs"
 prefs="${dir}/com.tencent.tmgp.sgame.v2.playerprefs.xml"
 
 if [ ! -f "$prefs" ]; then
-  echo '没找到配置文件，如果你刚更新了版本，请先启动一次游戏！！！'
+  echo '没找到配置脚本，如果你刚更新了版本，请先启动一次游戏！！！'
   exit;
 fi
 

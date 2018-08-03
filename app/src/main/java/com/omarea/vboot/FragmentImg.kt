@@ -14,7 +14,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.SimpleAdapter
 import android.widget.Toast
-import com.omarea.shared.Consts
+import com.omarea.shared.CommonCmds
 import com.omarea.shell.units.BackupRestoreUnit
 import kotlinx.android.synthetic.main.layout_img.*
 import java.io.File
@@ -30,7 +30,7 @@ class FragmentImg : Fragment() {
     }
 
     //获取SD卡可用空间
-    fun GetSDFreeSizeMB(): Long {
+    fun getSDFreeSizeMB(): Long {
         val stat = StatFs(Environment.getDataDirectory().path)
         return stat.availableBytes / 1024 / 1024 //剩余空间
     }
@@ -60,23 +60,23 @@ class FragmentImg : Fragment() {
         img_action_listview.onItemClickListener = AdapterView.OnItemClickListener { _, view, position, _ ->
             when (position) {
                 0 -> {
-                    if (GetSDFreeSizeMB() < 100) {
+                    if (getSDFreeSizeMB() < 100) {
                         Snackbar.make(view, context!!.getString(R.string.backup_space_small), Snackbar.LENGTH_LONG).show()
                         return@OnItemClickListener
                     }
-                    if (File("${Consts.SDCardDir}/boot.img").exists()) {
+                    if (File("${CommonCmds.SDCardDir}/boot.img").exists()) {
                         val builder = AlertDialog.Builder(context!!)
                         builder.setTitle(context!!.getString(R.string.backup_file_exists))
                         builder.setNegativeButton(android.R.string.cancel, null)
                         builder.setPositiveButton(android.R.string.yes) { _, _ ->
                             //导出boot
-                            BackupRestoreUnit(activity!!).SaveBoot()
+                            BackupRestoreUnit(activity!!).saveBoot()
                         }
                         builder.setMessage(context!!.getString(R.string.backup_boot_exists))
                         builder.create().show()
                     } else {
                         //导出boot
-                        BackupRestoreUnit(activity!!).SaveBoot()
+                        BackupRestoreUnit(activity!!).saveBoot()
                     }
                 }
                 1 -> {
@@ -85,23 +85,23 @@ class FragmentImg : Fragment() {
                     startActivityForResult(intent, BOOT_IMG_SELECTOR)
                 }
                 2 -> {
-                    if (GetSDFreeSizeMB() < 100) {
+                    if (getSDFreeSizeMB() < 100) {
                         Snackbar.make(view, context!!.getString(R.string.backup_space_small), Snackbar.LENGTH_LONG).show()
                         return@OnItemClickListener
                     }
-                    if (File("${Consts.SDCardDir}/recovery.img").exists()) {
+                    if (File("${CommonCmds.SDCardDir}/recovery.img").exists()) {
                         val builder = AlertDialog.Builder(context!!)
                         builder.setTitle(context!!.getString(R.string.backup_file_exists))
                         builder.setNegativeButton(android.R.string.cancel, null)
                         builder.setPositiveButton(android.R.string.yes) { _, _ ->
                             //导出rec
-                            BackupRestoreUnit(context!!).SaveRecovery()
+                            BackupRestoreUnit(context!!).saveRecovery()
                         }
                         builder.setMessage(context!!.getString(R.string.backup_rec_exists))
                         builder.create().show()
                     } else {
                         //导出rec
-                        BackupRestoreUnit(context!!).SaveRecovery()
+                        BackupRestoreUnit(context!!).saveRecovery()
                     }
                 }
                 3 -> {
@@ -135,7 +135,7 @@ class FragmentImg : Fragment() {
                             .setTitle(getString(R.string.flash_confirm))
                             .setNegativeButton(android.R.string.cancel, null)
                             .setPositiveButton(android.R.string.yes) { _, _ ->
-                                BackupRestoreUnit(context!!).FlashRecovery(path)
+                                BackupRestoreUnit(context!!).flashRecovery(path)
                             }
                             .setMessage("此操作将刷入${path}到系统Recovery分区，应用无法验证该文件是否有效，你需要自己确保该recovery镜像适合本设备使用！")
                             .create().show()
@@ -152,7 +152,7 @@ class FragmentImg : Fragment() {
                             .setTitle(getString(R.string.flash_confirm))
                             .setNegativeButton(android.R.string.cancel, null)
                             .setPositiveButton(android.R.string.yes) { _, _ ->
-                                BackupRestoreUnit(activity!!).FlashBoot(path)
+                                BackupRestoreUnit(activity!!).flashBoot(path)
                             }
                             .setMessage("此操作将刷入${path}到系统Boot分区，我十分不推荐你这么做，刷入无效的Boot文件可能导致你的设备无法启动。如果你没有办法在设备无法启动时紧急恢复。")
                             .create().show()

@@ -2,37 +2,40 @@ package com.omarea.vboot
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.IBinder
 import android.provider.Settings
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.AdapterView.OnItemClickListener
 import android.widget.CheckBox
 import android.widget.Switch
 import android.widget.Toast
 import com.omarea.shared.*
 import com.omarea.shared.model.Appinfo
-import com.omarea.shell.KeepShellSync
+import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.Platform
-import com.omarea.ui.AppListAdapter
 import com.omarea.ui.OverScrollListView
 import com.omarea.ui.ProgressBarDialog
+import com.omarea.ui.SceneModeAdapter
 import com.omarea.ui.SearchTextWatcher
+import com.omarea.vaddin.IAppConfigAidlInterface
 import kotlinx.android.synthetic.main.layout_config.*
+import org.json.JSONObject
 import java.io.File
 import java.nio.charset.Charset
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class FragmentConfig : Fragment() {
@@ -40,39 +43,77 @@ class FragmentConfig : Fragment() {
     private lateinit var spfPowercfg: SharedPreferences
     private lateinit var globalSPF: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
-    private var hasSystemApp = false
     private lateinit var applistHelper: AppListHelper
-
     internal val myHandler: Handler = Handler()
-
-    private var defaultList: ArrayList<Appinfo>? = null
-    private var gameList: ArrayList<Appinfo>? = null
-    private var powersaveList: ArrayList<Appinfo>? = null
-    private var fastList: ArrayList<Appinfo>? = null
-    private var ignoredList: ArrayList<Appinfo>? = null
     private var installedList: ArrayList<Appinfo>? = null
-
+    private var displayList: ArrayList<Appinfo>? = null
     private var packageManager: PackageManager? = null
+    private lateinit var appConfigStore: AppConfigStore
+    private var firstMode = "balance"
+    private var vAddinsInstalled = false
+    private var aidlConn: IAppConfigAidlInterface? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.layout_config, container, false)
+    private var conn = object : ServiceConnection {
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            aidlConn = IAppConfigAidlInterface.Stub.asInterface(service)
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            aidlConn = null
+        }
+    }
+
+    private fun bindService() {
+        try {
+            if (packageManager!!.getPackageInfo("com.omarea.vaddin", 0) == null) {
+                return
+            }
+        } catch (ex: Exception) {
+            return
+        }
+        if (aidlConn != null) {
+            return
+        }
+        try {
+            val intent = Intent();
+            //绑定服务端的service
+            intent.setAction("com.omarea.vaddin.ConfigUpdateService");
+            //新版本（5.0后）必须显式intent启动 绑定服务
+            intent.setComponent(ComponentName("com.omarea.vaddin", "com.omarea.vaddin.ConfigUpdateService"));
+            //绑定的时候服务端自动创建
+            if (context!!.bindService(intent, conn, Context.BIND_AUTO_CREATE)) {
+            } else {
+                throw Exception("")
+            }
+        } catch (ex: Exception) {
+            Toast.makeText(this.context, "连接到“Scene-高级设定”插件失败，请不要阻止插件自启动！", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.layout_config, container, false)
+    private lateinit var modeList: ModeList
 
     override fun onResume() {
         super.onResume()
-
+        bindService()
         val serviceState = AccessibleServiceHelper().serviceIsRunning(context!!)
         btn_config_service_not_active.visibility = if (serviceState) View.GONE else View.VISIBLE
-        btn_config_dynamicservice_not_active.visibility = if (!context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false)) View.VISIBLE else View.GONE
     }
 
     @SuppressLint("CommitPrefEdits", "ApplySharedPref")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        if (packageManager == null) {
+            packageManager = context!!.packageManager
+        }
+
+        modeList = ModeList(context!!)
         processBarDialog = ProgressBarDialog(context!!)
         applistHelper = AppListHelper(context!!)
         spfPowercfg = context!!.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         editor = spfPowercfg.edit()
+        firstMode = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance")
+        appConfigStore = AppConfigStore(this.context)
 
         if (spfPowercfg.all.isEmpty()) {
             initDefaultConfig()
@@ -104,128 +145,99 @@ class FragmentConfig : Fragment() {
                 }
             }).start()
         }
-        btn_config_dynamicservice_not_active.setOnClickListener {
-            val intent = Intent(context, ActivityAccessibilitySettings::class.java)
-            startActivity(intent)
-        }
 
         configlist_tabhost.setup()
 
-        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("def_tab").setContent(R.id.configlist_tab0).setIndicator("均衡"))
-        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("game_tab").setContent(R.id.configlist_tab1).setIndicator("性能"))
-        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("power_tab").setContent(R.id.configlist_tab2).setIndicator("省电"))
-        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("fast_tab").setContent(R.id.configlist_tab3).setIndicator("极速"))
-        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("fast_tab").setContent(R.id.configlist_tab4).setIndicator("忽略"))
+        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("def_tab").setContent(R.id.configlist_tab0).setIndicator("应用场景"))
+        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("tab_3").setContent(R.id.blacklist_tab3).setIndicator(context!!.getString(R.string.autobooster_tab_system_scene)))
         configlist_tabhost.addTab(configlist_tabhost.newTabSpec("confg_tab").setContent(R.id.configlist_tab5).setIndicator("设置"))
         configlist_tabhost.currentTab = 0
-        configlist_tabhost.setOnTabChangedListener { config_addtodefaultlist.visibility = if (configlist_tabhost.currentTab > 4) View.GONE else View.VISIBLE }
 
-        config_addtodefaultlist.setOnClickListener {
-            when (configlist_tabhost.currentTab) {
-                0 -> {
-                    val builder = AlertDialog.Builder(context)
-                    val items = arrayOf(getString(R.string.addto_performance), getString(R.string.addto_powersave), getString(R.string.addto_fast), getString(R.string.addto_ignore), "恢复默认模式")
-                    val configses = arrayOf(Configs.Game, Configs.PowerSave, Configs.Fast, Configs.Ignored, Configs.Unkonow)
-                    builder.setItems(items) { _, which ->
-                        val listadapter = config_defaultlist.adapter as AppListAdapter
-                        addToList(defaultList!!, listadapter.states, configses[which])
-                    }
-                    builder.setIcon(R.drawable.ic_menu_profile).setTitle(getString(R.string.set_power_mode)).create().show()
-                }
-                1 -> {
-                    val builder = AlertDialog.Builder(context)
-                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_powersave), getString(R.string.addto_fast), getString(R.string.addto_ignore), "恢复默认模式")
-                    val configses = arrayOf(Configs.Default, Configs.PowerSave, Configs.Fast, Configs.Ignored, Configs.Unkonow)
-                    builder.setItems(items) { _, which ->
-                        val listadapter = config_gamelist.adapter as AppListAdapter
-                        addToList(gameList!!, listadapter.states, configses[which])
-                    }
-                    builder.setIcon(R.drawable.ic_menu_profile).setTitle(getString(R.string.set_power_mode)).create().show()
-                }
-                2 -> {
-                    val builder = AlertDialog.Builder(context)
-                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_performance), getString(R.string.addto_fast), getString(R.string.addto_ignore), "恢复默认模式")
-                    val configses = arrayOf(Configs.Default, Configs.Game, Configs.Fast, Configs.Ignored, Configs.Unkonow)
-                    builder.setItems(items) { _, which ->
-                        val listadapter = config_powersavelist.adapter as AppListAdapter
-                        addToList(powersaveList!!, listadapter.states, configses[which])
-                    }
-                    builder.setIcon(R.drawable.ic_menu_profile).setTitle(getString(R.string.set_power_mode)).create().show()
-                }
-                3 -> {
-                    val builder = AlertDialog.Builder(context)
-                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_performance), getString(R.string.addto_powersave), getString(R.string.addto_ignore), "恢复默认模式")
-                    val configses = arrayOf(Configs.Default, Configs.Game, Configs.PowerSave, Configs.Ignored, Configs.Unkonow)
-                    builder.setItems(items) { _, which ->
-                        val listadapter = config_fastlist.adapter as AppListAdapter
-                        addToList(fastList!!, listadapter.states, configses[which])
-                    }
-                    builder.setIcon(R.drawable.ic_menu_profile).setTitle(getString(R.string.set_power_mode)).create().show()
-                }
-                4 -> {
-                    val builder = AlertDialog.Builder(context)
-                    val items = arrayOf(getString(R.string.addto_balance), getString(R.string.addto_performance), getString(R.string.addto_powersave), getString(R.string.addto_fast), "恢复默认模式")
-                    val configses = arrayOf(Configs.Default, Configs.Game, Configs.PowerSave, Configs.Fast, Configs.Unkonow)
-                    builder.setItems(items) { _, which ->
-                        val listadapter = config_ignoredlist.adapter as AppListAdapter
-                        addToList(ignoredList!!, listadapter.states, configses[which])
-                    }
-                    builder.setIcon(R.drawable.ic_menu_profile).setTitle(getString(R.string.set_power_mode)).create().show()
-                }
-            }
-        }
-
-        config_showSystemApp.isChecked = hasSystemApp
-        config_showSystemApp.setOnClickListener {
-            hasSystemApp = config_showSystemApp.isChecked
-            loadList(true)
-        }
-        lock_screen_optimize.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE, false)
-        lock_screen_optimize.setOnClickListener {
-            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_LOCK_SCREEN_OPTIMIZE, (it as Switch).isChecked).commit()
-        }
         accu_switch.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
         accu_switch.setOnClickListener {
             globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, (it as Switch).isChecked).commit()
+            reStartService()
         }
         battery_monitor.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
         battery_monitor.setOnClickListener {
             globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, (it as Switch).isChecked).commit()
+            reStartService()
         }
-
-        config_defaultlist.onItemClickListener = OnItemClickListener { _, current, position, _ ->
-            val selectState = current.findViewById(R.id.select_state) as CheckBox
-            selectState.isChecked = !selectState.isChecked
-            defaultList!![position].selectState = !selectState.isChecked
+        config_defaultlist.setOnItemClickListener { parent, view, position, id ->
+            try {
+                val item = (parent.adapter.getItem(position) as Appinfo)
+                val intent = Intent(this.context, AppDetailsActivity::class.java)
+                intent.putExtra("app", item.packageName)
+                startActivityForResult(intent, REQUEST_APP_CONFIG)
+                lastClickRow = view
+            } catch (ex: Exception) {
+            }
         }
+        config_defaultlist.setOnItemLongClickListener { parent, view, position, id ->
+            val item = (parent.adapter.getItem(position) as Appinfo)
+            var originIndex = 0
+            when (spfPowercfg.getString(item.packageName.toString(), firstMode)) {
+                ModeList.POWERSAVE -> originIndex = 0
+                ModeList.BALANCE -> originIndex = 1
+                ModeList.PERFORMANCE -> originIndex = 2
+                ModeList.FAST -> originIndex = 3
+                else -> originIndex = 4
+            }
+            var currentMode = originIndex
+            AlertDialog.Builder(context)
+                    .setTitle(item.appName.toString())
+                    .setSingleChoiceItems(arrayOf("省电模式（阅读）", "均衡模式（日常）", "性能模式（游戏）", "极速模式（跑分）", "跟随默认模式"), originIndex, DialogInterface.OnClickListener { dialog, which ->
+                        currentMode = which
+                    })
+                    .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                        if (currentMode != originIndex) {
+                            var modeName = ""
+                            when (currentMode) {
+                                0 -> modeName = ModeList.POWERSAVE
+                                1 -> modeName = ModeList.BALANCE
+                                2 -> modeName = ModeList.PERFORMANCE
+                                3 -> modeName = ModeList.FAST
+                                4 -> modeName = ""
+                            }
 
-        config_gamelist.onItemClickListener = OnItemClickListener { _, current, position, _ ->
-            val selectState = current.findViewById(R.id.select_state) as CheckBox
-            selectState.isChecked = !selectState.isChecked
-            gameList!![position].selectState = !selectState.isChecked
-        }
+                            if (modeName.isEmpty()) {
+                                spfPowercfg.edit().remove(item.packageName.toString()).commit()
+                            } else {
+                                spfPowercfg.edit().putString(item.packageName.toString(), modeName).commit()
+                            }
 
-        config_powersavelist.onItemClickListener = OnItemClickListener { _, current, position, _ ->
-            val selectState = current.findViewById(R.id.select_state) as CheckBox
-            selectState.isChecked = !selectState.isChecked
-            powersaveList!![position].selectState = !selectState.isChecked
-        }
-
-        config_fastlist.onItemClickListener = OnItemClickListener { _, current, position, _ ->
-            val selectState = current.findViewById(R.id.select_state) as CheckBox
-            selectState.isChecked = !selectState.isChecked
-            fastList!![position].selectState = !selectState.isChecked
-        }
-
-        config_ignoredlist.onItemClickListener = OnItemClickListener { _, current, position, _ ->
-            val selectState = current.findViewById(R.id.select_state) as CheckBox
-            selectState.isChecked = !selectState.isChecked
-            ignoredList!![position].selectState = !selectState.isChecked
+                            setAppRowDesc(item)
+                            (config_defaultlist.adapter as SceneModeAdapter).updateRow(position, view)
+                            notifyService(item.packageName.toString(), modeName)
+                        }
+                    })
+                    .setNeutralButton(R.string.btn_cancel, null)
+                    .create()
+                    .show()
+            true
         }
 
         config_search_box.addTextChangedListener(SearchTextWatcher(Runnable {
             loadList()
         }))
+        configlist_modes.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                loadList()
+            }
+        }
+        configlist_type.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+                //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                loadList()
+            }
+        }
 
         loadList()
 
@@ -238,9 +250,22 @@ class FragmentConfig : Fragment() {
             "igoned" -> first_mode.setSelection(4)
         }
         first_mode.onItemSelectedListener = ModeOnItemSelectedListener(globalSPF, Runnable {
+            reStartService()
             loadList()
         })
 
+
+        val spfAutoConfig = context!!.getSharedPreferences(SpfConfig.BOOSTER_SPF_CFG_SPF, Context.MODE_PRIVATE)
+
+        bindSPF(auto_switch_network_on_wifi, spfAutoConfig, SpfConfig.WIFI + SpfConfig.ON, false)
+        bindSPF(auto_switch_network_on_data, spfAutoConfig, SpfConfig.DATA + SpfConfig.ON, false)
+        bindSPF(auto_switch_network_on_nfc, spfAutoConfig, SpfConfig.NFC + SpfConfig.ON, false)
+        bindSPF(auto_switch_network_on_gps, spfAutoConfig, SpfConfig.GPS + SpfConfig.ON, false)
+
+        bindSPF(auto_switch_network_off_wifi, spfAutoConfig, SpfConfig.WIFI + SpfConfig.OFF, false)
+        bindSPF(auto_switch_network_off_data, spfAutoConfig, SpfConfig.DATA + SpfConfig.OFF, false)
+        bindSPF(auto_switch_network_off_nfc, spfAutoConfig, SpfConfig.NFC + SpfConfig.OFF, false)
+        bindSPF(auto_switch_network_off_gps, spfAutoConfig, SpfConfig.GPS + SpfConfig.OFF, false)
         config_customer_powercfg.setOnClickListener {
             try {
                 val intent = Intent(this.context, ActivityFileSelector::class.java)
@@ -253,11 +278,26 @@ class FragmentConfig : Fragment() {
         config_customer_powercfg_online.setOnClickListener {
             getOnlineConfig()
         }
+
+        config_adv.setOnClickListener {
+            try {
+                val intent = Intent(this.context, ActivityAdvSettings::class.java)
+                startActivity(intent)
+            } catch (ex: Exception) {
+            }
+        }
+        accessbility_notify.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true)
+        accessbility_notify.setOnClickListener({
+            val checked = (it as Switch).isChecked
+            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, checked).commit()
+            reStartService()
+        })
     }
 
     private val REQUEST_POWERCFG_FILE = 1
     private val REQUEST_POWERCFG_ONLINE = 2
     private val REQUEST_APP_CONFIG = 0
+    private var lastClickRow: View? = null
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -271,19 +311,22 @@ class FragmentConfig : Fragment() {
                         return
                     }
                     val lines = file.readLines(Charset.defaultCharset())
-                    val configStar = if (lines.size > 0) lines[0] else ""
+                    val configStar = if (lines.isNotEmpty()) lines[0] else ""
                     if (configStar.startsWith("#!/") && configStar.endsWith("sh")) {
-                        val cmds = StringBuilder("cp '$path' ${Consts.POWER_CFG_PATH}\n")
-                        cmds.append("chmod 0755 ${Consts.POWER_CFG_PATH}\n\n")
-                        cmds.append("if [[ -f ${Consts.POWER_CFG_PATH} ]]; then \n")
-                        cmds.append("chmod 0775 ${Consts.POWER_CFG_PATH};")
-                        cmds.append("busybox sed -i 's/^M//g' ${Consts.POWER_CFG_PATH};")
+                        val cmds = StringBuilder("cp '$path' ${CommonCmds.POWER_CFG_PATH}\n")
+                        cmds.append("chmod 0755 ${CommonCmds.POWER_CFG_PATH}\n\n")
+                        cmds.append("if [[ -f ${CommonCmds.POWER_CFG_PATH} ]]; then \n")
+                        cmds.append("chmod 0775 ${CommonCmds.POWER_CFG_PATH};")
+                        cmds.append("busybox sed -i 's/^M//g' ${CommonCmds.POWER_CFG_PATH};")
                         cmds.append("fi;")
-                        //cmds.append("if [[ -f ${Consts.POWER_CFG_BASE} ]]; then \n")
-                        //  cmds.append("chmod 0775 ${Consts.POWER_CFG_BASE};")
-                        //  cmds.append("busybox sed -i 's/^M//g' ${Consts.POWER_CFG_BASE};")
+                        //cmds.append("if [[ -f ${CommonCmds.POWER_CFG_BASE} ]]; then \n")
+                        //  cmds.append("chmod 0775 ${CommonCmds.POWER_CFG_BASE};")
+                        //  cmds.append("busybox sed -i 's/^M//g' ${CommonCmds.POWER_CFG_BASE};")
                         //cmds.append("fi;")
-                        KeepShellSync.doCmdSync(cmds.toString())
+                        if (KeepShellPublic.doCmdSync(cmds.toString()) != "error") {
+                            Toast.makeText(context, "动态响应配置脚本已安装！", Toast.LENGTH_SHORT).show()
+                            reStartService()
+                        }
                     } else {
                         Toast.makeText(context, "这似乎是个无效的脚本文件！", Toast.LENGTH_LONG).show()
                     }
@@ -293,7 +336,66 @@ class FragmentConfig : Fragment() {
             }
             return
         } else if (requestCode == REQUEST_POWERCFG_ONLINE) {
+            if (resultCode == Activity.RESULT_OK) {
+                reStartService()
+            }
+        } else if (requestCode == REQUEST_APP_CONFIG && data != null && displayList != null) {
+            try {
+                if (resultCode == RESULT_OK) {
+                    val adapter = (config_defaultlist.adapter as SceneModeAdapter)
+                    var index = -1
+                    val packageName = data.extras.getString("app")
+                    for (i in 0 until displayList!!.size) {
+                        if (displayList!![i].packageName == packageName) {
+                            index = i
+                        }
+                    }
+                    if (index < 0) {
+                        return
+                    }
+                    val item = adapter.getItem(index)
+                    setAppRowDesc(item)
+                    (config_defaultlist.adapter as SceneModeAdapter).updateRow(index, lastClickRow!!)
+                    //loadList(false)
+                }
+            } catch (ex: Exception) {
+                Log.e("update-list", ex.message)
+            }
+        }
+    }
 
+    // 通知辅助服务配置变化
+    private fun notifyService(app: String, mode: String) {
+        if (AccessibleServiceHelper().serviceIsRunning(context!!)) {
+            val intent = Intent(context!!.getString(R.string.scene_appchange_action))
+            intent.putExtra("app", app)
+            intent.putExtra("mode", mode)
+            context!!.sendBroadcast(intent)
+        }
+    }
+
+    /**
+     * 重启辅助服务
+     */
+    private fun reStartService() {
+        if (AccessibleServiceHelper().serviceIsRunning(context!!)) {
+            context!!.sendBroadcast(Intent(context!!.getString(R.string.scene_change_action)))
+        }
+    }
+
+    @SuppressLint("ApplySharedPref")
+    private fun bindSPF(checkBox: Switch, spf: SharedPreferences, prop: String, defValue: Boolean = false) {
+        checkBox.isChecked = spf.getBoolean(prop, defValue)
+        checkBox.setOnCheckedChangeListener { _, isChecked ->
+            spf.edit().putBoolean(prop, isChecked).commit()
+        }
+    }
+
+    @SuppressLint("ApplySharedPref")
+    private fun bindSPF(checkBox: CheckBox, spf: SharedPreferences, prop: String, defValue: Boolean = false) {
+        checkBox.isChecked = spf.getBoolean(prop, defValue)
+        checkBox.setOnCheckedChangeListener { _, isChecked ->
+            spf.edit().putBoolean(prop, isChecked).commit()
         }
     }
 
@@ -303,18 +405,19 @@ class FragmentConfig : Fragment() {
 
         @SuppressLint("ApplySharedPref")
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            var mode = "balance";
+            var mode = "balance"
             when (position) {
-                0 -> mode = "powersave";
-                1 -> mode = "balance";
-                2 -> mode = "performance";
-                3 -> mode = "fast";
-                4 -> mode = "igoned";
+                0 -> mode = "powersave"
+                1 -> mode = "balance"
+                2 -> mode = "performance"
+                3 -> mode = "fast"
+                4 -> mode = "igoned"
             }
-            globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, mode).commit()
-            runnable.run()
+            if (globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "") != mode) {
+                globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, mode).commit()
+                runnable.run()
+            }
         }
-
     }
 
     private fun initDefaultConfig() {
@@ -332,20 +435,24 @@ class FragmentConfig : Fragment() {
 
     private fun sortAppList(list: ArrayList<Appinfo>): ArrayList<Appinfo> {
         list.sortWith(Comparator { l, r ->
-            val les = l.enabledState.toString()
-            val res = r.enabledState.toString()
-            when {
-                les < res -> -1
-                les > res -> 1
-                else -> {
-                    val lp = l.packageName.toString()
-                    val rp = r.packageName.toString()
-                    when {
-                        lp < rp -> -1
-                        lp > rp -> 1
-                        else -> 0
+            try {
+                val les = l.enabledState.toString()
+                val res = r.enabledState.toString()
+                when {
+                    les < res -> -1
+                    les > res -> 1
+                    else -> {
+                        val lp = l.packageName.toString()
+                        val rp = r.packageName.toString()
+                        when {
+                            lp < rp -> -1
+                            lp > rp -> 1
+                            else -> 0
+                        }
                     }
                 }
+            } catch (ex: Exception) {
+                0
             }
         })
         return list
@@ -353,80 +460,123 @@ class FragmentConfig : Fragment() {
 
     private fun setListData(dl: ArrayList<Appinfo>?, lv: OverScrollListView) {
         myHandler.post {
-            lv.adapter = AppListAdapter(context!!, dl!!)
+            lv.adapter = SceneModeAdapter(context!!, dl!!)
             processBarDialog.hideDialog()
         }
     }
 
+    private var onLoading = false
     @SuppressLint("ApplySharedPref")
     private fun loadList(foreceReload: Boolean = false) {
-        processBarDialog.showDialog()
-        if (packageManager == null) {
-            packageManager = context!!.packageManager
+        if (this.isDetached) {
+            return
         }
+        if (onLoading) {
+            return
+        }
+        processBarDialog.showDialog()
 
         Thread(Runnable {
+            onLoading = true
             if (foreceReload || installedList == null || installedList!!.size == 0) {
                 installedList = ArrayList()/*在数组中存放数据*/
-                val hasSystemApp = hasSystemApp
-                installedList = if (hasSystemApp) applistHelper.getAll() else applistHelper.getUserAppList()
-                sortAppList(installedList!!)
+                installedList = applistHelper.getAll()
             }
-            defaultList = ArrayList()
-            gameList = ArrayList()
-            powersaveList = ArrayList()
-            fastList = ArrayList()
-            ignoredList = ArrayList()
 
-            val keyword = config_search_box.text.toString()
+            val keyword = config_search_box.text.toString().toLowerCase()
             val search = keyword.isNotEmpty()
-            val firstMode = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance")
+            var filterMode = ""
+            var filterAppType = ""
+            when (configlist_type.selectedItemPosition) {
+                0 -> filterAppType = "/data"
+                1 -> filterAppType = "/system"
+                2 -> filterAppType = "*"
+            }
+            when (configlist_modes.selectedItemPosition) {
+                0 -> filterMode = "*"
+                1 -> filterMode = ModeList.POWERSAVE
+                2 -> filterMode = ModeList.BALANCE
+                3 -> filterMode = ModeList.PERFORMANCE
+                4 -> filterMode = ModeList.FAST
+                5 -> filterMode = ModeList.IGONED
+            }
+            displayList = ArrayList()
             for (i in installedList!!.indices) {
                 val item = installedList!![i]
-                item.selectState = false
+                setAppRowDesc(item)
                 val packageName = item.packageName.toString()
-                if (search && !(packageName.contains(keyword) || item.appName.toString().contains(keyword))) {
+                if (search && !(packageName.toLowerCase().contains(keyword) || item.appName.toString().toLowerCase().contains(keyword))) {
                     continue
-                }
-                val config = spfPowercfg.getString(packageName, firstMode)
-                when (config) {
-                    "powersave" -> powersaveList!!.add(installedList!![i])
-                    "performance" -> gameList!!.add(installedList!![i])
-                    "game" -> {
-                        gameList!!.add(installedList!![i])
-                        spfPowercfg.edit().putString(installedList!![i].packageName.toString(), "performance").commit()
+                } else {
+                    if (filterMode == "*" || filterMode == spfPowercfg.getString(packageName, firstMode)) {
+                        if (filterAppType == "*" || item.path.startsWith(filterAppType)) {
+                            displayList!!.add(item)
+                        }
                     }
-                    "default" -> {
-                        defaultList!!.add(installedList!![i])
-                        spfPowercfg.edit().remove(installedList!![i].packageName.toString()).commit()
-                    }
-                    "fast" -> fastList!!.add(installedList!![i])
-                    "igoned" -> ignoredList!!.add(installedList!![i])
-                    else -> defaultList!!.add(installedList!![i])
                 }
             }
+            sortAppList(displayList!!)
             myHandler.post {
                 processBarDialog.hideDialog()
-                setListData(defaultList, config_defaultlist)
-                setListData(gameList, config_gamelist)
-                setListData(powersaveList, config_powersavelist)
-                setListData(fastList, config_fastlist)
-                setListData(ignoredList, config_ignoredlist)
+                setListData(displayList, config_defaultlist)
             }
+            onLoading = false
         }).start()
     }
 
-    private fun getOnlineConfig() {
-        try {
-            val intent = Intent(this.context, ActivityAddinOnline::class.java)
-            intent.putExtra("url", "https://github.com/yc9559/cpufreq-interactive-opt/tree/master/vtools-powercfg")
-            startActivityForResult(intent, REQUEST_POWERCFG_ONLINE)
-        } catch (ex: Exception) {
-            Toast.makeText(context!!, "启动在线页面失败！", Toast.LENGTH_SHORT).show()
+    private fun setAppRowDesc(item: Appinfo) {
+        item.selectState = false
+        val packageName = item.packageName.toString()
+        item.enabledState = spfPowercfg.getString(packageName, "")
+        val configInfo = appConfigStore.getAppConfig(packageName)
+        item.appConfigInfo = configInfo
+        val desc = StringBuilder()
+        if (configInfo.aloneLight && configInfo.aloneLightValue > 0) {
+            desc.append("亮度：${configInfo.aloneLightValue}  ")
         }
+        if (configInfo.disNotice) {
+            desc.append("屏蔽通知  ")
+        }
+        if (configInfo.disButton) {
+            desc.append("屏蔽按键  ")
+        }
+        if (configInfo.disBackgroundRun) {
+            desc.append("阻止后台 ")
+        }
+        if (aidlConn != null) {
+            try {
+                val configJson = aidlConn!!.getAppConfig(configInfo.packageName)
+                val config = JSONObject(configJson)
+                for (key in config.keys()) {
+                    when (key) {
+                        "dpi" -> {
+                            configInfo.dpi = config.getInt(key)
+                        }
+                        "excludeRecent" -> {
+                            configInfo.excludeRecent = config.getBoolean(key)
+                        }
+                        "smoothScroll" -> {
+                            configInfo.smoothScroll = config.getBoolean(key)
+                        }
+                    }
+                }
+            } catch (ex: Exception) {
+
+            }
+        }
+        if (configInfo.dpi > 0) {
+            desc.append("DPI:${configInfo.dpi}  ")
+        }
+        if (configInfo.excludeRecent) {
+            desc.append("隐藏后台  ")
+        }
+        if (configInfo.smoothScroll) {
+            desc.append("滚动优化  ")
+        }
+        item.desc = desc.toString()
     }
 
-    //检查配置文件是否已经安装
+    //检查配置脚本是否已经安装
     private fun checkConfig() {
         val support = Platform().dynamicSupport(context!!)
         if (support) {
@@ -439,7 +589,7 @@ class FragmentConfig : Fragment() {
             }
         }
         when {
-            File(Consts.POWER_CFG_PATH).exists() -> {
+            File(CommonCmds.POWER_CFG_PATH).exists() -> {
                 //TODO：检查是否更新
             }
             support -> {
@@ -461,7 +611,10 @@ class FragmentConfig : Fragment() {
             else ->
                 AlertDialog.Builder(context)
                         .setTitle(getString(R.string.not_support_config))
-                        .setMessage(String.format(getString(R.string.not_support_config_desc), Consts.POWER_CFG_PATH))
+                        .setMessage(String.format(getString(R.string.not_support_config_desc), CommonCmds.POWER_CFG_PATH))
+                        .setPositiveButton(getString(R.string.get_online_config), { _, _ ->
+                            getOnlineConfig()
+                        })
                         .setNegativeButton(getString(R.string.more), { _, _ ->
                             val intent = Intent()
                             //Intent intent = new Intent(Intent.ACTION_VIEW,uri);
@@ -470,11 +623,19 @@ class FragmentConfig : Fragment() {
                             intent.data = content_url
                             startActivity(intent)
                         })
-                        .setPositiveButton(getString(R.string.get_online_config), { _, _ ->
-                            getOnlineConfig()
-                        })
                         .create()
                         .show()
+        }
+    }
+
+
+    private fun getOnlineConfig() {
+        try {
+            val intent = Intent(this.context, ActivityAddinOnline::class.java)
+            intent.putExtra("url", "https://github.com/yc9559/cpufreq-interactive-opt/tree/master/vtools-powercfg")
+            startActivityForResult(intent, REQUEST_POWERCFG_ONLINE)
+        } catch (ex: Exception) {
+            Toast.makeText(context!!, "启动在线页面失败！", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -490,51 +651,19 @@ class FragmentConfig : Fragment() {
         try {
             ConfigInstaller().installPowerConfig(context!!, "", useBigCore)
             Snackbar.make(view!!, getString(R.string.config_installed), Snackbar.LENGTH_LONG).show()
+            reStartService()
         } catch (ex: Exception) {
             Snackbar.make(view!!, getString(R.string.config_install_fail) + ex.message, Snackbar.LENGTH_LONG).show()
         }
     }
 
-    /**
-     * 从当前列表中获取已选中的应用，添加到指定模式
-     *
-     * @param list     当前列表
-     * @param postions 各个序号的选中状态
-     * @param config   指定的新模式
-     */
-    private fun addToList(list: ArrayList<Appinfo>, postions: HashMap<Int, Boolean>, config: Configs) {
-        postions.keys
-                .filter { postions[it] == true }
-                .map { list[it] }
-                .forEach {
-                    when (config) {
-                        Configs.Default -> editor.putString(it.packageName.toString(), "balance")
-                        Configs.Game -> editor.putString(it.packageName.toString(), "performance")
-                        Configs.PowerSave -> editor.putString(it.packageName.toString(), "powersave")
-                        Configs.Fast -> editor.putString(it.packageName.toString(), "fast")
-                        Configs.Ignored -> editor.putString(it.packageName.toString(), "igoned")
-                        Configs.Unkonow -> editor.remove(it.packageName.toString())
-                    }
-                }
-        editor.commit()
-        try {
-            loadList()
-        } catch (ex: Exception) {
-        }
-    }
-
     override fun onDestroy() {
+        if (aidlConn != null) {
+            context!!.unbindService(conn)
+            aidlConn = null
+        }
         processBarDialog.hideDialog()
         super.onDestroy()
-    }
-
-    internal enum class Configs {
-        Default,
-        Game,
-        PowerSave,
-        Fast,
-        Ignored,
-        Unkonow
     }
 
     companion object {

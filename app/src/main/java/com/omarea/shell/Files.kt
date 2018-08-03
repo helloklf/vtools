@@ -7,7 +7,7 @@ import android.os.StatFs
  */
 
 object Files {
-    fun GetDirFreeSizeMB(dir: String): Long {
+    fun getDirFreeSizeMB(dir: String): Long {
         val stat = StatFs(dir)
         val size = stat.availableBytes
         return size / 1024 / 1024 //剩余空间

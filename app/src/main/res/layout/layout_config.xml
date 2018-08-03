@@ -6,16 +6,6 @@
     android:orientation="vertical"
     tools:context="com.omarea.vboot.FragmentConfig">
 
-    <EditText
-        android:id="@+id/config_search_box"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#33dddddd"
-        android:hint="搜索 应用名或PackageName"
-        android:inputType="textFilter"
-        android:padding="8dp"
-        android:singleLine="true" />
-
     <TabHost
         android:id="@+id/configlist_tabhost"
         android:layout_width="match_parent"
@@ -43,58 +33,166 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:background="#22dddddd">
+
+                        <EditText
+                            android:id="@+id/config_search_box"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:hint="搜索应用名"
+                            android:inputType="textFilter"
+                            android:padding="8dp"
+                            android:singleLine="true"
+                            android:textSize="16dp" />
+
+                        <Spinner
+                            android:id="@+id/configlist_type"
+                            android:layout_width="110dp"
+                            android:layout_height="match_parent"
+                            android:entries="@array/powercfg_apptype_filter"
+                            android:focusable="false"
+                            android:padding="0dp" />
+
+                        <Spinner
+                            android:id="@+id/configlist_modes"
+                            android:layout_width="110dp"
+                            android:layout_height="match_parent"
+                            android:entries="@array/powercfg_modes_filter"
+                            android:focusable="false"
+                            android:padding="0dp" />
+                    </LinearLayout>
+
                     <com.omarea.ui.OverScrollListView
                         android:id="@+id/config_defaultlist"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="50dp" />
                 </FrameLayout>
 
                 <FrameLayout
-                    android:id="@+id/configlist_tab1"
+                    android:id="@+id/blacklist_tab3"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="match_parent">
 
-                    <com.omarea.ui.OverScrollListView
-                        android:id="@+id/config_gamelist"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-                </FrameLayout>
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="12dp">
 
-                <FrameLayout
-                    android:id="@+id/configlist_tab2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="亮屏时开启（解锁后）" />
 
-                    <com.omarea.ui.OverScrollListView
-                        android:id="@+id/config_powersavelist"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-                </FrameLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="30dp"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
 
-                <FrameLayout
-                    android:id="@+id/configlist_tab3"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                            <CheckBox
+                                android:id="@+id/auto_switch_network_on_wifi"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                android:text="WIFI" />
 
-                    <com.omarea.ui.OverScrollListView
-                        android:id="@+id/config_fastlist"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-                </FrameLayout>
+                            <CheckBox
+                                android:id="@+id/auto_switch_network_on_data"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                android:text="Data" />
 
-                <FrameLayout
-                    android:id="@+id/configlist_tab4"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                            <CheckBox
+                                android:id="@+id/auto_switch_network_on_nfc"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                android:text="NFC" />
 
-                    <com.omarea.ui.OverScrollListView
-                        android:id="@+id/config_ignoredlist"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                            <CheckBox
+                                android:id="@+id/auto_switch_network_on_gps"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                android:text="GPS" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="息屏后关闭（延迟30秒）" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
+
+                            <CheckBox
+                                android:id="@+id/auto_switch_network_off_wifi"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                android:text="WIFI" />
+
+                            <CheckBox
+                                android:id="@+id/auto_switch_network_off_data"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                android:text="Data" />
+
+                            <CheckBox
+                                android:id="@+id/auto_switch_network_off_nfc"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                android:text="NFC" />
+
+                            <CheckBox
+                                android:id="@+id/auto_switch_network_off_gps"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                android:text="GPS" />
+                        </LinearLayout>
+
+                        <Switch
+                            android:id="@+id/auto_clear_ignore_chager"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:padding="8dp"
+                            android:text="@string/auto_clear_ignore_chager"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginTop="8dp"
+                            android:paddingLeft="8dp"
+                            android:text="@string/auto_clear_ignore_chager_desc"
+                            android:textAppearance="?android:attr/textAppearanceSmall"
+                            android:visibility="gone" />
+                    </LinearLayout>
                 </FrameLayout>
 
                 <FrameLayout
@@ -102,41 +200,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <android.support.design.widget.FloatingActionButton
-                        android:id="@+id/config_addconfig"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom|center"
-                        android:layout_margin="@dimen/fab_margin"
-                        android:src="@drawable/add"
-                        android:visibility="gone" />
-
                     <com.omarea.ui.OverScrollView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent">
+
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:padding="8dp">
-
-                            <Switch
-                                android:id="@+id/config_showSystemApp"
-                                style="@style/textTitle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="3dp"
-                                android:padding="8dp"
-                                android:text="显示系统应用" />
-
-                            <TextView
-                                style="@style/textSmall"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="10dp"
-                                android:layout_marginTop="5dp"
-                                android:paddingLeft="8dp"
-                                android:text="在列表中显示系统应用" />
 
                             <LinearLayout
                                 android:id="@+id/config_cfg_select"
@@ -178,131 +250,40 @@
 
                                     <Button
                                         android:id="@+id/config_cfg_select_0"
-                                        android:layout_width="55dp"
+                                        android:layout_width="75dp"
                                         android:layout_height="30dp"
                                         android:layout_gravity="center"
                                         android:layout_marginLeft="20dp"
                                         android:background="@android:color/transparent"
-                                        android:textColor="@color/colorPrimary"
-                                        android:text="保守" />
+                                        android:text="保守风格"
+                                        android:textColor="@color/colorPrimary" />
 
                                     <Button
                                         android:id="@+id/config_cfg_select_1"
-                                        android:layout_width="55dp"
+                                        android:layout_width="75dp"
                                         android:layout_height="30dp"
                                         android:layout_gravity="center"
                                         android:layout_marginLeft="20dp"
                                         android:background="@android:color/transparent"
-                                        android:textColor="@color/colorPrimary"
-                                        android:text="激进" />
+                                        android:text="激进风格"
+                                        android:textColor="@color/colorPrimary" />
                                 </LinearLayout>
                             </LinearLayout>
 
-                            <Switch
-                                android:id="@+id/lock_screen_optimize"
-                                style="@style/textTitle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="20dp"
-                                android:paddingLeft="8dp"
-                                android:paddingRight="8dp"
-                                android:text="锁屏优化" />
-
-                            <TextView
-                                style="@style/textSmall"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:paddingLeft="8dp"
-                                android:paddingRight="8dp"
-                                android:text="锁屏后自动切换省电模式，息屏后自动恢复" />
-
-                            <Switch
-                                android:id="@+id/accu_switch"
-                                style="@style/textTitle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="20dp"
-                                android:paddingLeft="8dp"
-                                android:paddingRight="8dp"
-                                android:text="精准切换" />
-
-                            <TextView
-                                style="@style/textSmall"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:paddingLeft="8dp"
-                                android:paddingRight="8dp"
-                                android:text="切换配置模式严格检查当前前台应用，避免悬浮窗抢占焦点导致意外的模式切换，但这会在频繁切换应用时增加耗电" />
-
-                            <Switch
-                                android:id="@+id/battery_monitor"
-                                style="@style/textTitle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="20dp"
-                                android:paddingLeft="8dp"
-                                android:paddingRight="8dp"
-                                android:text="耗电检测" />
-
-                            <TextView
-                                style="@style/textSmall"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:paddingLeft="8dp"
-                                android:paddingRight="8dp"
-                                android:text="加快常驻通知电流显示刷新，获得更精准的耗电速度信息，会增加亮屏时后台耗电（待机自动暂停）" />
-
                             <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="20dp"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    style="@style/textTitle"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:paddingLeft="8dp"
-                                    android:paddingRight="8dp"
-                                    android:text="默认模式" />
-
-                                <Spinner
-                                    android:id="@+id/first_mode"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical|right"
-                                    android:layout_marginLeft="38dp"
-                                    android:layout_marginRight="8dp"
-                                    android:entries="@array/powercfg_modes" />
-                            </LinearLayout>
-
-                            <TextView
-                                style="@style/textSmall"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:paddingLeft="8dp"
-                                android:paddingRight="8dp"
-                                android:text="新安装的应用默认使用的模式" />
-
-                            <LinearLayout
-                                android:layout_marginTop="30dp"
-                                android:gravity="center_vertical"
                                 android:id="@+id/config_cfg_customer"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:layout_marginTop="20dp"
+                                android:gravity="center_vertical"
                                 android:orientation="horizontal">
 
                                 <LinearLayout
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:gravity="center_vertical"
                                     android:layout_gravity="center_vertical"
                                     android:layout_weight="1"
+                                    android:gravity="center_vertical"
                                     android:orientation="vertical">
 
                                     <TextView
@@ -325,32 +306,192 @@
                                 <LinearLayout
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:gravity="center_vertical"
                                     android:layout_gravity="center_vertical"
+                                    android:gravity="center_vertical"
                                     android:orientation="vertical">
 
                                     <Button
                                         android:id="@+id/config_customer_powercfg"
-                                        android:layout_width="55dp"
+                                        android:layout_width="75dp"
                                         android:layout_height="30dp"
                                         android:layout_gravity="center"
                                         android:layout_marginLeft="20dp"
                                         android:background="@android:color/transparent"
-                                        android:text="本地"
+                                        android:text="本地选择"
                                         android:textColor="@color/colorPrimary" />
 
                                     <Button
                                         android:id="@+id/config_customer_powercfg_online"
-                                        android:layout_width="55dp"
+                                        android:layout_width="75dp"
                                         android:layout_height="30dp"
                                         android:layout_gravity="center"
                                         android:layout_marginLeft="20dp"
                                         android:background="@android:color/transparent"
-                                        android:textColor="@color/colorPrimary"
-                                        android:text="在线" />
+                                        android:text="在线获取"
+                                        android:textColor="@color/colorPrimary" />
                                 </LinearLayout>
                             </LinearLayout>
 
+                            <Switch
+                                android:id="@+id/accu_switch"
+                                style="@style/textTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="20dp"
+                                android:paddingLeft="8dp"
+                                android:text="精准切换" />
+
+                            <TextView
+                                style="@style/textSmall"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="70dp"
+                                android:text="切换配置模式严格检查当前前台应用，避免悬浮窗抢占焦点导致意外的模式切换，但这会在频繁切换应用时增加耗电" />
+
+                            <Switch
+                                android:id="@+id/battery_monitor"
+                                style="@style/textTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="30dp"
+                                android:paddingLeft="8dp"
+                                android:text="耗电检测"
+                                android:visibility="gone" />
+
+                            <TextView
+                                style="@style/textSmall"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp"
+                                android:text="加快常驻通知电流显示刷新，获得更精准的耗电速度信息，会增加亮屏时后台耗电（待机自动暂停）"
+                                android:visibility="gone" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="30dp"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    style="@style/textTitle"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_weight="1"
+                                    android:paddingLeft="8dp"
+                                    android:paddingRight="8dp"
+                                    android:text="默认模式" />
+
+                                <Spinner
+                                    android:id="@+id/first_mode"
+                                    android:layout_width="110dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical|right"
+                                    android:entries="@array/powercfg_modes"
+                                    android:paddingRight="0dp" />
+                            </LinearLayout>
+
+                            <TextView
+                                style="@style/textSmall"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp"
+                                android:text="没有单独设置模式的应用，将默认使用此模式" />
+
+
+                            <Switch
+                                android:id="@+id/accessbility_notify"
+                                style="@style/textTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="30dp"
+                                android:paddingLeft="8dp"
+                                android:text="@string/accessbility_notify" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingBottom="8dp"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp"
+                                android:text="@string/accessbility_notify_desc"
+                                style="@style/textSmall" />
+
+                            <android.support.v7.widget.CardView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="20dp"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginRight="8dp"
+                                android:layout_marginTop="30dp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:padding="8dp">
+
+                                    <TextView
+                                        style="@style/textSmall"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="10dp"
+                                        android:text="改动说明："
+                                        android:textColor="@color/colorPrimary" />
+
+                                    <TextView
+                                        style="@style/textSmall"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="原微工具箱中的锁屏优化选项，现已默认开启不再提供手动控制\n\n此外，相对于老版本，动态响应配置脚本位置有所变化，也不再需要手动放置，可直接在Scene里选择脚本即可自动安装\n\n另外，非常感谢yc对Scene适配，提供了更多机型的配置脚本文件，你也可以在本界面点击“在线”去安装" />
+
+                                    <TextView
+                                        style="@style/textSmall"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="10dp"
+                                        android:text="长按应用可快速选择配置模式哦！"
+                                        android:textColor="@color/colorPrimary" />
+
+                                </LinearLayout>
+                            </android.support.v7.widget.CardView>
+
+                            <android.support.v7.widget.CardView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="20dp"
+                                android:layout_marginLeft="8dp"
+                                android:layout_marginRight="8dp"
+                                android:layout_marginTop="10dp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical"
+                                    android:padding="8dp">
+
+                                    <TextView
+                                        android:id="@+id/config_adv"
+                                        style="@style/textTitle"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginBottom="10dp"
+                                        android:text="专家选项 >>"
+                                        android:textColor="@color/colorPrimary" />
+
+                                    <TextView
+                                        style="@style/textSmall"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="改变“场景模式”辅助功能基本运作逻辑的选项。一般保持默认就好了！！！" />
+                                </LinearLayout>
+                            </android.support.v7.widget.CardView>
                         </LinearLayout>
                     </com.omarea.ui.OverScrollView>
                 </FrameLayout>
@@ -360,25 +501,9 @@
         <Button
             android:id="@+id/btn_config_service_not_active"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="55dp"
             android:background="#eee"
             android:text="未激活辅助服务 - 点击去激活" />
-
-        <Button
-            android:id="@+id/btn_config_dynamicservice_not_active"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#eee"
-            android:text="动态响应功能未开启 - 点击去激活" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/config_addtodefaultlist"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center"
-            android:layout_margin="@dimen/fab_margin"
-            android:src="@drawable/check"
-            android:visibility="visible" />
     </TabHost>
 
 </LinearLayout>

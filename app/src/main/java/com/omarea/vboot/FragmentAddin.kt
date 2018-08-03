@@ -56,13 +56,13 @@ class FragmentAddin : Fragment() {
     private fun initAddin(view: View) {
         val listItem = ArrayList<HashMap<String, Any>>().apply {
             add(createItem(getString(R.string.addin_qq_clear), getString(R.string.addin_qq_clear_desc), Runnable { QQStyleUnit(context!!).showOption() }, false))
-            add(createItem(getString(R.string.addin_fullscreen_on), getString(R.string.addin_fullscreen_on_desc), Runnable { FullScreenAddin(context!!).FullScreen() }, false))
-            add(createItem(getString(R.string.addin_flyme_static_blur), getString(R.string.addin_flyme_static_blur_desc), Runnable { FlymeUnit().StaticBlur() }))
+            add(createItem(getString(R.string.addin_fullscreen_on), getString(R.string.addin_fullscreen_on_desc), Runnable { FullScreenAddin(context!!).fullScreen() }, false))
+            add(createItem(getString(R.string.addin_flyme_static_blur), getString(R.string.addin_flyme_static_blur_desc), Runnable { FlymeUnit().staticBlur() }))
             add(createItem(getString(R.string.addin_miui_hide_search), getString(R.string.addin_miui_hide_search_desc), Runnable { MiuiAddin(context!!).hideSearch() }))
             add(createItem(getString(R.string.addin_disable_x), getString(R.string.addin_disable_x_desc), Runnable { NetworkChecker(context!!).disableNetworkChecker() }))
             add(createItem(getString(R.string.addin_disable_google), getString(R.string.addin_disable_google_desc), Runnable { GoogleFrameworkAddin(context!!).showOption() }, false))
 
-            add(createItem(getString(R.string.addin_drop_caches), getString(R.string.addin_drop_caches_desc), Runnable { SystemAddin(context!!).dropCache() }))
+            // add(createItem(getString(R.string.addin_drop_caches), getString(R.string.addin_drop_caches_desc), Runnable { SystemAddin(context!!).dropCache() }))
             add(createItem(getString(R.string.addin_thermal_remove), getString(R.string.addin_thermal_remove_desc), Runnable { ThermalAddin(context!!).showOption() }, false))
             add(createItem(getString(R.string.addin_del_pwd), getString(R.string.addin_del_pwd_desc), Runnable { SystemAddin(context!!).deleteLockPwd() }))
             add(createItem(getString(R.string.addin_adb_network), String.format(getString(R.string.addin_adb_network_desc), getIP()), Runnable { AdbAddin(context!!).openNetworkDebug() }))
@@ -111,6 +111,12 @@ class FragmentAddin : Fragment() {
         progressBarDialog.showDialog("读取配置，稍等...")
         Thread(Runnable {
             val actions = ActionConfigReader.readActionConfigXml(this.activity!!)
+            if (actions == null) {
+                myHandler.post {
+                    progressBarDialog.hideDialog()
+                }
+                return@Runnable
+            }
             val onlineAddinDir = File(FileWrite.getPrivateFileDir(this.context!!) + "online-addin/")
             if (onlineAddinDir.exists() && onlineAddinDir.isDirectory) {
                 val onlineAddins = onlineAddinDir.list { dir, name ->
@@ -118,7 +124,7 @@ class FragmentAddin : Fragment() {
                 }
                 for (addinFile in onlineAddins) {
                     try {
-                        val result = ActionConfigReader.readActionConfigXml(this.activity, File("$onlineAddinDir/$addinFile").inputStream())
+                        val result = ActionConfigReader.readActionConfigXml(this.activity!!, File("$onlineAddinDir/$addinFile").inputStream())
                         if (result != null && result.size > 0)
                             actions.addAll(result)
                     } catch (ex: Exception) {
@@ -141,7 +147,7 @@ class FragmentAddin : Fragment() {
         val tabHost = view.findViewById(R.id.addin_tabhost) as TabHost
         tabHost.setup()
         tabHost.addTab(tabHost.newTabSpec("tab_1").setContent(R.id.tab0).setIndicator("内置"))
-        tabHost.addTab(tabHost.newTabSpec("tab_2").setContent(R.id.tab1).setIndicator("自定义"))
+        tabHost.addTab(tabHost.newTabSpec("tab_2").setContent(R.id.tab1).setIndicator("脚本"))
         tabHost.addTab(tabHost.newTabSpec("tab_3").setContent(R.id.tab2).setIndicator("开关"))
         tabHost.currentTab = 0
         tabHost.setOnTabChangedListener(TabHost.OnTabChangeListener { tabId ->

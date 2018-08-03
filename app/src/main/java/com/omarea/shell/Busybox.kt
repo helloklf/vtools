@@ -2,8 +2,6 @@ package com.omarea.shell
 
 import android.app.AlertDialog
 import android.content.Context
-import android.widget.Toast
-import com.omarea.shared.Consts
 import com.omarea.shared.FileWrite
 import com.omarea.shell.units.BusyboxInstallerUnit
 import com.omarea.vboot.R
@@ -27,7 +25,7 @@ class Busybox(private var context: Context) {
     fun forceInstall(next: Runnable? = null) {
         val privateBusybox = FileWrite.getPrivateFilePath(context, "busybox")
         if (!File(privateBusybox).exists()) {
-            FileWrite.WritePrivateFile(context.assets, "busybox.zip", "busybox", context)
+            FileWrite.writePrivateFile(context.assets, "busybox.zip", "busybox", context)
         }
         if (!busyboxInstalled()) {
             AlertDialog.Builder(context)
@@ -46,7 +44,14 @@ class Busybox(private var context: Context) {
                                 cmd.append("chmod 7777 $privateBusybox;\n")
                                 cmd.append("$privateBusybox chmod 7777 /cache/busybox;\n")
                                 cmd.append("chmod 7777 /cache/busybox;\n")
-                                cmd.append(Consts.MountSystemRW2)
+                                cmd.append("/cache/busybox mount -o rw,remount /system\n" +
+                                        "/cache/busybox mount -f -o rw,remount /system\n" +
+                                        "mount -o rw,remount /system\n" +
+                                        "/cache/busybox mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
+                                        "mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
+                                        "/cache/busybox mount -o rw,remount /system/xbin\n" +
+                                        "/cache/busybox mount -f -o rw,remount /system/xbin\n" +
+                                        "mount -o rw,remount /system/xbin\n")
                                 cmd.append("cp $privateBusybox /system/xbin/busybox;")
                                 cmd.append("$privateBusybox chmod 0777 /system/xbin/busybox;")
                                 cmd.append("chmod 0777 /system/xbin/busybox;")
@@ -54,9 +59,15 @@ class Busybox(private var context: Context) {
                                 cmd.append("chown root:root /system/xbin/busybox;")
                                 cmd.append("/system/xbin/busybox --install /system/xbin;")
 
-                                KeepShellSync.doCmdSync(cmd.toString())
+                                KeepShellPublic.doCmdSync(cmd.toString())
                                 if (!busyboxInstalled()) {
-                                    Toast.makeText(context, "已尝试自动安装Busybox但依然不可用，也许System分区没被解锁。因此，部分功能可能无法使用！", Toast.LENGTH_LONG).show()
+                                    AlertDialog.Builder(context)
+                                            .setTitle("安装Busybox失败")
+                                            .setMessage("已尝试自动安装Busybox，但它依然不可用。也许System分区没被解锁。因此，部分功能可能无法使用！")
+                                            .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                                            })
+                                            .create()
+                                            .show()
                                 }
                                 next?.run()
                             }
@@ -64,7 +75,7 @@ class Busybox(private var context: Context) {
                     .setCancelable(false)
                     .create().show()
         } else {
-            BusyboxInstallerUnit().InstallShellTools()
+            BusyboxInstallerUnit().installShellTools()
             next?.run()
         }
     }

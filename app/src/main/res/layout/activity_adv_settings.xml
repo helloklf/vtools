@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:backgroundTintMode="screen"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="true"
+    android:keepScreenOn="false"
+    tools:openDrawer="start">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="56dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:orientation="vertical">
+
+            <Switch
+                android:id="@+id/adv_find_viewid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="left"
+                android:padding="8dp"
+                android:text="报告View的ID"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="获得更完整的界面信息，Scene将通过windowId及window列表来判断当前活动窗口是否是悬浮窗\n规避悬浮窗导致模式切换需要开启此项"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="10dp" />
+
+            <Switch
+                android:id="@+id/adv_keyevent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="left"
+                android:padding="8dp"
+                android:text="按键行为捕获"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="允许辅助服务在后台捕获按键事件。如果Scene在后台运行时卡死，会导致按键没反应！！！\n屏蔽按键功能需要开启此选项"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="10dp" />
+
+            <Switch
+                android:id="@+id/adv_retrieve_window"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="left"
+                android:padding="8dp"
+                android:text="检索窗口内容"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="允许辅助服务检索窗口内容，正常情况下推荐开启此选项！\n应用安装自动点击服务需要开启此项"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="10dp" />
+
+            <Switch
+                android:id="@+id/adv_event_window_state"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:checked="true"
+                android:enabled="false"
+                android:gravity="left"
+                android:padding="8dp"
+                android:text="检测窗口状态变化(必需)"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="监测窗口状态变化，从而判断应用程序切换，此项是必须开启的！"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="10dp" />
+
+            <Switch
+                android:id="@+id/adv_event_content_change"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:checked="true"
+                android:gravity="left"
+                android:padding="8dp"
+                android:text="窗口内容变化"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="监测窗口内容的变化，从而判断应用程序切换\n开启可提高前台应用检测精确度，增加耗电"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="10dp" />
+
+            <Switch
+                android:id="@+id/adv_event_view_click"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:checked="true"
+                android:gravity="left"
+                android:padding="8dp"
+                android:text="视图内容点击"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="监测视图内容点击事件，从而判定前台应用程序活动状态\n开启可提高前台应用检测精确度，增加耗电"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="10dp" />
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="10dp"
+                    android:text="修改以上设置，均需要重启辅助服务才会生效！！！"
+                    android:textColor="@color/colorPrimary" />
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
+
+
+    <include
+        layout="@layout/app_bar_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</android.support.v4.widget.DrawerLayout>

@@ -2,27 +2,27 @@ package com.omarea.shared
 
 import android.content.Context
 import android.util.Log
-import com.omarea.shell.KeepShellSync
+import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.Platform
 import java.nio.charset.Charset
 
 class ConfigInstaller {
     fun installPowerConfig(context: Context, afterCmds: String, biCore: Boolean = false) {
         try {
-            val powercfg = parseText(context, Platform().GetCPUName() + (if (biCore) "/powercfg-bigcore.sh" else "/powercfg-default.sh"))
-            val powercfgBase = parseText(context, Platform().GetCPUName() + (if (biCore) "/powercfg-base-bigcore.sh" else "/powercfg-base-default.sh"))
-            FileWrite.WritePrivateFile(powercfg, "powercfg.sh", context)
-            FileWrite.WritePrivateFile(powercfgBase, "powercfg-base.sh", context)
+            val powercfg = parseText(context, Platform().getCPUName() + (if (biCore) "/powercfg-bigcore.sh" else "/powercfg-default.sh"))
+            val powercfgBase = parseText(context, Platform().getCPUName() + (if (biCore) "/powercfg-base-bigcore.sh" else "/powercfg-base-default.sh"))
+            FileWrite.writePrivateFile(powercfg, "powercfg.sh", context)
+            FileWrite.writePrivateFile(powercfgBase, "powercfg-base.sh", context)
             val cmd = StringBuilder()
-                    .append("cp ${FileWrite.getPrivateFilePath(context, "powercfg.sh")} ${Consts.POWER_CFG_PATH};")
-                    .append("cp ${FileWrite.getPrivateFilePath(context, "powercfg-base.sh")} ${Consts.POWER_CFG_BASE};")
-                    .append("chmod 0777 ${Consts.POWER_CFG_PATH};")
-                    .append("chmod 0777 ${Consts.POWER_CFG_BASE};")
-            //KeepShellSync.doCmdSync(Consts.InstallPowerToggleConfigToCache + "\n\n" + Consts.ExecuteConfig + "\n" + after)
-            KeepShellSync.doCmdSync(cmd.toString())
+                    .append("cp ${FileWrite.getPrivateFilePath(context, "powercfg.sh")} ${CommonCmds.POWER_CFG_PATH};")
+                    .append("cp ${FileWrite.getPrivateFilePath(context, "powercfg-base.sh")} ${CommonCmds.POWER_CFG_BASE};")
+                    .append("chmod 0777 ${CommonCmds.POWER_CFG_PATH};")
+                    .append("chmod 0777 ${CommonCmds.POWER_CFG_BASE};")
+            //KeepShellPublic.doCmdSync(CommonCmds.InstallPowerToggleConfigToCache + "\n\n" + CommonCmds.ExecuteConfig + "\n" + after)
+            KeepShellPublic.doCmdSync(cmd.toString())
             configCodeVerify(context)
-            KeepShellSync.doCmdSync(afterCmds)
             ModeList(context).setCurrentPowercfg("")
+            KeepShellPublic.doCmdSync(afterCmds)
         } catch (ex: Exception) {
             Log.e("script-parse", ex.message)
         }
@@ -30,13 +30,13 @@ class ConfigInstaller {
 
     fun installPowerConfigByText(context: Context, powercfg: String): Boolean {
         try {
-            FileWrite.WritePrivateFile(powercfg.replace("\r", "").toByteArray(Charset.forName("UTF-8")), "powercfg.sh", context)
+            FileWrite.writePrivateFile(powercfg.replace("\r", "").toByteArray(Charset.forName("UTF-8")), "powercfg.sh", context)
             val cmd = StringBuilder()
-                    .append("cp ${FileWrite.getPrivateFilePath(context, "powercfg.sh")} ${Consts.POWER_CFG_PATH};")
-                    .append("chmod 0777 ${Consts.POWER_CFG_PATH};")
-                    .append("chmod 0777 ${Consts.POWER_CFG_BASE};")
-            //KeepShellSync.doCmdSync(Consts.InstallPowerToggleConfigToCache + "\n\n" + Consts.ExecuteConfig + "\n" + after)
-            KeepShellSync.doCmdSync(cmd.toString())
+                    .append("cp ${FileWrite.getPrivateFilePath(context, "powercfg.sh")} ${CommonCmds.POWER_CFG_PATH};")
+                    .append("chmod 0777 ${CommonCmds.POWER_CFG_PATH};")
+                    .append("chmod 0777 ${CommonCmds.POWER_CFG_BASE};")
+            //KeepShellPublic.doCmdSync(CommonCmds.InstallPowerToggleConfigToCache + "\n\n" + CommonCmds.ExecuteConfig + "\n" + after)
+            KeepShellPublic.doCmdSync(cmd.toString())
             configCodeVerify(context)
             ModeList(context).setCurrentPowercfg("")
             return true
@@ -66,15 +66,15 @@ class ConfigInstaller {
     public fun configCodeVerify(context: Context) {
         try {
             val cmd = StringBuilder()
-            cmd.append("if [[ -f ${Consts.POWER_CFG_PATH} ]]; then \n")
-            cmd.append("chmod 0775 ${Consts.POWER_CFG_PATH};\n")
-            cmd.append("busybox sed -i 's/^M//g' ${Consts.POWER_CFG_PATH};\n")
+            cmd.append("if [[ -f ${CommonCmds.POWER_CFG_PATH} ]]; then \n")
+            cmd.append("chmod 0775 ${CommonCmds.POWER_CFG_PATH};\n")
+            cmd.append("busybox sed -i 's/^M//g' ${CommonCmds.POWER_CFG_PATH};\n")
             cmd.append("fi;\n")
-            cmd.append("if [[ -f ${Consts.POWER_CFG_BASE} ]]; then \n")
-            cmd.append("chmod 0775 ${Consts.POWER_CFG_BASE};\n")
-            cmd.append("busybox sed -i 's/^M//g' ${Consts.POWER_CFG_BASE};\n")
+            cmd.append("if [[ -f ${CommonCmds.POWER_CFG_BASE} ]]; then \n")
+            cmd.append("chmod 0775 ${CommonCmds.POWER_CFG_BASE};\n")
+            cmd.append("busybox sed -i 's/^M//g' ${CommonCmds.POWER_CFG_BASE};\n")
             cmd.append("fi;\n")
-            KeepShellSync.doCmdSync(cmd.toString())
+            KeepShellPublic.doCmdSync(cmd.toString())
         } catch (ex: Exception) {
             Log.e("script-parse", ex.message)
         }

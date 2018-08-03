@@ -8,9 +8,12 @@ echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
 echo N > /sys/module/msm_thermal/parameters/enabled
 echo 1 > /proc/sys/kernel/sched_prefer_sync_wakee_to_waker
 
-#if [ ! `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor` = "interactive" ]; then
-#	sh /system/etc/init.qcom.post_boot.sh
-#fi
+if [ ! `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor` = "interactive" ]; then
+	echo 'interactive' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+fi
+if [ ! `cat /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor` = "interactive" ]; then
+	echo 'interactive' > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
+fi
 
 # /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
 # 300000 364800 441600 518400 595200 672000 748800 825600 883200 960000 1036800 1094400 1171200 1248000 1324800 1401600 1478400 1555200 1670400 1747200 1824000 1900800
@@ -94,7 +97,7 @@ if [ "$action" = "powersave" ]; then
 	echo "85 300000:85 595200:67 825600:75 1248000:78" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
 	echo 518400 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
 
-	echo "87 300000:89 1056000:89 1344000:92" > /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
+	echo "97" > /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
 	echo 499200 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
 
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
@@ -123,7 +126,7 @@ if [ "$action" = "balance" ]; then
 	echo "83 300000:85 595200:67 825600:75 1248000:78 1478400:83" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
 	echo 960000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
 
-	echo "83 300000:89 1056000:89 1344000:92 1651200:95" > /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
+	echo "84 300000:89 1056000:89 1344000:92 1651200:95" > /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
 	echo 1056000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
 
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel

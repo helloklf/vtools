@@ -1,15 +1,14 @@
 package com.omarea.vboot
 
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Environment
-import android.os.Handler
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentStatePagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,47 +26,72 @@ class FragmentHome : Fragment() {
         return inflater.inflate(R.layout.layout_home, container, false)
     }
 
-    private var myHandler = Handler()
     private lateinit var globalSPF: SharedPreferences
     private fun showMsg(msg: String) {
         this.view?.let { Snackbar.make(it, msg, Snackbar.LENGTH_LONG).show() }
     }
 
+    private val fragmentList = ArrayList<Fragment>()
     private lateinit var spf: SharedPreferences
     private var modeList = ModeList()
     @SuppressLint("ApplySharedPref")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
 
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
-        if (Platform().dynamicSupport(context!!) || File(Consts.POWER_CFG_PATH).exists()) {
+        if (Platform().dynamicSupport(context!!) || File(CommonCmds.POWER_CFG_PATH).exists()) {
             powermode_toggles.visibility = View.VISIBLE
         } else {
             powermode_toggles.visibility = View.GONE
         }
 
         btn_powersave.setOnClickListener {
-            installConfig(modeList.POWERSAVE, getString(R.string.power_change_powersave))
+            installConfig(ModeList.POWERSAVE, getString(R.string.power_change_powersave))
         }
         btn_defaultmode.setOnClickListener {
-            installConfig(modeList.DEFAULT, getString(R.string.power_change_default))
+            installConfig(ModeList.BALANCE, getString(R.string.power_change_default))
         }
         btn_gamemode.setOnClickListener {
-            installConfig(modeList.PERFORMANCE, getString(R.string.power_change_game))
+            installConfig(ModeList.PERFORMANCE, getString(R.string.power_change_game))
         }
         btn_fastmode.setOnClickListener {
-            installConfig(modeList.FAST, getString(R.string.power_chagne_fast))
+            installConfig(ModeList.FAST, getString(R.string.power_chagne_fast))
         }
 
         spf = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
+        fragmentList.clear()
+        fragmentList.add(RamFragment())
+        fragmentList.add(CpuFragment())
+        home_viewpager.adapter = object : FragmentStatePagerAdapter(fragmentManager) {
+            override fun getCount(): Int {
+                return fragmentList.size
+            }
+
+            override fun getItem(position: Int): Fragment {
+                return fragmentList.get(position)
+            }
+        }
+        home_viewpager.adapter!!.notifyDataSetChanged()
+        home_viewpager.setCurrentItem(0, true)
+        home_chat_helpinfo.postDelayed(Runnable {
+            if (home_chat_helpinfo != null) {
+                home_chat_helpinfo.visibility = View.GONE
+            }
+        }, 1300)
     }
 
     override fun onResume() {
         super.onResume()
         setModeState()
         updateInfo()
+        // AppConfigLoader().getAppConfig("de.robv.android.xposed.installer", context!!.contentResolver)
     }
 
     override fun onDestroy() {
@@ -75,42 +99,38 @@ class FragmentHome : Fragment() {
     }
 
     private fun updateInfo() {
-        sdfree.text = "SDCard：" + Files.GetDirFreeSizeMB(Environment.getExternalStorageDirectory().absolutePath) + " MB"
-        datafree.text = "Data：" + Files.GetDirFreeSizeMB(Environment.getDataDirectory().absolutePath) + " MB"
-        // val activityManager = context!!.getSystemService(ACTIVITY_SERVICE) as ActivityManager
-        // val info = ActivityManager.MemoryInfo()
-        // activityManager.getMemoryInfo(info)
+        sdfree.text = "SDCard：" + Files.getDirFreeSizeMB(Environment.getExternalStorageDirectory().absolutePath) + " MB"
+        datafree.text = "Data：" + Files.getDirFreeSizeMB(Environment.getDataDirectory().absolutePath) + " MB"
     }
 
     private fun setModeState() {
-        btn_powersave.text = "省电"
-        btn_defaultmode.text = "均衡"
-        btn_gamemode.text = "性能"
-        btn_fastmode.text = "极速"
+        btn_powersave.setTextColor(0x66ffffff)
+        btn_defaultmode.setTextColor(0x66ffffff)
+        btn_gamemode.setTextColor(0x66ffffff)
+        btn_fastmode.setTextColor(0x66ffffff)
         val cfg = Props.getProp("vtools.powercfg")
         when (cfg) {
-            modeList.BALANCE -> btn_defaultmode.text = "均衡 √"
-            modeList.PERFORMANCE -> btn_gamemode.text = "性能 √"
-            modeList.POWERSAVE -> btn_powersave!!.text = "省电 √"
-            modeList.FAST -> btn_fastmode!!.text = "极速 √"
+            ModeList.BALANCE -> {
+                btn_defaultmode.setTextColor(Color.WHITE)
+            }
+            ModeList.PERFORMANCE -> {
+                btn_gamemode.setTextColor(Color.WHITE)
+            }
+            ModeList.POWERSAVE -> {
+                btn_powersave.setTextColor(Color.WHITE)
+            }
+            ModeList.FAST -> {
+                btn_fastmode.setTextColor(Color.WHITE)
+            }
         }
     }
 
     private fun installConfig(action: String, message: String) {
-        if (spf.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CPU, false) && AccessibleServiceHelper().serviceIsRunning(this.context!!)) {
-            AlertDialog.Builder(context)
-                    .setTitle("")
-                    .setMessage("检测到你已经开启“动态响应”，微工具箱将根据你的前台应用，自动调整CPU、GPU性能。\n如果你要更改全局性能，请先关闭“动态响应”！")
-                    .setPositiveButton(R.string.btn_confirm, DialogInterface.OnClickListener { dialog, which ->
-                    })
-                    .show()
-                    .create()
-        }
-        if (File(Consts.POWER_CFG_PATH).exists()) {
+        if (File(CommonCmds.POWER_CFG_PATH).exists()) {
             modeList.executePowercfgModeOnce(action, context!!.packageName)
         } else {
             val stringBuilder = StringBuilder()
-            stringBuilder.append(String.format(Consts.ToggleMode, action))
+            stringBuilder.append(String.format(CommonCmds.ToggleMode, action))
             ConfigInstaller().installPowerConfig(context!!, stringBuilder.toString());
         }
         setModeState()

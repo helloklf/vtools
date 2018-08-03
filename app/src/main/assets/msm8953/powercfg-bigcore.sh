@@ -3,7 +3,7 @@
 action=$1
 
 if [ ! `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor` = "interactive" ]; then
-	sh /system/etc/init.qcom.post_boot.sh
+	echo 'interactive' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 fi
 
 echo 0 > /dev/cpuset/background/cpus

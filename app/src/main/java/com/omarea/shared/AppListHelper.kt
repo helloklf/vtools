@@ -65,7 +65,7 @@ class AppListHelper(context: Context) {
     fun checkBackup(packageInfo: ApplicationInfo): String {
         try {
             val packageName = packageInfo.packageName
-            val absPath = Consts.AbsBackUpDir + packageName + ".apk"
+            val absPath = CommonCmds.AbsBackUpDir + packageName + ".apk"
             if (File(absPath).exists()) {
                 val backupInfo = packageManager.getPackageArchiveInfo(absPath, PackageManager.GET_ACTIVITIES)
                 val installInfo = packageManager.getPackageInfo(packageInfo.packageName, 0)
@@ -78,7 +78,7 @@ class AppListHelper(context: Context) {
                 } else {
                     return "★"
                 }
-            } else if (File(Consts.BackUpDir + packageName + ".tar.gz").exists()) {
+            } else if (File(CommonCmds.BackUpDir + packageName + ".tar.gz").exists()) {
                 return "☆"
             } else {
                 return ""

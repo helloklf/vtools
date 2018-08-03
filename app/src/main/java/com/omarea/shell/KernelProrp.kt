@@ -11,7 +11,11 @@ object KernelProrp {
      * @return
      */
     fun getProp(propName: String): String {
-        return KeepShellSync.doCmdSync("cat $propName")
+        return KeepShellPublic.doCmdSync("if [ -e \"$propName\" ]; then\ncat \"$propName\";\nfi;")
+    }
+
+    fun getProp(propName: String, grep: String): String {
+        return KeepShellPublic.doCmdSync("if [ -e \"$propName\" ]; then\ncat $propName | grep \"$grep\";\nfi;")
     }
 
     /**
@@ -20,6 +24,6 @@ object KernelProrp {
      * @param value    属性值,值尽量是简单的数字或字母，避免出现错误
      */
     fun setProp(propName: String, value: String): Boolean {
-        return KeepShellSync.doCmdSync("echo \"\$value\" > $propName") != "error"
+        return KeepShellPublic.doCmdSync("echo \"\$value\" > $propName") != "error"
     }
 }

@@ -55,7 +55,7 @@ public class SimpleShellExecutor {
         Process process = null;
         final File dir = context.getFilesDir();
         final String dirUri = dir.getAbsolutePath();
-        ArrayList<String> envp = new ArrayList<String>();
+        ArrayList<String> envp = new ArrayList<>();
         if (params != null) {
             for (String item : params.keySet()) {
                 String value = params.get(item);
@@ -148,7 +148,7 @@ public class SimpleShellExecutor {
         }
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View view = layoutInflater.inflate(R.layout.dialog_shell_executor, null);
-        TextView textView = (TextView) view.findViewById(R.id.shell_output);
+        TextView textView = view.findViewById(R.id.shell_output);
         new AlertDialog.Builder(context)
                 .setTitle(title)
                 .setView(view)

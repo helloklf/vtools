@@ -75,7 +75,7 @@ if [ "$action" = "powersave" ]; then
 	echo "85 300000:85 518400:67 748800:75 1248000:78" > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/target_loads
 	echo 518400 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
 
-	echo "87 345600:89 1056000:89 1344000:92" > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/target_loads
+	echo "99" > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/target_loads
 	echo 652800 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
 
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel

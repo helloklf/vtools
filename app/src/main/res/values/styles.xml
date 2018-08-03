@@ -1,4 +1,9 @@
 <resources>
+
+    <style name="NotificationInfo" parent="android:TextAppearance.Material.Notification.Info" />
+
+    <style name="NotificationTitle" parent="android:TextAppearance.Material.Notification.Title" />
+
     <style name="AppTheme" parent="Base.Theme.AppCompat.Light">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowTranslucentStatus">false</item>
@@ -9,6 +14,7 @@
         <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
     <style name="AppThemeNight" parent="Theme.AppCompat">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowTranslucentStatus">false</item>
@@ -21,19 +27,23 @@
         <item name="android:textColorSecondary">@android:color/darker_gray</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
     <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="android:textColor">#888888</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>
     </style>
+
     <style name="AppTheme.NoActionBarNight" parent="AppThemeNight">
         <item name="android:textColor">#888888</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>
     </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="textTitle">
@@ -41,6 +51,7 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">14dp</item>
     </style>
+
     <style name="textSmall">
         <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="android:textSize">10dp</item>
@@ -49,5 +60,17 @@
         <!-- float_box为我们定义的窗口背景-->
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:opacity">@integer/opacity</item>
+    </style>
+
+    <style name="FullscreenTheme" parent="AppTheme">
+        <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowBackground">@null</item>
+        <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
+        <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
+    </style>
+
+    <style name="FullscreenActionBarStyle" parent="android:Widget.Holo.ActionBar">
+        <item name="android:background">@color/black_overlay</item>
     </style>
 </resources>

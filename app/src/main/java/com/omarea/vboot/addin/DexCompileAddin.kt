@@ -13,7 +13,7 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import com.omarea.shared.Consts
+import com.omarea.shared.CommonCmds
 import com.omarea.shell.AsynSuShellUnit
 import com.omarea.shell.Props
 import com.omarea.vboot.R
@@ -32,7 +32,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
         return true
     }
 
-    class ProgressHandler(context: Context) : Handler() {
+    open class ProgressHandler(context: Context) : Handler() {
         protected var dialog: View
         protected var alert: android.app.AlertDialog
         protected var textView: TextView
@@ -52,7 +52,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                             alert.dismiss()
                             alert.hide()
                         }, 2000)
-                    } else if (Regex("^\\[.*\\]\$").matches(obj)) {
+                    } else if (Regex("^\\[.*]\$").matches(obj)) {
                         progressBar.progress = msg.what
                         val txt = obj
                                 .replace("[compile ", "[编译 ")
@@ -142,7 +142,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                     }
                 })
                 .setNeutralButton("查看说明", { _, _ ->
-                    AlertDialog.Builder(context).setTitle("说明").setMessage("在Android N以后，为了减少应用程序空间占用和提高安装效率，引入了新的机制。在安装应用时，不再像6.0时代一样将整个应用编译成本地代码，通过cmd package compile命令，可用于手动触发编译，常用以下几种模式：\n\nSpeed：尽可能的提高运行效率\nEverything：编译可以被编译的一切\nReset命令用于清除配置文件和已编译过的代码\n选择强制编译时，将重新编译已经编译过的应用。\nReset命令用于重置所有应用的Dex编译状态。\n\n 以8.0系统下斗鱼TV客户端为例，全新安装时base.odex仅为6.8MB，使用Speed模式编译后，base.odex文件增大到103MB。\n\n由于国内许多应用均使用了热更新技术，或使用其它自定义引擎（Weex、React等）来提高开发效率，但需要在运行时才解析并生成原生组件来渲染，甚至功能代码被托管在服务器端（每次运行都可能需要重新下载并解析）。这是导致应用启动慢或启动后卡顿的主要原因。因此Speed、Everything模式编译均不能为这类应用带来明显的性能提升！").setNegativeButton("了解更多", { dialog, which ->
+                    AlertDialog.Builder(context).setTitle("说明").setMessage("在Android N以后，为了减少应用程序空间占用和提高安装效率，引入了新的机制。在安装应用时，不再像6.0时代一样将整个应用编译成本地代码，通过cmd package compile命令，可用于手动触发编译，常用以下几种模式：\n\nSpeed：尽可能的提高运行效率\nEverything：编译可以被编译的一切\nReset命令用于清除配置脚本和已编译过的代码\n选择强制编译时，将重新编译已经编译过的应用。\nReset命令用于重置所有应用的Dex编译状态。\n\n 以8.0系统下斗鱼TV客户端为例，全新安装时base.odex仅为6.8MB，使用Speed模式编译后，base.odex文件增大到103MB。\n\n由于国内许多应用均使用了热更新技术，或使用其它自定义引擎（Weex、React等）来提高开发效率，但需要在运行时才解析并生成原生组件来渲染，甚至功能代码被托管在服务器端（每次运行都可能需要重新下载并解析）。这是导致应用启动慢或启动后卡顿的主要原因。因此Speed、Everything模式编译均不能为这类应用带来明显的性能提升！").setNegativeButton("了解更多", { dialog, which ->
                         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://source.android.com/devices/tech/dalvik/jit-compiler?hl=zh-cn")))
                     }).create().show()
                 })
@@ -262,7 +262,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                         }
                     }
 
-                    stringBuilder.append(Consts.MountSystemRW)
+                    stringBuilder.append(CommonCmds.MountSystemRW)
                     stringBuilder.append("cp /system/build.prop /system/build.prop.${System.currentTimeMillis()}\n")
                     stringBuilder.append("cp /data/build.prop /system/build.prop\n")
                     stringBuilder.append("rm /data/build.prop\n")
@@ -277,5 +277,14 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                     }).create().show()
                 })
                 .create().show()
+    }
+
+    fun modifyThreadConfig() {
+        /*
+        [dalvik.vm.boot-dex2oat-threads]: [8]
+        [dalvik.vm.dex2oat-threads]: [4]
+        [dalvik.vm.image-dex2oat-threads]: [4]
+        [ro.sys.fw.dex2oat_thread_count]: [4]
+        */
     }
 }
