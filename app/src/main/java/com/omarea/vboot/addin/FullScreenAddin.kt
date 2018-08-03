@@ -9,7 +9,7 @@ import android.widget.Toast
  */
 
 class FullScreenAddin(private var context: Context) : AddinBase(context) {
-    fun fullScreen() {
+    fun FullScreen() {
         val arr = arrayOf("全部隐藏", "隐藏导航栏", "隐藏状态栏", "恢复默认")
         var index = 0
         AlertDialog.Builder(context)

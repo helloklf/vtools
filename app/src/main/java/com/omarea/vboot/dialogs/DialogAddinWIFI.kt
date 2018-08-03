@@ -16,7 +16,7 @@ import javax.xml.parsers.DocumentBuilderFactory
 class DialogAddinWIFI(private var context: Context) {
     fun showOld() {
         var wifiInfo = SysUtils.executeCommandWithOutput(true, "cat /data/misc/wifi/wpa_supplicant.conf")
-        if (wifiInfo != null && wifiInfo.isNotEmpty()) {
+        if (wifiInfo != null && wifiInfo.length > 0) {
             val infos = wifiInfo.split("\n\n")
             val sb = StringBuilder()
 
@@ -35,7 +35,7 @@ class DialogAddinWIFI(private var context: Context) {
                     .replace(Regex("[\\s\\t]{0,}key_mgmt=.*"), "") //加密方式
                     .replace(Regex("[\\s\\t]{0,}id_str=.*"), "") //idstr
                     .replace(Regex("[\\s\\t]{0,}disabled=.*"), "") //disabled
-                    .replace(Regex("}"), "")
+                    .replace(Regex("\\}"), "")
                     .replace("\"", "")
                     .trim()
 
@@ -54,17 +54,17 @@ class DialogAddinWIFI(private var context: Context) {
 
     fun show() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val wifiInfo = SysUtils.executeCommandWithOutput(true, "cat /data/misc/wifi/WifiConfigStore.xml")
-            if (wifiInfo != null && wifiInfo.isNotEmpty()) {
+            var wifiInfo = SysUtils.executeCommandWithOutput(true, "cat /data/misc/wifi/WifiConfigStore.xml")
+            if (wifiInfo != null && wifiInfo.length > 0) {
                 val factory = DocumentBuilderFactory.newInstance()
                 val builder = factory.newDocumentBuilder()
                 //获得Document对象
                 val document = builder.parse(getInputStreamFromString(wifiInfo))
                 val networkList = document.getElementsByTagName("WifiConfiguration")
-                val stringBuild = StringBuilder()
-                for (i in 0 until networkList.length) {
+                var stringBuild = StringBuilder()
+                for (i in 0..networkList.length - 1) {
                     val wifi = networkList.item(i).childNodes
-                    for (j in 0 until wifi.length) {
+                    for (j in 0..wifi.length - 1) {
                         if (!wifi.item(j).hasChildNodes()) {
                             continue
                         }

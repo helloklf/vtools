@@ -8,18 +8,4 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="app_bar_height">180dp</dimen>
-    <integer name="addin_minimum_version">502</integer>
-
-    <color name="google_red">#EA4335</color>
-    <color name="google_yellow">#FBBC05</color>
-    <color name="google_blue">#4285F4</color>
-    <color name="google_green">#34A853</color>
-
-    <integer-array name="google_glyph_colors">
-        <item>@android:color/white</item>
-        <item>@color/google_red</item>
-        <item>@color/google_yellow</item>
-        <item>@color/google_blue</item>
-        <item>@color/google_green</item>
-    </integer-array>
 </resources>

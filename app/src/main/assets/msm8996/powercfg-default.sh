@@ -3,12 +3,6 @@
 action=$1
 stop perfd
 
-if [ ! `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor` = "interactive" ]; then
-	echo 'interactive' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-fi
-if [ ! `cat /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor` = "interactive" ]; then
-	echo 'interactive' > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
-fi
 echo 1 > /proc/sys/kernel/sched_prefer_sync_wakee_to_waker
 
 echo "0" > /sys/module/cpu_boost/parameters/input_boost_freq
@@ -83,8 +77,6 @@ if [ "$action" = "powersave" ]; then
 
 	echo 0 > /proc/sys/kernel/sched_boost
 
-    echo 90 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
-    echo 99 > /sys/devices/system/cpu/cpu2/cpufreq/interactive/target_loads
 	exit 0
 fi
 
@@ -108,14 +100,9 @@ if [ "$action" = "balance" ]; then
 
 	echo 0 > /proc/sys/kernel/sched_boost
 
-    echo 88 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
-    echo "87 1500000:90 1800000:87" > /sys/devices/system/cpu/cpu2/cpufreq/interactive/target_loads
-
 	exit 0
 fi
 
-echo 86 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
-echo "80 1500000:87 1800000:95" > /sys/devices/system/cpu/cpu2/cpufreq/interactive/target_loads
 if [ "$action" = "performance" ]; then
 	echo "0:1824000 1:1824000 2:1824000 3:1824000" > /sys/module/msm_performance/parameters/cpu_max_freq
 	echo 300000 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
@@ -134,9 +121,6 @@ if [ "$action" = "performance" ]; then
     echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
     echo 79000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
 
-    echo 0 > /sys/module/msm_thermal/core_control/enabled
-    echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
-    #echo N > /sys/module/msm_thermal/parameters/enabled
 	echo 0 > /proc/sys/kernel/sched_boost
     stop thermanager
     stop thermal-engine

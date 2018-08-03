@@ -137,7 +137,7 @@ class BuildConfigXml {
 
     private fun writeScript(script: String, outName: String, context: Context): String {
         if (script.startsWith("#!/")) {
-            FileWrite.writePrivateFile(script.replace(Regex("\r\n"), "\n").toByteArray(Charset.defaultCharset()), outName, context)
+            FileWrite.WritePrivateFile(script.replace(Regex("\r\n"), "\n").toByteArray(Charset.defaultCharset()), outName, context)
             return FileWrite.getPrivateFilePath(context, outName)
         } else {
             return script
@@ -146,7 +146,7 @@ class BuildConfigXml {
 
     private fun writeScript(script: String, outName: String, params: ArrayList<ActionParamInfo>?, context: Context): String {
         if (script.startsWith("#!/")) {
-            FileWrite.writePrivateFile(script.replace(Regex("\r\n"), "\n").toByteArray(Charset.defaultCharset()), outName, context)
+            FileWrite.WritePrivateFile(script.replace(Regex("\r\n"), "\n").toByteArray(Charset.defaultCharset()), outName, context)
             val path = FileWrite.getPrivateFilePath(context, outName)
             if (params != null && params.size > 0) {
                 val stringBuilder = StringBuilder(path)

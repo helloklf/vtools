@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.KeyEvent
 import android.widget.Toast
-import com.omarea.shared.CommonCmds
+import com.omarea.shared.Consts
 import com.omarea.shared.SpfConfig
 import com.omarea.ui.AdapterFileSelector
 import com.omarea.ui.ProgressBarDialog
@@ -26,7 +26,7 @@ class ActivityFileSelector : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_file_selector)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
         if (intent.extras.containsKey("extension")) {
             extension = intent.extras.getString("extension")
@@ -48,11 +48,11 @@ class ActivityFileSelector : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val sdcard = File(CommonCmds.SDCardDir)
+        val sdcard = File(Consts.SDCardDir)
         if (sdcard.exists() && sdcard.isDirectory) {
             val list = sdcard.listFiles()
             if (list == null) {
-                Toast.makeText(applicationContext, "没有读取文件的权限！", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "没有读取文件的权限！", Toast.LENGTH_LONG).show()
                 return
             }
             adapterFileSelector = AdapterFileSelector(sdcard, Runnable {

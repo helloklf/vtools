@@ -2,7 +2,7 @@ package com.omarea.vboot.addin
 
 import android.content.Context
 import android.widget.Toast
-import com.omarea.shared.CommonCmds
+import com.omarea.shared.Consts
 import com.omarea.vboot.R
 import java.io.File
 
@@ -14,7 +14,7 @@ class BatteryAddin(private var context: Context) : AddinBase(context) {
     fun deleteHistory() {
         command = StringBuilder()
                 .append("rm -f /data/system/batterystats-checkin.bin;rm -f /data/system/batterystats-daily.xml;rm -f /data/system/batterystats.bin;")
-                .append(CommonCmds.Reboot)
+                .append(Consts.Reboot)
                 .toString()
 
         super.run()
@@ -26,7 +26,7 @@ class BatteryAddin(private var context: Context) : AddinBase(context) {
             Toast.makeText(context, context.getString(R.string.device_unsupport), Toast.LENGTH_SHORT).show()
             return
         }
-        command = StringBuilder().append(CommonCmds.DisableChanger).toString()
+        command = StringBuilder().append(Consts.DisableChanger).toString()
         super.run()
     }
 
@@ -36,7 +36,7 @@ class BatteryAddin(private var context: Context) : AddinBase(context) {
             Toast.makeText(context, context.getString(R.string.device_unsupport), Toast.LENGTH_SHORT).show()
             return
         }
-        command = StringBuilder().append(CommonCmds.ResumeChanger).toString()
+        command = StringBuilder().append(Consts.ResumeChanger).toString()
         super.run()
     }
 }

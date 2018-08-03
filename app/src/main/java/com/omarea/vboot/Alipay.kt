@@ -1,4 +1,4 @@
-package com.omarea.shared
+package com.omarea.vboot
 
 import android.content.Context
 import android.content.Intent

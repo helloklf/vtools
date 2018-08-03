@@ -12,10 +12,10 @@ object Props {
      * @return 内容
      */
     fun getProp(propName: String): String {
-        return KeepShellPublic.doCmdSync("getprop \"$propName\"")
+        return KeepShellSync.doCmdSync("getprop $propName")
     }
 
     fun setPorp(propName: String, value: String): Boolean {
-        return KeepShellPublic.doCmdSync("setprop \"$propName\" \"$value\"") != "error"
+        return KeepShellSync.doCmdSync("setprop $propName $value") != "error"
     }
 }

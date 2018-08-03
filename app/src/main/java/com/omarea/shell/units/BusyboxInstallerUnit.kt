@@ -1,6 +1,6 @@
 package com.omarea.shell.units
 
-import com.omarea.shell.KeepShellPublic
+import com.omarea.shell.KeepShellSync
 
 /**
  * Created by Hello on 2017/11/01.
@@ -8,9 +8,9 @@ import com.omarea.shell.KeepShellPublic
 
 class BusyboxInstallerUnit {
     //安装Shell工具
-    fun installShellTools() {
+    fun InstallShellTools() {
         Thread(Runnable {
-            KeepShellPublic.doCmdSync("busybox --install /system/xbin\n")
+            KeepShellSync.doCmdSync("busybox --install /system/xbin\n")
         }).start()
     }
 }

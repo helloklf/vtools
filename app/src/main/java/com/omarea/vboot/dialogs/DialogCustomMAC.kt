@@ -9,7 +9,7 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
 import com.omarea.shared.SpfConfig
-import com.omarea.shell.KeepShellPublic
+import com.omarea.shell.KeepShellSync
 import com.omarea.vboot.R
 
 /**
@@ -42,7 +42,7 @@ class DialogCustomMAC(private var context: Context) {
                 return@setNegativeButton
             }
             spf!!.edit().putString(SpfConfig.GLOBAL_SPF_MAC, mac).commit()
-            val r = KeepShellPublic.doCmdSync("chmod 0644 /sys/class/net/wlan0/address\n" +
+            KeepShellSync.doCmdSync("chmod 0644 /sys/class/net/wlan0/address\n" +
                     "svc wifi disable\n" +
                     "ifconfig wlan0 down\n" +
                     "echo '$mac' > /sys/class/net/wlan0/address\n" +
@@ -51,11 +51,7 @@ class DialogCustomMAC(private var context: Context) {
                     "echo '$mac' > /sys/devices/soc/a000000.qcom,wcnss-wlan/wcnss_mac_addr\n" +
                     "ifconfig wlan0 up\n" +
                     "svc wifi enable\n");
-            if (r == "error") {
-                Toast.makeText(context, "修改失败！", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, "MAC已修改", Toast.LENGTH_SHORT).show()
-            }
+            Toast.makeText(context, "MAC已修改", Toast.LENGTH_SHORT).show()
         }).create().show()
     }
 }

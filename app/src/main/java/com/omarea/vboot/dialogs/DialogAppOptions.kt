@@ -10,12 +10,12 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import com.omarea.shared.CommonCmds
+import com.omarea.shared.Consts
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.model.Appinfo
 import com.omarea.shell.AsynSuShellUnit
 import com.omarea.shell.CheckRootStatus
-import com.omarea.shell.KeepShellPublic
+import com.omarea.shell.SysUtils
 import com.omarea.vboot.R
 import java.io.File
 import java.util.*
@@ -26,7 +26,7 @@ import java.util.*
 
 open class DialogAppOptions(protected final var context: Context, protected var apps: ArrayList<Appinfo>, protected var handler: Handler) {
     protected var allowPigz = false
-    protected var backupPath = CommonCmds.AbsBackUpDir
+    protected var backupPath = Consts.AbsBackUpDir
     protected var userdataPath = ""
 
     init {
@@ -101,8 +101,8 @@ open class DialogAppOptions(protected final var context: Context, protected var 
     }
 
     protected fun checkRestoreData(): Boolean {
-        val r = KeepShellPublic.doCmdSync("cd $userdataPath/${context.packageName};echo `toybox ls -ld|cut -f3 -d ' '`; echo `ls -ld|cut -f3 -d ' '`;")
-        return r != "error" && r.trim().isNotEmpty()
+        val r = SysUtils.executeCommandWithOutput(false, "cd $userdataPath/${Consts.PACKAGE_NAME};echo `toybox ls -ld|cut -f3 -d ' '`; echo `ls -ld|cut -f3 -d ' '`;")
+        return r != null && r.trim().length > 0
     }
 
     protected fun execShell(sb: StringBuilder) {
@@ -115,7 +115,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         alert.show()
     }
 
-    open class ProgressHandler(dialog: View, protected var alert: AlertDialog, protected var handler: Handler) : Handler() {
+    class ProgressHandler(dialog: View, protected var alert: AlertDialog, protected var handler: Handler) : Handler() {
         protected var textView: TextView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
         var progressBar: ProgressBar = (dialog.findViewById(R.id.dialog_app_details_progress) as ProgressBar)
 
@@ -134,7 +134,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                             alert.hide()
                         }, 2000)
                         handler.handleMessage(handler.obtainMessage(2))
-                    } else if (Regex("^\\[.*]\$").matches(obj)) {
+                    } else if (Regex("^\\[.*\\]\$").matches(obj)) {
                         progressBar.progress = msg.what
                         val txt = obj
                                 .replace("[copy ", "[复制 ")
@@ -209,7 +209,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         val sb = StringBuilder()
         sb.append("backup_date=\"$date\";");
         sb.append("\n")
-        sb.append("backup_path=\"${CommonCmds.AbsBackUpDir}\";")
+        sb.append("backup_path=\"${Consts.AbsBackUpDir}\";")
         sb.append("mkdir -p \${backup_path};")
         sb.append("\n")
         sb.append("\n")
@@ -371,7 +371,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
      * 删除选中的应用
      */
     protected fun deleteAll() {
-        confirm("删除应用", "已选择${apps.size}个应用，删除系统应用可能导致功能不正常，甚至无法开机，确定要继续删除？", Runnable {
+        confirm("删除应用", "删除系统应用可能导致功能不正常，甚至无法开机，确定要继续删除？", Runnable {
             if (CheckRootStatus.isMagisk() && (CheckRootStatus.isTmpfs("/system/app") || CheckRootStatus.isTmpfs("/system/priv-app"))) {
                 android.support.v7.app.AlertDialog.Builder(context)
                         .setTitle("Magisk 副作用警告")
@@ -389,19 +389,16 @@ open class DialogAppOptions(protected final var context: Context, protected var 
 
     private fun _deleteAll() {
         val sb = StringBuilder()
-        sb.append(CommonCmds.MountSystemRW)
+        sb.append(Consts.MountSystemRW)
         for (item in apps) {
             val packageName = item.packageName.toString()
-            // 先禁用再删除，避免老弹停止运行
-            sb.append("echo '[disable $packageName]';")
-            sb.append("pm disable $packageName;")
+            sb.append("echo '[delete $packageName]';")
 
-            sb.append("echo '[delete $packageName]'\n")
             val dir = item.dir.toString()
 
-            sb.append("rm -rf $dir/oat\n")
-            sb.append("rm -rf $dir/lib\n")
-            sb.append("rm -rf ${item.path}\n")
+            sb.append("rm -rf $dir/oat;")
+            sb.append("rm -rf $dir/lib;")
+            sb.append("rm -rf ${item.path};")
         }
 
         sb.append("echo '[operation completed]';")
@@ -442,7 +439,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
      * 清除数据
      */
     protected fun clearAll() {
-        confirm("清空应用数据", "已选中${apps.size}个应用，这些应用的数据将会被清除，确定吗？", Runnable {
+        confirm("清空应用数据", "已选中了${apps.size}个应用，这些应用的数据将会被清除，确定吗？", Runnable {
             _clearAll()
         })
     }
@@ -480,7 +477,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
      * 卸载选中
      */
     protected fun uninstallAll() {
-        confirm("卸载", "已选中${apps.size}个应用，正在卸载${apps.size}个应用，继续吗？", Runnable {
+        confirm("卸载", "正在卸载${apps.size}个应用，继续吗？", Runnable {
             _uninstallAll()
         })
     }
@@ -502,7 +499,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
      * 卸载且保留数据
      */
     protected fun uninstallKeepDataAll() {
-        confirm("卸载（保留数据）", "已选中${apps.size}个应用，卸载后，这些应用的数据会被保留，这可能会导致下次安装不同签名的同名应用时无法安装，继续吗？", Runnable {
+        confirm("卸载（保留数据）", "正在卸载${apps.size}个应用，这些应用的数据会被保留，这可能会导致下次安装不同签名的同名应用时无法安装，继续吗？", Runnable {
             _uninstallKeepDataAll()
         })
     }

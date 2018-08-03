@@ -10,7 +10,7 @@ import android.support.v4.app.NotificationCompat
 import android.util.Log
 import android.widget.RemoteViews
 import com.omarea.shared.ModeList
-import com.omarea.shell.KeepShellPublic
+import com.omarea.shell.KeepShellSync
 import com.omarea.shell.KernelProrp
 import com.omarea.shell.RootFile
 import com.omarea.shell.SysUtils
@@ -92,7 +92,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
     }
 
     private fun updateBatteryInfo() {
-        val batteryInfo = KeepShellPublic.doCmdSync("dumpsys battery")
+        val batteryInfo = KeepShellSync.doCmdSync("dumpsys battery")
         val batteryInfos = batteryInfo.split("\n")
 
         // 由于部分手机相同名称的参数重复出现，并且值不同，为了避免这种情况，加个额外处理，同名参数只读一次
@@ -253,7 +253,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         val remoteViews = RemoteViews(context.packageName, R.layout.notify0)
         remoteViews.setTextViewText(R.id.notify_title, getAppName(packageName))
         remoteViews.setTextViewText(R.id.notify_text, getModName(mode))
-        remoteViews.setTextViewText(R.id.notify_battery_text, "$batteryIO $capacity% $batteryTemp")
+        remoteViews.setTextViewText(R.id.notify_battery_text, batteryIO + " " + capacity + "% " + batteryTemp)
         if (modeImage != null) {
             remoteViews.setImageViewBitmap(R.id.notify_mode, modeImage)
         }

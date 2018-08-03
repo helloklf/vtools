@@ -28,8 +28,7 @@
         <desc su="file:///android_asset/custom/actions/tmgp_get.sh" />
         <script>file:///android_asset/custom/actions/tmgp_set.sh</script>
         <params>
-            <param name="render"
-                options-sh="file:///android_asset/custom/actions/tmgp_options.sh" />
+            <param options-sh="file:///android_asset/custom/actions/tmgp_options.sh" name="render" />
             <param name="thread" value="0">
                 <option val="1">多线程优化</option>
                 <option val="3">默认</option>
@@ -54,7 +53,7 @@
     </action>
     <!--<action root="false">
         <title>环境变量</title>
-        <desc>了解Scene提供的环境变量</desc>
+        <desc>了解微工具箱提供的环境变量</desc>
         <script>
             echo "action=$action"
             echo "TEMP_DIR=$TEMP_DIR"
@@ -85,57 +84,6 @@
             <param name="config">
                 <option value="1">启用</option>
                 <option value="0">禁用</option>
-            </param>
-        </params>
-    </action>
-    <action root="true">
-        <title>底层服务清理</title>
-        <desc>清理系统底层的一些非必要服务（如：调试服务、日志服务，开发人员请勿使用！！！），从而减少CPU开销（重启后失效）</desc>
-        <script>file:///android_asset/custom/actions/proc_kill.sh</script>
-    </action>
-    <action root="true">
-        <title>修改dex2oat线程数</title>
-        <desc>增加核心线程数（不超过CPU核心数量）可以提高应用安装效率，但会造成应用安装过程中卡顿！</desc>
-        <script>file:///android_asset/custom/actions/dex2oat_threads_set.sh</script>
-        <params>
-            <param name="boot" desc="启动时(boot-dex2oat-threads)"
-                value-sh="getprop dalvik.vm.boot-dex2oat-threads">
-                <option value="">自动（根据核心数）</option>
-                <option value="1">1 个线程</option>
-                <option value="2">2 个线程</option>
-                <option value="3">3 个线程</option>
-                <option value="4">4 个线程</option>
-                <option value="5">5 个线程</option>
-                <option value="6">6 个线程</option>
-                <option value="7">7 个线程</option>
-                <option value="8">8 个线程</option>
-            </param>
-            <param name="dex2oat" desc="启动后(dex2oat-threads)"
-                value-sh="getprop dalvik.vm.dex2oat-threads">
-                <option value="">自动（根据核心数）</option>
-                <option value="1">1 个线程</option>
-                <option value="2">2 个线程</option>
-                <option value="3">3 个线程</option>
-                <option value="4">4 个线程</option>
-                <option value="5">5 个线程</option>
-                <option value="6">6 个线程</option>
-                <option value="7">7 个线程</option>
-                <option value="8">8 个线程</option>
-            </param>
-            <param name="image" desc="编译启动映像(image-dex2oat-threads)"
-                value-sh="getprop dalvik.vm.image-dex2oat-threads">
-                <option value="">自动（根据核心数）</option>
-                <option value="1">1 个线程</option>
-                <option value="2">2 个线程</option>
-                <option value="3">3 个线程</option>
-                <option value="4">4 个线程</option>
-                <option value="5">5 个线程</option>
-                <option value="6">6 个线程</option>
-                <option value="7">7 个线程</option>
-                <option value="8">8 个线程</option>
-            </param>
-            <param name="other" desc="dex2oat_thread_count" readonly="readonly">
-                <option value="">默认</option>
             </param>
         </params>
     </action>

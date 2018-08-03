@@ -7,12 +7,6 @@ action=$1
 # /sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster1_freq_table
 # 2600000 2496000 2392000 2288000 2184000 2080000 1976000 1872000 1768000 1664000 1560000 1456000 1352000 1248000 1144000 1040000 936000 832000 728000 624000 520000 416000 312000
 
-if [ ! `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor` = "interactive" ]; then
-	echo 'interactive' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-fi
-if [ ! `cat /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor` = "interactive" ]; then
-	echo 'interactive' > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
-fi
 function set_value()
 {
     value=$1
@@ -81,7 +75,7 @@ if [ "$action" = "powersave" ]; then
     set_value 0 /sys/kernel/hmp/boost
 
     set_value "80 338000:90 650000:75 1066000:83 1274000:85 1482000:83" /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
-    set_value "90 312000:92 520000:95 832000:93 1040000:75 1456000:87 1872000:89 2080000:90 2392000：92" /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
+    set_value "84 312000:92 520000:95 832000:93 1040000:75 1456000:87 1872000:89 2080000:90 2392000：92" /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
 
     echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
 	echo 10000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
@@ -110,7 +104,7 @@ if [ "$action" = "balance" ]; then
     set_value 0 /sys/kernel/hmp/boost
 
     set_value "80 338000:90 650000:75 1066000:83 1274000:85 1482000:83" /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
-    set_value "85 312000:92 520000:95 832000:93 1040000:75 1456000:87 1872000:89 2080000:90 2392000：92" /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
+    set_value "84 312000:92 520000:95 832000:93 1040000:75 1456000:87 1872000:89 2080000:90 2392000：92" /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
 
     echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
 	echo 10000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time

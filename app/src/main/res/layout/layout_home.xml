@@ -1,116 +1,235 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.omarea.ui.OverScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.omarea.vboot.FragmentHome">
 
-    <LinearLayout
+    <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingBottom="20dp">
+        android:layout_height="wrap_content"
+        android:showDividers="beginning"
+        android:shrinkColumns="0,1,2"
+        android:stretchColumns="0,1,2,3">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_gravity="fill_vertical"
-            android:layout_weight="1">
+        <TableRow android:layout_marginTop="5dp">
 
             <TextView
-                android:id="@+id/home_chat_helpinfo"
-                android:layout_marginTop="20dp"
-                android:textColor="@color/colorPrimary"
-                android:layout_gravity="center_horizontal"
-                android:text="◀ 滑动切换到“性能监视器”"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-            <android.support.v4.view.ViewPager
-                android:id="@+id/home_viewpager"
+                android:id="@+id/sdfree"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </FrameLayout>
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_span="2"
+                android:background="#22888888"
+                android:padding="20dp"
+                android:textSize="12dp" />
 
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:showDividers="beginning"
-            android:shrinkColumns="0,1,2"
-            android:stretchColumns="0,1,2,3">
+            <TextView
+                android:id="@+id/datafree"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_span="2"
+                android:background="#22888888"
+                android:padding="20dp"
+                android:textSize="12dp" />
+        </TableRow>
 
-            <TableRow android:layout_marginTop="5dp">
+        <TableRow
+            android:id="@+id/powermode_toggles"
+            android:layout_marginBottom="4dp"
+            android:visibility="visible">
 
+            <Button
+                android:id="@+id/btn_powersave"
+                android:layout_marginLeft="4dp"
+                android:background="#448888cc"
+                android:text="省电" />
+
+            <Button
+                android:id="@+id/btn_defaultmode"
+                android:layout_marginLeft="4dp"
+                android:background="#4488cc88"
+                android:text="均衡" />
+
+            <Button
+                android:id="@+id/btn_gamemode"
+                android:layout_marginLeft="4dp"
+                android:background="#44cccc88"
+                android:text="性能" />
+
+            <Button
+                android:id="@+id/btn_fastmode"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:background="#44cc8888"
+                android:text="极速" />
+        </TableRow>
+
+        <TableRow
+            android:layout_marginBottom="4dp"
+            android:visibility="visible">
+            <LinearLayout android:padding="10dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:layout_span="4">
                 <TextView
-                    android:id="@+id/sdfree"
+                    style="@style/textTitle"
+                    android:textColor="@color/colorPrimary"
+                    android:text="使用本工具前，确保你已经掌握以下技能："
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_span="2"
-                    android:background="#22888888"
-                    android:paddingBottom="20dp"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
-                    android:paddingTop="20dp"
-                    android:textSize="12dp" />
-
+                    android:layout_height="wrap_content" />
                 <TextView
-                    android:id="@+id/datafree"
+                    style="@style/textSmall"
+                    android:text="1. 解锁BootLoader"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_span="2"
-                    android:background="#22888888"
-                    android:paddingBottom="20dp"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
-                    android:paddingTop="20dp"
-                    android:textSize="12dp" />
-            </TableRow>
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="2. TWRP或其它Recovery工具卡刷完整包（别跟我说卡刷是啥都不知道！）"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="3. Fastboot模式线刷官方完整包"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginTop="20dp"
+                    style="@style/textTitle"
+                    android:textColor="@color/colorPrimary"
+                    android:text="使用本工具前，确保你已经做好以下准备："
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="1. ROOT你的手机（必需）"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="2. 已解锁System（部分功能需要）"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="3. 已安装Busybox（必需）"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginTop="20dp"
+                    style="@style/textTitle"
+                    android:text="问：功能设置都去哪了？"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="答：软件右上角那个齿轮按钮，点一下"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginTop="20dp"
+                    style="@style/textTitle"
+                    android:text="问：调整了CPU、GPU配置如何还原？"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="答：关了动态响应，重启手机"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginTop="20dp"
+                    style="@style/textTitle"
+                    android:text="问：修改了机型信息如何还原？"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="答：在卸载工具箱前，再次进入机型修改界面点“还原”然后“确定”。如果已经卸载过了？那就刷个完整包吧，或者去找别人问原本的机型信息！"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginTop="20dp"
+                    style="@style/textTitle"
+                    android:text="问：软件后台耗电吗？"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="答：开启辅助服会有一点点的后台耗电，充电加速功能也会有轻微后台耗电。"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginTop="20dp"
+                    style="@style/textTitle"
+                    android:text="问：软件需要后台吗？"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="答：自动行为、充电加速、动态响应、按键模拟功能需要，其它的不需要"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginTop="20dp"
+                    style="@style/textTitle"
+                    android:text="问：动态响应啥原理？"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="答：工具箱通过辅助服务监测应用切换行为，并通过执行配置脚本来调整CPU、GPU频率。\n你可以为每个应用指定一个模式（省电、均衡、性能、极速），已为骁龙625、820、821、835、710、845及Exynos 8890提供了配置脚本，如果你有能力也可以自己定义配置脚本。"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginTop="20dp"
+                    style="@style/textTitle"
+                    android:text="问：内置的配置文件的4种模式有啥不同？"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="省电模式 -> 牺牲流畅度尽量延长续航，适于音乐视频播放、小说阅读\n均衡模式 -> 适用于绝大部分应用场景，续航和体验兼顾\n性能模式 -> 持续稳定高性能输出和更激进的调度，适于大型游戏、修图、转码\n极速模式 -> 短时间内发挥极致性能，适于安装应用、跑分、压缩解压"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginTop="20dp"
+                    style="@style/textTitle"
+                    android:text="问：动态响应对延长待机有帮助吗？"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="答：没帮助！动态响应只是对CPU性能的调节，是在CPU唤醒状态下有效的。而待机过程中，CPU一般处于深度休眠状态，因此控制后台减少唤醒才是延长续航的根本办法！"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginTop="20dp"
+                    style="@style/textTitle"
+                    android:text="问：我的手机卡顿怎么办？"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:text="答：我不确定这个软件能不能帮到你，一般来说解决卡顿只有三种办法，减少后台自启动、删掉温控、换手机"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    android:layout_marginTop="20dp"
+                    style="@style/textTitle"
+                    android:text="问：动态响应用不了咋办？"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+                <TextView
+                    style="@style/textSmall"
+                    android:autoLink="web"
+                    android:text="答：感谢yc9559大佬已为多款soc提供了工具箱可用的配置脚本，点这个链接，了解一下：\nhttps://github.com/yc9559/cpufreq-interactive-opt/blob/master/20180603-description.md"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
 
-            <TableRow
-                android:id="@+id/powermode_toggles"
-                android:layout_marginBottom="4dp"
-                android:visibility="visible">
-
-                <Button
-                    android:id="@+id/btn_powersave"
-                    android:layout_marginLeft="4dp"
-                    android:background="@color/color_powersave"
-                    android:text="省电"
-                    android:textColor="#66ffffff"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/btn_defaultmode"
-                    android:layout_marginLeft="4dp"
-                    android:background="@color/color_balance"
-                    android:text="均衡"
-                    android:textColor="#66ffffff"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/btn_gamemode"
-                    android:layout_marginLeft="4dp"
-                    android:background="@color/color_perf"
-                    android:text="性能"
-                    android:textColor="#66ffffff"
-                    android:textStyle="bold" />
-
-                <Button
-                    android:id="@+id/btn_fastmode"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginRight="4dp"
-                    android:background="@color/color_fast"
-                    android:text="极速"
-                    android:textColor="#66ffffff"
-                    android:textStyle="bold" />
-            </TableRow>
-        </TableLayout>
-    </LinearLayout>
-</FrameLayout>
+            </LinearLayout>
+        </TableRow>
+    </TableLayout>
+</com.omarea.ui.OverScrollView>

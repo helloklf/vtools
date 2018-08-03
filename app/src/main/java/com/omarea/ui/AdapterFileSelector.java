@@ -134,7 +134,7 @@ public class AdapterFileSelector extends BaseAdapter {
             });
         } else {
             view = View.inflate(parent.getContext(), R.layout.file_item, null);
-            ((TextView) (view.findViewById(R.id.ItemText))).setText(String.format("%sMB", String.format("%.2f", (file.length() / 1024 / 1024.0))));
+            ((TextView) (view.findViewById(R.id.ItemText))).setText(String.format("%.2f", (file.length() / 1024 / 1024.0)) + "MB");
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

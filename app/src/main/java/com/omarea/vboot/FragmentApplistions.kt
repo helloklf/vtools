@@ -15,10 +15,10 @@ import android.view.inputmethod.EditorInfo
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
 import com.omarea.shared.AppListHelper
-import com.omarea.shared.CommonCmds
+import com.omarea.shared.Consts
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.model.Appinfo
-import com.omarea.shell.KeepShellPublic
+import com.omarea.shell.KeepShellSync
 import com.omarea.ui.AppListAdapter
 import com.omarea.ui.OverScrollListView
 import com.omarea.ui.ProgressBarDialog
@@ -123,7 +123,7 @@ class FragmentApplistions : Fragment() {
                 .setMultiChoiceItems(apps.toTypedArray(), selected.toBooleanArray(), { dialog, which, isChecked ->
                     selected[which] = isChecked
                 })
-                .setPositiveButton(R.string.btn_confirm) { dialog, which ->
+                .setPositiveButton(R.string.btn_confirm, { dialog, which ->
                     val keys = all.keys.toList()
                     val cmds = StringBuffer()
                     val edit = spf.edit()
@@ -141,7 +141,7 @@ class FragmentApplistions : Fragment() {
                     if (cmds.length > 0) {
                         processBarDialog.showDialog("正在恢复应用，稍等...")
                         Thread(Runnable {
-                            KeepShellPublic.doCmdSync(cmds.toString())
+                            KeepShellSync.doCmdSync(cmds.toString())
                             myHandler.post {
                                 processBarDialog.hideDialog()
                                 setList()
@@ -149,7 +149,7 @@ class FragmentApplistions : Fragment() {
                             }
                         }).start()
                     }
-                }
+                })
                 .create().show()
     }
 
@@ -194,7 +194,7 @@ class FragmentApplistions : Fragment() {
         Thread(Runnable {
             systemList = appListHelper.getSystemAppList()
             installedList = appListHelper.getUserAppList()
-            backupedList = appListHelper.getApkFilesInfoList(CommonCmds.AbsBackUpDir)
+            backupedList = appListHelper.getApkFilesInfoList(Consts.AbsBackUpDir)
             setListData(installedList, apps_userlist)
             setListData(systemList, apps_systemlist)
             setListData(backupedList, apps_backupedlist)

@@ -1,8 +1,8 @@
 package com.omarea.shared
 
 import android.content.Context
-import com.omarea.shell.KeepShellAsync
-import com.omarea.shell.KeepShellPublic
+import com.omarea.shell.KeepShell
+import com.omarea.shell.KeepShellSync
 import com.omarea.shell.Props
 import com.omarea.vboot.R
 
@@ -11,28 +11,13 @@ import com.omarea.vboot.R
  */
 
 open class ModeList {
-    companion object {
-        internal var DEFAULT = "balance";
-        internal var POWERSAVE = "powersave";
-        internal var PERFORMANCE = "performance";
-        internal var FAST = "fast";
-        internal var BALANCE = "balance";
-        internal var IGONED = "igoned";
-
-        internal fun getModName(mode: String): String {
-            when (mode) {
-                POWERSAVE -> return "省电模式"
-                PERFORMANCE -> return "性能模式"
-                FAST -> return "极速模式"
-                BALANCE -> return "均衡模式"
-                IGONED -> return "忽略切换"
-                "" -> return "跟随默认"
-                else -> return "未知模式"
-            }
-        }
-    }
-
-    internal var keepShellAsync: KeepShellAsync? = null
+    internal var DEFAULT = "balance";
+    internal var POWERSAVE = "powersave";
+    internal var PERFORMANCE = "performance";
+    internal var FAST = "fast";
+    internal var BALANCE = "balance";
+    internal var IGONED = "igoned";
+    internal var keepShell: KeepShell? = null
     private var context: Context? = null
     private var currentPowercfg: String = ""
     private var currentPowercfgApp: String = ""
@@ -42,6 +27,16 @@ open class ModeList {
 
     constructor(context: Context) {
         this.context = context
+    }
+
+    internal fun getModName(mode: String): String {
+        when (mode) {
+            POWERSAVE -> return "省电模式"
+            PERFORMANCE -> return "性能模式"
+            FAST -> return "极速模式"
+            BALANCE -> return "均衡模式"
+            else -> return "未知模式"
+        }
     }
 
     internal fun getModIcon(mode: String): Int {
@@ -98,16 +93,16 @@ open class ModeList {
 
     internal fun keepShellExec(cmd: String) {
         /*
-        if (keepShellAsync == null) {
-            keepShellAsync = KeepShellAsync(context)
+        if (keepShell == null) {
+            keepShell = KeepShell(context)
         }
-        keepShellAsync!!.doCmd(cmd)
+        keepShell!!.doCmd(cmd)
         */
-        KeepShellPublic.doCmdSync(cmd)
+        KeepShellSync.doCmdSync(cmd)
     }
 
     internal fun executePowercfgMode(mode: String): ModeList {
-        keepShellExec("sh ${CommonCmds.POWER_CFG_PATH} " + mode)
+        keepShellExec("sh ${Consts.POWER_CFG_PATH} " + mode)
         setCurrentPowercfg(mode)
         return this
     }
@@ -119,22 +114,22 @@ open class ModeList {
     }
 
     internal fun densityKeepShell(): ModeList {
-        if (keepShellAsync != null) {
-            keepShellAsync!!.tryExit()
-            keepShellAsync = null
+        if (keepShell != null) {
+            keepShell!!.tryExit()
+            keepShell = null
         }
         return this
     }
 
 
     internal fun executePowercfgModeOnce(mode: String): ModeList {
-        KeepShellPublic.doCmdSync("sh ${CommonCmds.POWER_CFG_PATH} " + mode)
+        KeepShellSync.doCmdSync("sh ${Consts.POWER_CFG_PATH} " + mode)
         setCurrentPowercfg(mode)
         return this
     }
 
     internal fun executePowercfgModeOnce(mode: String, app: String): ModeList {
-        KeepShellPublic.doCmdSync("sh ${CommonCmds.POWER_CFG_PATH} " + mode)
+        KeepShellSync.doCmdSync("sh ${Consts.POWER_CFG_PATH} " + mode)
         setCurrent(mode, app)
         return this
     }

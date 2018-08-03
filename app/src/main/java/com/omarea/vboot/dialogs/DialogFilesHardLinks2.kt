@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
-import com.omarea.shared.CommonCmds
+import com.omarea.shared.Consts
 import com.omarea.shared.FileWrite
 import com.omarea.shell.AsynSuShellUnit
 import com.omarea.shell.Files
@@ -28,7 +28,7 @@ class DialogFilesHardLinks2(private var context: Context) {
     }
 
     fun getApkFiles() {
-        FileWrite.writePrivateFile(context.assets, "addin/map-dualboot-apk.sh", "map-dualboot-apk.sh", context)
+        FileWrite.WritePrivateFile(context.assets, "addin/map-dualboot-apk.sh", "map-dualboot-apk.sh", context)
         val shellFile = "${FileWrite.getPrivateFileDir(context)}/map-dualboot-apk.sh"
         val sb = StringBuilder()
         sb.append("cp $shellFile /cache/map-dualboot-apk.sh;")
@@ -71,8 +71,8 @@ class DialogFilesHardLinks2(private var context: Context) {
                             alert.hide()
                         }, 2000)
                         handler.handleMessage(handler.obtainMessage(2, fileInfos))
-                    } else if (Regex("^\\[.*]\$").matches(obj)) {
-                        if (Regex("^\\[fileinfo.*]$").matches(obj)) {
+                    } else if (Regex("^\\[.*\\]\$").matches(obj)) {
+                        if (Regex("^\\[fileinfo.*\\]$").matches(obj)) {
                             fileInfos.add(obj)
                         } else {
                             progressBar.progress = msg.what
@@ -177,7 +177,7 @@ class DialogFilesHardLinks2(private var context: Context) {
                     if (obj == "[operation completed]") {
                         textView.setText("操作完成！")
                         this.postDelayed(runnable, 2000)
-                    } else if (Regex("^\\[.*]\$").matches(obj)) {
+                    } else if (Regex("^\\[.*\\]\$").matches(obj)) {
                         val txt = obj
                                 .replace("[linked", "[已链接 ")
                         textView.text = txt
@@ -214,11 +214,11 @@ class DialogFilesHardLinks2(private var context: Context) {
             textView.text = "开始链接相同文件"
             val alert = AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
             alert.show()
-            val size = Files.getDirFreeSizeMB(CommonCmds.SDCardDir)
+            val size = Files.GetDirFreeSizeMB(Consts.SDCardDir)
             AsynSuShellUnit(HardlinkMergeHandler(Runnable {
                 alert.cancel()
                 alert.hide()
-                val currentSize = Files.getDirFreeSizeMB(CommonCmds.SDCardDir)
+                val currentSize = Files.GetDirFreeSizeMB(Consts.SDCardDir)
                 AlertDialog.Builder(context).setTitle("全部完成").setMessage("大约节省了${currentSize - size}MB空间").create().show()
             }, alert)).exec(sb.toString()).waitFor()
         }

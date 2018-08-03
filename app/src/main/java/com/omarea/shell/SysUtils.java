@@ -19,8 +19,6 @@ public class SysUtils {
             dos = new DataOutputStream(process.getOutputStream());
             dos.write(command.getBytes("UTF-8"));
             dos.writeBytes("\nexit \n");
-            dos.writeBytes("\nexit \n");
-            dos.writeBytes("\nexit \n");
             dos.flush();
             dos.close();
             if (process.waitFor() == 0) {

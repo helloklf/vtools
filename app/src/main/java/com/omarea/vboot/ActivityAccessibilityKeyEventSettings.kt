@@ -30,15 +30,6 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
         delegate.onPostResume()
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        val serviceState = AccessibleServiceHelper().serviceIsRunning(this, "AccessibilityServiceSceneKeyEvent")
-        // key_event_state!!.visibility = if (serviceState) View.VISIBLE else View.GONE
-
-        key_event_state.text = if (serviceState) getString(R.string.accessibility_running) else getString(R.string.accessibility_stoped)
-    }
-
     @SuppressLint("ApplySharedPref")
     override fun onCreate(savedInstanceState: Bundle?) {
         spf = getSharedPreferences(SpfConfig.KEY_EVENT_SPF, Context.MODE_PRIVATE)
@@ -48,18 +39,22 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_accessibility_key_event_settings)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
         setSwitchClick()
         key_event_state.setOnClickListener {
             try {
                 val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
                 startActivity(intent)
-                Toast.makeText(applicationContext, "请在无障碍设置中找到“Scene-按键辅助”并激活，从而使用按键辅助功能！", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "请在无障碍设置中找到“微工具箱-按键辅助”并激活，从而使用按键辅助功能！", Toast.LENGTH_LONG).show()
             } catch (ex: Exception) {
 
             }
         }
+        val serviceState = AccessibleServiceHelper().serviceIsRunning(this, "AccessibilityServiceVToolsKeyEvent")
+        // key_event_state!!.visibility = if (serviceState) View.VISIBLE else View.GONE
+
+        key_event_state.text = if (serviceState) getString(R.string.accessibility_running) else getString(R.string.accessibility_stoped)
     }
 
     @SuppressLint("ApplySharedPref")
@@ -108,8 +103,8 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
             }
             click.setSelection(getIndex(listItem, spf.getInt(propClick, Int.MIN_VALUE)))
             longClick.setSelection(getIndex(listItem, spf.getInt(propLongClick, Int.MIN_VALUE)))
-            click.onItemSelectedListener = OnItemSelected(click, spf)
-            longClick.onItemSelectedListener = OnItemSelected(longClick, spf)
+            click.onItemSelectedListener = onItemSelected(click, spf)
+            longClick.onItemSelectedListener = onItemSelected(longClick, spf)
         }
 
         key_event_vitual_touch_bar.isChecked = spfOther.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR, false)
@@ -126,7 +121,7 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     intent.action = "android.settings.APPLICATION_DETAILS_SETTINGS"
                     intent.data = Uri.fromParts("package", this.packageName, null)
-                    Toast.makeText(applicationContext, "为Scene授权显示悬浮窗权限，从而在使用虚拟导航条！", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "为微工具箱授权显示悬浮窗权限，从而在使用虚拟导航条！", Toast.LENGTH_SHORT).show();
                     (it as Switch).isChecked = !isChecked
                 }
             } else {
@@ -144,7 +139,7 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
         }
     }
 
-    private class OnItemSelected(private var spinner: Spinner, private var spf: SharedPreferences) : AdapterView.OnItemSelectedListener {
+    private class onItemSelected(private var spinner: Spinner, private var spf: SharedPreferences) : AdapterView.OnItemSelectedListener {
         override fun onNothingSelected(parent: AdapterView<*>?) {
             //
         }
@@ -194,7 +189,7 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
     }
 
     private fun getIndex(items: ArrayList<HashMap<String, Any>>, value: Int): Int {
-        for (index in 0 until items.size) {
+        for (index in 0..items.size - 1) {
             if (items[index].get("key") == value) return index
         }
         return 0

@@ -151,7 +151,6 @@ case "$target" in
         gpu="/sys/devices/14ac0000.mali/volt_table"
         chmod 0644 $gpu
         setvolt $gpu "806 " "737500"
-        setvolt $gpu "728 " "725000"
         setvolt $gpu "702 " "718750"
         setvolt $gpu "650 " "687500"
         setvolt $gpu "600 " "668750"

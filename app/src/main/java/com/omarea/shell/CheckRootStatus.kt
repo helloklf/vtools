@@ -7,7 +7,8 @@ import android.os.Handler
 import android.os.Looper
 import android.support.v4.content.PermissionChecker
 import android.util.Log
-import com.omarea.shared.CommonCmds
+import com.omarea.shared.Consts
+import com.omarea.ui.ProgressBarDialog
 import com.omarea.vboot.R
 
 /**
@@ -17,26 +18,16 @@ import com.omarea.vboot.R
 
 class CheckRootStatus(var context: Context, private var next: Runnable? = null, private var skip: Runnable?, private var disableSeLinux: Boolean = false) {
     var myHandler: Handler = Handler(Looper.getMainLooper())
-    val isRootUser = "if [[ `id -u 2>&1` = '0' ]]; then\n" +
-            "\techo 'root';\n" +
-            "elif [[ `\$UID` = '0' ]]; then\n" +
-            "\techo 'root';\n" +
-            "elif [[ `whoami 2>&1` = 'root' ]]; then\n" +
-            "\techo 'root';\n" +
-            "elif [[ `set | grep 'USER_ID=0'` = 'USER_ID=0' ]]; then\n" +
-            "\techo 'root';\n" +
-            "else\n" +
-            "\texit -1;\n" +
-            "fi;"
+
     //是否已经Root
     private fun isRoot(disableSeLinux: Boolean): Boolean {
-        val r = KeepShellPublic.doCmdSync(isRootUser)
+        val r = KeepShellSync.doCmdSync(Consts.isRootUser)
         Log.d("getsu", r)
         if (r == "error" || r.contains("permission denied") || r.contains("not allowed") || r.equals("not found")) {
             return false
         } else if (r == "root") {
             if (disableSeLinux)
-                KeepShellPublic.doCmdSync(CommonCmds.DisableSELinux)
+                KeepShellSync.doCmdSync(Consts.DisableSELinux)
             return true
         } else {
             return false
@@ -46,11 +37,14 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
 
     var therad: Thread? = null
     fun forceGetRoot() {
+        val pd = ProgressBarDialog(context)
+        pd.showDialog("正在检查ROOT权限")
         var completed = false
         therad = Thread {
             if (!isRoot(disableSeLinux)) {
                 completed = true
                 myHandler.post {
+                    pd.hideDialog()
                     val alert = AlertDialog.Builder(context)
                     alert.setCancelable(false)
                     alert.setTitle(R.string.error_root)
@@ -69,6 +63,7 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
                             therad = null
                         }
                         myHandler.post {
+                            pd.hideDialog()
                             if (skip != null)
                                 skip!!.run()
                         }
@@ -78,6 +73,7 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
             } else {
                 completed = true
                 myHandler.post {
+                    pd.hideDialog()
                     if (next != null)
                         next!!.run()
                 }
@@ -86,6 +82,7 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
         therad!!.start()
         myHandler.postDelayed({
             if (!completed) {
+                pd.hideDialog()
                 val alert = AlertDialog.Builder(context)
                 alert.setCancelable(false)
                 alert.setTitle(R.string.error_root)
@@ -104,6 +101,7 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
                     }
                     completed = true
                     myHandler.post {
+                        pd.hideDialog()
                         if (skip != null)
                             skip!!.run()
                     }
@@ -118,31 +116,13 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
         private fun checkPermission(context: Context, permission: String): Boolean = PermissionChecker.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED
         fun grantPermission(context: Context) {
             val cmds = StringBuilder()
-            cmds.append("dumpsys deviceidle whitelist +${context.packageName};\n")
-            // 必需的权限
-            val requiredPermission = arrayOf(
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.CHANGE_CONFIGURATION,
-                    Manifest.permission.WRITE_SECURE_SETTINGS,
-                    Manifest.permission.SYSTEM_ALERT_WINDOW
-            )
-            requiredPermission.forEach {
-                if (!checkPermission(context, it)) {
-                    cmds.append("pm grant ${context.packageName} $it;\n")
-                }
+            cmds.append("dumpsys deviceidle whitelist +com.omarea.vboot;\n")
+            if (!(checkPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
+                cmds.append("pm grant com.omarea.vboot android.permission.READ_EXTERNAL_STORAGE;\n")
+                cmds.append("pm grant com.omarea.vboot android.permission.WRITE_EXTERNAL_STORAGE;\n")
+                cmds.append("pm grant com.omarea.vboot android.permission.SYSTEM_ALERT_WINDOW;\n")
             }
-
-            /*
-            // 不支持使用ROOT权限进行设置
-            if (!checkPermission(context, Manifest.permission.BIND_NOTIFICATION_LISTENER_SERVICE)) {
-                cmds.append("pm grant ${context.packageName} android.permission.BIND_NOTIFICATION_LISTENER_SERVICE;\n")
-            }
-            if (!checkPermission(context, Manifest.permission.WRITE_SETTINGS)) {
-                cmds.append("pm grant ${context.packageName} android.permission.WRITE_SETTINGS;\n")
-            }
-            */
-            KeepShellPublic.doCmdSync(cmds.toString())
+            KeepShellSync.doCmdSync(cmds.toString())
         }
 
         public fun isMagisk(): Boolean {
@@ -150,7 +130,7 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
         }
 
         public fun isTmpfs(dir: String): Boolean {
-            return SysUtils.executeCommandWithOutput(false, " df | grep tmpfs | grep \"$dir\"").trim().isNotEmpty()
+            return SysUtils.executeCommandWithOutput(false, " df | grep tmpfs | grep \"$dir\"").trim().length > 0
         }
     }
 }

@@ -9,15 +9,18 @@ import android.content.Context
 
 class Platform {
     //获取CPU型号，如msm8996
-    fun getCPUName(): String {
+    fun GetCPUName(): String {
         val cpu = Props.getProp("ro.board.platform")
-
-        return cpu
+        if (cpu == null) {
+            return ""
+        } else {
+            return cpu
+        }
     }
 
     //
     fun dynamicSupport(context: Context): Boolean {
-        val cpuName = getCPUName()
+        val cpuName = GetCPUName()
         val names = context.assets.list("")
         for (i in names.indices) {
             if (names[i].equals(cpuName)) {

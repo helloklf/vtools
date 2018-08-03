@@ -2,23 +2,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_graph"
-        android:icon="@drawable/graph"
-        android:orderInCategory="100"
         android:title=""
         android:visible="false"
+        android:icon="@drawable/graph"
+        android:id="@+id/action_graph"
+        android:orderInCategory="100"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_power"
+        android:title=""
         android:icon="@drawable/ic_power"
+        android:id="@+id/action_power"
         android:orderInCategory="100"
-        android:title=""
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/action_settings"
-        android:icon="@drawable/settings"
-        android:orderInCategory="100"
-        android:title=""
         android:visible="true"
+        android:title=""
+        android:icon="@drawable/settings"
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
         app:showAsAction="ifRoom" />
 </menu>

@@ -33,11 +33,11 @@ class AutoClickService {
             return
 
         for (ki in autoClickKeyWords.indices) {
-            val nextNodes = event.source.findAccessibilityNodeInfosByText(autoClickKeyWords[ki])
-            if (nextNodes != null && !nextNodes.isEmpty()) {
+            val next_nodes = event.source.findAccessibilityNodeInfosByText(autoClickKeyWords[ki])
+            if (next_nodes != null && !next_nodes.isEmpty()) {
                 var node: AccessibilityNodeInfo
-                for (i in nextNodes.indices) {
-                    node = nextNodes[i]
+                for (i in next_nodes.indices) {
+                    node = next_nodes[i]
                     if (node.className.toString().toLowerCase().contains("button") && node.isEnabled) {
                         if (node.text != autoClickKeyWords[ki])
                             continue
@@ -71,11 +71,11 @@ class AutoClickService {
     }
 
     fun miuiUsbInstallAutoClick(event: AccessibilityEvent) {
-        val next2Nodes = event.source.findAccessibilityNodeInfosByText("继续安装")
-        if (next2Nodes != null && !next2Nodes.isEmpty()) {
+        val next2_nodes = event.source.findAccessibilityNodeInfosByText("继续安装")
+        if (next2_nodes != null && !next2_nodes.isEmpty()) {
             var node: AccessibilityNodeInfo
-            for (i in next2Nodes.indices) {
-                node = next2Nodes[i]
+            for (i in next2_nodes.indices) {
+                node = next2_nodes[i]
                 if (node.className.toString().toLowerCase().contains("button") && node.isEnabled) {
                     node.performAction(AccessibilityNodeInfo.ACTION_CLICK)
                 }

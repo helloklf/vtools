@@ -8,17 +8,13 @@ if [[ ! -f $path ]]; then
     fi;
 fi;
 
-echo 'Step1.挂载System、Vendor为读写...'
+echo 'Step1.挂载System为读写...'
 
 $BUSYBOX mount -o rw,remount /system
 mount -o rw,remount /system
 $BUSYBOX mount -o remount,rw /dev/block/bootdevice/by-name/system /system
 mount -o remount,rw /dev/block/bootdevice/by-name/system /system 2> /dev/null
 
-$BUSYBOX mount -o rw,remount /vendor 2> /dev/null
-mount -o rw,remount /vendor 2> /dev/null
-$BUSYBOX mount -o rw,remount /system/vendor 2> /dev/null
-mount -o rw,remount /system/vendor 2> /dev/null
 
 if [[ "$config" = "1" ]]; then
     if [[ -f "$path.bak" ]]; then

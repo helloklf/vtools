@@ -23,15 +23,20 @@ class ServiceBattery : Service() {
             //监听电池改变
             batteryChangedReciver = ReciverBatterychanged(this)
             //启动完成
-            registerReceiver(batteryChangedReciver, IntentFilter(Intent.ACTION_BOOT_COMPLETED))
+            val ACTION_BOOT_COMPLETED = IntentFilter(Intent.ACTION_BOOT_COMPLETED)
+            registerReceiver(batteryChangedReciver, ACTION_BOOT_COMPLETED)
             //电源连接
-            registerReceiver(batteryChangedReciver, IntentFilter(Intent.ACTION_POWER_CONNECTED))
+            val ACTION_POWER_CONNECTED = IntentFilter(Intent.ACTION_POWER_CONNECTED)
+            registerReceiver(batteryChangedReciver, ACTION_POWER_CONNECTED)
             //电源断开
-            registerReceiver(batteryChangedReciver, IntentFilter(Intent.ACTION_POWER_DISCONNECTED))
+            val ACTION_POWER_DISCONNECTED = IntentFilter(Intent.ACTION_POWER_DISCONNECTED)
+            registerReceiver(batteryChangedReciver, ACTION_POWER_DISCONNECTED)
             //电量变化
-            registerReceiver(batteryChangedReciver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+            val ACTION_BATTERY_CHANGED = IntentFilter(Intent.ACTION_BATTERY_CHANGED)
+            registerReceiver(batteryChangedReciver, ACTION_BATTERY_CHANGED)
             //电量不足
-            registerReceiver(batteryChangedReciver, IntentFilter(Intent.ACTION_BATTERY_LOW))
+            val ACTION_BATTERY_LOW = IntentFilter(Intent.ACTION_BATTERY_LOW)
+            registerReceiver(batteryChangedReciver, ACTION_BATTERY_LOW)
             batteryChangedReciver!!.resumeCharge()
             batteryChangedReciver!!.entryFastChanger(true)
         }
@@ -57,8 +62,8 @@ class ServiceBattery : Service() {
             if (m != null) {
                 val serviceInfos = m.getRunningServices(5000)
                 for (serviceInfo in serviceInfos) {
-                    if (serviceInfo.service.packageName == context.packageName) {
-                        if (serviceInfo.service.className == context.packageName + ".ServiceBattery") {
+                    if (serviceInfo.service.packageName == "com.omarea.vboot") {
+                        if (serviceInfo.service.className == "com.omarea.vboot.ServiceBattery") {
                             return true
                         }
                     }

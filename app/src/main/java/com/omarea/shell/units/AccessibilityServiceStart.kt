@@ -1,7 +1,7 @@
 package com.omarea.shell.units
 
 import android.content.Context
-import com.omarea.shell.KeepShellPublic
+import com.omarea.shell.KeepShellSync
 
 /**
  * Created by Hello on 2018/06/03.
@@ -9,21 +9,16 @@ import com.omarea.shell.KeepShellPublic
 
 class AccessibilityServiceStart {
     fun strartService(context: Context, serviceName: String): Boolean {
-        return KeepShellPublic.doCmdSync(
+        return KeepShellSync.doCmdSync(
                 "services=`settings get secure enabled_accessibility_services`;\n" +
                         "service='$serviceName';\n" +
-                        "include=\$(echo \"\$services\" |grep \"\$service\")\n" +
-
-                        "if [ ! -n \"\$services\" ]\n" +
+                        "echo \"\$services\" |grep -q \"\$service\"\n" +
+                        "if [ \$? -gt -1 ]\n" +
                         "then\n" +
-                            "   settings put secure enabled_accessibility_services \"\$service\"; \n" +
-                        "elif [ ! -n \"\$include\" ]\n" +
-                        "then\n" +
-                            "   settings put secure enabled_accessibility_services \"\$services:\$service\"; \n" +
-                        "else\n" +
-                            "   settings put secure enabled_accessibility_services \"\$services\"; \n" +
+                        "\tsettings put secure enabled_accessibility_services \"\$services:\$service\"; \n" +
                         "fi\n" +
-                        "settings put secure accessibility_enabled 1;\n"
-        ) != "error"
+                        "settings put secure accessibility_enabled 1;\n" +
+                        "am startservice -n \$service;\n"
+        ) != ""
     }
 }

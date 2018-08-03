@@ -8,39 +8,35 @@
     android:paddingRight="26dp">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="@string/dialog_addin_device_warn"
+        android:textSize="12dp"
         android:textColor="@color/colorPrimary"
-        android:textSize="12dp" />
-
+        android:text="@string/dialog_addin_device_warn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
     <EditText
         android:id="@+id/dialog_addin_model"
+        android:hint="@string/ro_product_model"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/ro_product_model"
         android:inputType="text" />
-
     <EditText
         android:id="@+id/dialog_addin_brand"
+        android:hint="@string/ro_product_brand"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/ro_product_brand"
         android:inputType="text" />
-
     <EditText
         android:id="@+id/dialog_addin_name"
+        android:hint="@string/ro_product_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/ro_product_name"
         android:inputType="text" />
-
     <EditText
         android:id="@+id/dialog_addin_device"
+        android:hint="@string/ro_product_device"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/ro_product_device"
         android:inputType="text" />
     <!--<EditText
         android:id="@+id/dialog_addin_product"
@@ -50,103 +46,91 @@
         android:inputType="text" />-->
     <EditText
         android:id="@+id/dialog_addin_manufacturer"
+        android:hint="@string/ro_product_manufacturer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/ro_product_manufacturer"
         android:inputType="text" />
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp"
-        android:layout_marginTop="20dp"
         android:text="@string/dialog_addin_device_inner"
         android:textColor="#888"
-        android:textSize="12dp" />
-
+        android:textSize="12dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="6dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
+        android:layout_height="wrap_content" android:orientation="horizontal">
         <Button
             android:id="@+id/dialog_addin_r11"
-            android:layout_width="60dp"
-            android:layout_height="32dp"
-            android:layout_marginRight="6dp"
-            android:background="@drawable/btn_bg"
             android:text="@string/r11"
-            android:textSize="12dp" />
-
+            android:layout_width="60dp"
+            android:textSize="12dp"
+            android:layout_height="32dp"
+            android:background="@drawable/btn_bg"
+            android:layout_marginRight="6dp" />
         <Button
             android:id="@+id/dialog_addin_r15"
-            android:layout_width="50dp"
-            android:layout_height="32dp"
-            android:layout_marginRight="6dp"
-            android:background="@drawable/btn_bg"
             android:text="@string/r15"
-            android:textSize="12dp" />
-
+            android:layout_width="50dp"
+            android:textSize="12dp"
+            android:layout_height="32dp"
+            android:background="@drawable/btn_bg"
+            android:layout_marginRight="6dp" />
         <Button
             android:id="@+id/dialog_addin_x20"
-            android:layout_width="50dp"
-            android:layout_height="32dp"
-            android:layout_marginRight="6dp"
-            android:background="@drawable/btn_bg"
             android:text="@string/x20"
-            android:textSize="12dp" />
-
+            android:layout_width="50dp"
+            android:textSize="12dp"
+            android:layout_height="32dp"
+            android:background="@drawable/btn_bg"
+            android:layout_marginRight="6dp" />
         <Button
             android:id="@+id/dialog_addin_default"
+            android:text="还原"
+            android:textSize="12dp"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
-            android:layout_marginRight="6dp"
             android:background="@drawable/btn_bg"
-            android:text="还原"
-            android:textSize="12dp" />
+            android:layout_marginRight="6dp" />
     </LinearLayout>
-
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:orientation="horizontal">
-
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:orientation="horizontal">
         <Button
             android:id="@+id/dialog_addin_s9plus"
-            android:layout_width="60dp"
-            android:layout_height="32dp"
-            android:layout_marginRight="6dp"
-            android:background="@drawable/btn_bg"
             android:text="S9+"
-            android:textSize="12dp" />
-
+            android:layout_width="60dp"
+            android:textSize="12dp"
+            android:layout_height="32dp"
+            android:background="@drawable/btn_bg"
+            android:layout_marginRight="6dp" />
         <Button
             android:id="@+id/dialog_addin_8848"
-            android:layout_width="50dp"
-            android:layout_height="32dp"
-            android:layout_marginRight="6dp"
-            android:background="@drawable/btn_bg"
             android:text="@string/_8848"
-            android:textSize="12dp" />
-
+            android:layout_width="50dp"
+            android:textSize="12dp"
+            android:layout_height="32dp"
+            android:background="@drawable/btn_bg"
+            android:layout_marginRight="6dp" />
         <Button
             android:id="@+id/dialog_addin_ipx"
-            android:layout_width="50dp"
-            android:layout_height="32dp"
-            android:layout_marginRight="6dp"
-            android:background="@drawable/btn_bg"
             android:text="@string/ipx"
-            android:textSize="12dp" />
-
+            android:layout_width="50dp"
+            android:textSize="12dp"
+            android:layout_height="32dp"
+            android:background="@drawable/btn_bg"
+            android:layout_marginRight="6dp" />
         <Button
             android:id="@+id/dialog_addin_mrs"
+            android:text="@string/mrs"
+            android:textSize="12dp"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
-            android:layout_marginRight="6dp"
             android:background="@drawable/btn_bg"
-            android:text="@string/mrs"
-            android:textSize="12dp" />
+            android:layout_marginRight="6dp" />
     </LinearLayout>
 
 </LinearLayout>

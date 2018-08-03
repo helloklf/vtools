@@ -18,13 +18,12 @@
             <EditText
                 android:id="@+id/apps_search_box"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
                 android:background="#33dddddd"
                 android:hint="搜索 应用名或PackageName"
                 android:inputType="textFilter"
                 android:padding="8dp"
-                android:singleLine="true"
-                android:textSize="16dp" />
+                android:singleLine="true" />
 
             <TabWidget
                 android:id="@android:id/tabs"
@@ -110,29 +109,23 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
-
                         <TextView
-                            style="@style/textTitle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
-                            android:text="说明" />
+                            android:text="说明"
+                            android:textSize="18dp" />
 
                         <TextView
-                            style="@style/textSmall"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/applist_help" />
+                            android:text="@string/applist_help"
+                            android:textSize="14dp" />
 
-                        <Button
-                            android:id="@+id/app_btn_hide"
+                        <Button android:background="@drawable/btn_bg" android:id="@+id/app_btn_hide"
                             android:layout_width="wrap_content"
                             android:layout_height="36dp"
                             android:layout_marginTop="30dp"
-                            android:background="@drawable/btn_bg"
-                            android:paddingLeft="10dp"
-                            android:paddingRight="10dp"
-                            android:text="恢复被隐藏的应用" />
+                            android:text="恢复被隐藏的应用" android:paddingLeft="10dp" android:paddingRight="10dp" />
                     </LinearLayout>
                 </FrameLayout>
             </FrameLayout>

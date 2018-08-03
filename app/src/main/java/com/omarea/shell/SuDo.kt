@@ -105,7 +105,7 @@ class SuDo(private val context: Context?) : ShellEvents() {
                 stringBuilder.append(cmd)
                 stringBuilder.append("\n\n")
             }
-            return KeepShellPublic.doCmdSync(stringBuilder.toString()) != "error"
+            return KeepShellSync.doCmdSync(stringBuilder.toString()) != "error"
         }
     }
 }

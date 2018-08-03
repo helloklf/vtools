@@ -11,14 +11,14 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
-import com.omarea.shared.CommonCmds
+import com.omarea.shared.Consts
 import com.omarea.shared.SpfConfig
-import com.omarea.shell.KeepShellAsync
+import com.omarea.shell.KeepShell
 
 
 class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() {
     private var bp: Boolean = false
-    private var keepShellAsync: KeepShellAsync? = null
+    private var keepShell: KeepShell? = null
 
     private var sharedPreferences: SharedPreferences
     private var globalSharedPreferences: SharedPreferences
@@ -37,28 +37,16 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
         }
     }
 
-    val FastChangerBase =
-    //"chmod 0777 /sys/class/power_supply/usb/pd_active;" +
-            "chmod 0777 /sys/class/power_supply/usb/pd_allowed;" +
-                    //"echo 1 > /sys/class/power_supply/usb/pd_active;" +
-                    "echo 1 > /sys/class/power_supply/usb/pd_allowed;" +
-                    "chmod 0777 /sys/class/power_supply/main/constant_charge_current_max;" +
-                    "chmod 0777 /sys/class/qcom-battery/restricted_current;" +
-                    "chmod 0777 /sys/class/qcom-battery/restricted_charging;" +
-                    "echo 0 > /sys/class/qcom-battery/restricted_charging;" +
-                    "echo 0 > /sys/class/power_supply/battery/restricted_charging;" +
-                    "echo 0 > /sys/class/power_supply/battery/safety_timer_enabled;" +
-                    "chmod 0777 /sys/class/power_supply/bms/temp_warm;" +
-                    "echo 480 > /sys/class/power_supply/bms/temp_warm;" +
-                    "chmod 0777 /sys/class/power_supply/battery/constant_charge_current_max;"
     //快速充电
     private fun fastCharger() {
         try {
             if (!sharedPreferences.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false))
                 return
 
-            keepShellAsync!!.doCmd(FastChangerBase)
-            keepShellAsync!!.doCmd(computeLeves(qcLimit).toString())
+            if (globalSharedPreferences.getBoolean(SpfConfig.GLOBAL_SPF_DEBUG, false))
+                showMsg(service.getString(R.string.power_connected), false)
+            keepShell!!.doCmd(Consts.FastChangerBase)
+            keepShell!!.doCmd(computeLeves(qcLimit).toString())
         } catch (ex: Exception) {
             Log.e("ChargeService", ex.stackTrace.toString())
         }
@@ -100,7 +88,7 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
                 if (onChanger) {
                     if (batteryLevel >= sharedPreferences.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85)) {
                         bp = true
-                        keepShellAsync!!.doCmd(CommonCmds.DisableChanger)
+                        keepShell!!.doCmd(Consts.DisableChanger)
                     } else if (batteryLevel < sharedPreferences.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85) - 20) {
                         resumeCharge()
                     }
@@ -131,8 +119,8 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
     }
 
     init {
-        if (keepShellAsync == null) {
-            keepShellAsync = KeepShellAsync(service)
+        if (keepShell == null) {
+            keepShell = KeepShell(service)
         }
         sharedPreferences = service.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
         listener = SharedPreferences.OnSharedPreferenceChangeListener { spf, key ->
@@ -148,13 +136,13 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
     internal fun onDestroy() {
         sharedPreferences.unregisterOnSharedPreferenceChangeListener(this.listener)
         this.resumeCharge()
-        keepShellAsync!!.tryExit()
-        keepShellAsync = null
+        keepShell!!.tryExit()
+        keepShell = null
     }
 
     internal fun resumeCharge() {
         bp = false
-        keepShellAsync!!.doCmd(CommonCmds.ResumeChanger)
+        keepShell!!.doCmd(Consts.ResumeChanger)
     }
 
     internal fun entryFastChanger(onChanger: Boolean) {

@@ -1,6 +1,7 @@
 package com.omarea.vboot.addin
 
 import android.content.Context
+import com.omarea.shared.Consts
 
 /**
  * Created by Hello on 2018/03/22.
@@ -8,7 +9,7 @@ import android.content.Context
 
 class SystemAddin(private var context: Context) : AddinBase(context) {
     fun deleteLockPwd() {
-        command = StringBuilder().append("rm -f /data/system/*.key;rm -f /data/system/locksettings.db*;reboot;").toString()
+        command = StringBuilder().append(Consts.DeleteLockPwd).toString()
         super.run()
     }
 

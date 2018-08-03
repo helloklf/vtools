@@ -1,6 +1,6 @@
 <html style="font-size:2.66666667vw;padding-top: 1.5em;">
 <head>
-    <title>SceneOnline示例</title>
+    <title>微工具箱 Online - 示例</title>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -41,21 +41,16 @@
             text-decoration: none;
             color: #138ed6;
         }
-
-
-
-
     </style>
 </head>
 <body>
-<div>
-    <div class="small input-title">输入唯一标识-addinID</div>
-    <input type="text" id="addinID" maxlength="20" placeholder="只能输入、字母、数字、“-”、“ _”"
-           value="test-addin"/>
-    <div class="small input-title">actions配置信息</div>
-    <textarea id="configXml" placeholder="configXml">
+    <div>
+        <div class="small input-title">输入唯一标识-addinID</div>
+        <input type="text" id="addinID" maxlength="20" placeholder="只能输入、字母、数字、“-”、“ _”" value="test-addin" />
+        <div class="small input-title">actions配置信息</div>
+        <textarea id="configXml" placeholder="configXml">
 <?xml version="1.0" encoding="UTF-8" ?>
-        <actions>
+<actions>
     <action root="true">
         <title>谷歌相机HDR+</title>
         <desc>[添加\移除] persist.camera.HAL3.enabled</desc>
@@ -107,14 +102,14 @@
 
 
         </textarea>
-    <a href="https://github.com/helloklf/kr-scripts/blob/master/README.md">点击这里，了解配置格式</a>
-    <br>
-    <br>
-    <button type="button" onclick="add()">添加</button>
-    <br>
-    <div class="small" id="result"></div>
-</div>
-<script>
+        <a href="https://github.com/helloklf/kr-scripts/blob/master/README.md">点击这里，了解配置格式</a>
+        <br>
+        <br>
+        <button type="button" onclick="add()">添加</button>
+        <br>
+        <div class="small" id="result"></div>
+    </div>
+    <script>
         function add() {
             if(window.VToolsNative) {
                 document.getElementById('result').innerHTML = '正在调用...';
@@ -122,16 +117,12 @@
                 var configXml = document.getElementById('configXml').value;
                 VToolsNative.registerAddin(encodeURIComponent(addinID), configXml.trim(), 'addCallback')
             } else {
-                document.getElementById('result').innerHTML = 'JSBridge调用失败，请在Scene中打开本页面！';
+                document.getElementById('result').innerHTML = 'JSBridge调用失败，请在微工具箱中打开本页面！';
             }
         }
         function addCallback(result) {
             document.getElementById('result').innerHTML = JSON.stringify(result, null, 2) || '执行完毕！';
         }
-
-
-
-
-</script>
+    </script>
 </body>
 </html>

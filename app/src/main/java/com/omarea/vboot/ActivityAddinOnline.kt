@@ -68,6 +68,7 @@ class ActivityAddinOnline : AppCompatActivity() {
             try {
                 val myURL = URL(url)
                 val conn = myURL.openConnection()
+                conn.connectTimeout = 30 * 1000
                 conn.connect()
                 conn.getInputStream()
                 val reader = conn.getInputStream().bufferedReader(Charset.forName("UTF-8"))
@@ -86,7 +87,7 @@ class ActivityAddinOnline : AppCompatActivity() {
                     }
                 } else {
                     vtools_online.post {
-                        Toast.makeText(applicationContext, "下载配置文件失败或文件无效！", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this, "下载配置文件失败或文件无效！", Toast.LENGTH_LONG).show()
                     }
                 }
                 vtools_online.post {
@@ -95,7 +96,7 @@ class ActivityAddinOnline : AppCompatActivity() {
             } catch (ex: Exception) {
                 vtools_online.post {
                     progressBarDialog.hideDialog()
-                    Toast.makeText(applicationContext, "下载配置文件失败！", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, "下载配置文件失败！", Toast.LENGTH_LONG).show()
                 }
             }
         }).start()
@@ -116,6 +117,7 @@ class ActivityAddinOnline : AppCompatActivity() {
             vtools_online.loadUrl("https://helloklf.github.io/vtools-online.html#/scripts")
         }
         //vtools_online.setWebChromeClient(object : WebChromeClient() { })
+
         vtools_online.setWebViewClient(object : WebViewClient() {
             private fun tryGetPowercfg(view: WebView?, url: String?): Boolean {
                 if (url != null && view != null) {
@@ -127,7 +129,8 @@ class ActivityAddinOnline : AppCompatActivity() {
                         AlertDialog.Builder(vtools_online.context)
                                 .setTitle("可用的配置脚本")
                                 .setMessage("在当前页面上检测到可用于动态响应的配置脚本，是否立即将其安装到本地？\n\n配置：$configPath\n\n作者：yc9559\n\n")
-                                .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                                .setPositiveButton(R.string.btn_confirm, {
+                                    _, _ ->
                                     val configAbsPath = "https://github.com/yc9559/cpufreq-interactive-opt/raw/master/$configPath"
                                     // view.loadUrl(configAbsPath)
                                     downloadPowercfg(configAbsPath)
@@ -167,13 +170,6 @@ class ActivityAddinOnline : AppCompatActivity() {
         //vtools_online.loadUrl("file:///android_asset/index.html")
         //vtools_online.loadUrl("http://192.168.2.118:8080/#/scripts")
         vtools_online.addJavascriptInterface(VToolsOnlineNative(this, vtools_online), "VToolsNative")
-    }
-
-    override fun onDestroy() {
-        vtools_online.clearCache(true)
-        vtools_online.removeAllViews()
-        vtools_online.destroy()
-        super.onDestroy()
     }
 
     public override fun onPause() {

@@ -14,16 +14,16 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
-import com.omarea.shared.CommonCmds
+import com.omarea.shared.Consts
 import com.omarea.shared.SpfConfig
-import com.omarea.shell.KeepShellPublic
+import com.omarea.shell.KeepShellSync
 import com.omarea.shell.units.BatteryUnit
 import kotlinx.android.synthetic.main.layout_battery.*
 import java.util.*
 
 
 class FragmentBattery : Fragment() {
-    internal lateinit var view: View
+    lateinit internal var view: View
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -41,16 +41,16 @@ class FragmentBattery : Fragment() {
     private var batteryUnits = BatteryUnit()
     private lateinit var spf: SharedPreferences
 
-    @SuppressLint("ApplySharedPref", "SetTextI18n")
+    @SuppressLint("ApplySharedPref")
     override fun onResume() {
         super.onResume()
 
         settings_qc.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)
         settings_bp.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_BP, false)
-        settings_bp_level.progress = spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85)
-        accessbility_bp_level_desc.text = "充电限制电量：" + spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85) + "%"
-        settings_qc_limit.progress = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000)
-        settings_qc_limit_desc.text = "设定上限电流：" + spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000) + "mA"
+        settings_bp_level.setProgress(spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85))
+        accessbility_bp_level_desc.setText("充电限制电量：" + spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85) + "%")
+        settings_qc_limit.setProgress(spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000))
+        settings_qc_limit_desc.setText("设定上限电流：" + spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000) + "mA")
 
 
         if (broadcast == null) {
@@ -146,18 +146,18 @@ class FragmentBattery : Fragment() {
             } else {
                 //启用电池服务
                 startBatteryService()
-                Snackbar.make(this.view, "OK！如果你要手机重启后自动开启本功能，请允许Scene开机自启！", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(this.view, "OK！如果你要手机重启后自动开启本功能，请允许微工具箱开机自启！", Snackbar.LENGTH_SHORT).show()
             }
         }
         settings_bp.setOnClickListener {
             spf.edit().putBoolean(SpfConfig.CHARGE_SPF_BP, settings_bp.isChecked).commit()
             //禁用电池保护：恢复充电功能
             if (!settings_bp.isChecked) {
-                KeepShellPublic.doCmdSync(CommonCmds.ResumeChanger)
+                KeepShellSync.doCmdSync(Consts.ResumeChanger)
             } else {
                 //启用电池服务
                 startBatteryService()
-                Snackbar.make(this.view, "OK！如果你要手机重启后自动开启本功能，请允许Scene开机自启！", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(this.view, "OK！如果你要手机重启后自动开启本功能，请允许微工具箱开机自启！", Snackbar.LENGTH_SHORT).show()
             }
         }
 
@@ -167,7 +167,7 @@ class FragmentBattery : Fragment() {
         settings_qc_limit.setOnSeekBarChangeListener(OnSeekBarChangeListener2(Runnable {
             val level = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000)
             startBatteryService()
-            batteryUnits.setChargeInputLimit(level)
+            batteryUnits.setChargeInputLimit(level);
         }, spf, settings_qc_limit_desc))
 
         if (!qcSettingSuupport) {
@@ -189,7 +189,7 @@ class FragmentBattery : Fragment() {
         btn_battery_history.setOnClickListener {
             try {
                 val powerUsageIntent = Intent(Intent.ACTION_POWER_USAGE_SUMMARY)
-                val resolveInfo = context!!.packageManager.resolveActivity(powerUsageIntent, 0)
+                val resolveInfo = context!!.getPackageManager().resolveActivity(powerUsageIntent, 0)
                 // check that the Battery app exists on this device
                 if (resolveInfo != null) {
                     startActivity(powerUsageIntent)
@@ -210,18 +210,18 @@ class FragmentBattery : Fragment() {
                     .setTitle("需要重启")
                     .setMessage("删除电池使用记录需要立即重启手机，是否继续？")
                     .setPositiveButton(R.string.btn_confirm, DialogInterface.OnClickListener { dialog, which ->
-                        KeepShellPublic.doCmdSync("rm -f /data/system/batterystats-checkin.bin;rm -f /data/system/batterystats-daily.xml;rm -f /data/system/batterystats.bin;sync;sleep 2; reboot;")
+                        KeepShellSync.doCmdSync(Consts.DeleteBatteryHistory)
                     })
                     .setNegativeButton(R.string.btn_cancel, DialogInterface.OnClickListener { dialog, which -> })
                     .create().show()
         }
 
         bp_disable_charge.setOnClickListener {
-            KeepShellPublic.doCmdSync(CommonCmds.DisableChanger)
+            KeepShellSync.doCmdSync(Consts.DisableChanger)
             Toast.makeText(context!!, "充电功能已禁止！", Toast.LENGTH_SHORT).show()
         }
         bp_enable_charge.setOnClickListener {
-            KeepShellPublic.doCmdSync(CommonCmds.ResumeChanger)
+            KeepShellSync.doCmdSync(Consts.ResumeChanger)
             Toast.makeText(context!!, "充电功能已恢复！", Toast.LENGTH_SHORT).show()
         }
     }
@@ -241,7 +241,7 @@ class FragmentBattery : Fragment() {
         }
 
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-            accessbility_bp_level_desc.text = "充电限制电量：$progress%"
+            accessbility_bp_level_desc.setText("充电限制电量：" + progress + "%")
         }
     }
 
@@ -260,7 +260,7 @@ class FragmentBattery : Fragment() {
         }
 
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-            settings_qc_limit_desc.text = "充电上限电流：" + progress + "mA"
+            settings_qc_limit_desc.setText("充电上限电流：" + progress + "mA")
         }
     }
 
