@@ -101,7 +101,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
     }
 
     protected fun checkRestoreData(): Boolean {
-        val r = KeepShellPublic.doCmdSync("cd $userdataPath/${CommonCmds.PACKAGE_NAME};echo `toybox ls -ld|cut -f3 -d ' '`; echo `ls -ld|cut -f3 -d ' '`;")
+        val r = KeepShellPublic.doCmdSync("cd $userdataPath/${context.packageName};echo `toybox ls -ld|cut -f3 -d ' '`; echo `ls -ld|cut -f3 -d ' '`;")
         return r != "error" && r.trim().isNotEmpty()
     }
 
