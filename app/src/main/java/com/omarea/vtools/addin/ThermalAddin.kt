@@ -3,7 +3,7 @@ package com.omarea.vtools.addin
 import android.app.AlertDialog
 import android.content.Context
 import android.widget.Toast
-import com.omarea.shared.Consts
+import com.omarea.shared.CommonCmds
 import java.io.File
 
 /**
@@ -47,8 +47,18 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
             return
         }
         command = StringBuilder()
-                .append(Consts.MountSystemRW)
-                .append(Consts.RMThermal)
+                .append(CommonCmds.MountSystemRW)
+                .append("cp /system/vendor/bin/thermal-engine /system/vendor/bin/thermal-engine.bak\n" +
+                        "rm -f /system/vendor/bin/thermal-engine\n" +
+
+                        "cp /system/vendor/lib64/libthermalclient.so /system/vendor/lib64/libthermalclient.so.bak\n" +
+                        "rm -f /system/vendor/lib64/libthermalclient.so\n" +
+
+                        "cp /system/vendor/lib64/libthermalioctl.so /system/vendor/lib64/libthermalioctl.so.bak\n" +
+                        "rm -f /system/vendor/lib64/libthermalioctl.so\n" +
+
+                        "cp /system/vendor/lib/libthermalclient.so /system/vendor/lib/libthermalclient.so.bak\n" +
+                        "rm -f /system/vendor/lib/libthermalclient.so\n")
                 .toString()
 
         super.run()
@@ -60,8 +70,18 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
             return
         }
         command = StringBuilder()
-                .append(Consts.MountSystemRW)
-                .append(Consts.ResetThermal)
+                .append(CommonCmds.MountSystemRW)
+                .append("cp /system/vendor/bin/thermal-engine.bak /system/vendor/bin/thermal-engine\n" +
+                        "rm -f /system/vendor/bin/thermal-engine.bak\n" +
+
+                        "cp /system/vendor/lib64/libthermalclient.so.bak /system/vendor/lib64/libthermalclient.so\n" +
+                        "rm -f /system/vendor/lib64/libthermalclient.so.bak\n" +
+
+                        "cp /system/vendor/lib64/libthermalioctl.so.bak /system/vendor/lib64/libthermalioctl.so\n" +
+                        "rm -f /system/vendor/lib64/libthermalioctl.so.bak\n" +
+
+                        "cp /system/vendor/lib/libthermalclient.so.bak /system/vendor/lib/libthermalclient.so\n" +
+                        "rm -f /system/vendor/lib/libthermalclient.so.bak\n")
                 .toString()
 
         super.run()

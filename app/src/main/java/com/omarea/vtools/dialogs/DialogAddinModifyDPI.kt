@@ -10,7 +10,7 @@ import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
-import com.omarea.shared.Consts
+import com.omarea.shared.CommonCmds
 import com.omarea.shell.KeepShellPublic
 import com.omarea.vtools.R
 
@@ -94,7 +94,7 @@ class DialogAddinModifyDPI(var context: Context) {
                 cmd.append("\n")
             }
             if (!qc && dpi >= 96) {
-                cmd.append(Consts.MountSystemRW)
+                cmd.append(CommonCmds.MountSystemRW)
                 cmd.append("wm density reset\n")
                 cmd.append("sed '/ro.sf.lcd_density=/'d /system/build.prop > /data/build.prop\n")
                 cmd.append("sed '\$aro.sf.lcd_density=$dpi' /data/build.prop > /data/build2.prop\n")

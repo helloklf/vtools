@@ -14,7 +14,7 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
-import com.omarea.shared.Consts
+import com.omarea.shared.CommonCmds
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.units.BatteryUnit
@@ -153,7 +153,7 @@ class FragmentBattery : Fragment() {
             spf.edit().putBoolean(SpfConfig.CHARGE_SPF_BP, settings_bp.isChecked).commit()
             //禁用电池保护：恢复充电功能
             if (!settings_bp.isChecked) {
-                KeepShellPublic.doCmdSync(Consts.ResumeChanger)
+                KeepShellPublic.doCmdSync(CommonCmds.ResumeChanger)
             } else {
                 //启用电池服务
                 startBatteryService()
@@ -210,18 +210,18 @@ class FragmentBattery : Fragment() {
                     .setTitle("需要重启")
                     .setMessage("删除电池使用记录需要立即重启手机，是否继续？")
                     .setPositiveButton(R.string.btn_confirm, DialogInterface.OnClickListener { dialog, which ->
-                        KeepShellPublic.doCmdSync(Consts.DeleteBatteryHistory)
+                        KeepShellPublic.doCmdSync("rm -f /data/system/batterystats-checkin.bin;rm -f /data/system/batterystats-daily.xml;rm -f /data/system/batterystats.bin;sync;sleep 2; reboot;")
                     })
                     .setNegativeButton(R.string.btn_cancel, DialogInterface.OnClickListener { dialog, which -> })
                     .create().show()
         }
 
         bp_disable_charge.setOnClickListener {
-            KeepShellPublic.doCmdSync(Consts.DisableChanger)
+            KeepShellPublic.doCmdSync(CommonCmds.DisableChanger)
             Toast.makeText(context!!, "充电功能已禁止！", Toast.LENGTH_SHORT).show()
         }
         bp_enable_charge.setOnClickListener {
-            KeepShellPublic.doCmdSync(Consts.ResumeChanger)
+            KeepShellPublic.doCmdSync(CommonCmds.ResumeChanger)
             Toast.makeText(context!!, "充电功能已恢复！", Toast.LENGTH_SHORT).show()
         }
     }

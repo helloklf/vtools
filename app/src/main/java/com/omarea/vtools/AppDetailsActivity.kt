@@ -254,7 +254,7 @@ class AppDetailsActivity : AppCompatActivity() {
 
         policyControl = PolicyControl(contentResolver)
 
-        dynamicCpu = (Platform().dynamicSupport(this) || File(Consts.POWER_CFG_PATH).exists())
+        dynamicCpu = (Platform().dynamicSupport(this) || File(CommonCmds.POWER_CFG_PATH).exists())
 
         app_details_dynamic.setOnClickListener {
             if (!dynamicCpu) {
@@ -625,7 +625,7 @@ class AppDetailsActivity : AppCompatActivity() {
         val powercfg = getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         val spfGlobal = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
-        dynamicCpu = (Platform().dynamicSupport(this) || File(Consts.POWER_CFG_PATH).exists())
+        dynamicCpu = (Platform().dynamicSupport(this) || File(CommonCmds.POWER_CFG_PATH).exists())
 
         var packageInfo: PackageInfo? = null
         try {
@@ -652,9 +652,9 @@ class AppDetailsActivity : AppCompatActivity() {
                 if (applicationInfo.dataDir != null) {
                     // size += getTotalSizeOfFilesInDir(File(applicationInfo.dataDir))
                 }
-                val dataFile = File("${Consts.SDCardDir}/Android/data/$app")
-                val obbFile = File("${Consts.SDCardDir}/Android/obb/$app")
-                val sdFile = File("${Consts.SDCardDir}/$app")
+                val dataFile = File("${CommonCmds.SDCardDir}/Android/data/$app")
+                val obbFile = File("${CommonCmds.SDCardDir}/Android/obb/$app")
+                val sdFile = File("${CommonCmds.SDCardDir}/$app")
                 if (dataFile.exists()) {
                     size += getTotalSizeOfFilesInDir(dataFile)
                 }

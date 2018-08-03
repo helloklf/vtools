@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.KeyEvent
 import android.widget.Toast
-import com.omarea.shared.Consts
+import com.omarea.shared.CommonCmds
 import com.omarea.shared.SpfConfig
 import com.omarea.ui.AdapterFileSelector
 import com.omarea.ui.ProgressBarDialog
@@ -48,7 +48,7 @@ class ActivityFileSelector : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val sdcard = File(Consts.SDCardDir)
+        val sdcard = File(CommonCmds.SDCardDir)
         if (sdcard.exists() && sdcard.isDirectory) {
             val list = sdcard.listFiles()
             if (list == null) {

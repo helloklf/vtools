@@ -4,12 +4,10 @@ import android.app.AlertDialog
 import android.content.Context
 import android.os.Handler
 import android.widget.Toast
-import com.omarea.shared.Consts
+import com.omarea.shared.CommonCmds
 import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.RootFile
 import com.omarea.ui.ProgressBarDialog
-import java.io.File
-import java.io.IOException
 
 /**
  * Created by Hello on 2017/11/01.
@@ -138,8 +136,8 @@ class BackupRestoreUnit(var context: Context) {
                 return
             }
             showProgressBar()
-            if (KeepShellPublic.doCmdSync("dd if=$bootPartPath of=${Consts.SDCardDir}/boot.img;\n") != "error") {
-                showMsg("Boot导出成功，保存在${Consts.SDCardDir}/boot.img ！", true)
+            if (KeepShellPublic.doCmdSync("dd if=$bootPartPath of=${CommonCmds.SDCardDir}/boot.img;\n") != "error") {
+                showMsg("Boot导出成功，保存在${CommonCmds.SDCardDir}/boot.img ！", true)
             } else {
                 showMsg("Boot导出失败！", true)
             }
@@ -159,8 +157,8 @@ class BackupRestoreUnit(var context: Context) {
                 return
             }
             showProgressBar()
-            if (KeepShellPublic.doCmdSync("dd if=$recPartPath of=${Consts.SDCardDir}/recovery.img\n") != "error") {
-                showMsg("Recovery导出成功，已保存为${Consts.SDCardDir}/recovery.img ！", true)
+            if (KeepShellPublic.doCmdSync("dd if=$recPartPath of=${CommonCmds.SDCardDir}/recovery.img\n") != "error") {
+                showMsg("Recovery导出成功，已保存为${CommonCmds.SDCardDir}/recovery.img ！", true)
             } else {
                 showMsg("Recovery导出失败！", true)
             }

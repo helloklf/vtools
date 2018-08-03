@@ -19,7 +19,6 @@ import com.omarea.shell.RootFile
 import com.omarea.vtools.R
 import java.io.File
 import java.util.*
-import android.content.Context.KEYGUARD_SERVICE
 import android.app.KeyguardManager
 
 
@@ -71,7 +70,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         val windowManager = this.context.getSystemService(WINDOW_SERVICE) as WindowManager
         val display = windowManager.defaultDisplay
         screenOn = display.state == Display.STATE_ON
-        dyamicCore = RootFile.fileExists(Consts.POWER_CFG_PATH)
+        dyamicCore = RootFile.fileExists(CommonCmds.POWER_CFG_PATH)
         notifyHelper.setNotify(spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))
         if (screenOn) {
             forceToggleMode(lastModePackage)
@@ -230,7 +229,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         if (!screenOn) {
             executePowercfgMode(POWERSAVE)
         }
-        if (!File(Consts.POWER_CFG_PATH).exists()) {
+        if (!File(CommonCmds.POWER_CFG_PATH).exists()) {
             ConfigInstaller().installPowerConfig(context, "")
         }
         executePowercfgMode(mode)
@@ -289,12 +288,12 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         ReciverLock.autoRegister(context, screenHandler)
         // 禁用SeLinux
         if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true))
-            keepShellAsync2.doCmd(Consts.DisableSELinux)
+            keepShellAsync2.doCmd(CommonCmds.DisableSELinux)
 
         Thread(Runnable {
-            if (!RootFile.fileExists(Consts.POWER_CFG_PATH)) {
+            if (!RootFile.fileExists(CommonCmds.POWER_CFG_PATH)) {
                 if (Platform().dynamicSupport(context)) {
-                    ConfigInstaller().installPowerConfig(context, Consts.ExecuteConfig, false)
+                    ConfigInstaller().installPowerConfig(context, CommonCmds.ExecuteConfig, false)
                     dyamicCore = true
                 } else {
                     dyamicCore = false
@@ -302,7 +301,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             } else {
                 dyamicCore = true
                 ConfigInstaller().configCodeVerify(context)
-                keepShellAsync2.doCmd(Consts.ExecuteConfig)
+                keepShellAsync2.doCmd(CommonCmds.ExecuteConfig)
             }
             // 添加输入法到忽略列表
             ignoredList.addAll(InputHelper(context).getInputMethods())

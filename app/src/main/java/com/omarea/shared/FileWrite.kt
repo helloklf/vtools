@@ -12,7 +12,7 @@ import java.io.IOException
  * Created by helloklf on 2016/8/27.
  */
 object FileWrite {
-    var baseUrl = "${Consts.SDCardDir}/Android/data/${Consts.PACKAGE_NAME}/"
+    var baseUrl = "${CommonCmds.SDCardDir}/Android/data/${CommonCmds.PACKAGE_NAME}/"
 
     fun writeFile(ass: AssetManager, file: String, hasExtName: Boolean): String? {
         try {

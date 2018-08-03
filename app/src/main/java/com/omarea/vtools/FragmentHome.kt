@@ -2,7 +2,6 @@ package com.omarea.vtools
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
@@ -46,7 +45,7 @@ class FragmentHome : Fragment() {
 
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
-        if (Platform().dynamicSupport(context!!) || File(Consts.POWER_CFG_PATH).exists()) {
+        if (Platform().dynamicSupport(context!!) || File(CommonCmds.POWER_CFG_PATH).exists()) {
             powermode_toggles.visibility = View.VISIBLE
         } else {
             powermode_toggles.visibility = View.GONE
@@ -125,11 +124,11 @@ class FragmentHome : Fragment() {
     }
 
     private fun installConfig(action: String, message: String) {
-        if (File(Consts.POWER_CFG_PATH).exists()) {
+        if (File(CommonCmds.POWER_CFG_PATH).exists()) {
             modeList.executePowercfgModeOnce(action, context!!.packageName)
         } else {
             val stringBuilder = StringBuilder()
-            stringBuilder.append(String.format(Consts.ToggleMode, action))
+            stringBuilder.append(String.format(CommonCmds.ToggleMode, action))
             ConfigInstaller().installPowerConfig(context!!, stringBuilder.toString());
         }
         setModeState()

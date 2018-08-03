@@ -4,7 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.widget.Toast
 import com.omarea.shared.ConfigInstaller
-import com.omarea.shared.Consts
+import com.omarea.shared.CommonCmds
 import com.omarea.shared.ModeList
 import com.omarea.shell.Platform
 import java.io.File
@@ -14,7 +14,7 @@ class ActivityShortcut : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (Platform().dynamicSupport(this) || File(Consts.POWER_CFG_PATH).exists()) {
+        if (Platform().dynamicSupport(this) || File(CommonCmds.POWER_CFG_PATH).exists()) {
             val action = intent.action
             if (action != null && !action.isNullOrEmpty()) {
                 installConfig(action)
@@ -28,9 +28,9 @@ class ActivityShortcut : Activity() {
 
     private fun installConfig(action: String) {
         val stringBuilder = StringBuilder()
-        stringBuilder.append(String.format(Consts.ToggleMode, action))
+        stringBuilder.append(String.format(CommonCmds.ToggleMode, action))
 
-        if (File(Consts.POWER_CFG_PATH).exists()) {
+        if (File(CommonCmds.POWER_CFG_PATH).exists()) {
             modeList.executePowercfgMode(action, packageName)
         } else {
             ConfigInstaller().installPowerConfig(this, stringBuilder.toString());

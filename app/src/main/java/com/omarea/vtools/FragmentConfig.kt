@@ -313,15 +313,15 @@ class FragmentConfig : Fragment() {
                     val lines = file.readLines(Charset.defaultCharset())
                     val configStar = if (lines.isNotEmpty()) lines[0] else ""
                     if (configStar.startsWith("#!/") && configStar.endsWith("sh")) {
-                        val cmds = StringBuilder("cp '$path' ${Consts.POWER_CFG_PATH}\n")
-                        cmds.append("chmod 0755 ${Consts.POWER_CFG_PATH}\n\n")
-                        cmds.append("if [[ -f ${Consts.POWER_CFG_PATH} ]]; then \n")
-                        cmds.append("chmod 0775 ${Consts.POWER_CFG_PATH};")
-                        cmds.append("busybox sed -i 's/^M//g' ${Consts.POWER_CFG_PATH};")
+                        val cmds = StringBuilder("cp '$path' ${CommonCmds.POWER_CFG_PATH}\n")
+                        cmds.append("chmod 0755 ${CommonCmds.POWER_CFG_PATH}\n\n")
+                        cmds.append("if [[ -f ${CommonCmds.POWER_CFG_PATH} ]]; then \n")
+                        cmds.append("chmod 0775 ${CommonCmds.POWER_CFG_PATH};")
+                        cmds.append("busybox sed -i 's/^M//g' ${CommonCmds.POWER_CFG_PATH};")
                         cmds.append("fi;")
-                        //cmds.append("if [[ -f ${Consts.POWER_CFG_BASE} ]]; then \n")
-                        //  cmds.append("chmod 0775 ${Consts.POWER_CFG_BASE};")
-                        //  cmds.append("busybox sed -i 's/^M//g' ${Consts.POWER_CFG_BASE};")
+                        //cmds.append("if [[ -f ${CommonCmds.POWER_CFG_BASE} ]]; then \n")
+                        //  cmds.append("chmod 0775 ${CommonCmds.POWER_CFG_BASE};")
+                        //  cmds.append("busybox sed -i 's/^M//g' ${CommonCmds.POWER_CFG_BASE};")
                         //cmds.append("fi;")
                         if (KeepShellPublic.doCmdSync(cmds.toString()) != "error") {
                             Toast.makeText(context, "动态响应配置脚本已安装！", Toast.LENGTH_SHORT).show()
@@ -589,7 +589,7 @@ class FragmentConfig : Fragment() {
             }
         }
         when {
-            File(Consts.POWER_CFG_PATH).exists() -> {
+            File(CommonCmds.POWER_CFG_PATH).exists() -> {
                 //TODO：检查是否更新
             }
             support -> {
@@ -611,7 +611,7 @@ class FragmentConfig : Fragment() {
             else ->
                 AlertDialog.Builder(context)
                         .setTitle(getString(R.string.not_support_config))
-                        .setMessage(String.format(getString(R.string.not_support_config_desc), Consts.POWER_CFG_PATH))
+                        .setMessage(String.format(getString(R.string.not_support_config_desc), CommonCmds.POWER_CFG_PATH))
                         .setPositiveButton(getString(R.string.get_online_config), { _, _ ->
                             getOnlineConfig()
                         })

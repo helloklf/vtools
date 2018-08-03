@@ -10,7 +10,7 @@ import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.Toast
 import com.omarea.shared.AccessibleServiceHelper
-import com.omarea.shared.Consts
+import com.omarea.shared.CommonCmds
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.KeepShellPublic
 import kotlinx.android.synthetic.main.activity_other_settings.*
@@ -69,12 +69,12 @@ class ActivitySceneOtherSettings : AppCompatActivity() {
         })
         settings_disable_selinux.setOnClickListener {
             if (settings_disable_selinux.isChecked) {
-                KeepShellPublic.doCmdSync(Consts.DisableSELinux)
+                KeepShellPublic.doCmdSync(CommonCmds.DisableSELinux)
                 myHandler.postDelayed({
                     spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true).commit()
                 }, 10000)
             } else {
-                KeepShellPublic.doCmdSync(Consts.ResumeSELinux)
+                KeepShellPublic.doCmdSync(CommonCmds.ResumeSELinux)
                 spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false).commit()
             }
         }

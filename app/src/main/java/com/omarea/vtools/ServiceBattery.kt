@@ -57,8 +57,8 @@ class ServiceBattery : Service() {
             if (m != null) {
                 val serviceInfos = m.getRunningServices(5000)
                 for (serviceInfo in serviceInfos) {
-                    if (serviceInfo.service.packageName == "com.omarea.vtools") {
-                        if (serviceInfo.service.className == "com.omarea.vtools.ServiceBattery") {
+                    if (serviceInfo.service.packageName == context.packageName) {
+                        if (serviceInfo.service.className == context.packageName + ".ServiceBattery") {
                             return true
                         }
                     }

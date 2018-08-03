@@ -2,7 +2,6 @@ package com.omarea.shell
 
 import android.app.AlertDialog
 import android.content.Context
-import com.omarea.shared.Consts
 import com.omarea.shared.FileWrite
 import com.omarea.shell.units.BusyboxInstallerUnit
 import com.omarea.vtools.R
@@ -45,7 +44,14 @@ class Busybox(private var context: Context) {
                                 cmd.append("chmod 7777 $privateBusybox;\n")
                                 cmd.append("$privateBusybox chmod 7777 /cache/busybox;\n")
                                 cmd.append("chmod 7777 /cache/busybox;\n")
-                                cmd.append(Consts.MountSystemRW2)
+                                cmd.append("/cache/busybox mount -o rw,remount /system\n" +
+                                        "/cache/busybox mount -f -o rw,remount /system\n" +
+                                        "mount -o rw,remount /system\n" +
+                                        "/cache/busybox mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
+                                        "mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
+                                        "/cache/busybox mount -o rw,remount /system/xbin\n" +
+                                        "/cache/busybox mount -f -o rw,remount /system/xbin\n" +
+                                        "mount -o rw,remount /system/xbin\n")
                                 cmd.append("cp $privateBusybox /system/xbin/busybox;")
                                 cmd.append("$privateBusybox chmod 0777 /system/xbin/busybox;")
                                 cmd.append("chmod 0777 /system/xbin/busybox;")

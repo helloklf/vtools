@@ -10,12 +10,12 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import com.omarea.shared.Consts
+import com.omarea.shared.CommonCmds
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.model.Appinfo
 import com.omarea.shell.AsynSuShellUnit
 import com.omarea.shell.CheckRootStatus
-import com.omarea.shell.SysUtils
+import com.omarea.shell.KeepShellPublic
 import com.omarea.vtools.R
 import java.io.File
 import java.util.*
@@ -26,7 +26,7 @@ import java.util.*
 
 open class DialogAppOptions(protected final var context: Context, protected var apps: ArrayList<Appinfo>, protected var handler: Handler) {
     protected var allowPigz = false
-    protected var backupPath = Consts.AbsBackUpDir
+    protected var backupPath = CommonCmds.AbsBackUpDir
     protected var userdataPath = ""
 
     init {
@@ -101,8 +101,8 @@ open class DialogAppOptions(protected final var context: Context, protected var 
     }
 
     protected fun checkRestoreData(): Boolean {
-        val r = SysUtils.executeCommandWithOutput(false, "cd $userdataPath/${Consts.PACKAGE_NAME};echo `toybox ls -ld|cut -f3 -d ' '`; echo `ls -ld|cut -f3 -d ' '`;")
-        return r != null && r.trim().isNotEmpty()
+        val r = KeepShellPublic.doCmdSync("cd $userdataPath/${CommonCmds.PACKAGE_NAME};echo `toybox ls -ld|cut -f3 -d ' '`; echo `ls -ld|cut -f3 -d ' '`;")
+        return r != "error" && r.trim().isNotEmpty()
     }
 
     protected fun execShell(sb: StringBuilder) {
@@ -209,7 +209,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         val sb = StringBuilder()
         sb.append("backup_date=\"$date\";");
         sb.append("\n")
-        sb.append("backup_path=\"${Consts.AbsBackUpDir}\";")
+        sb.append("backup_path=\"${CommonCmds.AbsBackUpDir}\";")
         sb.append("mkdir -p \${backup_path};")
         sb.append("\n")
         sb.append("\n")
@@ -389,7 +389,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
 
     private fun _deleteAll() {
         val sb = StringBuilder()
-        sb.append(Consts.MountSystemRW)
+        sb.append(CommonCmds.MountSystemRW)
         for (item in apps) {
             val packageName = item.packageName.toString()
             // 先禁用再删除，避免老弹停止运行

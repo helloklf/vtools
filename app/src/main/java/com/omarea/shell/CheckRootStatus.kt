@@ -7,7 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.support.v4.content.PermissionChecker
 import android.util.Log
-import com.omarea.shared.Consts
+import com.omarea.shared.CommonCmds
 import com.omarea.vtools.R
 
 /**
@@ -17,16 +17,26 @@ import com.omarea.vtools.R
 
 class CheckRootStatus(var context: Context, private var next: Runnable? = null, private var skip: Runnable?, private var disableSeLinux: Boolean = false) {
     var myHandler: Handler = Handler(Looper.getMainLooper())
-
+    val isRootUser = "if [[ `id -u 2>&1` = '0' ]]; then\n" +
+            "\techo 'root';\n" +
+            "elif [[ `\$UID` = '0' ]]; then\n" +
+            "\techo 'root';\n" +
+            "elif [[ `whoami 2>&1` = 'root' ]]; then\n" +
+            "\techo 'root';\n" +
+            "elif [[ `set | grep 'USER_ID=0'` = 'USER_ID=0' ]]; then\n" +
+            "\techo 'root';\n" +
+            "else\n" +
+            "\texit -1;\n" +
+            "fi;"
     //是否已经Root
     private fun isRoot(disableSeLinux: Boolean): Boolean {
-        val r = KeepShellPublic.doCmdSync(Consts.isRootUser)
+        val r = KeepShellPublic.doCmdSync(isRootUser)
         Log.d("getsu", r)
         if (r == "error" || r.contains("permission denied") || r.contains("not allowed") || r.equals("not found")) {
             return false
         } else if (r == "root") {
             if (disableSeLinux)
-                KeepShellPublic.doCmdSync(Consts.DisableSELinux)
+                KeepShellPublic.doCmdSync(CommonCmds.DisableSELinux)
             return true
         } else {
             return false

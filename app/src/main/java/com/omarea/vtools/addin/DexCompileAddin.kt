@@ -13,7 +13,7 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import com.omarea.shared.Consts
+import com.omarea.shared.CommonCmds
 import com.omarea.shell.AsynSuShellUnit
 import com.omarea.shell.Props
 import com.omarea.vtools.R
@@ -262,7 +262,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                         }
                     }
 
-                    stringBuilder.append(Consts.MountSystemRW)
+                    stringBuilder.append(CommonCmds.MountSystemRW)
                     stringBuilder.append("cp /system/build.prop /system/build.prop.${System.currentTimeMillis()}\n")
                     stringBuilder.append("cp /data/build.prop /system/build.prop\n")
                     stringBuilder.append("rm /data/build.prop\n")

@@ -10,7 +10,7 @@ import com.omarea.scripts.action.ActionConfigReader
 import com.omarea.scripts.action.ActionInfo
 import com.omarea.scripts.action.ActionParamInfo
 import com.omarea.scripts.action.BuildConfigXml
-import com.omarea.shared.Consts
+import com.omarea.shared.CommonCmds
 import com.omarea.shared.FileWrite
 import com.omarea.shell.KeepShellPublic
 import com.omarea.ui.ProgressBarDialog
@@ -367,7 +367,7 @@ class VToolsOnlineNative(var activity: ActivityAddinOnline, var webview: WebView
             val outPath = FileWrite.getPrivateFilePath(activity, "powercfg\temp.xml")
             FileWrite.writePrivateFile(shell.toByteArray(Charset.defaultCharset()), "powercfg\temp.xml", activity)
             myHandler.post {
-                KeepShellPublic.doCmdSync("cp '$outPath' ${Consts.POWER_CFG_PATH}; chmod 0777 ${Consts.POWER_CFG_PATH};sync;")
+                KeepShellPublic.doCmdSync("cp '$outPath' ${CommonCmds.POWER_CFG_PATH}; chmod 0777 ${CommonCmds.POWER_CFG_PATH};sync;")
             }
             if (callback != null && !callback.isEmpty()) {
                 webview.evaluateJavascript("${callback}({ result: true, message: '配置已写入到/data/powercf，现在去开启“动态响应功能”，即可体验根据前台应用自动调节GPU、CPU调度功能！' })", ValueCallback { });

@@ -14,7 +14,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.SimpleAdapter
 import android.widget.Toast
-import com.omarea.shared.Consts
+import com.omarea.shared.CommonCmds
 import com.omarea.shell.units.BackupRestoreUnit
 import kotlinx.android.synthetic.main.layout_img.*
 import java.io.File
@@ -64,7 +64,7 @@ class FragmentImg : Fragment() {
                         Snackbar.make(view, context!!.getString(R.string.backup_space_small), Snackbar.LENGTH_LONG).show()
                         return@OnItemClickListener
                     }
-                    if (File("${Consts.SDCardDir}/boot.img").exists()) {
+                    if (File("${CommonCmds.SDCardDir}/boot.img").exists()) {
                         val builder = AlertDialog.Builder(context!!)
                         builder.setTitle(context!!.getString(R.string.backup_file_exists))
                         builder.setNegativeButton(android.R.string.cancel, null)
@@ -89,7 +89,7 @@ class FragmentImg : Fragment() {
                         Snackbar.make(view, context!!.getString(R.string.backup_space_small), Snackbar.LENGTH_LONG).show()
                         return@OnItemClickListener
                     }
-                    if (File("${Consts.SDCardDir}/recovery.img").exists()) {
+                    if (File("${CommonCmds.SDCardDir}/recovery.img").exists()) {
                         val builder = AlertDialog.Builder(context!!)
                         builder.setTitle(context!!.getString(R.string.backup_file_exists))
                         builder.setNegativeButton(android.R.string.cancel, null)

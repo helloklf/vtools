@@ -8,7 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
-import com.omarea.shared.Consts
+import com.omarea.shared.CommonCmds
 import com.omarea.shared.FileWrite
 import com.omarea.shell.AsynSuShellUnit
 import com.omarea.shell.Files
@@ -214,11 +214,11 @@ class DialogFilesHardLinks2(private var context: Context) {
             textView.text = "开始链接相同文件"
             val alert = AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
             alert.show()
-            val size = Files.getDirFreeSizeMB(Consts.SDCardDir)
+            val size = Files.getDirFreeSizeMB(CommonCmds.SDCardDir)
             AsynSuShellUnit(HardlinkMergeHandler(Runnable {
                 alert.cancel()
                 alert.hide()
-                val currentSize = Files.getDirFreeSizeMB(Consts.SDCardDir)
+                val currentSize = Files.getDirFreeSizeMB(CommonCmds.SDCardDir)
                 AlertDialog.Builder(context).setTitle("全部完成").setMessage("大约节省了${currentSize - size}MB空间").create().show()
             }, alert)).exec(sb.toString()).waitFor()
         }

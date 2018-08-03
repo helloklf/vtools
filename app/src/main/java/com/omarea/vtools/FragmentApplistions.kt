@@ -15,7 +15,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
 import com.omarea.shared.AppListHelper
-import com.omarea.shared.Consts
+import com.omarea.shared.CommonCmds
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.model.Appinfo
 import com.omarea.shell.KeepShellPublic
@@ -194,7 +194,7 @@ class FragmentApplistions : Fragment() {
         Thread(Runnable {
             systemList = appListHelper.getSystemAppList()
             installedList = appListHelper.getUserAppList()
-            backupedList = appListHelper.getApkFilesInfoList(Consts.AbsBackUpDir)
+            backupedList = appListHelper.getApkFilesInfoList(CommonCmds.AbsBackUpDir)
             setListData(installedList, apps_userlist)
             setListData(systemList, apps_systemlist)
             setListData(backupedList, apps_backupedlist)

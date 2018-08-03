@@ -107,7 +107,7 @@ open class ModeList {
     }
 
     internal fun executePowercfgMode(mode: String): ModeList {
-        keepShellExec("sh ${Consts.POWER_CFG_PATH} " + mode)
+        keepShellExec("sh ${CommonCmds.POWER_CFG_PATH} " + mode)
         setCurrentPowercfg(mode)
         return this
     }
@@ -128,13 +128,13 @@ open class ModeList {
 
 
     internal fun executePowercfgModeOnce(mode: String): ModeList {
-        KeepShellPublic.doCmdSync("sh ${Consts.POWER_CFG_PATH} " + mode)
+        KeepShellPublic.doCmdSync("sh ${CommonCmds.POWER_CFG_PATH} " + mode)
         setCurrentPowercfg(mode)
         return this
     }
 
     internal fun executePowercfgModeOnce(mode: String, app: String): ModeList {
-        KeepShellPublic.doCmdSync("sh ${Consts.POWER_CFG_PATH} " + mode)
+        KeepShellPublic.doCmdSync("sh ${CommonCmds.POWER_CFG_PATH} " + mode)
         setCurrent(mode, app)
         return this
     }

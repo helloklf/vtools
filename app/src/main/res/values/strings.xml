@@ -211,33 +211,6 @@
     <string name="accessibility_stoped">点击此处去激活辅助服务</string>
 
     <string name="error_notbusybox">没有安装Busybox，部分功能可能无法正常使用！</string>
-
-    <string name="helpinfo">
-        "<font><big><b>使用说明</b></big></font>"
-        "<br />"
-        "<span>1.动态响应、后台管理、充电加速等功能均依赖于辅助服务，</span>"
-        "<span>   点击主界面右上角的齿轮按钮进入辅助功能设置页面，</span>"
-        "<span>   使用其中的功能需要辅助服务保持后台运行。</span>"
-        "<br />"
-        "<span>2.充电加速只对部分设备有效，对Nubia Z11效果显著</span>"
-        "<br />"
-        "<span>3.本工具不能创建双系统，使用系统切换需先刷双系统</span>"
-        "<br />"
-        "<span>4.本工具依赖ROOT权限和Busybox，请安装并授权使用</span>"
-        "<br />"
-        "<span>5.任何对系统的修改都有一定的风险，请谨慎操作</span>"
-        "<br />"
-        "<span>6.为何充电加速需要辅助服务？</span>"
-        "<span>为了少开一个后台服务而已，所以使用了和其它功能同一个服务</span>"
-        "<br />"
-        "<span>7.什么时候更新？</span>"
-        "<span>由于业余时间有限，更新周期不定，不确保能及时解决问题。</span>"
-        "<br />"
-        "<br />"
-        "<br />"
-        "<spna>详情：</spna>"
-        "<span>http://coolapk.com/apk/com.omarea.vtools</span>"
-    </string>
     <string name="battery_uevent_title">$ cat /sys/class/power_supply/bms/uevent</string>
     <string name="home_hide_in_recents">强迫症</string>
     <string name="home_hide_in_recents_desc">不要在多任务界面显示Scene</string>

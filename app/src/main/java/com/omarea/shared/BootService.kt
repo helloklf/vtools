@@ -54,7 +54,7 @@ class BootService : IntentService("vtools-boot") {
         val sb = StringBuilder()
 
         if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true)) {
-            sb.append(Consts.DisableSELinux)
+            sb.append(CommonCmds.DisableSELinux)
             sb.append("\n\n")
         }
 

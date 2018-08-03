@@ -15,7 +15,7 @@ import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.View
 import com.omarea.shared.ConfigInstaller
-import com.omarea.shared.Consts
+import com.omarea.shared.CommonCmds
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.Busybox
 import com.omarea.shell.CheckRootStatus
@@ -171,7 +171,7 @@ class StartSplashActivity : Activity() {
                             .commit()
                     start_state_text.text = "兼容性检测，稍等10秒..."
                     Thread(Runnable {
-                        KeepShellPublic.doCmdSync(Consts.DisableSELinux + "\n sleep 10; \n")
+                        KeepShellPublic.doCmdSync(CommonCmds.DisableSELinux + "\n sleep 10; \n")
                         myHandler.post {
                             next.run()
                         }
