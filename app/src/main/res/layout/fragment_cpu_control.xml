@@ -15,7 +15,6 @@
             android:orientation="vertical">
 
             <android.support.v7.widget.CardView
-                android:id="@+id/help_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
@@ -38,11 +37,43 @@
                         android:textSize="16dp" />
 
                     <TextView
+                        style="@style/textSmall"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/core_control_helpinfo"
-                        android:textColor="#aaa"
-                        android:textSize="12dp" />
+                        android:text="@string/core_control_helpinfo" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="4dp">
+                <LinearLayout
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <Switch
+                        android:id="@+id/cpu_apply_onboot"
+                        android:text="开机后应用  "
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:layout_marginTop="5dp"
+                        android:textSize="13dp"
+                        android:text="开机后应用当前设置，需要允许Scene开机自启动"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
@@ -457,16 +488,18 @@
                         android:id="@+id/exynos_hmp_up"
                         android:layout_column="0"
                         android:layout_gravity="fill_horizontal"
-                        android:textAlignment="center"
                         android:layout_row="3"
                         android:enabled="false"
                         android:max="1000"
-                        android:min="0" />
+                        android:min="0"
+                        android:textAlignment="center" />
 
                     <TextView
                         android:id="@+id/exynos_hmp_up_text"
                         android:layout_column="1"
+                        android:layout_gravity="center"
                         android:layout_row="3"
+                        android:text="0"
                         android:textAlignment="center" />
 
                     <TextView
@@ -484,15 +517,15 @@
                         android:layout_column="0"
                         android:layout_gravity="fill_horizontal"
                         android:layout_row="5"
-                        android:textAlignment="center"
                         android:enabled="false"
                         android:max="1000" />
 
                     <TextView
-                        android:layout_marginTop="5dp"
                         android:id="@+id/exynos_hmp_down_text"
                         android:layout_column="1"
+                        android:layout_gravity="center"
                         android:layout_row="5"
+                        android:text="0"
                         android:textAlignment="center" />
 
 
@@ -504,6 +537,7 @@
                         android:text="优先大核" />
 
                     <CheckBox
+                        android:layout_marginTop="5dp"
                         android:id="@+id/exynos_hmp_booster"
 
                         android:layout_column="1"

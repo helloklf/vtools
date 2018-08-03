@@ -7,7 +7,7 @@
     tools:context=".StartSplashActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
-         is needed to present your content, e.g. VideoView, SurfaceView,
+         is needed to present your contentv e.g. VideoView, SurfaceView,
          TextureView, etc. -->
     <!--<com.jaredrummler.android.widget.AnimatedSvgView
         android:id="@+id/animated_svg_view"

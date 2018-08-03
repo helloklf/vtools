@@ -56,4 +56,7 @@ public class SpfConfig {
     public static String CONFIG_SPF_TOUCH_BAR_MAP = "touch_bar_map";
 
     public static String APP_HIDE_HISTORY_SPF = "app_hide_spf";
+
+    public static String CPU_CONFIG_SOF = "cpu_config";
+
 }

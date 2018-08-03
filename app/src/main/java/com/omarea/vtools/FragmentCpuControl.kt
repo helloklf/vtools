@@ -12,10 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.CheckBox
-import android.widget.SeekBar
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
+import com.omarea.shared.model.CpuStatus
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import com.omarea.shell.cpucontrol.ThermalControlUtils
 import com.omarea.ui.ProgressBarDialog
@@ -129,42 +127,51 @@ class FragmentCpuControl : Fragment() {
             }
 
             cluster_little_min_freq.setOnClickListener {
-                var index = status.cluster_little_min_freq
+                var currentIndex = littleFreqs.indexOf(status.cluster_little_min_freq)
+                if (currentIndex < 0) {
+                    currentIndex = 0
+                }
+                var index = currentIndex
+
                 AlertDialog.Builder(context)
                         .setTitle("选择Cluster0最小频率")
-                        .setSingleChoiceItems(parseFreqList(littleFreqs), status.cluster_little_min_freq, { dialog, which ->
+                        .setSingleChoiceItems(parseFreqList(littleFreqs), currentIndex, { dialog, which ->
                             index = which
                         })
                         .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                            if (index != status.cluster_little_min_freq) {
+                            if (index != currentIndex) {
                                 val g = littleFreqs[index]
                                 if (CpuFrequencyUtils.getCurrentMinFrequency(0) == g) {
                                     return@setPositiveButton
                                 }
                                 CpuFrequencyUtils.setMinFrequency(g, 0, context)
-                                status.cluster_little_min_freq = index
-                                updateUI()
+                                status.cluster_little_min_freq = g
+                                setText(it as TextView ?, subFreqStr(g))
                             }
                         })
                         .create()
                         .show()
             }
             cluster_little_max_freq.setOnClickListener {
-                var index = status.cluster_little_max_freq
+                var currentIndex = littleFreqs.indexOf(status.cluster_little_max_freq)
+                if (currentIndex < 0) {
+                    currentIndex = 0
+                }
+                var index = currentIndex
                 AlertDialog.Builder(context)
                         .setTitle("选择Cluster0最大频率")
-                        .setSingleChoiceItems(parseFreqList(littleFreqs), status.cluster_little_max_freq, { dialog, which ->
+                        .setSingleChoiceItems(parseFreqList(littleFreqs), currentIndex, { dialog, which ->
                             index = which
                         })
                         .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                            if (index != status.cluster_little_max_freq) {
+                            if (index != currentIndex) {
                                 val g = littleFreqs[index]
                                 if (CpuFrequencyUtils.getCurrentMinFrequency(0) == g) {
                                     return@setPositiveButton
                                 }
                                 CpuFrequencyUtils.setMaxFrequency(g, 0, context)
-                                status.cluster_little_max_freq = index
-                                updateUI()
+                                status.cluster_little_max_freq = g
+                                setText(it as TextView ?, subFreqStr(g))
                             }
                         })
                         .create()
@@ -172,21 +179,25 @@ class FragmentCpuControl : Fragment() {
             }
             // cluster_little_governor.onItemSelectedListener = ItemSelected(R.id.cluster_little_governor, next)
             cluster_little_governor.setOnClickListener {
-                var governor = status.cluster_little_governor
+                var currentIndex = littleGovernor.indexOf(status.cluster_little_governor)
+                if (currentIndex < 0) {
+                    currentIndex = 0
+                }
+                var index = currentIndex
                 AlertDialog.Builder(context)
                         .setTitle("选择Cluster0调度模式")
-                        .setSingleChoiceItems((littleGovernor), status.cluster_little_governor, { dialog, which ->
-                            governor = which
+                        .setSingleChoiceItems((littleGovernor), currentIndex, { dialog, which ->
+                            index = which
                         })
                         .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                            if (governor != status.cluster_little_governor) {
-                                val g = littleGovernor[governor]
-                                if (CpuFrequencyUtils.getCurrentScalingGovernor(0) == g) {
+                            if (index != currentIndex) {
+                                val v = littleGovernor[index]
+                                if (CpuFrequencyUtils.getCurrentScalingGovernor(0) == v) {
                                     return@setPositiveButton
                                 }
-                                CpuFrequencyUtils.setGovernor(g, 0, context)
-                                status.cluster_little_governor = governor
-                                updateUI()
+                                CpuFrequencyUtils.setGovernor(v, 0, context)
+                                status.cluster_little_governor = v
+                                setText(it as TextView?, v)
                             }
                         })
                         .create()
@@ -196,63 +207,75 @@ class FragmentCpuControl : Fragment() {
 
             if (hasBigCore) {
                 cluster_big_min_freq.setOnClickListener {
-                    var index = status.cluster_big_min_freq
+                    var currentIndex = bigFreqs.indexOf(status.cluster_big_min_freq)
+                    if (currentIndex < 0) {
+                        currentIndex = 0
+                    }
+                    var index = currentIndex
                     AlertDialog.Builder(context)
                             .setTitle("选择Cluster1最小频率")
-                            .setSingleChoiceItems(parseFreqList(bigFreqs), status.cluster_big_min_freq, { dialog, which ->
+                            .setSingleChoiceItems(parseFreqList(bigFreqs), currentIndex, { dialog, which ->
                                 index = which
                             })
                             .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                                if (index != status.cluster_big_min_freq) {
-                                    val g = bigFreqs[index]
-                                    if (CpuFrequencyUtils.getCurrentMinFrequency(1) == g) {
+                                if (index != currentIndex) {
+                                    val v = bigFreqs[index]
+                                    if (CpuFrequencyUtils.getCurrentMinFrequency(1) == v) {
                                         return@setPositiveButton
                                     }
-                                    CpuFrequencyUtils.setMinFrequency(g, 1, context)
-                                    status.cluster_big_min_freq = index
-                                    updateUI()
+                                    CpuFrequencyUtils.setMinFrequency(v, 1, context)
+                                    status.cluster_big_min_freq = v
+                                    setText(it as TextView?, subFreqStr(v))
                                 }
                             })
                             .create()
                             .show()
                 }
                 cluster_big_max_freq.setOnClickListener {
-                    var index = status.cluster_big_max_freq
+                    var currentIndex = bigFreqs.indexOf(status.cluster_big_max_freq)
+                    if (currentIndex < 0) {
+                        currentIndex = 0
+                    }
+                    var index = currentIndex
                     AlertDialog.Builder(context)
                             .setTitle("选择Cluster1最大频率")
-                            .setSingleChoiceItems(parseFreqList(bigFreqs), status.cluster_big_max_freq, { dialog, which ->
+                            .setSingleChoiceItems(parseFreqList(bigFreqs), currentIndex, { dialog, which ->
                                 index = which
                             })
                             .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                                if (index != status.cluster_big_max_freq) {
-                                    val g = bigFreqs[index]
-                                    if (CpuFrequencyUtils.getCurrentMaxFrequency(1) == g) {
+                                if (index != currentIndex) {
+                                    val v = bigFreqs[index]
+                                    if (CpuFrequencyUtils.getCurrentMaxFrequency(1) == v) {
                                         return@setPositiveButton
                                     }
-                                    CpuFrequencyUtils.setMaxFrequency(g, 1, context)
-                                    status.cluster_big_max_freq = index
-                                    updateUI()
+                                    CpuFrequencyUtils.setMaxFrequency(v, 1, context)
+                                    status.cluster_big_max_freq = v
+                                    setText(it as TextView?, subFreqStr(v))
                                 }
                             })
                             .create()
                             .show()
                 }
                 cluster_big_governor.setOnClickListener {
-                    var governor = status.cluster_big_governor
+                    var currentIndex = bigGovernor.indexOf(status.cluster_big_governor)
+                    if (currentIndex < 0) {
+                        currentIndex = 0
+                    }
+                    var governor = currentIndex
                     AlertDialog.Builder(context)
                             .setTitle("选择Cluster1调度模式")
-                            .setSingleChoiceItems((bigGovernor), status.cluster_big_governor, { dialog, which ->
+                            .setSingleChoiceItems(bigGovernor, currentIndex, { dialog, which ->
                                 governor = which
                             })
                             .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                                if (governor != status.cluster_big_governor) {
+                                if (governor != currentIndex) {
                                     val g = bigGovernor[governor]
                                     if (CpuFrequencyUtils.getCurrentScalingGovernor(1) == g) {
                                         return@setPositiveButton
                                     }
                                     CpuFrequencyUtils.setGovernor(g, 1, context)
-                                    status.cluster_big_governor = governor
-                                    updateUI()
+                                    status.cluster_big_governor = g
+                                    setText(it as TextView?, g)
                                 }
                             })
                             .create()
@@ -262,125 +285,149 @@ class FragmentCpuControl : Fragment() {
 
             if (adrenoGPU) {
                 adreno_gpu_min_freq.setOnClickListener {
-                    var index = status.adrenoMinFreq
+                    var currentIndex = adrenoFreqs.indexOf(status.adrenoMinFreq)
+                    if (currentIndex < 0) {
+                        currentIndex = 0
+                    }
+                    var index = currentIndex
                     AlertDialog.Builder(context)
                             .setTitle("选择Adreno GPU最小频率")
-                            .setSingleChoiceItems(parseGPUFreqList(adrenoFreqs), status.adrenoMinFreq, { dialog, which ->
+                            .setSingleChoiceItems(parseGPUFreqList(adrenoFreqs), currentIndex, { dialog, which ->
                                 index = which
                             })
                             .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                                if (index != status.adrenoMinFreq) {
+                                if (index != currentIndex) {
                                     val g = adrenoFreqs[index]
                                     if (CpuFrequencyUtils.getAdrenoGPUMinFreq() == g) {
                                         return@setPositiveButton
                                     }
                                     CpuFrequencyUtils.setAdrenoGPUMinFreq(g)
-                                    status.adrenoMinFreq = index
-                                    updateUI()
+                                    status.adrenoMinFreq = g
+                                    setText(it as TextView?, subGPUFreqStr(g))
                                 }
                             })
                             .create()
                             .show()
                 }
                 adreno_gpu_max_freq.setOnClickListener {
-                    var index = status.adrenoMaxFreq
+                    var currentIndex = adrenoFreqs.indexOf(status.adrenoMaxFreq)
+                    if (currentIndex < 0) {
+                        currentIndex = 0
+                    }
+                    var index = currentIndex
                     AlertDialog.Builder(context)
                             .setTitle("选择Adreno GPU最大频率")
-                            .setSingleChoiceItems(parseGPUFreqList(adrenoFreqs), status.adrenoMaxFreq, { dialog, which ->
+                            .setSingleChoiceItems(parseGPUFreqList(adrenoFreqs), currentIndex, { dialog, which ->
                                 index = which
                             })
                             .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                                if (index != status.adrenoMaxFreq) {
+                                if (index != currentIndex) {
                                     val g = adrenoFreqs[index]
                                     if (CpuFrequencyUtils.getAdrenoGPUMaxFreq() == g) {
                                         return@setPositiveButton
                                     }
                                     CpuFrequencyUtils.setAdrenoGPUMaxFreq(g)
-                                    status.adrenoMaxFreq = index
-                                    updateUI()
+                                    status.adrenoMaxFreq = g
+                                    setText(it as TextView?, subGPUFreqStr(g))
                                 }
                             })
                             .create()
                             .show()
                 }
                 adreno_gpu_governor.setOnClickListener {
-                    var governor = status.adrenoGovernor
+                    var currentIndex = adrenoGovernors.indexOf(status.adrenoGovernor)
+                    if (currentIndex < 0) {
+                        currentIndex = 0
+                    }
+                    var governor = currentIndex
                     AlertDialog.Builder(context)
                             .setTitle("选择Adreno GPU调度")
-                            .setSingleChoiceItems((adrenoGovernors), status.adrenoGovernor, { dialog, which ->
+                            .setSingleChoiceItems((adrenoGovernors), currentIndex, { dialog, which ->
                                 governor = which
                             })
                             .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                                if (governor != status.adrenoGovernor) {
+                                if (governor != currentIndex) {
                                     val g = adrenoGovernors[governor]
                                     if (CpuFrequencyUtils.getAdrenoGPUGovernor() == g) {
                                         return@setPositiveButton
                                     }
                                     CpuFrequencyUtils.setAdrenoGPUGovernor(g)
-                                    status.adrenoGovernor = governor
-                                    updateUI()
+                                    status.adrenoGovernor = g
+                                    setText(it as TextView?, g)
                                 }
                             })
                             .create()
                             .show()
                 }
                 adreno_gpu_min_pl.setOnClickListener {
-                    var index = status.adrenoMinPL
+                    var currentIndex = adrenoPLevels.indexOf(status.adrenoMinPL)
+                    if (currentIndex < 0) {
+                        currentIndex = 0
+                    }
+                    var index = currentIndex
                     AlertDialog.Builder(context)
                             .setTitle("选择GPU最小功耗级别")
-                            .setSingleChoiceItems((adrenoPLevels), status.adrenoMinPL, { dialog, which ->
+                            .setSingleChoiceItems((adrenoPLevels), currentIndex, { dialog, which ->
                                 index = which
                             })
                             .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                                if (index != status.adrenoMinPL) {
+                                if (index != currentIndex) {
                                     val g = adrenoPLevels[index]
                                     if (CpuFrequencyUtils.getAdrenoGPUMinPowerLevel() == g) {
                                         return@setPositiveButton
                                     }
                                     CpuFrequencyUtils.setAdrenoGPUMinPowerLevel(g)
-                                    status.adrenoMinPL = index
-                                    updateUI()
+                                    status.adrenoMinPL = g
+                                    setText(it as TextView?, g)
                                 }
                             })
                             .create()
                             .show()
                 }
                 adreno_gpu_max_pl.setOnClickListener {
-                    var index = status.adrenoMaxPL
+                    var currentIndex = adrenoPLevels.indexOf(status.adrenoMaxPL)
+                    if (currentIndex < 0) {
+                        currentIndex = 0
+                    }
+                    var index = currentIndex
                     AlertDialog.Builder(context)
                             .setTitle("选择GPU最大功耗级别")
-                            .setSingleChoiceItems((adrenoPLevels), status.adrenoMaxPL, { dialog, which ->
+                            .setSingleChoiceItems((adrenoPLevels), currentIndex, { dialog, which ->
                                 index = which
                             })
                             .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                                if (index != status.adrenoMaxPL) {
+                                if (index != currentIndex) {
                                     val g = adrenoPLevels[index]
                                     if (CpuFrequencyUtils.getAdrenoGPUMaxPowerLevel() == g) {
                                         return@setPositiveButton
                                     }
                                     CpuFrequencyUtils.setAdrenoGPUMaxPowerLevel(g)
-                                    status.adrenoMaxPL = index
-                                    updateUI()
+                                    status.adrenoMaxPL = g
+                                    setText(it as TextView?, g)
                                 }
                             })
                             .create()
                             .show()
                 }
                 adreno_gpu_default_pl.setOnClickListener {
-                    var index = status.adrenoDefaultPL
+                    var currentIndex = adrenoPLevels.indexOf(status.adrenoDefaultPL)
+                    if (currentIndex < 0) {
+                        currentIndex = 0
+                    }
+                    var index = currentIndex
                     AlertDialog.Builder(context)
                             .setTitle("选择GPU默认功耗级别")
-                            .setSingleChoiceItems((adrenoPLevels), status.adrenoDefaultPL, { dialog, which ->
+                            .setSingleChoiceItems((adrenoPLevels), currentIndex, { dialog, which ->
                                 index = which
                             })
                             .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                                if (index != status.adrenoDefaultPL) {
+                                if (index != currentIndex) {
                                     val g = adrenoPLevels[index]
                                     if (CpuFrequencyUtils.getAdrenoGPUDefaultPowerLevel() == g) {
                                         return@setPositiveButton
                                     }
                                     CpuFrequencyUtils.setAdrenoGPUDefaultPowerLevel(g)
-                                    status.adrenoDefaultPL = index
+                                    status.adrenoDefaultPL = g
                                     updateUI()
                                 }
                             })
@@ -474,6 +521,15 @@ class FragmentCpuControl : Fragment() {
             }
             exynos_hmp_up.setOnSeekBarChangeListener(OnSeekBarChangeListener(true))
             exynos_hmp_down.setOnSeekBarChangeListener(OnSeekBarChangeListener(false))
+
+            cpu_apply_onboot.setOnClickListener {
+                val switch = it as Switch
+                if (exynosHMP || exynosCpuhotplug) {
+                    switch.isChecked = false
+                } else {
+                    // TODO:采集当前参数！
+                }
+            }
         } catch (ex: Exception) {
             Log.e("bindEvent", ex.message)
         }
@@ -497,44 +553,14 @@ class FragmentCpuControl : Fragment() {
         }
     }
 
-    class Status {
-        var cluster_little_min_freq = -1;
-        var cluster_little_max_freq = -1;
-        var cluster_little_governor = -1;
-
-        var cluster_big_min_freq = -1;
-        var cluster_big_max_freq = -1;
-        var cluster_big_governor = -1;
-
-        var coreControl = ""
-        var vdd = ""
-        var msmThermal = ""
-        var boost = ""
-        var boostFreq = ""
-        var boostTime = ""
-        var coreOnline = arrayListOf<Boolean>()
-
-        var exynosHmpUP = 0;
-        var exynosHmpDown = 0;
-        var exynosHmpBooster = false;
-        var exynosHotplug = false;
-
-        var adrenoMinFreq = -1
-        var adrenoMaxFreq = -1
-        var adrenoMinPL = -1
-        var adrenoMaxPL = -1
-        var adrenoDefaultPL = -1
-        var adrenoGovernor = -1
-    }
-
-    private var status = Status()
+    private var status = CpuStatus()
 
     private fun updateState() {
         Thread(Runnable {
             try {
-                status.cluster_little_min_freq = littleFreqs.indexOf(getApproximation(littleFreqs, CpuFrequencyUtils.getCurrentMinFrequency(0)))
-                status.cluster_little_max_freq = littleFreqs.indexOf(getApproximation(littleFreqs, CpuFrequencyUtils.getCurrentMaxFrequency(0)))
-                status.cluster_little_governor = littleGovernor.indexOf(CpuFrequencyUtils.getCurrentScalingGovernor(0))
+                status.cluster_little_min_freq = getApproximation(littleFreqs, CpuFrequencyUtils.getCurrentMinFrequency(0))
+                status.cluster_little_max_freq = getApproximation(littleFreqs, CpuFrequencyUtils.getCurrentMaxFrequency(0))
+                status.cluster_little_governor = CpuFrequencyUtils.getCurrentScalingGovernor(0)
                 status.coreControl = ThermalControlUtils.getCoreControlState()
                 status.vdd = ThermalControlUtils.getVDDRestrictionState()
                 status.msmThermal = ThermalControlUtils.getTheramlState()
@@ -547,18 +573,18 @@ class FragmentCpuControl : Fragment() {
                 status.exynosHotplug = CpuFrequencyUtils.getExynosHotplug()
 
                 if (adrenoGPU) {
-                    status.adrenoDefaultPL = adrenoPLevels.indexOf(CpuFrequencyUtils.getAdrenoGPUDefaultPowerLevel())
-                    status.adrenoMinPL = adrenoPLevels.indexOf(CpuFrequencyUtils.getAdrenoGPUMinPowerLevel())
-                    status.adrenoMaxPL = adrenoPLevels.indexOf(CpuFrequencyUtils.getAdrenoGPUMaxPowerLevel())
-                    status.adrenoMinFreq = adrenoFreqs.indexOf(getApproximation(adrenoFreqs, CpuFrequencyUtils.getAdrenoGPUMinFreq()))
-                    status.adrenoMaxFreq = adrenoFreqs.indexOf(getApproximation(adrenoFreqs, CpuFrequencyUtils.getAdrenoGPUMaxFreq()))
-                    status.adrenoGovernor = adrenoGovernors.indexOf(CpuFrequencyUtils.getAdrenoGPUGovernor())
+                    status.adrenoDefaultPL = CpuFrequencyUtils.getAdrenoGPUDefaultPowerLevel()
+                    status.adrenoMinPL = CpuFrequencyUtils.getAdrenoGPUMinPowerLevel()
+                    status.adrenoMaxPL = CpuFrequencyUtils.getAdrenoGPUMaxPowerLevel()
+                    status.adrenoMinFreq = getApproximation(adrenoFreqs, CpuFrequencyUtils.getAdrenoGPUMinFreq())
+                    status.adrenoMaxFreq = getApproximation(adrenoFreqs, CpuFrequencyUtils.getAdrenoGPUMaxFreq())
+                    status.adrenoGovernor = CpuFrequencyUtils.getAdrenoGPUGovernor()
                 }
 
                 if (hasBigCore) {
-                    status.cluster_big_min_freq = bigFreqs.indexOf(getApproximation(bigFreqs, CpuFrequencyUtils.getCurrentMinFrequency(1)))
-                    status.cluster_big_max_freq = bigFreqs.indexOf(getApproximation(bigFreqs, CpuFrequencyUtils.getCurrentMaxFrequency(1)))
-                    status.cluster_big_governor = bigGovernor.indexOf(CpuFrequencyUtils.getCurrentScalingGovernor(1))
+                    status.cluster_big_min_freq = getApproximation(bigFreqs, CpuFrequencyUtils.getCurrentMinFrequency(1))
+                    status.cluster_big_max_freq = getApproximation(bigFreqs, CpuFrequencyUtils.getCurrentMaxFrequency(1))
+                    status.cluster_big_governor = CpuFrequencyUtils.getCurrentScalingGovernor(1)
                 }
 
                 status.coreOnline = arrayListOf()
@@ -583,6 +609,9 @@ class FragmentCpuControl : Fragment() {
     }
 
     private fun subGPUFreqStr(freq: String): String {
+        if (freq.isNullOrEmpty()) {
+            return ""
+        }
         if (freq.length > 6) {
             return freq.substring(0, freq.length - 6) + " Mhz"
         } else {
@@ -607,8 +636,8 @@ class FragmentCpuControl : Fragment() {
         return arrMhz.toTypedArray<String>()
     }
 
-    private fun setText(view: TextView, text: String) {
-        if (view.text != text) {
+    private fun setText(view: TextView?, text: String) {
+        if (view != null && view.text != text) {
             view.setText(text)
         }
     }
@@ -616,14 +645,14 @@ class FragmentCpuControl : Fragment() {
     private fun updateUI() {
         progressBarDialog.hideDialog()
         try {
-            setText(cluster_little_min_freq, subFreqStr(littleFreqs[status.cluster_little_min_freq]))
-            setText(cluster_little_max_freq, subFreqStr(littleFreqs[status.cluster_little_max_freq]))
-            setText(cluster_little_governor, littleGovernor[status.cluster_little_governor])
+            setText(cluster_little_min_freq, subFreqStr(status.cluster_little_min_freq))
+            setText(cluster_little_max_freq, subFreqStr(status.cluster_little_max_freq))
+            setText(cluster_little_governor, status.cluster_little_governor)
 
             if (hasBigCore) {
-                cluster_big_min_freq.setText(subFreqStr(bigFreqs[status.cluster_big_min_freq]))
-                cluster_big_max_freq.setText(subFreqStr(bigFreqs[status.cluster_big_max_freq]))
-                cluster_big_governor.setText(bigGovernor[status.cluster_big_governor])
+                cluster_big_min_freq.setText(subFreqStr(status.cluster_big_min_freq))
+                cluster_big_max_freq.setText(subFreqStr(status.cluster_big_max_freq))
+                cluster_big_governor.setText(status.cluster_big_governor)
             }
 
             if (status.coreControl.isEmpty()) {
@@ -655,24 +684,12 @@ class FragmentCpuControl : Fragment() {
             exynos_hmp_booster.isChecked = status.exynosHmpBooster
 
             if (adrenoGPU) {
-                if (status.adrenoDefaultPL != -1) {
-                    adreno_gpu_default_pl.setText(adrenoPLevels[status.adrenoDefaultPL])
-                }
-                if (status.adrenoMinPL != -1) {
-                    adreno_gpu_min_pl.setText(adrenoPLevels[status.adrenoMinPL])
-                }
-                if (status.adrenoMaxPL != -1) {
-                    adreno_gpu_max_pl.setText(adrenoPLevels[status.adrenoMaxPL])
-                }
-                if (status.adrenoMinFreq != -1) {
-                    adreno_gpu_min_freq.setText(subGPUFreqStr(adrenoFreqs[status.adrenoMinFreq]))
-                }
-                if (status.adrenoMaxFreq != -1) {
-                    adreno_gpu_max_freq.setText(subGPUFreqStr(adrenoFreqs[status.adrenoMaxFreq]))
-                }
-                if (status.adrenoGovernor != -1) {
-                    adreno_gpu_governor.setText(adrenoGovernors[status.adrenoGovernor])
-                }
+                adreno_gpu_default_pl.setText(status.adrenoDefaultPL)
+                adreno_gpu_min_pl.setText(status.adrenoMinPL)
+                adreno_gpu_max_pl.setText(status.adrenoMaxPL)
+                adreno_gpu_min_freq.setText(subGPUFreqStr(status.adrenoMinFreq))
+                adreno_gpu_max_freq.setText(subGPUFreqStr(status.adrenoMaxFreq))
+                adreno_gpu_governor.setText(status.adrenoGovernor)
             }
 
             if (status.boostFreq.isEmpty()) {
