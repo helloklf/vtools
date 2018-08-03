@@ -328,7 +328,7 @@
     <string name="auto_start">自启动</string>
     <string name="boot_after_auto_modify">开机后自动修改</string>
     <string name="exclude_recent">从最近任务列表隐藏</string>
-    <string name="core_control_helpinfo">这是一个功能简陋的CPU控制器，但实际上CPU的调度工作非常复杂，单纯的提高或降低频率限制，并不一定能提高流畅度或节省电量。\n\n部分的手机底层具有自动调节CPU参数的机制，会导致自定义的参数很快失效（小米手机请先到“附加功能-自定义”中禁用perfd和Performance Boost Config，否则CPU频率修改不会生效！）。\n\n此外，热插拔温控功能可能也会影响你对CPU参数的修改！\n\ninteractive调度适用于大多数手机，反应迅速，ondemand调度则会更缓慢的切换频率，conservative、powersave、performance模式均不推荐使用！。\n\n优先Big核心会在获得绝佳的流畅体验的同时，耗电和发热显著增高。</string>
+    <string name="core_control_helpinfo">这是一个功能简陋的CPU控制器，但实际上CPU的调度工作非常复杂，单纯的提高或降低频率限制，并不一定能提高流畅度或节省电量。\n\n部分的手机底层具有自动调节CPU参数的机制，会导致自定义的参数很快失效（小米手机请先到“附加功能-自定义”中禁用perfd和Performance Boost Config，否则CPU频率修改不会生效！）。\n\n此外，热插拔温控功能可能也会影响你对CPU参数的修改！\n\ninteractive调度适用于大多数手机，反应迅速（schedutil更好），ondemand调度则会更缓慢的切换频率，conservative、powersave、performance模式均不推荐使用！。\n\n优先Big核心会在获得绝佳的流畅体验的同时，耗电和发热显著增高。</string>
     <string name="android_m_doze_doze">在白名单中的应用，将不会被安卓（Android M+）的Doze机制休眠。当然，Doze模式在国内的作用是微乎其微的，而且不被休眠并不代表进程不会被杀死！</string>
     <string name="doze_list_auto_resume">手机开机完成后，自动恢复当前设定状态（由于MIUI系统重启后会自动将系统应用全部添加到白名单中）</string>
     <string name="auto_resume">自动恢复设置</string>
