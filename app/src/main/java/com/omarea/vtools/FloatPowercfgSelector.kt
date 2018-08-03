@@ -109,7 +109,8 @@ class FloatPowercfgSelector {
         val view = LayoutInflater.from(context).inflate(R.layout.fw_powercfg_selector, null)
 
         val spfPowercfg = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
-        val mode = spfPowercfg.getString(packageName, "balance")
+        val globalSPF = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+        val mode = spfPowercfg.getString(packageName, globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance"))
 
         try {
             val pm = context.packageManager
