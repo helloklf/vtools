@@ -18,6 +18,14 @@
             android:layout_gravity="fill_vertical"
             android:layout_weight="1">
 
+            <TextView
+                android:id="@+id/home_chat_helpinfo"
+                android:layout_marginTop="20dp"
+                android:textColor="@color/colorPrimary"
+                android:layout_gravity="center_horizontal"
+                android:text="◀ 滑动切换到“性能监视器”"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
             <android.support.v4.view.ViewPager
                 android:id="@+id/home_viewpager"
                 android:layout_width="match_parent"

@@ -81,6 +81,9 @@ class FragmentHome : Fragment() {
         }
         home_viewpager.adapter!!.notifyDataSetChanged()
         home_viewpager.setCurrentItem(0, true)
+        home_chat_helpinfo.postDelayed(Runnable {
+            home_chat_helpinfo.visibility = View.GONE
+        }, 2000)
     }
 
     override fun onResume() {
