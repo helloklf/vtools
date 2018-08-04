@@ -33,12 +33,10 @@ import java.util.HashMap;
 
 public class SimpleShellExecutor {
     private Context context;
-    private Window window;
     private boolean started = false;
 
-    public SimpleShellExecutor(Context context, Window window) {
+    public SimpleShellExecutor(Context context) {
         this.context = context;
-        this.window = window;
     }
 
     /**
@@ -69,17 +67,8 @@ public class SimpleShellExecutor {
         envp.add("ANDROID_UID=" + dir.getParentFile().getParentFile().getName());
         envp.add("ANDROID_SDK=" + Build.VERSION.SDK_INT);
         envp.add("SDCARD_PATH=" + Environment.getExternalStorageDirectory().getAbsolutePath());
-
-        Display display = window.getWindowManager().getDefaultDisplay();
-        DisplayMetrics dm = new DisplayMetrics();
-        display.getMetrics(dm);
-        Point point = new Point();
-        display.getRealSize(point);
-
-        envp.add("DISPLAY_DPI=" + dm.densityDpi);
-        envp.add("DISPLAY_H=" + point.y);
-        envp.add("DISPLAY_W=" + point.x);
         envp.add("BUSYBOX=" + FileWrite.INSTANCE.getPrivateFilePath(context, "busybox"));
+
         try {
             if (root) {
                 process = Runtime.getRuntime().exec("su");

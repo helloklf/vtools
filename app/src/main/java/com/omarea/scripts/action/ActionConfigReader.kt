@@ -55,7 +55,7 @@ object ActionConfigReader {
                                     "su" -> {
                                         if (attrValue.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
                                             val path = ExtractAssets(context).extractToFilesDir(attrValue.trim { it <= ' ' })
-                                            action.descPollingSUShell = "chmod 7777 $path\n$path"
+                                            action.descPollingSUShell = "chmod 0755 $path\n$path"
                                         } else {
                                             action.descPollingSUShell = attrValue
                                         }
@@ -64,7 +64,7 @@ object ActionConfigReader {
                                     "sh" -> {
                                         if (attrValue.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
                                             val path = ExtractAssets(context).extractToFilesDir(attrValue.trim { it <= ' ' })
-                                            action.descPollingShell = "chmod 7777 $path\n$path"
+                                            action.descPollingShell = "chmod 0755 $path\n$path"
                                         } else {
                                             action.descPollingShell = attrValue
                                         }
@@ -90,7 +90,7 @@ object ActionConfigReader {
                             if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
                                 action.scriptType = ActionInfo.ActionScript.ASSETS_FILE
                                 val path = ExtractAssets(context).extractToFilesDir(script.trim { it <= ' ' })
-                                action.script = "chmod 7777 $path\n$path"
+                                action.script = "chmod 0755 $path\n$path"
                             } else {
                                 action.script = script
                             }
@@ -124,7 +124,7 @@ object ActionConfigReader {
                                         val script = parser.getAttributeValue(i)
                                         if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
                                             val path = ExtractAssets(context).extractToFilesDir(script.trim { it <= ' ' })
-                                            actionParamInfo.valueShell = "chmod 7777 $path\n$path"
+                                            actionParamInfo.valueShell = "chmod 0755 $path\n$path"
                                         } else {
                                             actionParamInfo.valueShell = script
                                         }
@@ -133,7 +133,7 @@ object ActionConfigReader {
                                         val script = parser.getAttributeValue(i)
                                         if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
                                             val path = ExtractAssets(context).extractToFilesDir(script.trim { it <= ' ' })
-                                            actionParamInfo.valueSUShell = "chmod 7777 $path\n$path"
+                                            actionParamInfo.valueSUShell = "chmod 0755 $path\n$path"
                                         } else {
                                             actionParamInfo.valueSUShell = script
                                         }
@@ -147,7 +147,7 @@ object ActionConfigReader {
                                         val script = parser.getAttributeValue(i)
                                         if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
                                             val path = ExtractAssets(context).extractToFilesDir(script.trim { it <= ' ' })
-                                            actionParamInfo.optionsSh = "chmod 7777 $path\n$path"
+                                            actionParamInfo.optionsSh = "chmod 0755 $path\n$path"
                                         } else {
                                             actionParamInfo.optionsSh = script
                                         }
@@ -158,7 +158,7 @@ object ActionConfigReader {
                                         val script = parser.getAttributeValue(i)
                                         if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
                                             val path = ExtractAssets(context).extractToFilesDir(script.trim { it <= ' ' })
-                                            actionParamInfo.optionsSU = "chmod 7777 $path\n$path"
+                                            actionParamInfo.optionsSU = "chmod 0755 $path\n$path"
                                         } else {
                                             actionParamInfo.optionsSU = script
                                         }
@@ -234,7 +234,7 @@ object ActionConfigReader {
         var script = script
         if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
             val path = ExtractAssets(context).extractToFilesDir(script.trim { it <= ' ' })
-            script = "chmod 7777 $path\n$path"
+            script = "chmod 0755 $path\n$path"
         }
         return KeepShellPublic.doCmdSync(script)
     }
@@ -243,7 +243,7 @@ object ActionConfigReader {
         var script = script
         if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
             val path = ExtractAssets(context).extractToFilesDir(script.trim { it <= ' ' })
-            script = "chmod 7777 $path\n$path"
+            script = "chmod 0755 $path\n$path"
         }
         return KeepShellPublic.doCmdSync(script)
     }

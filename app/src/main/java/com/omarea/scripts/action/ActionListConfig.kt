@@ -267,6 +267,6 @@ class ActionListConfig(private val context: FragmentActivity) {
     }
 
     private fun executeScript(title: String, root: Boolean?, cmds: StringBuilder, startPath: String, onExit: Runnable, params: HashMap<String, String>?) {
-        SimpleShellExecutor(context, context.window).execute(root, title, cmds, startPath, onExit, params)
+        SimpleShellExecutor(context).execute(root, title, cmds, startPath, onExit, params)
     }
 }

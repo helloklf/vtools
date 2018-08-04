@@ -143,7 +143,7 @@ class AppDetailsActivity : AppCompatActivity() {
         //使用ROOT权限安装插件
         val installResult = KeepShellPublic.doCmdSync("pm install -r '$addinPath'")
         // 如果使用ROOT权限自动安装成功（再次检查Xposed状态）
-        if (installResult !== "error" && installResult.contains("Success") && getAddinVersion() == getAddinMinimumVersion()) {
+        if (installResult !== "error" && installResult.contains("Success") && getAddinVersion() >= getAddinMinimumVersion()) {
             Toast.makeText(applicationContext, getString(R.string.scene_addin_installed), Toast.LENGTH_SHORT).show()
             checkXposedState(false)
         } else {

@@ -98,6 +98,6 @@ public class SwitchListConfig {
     }
 
     private void executeScript(String title, Boolean root, StringBuilder cmds, String startPath, Runnable onExit, HashMap<String, String> params) {
-        new SimpleShellExecutor(context, context.getWindow()).execute(root, title, cmds, startPath, onExit, params);
+        new SimpleShellExecutor(context).execute(root, title, cmds, startPath, onExit, params);
     }
 }

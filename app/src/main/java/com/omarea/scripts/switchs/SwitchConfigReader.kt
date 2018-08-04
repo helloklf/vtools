@@ -63,7 +63,7 @@ object SwitchConfigReader {
                                     "su" -> {
                                         if (attrValue.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
                                             val path = ExtractAssets(context).extractToFilesDir(attrValue.trim { it <= ' ' })
-                                            action.descPollingSUShell = "chmod 7777 $path\n$path"
+                                            action.descPollingSUShell = "chmod 0755 $path\n$path"
                                         } else {
                                             action.descPollingSUShell = attrValue
                                         }
@@ -72,7 +72,7 @@ object SwitchConfigReader {
                                     "sh" -> {
                                         if (attrValue.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
                                             val path = ExtractAssets(context).extractToFilesDir(attrValue.trim { it <= ' ' })
-                                            action.descPollingShell = "chmod 7777 $path\n$path"
+                                            action.descPollingShell = "chmod 0755 $path\n$path"
                                         } else {
                                             action.descPollingShell = attrValue
                                         }
@@ -87,7 +87,7 @@ object SwitchConfigReader {
                             if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
                                 action.getStateType = SwitchInfo.ActionScript.ASSETS_FILE
                                 val path = ExtractAssets(context).extractToFilesDir(script.trim { it <= ' ' })
-                                action.getState = "chmod 7777 $path\n$path"
+                                action.getState = "chmod 0755 $path\n$path"
                             } else {
                                 action.getState = script
                             }
@@ -96,7 +96,7 @@ object SwitchConfigReader {
                             if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
                                 action.setStateType = SwitchInfo.ActionScript.ASSETS_FILE
                                 val path = ExtractAssets(context).extractToFilesDir(script.trim { it <= ' ' })
-                                action.setState = "chmod 7777 $path\n$path"
+                                action.setState = "chmod 0755 $path\n$path"
                             } else {
                                 action.setState = script
                             }
@@ -139,7 +139,7 @@ object SwitchConfigReader {
         var script = script
         if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
             val path = ExtractAssets(context).extractToFilesDir(script.trim { it <= ' ' })
-            script = "chmod 7777 $path\n$path"
+            script = "chmod 0755 $path\n$path"
         }
         return KeepShellPublic.doCmdSync(script)
     }
@@ -148,7 +148,7 @@ object SwitchConfigReader {
         var script = script
         if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
             val path = ExtractAssets(context).extractToFilesDir(script.trim { it <= ' ' })
-            script = "chmod 7777 $path\n$path"
+            script = "chmod 0755 $path\n$path"
         }
         return KeepShellPublic.doCmdSync(script)
     }

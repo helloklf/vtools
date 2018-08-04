@@ -9,7 +9,8 @@
             $BUSYBOX killall com.android.systemui;
         </script>
         <params>
-            <param name="dpi" value="440">
+            <param name="dpi" value="reset">
+                <option val="reset">默认</option>
                 <option val="640">2K 小屏（640）</option>
                 <option val="560">2K 中屏（560）</option>
                 <option val="520">2K 大屏（520）</option>

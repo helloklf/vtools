@@ -775,7 +775,6 @@ class FragmentCpuControl : Fragment() {
     }
 
     override fun onDestroy() {
-        saveBootConfig()
         cancel()
         super.onDestroy()
     }
