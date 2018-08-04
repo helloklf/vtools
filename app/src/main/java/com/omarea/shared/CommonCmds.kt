@@ -15,12 +15,12 @@ object CommonCmds {
 
     const val MountSystemRW =
             "busybox mount -o rw,remount /system\n" +
-                    "busybox mount -f -o rw,remount /system\n" +
                     "mount -o rw,remount /system\n" +
-                    "busybox mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
-                    "mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
                     "busybox mount -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
                     "mount -o remount,rw /dev/block/bootdevice/by-name/system /system\n"
+    const val MountVendorRW =
+            "busybox mount -o rw,remount /vendor\n" +
+                    "mount -o rw,remount /vendor\n"
 
     const val POWER_CFG_PATH = "/data/powercfg.sh"
     const val POWER_CFG_BASE = "/data/powercfg-base.sh"

@@ -85,10 +85,20 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
      * @return
      */
     fun isScreenLocked(): Boolean {
+        /*
         val windowManager = context.getSystemService(WINDOW_SERVICE) as WindowManager
         val display = windowManager.defaultDisplay
         if (display.state == Display.STATE_ON) {
             return false
+        }
+
+        val mKeyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        return mKeyguardManager.inKeyguardRestrictedInputMode()
+        */
+        val windowManager = context.getSystemService(WINDOW_SERVICE) as WindowManager
+        val display = windowManager.defaultDisplay
+        if (display.state != Display.STATE_ON) {
+            return true
         }
 
         val mKeyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager

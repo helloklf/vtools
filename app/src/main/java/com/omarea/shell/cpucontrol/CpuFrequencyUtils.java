@@ -200,7 +200,7 @@ public class CpuFrequencyUtils {
     }
 
     public static int getExynosHmpUP() {
-        String up = KernelProrp.INSTANCE.getProp("/sys/kernel/hmp/up_threshold;").trim();
+        String up = KernelProrp.INSTANCE.getProp("/sys/kernel/hmp/up_threshold").trim();
         if (Objects.equals(up, "")) {
             return 0;
         }
@@ -219,7 +219,7 @@ public class CpuFrequencyUtils {
     }
 
     public static int getExynosHmpDown() {
-        String value = KernelProrp.INSTANCE.getProp("/sys/kernel/hmp/down_threshold;").trim();
+        String value = KernelProrp.INSTANCE.getProp("/sys/kernel/hmp/down_threshold").trim();
         if (Objects.equals(value, "")) {
             return 0;
         }
@@ -238,7 +238,7 @@ public class CpuFrequencyUtils {
     }
 
     public static boolean getExynosBooster() {
-        String value = KernelProrp.INSTANCE.getProp("/sys/kernel/hmp/boost;").trim().toLowerCase();
+        String value = KernelProrp.INSTANCE.getProp("/sys/kernel/hmp/boost").trim().toLowerCase();
         return Objects.equals(value, "1") || Objects.equals(value, "true") || Objects.equals(value, "enabled");
     }
 
@@ -250,7 +250,7 @@ public class CpuFrequencyUtils {
     }
 
     public static boolean getExynosHotplug() {
-        String value = KernelProrp.INSTANCE.getProp("/sys/devices/system/cpu/cpuhotplug/enabled;").trim().toLowerCase();
+        String value = KernelProrp.INSTANCE.getProp("/sys/devices/system/cpu/cpuhotplug/enabled").trim().toLowerCase();
         return Objects.equals(value, "1") || Objects.equals(value, "true") || Objects.equals(value, "enabled");
     }
 

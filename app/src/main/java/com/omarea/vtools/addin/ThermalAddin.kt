@@ -72,15 +72,19 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
         command = StringBuilder()
                 .append(CommonCmds.MountSystemRW)
                 .append("cp /system/vendor/bin/thermal-engine.bak /system/vendor/bin/thermal-engine\n" +
+                        "chmod 644 /system/vendor/bin/thermal-engine\n" +
                         "rm -f /system/vendor/bin/thermal-engine.bak\n" +
 
                         "cp /system/vendor/lib64/libthermalclient.so.bak /system/vendor/lib64/libthermalclient.so\n" +
+                        "chmod 644 /system/vendor/lib64/libthermalclient.so\n" +
                         "rm -f /system/vendor/lib64/libthermalclient.so.bak\n" +
 
                         "cp /system/vendor/lib64/libthermalioctl.so.bak /system/vendor/lib64/libthermalioctl.so\n" +
+                        "chmod 644 /system/vendor/lib64/libthermalioctl.so\n" +
                         "rm -f /system/vendor/lib64/libthermalioctl.so.bak\n" +
 
                         "cp /system/vendor/lib/libthermalclient.so.bak /system/vendor/lib/libthermalclient.so\n" +
+                        "chmod 644 /system/vendor/lib/libthermalclient\n" +
                         "rm -f /system/vendor/lib/libthermalclient.so.bak\n")
                 .toString()
 
@@ -92,12 +96,13 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
             return
         }
         command = StringBuilder()
-                .append("stop thermald;")
-                .append("stop mpdecision;")
-                .append("stop thermal-engine;")
-                .append("echo 0 > /sys/module/msm_thermal/core_control/enabled;")
-                .append("echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled;")
-                .append("echo N > /sys/module/msm_thermal/parameters/enabled;")
+                .append("stop thermanager\n")
+                .append("stop thermald\n")
+                .append("stop mpdecision\n")
+                .append("stop thermal-engine\n")
+                .append("echo 0 > /sys/module/msm_thermal/core_control/enabled\n")
+                .append("echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled\n")
+                .append("echo N > /sys/module/msm_thermal/parameters/enabled\n")
                 .toString()
 
         super.run()

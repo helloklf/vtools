@@ -32,10 +32,11 @@ class DialogAddinWIFI(private var context: Context) {
                     .replace(Regex("[\\s\\t]{0,}ssid="), "\n网络：") //SSID
                     .replace(Regex("[\\s\\t]{0,}psk="), "\n密码：") //密码
                     .replace(Regex("[\\s\\t]{0,}priority=.*"), "") //优先级
+                    .replace(Regex("[\\s\\t]{0,}priority=.*"), "") //优先级
                     .replace(Regex("[\\s\\t]{0,}key_mgmt=.*"), "") //加密方式
                     .replace(Regex("[\\s\\t]{0,}id_str=.*"), "") //idstr
                     .replace(Regex("[\\s\\t]{0,}disabled=.*"), "") //disabled
-                    .replace(Regex("}"), "")
+                    .replace("}", "")
                     .replace("\"", "")
                     .trim()
 
