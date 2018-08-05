@@ -1,6 +1,7 @@
 package com.omarea.vtools
 
 import android.annotation.SuppressLint
+import android.app.ActivityManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -11,12 +12,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import android.widget.Switch
 import android.widget.Toast
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.KernelProrp
 import com.omarea.shell.SysUtils
 import com.omarea.shell.units.ChangeZRAM
+import com.omarea.shell.units.LMKUnit
 import com.omarea.ui.AdapterSwaplist
 import com.omarea.ui.ProgressBarDialog
 import kotlinx.android.synthetic.main.layout_swap.*
@@ -90,6 +93,9 @@ class FragmentSwap : Fragment() {
         btn_swap_start.isEnabled = !txt.contains("/data/swapfile") && !txt.contains("/swapfile") && File("/data/swapfile").exists()
         btn_swap_close.isEnabled = txt.contains("/data/swapfile")
         btn_swap_delete.isEnabled = File("/data/swapfile").exists()
+        swap_auto_lmk.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, false)
+        val lmk = KernelProrp.getProp("/sys/module/lowmemorykiller/parameters/minfree")
+        swap_lmk_current.text = lmk
     }
 
     override fun onResume() {
@@ -97,6 +103,7 @@ class FragmentSwap : Fragment() {
         getSwaps()
     }
 
+    @SuppressLint("ApplySharedPref")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         processBarDialog = ProgressBarDialog(this.context!!)
@@ -147,6 +154,19 @@ class FragmentSwap : Fragment() {
                 })
             }
             Thread(run).start()
+        }
+        swap_auto_lmk.setOnClickListener {
+            val checked = (it as Switch).isChecked
+            swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, checked).commit()
+            if (checked) {
+                val activityManager = context!!.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+                val info = ActivityManager.MemoryInfo()
+                activityManager.getMemoryInfo(info)
+                LMKUnit().autoSetLMK(info.totalMem)
+                swap_lmk_current.text = KernelProrp.getProp("/sys/module/lowmemorykiller/parameters/minfree")
+            } else {
+                Toast.makeText(context!!, "需要重启手机才会恢复默认的LMK参数！", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

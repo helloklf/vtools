@@ -116,6 +116,11 @@ class CpuFragment : Fragment() {
         }
     }
 
+    override fun onDestroyView() {
+        this.stopTimer()
+        super.onDestroyView()
+    }
+
     override fun onPause() {
         this.stopTimer()
         super.onPause()

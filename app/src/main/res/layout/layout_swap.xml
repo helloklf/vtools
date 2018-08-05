@@ -258,6 +258,56 @@
                 </TableLayout>
             </android.support.v7.widget.CardView>
 
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp">
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="12dp">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/textTitle"
+                        android:layout_marginBottom="20dp"
+                        android:text="Low Memory Killer" />
+                    <Switch
+                        android:id="@+id/swap_auto_lmk"
+                        android:text="低内存优化"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        style="@style/textSmall"
+                        android:text="允许Scene根据你的设备内存情况，自动调整LMK参数，从而增强后台能力（可能导致低内存时卡顿）。如需恢复，请关闭该选项重启手机，如需开机后自动设置，请允许工具箱自启动"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <LinearLayout
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:text="当前状态："
+                            style="@style/textSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:layout_weight="1"
+                            android:id="@+id/swap_lmk_current"
+                            android:text=""
+                            style="@style/textSmall"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

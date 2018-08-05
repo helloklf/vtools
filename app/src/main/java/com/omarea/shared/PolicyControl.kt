@@ -59,9 +59,7 @@ class PolicyControl(private var contentResolver: ContentResolver) {
     }
 
     fun hideNavBar(packageName: String): Boolean {
-        if (isHideNavbarOnly(packageName)) {
-            return true
-        } else if (isFullScreen(packageName)) {
+        if (isHideNavbarOnly(packageName) || isFullScreen(packageName)) {
             return true
         } else {
             if (nav.isEmpty()) {
@@ -74,9 +72,10 @@ class PolicyControl(private var contentResolver: ContentResolver) {
     }
 
     fun showNavBar(packageName: String): Boolean {
-        if (!isHideNavbarOnly(packageName)) {
+        if (!isHideNavbarOnly(packageName) && !isFullScreen(packageName)) {
             return true
         } else if (isFullScreen(packageName)) {
+            showAll(packageName)
             hideStatusBar(packageName)
         }
         if (nav.contains("$NAV=*") || nav.contains("$NAV=apps")) {
@@ -88,9 +87,7 @@ class PolicyControl(private var contentResolver: ContentResolver) {
     }
 
     fun hideStatusBar(packageName: String): Boolean {
-        if (isHideStatusOnly(packageName)) {
-            return true
-        } else if (isFullScreen(packageName)) {
+        if (isHideStatusOnly(packageName) || isFullScreen(packageName)) {
             return true
         } else {
             if (status.isEmpty()) {
@@ -103,9 +100,10 @@ class PolicyControl(private var contentResolver: ContentResolver) {
     }
 
     fun showStatusBar(packageName: String): Boolean {
-        if (!isHideNavbarOnly(packageName)) {
+        if (!isHideStatusOnly(packageName) && !isFullScreen(packageName)) {
             return true
         } else if (isFullScreen(packageName)) {
+            showAll(packageName)
             hideNavBar(packageName)
         }
         if (status.contains("$STATUS=*") || status.contains("$STATUS=apps")) {

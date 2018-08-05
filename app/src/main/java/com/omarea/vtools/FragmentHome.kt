@@ -1,23 +1,32 @@
 package com.omarea.vtools
 
 import android.annotation.SuppressLint
+import android.app.ActivityManager
 import android.content.Context
+import android.content.Context.ACTIVITY_SERVICE
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.omarea.shared.*
+import com.omarea.shared.model.CpuCoreInfo
 import com.omarea.shell.Files
+import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.Platform
 import com.omarea.shell.Props
+import com.omarea.shell.cpucontrol.CpuFrequencyUtils
+import com.omarea.ui.AdapterCpuCores
 import kotlinx.android.synthetic.main.layout_home.*
 import java.io.File
+import java.util.*
 
 
 class FragmentHome : Fragment() {
@@ -27,13 +36,15 @@ class FragmentHome : Fragment() {
     }
 
     private lateinit var globalSPF: SharedPreferences
+    private var timer: Timer? = null
     private fun showMsg(msg: String) {
         this.view?.let { Snackbar.make(it, msg, Snackbar.LENGTH_LONG).show() }
     }
 
-    private val fragmentList = ArrayList<Fragment>()
     private lateinit var spf: SharedPreferences
     private var modeList = ModeList()
+    private var myHandler = Handler()
+
     @SuppressLint("ApplySharedPref")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -66,41 +77,87 @@ class FragmentHome : Fragment() {
 
         spf = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
-        fragmentList.clear()
-        fragmentList.add(RamFragment())
-        fragmentList.add(CpuFragment())
-        home_viewpager.adapter = object : FragmentStatePagerAdapter(fragmentManager) {
-            override fun getCount(): Int {
-                return fragmentList.size
-            }
-
-            override fun getItem(position: Int): Fragment {
-                return fragmentList.get(position)
-            }
-        }
-        home_viewpager.adapter!!.notifyDataSetChanged()
-        home_viewpager.setCurrentItem(0, true)
         home_chat_helpinfo.postDelayed(Runnable {
             if (home_chat_helpinfo != null) {
                 home_chat_helpinfo.visibility = View.GONE
             }
         }, 1300)
+
+        home_clear_ram.setOnClickListener {
+            home_raminfo_text.text = "稍等一下"
+            Thread(Runnable {
+                KeepShellPublic.doCmdSync("sync\n" +
+                        "echo 3 > /proc/sys/vm/drop_caches")
+                myHandler.postDelayed({
+                    updateInfo()
+                    Toast.makeText(context, "缓存已清理...", Toast.LENGTH_SHORT).show()
+                }, 1000)
+            }).start()
+        }
     }
 
     override fun onResume() {
         super.onResume()
         setModeState()
         updateInfo()
-        // AppConfigLoader().getAppConfig("de.robv.android.xposed.installer", context!!.contentResolver)
+
+        stopTimer()
+        timer = Timer()
+        timer!!.schedule(object : TimerTask() {
+            override fun run() {
+                updateInfo()
+            }
+        }, 0, 1000)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
+    private var coreCount = -1;
+    private var activityManager:ActivityManager? = null
 
+    @SuppressLint("SetTextI18n")
     private fun updateInfo() {
-        sdfree.text = "SDCard：" + Files.getDirFreeSizeMB(Environment.getExternalStorageDirectory().absolutePath) + " MB"
-        datafree.text = "Data：" + Files.getDirFreeSizeMB(Environment.getDataDirectory().absolutePath) + " MB"
+        if (coreCount < 1) {
+            coreCount = CpuFrequencyUtils.getCoreCount()
+        }
+        val cores = ArrayList<CpuCoreInfo>()
+        val loads = CpuFrequencyUtils.getCpuLoad()
+        for (coreIndex in 0 until coreCount) {
+            val core = CpuCoreInfo()
+            core.maxFreq = CpuFrequencyUtils.getCurrentMaxFrequency("cpu" + coreIndex)
+            core.minFreq = CpuFrequencyUtils.getCurrentMinFrequency("cpu$coreIndex")
+            core.currentFreq = CpuFrequencyUtils.getCurrentFrequency("cpu$coreIndex")
+            core.cpuGovernor = CpuFrequencyUtils.getCurrentScalingGovernor("cpu$coreIndex")
+            if (loads.containsKey(coreIndex)) {
+                core.loadRatio = loads.get(coreIndex)!!
+            }
+            cores.add(core)
+            if (activityManager == null) {
+                activityManager = context!!.getSystemService(ACTIVITY_SERVICE) as ActivityManager
+            }
+        }
+        myHandler.post {
+            try {
+                sdfree.text = "SDCard：" + Files.getDirFreeSizeMB(Environment.getExternalStorageDirectory().absolutePath) + " MB"
+                datafree.text = "Data：" + Files.getDirFreeSizeMB(Environment.getDataDirectory().absolutePath) + " MB"
+                cpu_core_count.text = "核心数：$coreCount"
+                if (loads.containsKey(-1)) {
+                    cpu_core_total_load.text = "负载：" + loads.get(-1)!!.toInt().toString() + "%"
+                }
+                if (cpu_core_list.adapter == null) {
+                    cpu_core_list.adapter = AdapterCpuCores(context!!, cores)
+                } else {
+                    (cpu_core_list.adapter as AdapterCpuCores).setData(cores)
+                }
+
+                val info = ActivityManager.MemoryInfo()
+                activityManager!!.getMemoryInfo(info)
+                val totalMem = (info.totalMem / 1024 / 1024f).toInt()
+                val availMem = (info.availMem / 1024 / 1024f).toInt()
+                home_raminfo_text.text = "${availMem} / ${totalMem}MB"
+                home_raminfo.setData(totalMem.toFloat(), availMem.toFloat())
+            } catch (ex: Exception) {
+
+            }
+        }
     }
 
     private fun setModeState() {
@@ -123,6 +180,18 @@ class FragmentHome : Fragment() {
                 btn_fastmode.setTextColor(Color.WHITE)
             }
         }
+    }
+
+    private fun stopTimer() {
+        if (this.timer != null) {
+            timer!!.cancel()
+            timer = null
+        }
+    }
+
+    override fun onPause() {
+        stopTimer()
+        super.onPause()
     }
 
     private fun installConfig(action: String, message: String) {

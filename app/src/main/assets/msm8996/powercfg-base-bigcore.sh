@@ -77,7 +77,7 @@ function configure_memory_parameters() {
     fi
 }
 
-configure_memory_parameters
+#configure_memory_parameters
 
 
 case "$target" in

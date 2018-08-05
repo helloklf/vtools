@@ -1,5 +1,6 @@
 package com.omarea.shared
 
+import android.app.ActivityManager
 import android.app.IntentService
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -12,6 +13,7 @@ import com.omarea.shell.KeepShell
 import com.omarea.shell.Props
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import com.omarea.shell.cpucontrol.ThermalControlUtils
+import com.omarea.shell.units.LMKUnit
 import com.omarea.vtools.R
 
 /**
@@ -210,6 +212,13 @@ class BootService : IntentService("vtools-boot") {
             keepShell.doCmdSync(sb2.toString())
         }
         */
+
+        if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, false)) {
+            val activityManager = context!!.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            val info = ActivityManager.MemoryInfo()
+            activityManager.getMemoryInfo(info)
+            LMKUnit().autoSetLMK(info.totalMem, keepShell)
+        }
         keepShell.tryExit()
         stopSelf()
     }

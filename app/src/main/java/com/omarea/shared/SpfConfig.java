@@ -45,6 +45,7 @@ public class SpfConfig {
     public static String SWAP_SPF_ZRAM = "zram";
     public static String SWAP_SPF_ZRAM_SIZE = "zram_size";
     public static String SWAP_SPF_SWAPPINESS = "swappiness";
+    public static String SWAP_SPF_AUTO_LMK = "auto_lmk";
 
     public static String KEY_EVENT_SPF = "key_event_spf";
     public static String KEY_EVENT_ONTHER_CONFIG_SPF = "key_event_spf2";
