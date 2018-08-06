@@ -1,12 +1,6 @@
 #!/system/bin/sh
 
 action=$1
-stop perfd
-
-echo 0 > /sys/module/msm_thermal/core_control/enabled
-echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
-echo N > /sys/module/msm_thermal/parameters/enabled
-echo 1 > /proc/sys/kernel/sched_prefer_sync_wakee_to_waker
 
 if [ ! `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor` = "interactive" ]; then
 	echo 'interactive' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
@@ -20,19 +14,6 @@ fi
 
 # /sys/devices/system/cpu/cpu4/cpufreq/scaling_available_frequencies
 # 300000 345600 422400 499200 576000 652800 729600 806400 902400 979200 1056000 1132800 1190400 1267200 1344000 1420800 1497600 1574400 1651200 1728000 1804800 1881600 1958400 2035200 2112000 2208000 2265600 2323200 2342400 2361600 2457600
-
-echo 4-7 > /dev/cpuset/foreground/boost/cpus
-echo 0-7 > /dev/cpuset/foreground/cpus
-
-echo 1 > /sys/devices/system/cpu/cpu0/online
-echo 1 > /sys/devices/system/cpu/cpu1/online
-echo 1 > /sys/devices/system/cpu/cpu2/online
-echo 1 > /sys/devices/system/cpu/cpu3/online
-echo 1 > /sys/devices/system/cpu/cpu4/online
-echo 1 > /sys/devices/system/cpu/cpu5/online
-echo 1 > /sys/devices/system/cpu/cpu6/online
-echo 1 > /sys/devices/system/cpu/cpu7/online
-
 
 function lock_value()
 {
@@ -108,9 +89,9 @@ if [ "$action" = "powersave" ]; then
     echo 0-3 > /dev/cpuset/system-background/cpus
 
     echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
-	echo 10000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
+	echo 6000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
 	echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
-    echo 10000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_rate
+    echo 6000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_rate
 
 	exit 0
 fi
@@ -162,7 +143,7 @@ if [ "$action" = "performance" ]; then
     echo 0-1 > /dev/cpuset/background/cpus
     echo 0-1 > /dev/cpuset/system-background/cpus
 
-	echo 10000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
+	echo 6000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
     echo 30000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
     echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
     echo 79000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
@@ -194,10 +175,10 @@ if [ "$action" = "fast" ]; then
     echo 0 > /dev/cpuset/background/cpus
     echo 0-1 > /dev/cpuset/system-background/cpus
 
-	echo 8000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
-    echo 24000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
+	echo 6000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
+    echo 18000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
     echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
-    echo 79000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
+    echo 36000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
 	
 	exit 0
 fi
