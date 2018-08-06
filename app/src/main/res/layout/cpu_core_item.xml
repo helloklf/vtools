@@ -5,7 +5,6 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingBottom="8dp"
-    android:paddingRight="16dp"
     android:paddingTop="8dp">
 
     <FrameLayout
