@@ -4,7 +4,9 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
+import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
@@ -61,7 +63,16 @@ class FragmentHome : Fragment() {
         }
 
         spf = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-
+        home_get_update.setOnClickListener {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(context!!.getString(R.string.get_update_url))))
+        }
+        home_hide_update.setOnClickListener {
+            home_update_notice.visibility = View.GONE
+            globalSPF.edit().putBoolean("hide_update_scene_1", true).commit()
+        }
+        if (globalSPF.getBoolean("hide_update_scene_1", false)) {
+            home_update_notice.visibility = View.GONE
+        }
     }
 
     override fun onResume() {

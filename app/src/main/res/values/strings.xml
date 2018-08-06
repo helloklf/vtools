@@ -74,6 +74,7 @@
 
     <string name="share_link">你也来试试微工具箱吧，我觉得还不错：\n http://www.coolapk.com/apk/com.omarea.vboot</string>
     <string name="feedback_link">mqqwpa://im/chat?chat_type=wpa&amp;uin=1191634433</string>
+    <string name="get_update_url">https://www.coolapk.com/apk/com.omarea.vtools</string>
 
     <string name="app_name">微工具箱</string>
     <string name="app_name_mode_switch">微工具箱 - 快速切换模式</string>
