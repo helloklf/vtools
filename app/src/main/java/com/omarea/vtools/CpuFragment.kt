@@ -86,7 +86,6 @@ class CpuFragment : Fragment() {
             core.maxFreq = CpuFrequencyUtils.getCurrentMaxFrequency("cpu" + coreIndex)
             core.minFreq = CpuFrequencyUtils.getCurrentMinFrequency("cpu$coreIndex")
             core.currentFreq = CpuFrequencyUtils.getCurrentFrequency("cpu$coreIndex")
-            core.cpuGovernor = CpuFrequencyUtils.getCurrentScalingGovernor("cpu$coreIndex")
             if (loads.containsKey(coreIndex)) {
                 core.loadRatio = loads.get(coreIndex)!!
             }

@@ -20,6 +20,11 @@ mount -o rw,remount /vendor 2> /dev/null
 $BUSYBOX mount -o rw,remount /system/vendor 2> /dev/null
 mount -o rw,remount /system/vendor 2> /dev/null
 
+if [[ -e /dev/block/bootdevice/by-name/vendor ]]; then
+    $BUSYBOX mount -o rw,remount /dev/block/bootdevice/by-name/vendor /vendor 2> /dev/null
+    mount -o rw,remount /dev/block/bootdevice/by-name/vendor /vendor 2> /dev/null
+fi
+
 if [[ "$config" = "1" ]]; then
     if [[ -f "$path.bak" ]]; then
         mv "$path.bak" "$path"

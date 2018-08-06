@@ -24,7 +24,10 @@ class AdapterCpuCores(private val context: Context, private val list: ArrayList<
         return position.toLong()
     }
 
-    private fun subFreqStr(freq: String): String {
+    private fun subFreqStr(freq: String?): String {
+        if (freq == null) {
+            return ""
+        }
         if (freq.length > 3) {
             return freq.substring(0, freq.length - 3)
         } else if (freq.isEmpty()) {
@@ -59,7 +62,8 @@ class AdapterCpuCores(private val context: Context, private val list: ArrayList<
         currentFreq.text = subFreqStr(coreInfo.currentFreq) + " Mhz"
 
         val freqRanage = convertView.findViewById<TextView>(R.id.cpu_core_freq_ranage)
-        freqRanage.text = subFreqStr(coreInfo.minFreq) + " ~ " + subFreqStr(coreInfo.maxFreq) + " Mhz"
+        val freq = subFreqStr(coreInfo.minFreq) + " ~ " + subFreqStr(coreInfo.maxFreq) + "Mhz"
+        freqRanage.text = freq
         return convertView
     }
 }

@@ -27,6 +27,7 @@ import com.omarea.ui.AdapterCpuCores
 import kotlinx.android.synthetic.main.layout_home.*
 import java.io.File
 import java.util.*
+import kotlin.collections.HashMap
 
 
 class FragmentHome : Fragment() {
@@ -91,14 +92,17 @@ class FragmentHome : Fragment() {
                 myHandler.postDelayed({
                     updateInfo()
                     Toast.makeText(context, "缓存已清理...", Toast.LENGTH_SHORT).show()
-                }, 1000)
+                }, 600)
             }).start()
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onResume() {
         super.onResume()
         setModeState()
+        maxFreqs.clear()
+        minFreqs.clear()
         updateInfo()
 
         stopTimer()
@@ -108,37 +112,58 @@ class FragmentHome : Fragment() {
                 updateInfo()
             }
         }, 0, 1000)
+
+        sdfree.text = "SDCard：" + Files.getDirFreeSizeMB(Environment.getExternalStorageDirectory().absolutePath) + " MB"
+        datafree.text = "Data：" + Files.getDirFreeSizeMB(Environment.getDataDirectory().absolutePath) + " MB"
+        val info = ActivityManager.MemoryInfo()
+        if (activityManager == null) {
+            activityManager = context!!.getSystemService(ACTIVITY_SERVICE) as ActivityManager
+        }
+        activityManager!!.getMemoryInfo(info)
+        val totalMem = (info.totalMem / 1024 / 1024f).toInt()
+        val availMem = (info.availMem / 1024 / 1024f).toInt()
+        home_raminfo_text.text = "${availMem} / ${totalMem}MB"
+        home_raminfo.setData(totalMem.toFloat(), availMem.toFloat())
     }
 
     private var coreCount = -1;
     private var activityManager:ActivityManager? = null
 
+    private var minFreqs = HashMap<Int, String>()
+    private var maxFreqs = HashMap<Int, String>()
+
     @SuppressLint("SetTextI18n")
     private fun updateInfo() {
         if (coreCount < 1) {
             coreCount = CpuFrequencyUtils.getCoreCount()
+            myHandler.post {
+                try {
+                    cpu_core_count.text = "核心数：$coreCount"
+                } catch (ex: Exception) {}
+            }
         }
         val cores = ArrayList<CpuCoreInfo>()
         val loads = CpuFrequencyUtils.getCpuLoad()
         for (coreIndex in 0 until coreCount) {
             val core = CpuCoreInfo()
-            core.maxFreq = CpuFrequencyUtils.getCurrentMaxFrequency("cpu" + coreIndex)
-            core.minFreq = CpuFrequencyUtils.getCurrentMinFrequency("cpu$coreIndex")
+            if (!maxFreqs.containsKey(coreIndex)) {
+                maxFreqs.put(coreIndex, CpuFrequencyUtils.getCurrentMaxFrequency("cpu" + coreIndex))
+            }
+            core.maxFreq = maxFreqs.get(coreIndex)
+
+            if (!minFreqs.containsKey(coreIndex)) {
+                minFreqs.put(coreIndex, CpuFrequencyUtils.getCurrentMinFrequency("cpu" + coreIndex))
+            }
+            core.minFreq = minFreqs.get(coreIndex)
+
             core.currentFreq = CpuFrequencyUtils.getCurrentFrequency("cpu$coreIndex")
-            core.cpuGovernor = CpuFrequencyUtils.getCurrentScalingGovernor("cpu$coreIndex")
             if (loads.containsKey(coreIndex)) {
                 core.loadRatio = loads.get(coreIndex)!!
             }
             cores.add(core)
-            if (activityManager == null) {
-                activityManager = context!!.getSystemService(ACTIVITY_SERVICE) as ActivityManager
-            }
         }
         myHandler.post {
             try {
-                sdfree.text = "SDCard：" + Files.getDirFreeSizeMB(Environment.getExternalStorageDirectory().absolutePath) + " MB"
-                datafree.text = "Data：" + Files.getDirFreeSizeMB(Environment.getDataDirectory().absolutePath) + " MB"
-                cpu_core_count.text = "核心数：$coreCount"
                 if (loads.containsKey(-1)) {
                     cpu_core_total_load.text = "负载：" + loads.get(-1)!!.toInt().toString() + "%"
                 }
@@ -147,13 +172,6 @@ class FragmentHome : Fragment() {
                 } else {
                     (cpu_core_list.adapter as AdapterCpuCores).setData(cores)
                 }
-
-                val info = ActivityManager.MemoryInfo()
-                activityManager!!.getMemoryInfo(info)
-                val totalMem = (info.totalMem / 1024 / 1024f).toInt()
-                val availMem = (info.availMem / 1024 / 1024f).toInt()
-                home_raminfo_text.text = "${availMem} / ${totalMem}MB"
-                home_raminfo.setData(totalMem.toFloat(), availMem.toFloat())
             } catch (ex: Exception) {
 
             }
