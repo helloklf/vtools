@@ -227,5 +227,8 @@ class FragmentHome : Fragment() {
         }
         setModeState()
         showMsg(message)
+        maxFreqs.clear()
+        minFreqs.clear()
+        updateInfo()
     }
 }
