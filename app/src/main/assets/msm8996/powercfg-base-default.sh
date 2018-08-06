@@ -291,3 +291,8 @@ echo 1 > /sys/devices/system/cpu/cpu0/online
 echo 1 > /sys/devices/system/cpu/cpu1/online
 echo 1 > /sys/devices/system/cpu/cpu2/online
 echo 1 > /sys/devices/system/cpu/cpu3/online
+
+echo 1 > /proc/sys/kernel/sched_prefer_sync_wakee_to_waker
+
+echo "0" > /sys/module/cpu_boost/parameters/input_boost_freq
+echo 0 > /sys/module/cpu_boost/parameters/input_boost_ms

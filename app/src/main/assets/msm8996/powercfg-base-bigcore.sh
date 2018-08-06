@@ -1,6 +1,5 @@
 #!/system/bin/sh
 
-
 target=`getprop ro.board.platform`
 
 function configure_memory_parameters() {
@@ -214,7 +213,6 @@ setprop ro.min_freq_4 384000
 start perfd
 
 
-
 # Let kernel know our image version/variant/crm_version
 if [ -f /sys/devices/soc0/select_image ]; then
     image_version="10:"
@@ -293,3 +291,8 @@ echo 1 > /sys/devices/system/cpu/cpu0/online
 echo 1 > /sys/devices/system/cpu/cpu1/online
 echo 1 > /sys/devices/system/cpu/cpu2/online
 echo 1 > /sys/devices/system/cpu/cpu3/online
+
+echo 1 > /proc/sys/kernel/sched_prefer_sync_wakee_to_waker
+
+echo "0" > /sys/module/cpu_boost/parameters/input_boost_freq
+echo 0 > /sys/module/cpu_boost/parameters/input_boost_ms

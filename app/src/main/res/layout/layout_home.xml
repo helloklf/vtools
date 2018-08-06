@@ -19,29 +19,29 @@
             android:layout_gravity="fill_vertical"
             android:layout_weight="1">
 
-            <HorizontalScrollView
+            <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent">
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/home_chat_helpinfo"
+                        android:layout_marginTop="20dp"
+                        android:textColor="@color/colorPrimary"
+                        android:layout_gravity="center_horizontal"
+                        android:text="🔻 滑动切换到“性能监视器”"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
                     <FrameLayout
-                        android:layout_width="360dp"
-                        android:layout_height="match_parent"
-                        android:paddingBottom="56dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="360dp"
+                        android:paddingBottom="20dp"
                         android:paddingLeft="20dp"
                         android:paddingRight="20dp"
-                        android:paddingTop="56dp"
-                        tools:context=".RamFragment">
+                        android:paddingTop="20dp">
 
-                        <TextView
-                            android:id="@+id/home_chat_helpinfo"
-                            android:layout_marginTop="20dp"
-                            android:textColor="@color/colorPrimary"
-                            android:layout_gravity="center_horizontal"
-                            android:text="◀ 滑动切换到“性能监视器”"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
                         <com.omarea.ui.RamChatView
                             android:id="@+id/home_raminfo"
                             android:layout_width="match_parent"
@@ -78,11 +78,10 @@
 
                     </FrameLayout>
                     <LinearLayout
-                        android:layout_width="360dp"
-                        android:layout_height="match_parent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="vertical">
-
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -109,7 +108,7 @@
                         <GridView
                             android:id="@+id/cpu_core_list"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="450dp"
                             android:layout_gravity="center_vertical"
                             android:layout_marginBottom="20dp"
                             android:layout_marginLeft="30dp"
@@ -119,7 +118,7 @@
                             android:numColumns="2" />
                     </LinearLayout>
                 </LinearLayout>
-            </HorizontalScrollView>
+            </ScrollView>
         </FrameLayout>
 
         <TableLayout

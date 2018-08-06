@@ -13,13 +13,6 @@ case "$target" in
     chmod 0644 /sys/devices/system/cpu/cpu6/online
     chmod 0644 /sys/devices/system/cpu/cpu7/online
 
-	#echo 2 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
-	#echo 60 > /sys/devices/system/cpu/cpu4/core_ctl/busy_up_thres
-	#echo 30 > /sys/devices/system/cpu/cpu4/core_ctl/busy_down_thres
-	#echo 100 > /sys/devices/system/cpu/cpu4/core_ctl/offline_delay_ms
-	#echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/is_big_cluster
-	#echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/task_thres
-
 	# Setting b.L scheduler parameters
 	echo 1 > /proc/sys/kernel/sched_migration_fixup
 	echo 95 > /proc/sys/kernel/sched_upmigrate
@@ -78,20 +71,6 @@ case "$target" in
     echo "0:0 1:0 2:0 3:0 4:2208000 5:0 6:0 7:0" > /sys/module/cpu_boost/parameters/powerkey_input_boost_freq
     echo 400 > /sys/module/cpu_boost/parameters/powerkey_input_boost_ms
 
-	#echo N > /sys/module/lpm_levels/system/pwr/cpu0/ret/idle_enabled
-	#echo N > /sys/module/lpm_levels/system/pwr/cpu1/ret/idle_enabled
-	#echo N > /sys/module/lpm_levels/system/pwr/cpu2/ret/idle_enabled
-	#echo N > /sys/module/lpm_levels/system/pwr/cpu3/ret/idle_enabled
-	#echo N > /sys/module/lpm_levels/system/perf/cpu4/ret/idle_enabled
-	#echo N > /sys/module/lpm_levels/system/perf/cpu5/ret/idle_enabled
-	#echo N > /sys/module/lpm_levels/system/perf/cpu6/ret/idle_enabled
-	#echo N > /sys/module/lpm_levels/system/perf/cpu7/ret/idle_enabled
-	#echo N > /sys/module/lpm_levels/system/pwr/pwr-l2-dynret/idle_enabled
-	#echo N > /sys/module/lpm_levels/system/pwr/pwr-l2-ret/idle_enabled
-	#echo N > /sys/module/lpm_levels/system/perf/perf-l2-dynret/idle_enabled
-	#echo N > /sys/module/lpm_levels/system/perf/perf-l2-ret/idle_enabled
-	#echo N > /sys/module/lpm_levels/parameters/sleep_disabled
-
     echo 0 > /dev/cpuset/background/cpus
     echo 0-3 > /dev/cpuset/system-background/cpus
     echo 4-7 > /dev/cpuset/foreground/boost/cpus
@@ -102,11 +81,6 @@ case "$target" in
     echo 1 > /sys/devices/system/cpu/cpu5/online
     echo 1 > /sys/devices/system/cpu/cpu6/online
     echo 1 > /sys/devices/system/cpu/cpu7/online
-
-	echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
-	echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/max_cpus
-	echo 95 > /sys/devices/system/cpu/cpu4/core_ctl/busy_up_thres
-	echo 60 > /sys/devices/system/cpu/cpu4/core_ctl/busy_down_thres
 
 	echo 5 > /proc/sys/vm/dirty_background_ratio
 	echo 50 > /proc/sys/vm/overcommit_ratio
@@ -146,7 +120,6 @@ echo 0 > /sys/module/msm_thermal/core_control/enabled
 echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
 echo N > /sys/module/msm_thermal/parameters/enabled
 echo 1 > /proc/sys/kernel/sched_prefer_sync_wakee_to_waker
-
 
 echo 4-7 > /dev/cpuset/foreground/boost/cpus
 echo 0-7 > /dev/cpuset/foreground/cpus
