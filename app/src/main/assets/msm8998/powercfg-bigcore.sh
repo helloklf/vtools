@@ -79,6 +79,7 @@ if [ "$action" = "powersave" ]; then
 
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
+    echo 100 > /proc/sys/kernel/sched_init_task_load
 
     echo 0-2 > /dev/cpuset/background/cpus
     echo 0-3 > /dev/cpuset/system-background/cpus
@@ -110,6 +111,7 @@ if [ "$action" = "balance" ]; then
 
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
+    echo 50 > /proc/sys/kernel/sched_init_task_load
 
     echo 0-1 > /dev/cpuset/background/cpus
     echo 0-3 > /dev/cpuset/system-background/cpus
@@ -140,6 +142,7 @@ if [ "$action" = "performance" ]; then
 
 	echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
+    echo 30 > /proc/sys/kernel/sched_init_task_load
 
     echo 0-1 > /dev/cpuset/background/cpus
     echo 0-1 > /dev/cpuset/system-background/cpus
@@ -172,6 +175,7 @@ if [ "$action" = "fast" ]; then
 
 	echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 1 > /proc/sys/kernel/sched_boost
+    echo 15 > /proc/sys/kernel/sched_init_task_load
 
     echo 0 > /dev/cpuset/background/cpus
     echo 0-1 > /dev/cpuset/system-background/cpus
