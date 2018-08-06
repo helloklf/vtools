@@ -149,6 +149,27 @@ class FragmentHome : Fragment() {
         }
         val cores = ArrayList<CpuCoreInfo>()
         val loads = CpuFrequencyUtils.getCpuLoad()
+        for (coreIndex in loads.keys.sorted()) {
+            if (coreIndex != -1) {
+                val core = CpuCoreInfo()
+                if (!maxFreqs.containsKey(coreIndex)) {
+                    maxFreqs.put(coreIndex, CpuFrequencyUtils.getCurrentMaxFrequency("cpu" + coreIndex))
+                }
+                core.maxFreq = maxFreqs.get(coreIndex)
+
+                if (!minFreqs.containsKey(coreIndex)) {
+                    minFreqs.put(coreIndex, CpuFrequencyUtils.getCurrentMinFrequency("cpu" + coreIndex))
+                }
+                core.minFreq = minFreqs.get(coreIndex)
+
+                core.currentFreq = CpuFrequencyUtils.getCurrentFrequency("cpu$coreIndex")
+                if (loads.containsKey(coreIndex)) {
+                    core.loadRatio = loads.get(coreIndex)!!
+                }
+                cores.add(core)
+            }
+        }
+        /*
         for (coreIndex in 0 until coreCount) {
             val core = CpuCoreInfo()
             if (!maxFreqs.containsKey(coreIndex)) {
@@ -167,6 +188,7 @@ class FragmentHome : Fragment() {
             }
             cores.add(core)
         }
+        */
         myHandler.post {
             try {
                 if (loads.containsKey(-1)) {
