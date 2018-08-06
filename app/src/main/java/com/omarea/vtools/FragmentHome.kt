@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentStatePagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ScrollView
 import android.widget.Toast
 import com.omarea.shared.*
 import com.omarea.shared.model.CpuCoreInfo
@@ -90,7 +91,7 @@ class FragmentHome : Fragment() {
                 KeepShellPublic.doCmdSync("sync\n" +
                         "echo 3 > /proc/sys/vm/drop_caches")
                 myHandler.postDelayed({
-                    updateInfo()
+                    updateRamInfo()
                     Toast.makeText(context, "缓存已清理...", Toast.LENGTH_SHORT).show()
                 }, 600)
             }).start()
@@ -100,6 +101,7 @@ class FragmentHome : Fragment() {
     @SuppressLint("SetTextI18n")
     override fun onResume() {
         super.onResume()
+        home_mainview.fullScroll(ScrollView.FOCUS_UP)
         setModeState()
         maxFreqs.clear()
         minFreqs.clear()
@@ -112,7 +114,16 @@ class FragmentHome : Fragment() {
                 updateInfo()
             }
         }, 0, 1000)
+        updateRamInfo()
+    }
 
+    private var coreCount = -1;
+    private var activityManager:ActivityManager? = null
+
+    private var minFreqs = HashMap<Int, String>()
+    private var maxFreqs = HashMap<Int, String>()
+
+    private fun updateRamInfo() {
         sdfree.text = "SDCard：" + Files.getDirFreeSizeMB(Environment.getExternalStorageDirectory().absolutePath) + " MB"
         datafree.text = "Data：" + Files.getDirFreeSizeMB(Environment.getDataDirectory().absolutePath) + " MB"
         val info = ActivityManager.MemoryInfo()
@@ -125,12 +136,6 @@ class FragmentHome : Fragment() {
         home_raminfo_text.text = "${availMem} / ${totalMem}MB"
         home_raminfo.setData(totalMem.toFloat(), availMem.toFloat())
     }
-
-    private var coreCount = -1;
-    private var activityManager:ActivityManager? = null
-
-    private var minFreqs = HashMap<Int, String>()
-    private var maxFreqs = HashMap<Int, String>()
 
     @SuppressLint("SetTextI18n")
     private fun updateInfo() {
