@@ -66,7 +66,6 @@ override fun onCreate() {
     */
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        initServiceHelper()
         try {
             val service = Intent(this, BootService::class.java)
             //service.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -125,15 +124,6 @@ override fun onCreate() {
         }
         setServiceInfo(info);
         super.onServiceConnected()
-        val timer = Timer()
-        timer.schedule(object: TimerTask() {
-            override fun run() {
-                Log.d("windows count", windows.size.toString())
-            }
-        }, 10000, 5000)
-    }
-
-    private fun initServiceHelper() {
         if (serviceHelper == null)
             serviceHelper = ServiceHelper(this)
     }
@@ -274,11 +264,8 @@ override fun onCreate() {
                     return
                 }
             }
-            initServiceHelper()
             serviceHelper?.onFocusAppChanged(event.packageName.toString())
         } else {
-            if (serviceHelper == null)
-                initServiceHelper()
             serviceHelper?.onFocusAppChanged(event.packageName.toString())
         }
         // event.recycle()
@@ -311,7 +298,7 @@ override fun onCreate() {
             return false
         }
         if (serviceHelper == null)
-            initServiceHelper()
+            return false
 
         val keyCode = event.keyCode
         // 只阻止四大金刚键
