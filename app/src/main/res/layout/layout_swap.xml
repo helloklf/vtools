@@ -254,7 +254,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="100dp"
                         android:layout_marginBottom="12dp"
-                        android:textSize="11dp" />
+                        android:textSize="10dp" />
                 </TableLayout>
             </android.support.v7.widget.CardView>
 

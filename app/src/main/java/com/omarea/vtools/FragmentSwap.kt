@@ -91,7 +91,7 @@ class FragmentSwap : Fragment() {
         txt_mem.text = KernelProrp.getProp("/proc/meminfo")
         btn_swap_create.isEnabled = !File("/data/swapfile").exists()
         btn_swap_start.isEnabled = !txt.contains("/data/swapfile") && !txt.contains("/swapfile") && File("/data/swapfile").exists()
-        btn_swap_close.isEnabled = txt.contains("/data/swapfile")
+        btn_swap_close.isEnabled = txt.contains("/data/swapfile") || txt.contains("/swapfile")
         btn_swap_delete.isEnabled = File("/data/swapfile").exists()
         swap_auto_lmk.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, false)
         val lmk = KernelProrp.getProp("/sys/module/lowmemorykiller/parameters/minfree")
@@ -133,7 +133,11 @@ class FragmentSwap : Fragment() {
         btn_swap_close.setOnClickListener {
             processBarDialog.showDialog(getString(R.string.swap_on_close))
             val run = Runnable {
-                SysUtils.executeCommandWithOutput(true, "sync\necho 3 > /proc/sys/vm/drop_caches\nbusybox swapoff /data/swapfile > /dev/null 2>&1")
+                SysUtils.executeCommandWithOutput(true,
+                        "echo 3 > /sys/block/zram0/max_comp_streams\n" +
+                        "sync\n" +
+                        "echo 3 > /proc/sys/vm/drop_caches\n" +
+                        "busybox swapoff /data/swapfile > /dev/null 2>&1")
                 myHandler.post({
                     processBarDialog.hideDialog()
                     getSwaps()
@@ -145,6 +149,7 @@ class FragmentSwap : Fragment() {
             processBarDialog.showDialog(getString(R.string.swap_on_close))
             val run = Runnable {
                 val sb = StringBuilder()
+                sb.append("echo 3 > /sys/block/zram0/max_comp_streams;")
                 sb.append("sync\necho 3 > /proc/sys/vm/drop_caches\nswapoff /data/swapfile >/dev/null 2>&1;")
                 sb.append("rm -f /data/swapfile;")
                 SysUtils.executeCommandWithOutput(true, sb.toString())
@@ -212,6 +217,7 @@ class FragmentSwap : Fragment() {
             val disablezram = chk_swap_disablezram.isChecked
 
             val sb = StringBuilder()
+            sb.append("echo 3 > /sys/block/zram0/max_comp_streams;")
             if (disablezram) {
                 sb.append("swapon /data/swapfile -p 32767\n")
                 //sb.append("swapoff /dev/block/zram0\n")
@@ -240,14 +246,15 @@ class FragmentSwap : Fragment() {
 
                 val run = Thread({
                     val sb = StringBuilder()
+                    sb.append("echo 3 > /sys/block/zram0/max_comp_streams;")
                     sb.append("if [ `cat /sys/block/zram0/disksize` != '" + sizeVal + "000000' ] ; then ")
                     sb.append(
                             "sync\n" +
-                                    "echo 3 > /proc/sys/vm/drop_caches\n" +
-                                    "swapoff /dev/block/zram0 >/dev/null 2>&1;")
-                    sb.append("echo 1 > /sys/block/zram0/reset;")
-                    sb.append("echo " + sizeVal + "000000 > /sys/block/zram0/disksize;")
-                    sb.append("mkswap /dev/block/zram0 >/dev/null 2>&1;")
+                            "echo 3 > /proc/sys/vm/drop_caches\n" +
+                            "swapoff /dev/block/zram0 >/dev/null 2>&1\n")
+                    sb.append("echo 1 > /sys/block/zram0/reset\n")
+                    sb.append("echo " + sizeVal + "000000 > /sys/block/zram0/disksize\n")
+                    sb.append("mkswap /dev/block/zram0 >/dev/null 2>&1\n")
                     sb.append("fi;")
                     sb.append("\n")
                     sb.append("swapon /dev/block/zram0 >/dev/null 2>&1;")

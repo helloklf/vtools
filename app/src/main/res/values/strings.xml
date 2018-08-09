@@ -282,7 +282,7 @@
     <string name="on_execute_please_wait">正在执行操作，请稍等…</string>
     <string name="executed">操作已完成！</string>
     <string name="file_creating">创建文件中</string>
-    <string name="zram_resizing">正在调整ZRAM，请稍等…</string>
+    <string name="zram_resizing">正在调整，这可能要很久…</string>
     <string name="zram_size_area">请输入ZRAM大小，值应在0 – 2048之间！</string>
     <string name="priority">优先级</string>
     <string name="used">已用</string>

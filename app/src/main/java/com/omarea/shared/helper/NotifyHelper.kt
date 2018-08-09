@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.os.BatteryManager
 import android.os.Build
 import android.support.v4.app.NotificationCompat
 import android.util.Log
@@ -121,8 +122,27 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         }
     }
 
+    private fun getBatterySensor(): String? {
+        var batterySensor: String? = null
+        if (batterySensor == "init") {
+            batterySensor = SysUtils.executeCommandWithOutput(false, "for sensor in /sys/class/thermal/*; do\n" +
+                    "\ttype=\"\$(cat \$sensor/type)\"\n" +
+                    "\tif [[ \"\$type\" = \"battery\" && -f \"\$sensor/temp\" ]]; then\n" +
+                    "\t\techo \"\$sensor/temp\";\n" +
+                    "\t\texit 0;\n" +
+                    "\tfi;\n" +
+                    "done;")
+            if (batterySensor != null) {
+                batterySensor = batterySensor!!.trim()
+            } else {
+                batterySensor = null
+            }
+        }
+        return batterySensor
+    }
+
     var path: String? = null
-    private fun getBatteryIO(): Int {
+    private fun getBatteryIO(): String {
         if (path == null) {
             if (RootFile.itemExists("/sys/class/power_supply/battery/current_now")) {
                 path = "/sys/class/power_supply/battery/current_now"
@@ -134,36 +154,37 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         }
 
         if (path.isNullOrEmpty()) {
-            return Int.MIN_VALUE
+            return ""
         }
 
         var io = KernelProrp.getProp(path!!)
         if (io.isEmpty()) {
-            return Int.MIN_VALUE
+            return ""
         }
         try {
             val unit = getBatteryUnit()
-            if (io.startsWith("+") || io.startsWith("-")) {
+            var start = ""
+            if (io.startsWith("+")) {
+                start = "+"
                 io = io.substring(1, io.length)
             } else if (io.startsWith("-")) {
+                start = "-"
                 io = io.substring(1, io.length)
-            }
-            var r = Int.MIN_VALUE
-            if (unit != Int.MIN_VALUE && io.length > unit) {
-                r = io.substring(0, io.length - unit).toInt()
-            } else if (io.length <= 4) {
-                r = io.toInt()
-            } else if (io.length >= 8) {
-                r = io.substring(0, io.length - 6).toInt()
-            } else if (io.length >= 5) {
-                r = io.substring(0, io.length - 3).toInt()
             } else {
-                r = io.toInt()
+                start = ""
             }
-            return r
+            if (unit != Int.MIN_VALUE && io.length > unit) {
+                return start + io.substring(0, io.length - unit)
+            } else if (io.length <= 4) {
+                return start + io
+            } else if (io.length >= 8) {
+                return start + io.substring(0, io.length - 6)
+            } else if (io.length >= 5) {
+                return start + io.substring(0, io.length - 3)
+            }
+            return start + io
         } catch (ex: Exception) {
-            Log.e("parse-battery-io", "$io -> mAh" + ex.message)
-            return Int.MIN_VALUE
+            return ""
         }
     }
 
@@ -203,13 +224,12 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         var batteryImage: Bitmap? = null
         var batteryIO: String? = ""
         var batteryTemp = ""
-        var capacity = ""
         var modeImage = BitmapFactory.decodeResource(context.resources, getModImage(mode))
         try {
             updateBatteryInfo()
             val io = getBatteryIO()
-            if (status.io > Int.MIN_VALUE) {
-                batteryIO = "${status.io}mAh"
+            if (io.isNotEmpty()) {
+                batteryIO = io + "mA"
             } else {
                 batteryIO = "?mAh"
             }
@@ -224,15 +244,14 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
             if (batteryStatus.isNotEmpty())
                 status.status = batteryStatus.toInt()
             if (status.level > Int.MIN_VALUE) {
-                capacity = "${status.level}%"
-                if (batteryStatus == "2") {
+                if (status.status == BatteryManager.BATTERY_STATUS_CHARGING) {
                     batteryImage = BitmapFactory.decodeResource(context.resources, R.drawable.b_4)
                 } else {
-                    status.io = abs(io)
+                    if (io.isNotEmpty()) {
+                        status.io = abs(io.toInt())
+                    }
                     batteryImage = BitmapFactory.decodeResource(context.resources, getBatteryIcon(status.level))
                 }
-            } else {
-                capacity = ""
             }
             modeImage = BitmapFactory.decodeResource(context.resources, getModImage(mode))
         } catch (ex: Exception) {
@@ -242,14 +261,17 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         if (batteryHistoryStore == null) {
             batteryHistoryStore = BatteryHistoryStore(context)
         }
-        if (status.status > Int.MIN_VALUE && status.io > Int.MIN_VALUE && status.status != 2) {
-            batteryHistoryStore!!.insertHistory(status)
+
+        if (status.status != BatteryManager.BATTERY_STATUS_CHARGING) {
+            if (status.status > Int.MIN_VALUE && status.io > Int.MIN_VALUE) {
+                batteryHistoryStore!!.insertHistory(status)
+            }
         }
 
         val remoteViews = RemoteViews(context.packageName, R.layout.notify0)
         remoteViews.setTextViewText(R.id.notify_title, getAppName(packageName))
         remoteViews.setTextViewText(R.id.notify_text, getModName(mode))
-        remoteViews.setTextViewText(R.id.notify_battery_text, "$batteryIO $capacity% $batteryTemp")
+        remoteViews.setTextViewText(R.id.notify_battery_text, "$batteryIO ${status.level}% $batteryTemp")
         if (modeImage != null) {
             remoteViews.setImageViewBitmap(R.id.notify_mode, modeImage)
         }

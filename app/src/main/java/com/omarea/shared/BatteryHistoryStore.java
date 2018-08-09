@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.omarea.shared.model.BatteryAvgStatus;
 import com.omarea.shared.model.BatteryStatus;
@@ -62,7 +63,7 @@ public class BatteryHistoryStore extends SQLiteOpenHelper {
     public ArrayList<BatteryAvgStatus> getAvgData (long timeStart) {
         try {
             SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-            Cursor cursor = sqLiteDatabase.rawQuery("select avg(io) AS io, avg(temperature) as temperature, package, mode, count(io) from battery_io where status = 0 group by package, mode", new String[]{  });
+            Cursor cursor = sqLiteDatabase.rawQuery("select avg(io) AS io, avg(temperature) as temperature, package, mode, count(io) from battery_io group by package, mode", new String[]{  });
             ArrayList<BatteryAvgStatus> data = new ArrayList<>();
             while (cursor.moveToNext()) {
                 BatteryAvgStatus batteryAvgStatus = new BatteryAvgStatus();
@@ -75,6 +76,7 @@ public class BatteryHistoryStore extends SQLiteOpenHelper {
             }
             return data;
         } catch (Exception ex) {
+            Log.e("query-data-base", ex.getMessage());
         }
         return new ArrayList<>();
     }
