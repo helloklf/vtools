@@ -45,8 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="@string/balance"
-                android:textColor="#8888"
-                android:textSize="10dp" />
+                style="@style/textSmall" />
             <TextView
                 android:id="@+id/itemAvgIO"
                 android:layout_weight="1"
@@ -54,8 +53,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="0mAh"
-                android:textColor="#8888"
-                android:textSize="10dp" />
+                style="@style/textSmall" />
             <TextView
                 android:id="@+id/itemTemperature"
                 android:layout_weight="1"
@@ -63,17 +61,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="0°C"
-                android:textColor="#8888"
-                android:textSize="10dp" />
+                style="@style/textSmall" />
             <TextView
                 android:id="@+id/itemCounts"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="样本数："
-                android:textColor="#8888"
-                android:textSize="10dp" />
+                style="@style/textSmall"
+                android:textColor="@color/colorAccent" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

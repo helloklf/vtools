@@ -217,8 +217,8 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
             if (batteryTemp.isEmpty()) {
                 batteryTemp = "?°C"
             } else {
-                batteryTemp += "°C"
                 status.temperature = batteryTemp.toInt()
+                batteryTemp += "°C"
             }
             status.level = getCapacity()
             if (status.level > -1) {

@@ -58,9 +58,9 @@ class AdapterBatteryStats(private val context: Context, private val list: ArrayL
         }
         val batteryStats  = getItem(position)
         convertView!!.findViewById<TextView>(R.id.itemModeName).text = ModeList.getModName(batteryStats.mode)
-        convertView.findViewById<TextView>(R.id.itemAvgIO).text = batteryStats.io.toString() + "mAh"
+        convertView.findViewById<TextView>(R.id.itemAvgIO).text = batteryStats.io.toString() + "mA/h"
         convertView.findViewById<TextView>(R.id.itemTemperature).text = batteryStats.temperature.toString() + "°C"
-        convertView.findViewById<TextView>(R.id.itemCounts).text = "样本数：" + batteryStats.count
+        convertView.findViewById<TextView>(R.id.itemCounts).text = "${batteryStats.count}个样本，总耗电 " + (batteryStats.io * (batteryStats.count * batteryStats.io / 12 / 60)).toInt().toString() + "mAh"
         loadIcon(convertView, batteryStats.packageName)
         return convertView
     }

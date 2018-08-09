@@ -30,10 +30,13 @@ class FragmentBatteryStats : Fragment() {
                               savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.layout_battery_stats, container, false)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onResume() {
+        super.onResume()
+
         val data = BatteryHistoryStore(context!!).getAvgData(System.currentTimeMillis())
-        Log.d("battery-stats", data.toString())
+        data.sortBy {
+            -(it.io * it.count)
+        }
         battery_stats.adapter = AdapterBatteryStats(context!!, data)
     }
 
