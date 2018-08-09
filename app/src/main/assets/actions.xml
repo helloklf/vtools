@@ -140,4 +140,19 @@
             </param>
         </params>
     </action>
+    <action root="true">
+        <title>清理电池优化白名单</title>
+        <desc>适用于Android M+，清理Doze模式白名单应用（某些系统喜欢把一些应用自动添加到白名单，从而导致这些应用无法被休眠！）</desc>
+        <script>file:///android_asset/custom/actions/doze_clear.sh</script>
+    </action>
+    <action root="true">
+        <title>查看已挂载分区</title>
+        <desc>通过简单的命令，查看当前已挂载的分区</desc>
+        <script>df -h</script>
+    </action>
+    <action root="true">
+        <title>优化编译系统应用</title>
+        <desc>适用于Android N+，与“强制odex2oat”的speed模式相同，但只编译系统应用。建议官改系统（或者进行过deodex的）刷完开机后进行此操作，从而提高整体流畅度！</desc>
+        <script>file:///android_asset/custom/actions/sys_compile.sh</script>
+    </action>
 </actions>

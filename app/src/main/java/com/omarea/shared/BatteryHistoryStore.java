@@ -7,22 +7,24 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.omarea.shared.model.AppConfigInfo;
 
-public class AppConfigStore extends SQLiteOpenHelper {
-    public AppConfigStore(Context context) {
-        super(context, "app-settings", null, 1);
+public class BatteryHistoryStore extends SQLiteOpenHelper {
+    public BatteryHistoryStore(Context context) {
+        super(context, "battery-history", null, 1);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         try {
-            db.execSQL("create table app_config(" +
-                    "id text primary key, " +
-                    "alone_light int default(0), " +
-                    "light int default(-1), " +
-                    "dis_notice int default(0)," +
-                    "dis_button int default(0)," +
-                    "gps_on int default(0)," +
-                    "dis_background_run int default(0))");
+            db.execSQL(
+            "create table battery_io(" +
+                "time text primary key, " +
+                "level int default(0), " +
+                "temperature int default(-1), " +
+                "status int default(0)," +
+                "voltage int default(0)," +
+                "io int default(0)," +
+                "package text" +
+            ")");
         } catch (Exception ex) {
 
         }
