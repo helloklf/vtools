@@ -51,14 +51,14 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
             if (full.length >= 4) {
                 return full.length - 4
             }
-            batteryUnit = -1
+            batteryUnit = Int.MIN_VALUE
         }
         return batteryUnit
     }
 
     private fun getCapacity(): Int {
         if (batteryCapacity.isEmpty() || batteryCapacity == "%?") {
-            return -1
+            return Int.MIN_VALUE
         } else {
             return batteryCapacity.toInt()
         }
@@ -86,7 +86,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         for (item in batteryInfos) {
             val info = item.trim()
             val index = info.indexOf(":")
-            if (index > -1 && index < info.length) {
+            if (index > Int.MIN_VALUE && index < info.length) {
                 val value = info.substring(info.indexOf(":") + 1).trim()
                 if (info.startsWith("status")) {
                     if (!statusReaded) {
@@ -134,12 +134,12 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         }
 
         if (path.isNullOrEmpty()) {
-            return -1
+            return Int.MIN_VALUE
         }
 
         var io = KernelProrp.getProp(path!!)
         if (io.isEmpty()) {
-            return -1
+            return Int.MIN_VALUE
         }
         try {
             val unit = getBatteryUnit()
@@ -148,8 +148,8 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
             } else if (io.startsWith("-")) {
                 io = io.substring(1, io.length)
             }
-            var r = -1
-            if (unit != -1 && io.length > unit) {
+            var r = Int.MIN_VALUE
+            if (unit != Int.MIN_VALUE && io.length > unit) {
                 r = io.substring(0, io.length - unit).toInt()
             } else if (io.length <= 4) {
                 r = io.toInt()
@@ -160,10 +160,10 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
             } else {
                 r = io.toInt()
             }
-            return abs(r)
+            return r
         } catch (ex: Exception) {
             Log.e("parse-battery-io", "$io -> mAh" + ex.message)
-            return -1
+            return Int.MIN_VALUE
         }
     }
 
@@ -207,8 +207,8 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         var modeImage = BitmapFactory.decodeResource(context.resources, getModImage(mode))
         try {
             updateBatteryInfo()
-            status.io = getBatteryIO()
-            if (status.io > -1) {
+            val io = getBatteryIO()
+            if (status.io > Int.MIN_VALUE) {
                 batteryIO = "${status.io}mAh"
             } else {
                 batteryIO = "?mAh"
@@ -217,15 +217,18 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
             if (batteryTemp.isEmpty()) {
                 batteryTemp = "?°C"
             } else {
-                status.temperature = batteryTemp.toInt()
+                status.temperature = batteryTemp.toFloat()
                 batteryTemp += "°C"
             }
             status.level = getCapacity()
-            if (status.level > -1) {
+            if (batteryStatus.isNotEmpty())
+                status.status = batteryStatus.toInt()
+            if (status.level > Int.MIN_VALUE) {
                 capacity = "${status.level}%"
                 if (batteryStatus == "2") {
                     batteryImage = BitmapFactory.decodeResource(context.resources, R.drawable.b_4)
                 } else {
+                    status.io = abs(io)
                     batteryImage = BitmapFactory.decodeResource(context.resources, getBatteryIcon(status.level))
                 }
             } else {
@@ -239,7 +242,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         if (batteryHistoryStore == null) {
             batteryHistoryStore = BatteryHistoryStore(context)
         }
-        if (status.status > -1 && status.io > -1 && status.status != 2) {
+        if (status.status > Int.MIN_VALUE && status.io > Int.MIN_VALUE && status.status != 2) {
             batteryHistoryStore!!.insertHistory(status)
         }
 

@@ -3,6 +3,7 @@ package com.omarea.ui
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
@@ -57,10 +58,32 @@ class AdapterBatteryStats(private val context: Context, private val list: ArrayL
             convertView = View.inflate(context, R.layout.battery_stats_item, null)
         }
         val batteryStats  = getItem(position)
-        convertView!!.findViewById<TextView>(R.id.itemModeName).text = ModeList.getModName(batteryStats.mode)
+        val modeView = convertView!!.findViewById<TextView>(R.id.itemModeName)
+        modeView.text = ModeList.getModName(batteryStats.mode)
+
+        when (batteryStats.mode) {
+            ModeList.POWERSAVE -> {
+                modeView.setTextColor(Color.parseColor("#0091D5"))
+            }
+            ModeList.PERFORMANCE -> {
+                modeView.setTextColor(Color.parseColor("#6ECB00"))
+            }
+            ModeList.FAST -> {
+                modeView.setTextColor(Color.parseColor("#FF7E00"))
+            }
+            ModeList.IGONED -> {
+                modeView.setTextColor(Color.parseColor("#888888"))
+            }
+            ModeList.BALANCE -> {
+                modeView.setTextColor(Color.parseColor("#00B78A"))
+            }
+            else -> {
+                modeView.setTextColor(Color.parseColor("#00B78A"))
+            }
+        }
         convertView.findViewById<TextView>(R.id.itemAvgIO).text = batteryStats.io.toString() + "mA/h"
         convertView.findViewById<TextView>(R.id.itemTemperature).text = batteryStats.temperature.toString() + "°C"
-        convertView.findViewById<TextView>(R.id.itemCounts).text = "${batteryStats.count}样本，耗电 " + String.format("%.1f", (batteryStats.count * batteryStats.io / 12.0 / 60.0)) + "mAh"
+        convertView.findViewById<TextView>(R.id.itemCounts).text = "${batteryStats.count}样本,耗电 " + String.format("%.1f", (batteryStats.count * batteryStats.io / 12.0 / 60.0)) + "mAh"
         loadIcon(convertView, batteryStats.packageName)
         return convertView
     }

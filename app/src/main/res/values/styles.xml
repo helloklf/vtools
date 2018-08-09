@@ -55,7 +55,7 @@
 
     <style name="textSmall">
         <item name="android:textColor">?android:attr/textColorSecondary</item>
-        <item name="android:textSize">10dp</item>
+        <item name="android:textSize">11dp</item>
     </style><!--activity 对话框样式  -->
     <style name="FloatActivity" parent="Theme.AppCompat">
         <!-- float_box为我们定义的窗口背景-->

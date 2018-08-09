@@ -22,8 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:paddingLeft="7dp">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/itemTitle"

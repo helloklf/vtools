@@ -22,7 +22,7 @@ public class BatteryHistoryStore extends SQLiteOpenHelper {
             "create table battery_io(" +
                 "time text primary key, " +
                 "level int default(-1), " +
-                "temperature int default(-1), " +
+                "temperature REAL default(-1), " +
                 "status int default(-1)," +
                 "mode text," +
                 "io int default(-1)," +
@@ -77,5 +77,15 @@ public class BatteryHistoryStore extends SQLiteOpenHelper {
         } catch (Exception ex) {
         }
         return new ArrayList<>();
+    }
+
+    public boolean clearData() {
+        try {
+            SQLiteDatabase database = getWritableDatabase();
+            database.delete("battery_io", " 1 =1", new String[]{ });
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
     }
 }

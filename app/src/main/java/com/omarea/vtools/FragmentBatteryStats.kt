@@ -30,9 +30,21 @@ class FragmentBatteryStats : Fragment() {
                               savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.layout_battery_stats, container, false)
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        battery_stats_delete.setOnClickListener {
+            BatteryHistoryStore(context!!).clearData()
+            Toast.makeText(context!!, "统计记录已清理", Toast.LENGTH_SHORT).show()
+            loadData()
+        }
+    }
+
     override fun onResume() {
         super.onResume()
+        loadData()
+    }
 
+    private fun loadData() {
         val data = BatteryHistoryStore(context!!).getAvgData(System.currentTimeMillis())
         data.sortBy {
             -(it.io * it.count)
