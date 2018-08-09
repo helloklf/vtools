@@ -256,7 +256,7 @@
                                         android:layout_marginLeft="20dp"
                                         android:background="@android:color/transparent"
                                         android:text="保守风格"
-                                        android:textColor="@color/colorPrimary" />
+                                        android:textColor="@color/colorAccent" />
 
                                     <Button
                                         android:id="@+id/config_cfg_select_1"
@@ -266,7 +266,7 @@
                                         android:layout_marginLeft="20dp"
                                         android:background="@android:color/transparent"
                                         android:text="激进风格"
-                                        android:textColor="@color/colorPrimary" />
+                                        android:textColor="@color/colorAccent" />
                                 </LinearLayout>
                             </LinearLayout>
 
@@ -318,7 +318,7 @@
                                         android:layout_marginLeft="20dp"
                                         android:background="@android:color/transparent"
                                         android:text="本地选择"
-                                        android:textColor="@color/colorPrimary" />
+                                        android:textColor="@color/colorAccent" />
 
                                     <Button
                                         android:id="@+id/config_customer_powercfg_online"
@@ -328,7 +328,7 @@
                                         android:layout_marginLeft="20dp"
                                         android:background="@android:color/transparent"
                                         android:text="在线获取"
-                                        android:textColor="@color/colorPrimary" />
+                                        android:textColor="@color/colorAccent" />
                                 </LinearLayout>
                             </LinearLayout>
 
@@ -443,7 +443,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginBottom="10dp"
                                         android:text="改动说明："
-                                        android:textColor="@color/colorPrimary" />
+                                        android:textColor="@color/colorAccent" />
 
                                     <TextView
                                         style="@style/textSmall"
@@ -457,7 +457,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="10dp"
                                         android:text="长按应用可快速选择配置模式哦！"
-                                        android:textColor="@color/colorPrimary" />
+                                        android:textColor="@color/colorAccent" />
 
                                 </LinearLayout>
                             </android.support.v7.widget.CardView>
@@ -483,7 +483,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginBottom="10dp"
                                         android:text="专家选项 >>"
-                                        android:textColor="@color/colorPrimary" />
+                                        android:textColor="@color/colorAccent" />
 
                                     <TextView
                                         style="@style/textSmall"

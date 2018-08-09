@@ -34,7 +34,7 @@
                         android:layout_height="wrap_content"
                         android:padding="8dp"
                         android:text="电池信息："
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/colorAccent"
                         android:textSize="11dp" />
                 </LinearLayout>
             </android.support.v7.widget.CardView>
@@ -223,7 +223,7 @@
                         android:paddingRight="8dp"
                         android:paddingTop="16dp"
                         android:text="@string/battery_uevent_title"
-                        android:textColor="@color/colorPrimary" />
+                        android:textColor="@color/colorAccent" />
 
                     <TextView
                         android:id="@+id/battery_uevent"

@@ -33,7 +33,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
                         android:text="@string/help"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/colorAccent"
                         android:textSize="16dp" />
 
                     <TextView
@@ -96,7 +96,7 @@
                         android:layout_marginBottom="10dp"
                         android:layout_row="0"
                         android:text="Little Cluster"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/colorAccent"
                         android:textSize="16dp" />
 
                     <TextView
@@ -175,7 +175,7 @@
                         android:layout_marginBottom="10dp"
                         android:layout_row="0"
                         android:text="Big Cluster"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/colorAccent"
                         android:textSize="16dp" />
 
                     <TextView
@@ -254,7 +254,7 @@
                         android:layout_marginBottom="10dp"
                         android:layout_row="0"
                         android:text="Adreno GPU"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/colorAccent"
                         android:textSize="16dp" />
 
                     <TextView
@@ -395,7 +395,7 @@
                         android:layout_marginBottom="10dp"
                         android:layout_row="0"
                         android:text="Qualcomm温控"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/colorAccent"
                         android:textSize="16dp" />
 
                     <TextView
@@ -457,7 +457,7 @@
                         android:layout_marginBottom="10dp"
                         android:layout_row="0"
                         android:text="Exynos"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/colorAccent"
                         android:textSize="16dp" />
 
                     <TextView
@@ -577,7 +577,7 @@
                         android:layout_marginBottom="10dp"
                         android:layout_row="0"
                         android:text="Booster"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/colorAccent"
                         android:textSize="16dp" />
 
                     <TextView
@@ -655,7 +655,7 @@
                         android:layout_marginBottom="10dp"
                         android:layout_row="0"
                         android:text="Core Online"
-                        android:textColor="@color/colorPrimary"
+                        android:textColor="@color/colorAccent"
                         android:textSize="16dp" />
 
                     <LinearLayout
