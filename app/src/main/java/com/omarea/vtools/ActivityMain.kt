@@ -183,6 +183,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_swap -> fragment = FragmentSwap.createPage()
             R.id.nav_battery -> fragment = FragmentBattery.createPage()
             R.id.nav_img -> fragment = FragmentImg.createPage()
+            R.id.nav_battery_stats -> fragment = FragmentBatteryStats.createPage()
             R.id.nav_core_control -> fragment = FragmentCpuControl.newInstance()
             R.id.nav_paypal -> {
                 fragment = FragmentPay.createPage()

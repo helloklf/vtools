@@ -9,13 +9,16 @@ import android.os.Build
 import android.support.v4.app.NotificationCompat
 import android.util.Log
 import android.widget.RemoteViews
+import com.omarea.shared.BatteryHistoryStore
 import com.omarea.shared.ModeList
+import com.omarea.shared.model.BatteryStatus
 import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.KernelProrp
 import com.omarea.shell.RootFile
 import com.omarea.shell.SysUtils
 import com.omarea.vtools.ActivityQuickSwitchMode
 import com.omarea.vtools.R
+import kotlin.math.abs
 
 
 /**
@@ -27,6 +30,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
     private var showNofity: Boolean = false
     private var notification: Notification? = null
     private var notificationManager: NotificationManager? = null
+    private var batteryHistoryStore: BatteryHistoryStore? = null
 
     private fun getAppName(packageName: String): CharSequence? {
         try {
@@ -39,10 +43,8 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
     private var batteryTemp = "?°C"
     private var batteryCapacity = ""
     private var batteryStatus = "0"
-    private var batteryIO = "0"
 
     private var batteryUnit = Int.MIN_VALUE
-    private var batterySensor: String? = "init"
     private fun getBatteryUnit(): Int {
         if (batteryUnit == Int.MIN_VALUE) {
             val full = KernelProrp.getProp("/sys/class/power_supply/battery/charge_full_design")
@@ -54,13 +56,12 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         return batteryUnit
     }
 
-    private fun getCapacity(): String {
+    private fun getCapacity(): Int {
         if (batteryCapacity.isEmpty() || batteryCapacity == "%?") {
-            return ""
+            return -1
         } else {
-            return batteryCapacity
+            return batteryCapacity.toInt()
         }
-        // return KernelProrp.getProp("/sys/class/power_supply/battery/capacity") + "%"
     }
 
     private fun getBatteryIcon(capacity: Int): Int {
@@ -71,24 +72,6 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         if (capacity < 70)
             return R.drawable.b_2
         return R.drawable.b_3
-    }
-
-    private fun getBatterySensor(): String? {
-        if (batterySensor == "init") {
-            batterySensor = SysUtils.executeCommandWithOutput(false, "for sensor in /sys/class/thermal/*; do\n" +
-                    "\ttype=\"\$(cat \$sensor/type)\"\n" +
-                    "\tif [[ \"\$type\" = \"battery\" && -f \"\$sensor/temp\" ]]; then\n" +
-                    "\t\techo \"\$sensor/temp\";\n" +
-                    "\t\texit 0;\n" +
-                    "\tfi;\n" +
-                    "done;")
-            if (batterySensor != null) {
-                batterySensor = batterySensor!!.trim()
-            } else {
-                batterySensor = null
-            }
-        }
-        return batterySensor
     }
 
     private fun updateBatteryInfo() {
@@ -129,34 +112,17 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
 
     private fun getBatteryTemp(): String {
         if (batteryTemp == "?°C" || batteryTemp.isEmpty()) {
-            return "?°C"
+            return ""
         }
         try {
-            return (batteryTemp.toInt() / 10.0).toString() + "°C"
+            return (batteryTemp.toInt() / 10.0).toString()
         } catch (ex: Exception) {
-            return "?°C"
+            return ""
         }
-        /*
-        try {
-            val sensor = getBatterySensor()
-            if (sensor != null && !sensor.isNullOrEmpty()) {
-                val temp = KernelProrp.getProp(sensor)
-                if (temp == null || (temp.length < 4)) {
-                    return "? °C"
-                }
-                return temp.substring(0, temp.length - 3) + "°C"
-            } else {
-                return "? °C"
-            }
-        } catch (ex: Exception) {
-            Log.e("NotifyHelper", "getBatteryTemp, " + ex.message)
-            return "? °C"
-        }
-        */
     }
 
     var path: String? = null
-    private fun getBatteryIO(): String? {
+    private fun getBatteryIO(): Int {
         if (path == null) {
             if (RootFile.itemExists("/sys/class/power_supply/battery/current_now")) {
                 path = "/sys/class/power_supply/battery/current_now"
@@ -168,38 +134,36 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         }
 
         if (path.isNullOrEmpty()) {
-            return "? mA"
+            return -1
         }
 
         var io = KernelProrp.getProp(path!!)
         if (io.isEmpty()) {
-            return "? mA"
+            return -1
         }
         try {
             val unit = getBatteryUnit()
-            var start = ""
-            if (io.startsWith("+")) {
-                start = "+"
+            if (io.startsWith("+") || io.startsWith("-")) {
                 io = io.substring(1, io.length)
             } else if (io.startsWith("-")) {
-                start = "-"
                 io = io.substring(1, io.length)
-            } else {
-                start = ""
             }
+            var r = -1
             if (unit != -1 && io.length > unit) {
-                return start + io.substring(0, io.length - unit) + "mA"
+                r = io.substring(0, io.length - unit).toInt()
             } else if (io.length <= 4) {
-                return start + io + "mA"
+                r = io.toInt()
             } else if (io.length >= 8) {
-                return start + io.substring(0, io.length - 6) + "mA"
+                r = io.substring(0, io.length - 6).toInt()
             } else if (io.length >= 5) {
-                return start + io.substring(0, io.length - 3) + "mA"
+                r = io.substring(0, io.length - 3).toInt()
+            } else {
+                r = io.toInt()
             }
-            return start + io
+            return abs(r)
         } catch (ex: Exception) {
             Log.e("parse-battery-io", "$io -> mAh" + ex.message)
-            return "? mA"
+            return -1
         }
     }
 
@@ -230,24 +194,53 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         if (!showNofity) {
             return
         }
+
+        val status = BatteryStatus()
+        status.packageName = packageName
+        status.mode = mode
+        status.time = System.currentTimeMillis()
+
         var batteryImage: Bitmap? = null
-        var batteryIO = getBatteryIO()
+        var batteryIO: String? = ""
         var batteryTemp = ""
         var capacity = ""
         var modeImage = BitmapFactory.decodeResource(context.resources, getModImage(mode))
         try {
             updateBatteryInfo()
-            batteryIO = getBatteryIO()
-            batteryTemp = getBatteryTemp()
-            capacity = getCapacity()
-            modeImage = BitmapFactory.decodeResource(context.resources, getModImage(mode))
-            if (batteryStatus == "2") {
-                batteryImage = BitmapFactory.decodeResource(context.resources, R.drawable.b_4)
-            } else if (!capacity.isEmpty()) {
-                batteryImage = BitmapFactory.decodeResource(context.resources, getBatteryIcon(capacity.replace("%", "").toInt()))
+            status.io = getBatteryIO()
+            if (status.io > -1) {
+                batteryIO = "${status.io}mAh"
+            } else {
+                batteryIO = "?mAh"
             }
+            batteryTemp = getBatteryTemp()
+            if (batteryTemp.isEmpty()) {
+                batteryTemp = "?°C"
+            } else {
+                batteryTemp += "°C"
+                status.temperature = batteryTemp.toInt()
+            }
+            status.level = getCapacity()
+            if (status.level > -1) {
+                capacity = "${status.level}%"
+                if (batteryStatus == "2") {
+                    batteryImage = BitmapFactory.decodeResource(context.resources, R.drawable.b_4)
+                } else {
+                    batteryImage = BitmapFactory.decodeResource(context.resources, getBatteryIcon(status.level))
+                }
+            } else {
+                capacity = ""
+            }
+            modeImage = BitmapFactory.decodeResource(context.resources, getModImage(mode))
         } catch (ex: Exception) {
             Log.e("NotifyHelper", ex.message)
+        }
+
+        if (batteryHistoryStore == null) {
+            batteryHistoryStore = BatteryHistoryStore(context)
+        }
+        if (status.status > -1 && status.io > -1 && status.status != 2) {
+            batteryHistoryStore!!.insertHistory(status)
         }
 
         val remoteViews = RemoteViews(context.packageName, R.layout.notify0)

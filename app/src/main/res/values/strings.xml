@@ -157,6 +157,7 @@
     <string name="menu_tasks">系统进程</string>
     <string name="menu_swap">SWAP设置</string>
     <string name="menu_battery">电池充电</string>
+    <string name="menu_battery_stats">耗电统计</string>
     <string name="menu_xposed">Xposed功能</string>
     <string name="menu_keymap">按键辅助</string>
     <string name="menu_whitelist">阻止休眠</string>

@@ -5,7 +5,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.omarea.shared.model.AppConfigInfo;
+import com.omarea.shared.model.BatteryAvgStatus;
+import com.omarea.shared.model.BatteryStatus;
+
+import java.util.ArrayList;
 
 public class BatteryHistoryStore extends SQLiteOpenHelper {
     public BatteryHistoryStore(Context context) {
@@ -18,15 +21,14 @@ public class BatteryHistoryStore extends SQLiteOpenHelper {
             db.execSQL(
             "create table battery_io(" +
                 "time text primary key, " +
-                "level int default(0), " +
+                "level int default(-1), " +
                 "temperature int default(-1), " +
-                "status int default(0)," +
-                "voltage int default(0)," +
-                "io int default(0)," +
+                "status int default(-1)," +
+                "mode text," +
+                "io int default(-1)," +
                 "package text" +
             ")");
         } catch (Exception ex) {
-
         }
     }
 
@@ -35,39 +37,18 @@ public class BatteryHistoryStore extends SQLiteOpenHelper {
 
     }
 
-    public AppConfigInfo getAppConfig(String app) {
-        AppConfigInfo appConfigInfo = new AppConfigInfo();
-        appConfigInfo.packageName = app;
-        try {
-            Cursor cursor = this.getReadableDatabase().rawQuery("select * from app_config where id = ?", new String[]{app});
-            if (cursor.moveToNext()) {
-                appConfigInfo.aloneLight = cursor.getInt(cursor.getColumnIndex("alone_light")) == 1;
-                appConfigInfo.aloneLightValue = cursor.getInt(cursor.getColumnIndex("light"));
-                appConfigInfo.disNotice = cursor.getInt(cursor.getColumnIndex("dis_notice")) == 1;
-                appConfigInfo.disButton = cursor.getInt(cursor.getColumnIndex("dis_button")) == 1;
-                appConfigInfo.gpsOn = cursor.getInt(cursor.getColumnIndex("gps_on")) == 1;
-                appConfigInfo.disBackgroundRun = cursor.getInt(cursor.getColumnIndex("dis_background_run")) == 1;
-            }
-            cursor.close();
-        } catch (Exception ignored) {
-
-        }
-        return appConfigInfo;
-    }
-
-    public boolean setAppConfig(AppConfigInfo appConfigInfo) {
+    public boolean insertHistory (BatteryStatus batteryStatus) {
         SQLiteDatabase database = getWritableDatabase();
         getWritableDatabase().beginTransaction();
         try {
-            database.execSQL("delete from  app_config where id = ?", new String[]{appConfigInfo.packageName});
-            database.execSQL("insert into app_config(id, alone_light, light, dis_notice, dis_button, gps_on, dis_background_run) values (?, ?, ?, ?, ?, ?, ?)", new Object[]{
-                    appConfigInfo.packageName,
-                    appConfigInfo.aloneLight ? 1 : 0,
-                    appConfigInfo.aloneLightValue,
-                    appConfigInfo.disNotice ? 1 : 0,
-                    appConfigInfo.disButton ? 1 : 0,
-                    appConfigInfo.gpsOn ? 1 : 0,
-                    appConfigInfo.disBackgroundRun ? 1 : 0
+            database.execSQL("insert into battery_io(time, level, temperature, status, mode, io, package) values (?, ?, ?, ?, ?, ?, ?)", new Object[]{
+                "" + batteryStatus.time,
+                batteryStatus.level,
+                batteryStatus.temperature,
+                batteryStatus.status,
+                batteryStatus.mode,
+                batteryStatus.io,
+                batteryStatus.packageName
             });
             database.setTransactionSuccessful();
             return true;
@@ -76,5 +57,25 @@ public class BatteryHistoryStore extends SQLiteOpenHelper {
         } finally {
             database.endTransaction();
         }
+    }
+
+    public ArrayList<BatteryAvgStatus> getAvgData (long timeStart) {
+        try {
+            SQLiteDatabase sqLiteDatabase = getReadableDatabase();
+            Cursor cursor = sqLiteDatabase.rawQuery("select avg(io) AS io, avg(temperature) as temperature, package, mode, count(io) from battery_io where status = 0 group by package, mode", new String[]{  });
+            ArrayList<BatteryAvgStatus> data = new ArrayList<>();
+            while (cursor.moveToNext()) {
+                BatteryAvgStatus batteryAvgStatus = new BatteryAvgStatus();
+                batteryAvgStatus.io = cursor.getInt(0);
+                batteryAvgStatus.temperature = cursor.getInt(1);
+                batteryAvgStatus.packageName = cursor.getString(2);
+                batteryAvgStatus.mode = cursor.getString(3);
+                batteryAvgStatus.count = cursor.getInt(4);
+                data.add(batteryAvgStatus);
+            }
+            return data;
+        } catch (Exception ex) {
+        }
+        return new ArrayList<>();
     }
 }
