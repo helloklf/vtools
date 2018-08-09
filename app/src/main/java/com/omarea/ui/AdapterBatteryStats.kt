@@ -60,7 +60,7 @@ class AdapterBatteryStats(private val context: Context, private val list: ArrayL
         convertView!!.findViewById<TextView>(R.id.itemModeName).text = ModeList.getModName(batteryStats.mode)
         convertView.findViewById<TextView>(R.id.itemAvgIO).text = batteryStats.io.toString() + "mA/h"
         convertView.findViewById<TextView>(R.id.itemTemperature).text = batteryStats.temperature.toString() + "°C"
-        convertView.findViewById<TextView>(R.id.itemCounts).text = "${batteryStats.count}个样本，总耗电 " + (batteryStats.io * (batteryStats.count * batteryStats.io / 12 / 60)).toInt().toString() + "mAh"
+        convertView.findViewById<TextView>(R.id.itemCounts).text = "${batteryStats.count}样本，耗电 " + String.format("%.1f", (batteryStats.count * batteryStats.io / 12.0 / 60.0)) + "mAh"
         loadIcon(convertView, batteryStats.packageName)
         return convertView
     }

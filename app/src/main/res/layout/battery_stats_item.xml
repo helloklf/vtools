@@ -54,7 +54,7 @@
                 style="@style/textSmall" />
             <TextView
                 android:id="@+id/itemTemperature"
-                android:layout_width="60dp"
+                android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="0°C"
