@@ -4,6 +4,7 @@ import android.app.Notification.FLAG_AUTO_CANCEL
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
+import android.widget.Toast
 import com.omarea.shared.SceneMode
 
 class NotificationService : NotificationListenerService() {
@@ -12,6 +13,12 @@ class NotificationService : NotificationListenerService() {
         if (sbn == null) {
             return
         }
+        /*
+        if (sbn.isOngoing) {
+            Toast.makeText(this,  sbn.id.toString() + "正在后台运行...", Toast.LENGTH_SHORT).show()
+            return
+        }
+        */
         if (sbn.isClearable) {
             val instance = SceneMode.getInstanceOrInit(null, null)
             if (instance == null) {

@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentStatePagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.ScrollView
 import android.widget.Toast
 import com.omarea.shared.*
@@ -96,12 +97,31 @@ class FragmentHome : Fragment() {
                 }, 600)
             }).start()
         }
+
+        val globalLayoutListener  = object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                val h = home_mainview.measuredHeight
+                if (h > 0) {
+                    /*
+                    val lp1 = home_mainview1.layoutParams
+                    lp1.height = h
+                    home_mainview1.layoutParams = lp1
+                    */
+
+                    val lp = home_mainview2.layoutParams
+                    lp.height = h
+                    home_mainview2.layoutParams = lp
+                    home_mainview_scroll.fullScroll(ScrollView.FOCUS_UP)
+                    home_mainview.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                }
+            }
+        }
+        home_mainview.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
     }
 
     @SuppressLint("SetTextI18n")
     override fun onResume() {
         super.onResume()
-        home_mainview.fullScroll(ScrollView.FOCUS_UP)
         setModeState()
         maxFreqs.clear()
         minFreqs.clear()
@@ -137,6 +157,8 @@ class FragmentHome : Fragment() {
         home_raminfo.setData(totalMem.toFloat(), availMem.toFloat())
     }
 
+    private var updateTick = 0;
+
     @SuppressLint("SetTextI18n")
     private fun updateInfo() {
         if (coreCount < 1) {
@@ -149,6 +171,7 @@ class FragmentHome : Fragment() {
         }
         val cores = ArrayList<CpuCoreInfo>()
         val loads = CpuFrequencyUtils.getCpuLoad()
+        /*
         for (coreIndex in loads.keys.sorted()) {
             if (coreIndex != -1) {
                 val core = CpuCoreInfo()
@@ -169,26 +192,26 @@ class FragmentHome : Fragment() {
                 cores.add(core)
             }
         }
-        /*
+        */
         for (coreIndex in 0 until coreCount) {
             val core = CpuCoreInfo()
-            if (!maxFreqs.containsKey(coreIndex)) {
+
+            core.currentFreq = CpuFrequencyUtils.getCurrentFrequency("cpu$coreIndex")
+            if (!maxFreqs.containsKey(coreIndex) || (core.currentFreq != "" && maxFreqs.get(coreIndex).isNullOrEmpty())) {
                 maxFreqs.put(coreIndex, CpuFrequencyUtils.getCurrentMaxFrequency("cpu" + coreIndex))
             }
             core.maxFreq = maxFreqs.get(coreIndex)
 
-            if (!minFreqs.containsKey(coreIndex)) {
+            if (!minFreqs.containsKey(coreIndex) || (core.currentFreq != "" && minFreqs.get(coreIndex).isNullOrEmpty())) {
                 minFreqs.put(coreIndex, CpuFrequencyUtils.getCurrentMinFrequency("cpu" + coreIndex))
             }
             core.minFreq = minFreqs.get(coreIndex)
 
-            core.currentFreq = CpuFrequencyUtils.getCurrentFrequency("cpu$coreIndex")
             if (loads.containsKey(coreIndex)) {
                 core.loadRatio = loads.get(coreIndex)!!
             }
             cores.add(core)
         }
-        */
         myHandler.post {
             try {
                 if (loads.containsKey(-1)) {
@@ -202,6 +225,12 @@ class FragmentHome : Fragment() {
             } catch (ex: Exception) {
 
             }
+        }
+        updateTick++
+        if (updateTick > 5) {
+            updateTick = 0
+            minFreqs.clear()
+            maxFreqs.clear()
         }
     }
 

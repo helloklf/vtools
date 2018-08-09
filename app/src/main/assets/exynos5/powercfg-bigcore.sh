@@ -164,7 +164,7 @@ if [ "$action" = "fast" ]; then
 
     set_value 170 /sys/kernel/hmp/down_threshold
     set_value 310 /sys/kernel/hmp/up_threshold
-    set_value 0 /sys/kernel/hmp/boost
+    set_value 1 /sys/kernel/hmp/boost
 
     set_value "76 338000:90 650000:70 1066000:80 1274000:83 1482000:85" /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
     set_value "79 312000:92 520000:77 832000:78 1040000:75 1456000:85 1872000:88 2080000:90 2392000：92" /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads

@@ -68,6 +68,7 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
                 super.afterHookedMethod(param);
                 if (disServiceForeground) {
                     callMethod(param.thisObject, "stopForeground", true);
+                    /*
                     try {
                         Service service = (Service) param.thisObject;
                         NotificationManager notificationManager = (NotificationManager) service.getSystemService(Service.NOTIFICATION_SERVICE);
@@ -75,6 +76,7 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
                     } catch (Exception ex) {
 
                     }
+                    */
                     XposedBridge.log("禁止前台模式，hook startForeground in " + AndroidAppHelper.currentPackageName());
                 }
             }
