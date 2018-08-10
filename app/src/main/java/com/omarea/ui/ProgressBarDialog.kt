@@ -30,13 +30,17 @@ open class ProgressBarDialog(private var context: Context) {
             if (msg.what == 10) {
                 alertDialog!!.dismiss()
                 alertDialog!!.hide()
-                Toast.makeText(alertDialog!!.context, R.string.execute_success, Toast.LENGTH_SHORT).show()
+                if (msg.obj == true) {
+                    Toast.makeText(alertDialog!!.context, R.string.execute_success, Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(alertDialog!!.context, R.string.execute_fail, Toast.LENGTH_LONG).show()
+                }
             } else if (msg.what == -1) {
-                Toast.makeText(alertDialog!!.context, R.string.execute_fail, Toast.LENGTH_SHORT).show()
+                Toast.makeText(alertDialog!!.context, R.string.execute_fail, Toast.LENGTH_LONG).show()
             } else if (msg.what == 0 && msg.obj == false) {
                 alertDialog!!.dismiss()
                 alertDialog!!.hide()
-                Toast.makeText(alertDialog!!.context, R.string.execute_fail, Toast.LENGTH_SHORT).show()
+                Toast.makeText(alertDialog!!.context, R.string.execute_fail, Toast.LENGTH_LONG).show()
             }
         }
     }

@@ -1,7 +1,9 @@
 package com.omarea.shell
 
 import android.os.Handler
+import android.widget.Toast
 import java.nio.charset.Charset
+import kotlin.coroutines.experimental.coroutineContext
 
 /**
  * Created by helloklf on 2017/12/01.
@@ -78,9 +80,12 @@ class AsynSuShellUnit(var handler: Handler) {
         writer.write("\n\n")
         writer.flush()
         Thread(Runnable {
-            process!!.waitFor()
+            if (process!!.waitFor() == 0) {
+                handler.sendMessage(handler.obtainMessage(10, true))
+            } else {
+                handler.sendMessage(handler.obtainMessage(10, false))
+            }
             destroy()
-            handler.sendMessage(handler.obtainMessage(10, true))
         }).start()
     }
 

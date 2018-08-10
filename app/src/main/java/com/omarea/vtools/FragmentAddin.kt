@@ -74,6 +74,7 @@ class FragmentAddin : Fragment() {
             add(createItem(getString(R.string.addin_mac), getString(R.string.addin_mac_desc), Runnable { DialogCustomMAC(context!!).modifyMAC() }, false))
             add(createItem(getString(R.string.addin_force_dex_compile), getString(R.string.addin_force_dex_compile_desc), Runnable { DexCompileAddin(context!!).run() }, false))
             add(createItem(getString(R.string.addin_pm_dexopt), getString(R.string.addin_pm_dexopt_desc), Runnable { DexCompileAddin(context!!).modifyConfig() }, false))
+            add(createItem(getString(R.string.addin_bpc), String.format(getString(R.string.addin_bpc_desc), getIP()), Runnable { PerfBoostConfigAddin(context!!).install() }))
         }
 
         val mSimpleAdapter = SimpleAdapter(
