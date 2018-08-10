@@ -31,6 +31,9 @@
         <item>com.android.wallpapercropper</item>
     </string-array>
     <string-array name="powercfg_game">
+        <item>com.tencent.tmgp.pubgm</item>
+        <item>com.tencent.tmgp.pubgmhd</item>
+        <item>com.rarlab.rar</item>
         <item>com.rarlab.rar</item>
         <item>com.stupeflix.replay</item>
         <item>com.niksoftware.snapseed</item>
@@ -40,10 +43,13 @@
         <item>com.pinguo.edit.sdk</item>
         <item>com.ak.mi</item>
         <item>com.tencent.cldts</item>
+        <item>com.pinguo.edit.sdk</item>
+        <item>com.miHoYo.bh3.wdj</item>
     </string-array>
     <string-array name="powercfg_fast">
-        <item>com.Antutu.abenchmark</item>
-        <item>com.Antutu.benchmark.full</item>
+        <item>com.ludashi.benchmark</item>
+        <item>com.antutu.ABenchMark</item>
+        <item>com.antutu.benchmark.full</item>
         <item>com.keramidas.TitaniumBackup</item>
         <item>com.primatelabs.geekbench</item>
         <item>com.andromeda.androbench2</item>
