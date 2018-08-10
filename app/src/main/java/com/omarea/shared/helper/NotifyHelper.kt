@@ -174,7 +174,11 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
                 start = ""
             }
             if (unit != Int.MIN_VALUE && io.length > unit) {
-                return start + io.substring(0, io.length - unit)
+                val v = io.substring(0, io.length - unit)
+                if (v.length > 4) {
+                    return start + v.substring(0, v.length - 3)
+                }
+                return start + v
             } else if (io.length <= 4) {
                 return start + io
             } else if (io.length >= 8) {
