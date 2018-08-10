@@ -87,8 +87,8 @@ if [ "$action" = "powersave" ]; then
 	echo "85 300000:85 595200:67 825600:75 1248000:78" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
 	echo 518400 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
 	echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
-	echo 19000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
-    echo 20000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
+	echo 9000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
+    echo 10000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
     echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy
 
 
@@ -118,8 +118,8 @@ if [ "$action" = "balance" ]; then
 	echo "84 300000:85 595200:67 825600:75 1248000:78" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
 	echo 960000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
 	echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
-	echo 19000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
-    echo 20000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
+	echo 9000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
+    echo 10000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
     echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy
 
 

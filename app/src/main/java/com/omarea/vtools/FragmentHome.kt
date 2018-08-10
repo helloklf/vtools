@@ -80,12 +80,6 @@ class FragmentHome : Fragment() {
 
         spf = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
-        home_chat_helpinfo.postDelayed(Runnable {
-            if (home_chat_helpinfo != null) {
-                home_chat_helpinfo.visibility = View.GONE
-            }
-        }, 1300)
-
         home_clear_ram.setOnClickListener {
             home_raminfo_text.text = "稍等一下"
             Thread(Runnable {

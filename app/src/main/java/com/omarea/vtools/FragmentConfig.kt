@@ -238,6 +238,11 @@ class FragmentConfig : Fragment() {
                 loadList()
             }
         }
+        dynamic_control.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)
+        dynamic_control.setOnClickListener {
+            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, (it as Switch).isChecked).commit()
+            reStartService()
+        }
 
         loadList()
 
@@ -266,6 +271,7 @@ class FragmentConfig : Fragment() {
         bindSPF(auto_switch_network_off_data, spfAutoConfig, SpfConfig.DATA + SpfConfig.OFF, false)
         bindSPF(auto_switch_network_off_nfc, spfAutoConfig, SpfConfig.NFC + SpfConfig.OFF, false)
         bindSPF(auto_switch_network_off_gps, spfAutoConfig, SpfConfig.GPS + SpfConfig.OFF, false)
+        bindSPF(dynamic_control, globalSPF, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)
         config_customer_powercfg.setOnClickListener {
             try {
                 val intent = Intent(this.context, ActivityFileSelector::class.java)

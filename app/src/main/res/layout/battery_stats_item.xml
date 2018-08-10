@@ -39,7 +39,7 @@
             android:layout_height="wrap_content">
             <TextView
                 android:id="@+id/itemModeName"
-                android:layout_width="60dp"
+                android:layout_width="55dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="@string/balance"
@@ -53,7 +53,7 @@
                 style="@style/textSmall" />
             <TextView
                 android:id="@+id/itemTemperature"
-                android:layout_width="40dp"
+                android:layout_width="35dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="0°C"
@@ -64,7 +64,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="样本数："
+                android:text=""
                 style="@style/textSmall"
                 android:textColor="@color/colorAccent" />
         </LinearLayout>

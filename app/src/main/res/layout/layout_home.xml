@@ -30,14 +30,6 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                    <TextView
-                        android:id="@+id/home_chat_helpinfo"
-                        android:layout_marginTop="20dp"
-                        android:textColor="@color/colorAccent"
-                        android:layout_gravity="center_horizontal"
-                        android:text="🔻 滑动切换到“性能监视器”"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
                     <FrameLayout
                         android:id="@+id/home_mainview1"
                         android:layout_width="match_parent"

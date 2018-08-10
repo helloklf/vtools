@@ -70,7 +70,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         val windowManager = this.context.getSystemService(WINDOW_SERVICE) as WindowManager
         val display = windowManager.defaultDisplay
         screenOn = display.state == Display.STATE_ON
-        dyamicCore = RootFile.fileExists(CommonCmds.POWER_CFG_PATH)
+        initConfig()
         notifyHelper.setNotify(spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))
         if (screenOn) {
             forceToggleMode(lastModePackage)
@@ -289,18 +289,8 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         }
     }
 
-    init {
-        notifyHelper.notify()
-
-        this.screenOn = !isScreenLocked()
-
-        // 监听锁屏状态变化
-        ReciverLock.autoRegister(context, screenHandler)
-        // 禁用SeLinux
-        if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true))
-            keepShellAsync2.doCmd(CommonCmds.DisableSELinux)
-
-        Thread(Runnable {
+    private fun initConfig() {
+        if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)) {
             if (!RootFile.fileExists(CommonCmds.POWER_CFG_PATH)) {
                 if (Platform().dynamicSupport(context)) {
                     ConfigInstaller().installPowerConfig(context, CommonCmds.ExecuteConfig, false)
@@ -313,6 +303,24 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
                 ConfigInstaller().configCodeVerify(context)
                 keepShellAsync2.doCmd(CommonCmds.ExecuteConfig)
             }
+        } else {
+            dyamicCore = false
+        }
+    }
+
+    init {
+        notifyHelper.notify()
+
+        this.screenOn = !isScreenLocked()
+
+        // 监听锁屏状态变化
+        ReciverLock.autoRegister(context, screenHandler)
+        // 禁用SeLinux
+        if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true))
+            keepShellAsync2.doCmd(CommonCmds.DisableSELinux)
+
+        Thread(Runnable {
+            initConfig()
             // 添加输入法到忽略列表
             ignoredList.addAll(InputHelper(context).getInputMethods())
             // 启动完成后初始化模式状态

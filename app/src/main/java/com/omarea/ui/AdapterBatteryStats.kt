@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
@@ -12,7 +11,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.omarea.shared.ModeList
 import com.omarea.shared.model.BatteryAvgStatus
-import com.omarea.shared.model.CpuCoreInfo
 import com.omarea.vtools.R
 import java.util.*
 
@@ -83,7 +81,7 @@ class AdapterBatteryStats(private val context: Context, private val list: ArrayL
         }
         convertView.findViewById<TextView>(R.id.itemAvgIO).text = batteryStats.io.toString() + "mA/h"
         convertView.findViewById<TextView>(R.id.itemTemperature).text = batteryStats.temperature.toString() + "°C"
-        convertView.findViewById<TextView>(R.id.itemCounts).text = "${batteryStats.count}样本,耗电 " + String.format("%.1f", (batteryStats.count * batteryStats.io / 12.0 / 60.0)) + "mAh"
+        convertView.findViewById<TextView>(R.id.itemCounts).text = "${batteryStats.count / 12}分钟,耗电" + String.format("%.1f", (batteryStats.count * batteryStats.io / 12.0 / 60.0)) + "mAh"
         loadIcon(convertView, batteryStats.packageName)
         return convertView
     }

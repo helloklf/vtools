@@ -14,6 +14,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="cardBackgroundColor">#ff0000</item>
     </style>
 
     <style name="AppThemeNight" parent="Theme.AppCompat">

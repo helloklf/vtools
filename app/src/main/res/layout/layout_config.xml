@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context="com.omarea.vtools.FragmentConfig">
 
@@ -421,6 +422,23 @@
                                 android:paddingLeft="8dp"
                                 android:paddingRight="8dp"
                                 android:text="@string/accessbility_notify_desc"
+                                style="@style/textSmall" />
+
+                            <Switch
+                                android:id="@+id/dynamic_control"
+                                style="@style/textTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="30dp"
+                                android:paddingLeft="8dp"
+                                android:text="动态响应" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingBottom="8dp"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp"
+                                android:text="你需要开启此选项，才能使动态响应设置生效。并且，场景模式运作需要Scene保持服务后台运行！"
                                 style="@style/textSmall" />
 
                             <android.support.v7.widget.CardView
