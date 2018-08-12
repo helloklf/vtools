@@ -2,6 +2,7 @@ package com.omarea.vtools
 
 import android.annotation.SuppressLint
 import android.app.ActivityManager
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
 import android.content.SharedPreferences
@@ -58,6 +59,21 @@ class FragmentHome : Fragment() {
 
 
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+        if (!globalSPF.getBoolean("faq_readed_001", false)) {
+            AlertDialog.Builder(context!!)
+                    .setTitle("重要说明！！！")
+                    .setMessage("使用场景模式-动态响应的时，同时使用其它调频优化脚本或调度模式优化软件！\n\n由于部分调频优化脚本或应用，会锁定一些重要的调度参数，导致无法Scene动态修改，并引发一些冲突导致的错误。\n\n如：最低频率被锁定在某个值不再下降。\n\n已知的冲突：卡刷或Magisk模块形式的Project WIPE（yc）调频\nSkymi集成的模式脚本\n\n此外，更换不同作者的动态响应配置脚本需要重启生效！！！\n\n例如：从[保守/激进]更换成[在线获取]的配置脚本")
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.btn_iknow, {
+                        _, _ ->
+                    })
+                    .setNeutralButton(R.string.btn_dontshow, {
+                        _,_ ->
+                        globalSPF.edit().putBoolean("faq_readed_001", true).apply()
+                    })
+                    .create()
+                    .show()
+        }
 
         if (Platform().dynamicSupport(context!!) || File(CommonCmds.POWER_CFG_PATH).exists()) {
             powermode_toggles.visibility = View.VISIBLE
@@ -96,11 +112,9 @@ class FragmentHome : Fragment() {
             override fun onGlobalLayout() {
                 val h = home_mainview.measuredHeight
                 if (h > 0) {
-                    /*
                     val lp1 = home_mainview1.layoutParams
                     lp1.height = h
                     home_mainview1.layoutParams = lp1
-                    */
 
                     val lp = home_mainview2.layoutParams
                     lp.height = h

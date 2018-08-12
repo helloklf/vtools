@@ -73,7 +73,7 @@ gpu_config
 function set_cpu_freq()
 {
     echo $1 $2 $3 $4
-	echo "0:$2 1:$2 2:$4 3:$4" > /sys/module/msm_performance/parameters/cpu_max_freq
+	#echo "0:$2 1:$2 2:$4 3:$4" > /sys/module/msm_performance/parameters/cpu_max_freq
 	echo $1 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 	echo $2 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
 	echo $3 > /sys/devices/system/cpu/cpu2/cpufreq/scaling_min_freq
