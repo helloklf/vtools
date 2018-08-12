@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="10dp"
+    android:paddingTop="10dp"
     android:paddingLeft="26dp"
     android:paddingRight="26dp">
 
@@ -13,7 +13,7 @@
         android:layout_marginTop="10dp"
         android:text="@string/dialog_addin_device_warn"
         android:textColor="@color/colorAccent"
-        android:textSize="12dp" />
+        android:textSize="11dp" />
 
     <EditText
         android:id="@+id/dialog_addin_model"
@@ -59,10 +59,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="6dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:text="@string/dialog_addin_device_inner"
         android:textColor="#888"
-        android:textSize="12dp" />
+        android:textSize="11dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -71,39 +71,42 @@
 
         <Button
             android:id="@+id/dialog_addin_r11"
-            android:layout_width="60dp"
-            android:layout_height="32dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="30dp"
             android:layout_marginRight="6dp"
             android:background="@drawable/btn_bg"
             android:text="@string/r11"
-            android:textSize="12dp" />
+            android:textSize="11dp" />
 
         <Button
             android:id="@+id/dialog_addin_r15"
-            android:layout_width="50dp"
-            android:layout_height="32dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="30dp"
             android:layout_marginRight="6dp"
             android:background="@drawable/btn_bg"
             android:text="@string/r15"
-            android:textSize="12dp" />
+            android:textSize="11dp" />
 
         <Button
             android:id="@+id/dialog_addin_x20"
-            android:layout_width="50dp"
-            android:layout_height="32dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="30dp"
             android:layout_marginRight="6dp"
             android:background="@drawable/btn_bg"
             android:text="@string/x20"
-            android:textSize="12dp" />
+            android:textSize="11dp" />
 
         <Button
             android:id="@+id/dialog_addin_default"
             android:layout_width="wrap_content"
-            android:layout_height="32dp"
+            android:layout_height="30dp"
             android:layout_marginRight="6dp"
             android:background="@drawable/btn_bg"
             android:text="还原"
-            android:textSize="12dp" />
+            android:textSize="11dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -114,39 +117,42 @@
 
         <Button
             android:id="@+id/dialog_addin_s9plus"
-            android:layout_width="60dp"
-            android:layout_height="32dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="30dp"
             android:layout_marginRight="6dp"
             android:background="@drawable/btn_bg"
             android:text="S9+"
-            android:textSize="12dp" />
+            android:textSize="11dp" />
 
         <Button
             android:id="@+id/dialog_addin_8848"
-            android:layout_width="50dp"
-            android:layout_height="32dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="30dp"
             android:layout_marginRight="6dp"
             android:background="@drawable/btn_bg"
             android:text="@string/_8848"
-            android:textSize="12dp" />
+            android:textSize="11dp" />
 
         <Button
             android:id="@+id/dialog_addin_ipx"
-            android:layout_width="50dp"
-            android:layout_height="32dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="30dp"
             android:layout_marginRight="6dp"
             android:background="@drawable/btn_bg"
             android:text="@string/ipx"
-            android:textSize="12dp" />
+            android:textSize="11dp" />
 
         <Button
             android:id="@+id/dialog_addin_mrs"
             android:layout_width="wrap_content"
-            android:layout_height="32dp"
+            android:layout_height="30dp"
             android:layout_marginRight="6dp"
             android:background="@drawable/btn_bg"
             android:text="@string/mrs"
-            android:textSize="12dp" />
+            android:textSize="11dp" />
     </LinearLayout>
 
 </LinearLayout>

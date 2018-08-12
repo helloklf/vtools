@@ -158,7 +158,9 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
      */
     private fun onScreenOffCloseNetwork() {
         if (dyamicCore && !screenOn) {
-            toggleConfig(POWERSAVE)
+            if (dyamicCore) {
+                toggleConfig(POWERSAVE)
+            }
             updateModeNofity()
         }
         if (System.currentTimeMillis() - lastScreenOnOff >= SCREEN_OFF_SWITCH_NETWORK_DELAY && !screenOn) {
@@ -179,10 +181,12 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
 
         if (dyamicCore) {
             if (this.lastModePackage != null && !this.lastModePackage.isNullOrEmpty()) {
-                handler.postDelayed({
-                    if (screenOn)
-                        forceToggleMode(this.lastModePackage)
-                }, 5000)
+                if (dyamicCore) {
+                    handler.postDelayed({
+                        if (screenOn)
+                            forceToggleMode(this.lastModePackage)
+                    }, 5000)
+                }
             }
         }
         if (screenOn == true)

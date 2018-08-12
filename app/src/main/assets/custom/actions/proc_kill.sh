@@ -18,6 +18,7 @@ stop subsystem_ramdump 2> /dev/null
 stop tcpdump 2> /dev/null
 stop logd 2> /dev/null
 stop adbd 2> /dev/null
+killall -9 magiskd 2> /dev/null
 
 echo '执行完成，立即生效！'
 

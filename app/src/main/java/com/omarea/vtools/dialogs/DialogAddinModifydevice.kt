@@ -11,6 +11,10 @@ import android.widget.Toast
 import com.omarea.shared.CommonCmds
 import com.omarea.shell.KeepShellPublic
 import com.omarea.vtools.R
+import android.content.ClipboardManager
+import android.content.Context.CLIPBOARD_SERVICE
+import android.util.Base64
+
 
 /**
  * Created by Hello on 2017/12/03.
@@ -19,6 +23,8 @@ import com.omarea.vtools.R
 class DialogAddinModifydevice(var context: Context) {
 
     fun modifyDeviceInfo() {
+        //SM-N9500@samsung@samsung@dream2qltezc@dream2qltechn
+
         val layoutInflater = LayoutInflater.from(context)
         val dialog = layoutInflater.inflate(R.layout.dialog_addin_device, null)
         editModel = dialog.findViewById(R.id.dialog_addin_model) as EditText
@@ -51,7 +57,9 @@ class DialogAddinModifydevice(var context: Context) {
         (dialog.findViewById(R.id.dialog_addin_8848) as Button).setOnClickListener {
             set8848()
         }
-        AlertDialog.Builder(context).setTitle("机型信息修改").setView(dialog).setNegativeButton("保存重启", { _, _ ->
+        AlertDialog.Builder(context)
+                //.setTitle("机型信息修改")
+                .setView(dialog).setNegativeButton("保存重启", { _, _ ->
             val sb = StringBuilder()
             val model = editModel.text.trim()
             val brand = editBrand.text.trim()
@@ -89,6 +97,32 @@ class DialogAddinModifydevice(var context: Context) {
             AlertDialog.Builder(context).setMessage(R.string.dialog_addin_device_desc).setNegativeButton(R.string.btn_confirm, { _, _ -> }).create().show()
         }).create().show()
         loadCurrent()
+
+        try {
+            val cm = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+            val data = cm.getPrimaryClip()
+            val item = data.getItemAt(0)
+            val content = item.getText()
+            if (content.isNotEmpty()) {
+                val copyData = String(Base64.decode(content.toString().trim(), Base64.DEFAULT))
+                if (Regex("^.*@.*@.*@.*@.*\$").matches(copyData)) {
+                    val deviceInfos = copyData.split("@")
+                    AlertDialog.Builder(context)
+                            .setTitle("可用的模板")
+                            .setMessage("检测到已复制的机型信息：\n\n" +copyData + "\n\n是否立即使用？")
+                            .setPositiveButton(R.string.btn_confirm, {
+                                _, _ ->
+                                editModel.setText(deviceInfos[0])
+                                editBrand.setText(deviceInfos[1])
+                                editProductName.setText(deviceInfos[3])
+                                editDevice.setText(deviceInfos[4])
+                                editManufacturer.setText(deviceInfos[2])
+                            })
+                            .setNegativeButton(R.string.btn_cancel, null)
+                            .create().show()
+                }
+            }
+        } catch (ex: Exception) {}
     }
 
     private lateinit var editModel: EditText
@@ -162,7 +196,7 @@ class DialogAddinModifydevice(var context: Context) {
     private fun setR15Plus() {
         editBrand.setText("OPPO")
         editModel.setText("PAAM00")
-        editProductName.setText("OPPO R15")
+        editProductName.setText("OPPO PAAM00")
         editDevice.setText("PAAM00")
         editManufacturer.setText("OPPO")
     }

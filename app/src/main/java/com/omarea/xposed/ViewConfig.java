@@ -189,12 +189,12 @@ public class ViewConfig {
         //
         static final boolean DEFAULT_SCROLLING_NO_FADING = false;
         //滚动溢出最大距离
-        static final int DEFAULT_SCROLLING_OVERSCROLL = 160;
+        static final int DEFAULT_SCROLLING_OVERSCROLL = 100;
         //滚动回弹距离
-        static final int DEFAULT_SCROLLING_OVERFLING = 160;
+        static final int DEFAULT_SCROLLING_OVERFLING = 100;
         //滚动惯性
-        static final int DEFAULT_SCROLLING_FRICTION = 100;
+        static final int DEFAULT_SCROLLING_FRICTION = 400;
         //最大滚动速度
-        static final int DEFAULT_SCROLLING_VELOCITY = 2000;
+        static final int DEFAULT_SCROLLING_VELOCITY = 8000;
     }
 }
