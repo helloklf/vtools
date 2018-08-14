@@ -112,7 +112,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         if (timer == null) {
             this.screenOn = !isScreenLocked()
             if (!screenOn) return
-            val time = if (batteryMonitro) 2000L else 5000L
+            val time = if (batteryMonitro) 2000L else 10000L
             timer = Timer(true)
             timer!!.scheduleAtFixedRate(object : TimerTask() {
                 override fun run() {

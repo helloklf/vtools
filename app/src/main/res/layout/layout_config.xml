@@ -358,8 +358,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="30dp"
                                 android:paddingLeft="8dp"
-                                android:text="耗电检测"
-                                android:visibility="gone" />
+                                android:text="精确耗电统计" />
 
                             <TextView
                                 style="@style/textSmall"
@@ -368,8 +367,7 @@
                                 android:layout_marginTop="5dp"
                                 android:paddingLeft="8dp"
                                 android:paddingRight="8dp"
-                                android:text="加快常驻通知电流显示刷新，获得更精准的耗电速度信息，会增加亮屏时后台耗电（待机自动暂停）"
-                                android:visibility="gone" />
+                                android:text="每2秒刷新电池信息（默认10秒），获得更精准的耗电速度信息，会增加亮屏时后台耗电（待机自动暂停）" />
 
                             <LinearLayout
                                 android:layout_width="match_parent"
