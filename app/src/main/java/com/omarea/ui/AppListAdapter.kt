@@ -25,7 +25,7 @@ import kotlin.Comparator
  * Created by Hello on 2018/01/26.
  */
 
-class AppListAdapter(private val context: Context, apps: ArrayList<Appinfo>, private var keywords: String = "") : BaseAdapter() {
+class AppListAdapter(apps: ArrayList<Appinfo>, private var keywords: String = "") : BaseAdapter() {
     private val list: ArrayList<Appinfo>?
     @SuppressLint("UseSparseArrays")
     var states = HashMap<Int, Boolean>()
@@ -125,7 +125,7 @@ class AppListAdapter(private val context: Context, apps: ArrayList<Appinfo>, pri
         return selectedItems
     }
 
-    private fun loadIcon(viewHolder: ViewHolder, item: Appinfo) {
+    private fun loadIcon(context: Context , viewHolder: ViewHolder, item: Appinfo) {
         Thread(Runnable {
             var icon: Drawable? = null
             try {
@@ -166,6 +166,7 @@ class AppListAdapter(private val context: Context, apps: ArrayList<Appinfo>, pri
 
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
         var convertView = view
+        val context = parent.context
         if (convertView == null) {
             viewHolder = ViewHolder()
             convertView = View.inflate(context, R.layout.app_item, null)
@@ -186,7 +187,7 @@ class AppListAdapter(private val context: Context, apps: ArrayList<Appinfo>, pri
         viewHolder!!.itemTitle!!.text = keywordHightLight(item.appName.toString())
         viewHolder!!.itemText!!.text = keywordHightLight(item.packageName.toString())
         if (item.icon == null) {
-            loadIcon(viewHolder!!, item)
+            loadIcon(context, viewHolder!!, item)
         } else {
             viewHolder!!.imgView!!.setImageDrawable(item.icon)
         }

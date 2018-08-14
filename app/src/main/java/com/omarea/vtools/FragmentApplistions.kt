@@ -34,7 +34,7 @@ class FragmentApplistions : Fragment() {
     private var installedList: ArrayList<Appinfo>? = null
     private var systemList: ArrayList<Appinfo>? = null
     private var backupedList: ArrayList<Appinfo>? = null
-    private val myHandler: Handler = UpdateHandler(Runnable {
+    private var myHandler: Handler? = UpdateHandler(Runnable {
         setList()
     })
 
@@ -74,7 +74,7 @@ class FragmentApplistions : Fragment() {
                 return@OnItemLongClickListener true
             val adapter = (parent.adapter as HeaderViewListAdapter).wrappedAdapter
             val app = adapter.getItem(position - 1) as Appinfo
-            DialogSingleAppOptions(context!!, app, myHandler).showSingleAppOptions()
+            DialogSingleAppOptions(context!!, app, myHandler!!).showSingleAppOptions()
             true
         }
 
@@ -142,10 +142,12 @@ class FragmentApplistions : Fragment() {
                         processBarDialog.showDialog("正在恢复应用，稍等...")
                         Thread(Runnable {
                             KeepShellPublic.doCmdSync(cmds.toString())
-                            myHandler.post {
-                                processBarDialog.hideDialog()
-                                setList()
-                                edit.commit()
+                            if (myHandler != null) {
+                                myHandler!!.post {
+                                    processBarDialog.hideDialog()
+                                    setList()
+                                    edit.commit()
+                                }
                             }
                         }).start()
                     }
@@ -173,11 +175,11 @@ class FragmentApplistions : Fragment() {
 
         when (apptype) {
             Appinfo.AppType.SYSTEM ->
-                DialogAppOptions(context!!, selectedItems, myHandler).selectSystemAppOptions()
+                DialogAppOptions(context!!, selectedItems, myHandler!!).selectSystemAppOptions()
             Appinfo.AppType.USER ->
-                DialogAppOptions(context!!, selectedItems, myHandler).selectUserAppOptions()
+                DialogAppOptions(context!!, selectedItems, myHandler!!).selectUserAppOptions()
             Appinfo.AppType.BACKUPFILE ->
-                DialogAppOptions(context!!, selectedItems, myHandler).selectBackupOptions()
+                DialogAppOptions(context!!, selectedItems, myHandler!!).selectBackupOptions()
             else -> {
             }
         }
@@ -204,36 +206,39 @@ class FragmentApplistions : Fragment() {
     private fun setListData(dl: ArrayList<Appinfo>?, lv: OverScrollListView) {
         if (dl == null)
             return
-        myHandler.post {
-            try {
-                if (isDetached) {
-                    return@post
-                }
-                processBarDialog.hideDialog()
-                val adapter = AppListAdapter(context!!, dl, apps_search_box.text.toString().toLowerCase())
-                lv.adapter = adapter
-                lv.onItemClickListener = OnItemClickListener { list, itemView, postion, _ ->
-                    if (postion == 0) {
-                        val checkBox = itemView.findViewById(R.id.select_state_all) as CheckBox
-                        checkBox.isChecked = !checkBox.isChecked
-                        adapter.setSelecteStateAll(checkBox.isChecked)
-                        adapter.notifyDataSetChanged()
-                    } else {
-                        val checkBox = itemView.findViewById(R.id.select_state) as CheckBox
-                        checkBox.isChecked = !checkBox.isChecked
-                        val all = lv.findViewById<CheckBox>(R.id.select_state_all)
-                        all.isChecked = adapter.getIsAllSelected()
+        if (myHandler != null) {
+            myHandler!!.post {
+                try {
+                    if (isDetached) {
+                        return@post
                     }
+                    processBarDialog.hideDialog()
+                    val adapter = AppListAdapter(dl, apps_search_box.text.toString().toLowerCase())
+                    lv.adapter = adapter
+                    lv.onItemClickListener = OnItemClickListener { list, itemView, postion, _ ->
+                        if (postion == 0) {
+                            val checkBox = itemView.findViewById(R.id.select_state_all) as CheckBox
+                            checkBox.isChecked = !checkBox.isChecked
+                            adapter.setSelecteStateAll(checkBox.isChecked)
+                            adapter.notifyDataSetChanged()
+                        } else {
+                            val checkBox = itemView.findViewById(R.id.select_state) as CheckBox
+                            checkBox.isChecked = !checkBox.isChecked
+                            val all = lv.findViewById<CheckBox>(R.id.select_state_all)
+                            all.isChecked = adapter.getIsAllSelected()
+                        }
+                    }
+                    val all = lv.findViewById<CheckBox>(R.id.select_state_all)
+                    all.isChecked = false
+                } catch (ex: Exception) {
                 }
-                val all = lv.findViewById<CheckBox>(R.id.select_state_all)
-                all.isChecked = false
-            } catch (ex: Exception) {
             }
         }
     }
 
     override fun onDetach() {
         processBarDialog.hideDialog()
+        myHandler = null
         super.onDetach()
     }
 

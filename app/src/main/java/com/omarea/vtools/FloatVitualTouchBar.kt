@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Context.VIBRATOR_SERVICE
 import android.content.SharedPreferences
 import android.graphics.PixelFormat
+import android.graphics.Point
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.VibrationEffect.DEFAULT_AMPLITUDE
@@ -68,10 +69,10 @@ class FloatVitualTouchBar// 获取应用的Context
 
         // 设置flag
 
-        val flags = WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
+        //val flags = WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         // | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
         // 如果设置了WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE，弹出的View收不到Back键的事件
-        params.flags = flags
+        //params.flags = flags
         // 不设置这个弹出框的透明遮罩显示为黑色
         params.format = PixelFormat.TRANSLUCENT
         // FLAG_NOT_TOUCH_MODAL不阻塞事件传递到后面的窗口
@@ -82,9 +83,36 @@ class FloatVitualTouchBar// 获取应用的Context
         params.height = LayoutParams.WRAP_CONTENT
 
         params.gravity = Gravity.BOTTOM
-        params.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+        params.flags =  LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE or LayoutParams.FLAG_FULLSCREEN or LayoutParams.FLAG_LAYOUT_IN_SCREEN or LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        // WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        // LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE or
 
+        val navHeight = 0 // (getNavBarHeight(mContext!!))
+        if (navHeight > 0) {
+            val display = mWindowManager!!.getDefaultDisplay()
+            val p = Point()
+            display.getRealSize(p)
+            params.y = -navHeight
+            params.x = 0
+        } else {
+        }
         mWindowManager!!.addView(mView, params)
+    }
+
+    /**
+     * 获取导航栏高度
+     * @param context
+     * @return
+     */
+    fun getNavBarHeight(context: Context): Int {
+        val result = 0
+        var resourceId = 0
+        val rid = context.resources.getIdentifier("config_showNavigationBar", "bool", "android")
+        if (rid != 0) {
+            resourceId = context.resources.getIdentifier("navigation_bar_height", "dimen", "android")
+            return context.resources.getDimensionPixelSize(resourceId)
+        } else
+            return 0
     }
 
     /**

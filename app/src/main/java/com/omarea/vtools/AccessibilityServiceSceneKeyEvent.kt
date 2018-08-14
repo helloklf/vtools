@@ -98,13 +98,13 @@ class AccessibilityServiceSceneKeyEvent : AccessibilityService() {
 
         private fun onDown(event: KeyEvent): Boolean {
             downTime = event.eventTime
-            startTimer()
             val overrideKeyCode = spf.getInt("${keyCode}_click", Int.MIN_VALUE)
             if (overrideKeyCode != Int.MIN_VALUE) {
                 return true
             }
             val overrideKeyCode2 = spf.getInt("${keyCode}_long_click", Int.MIN_VALUE)
             if (overrideKeyCode2 != Int.MIN_VALUE) {
+                startTimer()
                 return true
             }
             return false
