@@ -182,9 +182,6 @@ if [ "$action" = "performance" ]; then
     echo 12000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_rate
     echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
 
-    stop thermanager
-    stop thermal-engine
-
 	exit 0
 fi
 
