@@ -47,6 +47,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        /*
         StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
                 .detectDiskReads()
                 .detectDiskWrites()
@@ -59,6 +60,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .penaltyLog()
                 .penaltyDeath()
                 .build());
+        */
         startActivityForResult(Intent(this.applicationContext, StartSplashActivity::class.java), 999)
         //CrashHandler().init(this)
         //setMaxAspect()

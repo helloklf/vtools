@@ -11,11 +11,16 @@ echo 1 > /sys/devices/system/cpu/cpu5/online
 echo 1 > /sys/devices/system/cpu/cpu6/online
 echo 1 > /sys/devices/system/cpu/cpu7/online
 
-if [ ! `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor` = "interactive" ]; then
+governor0=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
+governor4=`cat /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor`
+
+if [ ! governor0 = "interactive" ] && [ ! governor0 = "schedutil" ]; then
 	echo 'interactive' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+	echo 'schedutil' > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
 fi
-if [ ! `cat /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor` = "interactive" ]; then
+if [ ! governor4 = "interactive" ] && [ ! governor0 = "schedutil" ]; then
 	echo 'interactive' > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
+	echo 'schedutil' > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
 fi
 
 # /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
@@ -50,6 +55,7 @@ function lock_value()
         fi;
     fi;
 }
+
 lock_value 0 /sys/devices/system/cpu/cpu0/cpufreq/interactive/boost
 lock_value 0 /sys/devices/system/cpu/cpu4/cpufreq/interactive/boost
 
@@ -93,6 +99,15 @@ function set_cpu_freq()
 	echo $4 > /sys/devices/system/cpu/cpu4/cpufreq/scaling_max_freq
 }
 
+function interactive_cfg()
+{
+    if [ governor$1 = "interactive" ]; then
+        echo $2 > /sys/devices/system/cpu/cpu$1/cpufreq/interactive/max_freq_hysteresis
+        echo $3 > /sys/devices/system/cpu/cpu$1/cpufreq/interactive/min_sample_time
+        echo $4 > /sys/devices/system/cpu/cpu$1/cpufreq/interactive/timer_rate
+    fi
+}
+
 if [ "$action" = "powersave" ]; then
 	set_cpu_freq 5000 1401600 5000 1497600
 
@@ -106,20 +121,16 @@ if [ "$action" = "powersave" ]; then
     echo 0-2 > /dev/cpuset/background/cpus
     echo 0-3 > /dev/cpuset/system-background/cpus
 
-	echo "85 300000:85 595200:67 825600:75 1248000:78" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
-	set_value 518400 /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
-	echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
-	echo 9000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
-    echo 10000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
-    echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy
+	set_value "85 300000:85 595200:67 825600:75 1248000:78" /sys/devices/system/cpu/cpu0/cpufreq/$governor0/target_loads
+	set_value 518400 /sys/devices/system/cpu/cpu0/cpufreq/$governor0/hispeed_freq
+    set_value 1 /sys/devices/system/cpu/cpu0/cpufreq/$governor0/io_is_busy
+    interactive_cfg 0 0 9000 10000
 
 
-	echo "99" > /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
-	set_value 1056000 /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
-	echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/max_freq_hysteresis
-    echo 19000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/min_sample_time
-    echo 20000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_rate
-    echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
+	set_value "99" /sys/devices/system/cpu/cpu4/cpufreq/$governor4/target_loads
+	set_value 1056000 /sys/devices/system/cpu/cpu4/cpufreq/$governor4/hispeed_freq
+    set_value 0 /sys/devices/system/cpu/cpu4/cpufreq/$governor4/io_is_busy
+    interactive_cfg 4 0 19000 20000
 
 	exit 0
 fi
@@ -137,20 +148,16 @@ if [ "$action" = "balance" ]; then
     echo 0-1 > /dev/cpuset/background/cpus
     echo 0-3 > /dev/cpuset/system-background/cpus
 
-	echo "84 300000:85 595200:67 825600:75 1248000:78" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
-	set_value 960000 /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
-	echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
-	echo 9000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
-    echo 10000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
-    echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy
+	set_value "84 300000:85 595200:67 825600:75 1248000:78" /sys/devices/system/cpu/cpu0/cpufreq/$governor0/target_loads
+	set_value 960000 /sys/devices/system/cpu/cpu0/cpufreq/$governor0/hispeed_freq
+    set_value 1 /sys/devices/system/cpu/cpu0/cpufreq/$governor0/io_is_busy
+    interactive_cfg 0 0 9000 10000
 
 
-	echo "83 300000:89 1056000:89 1344000:92" > /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
-	set_value 1056000 /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
-	echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/max_freq_hysteresis
-    echo 11000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/min_sample_time
-    echo 12000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_rate
-    echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
+	set_value "83 300000:89 1056000:89 1344000:92" /sys/devices/system/cpu/cpu4/cpufreq/$governor4/target_loads
+	set_value 1056000 /sys/devices/system/cpu/cpu4/cpufreq/$governor4/hispeed_freq
+    set_value 0 /sys/devices/system/cpu/cpu4/cpufreq/$governor4/io_is_busy
+    interactive_cfg 4 0 19000 20000
 
 	exit 0
 fi
@@ -168,19 +175,15 @@ if [ "$action" = "performance" ]; then
     echo 0-1 > /dev/cpuset/background/cpus
     echo 0-1 > /dev/cpuset/system-background/cpus
 
-    echo "73 960000:72 1478400:78 1804800:87" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
-    set_value 1478400 /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
-	echo 79000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
-	echo 19000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
-    echo 10000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
-    echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy
+    set_value "73 960000:72 1478400:78 1804800:87" /sys/devices/system/cpu/cpu0/cpufreq/$governor0/target_loads
+    set_value 1478400 /sys/devices/system/cpu/cpu0/cpufreq/$governor0/hispeed_freq
+    set_value 1 /sys/devices/system/cpu/cpu0/cpufreq/$governor0/io_is_busy
+    interactive_cfg 0 79000 19000 10000
 
-    echo "78 1497600:80 2016000:87" > /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
-    set_value 1267200 /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
-	echo 79000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/max_freq_hysteresis
-    echo 23000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/min_sample_time
-    echo 12000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_rate
-    echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
+    set_value "78 1497600:80 2016000:87" /sys/devices/system/cpu/cpu4/cpufreq/$governor4/target_loads
+    set_value 1267200 /sys/devices/system/cpu/cpu4/cpufreq/$governor4/hispeed_freq
+    set_value 1 /sys/devices/system/cpu/cpu4/cpufreq/$governor4/io_is_busy
+    interactive_cfg 4 79000 23000 12000
 
 	exit 0
 fi
@@ -192,26 +195,22 @@ if [ "$action" = "fast" ]; then
     echo 50 > /sys/module/cpu_boost/parameters/input_boost_ms
 
 	echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
-	echo 0 > /proc/sys/kernel/sched_boost
+	echo 1 > /proc/sys/kernel/sched_boost
     echo 30 > /proc/sys/kernel/sched_init_task_load
 
     echo 0 > /dev/cpuset/background/cpus
     echo 0-1 > /dev/cpuset/system-background/cpus
 
-    echo "72 960000:72 1478400:78 1804800:87" > /sys/devices/system/cpu/cpu0/cpufreq/interactive/target_loads
-	set_value 1036800 /sys/devices/system/cpu/cpu0/cpufreq/interactive/hispeed_freq
-	echo 79000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/max_freq_hysteresis
-	echo 19000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/min_sample_time
-    echo 5000 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/timer_rate
-    echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/interactive/io_is_busy
+    set_value "72 960000:72 1478400:78 1804800:87" /sys/devices/system/cpu/cpu0/cpufreq/$governor0/target_loads
+	set_value 1036800 /sys/devices/system/cpu/cpu0/cpufreq/$governor0/hispeed_freq
+    set_value 1 /sys/devices/system/cpu/cpu0/cpufreq/$governor0/io_is_busy
+    interactive_cfg 0 79000 19000 5000
 
 
-    echo "73 1497600:78 2016000:87" > /sys/devices/system/cpu/cpu4/cpufreq/interactive/target_loads
-	set_value 1497600 /sys/devices/system/cpu/cpu4/cpufreq/interactive/hispeed_freq
-	echo 79000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/max_freq_hysteresis
-    echo 19000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/min_sample_time
-    echo 5000 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/timer_rate
-    echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/interactive/io_is_busy
+    set_value "73 1497600:78 2016000:87" /sys/devices/system/cpu/cpu4/cpufreq/$governor4/target_loads
+	set_value 1497600 /sys/devices/system/cpu/cpu4/cpufreq/$governor4/hispeed_freq
+    set_value 1 /sys/devices/system/cpu/cpu4/cpufreq/$governor4/io_is_busy
+    interactive_cfg 4 79000 19000 5000
 
 	exit 0
 fi

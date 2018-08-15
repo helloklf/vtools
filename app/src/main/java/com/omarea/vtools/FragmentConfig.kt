@@ -488,7 +488,12 @@ class FragmentConfig : Fragment() {
                 installedList = ArrayList()/*在数组中存放数据*/
                 installedList = applistHelper.getAll()
             }
-
+            if (config_search_box == null) {
+                myHandler.post {
+                    processBarDialog.hideDialog()
+                }
+                return@Runnable
+            }
             val keyword = config_search_box.text.toString().toLowerCase()
             val search = keyword.isNotEmpty()
             var filterMode = ""

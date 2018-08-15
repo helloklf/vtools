@@ -37,7 +37,8 @@ public class AppConfigStore extends SQLiteOpenHelper {
         AppConfigInfo appConfigInfo = new AppConfigInfo();
         appConfigInfo.packageName = app;
         try {
-            Cursor cursor = this.getReadableDatabase().rawQuery("select * from app_config where id = ?", new String[]{app});
+            SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+            Cursor cursor = sqLiteDatabase.rawQuery("select * from app_config where id = ?", new String[]{app});
             if (cursor.moveToNext()) {
                 appConfigInfo.aloneLight = cursor.getInt(cursor.getColumnIndex("alone_light")) == 1;
                 appConfigInfo.aloneLightValue = cursor.getInt(cursor.getColumnIndex("light"));
@@ -47,6 +48,7 @@ public class AppConfigStore extends SQLiteOpenHelper {
                 appConfigInfo.disBackgroundRun = cursor.getInt(cursor.getColumnIndex("dis_background_run")) == 1;
             }
             cursor.close();
+            sqLiteDatabase.close();
         } catch (Exception ignored) {
 
         }
