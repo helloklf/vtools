@@ -7,9 +7,15 @@ echo 0 > /sys/module/msm_thermal/core_control/enabled
 echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
 echo N > /sys/module/msm_thermal/parameters/enabled
 
-#if [ ! `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor` = "interactive" ]; then
-#	sh /system/etc/init.qcom.post_boot.sh
-#fi
+governor0=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
+governor4=`cat /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor`
+
+if [ ! governor0 = "schedutil" ]; then
+	echo 'schedutil' > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
+fi
+if [ ! governor0 = "schedutil" ]; then
+	echo 'schedutil' > /sys/devices/system/cpu/cpu6/cpufreq/scaling_governor
+fi
 
 # /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
 # 300000 364800 441600 518400 595200 672000 748800 825600 883200 960000 1036800 1094400 1171200 1248000 1324800 1401600 1478400 1555200 1670400 1747200 1824000 1900800
@@ -44,6 +50,7 @@ function gpu_config()
     echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
     echo 0 > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 }
+
 gpu_config
 
 function set_cpu_freq()
@@ -54,6 +61,13 @@ function set_cpu_freq()
 	echo $2 > /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
 	echo $3 > /sys/devices/system/cpu/cpu6/cpufreq/scaling_min_freq
 	echo $4 > /sys/devices/system/cpu/cpu6/cpufreq/scaling_max_freq
+}
+
+function schedutil_cfg()
+{
+    set_value $2 /sys/devices/system/cpu/cpu$1/cpufreq/schedutil/down_rate_limit_us
+    set_value $3 /sys/devices/system/cpu/cpu$1/cpufreq/schedutil/up_rate_limit_us
+    set_value $4 /sys/devices/system/cpu/cpu$1/cpufreq/schedutil/iowait_boost_enable
 }
 
 if [ "$action" = "powersave" ]; then
@@ -68,10 +82,12 @@ if [ "$action" = "powersave" ]; then
 	echo "85 300000:85 518400:67 748800:75 1248000:78" > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/target_loads
 	echo 518400 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
     echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/io_is_busy
+    schedutil_cfg 0 1000 10000 0
 
 	echo "99" > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/target_loads
 	echo 652800 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
     echo 0 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/io_is_busy
+    schedutil_cfg 6 1000 10000 0
 
     echo 0-2 > /dev/cpuset/background/cpus
     echo 0-3 > /dev/cpuset/system-background/cpus
@@ -91,10 +107,12 @@ if [ "$action" = "balance" ]; then
     echo "83 300000:85 595200:67 825600:75 1248000:78" > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/target_loads
 	echo 960000 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
     echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/io_is_busy
+    schedutil_cfg 0 1000 5000 0
 
     echo "83 300000:89 1056000:89 1344000:92" > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/target_loads
 	echo 1056000 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
     echo 0 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/io_is_busy
+    schedutil_cfg 6 1000 5000 0
 
     echo 0-1 > /dev/cpuset/background/cpus
     echo 0-3 > /dev/cpuset/system-background/cpus
@@ -115,10 +133,12 @@ if [ "$action" = "performance" ]; then
     echo "73 960000:72 1478400:78 1804800:87" > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/target_loads
     echo 1478400 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
     echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/io_is_busy
+    schedutil_cfg 0 1000 1000 1
 
     echo "78 1497600:80 2016000:87" > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/target_loads
     echo 1267200 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
     echo 0 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/io_is_busy
+    schedutil_cfg 6 1000 1000 1
 
     echo 0-1 > /dev/cpuset/background/cpus
     echo 0-1 > /dev/cpuset/system-background/cpus
@@ -135,16 +155,18 @@ if [ "$action" = "fast" ]; then
     echo "72 960000:72 1478400:78 1804800:87" > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/target_loads
 	echo 1036800 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
     echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/io_is_busy
+    schedutil_cfg 0 1000 1000 1
 
     echo "73 1497600:78 2016000:87" > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/target_loads
 	echo 1497600 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
     echo 0 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/io_is_busy
+    schedutil_cfg 6 1000 1000 1
 
 	echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 1 > /proc/sys/kernel/sched_boost
 
     echo 0 > /dev/cpuset/background/cpus
     echo 0-1 > /dev/cpuset/system-background/cpus
-	
+
 	exit 0
 fi
