@@ -101,11 +101,9 @@ function set_cpu_freq()
 
 function interactive_cfg()
 {
-    if [ governor$1 = "interactive" ]; then
-        echo $2 > /sys/devices/system/cpu/cpu$1/cpufreq/interactive/max_freq_hysteresis
-        echo $3 > /sys/devices/system/cpu/cpu$1/cpufreq/interactive/min_sample_time
-        echo $4 > /sys/devices/system/cpu/cpu$1/cpufreq/interactive/timer_rate
-    fi
+    set_value $2 /sys/devices/system/cpu/cpu$1/cpufreq/interactive/max_freq_hysteresis
+    set_value $3 /sys/devices/system/cpu/cpu$1/cpufreq/interactive/min_sample_time
+    set_value $4 /sys/devices/system/cpu/cpu$1/cpufreq/interactive/timer_rate
 }
 
 if [ "$action" = "powersave" ]; then
