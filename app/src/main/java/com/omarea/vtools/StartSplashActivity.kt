@@ -13,9 +13,8 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.PermissionChecker
 import android.support.v7.app.AlertDialog
 import android.util.Log
-import android.view.View
-import com.omarea.shared.ConfigInstaller
 import com.omarea.shared.CommonCmds
+import com.omarea.shared.ConfigInstaller
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.Busybox
 import com.omarea.shell.CheckRootStatus
@@ -118,12 +117,18 @@ class StartSplashActivity : Activity() {
 
     //检查权限 主要是文件读写权限
     private fun checkFileWrite(next: Runnable) {
-        Thread(Runnable {
-            CheckRootStatus.grantPermission(this)
-            if (!(checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
+        CheckFileWriteThread(this, next).start()
+    }
+
+    private class CheckFileWriteThread(context: StartSplashActivity, runnable: Runnable) : Thread() {
+        private var context:WeakReference<StartSplashActivity>;
+        private var runnable: WeakReference<Runnable>;
+        override fun run() {
+            CheckRootStatus.grantPermission(context.get()!!)
+            if (!(context.get()!!.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) && context.get()!!.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     ActivityCompat.requestPermissions(
-                            this@StartSplashActivity,
+                            context.get()!!,
                             arrayOf(
                                     Manifest.permission.READ_EXTERNAL_STORAGE,
                                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -135,7 +140,7 @@ class StartSplashActivity : Activity() {
                     )
                 } else {
                     ActivityCompat.requestPermissions(
-                            this@StartSplashActivity,
+                            context.get()!!,
                             arrayOf(
                                     Manifest.permission.READ_EXTERNAL_STORAGE,
                                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -146,14 +151,18 @@ class StartSplashActivity : Activity() {
                     )
                 }
             }
-            myHandler.post {
+            context.get()!!.myHandler.post {
                 val writeSettings = WriteSettings()
-                if (!writeSettings.getPermission(applicationContext)) {
-                    writeSettings.setPermission(applicationContext)
+                if (!writeSettings.getPermission(context.get()!!.applicationContext)) {
+                    writeSettings.setPermission(context.get()!!.applicationContext)
                 }
-                next.run()
+                this.runnable.get()!!.run()
             }
-        }).start()
+        }
+        init {
+            this.context = WeakReference(context)
+            this.runnable = WeakReference(runnable)
+        }
     }
 
     private var hasRoot = false
