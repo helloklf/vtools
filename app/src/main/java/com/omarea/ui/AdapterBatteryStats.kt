@@ -10,11 +10,14 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.omarea.shared.ModeList
+import com.omarea.shared.SpfConfig
 import com.omarea.shared.model.BatteryAvgStatus
 import com.omarea.vtools.R
 import java.util.*
 
 class AdapterBatteryStats(private val context: Context, private val list: ArrayList<BatteryAvgStatus>?) : BaseAdapter() {
+    private var accuMode: Boolean = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
+    private var timerRate: Int
     override fun getCount(): Int {
         return list?.size ?: 0
     }
@@ -81,8 +84,12 @@ class AdapterBatteryStats(private val context: Context, private val list: ArrayL
         }
         convertView.findViewById<TextView>(R.id.itemAvgIO).text = batteryStats.io.toString() + "mA/h"
         convertView.findViewById<TextView>(R.id.itemTemperature).text = batteryStats.temperature.toString() + "°C"
-        convertView.findViewById<TextView>(R.id.itemCounts).text = "${batteryStats.count / 12}分钟,耗电" + String.format("%.1f", (batteryStats.count * batteryStats.io / 12.0 / 60.0)) + "mAh"
+        convertView.findViewById<TextView>(R.id.itemCounts).text = "${batteryStats.count / 12}分钟,耗电" + String.format("%.1f", (batteryStats.count * batteryStats.io * timerRate / 360.0)) + "mAh"
         loadIcon(convertView, batteryStats.packageName)
         return convertView
+    }
+
+    init {
+        timerRate = if (accuMode) 2 else 10
     }
 }
