@@ -22,45 +22,9 @@ import com.omarea.shell.CheckRootStatus
 import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.WriteSettings
 import kotlinx.android.synthetic.main.activity_start_splash.*
+import java.lang.ref.WeakReference
 
-/**
- * An example full-screen activity that shows and hides the system UI (i.e.
- * status bar and navigation/system bar) with user interaction.
- */
 class StartSplashActivity : Activity() {
-    private val mHideHandler = Handler()
-    private val mHidePart2Runnable = Runnable {
-        // Delayed removal of status and navigation bar
-
-        // Note that some of these constants are new as of API 16 (Jelly Bean)
-        // and API 19 (KitKat). It is safe to use them, as they are inlined
-        // at compile-time and do nothing on earlier devices.
-        fullscreen_content.systemUiVisibility =
-                View.SYSTEM_UI_FLAG_LOW_PROFILE or
-                View.SYSTEM_UI_FLAG_FULLSCREEN or
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
-                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-    }
-    private val mShowPart2Runnable = Runnable {
-        // Delayed display of UI elements
-        actionBar?.show()
-        fullscreen_content_controls.visibility = View.VISIBLE
-    }
-    private var mVisible: Boolean = false
-    private val mHideRunnable = Runnable { hide() }
-    /**
-     * Touch listener to use for in-layout UI controls to delay hiding the
-     * system UI. This is to prevent the jarring behavior of controls going away
-     * while interacting with activity UI.
-     */
-    private val mDelayHideTouchListener = View.OnTouchListener { _, _ ->
-        if (AUTO_HIDE) {
-            delayedHide(AUTO_HIDE_DELAY_MILLIS)
-        }
-        false
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,41 +32,90 @@ class StartSplashActivity : Activity() {
         setContentView(R.layout.activity_start_splash)
         actionBar?.setDisplayHomeAsUpEnabled(true)
 
-        mVisible = true
-
-        // Set up the user interaction to manually show or hide the system UI.
-        fullscreen_content.setOnClickListener { toggle() }
-
-        // Upon interacting with UI controls, delay any scheduled hide()
-        // operations to prevent the jarring behavior of controls going away
-        // while interacting with the UI.
-        dummy_button.setOnTouchListener(mDelayHideTouchListener)
-
 
         //checkFileWrite()
-        checkRoot(Runnable {
-            start_state_text.text = "检查并获取必需权限..."
-            hasRoot = true
-            checkFileWrite(Runnable {
-                start_state_text.text = "检查Busybox是否安装..."
-                Busybox(this).forceInstall(Runnable {
-                    configInstallerThread = Thread(Runnable {
-                        ConfigInstaller().configCodeVerify(this)
-                    })
-                    configInstallerThread!!.start()
-                    next()
-                })
-            })
-        }, Runnable {
-            next()
-        })
+        checkRoot(CheckRootSuccess(this), CheckRootFail(this))
+    }
+
+    private class CheckRootFail(context:StartSplashActivity) : Runnable {
+        private var context:WeakReference<StartSplashActivity>;
+        override fun run() {
+            context.get()!!.next()
+        }
+        init {
+            this.context = WeakReference(context)
+        }
+    }
+
+    private class CheckRootSuccess(context:StartSplashActivity) : Runnable {
+        private var context:WeakReference<StartSplashActivity>;
+        override fun run() {
+            context.get()!!.start_state_text.text = "检查并获取必需权限..."
+            context.get()!!.hasRoot = true
+
+            context.get()!!.checkFileWrite(CheckFileWriteSuccess(context.get()!!))
+        }
+        init {
+            this.context = WeakReference(context)
+        }
+    }
+
+    private class CheckFileWriteSuccess(context:StartSplashActivity) : Runnable {
+        private var context:WeakReference<StartSplashActivity>;
+        override fun run() {
+            context.get()!!.start_state_text.text = "检查Busybox是否安装..."
+            Busybox(context.get()!!).forceInstall(BusyboxInstalled(context.get()!!))
+        }
+        init {
+            this.context = WeakReference(context)
+        }
+    }
+
+    private class BusyboxInstalled(context:StartSplashActivity) : Runnable {
+        private var context:WeakReference<StartSplashActivity>;
+        override fun run() {
+            ConfigInstallerThread(context.get()!!.applicationContext).start()
+            context.get()!!.next()
+        }
+        init {
+            this.context = WeakReference(context)
+        }
+    }
+
+    private class ConfigInstallerThread(context: Context): Thread() {
+        private var context:WeakReference<Context>;
+        override fun run() {
+            super.run()
+            ConfigInstaller().configCodeVerify(context.get()!!)
+        }
+        init {
+            this.context = WeakReference(context)
+        }
+    }
+
+    private class ServiceCreateThread(context: Context): Runnable {
+        private var context:WeakReference<Context>;
+        override fun run() {
+            //判断是否开启了充电加速和充电保护，如果开启了，自动启动后台服务
+            val chargeConfig = context.get()!!.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
+            if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) || chargeConfig!!.getBoolean(SpfConfig.CHARGE_SPF_BP, false)) {
+                try {
+                    val intent = Intent(context.get()!!, ServiceBattery::class.java)
+                    context.get()!!.startService(intent)
+                } catch (ex: Exception) {
+                    Log.e("startChargeService", ex.message)
+                }
+            }
+        }
+        init {
+            this.context = WeakReference(context)
+        }
     }
 
     private fun checkPermission(permission: String): Boolean =
             PermissionChecker.checkSelfPermission(this.applicationContext, permission) == PermissionChecker.PERMISSION_GRANTED
 
 
-    private var configInstallerThread: Thread? = null
     //检查权限 主要是文件读写权限
     private fun checkFileWrite(next: Runnable) {
         Thread(Runnable {
@@ -190,81 +203,9 @@ class StartSplashActivity : Activity() {
 
     private fun next() {
         start_state_text.text = "启动完成！"
-        //判断是否开启了充电加速和充电保护，如果开启了，自动启动后台服务
-        val chargeConfig = getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
-        if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) || chargeConfig!!.getBoolean(SpfConfig.CHARGE_SPF_BP, false)) {
-            try {
-                val intent = Intent(this.applicationContext, ServiceBattery::class.java)
-                this.applicationContext.startService(intent)
-            } catch (ex: Exception) {
-                Log.e("startChargeService", ex.message)
-            }
-        }
         setResult(if (hasRoot) RESULT_OK else RESULT_CANCELED)
+        ServiceCreateThread(this.applicationContext).run()
         finish()
-    }
-
-    override fun onResume() {
-        super.onResume()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        try {
-            if (getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-                            .getBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, false)) {
-                //this.finishAndRemoveTask()
-            }
-            if (this.configInstallerThread != null && !this.configInstallerThread!!.isInterrupted) {
-                this.configInstallerThread!!.destroy()
-            }
-        } catch (ex: Exception) {
-        }
-    }
-
-    override fun onPostCreate(savedInstanceState: Bundle?) {
-        super.onPostCreate(savedInstanceState)
-        delayedHide(100)
-    }
-
-    private fun toggle() {
-        if (mVisible) {
-            hide()
-        } else {
-            show()
-        }
-    }
-
-    private fun hide() {
-        // Hide UI first
-        actionBar?.hide()
-        fullscreen_content_controls.visibility = View.GONE
-        mVisible = false
-
-        mHideHandler.removeCallbacks(mShowPart2Runnable)
-        mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY.toLong())
-    }
-
-    private fun show() {
-        // Show the system bar
-        fullscreen_content.systemUiVisibility =
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-        mVisible = true
-
-        // Schedule a runnable to display UI elements after a delay
-        mHideHandler.removeCallbacks(mHidePart2Runnable)
-        mHideHandler.postDelayed(mShowPart2Runnable, UI_ANIMATION_DELAY.toLong())
-    }
-
-    /**
-     * Schedules a call to hide() in [delayMillis], canceling any
-     * previously scheduled calls.
-     */
-    private fun delayedHide(delayMillis: Int) {
-        mHideHandler.removeCallbacks(mHideRunnable)
-        mHideHandler.postDelayed(mHideRunnable, delayMillis.toLong())
     }
 
     companion object {

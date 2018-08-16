@@ -155,4 +155,23 @@
         <desc>适用于Android N+，与“强制odex2oat”的speed模式相同，但只编译系统应用。建议官改系统（或者进行过deodex的）刷完开机后进行此操作，从而提高整体流畅度！</desc>
         <script>file:///android_asset/custom/actions/sys_compile.sh</script>
     </action>
+    <action root="true">
+        <title>磁盘测速</title>
+        <desc>使用简单的命令检测磁盘连续读写速度</desc>
+        <script>
+            rm -f /sdcard/tmp 2> /dev/null
+            sync
+            echo 3 > /proc/sys/vm/drop_caches
+            echo '测试写入速度...'
+            busybox dd if=/dev/zero of=/sdcard/tmp bs=1024000 count=1024 conv=fsync
+            sync
+            echo 3 > /proc/sys/vm/drop_cache
+            echo '测试读取速度...'
+            busybox dd if=/sdcard/tmp of=/dev/null
+            echo '清理垃圾文件...'
+            rm -f /sdcard/tmp 2> /dev/null
+            sync
+            echo 3 > /proc/sys/vm/drop_caches
+        </script>
+    </action>
 </actions>

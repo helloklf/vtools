@@ -59,6 +59,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .detectLeakedClosableObjects()
                 .penaltyLog()
                 .penaltyDeath()
+                .detectAll()
                 .build());
         */
         startActivityForResult(Intent(this.applicationContext, StartSplashActivity::class.java), 999)
@@ -86,6 +87,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             setExcludeFromRecents()
             // AppShortcutManager(this.applicationContext).removeMenu()
             // checkUseState()
+            /*
             supportFragmentManager.addOnBackStackChangedListener {
                 if (supportFragmentManager.backStackEntryCount > 0) {
                     val item = supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 1)
@@ -94,6 +96,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     title = getString(R.string.app_name)
                 }
             }
+            */
 
 
             val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -136,8 +139,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val fragmentManager = supportFragmentManager
         fragmentManager.fragments.clear()
         val transaction = fragmentManager.beginTransaction()
-        val fragment = FragmentHome()
-        transaction.replace(R.id.main_content, fragment)
+        transaction.replace(R.id.main_content, FragmentHome())
         // transaction.addToBackStack(getString(R.string.app_name))
         transaction.commit()
     }
@@ -265,5 +267,11 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     public override fun onPause() {
         super.onPause()
+    }
+
+    override fun onDestroy() {
+        val fragmentManager = supportFragmentManager
+        fragmentManager.fragments.clear()
+        super.onDestroy()
     }
 }

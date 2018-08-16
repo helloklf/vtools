@@ -83,10 +83,7 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
 
     override fun onReceive(context: Context, intent: Intent) {
         val pendingResult = goAsync()
-        val asyncTask = TaskAsync()
-        asyncTask.execute(Runnable {
-            onReceiveAsync(intent, pendingResult)
-        })
+        onReceiveAsync(intent, pendingResult)
     }
 
     private fun onReceiveAsync(intent: Intent, pendingResult: PendingResult) {
@@ -120,13 +117,6 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
             showMsg("充电加速服务：\n" + ex.message, true);
         } finally {
             pendingResult.finish()
-        }
-    }
-
-
-    internal class TaskAsync : AsyncTask<Runnable, Int, Unit>() {
-        override fun doInBackground(vararg params: Runnable) {
-            params[0].run()
         }
     }
 
