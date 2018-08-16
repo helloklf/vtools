@@ -15,10 +15,6 @@ public class MyChatView extends View {
     private int[] strPercent = new int[]{10, 25, 18, 41, 2, 5};
     //圆的直径
     private float mRadius = 300;
-    //圆的粗细
-    private float mStrokeWidth = 40;
-    //文字大小
-    private int textSize = 20;
     //-------------画笔相关-------------
     //圆环的画笔
     private Paint cyclePaint;
@@ -29,8 +25,6 @@ public class MyChatView extends View {
     //-------------颜色相关-------------
     //边框颜色和标注颜色
     private int[] mColor = new int[]{0xFFF06292, 0xFF9575CD, 0xFFE57373, 0xFF4FC3F7, 0xFFFFF176, 0xFF81C784};
-    //文字颜色
-    private int textColor = 0xFF000000;
     //-------------View相关-------------
     //View自身的宽和高
     private int mHeight;
@@ -77,13 +71,16 @@ public class MyChatView extends View {
         cyclePaint = new Paint();
         cyclePaint.setAntiAlias(true);
         cyclePaint.setStyle(Paint.Style.STROKE);
+        float mStrokeWidth = 40;
         cyclePaint.setStrokeWidth(mStrokeWidth);
         //文字画笔
         textPaint = new Paint();
         textPaint.setAntiAlias(true);
+        int textColor = 0xFF000000;
         textPaint.setColor(textColor);
         textPaint.setStyle(Paint.Style.STROKE);
         textPaint.setStrokeWidth(1);
+        int textSize = 20;
         textPaint.setTextSize(textSize);
         //标注画笔
         labelPaint = new Paint();

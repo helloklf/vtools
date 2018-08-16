@@ -223,7 +223,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_share -> {
                 val sendIntent = Intent()
                 sendIntent.action = Intent.ACTION_SEND
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "https://www.paypal.me/duduski")
+                sendIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_link))
                 sendIntent.type = "text/plain"
                 startActivity(sendIntent)
             }

@@ -4,14 +4,12 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AndroidAppHelper;
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.XModuleResources;
 import android.content.res.XResources;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -58,7 +56,7 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
                     if ((Boolean) param.args[0]) {
                         callMethod(param.thisObject, "setForeground", false);
                     }
-                } catch (Exception ex) {
+                } catch (Exception ignored) {
                 }
             }
         });
@@ -174,9 +172,7 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
                                 newMetrics.density = dpi / 160f;
                                 newMetrics.densityDpi = (int) dpi;
                                 newMetrics.scaledDensity = dpi / 160f;
-                                if (Build.VERSION.SDK_INT >= 17) {
-                                    XposedHelpers.setIntField(newConfig, "densityDpi", (int) dpi);
-                                }
+                                XposedHelpers.setIntField(newConfig, "densityDpi", (int) dpi);
                             }
 
                             if (newConfig != null)

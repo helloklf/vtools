@@ -246,6 +246,7 @@ class FragmentBattery : Fragment() {
     }
 
     class OnSeekBarChangeListener2(private var next: Runnable, private var spf: SharedPreferences, private var settings_qc_limit_desc: TextView) : SeekBar.OnSeekBarChangeListener {
+        @SuppressLint("ApplySharedPref")
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
             val progress = seekBar!!.progress
             if (spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, Int.MIN_VALUE) == progress) {

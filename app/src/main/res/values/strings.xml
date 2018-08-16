@@ -1,7 +1,4 @@
 <resources>
-    <string-array name="app_desktop">
-        <item>com.teslacoilsw.launcher</item>
-    </string-array>
     <integer name="opacity">0</integer>
     <string-array name="powercfg_igoned">
         <item>com.zbar.lib</item>
@@ -74,15 +71,11 @@
     <string name="execute_wait">正在执行，请稍等…</string>
 
     <string name="error_root">抱歉，没有获取到ROOT权限，很多功能将无法使用！</string>
-    <string name="error_busybox">抱歉，没有安装Busybox，无法运行此应用！</string>
-    <string name="error_unsupport_uri">不支持的路径格式，非常抱歉。请向开发者反馈此问题！</string>
-    <string name="error_not_img">所选文件不是镜像格式（.img）</string>
-    <string name="unknow_action">不支持的操作！</string>
     <string name="question_install_busybox">安装Busybox吗？</string>
     <string name="question_install_busybox_desc">你的手机似乎没有安装busybox，这会导致Scene无法使用，是否要立即安装（需要修改System）？</string>
 
     <string name="share_link">你也来试试Scene吧，我觉得还不错：\n http://www.coolapk.com/apk/com.omarea.vtools</string>
-    <string name="feedback_link">mqqwpa://im/chat?chat_type=wpa&amp;uin=1191634433</string>
+    <!--<string name="feedback_link">mqqwpa://im/chat?chat_type=wpa&amp;uin=1191634433</string>-->
 
     <string name="app_name">Scene</string>
     <string name="app_name_mode_switch">Scene-快速切换模式</string>
@@ -99,43 +92,17 @@
     <string name="backup_action_desc_rec">备份当前使用中的导出Recovery为img，复制到/sdcard/recovery.img</string>
     <string name="restore_action_title_rec">刷入Recovery</string>
     <string name="restore_action_desc_rec">选择刷入recovery.img</string>
-    <string name="restore_action_ghostclone">应用克隆</string>
-    <string name="restore_action_ghostclone_rec">辅助于DualbootPatcher多系统同，快速的从另一个系统将应用和数据复制到当前系统中</string>
-
-    <string name="zip_package">ZIP打包</string>
-    <string name="zip_package_desc">强大的卡刷包制作工具，一键打包调频、Boot、ROM</string>
 
     <string name="backup_file_exists">覆盖文件？</string>
     <string name="backup_boot_exists">/sdcard/boot.img已经存在，是否覆盖已有文件？\n</string>
     <string name="backup_rec_exists">/sdcard/recovery.img已经存在，是否覆盖已有文件？\n</string>
     <string name="backup_space_small">存储空间不足，请至少预留100M可用空间！</string>
-    <string name="restore_boot_confirm">确定刷入BOOT？</string>
-    <string name="restore_boot_confirm_desc">此操做非常危险，刷入无效的BOOT镜像可能导致手机无法开机！\n</string>
 
-    <string name="rom2zip_contents">打包内容</string>
-    <string name="rom2zip_romname">ROM名称，限英文</string>
-    <string name="rom2zip_size">大约需要空间：</string>
-    <string name="rom2zip_tips">本工具估算的所需空间只是预计值，为确保操作顺利，请先预留足够的可用空间，并授权允许本应用使用本地存储和ROOT权限！！</string>
 
-    <string name="autoboosterhelp">
-        "<b>配置说明：</b>"
-
-        "<span>当黑名单应用离开主界面进入挂起状态时，本工具将立即将它杀死或休眠（默认是杀死）。</span>"
-
-        "<span>需要注意的是，其它应用的弹窗可能会导致前台应用丢失焦点，此时如果是黑名单应用可能会被意外杀死！</span>"
-    </string>
-    <string name="autobooster_tab_disDoze">Doze白名单</string>
-    <string name="autobooster_tab_blacklist">后台黑名单</string>
     <string name="autobooster_tab_details">黑名单设置</string>
     <string name="autobooster_tab_system_scene">系统场景</string>
-    <string name="autobooster_cacheclear">缓存回收</string>
-    <string name="autobooster_cacheclear_desc">每次切换应用都进行缓存回收，可以保持内存处于较高可用状态，但可能会减缓运行速度增加耗电。</string>
-    <string name="autoboster_dozemode">休眠模式（Android 6.0+）</string>
-    <string name="autobooster_dozemode_desc">使用休眠模式替代强制停止，适合内存比较充足的设备，但是有些比较流氓的软件可能无法休眠！</string>
     <string name="auto_clear_ignore_chager">充电状态忽略</string>
     <string name="auto_clear_ignore_chager_desc">充电状态下，息屏动作延迟到充电完成才执行</string>
-    <string name="autobooster_service_unactive">未激活辅助服务 - 点击去激活</string>
-    <string name="autobooster_service_unactive2">自动行为功能未开启 - 点击去激活</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -144,8 +111,6 @@
     <string name="accessbility_autoclick_desc">安装第三方应用时，自动帮你点“下一步”</string>
     <string name="accessbility_charger">充电加速 *实验性</string>
     <string name="accessbility_charger_desc">尝试提高充电最大电流限制，但不代表实际充电速度</string>
-    <string name="accessbility_dynconfig">动态响应 - 总开关</string>
-    <string name="accessbility_dynconfig_desc">开启此功能时，你的设备性能将受Scene控制</string>
     <string name="accessbility_bp">充电保护</string>
     <string name="accessbility_bp_desc">充电到指定百分比时自动禁止充电功能，浅充浅放有助于保护电池。但可能导致电量显示不精准。</string>
     <string name="accessbility_bp_level_desc">电量限制值（%）</string>
@@ -163,71 +128,26 @@
     <string name="menu_core_control">CPU 控制</string>
     <string name="menu_additional">附加功能</string>
     <string name="menu_applictions">应用管理</string>
-    <string name="menu_tasks">系统进程</string>
     <string name="menu_swap">SWAP设置</string>
     <string name="menu_battery">电池充电</string>
     <string name="menu_battery_stats">耗电统计</string>
-    <string name="menu_xposed">Xposed功能</string>
     <string name="menu_keymap">按键辅助</string>
-    <string name="menu_whitelist">阻止休眠</string>
     <string name="menu_img">备份还原</string>
-    <string name="menu_settings">软件设置</string>
-    <string name="menu_help">使用帮助</string>
     <string name="menu_qq">Scene实验室</string>
     <string name="menu_menu_title">反馈交流</string>
     <string name="menu_share">分享</string>
-    <string name="menu_feedback">反馈</string>
-    <string name="menu_reward">捐赠</string>
 
     <string name="system">系统</string>
-
-    <string name="title_vtoolsresize">vtools容量调整</string>
-    <string name="title_activity_rom2zip">打包当前ROM</string>
-
-    <string name="action_shutdown">关闭手机</string>
-    <string name="action_reboot">重启手机</string>
-    <string name="action_hotreboot">热重启(不推荐)</string>
-    <string name="action_reboot_rec">重启到Recovery</string>
-    <string name="action_reboot_bl">重启到FastBoot</string>
-    <string name="action_reboot9008">重启到9008模式</string>
-
-    <string name="xposed_tab_a">全局配置</string>
-    <string name="xposed_tab_b">应用配置</string>
-    <string name="xposed_gamehf_title">王者荣耀 高帧率模式</string>
-    <string name="xposed_gamehf_desc">通过伪装设备型号为OPPO R11，让王者荣耀游戏允许开启60帧模式并提高游戏稳定性。</string>
-    <string name="xposed_dpi_title">应用单独配置</string>
-    <string name="xposed_appconfig_desc">允许对应用单独进行配置，自定义应用DPI和隐藏任务时需要开启此项。</string>
-    <string name="xposed_actived">模块已激活-工作正常</string>
-    <string name="xposed_unactive">Xposed模块未激活</string>
-    <string name="xposed_cannot_openxposed">Xposed管理器似乎还没有安装？</string>
-    <string name="xposed_cannot_openaddin">现在，Xposed相关功能已经从Scene移除并独立，如果你还没安装独立插件，请到 酷安市场搜索“微插件”下载并安装激活？</string>
-
-    <string name="dataresize_waring">
-"<big>注意：</big>"
-        "<br />"
-        "<span>保险起见，建议备份手机上重要数据！</span>"
-        "<br />"
-        "<span>推荐容量：4000MB - 8000MB</span>"
-        "<span>　　　　　≈30-50个应用</span>"
-    </string>
-
-    <string name="helpmsg">
-        为确保软件稳定运行，需要允许软件 后台自启动、读写本地文件并锁定后台加入内存清理白名单。
-        "<br />"
-        对于MIUI等具有软件休眠机制的系统，还应对本软件单独设置，避免后台服务被暂停和挂起。
-    </string>
 
     <string name="accessibility_running">辅助服务已激活</string>
     <string name="accessibility_stoped">点击此处去激活辅助服务</string>
 
-    <string name="error_notbusybox">没有安装Busybox，部分功能可能无法正常使用！</string>
     <string name="battery_uevent_title">$ cat /sys/class/power_supply/bms/uevent</string>
     <string name="home_hide_in_recents">强迫症</string>
     <string name="home_hide_in_recents_desc">不要在多任务界面显示Scene</string>
     <string name="home_app_night">辣眼睛</string>
     <string name="home_app_night_desc">开启暗色主题</string>
     <string name="applist_help">✔ 已备份\n✘ 备份的版本比安装的版本更高\n★ 已安装的版本比备份的版本旧\n☆ 已备份数据未备份APK\n\n目前所提供的应用数据备份功能，需要系统集成busybox、toybox，使用tar+gz压缩数据（如果系统支持，将使用pigz提高压缩速度），仅备份 “/data/data/应用包名” 下的数据，且不保证兼容所有系统和应用。\n\n“禁用+隐藏”非常适合精简ROM，但是应用一旦被设为隐藏你将无法通过其它应用管理工具来恢复或启动（除非恢复出厂设置或在Scene里手动解除隐藏），Scene会自动保存隐藏记录，你可以通过下面的按钮来解除隐藏。\n如果你卸载了Scene，则隐藏记录也会丢失，则无法再恢复！！</string>
-    <string name="title_activity_core_contrl">CPU控制</string>
     <string name="dialog_addin_device_warn">请不要输入特殊符号，卸载Scene后备份的机型信息也会丢失！\n已兼容应用变量的机型代码，复制后重新打开此窗口即可使用！</string>
     <string name="dialog_addin_device_desc">修改后可点击“还原”->“确认”恢复修改前的机型，卸载Scene会导致备份的机型信息丢失，请务必还原后再卸载！\n\n或者，你也可以通过重新刷入完整ROM来恢复机型信息！\n\n使用DualBootPatcher多软件切勿使用本功能修改机型！！！</string>
     <string name="dialog_addin_device_inner">预设模板</string>
@@ -243,13 +163,10 @@
     <string name="shortcut_p2_long">性能配置-性能</string>
     <string name="shortcut_p3">极速模式</string>
     <string name="shortcut_p3_long">性能配置-极速</string>
-    <string name="shortcut_xposed">Xposed</string>
-    <string name="shortcut_xposed_long">Xposed插件</string>
     <string name="power_change_default">已切换为均衡模式，适合日常使用，速度与耗电平衡！</string>
     <string name="power_change_game">已切换为游戏（性能）模式，但受温度影响并不一定会更快，你可以考虑删除温控！</string>
     <string name="power_change_powersave">已切换为省电模式，适合长时间媒体播放或阅读，综合使用时并不效率也不会省电太多！</string>
     <string name="power_chagne_fast">已切换为极速模式，这会大幅增加发热，如果不删除温控性能并不稳定！</string>
-    <string name="change_need_reboot">此设置将在下次启动Scene时生效！</string>
     <string name="device_unsupport">该功能暂不支持您的设备！</string>
 
     <string name="addin_fullscreen_on">沉浸式体验</string>
@@ -274,8 +191,6 @@
     <string name="addin_force_dex_compile_desc">适用于Android N+，对已安装的应用进行dex2oat编译，从而降低运行时的CPU占用，此过程可能需要半小时甚至更久（期间会占用大量CPU、RAM资源），并增加10%~30%的磁盘占用！\n系统更新后可能需要重新进行此操作！</string>
     <string name="addin_pm_dexopt">调整默认odex2oat策略</string>
     <string name="addin_pm_dexopt_desc">适用于Android N+，调整PackageManager应用安装时的dex2oat编译级别，选择更快的安装（运行时编译）或安装时完整的编译，重启后生效，更新系统后需要重新设置</string>
-    <string name="addin_drop_caches">内存清理</string>
-    <string name="addin_drop_caches_desc"><![CDATA[Linux标准缓存清理命令：echo 3 > /proc/sys/vm/drop_caches]]></string>
     <string name="addin_thermal_remove">删除、恢复、禁用温控</string>
     <string name="addin_thermal_remove_desc">禁用温控可确保手机性能更加稳定，但会显著增加发热，同时也会导致MIUI系统的CPU智能调度失效，需要重启手机。</string>
     <string name="addin_del_pwd">删除锁屏密码</string>
@@ -300,7 +215,6 @@
     <string name="size">大小</string>
     <string name="type">类型</string>
     <string name="path">路径</string>
-    <string name="power_connected">充电器已连接！</string>
     <string name="battery_low">电池电量低，请及时充电！</string>
     <string name="sorry">抱歉</string>
     <string name="powersave">省电模式</string>
@@ -311,13 +225,6 @@
     <string name="use">用户</string>
     <string name="backuped">已备份</string>
     <string name="help">帮助</string>
-    <string name="addto_performance"><![CDATA[添加选中到 -> 性能模式]]></string>
-    <string name="addto_powersave"><![CDATA[添加选中到 -> 省电模式]]></string>
-    <string name="addto_fast"><![CDATA[添加选中到 -> 极速模式]]></string>
-    <string name="addto_ignore"><![CDATA[添加选中到 -> 忽略列表]]></string>
-    <string name="addto_balance"><![CDATA[添加选中到 -> 均衡模式]]></string>
-    <string name="set_power_mode">设置配置模式</string>
-    <string name="i_know">知道了</string>
     <string name="more">了解更多</string>
     <string name="not_support_config">未找到可用的模式配置脚本</string>
     <string name="not_support_config_desc">本应用目前还没有为您当前Soc提供性能配置文件，但你可以自己创建配置文件，并放到/data目录下，文件命名为powercfg，权限设为0755.\n\n或者，试试YC大佬是否有为你的设备提供可用的配置文件，找到适用的配置，点击powercfg.apk，工具箱会自动帮你安装！</string>
@@ -339,11 +246,7 @@
     <string name="r15">R15</string>
     <string name="auto_start">自启动</string>
     <string name="boot_after_auto_modify">开机后自动修改</string>
-    <string name="exclude_recent">从最近任务列表隐藏</string>
     <string name="core_control_helpinfo">这是一个功能简陋的CPU控制器，但实际上CPU的调度工作非常复杂，单纯的提高或降低频率限制，并不一定能提高流畅度或节省电量。\n\n部分的手机底层具有自动调节CPU参数的机制，会导致自定义的参数很快失效（小米手机请先到“附加功能-自定义”中禁用perfd和Performance Boost Config，否则CPU频率修改不会生效！）。\n\n此外，热插拔温控功能可能也会影响你对CPU参数的修改！\n\ninteractive调度适用于大多数手机，反应迅速（schedutil更好），ondemand调度则会更缓慢的切换频率，conservative、powersave、performance模式均不推荐使用！。\n\n优先Big核心会在获得绝佳的流畅体验的同时，耗电和发热显著增高。</string>
-    <string name="android_m_doze_doze">在白名单中的应用，将不会被安卓（Android M+）的Doze机制休眠。当然，Doze模式在国内的作用是微乎其微的，而且不被休眠并不代表进程不会被杀死！</string>
-    <string name="doze_list_auto_resume">手机开机完成后，自动恢复当前设定状态（由于MIUI系统重启后会自动将系统应用全部添加到白名单中）</string>
-    <string name="auto_resume">自动恢复设置</string>
     <string name="shell_executor">脚本执行</string>
     <string-array name="powercfg_modes2">
         <item>省电模式</item>
@@ -370,21 +273,10 @@
         <item>系统应用</item>
         <item>所有应用</item>
     </string-array>
-    <string-array name="key_event">
-        <item>默认动作</item>
-        <item>返回</item>
-        <item>首页</item>
-        <item>菜单</item>
-        <item>最近任务</item>
-        <item>下拉通知</item>
-        <item>截屏</item>
-        <item>相机</item>
-    </string-array>
     <string-array name="vitual_touch_bar_map">
         <item>返回-首页-任务</item>
         <item>任务-首页-返回</item>
     </string-array>
-    <string name="title_activity_app_details">应用详情</string>
     <string name="title_activity_file_selector">请选择文件</string>
     <string name="config_save_fail">配置保存失败！</string>
     <string name="boot_success">已完成开机自启动</string>
@@ -405,20 +297,9 @@
     <string name="start_app_fail">启动应用失败！</string>
     <string name="scene_need_notic_listing">请先授权允许Scene“通知使用权限”！</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="get_online_config">在线获取配置脚本</string>
 
     <string name="title_activity_start_splash">StartSplashActivity</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="scene_change_action">com.omarea.vtools.SceneConfigChanged</string>
     <string name="scene_appchange_action">com.omarea.vtools.SceneAppChanged</string>
-
-    <!--<string-array name="google_glyph_strings">
-        <item>M142.9,24.2C97.6,39.7,59,73.6,37.5,116.5c-7.5,14.8-12.9,30.5-16.2,46.8c-8.2,40.4-2.5,83.5,16.1,120.3   c12.1,24,29.5,45.4,50.5,62.1c19.9,15.8,43,27.6,67.6,34.1c31,8.3,64,8.1,95.2,1c28.2-6.5,54.9-20,76.2-39.6   c22.5-20.7,38.6-47.9,47.1-77.2c9.3-31.9,10.5-66,4.7-98.8c-58.3,0-116.7,0-175,0c0,24.2,0,48.4,0,72.6c33.8,0,67.6,0,101.4,0   c-3.9,23.2-17.7,44.4-37.2,57.5c-12.3,8.3-26.4,13.6-41,16.2c-14.6,2.5-29.8,2.8-44.4-0.1c-14.9-3-29-9.2-41.4-17.9   c-19.8-13.9-34.9-34.2-42.6-57.1c-7.9-23.3-8-49.2,0-72.4c5.6-16.4,14.8-31.5,27-43.9c15-15.4,34.5-26.4,55.6-30.9   c18-3.8,37-3.1,54.6,2.2c15,4.5,28.8,12.8,40.1,23.6c11.4-11.4,22.8-22.8,34.2-34.2c6-6.1,12.3-12,18.1-18.3   c-17.3-16-37.7-28.9-59.9-37.1C228.2,10.6,183.2,10.3,142.9,24.2z</item>
-        <item>M142.9,24.2c40.2-13.9,85.3-13.6,125.3,1.1c22.2,8.2,42.5,21,59.9,37.1c-5.8,6.3-12.1,12.2-18.1,18.3    c-11.4,11.4-22.8,22.8-34.2,34.2c-11.3-10.8-25.1-19-40.1-23.6c-17.6-5.3-36.6-6.1-54.6-2.2c-21,4.5-40.5,15.5-55.6,30.9    c-12.2,12.3-21.4,27.5-27,43.9c-20.3-15.8-40.6-31.5-61-47.3C59,73.6,97.6,39.7,142.9,24.2z</item>
-        <item>M21.4,163.2c3.3-16.2,8.7-32,16.2-46.8c20.3,15.8,40.6,31.5,61,47.3c-8,23.3-8,49.2,0,72.4    c-20.3,15.8-40.6,31.6-60.9,47.3C18.9,246.7,13.2,203.6,21.4,163.2z</item>
-        <item>M203.7,165.1c58.3,0,116.7,0,175,0c5.8,32.7,4.5,66.8-4.7,98.8c-8.5,29.3-24.6,56.5-47.1,77.2    c-19.7-15.3-39.4-30.6-59.1-45.9c19.5-13.1,33.3-34.3,37.2-57.5c-33.8,0-67.6,0-101.4,0C203.7,213.5,203.7,189.3,203.7,165.1z</item>
-        <item>M37.5,283.5c20.3-15.7,40.6-31.5,60.9-47.3c7.8,22.9,22.8,43.2,42.6,57.1c12.4,8.7,26.6,14.9,41.4,17.9    c14.6,3,29.7,2.6,44.4,0.1c14.6-2.6,28.7-7.9,41-16.2c19.7,15.3,39.4,30.6,59.1,45.9c-21.3,19.7-48,33.1-76.2,39.6    c-31.2,7.1-64.2,7.3-95.2-1c-24.6-6.5-47.7-18.2-67.6-34.1C67,328.9,49.6,307.5,37.5,283.5z</item>
-    </string-array>-->
 </resources>

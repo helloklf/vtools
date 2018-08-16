@@ -8,7 +8,7 @@ import android.os.Environment
 
 object CommonCmds {
     const val PACKAGE_NAME = "com.omarea.vtools"
-    val SDCardDir = Environment.getExternalStorageDirectory().absolutePath
+    val SDCardDir: String = Environment.getExternalStorageDirectory().absolutePath
 
     const val BackUpDir = "/backups/apps/";
     val AbsBackUpDir = "$SDCardDir/backups/apps/";

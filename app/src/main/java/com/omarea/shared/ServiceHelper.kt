@@ -20,8 +20,7 @@ import com.omarea.vtools.R
 import java.io.File
 import java.util.*
 import android.app.KeyguardManager
-
-
+import java.lang.ref.WeakReference
 
 
 /**
@@ -257,19 +256,45 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         lastPackage = packageName
     }
 
-    //焦点应用改变
+    /**
+     * 焦点应用改变
+     */
     fun onFocusAppChanged(packageName: String) {
         startTimer() // 前台应用改变后开始定时更新通知
         if (lastPackage == packageName || ignoredList.contains(packageName)) return
         if (lastPackage == null) lastPackage = "com.android.systemui"
 
         if (accuSwitch)
-            Thread(Runnable {
-                if (dumpTopAppliction.dumpsysTopActivity(packageName) == packageName)
-                    dumpSuccess(packageName)
-            }).start()
+            DumpTopApplictionThread(dumpTopAppliction, packageName, this).start()
         else
             dumpSuccess(packageName)
+    }
+
+    /**
+     * 获取上层应用
+     */
+    private class DumpTopApplictionThread(
+            dumpTopAppliction: DumpTopAppliction,
+            packageName: String,
+            serviceHelper: ServiceHelper
+    ) : Thread() {
+        private var dumpTopAppliction: WeakReference<DumpTopAppliction>
+        private var packageName: WeakReference<String>
+        private var serviceHelper: WeakReference<ServiceHelper>
+        override fun run() {
+            val packageName = this.packageName.get()!!
+            if (dumpTopAppliction.get()!!.dumpsysTopActivity(packageName) == packageName) {
+                val serviceHelper = this.serviceHelper.get()
+                if (serviceHelper != null) {
+                    serviceHelper.dumpSuccess(packageName)
+                }
+            }
+        }
+        init {
+            this.dumpTopAppliction = WeakReference(dumpTopAppliction)
+            this.packageName = WeakReference(packageName)
+            this.serviceHelper = WeakReference(serviceHelper)
+        }
     }
 
     fun onKeyDown(): Boolean {

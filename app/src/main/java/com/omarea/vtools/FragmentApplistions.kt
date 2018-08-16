@@ -209,10 +209,10 @@ class FragmentApplistions : Fragment() {
         if (myHandler != null) {
             myHandler!!.post {
                 try {
+                    processBarDialog.hideDialog()
                     if (isDetached) {
                         return@post
                     }
-                    processBarDialog.hideDialog()
                     val adapter = AppListAdapter(dl, apps_search_box.text.toString().toLowerCase())
                     lv.adapter = adapter
                     lv.onItemClickListener = OnItemClickListener { list, itemView, postion, _ ->

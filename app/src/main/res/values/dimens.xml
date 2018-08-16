@@ -6,11 +6,11 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="text_margin">16dp</dimen>
-    <dimen name="app_bar_height">180dp</dimen>
+    <!--<dimen name="text_margin">16dp</dimen>
+    <dimen name="app_bar_height">180dp</dimen>-->
     <integer name="addin_minimum_version">502</integer>
 
-    <color name="google_red">#EA4335</color>
+    <!--<color name="google_red">#EA4335</color>
     <color name="google_yellow">#FBBC05</color>
     <color name="google_blue">#4285F4</color>
     <color name="google_green">#34A853</color>
@@ -22,4 +22,5 @@
         <item>@color/google_blue</item>
         <item>@color/google_green</item>
     </integer-array>
+    -->
 </resources>

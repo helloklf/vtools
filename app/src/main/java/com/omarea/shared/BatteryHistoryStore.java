@@ -29,7 +29,7 @@ public class BatteryHistoryStore extends SQLiteOpenHelper {
                 "io int default(-1)," +
                 "package text" +
             ")");
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
     }
 
@@ -74,6 +74,7 @@ public class BatteryHistoryStore extends SQLiteOpenHelper {
                 batteryAvgStatus.count = cursor.getInt(4);
                 data.add(batteryAvgStatus);
             }
+            cursor.close();
             return data;
         } catch (Exception ex) {
             Log.e("query-data-base", ex.getMessage());

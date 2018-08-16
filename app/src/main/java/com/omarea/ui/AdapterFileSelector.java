@@ -46,14 +46,7 @@ public class AdapterFileSelector extends BaseAdapter {
                     File[] files = dir.listFiles(new FileFilter() {
                         @Override
                         public boolean accept(File pathname) {
-                            if (!pathname.exists()) {
-                                return false;
-                            }
-                            if (pathname.isFile() && extension != null && !extension.isEmpty()) {
-                                return pathname.getName().endsWith(extension);
-                            } else {
-                                return true;
-                            }
+                            return pathname.exists() && (!pathname.isFile() || extension == null || extension.isEmpty() || pathname.getName().endsWith(extension));
                         }
                     });
 

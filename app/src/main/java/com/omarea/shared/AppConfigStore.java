@@ -23,7 +23,7 @@ public class AppConfigStore extends SQLiteOpenHelper {
                     "dis_button int default(0)," +
                     "gps_on int default(0)," +
                     "dis_background_run int default(0))");
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
 
         }
     }
