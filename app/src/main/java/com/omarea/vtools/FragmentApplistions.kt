@@ -26,6 +26,7 @@ import com.omarea.ui.SearchTextWatcher
 import com.omarea.vtools.dialogs.DialogAppOptions
 import com.omarea.vtools.dialogs.DialogSingleAppOptions
 import kotlinx.android.synthetic.main.layout_applictions.*
+import java.lang.ref.WeakReference
 
 
 class FragmentApplistions : Fragment() {
@@ -203,6 +204,7 @@ class FragmentApplistions : Fragment() {
         }).start()
     }
 
+    private var adapter: WeakReference<AppListAdapter> = WeakReference<AppListAdapter>(null)
     private fun setListData(dl: ArrayList<Appinfo>?, lv: OverScrollListView) {
         if (dl == null)
             return
@@ -213,19 +215,24 @@ class FragmentApplistions : Fragment() {
                     if (isDetached) {
                         return@post
                     }
-                    val adapter = AppListAdapter(dl, apps_search_box.text.toString().toLowerCase())
-                    lv.adapter = adapter
+                    val adapterObj = AppListAdapter(dl, apps_search_box.text.toString().toLowerCase())
+                    adapter = WeakReference(adapterObj)
+                    lv.adapter = adapterObj
                     lv.onItemClickListener = OnItemClickListener { list, itemView, postion, _ ->
                         if (postion == 0) {
                             val checkBox = itemView.findViewById(R.id.select_state_all) as CheckBox
                             checkBox.isChecked = !checkBox.isChecked
-                            adapter.setSelecteStateAll(checkBox.isChecked)
-                            adapter.notifyDataSetChanged()
+                            if (adapter.get() != null) {
+                                adapter.get()!!.setSelecteStateAll(checkBox.isChecked)
+                                adapter.get()!!.notifyDataSetChanged()
+                            }
                         } else {
                             val checkBox = itemView.findViewById(R.id.select_state) as CheckBox
                             checkBox.isChecked = !checkBox.isChecked
                             val all = lv.findViewById<CheckBox>(R.id.select_state_all)
-                            all.isChecked = adapter.getIsAllSelected()
+                            if (adapter.get() != null) {
+                                all.isChecked = adapter.get()!!.getIsAllSelected()
+                            }
                         }
                     }
                     val all = lv.findViewById<CheckBox>(R.id.select_state_all)
