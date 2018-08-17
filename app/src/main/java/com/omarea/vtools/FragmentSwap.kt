@@ -34,6 +34,7 @@ class FragmentSwap : Fragment() {
     internal lateinit var view: View
     private lateinit var myHandler: Handler
     private lateinit var swapConfig: SharedPreferences
+    private var totalMem = 2048
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -41,6 +42,12 @@ class FragmentSwap : Fragment() {
 
         myHandler = Handler()
         swapConfig = context!!.getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)
+
+        val activityManager = context!!.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+        val info = ActivityManager.MemoryInfo()
+        activityManager.getMemoryInfo(info)
+
+        totalMem = (info.totalMem / 1024 / 1024f).toInt()
         return view
     }
 
@@ -112,10 +119,23 @@ class FragmentSwap : Fragment() {
         chk_swap_autostart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)
         chk_zram_autostart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)
 
-        txt_swap_size.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, if (File("/data/swapfile").exists()) (File("/data/swapfile").length() / 1024 / 1024).toInt() else 0)
-        txt_swap_size_display.text = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 0).toString() + "MB"
-        txt_zram_size.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0)
-        txt_zram_size_display.text = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0).toString() + "MB"
+        var swapSize = 0
+        if (File("/data/swapfile").exists()) {
+            swapSize = (File("/data/swapfile").length() / 1024 / 1024).toInt()
+        } else {
+            swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 0)
+        }
+        if (swapSize > totalMem)
+            swapSize = totalMem
+        txt_swap_size.progress = swapSize
+        txt_swap_size.max = totalMem
+        txt_swap_size_display.text = "${swapSize}MB"
+        txt_zram_size.max = totalMem
+        var zramSize = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0)
+        if (zramSize > totalMem)
+            zramSize = totalMem
+        txt_zram_size.progress = zramSize
+        txt_zram_size_display.text = "${zramSize}MB"
         txt_swap_swappiness.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65)
         txt_swap_size.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
             txt_swap_size_display.text = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 0).toString() + "MB"

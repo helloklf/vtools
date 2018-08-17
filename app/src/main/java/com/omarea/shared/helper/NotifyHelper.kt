@@ -142,19 +142,24 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
     }
 
     var path: String? = null
+    private var isHuawei = false
+    private var isOther = false
     private fun getBatteryIO(): String {
+        if (isHuawei) {
+            return getBatteryIOForHuawei()
+        }
         if (path == null) {
             if (RootFile.itemExists("/sys/class/power_supply/battery/current_now")) {
                 path = "/sys/class/power_supply/battery/current_now"
             } else if (RootFile.itemExists("/sys/class/power_supply/battery/BatteryAverageCurrent")) {
                 path = "/sys/class/power_supply/battery/BatteryAverageCurrent"
             } else {
-                path = ""
+                val io = getBatteryIOForHuawei()
+                if (!io.isEmpty()) {
+                    isHuawei = true
+                }
+                return io;
             }
-        }
-
-        if (path.isNullOrEmpty()) {
-            return ""
         }
 
         var io = KernelProrp.getProp(path!!)
@@ -187,6 +192,22 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
                 return start + io.substring(0, io.length - 3)
             }
             return start + io
+        } catch (ex: Exception) {
+            return ""
+        }
+    }
+    private fun getBatteryIOForHuawei(): String {
+        if (RootFile.itemExists("/sys/class/power_supply/Battery/uevent")) {
+            path = "/sys/class/power_supply/Battery/uevent"
+        } else if (RootFile.itemExists("/sys/class/power_supply/bms/uevent")) {
+            path = "/sys/class/power_supply/bms/uevent"
+        } else {
+            return ""
+        }
+
+        try {
+            val io = KernelProrp.getProp(path!!, "POWER_SUPPLY_CURRENT_NOW=")
+            return io.replace("POWER_SUPPLY_CURRENT_NOW=", "").replace("error", "")
         } catch (ex: Exception) {
             return ""
         }
