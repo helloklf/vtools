@@ -130,7 +130,10 @@ class FragmentSwap : Fragment() {
         txt_swap_size.progress = swapSize
         txt_swap_size.max = totalMem
         txt_swap_size_display.text = "${swapSize}MB"
-        txt_zram_size.max = totalMem
+        if (totalMem > 2048)
+            txt_zram_size.max = 2048
+        else
+            txt_zram_size.max = totalMem
         var zramSize = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0)
         if (zramSize > totalMem)
             zramSize = totalMem
