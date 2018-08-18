@@ -41,6 +41,11 @@
                 android:id="@+id/nav_applictions"
                 android:icon="@drawable/ic_menu_modules"
                 android:title="@string/menu_applictions" />
+            <item
+                android:visible="false"
+                android:id="@+id/nav_recents"
+                android:icon="@drawable/ic_menu_modules"
+                android:title="@string/menu_applictions" />
         </menu>
     </item>
     <item android:title="系统管理">

@@ -18,6 +18,7 @@ import android.view.accessibility.AccessibilityWindowInfo
 import android.widget.Toast
 import com.omarea.shared.AutoClickService
 import com.omarea.shared.BootService
+import com.omarea.shared.CrashHandler
 import com.omarea.shared.ServiceHelper
 import java.util.*
 
@@ -66,6 +67,7 @@ override fun onCreate() {
     */
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        CrashHandler().init(this)
         try {
             val service = Intent(this, BootService::class.java)
             //service.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

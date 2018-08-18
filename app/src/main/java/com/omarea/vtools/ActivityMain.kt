@@ -8,6 +8,7 @@ import android.graphics.Point
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.os.StrictMode
 import android.provider.Settings
 import android.support.design.widget.NavigationView
@@ -22,11 +23,14 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import com.omarea.shared.CrashHandler
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.units.BackupRestoreUnit
 import com.omarea.shell.units.BatteryUnit
 import com.omarea.vtools.dialogs.DialogPower
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.File
+import java.io.FileInputStream
 
 class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var hasRoot = false
@@ -62,8 +66,8 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .detectAll()
                 .build());
         */
+        CrashHandler().init(this)
         startActivityForResult(Intent(this.applicationContext, StartSplashActivity::class.java), 999)
-        //CrashHandler().init(this)
         //setMaxAspect()
         if (globalSPF == null) {
             globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
@@ -113,6 +117,22 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 hideRootMenu(navigationView.menu)
             else if (!BackupRestoreUnit.isSupport()) {
                 navigationView.menu.findItem(R.id.nav_img).isEnabled = false
+            }
+            val file = File(Environment.getExternalStorageDirectory().absolutePath + "/vtools-error.log")
+            if (file.exists()) {
+                val error = String(FileInputStream(file).readBytes())
+                AlertDialog.Builder(this)
+                        .setTitle("异常退出记录")
+                        .setMessage("检测到Scene在之前的运行过程中出现错误，错误信息如下：\n\n" + error + "\n\n请截屏错误信息，或将本机存储目录下的vtools-error.log发送给开发者，以便解决问题！")
+                        .setNegativeButton(R.string.btn_iknow, {
+                            _, _ ->
+                        })
+                        .setPositiveButton(R.string.btn_cancel, {
+                            _, _ ->
+                            file.delete()
+                        })
+                        .create()
+                        .show()
             }
         }
     }
@@ -236,6 +256,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 } catch (ex: Exception) {
                 }
             }
+            R.id.nav_recents -> fragment = FragmentRecent.createPage()
         }
 
         if (fragment != null) {

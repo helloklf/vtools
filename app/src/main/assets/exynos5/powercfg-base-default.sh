@@ -168,17 +168,17 @@ case "$target" in
 
         echo 'coarse_demand' > /sys/devices/14ac0000.mali/power_policy
         #echo 'always_on' > /sys/devices/14ac0000.mali/power_policy
-        echo '78' > /sys/devices/14ac0000.mali/highspeed_load
+        echo '82' > /sys/devices/14ac0000.mali/highspeed_load
         echo '806' > /sys/devices/14ac0000.mali/max_clock
         echo '100' > /sys/devices/14ac0000.mali/min_clock
         echo "600" > /sys/devices/14ac0000.mali/highspeed_clock
     ;;
 esac
 
-set_value '0' /dev/cpuset/system-background/cpus
-set_value '1' /dev/cpuset/background/cpus
+set_value '0-3' /dev/cpuset/system-background/cpus
+set_value '0-1' /dev/cpuset/background/cpus
 set_value '4-7' /dev/cpuset/foreground/boost/cpus
-set_value '2-7' /dev/cpuset/foreground/cpus
-set_value '2-7' /dev/cpuset/top-app/cpus
-set_value "4-7" /dev/cpuset/dex2oat/cpus
+set_value '1-7' /dev/cpuset/foreground/cpus
+set_value '1-7' /dev/cpuset/top-app/cpus
+set_value "2-7" /dev/cpuset/dex2oat/cpus
 set_value 0 /proc/sys/kernel/sched_boost
