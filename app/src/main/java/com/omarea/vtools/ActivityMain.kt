@@ -127,7 +127,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         .setNegativeButton(R.string.btn_iknow, {
                             _, _ ->
                         })
-                        .setPositiveButton(R.string.btn_cancel, {
+                        .setPositiveButton(R.string.btn_delete, {
                             _, _ ->
                             file.delete()
                         })

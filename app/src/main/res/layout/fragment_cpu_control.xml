@@ -668,24 +668,28 @@
 
                         <CheckBox
                             android:id="@+id/core_0"
+                            android:layout_weight="1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="CPU0" />
 
                         <CheckBox
                             android:id="@+id/core_1"
+                            android:layout_weight="1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="CPU1" />
 
                         <CheckBox
                             android:id="@+id/core_2"
+                            android:layout_weight="1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="CPU2" />
 
                         <CheckBox
                             android:id="@+id/core_3"
+                            android:layout_weight="1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="CPU3" />
@@ -701,28 +705,41 @@
 
                         <CheckBox
                             android:id="@+id/core_4"
+                            android:layout_weight="1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="CPU4" />
 
                         <CheckBox
                             android:id="@+id/core_5"
+                            android:layout_weight="1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="CPU5" />
 
                         <CheckBox
                             android:id="@+id/core_6"
+                            android:layout_weight="1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="CPU6" />
 
                         <CheckBox
                             android:id="@+id/core_7"
+                            android:layout_weight="1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="CPU7" />
                     </LinearLayout>
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_gravity="fill_horizontal"
+                        android:layout_marginTop="8dp"
+                        android:layout_column="0"
+                        android:layout_columnSpan="2"
+                        android:layout_row="3"
+                        android:text="可能需要关闭温控栏的“核心控制”（高通设备），并关闭热插拔才能设置CPU核心离线状态！" />
                 </GridLayout>
             </android.support.v7.widget.CardView>
         </LinearLayout>

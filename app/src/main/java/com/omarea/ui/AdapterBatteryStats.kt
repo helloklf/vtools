@@ -84,7 +84,9 @@ class AdapterBatteryStats(private val context: Context, private val list: ArrayL
         }
         convertView.findViewById<TextView>(R.id.itemAvgIO).text = batteryStats.io.toString() + "mA/h"
         convertView.findViewById<TextView>(R.id.itemTemperature).text = batteryStats.temperature.toString() + "°C"
-        convertView.findViewById<TextView>(R.id.itemCounts).text = "${batteryStats.count / 12}分钟,耗电" + String.format("%.1f", (batteryStats.count * batteryStats.io * timerRate / 360.0)) + "mAh"
+        val time = (batteryStats.count * timerRate / 60.0).toInt()
+        val total = batteryStats.count * batteryStats.io * timerRate / 3600.0
+        convertView.findViewById<TextView>(R.id.itemCounts).text = "${time}分钟,耗电" + String.format("%.1f",total) + "mAh"
         loadIcon(convertView, batteryStats.packageName)
         return convertView
     }

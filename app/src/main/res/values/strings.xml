@@ -59,6 +59,7 @@
     </string-array>
 
     <string name="btn_cancel">取消</string>
+    <string name="btn_delete">删除</string>
     <string name="btn_dontshow">不再显示</string>
     <string name="btn_confirm">确定</string>
     <string name="btn_iknow">知道了</string>

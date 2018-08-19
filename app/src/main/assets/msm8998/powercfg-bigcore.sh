@@ -69,8 +69,8 @@ function gpu_config()
         fi;
     done
     gpu_min_pl=6
-    if [[ -f /sys/class/kgsl/kgsl-3d0//num_pwrlevels ]];then
-        gpu_min_pl=`cat /sys/class/kgsl/kgsl-3d0//num_pwrlevels`
+    if [[ -f /sys/class/kgsl/kgsl-3d0/num_pwrlevels ]];then
+        gpu_min_pl=`cat /sys/class/kgsl/kgsl-3d0/num_pwrlevels`
         gpu_min_pl=`expr $gpu_min_pl - 1`
     fi;
 
