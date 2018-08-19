@@ -52,15 +52,15 @@ class StartSplashActivity : Activity() {
             context.get()!!.start_state_text.text = "检查并获取必需权限..."
             context.get()!!.hasRoot = true
 
-            context.get()!!.checkFileWrite(CheckFileWriteSuccess(context.get()!!))
+            CheckFileWriteThread(context.get()!!, CheckFileWriteSuccess(context.get()!!)).start()
         }
         init {
             this.context = WeakReference(context)
         }
     }
 
-    private class CheckFileWriteSuccess(context:StartSplashActivity) : Runnable {
-        private var context:WeakReference<StartSplashActivity>;
+    private class CheckFileWriteSuccess(context: StartSplashActivity) : Runnable {
+        private var context: WeakReference<StartSplashActivity>;
         override fun run() {
             context.get()!!.start_state_text.text = "检查Busybox是否安装..."
             Busybox(context.get()!!).forceInstall(BusyboxInstalled(context.get()!!))
@@ -92,7 +92,7 @@ class StartSplashActivity : Activity() {
         }
     }
 
-    private class ServiceCreateThread(context: Context): Runnable {
+    private class ServiceCreateRunnable(context: Context): Runnable {
         private var context:WeakReference<Context>;
         override fun run() {
             //判断是否开启了充电加速和充电保护，如果开启了，自动启动后台服务
@@ -116,10 +116,6 @@ class StartSplashActivity : Activity() {
 
 
     //检查权限 主要是文件读写权限
-    private fun checkFileWrite(next: Runnable) {
-        CheckFileWriteThread(this, next).start()
-    }
-
     private class CheckFileWriteThread(context: StartSplashActivity, runnable: Runnable) : Thread() {
         private var context:WeakReference<StartSplashActivity>;
         private var runnable: WeakReference<Runnable>;
@@ -213,7 +209,7 @@ class StartSplashActivity : Activity() {
     private fun next() {
         start_state_text.text = "启动完成！"
         setResult(if (hasRoot) RESULT_OK else RESULT_CANCELED)
-        ServiceCreateThread(this.applicationContext).run()
+        ServiceCreateRunnable(this.applicationContext).run()
         finish()
     }
 
