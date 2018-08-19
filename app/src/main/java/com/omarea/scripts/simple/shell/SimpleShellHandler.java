@@ -57,9 +57,9 @@ public class SimpleShellHandler extends ShellHandler {
     private void onExit(Object msg) {
         if (msg != null && msg instanceof Integer) {
             if ((Integer) msg == 0)
-                updateLog("\n\n" + context.getString(R.string.execute_success), "#5500cc");
+                updateLog("\n\n" + context.getString(R.string.execute_success), "#138ed6");
             else
-                updateLog("\n\nexit value: " + msg, "#5500cc");
+                updateLog("\n\nexit value: " + msg, "#138ed6");
         } else
             updateLog(msg, "#5500cc");
     }
