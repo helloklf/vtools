@@ -33,6 +33,7 @@ class StartSplashActivity : Activity() {
 
 
         //checkFileWrite()
+        start_state_text.text = "检查ROOT权限..."
         checkRoot(CheckRootSuccess(this), CheckRootFail(this))
     }
 
@@ -149,8 +150,8 @@ class StartSplashActivity : Activity() {
             }
             context.get()!!.myHandler.post {
                 val writeSettings = WriteSettings()
-                if (!writeSettings.getPermission(context.get()!!.applicationContext)) {
-                    writeSettings.setPermission(context.get()!!.applicationContext)
+                if (!writeSettings.getPermission(context.get()!!)) {
+                    writeSettings.setPermission(context.get()!!)
                 }
                 this.runnable.get()!!.run()
             }
