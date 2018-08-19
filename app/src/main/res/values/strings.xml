@@ -301,6 +301,7 @@
     <string name="get_online_config">在线获取配置脚本</string>
 
     <string name="title_activity_start_splash">StartSplashActivity</string>
+    <string name="scene_key_capture_change_action">com.omarea.vtools.SceneAccessibleConfigChanged</string>
     <string name="scene_change_action">com.omarea.vtools.SceneConfigChanged</string>
     <string name="scene_appchange_action">com.omarea.vtools.SceneAppChanged</string>
 </resources>

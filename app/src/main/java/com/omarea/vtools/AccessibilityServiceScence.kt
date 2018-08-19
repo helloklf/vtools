@@ -4,9 +4,7 @@ import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.app.usage.UsageEvents
 import android.app.usage.UsageStatsManager
-import android.content.ComponentName
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Build
@@ -16,10 +14,7 @@ import android.view.KeyEvent
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityWindowInfo
 import android.widget.Toast
-import com.omarea.shared.AutoClickService
-import com.omarea.shared.BootService
-import com.omarea.shared.CrashHandler
-import com.omarea.shared.ServiceHelper
+import com.omarea.shared.*
 import java.util.*
 
 /**
@@ -34,6 +29,7 @@ class AccessibilityServiceScence : AccessibilityService() {
     private var eventWindowStateChange = true
     private var eventWindowContentChange = false
     private var eventViewClick = false
+    private var sceneConfigChanged: BroadcastReceiver? = null
 
 
     /*
@@ -80,12 +76,10 @@ override fun onCreate() {
 
     internal var serviceHelper: ServiceHelper? = null
 
-
-    public override fun onServiceConnected() {
-        serviceIsConnected = true
+    private fun updateConfig () {
         val spf = getSharedPreferences("adv", Context.MODE_PRIVATE)
         flagReportViewIds = spf.getBoolean("adv_find_viewid", flagReportViewIds)
-        flagRequestKeyEvent = spf.getBoolean("adv_keyevent", flagRequestKeyEvent)
+        flagRequestKeyEvent = spf.getBoolean("adv_keyevent", AppConfigStore(this.applicationContext).needKeyCapture())
         flagRetriveWindow = spf.getBoolean("adv_retrieve_window", flagRetriveWindow)
 
         eventWindowStateChange = spf.getBoolean("adv_event_window_state", eventWindowStateChange)
@@ -125,9 +119,24 @@ override fun onCreate() {
             info.flags = info.flags or AccessibilityServiceInfo.FLAG_REQUEST_ACCESSIBILITY_BUTTON
         }
         setServiceInfo(info);
+    }
+
+    public override fun onServiceConnected() {
+        serviceIsConnected = true
+        updateConfig()
+        if (sceneConfigChanged == null) {
+            sceneConfigChanged = object : BroadcastReceiver() {
+                override fun onReceive(context: Context, intent: Intent) {
+                    updateConfig()
+                    Toast.makeText(context, "动态响应配置参数已更新，将在下次切换应用时生效！", Toast.LENGTH_SHORT).show()
+                }
+            }
+            registerReceiver(sceneConfigChanged, IntentFilter(getString(R.string.scene_key_capture_change_action)))
+        }
         super.onServiceConnected()
         if (serviceHelper == null)
             serviceHelper = ServiceHelper(this)
+
     }
 
     private fun tryGetActivity(componentName: ComponentName): ActivityInfo? {
@@ -334,6 +343,10 @@ override fun onCreate() {
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
+        if (sceneConfigChanged != null) {
+            unregisterReceiver(sceneConfigChanged)
+            sceneConfigChanged = null
+        }
         serviceIsConnected = false
         deestory()
         stopSelf()

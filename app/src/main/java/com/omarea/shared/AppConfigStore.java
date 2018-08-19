@@ -77,4 +77,20 @@ public class AppConfigStore extends SQLiteOpenHelper {
             database.endTransaction();
         }
     }
+
+    public boolean needKeyCapture () {
+        boolean r = false;
+        try {
+            SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+            Cursor cursor = sqLiteDatabase.rawQuery("select * from app_config where dis_button = 1", new String[]{});
+            if (cursor.moveToNext()) {
+                r = true;
+            }
+            cursor.close();
+            sqLiteDatabase.close();
+        } catch (Exception ignored) {
+
+        }
+        return r;
+    }
 }

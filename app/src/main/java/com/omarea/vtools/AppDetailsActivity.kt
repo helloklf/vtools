@@ -43,6 +43,8 @@ class AppDetailsActivity : AppCompatActivity() {
     private var vAddinsInstalled = false
     private var aidlConn: IAppConfigAidlInterface? = null
 
+    private var needKeyCapture = false
+
     fun getAddinVersion(): Int {
         var code = 0
         try {
@@ -244,6 +246,7 @@ class AppDetailsActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         app = this.intent.extras.getString("app")
+        needKeyCapture = AppConfigStore(this.applicationContext).needKeyCapture()
 
         if (app == "android" || app == "com.android.systemui" || app == "com.android.webview" || app == "mokee.platform" || app == "com.miui.rom") {
             app_details_permission.visibility = View.GONE
@@ -397,7 +400,11 @@ class AppDetailsActivity : AppCompatActivity() {
         appConfigInfo = AppConfigStore(this).getAppConfig(app)
 
         app_details_hidebtn.setOnClickListener {
-            appConfigInfo.disButton = (it as Switch).isChecked
+            val isChecked =(it as Switch).isChecked
+            appConfigInfo.disButton = isChecked
+            if (isChecked && !needKeyCapture) {
+                sendBroadcast(Intent(getString(R.string.scene_key_capture_change_action)))
+            }
         }
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.LOLLIPOP) {
             app_details_hidenotice.isEnabled = false

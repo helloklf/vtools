@@ -15,7 +15,7 @@ import com.omarea.vtools.R
  * Created by helloklf on 2017/6/3.
  */
 
-class CheckRootStatus(var context: Context, private var next: Runnable? = null, private var skip: Runnable?, private var disableSeLinux: Boolean = false) {
+class CheckRootStatus(var context: Context, private var next: Runnable? = null, private var disableSeLinux: Boolean = false) {
     var myHandler: Handler = Handler(Looper.getMainLooper())
     val isRootUser = "if [[ `id -u 2>&1` = '0' ]]; then\n" +
             "\techo 'root';\n" +
@@ -61,19 +61,13 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
                         }
                         forceGetRoot()
                     })
-                    alert.setNeutralButton(R.string.btn_skip, { _, _ ->
+                    alert.setNeutralButton(R.string.btn_exit, { _, _ ->
+                        System.exit(0)
                         //android.os.Process.killProcess(android.os.Process.myPid())
-                        completed = true
-                        if (therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
-                            therad!!.interrupt()
-                            therad = null
-                        }
-                        myHandler.post {
-                            if (skip != null)
-                                skip!!.run()
-                        }
                     })
-                    alert.create().show()
+                    alert
+                    .create()
+                    .show()
                 }
             } else {
                 completed = true
@@ -97,16 +91,8 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
                     }
                     forceGetRoot()
                 })
-                alert.setNeutralButton(R.string.btn_skip, { _, _ ->
-                    if (therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
-                        therad!!.interrupt()
-                        therad = null
-                    }
-                    completed = true
-                    myHandler.post {
-                        if (skip != null)
-                            skip!!.run()
-                    }
+                alert.setNeutralButton(R.string.btn_exit, { _, _ ->
+                    System.exit(0)
                     //android.os.Process.killProcess(android.os.Process.myPid())
                 })
                 alert.create().show()

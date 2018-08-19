@@ -74,6 +74,36 @@ class FragmentHome : Fragment() {
                     .create()
                     .show()
         }
+        if (!globalSPF.getBoolean("faq_readed_002", false)) {
+            AlertDialog.Builder(context!!)
+                    .setTitle("重要说明！！！")
+                    .setMessage("如果你在使用场景模式过程中出现触摸失灵或按键没反应，可到【场景模式 - 设置 - 专家选项】中关闭按键事件捕获选项。\n\n但是，关闭此选项的同时，场景模式中的“按键屏蔽”功能将会失效！")
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.btn_iknow, {
+                        _, _ ->
+                    })
+                    .setNeutralButton(R.string.btn_dontshow, {
+                        _,_ ->
+                        globalSPF.edit().putBoolean("faq_readed_002", true).apply()
+                    })
+                    .create()
+                    .show()
+        }
+        if (!globalSPF.getBoolean("faq_readed_003", false)) {
+            AlertDialog.Builder(context!!)
+                    .setTitle("重要说明！！！")
+                    .setMessage("为了确保你隐私和财产安全，建议不要从其它不可信的渠道下载本应用！\n\n目前，Scene只在酷安市场和[Scene实验室]发布！！！\n\n")
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.btn_iknow, {
+                        _, _ ->
+                    })
+                    .setNeutralButton(R.string.btn_dontshow, {
+                        _,_ ->
+                        globalSPF.edit().putBoolean("faq_readed_003", true).apply()
+                    })
+                    .create()
+                    .show()
+        }
 
         if (Platform().dynamicSupport(context!!) || File(CommonCmds.POWER_CFG_PATH).exists()) {
             powermode_toggles.visibility = View.VISIBLE
