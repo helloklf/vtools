@@ -115,7 +115,16 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
             if (!hasRoot)
                 hideRootMenu(navigationView.menu)
-            else if (!BackupRestoreUnit.isSupport()) {
+            else {
+                try {
+                    setHomePage()
+                } catch (ex: Exception) {
+                    AlertDialog.Builder(this).setTitle(getString(R.string.sorry)).setMessage("启动应用失败\n" + ex.message).setNegativeButton("重试", { _, _ ->
+                        setHomePage()
+                    }).create().show()
+                }
+            }
+            if (!BackupRestoreUnit.isSupport()) {
                 navigationView.menu.findItem(R.id.nav_img).isEnabled = false
             }
             val file = File(Environment.getExternalStorageDirectory().absolutePath + "/vtools-error.log")
@@ -146,13 +155,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
-        try {
-            setHomePage()
-        } catch (ex: Exception) {
-            AlertDialog.Builder(this).setTitle(getString(R.string.sorry)).setMessage("启动应用失败\n" + ex.message).setNegativeButton("重试", { _, _ ->
-                setHomePage()
-            }).create().show()
-        }
     }
 
     private fun setHomePage() {

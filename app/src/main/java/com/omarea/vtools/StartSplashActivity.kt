@@ -50,8 +50,8 @@ class StartSplashActivity : Activity() {
     private class CheckRootSuccess(context:StartSplashActivity) : Runnable {
         private var context:WeakReference<StartSplashActivity>;
         override fun run() {
-            context.get()!!.start_state_text.text = "检查并获取必需权限..."
             context.get()!!.hasRoot = true
+            context.get()!!.start_state_text.text = "检查并获取必需权限..."
 
             CheckFileWriteThread(context.get()!!, CheckFileWriteSuccess(context.get()!!)).start()
         }
@@ -74,7 +74,7 @@ class StartSplashActivity : Activity() {
     private class BusyboxInstalled(context:StartSplashActivity) : Runnable {
         private var context:WeakReference<StartSplashActivity>;
         override fun run() {
-            ConfigInstallerThread(context.get()!!.applicationContext).start()
+            ConfigInstallerThread(context.get()!!).start()
             context.get()!!.next()
         }
         init {
@@ -113,7 +113,7 @@ class StartSplashActivity : Activity() {
     }
 
     private fun checkPermission(permission: String): Boolean =
-            PermissionChecker.checkSelfPermission(this.applicationContext, permission) == PermissionChecker.PERMISSION_GRANTED
+            PermissionChecker.checkSelfPermission(this, permission) == PermissionChecker.PERMISSION_GRANTED
 
 
     //检查权限 主要是文件读写权限
@@ -210,7 +210,7 @@ class StartSplashActivity : Activity() {
     private fun next() {
         start_state_text.text = "启动完成！"
         setResult(if (hasRoot) RESULT_OK else RESULT_CANCELED)
-        ServiceCreateRunnable(this.applicationContext).run()
+        ServiceCreateRunnable(this).run()
         finish()
     }
 

@@ -31,11 +31,11 @@ class WriteSettings {
             // intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             // context.startActivity(intent)
             try {
+                Toast.makeText(context, "请为Scene授予“修改系统设置”权限！", Toast.LENGTH_SHORT).show()
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                 val uri = Uri.fromParts("package", context.getPackageName(), null)
                 intent.setData(uri)
                 context.startActivity(intent)
-                Toast.makeText(context, "请为Scene授予“修改系统设置”权限！", Toast.LENGTH_SHORT).show()
             } catch (ex: Exception) {
 
             }

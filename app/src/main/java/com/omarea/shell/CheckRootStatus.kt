@@ -115,7 +115,7 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
             )
             requiredPermission.forEach {
                 if (!checkPermission(context, it)) {
-                    cmds.append("pm grant ${context.packageName} $it;\n")
+                    cmds.append("pm grant ${context.packageName} $it\n")
                 }
             }
 
