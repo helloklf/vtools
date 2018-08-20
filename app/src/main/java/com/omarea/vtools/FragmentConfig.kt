@@ -274,6 +274,7 @@ class FragmentConfig : Fragment() {
         bindSPF(auto_switch_network_off_nfc, spfAutoConfig, SpfConfig.NFC + SpfConfig.OFF, false)
         bindSPF(auto_switch_network_off_gps, spfAutoConfig, SpfConfig.GPS + SpfConfig.OFF, false)
         bindSPF(dynamic_control, globalSPF, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)
+        bindSPF(settings_autoinstall, globalSPF, SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false)
         config_customer_powercfg.setOnClickListener {
             try {
                 val intent = Intent(this.context, ActivityFileSelector::class.java)

@@ -31,9 +31,7 @@ class StartSplashActivity : Activity() {
         setContentView(R.layout.activity_start_splash)
         actionBar?.setDisplayHomeAsUpEnabled(true)
 
-
         //checkFileWrite()
-        start_state_text.text = "检查ROOT权限..."
         checkRoot(CheckRootSuccess(this), CheckRootFail(this))
     }
 
@@ -50,18 +48,18 @@ class StartSplashActivity : Activity() {
     private class CheckRootSuccess(context:StartSplashActivity) : Runnable {
         private var context:WeakReference<StartSplashActivity>;
         override fun run() {
-            context.get()!!.hasRoot = true
             context.get()!!.start_state_text.text = "检查并获取必需权限..."
+            context.get()!!.hasRoot = true
 
-            CheckFileWriteThread(context.get()!!, CheckFileWriteSuccess(context.get()!!)).start()
+            context.get()!!.checkFileWrite(CheckFileWriteSuccess(context.get()!!))
         }
         init {
             this.context = WeakReference(context)
         }
     }
 
-    private class CheckFileWriteSuccess(context: StartSplashActivity) : Runnable {
-        private var context: WeakReference<StartSplashActivity>;
+    private class CheckFileWriteSuccess(context:StartSplashActivity) : Runnable {
+        private var context:WeakReference<StartSplashActivity>;
         override fun run() {
             context.get()!!.start_state_text.text = "检查Busybox是否安装..."
             Busybox(context.get()!!).forceInstall(BusyboxInstalled(context.get()!!))
@@ -74,7 +72,7 @@ class StartSplashActivity : Activity() {
     private class BusyboxInstalled(context:StartSplashActivity) : Runnable {
         private var context:WeakReference<StartSplashActivity>;
         override fun run() {
-            ConfigInstallerThread(context.get()!!).start()
+            ConfigInstallerThread(context.get()!!.applicationContext).start()
             context.get()!!.next()
         }
         init {
@@ -93,7 +91,7 @@ class StartSplashActivity : Activity() {
         }
     }
 
-    private class ServiceCreateRunnable(context: Context): Runnable {
+    private class ServiceCreateThread(context: Context): Runnable {
         private var context:WeakReference<Context>;
         override fun run() {
             //判断是否开启了充电加速和充电保护，如果开启了，自动启动后台服务
@@ -113,20 +111,17 @@ class StartSplashActivity : Activity() {
     }
 
     private fun checkPermission(permission: String): Boolean =
-            PermissionChecker.checkSelfPermission(this, permission) == PermissionChecker.PERMISSION_GRANTED
+            PermissionChecker.checkSelfPermission(this.applicationContext, permission) == PermissionChecker.PERMISSION_GRANTED
 
 
     //检查权限 主要是文件读写权限
-    private class CheckFileWriteThread(context: StartSplashActivity, runnable: Runnable) : Thread() {
-        private var context:WeakReference<StartSplashActivity>;
-        private var runnable: WeakReference<Runnable>;
-        override fun run() {
-            CheckRootStatus.grantPermission(context.get()!!)
-
-            if (!(context.get()!!.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) && context.get()!!.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
+    private fun checkFileWrite(next: Runnable) {
+        Thread(Runnable {
+            CheckRootStatus.grantPermission(this)
+            if (!(checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     ActivityCompat.requestPermissions(
-                            context.get()!!,
+                            this@StartSplashActivity,
                             arrayOf(
                                     Manifest.permission.READ_EXTERNAL_STORAGE,
                                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -138,7 +133,7 @@ class StartSplashActivity : Activity() {
                     )
                 } else {
                     ActivityCompat.requestPermissions(
-                            context.get()!!,
+                            this@StartSplashActivity,
                             arrayOf(
                                     Manifest.permission.READ_EXTERNAL_STORAGE,
                                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -149,19 +144,14 @@ class StartSplashActivity : Activity() {
                     )
                 }
             }
-            context.get()!!.myHandler.post {
-                context.get()!!.start_state_text.text = "获取修改系统设置权限..."
+            myHandler.post {
                 val writeSettings = WriteSettings()
-                if (!writeSettings.getPermission(context.get()!!)) {
-                    writeSettings.setPermission(context.get()!!)
+                if (!writeSettings.getPermission(applicationContext)) {
+                    writeSettings.setPermission(applicationContext)
                 }
-                this.runnable.get()!!.run()
+                next.run()
             }
-        }
-        init {
-            this.context = WeakReference(context)
-            this.runnable = WeakReference(runnable)
-        }
+        }).start()
     }
 
     private var hasRoot = false
@@ -212,7 +202,7 @@ class StartSplashActivity : Activity() {
     private fun next() {
         start_state_text.text = "启动完成！"
         setResult(if (hasRoot) RESULT_OK else RESULT_CANCELED)
-        ServiceCreateRunnable(this).run()
+        ServiceCreateThread(this.applicationContext).run()
         finish()
     }
 
