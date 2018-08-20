@@ -17,9 +17,16 @@
         <setstate>file:///android_asset/custom/switchs/mi8status_set.sh</setstate>
     </switch>
     <switch root="true">
+        <title>Miui10 屏幕圆角</title>
+        <desc>开关全局圆角效果，在MiX2和Mi6上测试可用</desc>
+        <getstate>file:///android_asset/custom/switchs/miui_round_get.sh</getstate>
+        <setstate>file:///android_asset/custom/switchs/miui_round_set.sh</setstate>
+    </switch>
+    <switch root="true">
         <title>网易云首屏广告</title>
         <desc>如果禁用，则会通过修改Ad缓存文件夹写入权限，达到禁用广告的目的（也许会增加流量消耗？）</desc>
         <getstate>file:///android_asset/custom/switchs/cloudmusic_ad_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/cloudmusic_ad_set.sh</setstate>
     </switch>
+
 </switchs>
