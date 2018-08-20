@@ -12,7 +12,7 @@ import java.util.concurrent.locks.ReentrantLock
 /**
  * Created by Hello on 2018/01/23.
  */
-class KeepShell {
+class KeepShell(private var rootMode: Boolean = true) {
     private var p: Process? = null
     private var out: OutputStream? = null
     private var reader: BufferedReader? = null
@@ -62,7 +62,7 @@ class KeepShell {
             try {
                 mLock.lockInterruptibly()
                 enterLockTime = System.currentTimeMillis()
-                p = Runtime.getRuntime().exec("su")
+                p = Runtime.getRuntime().exec(if (rootMode) "su" else "sh")
                 out = p!!.outputStream
                 reader = p!!.inputStream.bufferedReader()
                 out!!.write(checkRootState.toByteArray(Charset.defaultCharset()))

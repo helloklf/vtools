@@ -13,4 +13,11 @@ object KeepShellPublic {
         }
         return keepShell!!.doCmdSync(cmd)
     }
+
+    internal fun tryExit() {
+        if (keepShell != null) {
+            keepShell!!.tryExit()
+            keepShell = null
+        }
+    }
 }

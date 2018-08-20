@@ -51,6 +51,7 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
             if (!isRoot(disableSeLinux)) {
                 completed = true
                 myHandler.post {
+                    KeepShellPublic.tryExit()
                     val alert = AlertDialog.Builder(context)
                     alert.setCancelable(false)
                     alert.setTitle(R.string.error_root)

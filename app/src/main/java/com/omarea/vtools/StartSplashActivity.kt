@@ -122,6 +122,7 @@ class StartSplashActivity : Activity() {
         private var runnable: WeakReference<Runnable>;
         override fun run() {
             CheckRootStatus.grantPermission(context.get()!!)
+
             if (!(context.get()!!.checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) && context.get()!!.checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     ActivityCompat.requestPermissions(
@@ -149,6 +150,7 @@ class StartSplashActivity : Activity() {
                 }
             }
             context.get()!!.myHandler.post {
+                context.get()!!.start_state_text.text = "获取修改系统设置权限..."
                 val writeSettings = WriteSettings()
                 if (!writeSettings.getPermission(context.get()!!)) {
                     writeSettings.setPermission(context.get()!!)

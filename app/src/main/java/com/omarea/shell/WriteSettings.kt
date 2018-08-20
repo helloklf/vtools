@@ -16,11 +16,15 @@ import android.widget.Toast
 class WriteSettings {
     private fun checkPermission(context: Context, permission: String): Boolean = PermissionChecker.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED
     fun getPermission(context: Context): Boolean {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return Settings.System.canWrite(context)
-        } else {
-            // TODO("VERSION.SDK_INT < M")
-            return true
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                return Settings.System.canWrite(context)
+            } else {
+                // TODO("VERSION.SDK_INT < M")
+                return true
+            }
+        } catch (ex: Exception) {
+            return false;
         }
     }
 

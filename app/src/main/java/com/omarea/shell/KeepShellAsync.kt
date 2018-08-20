@@ -13,7 +13,7 @@ import java.util.concurrent.locks.ReentrantLock
 /**
  * Created by Hello on 2018/01/23.
  */
-class KeepShellAsync(private var context: Context?) : ShellEvents() {
+class KeepShellAsync(private var context: Context?, private var rootMode: Boolean = true) : ShellEvents() {
     companion object {
         val keepShells = HashMap<String, KeepShellAsync>()
         fun getInstance(key: String): KeepShellAsync {
@@ -91,7 +91,7 @@ class KeepShellAsync(private var context: Context?) : ShellEvents() {
         val thread = Thread(Runnable {
             try {
                 tryExit()
-                p = Runtime.getRuntime().exec("su")
+                p = Runtime.getRuntime().exec(if(rootMode) "su" else "sh")
 
                 if (processHandler != null) {
                     processHandler!!.sendMessage(processHandler!!.obtainMessage(PROCESS_EVENT_STAR))
@@ -174,32 +174,6 @@ class KeepShellAsync(private var context: Context?) : ShellEvents() {
 
     //执行脚本
     internal fun doCmd(cmd: String, isRedo: Boolean = false) {
-        try {
-            //tryExit()
-            if (p == null || isRedo || out == null) {
-                getRuntimeShell(cmd, Runnable {
-                    //重试一次
-                    if (!isRedo)
-                        doCmd(cmd, true)
-                    else
-                        showMsg("Failed execution action!\nError message : Unable to obtain Root permissions\n\n\ncommand : \r\n$cmd")
-                })
-            } else {
-                out!!.write(cmd)
-                out!!.write("\n\n")
-                out!!.flush()
-            }
-        } catch (e: IOException) {
-            //重试一次
-            if (!isRedo)
-                doCmd(cmd, true)
-            else
-                showMsg("Failed execution action!\nError message : " + e.message + "\n\n\ncommand : \r\n" + cmd)
-        }
-    }
-
-    //执行脚本
-    internal fun doCmdSync(cmd: String, isRedo: Boolean = false) {
         try {
             //tryExit()
             if (p == null || isRedo || out == null) {

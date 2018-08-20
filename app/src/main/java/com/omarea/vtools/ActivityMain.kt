@@ -123,9 +123,9 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         setHomePage()
                     }).create().show()
                 }
-            }
-            if (!BackupRestoreUnit.isSupport()) {
-                navigationView.menu.findItem(R.id.nav_img).isEnabled = false
+                if (!BackupRestoreUnit.isSupport()) {
+                    navigationView.menu.findItem(R.id.nav_img).isEnabled = false
+                }
             }
             val file = File(Environment.getExternalStorageDirectory().absolutePath + "/vtools-error.log")
             if (file.exists()) {
@@ -151,10 +151,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
             startActivity(intent)
         }
-    }
-
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
     }
 
     private fun setHomePage() {
