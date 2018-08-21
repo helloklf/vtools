@@ -38,6 +38,7 @@ public class SpfConfig {
     public static String GLOBAL_SPF_BATTERY_MONITORY = "power_config_battery_monitor";
     public static String GLOBAL_SPF_POWERCFG_FIRST_MODE = "powercfg_first_mode";
     public static String GLOBAL_SPF_DYNAMIC_CONTROL = "dynamic_control";
+    public static String GLOBAL_SPF_LOCK_MODE = "lock_mode";
 
     public static String SWAP_SPF = "swap"; //spf
     public static String SWAP_SPF_SWAP = "swap";

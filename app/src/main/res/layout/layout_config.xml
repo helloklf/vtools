@@ -440,6 +440,23 @@
                                 style="@style/textSmall" />
 
                             <Switch
+                                android:id="@+id/dynamic_lock_mode"
+                                style="@style/textTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="30dp"
+                                android:paddingLeft="8dp"
+                                android:text="锁屏优化" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:paddingBottom="8dp"
+                                android:paddingLeft="8dp"
+                                android:paddingRight="8dp"
+                                android:text="屏幕关闭5秒后，自动切换为省电模式"
+                                style="@style/textSmall" />
+
+                            <Switch
                                 android:id="@+id/settings_autoinstall"
                                 style="@style/textTitle"
                                 android:layout_width="match_parent"

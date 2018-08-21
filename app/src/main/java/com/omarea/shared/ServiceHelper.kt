@@ -20,6 +20,7 @@ import com.omarea.vtools.R
 import java.io.File
 import java.util.*
 import android.app.KeyguardManager
+import android.os.Build
 import java.lang.ref.WeakReference
 
 
@@ -44,6 +45,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             "com.miui.contentextension",
             "com.miui.systemAdSolution")
     private var dyamicCore = false
+    private var lockMode = false
     private var firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
     private var accuSwitch = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
     private var batteryMonitro = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
@@ -66,6 +68,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
         accuSwitch = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
         batteryMonitro = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
+        lockMode = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_LOCK_MODE, true)
         val windowManager = this.context.getSystemService(WINDOW_SERVICE) as WindowManager
         val display = windowManager.defaultDisplay
         screenOn = display.state == Display.STATE_ON
@@ -101,7 +104,11 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         }
 
         val mKeyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-        return mKeyguardManager.inKeyguardRestrictedInputMode()
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+            mKeyguardManager.inKeyguardRestrictedInputMode() || mKeyguardManager.isDeviceLocked || mKeyguardManager.isKeyguardLocked
+        } else {
+            mKeyguardManager.inKeyguardRestrictedInputMode() || mKeyguardManager.isKeyguardLocked
+        }
     }
 
     private fun startTimer() {
@@ -157,10 +164,10 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
      */
     private fun onScreenOffCloseNetwork() {
         if (dyamicCore && !screenOn) {
-            if (dyamicCore) {
+            if (lockMode) {
+                updateModeNofity()
                 toggleConfig(POWERSAVE)
             }
-            updateModeNofity()
         }
         if (System.currentTimeMillis() - lastScreenOnOff >= SCREEN_OFF_SWITCH_NETWORK_DELAY && !screenOn) {
             systemScene.onScreenOff()
@@ -180,7 +187,9 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
 
         if (dyamicCore) {
             if (this.lastModePackage != null && !this.lastModePackage.isNullOrEmpty()) {
-                if (dyamicCore) {
+                if (lockMode) {
+                    if (screenOn)
+                        forceToggleMode(this.lastModePackage)
                     handler.postDelayed({
                         if (screenOn)
                             forceToggleMode(this.lastModePackage)
@@ -188,8 +197,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
                 }
             }
         }
-        if (screenOn == true)
-            systemScene.onScreenOn()
+        systemScene.onScreenOn()
     }
 
     private var keepShellAsync2: KeepShellAsync = KeepShellAsync(context)
@@ -354,6 +362,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             ignoredList.addAll(InputHelper(context).getInputMethods())
             // 启动完成后初始化模式状态
             Thread.sleep(5 * 1000)
+            this.screenOn = !isScreenLocked()
             if (dyamicCore && lastMode.isEmpty()) {
                 if (!this.screenOn)
                     toggleConfig(POWERSAVE)
