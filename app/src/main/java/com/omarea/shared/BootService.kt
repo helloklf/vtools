@@ -26,6 +26,38 @@ class BootService : IntentService("vtools-boot") {
     private var isFirstBoot = true
     private var bootCancel = false
 
+
+    val FastChangerBase =
+    //"chmod 0777 /sys/class/power_supply/usb/pd_active;" +
+            "chmod 0777 /sys/class/power_supply/usb/pd_allowed;" +
+                    //"echo 1 > /sys/class/power_supply/usb/pd_active;" +
+                    "echo 1 > /sys/class/power_supply/usb/pd_allowed;" +
+                    "chmod 0666 /sys/class/power_supply/main/constant_charge_current_max;" +
+                    "chmod 0666 /sys/class/qcom-battery/restricted_current;" +
+                    "chmod 0666 /sys/class/qcom-battery/restricted_charging;" +
+                    "echo 0 > /sys/class/qcom-battery/restricted_charging;" +
+                    "echo 0 > /sys/class/power_supply/battery/restricted_charging;" +
+                    "echo 0 > /sys/class/power_supply/battery/safety_timer_enabled;" +
+                    "chmod 0666 /sys/class/power_supply/bms/temp_warm;" +
+                    "echo 500 > /sys/class/power_supply/bms/temp_warm;" +
+                    "chmod 0666 /sys/class/power_supply/battery/constant_charge_current_max;\n"
+    private fun computeLeves(qcLimit: Int): StringBuilder {
+        val arr = StringBuilder()
+        if (qcLimit > 300) {
+            var level = 300
+            while (level < qcLimit) {
+                arr.append("echo ${level}000 > /sys/class/power_supply/battery/constant_charge_current_max\n")
+                arr.append("echo ${level}000 > /sys/class/power_supply/main/constant_charge_current_max\n")
+                arr.append("echo ${level}000 > /sys/class/qcom-battery/restricted_current\n")
+                level += 300
+            }
+        }
+        arr.append("echo ${qcLimit}000 > /sys/class/power_supply/battery/constant_charge_current_max\n")
+        arr.append("echo ${qcLimit}000 > /sys/class/power_supply/main/constant_charge_current_max\n")
+        arr.append("echo ${qcLimit}000 > /sys/class/qcom-battery/restricted_current\n\n")
+        return arr;
+    }
+
     override fun onHandleIntent(intent: Intent?) {
         swapConfig = this.getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)
         globalConfig = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
@@ -156,6 +188,14 @@ class BootService : IntentService("vtools-boot") {
                         "ifconfig wlan0 up\n" +
                         "svc wifi enable\n\n")
             }
+        }
+
+
+        val chargeConfig = getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
+        if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) || chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_BP, false)) {
+            sb.append(FastChangerBase)
+            val qcLimit = chargeConfig.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000)
+            sb.append(computeLeves(qcLimit).toString())
         }
 
         if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false) || swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) {
