@@ -104,8 +104,9 @@ public class SimpleShellExecutor {
                 }
                 dataOutputStream.write(String.format("cd '%s'\n", start).getBytes("UTF-8"));
 
-                shellHandler.sendMessage(shellHandler.obtainMessage(ShellHandler.EVENT_START, "shell@android:" + start + " $\n\n"));
-                shellHandler.sendMessage(shellHandler.obtainMessage(ShellHandler.EVENT_WRITE, cmds.toString()));
+                //shellHandler.sendMessage(shellHandler.obtainMessage(ShellHandler.EVENT_START, "shell@android:" + start + " $\n\n"));
+                //shellHandler.sendMessage(shellHandler.obtainMessage(ShellHandler.EVENT_WRITE, cmds.toString()));
+                shellHandler.sendMessage(shellHandler.obtainMessage(ShellHandler.EVENT_START, "shell@android:\n\n"));
 
                 dataOutputStream.writeBytes("sleep 0.2;\n");
                 dataOutputStream.write(cmds.toString().replaceAll("\r\n", "\n").replaceAll("\r\t", "\t").getBytes("UTF-8"));
