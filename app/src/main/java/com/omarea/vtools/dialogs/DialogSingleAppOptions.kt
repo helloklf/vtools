@@ -159,7 +159,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
             val parent = File(app.path.toString())
             val outPutPath = "/system/app/${parent.name}"
             sb.append("cp '${app.path}' '$outPutPath'\n")
-            sb.append("chmod 0664 '$outPutPath'\n")
+            sb.append("chmod 0755 '$outPutPath'\n")
             sb.append("chown -R system:system '$outPutPath'\n")
             sb.append("busybox chown -R system:system '$outPutPath'\n")
             sb.append("if [[ ! -e '$outPutPath' ]]; then exit 1; else rm -f '${app.path}'; fi;\n")
@@ -167,7 +167,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
             val parent = File(appDir)
             val outPutPath = "/system/app/${parent.name}"
             sb.append("cp -a '$appDir' '$outPutPath'\n")
-            sb.append("chmod -R 0664 '$outPutPath'\n")
+            sb.append("chmod -R 0755 '$outPutPath'\n")
             sb.append("chown -R system:system '$outPutPath'\n")
             sb.append("busybox chown -R system:system '$outPutPath'\n")
             sb.append("if [[ ! -e '$outPutPath' ]]; then exit 1; exit 1; else rm -rf '$appDir'; fi;\n")

@@ -50,6 +50,8 @@ class QQStyleUnit(var context: Context) {
                         "echo \"\" > /storage/emulated/0/tencent/MobileQQ/.pendant\n" +
                         "rm -rf ${CommonCmds.SDCardDir}/tencent/MobileQQ/.pendant\n" +
                         "echo \"\" > ${CommonCmds.SDCardDir}/tencent/MobileQQ/.pendant\n" +
+                        "rm -rf ${CommonCmds.SDCardDir}/tencent/MobileQQ/.nomedia\n" +
+                        "echo \"\" > ${CommonCmds.SDCardDir}/tencent/MobileQQ/.nomedia\n" +
                         "am force-stop com.tencent.mobileqq\n"+
                         "am kill-all com.tencent.mobileqq\n"+
                         "am kill com.tencent.mobileqq\n")
