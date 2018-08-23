@@ -5,9 +5,7 @@ import android.os.Environment
 import android.util.Log
 import com.omarea.shared.helper.NotifyHelper
 import com.omarea.shell.cpucontrol.Constants
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
+import java.io.*
 import java.nio.charset.Charset
 
 /**
@@ -26,8 +24,10 @@ class CrashHandler constructor() : Thread.UncaughtExceptionHandler {
     override fun uncaughtException(thread: Thread, ex: Throwable){
         if (ex.message != null) {
             try {
+                val trace = StringWriter()
+                ex.printStackTrace(PrintWriter(trace))
                 val fileOutputStream = FileOutputStream(File(Environment.getExternalStorageDirectory().absolutePath + "/vtools-error.log"))
-                fileOutputStream.write(ex.message!!.toByteArray(Charset.defaultCharset()))
+                fileOutputStream.write((ex.message + "\n\n" + trace.toString()).toByteArray(Charset.defaultCharset()))
                 fileOutputStream.flush()
                 fileOutputStream.close()
             } catch (ex: Exception) {
