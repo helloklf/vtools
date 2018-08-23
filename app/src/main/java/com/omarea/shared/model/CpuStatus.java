@@ -2,6 +2,7 @@ package com.omarea.shared.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Hello on 2018/08/04.
@@ -11,10 +12,12 @@ public class CpuStatus implements Serializable {
     public String cluster_little_min_freq = "";
     public String cluster_little_max_freq = "";
     public String cluster_little_governor = "";
+    public HashMap<String, String> cluster_little_governor_params = null;
 
     public String cluster_big_min_freq = "";
     public String cluster_big_max_freq = "";
     public String cluster_big_governor = "";
+    public HashMap<String, String> cluster_big_governor_params = null;
 
     public String coreControl = "";
     public String vdd = "";

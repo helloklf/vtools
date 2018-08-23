@@ -204,7 +204,6 @@ class FragmentApplistions : Fragment() {
         }).start()
     }
 
-    private var adapter: WeakReference<AppListAdapter> = WeakReference<AppListAdapter>(null)
     private fun setListData(dl: ArrayList<Appinfo>?, lv: OverScrollListView) {
         if (dl == null)
             return
@@ -216,7 +215,7 @@ class FragmentApplistions : Fragment() {
                         return@post
                     }
                     val adapterObj = AppListAdapter(dl, apps_search_box.text.toString().toLowerCase())
-                    adapter = WeakReference(adapterObj)
+                    val adapter: WeakReference<AppListAdapter> = WeakReference(adapterObj)
                     lv.adapter = adapterObj
                     lv.onItemClickListener = OnItemClickListener { list, itemView, postion, _ ->
                         if (postion == 0) {

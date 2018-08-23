@@ -209,6 +209,26 @@ class FragmentCpuControl : Fragment() {
                         .show()
                 return@setOnClickListener
             }
+            cluster_little_governor_params.setOnClickListener {
+                if (status.cluster_little_governor_params != null) {
+                    val msg = StringBuilder()
+                    for (param in status.cluster_little_governor_params) {
+                        msg.append("\n")
+                        msg.append(param.key)
+                        msg.append("：")
+                        msg.append(param.value)
+                        msg.append("\n")
+                    }
+                    AlertDialog.Builder(context)
+                            .setTitle("Cluster0 调度器参数")
+                            .setMessage(msg.toString())
+                            .setPositiveButton(R.string.btn_confirm, {
+                                _,_ ->
+                            })
+                            .create()
+                            .show()
+                }
+            }
 
             if (hasBigCore) {
                 cluster_big_min_freq.setOnClickListener {
@@ -285,6 +305,25 @@ class FragmentCpuControl : Fragment() {
                             })
                             .create()
                             .show()
+                }
+                cluster_big_governor_params.setOnClickListener {
+                    if (status.cluster_big_governor_params != null) {
+                        val msg = StringBuilder()
+                        for (param in status.cluster_big_governor_params) {
+                            msg.append(param.key)
+                            msg.append("：")
+                            msg.append(param.value)
+                            msg.append("\n\n")
+                        }
+                        AlertDialog.Builder(context)
+                                .setTitle("Cluster1 调度器参数")
+                                .setMessage(msg.toString())
+                                .setPositiveButton(R.string.btn_confirm, {
+                                    _, _ ->
+                                })
+                                .create()
+                                .show()
+                    }
                 }
             }
 
@@ -567,6 +606,7 @@ class FragmentCpuControl : Fragment() {
                 status.cluster_little_min_freq = getApproximation(littleFreqs, CpuFrequencyUtils.getCurrentMinFrequency(0))
                 status.cluster_little_max_freq = getApproximation(littleFreqs, CpuFrequencyUtils.getCurrentMaxFrequency(0))
                 status.cluster_little_governor = CpuFrequencyUtils.getCurrentScalingGovernor(0)
+                status.cluster_little_governor_params = CpuFrequencyUtils.getCurrentScalingGovernorParams(0)
                 status.coreControl = ThermalControlUtils.getCoreControlState()
                 status.vdd = ThermalControlUtils.getVDDRestrictionState()
                 status.msmThermal = ThermalControlUtils.getTheramlState()
@@ -591,6 +631,7 @@ class FragmentCpuControl : Fragment() {
                     status.cluster_big_min_freq = getApproximation(bigFreqs, CpuFrequencyUtils.getCurrentMinFrequency(1))
                     status.cluster_big_max_freq = getApproximation(bigFreqs, CpuFrequencyUtils.getCurrentMaxFrequency(1))
                     status.cluster_big_governor = CpuFrequencyUtils.getCurrentScalingGovernor(1)
+                    status.cluster_big_governor_params = CpuFrequencyUtils.getCurrentScalingGovernorParams(1)
                 }
 
                 status.coreOnline = arrayListOf<Boolean>()

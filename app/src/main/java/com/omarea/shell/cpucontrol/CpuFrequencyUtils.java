@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.omarea.shell.KernelProrp;
 import com.omarea.shell.SuDo;
+import com.omarea.shell.units.FileValueMap;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -88,6 +89,15 @@ public class CpuFrequencyUtils {
 
     public static String getCurrentScalingGovernor(String core) {
         return KernelProrp.INSTANCE.getProp(Constants.scaling_governor.replace("cpu0", core));
+    }
+
+    public static HashMap<String, String> getCurrentScalingGovernorParams(Integer cluster) {
+        if (cluster >= getClusterInfo().size()) {
+            return null;
+        }
+        String cpu = "cpu" + getClusterInfo().get(cluster)[0];
+        String governor = getCurrentScalingGovernor(cpu);
+        return new FileValueMap().mapFileValue(Constants.cpu_dir.replace("cpu0", cpu) + "cpufreq/" + governor);
     }
 
     public static void setMinFrequency(String minFrequency, Integer cluster, Context context) {

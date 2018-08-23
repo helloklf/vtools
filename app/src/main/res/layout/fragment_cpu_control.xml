@@ -152,6 +152,23 @@
                         android:text="Governor"
                         android:textAlignment="textEnd" />
 
+                    <TextView
+
+                        android:layout_column="0"
+                        android:layout_gravity="fill"
+                        android:layout_row="4"
+                        android:gravity="center_vertical"
+                        android:text="微调参数" />
+
+                    <TextView
+                        android:id="@+id/cluster_little_governor_params"
+                        android:layout_width="150dp"
+                        android:layout_column="1"
+                        android:layout_row="4"
+                        android:padding="5dp"
+                        android:text="点击查看"
+                        android:textAlignment="textEnd" />
+
                 </GridLayout>
             </android.support.v7.widget.CardView>
 
@@ -229,6 +246,23 @@
                         android:layout_row="3"
                         android:padding="5dp"
                         android:text="Governor"
+                        android:textAlignment="textEnd" />
+
+                    <TextView
+
+                        android:layout_column="0"
+                        android:layout_gravity="fill"
+                        android:layout_row="4"
+                        android:gravity="center_vertical"
+                        android:text="微调参数" />
+
+                    <TextView
+                        android:id="@+id/cluster_big_governor_params"
+                        android:layout_width="150dp"
+                        android:layout_column="1"
+                        android:layout_row="4"
+                        android:padding="5dp"
+                        android:text="点击查看"
                         android:textAlignment="textEnd" />
 
                 </GridLayout>
