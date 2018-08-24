@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.omarea.shared.model.AppConfigInfo;
 
+import java.util.ArrayList;
+
 public class AppConfigStore extends SQLiteOpenHelper {
     public AppConfigStore(Context context) {
         super(context, "app-settings", null, 1);
@@ -76,6 +78,21 @@ public class AppConfigStore extends SQLiteOpenHelper {
         } finally {
             database.endTransaction();
         }
+    }
+
+    public ArrayList<String> getDozeAppList() {
+        ArrayList<String> list = new ArrayList<String>();
+        try {
+            SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+            Cursor cursor = sqLiteDatabase.rawQuery("select id from app_config where dis_background_run = 1", new String[]{});
+            if (cursor.moveToNext()) {
+                list.add(cursor.getString(0));
+            }
+            cursor.close();
+            sqLiteDatabase.close();
+        } catch (Exception ignored) {
+        }
+        return list;
     }
 
     public boolean needKeyCapture () {

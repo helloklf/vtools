@@ -258,7 +258,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="阻止后台" />
+                            android:text="离开主界面立即休眠" />
 
                         <Switch
                             android:id="@+id/app_details_disbackground"
