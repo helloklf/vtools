@@ -2,6 +2,7 @@ package com.omarea.shell.units
 
 import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.KernelProrp
+import com.omarea.shell.RootFile
 import java.io.File
 
 /**
@@ -11,7 +12,7 @@ import java.io.File
 class BatteryUnit {
     //是否兼容此设备
     val isSupport: Boolean
-        get() = File("/sys/class/power_supply/bms/uevent").exists() || qcSettingSuupport() || bpSettingSuupport()
+        get() = RootFile.itemExists("/sys/class/power_supply/bms/uevent") || qcSettingSuupport() || bpSettingSuupport()
 
     //获取电池信息
     /*else if (info.startsWith("POWER_SUPPLY_TIME_TO_EMPTY_AVG=")) {
@@ -189,7 +190,7 @@ class BatteryUnit {
 
     //快充是否支持修改充电速度设置
     fun qcSettingSuupport(): Boolean {
-        return File("/sys/class/power_supply/battery/constant_charge_current_max").exists()
+        return RootFile.itemExists("/sys/class/power_supply/battery/constant_charge_current_max")
     }
 
     fun getqcLimit(): String {
@@ -212,7 +213,7 @@ class BatteryUnit {
 
     //快充是否支持电池保护
     fun bpSettingSuupport(): Boolean {
-        return File("/sys/class/power_supply/battery/battery_charging_enabled").exists() || File("/sys/class/power_supply/battery/input_suspend").exists()
+        return RootFile.itemExists("/sys/class/power_supply/battery/battery_charging_enabled") || RootFile.itemExists("/sys/class/power_supply/battery/input_suspend")
     }
 
 

@@ -19,24 +19,4 @@ class BatteryAddin(private var context: Context) : AddinBase(context) {
 
         super.run()
     }
-
-    fun disbleCharge() {
-        if (File("/sys/class/power_supply/battery/battery_charging_enabled").exists() || File("/sys/class/power_supply/battery/input_suspend").exists()) {
-        } else {
-            Toast.makeText(context, context.getString(R.string.device_unsupport), Toast.LENGTH_SHORT).show()
-            return
-        }
-        command = StringBuilder().append(CommonCmds.DisableChanger).toString()
-        super.run()
-    }
-
-    fun resumeCharge() {
-        if (File("/sys/class/power_supply/battery/battery_charging_enabled").exists() || File("/sys/class/power_supply/battery/input_suspend").exists()) {
-        } else {
-            Toast.makeText(context, context.getString(R.string.device_unsupport), Toast.LENGTH_SHORT).show()
-            return
-        }
-        command = StringBuilder().append(CommonCmds.ResumeChanger).toString()
-        super.run()
-    }
 }

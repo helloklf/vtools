@@ -77,6 +77,13 @@ class DialogAddinModifyDPI(var context: Context) {
             }
             dpiInput.setText("960")
         })
+        dialog.findViewById<Button>(R.id.dialog_dpi_reset).setOnClickListener({
+            val cmd = StringBuilder()
+            cmd.append("wm size reset\n")
+            cmd.append("wm density reset\n")
+            cmd.append("wm overscan reset\n")
+            KeepShellPublic.doCmdSync(cmd.toString())
+        })
 
         AlertDialog.Builder(context).setTitle("DPI、分辨率").setView(dialog).setNegativeButton("确定", { _, _ ->
             val dpi = if (dpiInput.text.isNotEmpty()) (dpiInput.text.toString().toInt()) else (0)
