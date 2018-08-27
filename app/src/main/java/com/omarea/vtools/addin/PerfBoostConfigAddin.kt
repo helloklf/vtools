@@ -53,7 +53,7 @@ class PerfBoostConfigAddin(private var context: Context) : AddinBase(context) {
                     .append("cp $path $installPath\n")
                     .append("chmod 644 $installPath\n")
                     .append("md5=`busybox md5sum $installPath | cut -f1 -d ' '`\n")
-                    .append("if [[ \$md5 = '593c2139b1ad7a101573f9c487749dbd' ]] || [[ \$md5 = 'ff0b967ccccd058773f5ccc44c837442' ]] || [[ \$md5 = '6e0ee52074db2b6939a9fc36ea40444d' ]]; then exit 0; else exit 1; fi;\n")
+                    .append("if [[ \$md5 = '593c2139b1ad7a101573f9c487749dbd' ]] || [[ \$md5 = 'ff0b967ccccd058773f5ccc44c837442' ]] || [[ \$md5 = '6e0ee52074db2b6939a9fc36ea40444d' ]] || [[ \$md5 = 'dc6bcef917379e8bccb0f1c0b937d5e2' ]]; then exit 0; else exit 1; fi;\n")
                     .toString()
 
             super.run()
