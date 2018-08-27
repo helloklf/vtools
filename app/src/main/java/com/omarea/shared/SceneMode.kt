@@ -200,11 +200,13 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
             autoBoosterApp(lastAppPackageName)
             if (config == null)
                 return
-            if (config!!.aloneLight && config!!.aloneLightValue > 0) {
+            if (config!!.aloneLight) {
                 if (mode < 0) {
                     backupState()
                 }
-                if (config!!.aloneLightValue > 255) {
+                if (config!!.aloneLightValue < 1) {
+                    config!!.aloneLightValue = 128
+                } else if (config!!.aloneLightValue > 255) {
                     config!!.aloneLightValue = 255
                 }
                 setScreenLight(config!!.aloneLightValue)

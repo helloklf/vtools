@@ -56,7 +56,7 @@ public class AdapterFileSelector extends BaseAdapter {
                                 File t = files[i];
                                 files[i] = files[j];
                                 files[j] = t;
-                            } else if (files[j].isDirectory() == files[i].isDirectory() && (files[j].getName().compareTo(files[i].getName()) < 0)) {
+                            } else if (files[j].isDirectory() == files[i].isDirectory() && (files[j].getName().toLowerCase().compareTo(files[i].getName().toLowerCase()) < 0)) {
                                 File t = files[i];
                                 files[i] = files[j];
                                 files[j] = t;

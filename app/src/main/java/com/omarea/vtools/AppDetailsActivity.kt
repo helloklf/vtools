@@ -403,6 +403,7 @@ class AppDetailsActivity : AppCompatActivity() {
             val isChecked =(it as Switch).isChecked
             appConfigInfo.disButton = isChecked
             if (isChecked && !needKeyCapture) {
+                saveConfig()
                 sendBroadcast(Intent(getString(R.string.scene_key_capture_change_action)))
             }
         }
