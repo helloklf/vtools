@@ -202,8 +202,8 @@
     <string name="addin_battery_history_del">删除电池使用记录</string>
     <string name="addin_battery_history_del_desc">通过删除/data/system/batterystats-checkin.bin、/data/system/batterystats-daily.xml、/data/system/batterystats.bin 来清空系统的电池使用记录，会重启手机！</string>
     <string name="addin_adb_network_desc">开启网络adb前，请先连接wifi。开启后通过同一局域网下的电脑，使用adb connect %s:5555 命令连接</string>
-    <string name="addin_bpc">Performance Boost Config优化</string>
-    <string name="addin_bpc_desc">关闭Performance Boost Config中的一些选项，避免CPU频繁被拉高频率造成耗电，但保留应用启动升频。需要重启！</string>
+    <string name="addin_bpc">Performance Boost Config精简</string>
+    <string name="addin_bpc_desc">关闭Performance Boost Config中的一些选项，避免CPU频繁被拉高频率造成耗电，但保留应用启动升频，会略微降低体验。需要重启！</string>
     <string name="addin_execute">确定执行？</string>
     <string name="swap_on_close">正在关闭SWAP，这可能很慢</string>
     <string name="on_execute_please_wait">正在执行操作，请稍等…</string>
