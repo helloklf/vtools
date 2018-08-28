@@ -47,6 +47,7 @@
                         android:layout_height="match_parent" />
 
                     <android.support.design.widget.FloatingActionButton
+                        android:visibility="gone"
                         android:id="@+id/addin_online"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
