@@ -146,9 +146,10 @@
                     android:layout_span="2"
                     android:background="#22888888"
                     android:paddingBottom="20dp"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
                     android:paddingTop="20dp"
+                    android:textAlignment="center"
                     android:textSize="12dp" />
 
                 <TextView
@@ -161,9 +162,10 @@
                     android:layout_span="2"
                     android:background="#22888888"
                     android:paddingBottom="20dp"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="15dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
                     android:paddingTop="20dp"
+                    android:textAlignment="center"
                     android:textSize="12dp" />
             </TableRow>
 

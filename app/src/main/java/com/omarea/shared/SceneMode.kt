@@ -177,9 +177,9 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
     /**
      * 前台应用切换
      */
-    fun onFocusdAppChange(packageName: String) {
+    fun onFocusdAppChange(packageName: String, foceUpdateConfig: Boolean = false) {
         try {
-            if (lastAppPackageName == packageName) {
+            if (lastAppPackageName == packageName && !foceUpdateConfig) {
                 return
             }
             if (config != null) {
@@ -197,7 +197,8 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
                 }
             }
             config = store.getAppConfig(packageName)
-            autoBoosterApp(lastAppPackageName)
+            if (lastAppPackageName != packageName)
+                autoBoosterApp(lastAppPackageName)
             if (config == null)
                 return
             if (config!!.aloneLight) {
@@ -244,6 +245,12 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
             lastAppPackageName = packageName
         } catch (ex: Exception) {
             Log.e("onFocusdAppChange", ex.message)
+        }
+    }
+
+    fun updateAppConfig() {
+        if (!lastAppPackageName.isEmpty()) {
+            onFocusdAppChange(lastAppPackageName, true)
         }
     }
 

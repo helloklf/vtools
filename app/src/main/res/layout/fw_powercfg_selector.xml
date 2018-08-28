@@ -14,8 +14,8 @@
 
         <RelativeLayout
             android:id="@+id/popup_window"
-            android:layout_width="280dp"
-            android:layout_height="200dp"
+            android:layout_width="320dp"
+            android:layout_height="230dp"
             android:orientation="vertical">
 
             <TextView
@@ -62,17 +62,13 @@
                         style="@style/textTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginRight="5dp"
                         android:layout_weight="1"
                         android:background="@color/color_balance"
                         android:paddingBottom="10dp"
                         android:paddingTop="10dp"
                         android:text="@string/balance"
                         android:textAlignment="center" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
 
                     <TextView
                         android:id="@+id/btn_gamemode"
@@ -99,6 +95,42 @@
                         android:text="@string/fast"
                         android:textAlignment="center" />
                 </LinearLayout>
+
+                <LinearLayout
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <Switch
+                        android:textColor="#888"
+                        android:id="@+id/fw_app_light"
+                        android:text="独立亮度"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <Switch
+                        android:textColor="#888"
+                        android:id="@+id/fw_app_dis_notice"
+                        android:text="屏蔽通知"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+                    <Switch
+                        android:textColor="#888"
+                        android:id="@+id/fw_app_dis_button"
+                        android:layout_marginLeft="20dp"
+                        android:text="屏蔽按键"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent" />
+                </LinearLayout>
+
             </LinearLayout>
 
             <LinearLayout

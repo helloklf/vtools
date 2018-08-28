@@ -9,14 +9,13 @@ import android.graphics.Rect
 import android.os.Build
 import android.view.*
 import android.view.WindowManager.LayoutParams
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import com.omarea.shared.AccessibleServiceHelper
+import com.omarea.shared.AppConfigStore
 import com.omarea.shared.ModeList
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.helper.NotifyHelper
+import com.omarea.shell.NoticeListing
 
 /**
  * 弹窗辅助类
@@ -106,6 +105,10 @@ class FloatPowercfgSelector {
 
     @SuppressLint("ApplySharedPref")
     private fun setUpView(context: Context, packageName: String): View {
+        val store = AppConfigStore(context)
+        val appConfig = store.getAppConfig(packageName)
+        var needKeyCapture = store.needKeyCapture()
+
         val view = LayoutInflater.from(context).inflate(R.layout.fw_powercfg_selector, null)
 
         val spfPowercfg = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
@@ -135,11 +138,11 @@ class FloatPowercfgSelector {
         val updateUI = Runnable {
             btn_powersave.text = "省电"
             btn_defaultmode.text = "均衡"
-            btn_gamemode.text = "游戏"
+            btn_gamemode.text = "性能"
             btn_fastmode.text = "极速"
             when (selectedMode) {
                 ModeList.BALANCE -> btn_defaultmode.text = "均衡 √"
-                ModeList.PERFORMANCE -> btn_gamemode.text = "游戏 √"
+                ModeList.PERFORMANCE -> btn_gamemode.text = "性能 √"
                 ModeList.POWERSAVE -> btn_powersave!!.text = "省电 √"
                 ModeList.FAST -> btn_fastmode!!.text = "极速 √"
             }
@@ -159,6 +162,53 @@ class FloatPowercfgSelector {
         btn_fastmode.setOnClickListener {
             selectedMode = ModeList.FAST
             updateUI.run()
+        }
+        val fw_app_light = view.findViewById<Switch>(R.id.fw_app_light)
+        fw_app_light.isChecked = appConfig.aloneLight
+        fw_app_light.setOnClickListener {
+            val isChecked =(it as Switch).isChecked
+            appConfig.aloneLight = isChecked
+            if (appConfig.aloneLightValue < 1) {
+                appConfig.aloneLightValue = 128
+            }
+            store.setAppConfig(appConfig)
+
+            val intent = Intent(context.getString(R.string.scene_appchange_action))
+            intent.putExtra("app", packageName)
+            context.sendBroadcast(intent)
+        }
+        val fw_app_dis_notice = view.findViewById<Switch>(R.id.fw_app_dis_notice)
+        fw_app_dis_notice.isChecked = appConfig.disNotice
+        fw_app_dis_notice.setOnClickListener {
+            appConfig.disNotice = (it as Switch).isChecked
+            store.setAppConfig(appConfig)
+
+            val intent = Intent(context.getString(R.string.scene_appchange_action))
+            intent.putExtra("app", packageName)
+            context.sendBroadcast(intent)
+        }
+        val fw_app_dis_button = view.findViewById<Switch>(R.id.fw_app_dis_button)
+        fw_app_dis_button.isChecked = appConfig.disButton
+        fw_app_dis_button.setOnClickListener {
+            val isChecked = (it as Switch).isChecked
+            if (isChecked) {
+                if (!NoticeListing().getPermission(context)) {
+                    NoticeListing().setPermission(context)
+                    Toast.makeText(context, context.getString(R.string.scene_need_notic_listing), Toast.LENGTH_SHORT).show()
+                    it.isChecked = false
+                    return@setOnClickListener
+                }
+            }
+            appConfig.disButton = isChecked
+            store.setAppConfig(appConfig)
+            if (isChecked && !needKeyCapture) {
+                context.sendBroadcast(Intent(context.getString(R.string.scene_key_capture_change_action)))
+                needKeyCapture = true
+            }
+
+            val intent = Intent(context.getString(R.string.scene_appchange_action))
+            intent.putExtra("app", packageName)
+            context.sendBroadcast(intent)
         }
 
 

@@ -384,14 +384,18 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             override fun onReceive(context: Context, intent: Intent) {
                 if (intent.extras != null) {
                     if (intent.extras.containsKey("app") && intent.extras.containsKey("mode")) {
-                        val mode = intent.getStringExtra("mode")
+                        val mode = ""
                         val app = intent.getStringExtra("app")
-                        if (app == lastModePackage) {
-                            if (lastMode != mode) {
-                                toggleConfig(mode)
+                        if (intent.extras.containsKey("mode")) {
+                            intent.getStringExtra("mode")
+                            if (app == lastModePackage && dyamicCore && screenOn) {
+                                if (lastMode != mode) {
+                                    toggleConfig(mode)
+                                }
+                                lastMode = mode
                             }
-                            lastMode = mode
                         }
+                        sceneMode.updateAppConfig()
                     }
                 }
             }
