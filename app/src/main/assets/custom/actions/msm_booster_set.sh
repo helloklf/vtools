@@ -28,13 +28,13 @@ fi
 if [[ "$config" = "1" ]]; then
     if [[ -f "$path.bak" ]]; then
         mv "$path.bak" "$path"
-        chmod 0644 "$path"
+        chmod 0755 "$path"
         echo "Step2.还原（${path}.bak）->（$path） ..."
     fi;
 elif [[ "$config" = "0" ]]; then
     if [[ -f "$path" ]]; then
         mv "$path" "$path.bak"
-        chmod 0644 "$path.bak"
+        chmod 0755 "$path.bak"
         echo "Step2.重命名 （$path） ->（${path}.bak） ..."
     fi;
 fi;

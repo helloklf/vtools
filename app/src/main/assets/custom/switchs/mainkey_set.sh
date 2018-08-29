@@ -23,7 +23,7 @@ echo '3.覆盖/system/build.prop'
 cp /cache/build.prop /system/build.prop
 
 echo '4.修正读写权限'
-chmod 0644 /system/build.prop
+chmod 0755 /system/build.prop
 
 echo '5.删除临时文件'
 rm /cache/build.prop

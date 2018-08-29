@@ -129,7 +129,7 @@ case "$target" in
 
         #/sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster0_volt_table
         cluster0="/sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster0_volt_table"
-        chmod 0644 $cluster0
+        chmod 0755 $cluster0
         setvolt $cluster0 "1794000 " "962500"
         setvolt $cluster0 "1690000 " "987500"
         setvolt $cluster0 "1586000 " "950000"
@@ -149,7 +149,7 @@ case "$target" in
         setvolt $cluster0 "130000 " "512500"
 
         gpu="/sys/devices/14ac0000.mali/volt_table"
-        chmod 0644 $gpu
+        chmod 0755 $gpu
         setvolt $gpu "806 " "737500"
         setvolt $gpu "728 " "725000"
         setvolt $gpu "702 " "718750"

@@ -17,7 +17,7 @@ class FlymeUnit {
                 add("busybox sed 's/^persist.sys.static_blur_mode=.*/persist.sys.static_blur_mode=true/' /system/build.prop > /data/build.prop;")
                 add("cp /data/build.prop /system/build.prop\n")
                 add("rm /data/build.prop\n")
-                add("chmod 0644 /system/build.prop\n")
+                add("chmod 0755 /system/build.prop\n")
                 add(CommonCmds.Reboot)
             }
         }

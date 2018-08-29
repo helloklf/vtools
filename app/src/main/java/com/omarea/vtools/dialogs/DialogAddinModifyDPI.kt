@@ -109,7 +109,7 @@ class DialogAddinModifyDPI(var context: Context) {
                 cmd.append("cp /data/build2.prop /system/build.prop\n")
                 cmd.append("rm /data/build.prop\n")
                 cmd.append("rm /data/build2.prop\n")
-                cmd.append("chmod 0644 /system/build.prop\n")
+                cmd.append("chmod 0755 /system/build.prop\n")
                 cmd.append("sync\n")
                 cmd.append("reboot\n")
             }

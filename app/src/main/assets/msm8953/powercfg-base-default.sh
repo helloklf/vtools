@@ -290,11 +290,11 @@ case "$console_config" in
 esac
 
 
-#chmod 0644 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+#chmod 0755 /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 #echo "ondemand" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-#chmod 0644 /sys/module/workqueue/parameters/power_efficient
+#chmod 0755 /sys/module/workqueue/parameters/power_efficient
 #echo "Y" > /sys/module/workqueue/parameters/power_efficient
-#chmod 0644 -R /sys/devices/system/cpu/cpufreq/ondemand
+#chmod 0755 -R /sys/devices/system/cpu/cpufreq/ondemand
 #echo 1 > /sys/devices/system/cpu/cpufreq/ondemand/io_is_busy
 #echo 90 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
 

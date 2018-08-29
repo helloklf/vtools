@@ -266,7 +266,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                     stringBuilder.append("cp /system/build.prop /system/build.prop.${System.currentTimeMillis()}\n")
                     stringBuilder.append("cp /data/build.prop /system/build.prop\n")
                     stringBuilder.append("rm /data/build.prop\n")
-                    stringBuilder.append("chmod 0644 /system/build.prop\n")
+                    stringBuilder.append("chmod 0755 /system/build.prop\n")
 
                     execShell(stringBuilder)
                     Toast.makeText(context, "配置已修改，但需要重启才能生效！", Toast.LENGTH_SHORT).show()

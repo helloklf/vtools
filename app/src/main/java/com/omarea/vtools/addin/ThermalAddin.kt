@@ -48,6 +48,7 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
         }
         command = StringBuilder()
                 .append(CommonCmds.MountSystemRW)
+                .append(CommonCmds.MountVendorRW)
                 .append("cp /system/vendor/bin/thermal-engine /system/vendor/bin/thermal-engine.bak\n" +
                         "rm -f /system/vendor/bin/thermal-engine\n" +
 
@@ -71,20 +72,21 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
         }
         command = StringBuilder()
                 .append(CommonCmds.MountSystemRW)
+                .append(CommonCmds.MountVendorRW)
                 .append("cp /system/vendor/bin/thermal-engine.bak /system/vendor/bin/thermal-engine\n" +
-                        "chmod 644 /system/vendor/bin/thermal-engine\n" +
+                        "chmod 755 /system/vendor/bin/thermal-engine\n" +
                         "rm -f /system/vendor/bin/thermal-engine.bak\n" +
 
                         "cp /system/vendor/lib64/libthermalclient.so.bak /system/vendor/lib64/libthermalclient.so\n" +
-                        "chmod 644 /system/vendor/lib64/libthermalclient.so\n" +
+                        "chmod 755 /system/vendor/lib64/libthermalclient.so\n" +
                         "rm -f /system/vendor/lib64/libthermalclient.so.bak\n" +
 
                         "cp /system/vendor/lib64/libthermalioctl.so.bak /system/vendor/lib64/libthermalioctl.so\n" +
-                        "chmod 644 /system/vendor/lib64/libthermalioctl.so\n" +
+                        "chmod 755 /system/vendor/lib64/libthermalioctl.so\n" +
                         "rm -f /system/vendor/lib64/libthermalioctl.so.bak\n" +
 
                         "cp /system/vendor/lib/libthermalclient.so.bak /system/vendor/lib/libthermalclient.so\n" +
-                        "chmod 644 /system/vendor/lib/libthermalclient\n" +
+                        "chmod 755 /system/vendor/lib/libthermalclient\n" +
                         "rm -f /system/vendor/lib/libthermalclient.so.bak\n")
                 .toString()
 

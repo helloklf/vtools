@@ -69,7 +69,7 @@ class DialogAddinModifydevice(var context: Context) {
             if (model.isNotEmpty() || brand.isNotEmpty() || product.isNotEmpty() || device.isNotEmpty() || manufacturer.isNotEmpty()) {
                 backupDefault()
                 sb.append(CommonCmds.MountSystemRW)
-                sb.append("cp /system/build.prop /data/build.prop;chmod 0644 /data/build.prop;")
+                sb.append("cp /system/build.prop /data/build.prop;chmod 0755 /data/build.prop;")
 
                 if (brand.isNotEmpty())
                     sb.append("busybox sed -i 's/^ro.product.brand=.*/ro.product.brand=$brand/' /data/build.prop;")
@@ -85,7 +85,7 @@ class DialogAddinModifydevice(var context: Context) {
                 sb.append("cp /system/build.prop /system/build.bak.prop\n")
                 sb.append("cp /data/build.prop /system/build.prop\n")
                 sb.append("rm /data/build.prop\n")
-                sb.append("chmod 0644 /system/build.prop\n")
+                sb.append("chmod 0755 /system/build.prop\n")
                 sb.append("sync\n")
                 sb.append("reboot\n")
 

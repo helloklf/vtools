@@ -42,12 +42,12 @@ class DialogCustomMAC(private var context: Context) {
                 return@setNegativeButton
             }
             spf!!.edit().putString(SpfConfig.GLOBAL_SPF_MAC, mac).commit()
-            val r = KeepShellPublic.doCmdSync("chmod 0644 /sys/class/net/wlan0/address\n" +
+            val r = KeepShellPublic.doCmdSync("chmod 0755 /sys/class/net/wlan0/address\n" +
                     "svc wifi disable\n" +
                     "ifconfig wlan0 down\n" +
                     "echo '$mac' > /sys/class/net/wlan0/address\n" +
                     "ifconfig wlan0 hw ether '$mac'\n" +
-                    "chmod 0644 /sys/devices/soc/a000000.qcom,wcnss-wlan/wcnss_mac_addr\n" +
+                    "chmod 0755 /sys/devices/soc/a000000.qcom,wcnss-wlan/wcnss_mac_addr\n" +
                     "echo '$mac' > /sys/devices/soc/a000000.qcom,wcnss-wlan/wcnss_mac_addr\n" +
                     "ifconfig wlan0 up\n" +
                     "svc wifi enable\n");

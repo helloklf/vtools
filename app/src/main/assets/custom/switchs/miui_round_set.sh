@@ -31,7 +31,7 @@ do
     fi;
 
     sync
-    chmod 644 $config
+    chmod 755 $config
 
     echo '操作完成，请重启手机！'
     return

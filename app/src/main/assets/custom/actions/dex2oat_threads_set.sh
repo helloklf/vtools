@@ -43,9 +43,9 @@ if [[ ! -e "/system/build.prop.bak" ]]; then
     cp /system/build.prop /system/build.prop.bak
 fi;
 cp /data/build.prop /system/build.prop
-chmod 0644 /system/build.prop
+chmod 0755 /system/build.prop
 rm /data/build.prop
-chmod 0644 /system/build.prop.bak
+chmod 0755 /system/build.prop.bak
 
 
 echo '操作完成...'

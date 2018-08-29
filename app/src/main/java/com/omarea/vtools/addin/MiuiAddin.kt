@@ -14,7 +14,7 @@ class MiuiAddin(private var context: Context) : AddinBase(context) {
         command = StringBuilder()
                 .append(CommonCmds.MountSystemRW)
                 .append("cp ${FileWrite.getPrivateFileDir(context)}/com.android.systemui /system/media/theme/default/com.android.systemui\n")
-                .append("chmod 0644 /system/media/theme/default/com.android.systemui\n")
+                .append("chmod 0755 /system/media/theme/default/com.android.systemui\n")
                 .toString()
 
         super.run()

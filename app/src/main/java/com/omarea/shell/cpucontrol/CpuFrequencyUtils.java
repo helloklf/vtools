@@ -160,7 +160,7 @@ public class CpuFrequencyUtils {
          */
         if (governor != null) {
             for (String core : cores) {
-                commands.add("chmod 0644 " + Constants.scaling_governor.replace("cpu0", "cpu" + core));
+                commands.add("chmod 0755 " + Constants.scaling_governor.replace("cpu0", "cpu" + core));
                 commands.add("echo " + governor + " > " + Constants.scaling_governor.replace("cpu0", "cpu" + core));
             }
 
@@ -177,7 +177,7 @@ public class CpuFrequencyUtils {
 
     public static void setInputBoosterFreq(String freqs) {
         ArrayList<String> commands = new ArrayList<>();
-        commands.add("chmod 0644 /sys/module/cpu_boost/parameters/input_boost_freq");
+        commands.add("chmod 0755 /sys/module/cpu_boost/parameters/input_boost_freq");
         commands.add("echo " + freqs + " > /sys/module/cpu_boost/parameters/input_boost_freq");
 
         SuDo.Companion.execCmdSync(commands);
@@ -189,7 +189,7 @@ public class CpuFrequencyUtils {
 
     public static void setInputBoosterTime(String time) {
         ArrayList<String> commands = new ArrayList<>();
-        commands.add("chmod 0644 /sys/module/cpu_boost/parameters/input_boost_ms");
+        commands.add("chmod 0755 /sys/module/cpu_boost/parameters/input_boost_ms");
         commands.add("echo " + time + " > /sys/module/cpu_boost/parameters/input_boost_ms");
 
         SuDo.Companion.execCmdSync(commands);
@@ -204,7 +204,7 @@ public class CpuFrequencyUtils {
         if (exynosCpuhotplugSupport() && getExynosHotplug()) {
             commands.add("echo 0 > /sys/devices/system/cpu/cpuhotplug/enabled;");
         }
-        commands.add("chmod 0644 /sys/devices/system/cpu/cpu0/online".replace("cpu0", "cpu" + coreIndex));
+        commands.add("chmod 0755 /sys/devices/system/cpu/cpu0/online".replace("cpu0", "cpu" + coreIndex));
         commands.add("echo " + (online ? "1" : "0") + " > /sys/devices/system/cpu/cpu0/online".replace("cpu0", "cpu" + coreIndex));
         SuDo.Companion.execCmdSync(commands);
     }

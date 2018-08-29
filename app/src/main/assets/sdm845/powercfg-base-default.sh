@@ -2,14 +2,14 @@
 
 target=`getprop ro.board.platform`
 
-chmod 0644 /sys/devices/system/cpu/cpu0/online
-chmod 0644 /sys/devices/system/cpu/cpu1/online
-chmod 0644 /sys/devices/system/cpu/cpu2/online
-chmod 0644 /sys/devices/system/cpu/cpu3/online
-chmod 0644 /sys/devices/system/cpu/cpu4/online
-chmod 0644 /sys/devices/system/cpu/cpu5/online
-chmod 0644 /sys/devices/system/cpu/cpu6/online
-chmod 0644 /sys/devices/system/cpu/cpu7/online
+chmod 0755 /sys/devices/system/cpu/cpu0/online
+chmod 0755 /sys/devices/system/cpu/cpu1/online
+chmod 0755 /sys/devices/system/cpu/cpu2/online
+chmod 0755 /sys/devices/system/cpu/cpu3/online
+chmod 0755 /sys/devices/system/cpu/cpu4/online
+chmod 0755 /sys/devices/system/cpu/cpu5/online
+chmod 0755 /sys/devices/system/cpu/cpu6/online
+chmod 0755 /sys/devices/system/cpu/cpu7/online
 
 #echo 2 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
 #echo 60 > /sys/devices/system/cpu/cpu4/core_ctl/busy_up_thres

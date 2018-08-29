@@ -221,9 +221,9 @@ class BatteryUnit {
     fun setChargeInputLimit(limit: Int) {
         val cmd = "echo 0 > /sys/class/power_supply/battery/restricted_charging;" +
                 "echo 0 > /sys/class/power_supply/battery/safety_timer_enabled;" +
-                "chmod 644 /sys/class/power_supply/bms/temp_warm;" +
+                "chmod 755 /sys/class/power_supply/bms/temp_warm;" +
                 "echo 480 > /sys/class/power_supply/bms/temp_warm;" +
-                "chmod 644 /sys/class/power_supply/battery/constant_charge_current_max;" +
+                "chmod 755 /sys/class/power_supply/battery/constant_charge_current_max;" +
                 "echo 2000000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
                 "echo 2500000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
                 "echo 3000000 > /sys/class/power_supply/battery/constant_charge_current_max;" +

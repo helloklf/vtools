@@ -5,14 +5,14 @@ target=`getprop ro.board.platform`
 
 case "$target" in
     "msm8998")
-    chmod 0644 /sys/devices/system/cpu/cpu0/online
-    chmod 0644 /sys/devices/system/cpu/cpu1/online
-    chmod 0644 /sys/devices/system/cpu/cpu2/online
-    chmod 0644 /sys/devices/system/cpu/cpu3/online
-    chmod 0644 /sys/devices/system/cpu/cpu4/online
-    chmod 0644 /sys/devices/system/cpu/cpu5/online
-    chmod 0644 /sys/devices/system/cpu/cpu6/online
-    chmod 0644 /sys/devices/system/cpu/cpu7/online
+    chmod 0755 /sys/devices/system/cpu/cpu0/online
+    chmod 0755 /sys/devices/system/cpu/cpu1/online
+    chmod 0755 /sys/devices/system/cpu/cpu2/online
+    chmod 0755 /sys/devices/system/cpu/cpu3/online
+    chmod 0755 /sys/devices/system/cpu/cpu4/online
+    chmod 0755 /sys/devices/system/cpu/cpu5/online
+    chmod 0755 /sys/devices/system/cpu/cpu6/online
+    chmod 0755 /sys/devices/system/cpu/cpu7/online
 
 	# Setting b.L scheduler parameters
 	echo 1 > /proc/sys/kernel/sched_migration_fixup
