@@ -198,6 +198,8 @@ class FragmentApplistions : Fragment() {
             systemList = appListHelper.getSystemAppList()
             installedList = appListHelper.getUserAppList()
             backupedList = appListHelper.getApkFilesInfoList(CommonCmds.AbsBackUpDir)
+            if (this.isDetached)
+                return@Runnable
             setListData(installedList, apps_userlist)
             setListData(systemList, apps_systemlist)
             setListData(backupedList, apps_backupedlist)
