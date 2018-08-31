@@ -32,11 +32,12 @@ if [[ "$config" = "1" ]]; then
         echo "Step2.还原（${path}.bak）->（$path） ..."
     fi;
 elif [[ "$config" = "0" ]]; then
-    if [[ -f "$path" ]]; then
+    if [[ -f "$path" ]] && [[ ! -f "$path.bak" ]]; then
         mv "$path" "$path.bak"
         chmod 0755 "$path.bak"
         echo "Step2.重命名 （$path） ->（${path}.bak） ..."
     fi;
+    rm -f "$path" 2> /dev/null
 fi;
 
 echo '操作完成...'

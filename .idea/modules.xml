@@ -3,9 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/scence.iml" filepath="$PROJECT_DIR$/scence.iml" />
+      <module fileurl="file://D:\Android\scene\scence.iml" filepath="D:\Android\scene\scence.iml" />
       <module fileurl="file://$PROJECT_DIR$/scene.iml" filepath="$PROJECT_DIR$/scene.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../scence/scene.iml" filepath="$PROJECT_DIR$/../scence/scene.iml" />
+      <module fileurl="file://D:\Android\scence\scene.iml" filepath="D:\Android\scence\scene.iml" />
     </modules>
   </component>
 </project>
