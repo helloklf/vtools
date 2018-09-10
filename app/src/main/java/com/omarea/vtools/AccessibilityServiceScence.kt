@@ -272,11 +272,15 @@ override fun onCreate() {
                 子Window	    1000~1999
                 系统Window	    2000~2999
                  */
-                val source = event.source
-                if (source == null) return
+                try {
+                    val source = event.source
+                    if (source == null) return
 
-                if (source.windowId != windowInfo.id) {
-                    return
+                    if (source.windowId != windowInfo.id) {
+                        return
+                    }
+                } catch (ex: Exception) {
+
                 }
             }
             lastPackageName = packageName

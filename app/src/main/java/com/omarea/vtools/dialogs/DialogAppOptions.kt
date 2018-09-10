@@ -3,6 +3,7 @@ package com.omarea.vtools.dialogs
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
+import android.os.Build
 import android.os.Handler
 import android.os.Message
 import android.view.LayoutInflater
@@ -46,7 +47,8 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                                 "清除缓存",
                                 "冻结",
                                 "解冻",
-                                "禁用+隐藏"), { _, which ->
+                                "禁用+隐藏",
+                                "dex2oat编译"), { _, which ->
                     when (which) {
                         0 -> backupAll(true, true)
                         1 -> backupAll(true, false)
@@ -57,6 +59,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                         6 -> disableAll()
                         7 -> enableAll()
                         8 -> hideAll()
+                        9 -> buildAll()
                     }
                 })
                 .show()
@@ -71,7 +74,8 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                                 "清除缓存",
                                 "冻结",
                                 "解冻",
-                                "禁用+隐藏"), { _, which ->
+                                "禁用+隐藏",
+                                "dex2oat编译"), { _, which ->
                     when (which) {
                         0 -> deleteAll()
                         1 -> clearAll()
@@ -79,6 +83,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                         3 -> disableAll()
                         4 -> enableAll()
                         5 -> hideAll()
+                        6 -> buildAll()
                     }
                 })
                 .show()
@@ -126,7 +131,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                     textView.text = "正在执行操作..."
                 } else {
                     val obj = msg.obj.toString()
-                    if (obj == "[operation completed]") {
+                    if (obj.contains("[operation completed]")) {
                         progressBar.progress = 100
                         textView.text = "操作完成！"
                         handler.postDelayed({
@@ -151,6 +156,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                                 .replace("[clear ", "[清除数据 ")
                                 .replace("[skip ", "[跳过 ")
                                 .replace("[link ", "[链接 ")
+                                .replace("[compile ", "[编译 ")
                         textView.text = txt
                     }
                 }
@@ -517,6 +523,23 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         }
 
         sb.append("echo '[operation completed]';")
+        execShell(sb)
+    }
+
+    private fun buildAll () {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            Toast.makeText(context, "该功能只支持Android N（7.0）以上的系统！", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val sb = StringBuilder()
+        for (item in apps) {
+            val packageName = item.packageName.toString()
+            sb.append("echo '[compile $packageName]'\n")
+
+            sb.append("cmd package compile -m speed $packageName\n\n")
+        }
+
+        sb.append("echo '[operation completed]'\n\n")
         execShell(sb)
     }
 }
