@@ -788,6 +788,9 @@ class FragmentCpuControl : Fragment() {
     private var timer: Timer? = null
     override fun onResume() {
         super.onResume()
+        if (isDetached) {
+            return
+        }
         progressBarDialog.showDialog("正在读取信息...")
         loadBootConfig()
         if (timer == null) {

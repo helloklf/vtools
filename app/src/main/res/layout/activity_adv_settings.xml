@@ -152,6 +152,28 @@
                 android:textColor="?android:attr/textColorSecondary"
                 android:textSize="10dp" />
 
+            <Switch
+                android:id="@+id/adv_event_usage_stats"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:checked="true"
+                android:gravity="left"
+                android:padding="8dp"
+                android:text="UsageStats增强"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="使用UsageStatsManager增强前台应用检测机制的可靠性，需要在“有权查看使用情况的应用”中启用Scene，部分系统可能需要重新开关启用状态才会生效！"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="10dp" />
+
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

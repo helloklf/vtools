@@ -41,6 +41,9 @@ class FragmentBatteryStats : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        if (isDetached) {
+            return
+        }
         loadData()
     }
 

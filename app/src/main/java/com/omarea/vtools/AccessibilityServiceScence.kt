@@ -15,6 +15,7 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityWindowInfo
 import android.widget.Toast
 import com.omarea.shared.*
+import java.lang.ref.WeakReference
 import java.util.*
 
 /**
@@ -30,6 +31,8 @@ class AccessibilityServiceScence : AccessibilityService() {
     private var eventWindowContentChange = false
     private var eventViewClick = false
     private var sceneConfigChanged: BroadcastReceiver? = null
+
+    private var lastPackageName = ""
 
 
     /*
@@ -185,6 +188,7 @@ override fun onCreate() {
         //if (root == null) {
         //    return
         //}
+
         /*
         if(event.source != null && event.source.window != null)
             if (event.source.window.type != -1) {
@@ -192,7 +196,6 @@ override fun onCreate() {
             }
         if(event.source.parent != null && event.source.window != null) {
             if (event.source.window.type != -1) {
-
             }
         }
         val componentName = ComponentName(
@@ -210,26 +213,27 @@ override fun onCreate() {
         if (packageName == "android" || packageName == "com.android.systemui") {
             return
         }
-        // 针对一加部分系统的修复
-        if ((packageName == "net.oneplus.h2launcher" || packageName == "net.oneplus.launcher") && event.className == "android.widget.LinearLayout") {
-            return
-        }
+        if (packageName.contains("packageinstaller")) {
+            if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity")
+                return
 
-        if (flagRetriveWindow) {
-            if (packageName.contains("packageinstaller")) {
-                if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity")
-                    return
+            if (flagRetriveWindow) {
                 try {
                     AutoClickService().packageinstallerAutoClick(this.applicationContext, event)
                 } catch (ex: Exception) {
                 }
-            } else if (packageName == "com.miui.securitycenter") {
-                try {
-                    AutoClickService().miuiUsbInstallAutoClick(event)
-                } catch (ex: Exception) {
-                }
-                return
             }
+        } else if (packageName == "com.miui.securitycenter") {
+            try {
+                AutoClickService().miuiUsbInstallAutoClick(event)
+            } catch (ex: Exception) {
+            }
+            return
+        }
+
+        // 针对一加部分系统的修复
+        if ((packageName == "net.oneplus.h2launcher" || packageName == "net.oneplus.launcher") && event.className == "android.widget.LinearLayout") {
+            return
         }
 
         /*
@@ -239,9 +243,9 @@ override fun onCreate() {
         if (source == null || rootWindow.windowId != source.windowId) {
             return
         }
-
         val windowInfo = source.window
         */
+
         if (flagReportViewIds) {
             val windows_ = windows
             if (windows_ == null || windows_.isEmpty()) {
@@ -267,7 +271,7 @@ override fun onCreate() {
                 应用Window	    1~99
                 子Window	    1000~1999
                 系统Window	    2000~2999
-                */
+                 */
                 val source = event.source
                 if (source == null) return
 
@@ -275,12 +279,24 @@ override fun onCreate() {
                     return
                 }
             }
-            serviceHelper?.onFocusAppChanged(event.packageName.toString())
+            lastPackageName = packageName
+            serviceHelper?.onFocusAppChanged(lastPackageName)
         } else {
-            serviceHelper?.onFocusAppChanged(event.packageName.toString())
+            lastPackageName = packageName
+            serviceHelper?.onFocusAppChanged(lastPackageName)
         }
-        // event.recycle()
+
+        handler.postDelayed({
+            if (lastPackageName != packageName) {
+                val lastEvent = topAppPackageName()
+                if (lastEvent.isNotEmpty() && lastEvent != lastPackageName) {
+                    serviceHelper?.onFocusAppChanged(lastEvent)
+                    lastPackageName = lastEvent
+                }
+            }
+        }, 2000)
     }
+
     /*
     Thread(Runnable {
     val inst = Instrumentation()

@@ -134,7 +134,7 @@ if [ "$action" = "powersave" ]; then
 
 
 	set_value "99" /sys/devices/system/cpu/cpu4/cpufreq/$governor4/target_loads
-	set_value 1056000 /sys/devices/system/cpu/cpu4/cpufreq/$governor4/hispeed_freq
+	set_value 576000 /sys/devices/system/cpu/cpu4/cpufreq/$governor4/hispeed_freq
     set_value 0 /sys/devices/system/cpu/cpu4/cpufreq/$governor4/io_is_busy
     interactive_cfg 4 0 19000 20000
     schedutil_cfg 4 1000 10000 0

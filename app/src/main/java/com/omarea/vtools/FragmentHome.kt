@@ -160,6 +160,9 @@ class FragmentHome : Fragment() {
     @SuppressLint("SetTextI18n")
     override fun onResume() {
         super.onResume()
+        if (isDetached) {
+            return
+        }
         setModeState()
         maxFreqs.clear()
         minFreqs.clear()

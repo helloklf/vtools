@@ -102,6 +102,9 @@ class FragmentSwap : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        if (isDetached) {
+            return
+        }
         getSwaps()
     }
 
