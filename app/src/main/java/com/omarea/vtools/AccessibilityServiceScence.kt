@@ -209,7 +209,7 @@ override fun onCreate() {
         }
         */
 
-        val packageName = event.packageName.toString().toLowerCase()
+        val packageName = event.packageName.toString()
         if (packageName == "android" || packageName == "com.android.systemui") {
             return
         }
