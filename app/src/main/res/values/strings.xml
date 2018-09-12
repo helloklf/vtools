@@ -193,7 +193,9 @@
     <string name="addin_pm_dexopt">调整默认odex2oat策略</string>
     <string name="addin_pm_dexopt_desc">适用于Android N+，调整PackageManager应用安装时的dex2oat编译级别，选择更快的安装（运行时编译）或安装时完整的编译，重启后生效，更新系统后需要重新设置</string>
     <string name="addin_thermal_remove">删除、恢复、禁用温控</string>
-    <string name="addin_thermal_remove_desc">禁用温控可确保手机性能更加稳定，但会显著增加发热，同时也会导致MIUI系统的CPU智能调度失效，需要重启手机。</string>
+    <string name="addin_thermal_remove_desc">禁用温控可让手机的性能更加稳定，但会显著增加发热，同时也会导致MIUI系统的CPU智能调度失效，并可能导致相机启动缓慢，需要重启手机。</string>
+    <string name="addin_thermal_remove2">MIUI解除性能限制</string>
+    <string name="addin_thermal_remove2_desc">适用于部分手机，全局使用“无限制”模式，理论上没有副作用，比直接删除温控可靠，需要重启手机。</string>
     <string name="addin_del_pwd">删除锁屏密码</string>
     <string name="addin_del_pwd_desc">如果你的设备处于加密状态（大部分设备默认都是），请不要点这个！！！</string>
     <string name="addin_adb_network">开启网络ADB</string>

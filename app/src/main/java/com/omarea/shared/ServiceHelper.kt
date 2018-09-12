@@ -1,6 +1,7 @@
 package com.omarea.shared
 
 import android.accessibilityservice.AccessibilityService
+import android.annotation.SuppressLint
 import android.content.*
 import android.content.Context.WINDOW_SERVICE
 import android.os.Handler
@@ -326,6 +327,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         }
     }
 
+    @SuppressLint("ApplySharedPref")
     private fun initConfig() {
         if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)) {
             if (!RootFile.fileExists(CommonCmds.POWER_CFG_PATH)) {
@@ -340,6 +342,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
                 ConfigInstaller().configCodeVerify(context)
                 keepShellAsync2.doCmd(CommonCmds.ExecuteConfig)
             }
+            spfGlobal.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, "").commit()
         } else {
             dyamicCore = false
         }

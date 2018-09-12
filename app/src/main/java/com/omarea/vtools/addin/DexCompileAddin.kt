@@ -158,7 +158,12 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
             return
         }
 
-        val arr = arrayOf("快速安装", "Speed编译（最佳性能）", "Everything编译（安装极慢）", "永不编译", "恢复默认")
+        val arr = arrayOf(
+                "快速安装（闲时编译）",
+                "Speed模式（尽量编译）",
+                "Everything模式（完全编译）",
+                "节省空间（永不编译）",
+                "恢复默认")
         val intallMode = Props.getProp("pm.dexopt.install")
         var index = 0
         when (intallMode) {
@@ -195,13 +200,11 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
 
                     when (index) {
                         0 -> {
-                            stringBuilder.append("sed -i '\$apm.dexopt.ab-ota=verify-none' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.bg-dexopt=speed' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.boot=verify-profile' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.core-app=speed' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.first-boot=interpret-only' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.forced-dexopt=speed' /data/build.prop;")
-                            stringBuilder.append("sed -i '\$apm.dexopt.ab-ota=verify-none' /data/build.prop;")
                             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                                 stringBuilder.append("sed -i '\$apm.dexopt.ab-ota=interpret-only' /data/build.prop;")
                             } else {
@@ -240,7 +243,6 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                             stringBuilder.append("sed -i '\$adalvik.vm.dex2oat-filter=speed' /data/build.prop;")
                         }
                         3 -> {
-                            stringBuilder.append("sed -i '\$apm.dexopt.ab-ota=verify-none' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.bg-dexopt=verify-none' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.boot=verify-none' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.core-app=verify-none' /data/build.prop;")

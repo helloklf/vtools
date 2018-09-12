@@ -185,17 +185,21 @@ class FragmentHome : Fragment() {
     private var maxFreqs = HashMap<Int, String>()
 
     private fun updateRamInfo() {
-        sdfree.text = "SDCard：" + Files.getDirFreeSizeMB(Environment.getExternalStorageDirectory().absolutePath) + " MB"
-        datafree.text = "Data：" + Files.getDirFreeSizeMB(Environment.getDataDirectory().absolutePath) + " MB"
-        val info = ActivityManager.MemoryInfo()
-        if (activityManager == null) {
-            activityManager = context!!.getSystemService(ACTIVITY_SERVICE) as ActivityManager
+        try {
+            val info = ActivityManager.MemoryInfo()
+            if (activityManager == null) {
+                activityManager = context!!.getSystemService(ACTIVITY_SERVICE) as ActivityManager
+            }
+            activityManager!!.getMemoryInfo(info)
+            val totalMem = (info.totalMem / 1024 / 1024f).toInt()
+            val availMem = (info.availMem / 1024 / 1024f).toInt()
+            home_raminfo_text.text = "${availMem} / ${totalMem}MB"
+            home_raminfo.setData(totalMem.toFloat(), availMem.toFloat())
+            datafree.text = "Data：" + Files.getDirFreeSizeMB(Environment.getDataDirectory().absolutePath) + " MB"
+            sdfree.text = "SDCard：" + Files.getDirFreeSizeMB(Environment.getExternalStorageDirectory().absolutePath) + " MB"
+        } catch (ex: Exception) {
+
         }
-        activityManager!!.getMemoryInfo(info)
-        val totalMem = (info.totalMem / 1024 / 1024f).toInt()
-        val availMem = (info.availMem / 1024 / 1024f).toInt()
-        home_raminfo_text.text = "${availMem} / ${totalMem}MB"
-        home_raminfo.setData(totalMem.toFloat(), availMem.toFloat())
     }
 
     private var updateTick = 0;
@@ -309,7 +313,16 @@ class FragmentHome : Fragment() {
         super.onPause()
     }
 
+    @SuppressLint("ApplySharedPref")
     private fun installConfig(action: String, message: String) {
+        val dynamic = AccessibleServiceHelper().serviceIsRunning(context!!)
+        if (!dynamic && modeList.getCurrentPowerMode() == action) {
+            modeList.setCurrent("", "")
+            globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, "").commit()
+            Toast.makeText(context, "已取消开机后自动设置模式，你现在需要重启手机才能恢复系统默认调度！", Toast.LENGTH_LONG).show()
+            setModeState()
+            return
+        }
         if (File(CommonCmds.POWER_CFG_PATH).exists()) {
             modeList.executePowercfgModeOnce(action, context!!.packageName)
         } else {
@@ -322,5 +335,11 @@ class FragmentHome : Fragment() {
         maxFreqs.clear()
         minFreqs.clear()
         updateInfo()
+        if (dynamic) {
+            globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, "").commit()
+        } else {
+            globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, action).commit()
+            Toast.makeText(context, "重启手机后Scene会尝试自动设置为当前选中的模式，如需取消自动设置请再次点击！", Toast.LENGTH_LONG).show()
+        }
     }
 }

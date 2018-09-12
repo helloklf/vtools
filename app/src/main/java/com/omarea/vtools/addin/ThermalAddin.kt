@@ -4,6 +4,10 @@ import android.app.AlertDialog
 import android.content.Context
 import android.widget.Toast
 import com.omarea.shared.CommonCmds
+import com.omarea.shell.Platform
+import com.omarea.shell.RootFile
+import com.omarea.vtools.R
+import kotlinx.android.synthetic.main.dpi_input.view.*
 import java.io.File
 
 /**
@@ -12,7 +16,7 @@ import java.io.File
 
 class ThermalAddin(private var context: Context) : AddinBase(context) {
     private fun isSupprt(): Boolean {
-        if (File("/system/vendor/bin/thermal-engine").exists() || File("/system/vendor/bin/thermal-engine.bak").exists()) {
+        if (RootFile.fileExists("/system/vendor/bin/thermal-engine") || RootFile.fileExists("/system/vendor/bin/thermal-engine.bak")) {
             return true
         } else {
             Toast.makeText(context, "该功能暂不支持您的设备！", Toast.LENGTH_SHORT).show()
@@ -41,8 +45,41 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
                 .create().show()
     }
 
+    fun miuiSetThermalNo () {
+        val cpuName = Platform().getCPUName().replace("msm", "")
+        if (RootFile.fileExists("/vendor/etc/thermal-engine-${cpuName}.conf") && RootFile.fileExists("/vendor/etc/thermal-engine-${cpuName}-nolimits.conf")) {
+            AlertDialog.Builder(context)
+                    .setTitle("确定")
+                    .setMessage("这个操作是永久性的，暂时没有做备份还原功能，如果你需要恢复之前的温控，则需要重新输入ROM（不需要清除数据），手动删除/data/thermal目录并重启手机！")
+                    .setPositiveButton(R.string.btn_confirm, {
+                        _, _ ->
+                        command = StringBuilder()
+                                .append(CommonCmds.MountSystemRW)
+                                .append(CommonCmds.MountVendorRW)
+                                .append("cp /vendor/etc/thermal-engine-${cpuName}-nolimits.conf /vendor/etc/thermal-engine-${cpuName}.conf\n")
+                                .append("cp /vendor/etc/thermal-engine-${cpuName}-nolimits.conf /vendor/etc/thermal-engine-${cpuName}-camera.conf\n")
+                                .append("cp /vendor/etc/thermal-engine-${cpuName}-nolimits.conf /vendor/etc/thermal-engine-${cpuName}-class0.conf\n")
+                                .append("cp /vendor/etc/thermal-engine-${cpuName}-nolimits.conf /vendor/etc/thermal-engine-${cpuName}-high.conf\n")
+                                .append("cp /vendor/etc/thermal-engine-${cpuName}-nolimits.conf /vendor/etc/thermal-engine-${cpuName}-map.conf\n")
+                                .append("cp /vendor/etc/thermal-engine-${cpuName}-nolimits.conf /vendor/etc/thermal-engine-${cpuName}-phone.conf\n")
+                                .append("cp /vendor/etc/thermal-engine-${cpuName}-nolimits.conf /vendor/etc/thermal-engine-${cpuName}-pubgmhd.conf\n")
+                                .append("cp /vendor/etc/thermal-engine-${cpuName}-nolimits.conf /vendor/etc/thermal-engine-${cpuName}-sgame.conf\n")
+                                .append("rm -rf /data/thermal\n")
+                                .toString()
+                        super.run()
+                    })
+                    .setNegativeButton(R.string.btn_cancel, {
+                        _, _ ->
+                    })
+                    .create()
+                    .show()
+        } else {
+            Toast.makeText(context, "暂不支持你当前设备或系统！", Toast.LENGTH_LONG).show()
+        }
+    }
+
     private fun removeThermal() {
-        if (File("/system/vendor/bin/thermal-engine.bak").exists()) {
+        if (RootFile.fileExists("/system/vendor/bin/thermal-engine.bak")) {
             Toast.makeText(context, "你已执行过这个操作，不需要再次执行，如果未生效请重启手机！", Toast.LENGTH_SHORT).show()
             return
         }
@@ -66,7 +103,7 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
     }
 
     private fun resumeThermal() {
-        if (File("/system/vendor/bin/thermal-engine").exists()) {
+        if (RootFile.fileExists("/system/vendor/bin/thermal-engine")) {
             Toast.makeText(context, "你不需要此操作，温控文件正在正常使用，如果无效请重启手机！", Toast.LENGTH_SHORT).show()
             return
         }

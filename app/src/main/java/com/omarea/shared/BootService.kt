@@ -15,6 +15,7 @@ import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import com.omarea.shell.cpucontrol.ThermalControlUtils
 import com.omarea.shell.units.LMKUnit
 import com.omarea.vtools.R
+import java.io.File
 
 /**
  * Created by Hello on 2017/12/27.
@@ -196,6 +197,18 @@ class BootService : IntentService("vtools-boot") {
             sb.append(FastChangerBase)
             val qcLimit = chargeConfig.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000)
             sb.append(computeLeves(qcLimit).toString())
+        }
+
+        val globalPowercfg = globalConfig.getString(SpfConfig.GLOBAL_SPF_POWERCFG, "")
+        if (globalPowercfg.isNotEmpty()) {
+            val modeList = ModeList()
+            if (File(CommonCmds.POWER_CFG_PATH).exists()) {
+                modeList.executePowercfgModeOnce(globalPowercfg, context!!.packageName)
+            } else {
+                val stringBuilder = StringBuilder()
+                stringBuilder.append(String.format(CommonCmds.ToggleMode, globalPowercfg))
+                ConfigInstaller().installPowerConfig(context!!, stringBuilder.toString());
+            }
         }
 
         if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false) || swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) {
