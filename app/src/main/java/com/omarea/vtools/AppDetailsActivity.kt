@@ -273,15 +273,16 @@ class AppDetailsActivity : AppCompatActivity() {
                 ModeList.BALANCE -> index = 1
                 ModeList.PERFORMANCE -> index = 2
                 ModeList.FAST -> index = 3
-                ModeList.IGONED -> index = 4
+                ModeList.IGONED -> index = 5
+                else -> index = 4
             }
             var selectedIndex = index
             AlertDialog.Builder(this)
                     .setTitle(getString(R.string.perf_opt))
-                    .setSingleChoiceItems(R.array.powercfg_modes2, index, DialogInterface.OnClickListener { dialog, which ->
+                    .setSingleChoiceItems(R.array.powercfg_modes2, index, { dialog, which ->
                         selectedIndex = which
                     })
-                    .setPositiveButton(R.string.btn_confirm, DialogInterface.OnClickListener { dialog, which ->
+                    .setPositiveButton(R.string.btn_confirm, { dialog, which ->
                         if (index != selectedIndex) {
                             var modeName = ModeList.BALANCE
                             when (selectedIndex) {
@@ -289,6 +290,7 @@ class AppDetailsActivity : AppCompatActivity() {
                                 1 -> modeName = ModeList.BALANCE
                                 2 -> modeName = ModeList.PERFORMANCE
                                 3 -> modeName = ModeList.FAST
+                                5 -> modeName = ModeList.IGONED
                                 4 -> modeName = ""
                             }
                             if (modeName.isEmpty()) {

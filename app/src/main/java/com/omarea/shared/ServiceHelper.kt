@@ -273,6 +273,10 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         if (lastPackage == packageName || ignoredList.contains(packageName)) return
         if (lastPackage == null) lastPackage = "com.android.systemui"
 
+        if (!screenOn) {
+            this.screenOn = !isScreenLocked()
+        }
+
         if (accuSwitch)
             DumpTopApplictionThread(dumpTopAppliction, packageName, this).start()
         else
@@ -356,7 +360,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         // 监听锁屏状态变化
         ReciverLock.autoRegister(context, screenHandler)
         // 禁用SeLinux
-        if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true))
+        if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false))
             keepShellAsync2.doCmd(CommonCmds.DisableSELinux)
 
         Thread(Runnable {

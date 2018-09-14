@@ -183,12 +183,13 @@ class FragmentConfig : Fragment() {
                 ModeList.BALANCE -> originIndex = 1
                 ModeList.PERFORMANCE -> originIndex = 2
                 ModeList.FAST -> originIndex = 3
+                ModeList.IGONED -> originIndex = 5
                 else -> originIndex = 4
             }
             var currentMode = originIndex
             AlertDialog.Builder(context)
                     .setTitle(item.appName.toString())
-                    .setSingleChoiceItems(arrayOf("省电模式（阅读）", "均衡模式（日常）", "性能模式（游戏）", "极速模式（跑分）", "跟随默认模式"), originIndex, DialogInterface.OnClickListener { dialog, which ->
+                    .setSingleChoiceItems(arrayOf("省电模式（阅读）", "均衡模式（日常）", "性能模式（游戏）", "极速模式（跑分）", "跟随默认模式", "忽略切换"), originIndex, DialogInterface.OnClickListener { dialog, which ->
                         currentMode = which
                     })
                     .setPositiveButton(R.string.btn_confirm, { _, _ ->
@@ -200,6 +201,7 @@ class FragmentConfig : Fragment() {
                                 2 -> modeName = ModeList.PERFORMANCE
                                 3 -> modeName = ModeList.FAST
                                 4 -> modeName = ""
+                                5 -> modeName = ModeList.IGONED
                             }
 
                             if (modeName.isEmpty()) {
@@ -250,11 +252,11 @@ class FragmentConfig : Fragment() {
 
         val modeValue = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance")
         when (modeValue) {
-            "powersave" -> first_mode.setSelection(0)
-            "balance" -> first_mode.setSelection(1)
-            "performance" -> first_mode.setSelection(2)
-            "fast" -> first_mode.setSelection(3)
-            "igoned" -> first_mode.setSelection(4)
+            ModeList.POWERSAVE -> first_mode.setSelection(0)
+            ModeList.BALANCE -> first_mode.setSelection(1)
+            ModeList.PERFORMANCE -> first_mode.setSelection(2)
+            ModeList.FAST -> first_mode.setSelection(3)
+            ModeList.IGONED -> first_mode.setSelection(4)
         }
         first_mode.onItemSelectedListener = ModeOnItemSelectedListener(globalSPF, Runnable {
             reStartService()
@@ -513,7 +515,8 @@ class FragmentConfig : Fragment() {
                 2 -> filterMode = ModeList.BALANCE
                 3 -> filterMode = ModeList.PERFORMANCE
                 4 -> filterMode = ModeList.FAST
-                5 -> filterMode = ModeList.IGONED
+                5 -> filterMode = ""
+                6 -> filterMode = ModeList.IGONED
             }
             displayList = ArrayList()
             for (i in installedList!!.indices) {
@@ -523,7 +526,7 @@ class FragmentConfig : Fragment() {
                 if (search && !(packageName.toLowerCase().contains(keyword) || item.appName.toString().toLowerCase().contains(keyword))) {
                     continue
                 } else {
-                    if (filterMode == "*" || filterMode == spfPowercfg.getString(packageName, firstMode)) {
+                    if (filterMode == "*" || filterMode == spfPowercfg.getString(packageName, "")) {
                         if (filterAppType == "*" || item.path.startsWith(filterAppType)) {
                             displayList!!.add(item)
                         }

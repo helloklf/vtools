@@ -67,12 +67,14 @@ override fun onCreate() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         CrashHandler().init(this)
+        /*
         try {
             val service = Intent(this, BootService::class.java)
             //service.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startService(service)
         } catch (ex: Exception) {
         }
+        */
 
         return super.onStartCommand(intent, flags, startId)
     }
@@ -254,6 +256,9 @@ override fun onCreate() {
             if (windows_.size > 1) {
                 var lastWindow: AccessibilityWindowInfo? = null
                 for (window in windows_.iterator()) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && window.isInPictureInPictureMode) {
+                        continue
+                    }
                     if (window.type == AccessibilityWindowInfo.TYPE_APPLICATION) {
                         lastWindow = window
                     } else {
@@ -280,7 +285,6 @@ override fun onCreate() {
                         return
                     }
                 } catch (ex: Exception) {
-
                 }
             }
             lastPackageName = packageName

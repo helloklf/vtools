@@ -10,6 +10,7 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.support.v4.app.NotificationCompat
 import com.omarea.shell.KeepShell
+import com.omarea.shell.KernelProrp
 import com.omarea.shell.Props
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import com.omarea.shell.cpucontrol.ThermalControlUtils
@@ -90,7 +91,7 @@ class BootService : IntentService("vtools-boot") {
     private fun autoBoot() {
         val sb = StringBuilder()
 
-        if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true)) {
+        if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false)) {
             sb.append(CommonCmds.DisableSELinux)
             sb.append("\n\n")
         }
@@ -173,6 +174,22 @@ class BootService : IntentService("vtools-boot") {
                 CpuFrequencyUtils.setExynosHmpDown(cpuState.exynosHmpDown);
                 CpuFrequencyUtils.setExynosHmpUP(cpuState.exynosHmpUP);
                 CpuFrequencyUtils.setExynosBooster(cpuState.exynosHmpBooster);
+            }
+
+            if (!cpuState.cpusetBackground.isNullOrEmpty()) {
+                KernelProrp.setProp("/dev/cpuset/background/cpus", cpuState.cpusetBackground)
+            }
+            if (!cpuState.cpusetSysBackground.isNullOrEmpty()) {
+                KernelProrp.setProp("/dev/cpuset/system-background/cpus", cpuState.cpusetSysBackground)
+            }
+            if (!cpuState.cpusetForeground.isNullOrEmpty()) {
+                KernelProrp.setProp("/dev/cpuset/foreground/cpus", cpuState.cpusetForeground)
+            }
+            if (!cpuState.cpusetForegroundBoost.isNullOrEmpty()) {
+                KernelProrp.setProp("/dev/cpuset/foreground/boost/cpus", cpuState.cpusetForegroundBoost)
+            }
+            if (!cpuState.cpusetTopApp.isNullOrEmpty()) {
+                KernelProrp.setProp("/dev/cpuset/top-app/cpus", cpuState.cpusetTopApp)
             }
         }
 

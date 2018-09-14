@@ -187,14 +187,14 @@ class StartSplashActivity : Activity() {
                             next.run()
                         }
                         globalConfig.edit()
-                                .putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true)
+                                .putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false)
                                 .remove(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE_CHECKING)
                                 .commit()
                     }).start()
                 }
             }, false).forceGetRoot()
         } else {
-            val disableSeLinux = globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, true)
+            val disableSeLinux = globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false)
             CheckRootStatus(this, next, disableSeLinux).forceGetRoot()
         }
     }

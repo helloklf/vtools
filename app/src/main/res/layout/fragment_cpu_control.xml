@@ -51,30 +51,152 @@
                 android:layout_marginRight="16dp"
                 android:layout_marginTop="16dp"
                 app:cardCornerRadius="4dp">
+
                 <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="20dp"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:paddingTop="20dp"
-                    android:paddingBottom="20dp"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:paddingTop="20dp">
+
                     <Switch
                         android:id="@+id/cpu_apply_onboot"
-                        android:text="开机后应用  "
-                        android:gravity="center"
-                        android:layout_gravity="center"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="开机后应用  " />
+
                     <TextView
-                        android:layout_marginTop="5dp"
-                        android:textSize="13dp"
-                        android:text="开机后应用当前设置，需要允许Scene开机自启动"
-                        android:gravity="center"
-                        android:layout_gravity="center"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center"
+                        android:text="开机后应用当前设置，需要允许Scene开机自启动"
+                        android:textSize="13dp" />
                 </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginTop="10dp"
+                app:cardCornerRadius="4dp">
+
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_columnSpan="2"
+                        android:layout_gravity="fill_horizontal"
+                        android:layout_marginBottom="10dp"
+                        android:layout_row="0"
+                        android:text="Cpuset"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        android:layout_column="0"
+                        android:layout_gravity="fill"
+                        android:layout_row="1"
+                        android:gravity="center_vertical"
+                        android:text="用户的后台应用" />
+
+                    <TextView
+                        android:id="@+id/cpuset_bg"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:layout_row="1"
+                        android:padding="5dp"
+                        android:text=""
+                        android:textAlignment="textEnd" />
+
+                    <TextView
+                        android:layout_column="0"
+                        android:layout_gravity="fill"
+                        android:layout_row="2"
+                        android:gravity="center_vertical"
+                        android:text="系统的后台应用" />
+
+                    <TextView
+                        android:id="@+id/cpuset_system_bg"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:layout_row="2"
+                        android:padding="5dp"
+                        android:text=""
+                        android:textAlignment="textEnd" />
+
+                    <TextView
+                        android:layout_column="0"
+                        android:layout_gravity="fill"
+                        android:layout_row="3"
+                        android:gravity="center_vertical"
+                        android:text="前台运行的应用" />
+
+                    <TextView
+                        android:id="@+id/cpuset_foreground"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:layout_row="3"
+                        android:padding="5dp"
+                        android:text=""
+                        android:textAlignment="textEnd" />
+
+                    <TextView
+                        android:layout_column="0"
+                        android:layout_gravity="fill"
+                        android:layout_row="4"
+                        android:gravity="center_vertical"
+                        android:text="显示在上层的应用" />
+
+                    <TextView
+                        android:id="@+id/cpuset_top_app"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:layout_row="4"
+                        android:padding="5dp"
+                        android:text=""
+                        android:textAlignment="textEnd" />
+
+                    <TextView
+                        android:layout_column="0"
+                        android:layout_gravity="fill"
+                        android:layout_row="5"
+                        android:gravity="center_vertical"
+                        android:text="前台应用加速核心" />
+
+                    <TextView
+                        android:id="@+id/cpuset_boost"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_column="1"
+                        android:layout_row="5"
+                        android:padding="5dp"
+                        android:text=""
+                        android:textAlignment="textEnd" />
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_column="0"
+                        android:layout_columnSpan="2"
+                        android:layout_gravity="fill_horizontal"
+                        android:layout_marginTop="4dp"
+                        android:layout_row="6"
+                        android:text="Cpuset用于设定不同状态的进程可使用的CPU核心，给后台进程分配较少的CPU核心，可以保证后台过多时前台进程仍然能流畅运行，但也会导致单个核心持续满载，或下载工具后台时下载速度显著变慢。" />
+
+                </GridLayout>
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
@@ -571,10 +693,10 @@
                         android:text="优先大核" />
 
                     <CheckBox
-                        android:layout_marginTop="5dp"
                         android:id="@+id/exynos_hmp_booster"
-
                         android:layout_column="1"
+
+                        android:layout_marginTop="5dp"
                         android:layout_row="6"
                         android:enabled="false" />
 
@@ -667,6 +789,7 @@
                 </GridLayout>
             </android.support.v7.widget.CardView>
 
+
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -702,30 +825,30 @@
 
                         <CheckBox
                             android:id="@+id/core_0"
-                            android:layout_weight="1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:text="CPU0" />
 
                         <CheckBox
                             android:id="@+id/core_1"
-                            android:layout_weight="1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:text="CPU1" />
 
                         <CheckBox
                             android:id="@+id/core_2"
-                            android:layout_weight="1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:text="CPU2" />
 
                         <CheckBox
                             android:id="@+id/core_3"
-                            android:layout_weight="1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:text="CPU3" />
                     </LinearLayout>
 
@@ -739,39 +862,39 @@
 
                         <CheckBox
                             android:id="@+id/core_4"
-                            android:layout_weight="1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:text="CPU4" />
 
                         <CheckBox
                             android:id="@+id/core_5"
-                            android:layout_weight="1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:text="CPU5" />
 
                         <CheckBox
                             android:id="@+id/core_6"
-                            android:layout_weight="1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:text="CPU6" />
 
                         <CheckBox
                             android:id="@+id/core_7"
-                            android:layout_weight="1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:text="CPU7" />
                     </LinearLayout>
 
                     <TextView
                         style="@style/textSmall"
-                        android:layout_gravity="fill_horizontal"
-                        android:layout_marginTop="8dp"
                         android:layout_column="0"
                         android:layout_columnSpan="2"
+                        android:layout_gravity="fill_horizontal"
+                        android:layout_marginTop="8dp"
                         android:layout_row="3"
                         android:text="可能需要关闭温控栏的“核心控制”（高通设备），并关闭热插拔才能设置CPU核心离线状态！" />
                 </GridLayout>

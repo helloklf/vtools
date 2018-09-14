@@ -28,7 +28,7 @@ class BatteryUnit {
                     }*/
     val batteryInfo: String
         get() {
-            if (File("/sys/class/power_supply/bms/uevent").exists()) {
+            if (RootFile.fileExists("/sys/class/power_supply/bms/uevent")) {
                 val batteryInfos = KernelProrp.getProp("/sys/class/power_supply/bms/uevent")
                 val infos = batteryInfos.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
                 val stringBuilder = StringBuilder()
@@ -153,7 +153,7 @@ class BatteryUnit {
             */ val batteryMAH: String
         get() {
             var path = ""
-            if (File("/sys/class/power_supply/bms/uevent").exists()) {
+            if (RootFile.fileExists("/sys/class/power_supply/bms/uevent")) {
                 val batteryInfos = KernelProrp.getProp("/sys/class/power_supply/bms/uevent")
 
                 val arr = batteryInfos.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()

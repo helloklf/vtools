@@ -252,11 +252,12 @@
     <string name="core_control_helpinfo">这是一个功能简陋的CPU控制器，但实际上CPU的调度工作非常复杂，单纯的提高或降低频率限制，并不一定能提高流畅度或节省电量。\n\n部分的手机底层具有自动调节CPU参数的机制，会导致自定义的参数很快失效（小米手机请先到“附加功能-自定义”中禁用perfd和Performance Boost Config，否则CPU频率修改不会生效！）。\n\n此外，热插拔温控功能可能也会影响你对CPU参数的修改！\n\ninteractive调度适用于大多数手机，反应迅速（schedutil更好），ondemand调度则会更缓慢的切换频率，conservative、powersave、performance模式均不推荐使用！。\n\n优先Big核心会在获得绝佳的流畅体验的同时，耗电和发热显著增高。</string>
     <string name="shell_executor">脚本执行</string>
     <string-array name="powercfg_modes2">
-        <item>省电模式</item>
-        <item>均衡模式</item>
-        <item>性能模式</item>
-        <item>极速模式</item>
-        <item>跟随默认</item>
+        <item>省电模式（阅读）</item>
+        <item>均衡模式（日常）</item>
+        <item>性能模式（游戏）</item>
+        <item>极速模式（跑分）</item>
+        <item>跟随默认模式</item>
+        <item>忽略切换</item>
     </string-array>
     <string-array name="powercfg_modes">
         <item>省电模式</item>
@@ -270,6 +271,8 @@
         <item>均衡模式</item>
         <item>性能模式</item>
         <item>极速模式</item>
+        <item>跟随默认</item>
+        <item>忽略切换</item>
     </string-array>
     <string-array name="powercfg_apptype_filter">
         <item>用户程序</item>

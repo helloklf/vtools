@@ -14,14 +14,13 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import com.omarea.shared.CpuStatusHelp
-import com.omarea.shared.FileWrite
 import com.omarea.shared.model.CpuStatus
+import com.omarea.shell.KernelProrp
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import com.omarea.shell.cpucontrol.ThermalControlUtils
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.ui.StringAdapter
 import kotlinx.android.synthetic.main.fragment_cpu_control.*
-import java.io.*
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.collections.ArrayList
@@ -151,7 +150,7 @@ class FragmentCpuControl : Fragment() {
                                 }
                                 CpuFrequencyUtils.setMinFrequency(g, 0, context)
                                 status.cluster_little_min_freq = g
-                                setText(it as TextView ?, subFreqStr(g))
+                                setText(it as TextView?, subFreqStr(g))
                             }
                         })
                         .create()
@@ -176,7 +175,7 @@ class FragmentCpuControl : Fragment() {
                                 }
                                 CpuFrequencyUtils.setMaxFrequency(g, 0, context)
                                 status.cluster_little_max_freq = g
-                                setText(it as TextView ?, subFreqStr(g))
+                                setText(it as TextView?, subFreqStr(g))
                             }
                         })
                         .create()
@@ -222,8 +221,7 @@ class FragmentCpuControl : Fragment() {
                     AlertDialog.Builder(context)
                             .setTitle("Cluster0 调度器参数")
                             .setMessage(msg.toString())
-                            .setPositiveButton(R.string.btn_confirm, {
-                                _,_ ->
+                            .setPositiveButton(R.string.btn_confirm, { _, _ ->
                             })
                             .create()
                             .show()
@@ -318,8 +316,7 @@ class FragmentCpuControl : Fragment() {
                         AlertDialog.Builder(context)
                                 .setTitle("Cluster1 调度器参数")
                                 .setMessage(msg.toString())
-                                .setPositiveButton(R.string.btn_confirm, {
-                                    _, _ ->
+                                .setPositiveButton(R.string.btn_confirm, { _, _ ->
                                 })
                                 .create()
                                 .show()
@@ -566,18 +563,159 @@ class FragmentCpuControl : Fragment() {
             exynos_hmp_up.setOnSeekBarChangeListener(OnSeekBarChangeListener(true))
             exynos_hmp_down.setOnSeekBarChangeListener(OnSeekBarChangeListener(false))
 
-            cpu_apply_onboot.setOnClickListener {
-                val switch = it as Switch
-                if (exynosHMP || exynosCpuhotplug) {
-                    switch.isChecked = false
-                } else {
-                    saveBootConfig()
-                    // TODO:采集当前参数！
+            cpuset_bg.setOnClickListener {
+                if (status.cpusetBackground.isNotEmpty()) {
+                    val coreState = parsetCpuset(status.cpusetBackground)
+                    AlertDialog.Builder(context)
+                            .setTitle("选择要使用的核心")
+                            .setMultiChoiceItems(getCoreList(), coreState, { dialog, which, isChecked ->
+                                coreState[which] = isChecked
+                            })
+                            .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                                status.cpusetBackground = parsetCpuset(coreState)
+                                KernelProrp.setProp("/dev/cpuset/background/cpus", status.cpusetBackground)
+                                updateUI()
+                            })
+                            .setNegativeButton(R.string.btn_cancel, { _, _ ->
+                            })
+                            .create().show()
                 }
+            }
+            cpuset_system_bg.setOnClickListener {
+                if (status.cpusetSysBackground.isNotEmpty()) {
+                    val coreState = parsetCpuset(status.cpusetSysBackground)
+                    AlertDialog.Builder(context)
+                            .setTitle("选择要使用的核心")
+                            .setMultiChoiceItems(getCoreList(), coreState, { dialog, which, isChecked ->
+                                coreState[which] = isChecked
+                            })
+                            .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                                status.cpusetSysBackground = parsetCpuset(coreState)
+                                KernelProrp.setProp("/dev/cpuset/system-background/cpus", status.cpusetSysBackground)
+                                updateUI()
+                            })
+                            .setNegativeButton(R.string.btn_cancel, { _, _ ->
+                            })
+                            .create().show()
+                }
+            }
+            cpuset_foreground.setOnClickListener {
+                if (status.cpusetForeground.isNotEmpty()) {
+                    val coreState = parsetCpuset(status.cpusetForeground)
+                    AlertDialog.Builder(context)
+                            .setTitle("选择要使用的核心")
+                            .setMultiChoiceItems(getCoreList(), coreState, { dialog, which, isChecked ->
+                                coreState[which] = isChecked
+                            })
+                            .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                                status.cpusetForeground = parsetCpuset(coreState)
+                                KernelProrp.setProp("/dev/cpuset/foreground/cpus", status.cpusetForeground)
+                                updateUI()
+                            })
+                            .setNegativeButton(R.string.btn_cancel, { _, _ ->
+                            })
+                            .create().show()
+                }
+            }
+            cpuset_top_app.setOnClickListener {
+                if (status.cpusetTopApp.isNotEmpty()) {
+                    val coreState = parsetCpuset(status.cpusetTopApp)
+                    AlertDialog.Builder(context)
+                            .setTitle("选择要使用的核心")
+                            .setMultiChoiceItems(getCoreList(), coreState, { dialog, which, isChecked ->
+                                coreState[which] = isChecked
+                            })
+                            .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                                status.cpusetTopApp = parsetCpuset(coreState)
+                                KernelProrp.setProp("/dev/cpuset/top-app/cpus", status.cpusetTopApp)
+                                updateUI()
+                            })
+                            .setNegativeButton(R.string.btn_cancel, { _, _ ->
+                            })
+                            .create().show()
+                }
+            }
+            cpuset_boost.setOnClickListener {
+                if (status.cpusetForeground.isNotEmpty()) {
+                    val coreState = parsetCpuset(status.cpusetForeground)
+                    AlertDialog.Builder(context)
+                            .setTitle("选择要使用的核心")
+                            .setMultiChoiceItems(getCoreList(), coreState, { dialog, which, isChecked ->
+                                coreState[which] = isChecked
+                            })
+                            .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                                status.cpusetForeground = parsetCpuset(coreState)
+                                KernelProrp.setProp("/dev/cpuset/foreground/boost/cpus", status.cpusetForeground)
+                                updateUI()
+                            })
+                            .setNegativeButton(R.string.btn_cancel, { _, _ ->
+                            })
+                            .create().show()
+                }
+            }
+
+            cpu_apply_onboot.setOnClickListener {
+                saveBootConfig()
             }
         } catch (ex: Exception) {
             Log.e("bindEvent", ex.message)
         }
+    }
+
+    private fun parsetCpuset(booleanArray: BooleanArray): String {
+        val stringBuilder = StringBuilder()
+        for (index in 0..booleanArray.size - 1) {
+            if (booleanArray.get(index)) {
+                if (stringBuilder.length > 0) {
+                    stringBuilder.append(",")
+                }
+                stringBuilder.append(index)
+            }
+        }
+        return stringBuilder.toString()
+    }
+
+    private fun parsetCpuset(value: String): BooleanArray {
+        val cores = ArrayList<Boolean>();
+        for (coreIndex in 0..coreCount - 1) {
+            cores.add(false)
+        }
+        if (value.isEmpty() || value == "error") {
+        } else {
+            val valueGroups = value.split(",")
+            for (valueGroup in valueGroups) {
+                if (valueGroup.contains("-")) {
+                    try {
+                        val range = valueGroup.split("-")
+                        val min = range[0].toInt()
+                        val max = range[1].toInt()
+                        for (coreIndex in min..max) {
+                            if (coreIndex < cores.size) {
+                                cores[coreIndex] = true
+                            }
+                        }
+                    } catch (ex: Exception) {
+                    }
+                } else {
+                    try {
+                        val coreIndex = valueGroup.toInt()
+                        if (coreIndex < cores.size) {
+                            cores[coreIndex] = true
+                        }
+                    } catch (ex: Exception) {
+                    }
+                }
+            }
+        }
+        return cores.toBooleanArray()
+    }
+
+    private fun getCoreList(): Array<String> {
+        val cores = ArrayList<String>();
+        for (coreIndex in 0..coreCount - 1) {
+            cores.add("Cpu" + coreIndex)
+        }
+        return cores.toTypedArray()
     }
 
     class OnSeekBarChangeListener(private var up: Boolean) : SeekBar.OnSeekBarChangeListener {
@@ -644,6 +782,11 @@ class FragmentCpuControl : Fragment() {
                 } finally {
                     mLock.unlock()
                 }
+                status.cpusetBackground = KernelProrp.getProp("/dev/cpuset/background/cpus")
+                status.cpusetSysBackground = KernelProrp.getProp("/dev/cpuset/system-background/cpus")
+                status.cpusetForeground = KernelProrp.getProp("/dev/cpuset/foreground/cpus")
+                status.cpusetForegroundBoost = KernelProrp.getProp("/dev/cpuset/foreground/boost/cpus")
+                status.cpusetTopApp = KernelProrp.getProp("/dev/cpuset/top-app/cpus")
 
                 handler.post {
                     updateUI()
@@ -760,6 +903,12 @@ class FragmentCpuControl : Fragment() {
             for (i in 0 until coreCount) {
                 cores[i].isChecked = status.coreOnline.get(i)
             }
+
+            cpuset_bg.text = status.cpusetBackground
+            cpuset_system_bg.text = status.cpusetSysBackground
+            cpuset_foreground.text = status.cpusetForeground
+            cpuset_top_app.text = status.cpusetTopApp
+            cpuset_boost.text = status.cpusetForeground
         } catch (ex: Exception) {
         }
     }
@@ -773,13 +922,13 @@ class FragmentCpuControl : Fragment() {
         }).start()
     }
 
-    private fun loadBootConfig () {
+    private fun loadBootConfig() {
         statusOnBoot = CpuStatusHelp().loadBootConfig(context!!)
         cpu_apply_onboot.isChecked = statusOnBoot != null
     }
 
-    private fun saveBootConfig () {
-        if(!CpuStatusHelp().saveBootConfig(context!!, if (cpu_apply_onboot.isChecked) status else null)) {
+    private fun saveBootConfig() {
+        if (!CpuStatusHelp().saveBootConfig(context!!, if (cpu_apply_onboot.isChecked) status else null)) {
             Toast.makeText(context!!, "更新配置为启动设置失败！", Toast.LENGTH_SHORT).show()
             cpu_apply_onboot.isChecked = false
         }

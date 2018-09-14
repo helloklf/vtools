@@ -38,4 +38,10 @@ public class CpuStatus implements Serializable {
     public String adrenoMaxPL = "";
     public String adrenoDefaultPL = "";
     public String adrenoGovernor = "";
+
+    public String cpusetBackground = "";
+    public String cpusetSysBackground = "";
+    public String cpusetForeground = "";
+    public String cpusetTopApp = "";
+    public String cpusetForegroundBoost = "";
 }

@@ -59,7 +59,12 @@ class AdapterCpuCores(private val context: Context, private val list: ArrayList<
         index.text = coreInfo.loadRatio.toInt().toString() + "%"
 
         val currentFreq = convertView.findViewById<TextView>(R.id.cpu_core_current_freq)
-        currentFreq.text = subFreqStr(coreInfo.currentFreq) + " Mhz"
+        val freqMhz = subFreqStr(coreInfo.currentFreq)
+        if (freqMhz == "0") {
+            currentFreq.text = "离线"
+        } else {
+            currentFreq.text = freqMhz + " Mhz"
+        }
 
         val freqRanage = convertView.findViewById<TextView>(R.id.cpu_core_freq_ranage)
         val freq = subFreqStr(coreInfo.minFreq) + " ~ " + subFreqStr(coreInfo.maxFreq) + "Mhz"

@@ -528,12 +528,17 @@ public class CpuFrequencyUtils {
                             long total0 = cpuTotalTime(cols0);
                             long idel0 = cpuIdelTime(cols0);
                             long timePoor = total1 - total0;
-                            long idelTimePoor = idel1 - idel0;
-                            if (idelTimePoor < 1) {
-                                loads.put(getCpuIndex(cols1), 100d);
+                            // 如果CPU时长是0，那就是离线咯
+                            if (timePoor == 0) {
+                                loads.put(getCpuIndex(cols1), 0d);
                             } else {
-                                double load = (100 - (idelTimePoor * 100.0 / timePoor));
-                                loads.put(getCpuIndex(cols1), load);
+                                long idelTimePoor = idel1 - idel0;
+                                if (idelTimePoor < 1) {
+                                    loads.put(getCpuIndex(cols1), 100d);
+                                } else {
+                                    double load = (100 - (idelTimePoor * 100.0 / timePoor));
+                                    loads.put(getCpuIndex(cols1), load);
+                                }
                             }
                         } else {
                             loads.put(getCpuIndex(cols1), 0d);
