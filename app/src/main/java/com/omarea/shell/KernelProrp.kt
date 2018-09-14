@@ -24,6 +24,6 @@ object KernelProrp {
      * @param value    属性值,值尽量是简单的数字或字母，避免出现错误
      */
     fun setProp(propName: String, value: String): Boolean {
-        return KeepShellPublic.doCmdSync("echo \"\$value\" > $propName") != "error"
+        return KeepShellPublic.doCmdSync("echo \"$value\" > $propName") != "error"
     }
 }

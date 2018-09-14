@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.omarea.shell.KernelProrp;
+import com.omarea.shell.RootFile;
 import com.omarea.shell.SuDo;
 
 import java.io.File;
@@ -11,9 +12,9 @@ import java.util.ArrayList;
 
 public class ThermalControlUtils {
     public static Boolean isSupported() {
-        return new File(Constants.thermal_core_control).exists() ||
-                new File(Constants.thermal_vdd_restriction).exists() ||
-                new File(Constants.thermal_parameters).exists();
+        return RootFile.INSTANCE.itemExists(Constants.thermal_core_control) ||
+                RootFile.INSTANCE.itemExists(Constants.thermal_vdd_restriction) ||
+                RootFile.INSTANCE.itemExists(Constants.thermal_parameters);
     }
 
     public static String getCoreControlState() {

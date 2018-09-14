@@ -636,16 +636,16 @@ class FragmentCpuControl : Fragment() {
                 }
             }
             cpuset_boost.setOnClickListener {
-                if (status.cpusetForeground.isNotEmpty()) {
-                    val coreState = parsetCpuset(status.cpusetForeground)
+                if (status.cpusetForegroundBoost.isNotEmpty()) {
+                    val coreState = parsetCpuset(status.cpusetForegroundBoost)
                     AlertDialog.Builder(context)
                             .setTitle("选择要使用的核心")
                             .setMultiChoiceItems(getCoreList(), coreState, { dialog, which, isChecked ->
                                 coreState[which] = isChecked
                             })
                             .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                                status.cpusetForeground = parsetCpuset(coreState)
-                                KernelProrp.setProp("/dev/cpuset/foreground/boost/cpus", status.cpusetForeground)
+                                status.cpusetForegroundBoost = parsetCpuset(coreState)
+                                KernelProrp.setProp("/dev/cpuset/foreground/boost/cpus", status.cpusetForegroundBoost)
                                 updateUI()
                             })
                             .setNegativeButton(R.string.btn_cancel, { _, _ ->
@@ -908,7 +908,7 @@ class FragmentCpuControl : Fragment() {
             cpuset_system_bg.text = status.cpusetSysBackground
             cpuset_foreground.text = status.cpusetForeground
             cpuset_top_app.text = status.cpusetTopApp
-            cpuset_boost.text = status.cpusetForeground
+            cpuset_boost.text = status.cpusetForegroundBoost
         } catch (ex: Exception) {
         }
     }
