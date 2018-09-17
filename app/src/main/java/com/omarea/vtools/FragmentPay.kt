@@ -38,7 +38,7 @@ class FragmentPay : Fragment() {
                 Toast.makeText(context!!, "暂不支持此方式！", Toast.LENGTH_SHORT).show()
             }
             */
-            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("http://image.coolapk.com/apk_image/2018/0622/fa769ad01cb8dea10e088ad5b15161e9-138322-o_1cgjoesbrbbp6751jv9qe3e6vu-uid-734809@990x1980.png")))
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("http://47.106.224.127/")))
             Toast.makeText(context!!, "暂不支持直接调起，请保存收款码然后使用微信扫码（在扫一扫界面从相册选择图片）！", Toast.LENGTH_SHORT).show()
         }
         pay_alipay_code.setOnClickListener {

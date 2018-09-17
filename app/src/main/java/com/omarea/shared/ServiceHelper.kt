@@ -275,6 +275,9 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
 
         if (!screenOn) {
             this.screenOn = !isScreenLocked()
+            if (this.screenOn) {
+                systemScene.onScreenOn()
+            }
         }
 
         if (accuSwitch)

@@ -22,13 +22,21 @@ class PerfBoostConfigAddin(private var context: Context) : AddinBase(context) {
             }
             msm8898()
         } else if (soc == "sdm845") {
+            sdm845()
+        } else if (soc == "sdm630") {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                 Toast.makeText(context, "只支持Android 8.0以后的系统！", Toast.LENGTH_SHORT).show()
                 return
             }
-            sdm845()
+            sdm630()
+        } else if (soc == "sdm660") {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                Toast.makeText(context, "只支持Android 8.0以后的系统！", Toast.LENGTH_SHORT).show()
+                return
+            }
+            sdm660()
         } else {
-            Toast.makeText(context, "暂未适配这个处理器，暂时只支持 骁龙835、骁龙845！", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "暂未适配这个处理器，暂时只支持 骁龙835、845、660AIE、630！", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -39,6 +47,16 @@ class PerfBoostConfigAddin(private var context: Context) : AddinBase(context) {
 
     private fun msm8898() {
         val path = FileWrite.writePrivateFile(context.assets, "addin/perfboostsconfig_msm8998.xml", "perfboostsconfig_msm8998.xml", context)
+        copyFile(path)
+    }
+
+    private fun sdm630() {
+        val path = FileWrite.writePrivateFile(context.assets, "addin/perfboostsconfig_sdm630.xml", "perfboostsconfig_sdm630.xml", context)
+        copyFile(path)
+    }
+
+    private fun sdm660() {
+        val path = FileWrite.writePrivateFile(context.assets, "addin/perfboostsconfig_sdm660.xml", "perfboostsconfig_sdm660.xml", context)
         copyFile(path)
     }
 
@@ -53,7 +71,7 @@ class PerfBoostConfigAddin(private var context: Context) : AddinBase(context) {
                     .append("cp $path $installPath\n")
                     .append("chmod 755 $installPath\n")
                     .append("md5=`busybox md5sum $installPath | cut -f1 -d ' '`\n")
-                    .append("if [[ \$md5 = '593c2139b1ad7a101573f9c487749dbd' ]] || [[ \$md5 = 'ff0b967ccccd058773f5ccc44c837442' ]] || [[ \$md5 = '6e0ee52074db2b6939a9fc36ea40444d' ]] || [[ \$md5 = 'dc6bcef917379e8bccb0f1c0b937d5e2' ]]; then exit 0; else exit 1; fi;\n")
+                    .append("if [[ \$md5 = '593c2139b1ad7a101573f9c487749dbd' ]] || [[ \$md5 = 'ff0b967ccccd058773f5ccc44c837442' ]] || [[ \$md5 = '6e0ee52074db2b6939a9fc36ea40444d' ]] || [[ \$md5 = 'dc6bcef917379e8bccb0f1c0b937d5e2' ]] || [[ \$md5 = '583fba2aed1737d9e4d954c6f673b0fa' ]]; then exit 0; else exit 1; fi;\n")
                     .toString()
 
             super.run()

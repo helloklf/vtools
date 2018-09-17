@@ -53,17 +53,20 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
                     .setMessage("这个操作是永久性的，暂时没有做备份还原功能，如果你需要恢复之前的温控，则需要重新输入ROM（不需要清除数据），手动删除/data/thermal目录并重启手机！\n\n操作完后，请重启手机！")
                     .setPositiveButton(R.string.btn_confirm, {
                         _, _ ->
+                        val nolimits = "/vendor/etc/thermal-engine-${cpuName}-nolimits.conf"
+                        val baseName = "/vendor/etc/thermal-engine-${cpuName}"
                         command = StringBuilder()
                                 .append(CommonCmds.MountSystemRW)
                                 .append(CommonCmds.MountVendorRW)
-                                .append("\ncp /vendor/etc/thermal-engine-${cpuName}-nolimits.conf /vendor/etc/thermal-engine-${cpuName}.conf")
-                                .append("\ncp /vendor/etc/thermal-engine-${cpuName}-nolimits.conf /vendor/etc/thermal-engine-${cpuName}-camera.conf")
-                                .append("\ncp /vendor/etc/thermal-engine-${cpuName}-nolimits.conf /vendor/etc/thermal-engine-${cpuName}-class0.conf")
-                                .append("\ncp /vendor/etc/thermal-engine-${cpuName}-nolimits.conf /vendor/etc/thermal-engine-${cpuName}-high.conf")
-                                .append("\ncp /vendor/etc/thermal-engine-${cpuName}-nolimits.conf /vendor/etc/thermal-engine-${cpuName}-map.conf")
-                                .append("\ncp /vendor/etc/thermal-engine-${cpuName}-nolimits.conf /vendor/etc/thermal-engine-${cpuName}-phone.conf")
-                                .append("\ncp /vendor/etc/thermal-engine-${cpuName}-nolimits.conf /vendor/etc/thermal-engine-${cpuName}-pubgmhd.conf")
-                                .append("\ncp /vendor/etc/thermal-engine-${cpuName}-nolimits.conf /vendor/etc/thermal-engine-${cpuName}-sgame.conf")
+                                .append("function cp664()\n{\n cp $1 $2\n chmod 664 $2\n}\n\n")
+                                .append("\ncp664 $nolimits ${baseName}.conf")
+                                .append("\ncp664 $nolimits ${baseName}-camera.conf")
+                                .append("\ncp664 $nolimits ${baseName}-class0.conf")
+                                .append("\ncp664 $nolimits ${baseName}-high.conf")
+                                .append("\ncp664 $nolimits ${baseName}-map.conf")
+                                .append("\ncp664 $nolimits ${baseName}-phone.conf")
+                                .append("\ncp664 $nolimits ${baseName}-pubgmhd.conf")
+                                .append("\ncp664 $nolimits ${baseName}-sgame.conf")
                                 .append("\nrm -rf /data/thermal")
                                 .append("\n")
                                 .toString()
@@ -74,23 +77,86 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
                     })
                     .create()
                     .show()
+        } else if (RootFile.fileExists("/vendor/etc/thermal-engine-nolimits.conf")) {
+            AlertDialog.Builder(context)
+                    .setTitle("确定")
+                    .setMessage("这个操作是永久性的，暂时没有做备份还原功能，如果你需要恢复之前的温控，则需要重新输入ROM（不需要清除数据），手动删除/data/thermal目录并重启手机！\n\n操作完后，请重启手机！")
+                    .setPositiveButton(R.string.btn_confirm, {
+                        _, _ ->
+                        val nolimits = "/vendor/etc/thermal-engine-nolimits.conf"
+                        val baseName = "/vendor/etc/thermal-engine"
+                        command = StringBuilder()
+                                .append(CommonCmds.MountSystemRW)
+                                .append(CommonCmds.MountVendorRW)
+                                .append("function cp664()\n{\n cp $1 $2\n chmod 664 $2\n}\n\n")
+                                .append("\ncp664 $nolimits ${baseName}.conf")
+                                .append("\ncp664 $nolimits ${baseName}-normal.conf")
+                                .append("\ncp664 $nolimits ${baseName}-camera.conf")
+                                .append("\ncp664 $nolimits ${baseName}-class0.conf")
+                                .append("\ncp664 $nolimits ${baseName}-high.conf")
+                                .append("\ncp664 $nolimits ${baseName}-map.conf")
+                                .append("\ncp664 $nolimits ${baseName}-phone.conf")
+                                .append("\ncp664 $nolimits ${baseName}-pubgmhd.conf")
+                                .append("\ncp664 $nolimits ${baseName}-sgame.conf")
+                                .append("\nrm -rf /data/thermal")
+                                .append("\n")
+                                .toString()
+                        super.run()
+                    })
+                    .setNegativeButton(R.string.btn_cancel, {
+                        _, _ ->
+                    })
+                    .create()
+                    .show()
+        } else if (RootFile.fileExists("/system/etc/thermal-engine-nolimits.conf")) {AlertDialog.Builder(context)
+                .setTitle("确定")
+                .setMessage("这个操作是永久性的，暂时没有做备份还原功能，如果你需要恢复之前的温控，则需要重新输入ROM（不需要清除数据），手动删除/data/thermal目录并重启手机！\n\n操作完后，请重启手机！")
+                .setPositiveButton(R.string.btn_confirm, {
+                    _, _ ->
+                    val nolimits = "/system/etc/thermal-engine-nolimits.conf"
+                    val baseName = "/system/etc/thermal-engine"
+                    command = StringBuilder()
+                            .append(CommonCmds.MountSystemRW)
+                            .append(CommonCmds.MountVendorRW)
+                            .append("function cp664()\n{\n cp $1 $2\n chmod 664 $2\n}\n\n")
+                            .append("\ncp664 $nolimits ${baseName}.conf")
+                            .append("\ncp664 $nolimits ${baseName}-camera.conf")
+                            .append("\ncp664 $nolimits ${baseName}-class0.conf")
+                            .append("\ncp664 $nolimits ${baseName}-high.conf")
+                            .append("\ncp664 $nolimits ${baseName}-map.conf")
+                            .append("\ncp664 $nolimits ${baseName}-phone.conf")
+                            .append("\ncp664 $nolimits ${baseName}-pubgmhd.conf")
+                            .append("\ncp664 $nolimits ${baseName}-sgame.conf")
+                            .append("\nrm -rf /data/thermal")
+                            .append("\n")
+                            .toString()
+                    super.run()
+                })
+                .setNegativeButton(R.string.btn_cancel, {
+                    _, _ ->
+                })
+                .create()
+                .show()
         } else if (RootFile.fileExists("/system/etc/thermal-engine-${cpuName}.conf") && RootFile.fileExists("/system/etc/thermal-engine-${cpuName}-nolimits.conf")) {
             AlertDialog.Builder(context)
                     .setTitle("确定")
                     .setMessage("这个操作是永久性的，暂时没有做备份还原功能，如果你需要恢复之前的温控，则需要重新输入ROM（不需要清除数据），手动删除/data/thermal目录并重启手机！\n\n操作完后，请重启手机！")
                     .setPositiveButton(R.string.btn_confirm, {
                         _, _ ->
+                        val nolimits = "/system/etc/thermal-engine-${cpuName}-nolimits.conf"
+                        val baseName = " /system/etc/thermal-engine-${cpuName}"
                         command = StringBuilder()
                                 .append(CommonCmds.MountSystemRW)
                                 .append(CommonCmds.MountVendorRW)
-                                .append("\ncp /system/etc/thermal-engine-${cpuName}-nolimits.conf /system/etc/thermal-engine-${cpuName}.conf")
-                                .append("\ncp /system/etc/thermal-engine-${cpuName}-nolimits.conf /system/etc/thermal-engine-${cpuName}-camera.conf")
-                                .append("\ncp /system/etc/thermal-engine-${cpuName}-nolimits.conf /system/etc/thermal-engine-${cpuName}-class0.conf")
-                                .append("\ncp /system/etc/thermal-engine-${cpuName}-nolimits.conf /system/etc/thermal-engine-${cpuName}-high.conf")
-                                .append("\ncp /system/etc/thermal-engine-${cpuName}-nolimits.conf /system/etc/thermal-engine-${cpuName}-map.conf")
-                                .append("\ncp /system/etc/thermal-engine-${cpuName}-nolimits.conf /system/etc/thermal-engine-${cpuName}-phone.conf")
-                                .append("\ncp /system/etc/thermal-engine-${cpuName}-nolimits.conf /system/etc/thermal-engine-${cpuName}-pubgmhd.conf")
-                                .append("\ncp /system/etc/thermal-engine-${cpuName}-nolimits.conf /system/etc/thermal-engine-${cpuName}-sgame.conf")
+                                .append("function cp664()\n{\n cp $1 $2\n chmod 664 $2\n}\n\n")
+                                .append("\ncp664 $nolimits ${baseName}.conf")
+                                .append("\ncp664 $nolimits ${baseName}-camera.conf")
+                                .append("\ncp664 $nolimits ${baseName}-class0.conf")
+                                .append("\ncp664 $nolimits ${baseName}-high.conf")
+                                .append("\ncp664 $nolimits ${baseName}-map.conf")
+                                .append("\ncp664 $nolimits ${baseName}-phone.conf")
+                                .append("\ncp664 $nolimits ${baseName}-pubgmhd.conf")
+                                .append("\ncp664 $nolimits ${baseName}-sgame.conf")
                                 .append("\nrm -rf /data/thermal")
                                 .append("\n")
                                 .toString()
