@@ -269,16 +269,16 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
      * 焦点应用改变
      */
     fun onFocusAppChanged(packageName: String) {
-        startTimer() // 前台应用改变后开始定时更新通知
-        if (lastPackage == packageName || ignoredList.contains(packageName)) return
-        if (lastPackage == null) lastPackage = "com.android.systemui"
-
         if (!screenOn) {
             this.screenOn = !isScreenLocked()
             if (this.screenOn) {
                 systemScene.onScreenOn()
+                startTimer()
             }
         }
+
+        if (lastPackage == packageName || ignoredList.contains(packageName)) return
+        if (lastPackage == null) lastPackage = "com.android.systemui"
 
         if (accuSwitch)
             DumpTopApplictionThread(dumpTopAppliction, packageName, this).start()

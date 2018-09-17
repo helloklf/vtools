@@ -44,7 +44,7 @@ class ReciverLock(private var callbacks: Handler) : BroadcastReceiver() {
                                 System.out.print(">>>>>" + ex.message)
                             }
                         }
-                    }, 5000)
+                    }, 5500)
                 } catch (ex: Exception) {
                     System.out.print(">>>>>" + ex.message)
                 }
@@ -77,19 +77,19 @@ class ReciverLock(private var callbacks: Handler) : BroadcastReceiver() {
 
             reciver = ReciverLock(callbacks)
 
-            context.registerReceiver(reciver, IntentFilter(Intent.ACTION_SCREEN_OFF))
+            context.applicationContext.registerReceiver(reciver, IntentFilter(Intent.ACTION_SCREEN_OFF))
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                context.registerReceiver(reciver, IntentFilter(Intent.ACTION_USER_UNLOCKED))
+                context.applicationContext.registerReceiver(reciver, IntentFilter(Intent.ACTION_USER_UNLOCKED))
             }
-            context.registerReceiver(reciver, IntentFilter(Intent.ACTION_SCREEN_ON))
-            context.registerReceiver(reciver, IntentFilter(Intent.ACTION_USER_PRESENT))
+            context.applicationContext.registerReceiver(reciver, IntentFilter(Intent.ACTION_SCREEN_ON))
+            context.applicationContext.registerReceiver(reciver, IntentFilter(Intent.ACTION_USER_PRESENT))
         }
 
         fun unRegister(context: Context) {
             if (reciver == null) {
                 return
             }
-            context.unregisterReceiver(reciver)
+            context.applicationContext.unregisterReceiver(reciver)
             reciver = null
         }
     }
