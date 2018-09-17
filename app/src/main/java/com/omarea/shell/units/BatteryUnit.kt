@@ -12,7 +12,7 @@ import java.io.File
 class BatteryUnit {
     //是否兼容此设备
     val isSupport: Boolean
-        get() = RootFile.itemExists("/sys/class/power_supply/bms/uevent") || qcSettingSuupport() || bpSettingSuupport()
+        get() = RootFile.itemExists("/sys/class/power_supply/bms/uevent") || qcSettingSuupport() || bpSettingSuupport() || pdSupported()
 
     //获取电池信息
     /*else if (info.startsWith("POWER_SUPPLY_TIME_TO_EMPTY_AVG=")) {
@@ -216,7 +216,6 @@ class BatteryUnit {
         return RootFile.itemExists("/sys/class/power_supply/battery/battery_charging_enabled") || RootFile.itemExists("/sys/class/power_supply/battery/input_suspend")
     }
 
-
     //修改充电速度限制
     fun setChargeInputLimit(limit: Int) {
         val cmd = "echo 0 > /sys/class/power_supply/battery/restricted_charging;" +
@@ -234,5 +233,21 @@ class BatteryUnit {
                 "echo " + limit + "000 > /sys/class/power_supply/battery/constant_charge_current_max;"
 
         KeepShellPublic.doCmdSync(cmd)
+    }
+
+    fun pdSupported (): Boolean {
+        return RootFile.fileExists("/sys/class/power_supply/usb/pd_allowed")
+    }
+
+    fun pdAllowed (): Boolean {
+        return KernelProrp.getProp("/sys/class/power_supply/usb/pd_allowed") == "1"
+    }
+
+    fun setAllowed (boolean: Boolean): Boolean {
+        return KernelProrp.setProp("/sys/class/power_supply/usb/pd_allowed", if (boolean) "1" else "0")
+    }
+
+    fun pdActive (): Boolean {
+        return KernelProrp.getProp("/sys/class/power_supply/usb/pd_active") == "1"
     }
 }

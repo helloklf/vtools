@@ -12,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import com.omarea.shared.CommonCmds
@@ -55,7 +56,6 @@ class FragmentBattery : Fragment() {
         settings_qc_limit.progress = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000)
         settings_qc_limit_desc.text = "设定上限电流：" + spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000) + "mA"
 
-
         if (broadcast == null) {
             broadcast = object : BroadcastReceiver() {
                 override fun onReceive(context: Context, intent: Intent) = try {
@@ -86,6 +86,12 @@ class FragmentBattery : Fragment() {
 
         timer!!.schedule(object : TimerTask() {
             override fun run() {
+                var pdAllowed = false
+                var pdActive = false
+                if (pdSettingSupport){
+                    pdAllowed = batteryUnits.pdAllowed()
+                    pdActive = batteryUnits.pdActive()
+                }
                 myHandler.post {
                     if (qcSettingSuupport) {
                         settings_qc_limit_current.text = "实际上限电流：" + batteryUnits.getqcLimit()
@@ -98,6 +104,11 @@ class FragmentBattery : Fragment() {
 
                     settings_qc.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) && serviceRunning
                     battery_uevent.text = batteryUnits.batteryInfo
+
+                    if (pdSettingSupport) {
+                        settings_pd.isChecked = pdAllowed
+                        settings_pd_state.text = if (pdActive) "已进入PD快充模式" else "未进入PD快充模式"
+                    }
                 }
             }
         }, 0, 3000)
@@ -135,12 +146,14 @@ class FragmentBattery : Fragment() {
 
     private var broadcast: BroadcastReceiver? = null
     private var qcSettingSuupport = false
+    private var pdSettingSupport = false
 
     @SuppressLint("ApplySharedPref")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         spf = context!!.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
         qcSettingSuupport = batteryUnits.qcSettingSuupport()
+        pdSettingSupport = batteryUnits.pdSupported()
 
         settings_qc.setOnClickListener {
             spf.edit().putBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, settings_qc.isChecked).commit()
@@ -187,6 +200,22 @@ class FragmentBattery : Fragment() {
             bp_cardview.visibility = View.GONE
         } else {
             bp_cardview.visibility = View.VISIBLE
+        }
+
+        if (pdSettingSupport) {
+            settings_pd_support.visibility = View.VISIBLE
+            settings_pd.setOnClickListener {
+                val isChecked = (it as Switch).isChecked
+                batteryUnits.setAllowed(isChecked)
+            }
+            var pdAllowed = false
+            var pdActive = false
+            pdAllowed = batteryUnits.pdAllowed()
+            pdActive = batteryUnits.pdActive()
+            settings_pd.isChecked = pdAllowed
+            settings_pd_state.text = if (pdActive) "已进入PD快充模式" else "未进入PD快充模式"
+        } else {
+            settings_pd_support.visibility = View.GONE
         }
 
         btn_battery_history.setOnClickListener {
