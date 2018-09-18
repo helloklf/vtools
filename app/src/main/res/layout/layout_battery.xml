@@ -96,7 +96,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="8dp"
-                        android:text="启用USB-PD快充协议，当然你可能无法通过此选项关闭PD支持"
+                        android:text="启用USB-PD快充协议。（手动开关此选项可能会被系统自动还原...）"
                         android:textAppearance="?android:attr/textAppearanceSmall"
                         android:textSize="11dp" />
 

@@ -269,3 +269,5 @@ case "$console_config" in
         echo "Enable console config to $console_config"
         ;;
 esac
+
+echo 1 > /proc/sys/kernel/sched_prefer_sync_wakee_to_waker

@@ -164,3 +164,4 @@ echo 1 > /sys/devices/system/cpu/cpu3/online
 
 echo "0" > /sys/module/cpu_boost/parameters/input_boost_freq
 echo 0 > /sys/module/cpu_boost/parameters/input_boost_ms
+echo 1 > /proc/sys/kernel/sched_prefer_sync_wakee_to_waker

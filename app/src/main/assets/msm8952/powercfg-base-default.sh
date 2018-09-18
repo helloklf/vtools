@@ -394,3 +394,5 @@ echo 4-7 > /dev/cpuset/foreground/boost/cpus
 echo 0-7 > /dev/cpuset/foreground/cpus
 echo 0 > /proc/sys/kernel/sched_boost
 
+echo 1 > /proc/sys/kernel/sched_prefer_sync_wakee_to_waker
+

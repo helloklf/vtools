@@ -298,3 +298,4 @@ esac
 #echo 1 > /sys/devices/system/cpu/cpufreq/ondemand/io_is_busy
 #echo 90 > /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
 
+echo 1 > /proc/sys/kernel/sched_prefer_sync_wakee_to_waker

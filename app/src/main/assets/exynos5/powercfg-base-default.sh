@@ -182,3 +182,5 @@ set_value '1-7' /dev/cpuset/foreground/cpus
 set_value '1-7' /dev/cpuset/top-app/cpus
 set_value "2-7" /dev/cpuset/dex2oat/cpus
 set_value 0 /proc/sys/kernel/sched_boost
+
+echo 1 > /proc/sys/kernel/sched_prefer_sync_wakee_to_waker

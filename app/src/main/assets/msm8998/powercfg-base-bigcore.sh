@@ -119,7 +119,7 @@ stop perfd
 echo 0 > /sys/module/msm_thermal/core_control/enabled
 echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
 echo N > /sys/module/msm_thermal/parameters/enabled
-#echo 1 > /proc/sys/kernel/sched_prefer_sync_wakee_to_waker
+echo 1 > /proc/sys/kernel/sched_prefer_sync_wakee_to_waker
 #stop thermanager
 #stop thermal-engine
 

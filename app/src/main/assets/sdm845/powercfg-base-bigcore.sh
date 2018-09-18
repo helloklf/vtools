@@ -83,3 +83,6 @@ echo 1 > /sys/devices/system/cpu/cpu4/online
 echo 1 > /sys/devices/system/cpu/cpu5/online
 echo 1 > /sys/devices/system/cpu/cpu6/online
 echo 1 > /sys/devices/system/cpu/cpu7/online
+
+echo 1 > /proc/sys/kernel/sched_prefer_sync_wakee_to_waker
+
