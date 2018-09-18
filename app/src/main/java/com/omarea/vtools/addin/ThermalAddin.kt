@@ -229,13 +229,15 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
             return
         }
         command = StringBuilder()
-                .append("stop thermanager\n")
-                .append("stop thermald\n")
-                .append("stop mpdecision\n")
-                .append("stop thermal-engine\n")
-                .append("echo 0 > /sys/module/msm_thermal/core_control/enabled\n")
-                .append("echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled\n")
-                .append("echo N > /sys/module/msm_thermal/parameters/enabled\n")
+                .append("\nstop thermanager")
+                .append("\nstop thermald")
+                .append("\nstop mpdecision")
+                .append("\nstop thermal-engine")
+                .append("\necho 0 > /sys/module/msm_thermal/core_control/enabled")
+                .append("\necho 0 > /sys/module/msm_thermal/vdd_restriction/enabled")
+                .append("\necho N > /sys/module/msm_thermal/parameters/enabled")
+                .append("\nkillall -9 vendor.qti.hardware.perf@1.0-service")
+                .append("\n")
                 .toString()
 
         super.run()
