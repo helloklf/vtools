@@ -26,6 +26,7 @@ import android.view.Menu
 import android.view.MenuItem
 import com.omarea.shared.CrashHandler
 import com.omarea.shared.SpfConfig
+import com.omarea.shared.Update
 import com.omarea.shell.units.BackupRestoreUnit
 import com.omarea.shell.units.BatteryUnit
 import com.omarea.vtools.dialogs.DialogPower
@@ -151,6 +152,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         .create()
                         .show()
             }
+            Update().checkUpdate(this)
         }
     }
 

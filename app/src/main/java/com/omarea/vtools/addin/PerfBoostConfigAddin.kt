@@ -50,8 +50,9 @@ class PerfBoostConfigAddin(private var context: Context) : AddinBase(context) {
         copyFile(path)
     }
 
+    // 配置文件和660AIE的写在一起了
     private fun sdm630() {
-        val path = FileWrite.writePrivateFile(context.assets, "addin/perfboostsconfig_sdm630.xml", "perfboostsconfig_sdm630.xml", context)
+        val path = FileWrite.writePrivateFile(context.assets, "addin/perfboostsconfig_sdm660.xml", "perfboostsconfig_sdm660.xml", context)
         copyFile(path)
     }
 
@@ -71,7 +72,7 @@ class PerfBoostConfigAddin(private var context: Context) : AddinBase(context) {
                     .append("cp $path $installPath\n")
                     .append("chmod 755 $installPath\n")
                     .append("md5=`busybox md5sum $installPath | cut -f1 -d ' '`\n")
-                    .append("if [[ \$md5 = '593c2139b1ad7a101573f9c487749dbd' ]] || [[ \$md5 = 'ff0b967ccccd058773f5ccc44c837442' ]] || [[ \$md5 = '6e0ee52074db2b6939a9fc36ea40444d' ]] || [[ \$md5 = 'dc6bcef917379e8bccb0f1c0b937d5e2' ]] || [[ \$md5 = '583fba2aed1737d9e4d954c6f673b0fa' ]]; then exit 0; else exit 1; fi;\n")
+                    .append("if [[ \$md5 = '593c2139b1ad7a101573f9c487749dbd' ]] || [[ \$md5 = 'ff0b967ccccd058773f5ccc44c837442' ]] || [[ \$md5 = '6e0ee52074db2b6939a9fc36ea40444d' ]] || [[ \$md5 = 'dc6bcef917379e8bccb0f1c0b937d5e2' ]] || [[ \$md5 = '4f6f8f57f88d67f6987f4ce7373c7fe2' ]]; then exit 0; else exit 1; fi;\n")
                     .toString()
 
             super.run()

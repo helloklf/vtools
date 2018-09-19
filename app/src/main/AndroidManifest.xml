@@ -100,7 +100,7 @@
         <activity
             android:name=".ActivityMain"
             android:autoRemoveFromRecents="false"
-            android:configChanges="keyboardHidden|orientation"
+            android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|fontScale|uiMode|layoutDirection"
             android:excludeFromRecents="false"
             android:exported="true"
             android:label="@string/app_name"
@@ -121,7 +121,7 @@
         </activity>
         <activity
             android:name=".ActivitySceneOtherSettings"
-            android:configChanges="keyboardHidden|orientation"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="true"
             android:label="Scene 杂项设置"
             android:launchMode="singleTop"
@@ -129,7 +129,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ActivityAdvSettings"
-            android:configChanges="keyboardHidden|orientation"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="true"
             android:label="辅助功能逻辑"
             android:launchMode="singleTop"
@@ -137,7 +137,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ActivityAccessibilityKeyEventSettings"
-            android:configChanges="keyboardHidden|orientation"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="true"
             android:label="Scene-按键辅助"
             android:launchMode="singleTop"
@@ -174,7 +174,7 @@
             android:launchMode="standard" />
         <activity
             android:name=".ActivityQuickSwitchMode"
-            android:configChanges="keyboardHidden|orientation"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="true"
             android:finishOnTaskLaunch="true"
             android:label="@string/app_name_mode_switch"

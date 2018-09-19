@@ -7,112 +7,72 @@
 -->
 <BoostConfigs>
     <PerfBoost>
-
-    <!--app lauch boost-->
-        <Config
-            Id="0x00001081" Type="1" Enable="true" Timeout="3000" Target="sdm660"
-            Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40800000, 0xFFF,
+        <!--app lauch boost-->
+        <Config Enable="true" Id="0x00001081" Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40800000, 0xFFF,
                        0x40800100, 0xFFF, 0x40C2C000, 1, 0x40C34000, 0,
-                       0x40400000, 0x1, 0x42C10000, 0x1" />
+                       0x40400000, 0x1, 0x42C10000, 0x1" Target="sdm660" Timeout="3000" Type="1" />
+        <Config Enable="true" Id="0x00001081" Resources="0x40C00000, 0x1, 0x40800000, 0xFFF,
+                       0x40800100, 0xFFF, 0x40C2C000, 1, 0x40C34000, 0" Target="sdm630"
+            Timeout="3000" Type="1" />
 
-    <!--sdm630 app lauch boost-->
-        <Config
-            Id="0x00001081" Type="1" Enable="true" Timeout="2000" Target="sdm630"
-            Resources="0x40C00000, 0x1, 0x40800000, 0xFFF,
-                       0x40800100, 0xFFF, 0x40C2C000, 1, 0x40C34000, 0" />
+        <!--resume boost-->
+        <Config Enable="true" Id="0x00001082" Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40800000, 0xFFF,
+                       0x40800100, 0xFFF, 0x40C2C000, 1, 0x40C34000, 0" Target="sdm660"
+            Timeout="500" Type="1" />
 
-    <!--resume boost-->
-        <Config
-            Id="0x00001082" Type="1" Enable="false" Timeout="400" Target="sdm660"
-            Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40800000, 0xFFF,
-                       0x40800100, 0xFFF, 0x40C2C000, 1, 0x40C34000, 0" />
+        <!--app lauch boost (disabling packing)-->
+        <Config Enable="false" Id="0x00001081" Resources="0x40400000, 0x1, 0x42C10000, 0x1"
+            Target="sdm660" Timeout="1500" Type="2" />
+        <Config Enable="false" Id="0x00001081" Resources="0x40400000, 0x1" Target="sdm630"
+            Timeout="1500" Type="2" />
 
-    <!--app lauch boost (disabling packing)-->
-        <Config
-            Id="0x00001081" Type="2" Enable="false" Timeout="1500" Target="sdm660"
-            Resources="0x40400000, 0x1, 0x42C10000, 0x1" />
+        <!-- config_enableLaunchBoostv3-->
+        <Config Enable="true" Id="0x00001081"
+            Resources="0x40C5C000, 50, 0x40C58000, 95, 0x40C54000, 100" Target="sdm660"
+            Timeout="15000" Type="3" />
+        <Config Enable="true" Id="0x00001081" Resources="0x40C5C000, 80" Target="sdm630"
+            Timeout="15000" Type="3" />
 
-    <!--sdm630 app lauch boost (disabling packing)-->
-        <Config
-            Id="0x00001081" Type="2" Enable="true" Timeout="1500" Target="sdm630"
-            Resources="0x40400000, 0x1" />
+        <!--Vertical Scroll boost-->
+        <Config Enable="false" Id="0x00001080" Resolution="1080p" Resources="0x41800000, 0x31, 0x40800000, 1100, 0x40800100, 1100, 0x40C00000, 2,
+                       0x41400000, 1, 0x41418000, 1, 0x40C5C000, 40" Target="sdm660" Type="1" />
+        <Config Enable="false" Id="0x00001080" Resolution="2560" Resources="0x41800000, 0x31, 0x40800000, 1100, 0x40800100, 1100, 0x40C00000, 2,
+                       0x41400000, 1, 0x41418000, 1, 0x40C5C000, 40, 0x4280C000, 266"
+            Target="sdm660" Type="1" />
+        <Config Enable="false" Id="0x00001080" Resources="0x41800000, 0x1C, 0x40800000, 1344, 0x40800100, 600,
+                       0x40C5C000, 80" Target="sdm630" Type="1" />
 
-    <!-- config_enableLaunchBoostv3-->
-        <Config
-            Id="0x00001081" Type="3" Enable="true" Timeout="15000" Target="sdm660"
-            Resources="0x40C5C000, 50, 0x40C58000, 95, 0x40C54000, 100" />
+        <!--Horizontal Scroll boost-->
+        <Config Enable="false" Id="0x00001080" Resolution="1080p" Resources="0x41800000, 0x31, 0x40800000, 1100, 0x40800100, 1100, 0x40C00000, 2,
+                       0x41400000, 1, 0x41418000, 1, 0x40C5C000, 40" Target="sdm660" Type="2" />
+        <Config Enable="false" Id="0x00001080" Resolution="2560" Resources="0x41800000, 0x31, 0x40800000, 1100, 0x40800100, 1100, 0x40C00000, 2,
+                       0x41400000, 1, 0x41418000, 1, 0x40C5C000, 40, 0x4280C000, 266"
+            Target="sdm660" Type="2" />
+        <Config Enable="false" Id="0x00001080" Resources="0x41800000, 0x1C, 0x40800000, 1344, 0x40800100, 600,
+                       0x40C5C000, 80" Target="sdm630" Type="2" />
 
-    <!--sdm630 config_enableLaunchBoostv3-->
-        <Config
-            Id="0x00001081" Type="3" Enable="true" Timeout="15000" Target="sdm630"
-            Resources="0x40C5C000, 80" />
+        <!--Pre-Fling boost-->
+        <Config Enable="false" Id="0x00001080" Resolution="1080p" Resources="0x41800000, 0x31, 0x40800000, 1100, 0x40800100, 1100, 0x40C00000, 2,
+                       0x41400000, 1, 0x41418000, 1, 0x40C5C000, 40" Target="sdm660" Timeout="150"
+            Type="4" />
+        <Config Enable="false" Id="0x00001080" Resolution="2560" Resources="0x41800000, 0x31, 0x40800000, 1100, 0x40800100, 1100, 0x40C00000, 2,
+                       0x41400000, 1, 0x41418000, 1, 0x40C5C000, 40, 0x4280C000, 266"
+            Target="sdm660" Timeout="150" Type="4" />
+        <Config Enable="false" Id="0x00001080" Resources="0x41800000, 0x31, 0x40800000, 1100, 0x40800100, 1100, 0x40C00000, 2,
+                       0x41400000, 1, 0x41418000, 1, 0x40C5C000, 40" Target="sdm630" Timeout="150"
+            Type="4" />
 
-    <!--Vertical Scroll boost-->
-        <Config
-            Id="0x00001080" Type="1" Enable="false" Target="sdm660" Resolution="1080p"
-            Resources="0x41800000, 0x31, 0x40800000, 1100, 0x40800100, 1100, 0x40C00000, 2,
-                       0x41400000, 1, 0x41418000, 1, 0x40C5C000, 40"  />
-
-        <Config
-            Id="0x00001080" Type="1" Enable="false" Target="sdm660" Resolution="2560"
-            Resources="0x41800000, 0x31, 0x40800000, 1100, 0x40800100, 1100, 0x40C00000, 2,
-                       0x41400000, 1, 0x41418000, 1, 0x40C5C000, 40, 0x4280C000, 266"  />
-
-    <!--sdm630 Vertical Scroll boost-->
-        <Config
-            Id="0x00001080" Type="1" Enable="true" Target="sdm630"
-            Resources="0x41800000, 0x1C, 0x40800000, 1344, 0x40800100, 600,
-                       0x40C5C000, 80"  />
-
-    <!--Horizontal Scroll boost-->
-        <Config
-            Id="0x00001080" Type="2" Enable="false" Target="sdm660" Resolution="1080p"
-            Resources="0x41800000, 0x31, 0x40800000, 1100, 0x40800100, 1100, 0x40C00000, 2,
-                       0x41400000, 1, 0x41418000, 1, 0x40C5C000, 40"  />
-        <Config
-            Id="0x00001080" Type="2" Enable="false" Target="sdm660" Resolution="2560"
-            Resources="0x41800000, 0x31, 0x40800000, 1100, 0x40800100, 1100, 0x40C00000, 2,
-                       0x41400000, 1, 0x41418000, 1, 0x40C5C000, 40, 0x4280C000, 266"  />
-    <!--sdm630 Horizontal Scroll boost-->
-        <Config
-            Id="0x00001080" Type="2" Enable="false" Target="sdm630"
-            Resources="0x41800000, 0x1C, 0x40800000, 1344, 0x40800100, 600,
-                       0x40C5C000, 80"  />
-
-    <!--Pre-Fling boost-->
-        <Config
-            Id="0x00001080" Type="4" Enable="false" Timeout="150" Target="sdm660" Resolution="1080p"
-            Resources="0x41800000, 0x31, 0x40800000, 1100, 0x40800100, 1100, 0x40C00000, 2,
-                       0x41400000, 1, 0x41418000, 1, 0x40C5C000, 40"  />
-
-        <Config
-            Id="0x00001080" Type="4" Enable="false" Timeout="150" Target="sdm660" Resolution="2560"
-            Resources="0x41800000, 0x31, 0x40800000, 1100, 0x40800100, 1100, 0x40C00000, 2,
-                       0x41400000, 1, 0x41418000, 1, 0x40C5C000, 40, 0x4280C000, 266"  />
-
-        <Config
-            Id="0x00001080" Type="4" Enable="false" Timeout="150" Target="sdm630"
-            Resources="0x41800000, 0x31, 0x40800000, 1100, 0x40800100, 1100, 0x40C00000, 2,
-                       0x41400000, 1, 0x41418000, 1, 0x40C5C000, 40"  />
-
-    <!--MTP boost-->
-        <Config
-            Id="0x00001086" Enable="true" Target="sdm660"
-            Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40800000, 1800,
-                       0x40800100, 1400, 0x42C10000, 0x1" />
-
-        <Config
-            Id="0x00001086" Enable="true" Target="sdm630"
-            Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40800000, 1800,
-                       0x40800100, 1400, 0x42C10000, 0x1" />
-    <!--PackageInstall boost-->
-        <Config
-            Id="0x00001088" Enable="true" Target="sdm660"
-            Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40800000, 0xFFF,
-                       0x40800100, 0xFFF, 0x42C10000, 0x1, 0x41418000, 0x1, 0x41418100, 0x1" />
-        <Config
-            Id="0x00001088" Enable="true" Target="sdm630"
-            Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40800000, 0xFFF,
-                       0x40800100, 0xFFF, 0x42C10000, 0x1, 0x41418000, 0x1, 0x41418100, 0x1" />
+        <!--MTP boost-->
+        <Config Enable="true" Id="0x00001086" Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40800000, 1800,
+                       0x40800100, 1400, 0x42C10000, 0x1" Target="sdm660" />
+        <Config Enable="true" Id="0x00001086" Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40800000, 1800,
+                       0x40800100, 1400, 0x42C10000, 0x1" Target="sdm630" />
+        <!--PackageInstall boost-->
+        <Config Enable="true" Id="0x00001088" Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40800000, 0xFFF,
+                       0x40800100, 0xFFF, 0x42C10000, 0x1, 0x41418000, 0x1, 0x41418100, 0x1"
+            Target="sdm660" />
+        <Config Enable="true" Id="0x00001088" Resources="0x40C00000, 0x1, 0x40804000, 0xFFF, 0x40804100, 0xFFF, 0x40800000, 0xFFF,
+                       0x40800100, 0xFFF, 0x42C10000, 0x1, 0x41418000, 0x1, 0x41418100, 0x1"
+            Target="sdm630" />
     </PerfBoost>
 </BoostConfigs>
