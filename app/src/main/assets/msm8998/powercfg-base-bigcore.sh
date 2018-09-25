@@ -116,6 +116,7 @@ esac
 
 stop perfd
 
+killall -9 vendor.qti.hardware.perf@1.0-service
 echo 0 > /sys/module/msm_thermal/core_control/enabled
 echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
 echo N > /sys/module/msm_thermal/parameters/enabled

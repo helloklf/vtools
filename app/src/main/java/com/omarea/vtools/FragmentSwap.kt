@@ -17,6 +17,7 @@ import android.widget.Toast
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.KernelProrp
+import com.omarea.shell.RootFile
 import com.omarea.shell.SysUtils
 import com.omarea.shell.units.ChangeZRAM
 import com.omarea.shell.units.LMKUnit
@@ -24,6 +25,7 @@ import com.omarea.ui.AdapterSwaplist
 import com.omarea.ui.ProgressBarDialog
 import kotlinx.android.synthetic.main.layout_swap.*
 import java.io.File
+import java.lang.Exception
 import java.util.ArrayList
 import java.util.HashMap
 import kotlin.collections.LinkedHashMap
@@ -118,8 +120,18 @@ class FragmentSwap : Fragment() {
         chk_zram_autostart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)
 
         var swapSize = 0
-        if (File("/data/swapfile").exists()) {
-            swapSize = (File("/data/swapfile").length() / 1024 / 1024).toInt()
+        if (RootFile.itemExists("/data/swapfile")) {
+            var size = 0L
+            try {
+                size = KeepShellPublic.doCmdSync("ls -l /data/swapfile | awk '{ print \$5 }'").toLong()
+            } catch (ex: Exception) {
+                try {
+                    size = File("/data/swapfile").length()
+                } catch (ex: Exception) {
+
+                }
+            }
+            swapSize = (size / 1024 / 1024).toInt()
         } else {
             swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 0)
         }

@@ -152,6 +152,7 @@ if [ "$action" = "performance" ]; then
 	echo 0 > /proc/sys/kernel/sched_boost
     stop thermanager
     stop thermal-engine
+    killall -9 vendor.qti.hardware.perf@1.0-service
 
     echo 1 > /sys/devices/system/cpu/cpu0/online
     echo 1 > /sys/devices/system/cpu/cpu1/online

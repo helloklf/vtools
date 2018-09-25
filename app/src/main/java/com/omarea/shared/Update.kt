@@ -2,24 +2,17 @@ package com.omarea.shared
 
 
 import android.app.AlertDialog
+import android.app.DownloadManager
 import android.content.Context
-import android.content.DialogInterface
-import android.content.Intent
-import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Handler
 import android.widget.Toast
-
 import com.omarea.vtools.R
-
 import org.json.JSONObject
-
-import java.io.BufferedInputStream
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.URL
-import java.net.URLConnection
 
 class Update {
     private fun currentVersionCode(context: Context): Int {
@@ -36,7 +29,7 @@ class Update {
     }
 
     fun checkUpdate(context: Context) {
-        val  handler = Handler();
+        val handler = Handler();
         Thread(Runnable {
             //http://47.106.224.127/
             try {
@@ -66,15 +59,26 @@ class Update {
                         handler.post {
                             AlertDialog.Builder(context)
                                     .setTitle("下载新版本" + jsonObject.getString("versionName") + " ？")
-                                    .setMessage("更新内容：" +  "\n\n" + jsonObject.getString("message") + "\n\n如果下载速度过慢，也可以前往“酷安”自行下载")
+                                    .setMessage("更新内容：" + "\n\n" + jsonObject.getString("message") + "\n\n如果下载速度过慢，也可以前往“酷安”自行下载")
                                     .setPositiveButton(R.string.btn_confirm) { dialog, which ->
+                                        val downloadUrl = "http://47.106.224.127/publish/app-release.apk"
+                                        /*
                                         try {
                                             val intent = Intent()
-                                            intent.data = Uri.parse("http://47.106.224.127/publish/app-release.apk")
+                                            intent.data = Uri.parse(downloadUrl)
                                             context.startActivity(intent)
                                         } catch (ex: java.lang.Exception) {
                                             Toast.makeText(context, "启动下载失败！", Toast.LENGTH_SHORT).show()
                                         }
+                                        */
+                                        //创建下载任务,downloadUrl就是下载链接
+                                        val request = DownloadManager.Request(Uri.parse(downloadUrl));
+                                        //指定下载路径和下载文件名
+                                        request.setDestinationInExternalPublicDir("/download/", "Scene_" + jsonObject.getString("versionName") + ".apk");
+                                        //获取下载管理器
+                                        val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                                        //将下载任务加入下载队列，否则不会进行下载
+                                        downloadManager.enqueue(request)
                                     }
                                     .setNegativeButton(R.string.btn_cancel) { dialog, which -> }
                                     .create()

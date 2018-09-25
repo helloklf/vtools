@@ -72,6 +72,7 @@ echo 0 > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
 #echo 0 > /sys/zte_power_debug/switch
 #echo N > /sys/kernel/debug/debug_enabled
 
+killall -9 vendor.qti.hardware.perf@1.0-service
 echo 4-7 > /dev/cpuset/foreground/boost/cpus
 echo 0-7 > /dev/cpuset/foreground/cpus
 

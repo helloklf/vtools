@@ -95,6 +95,9 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        if (this.isDestroyed) {
+            return
+        }
         if (requestCode == 999) {
             hasRoot = resultCode == Activity.RESULT_OK
             setExcludeFromRecents()

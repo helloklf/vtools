@@ -388,6 +388,7 @@ chown -h system /sys/devices/system/cpu/cpufreq/ondemand/sampling_rate
 chown -h system /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor
 chown -h system /sys/devices/system/cpu/cpufreq/ondemand/io_is_busy
 
+killall -9 vendor.qti.hardware.perf@1.0-service
 echo 0 > /dev/cpuset/background/cpus
 echo 0-2 > /dev/cpuset/system-background/cpus
 echo 4-7 > /dev/cpuset/foreground/boost/cpus

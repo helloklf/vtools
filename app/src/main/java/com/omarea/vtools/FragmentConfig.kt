@@ -313,6 +313,9 @@ class FragmentConfig : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        if (this.isDetached) {
+            return
+        }
         if (requestCode == REQUEST_POWERCFG_FILE) {
             if (resultCode == Activity.RESULT_OK && data != null && data.extras.containsKey("file")) {
                 val path = data.extras.getString("file")

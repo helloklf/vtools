@@ -80,6 +80,12 @@ class ActivitySceneOtherSettings : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, settings_disable_selinux.isChecked).commit()
+    }
+
     public override fun onPause() {
         super.onPause()
     }
