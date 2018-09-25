@@ -137,24 +137,6 @@ class FragmentHome : Fragment() {
                 }, 600)
             }).start()
         }
-
-        val globalLayoutListener  = object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                val h = home_mainview.measuredHeight
-                if (h > 0) {
-                    val lp1 = home_mainview1.layoutParams
-                    lp1.height = h
-                    home_mainview1.layoutParams = lp1
-
-                    val lp = home_mainview2.layoutParams
-                    lp.height = h
-                    home_mainview2.layoutParams = lp
-                    home_mainview_scroll.fullScroll(ScrollView.FOCUS_UP)
-                    home_mainview.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                }
-            }
-        }
-        home_mainview.viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
     }
 
     @SuppressLint("SetTextI18n")

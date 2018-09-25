@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.omarea.vtools.FragmentHome">
 
     <LinearLayout
@@ -20,51 +20,61 @@
             android:layout_gravity="fill_vertical"
             android:layout_weight="1">
 
-            <com.omarea.ui.OverScrollView
-                android:id="@+id/home_mainview_scroll"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <LinearLayout
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:orientation="vertical"
+                android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical">
+
+                <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                    <FrameLayout
+
+                    <LinearLayout
                         android:id="@+id/home_mainview1"
                         android:layout_width="match_parent"
-                        android:layout_height="360dp"
-                        android:paddingBottom="20dp"
+                        android:layout_height="130dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingBottom="10dp"
                         android:paddingLeft="20dp"
                         android:paddingRight="20dp"
-                        android:paddingTop="20dp">
+                        android:paddingTop="10dp">
 
                         <com.omarea.ui.RamChatView
+                            android:id="@+id/home_raminfo"
+                            android:layout_width="110dp"
+                            android:layout_height="110dp"
                             android:focusable="false"
                             android:focusableInTouchMode="false"
-                            android:id="@+id/home_raminfo"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
                             app:free="0"
                             app:total="1" />
 
                         <LinearLayout
-                            android:focusable="false"
-                            android:focusableInTouchMode="false"
                             android:id="@+id/home_clear_ram"
                             style="?android:buttonBarButtonStyle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:orientation="vertical"
-                            android:padding="30dp">
+                            android:layout_weight="1"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:text="RAM"
-                                android:textSize="60dp"
+                                android:textSize="24dp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="可用/总共"
+                                android:textSize="12dp"
                                 android:textStyle="bold" />
 
                             <TextView
@@ -73,57 +83,61 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:text="0 / 0MB"
-                                android:textSize="18dp"
+                                android:textSize="13dp"
                                 android:textStyle="bold" />
                         </LinearLayout>
 
-                    </FrameLayout>
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+
+                <LinearLayout
+                    android:id="@+id/home_mainview2"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
                     <LinearLayout
-                        android:layout_gravity="center_vertical"
-                        android:id="@+id/home_mainview2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="34dp"
+                        android:layout_marginTop="10dp">
+
+                        <TextView
+                            android:id="@+id/cpu_core_count"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:text="核心数：" />
+
+                        <TextView
+                            android:id="@+id/cpu_core_total_load"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="负载：" />
+                    </LinearLayout>
+
+                    <GridView
+                        android:id="@+id/cpu_core_list"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:orientation="vertical">
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="30dp"
-                            android:layout_marginRight="34dp"
-                            android:layout_marginTop="20dp">
-
-                            <TextView
-                                android:id="@+id/cpu_core_count"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_vertical"
-                                android:layout_weight="1"
-                                android:text="核心数：" />
-
-                            <TextView
-                                android:id="@+id/cpu_core_total_load"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center_vertical"
-                                android:text="负载：" />
-                        </LinearLayout>
-
-                        <GridView
-                            android:clickable="false"
-                            android:focusable="false"
-                            android:focusableInTouchMode="false"
-                            android:id="@+id/cpu_core_list"
-                            android:layout_width="match_parent"
-                            android:layout_height="450dp"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginBottom="20dp"
-                            android:layout_marginLeft="30dp"
-                            android:layout_marginRight="22dp"
-                            android:layout_marginTop="6dp"
-                            android:listSelector="@android:color/transparent"
-                            android:numColumns="2" />
-                    </LinearLayout>
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="30dp"
+                        android:layout_marginRight="22dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_weight="1"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:listSelector="@android:color/transparent"
+                        android:numColumns="2" />
                 </LinearLayout>
-            </com.omarea.ui.OverScrollView>
+            </LinearLayout>
         </FrameLayout>
 
         <TableLayout
