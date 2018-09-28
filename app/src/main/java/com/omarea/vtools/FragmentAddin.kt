@@ -56,7 +56,7 @@ class FragmentAddin : Fragment() {
     private fun initAddin(view: View) {
         val listItem = ArrayList<HashMap<String, Any>>().apply {
             add(createItem(getString(R.string.addin_qq_clear), getString(R.string.addin_qq_clear_desc), Runnable { QQStyleUnit(context!!).showOption() }, false))
-            add(createItem(getString(R.string.addin_fullscreen_on), getString(R.string.addin_fullscreen_on_desc), Runnable { FullScreenAddin(context!!).fullScreen() }, false))
+            add(createItem(getString(R.string.addin_fullscreen_on), getString(R.string.addin_fullscreen_on_desc), Runnable { FullScreenAddin(activity!!).fullScreen() }, false))
             add(createItem(getString(R.string.addin_flyme_static_blur), getString(R.string.addin_flyme_static_blur_desc), Runnable { FlymeUnit().staticBlur() }))
             add(createItem(getString(R.string.addin_miui_hide_search), getString(R.string.addin_miui_hide_search_desc), Runnable { MiuiAddin(context!!).hideSearch() }))
             add(createItem(getString(R.string.addin_disable_x), getString(R.string.addin_disable_x_desc), Runnable { NetworkChecker(context!!).disableNetworkChecker() }))

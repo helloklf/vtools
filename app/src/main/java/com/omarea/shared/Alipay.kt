@@ -37,7 +37,8 @@ class Alipay(private var context: Context) {
         }
         try {
             val alipayqr = "alipayqr://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=$encodeedQrcode"
-            openUri(context, alipayqr + "%3F_s%3Dweb-other&_t=" + System.currentTimeMillis())
+            val url = alipayqr + "%3F_s%3Dweb-other&_t=" + System.currentTimeMillis()
+            openUri(context, url)
             return true
         } catch (e: Exception) {
             Log.e("alipay-jump", e.message)

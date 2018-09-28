@@ -75,6 +75,7 @@ echo 0 > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
 
 echo 4-7 > /dev/cpuset/foreground/boost/cpus
 echo 0-7 > /dev/cpuset/foreground/cpus
+echo 0-7 > /dev/cpuset/top-app/cpus
 
 echo 1 > /sys/devices/system/cpu/cpu0/online
 echo 1 > /sys/devices/system/cpu/cpu1/online

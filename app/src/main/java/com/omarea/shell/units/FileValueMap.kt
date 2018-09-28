@@ -6,7 +6,7 @@ class FileValueMap {
     fun mapFileValue (dir: String) : HashMap<String,String> {
         val hashMap = HashMap<String, String> ()
 
-        val cmds = StringBuilder("if [[ ! -e $dir ]]; then exit 0; fi\n")
+        val cmds = StringBuilder("if [[ -e $dir ]]; then\n")
         cmds.append("cd $dir\n")
         cmds.append("for item in `ls`\n" +
                 "do\n" +
@@ -15,6 +15,7 @@ class FileValueMap {
                 "\t\techo '----'\n" +
                 "\tfi\n" +
                 "done\n")
+        cmds.append("\nfi\n")
         val content = KeepShellPublic.doCmdSync(cmds.toString())
         if (content != "error") {
             val rows = content.split("----")

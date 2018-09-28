@@ -1,6 +1,7 @@
 package com.omarea.shell
 
 import android.util.Log
+import java.io.BufferedOutputStream
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.OutputStream
@@ -104,7 +105,7 @@ class KeepShell(private var rootMode: Boolean = true) {
             tryExit()
             Log.e("doCmdSync-Lock", "线程等待超时${System.currentTimeMillis()} - $enterLockTime > $LOCK_TIMEOUT")
         }
-        val uuid = UUID.randomUUID().toString()
+        val uuid = UUID.randomUUID().toString().subSequence(0, 8)
         getRuntimeShell()
         if (out != null) {
             val startTag = "--start--$uuid--"
@@ -113,15 +114,20 @@ class KeepShell(private var rootMode: Boolean = true) {
             try {
                 mLock.lockInterruptibly()
 
+                val out =  p!!.outputStream
                 if (out != null) {
-                    out!!.write(br)
-                    out!!.write("echo '$startTag'".toByteArray(Charset.defaultCharset()))
-                    out!!.write(br)
-                    out!!.write(cmd.toByteArray(Charset.defaultCharset()))
-                    out!!.write(br)
-                    out!!.write("echo '$endTag'".toByteArray(Charset.defaultCharset()))
-                    out!!.write(br)
-                    out!!.flush()
+                    try {
+                        out.write(br)
+                        out.write("echo '$startTag'".toByteArray(Charset.defaultCharset()))
+                        out.write(br)
+                        out.write(cmd.toByteArray(Charset.defaultCharset()))
+                        out.write(br)
+                        out.write("echo '$endTag'".toByteArray(Charset.defaultCharset()))
+                        out.write(br)
+                        out.flush()
+                    } catch (ex: java.lang.Exception) {
+                        Log.e("out!!.write", ex.message)
+                    }
 
                     val results = StringBuilder()
                     var unstart = true

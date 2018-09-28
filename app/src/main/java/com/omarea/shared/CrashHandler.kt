@@ -31,7 +31,6 @@ class CrashHandler constructor() : Thread.UncaughtExceptionHandler {
                 fileOutputStream.flush()
                 fileOutputStream.close()
             } catch (ex: Exception) {
-
             }
         }
         Log.e("vtools-Exception", ex.message)
@@ -42,6 +41,6 @@ class CrashHandler constructor() : Thread.UncaughtExceptionHandler {
         } catch (ex: Exception) {
 
         }
-        System.exit(0)
+        // System.exit(0)
     }
 }

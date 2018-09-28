@@ -197,6 +197,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
                     }, 5000)
                 }
             }
+        } else {
         }
         systemScene.onScreenOn()
     }
@@ -230,8 +231,12 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
 
     //自动切换模式
     private fun autoToggleMode(packageName: String?) {
-        if (!dyamicCore || packageName == null || packageName == lastModePackage)
+        if (packageName == null || packageName == lastModePackage)
             return
+        if (!dyamicCore) {
+            setCurrentPowercfgApp(packageName)
+            return
+        }
 
         val mode = spfPowercfg.getString(packageName, firstMode)
         when (mode) {

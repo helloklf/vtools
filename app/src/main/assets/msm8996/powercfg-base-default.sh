@@ -135,6 +135,7 @@ echo "0-3" > /dev/cpuset/foreground/cpus
 echo "2-3" > /dev/cpuset/foreground/boost/cpus
 echo "0" > /dev/cpuset/background/cpus
 echo "0-1" > /dev/cpuset/system-background/cpus
+echo 0-3 > /dev/cpuset/top-app/cpus
 
 # GPU
 echo "msm-adreno-tz" > /sys/class/kgsl/kgsl-3d0/devfreq/governor

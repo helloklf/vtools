@@ -154,6 +154,16 @@ public class ViewConfig {
         hookMaxFlingVelocity(ViewConfiguration.class);
         hookScrollFriction(ViewConfiguration.class);
 
+        XposedBridge.hookAllMethods(ViewConfiguration.class, "getScaledMaximumDrawingCacheSize",
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        param.setResult(0);
+                    }
+                }
+        );
+
+
         // TODO velocity 0 to 100000 / def 8000 // try 2000
         // overscroll dist 0 to 1000 / def 0
         // overfling dist 0 to 1000 / def 6
@@ -189,12 +199,12 @@ public class ViewConfig {
         //
         static final boolean DEFAULT_SCROLLING_NO_FADING = false;
         //滚动溢出最大距离
-        static final int DEFAULT_SCROLLING_OVERSCROLL = 100;
+        static final int DEFAULT_SCROLLING_OVERSCROLL = 150;
         //滚动回弹距离
-        static final int DEFAULT_SCROLLING_OVERFLING = 100;
+        static final int DEFAULT_SCROLLING_OVERFLING = 150;
         //滚动惯性
-        static final int DEFAULT_SCROLLING_FRICTION = 400;
+        static final int DEFAULT_SCROLLING_FRICTION = 220;
         //最大滚动速度
-        static final int DEFAULT_SCROLLING_VELOCITY = 8000;
+        static final int DEFAULT_SCROLLING_VELOCITY = 4000;
     }
 }

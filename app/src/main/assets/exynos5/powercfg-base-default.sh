@@ -178,8 +178,8 @@ esac
 set_value '0-3' /dev/cpuset/system-background/cpus
 set_value '0-1' /dev/cpuset/background/cpus
 set_value '4-7' /dev/cpuset/foreground/boost/cpus
-set_value '1-7' /dev/cpuset/foreground/cpus
-set_value '1-7' /dev/cpuset/top-app/cpus
+set_value '0-7' /dev/cpuset/foreground/cpus
+set_value '0-7' /dev/cpuset/top-app/cpus
 set_value "2-7" /dev/cpuset/dex2oat/cpus
 set_value 0 /proc/sys/kernel/sched_boost
 

@@ -153,8 +153,61 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
         run2()
     }
 
+    fun modifyConfigOld () {
+        val arr = arrayOf(
+                "verify",
+                "speed",
+                "恢复默认")
+        val intallMode = Props.getProp("dalvik.vm.dex2oat-filter")
+        var index = 0
+        when (intallMode) {
+            "interpret-only" -> index = 0
+            "speed" -> index = 1
+        }
+        AlertDialog.Builder(context)
+                .setTitle("请选择Dex2oat配置")
+                .setSingleChoiceItems(arr, index, { _, which ->
+                    index = which
+                })
+                .setNegativeButton("确定", { _, _ ->
+                    val stringBuilder = StringBuilder()
+
+                    //移除已添加的配置
+                    stringBuilder.append("sed '/^dalvik.vm.image-dex2oat-filter=/'d /system/build.prop > /data/build.prop;")
+                    stringBuilder.append("sed -i '/^dalvik.vm.dex2oat-filter=/'d /data/build.prop;")
+
+                    when (index) {
+                        0 -> {
+                            stringBuilder.append("sed -i '\$adalvik.vm.image-dex2oat-filter=interpret-only' /data/build.prop;")
+                            stringBuilder.append("sed -i '\$adalvik.vm.dex2oat-filter=interpret-only' /data/build.prop;")
+                        }
+                        1 -> {
+                            stringBuilder.append("sed -i '\$adalvik.vm.image-dex2oat-filter=speed' /data/build.prop;")
+                            stringBuilder.append("sed -i '\$adalvik.vm.dex2oat-filter=speed' /data/build.prop;")
+                        }
+                        2 -> { }
+                    }
+
+                    stringBuilder.append(CommonCmds.MountSystemRW)
+                    stringBuilder.append("cp /system/build.prop /system/build.prop.${System.currentTimeMillis()}\n")
+                    stringBuilder.append("cp /data/build.prop /system/build.prop\n")
+                    stringBuilder.append("rm /data/build.prop\n")
+                    stringBuilder.append("chmod 0755 /system/build.prop\n")
+
+                    execShell(stringBuilder)
+                    Toast.makeText(context, "配置已修改，但需要重启才能生效！", Toast.LENGTH_SHORT).show()
+                })
+                .setNeutralButton("查看说明", { _, _ ->
+                    AlertDialog.Builder(context).setTitle("说明").setMessage("interpret-only模式安装应用更快。speed模式安装应用将会很慢，但是运行速度更快。").create().show()
+                })
+                .create().show()
+    }
+
     fun modifyConfig() {
-        if (!isSupport()) {
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            Toast.makeText(context, "系统版本过低，至少需要Android 7.0！", Toast.LENGTH_SHORT).show()
+            modifyConfigOld()
             return
         }
 
@@ -203,13 +256,16 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                             stringBuilder.append("sed -i '\$apm.dexopt.bg-dexopt=speed' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.boot=verify-profile' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.core-app=speed' /data/build.prop;")
-                            stringBuilder.append("sed -i '\$apm.dexopt.first-boot=interpret-only' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.forced-dexopt=speed' /data/build.prop;")
                             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                                stringBuilder.append("sed -i '\$apm.dexopt.install=interpret-only' /data/build.prop;")
                                 stringBuilder.append("sed -i '\$apm.dexopt.ab-ota=interpret-only' /data/build.prop;")
+                                stringBuilder.append("sed -i '\$apm.dexopt.first-boot=interpret-only' /data/build.prop;")
                             } else {
+                                stringBuilder.append("sed -i '\$apm.dexopt.install=quicken' /data/build.prop;")
                                 // stringBuilder.append("sed -i '\$apm.dexopt.ab-ota=quicken' /data/build.prop;")
-                                stringBuilder.append("sed -i '\$apm.dexopt.ab-ota=extract' /data/build.prop;")
+                                stringBuilder.append("sed -i '\$apm.dexopt.ab-ota=quicken' /data/build.prop;")
+                                stringBuilder.append("sed -i '\$apm.dexopt.first-boot=quicken' /data/build.prop;")
                             }
                             stringBuilder.append("sed -i '\$apm.dexopt.nsys-library=speed' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.shared-apk=speed' /data/build.prop;")
