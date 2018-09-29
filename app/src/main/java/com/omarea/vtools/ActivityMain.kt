@@ -155,7 +155,10 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         .create()
                         .show()
             }
-            Update().checkUpdate(this)
+            if (globalSPF!!.getLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, 0) > System.currentTimeMillis() + 1000 * 60 * 120) {
+                Update().checkUpdate(this)
+                globalSPF!!.edit().putLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, System.currentTimeMillis()).apply()
+            }
         }
     }
 

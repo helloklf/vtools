@@ -10,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.omarea.shell.AsynSuShellUnit
 import com.omarea.vtools.R
+import java.lang.Exception
 
 /**
  * Loading弹窗
@@ -24,24 +25,26 @@ open class ProgressBarDialog(private var context: Context) {
         override fun handleMessage(msg: Message?) {
             super.handleMessage(msg)
 
-            if (msg == null || alertDialog == null) {
-                return
-            }
-            if (msg.what == 10) {
-                alertDialog!!.dismiss()
-                alertDialog!!.hide()
-                if (msg.obj == true) {
-                    Toast.makeText(alertDialog!!.context, R.string.execute_success, Toast.LENGTH_SHORT).show()
-                } else {
+            try {
+                if (msg == null || alertDialog == null) {
+                    return
+                }
+                if (msg.what == 10) {
+                    alertDialog!!.dismiss()
+                    alertDialog!!.hide()
+                    if (msg.obj == true) {
+                        Toast.makeText(alertDialog!!.context, R.string.execute_success, Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(alertDialog!!.context, R.string.execute_fail, Toast.LENGTH_LONG).show()
+                    }
+                } else if (msg.what == -1) {
+                    Toast.makeText(alertDialog!!.context, R.string.execute_fail, Toast.LENGTH_LONG).show()
+                } else if (msg.what == 0 && msg.obj == false) {
+                    alertDialog!!.dismiss()
+                    alertDialog!!.hide()
                     Toast.makeText(alertDialog!!.context, R.string.execute_fail, Toast.LENGTH_LONG).show()
                 }
-            } else if (msg.what == -1) {
-                Toast.makeText(alertDialog!!.context, R.string.execute_fail, Toast.LENGTH_LONG).show()
-            } else if (msg.what == 0 && msg.obj == false) {
-                alertDialog!!.dismiss()
-                alertDialog!!.hide()
-                Toast.makeText(alertDialog!!.context, R.string.execute_fail, Toast.LENGTH_LONG).show()
-            }
+            } catch (ex: Exception) { }
         }
     }
 
@@ -71,11 +74,13 @@ open class ProgressBarDialog(private var context: Context) {
     }
 
     public fun hideDialog() {
-        if (alert != null) {
-            alert!!.dismiss()
-            alert!!.hide()
-            alert = null
-        }
+        try {
+            if (alert != null) {
+                alert!!.dismiss()
+                alert!!.hide()
+                alert = null
+            }
+        } catch (ex: Exception) { }
     }
 
     @SuppressLint("InflateParams")

@@ -15,7 +15,9 @@ class SystemScene(private var context: Context) {
     private var keepShell = KeepShellAsync(context)
 
     fun onScreenOn() {
-        keepShell.doCmd("dumpsys deviceidle unforce\ndumpsys deviceidle enable all\n")
+        if (spfAutoConfig.getBoolean(SpfConfig.FORCEDOZE + SpfConfig.OFF, false)) {
+            keepShell.doCmd("dumpsys deviceidle unforce\ndumpsys deviceidle enable all\n")
+        }
         if (spfAutoConfig.getBoolean(SpfConfig.WIFI + SpfConfig.ON, false))
             keepShell.doCmd("svc wifi enable")
 
@@ -51,13 +53,15 @@ class SystemScene(private var context: Context) {
             }
         }
 
-        // 强制Doze: dumpsys deviceidle force-idle
-        val applist = AppConfigStore(context).getDozeAppList()
-        keepShell.doCmd("dumpsys deviceidle enable\ndumpsys deviceidle enable all\n")
-        keepShell.doCmd("dumpsys deviceidle force-idle\n")
-        for (item in applist) {
-            keepShell.doCmd("dumpsys deviceidle whitelist -$item\nam set-inactive com.tencent.tim $item\n")
+        if (spfAutoConfig.getBoolean(SpfConfig.FORCEDOZE + SpfConfig.ON, false)){
+            // 强制Doze: dumpsys deviceidle force-idle
+            val applist = AppConfigStore(context).getDozeAppList()
+            keepShell.doCmd("dumpsys deviceidle enable\ndumpsys deviceidle enable all\n")
+            keepShell.doCmd("dumpsys deviceidle force-idle\n")
+            for (item in applist) {
+                keepShell.doCmd("dumpsys deviceidle whitelist -$item\nam set-inactive com.tencent.tim $item\n")
+            }
+            keepShell.doCmd("dumpsys deviceidle step\ndumpsys deviceidle step\ndumpsys deviceidle step\ndumpsys deviceidle step\n")
         }
-        keepShell.doCmd("dumpsys deviceidle step\ndumpsys deviceidle step\ndumpsys deviceidle step\ndumpsys deviceidle step\n")
     }
 }

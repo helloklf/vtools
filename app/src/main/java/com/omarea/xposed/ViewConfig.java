@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.ListView;
 import android.widget.ScrollView;
-
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
@@ -49,6 +48,12 @@ public class ViewConfig {
             }
         });
 
+        XposedBridge.hookAllMethods(clazz, "getScaledMinimumFlingVelocity", new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+              param.setResult(5);
+            }
+        });
         XposedBridge.hookAllMethods(clazz, "getScaledMaximumFlingVelocity", new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
@@ -108,6 +113,33 @@ public class ViewConfig {
         });
     }
 
+    private static void hookLongPressTimeout(final Class<?> clazz) {
+        XposedBridge.hookAllMethods(View.class, "getLongPressTimeout", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                param.setResult(200);
+            }
+        });
+    }
+
+    private static void hookTapTimeout(final Class<?> clazz) {
+        XposedBridge.hookAllMethods(View.class, "getTapTimeout", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                param.setResult(100);
+            }
+        });
+    }
+
+    private static void hookScaledTouchSlop(final Class<?> clazz) {
+        XposedBridge.hookAllMethods(View.class, "getScaledTouchSlop", new XC_MethodHook() {
+            @Override
+            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                param.setResult(4);
+            }
+        });
+    }
+
     private static void hookScrollbarNoFading(final Class<?> clazz) {
         XposedBridge.hookAllConstructors(View.class, new XC_MethodHook() {
             @Override
@@ -153,7 +185,11 @@ public class ViewConfig {
         hookOverflingDistance(ViewConfiguration.class);
         hookMaxFlingVelocity(ViewConfiguration.class);
         hookScrollFriction(ViewConfiguration.class);
+        hookLongPressTimeout(ViewConfiguration.class);
+        hookTapTimeout(ViewConfiguration.class);
+        hookScaledTouchSlop(ViewConfiguration.class);
 
+        /*
         XposedBridge.hookAllMethods(ViewConfiguration.class, "getScaledMaximumDrawingCacheSize",
                 new XC_MethodHook() {
                     @Override
@@ -162,6 +198,7 @@ public class ViewConfig {
                     }
                 }
         );
+        */
 
 
         // TODO velocity 0 to 100000 / def 8000 // try 2000

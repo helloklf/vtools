@@ -19,6 +19,8 @@ public class SpfConfig {
     public static String WIFI = "wifi";
     public static String NFC = "nfc";
     public static String GPS = "gps";
+    public static String HOTSPOT = "hotspot";
+    public static String FORCEDOZE = "doze";
 
     public static String ON = "_on";
     public static String OFF = "_off";
@@ -40,6 +42,7 @@ public class SpfConfig {
     public static String GLOBAL_SPF_DYNAMIC_CONTROL = "dynamic_control";
     public static String GLOBAL_SPF_LOCK_MODE = "lock_mode";
     public static String GLOBAL_SPF_POWERCFG = "global_powercfg";
+    public static String GLOBAL_SPF_LAST_UPDATE = "global_lastupdate";
 
     public static String SWAP_SPF = "swap"; //spf
     public static String SWAP_SPF_SWAP = "swap";

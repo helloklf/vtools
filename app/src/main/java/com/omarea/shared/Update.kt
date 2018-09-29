@@ -3,7 +3,10 @@ package com.omarea.shared
 
 import android.app.AlertDialog
 import android.app.DownloadManager
+import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Handler
@@ -57,32 +60,11 @@ class Update {
                     val currentVersion = currentVersionCode(context)
                     if (currentVersion < jsonObject.getInt("versionCode")) {
                         handler.post {
-                            AlertDialog.Builder(context)
-                                    .setTitle("下载新版本" + jsonObject.getString("versionName") + " ？")
-                                    .setMessage("更新内容：" + "\n\n" + jsonObject.getString("message") + "\n\n如果下载速度过慢，也可以前往“酷安”自行下载")
-                                    .setPositiveButton(R.string.btn_confirm) { dialog, which ->
-                                        val downloadUrl = "http://vtools.oss-cn-beijing.aliyuncs.com/app-release${jsonObject.getInt("versionCode")}.apk"// "http://47.106.224.127/publish/app-release.apk"
-                                        /*
-                                        try {
-                                            val intent = Intent()
-                                            intent.data = Uri.parse(downloadUrl)
-                                            context.startActivity(intent)
-                                        } catch (ex: java.lang.Exception) {
-                                            Toast.makeText(context, "启动下载失败！", Toast.LENGTH_SHORT).show()
-                                        }
-                                        */
-                                        //创建下载任务,downloadUrl就是下载链接
-                                        val request = DownloadManager.Request(Uri.parse(downloadUrl));
-                                        //指定下载路径和下载文件名
-                                        request.setDestinationInExternalPublicDir("/download/", "Scene_" + jsonObject.getString("versionName") + ".apk");
-                                        //获取下载管理器
-                                        val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-                                        //将下载任务加入下载队列，否则不会进行下载
-                                        downloadManager.enqueue(request)
-                                    }
-                                    .setNegativeButton(R.string.btn_cancel) { dialog, which -> }
-                                    .create()
-                                    .show()
+                            try {
+                                update(context, jsonObject)
+                            } catch (ex: java.lang.Exception) {
+
+                            }
                         }
                     }
                 }
@@ -92,5 +74,44 @@ class Update {
                 }
             }
         }).start()
+    }
+
+    private fun update(context: Context, jsonObject: JSONObject) {
+        AlertDialog.Builder(context)
+                .setTitle("下载新版本" + jsonObject.getString("versionName") + " ？")
+                .setMessage("更新内容：" + "\n\n" + jsonObject.getString("message") + "\n\n如果下载速度过慢，也可以前往“酷安”自行下载")
+                .setPositiveButton(R.string.btn_confirm) { dialog, which ->
+                    val downloadUrl = "http://vtools.oss-cn-beijing.aliyuncs.com/app-release${jsonObject.getInt("versionCode")}.apk"// "http://47.106.224.127/publish/app-release.apk"
+                    /*
+                    try {
+                        val intent = Intent()
+                        intent.data = Uri.parse(downloadUrl)
+                        context.startActivity(intent)
+                    } catch (ex: java.lang.Exception) {
+                        Toast.makeText(context, "启动下载失败！", Toast.LENGTH_SHORT).show()
+                    }
+                    */
+                    //创建下载任务,downloadUrl就是下载链接
+                    val request = DownloadManager.Request(Uri.parse(downloadUrl));
+                    //指定下载路径和下载文件名
+                    request.setDestinationInExternalPublicDir("/download/", "Scene_" + jsonObject.getString("versionName") + ".apk");
+                    //获取下载管理器
+                    val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                    //将下载任务加入下载队列，否则不会进行下载
+                    val taskId = downloadManager.enqueue(request)
+
+                    val intentFilter = IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
+                    context.registerReceiver(object : BroadcastReceiver() {
+                        override fun onReceive(context: Context?, intent: Intent?) {
+                            val id = intent!!.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+                            if (id == taskId) {
+                                downloadManager.openDownloadedFile(taskId)
+                            }
+                        }
+                    }, intentFilter)
+                }
+                .setNegativeButton(R.string.btn_cancel) { dialog, which -> }
+                .create()
+                .show()
     }
 }

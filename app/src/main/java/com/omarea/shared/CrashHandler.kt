@@ -41,6 +41,6 @@ class CrashHandler constructor() : Thread.UncaughtExceptionHandler {
         } catch (ex: Exception) {
 
         }
-        // System.exit(0)
+        System.exit(0)
     }
 }

@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     tools:context="com.omarea.vtools.FragmentConfig">
 
@@ -94,8 +93,8 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="30dp"
                             android:layout_marginTop="5dp"
+                            android:layout_marginBottom="30dp"
                             android:orientation="horizontal">
 
                             <CheckBox
@@ -104,7 +103,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:padding="5dp"
-                                android:text="WIFI" />
+                                android:text="打开WIFI" />
 
                             <CheckBox
                                 android:id="@+id/auto_switch_network_on_data"
@@ -112,7 +111,15 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:padding="5dp"
-                                android:text="Data" />
+                                android:text="打开数据网络" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="30dp"
+                            android:orientation="horizontal">
 
                             <CheckBox
                                 android:id="@+id/auto_switch_network_on_nfc"
@@ -120,7 +127,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:padding="5dp"
-                                android:text="NFC" />
+                                android:text="打开NFC" />
 
                             <CheckBox
                                 android:id="@+id/auto_switch_network_on_gps"
@@ -128,7 +135,23 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:padding="5dp"
-                                android:text="GPS" />
+                                android:text="打开GPS" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="30dp"
+                            android:orientation="horizontal">
+
+                            <CheckBox
+                                android:id="@+id/auto_switch_forcedoze_off"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                android:text="关闭强制Doze" />
                         </LinearLayout>
 
                         <TextView
@@ -148,7 +171,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:padding="5dp"
-                                android:text="WIFI" />
+                                android:text="关闭WIFI" />
 
                             <CheckBox
                                 android:id="@+id/auto_switch_network_off_data"
@@ -156,7 +179,14 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:padding="5dp"
-                                android:text="Data" />
+                                android:text="关闭数据" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:orientation="horizontal">
 
                             <CheckBox
                                 android:id="@+id/auto_switch_network_off_nfc"
@@ -164,7 +194,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:padding="5dp"
-                                android:text="NFC" />
+                                android:text="关闭NFC" />
 
                             <CheckBox
                                 android:id="@+id/auto_switch_network_off_gps"
@@ -172,7 +202,31 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:padding="5dp"
-                                android:text="GPS" />
+                                android:text="关闭GPS" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="30dp"
+                            android:orientation="horizontal">
+
+                            <CheckBox
+                                android:id="@+id/auto_switch_forcedoze_on"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                android:text="打开强制Doze" />
+
+                            <CheckBox android:visibility="gone"
+                                android:id="@+id/auto_switch_hotspot_off"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                android:text="关闭热点" />
                         </LinearLayout>
 
                         <Switch
@@ -187,8 +241,8 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="8dp"
                             android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp"
                             android:paddingLeft="8dp"
                             android:text="@string/auto_clear_ignore_chager_desc"
                             android:textAppearance="?android:attr/textAppearanceSmall"
@@ -414,13 +468,13 @@
                                 android:text="@string/accessbility_notify" />
 
                             <TextView
+                                style="@style/textSmall"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:paddingBottom="8dp"
                                 android:paddingLeft="8dp"
                                 android:paddingRight="8dp"
-                                android:text="@string/accessbility_notify_desc"
-                                style="@style/textSmall" />
+                                android:paddingBottom="8dp"
+                                android:text="@string/accessbility_notify_desc" />
 
                             <Switch
                                 android:id="@+id/dynamic_control"
@@ -430,14 +484,15 @@
                                 android:layout_marginTop="30dp"
                                 android:paddingLeft="8dp"
                                 android:text="动态响应" />
+
                             <TextView
+                                style="@style/textSmall"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:paddingBottom="8dp"
                                 android:paddingLeft="8dp"
                                 android:paddingRight="8dp"
-                                android:text="你需要开启此选项，才能使动态响应设置生效。并且，场景模式运作需要Scene保持服务后台运行！"
-                                style="@style/textSmall" />
+                                android:paddingBottom="8dp"
+                                android:text="你需要开启此选项，才能使动态响应设置生效。并且，场景模式运作需要Scene保持服务后台运行！" />
 
                             <Switch
                                 android:id="@+id/dynamic_lock_mode"
@@ -447,14 +502,15 @@
                                 android:layout_marginTop="30dp"
                                 android:paddingLeft="8dp"
                                 android:text="锁屏优化" />
+
                             <TextView
+                                style="@style/textSmall"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:paddingBottom="8dp"
                                 android:paddingLeft="8dp"
                                 android:paddingRight="8dp"
-                                android:text="屏幕关闭5秒后，自动切换为省电模式"
-                                style="@style/textSmall" />
+                                android:paddingBottom="8dp"
+                                android:text="屏幕关闭5秒后，自动切换为省电模式" />
 
                             <Switch
                                 android:id="@+id/settings_autoinstall"
@@ -464,22 +520,23 @@
                                 android:layout_marginTop="30dp"
                                 android:paddingLeft="8dp"
                                 android:text="@string/accessbility_autoclick" />
+
                             <TextView
+                                style="@style/textSmall"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:paddingBottom="8dp"
                                 android:paddingLeft="8dp"
                                 android:paddingRight="8dp"
-                                android:text="@string/accessbility_autoclick_desc"
-                                style="@style/textSmall" />
+                                android:paddingBottom="8dp"
+                                android:text="@string/accessbility_autoclick_desc" />
 
                             <android.support.v7.widget.CardView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginBottom="20dp"
                                 android:layout_marginLeft="8dp"
+                                android:layout_marginTop="30dp"
                                 android:layout_marginRight="8dp"
-                                android:layout_marginTop="30dp">
+                                android:layout_marginBottom="20dp">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
@@ -515,10 +572,10 @@
                             <android.support.v7.widget.CardView
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_marginBottom="20dp"
                                 android:layout_marginLeft="8dp"
+                                android:layout_marginTop="10dp"
                                 android:layout_marginRight="8dp"
-                                android:layout_marginTop="10dp">
+                                android:layout_marginBottom="20dp">
 
                                 <LinearLayout
                                     android:layout_width="match_parent"
