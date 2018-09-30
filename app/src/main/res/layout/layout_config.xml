@@ -88,13 +88,12 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="亮屏时开启（解锁后）" />
+                            android:text="亮屏时（解锁后）" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:layout_marginBottom="30dp"
                             android:orientation="horizontal">
 
                             <CheckBox
@@ -118,7 +117,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:layout_marginBottom="30dp"
                             android:orientation="horizontal">
 
                             <CheckBox
@@ -157,7 +155,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="息屏后关闭（延迟30秒）" />
+                            android:text="息屏后（延迟30秒）" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
