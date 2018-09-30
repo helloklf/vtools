@@ -12,12 +12,11 @@ import android.os.VibrationEffect
 import android.os.VibrationEffect.DEFAULT_AMPLITUDE
 import android.os.Vibrator
 import android.provider.Settings
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import android.view.WindowManager.LayoutParams
+import android.view.animation.Animation
 import android.widget.Button
+import android.widget.LinearLayout
 import android.widget.Toast
 import com.omarea.shared.SpfConfig
 
@@ -127,66 +126,88 @@ class FloatVitualTouchBar// 获取应用的Context
     }
 
 
-    @SuppressLint("ApplySharedPref")
+    @SuppressLint("ApplySharedPref", "ClickableViewAccessibility")
     private fun setUpView(context: AccessibilityService): View {
         val view = LayoutInflater.from(context).inflate(R.layout.fw_vitual_touch_bar, null)
 
-        val btn1 = view.findViewById<Button>(R.id.vitual_touch_bar_1)
-        val btn2 = view.findViewById<Button>(R.id.vitual_touch_bar_2)
-        val btn3 = view.findViewById<Button>(R.id.vitual_touch_bar_3)
-
-        val vibrator = Runnable {
-            val vibrator = context.getSystemService(VIBRATOR_SERVICE) as Vibrator
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(20, 10), DEFAULT_AMPLITUDE))
-            } else {
-                vibrator.vibrate(longArrayOf(20, 10), -1)
-            }
-        }
-
-        btn1.setOnClickListener {
-            vibrator.run()
-            if (!reversalLayout) {
-                context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
-            } else {
-                context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS)
-            }
-        }
-        btn1.setOnLongClickListener {
-            vibrator.run()
-            if (reversalLayout) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_TOGGLE_SPLIT_SCREEN)
+        val bar = view.findViewById<LinearLayout>(R.id.bottom_touch_bar)
+        val gust = GestureDetector(context, object : GestureDetector.OnGestureListener {
+            val vibrator = Runnable {
+                val vibrator = context.getSystemService(VIBRATOR_SERVICE) as Vibrator
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(20, 10), DEFAULT_AMPLITUDE))
+                } else {
+                    vibrator.vibrate(longArrayOf(20, 10), -1)
                 }
             }
-            true
-        }
-        btn2.setOnClickListener {
-            vibrator.run()
-            context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
-        }
-        btn2.setOnLongClickListener {
-            vibrator.run()
-            context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS)
-            true
-        }
-        btn3.setOnClickListener {
-            vibrator.run()
-            if (!reversalLayout) {
-                context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS)
-            } else {
-                context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
-            }
-        }
-        btn3.setOnLongClickListener {
-            vibrator.run()
-            if (!reversalLayout) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_TOGGLE_SPLIT_SCREEN)
+            // 定义手势动作亮点之间的最小距离
+            val FLIP_DISTANCE = 100
+            override fun onLongPress(e: MotionEvent?) {
+                if (e != null) {
+                    if (e.getX() < bar.width * 0.33) {
+
+                    } else if (e.getX() > bar.width * 0.77) {
+                    } else {
+                        context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS)
+                    }
                 }
             }
-            true
+
+            override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
+                return false
+            }
+
+            override fun onDown(e: MotionEvent?): Boolean {
+                return false
+            }
+
+            override fun onSingleTapUp(e: MotionEvent?): Boolean {
+                if (e != null) {
+                    if (e.getX() < bar.width * 0.33) {
+                        if (!reversalLayout) {
+                            context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
+                        } else {
+                            context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS)
+                        }
+                    } else if (e.getX() > bar.width * 0.77) {
+                        if (!reversalLayout) {
+                            context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS)
+                        } else {
+                            context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
+                        }
+                    } else {
+                        context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
+                    }
+                }
+                return false
+            }
+
+            override fun onShowPress(e: MotionEvent?) {
+            }
+
+            override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
+                // 如果第一个触点事件的X坐标大于第二个触点事件的X坐标超过FLIP_DISTANCE
+                // 也就是手势从右向左滑
+                if (e1!!.getX() - e2!!.getX() > FLIP_DISTANCE) {
+                    context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
+                    return true;
+                }
+                // 如果第二个触点事件的X坐标大于第一个触点事件的X坐标超过FLIP_DISTANCE
+                // 也就是手势从右向左滑
+                else if (e2.getX() - e1.getX() > FLIP_DISTANCE) {
+                    context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS)
+                    return true;
+                } else if (e1.getY() - e2.getY() > 5) {
+                    context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
+                    return true;
+                }
+                return false;
+            }
+        })
+        bar.setOnTouchListener { v, event ->
+            gust.onTouchEvent(event)
         }
+
         return view
     }
 

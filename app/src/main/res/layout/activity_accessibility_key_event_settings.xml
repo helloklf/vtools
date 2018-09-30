@@ -78,7 +78,7 @@
                         android:layout_marginTop="6dp"
                         android:paddingLeft="8dp"
                         android:paddingRight="8dp"
-                        android:text="在全面屏手机上，轻触你的下巴（屏幕底部）即可操作你的手机，节省屏幕空间又简单易用，需要为Scene开启悬浮窗（在应用上层显示）权限！" />
+                        android:text="在全面屏手机上，轻触或滑动你的下巴（屏幕底部）即可操作你的手机，节省屏幕空间又简单易用，需要为Scene开启悬浮窗（在应用上层显示）权限！" />
                     <!--<TextView
                         android:layout_marginTop="16dp"
                         android:paddingLeft="8dp"

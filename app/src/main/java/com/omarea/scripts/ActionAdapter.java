@@ -53,8 +53,7 @@ public class ActionAdapter extends BaseAdapter {
 
     @Override
     public Object getItem(int position) {
-        final ActionInfo item = actionInfos != null ? actionInfos.get(position) : null;
-        return item;
+        return actionInfos != null ? actionInfos.get(position) : null;
     }
 
     @Override
