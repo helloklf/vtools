@@ -163,7 +163,7 @@ class StartSplashActivity : Activity() {
             AlertDialog.Builder(this)
                     .setTitle("兼容性问题")
                     .setMessage("检测到你的设备在上次“兼容性检测”过程中断，“自动SELinux宽容模式”将不会被开启！\n\n因此，有些功能可能无法使用！")
-                    .setPositiveButton(R.string.btn_confirm, DialogInterface.OnClickListener { dialog, which ->
+                    .setPositiveButton(R.string.btn_confirm, { dialog, which ->
                         globalConfig.edit()
                                 .putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE_CHECKING, false)
                                 .remove(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE_CHECKING)

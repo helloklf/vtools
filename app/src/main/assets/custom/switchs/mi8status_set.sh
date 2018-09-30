@@ -11,7 +11,16 @@ mount -o rw,remount /system
 $BUSYBOX mount -o remount,rw /dev/block/bootdevice/by-name/system /system
 mount -o remount,rw /dev/block/bootdevice/by-name/system /system 2> /dev/null
 
-$BUSYBOX sed '/ro.miui.notch=/'d /system/build.prop > /cache/build.prop
+busybox mount -o rw,remount /vendor 2> /dev/null
+mount -o rw,remount /vendor 2> /dev/null
+
+path="/system/build.prop"
+if [[ -f /vendor/build.prop ]] && [[ -n `cat /vendor/build.prop | grep ro\.miui\.notch=` ]]
+then
+    path="/vendor/build.prop"
+fi
+
+$BUSYBOX sed '/ro.miui.notch=/'d $path > /cache/build.prop
 if [ $state == 1 ];then
     $BUSYBOX sed -i '$aro.miui.notch=1' /cache/build.prop
     echo '2.修改ro.miui.notch=1'
@@ -20,7 +29,7 @@ else
     echo '2.修改ro.miui.notch=0'
 fi
 echo '3.覆盖/system/build.prop'
-cp /cache/build.prop /system/build.prop
+cp /cache/build.prop $path
 
 echo '4.修正读写权限'
 chmod 0755 /system/build.prop

@@ -3,8 +3,10 @@ package com.omarea.shell
 import android.Manifest
 import android.app.AlertDialog
 import android.content.Context
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.provider.Settings
 import android.support.v4.content.PermissionChecker
 import android.util.Log
 import com.omarea.shared.CommonCmds
@@ -105,7 +107,6 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
         private fun checkPermission(context: Context, permission: String): Boolean = PermissionChecker.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED
         fun grantPermission(context: Context) {
             val cmds = StringBuilder()
-            cmds.append("dumpsys deviceidle whitelist +${context.packageName};\n")
             // 必需的权限
             val requiredPermission = arrayOf(
                     Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -116,7 +117,20 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
             )
             requiredPermission.forEach {
                 if (!checkPermission(context, it)) {
-                    cmds.append("pm grant ${context.packageName} $it\n")
+                    if (it == Manifest.permission.SYSTEM_ALERT_WINDOW) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(context)) {
+                        } else {
+                            cmds.append("pm grant ${context.packageName} $it\n")
+                        }
+                    } else {
+                        cmds.append("pm grant ${context.packageName} $it\n")
+                    }
+                }
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (!checkPermission(context, Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)) {
+                    cmds.append("dumpsys deviceidle whitelist +${context.packageName};\n")
                 }
             }
 
