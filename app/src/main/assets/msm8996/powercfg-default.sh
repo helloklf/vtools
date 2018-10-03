@@ -3,11 +3,16 @@
 action=$1
 stop perfd
 
-if [ ! `cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor` = "interactive" ]; then
+governor0=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
+governor2=`cat /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor`
+
+if [ ! "$governor0" = "interactive" ] && [ ! "$governor0" = "schedutil" ]; then
 	echo 'interactive' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+	echo 'schedutil' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 fi
-if [ ! `cat /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor` = "interactive" ]; then
+if [ ! "$governor2" = "interactive" ] && [ ! "$governor2" = "schedutil" ]; then
 	echo 'interactive' > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
+	echo 'schedutil' > /sys/devices/system/cpu/cpu2/cpufreq/scaling_governor
 fi
 
 function set_value()

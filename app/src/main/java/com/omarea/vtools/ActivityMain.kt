@@ -27,6 +27,7 @@ import android.view.MenuItem
 import com.omarea.shared.CrashHandler
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.Update
+import com.omarea.shell.Platform
 import com.omarea.shell.units.BackupRestoreUnit
 import com.omarea.shell.units.BatteryUnit
 import com.omarea.vtools.dialogs.DialogPower
@@ -139,6 +140,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     navigationView.menu.findItem(R.id.nav_img).isEnabled = false
                 }
             }
+            /*
             val file = File(Environment.getExternalStorageDirectory().absolutePath + "/vtools-error.log")
             if (file.exists()) {
                 val error = String(FileInputStream(file).readBytes())
@@ -155,7 +157,8 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         .create()
                         .show()
             }
-            if (globalSPF!!.getLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, 0) > System.currentTimeMillis() + 1000 * 60 * 120) {
+            */
+            if (globalSPF!!.getLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, 0) + (1000 * 3600) > System.currentTimeMillis()) {
                 Update().checkUpdate(this)
                 globalSPF!!.edit().putLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, System.currentTimeMillis()).apply()
             }
@@ -261,7 +264,21 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 sendIntent.type = "text/plain"
                 startActivity(sendIntent)
             }
-            R.id.nav_profile -> fragment = FragmentConfig.createPage()
+            R.id.nav_profile -> {
+                if (Build.BRAND.toLowerCase() == "meizu" || Build.MANUFACTURER.toLowerCase() == "meizu") {
+                    val soc = Platform().getCPUName()
+                    if (soc == "sdm845" || soc == "710") {
+                        android.app.AlertDialog.Builder(this)
+                                .setTitle("暂不支持该设备")
+                                .setMessage("根据许多魅族16th/16th Plus用户反馈，使用性能调度模式以后会无法正常开机（原因不详）。为了避免更多用户被坑，该功能现在将直接不再允许Meizu的sdm845、sdm710系列手机使用！")
+                                .setPositiveButton(R.string.btn_iknow, { _,_ -> })
+                                .create()
+                                .show()
+                        return false
+                    }
+                }
+                fragment = FragmentConfig.createPage()
+            }
             R.id.nav_additional -> fragment = FragmentAddin.createPage()
             R.id.nav_keyevent -> {
                 try {

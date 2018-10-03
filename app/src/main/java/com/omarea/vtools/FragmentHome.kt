@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
@@ -49,14 +50,8 @@ class FragmentHome : Fragment() {
     private var modeList = ModeList()
     private var myHandler = Handler()
 
-    @SuppressLint("ApplySharedPref")
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         if (!globalSPF.getBoolean("faq_readed_001", false)) {
@@ -132,8 +127,10 @@ class FragmentHome : Fragment() {
                 KeepShellPublic.doCmdSync("sync\n" +
                         "echo 3 > /proc/sys/vm/drop_caches")
                 myHandler.postDelayed({
-                    updateRamInfo()
-                    Toast.makeText(context, "缓存已清理...", Toast.LENGTH_SHORT).show()
+                    try {
+                        updateRamInfo()
+                        Toast.makeText(context, "缓存已清理...", Toast.LENGTH_SHORT).show()
+                    } catch (ex: java.lang.Exception) {}
                 }, 600)
             }).start()
         }
@@ -198,28 +195,6 @@ class FragmentHome : Fragment() {
         }
         val cores = ArrayList<CpuCoreInfo>()
         val loads = CpuFrequencyUtils.getCpuLoad()
-        /*
-        for (coreIndex in loads.keys.sorted()) {
-            if (coreIndex != -1) {
-                val core = CpuCoreInfo()
-                if (!maxFreqs.containsKey(coreIndex)) {
-                    maxFreqs.put(coreIndex, CpuFrequencyUtils.getCurrentMaxFrequency("cpu" + coreIndex))
-                }
-                core.maxFreq = maxFreqs.get(coreIndex)
-
-                if (!minFreqs.containsKey(coreIndex)) {
-                    minFreqs.put(coreIndex, CpuFrequencyUtils.getCurrentMinFrequency("cpu" + coreIndex))
-                }
-                core.minFreq = minFreqs.get(coreIndex)
-
-                core.currentFreq = CpuFrequencyUtils.getCurrentFrequency("cpu$coreIndex")
-                if (loads.containsKey(coreIndex)) {
-                    core.loadRatio = loads.get(coreIndex)!!
-                }
-                cores.add(core)
-            }
-        }
-        */
         for (coreIndex in 0 until coreCount) {
             val core = CpuCoreInfo()
 
@@ -297,6 +272,18 @@ class FragmentHome : Fragment() {
 
     @SuppressLint("ApplySharedPref")
     private fun installConfig(action: String, message: String) {
+        if (Build.BRAND.toLowerCase() == "meizu" || Build.MANUFACTURER.toLowerCase() == "meizu") {
+            val soc = Platform().getCPUName()
+            if (soc == "sdm845" || soc == "710") {
+                AlertDialog.Builder(context)
+                        .setTitle("暂不支持该设备")
+                        .setMessage("根据许多魅族16th/16th Plus用户反馈，使用性能调度模式以后会无法正常开机（原因不详）。为了避免更多用户被坑，该功能现在将直接不再允许Meizu的sdm845、sdm710系列手机使用！")
+                        .setPositiveButton(R.string.btn_iknow, { _,_ -> })
+                        .create()
+                        .show()
+                return
+            }
+        }
         val dynamic = AccessibleServiceHelper().serviceIsRunning(context!!)
         if (!dynamic && modeList.getCurrentPowerMode() == action) {
             modeList.setCurrent("", "")

@@ -5,22 +5,28 @@
         [confirm]=[true/false]执行脚本前是否需要确认
     -->
     <switch root="true">
-        <title>模拟全面屏</title>
-        <desc>开启MIUI9 Oreo系统设置中的“全面屏”选项，或在具有物理按键的设备上开启导航栏。重启生效！</desc>
+        <title>开启虚拟键</title>
+        <desc>标识当前设备没有实体按键，MIUI系统可以通过本功能启用全面屏手势，其它系统可以启用虚拟键。重启生效！</desc>
         <getstate>file:///android_asset/custom/switchs/mainkey_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/mainkey_set.sh</setstate>
     </switch>
     <switch root="true">
-        <title>Miui10 状态栏缺口</title>
+        <title>MIUI10 状态栏缺口</title>
         <desc>在MIUI10中开启MI8、8SE刘海屏状态栏中间的缺口，减少图标数量，在MiX2和Mi6上测试可用。重启生效！</desc>
         <getstate>file:///android_asset/custom/switchs/mi8status_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/mi8status_set.sh</setstate>
     </switch>
     <switch root="true">
-        <title>Miui10 屏幕圆角</title>
+        <title>MIUI10 屏幕圆角</title>
         <desc>开关全局圆角效果，在MiX2和Mi6上测试可用。重启生效！</desc>
         <getstate>file:///android_asset/custom/switchs/miui_round_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/miui_round_set.sh</setstate>
+    </switch>
+    <switch root="true">
+        <title>MIUI10 安全键盘</title>
+        <desc>在输入密码时使用MIUI的安全键盘，避免密码被输入法作为自定义词语记录。重启生效！</desc>
+        <getstate>file:///android_asset/custom/switchs/miui_security_keyboard_get.sh</getstate>
+        <setstate>file:///android_asset/custom/switchs/miui_security_keyboard_set.sh</setstate>
     </switch>
     <switch root="true">
         <title>网易云首屏广告</title>

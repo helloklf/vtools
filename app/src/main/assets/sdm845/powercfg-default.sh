@@ -10,10 +10,10 @@ echo N > /sys/module/msm_thermal/parameters/enabled
 governor0=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
 governor4=`cat /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor`
 
-if [ ! governor0 = "schedutil" ]; then
-	echo 'schedutil' > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
+if [ ! "$governor0" = "schedutil" ]; then
+	echo 'schedutil' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 fi
-if [ ! governor0 = "schedutil" ]; then
+if [ ! "$governor4" = "schedutil" ]; then
 	echo 'schedutil' > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
 fi
 

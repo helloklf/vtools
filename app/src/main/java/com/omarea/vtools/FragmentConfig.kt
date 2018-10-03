@@ -329,22 +329,14 @@ class FragmentConfig : Fragment() {
                         Toast.makeText(context, "这个文件也太大了，配置脚本大小不能超过200KB！", Toast.LENGTH_LONG).show()
                         return
                     }
-                    val lines = file.readLines(Charset.defaultCharset())
-                    val configStar = if (lines.isNotEmpty()) lines[0] else ""
-                    if (configStar.startsWith("#!/") && configStar.endsWith("sh")) {
-                        val cmds = StringBuilder("cp '$path' ${CommonCmds.POWER_CFG_PATH}\n")
-                        cmds.append("chmod 0755 ${CommonCmds.POWER_CFG_PATH}\n\n")
-                        cmds.append("if [[ -f ${CommonCmds.POWER_CFG_PATH} ]]; then \n")
-                        cmds.append("chmod 0775 ${CommonCmds.POWER_CFG_PATH};")
-                        cmds.append("busybox sed -i 's/^M//g' ${CommonCmds.POWER_CFG_PATH};")
-                        cmds.append("fi;")
-                        //cmds.append("if [[ -f ${CommonCmds.POWER_CFG_BASE} ]]; then \n")
-                        //  cmds.append("chmod 0775 ${CommonCmds.POWER_CFG_BASE};")
-                        //  cmds.append("busybox sed -i 's/^M//g' ${CommonCmds.POWER_CFG_BASE};")
-                        //cmds.append("fi;")
-                        if (KeepShellPublic.doCmdSync(cmds.toString()) != "error") {
+                    val lines = file.readText(Charset.defaultCharset()).replace("\r", "")
+                    val configStar = lines.split("\n").firstOrNull()
+                    if (configStar != null && configStar.startsWith("#!/") && configStar.endsWith("sh")) {
+                        if (ConfigInstaller().installPowerConfigByText(context!!, lines)) {
                             Toast.makeText(context, "动态响应配置脚本已安装！", Toast.LENGTH_SHORT).show()
                             reStartService()
+                        } else {
+                            Toast.makeText(context, "由于某些原因，安装配置脚本失败，请重试！", Toast.LENGTH_LONG).show()
                         }
                     } else {
                         Toast.makeText(context, "这似乎是个无效的脚本文件！", Toast.LENGTH_LONG).show()

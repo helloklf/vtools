@@ -14,14 +14,17 @@ echo 1 > /sys/devices/system/cpu/cpu7/online
 governor0=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
 governor4=`cat /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor`
 
-if [ ! governor0 = "interactive" ] && [ ! governor0 = "schedutil" ]; then
+if [ ! "$governor0" = "interactive" ] && [ ! "$governor0" = "schedutil" ]; then
 	echo 'interactive' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
-	echo 'schedutil' > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
+	echo 'schedutil' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 fi
-if [ ! governor4 = "interactive" ] && [ ! governor0 = "schedutil" ]; then
+if [ ! "$governor4" = "interactive" ] && [ ! "$governor4" = "schedutil" ]; then
 	echo 'interactive' > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
 	echo 'schedutil' > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
 fi
+
+governor0=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
+governor4=`cat /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor`
 
 # /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
 # 300000 364800 441600 518400 595200 672000 748800 825600 883200 960000 1036800 1094400 1171200 1248000 1324800 1401600 1478400 1555200 1670400 1747200 1824000 1900800

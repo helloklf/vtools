@@ -107,6 +107,19 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
                         android:entries="@array/vitual_touch_bar_map" />
+                    <Switch
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp"
+                        android:layout_marginTop="6dp"
+                        android:id="@+id/key_event_vitual_touch_bar_vibrator"
+                        android:text="震动反馈"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                    <Switch
+                        android:visibility="gone"
+                        android:text="横屏防误触"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 

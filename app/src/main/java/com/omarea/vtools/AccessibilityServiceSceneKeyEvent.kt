@@ -2,6 +2,7 @@ package com.omarea.vtools
 
 import android.accessibilityservice.AccessibilityService
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Handler
 import android.view.KeyEvent
@@ -31,7 +32,24 @@ class AccessibilityServiceSceneKeyEvent : AccessibilityService() {
             updateKeyEventProcess()
         })
         updateKeyEventProcess()
+    }
+
+    private fun destroy () {
+        if (floatVitualTouchBar != null) {
+            floatVitualTouchBar!!.hidePopupWindow()
+            floatVitualTouchBar = null
+        }
+    }
+
+    override fun onServiceConnected() {
+        super.onServiceConnected()
+        destroy()
         floatVitualTouchBar = FloatVitualTouchBar(this)
+    }
+
+    override fun onUnbind(intent: Intent?): Boolean {
+        destroy()
+        return super.onUnbind(intent)
     }
 
     private fun updateKeyEventProcess() {

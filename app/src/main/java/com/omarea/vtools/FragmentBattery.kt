@@ -86,6 +86,9 @@ class FragmentBattery : Fragment() {
 
         timer!!.schedule(object : TimerTask() {
             override fun run() {
+                if (isDetached) {
+                    return
+                }
                 var pdAllowed = false
                 var pdActive = false
                 if (pdSettingSupport){

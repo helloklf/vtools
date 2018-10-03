@@ -57,6 +57,7 @@ public class SpfConfig {
     public static String KEY_EVENT_ONTHER_CONFIG_SPF = "key_event_spf2";
     public static String CONFIG_SPF_TOUCH_BAR = "touch_bar";
     public static String CONFIG_SPF_TOUCH_BAR_MAP = "touch_bar_map";
+    public static String CONFIG_SPF_TOUCH_BAR_VIBRATOR = "touch_bar_vibrator";
 
     public static String APP_HIDE_HISTORY_SPF = "app_hide_spf";
 

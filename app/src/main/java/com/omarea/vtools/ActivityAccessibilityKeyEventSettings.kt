@@ -142,6 +142,10 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
                 spfOther.edit().putBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_MAP, key_event_vitual_touch_bar_map.selectedItemPosition == 1).commit()
             }
         }
+        key_event_vitual_touch_bar_vibrator.isChecked = spfOther.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_VIBRATOR, false)
+        key_event_vitual_touch_bar_vibrator.setOnClickListener {
+            spfOther.edit().putBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_VIBRATOR, (it as Switch).isChecked).commit()
+        }
     }
 
     private class OnItemSelected(private var spinner: Spinner, private var spf: SharedPreferences) : AdapterView.OnItemSelectedListener {

@@ -82,11 +82,11 @@ class AdapterBatteryStats(private val context: Context, private val list: ArrayL
                 modeView.setTextColor(Color.parseColor("#00B78A"))
             }
         }
-        convertView.findViewById<TextView>(R.id.itemAvgIO).text = batteryStats.io.toString() + "mA/h"
+        convertView.findViewById<TextView>(R.id.itemAvgIO).text = batteryStats.io.toString() + "mA"
         convertView.findViewById<TextView>(R.id.itemTemperature).text = batteryStats.temperature.toString() + "°C"
         val time = (batteryStats.count * timerRate / 60.0).toInt()
         val total = batteryStats.count * batteryStats.io * timerRate / 3600.0
-        convertView.findViewById<TextView>(R.id.itemCounts).text = "${time}分钟,耗电" + String.format("%.1f",total) + "mAh"
+        convertView.findViewById<TextView>(R.id.itemCounts).text = "约${time}分钟,耗电" + String.format("%.1f",total) + "mAh"
         loadIcon(convertView, batteryStats.packageName)
         return convertView
     }

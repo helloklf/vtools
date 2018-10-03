@@ -129,6 +129,7 @@ class FloatVitualTouchBar// 获取应用的Context
     @SuppressLint("ApplySharedPref", "ClickableViewAccessibility")
     private fun setUpView(context: AccessibilityService): View {
         val view = LayoutInflater.from(context).inflate(R.layout.fw_vitual_touch_bar, null)
+        val vibratorOn = sharedPreferences!!.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_VIBRATOR, false)
 
         val bar = view.findViewById<LinearLayout>(R.id.bottom_touch_bar)
         val gust = GestureDetector(context, object : GestureDetector.OnGestureListener {
@@ -141,13 +142,16 @@ class FloatVitualTouchBar// 获取应用的Context
                 }
             }
             // 定义手势动作亮点之间的最小距离
-            val FLIP_DISTANCE = 100
+            val FLIP_DISTANCE = 120
             override fun onLongPress(e: MotionEvent?) {
                 if (e != null) {
                     if (e.getX() < bar.width * 0.33) {
 
                     } else if (e.getX() > bar.width * 0.77) {
                     } else {
+                        if (vibratorOn) {
+                            vibrator.run()
+                        }
                         context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS)
                     }
                 }
@@ -163,6 +167,9 @@ class FloatVitualTouchBar// 获取应用的Context
 
             override fun onSingleTapUp(e: MotionEvent?): Boolean {
                 if (e != null) {
+                    if (vibratorOn) {
+                        vibrator.run()
+                    }
                     if (e.getX() < bar.width * 0.33) {
                         if (!reversalLayout) {
                             context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
@@ -189,15 +196,32 @@ class FloatVitualTouchBar// 获取应用的Context
                 // 如果第一个触点事件的X坐标大于第二个触点事件的X坐标超过FLIP_DISTANCE
                 // 也就是手势从右向左滑
                 if (e1!!.getX() - e2!!.getX() > FLIP_DISTANCE) {
-                    context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
+                    if (vibratorOn) {
+                        vibrator.run()
+                    }
+                    if (reversalLayout) {
+                        context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS)
+                    } else {
+                        context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
+                    }
                     return true;
                 }
                 // 如果第二个触点事件的X坐标大于第一个触点事件的X坐标超过FLIP_DISTANCE
                 // 也就是手势从右向左滑
                 else if (e2.getX() - e1.getX() > FLIP_DISTANCE) {
-                    context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS)
+                    if (vibratorOn) {
+                        vibrator.run()
+                    }
+                    if (reversalLayout) {
+                        context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
+                    } else {
+                        context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS)
+                    }
                     return true;
                 } else if (e1.getY() - e2.getY() > 5) {
+                    if (vibratorOn) {
+                        vibrator.run()
+                    }
                     context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
                     return true;
                 }

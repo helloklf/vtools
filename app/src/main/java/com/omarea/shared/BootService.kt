@@ -257,6 +257,10 @@ class BootService : IntentService("vtools-boot") {
         sb.append("\n\n")
         sb.append("setprop vtools.boot 1")
         sb.append("\n\n")
+        sb.append("fstrim /data\n")
+        sb.append("fstrim /system\n")
+        sb.append("fstrim /cache\n")
+        sb.append("fstrim /vendor\n")
         val keepShell = KeepShell()
         keepShell.doCmdSync(sb.toString())
 

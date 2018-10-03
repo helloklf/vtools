@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="8dp"
+    android:layout_height="6dp"
     android:layout_gravity="bottom"
     android:background="@android:color/transparent"
     android:fitsSystemWindows="true"
@@ -14,6 +14,6 @@
         android:id="@+id/bottom_touch_bar"
         android:background="#11888888"
         android:layout_width="match_parent"
-        android:layout_height="8dp"
+        android:layout_height="6dp"
         android:orientation="horizontal" />
 </LinearLayout>
