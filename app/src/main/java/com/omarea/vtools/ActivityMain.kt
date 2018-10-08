@@ -55,12 +55,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setNavigationBarColor(R.color.colorPrimary);
-            //getWindow().setNavigationBarColor(getResources().getColor(R.color.black));
-            //getWindow().setNavigationBarColor(Color.BLUE);
-        }
         /*
         StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
                 .detectDiskReads()

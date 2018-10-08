@@ -36,7 +36,7 @@ class Update {
         Thread(Runnable {
             //http://47.106.224.127/
             try {
-                val url = URL("http://47.106.224.127/publish/lastversion.json")
+                val url = URL("http://vtools.omarea.com/publish/lastversion.json")
                 val connection = url.openConnection()
                 // 设置连接方式：get
                 // connection.setRequestMethod("GET");

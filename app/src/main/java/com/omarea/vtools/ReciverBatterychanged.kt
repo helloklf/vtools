@@ -112,7 +112,9 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
                 }
             }
 
-            entryFastChanger(onChanger)
+            if (batteryLevel < sharedPreferences.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85)) {
+                entryFastChanger(onChanger)
+            }
         } catch (ex: Exception) {
             showMsg("充电加速服务：\n" + ex.message, true);
         } finally {

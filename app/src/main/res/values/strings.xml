@@ -75,7 +75,7 @@
     <string name="question_install_busybox">安装Busybox吗？</string>
     <string name="question_install_busybox_desc">你的手机似乎没有安装busybox，这会导致Scene无法使用，是否要立即安装（需要修改System）？</string>
 
-    <string name="share_link">你也来试试Scene吧，我觉得还不错，下载地址：\n http://47.106.224.127/</string>
+    <string name="share_link">你也来试试Scene吧，我觉得还不错，下载地址：\n http://vtools.omarea.com/</string>
     <!--<string name="feedback_link">mqqwpa://im/chat?chat_type=wpa&amp;uin=1191634433</string>-->
 
     <string name="app_name">Scene</string>

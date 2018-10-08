@@ -222,5 +222,14 @@
                     android:textStyle="bold" />
             </TableRow>
         </TableLayout>
+        <TextView
+            style="@style/textSmall"
+            android:textColor="@color/colorAccent"
+            android:layout_marginTop="5dp"
+            android:textAlignment="center"
+            android:autoLink="all"
+            android:text="访问 vtools.omarea.com 快速入门"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </FrameLayout>

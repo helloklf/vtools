@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityService
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.os.Handler
 import android.view.KeyEvent
 import android.view.KeyEvent.ACTION_DOWN
@@ -34,7 +35,7 @@ class AccessibilityServiceSceneKeyEvent : AccessibilityService() {
         updateKeyEventProcess()
     }
 
-    private fun destroy () {
+    private fun destroy() {
         if (floatVitualTouchBar != null) {
             floatVitualTouchBar!!.hidePopupWindow()
             floatVitualTouchBar = null
@@ -50,6 +51,18 @@ class AccessibilityServiceSceneKeyEvent : AccessibilityService() {
     override fun onUnbind(intent: Intent?): Boolean {
         destroy()
         return super.onUnbind(intent)
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        if (floatVitualTouchBar != null && newConfig != null) {
+            if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                floatVitualTouchBar!!.isLandscapf = false
+            }
+            else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                floatVitualTouchBar!!.isLandscapf = true
+            }
+        }
     }
 
     private fun updateKeyEventProcess() {
