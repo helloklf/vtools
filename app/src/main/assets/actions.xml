@@ -188,4 +188,9 @@
         <desc>看人品，也许是可以开出来，但不一定啦！据说稳定版是不行的。</desc>
         <script>file:///android_asset/custom/actions/miui_thermal_set.sh</script>
     </action>
+    <action root="true">
+        <title>清理淘宝优酷热更新文件</title>
+        <desc>清理优酷和淘宝下载的热更新文件，出现淘宝或优酷闪退的，可以试试</desc>
+        <script>file:///android_asset/custom/actions/app_simple.sh</script>
+    </action>
 </actions>
