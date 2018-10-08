@@ -49,6 +49,14 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
                 mode = -1
             }
             if (screenBrightness > -1) {
+                if (config != null && config!!.aloneLight) {
+                    try {
+                        config!!.aloneLightValue = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS)
+                        store.setAppConfig(config)
+                    } catch (e: Settings.SettingNotFoundException) {
+                        e.printStackTrace()
+                    }
+                }
                 Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, screenBrightness)
                 contentResolver.notifyChange(Settings.System.getUriFor("screen_brightness"), null)
                 screenBrightness = -1
