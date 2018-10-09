@@ -18,19 +18,19 @@ class LMKUnit {
 
         // 8GB
         if (totalRamBytes > (6144 * 1024 * 1024L)) {
-            ratio = 2f
+            ratio = 1.5f
         }
         // 6GB
         else if (totalRamBytes > (4096 * 1024 * 1024L)) {
-            ratio = 1.5f
+            ratio = 1.2f
         }
         // 4GB
         else if (totalRamBytes > (3072 * 1024 * 1024L)) {
-            ratio = 1.25f
+            ratio = 1.0f
         }
         // 3GB
         else if (totalRamBytes > (2048 * 1024 * 1024L)) {
-            ratio = 1f
+            ratio = 0.9f
         }
         // 2GB
         else if (totalRamBytes > 1024 * 1024 * 1024) {
