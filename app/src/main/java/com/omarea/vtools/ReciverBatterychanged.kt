@@ -5,13 +5,12 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.AsyncTask
 import android.os.BatteryManager
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
-import com.omarea.shared.CommonCmds
+import com.omarea.shared.FileWrite
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.KeepShellAsync
 
@@ -37,27 +36,34 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
         }
     }
 
-    val FastChangerBase =
-    //"chmod 0777 /sys/class/power_supply/usb/pd_active;" +
-            "chmod 0777 /sys/class/power_supply/usb/pd_allowed;" +
-                    //"echo 1 > /sys/class/power_supply/usb/pd_active;" +
-                    "echo 1 > /sys/class/power_supply/usb/pd_allowed;" +
-                    "chmod 0666 /sys/class/power_supply/main/constant_charge_current_max;" +
-                    "chmod 0666 /sys/class/qcom-battery/restricted_current;" +
-                    "chmod 0666 /sys/class/qcom-battery/restricted_charging;" +
-                    "echo 0 > /sys/class/qcom-battery/restricted_charging;" +
-                    "echo 0 > /sys/class/power_supply/battery/restricted_charging;" +
-                    "echo 0 > /sys/class/power_supply/battery/safety_timer_enabled;" +
-                    "chmod 0666 /sys/class/power_supply/bms/temp_warm;" +
-                    "echo 500 > /sys/class/power_supply/bms/temp_warm;" +
-                    "chmod 0666 /sys/class/power_supply/battery/constant_charge_current_max;"
+    var FastChangerBase = "sh " + FileWrite.writeFile(service.assets, "custom/battery/fast_charge.sh", "fast_charge.sh")
+    var ResumeChanger = "sh " + FileWrite.writeFile(service.assets, "custom/battery/resume_charge.sh", "resume_charge.sh")
+    var DisableChanger = "sh " + FileWrite.writeFile(service.assets, "custom/battery/disable_charge.sh", "disable_charge.sh")
+
+    /*
+     "chmod 0777 /sys/class/power_supply/usb/pd_allowed;" +
+     "echo 1 > /sys/class/power_supply/usb/pd_allowed;" +
+     "chmod 0666 /sys/class/power_supply/main/constant_charge_current_max;" +
+     "chmod 0666 /sys/class/qcom-battery/restricted_current;" +
+     "chmod 0666 /sys/class/qcom-battery/restricted_charging;" +
+     "echo 0 > /sys/class/qcom-battery/restricted_charging;" +
+     "echo 0 > /sys/class/power_supply/battery/restricted_charging;" +
+     "echo 0 > /sys/class/power_supply/battery/safety_timer_enabled;" +
+     "chmod 0666 /sys/class/power_supply/bms/temp_warm;" +
+     "echo 500 > /sys/class/power_supply/bms/temp_warm;" +
+     "chmod 0666 /sys/class/power_supply/battery/constant_charge_current_max;"
+    */
+
     //快速充电
     private fun fastCharger() {
         try {
             if (!sharedPreferences.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false))
                 return
 
-            keepShellAsync!!.doCmd(FastChangerBase)
+            if (FastChangerBase.isNotEmpty()) {
+                keepShellAsync!!.doCmd(FastChangerBase)
+                FastChangerBase = ""
+            }
             keepShellAsync!!.doCmd(computeLeves(qcLimit).toString())
         } catch (ex: Exception) {
             Log.e("ChargeService", ex.stackTrace.toString())
@@ -66,8 +72,8 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
 
     private fun computeLeves(qcLimit: Int): StringBuilder {
         val arr = StringBuilder()
-        if (qcLimit > 300) {
-            var level = 300
+        if (qcLimit > 2000) {
+            var level = 2000
             while (level < qcLimit) {
                 arr.append("echo ${level}000 > /sys/class/power_supply/battery/constant_charge_current_max\n")
                 arr.append("echo ${level}000 > /sys/class/power_supply/main/constant_charge_current_max\n")
@@ -97,7 +103,7 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
                 if (onChanger) {
                     if (batteryLevel >= sharedPreferences.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85)) {
                         bp = true
-                        keepShellAsync!!.doCmd(CommonCmds.DisableChanger)
+                        keepShellAsync!!.doCmd(DisableChanger)
                     } else if (batteryLevel < sharedPreferences.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85) - 20) {
                         resumeCharge()
                     }
@@ -146,7 +152,7 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
 
     internal fun resumeCharge() {
         bp = false
-        keepShellAsync!!.doCmd(CommonCmds.ResumeChanger)
+        keepShellAsync!!.doCmd(ResumeChanger)
     }
 
     internal fun entryFastChanger(onChanger: Boolean) {

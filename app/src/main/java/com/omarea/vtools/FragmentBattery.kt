@@ -16,6 +16,7 @@ import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import com.omarea.shared.CommonCmds
+import com.omarea.shared.FileWrite
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.units.BatteryUnit
@@ -150,10 +151,12 @@ class FragmentBattery : Fragment() {
     private var broadcast: BroadcastReceiver? = null
     private var qcSettingSuupport = false
     private var pdSettingSupport = false
+    private var ResumeChanger = ""
 
     @SuppressLint("ApplySharedPref")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        ResumeChanger = "sh " + FileWrite.writeFile(context!!.assets, "custom/battery/resume_charge.sh", "resume_charge.sh")
         spf = context!!.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
         qcSettingSuupport = batteryUnits.qcSettingSuupport()
         pdSettingSupport = batteryUnits.pdSupported()
@@ -172,7 +175,7 @@ class FragmentBattery : Fragment() {
             spf.edit().putBoolean(SpfConfig.CHARGE_SPF_BP, settings_bp.isChecked).commit()
             //禁用电池保护：恢复充电功能
             if (!settings_bp.isChecked) {
-                KeepShellPublic.doCmdSync(CommonCmds.ResumeChanger)
+                KeepShellPublic.doCmdSync(ResumeChanger)
             } else {
                 //启用电池服务
                 startBatteryService()
@@ -252,11 +255,11 @@ class FragmentBattery : Fragment() {
         }
 
         bp_disable_charge.setOnClickListener {
-            KeepShellPublic.doCmdSync(CommonCmds.DisableChanger)
+            KeepShellPublic.doCmdSync( "sh " + FileWrite.writeFile(context!!.assets, "custom/battery/disable_charge.sh", "disable_charge.sh"))
             Toast.makeText(context!!, "充电功能已禁止！", Toast.LENGTH_SHORT).show()
         }
         bp_enable_charge.setOnClickListener {
-            KeepShellPublic.doCmdSync(CommonCmds.ResumeChanger)
+            KeepShellPublic.doCmdSync(ResumeChanger)
             Toast.makeText(context!!, "充电功能已恢复！", Toast.LENGTH_SHORT).show()
         }
     }
