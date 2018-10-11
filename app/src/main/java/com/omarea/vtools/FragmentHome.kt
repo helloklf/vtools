@@ -136,7 +136,7 @@ class FragmentHome : Fragment() {
             val totalMem = (info.totalMem / 1024 / 1024f).toInt()
             val availMem = (info.availMem / 1024 / 1024f).toInt()
             home_raminfo_text.text = "${format1(availMem / 1024.0)} / ${totalMem / 1024 + 1} GB"
-            home_zramstate.text = (availMem * 100 / totalMem).toString() + "%"
+            home_ramstate.text = ((totalMem - availMem) * 100 / totalMem).toString() + "%"
             home_raminfo.setData(totalMem.toFloat(), availMem.toFloat())
             val sdFree = Files.getDirFreeSizeMB(Environment.getDataDirectory().absolutePath)
             if (sdFree > 8192) {

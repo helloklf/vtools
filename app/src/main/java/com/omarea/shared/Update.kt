@@ -20,7 +20,7 @@ import java.io.InputStreamReader
 import java.net.URL
 import android.provider.MediaStore
 import android.content.ContentResolver
-
+import android.os.Environment
 
 
 class Update {
@@ -100,9 +100,10 @@ class Update {
                     //创建下载任务,downloadUrl就是下载链接
                     val request = DownloadManager.Request(Uri.parse(downloadUrl));
                     //指定下载路径和下载文件名
-                    request.setDestinationInExternalPublicDir("/download/", "Scene_" + jsonObject.getString("versionName") + ".apk");
+                    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "Scene_" + jsonObject.getString("versionName") + ".apk");
                     //在通知栏显示下载进度
                     request.allowScanningByMediaScanner();
+                    request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_MOBILE or DownloadManager.Request.NETWORK_WIFI)
                     request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
                     //获取下载管理器
                     val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager

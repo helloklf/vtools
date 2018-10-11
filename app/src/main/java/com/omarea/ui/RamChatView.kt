@@ -130,9 +130,9 @@ class RamChatView : View {
         if (ratio == 0) {
             return
         }
-        if (ratioState > 85) {
+        if (ratioState > 90) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_veryhight)
-        } else if (ratioState > 65) {
+        } else if (ratioState > 75) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_hight)
         } else if (ratioState > 20) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_mid)
