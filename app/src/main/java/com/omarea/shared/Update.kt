@@ -9,13 +9,19 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Handler
 import android.widget.Toast
+import com.omarea.shell.KeepShellPublic
 import com.omarea.vtools.R
 import org.json.JSONObject
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.URL
+import android.provider.MediaStore
+import android.content.ContentResolver
+
+
 
 class Update {
     private fun currentVersionCode(context: Context): Int {
@@ -36,7 +42,7 @@ class Update {
         Thread(Runnable {
             //http://47.106.224.127/
             try {
-                val url = URL("http://vtools.omarea.com/publish/lastversion.json")
+                val url = URL("https://vtools.oss-cn-beijing.aliyuncs.com/vi/lastversion.json")
                 val connection = url.openConnection()
                 // 设置连接方式：get
                 // connection.setRequestMethod("GET");
@@ -95,6 +101,9 @@ class Update {
                     val request = DownloadManager.Request(Uri.parse(downloadUrl));
                     //指定下载路径和下载文件名
                     request.setDestinationInExternalPublicDir("/download/", "Scene_" + jsonObject.getString("versionName") + ".apk");
+                    //在通知栏显示下载进度
+                    request.allowScanningByMediaScanner();
+                    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
                     //获取下载管理器
                     val downloadManager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
                     //将下载任务加入下载队列，否则不会进行下载
@@ -105,7 +114,14 @@ class Update {
                         override fun onReceive(context: Context?, intent: Intent?) {
                             val id = intent!!.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
                             if (id == taskId) {
-                                downloadManager.openDownloadedFile(taskId)
+                                val path = getRealFilePath(context!!, downloadManager.getUriForDownloadedFile(taskId))
+                                if (path != null) {
+                                    Toast.makeText(context, "下载已完成，尝试自动安装", Toast.LENGTH_SHORT).show()
+                                    KeepShellPublic.doCmdSync("pm install -r '$path'") != "error"
+                                    installApk(context, path)
+                                } else {
+                                    Toast.makeText(context, "请到下载管理器或文件管理器中打开安装！", Toast.LENGTH_LONG).show()
+                                }
                             }
                         }
                     }, intentFilter)
@@ -113,5 +129,42 @@ class Update {
                 .setNegativeButton(R.string.btn_cancel) { dialog, which -> }
                 .create()
                 .show()
+    }
+
+    fun getRealFilePath(context: Context, uri: Uri?): String? {
+        if (null == uri) return null
+        val scheme = uri.scheme
+        var data: String? = null
+        if (scheme == null)
+            data = uri.path
+        else if (ContentResolver.SCHEME_FILE == scheme) {
+            data = uri.path
+        } else if (ContentResolver.SCHEME_CONTENT == scheme) {
+            val cursor = context.contentResolver.query(uri, arrayOf(MediaStore.Images.ImageColumns.DATA), null, null, null)
+            if (null != cursor) {
+                if (cursor.moveToFirst()) {
+                    val index = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA)
+                    if (index > -1) {
+                        data = cursor.getString(index)
+                    }
+                }
+                cursor.close()
+            }
+        }
+        return data
+    }
+
+
+    // 安装Apk
+    private fun installApk(context: Context, filePath: String) {
+        try {
+            val i = Intent(Intent.ACTION_VIEW)
+            i.setDataAndType(Uri.parse("file://$filePath"), "application/vnd.android.package-archive")
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(i)
+        } catch (e: Exception) {
+            // Log.e(TAG, "安装失败")
+            e.printStackTrace()
+        }
     }
 }

@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingBottom="20dp">
+        android:paddingBottom="6dp">
 
         <FrameLayout
             android:id="@+id/home_mainview"
@@ -42,16 +42,41 @@
                         android:paddingRight="20dp"
                         android:paddingTop="10dp">
 
-                        <com.omarea.ui.RamChatView
-                            android:id="@+id/home_raminfo"
-                            android:layout_width="110dp"
-                            android:layout_height="110dp"
-                            android:focusable="false"
-                            android:focusableInTouchMode="false"
-                            app:free="0"
-                            app:total="1" />
+                        <LinearLayout
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:layout_width="76dp"
+                            android:layout_height="wrap_content">
+                            <FrameLayout
+                                android:layout_gravity="center"
+                                android:layout_width="wrap_content"
+                                android:layout_height="75dp">
+                                <TextView
+                                    android:id="@+id/home_zramstate"
+                                    style="@style/textTitle"
+                                    android:text=""
+                                    android:layout_gravity="center"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+                                <com.omarea.ui.RamChatView
+                                    android:id="@+id/home_raminfo"
+                                    android:layout_width="75dp"
+                                    android:layout_height="75dp"
+                                    app:free="0"
+                                    app:total="1" />
+                            </FrameLayout>
+                            <TextView
+                                android:layout_marginTop="5dp"
+                                android:textSize="10dp"
+                                android:textStyle="bold"
+                                android:text="物理内存"
+                                android:layout_gravity="center"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
 
                         <LinearLayout
+                            android:padding="5dp"
                             android:id="@+id/home_clear_ram"
                             style="?android:buttonBarButtonStyle"
                             android:layout_width="wrap_content"
@@ -64,29 +89,82 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:text="RAM"
-                                android:textSize="24dp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
+                                android:layout_gravity="left"
                                 android:text="可用/总共"
                                 android:textSize="12dp"
                                 android:textStyle="bold" />
 
                             <TextView
+                                android:layout_marginBottom="15dp"
                                 android:id="@+id/home_raminfo_text"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:text="0 / 0MB"
-                                android:textSize="13dp"
+                                android:layout_gravity="left"
+                                android:text="0/0MB"
+                                android:textSize="12dp"
                                 android:textStyle="bold" />
                         </LinearLayout>
 
+                        <LinearLayout
+                            android:padding="5dp"
+                            style="?android:buttonBarButtonStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:focusable="false"
+                            android:focusableInTouchMode="false"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="right"
+                                android:text="可用/总共"
+                                android:textSize="12dp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/home_zramsize"
+                                android:layout_marginBottom="15dp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="right"
+                                android:text="0/0MB"
+                                android:textSize="12dp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:layout_width="76dp"
+                            android:layout_height="wrap_content">
+                            <FrameLayout
+                                android:layout_gravity="center"
+                                android:layout_width="wrap_content"
+                                android:layout_height="75dp">
+                                <TextView
+                                    android:id="@+id/home_swapstate"
+                                    style="@style/textTitle"
+                                    android:text=""
+                                    android:layout_gravity="center"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+                                <com.omarea.ui.RamChatView
+                                    android:id="@+id/home_swapstate_chat"
+                                    android:layout_width="75dp"
+                                    android:layout_height="75dp"
+                                    app:free="0"
+                                    app:total="1" />
+                            </FrameLayout>
+                            <TextView
+                                android:layout_marginTop="5dp"
+                                android:textSize="10dp"
+                                android:textStyle="bold"
+                                android:text="交换分区"
+                                android:layout_gravity="center"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
                     </LinearLayout>
                 </android.support.v7.widget.CardView>
 
@@ -228,7 +306,7 @@
             android:layout_marginTop="5dp"
             android:textAlignment="center"
             android:autoLink="all"
-            android:text="访问 vtools.omarea.com 快速入门"
+            android:text="访问 http://vtools.omarea.com 快速入门"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </LinearLayout>

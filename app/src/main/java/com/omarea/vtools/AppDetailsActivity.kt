@@ -733,6 +733,10 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_disbackground.isChecked = appConfigInfo.disBackgroundRun
         app_details_aloowlight.isChecked = appConfigInfo.aloneLight
         if (appConfigInfo.aloneLightValue > 0) {
+            // 部分手机具有4096级亮度
+            if (appConfigInfo.aloneLightValue > 255) {
+                app_details_light.max = 4096
+            }
             app_details_light.setProgress(appConfigInfo.aloneLightValue)
         }
         app_details_gps.isChecked = appConfigInfo.gpsOn

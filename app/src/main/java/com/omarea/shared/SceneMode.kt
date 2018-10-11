@@ -61,9 +61,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
     private fun setScreenLight(level: Int): Boolean {
         try {
             var l = level
-            if (l > 255) {
-                l = 255
-            } else if (l < 1) {
+            if (l < 1) {
                 l = 1
             }
             if (Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, 0)) {
@@ -189,19 +187,10 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
                         val sb = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS)
                         if (currentConfig.aloneLightValue != sb) {
                             currentConfig.aloneLightValue = sb
+                            store.setAppConfig(currentConfig)
                         }
-                        store.setAppConfig(currentConfig)
                     }
                 } catch (ex: Exception) {
-
-                }
-            }
-            if (config != null && config!!.aloneLight) {
-                try {
-                    config!!.aloneLightValue = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS)
-                    store.setAppConfig(config)
-                } catch (e: Settings.SettingNotFoundException) {
-                    e.printStackTrace()
                 }
             }
             config = store.getAppConfig(packageName)
@@ -215,9 +204,9 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
                 }
                 if (config!!.aloneLightValue < 1) {
                     config!!.aloneLightValue = 128
-                } else if (config!!.aloneLightValue > 255) {
+                }/* else if (config!!.aloneLightValue > 255) {
                     config!!.aloneLightValue = 255
-                }
+                }*/
                 setScreenLight(config!!.aloneLightValue)
             } else {
                 if (mode > -1) {

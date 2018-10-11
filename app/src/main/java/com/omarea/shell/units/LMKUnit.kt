@@ -13,36 +13,35 @@ class LMKUnit {
         //echo "14746,18432,22118,25805,40000,55000" > /sys/module/lowmemorykiller/parameters/minfree
         //echo "18432,23040,27648,32256,56250,81250" > /sys/module/lowmemorykiller/parameters/minfree
 
-
         var ratio = 1f
 
         // 8GB
         if (totalRamBytes > (6144 * 1024 * 1024L)) {
-            ratio = 1.5f
+            ratio = 1.3f
         }
         // 6GB
         else if (totalRamBytes > (4096 * 1024 * 1024L)) {
-            ratio = 1.2f
+            ratio = 1.1f
         }
         // 4GB
         else if (totalRamBytes > (3072 * 1024 * 1024L)) {
-            ratio = 1.0f
+            ratio = 0.9f
         }
         // 3GB
         else if (totalRamBytes > (2048 * 1024 * 1024L)) {
-            ratio = 0.9f
+            ratio = 0.8f
         }
         // 2GB
         else if (totalRamBytes > 1024 * 1024 * 1024) {
-            ratio = 0.75f
+            ratio = 0.6f
         }
         // 1GB
         else if (totalRamBytes > 1024 * 1024 * 1024) {
-            ratio = 0.5f
+            ratio = 0.4f
         }
         // < 1GB (这破手机还用毛啊！！！)
         else {
-            ratio = 0.25f
+            ratio = 0.20f
         }
 
         val foregroundApp = (40 * 1024 / 4 * ratio).toInt()

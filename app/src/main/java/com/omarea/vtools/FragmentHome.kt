@@ -30,6 +30,8 @@ import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import com.omarea.ui.AdapterCpuCores
 import kotlinx.android.synthetic.main.layout_home.*
 import java.io.File
+import java.math.BigDecimal
+import java.math.RoundingMode
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -54,51 +56,6 @@ class FragmentHome : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-        if (!globalSPF.getBoolean("faq_readed_001", false)) {
-            AlertDialog.Builder(context!!)
-                    .setTitle("重要说明！！！")
-                    .setMessage("使用场景模式-动态响应的时，同时使用其它调频优化脚本或调度模式优化软件！\n\n由于部分调频优化脚本或应用，会锁定一些重要的调度参数，导致无法Scene动态修改，并引发一些冲突导致的错误。\n\n如：最低频率被锁定在某个值不再下降。\n\n已知的冲突：卡刷或Magisk模块形式的Project WIPE（yc）调频\nSkymi集成的模式脚本\n\n此外，更换不同作者的动态响应配置脚本需要重启生效！！！\n\n例如：从[保守/激进]更换成[在线获取]的配置脚本")
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.btn_iknow, {
-                        _, _ ->
-                    })
-                    .setNeutralButton(R.string.btn_dontshow, {
-                        _,_ ->
-                        globalSPF.edit().putBoolean("faq_readed_001", true).apply()
-                    })
-                    .create()
-                    .show()
-        }
-        if (!globalSPF.getBoolean("faq_readed_002", false)) {
-            AlertDialog.Builder(context!!)
-                    .setTitle("重要说明！！！")
-                    .setMessage("如果你在使用场景模式过程中出现触摸失灵或按键没反应，可到【场景模式 - 设置 - 专家选项】中关闭按键事件捕获选项。\n\n但是，关闭此选项的同时，场景模式中的“按键屏蔽”功能将会失效！")
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.btn_iknow, {
-                        _, _ ->
-                    })
-                    .setNeutralButton(R.string.btn_dontshow, {
-                        _,_ ->
-                        globalSPF.edit().putBoolean("faq_readed_002", true).apply()
-                    })
-                    .create()
-                    .show()
-        }
-        if (!globalSPF.getBoolean("faq_readed_003", false)) {
-            AlertDialog.Builder(context!!)
-                    .setTitle("重要说明！！！")
-                    .setMessage("为了确保你隐私和财产安全，建议不要从其它不可信的渠道下载本应用！\n\n目前，Scene只在酷安市场和[Scene实验室]发布！！！\n\n")
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.btn_iknow, {
-                        _, _ ->
-                    })
-                    .setNeutralButton(R.string.btn_dontshow, {
-                        _,_ ->
-                        globalSPF.edit().putBoolean("faq_readed_003", true).apply()
-                    })
-                    .create()
-                    .show()
-        }
 
         if (Platform().dynamicSupport(context!!) || File(CommonCmds.POWER_CFG_PATH).exists()) {
             powermode_toggles.visibility = View.VISIBLE
@@ -162,7 +119,13 @@ class FragmentHome : Fragment() {
 
     private var minFreqs = HashMap<Int, String>()
     private var maxFreqs = HashMap<Int, String>()
+    fun format1(value: Double): String {
 
+        var bd = BigDecimal(value)
+        bd = bd.setScale(1, RoundingMode.HALF_UP)
+        return bd.toString()
+    }
+    @SuppressLint("SetTextI18n")
     private fun updateRamInfo() {
         try {
             val info = ActivityManager.MemoryInfo()
@@ -172,10 +135,44 @@ class FragmentHome : Fragment() {
             activityManager!!.getMemoryInfo(info)
             val totalMem = (info.totalMem / 1024 / 1024f).toInt()
             val availMem = (info.availMem / 1024 / 1024f).toInt()
-            home_raminfo_text.text = "${availMem} / ${totalMem}MB"
+            home_raminfo_text.text = "${format1(availMem / 1024.0)} / ${totalMem / 1024 + 1} GB"
+            home_zramstate.text = (availMem * 100 / totalMem).toString() + "%"
             home_raminfo.setData(totalMem.toFloat(), availMem.toFloat())
-            datafree.text = "Data：" + Files.getDirFreeSizeMB(Environment.getDataDirectory().absolutePath) + " MB"
-            sdfree.text = "SDCard：" + Files.getDirFreeSizeMB(Environment.getExternalStorageDirectory().absolutePath) + " MB"
+            val sdFree = Files.getDirFreeSizeMB(Environment.getDataDirectory().absolutePath)
+            if (sdFree > 8192) {
+                datafree.text = "Data：" + sdFree / 1024 + " GB"
+            } else {
+                datafree.text = "Data：" + sdFree + " MB"
+            }
+            val sdSize = Files.getDirFreeSizeMB(Environment.getExternalStorageDirectory().absolutePath)
+            if (sdSize > 8292) {
+                sdfree.text = "SDCard：" + sdSize / 1024 + " GB"
+            } else {
+                sdfree.text = "SDCard：" + sdSize + " MB"
+            }
+            val swapInfo = KeepShellPublic.doCmdSync("free -m | grep Swap")
+            if (swapInfo.contains("Swap")) {
+                try {
+                    val swapInfos = swapInfo.substring(swapInfo.indexOf(" "), swapInfo.lastIndexOf(" ")).trim()
+                    if (Regex("[\\d]{1,}[\\s]{1,}[\\d]{1,}").matches(swapInfos)) {
+                        val total = swapInfos.substring(0, swapInfos.indexOf(" ")).trim().toInt()
+                        val use = swapInfos.substring(swapInfos.indexOf(" ")).trim().toInt()
+                        val free = total - use
+                        home_swapstate_chat.setData(total.toFloat(), free.toFloat())
+                        home_swapstate.text = (use * 100.0 / total).toInt().toString() + "%"
+                        if (total > 99) {
+                            home_zramsize.text = "${format1(free / 1024.0)} / ${format1(total / 1024.0)} GB"
+                        } else {
+                            home_zramsize.text = "${free}/${total}MB"
+                        }
+                    }
+                } catch (ex: java.lang.Exception) {
+                    home_swapstate.text = ""
+                }
+                // home_swapstate.text = swapInfo.substring(swapInfo.indexOf(" "), swapInfo.lastIndexOf(" ")).trim()
+            } else {
+                home_swapstate.text = ""
+            }
         } catch (ex: Exception) {
 
         }

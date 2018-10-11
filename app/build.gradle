@@ -11,20 +11,20 @@ android {
             storePassword 'I0140728'
         }
     }
-    compileSdkVersion 27
+    compileSdkVersion 28
     buildToolsVersion '28.0.2'
     defaultConfig {
         applicationId "com.omarea.vtools"
         minSdkVersion 21
-        targetSdkVersion 27
-        versionCode 576
-        versionName "1.1.7 Beta3"
+        targetSdkVersion 28
+        versionCode 577
+        versionName "1.1.7 Beta4"
     }
     buildTypes {
         release {
             zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            minifyEnabled false
+            minifyEnabled true
             debuggable false
             signingConfig signingConfigs.omarea_Signing
         }

@@ -152,7 +152,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         .show()
             }
             */
-            if (globalSPF!!.getLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, 0) + (1000 * 3600) < System.currentTimeMillis()) {
+            if (globalSPF!!.getLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, 0) + (1000 * 7200) < System.currentTimeMillis()) {
                 Update().checkUpdate(this)
                 globalSPF!!.edit().putLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, System.currentTimeMillis()).apply()
             }
@@ -281,7 +281,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 } catch (ex: Exception) {
                 }
             }
-            R.id.nav_recents -> fragment = FragmentRecent.createPage()
         }
 
         if (fragment != null) {

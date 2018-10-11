@@ -28,9 +28,6 @@ class RamChatView : View {
     private var textPaint: Paint? = null
     //标注的画笔
     private var labelPaint: Paint? = null
-    //-------------颜色相关-------------
-    //边框颜色和标注颜色
-    private val mColor = intArrayOf(-0xec712a, 0x55888888, -0x1a8c8d, -0xb03c09, -0xe8a, -0x7e387c)
     // private int[] mColor = new int[]{0xFFF06292, 0xFF9575CD, 0xFFE57373, 0xFF4FC3F7, 0xFFFFF176, 0xFF81C784};
     //文字颜色
     private val textColor = -0x777778
@@ -73,7 +70,7 @@ class RamChatView : View {
         super.onSizeChanged(w, h, oldw, oldh)
         mWidth = w
         mHeight = h
-        val mStrokeWidth = dp2px(context, 20f)
+        val mStrokeWidth = dp2px(context, 8f)
         this.mStrokeWidth = mStrokeWidth.toFloat()
         this.textSize = dp2px(context, 18f)
         if (w > h) {
@@ -128,12 +125,20 @@ class RamChatView : View {
      */
     private fun drawCycle(canvas: Canvas) {
         val startPercent = -90f
+        cyclePaint!!.color = 0x44888888 //Color.parseColor("#888888")
+        canvas.drawArc(RectF(0f, 0f, mRadius, mRadius), 0f, 360f, false, cyclePaint)
         if (ratio == 0) {
             return
         }
-        cyclePaint!!.color = Color.parseColor("#888888")
-        canvas.drawArc(RectF(0f, 0f, mRadius, mRadius), 0f, 360f, false, cyclePaint)
-        cyclePaint!!.color = mColor[0]
+        if (ratioState > 85) {
+            cyclePaint!!.color = resources.getColor(R.color.color_load_veryhight)
+        } else if (ratioState > 65) {
+            cyclePaint!!.color = resources.getColor(R.color.color_load_hight)
+        } else if (ratioState > 20) {
+            cyclePaint!!.color = resources.getColor(R.color.color_load_mid)
+        } else {
+            cyclePaint!!.color = resources.getColor(R.color.color_load_low)
+        }
         canvas.drawArc(RectF(0f, 0f, mRadius, mRadius), -90f, (ratioState * 3.6f) + 1f, false, cyclePaint!!)
         if (ratioState < ratio) {
             ratioState += 1
