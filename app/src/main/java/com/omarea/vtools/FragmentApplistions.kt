@@ -120,7 +120,7 @@ class FragmentApplistions : Fragment() {
             apps.add(item as String)
             selected.add(false)
         }
-        AlertDialog.Builder(context).setTitle("应用隐藏记录")
+        val dialog = AlertDialog.Builder(context).setTitle("应用隐藏记录")
                 .setMultiChoiceItems(apps.toTypedArray(), selected.toBooleanArray(), { dialog, which, isChecked ->
                     selected[which] = isChecked
                 })
@@ -153,7 +153,10 @@ class FragmentApplistions : Fragment() {
                         }).start()
                     }
                 }
-                .create().show()
+                .create()
+
+        dialog.window!!.setWindowAnimations(R.style.windowAnim)
+        dialog.show()
     }
 
     private fun getSelectedAppShowOptions(apptype: Appinfo.AppType) {

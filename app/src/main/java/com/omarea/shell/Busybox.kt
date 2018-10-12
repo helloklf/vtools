@@ -29,7 +29,7 @@ class Busybox(private var context: Context) {
     }
 
     fun forceInstall2(next: Runnable? = null) {
-        AlertDialog.Builder(context)
+        val dialog = AlertDialog.Builder(context)
                 .setTitle("需要安装Busybox")
                 .setMessage("您当前系统未安装Busybox，并且Scene也没有集成安装包，需要联网下载安装包才能继续！")
                 .setPositiveButton(R.string.btn_confirm) { dialog, which ->
@@ -106,11 +106,12 @@ class Busybox(private var context: Context) {
                 }
                 .setCancelable(false)
                 .create()
-                .show()
+        dialog.window!!.setWindowAnimations(R.style.windowAnim)
+        dialog.show()
     }
 
     private fun busyboxDownloadFail () {
-        AlertDialog.Builder(context)
+        val dialog = AlertDialog.Builder(context)
                 .setTitle("安装失败")
                 .setMessage("在线安装Busybox失败，Scene无法继续运行，请用其它方式安装！\n")
                 .setPositiveButton(R.string.btn_confirm, {
@@ -119,7 +120,8 @@ class Busybox(private var context: Context) {
                 })
                 .setCancelable(false)
                 .create()
-                .show()
+        dialog.window!!.setWindowAnimations(R.style.windowAnim)
+        dialog.show()
     }
 
     fun forceInstall(next: Runnable? = null) {
@@ -131,7 +133,7 @@ class Busybox(private var context: Context) {
                 forceInstall2(next)
                 return
             }
-            AlertDialog.Builder(context)
+            val dialog = AlertDialog.Builder(context)
                     .setTitle(R.string.question_install_busybox)
                     .setMessage(R.string.question_install_busybox_desc)
                     .setNegativeButton(
@@ -164,19 +166,22 @@ class Busybox(private var context: Context) {
 
                                 KeepShellPublic.doCmdSync(cmd.toString())
                                 if (!busyboxInstalled()) {
-                                    AlertDialog.Builder(context)
+                                    val dialog = AlertDialog.Builder(context)
                                             .setTitle("安装Busybox失败")
                                             .setMessage("已尝试自动安装Busybox，但它依然不可用。也许System分区没被解锁。因此，部分功能可能无法使用！")
                                             .setPositiveButton(R.string.btn_confirm, { _, _ ->
                                             })
                                             .create()
-                                            .show()
+                                    dialog.window!!.setWindowAnimations(R.style.windowAnim)
+                                    dialog.show()
                                 }
                                 next?.run()
                             }
                     )
                     .setCancelable(false)
-                    .create().show()
+                    .create()
+            dialog.window!!.setWindowAnimations(R.style.windowAnim)
+            dialog.show()
         } else {
             BusyboxInstallerUnit().installShellTools()
             next?.run()

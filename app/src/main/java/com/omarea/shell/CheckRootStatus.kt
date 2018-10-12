@@ -30,6 +30,7 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
             "else\n" +
             "\texit -1;\n" +
             "fi;"
+
     //是否已经Root
     private fun isRoot(disableSeLinux: Boolean): Boolean {
         val r = KeepShellPublic.doCmdSync(isRootUser)
@@ -68,9 +69,9 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
                         System.exit(0)
                         //android.os.Process.killProcess(android.os.Process.myPid())
                     })
-                    alert
-                    .create()
-                    .show()
+                    val dialog = alert.create()
+                    dialog.window!!.setWindowAnimations(R.style.windowAnim)
+                    dialog.show()
                 }
             } else {
                 completed = true
@@ -98,7 +99,9 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
                     System.exit(0)
                     //android.os.Process.killProcess(android.os.Process.myPid())
                 })
-                alert.create().show()
+                val dialog = alert.create()
+                dialog.window!!.setWindowAnimations(R.style.windowAnim)
+                dialog.show()
             }
         }, 15000)
     }

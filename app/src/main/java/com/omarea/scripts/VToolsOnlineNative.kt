@@ -55,14 +55,15 @@ class VToolsOnlineNative(var activity: ActivityAddinOnline, var webview: WebView
         override fun onJsAlert(view: WebView?, url: String?, message: String?, result: JsResult?): Boolean {
             if (view == null || result == null)
                 return false;
-            AlertDialog.Builder(view.context)
+            val dialog = AlertDialog.Builder(view.context)
                     .setTitle("提示").setMessage(message)
                     .setPositiveButton(R.string.btn_confirm, DialogInterface.OnClickListener { dialog, which ->
                         result.confirm()
                     })
                     .setCancelable(false)
                     .create()
-                    .show()
+            dialog.window!!.setWindowAnimations(R.style.windowAnim)
+            dialog.show()
             return true
             //return super.onJsAlert(view, url, message, result)
         }

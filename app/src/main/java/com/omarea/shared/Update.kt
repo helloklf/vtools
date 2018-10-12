@@ -83,7 +83,7 @@ class Update {
     }
 
     private fun update(context: Context, jsonObject: JSONObject) {
-        AlertDialog.Builder(context)
+        val dialog = AlertDialog.Builder(context)
                 .setTitle("下载新版本" + jsonObject.getString("versionName") + " ？")
                 .setMessage("更新内容：" + "\n\n" + jsonObject.getString("message") + "\n\n如果下载速度过慢，也可以前往“酷安”自行下载")
                 .setPositiveButton(R.string.btn_confirm) { dialog, which ->
@@ -129,7 +129,8 @@ class Update {
                 }
                 .setNegativeButton(R.string.btn_cancel) { dialog, which -> }
                 .create()
-                .show()
+        dialog.window!!.setWindowAnimations(R.style.windowAnim)
+        dialog.show()
     }
 
     fun getRealFilePath(context: Context, uri: Uri?): String? {

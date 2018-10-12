@@ -85,7 +85,7 @@ class DialogAddinModifyDPI(var context: Context) {
             KeepShellPublic.doCmdSync(cmd.toString())
         })
 
-        AlertDialog.Builder(context).setTitle("DPI、分辨率").setView(dialog).setNegativeButton("确定", { _, _ ->
+        val dialogInstance = AlertDialog.Builder(context).setTitle("DPI、分辨率").setView(dialog).setNegativeButton("确定", { _, _ ->
             val dpi = if (dpiInput.text.isNotEmpty()) (dpiInput.text.toString().toInt()) else (0)
             val width = if (widthInput.text.isNotEmpty()) (widthInput.text.toString().toInt()) else (0)
             val height = if (heightInput.text.isNotEmpty()) (heightInput.text.toString().toInt()) else (0)
@@ -115,6 +115,9 @@ class DialogAddinModifyDPI(var context: Context) {
             }
             if (cmd.isNotEmpty())
                 KeepShellPublic.doCmdSync(cmd.toString())
-        }).create().show()
+        }).create()
+
+        dialogInstance.window!!.setWindowAnimations(R.style.windowAnim)
+        dialogInstance.show()
     }
 }

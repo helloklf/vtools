@@ -94,7 +94,7 @@ class FragmentAddin : Fragment() {
         if (item.get("Wran") == false) {
             (item["Action"] as Runnable).run()
         } else {
-            AlertDialog.Builder(context!!)
+            val dialog = AlertDialog.Builder(context!!)
                     .setTitle(getString(R.string.addin_execute))
                     .setNegativeButton(android.R.string.cancel, null)
                     .setPositiveButton(android.R.string.yes) { _, _ ->
@@ -102,7 +102,8 @@ class FragmentAddin : Fragment() {
                     }
                     .setMessage(item["Title"].toString() + "：" + item["Desc"])
                     .create()
-                    .show()
+            dialog.window!!.setWindowAnimations(R.style.windowAnim)
+            dialog.show()
         }
     }
 

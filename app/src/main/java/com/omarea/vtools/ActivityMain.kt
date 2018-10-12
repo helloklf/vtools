@@ -4,14 +4,20 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
-import android.content.*
-import android.graphics.Point
+import android.app.WallpaperManager
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.os.StrictMode
 import android.provider.Settings
+import android.renderscript.Allocation
+import android.renderscript.Element
+import android.renderscript.RenderScript
+import android.renderscript.ScriptIntrinsicBlur
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.content.PermissionChecker
@@ -32,8 +38,6 @@ import com.omarea.shell.units.BackupRestoreUnit
 import com.omarea.shell.units.BatteryUnit
 import com.omarea.vtools.dialogs.DialogPower
 import kotlinx.android.synthetic.main.activity_main.*
-import java.io.File
-import java.io.FileInputStream
 
 class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var hasRoot = false
@@ -84,8 +88,43 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         if (globalSPF!!.getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false))
             this.setTheme(R.style.AppTheme_NoActionBarNight)
+        /*
+        使用壁纸高斯模糊作为窗口背景
+        val wallPaper = WallpaperManager.getInstance(this).getDrawable();
+        this.getWindow().setBackgroundDrawable(wallPaper);
+
+        this.getWindow().setBackgroundDrawable(BitmapDrawable(resources, rsBlur((wallPaper as BitmapDrawable).bitmap, 25)))
+        */
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+    }
+
+    private fun rsBlur(source: Bitmap, radius: Int): Bitmap {
+        val inputBmp = source
+        val renderScript = RenderScript.create(this);
+
+        // Allocate memory for Renderscript to work with
+        //(2)
+        val input = Allocation.createFromBitmap(renderScript, inputBmp);
+        val output = Allocation.createTyped(renderScript, input.getType());
+        //(3)
+        // Load up an instance of the specific script that we want to use.
+        val scriptIntrinsicBlur = ScriptIntrinsicBlur.create(renderScript, Element.U8_4(renderScript));
+        //(4)
+        scriptIntrinsicBlur.setInput(input);
+        //(5)
+        // Set the blur radius
+        scriptIntrinsicBlur.setRadius(radius.toFloat());
+        //(6)
+        // Start the ScriptIntrinisicBlur
+        scriptIntrinsicBlur.forEach(output);
+        //(7)
+        // Copy the output to the blurred bitmap
+        output.copyTo(inputBmp);
+        //(8)
+        renderScript.destroy();
+
+        return inputBmp;
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -219,6 +258,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
         val transaction = supportFragmentManager.beginTransaction()
+        transaction.setCustomAnimations(R.animator.fragment_enter, R.animator.fragment_exit)
         var fragment: Fragment? = null
 
         //以下代码用于去除阴影
@@ -265,7 +305,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         android.app.AlertDialog.Builder(this)
                                 .setTitle("暂不支持该设备")
                                 .setMessage("根据许多魅族16th/16th Plus用户反馈，使用性能调度模式以后会无法正常开机（原因不详）。为了避免更多用户被坑，该功能现在将直接不再允许Meizu的sdm845、sdm710系列手机使用！")
-                                .setPositiveButton(R.string.btn_iknow, { _,_ -> })
+                                .setPositiveButton(R.string.btn_iknow, { _, _ -> })
                                 .create()
                                 .show()
                         return false

@@ -14,6 +14,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowAnimationStyle">@style/activityAnim</item>
     </style>
 
     <style name="AppThemeNight" parent="Theme.AppCompat">
@@ -27,6 +28,7 @@
         <item name="android:windowBackground">@android:color/background_dark</item>
         <item name="android:textColorSecondary">@android:color/darker_gray</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:windowAnimationStyle">@style/activityAnim</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
@@ -34,6 +36,7 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@style/activityAnim</item>
     </style>
 
     <style name="AppTheme.NoActionBarNight" parent="AppThemeNight">
@@ -41,6 +44,7 @@
         <item name="android:windowContentOverlay">@null</item>
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@style/activityAnim</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -81,5 +85,19 @@
 
     <style name="FullscreenActionBarStyle" parent="android:Widget.Holo.ActionBar">
         <item name="android:background">@color/black_overlay</item>
+    </style>
+    <style name="activityAnim">
+        <item name="android:activityOpenEnterAnimation">@anim/activity_open_enter</item>
+        <item name="android:activityOpenExitAnimation">@anim/activity_open_exit</item>
+        <item name="android:activityCloseEnterAnimation">@anim/activity_close_enter</item>
+        <item name="android:activityCloseExitAnimation">@anim/activity_close_exit</item>
+        <item name="android:taskOpenEnterAnimation">@anim/task_open_enter</item>
+        <item name="android:taskOpenExitAnimation">@anim/task_open_exit</item>
+        <item name="android:taskCloseEnterAnimation">@anim/task_close_enter</item>
+        <item name="android:taskCloseExitAnimation">@anim/task_close_exit</item>
+    </style>
+    <style name="windowAnim">
+        <item name="android:windowExitAnimation">@anim/dialog_exit</item>
+        <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
     </style>
 </resources>

@@ -277,7 +277,7 @@ class AppDetailsActivity : AppCompatActivity() {
                 else -> index = 4
             }
             var selectedIndex = index
-            AlertDialog.Builder(this)
+            val dialog = AlertDialog.Builder(this)
                     .setTitle(getString(R.string.perf_opt))
                     .setSingleChoiceItems(R.array.powercfg_modes2, index, { dialog, which ->
                         selectedIndex = which
@@ -305,7 +305,8 @@ class AppDetailsActivity : AppCompatActivity() {
                     })
                     .setNegativeButton(R.string.btn_cancel, DialogInterface.OnClickListener { dialog, which -> })
                     .create()
-                    .show()
+            dialog.window!!.setWindowAnimations(R.style.windowAnim)
+            dialog.show()
         }
         app_details_floatwindow.setOnClickListener {
             val isChecked = (it as Switch).isChecked
@@ -572,6 +573,7 @@ class AppDetailsActivity : AppCompatActivity() {
                         .setTitle("请输入DPI")
                         .setView(view)
                         .create()
+                dialog.window!!.setWindowAnimations(R.style.windowAnim)
                 dialog.show()
             }
         }

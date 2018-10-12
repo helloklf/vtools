@@ -244,14 +244,16 @@ class FragmentBattery : Fragment() {
             }
         }
         btn_battery_history_del.setOnClickListener {
-            AlertDialog.Builder(context!!)
+            val dialog = AlertDialog.Builder(context!!)
                     .setTitle("需要重启")
                     .setMessage("删除电池使用记录需要立即重启手机，是否继续？")
                     .setPositiveButton(R.string.btn_confirm, DialogInterface.OnClickListener { dialog, which ->
                         KeepShellPublic.doCmdSync("rm -f /data/system/batterystats-checkin.bin;rm -f /data/system/batterystats-daily.xml;rm -f /data/system/batterystats.bin;sync;sleep 2; reboot;")
                     })
                     .setNegativeButton(R.string.btn_cancel, DialogInterface.OnClickListener { dialog, which -> })
-                    .create().show()
+                    .create()
+            dialog.window!!.setWindowAnimations(R.style.windowAnim)
+            dialog.show()
         }
 
         bp_disable_charge.setOnClickListener {

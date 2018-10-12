@@ -57,7 +57,7 @@ class DialogAddinModifydevice(var context: Context) {
         (dialog.findViewById(R.id.dialog_addin_8848) as Button).setOnClickListener {
             set8848()
         }
-        AlertDialog.Builder(context)
+        val dialogInstance = AlertDialog.Builder(context)
                 //.setTitle("机型信息修改")
                 .setView(dialog).setNegativeButton("保存重启", { _, _ ->
             val sb = StringBuilder()
@@ -95,7 +95,10 @@ class DialogAddinModifydevice(var context: Context) {
             }
         }).setPositiveButton("使用帮助", DialogInterface.OnClickListener { dialog, which ->
             AlertDialog.Builder(context).setMessage(R.string.dialog_addin_device_desc).setNegativeButton(R.string.btn_confirm, { _, _ -> }).create().show()
-        }).create().show()
+        }).create()
+
+        dialogInstance.window!!.setWindowAnimations(R.style.windowAnim)
+        dialogInstance.show()
         loadCurrent()
 
         try {

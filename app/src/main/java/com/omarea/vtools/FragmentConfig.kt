@@ -187,7 +187,7 @@ class FragmentConfig : Fragment() {
                 else -> originIndex = 4
             }
             var currentMode = originIndex
-            AlertDialog.Builder(context)
+            val dialog = AlertDialog.Builder(context)
                     .setTitle(item.appName.toString())
                     .setSingleChoiceItems(arrayOf("省电模式（阅读）", "均衡模式（日常）", "性能模式（游戏）", "极速模式（跑分）", "跟随默认模式", "忽略切换"), originIndex, DialogInterface.OnClickListener { dialog, which ->
                         currentMode = which
@@ -217,7 +217,8 @@ class FragmentConfig : Fragment() {
                     })
                     .setNeutralButton(R.string.btn_cancel, null)
                     .create()
-                    .show()
+            dialog.window!!.setWindowAnimations(R.style.windowAnim)
+            dialog.show()
             true
         }
 
@@ -611,7 +612,7 @@ class FragmentConfig : Fragment() {
             }
             support -> {
                 var i = 0
-                AlertDialog.Builder(context)
+                val dialog = AlertDialog.Builder(context)
                         .setTitle(getString(R.string.first_start_select_config))
                         .setCancelable(false)
                         .setSingleChoiceItems(arrayOf(getString(R.string.conservative), getString(R.string.radicalness), getString(R.string.get_online_config)), 0, { _, which ->
@@ -623,10 +624,13 @@ class FragmentConfig : Fragment() {
                                 return@setNegativeButton
                             }
                             installConfig(i == 1)
-                        }).create().show()
+                        }).create()
+
+                dialog.window!!.setWindowAnimations(R.style.windowAnim)
+                dialog.show()
             }
-            else ->
-                AlertDialog.Builder(context)
+            else -> {
+                val dialog = AlertDialog.Builder(context)
                         .setTitle(getString(R.string.not_support_config))
                         .setMessage(String.format(getString(R.string.not_support_config_desc), CommonCmds.POWER_CFG_PATH))
                         .setPositiveButton(getString(R.string.get_online_config), { _, _ ->
@@ -641,7 +645,9 @@ class FragmentConfig : Fragment() {
                             startActivity(intent)
                         })
                         .create()
-                        .show()
+                dialog.window!!.setWindowAnimations(R.style.windowAnim)
+                dialog.show()
+            }
         }
     }
 
