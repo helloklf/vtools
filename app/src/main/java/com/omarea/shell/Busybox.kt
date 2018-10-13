@@ -71,8 +71,13 @@ class Busybox(private var context: Context) {
                             if (id == taskId) {
                                 val path = getRealFilePath(context!!, downloadManager.getUriForDownloadedFile(taskId))
                                 if (path != null) {
+                                    val privateBusybox = FileWrite.getPrivateFilePath(context, "busybox")
                                     val cmd = StringBuilder("cp '$path' /cache/busybox;\n")
                                     cmd.append("chmod 7777 /cache/busybox;\n")
+                                    cmd.append("mkdir -p '$privateBusybox';\n")
+                                    cmd.append("rm -f '$privateBusybox';\n")
+                                    cmd.append("cp '$path' '$privateBusybox';\n")
+                                    cmd.append("chmod 7777 '$privateBusybox';\n")
                                     cmd.append("/cache/busybox mount -o rw,remount /system\n" +
                                             "/cache/busybox mount -f -o rw,remount /system\n" +
                                             "mount -o rw,remount /system\n" +
@@ -125,14 +130,12 @@ class Busybox(private var context: Context) {
     }
 
     fun forceInstall(next: Runnable? = null) {
+        val privateBusybox = FileWrite.getPrivateFilePath(context, "busybox")
+        if (!(File(privateBusybox).exists() || FileWrite.writePrivateFile(context.assets, "busybox.zip", "busybox", context) == privateBusybox)) {
+            forceInstall2(next)
+            return
+        }
         if (!busyboxInstalled()) {
-            val privateBusybox = FileWrite.getPrivateFilePath(context, "busybox")
-            if (!File(privateBusybox).exists() && FileWrite.writePrivateFile(context.assets, "busybox.zip", "busybox", context) == privateBusybox) {
-
-            } else {
-                forceInstall2(next)
-                return
-            }
             val dialog = AlertDialog.Builder(context)
                     .setTitle(R.string.question_install_busybox)
                     .setMessage(R.string.question_install_busybox_desc)
