@@ -87,7 +87,10 @@ class Update {
                 .setTitle("下载新版本" + jsonObject.getString("versionName") + " ？")
                 .setMessage("更新内容：" + "\n\n" + jsonObject.getString("message") + "\n\n如果下载速度过慢，也可以前往“酷安”自行下载")
                 .setPositiveButton(R.string.btn_confirm) { dialog, which ->
-                    val downloadUrl = "http://vtools.oss-cn-beijing.aliyuncs.com/app-release${jsonObject.getInt("versionCode")}.apk"// "http://47.106.224.127/publish/app-release.apk"
+                    var downloadUrl = "http://vtools.oss-cn-beijing.aliyuncs.com/app-release${jsonObject.getInt("versionCode")}.apk"// "http://47.106.224.127/publish/app-release.apk"
+                    if (jsonObject.has("downloadUrl")) {
+                        downloadUrl = jsonObject.getString("downloadUrl")
+                    }
                     /*
                     try {
                         val intent = Intent()
