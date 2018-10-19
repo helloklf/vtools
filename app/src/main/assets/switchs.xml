@@ -54,7 +54,7 @@
     </switch>
     <switch root="true">
         <title>隐藏错误弹窗</title>
-        <desc>不要显示应用奔溃和未响应的弹窗</desc>
+        <desc>不要显示应用崩溃和未响应的弹窗</desc>
         <getstate>file:///android_asset/custom/switchs/hide_errordialog_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/hide_errordialog_set.sh</setstate>
     </switch>

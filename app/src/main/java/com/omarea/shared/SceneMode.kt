@@ -126,7 +126,11 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
      * 自动清理前一个应用后台
      */
     private fun autoBoosterApp(packageName: String) {
-        if (config!!.disBackgroundRun || getBatteryCapacity() < lowPowerLevel) {
+        if (config == null) {
+            return
+        }
+        val level = getBatteryCapacity()
+        if (config!!.disBackgroundRun || (level > -1 && level < lowPowerLevel)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 dozeApp(packageName)
             } else {
@@ -151,33 +155,34 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
 
 
     private fun getBatteryCapacity(): Int {
-        val batteryInfo = KeepShellPublic.doCmdSync("dumpsys battery")
-        val batteryInfos = batteryInfo.split("\n")
+        try {
+            val batteryInfo = KeepShellPublic.doCmdSync("dumpsys battery")
+            val batteryInfos = batteryInfo.split("\n")
 
-        // 由于部分手机相同名称的参数重复出现，并且值不同，为了避免这种情况，加个额外处理，同名参数只读一次
-        var levelReaded = false
-        var tempReaded = false
-        var statusReaded = false
+            // 由于部分手机相同名称的参数重复出现，并且值不同，为了避免这种情况，加个额外处理，同名参数只读一次
+            var levelReaded = false
+            var batteryCapacity = -1
 
-        var batteryCapacity = -1
-
-        for (item in batteryInfos) {
-            val info = item.trim()
-            val index = info.indexOf(":")
-            if (index > Int.MIN_VALUE && index < info.length) {
-                val value = info.substring(info.indexOf(":") + 1).trim()
-                if (info.startsWith("level")) {
-                    if (!levelReaded) {
-                        try {
-                            batteryCapacity = value.toInt()
-                        } catch (ex: java.lang.Exception) {
-                        }
-                        levelReaded = true
-                    } else continue
+            for (item in batteryInfos) {
+                val info = item.trim()
+                val index = info.indexOf(":")
+                if (index > Int.MIN_VALUE && index < info.length) {
+                    val value = info.substring(info.indexOf(":") + 1).trim()
+                    if (info.startsWith("level")) {
+                        if (!levelReaded) {
+                            try {
+                                batteryCapacity = value.trim().toInt()
+                            } catch (ex: java.lang.Exception) {
+                            }
+                            levelReaded = true
+                        } else continue
+                    }
                 }
             }
+            return batteryCapacity
+        } catch (ex: java.lang.Exception) {
+            return -1
         }
-        return batteryCapacity
     }
 
     private var headsup = -1
