@@ -5,8 +5,10 @@ import android.app.ActivityManager
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
+import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -90,6 +92,15 @@ class FragmentHome : Fragment() {
                     } catch (ex: java.lang.Exception) {}
                 }, 600)
             }).start()
+        }
+        home_help.setOnClickListener {
+            try {
+                val uri = Uri.parse("http://vtools.omarea.com/")
+                val intent = Intent(Intent.ACTION_VIEW, uri)
+                startActivity(intent)
+            } catch (ex: Exception) {
+                Toast.makeText(context!!, "启动在线页面失败！", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

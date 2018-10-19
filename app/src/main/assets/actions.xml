@@ -193,4 +193,29 @@
         <desc>清理优酷和淘宝下载的热更新文件，出现淘宝或优酷闪退的，可以试试</desc>
         <script>file:///android_asset/custom/actions/app_simple.sh</script>
     </action>
+    <action root="true">
+        <title>低电量级别</title>
+        <desc>设置低电量级别，以及触发低电量模式的级别</desc>
+        <params>
+            <param name="level" desc="低电量模式触发级别" value-sh="settings get global low_power_trigger_level">
+                <option value="null">默认</option>
+                <option value="5">5%</option>
+                <option value="10">10%</option>
+                <option value="15">15%</option>
+                <option value="20">20%</option>
+                <option value="25">25%</option>
+                <option value="30">30%</option>
+            </param>
+            <param name="levelmax" desc="低电量模式触发最大级别" value-sh="settings get global low_power_trigger_level_max">
+                <option value="null">默认</option>
+                <option value="5">5%</option>
+                <option value="10">10%</option>
+                <option value="15">15%</option>
+                <option value="20">20%</option>
+                <option value="25">25%</option>
+                <option value="30">30%</option>
+            </param>
+        </params>
+        <script>file:///android_asset/custom/actions/low_power_level_set.sh</script>
+    </action>
 </actions>

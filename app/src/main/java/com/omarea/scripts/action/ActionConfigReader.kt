@@ -30,9 +30,13 @@ object ActionConfigReader {
                 when (type) {
                     XmlPullParser.START_TAG -> if ("actions" == parser.name) {
                         actions = ArrayList()
-                    } else if ("action" == parser.name) {
+                    }
+                    else if ("action" == parser.name) {
                         action = ActionInfo()
                         for (i in 0 until parser.attributeCount) {
+                            if (action == null) {
+                                break
+                            }
                             when (parser.getAttributeName(i)) {
                                 "root" -> {
                                     action.root = parser.getAttributeValue(i) == "true"
@@ -43,9 +47,15 @@ object ActionConfigReader {
                                 "start" -> {
                                     action.start = parser.getAttributeValue(i)
                                 }
+                                "support" -> {
+                                    if (executeResultRoot(context, parser.getAttributeValue(i)) != "1") {
+                                        action = null
+                                    }
+                                }
                             }
                         }
-                    } else if (action != null) {
+                    }
+                    else if (action != null) {
                         if ("title" == parser.name) {
                             action.title = parser.nextText()
                         } else if ("desc" == parser.name) {

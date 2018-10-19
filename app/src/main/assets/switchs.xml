@@ -10,19 +10,25 @@
         <getstate>file:///android_asset/custom/switchs/mainkey_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/mainkey_set.sh</setstate>
     </switch>
-    <switch root="true">
+    <switch root="true" support="file:///android_asset/custom/switchs/miui_support.sh">
         <title>MIUI10 状态栏缺口</title>
         <desc>在MIUI10中开启MI8、8SE刘海屏状态栏中间的缺口，减少图标数量，在MiX2和Mi6上测试可用。重启生效！</desc>
         <getstate>file:///android_asset/custom/switchs/mi8status_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/mi8status_set.sh</setstate>
     </switch>
-    <switch root="true">
+    <switch root="true" support="file:///android_asset/custom/switchs/miui_support.sh">
         <title>MIUI10 屏幕圆角</title>
         <desc>开关全局圆角效果，在MiX2和Mi6上测试可用。重启生效！</desc>
         <getstate>file:///android_asset/custom/switchs/miui_round_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/miui_round_set.sh</setstate>
     </switch>
     <switch root="true">
+        <title>MIUI 在线更新检查</title>
+        <desc>关闭此开关可以屏蔽在线更新检查</desc>
+        <getstate>file:///android_asset/custom/switchs/miui_update_get.sh</getstate>
+        <setstate>file:///android_asset/custom/switchs/miui_update_set.sh</setstate>
+    </switch>
+    <switch root="true" support="file:///android_asset/custom/switchs/miui_support.sh">
         <title>MIUI10 安全键盘</title>
         <desc>在输入密码时使用MIUI的安全键盘，避免密码被输入法作为自定义词语记录。重启生效！</desc>
         <getstate>file:///android_asset/custom/switchs/miui_security_keyboard_get.sh</getstate>
@@ -39,6 +45,18 @@
         <desc>适用于Android 7.0+，同开发者设置中的“强制将Activity设为可调整大小”选项。开启此项，从而对声明支持分屏的应用进行分屏操作！</desc>
         <getstate>file:///android_asset/custom/switchs/force_resize_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/force_resize_set.sh</setstate>
+    </switch>
+    <switch root="true">
+        <title>省电模式</title>
+        <desc>开关安卓系统自带的省电模式（不是第三方UI自带的省电模式）</desc>
+        <getstate>file:///android_asset/custom/switchs/power_save_get.sh</getstate>
+        <setstate>file:///android_asset/custom/switchs/power_save_set.sh</setstate>
+    </switch>
+    <switch root="true">
+        <title>隐藏错误弹窗</title>
+        <desc>不要显示应用奔溃和未响应的弹窗</desc>
+        <getstate>file:///android_asset/custom/switchs/hide_errordialog_get.sh</getstate>
+        <setstate>file:///android_asset/custom/switchs/hide_errordialog_set.sh</setstate>
     </switch>
 
 </switchs>

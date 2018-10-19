@@ -77,7 +77,7 @@ class PerfBoostConfigAddin(private var context: Context) : AddinBase(context) {
 
             super.run()
         } else {
-            Toast.makeText(context, "配置文件perfboostsconfig_msm8998.xml提取失败！", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "配置文件提取失败！", Toast.LENGTH_SHORT).show()
         }
     }
 }

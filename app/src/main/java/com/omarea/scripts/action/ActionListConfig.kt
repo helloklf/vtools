@@ -97,7 +97,7 @@ class ActionListConfig(private val context: FragmentActivity) {
                                     } else {
                                         shellResult = KeepShellPublic.doCmdSync(actionParamInfo.optionsSU)
                                     }
-                                    if (shellResult != "error" && !shellResult.isEmpty()) {
+                                    if (shellResult != "error" && shellResult != "null" && !shellResult.isEmpty()) {
                                         for (item in shellResult.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
                                             if (item.contains("|")) {
                                                 val itemSplit = item.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
