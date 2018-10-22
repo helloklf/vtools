@@ -33,6 +33,10 @@ class SystemScene(private var context: Context) {
             else
                 keepShell.doCmd("settings put secure location_providers_allowed gps,network")
         }
+        val lowPowerMode = spfAutoConfig.getBoolean(SpfConfig.FORCEDOZE + SpfConfig.OFF, false)
+        if (lowPowerMode) {
+            switchLowPowerModeShell(false)
+        }
     }
 
     fun onScreenOff() {
@@ -53,7 +57,8 @@ class SystemScene(private var context: Context) {
             }
         }
 
-        if (spfAutoConfig.getBoolean(SpfConfig.FORCEDOZE + SpfConfig.ON, false)){
+        val lowPowerMode = spfAutoConfig.getBoolean(SpfConfig.FORCEDOZE + SpfConfig.ON, false)
+        if (lowPowerMode || spfAutoConfig.getBoolean(SpfConfig.FORCEDOZE + SpfConfig.ON, false)){
             // 强制Doze: dumpsys deviceidle force-idle
             val applist = AppConfigStore(context).getDozeAppList()
             keepShell.doCmd("dumpsys deviceidle enable\ndumpsys deviceidle enable all\n")
@@ -63,5 +68,22 @@ class SystemScene(private var context: Context) {
             }
             keepShell.doCmd("dumpsys deviceidle step\ndumpsys deviceidle step\ndumpsys deviceidle step\ndumpsys deviceidle step\n")
         }
+        if (lowPowerMode) {
+            switchLowPowerModeShell(true)
+        }
+    }
+
+    private var lowPowerModeShell: String? = ""
+    private fun switchLowPowerModeShell (powersave: Boolean) {
+        if (lowPowerModeShell == null) {
+            return
+        }
+        if (lowPowerModeShell!!.isEmpty()) {
+            lowPowerModeShell = FileWrite.writePrivateShellFile("custom/battery/power_save_set.sh", "power_save_set.sh", context)
+        }
+        if (lowPowerModeShell.isNullOrEmpty()) {
+            return
+        }
+        keepShell.doCmd("sh \"$lowPowerModeShell\" " + if (powersave) "1" else "0")
     }
 }

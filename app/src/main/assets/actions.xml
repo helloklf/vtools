@@ -90,11 +90,6 @@
         </params>
     </action>
     <action root="true">
-        <title>底层服务清理</title>
-        <desc>清理系统底层的一些非必要服务（如：调试服务、日志服务，开发人员请勿使用！！！），从而减少CPU开销（重启后失效）</desc>
-        <script>file:///android_asset/custom/actions/proc_kill.sh</script>
-    </action>
-    <action root="true">
         <title>修改dex2oat线程数</title>
         <desc>增加核心线程数（不超过CPU核心数量）可以提高应用安装效率，但会造成应用安装过程中卡顿！</desc>
         <script>file:///android_asset/custom/actions/dex2oat_threads_set.sh</script>

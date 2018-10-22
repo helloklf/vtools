@@ -9,18 +9,17 @@ import java.nio.charset.Charset
 class ConfigInstaller {
     fun installPowerConfig(context: Context, afterCmds: String, biCore: Boolean = false) {
         try {
-            val powercfg = parseText(context, Platform().getCPUName() + (if (biCore) "/powercfg-bigcore.sh" else "/powercfg-default.sh"))
-            val powercfgBase = parseText(context, Platform().getCPUName() + (if (biCore) "/powercfg-base-bigcore.sh" else "/powercfg-base-default.sh"))
-            FileWrite.writePrivateFile(powercfg, "powercfg.sh", context)
-            FileWrite.writePrivateFile(powercfgBase, "powercfg-base.sh", context)
+            val powercfg = FileWrite.writePrivateShellFile(Platform().getCPUName() + (if (biCore) "/powercfg-bigcore.sh" else "/powercfg-default.sh"), "powercfg.sh", context)
+            val powercfgBase = FileWrite.writePrivateShellFile(Platform().getCPUName() + (if (biCore) "/powercfg-base-bigcore.sh" else "/powercfg-base-default.sh"), "powercfg-base.sh", context)
+
             val cmd = StringBuilder()
-                    .append("cp ${FileWrite.getPrivateFilePath(context, "powercfg.sh")} ${CommonCmds.POWER_CFG_PATH};")
-                    .append("cp ${FileWrite.getPrivateFilePath(context, "powercfg-base.sh")} ${CommonCmds.POWER_CFG_BASE};")
+                    .append("cp ${powercfg} ${CommonCmds.POWER_CFG_PATH};")
+                    .append("cp ${powercfgBase} ${CommonCmds.POWER_CFG_BASE};")
                     .append("chmod 0777 ${CommonCmds.POWER_CFG_PATH};")
                     .append("chmod 0777 ${CommonCmds.POWER_CFG_BASE};")
             //KeepShellPublic.doCmdSync(CommonCmds.InstallPowerToggleConfigToCache + "\n\n" + CommonCmds.ExecuteConfig + "\n" + after)
             KeepShellPublic.doCmdSync(cmd.toString())
-            configCodeVerify(context)
+            configCodeVerify()
             ModeList(context).setCurrentPowercfg("")
             KeepShellPublic.doCmdSync(afterCmds)
         } catch (ex: Exception) {
@@ -37,7 +36,7 @@ class ConfigInstaller {
                     .append("chmod 0777 ${CommonCmds.POWER_CFG_BASE};")
             //KeepShellPublic.doCmdSync(CommonCmds.InstallPowerToggleConfigToCache + "\n\n" + CommonCmds.ExecuteConfig + "\n" + after)
             KeepShellPublic.doCmdSync(cmd.toString())
-            configCodeVerify(context)
+            configCodeVerify()
             ModeList(context).setCurrentPowercfg("")
             return true
         } catch (ex: Exception) {
@@ -46,24 +45,7 @@ class ConfigInstaller {
         }
     }
 
-
-    //Dos转Unix，避免\r\n导致的脚本无法解析
-    private fun parseText(context: Context, fileName: String): ByteArray {
-        try {
-            val assetManager = context.assets
-            val inputStream = assetManager.open(fileName)
-            val datas = ByteArray(2 * 1024 * 1024)
-            //inputStream.available()
-            val len = inputStream.read(datas)
-            val codes = String(datas, 0, len).replace(Regex("\r\n"), "\n").replace(Regex("\r\t"), "\t")
-            return codes.toByteArray(Charsets.UTF_8)
-        } catch (ex: Exception) {
-            Log.e("script-parse", ex.message)
-            return "".toByteArray()
-        }
-    }
-
-    public fun configCodeVerify(context: Context) {
+    fun configCodeVerify() {
         try {
             val cmd = StringBuilder()
             cmd.append("if [[ -f ${CommonCmds.POWER_CFG_PATH} ]]; then \n")

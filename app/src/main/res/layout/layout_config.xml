@@ -110,7 +110,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:padding="5dp"
-                                android:text="打开数据网络" />
+                                android:text="打开3/4G" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -150,6 +150,14 @@
                                 android:layout_weight="1"
                                 android:padding="5dp"
                                 android:text="关闭强制Doze" />
+
+                            <CheckBox
+                                android:id="@+id/auto_switch_powersave_off"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:padding="5dp"
+                                android:text="关闭极致省电" />
                         </LinearLayout>
 
                         <TextView
@@ -177,7 +185,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:padding="5dp"
-                                android:text="关闭数据" />
+                                android:text="关闭3/4G" />
                         </LinearLayout>
 
                         <LinearLayout
@@ -218,13 +226,13 @@
                                 android:padding="5dp"
                                 android:text="打开强制Doze" />
 
-                            <CheckBox android:visibility="gone"
-                                android:id="@+id/auto_switch_hotspot_off"
+                            <CheckBox
+                                android:id="@+id/auto_switch_powersave_on"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:padding="5dp"
-                                android:text="关闭热点" />
+                                android:text="开启极致省电" />
                         </LinearLayout>
 
                         <Switch

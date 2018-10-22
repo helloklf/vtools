@@ -2,6 +2,7 @@ package com.omarea.shared
 
 import android.content.Context
 import android.content.res.AssetManager
+import android.util.Log
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -149,6 +150,30 @@ object FileWrite {
         } catch (e: IOException) {
             e.printStackTrace()
             return false
+        }
+    }
+
+    fun writePrivateShellFile(file: String, outName: String, context: Context): String? {
+        val data = parseText(context, file)
+        if (data.size > 0 && FileWrite.writePrivateFile(data, outName, context)) {
+            return getPrivateFilePath(context, outName)
+        }
+        return null
+    }
+
+    //Dos转Unix，避免\r\n导致的脚本无法解析
+    private fun parseText(context: Context, fileName: String): ByteArray {
+        try {
+            val assetManager = context.assets
+            val inputStream = assetManager.open(fileName)
+            val datas = ByteArray(2 * 1024 * 1024)
+            //inputStream.available()
+            val len = inputStream.read(datas)
+            val codes = String(datas, 0, len).replace(Regex("\r\n"), "\n").replace(Regex("\r\t"), "\t")
+            return codes.toByteArray(Charsets.UTF_8)
+        } catch (ex: Exception) {
+            Log.e("script-parse", ex.message)
+            return "".toByteArray()
         }
     }
 }

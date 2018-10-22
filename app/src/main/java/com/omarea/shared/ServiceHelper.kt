@@ -351,7 +351,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
                 }
             } else {
                 dyamicCore = true
-                ConfigInstaller().configCodeVerify(context)
+                ConfigInstaller().configCodeVerify()
                 keepShellAsync2.doCmd(CommonCmds.ExecuteConfig)
             }
             spfGlobal.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, "").commit()

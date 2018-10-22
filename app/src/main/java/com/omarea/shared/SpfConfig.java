@@ -22,6 +22,7 @@ public class SpfConfig {
     public static String GPS = "gps";
     public static String HOTSPOT = "hotspot";
     public static String FORCEDOZE = "doze";
+    public static String POWERSAVE = "powersave";
 
     public static String ON = "_on";
     public static String OFF = "_off";

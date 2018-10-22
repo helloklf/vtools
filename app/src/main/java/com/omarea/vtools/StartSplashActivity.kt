@@ -4,7 +4,6 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -84,7 +83,7 @@ class StartSplashActivity : Activity() {
         private var context:WeakReference<Context>;
         override fun run() {
             super.run()
-            ConfigInstaller().configCodeVerify(context.get()!!)
+            ConfigInstaller().configCodeVerify()
         }
         init {
             this.context = WeakReference(context)
