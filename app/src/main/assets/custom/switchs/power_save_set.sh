@@ -71,42 +71,36 @@ then
     do
         app=`echo "$item" | cut -f2 -d ','`
         #echo "deviceidle whitelist -$app"
-        dumpsys deviceidle whitelist -$app
-        am set-inactive $app true 2> /dev/null
+        r=`dumpsys deviceidle whitelist -$app | grep Removed`
+        if [[ -n "$r" ]]
+        then
+            am set-inactive $app true 2> /dev/null
+        fi
     done
     dumpsys deviceidle step
     dumpsys deviceidle step
     dumpsys deviceidle step
     dumpsys deviceidle step
 
-    #echo '关闭GPS定位'
-    # Android M or M+
-    #settings put secure location_providers_allowed -gps
-
-    # Android M-
-    #settings put secure location_providers_allowed network
-
-    level=`settings get global low_power_trigger_level`
-    maxlevel=`settings get global low_power_trigger_level_max`
-    if [[ "$level" = "null" ]]
-    then
-        echo ''
-        #echo '进入省电模式的电流级别当前设为null，将不会自动进入省电模式'
-    fi
-
     echo '注意：开启省电模式后，Scene可能会无法保持后台'
     echo '并且，可能会收不到后台消息推送！'
     echo ''
 else
+    echo "关闭应用自动限制 可能需要Android Pie"
+    settings put global app_auto_restriction_enabled false
+
     echo "关闭应用强制standby"
-    settings put global forced_app_standby_enabled null
+    settings put global forced_app_standby_enabled 0
+
+    echo "开启应用standby"
+    settings put global app_standby_enabled 1
 
     echo "关闭小容量电池设备应用强制standby"
-    settings put global forced_app_standby_for_small_battery_enabled null
+    settings put global forced_app_standby_for_small_battery_enabled 0
 
     echo "关闭安卓原生的省电模式"
-    settings put global low_power_sticky null
-    settings put global low_power null
+    settings put global low_power 0
+    settings put global low_power_sticky 0
 fi
 
 echo '状态已切换，部分深度定制的系统此操作可能无效！'

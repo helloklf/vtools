@@ -150,8 +150,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         lastScreenOnOff = System.currentTimeMillis()
 
         screenHandler.postDelayed({
-            if (!screenOn)
-                onScreenOffCloseNetwork()
+            onScreenOffCloseNetwork()
         }, SCREEN_OFF_SWITCH_NETWORK_DELAY)
         // TODO: 关闭屏幕后清理后台
         screenHandler.postDelayed({
@@ -164,14 +163,16 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
      * 屏幕关闭后 - 关闭网络
      */
     private fun onScreenOffCloseNetwork() {
-        if (dyamicCore && !screenOn) {
-            if (lockMode) {
-                updateModeNofity()
-                toggleConfig(POWERSAVE)
+        if (!screenOn) {
+            if (dyamicCore && !screenOn) {
+                if (lockMode) {
+                    updateModeNofity()
+                    toggleConfig(POWERSAVE)
+                }
             }
-        }
-        if (System.currentTimeMillis() - lastScreenOnOff >= SCREEN_OFF_SWITCH_NETWORK_DELAY && !screenOn) {
-            systemScene.onScreenOff()
+            if (System.currentTimeMillis() - lastScreenOnOff >= SCREEN_OFF_SWITCH_NETWORK_DELAY) {
+                systemScene.onScreenOff()
+            }
         }
     }
 
@@ -274,12 +275,8 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
      * 焦点应用改变
      */
     fun onFocusAppChanged(packageName: String) {
-        if (!screenOn) {
-            this.screenOn = !isScreenLocked()
-            if (this.screenOn) {
-                systemScene.onScreenOn()
-                startTimer()
-            }
+        if (!screenOn && !isScreenLocked()) {
+            onScreenOn()
         }
 
         if (lastPackage == packageName || ignoredList.contains(packageName)) return

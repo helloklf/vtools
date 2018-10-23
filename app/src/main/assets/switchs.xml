@@ -10,6 +10,12 @@
         <getstate>file:///android_asset/custom/switchs/mainkey_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/mainkey_set.sh</setstate>
     </switch>
+    <switch root="true">
+        <title>远程ADB调试</title>
+        <desc>开启设备的网络调试端口，方便开发人员免数据线连接电脑，千万不要在公共WIFI网络环境下开启本选项！</desc>
+        <getstate>file:///android_asset/custom/switchs/adb_remote_get.sh</getstate>
+        <setstate>file:///android_asset/custom/switchs/adb_remote_set.sh</setstate>
+    </switch>
     <switch root="true" support="file:///android_asset/custom/switchs/gapps_support.sh">
         <title>启用Google服务</title>
         <desc>关闭此选项以临时禁用谷歌框架节省电量</desc>

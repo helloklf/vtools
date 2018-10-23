@@ -95,9 +95,24 @@
         <script>df -h</script>
     </action>
     <action root="true">
+        <title>清空电池使用记录</title>
+        <desc>清空应用耗电记录和电池曲线数据，并不是还原电池寿命！</desc>
+        <script>file:///android_asset/custom/actions/battery_history_clear.sh</script>
+    </action>
+    <action root="true">
+        <title>去除！和×</title>
+        <desc>通过修改网络检测服务器为国内地址，修复状态栏的WIFI、LTE图标一直显示！或×</desc>
+        <params>
+            <param desc="操作类型">
+                <option value="1">去除！和×</option>
+                <option value="0">还原</option>
+            </param>
+        </params>
+        <script>file:///android_asset/custom/actions/network_checker_set.sh</script>
+    </action>
+    <action root="true">
         <title>优化编译系统应用</title>
-        <desc>适用于Android N+，与“强制odex2oat”的speed模式相同，但只编译系统应用。建议官改系统（或者进行过deodex的）刷完开机后进行此操作，从而提高整体流畅度！
-        </desc>
+        <desc>适用于Android N+，与“强制odex2oat”的speed模式相同，但只编译系统应用。建议官改系统（或者进行过deodex的）刷完开机后进行此操作，从而提高整体流畅度！</desc>
         <script>file:///android_asset/custom/actions/sys_compile.sh</script>
     </action>
     <action root="true">

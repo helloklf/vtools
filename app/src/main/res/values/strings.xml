@@ -176,8 +176,6 @@
     <string name="addin_flyme_static_blur_desc">禁用Flyme6下拉通知中心的实时模糊效果，以减少魅族低端机在游戏或视频播放时下拉通知中心的卡顿，或许还能省电，需要重启。</string>
     <string name="addin_miui_hide_search">MIUI9去通知中心搜索</string>
     <string name="addin_miui_hide_search_desc">默认隐藏MIUI9系统下拉通知中心的搜索框，重启后生效</string>
-    <string name="addin_disable_x">修复 ! 和 ×</string>
-    <string name="addin_disable_x_desc">将网络可用性检测地址设为国内服务器，从而去除类原生系统状态栏上WIFI、4G图标的!和x，可能导致一些公共网络无法使用！！！</string>
     <string name="addin_qq_clear">QQ净化</string>
     <string name="addin_qq_clear_desc">干掉/恢复QQ个性气泡、字体、头像挂件，会重启QQ</string>
     <string name="addin_dpi">DPI、分辨率修改</string>
@@ -196,12 +194,8 @@
     <string name="addin_thermal_remove2_desc">适用于部分手机，全局使用“无限制”模式，理论上没有副作用，比直接删除温控可靠，需要重启手机。</string>
     <string name="addin_del_pwd">删除锁屏密码</string>
     <string name="addin_del_pwd_desc">如果你的设备处于加密状态（大部分设备默认都是），请不要点这个！！！</string>
-    <string name="addin_adb_network">开启网络ADB</string>
     <string name="addin_wifi">查看保存的WIFI</string>
     <string name="addin_wifi_desc">查看已保存的WIFI信息，通过读取/data/misc/wifi/wpa_supplicant.conf 或 /data/misc/wifi/WifiConfigStore.xml（Android Oreo+）</string>
-    <string name="addin_battery_history_del">删除电池使用记录</string>
-    <string name="addin_battery_history_del_desc">通过删除/data/system/batterystats-checkin.bin、/data/system/batterystats-daily.xml、/data/system/batterystats.bin 来清空系统的电池使用记录，会重启手机！</string>
-    <string name="addin_adb_network_desc">开启网络adb前，请先连接wifi。开启后通过同一局域网下的电脑，使用adb connect %s:5555 命令连接</string>
     <string name="addin_bpc">Performance Boost Config精简</string>
     <string name="addin_bpc_desc">关闭Performance Boost Config中的一些选项，避免CPU频繁被拉高频率造成耗电，但保留应用启动升频，会略微降低体验。需要重启！</string>
     <string name="addin_execute">确定执行？</string>
