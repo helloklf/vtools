@@ -2,6 +2,8 @@ package com.omarea.scripts;
 
 import android.content.Context;
 
+import com.omarea.shared.FileWrite;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -23,25 +25,6 @@ public class ExtractAssets {
         if (fileName.startsWith("file:///android_asset/")) {
             fileName = fileName.substring("file:///android_asset/".length());
         }
-        try {
-            InputStream inputStream = context.getAssets().open(fileName);
-            String filePath = context.getFilesDir().getAbsolutePath() + "/" + fileName;
-            File dir = new File(filePath).getParentFile();
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
-            FileOutputStream fileOutputStream = new FileOutputStream(filePath);
-            byte[] cache = new byte[1024 * 1024];
-            int length;
-            while ((length = inputStream.read(cache)) > 0) {
-                fileOutputStream.write(new String(cache, 0, length).replaceAll("\r\n", "\n").replaceAll("\r\t", "\t").getBytes(Charsets.UTF_8));
-            }
-            fileOutputStream.flush();
-            fileOutputStream.close();
-            inputStream.close();
-            return filePath;
-        } catch (Exception ex) {
-            return null;
-        }
+        return FileWrite.INSTANCE.writePrivateShellFile(fileName, fileName, context);
     }
 }

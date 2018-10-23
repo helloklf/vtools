@@ -10,6 +10,12 @@
         <getstate>file:///android_asset/custom/switchs/mainkey_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/mainkey_set.sh</setstate>
     </switch>
+    <switch root="true" support="file:///android_asset/custom/switchs/gapps_support.sh">
+        <title>启用Google服务</title>
+        <desc>关闭此选项以临时禁用谷歌框架节省电量</desc>
+        <getstate>file:///android_asset/custom/switchs/gapps_get.sh</getstate>
+        <setstate>file:///android_asset/custom/switchs/gapps_set.sh</setstate>
+    </switch>
     <switch root="true" support="file:///android_asset/custom/switchs/miui_support.sh">
         <title>MIUI10 状态栏缺口</title>
         <desc>在MIUI10中开启MI8、8SE刘海屏状态栏中间的缺口，减少图标数量，在MiX2和Mi6上测试可用。重启生效！</desc>
@@ -40,7 +46,7 @@
         <getstate>file:///android_asset/custom/switchs/cloudmusic_ad_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/cloudmusic_ad_set.sh</setstate>
     </switch>
-    <switch root="true">
+    <switch root="true" support="file:///android_asset/custom/switchs/android_n.sh">
         <title>强制将Activity设为可调整大小</title>
         <desc>适用于Android 7.0+，同开发者设置中的“强制将Activity设为可调整大小”选项。开启此项，从而对声明支持分屏的应用进行分屏操作！</desc>
         <getstate>file:///android_asset/custom/switchs/force_resize_get.sh</getstate>

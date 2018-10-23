@@ -178,8 +178,6 @@
     <string name="addin_miui_hide_search_desc">默认隐藏MIUI9系统下拉通知中心的搜索框，重启后生效</string>
     <string name="addin_disable_x">修复 ! 和 ×</string>
     <string name="addin_disable_x_desc">将网络可用性检测地址设为国内服务器，从而去除类原生系统状态栏上WIFI、4G图标的!和x，可能导致一些公共网络无法使用！！！</string>
-    <string name="addin_disable_google">冻结/解冻 Google套件</string>
-    <string name="addin_disable_google_desc">冻结谷歌服务基础4件套，可以减少待机耗电</string>
     <string name="addin_qq_clear">QQ净化</string>
     <string name="addin_qq_clear_desc">干掉/恢复QQ个性气泡、字体、头像挂件，会重启QQ</string>
     <string name="addin_dpi">DPI、分辨率修改</string>

@@ -156,7 +156,7 @@ class FragmentHome : Fragment() {
                 datafree.text = "Data：" + sdFree + " MB"
             }
             val sdSize = Files.getDirFreeSizeMB(Environment.getExternalStorageDirectory().absolutePath)
-            if (sdSize > 8292) {
+            if (sdSize > 8192) {
                 sdfree.text = "SDCard：" + sdSize / 1024 + " GB"
             } else {
                 sdfree.text = "SDCard：" + sdSize + " MB"

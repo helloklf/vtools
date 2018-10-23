@@ -99,11 +99,14 @@ then
     echo ''
 else
     echo "关闭应用强制standby"
-    settings put global forced_app_standby_enabled 0
+    settings put global forced_app_standby_enabled null
+
+    echo "关闭小容量电池设备应用强制standby"
+    settings put global forced_app_standby_for_small_battery_enabled null
 
     echo "关闭安卓原生的省电模式"
-    settings put global low_power 0
-    settings put global low_power_sticky 0
+    settings put global low_power_sticky null
+    settings put global low_power null
 fi
 
 echo '状态已切换，部分深度定制的系统此操作可能无效！'
