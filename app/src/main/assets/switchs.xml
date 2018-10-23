@@ -5,10 +5,34 @@
         [confirm]=[true/false]执行脚本前是否需要确认
     -->
     <switch root="true">
+        <title>QQ个性化样式</title>
+        <desc>禁用此选项将去除QQ的个性化字体、气泡、头像挂件</desc>
+        <getstate>file:///android_asset/custom/switchs/qq_style_get.sh</getstate>
+        <setstate>file:///android_asset/custom/switchs/qq_style_set.sh</setstate>
+    </switch>
+    <switch root="true">
         <title>开启虚拟键</title>
         <desc>标识当前设备没有实体按键，MIUI系统可以通过本功能启用全面屏手势，其它系统可以启用虚拟键。重启生效！</desc>
         <getstate>file:///android_asset/custom/switchs/mainkey_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/mainkey_set.sh</setstate>
+    </switch>
+    <switch root="true">
+        <title>Camera2 HAL3</title>
+        <desc>启用HAL3，从而支持谷歌相机HDR+功能或避免闪退（谷歌相机需要自行下载适合自己机型的版本）。可能导致相机无法开启或切换缓慢</desc>
+        <getstate>file:///android_asset/custom/switchs/gcm_get.sh</getstate>
+        <setstate>file:///android_asset/custom/switchs/gcm_set.sh</setstate>
+    </switch>
+    <switch root="true" support="file:///android_asset/custom/switchs/msm_booster_support.sh">
+        <title>Performance Boost Config</title>
+        <desc>系统根据你启动应用或切换界面的操作，短时间内将CPU频率提高到最佳值（并且不受频率自定义频率限制），提高流畅度增加耗电</desc>
+        <getstate>file:///android_asset/custom/switchs/msm_booster_get.sh</getstate>
+        <setstate>file:///android_asset/custom/switchs/msm_booster_set.sh</setstate>
+    </switch>
+    <switch root="true" support="file:///android_asset/custom/switchs/msm_perfd_support.sh">
+        <title>Perfd</title>
+        <desc>系统根据你启动应用或切换界面的操作，短时间内将CPU频率提高到最佳值（并且不受频率自定义频率限制），提高流畅度增加耗电</desc>
+        <getstate>file:///android_asset/custom/switchs/msm_perfd_get.sh</getstate>
+        <setstate>file:///android_asset/custom/switchs/msm_perfd_set.sh</setstate>
     </switch>
     <switch root="true">
         <title>远程ADB调试</title>
@@ -48,7 +72,7 @@
     </switch>
     <switch root="true">
         <title>网易云首屏广告</title>
-        <desc>如果禁用，则会通过修改Ad缓存文件夹写入权限，达到禁用广告的目的（也许会增加流量消耗？）</desc>
+        <desc>如果禁用，则会通过修改Ad缓存文件夹写入权限，达到禁用广告的目的</desc>
         <getstate>file:///android_asset/custom/switchs/cloudmusic_ad_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/cloudmusic_ad_set.sh</setstate>
     </switch>
@@ -70,5 +94,4 @@
         <getstate>file:///android_asset/custom/switchs/hide_errordialog_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/hide_errordialog_set.sh</setstate>
     </switch>
-
 </switchs>

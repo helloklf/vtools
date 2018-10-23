@@ -63,7 +63,12 @@ public class SimpleShellExecutor {
         envp.add("ANDROID_UID=" + dir.getParentFile().getParentFile().getName());
         envp.add("ANDROID_SDK=" + Build.VERSION.SDK_INT);
         envp.add("SDCARD_PATH=" + Environment.getExternalStorageDirectory().getAbsolutePath());
-        envp.add("BUSYBOX=" + FileWrite.INSTANCE.getPrivateFilePath(context, "busybox"));
+        String busyboxPath = FileWrite.INSTANCE.getPrivateFilePath(context, "busybox");
+        if (new File(FileWrite.INSTANCE.getPrivateFilePath(context, "busybox")).exists()) {
+            envp.add("BUSYBOX=" + busyboxPath);
+        } else {
+            envp.add("BUSYBOX=busybox");
+        }
 
         try {
             if (root) {

@@ -13,22 +13,6 @@
             </param>
         </params>
     </action>
-    <action root="true">
-        <title>HAL3【启用\禁用】</title>
-        <desc su="file:///android_asset/custom/actions/gcm_get.sh" />
-        <script>
-            setprop persist.camera.HAL3.enabled $gcm;
-            echo '已修改，可能需要重启才能生效！';
-            result=`getprop persist.camera.HAL3.enabled`
-            echo "persist.camera.HAL3.enabled=${result}"
-        </script>
-        <params>
-            <param name="gcm">
-                <option value="1">启用Camera2 API</option>
-                <option value="0">禁用Camera2 API</option>
-            </param>
-        </params>
-    </action>
     <!--<action root="false">
         <title>环境变量</title>
         <desc>了解Scene提供的环境变量</desc>
@@ -43,28 +27,6 @@
             <param name="action" value="12123123" />
         </params>
     </action>-->
-    <action root="true" support="file:///android_asset/custom/actions/msm_booster_support.sh">
-        <title>Performance Boost Config【启用\禁用】</title>
-        <desc su="file:///android_asset/custom/actions/msm_booster_get.sh" />
-        <script>file:///android_asset/custom/actions/msm_booster_set.sh</script>
-        <params>
-            <param name="config">
-                <option value="1">启用</option>
-                <option value="0">禁用</option>
-            </param>
-        </params>
-    </action>
-    <action root="true" support="file:///android_asset/custom/actions/msm_perfd_support.sh">
-        <title>perfd【启用\禁用】</title>
-        <desc su="file:///android_asset/custom/actions/msm_perfd_get.sh" />
-        <script>file:///android_asset/custom/actions/msm_perfd_set.sh</script>
-        <params>
-            <param name="config">
-                <option value="1">启用</option>
-                <option value="0">禁用</option>
-            </param>
-        </params>
-    </action>
     <action root="true">
         <title>修改dex2oat线程数</title>
         <desc>增加核心线程数（不超过CPU核心数量）可以提高应用安装效率，但会造成应用安装过程中卡顿！</desc>

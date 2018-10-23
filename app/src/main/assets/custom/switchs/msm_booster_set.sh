@@ -1,4 +1,5 @@
 #!/system/bin/sh
+config=$1
 
 path=/system/vendor/etc/perf/perfboostsconfig.xml
 if [[ ! -f $path ]]; then

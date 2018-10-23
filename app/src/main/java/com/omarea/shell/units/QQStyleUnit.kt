@@ -12,7 +12,6 @@ import java.util.*
  */
 
 class QQStyleUnit(var context: Context) {
-
     fun showOption() {
         val arr = arrayOf("禁用个性化样式", "恢复个性化样式")
         var index = 0
