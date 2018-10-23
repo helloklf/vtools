@@ -89,6 +89,10 @@ public class SwitchAdapter implements ListAdapter {
                 convertView.setTag(viewHolder);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
+                viewHolder.itemSwitch.setText((item.title));
+                viewHolder.itemText.setText(item.desc);
+                viewHolder.itemSwitch.setChecked(item.selected);
+                viewHolder.itemSwitch.setTag(item);
             }
         } catch (Exception ignored) {
 

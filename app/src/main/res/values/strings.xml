@@ -176,8 +176,6 @@
     <string name="addin_flyme_static_blur_desc">禁用Flyme6下拉通知中心的实时模糊效果，以减少魅族低端机在游戏或视频播放时下拉通知中心的卡顿，或许还能省电，需要重启。</string>
     <string name="addin_miui_hide_search">MIUI9去通知中心搜索</string>
     <string name="addin_miui_hide_search_desc">默认隐藏MIUI9系统下拉通知中心的搜索框，重启后生效</string>
-    <string name="addin_qq_clear">QQ净化</string>
-    <string name="addin_qq_clear_desc">干掉/恢复QQ个性气泡、字体、头像挂件，会重启QQ</string>
     <string name="addin_dpi">DPI、分辨率修改</string>
     <string name="addin_dpi_desc">自定义手机DPI或分辨率，这可能导致设备无法正常启动或UI错误</string>
     <string name="addin_deviceinfo">机型修改</string>
