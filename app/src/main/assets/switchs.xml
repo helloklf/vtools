@@ -5,12 +5,6 @@
         [confirm]=[true/false]执行脚本前是否需要确认
     -->
     <switch root="true">
-        <title>QQ个性化样式</title>
-        <desc>禁用此选项将去除QQ的个性化字体、气泡、头像挂件</desc>
-        <getstate>file:///android_asset/custom/switchs/qq_style_get.sh</getstate>
-        <setstate>file:///android_asset/custom/switchs/qq_style_set.sh</setstate>
-    </switch>
-    <switch root="true">
         <title>开启虚拟键</title>
         <desc>标识当前设备没有实体按键，MIUI系统可以通过本功能启用全面屏手势，其它系统可以启用虚拟键。重启生效！</desc>
         <getstate>file:///android_asset/custom/switchs/mainkey_get.sh</getstate>
@@ -33,12 +27,6 @@
         <desc>系统根据你启动应用或切换界面的操作，短时间内将CPU频率提高到最佳值（并且不受频率自定义频率限制），提高流畅度增加耗电</desc>
         <getstate>file:///android_asset/custom/switchs/msm_perfd_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/msm_perfd_set.sh</setstate>
-    </switch>
-    <switch root="true">
-        <title>远程ADB调试</title>
-        <desc>开启设备的网络调试端口，方便开发人员免数据线连接电脑，千万不要在公共WIFI网络环境下开启本选项！</desc>
-        <getstate>file:///android_asset/custom/switchs/adb_remote_get.sh</getstate>
-        <setstate>file:///android_asset/custom/switchs/adb_remote_set.sh</setstate>
     </switch>
     <switch root="true" support="file:///android_asset/custom/switchs/gapps_support.sh">
         <title>启用Google服务</title>
@@ -76,6 +64,12 @@
         <getstate>file:///android_asset/custom/switchs/cloudmusic_ad_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/cloudmusic_ad_set.sh</setstate>
     </switch>
+    <switch root="true">
+        <title>QQ个性化样式</title>
+        <desc>禁用此选项将去除QQ的个性化字体、气泡、头像挂件</desc>
+        <getstate>file:///android_asset/custom/switchs/qq_style_get.sh</getstate>
+        <setstate>file:///android_asset/custom/switchs/qq_style_set.sh</setstate>
+    </switch>
     <switch root="true" support="file:///android_asset/custom/switchs/android_n.sh">
         <title>强制将Activity设为可调整大小</title>
         <desc>适用于Android 7.0+，同开发者设置中的“强制将Activity设为可调整大小”选项。开启此项，从而对声明支持分屏的应用进行分屏操作！</desc>
@@ -93,5 +87,11 @@
         <desc>不要显示应用崩溃和未响应的弹窗</desc>
         <getstate>file:///android_asset/custom/switchs/hide_errordialog_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/hide_errordialog_set.sh</setstate>
+    </switch>
+    <switch root="true">
+        <title>远程ADB调试</title>
+        <desc>开启设备的网络调试端口，方便开发人员免数据线连接电脑，千万不要在公共WIFI网络环境下开启本选项！</desc>
+        <getstate>file:///android_asset/custom/switchs/adb_remote_get.sh</getstate>
+        <setstate>file:///android_asset/custom/switchs/adb_remote_set.sh</setstate>
     </switch>
 </switchs>

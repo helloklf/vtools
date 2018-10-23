@@ -148,7 +148,7 @@ class FloatVitualTouchBar// 获取应用的Context
             val FLIP_DISTANCE = 120
             override fun onLongPress(e: MotionEvent?) {
                 if (e != null) {
-                    if (e.getX() < bar.width * 0.33) {
+                    if (e.getX() < bar.width * 0.3) {
 
                     } else if (e.getX() > bar.width * 0.77) {
                     } else {
@@ -179,7 +179,7 @@ class FloatVitualTouchBar// 获取应用的Context
                     if (vibratorOn) {
                         vibrator.run()
                     }
-                    if (e.getX() < bar.width * 0.33) {
+                    if (e.getX() < bar.width * 0.3) {
                         if (!reversalLayout) {
                             if (isLandscapf && (lastEventTime + 1000 < System.currentTimeMillis() || lastEvent != AccessibilityService.GLOBAL_ACTION_BACK)) {
                                 lastEvent = AccessibilityService.GLOBAL_ACTION_BACK
@@ -216,7 +216,13 @@ class FloatVitualTouchBar// 获取应用的Context
                             }
                         }
                     } else {
-                        context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
+                        if (isLandscapf && (lastEventTime + 1000 < System.currentTimeMillis() || lastEvent != AccessibilityService.GLOBAL_ACTION_HOME)) {
+                            lastEvent = AccessibilityService.GLOBAL_ACTION_HOME
+                            lastEventTime = System.currentTimeMillis()
+                            Toast.makeText(context, "请重复手势~", Toast.LENGTH_SHORT).show()
+                        } else {
+                            context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
+                        }
                     }
                 }
                 return false
@@ -276,10 +282,31 @@ class FloatVitualTouchBar// 获取应用的Context
                     }
                     return true;
                 } else if (e1.getY() - e2.getY() > 5) {
+                    val bw = bar.width
                     if (vibratorOn) {
                         vibrator.run()
                     }
-                    context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
+                    var event = AccessibilityService.GLOBAL_ACTION_HOME
+                    if (e1.getX() < bw * 0.3 && e1.getX() < bw * 0.3) {
+                        if (reversalLayout) {
+                            event = AccessibilityService.GLOBAL_ACTION_RECENTS
+                        } else {
+                            event = AccessibilityService.GLOBAL_ACTION_BACK
+                        }
+                    } else if (e1.getX() > bw * 0.7 && e1.getX() > bw * 0.7) {
+                        if (reversalLayout) {
+                            event = AccessibilityService.GLOBAL_ACTION_BACK
+                        } else {
+                            event = AccessibilityService.GLOBAL_ACTION_RECENTS
+                        }
+                    }
+                    if (isLandscapf && (lastEventTime + 1000 < System.currentTimeMillis() || lastEvent != event)) {
+                        lastEvent = event
+                        lastEventTime = System.currentTimeMillis()
+                        Toast.makeText(context, "请重复手势~", Toast.LENGTH_SHORT).show()
+                    } else {
+                        context.performGlobalAction(event)
+                    }
                     return true;
                 }
                 return false;

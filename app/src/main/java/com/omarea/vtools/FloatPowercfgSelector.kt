@@ -221,7 +221,7 @@ class FloatPowercfgSelector {
                 modeList.setCurrent(selectedMode, packageName)
             }
             spfPowercfg.edit().putString(packageName, selectedMode).commit()
-            it.postDelayed(Runnable {
+            it.postDelayed({
                 NotifyHelper(context, true).notify()
                 reStartService(packageName, selectedMode)
             }, 1000)
