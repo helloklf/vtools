@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <LinearLayout
-                android:background="@color/colorAccent"
+                android:background="#8888"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
@@ -37,7 +37,9 @@
                         android:layout_marginLeft="@dimen/text_margin"
                         android:layout_marginTop="@dimen/text_margin" />
 
-                    <SearchView
+                    <SearchView style="@style/SeachViewActivityTheme"
+                        android:queryHint="AppName or PackageName"
+                        android:id="@+id/desktop_search"
                         android:layout_marginLeft="8dp"
                         android:layout_marginRight="@dimen/text_margin"
                         android:background="@android:color/transparent"

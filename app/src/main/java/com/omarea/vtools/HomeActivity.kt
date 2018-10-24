@@ -13,6 +13,7 @@ import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
+import android.support.v7.widget.SearchView
 import com.omarea.ui.DesktopAppsAdapter
 import kotlinx.android.synthetic.main.activity_home.*
 import java.text.SimpleDateFormat
@@ -38,7 +39,7 @@ class HomeActivity : Activity() {
         }
         //getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER)
         loadApps()
-        val adapter = DesktopAppsAdapter(apps!!, this)
+        val adapter = DesktopAppsAdapter(apps!!, this, desktop_search.query.toString())
         desktop_apps.setAdapter(adapter)
         desktop_apps.setNestedScrollingEnabled(true)
         desktop_apps.setOnItemClickListener { parent, view, position, id ->
@@ -51,6 +52,18 @@ class HomeActivity : Activity() {
             startActivity(intent)
             //overridePendingTransition()
         }
+        desktop_search.setOnQueryTextListener(object : SearchView.OnQueryTextListener, android.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextChange(p0: String?): Boolean {
+                try {
+                    (desktop_apps.adapter as DesktopAppsAdapter).setKeywords(p0!!)
+                } catch (ex: java.lang.Exception) {}
+                return true
+            }
+
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                return true
+            }
+        })
     }
 
     private var timer: Timer? = null

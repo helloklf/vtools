@@ -3,9 +3,13 @@ package com.omarea.ui;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.v4.util.LruCache;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,21 +17,25 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.omarea.vtools.R;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DesktopAppsAdapter extends BaseAdapter {
     private List<ResolveInfo> apps;
+    private List<ResolveInfo> allApps;
     private Context mContent;
     private PackageManager packageManager;
     private LruCache<String, Drawable> iconsCache = new LruCache<>(200);
     private Handler handler = new Handler();
+    private String keywords = "";
 
-    public DesktopAppsAdapter(List<ResolveInfo> apps, Context mContent) {
-        this.apps = apps;
+    public DesktopAppsAdapter(List<ResolveInfo> apps, Context mContent, String keywords) {
+        this.allApps = apps;
+        this.keywords = keywords.toLowerCase();
         this.mContent = mContent;
         this.packageManager = mContent.getPackageManager();
+        serchApp();
     }
 
     @Override
@@ -46,30 +54,73 @@ public class DesktopAppsAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(int i, View convertView, ViewGroup viewGroup) {
         ResolveInfo info = apps.get(i);
 
-        View convertView = LayoutInflater.from(mContent).inflate(R.layout.desktop_app_item, null);
-        ImageView image = convertView.findViewById(R.id.image);
-        TextView text = convertView.findViewById(R.id.text);
-        text.setText(info.loadLabel(mContent.getPackageManager()));
+        if (convertView == null) {
+            convertView = LayoutInflater.from(mContent).inflate(R.layout.desktop_app_item, null);
+            //使用dp进行参数设置。进行分辨率适配。
+            convertView.setLayoutParams(new GridView.LayoutParams
+            (
+                (int) mContent.getResources().getDimension(R.dimen.app_width),
+                (int) mContent.getResources().getDimension(R.dimen.app_height))
+            );
+        }
+        ViewHolder viewHolder = (ViewHolder) convertView.getTag();
+        if (convertView.getTag() == null) {
+            viewHolder = new ViewHolder();
+            viewHolder.image = convertView.findViewById(R.id.image);
+            viewHolder.text = convertView.findViewById(R.id.text);
+        }
+
+        viewHolder.text.setText(keywordHightLight(info.loadLabel(mContent.getPackageManager()).toString()));
         String packageName = info.activityInfo.packageName;
         final Drawable drawable = iconsCache.get(packageName);
         if (drawable != null) {
-            image.setImageDrawable(drawable);
+            viewHolder.image.setImageDrawable(drawable);
         } else {
-            new LoadIconThread(image, info).start();
+            new LoadIconThread(viewHolder.image, info).start();
         }
-        // image.setImageDrawable(info.activityInfo.loadIcon(mContent.getPackageManager()));
-        // convertView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        convertView.setTag(viewHolder);
 
-        //使用dp进行参数设置。进行分辨率适配。
-        convertView.setLayoutParams(new GridView.LayoutParams
-        (
-            (int) mContent.getResources().getDimension(R.dimen.app_width),
-            (int) mContent.getResources().getDimension(R.dimen.app_height))
-        );
         return convertView;
+    }
+
+    public void setKeywords (String keywords) {
+        if (keywords == null) {
+            keywords = "";
+        }
+        this.keywords = keywords.toLowerCase();
+        serchApp();
+        notifyDataSetChanged();
+    }
+
+    private void serchApp () {
+        List<ResolveInfo> apps = new ArrayList<>();
+        for (int i=0; i< allApps.size(); i++) {
+            if (keywordSearch(allApps.get(i))) {
+                apps.add(allApps.get(i));
+            }
+        }
+        this.apps = apps;
+    }
+
+    private Boolean keywordSearch(ResolveInfo item) {
+        return item.activityInfo.packageName.toLowerCase().contains(keywords) || item.activityInfo.loadLabel(packageManager).toString().toLowerCase().contains(keywords);
+    }
+
+    private SpannableString keywordHightLight(String str) {
+        SpannableString spannableString = new SpannableString(str);
+        int index = 0;
+        if (keywords.isEmpty()) {
+            return spannableString;
+        }
+        index = str.toLowerCase().indexOf(keywords.toLowerCase());
+        if (index < 0)
+            return spannableString;
+
+        spannableString.setSpan(new ForegroundColorSpan(Color.parseColor("#0094ff")), index, index + keywords.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannableString;
     }
 
     class LoadIconThread extends Thread {
@@ -93,5 +144,10 @@ public class DesktopAppsAdapter extends BaseAdapter {
                 }
             });
         }
+    }
+
+    class ViewHolder {
+        ImageView image;
+        TextView text;
     }
 }
