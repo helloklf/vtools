@@ -228,7 +228,7 @@
             android:theme="@style/FullscreenTheme" />
         <activity
             android:launchMode="singleInstance"
-            android:theme="@style/desktop"
+            android:theme="@style/AppTheme.NoActionBarNight"
             android:name=".HomeActivity"
             android:label="@string/title_activity_home">
             <intent-filter>

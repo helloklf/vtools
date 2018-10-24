@@ -6,6 +6,7 @@ import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.ResolveInfo
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.os.Handler
@@ -14,6 +15,7 @@ import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
 import android.support.v7.widget.SearchView
+import android.view.View
 import com.omarea.ui.DesktopAppsAdapter
 import kotlinx.android.synthetic.main.activity_home.*
 import java.text.SimpleDateFormat
@@ -23,6 +25,12 @@ class HomeActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
+        window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
+
+        //透明状态栏/导航栏
+        window.setStatusBarColor(Color.TRANSPARENT);
+        window.setNavigationBarColor(Color.TRANSPARENT);
+
         // 使用壁纸高斯模糊作为窗口背景
         try {
             val wallPaper = WallpaperManager.getInstance(this).getDrawable();

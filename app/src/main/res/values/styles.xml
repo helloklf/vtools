@@ -101,11 +101,6 @@
         <item name="android:windowExitAnimation">@anim/dialog_exit</item>
         <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
     </style>
-    <style name="desktop" parent="android:Theme.NoTitleBar">
-        <item name="android:statusBarColor">@color/colorPrimary</item>
-        <item name="android:navigationBarColor">@color/colorPrimary</item>
-        <item name="android:windowBackground">@null</item>
-    </style>
     <style name="SeachViewActivityTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">#fff</item>
         <item name="colorPrimaryDark">#fff</item>
