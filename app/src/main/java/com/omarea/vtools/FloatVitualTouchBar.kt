@@ -14,8 +14,6 @@ import android.os.Vibrator
 import android.provider.Settings
 import android.view.*
 import android.view.WindowManager.LayoutParams
-import android.view.animation.Animation
-import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Toast
 import com.omarea.shared.SpfConfig

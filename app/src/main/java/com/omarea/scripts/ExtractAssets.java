@@ -4,12 +4,6 @@ import android.content.Context;
 
 import com.omarea.shared.FileWrite;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-
-import kotlin.text.Charsets;
-
 /**
  * Created by Hello on 2018/04/03.
  */

@@ -57,7 +57,7 @@
         <script>df -h</script>
     </action>
     <action root="true" confirm="true">
-        <title>清空电池使用记录</title>
+        <title>清空耗电记录</title>
         <desc>清空应用耗电记录和电池曲线数据，并不是还原电池寿命！</desc>
         <script>file:///android_asset/custom/actions/battery_history_clear.sh</script>
     </action>
@@ -73,8 +73,8 @@
         <script>file:///android_asset/custom/actions/network_checker_set.sh</script>
     </action>
     <action root="true" confirm="true">
-        <title>优化编译系统应用</title>
-        <desc>适用于Android N+，与“强制odex2oat”的speed模式相同，但只编译系统应用。建议官改系统刷完开机后进行此操作，从而恢复流畅度！</desc>
+        <title>优化系统应用</title>
+        <desc>适用于Android N+，使用Speed模式对系统应用进行dex2oat编译。建议官改系统刷完开机后进行此操作，从而恢复流畅度！</desc>
         <script>file:///android_asset/custom/actions/sys_compile.sh</script>
     </action>
     <action root="true" confirm="true">
@@ -83,16 +83,16 @@
         <script>file:///android_asset/custom/actions/disk_test.sh</script>
     </action>
     <action root="true">
-        <title>过渡动画缩放</title>
-        <desc>按比率调整过渡动画时长</desc>
+        <title>过渡动画时长</title>
+        <desc>调整各种动画时长</desc>
         <params>
-            <param name="window_animation_scale" desc="窗口动画缩放"
+            <param name="window_animation_scale" desc="弹窗动画时长"
                 options-sh="file:///android_asset/custom/actions/anima_level_options.sh" value="1"
                 value-sh="settings get global window_animation_scale" />
-            <param name="transition_animation_scale" desc="过渡动画缩放"
+            <param name="transition_animation_scale" desc="界面切换动画时长"
                 options-sh="file:///android_asset/custom/actions/anima_level_options.sh" value="1"
                 value-sh="settings get global transition_animation_scale" />
-            <param name="animator_duration_scale" desc="动画程序时长缩放"
+            <param name="animator_duration_scale" desc="动画程序时长"
                 options-sh="file:///android_asset/custom/actions/anima_level_options.sh" value="1"
                 value-sh="settings get global animator_duration_scale" />
         </params>
@@ -109,7 +109,7 @@
         <script>file:///android_asset/custom/actions/miui_thermal_set.sh</script>
     </action>
     <action root="true" confirm="true">
-        <title>清理淘宝优酷热更新文件</title>
+        <title>修复淘宝闪退</title>
         <desc>清理优酷和淘宝下载的热更新文件，出现淘宝或优酷闪退的，可以试试</desc>
         <script>file:///android_asset/custom/actions/app_simple.sh</script>
     </action>
@@ -120,7 +120,7 @@
             <param name="level" desc="低电量模式触发级别"
                 options-sh="file:///android_asset/custom/actions/power_level_options.sh"
                 value-sh="settings get global low_power_trigger_level" />
-            <param name="levelmax" desc="低电量模式触发最大级别"
+            <param name="levelmax" desc="低电量提示级别"
                 options-sh="file:///android_asset/custom/actions/power_level_options.sh"
                 value-sh="settings get global low_power_trigger_level_max" />
         </params>

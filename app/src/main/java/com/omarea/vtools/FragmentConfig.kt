@@ -23,7 +23,6 @@ import android.widget.Switch
 import android.widget.Toast
 import com.omarea.shared.*
 import com.omarea.shared.model.Appinfo
-import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.Platform
 import com.omarea.ui.OverScrollListView
 import com.omarea.ui.ProgressBarDialog

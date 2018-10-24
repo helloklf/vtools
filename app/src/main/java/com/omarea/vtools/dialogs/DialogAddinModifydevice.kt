@@ -1,9 +1,12 @@
 package com.omarea.vtools.dialogs
 
 import android.annotation.SuppressLint
+import android.content.ClipboardManager
 import android.content.Context
+import android.content.Context.CLIPBOARD_SERVICE
 import android.content.DialogInterface
 import android.support.v7.app.AlertDialog
+import android.util.Base64
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.EditText
@@ -11,9 +14,6 @@ import android.widget.Toast
 import com.omarea.shared.CommonCmds
 import com.omarea.shell.KeepShellPublic
 import com.omarea.vtools.R
-import android.content.ClipboardManager
-import android.content.Context.CLIPBOARD_SERVICE
-import android.util.Base64
 
 
 /**

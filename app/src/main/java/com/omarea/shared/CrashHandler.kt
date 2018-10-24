@@ -4,8 +4,10 @@ import android.content.Context
 import android.os.Environment
 import android.util.Log
 import com.omarea.shared.helper.NotifyHelper
-import com.omarea.shell.cpucontrol.Constants
-import java.io.*
+import java.io.File
+import java.io.FileOutputStream
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.nio.charset.Charset
 
 /**

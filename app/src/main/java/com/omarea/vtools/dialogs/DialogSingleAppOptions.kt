@@ -11,7 +11,6 @@ import com.omarea.shared.CommonCmds
 import com.omarea.shared.model.Appinfo
 import com.omarea.shell.CheckRootStatus
 import com.omarea.vtools.R
-import kotlinx.android.synthetic.main.dpi_input.view.*
 import java.io.File
 
 /**

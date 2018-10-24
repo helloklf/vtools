@@ -2,8 +2,13 @@ package com.omarea.shared
 
 import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint
-import android.content.*
+import android.app.KeyguardManager
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Context.WINDOW_SERVICE
+import android.content.Intent
+import android.content.IntentFilter
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.view.Display
@@ -19,10 +24,8 @@ import com.omarea.shell.Platform
 import com.omarea.shell.RootFile
 import com.omarea.vtools.R
 import java.io.File
-import java.util.*
-import android.app.KeyguardManager
-import android.os.Build
 import java.lang.ref.WeakReference
+import java.util.*
 
 
 /**

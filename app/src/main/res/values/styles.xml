@@ -101,4 +101,6 @@
         <item name="android:windowExitAnimation">@anim/dialog_exit</item>
         <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
     </style>
+    <style name="desktop" parent="android:Theme.NoTitleBar.Fullscreen">
+    </style>
 </resources>

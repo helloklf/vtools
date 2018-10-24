@@ -19,8 +19,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
-import com.omarea.shared.model.AppConfigInfo
 import com.omarea.shared.*
+import com.omarea.shared.model.AppConfigInfo
 import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.NoticeListing
 import com.omarea.shell.Platform

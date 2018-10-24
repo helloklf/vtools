@@ -25,7 +25,6 @@ import com.omarea.ui.AdapterSwaplist
 import com.omarea.ui.ProgressBarDialog
 import kotlinx.android.synthetic.main.layout_swap.*
 import java.io.File
-import java.lang.Exception
 import java.util.ArrayList
 import java.util.HashMap
 import kotlin.collections.LinkedHashMap

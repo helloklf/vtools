@@ -15,7 +15,6 @@ import android.widget.SeekBar
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
-import com.omarea.shared.CommonCmds
 import com.omarea.shared.FileWrite
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.KeepShellPublic

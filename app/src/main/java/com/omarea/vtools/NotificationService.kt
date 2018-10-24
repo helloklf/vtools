@@ -4,7 +4,6 @@ import android.app.Notification.FLAG_AUTO_CANCEL
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
-import android.widget.Toast
 import com.omarea.shared.SceneMode
 
 class NotificationService : NotificationListenerService() {

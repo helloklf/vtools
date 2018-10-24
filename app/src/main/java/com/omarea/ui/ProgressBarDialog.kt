@@ -10,7 +10,6 @@ import android.widget.TextView
 import android.widget.Toast
 import com.omarea.shell.AsynSuShellUnit
 import com.omarea.vtools.R
-import java.lang.Exception
 
 /**
  * Loading弹窗

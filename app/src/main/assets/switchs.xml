@@ -5,7 +5,7 @@
         [confirm]=[true/false]执行脚本前是否需要确认
     -->
     <switch root="true">
-        <title>开启虚拟键</title>
+        <title>虚拟键设备</title>
         <desc>标识当前设备没有实体按键，MIUI系统可以通过本功能启用全面屏手势，其它系统可以启用虚拟键。重启生效！</desc>
         <getstate>file:///android_asset/custom/switchs/mainkey_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/mainkey_set.sh</setstate>
@@ -65,13 +65,13 @@
         <setstate>file:///android_asset/custom/switchs/cloudmusic_ad_set.sh</setstate>
     </switch>
     <switch root="true">
-        <title>QQ个性化样式</title>
+        <title>QQ个性化</title>
         <desc>禁用此选项将去除QQ的个性化字体、气泡、头像挂件</desc>
         <getstate>file:///android_asset/custom/switchs/qq_style_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/qq_style_set.sh</setstate>
     </switch>
     <switch root="true" support="file:///android_asset/custom/switchs/android_n.sh">
-        <title>强制将Activity设为可调整大小</title>
+        <title>强制分屏</title>
         <desc>适用于Android 7.0+，同开发者设置中的“强制将Activity设为可调整大小”选项。开启此项，从而对声明支持分屏的应用进行分屏操作！</desc>
         <getstate>file:///android_asset/custom/switchs/force_resize_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/force_resize_set.sh</setstate>

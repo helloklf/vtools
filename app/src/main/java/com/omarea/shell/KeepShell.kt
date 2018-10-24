@@ -1,7 +1,6 @@
 package com.omarea.shell
 
 import android.util.Log
-import java.io.BufferedOutputStream
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.OutputStream

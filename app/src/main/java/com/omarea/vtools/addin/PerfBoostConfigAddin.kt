@@ -6,7 +6,6 @@ import android.widget.Toast
 import com.omarea.shared.CommonCmds
 import com.omarea.shared.FileWrite
 import com.omarea.shell.Platform
-import com.omarea.shell.cpucontrol.Constants
 
 /**
  * Created by Hello on 2018/03/22.

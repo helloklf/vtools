@@ -16,7 +16,7 @@ import com.omarea.shell.KeepShellAsync
 
 
 class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() {
-    private var bp: Boolean = false
+    private var chargeDisabled: Boolean = false
     private var keepShellAsync: KeepShellAsync? = null
 
     private var sharedPreferences: SharedPreferences
@@ -96,30 +96,46 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
         try {
             val action = intent.action
             val onChanger = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1) == BatteryManager.BATTERY_STATUS_CHARGING
-            val batteryLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+            val currentLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+            var bpLeve = sharedPreferences.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85)
+            if (bpLeve <= 30) {
+                showMsg("Scene：当前电池保护电量值设为小于30%，会引起一些异常，已自动替换为默认值85%！", true)
+                bpLeve = 85
+            }
+            val bp = sharedPreferences.getBoolean(SpfConfig.CHARGE_SPF_BP, false)
 
-            //BatteryProtection
-            if (sharedPreferences.getBoolean(SpfConfig.CHARGE_SPF_BP, false)) {
+            //BatteryProtection 如果开启充电保护
+            if (bp) {
                 if (onChanger) {
-                    if (batteryLevel >= sharedPreferences.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85)) {
-                        bp = true
-                        keepShellAsync!!.doCmd(DisableChanger)
-                    } else if (batteryLevel < sharedPreferences.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85) - 20) {
+                    if (currentLevel >= bpLeve) {
+                        disableCharge()
+                    } else if (currentLevel < bpLeve - 20) {
                         resumeCharge()
                     }
                 }
                 //电量不足，恢复充电功能
-                else if (action == Intent.ACTION_BATTERY_LOW) {
-                    showMsg(service.getString(R.string.battery_low), false)
-                    resumeCharge()
-                } else if (bp && batteryLevel != -1 && batteryLevel < sharedPreferences.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85) - 20) {
+                else if (chargeDisabled && currentLevel != -1 && currentLevel < bpLeve - 20) {
                     //电量低于保护级别20
                     resumeCharge()
                 }
             }
+            // 如果没有开启充电保护，并且已经禁止充电
+            else if (chargeDisabled) {
+                resumeCharge()
+            }
 
-            if (batteryLevel < sharedPreferences.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85)) {
-                entryFastChanger(onChanger)
+            // 如果电池电量低
+            if (action == Intent.ACTION_BATTERY_LOW) {
+                showMsg(service.getString(R.string.battery_low), false)
+                resumeCharge()
+            }
+
+            // 未进入电池保护状态 并且电量低于85
+            if (currentLevel < bpLeve && currentLevel < 85 && !(chargeDisabled && currentLevel > (bpLeve - 20))) {
+                if (chargeDisabled) {
+                    resumeCharge()
+                }
+                entryFastChanger()
             }
         } catch (ex: Exception) {
             showMsg("充电加速服务：\n" + ex.message, true);
@@ -150,16 +166,19 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
         keepShellAsync = null
     }
 
-    internal fun resumeCharge() {
-        bp = false
-        keepShellAsync!!.doCmd(ResumeChanger)
+    internal fun disableCharge () {
+        keepShellAsync!!.doCmd(DisableChanger)
+        chargeDisabled = true
     }
 
-    internal fun entryFastChanger(onChanger: Boolean) {
-        if (onChanger) {
-            if (sharedPreferences.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
-                fastCharger()
-            }
+    internal fun resumeCharge() {
+        keepShellAsync!!.doCmd(ResumeChanger)
+        chargeDisabled = false
+    }
+
+    internal fun entryFastChanger() {
+        if (sharedPreferences.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
+            fastCharger()
         }
     }
 }

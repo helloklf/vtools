@@ -7,8 +7,6 @@ import com.omarea.shared.CommonCmds
 import com.omarea.shell.Platform
 import com.omarea.shell.RootFile
 import com.omarea.vtools.R
-import kotlinx.android.synthetic.main.dpi_input.view.*
-import java.io.File
 
 /**
  * Created by Hello on 2018/03/22.

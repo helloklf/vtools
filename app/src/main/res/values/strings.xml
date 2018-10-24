@@ -299,4 +299,5 @@
     <string name="scene_key_capture_change_action">com.omarea.vtools.SceneAccessibleConfigChanged</string>
     <string name="scene_change_action">com.omarea.vtools.SceneConfigChanged</string>
     <string name="scene_appchange_action">com.omarea.vtools.SceneAppChanged</string>
+    <string name="title_activity_home">Scene桌面</string>
 </resources>

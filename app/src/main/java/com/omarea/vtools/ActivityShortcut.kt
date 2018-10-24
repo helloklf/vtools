@@ -3,8 +3,8 @@ package com.omarea.vtools
 import android.app.Activity
 import android.os.Bundle
 import android.widget.Toast
-import com.omarea.shared.ConfigInstaller
 import com.omarea.shared.CommonCmds
+import com.omarea.shared.ConfigInstaller
 import com.omarea.shared.ModeList
 import com.omarea.shell.Platform
 import java.io.File

@@ -2,16 +2,35 @@ package com.omarea.vtools.addin
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
 import android.widget.Toast
+import com.omarea.shared.CommonCmds
+import com.omarea.shared.FileWrite
 
 /**
  * Created by Hello on 2017/11/01.
  */
 
 class FullScreenAddin(private var context: Activity) : AddinBase(context) {
+    fun hideNavgationBar() {
+        FileWrite.writePrivateFile(context.assets, "framework-res", "framework-res", context)
+        command = StringBuilder()
+                .append(CommonCmds.MountSystemRW)
+                .append("cp ${FileWrite.getPrivateFileDir(context)}/framework-res /system/media/theme/default/framework-res\n")
+                .append("chmod 0755 /system/media/theme/default/framework-res\n")
+                .toString()
+
+        super.run()
+        AlertDialog.Builder(context)
+                .setTitle("注意")
+                .setMessage("此操作会写入/system/media/theme/default/framework-res，需要重启才能生效。如需还原，则需删除/system/media/theme/default/framework-res！")
+                .setPositiveButton("知道了", {
+                    _, _ ->
+                })
+                .create()
+                .show()
+    }
     fun fullScreen() {
-        val arr = arrayOf("全部隐藏", "隐藏导航栏", "隐藏状态栏", "恢复默认", "移走导航栏（试验）")
+        val arr = arrayOf("全部隐藏", "隐藏导航栏", "隐藏状态栏", "恢复默认", "移走导航栏（试验）", "MIUI(专属)去导航栏")
         var index = 0
         AlertDialog.Builder(context)
                 .setTitle("请选择操作")
@@ -25,6 +44,9 @@ class FullScreenAddin(private var context: Activity) : AddinBase(context) {
                         2 -> execShell("wm overscan reset;settings put global policy_control immersive.status=apps,-android,-com.android.systemui,-com.tencent.mobileqq,-com.tencent.tim,-com.tencent.mm,-com.tencent.tim,-com.tencent.tim;")
                         3 -> execShell("wm overscan reset;settings put global policy_control null;")
                         4 -> execShell("wm overscan 0,0,0,-${getNavHeight()};")
+                        5 -> {
+                            hideNavgationBar()
+                        }
                     }
                     if (index < 4)
                         Toast.makeText(context, "腾讯系列聊天软件不兼容状态栏隐藏，自动加入忽略列表！", Toast.LENGTH_LONG).show()

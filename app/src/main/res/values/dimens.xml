@@ -9,6 +9,9 @@
     <!--<dimen name="text_margin">16dp</dimen>
     <dimen name="app_bar_height">180dp</dimen>-->
     <integer name="addin_minimum_version">502</integer>
+    <dimen name="text_margin">16dp</dimen>
+    <dimen name="app_width">60dp</dimen>
+    <dimen name="app_height">120dp</dimen>
 
     <!--<color name="google_red">#EA4335</color>
     <color name="google_yellow">#FBBC05</color>

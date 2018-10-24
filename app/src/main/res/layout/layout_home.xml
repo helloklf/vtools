@@ -199,7 +199,7 @@
                             android:text="负载：" />
                     </LinearLayout>
 
-                    <GridView
+                    <com.omarea.ui.OverScrollGridView
                         android:id="@+id/cpu_core_list"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
