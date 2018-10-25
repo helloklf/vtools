@@ -2,6 +2,7 @@ package com.omarea.vtools
 
 import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Context.VIBRATOR_SERVICE
 import android.content.SharedPreferences
@@ -126,40 +127,54 @@ class FloatVitualTouchBar// 获取应用的Context
 
     private var lastEventTime = 0L
     private var lastEvent = -1
+    private var vibratorOn = false
+    private var vibrator: Vibrator? = null
+
+    /**
+     * dp转换成px
+     */
+    private fun dp2px(context: Context, dpValue: Float): Int {
+        val scale = context.resources.displayMetrics.density
+        return (dpValue * scale + 0.5f).toInt()
+    }
+    private fun performGlobalAction(context: AccessibilityService, event: Int) {
+        if (isLandscapf && (lastEventTime + 1000 < System.currentTimeMillis() || lastEvent != event)) {
+            lastEvent = event
+            lastEventTime = System.currentTimeMillis()
+            Toast.makeText(context, "请重复手势~", Toast.LENGTH_SHORT).show()
+        } else {
+            if (vibratorOn) {
+                if (vibrator == null) {
+                    vibrator = context.getSystemService(VIBRATOR_SERVICE) as Vibrator
+                }
+                vibrator!!.cancel()
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    // vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(20, 10), DEFAULT_AMPLITUDE))
+                    vibrator!!.vibrate(VibrationEffect.createOneShot(20, 20))
+                } else {
+                    vibrator!!.vibrate(longArrayOf(20, 10), -1)
+                }
+            }
+            context.performGlobalAction(event)
+        }
+    }
 
     @SuppressLint("ApplySharedPref", "ClickableViewAccessibility")
     private fun setUpView(context: AccessibilityService): View {
         val view = LayoutInflater.from(context).inflate(R.layout.fw_vitual_touch_bar, null)
-        val vibratorOn = sharedPreferences!!.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_VIBRATOR, false)
+        vibratorOn = sharedPreferences!!.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_VIBRATOR, false)
+        val allowTap = sharedPreferences!!.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_TAP, false)
 
         val bar = view.findViewById<LinearLayout>(R.id.bottom_touch_bar)
         val gust = GestureDetector(context, object : GestureDetector.OnGestureListener {
-            val vibrator = Runnable {
-                val vibrator = context.getSystemService(VIBRATOR_SERVICE) as Vibrator
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(20, 10), DEFAULT_AMPLITUDE))
-                } else {
-                    vibrator.vibrate(longArrayOf(20, 10), -1)
-                }
-            }
             // 定义手势动作亮点之间的最小距离
-            val FLIP_DISTANCE = 120
+            val FLIP_DISTANCE = dp2px(context, 70f)
             override fun onLongPress(e: MotionEvent?) {
                 if (e != null) {
-                    if (e.getX() < bar.width * 0.3) {
-
-                    } else if (e.getX() > bar.width * 0.77) {
+                    if (e.getX() < bar.width * 0.33) {
+                    } else if (e.getX() > bar.width * 0.67) {
                     } else {
-                        if (isLandscapf && (lastEventTime + 1000 < System.currentTimeMillis() || lastEvent != AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS)) {
-                            lastEvent = AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS
-                            lastEventTime = System.currentTimeMillis()
-                            Toast.makeText(context, "请重复手势~", Toast.LENGTH_SHORT).show()
-                        } else {
-                            if (vibratorOn) {
-                                vibrator.run()
-                            }
-                            context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS)
-                        }
+                        performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS)
                     }
                 }
             }
@@ -173,54 +188,21 @@ class FloatVitualTouchBar// 获取应用的Context
             }
 
             override fun onSingleTapUp(e: MotionEvent?): Boolean {
-                if (e != null) {
-                    if (vibratorOn) {
-                        vibrator.run()
-                    }
-                    if (e.getX() < bar.width * 0.3) {
+                if (e != null && allowTap) {
+                    if (e.getX() < bar.width * 0.33) {
                         if (!reversalLayout) {
-                            if (isLandscapf && (lastEventTime + 1000 < System.currentTimeMillis() || lastEvent != AccessibilityService.GLOBAL_ACTION_BACK)) {
-                                lastEvent = AccessibilityService.GLOBAL_ACTION_BACK
-                                lastEventTime = System.currentTimeMillis()
-                                Toast.makeText(context, "请重复手势~", Toast.LENGTH_SHORT).show()
-                            } else {
-                                context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
-                            }
+                            performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
                         } else {
-                            if (isLandscapf && (lastEventTime + 1000 < System.currentTimeMillis() || lastEvent != AccessibilityService.GLOBAL_ACTION_RECENTS)) {
-                                lastEvent = AccessibilityService.GLOBAL_ACTION_RECENTS
-                                lastEventTime = System.currentTimeMillis()
-                                Toast.makeText(context, "请重复手势~", Toast.LENGTH_SHORT).show()
-                            } else {
-                                context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS)
-                            }
+                            performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
                         }
-                    } else if (e.getX() > bar.width * 0.77) {
+                    } else if (e.getX() > bar.width * 0.67) {
                         if (!reversalLayout) {
-                            if (isLandscapf && (lastEventTime + 1000 < System.currentTimeMillis() || lastEvent != AccessibilityService.GLOBAL_ACTION_RECENTS)) {
-                                lastEvent = AccessibilityService.GLOBAL_ACTION_RECENTS
-                                lastEventTime = System.currentTimeMillis()
-                                Toast.makeText(context, "请重复手势~", Toast.LENGTH_SHORT).show()
-                            } else {
-                                context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS)
-                            }
+                            performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
                         } else {
-                            if (isLandscapf && (lastEventTime + 1000 < System.currentTimeMillis() || lastEvent != AccessibilityService.GLOBAL_ACTION_BACK)) {
-                                lastEvent = AccessibilityService.GLOBAL_ACTION_BACK
-                                lastEventTime = System.currentTimeMillis()
-                                Toast.makeText(context, "请重复手势~", Toast.LENGTH_SHORT).show()
-                            } else {
-                                context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
-                            }
+                            performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
                         }
                     } else {
-                        if (isLandscapf && (lastEventTime + 1000 < System.currentTimeMillis() || lastEvent != AccessibilityService.GLOBAL_ACTION_HOME)) {
-                            lastEvent = AccessibilityService.GLOBAL_ACTION_HOME
-                            lastEventTime = System.currentTimeMillis()
-                            Toast.makeText(context, "请重复手势~", Toast.LENGTH_SHORT).show()
-                        } else {
-                            context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_HOME)
-                        }
+                        performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_HOME)
                     }
                 }
                 return false
@@ -233,59 +215,26 @@ class FloatVitualTouchBar// 获取应用的Context
                 // 如果第一个触点事件的X坐标大于第二个触点事件的X坐标超过FLIP_DISTANCE
                 // 也就是手势从右向左滑
                 if (e1!!.getX() - e2!!.getX() > FLIP_DISTANCE) {
-                    if (vibratorOn) {
-                        vibrator.run()
-                    }
                     if (reversalLayout) {
-                        if (isLandscapf && (lastEventTime + 1000 < System.currentTimeMillis() || lastEvent != AccessibilityService.GLOBAL_ACTION_RECENTS)) {
-                            lastEvent = AccessibilityService.GLOBAL_ACTION_RECENTS
-                            lastEventTime = System.currentTimeMillis()
-                            Toast.makeText(context, "请重复手势~", Toast.LENGTH_SHORT).show()
-                        } else {
-                            context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS)
-                        }
+                        performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
                     } else {
-                        if (isLandscapf && (lastEventTime + 1000 < System.currentTimeMillis() || lastEvent != AccessibilityService.GLOBAL_ACTION_BACK)) {
-                            lastEvent = AccessibilityService.GLOBAL_ACTION_BACK
-                            lastEventTime = System.currentTimeMillis()
-                            Toast.makeText(context, "请重复手势~", Toast.LENGTH_SHORT).show()
-                        } else {
-                            context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
-                        }
+                        performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
                     }
                     return true;
                 }
                 // 如果第二个触点事件的X坐标大于第一个触点事件的X坐标超过FLIP_DISTANCE
                 // 也就是手势从右向左滑
                 else if (e2.getX() - e1.getX() > FLIP_DISTANCE) {
-                    if (vibratorOn) {
-                        vibrator.run()
-                    }
                     if (reversalLayout) {
-                        if (isLandscapf && (lastEventTime + 1000 < System.currentTimeMillis() || lastEvent != AccessibilityService.GLOBAL_ACTION_BACK)) {
-                            lastEvent = AccessibilityService.GLOBAL_ACTION_BACK
-                            lastEventTime = System.currentTimeMillis()
-                            Toast.makeText(context, "请重复手势~", Toast.LENGTH_SHORT).show()
-                        } else {
-                            context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK)
-                        }
+                        performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
                     } else {
-                        if (isLandscapf && (lastEventTime + 1000 < System.currentTimeMillis() || lastEvent != AccessibilityService.GLOBAL_ACTION_RECENTS)) {
-                            lastEvent = AccessibilityService.GLOBAL_ACTION_RECENTS
-                            lastEventTime = System.currentTimeMillis()
-                            Toast.makeText(context, "请重复手势~", Toast.LENGTH_SHORT).show()
-                        } else {
-                            context.performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS)
-                        }
+                        performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
                     }
                     return true;
                 } else if (e1.getY() - e2.getY() > 5) {
                     val bw = bar.width
-                    if (vibratorOn) {
-                        vibrator.run()
-                    }
                     var event = AccessibilityService.GLOBAL_ACTION_HOME
-                    if (e1.getX() < bw * 0.3 && e1.getX() < bw * 0.3) {
+                    if (e1.getX() < bw * 0.33 && e1.getX() < bw * 0.33) {
                         if (reversalLayout) {
                             event = AccessibilityService.GLOBAL_ACTION_RECENTS
                         } else {
@@ -298,13 +247,7 @@ class FloatVitualTouchBar// 获取应用的Context
                             event = AccessibilityService.GLOBAL_ACTION_RECENTS
                         }
                     }
-                    if (isLandscapf && (lastEventTime + 1000 < System.currentTimeMillis() || lastEvent != event)) {
-                        lastEvent = event
-                        lastEventTime = System.currentTimeMillis()
-                        Toast.makeText(context, "请重复手势~", Toast.LENGTH_SHORT).show()
-                    } else {
-                        context.performGlobalAction(event)
-                    }
+                    performGlobalAction(context, event)
                     return true;
                 }
                 return false;

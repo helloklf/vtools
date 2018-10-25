@@ -6,7 +6,6 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
-import android.support.v4.util.LruCache;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -19,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.omarea.vtools.R;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class DesktopAppsAdapter extends BaseAdapter {
@@ -26,7 +26,8 @@ public class DesktopAppsAdapter extends BaseAdapter {
     private List<ResolveInfo> allApps;
     private Context mContent;
     private PackageManager packageManager;
-    private LruCache<String, Drawable> iconsCache = new LruCache<>(200);
+    // private LruCache<String, Drawable> iconsCache = new LruCache<>(200);
+    private HashMap<String, Drawable> iconsCache = new HashMap<>(200);
     private Handler handler = new Handler();
     private String keywords = "";
 
@@ -75,8 +76,8 @@ public class DesktopAppsAdapter extends BaseAdapter {
 
         viewHolder.text.setText(keywordHightLight(info.loadLabel(mContent.getPackageManager()).toString()));
         String packageName = info.activityInfo.packageName;
-        final Drawable drawable = iconsCache.get(packageName);
-        if (drawable != null) {
+        if (iconsCache.containsKey(packageName)) {
+            final Drawable drawable = iconsCache.get(packageName);
             viewHolder.image.setImageDrawable(drawable);
         } else {
             new LoadIconThread(viewHolder.image, info).start();

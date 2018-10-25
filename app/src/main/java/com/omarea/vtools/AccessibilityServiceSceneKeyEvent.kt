@@ -1,9 +1,7 @@
 package com.omarea.vtools
 
 import android.accessibilityservice.AccessibilityService
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
 import android.content.res.Configuration
 import android.os.Handler
 import android.view.KeyEvent
@@ -25,6 +23,7 @@ class AccessibilityServiceSceneKeyEvent : AccessibilityService() {
     private var eventHandlers: HashMap<Int, ButtonEventHandler> = HashMap()
     private lateinit var sharedPreferences: SharedPreferences
     private var floatVitualTouchBar: FloatVitualTouchBar? = null
+    private var sceneConfigChanged:BroadcastReceiver? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -40,12 +39,30 @@ class AccessibilityServiceSceneKeyEvent : AccessibilityService() {
             floatVitualTouchBar!!.hidePopupWindow()
             floatVitualTouchBar = null
         }
+        if (sceneConfigChanged != null) {
+            unregisterReceiver(sceneConfigChanged)
+            sceneConfigChanged = null
+        }
     }
 
     override fun onServiceConnected() {
         super.onServiceConnected()
         destroy()
         floatVitualTouchBar = FloatVitualTouchBar(this)
+
+        if (sceneConfigChanged == null) {
+            sceneConfigChanged = object : BroadcastReceiver() {
+                override fun onReceive(context: Context?, intent: Intent?) {
+                    updateKeyEventProcess()
+                    if (floatVitualTouchBar != null) {
+                        floatVitualTouchBar!!.hidePopupWindow()
+                        floatVitualTouchBar = null
+                    }
+                    floatVitualTouchBar = FloatVitualTouchBar(this@AccessibilityServiceSceneKeyEvent)
+                }
+            }
+        }
+        registerReceiver(sceneConfigChanged, IntentFilter(getString(R.string.scene_keyeventchange_action)))
     }
 
     override fun onUnbind(intent: Intent?): Boolean {

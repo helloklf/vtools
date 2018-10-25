@@ -146,6 +146,10 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
         key_event_vitual_touch_bar_vibrator.setOnClickListener {
             spfOther.edit().putBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_VIBRATOR, (it as Switch).isChecked).commit()
         }
+        key_event_vitual_touch_bar_tap.isChecked = spfOther.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_TAP, false)
+        key_event_vitual_touch_bar_tap.setOnClickListener {
+            spfOther.edit().putBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_TAP, (it as Switch).isChecked).commit()
+        }
     }
 
     private class OnItemSelected(private var spinner: Spinner, private var spf: SharedPreferences) : AdapterView.OnItemSelectedListener {
@@ -204,7 +208,16 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
         return 0
     }
 
+
+    // 通知辅助服务配置变化
+    private fun notifyService() {
+        if (AccessibleServiceHelper().serviceIsRunning(this.applicationContext)) {
+            val intent = Intent(getString(R.string.scene_keyeventchange_action))
+            sendBroadcast(intent)
+        }
+    }
     public override fun onPause() {
+        this.notifyService()
         super.onPause()
     }
 }

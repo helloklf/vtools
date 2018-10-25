@@ -40,7 +40,8 @@
                         android:layout_marginLeft="@dimen/text_margin"
                         android:layout_marginTop="@dimen/text_margin" />
 
-                    <SearchView style="@style/SeachViewActivityTheme"
+                    <SearchView
+                        style="@style/SeachViewActivityTheme"
                         android:queryHint="AppName or PackageName"
                         android:id="@+id/desktop_search"
                         android:layout_marginLeft="8dp"
