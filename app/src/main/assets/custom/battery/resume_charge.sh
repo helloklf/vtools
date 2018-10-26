@@ -23,7 +23,6 @@ then
     if [ `/sys/class/power_supply/battery/battery_charging_enabled` = '0' ]
     then
         set_value > /sys/class/power_supply/battery/battery_charging_enabled 3000000
-        setprop vtools.bp 0
     fi
 fi;
 

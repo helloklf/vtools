@@ -131,10 +131,7 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
             }
 
             // 未进入电池保护状态 并且电量低于85
-            if (currentLevel < bpLeve && currentLevel < 85 && !(chargeDisabled && currentLevel > (bpLeve - 20))) {
-                if (chargeDisabled) {
-                    resumeCharge()
-                }
+            if (currentLevel < (bpLeve - 20) && currentLevel < 85) {
                 entryFastChanger()
             }
         } catch (ex: Exception) {
