@@ -28,6 +28,12 @@
         <getstate>file:///android_asset/custom/switchs/gcm_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/gcm_set.sh</setstate>
     </switch>
+    <switch root="true">
+        <title>Force Software GLES</title>
+        <desc>强制软件GLES渲染，开启此选项可能增加耗电甚至界面黑屏，如果默认开启，可尝试关闭</desc>
+        <getstate>getprop persist.sys.force_sw_gles</getstate>
+        <setstate>setprop  persist.sys.force_sw_gles $state</setstate>
+    </switch>
     <switch root="true" support="file:///android_asset/custom/switchs/msm_booster_support.sh">
         <title>Performance Boost Config</title>
         <desc>系统根据你启动应用或切换界面的操作，短时间内将CPU频率提高到最佳值（并且不受频率自定义频率限制），提高流畅度增加耗电</desc>

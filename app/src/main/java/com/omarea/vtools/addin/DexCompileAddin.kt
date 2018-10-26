@@ -239,7 +239,8 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                     val stringBuilder = StringBuilder()
 
                     //移除已添加的配置
-                    //stringBuilder.append("sed '/^pm.dexopt.ab-ota=/'d /system/build.prop > /data/build.prop;")
+                    stringBuilder.append("cp /system/build.prop /data/build.prop;")
+                    //stringBuilder.append("sed -i '/^pm.dexopt.ab-ota=/'d /data/build.prop;")
                     stringBuilder.append("sed -i '/^pm.dexopt.bg-dexopt=/'d /data/build.prop;")
                     //stringBuilder.append("sed -i '/^pm.dexopt.boot=/'d /data/build.prop;")
                     stringBuilder.append("sed -i '/^pm.dexopt.core-app=/'d /data/build.prop;")

@@ -42,8 +42,8 @@ class DialogAddinModifydevice(var context: Context) {
         (dialog.findViewById(R.id.dialog_addin_r11) as Button).setOnClickListener {
             setR11Plus()
         }
-        (dialog.findViewById(R.id.dialog_addin_ipx) as Button).setOnClickListener {
-            setIPhoneX()
+        (dialog.findViewById(R.id.dialog_addin_mix3) as Button).setOnClickListener {
+            setMIX3()
         }
         (dialog.findViewById(R.id.dialog_addin_mrs) as Button).setOnClickListener {
             setMateRS()
@@ -162,6 +162,14 @@ class DialogAddinModifydevice(var context: Context) {
             editDevice.setText(spf.getString("android.os.Build.DEVICE", android.os.Build.DEVICE))
             editManufacturer.setText(spf.getString("android.os.Build.MANUFACTURER", android.os.Build.MANUFACTURER))
         }
+    }
+
+    private fun setMIX3() {
+        editBrand.setText("Xiaomi")
+        editModel.setText("MIX 3")
+        editProductName.setText("perseus")
+        editDevice.setText("perseus")
+        editManufacturer.setText("Xiaomi")
     }
 
     private fun setX20() {
