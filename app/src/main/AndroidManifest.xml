@@ -235,8 +235,8 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-                <category android:name="android.intent.category.HOME" />
+                <!--<category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.HOME" />-->
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

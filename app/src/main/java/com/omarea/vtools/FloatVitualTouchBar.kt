@@ -150,7 +150,7 @@ class FloatVitualTouchBar// 获取应用的Context
                 vibrator!!.cancel()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     // vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(20, 10), DEFAULT_AMPLITUDE))
-                    vibrator!!.vibrate(VibrationEffect.createOneShot(20, 20))
+                    vibrator!!.vibrate(VibrationEffect.createOneShot(20, 5))
                 } else {
                     vibrator!!.vibrate(longArrayOf(20, 10), -1)
                 }
@@ -184,6 +184,18 @@ class FloatVitualTouchBar// 获取应用的Context
             }
 
             override fun onDown(e: MotionEvent?): Boolean {
+                if (vibratorOn) {
+                    if (vibrator == null) {
+                        vibrator = context.getSystemService(VIBRATOR_SERVICE) as Vibrator
+                    }
+                    vibrator!!.cancel()
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        // vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(20, 10), DEFAULT_AMPLITUDE))
+                        vibrator!!.vibrate(VibrationEffect.createOneShot(1, 1))
+                    } else {
+                        vibrator!!.vibrate(longArrayOf(1, 1), -1)
+                    }
+                }
                 return false
             }
 
@@ -220,7 +232,6 @@ class FloatVitualTouchBar// 获取应用的Context
                     } else {
                         performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
                     }
-                    return true;
                 }
                 // 如果第二个触点事件的X坐标大于第一个触点事件的X坐标超过FLIP_DISTANCE
                 // 也就是手势从右向左滑
@@ -230,7 +241,6 @@ class FloatVitualTouchBar// 获取应用的Context
                     } else {
                         performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
                     }
-                    return true;
                 } else if (e1.getY() - e2.getY() > 5) {
                     val bw = bar.width
                     var event = AccessibilityService.GLOBAL_ACTION_HOME
@@ -248,9 +258,10 @@ class FloatVitualTouchBar// 获取应用的Context
                         }
                     }
                     performGlobalAction(context, event)
-                    return true;
+                } else {
+                    return false;
                 }
-                return false;
+                return true;
             }
         })
         bar.setOnTouchListener { v, event ->

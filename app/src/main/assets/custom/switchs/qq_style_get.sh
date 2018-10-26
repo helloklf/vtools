@@ -17,7 +17,11 @@ if [[ -d ${qqsdcard}/.font_info ]]; then
     echo 1
 elif [[ -d ${qqsdcard}/font_info ]]; then
     echo 1
-elif [[ -d ${qqsdcard}/bubble_info ]]; then
+elif [[ -d ${qqdata}/pendant_info ]]; then
+    echo 1
+elif [[ -d ${qqsdcard}/.pendant ]]; then
+    echo 1
+elif [[ -d ${qqdata}/bubble_info ]]; then
     echo 1
 else
     echo 0

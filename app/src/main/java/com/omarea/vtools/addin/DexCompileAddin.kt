@@ -239,11 +239,11 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                     val stringBuilder = StringBuilder()
 
                     //移除已添加的配置
-                    stringBuilder.append("sed '/^pm.dexopt.ab-ota=/'d /system/build.prop > /data/build.prop;")
+                    //stringBuilder.append("sed '/^pm.dexopt.ab-ota=/'d /system/build.prop > /data/build.prop;")
                     stringBuilder.append("sed -i '/^pm.dexopt.bg-dexopt=/'d /data/build.prop;")
-                    stringBuilder.append("sed -i '/^pm.dexopt.boot=/'d /data/build.prop;")
+                    //stringBuilder.append("sed -i '/^pm.dexopt.boot=/'d /data/build.prop;")
                     stringBuilder.append("sed -i '/^pm.dexopt.core-app=/'d /data/build.prop;")
-                    stringBuilder.append("sed -i '/^pm.dexopt.first-boot=/'d /data/build.prop;")
+                    //stringBuilder.append("sed -i '/^pm.dexopt.first-boot=/'d /data/build.prop;")
                     stringBuilder.append("sed -i '/^pm.dexopt.forced-dexopt=/'d /data/build.prop;")
                     stringBuilder.append("sed -i '/^pm.dexopt.install=/'d /data/build.prop;")
                     stringBuilder.append("sed -i '/^pm.dexopt.nsys-library=/'d /data/build.prop;")
@@ -254,49 +254,43 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                     when (index) {
                         0 -> {
                             stringBuilder.append("sed -i '\$apm.dexopt.bg-dexopt=speed' /data/build.prop;")
-                            stringBuilder.append("sed -i '\$apm.dexopt.boot=verify-profile' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.core-app=speed' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.forced-dexopt=speed' /data/build.prop;")
                             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                                 stringBuilder.append("sed -i '\$apm.dexopt.install=interpret-only' /data/build.prop;")
-                                stringBuilder.append("sed -i '\$apm.dexopt.ab-ota=interpret-only' /data/build.prop;")
-                                stringBuilder.append("sed -i '\$apm.dexopt.first-boot=interpret-only' /data/build.prop;")
                             } else {
                                 stringBuilder.append("sed -i '\$apm.dexopt.install=quicken' /data/build.prop;")
-                                // stringBuilder.append("sed -i '\$apm.dexopt.ab-ota=quicken' /data/build.prop;")
-                                stringBuilder.append("sed -i '\$apm.dexopt.ab-ota=quicken' /data/build.prop;")
-                                stringBuilder.append("sed -i '\$apm.dexopt.first-boot=quicken' /data/build.prop;")
                             }
                             stringBuilder.append("sed -i '\$apm.dexopt.nsys-library=speed' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.shared-apk=speed' /data/build.prop;")
-                            stringBuilder.append("sed -i '\$adalvik.vm.image-dex2oat-filter=speed' /data/build.prop;")
-                            stringBuilder.append("sed -i '\$adalvik.vm.dex2oat-filter=speed' /data/build.prop;")
+                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                                stringBuilder.append("sed -i '\$adalvik.vm.image-dex2oat-filter=speed' /data/build.prop;")
+                                stringBuilder.append("sed -i '\$adalvik.vm.dex2oat-filter=speed' /data/build.prop;")
+                            }
                         }
                         1 -> {
-                            stringBuilder.append("sed -i '\$apm.dexopt.ab-ota=verify-none' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.bg-dexopt=speed' /data/build.prop;")
-                            stringBuilder.append("sed -i '\$apm.dexopt.boot=verify-none' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.core-app=speed' /data/build.prop;")
-                            stringBuilder.append("sed -i '\$apm.dexopt.first-boot=verify-none' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.forced-dexopt=speed' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.install=speed' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.nsys-library=speed' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.shared-apk=speed' /data/build.prop;")
-                            stringBuilder.append("sed -i '\$adalvik.vm.image-dex2oat-filter=speed' /data/build.prop;")
-                            stringBuilder.append("sed -i '\$adalvik.vm.dex2oat-filter=speed' /data/build.prop;")
+                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                                stringBuilder.append("sed -i '\$adalvik.vm.image-dex2oat-filter=speed' /data/build.prop;")
+                                stringBuilder.append("sed -i '\$adalvik.vm.dex2oat-filter=speed' /data/build.prop;")
+                            }
                         }
                         2 -> {
-                            stringBuilder.append("sed -i '\$apm.dexopt.ab-ota=verify-none' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.bg-dexopt=speed' /data/build.prop;")
-                            stringBuilder.append("sed -i '\$apm.dexopt.boot=verify-none' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.core-app=speed' /data/build.prop;")
-                            stringBuilder.append("sed -i '\$apm.dexopt.first-boot=verify-none' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.forced-dexopt=speed' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.install=everything' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.nsys-library=speed' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.shared-apk=speed' /data/build.prop;")
-                            stringBuilder.append("sed -i '\$adalvik.vm.image-dex2oat-filter=speed' /data/build.prop;")
-                            stringBuilder.append("sed -i '\$adalvik.vm.dex2oat-filter=speed' /data/build.prop;")
+                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                                stringBuilder.append("sed -i '\$adalvik.vm.image-dex2oat-filter=speed' /data/build.prop;")
+                                stringBuilder.append("sed -i '\$adalvik.vm.dex2oat-filter=speed' /data/build.prop;")
+                            }
                         }
                         3 -> {
                             stringBuilder.append("sed -i '\$apm.dexopt.bg-dexopt=verify-none' /data/build.prop;")
@@ -304,16 +298,12 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                             stringBuilder.append("sed -i '\$apm.dexopt.core-app=verify-none' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.first-boot=verify-none' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.forced-dexopt=verify-none' /data/build.prop;")
-                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-                                stringBuilder.append("sed -i '\$apm.dexopt.ab-ota=verify-none' /data/build.prop;")
-                            } else {
-                                // stringBuilder.append("sed -i '\$apm.dexopt.ab-ota=quicken' /data/build.prop;")
-                                stringBuilder.append("sed -i '\$apm.dexopt.ab-ota=extract' /data/build.prop;")
-                            }
                             stringBuilder.append("sed -i '\$apm.dexopt.nsys-library=verify-none' /data/build.prop;")
                             stringBuilder.append("sed -i '\$apm.dexopt.shared-apk=verify-none' /data/build.prop;")
-                            stringBuilder.append("sed -i '\$adalvik.vm.image-dex2oat-filter=verify-none' /data/build.prop;")
-                            stringBuilder.append("sed -i '\$adalvik.vm.dex2oat-filter=verify-none' /data/build.prop;")
+                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                                stringBuilder.append("sed -i '\$adalvik.vm.image-dex2oat-filter=verify-none' /data/build.prop;")
+                                stringBuilder.append("sed -i '\$adalvik.vm.dex2oat-filter=verify-none' /data/build.prop;")
+                            }
                         }
                         4 -> {
                             //

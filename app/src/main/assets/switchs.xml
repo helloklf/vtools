@@ -10,6 +10,18 @@
         <getstate>file:///android_asset/custom/switchs/mainkey_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/mainkey_set.sh</setstate>
     </switch>
+    <switch root="true" support="file:///android_asset/custom/switchs/android_n.sh">
+        <title>自由窗口</title>
+        <desc>开启（原生）系统的窗口模式，在多任务界面显示窗口化按钮</desc>
+        <getstate>file:///android_asset/custom/switchs/freeform_get.sh</getstate>
+        <setstate>file:///android_asset/custom/switchs/freeform_set.sh</setstate>
+    </switch>
+    <switch root="true" confirm="true">
+        <title>低内存设备</title>
+        <desc>开启低内存设备标识，从而激活一些为低端机设计的特性（仅限纯原生系统！！！），定制系统开启后可能无法开机！！！</desc>
+        <getstate>file:///android_asset/custom/switchs/lowram_device_get.sh</getstate>
+        <setstate>file:///android_asset/custom/switchs/lowram_device_set.sh</setstate>
+    </switch>
     <switch root="true">
         <title>Camera2 HAL3</title>
         <desc>启用HAL3，从而支持谷歌相机HDR+功能或避免闪退（谷歌相机需要自行下载适合自己机型的版本）。可能导致相机无法开启或切换缓慢</desc>

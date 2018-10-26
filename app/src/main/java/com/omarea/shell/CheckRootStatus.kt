@@ -3,14 +3,18 @@ package com.omarea.shell
 import android.Manifest
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import android.support.v4.content.PermissionChecker
 import android.util.Log
+import android.widget.Toast
 import com.omarea.shared.CommonCmds
 import com.omarea.vtools.R
+import java.lang.Exception
 
 /**
  * 检查获取root权限
@@ -119,13 +123,26 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
                     Manifest.permission.SYSTEM_ALERT_WINDOW
             )
             requiredPermission.forEach {
-                if (!checkPermission(context, it)) {
-                    if (it == Manifest.permission.SYSTEM_ALERT_WINDOW) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.canDrawOverlays(context)) {
-                        } else {
-                            cmds.append("pm grant ${context.packageName} $it\n")
+                if (it == Manifest.permission.SYSTEM_ALERT_WINDOW) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (!Settings.canDrawOverlays(context)) {
+                            // 未允许悬浮窗
+                            try {
+                                //启动Activity让用户授权
+                                // Toast.makeText(context, "Scene未获得显示悬浮窗权限", Toast.LENGTH_SHORT).show()
+                                // val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + context.getPackageName()));
+                                // context.startActivity(intent);
+                            } catch (ex: Exception) {
+
+                            }
                         }
                     } else {
+                        if (!checkPermission(context, it)) {
+                            cmds.append("pm grant ${context.packageName} $it\n")
+                        }
+                    }
+                } else {
+                    if (!checkPermission(context, it)) {
                         cmds.append("pm grant ${context.packageName} $it\n")
                     }
                 }

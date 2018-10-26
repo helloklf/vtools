@@ -53,9 +53,10 @@ elif [[ "$config" = "0" ]]; then
             echo '操作完成...'
             echo '现在，请重启手机使修改生效！'
         fi
+    elif [[ -f "$path" ]] && [[ -f "$path.bak" ]]; then
+        echo '已备份，删除原文件...'
+        rm -f "$path" 2> /dev/null
     elif [[ ! -f "$path" ]]; then
         echo '原文件已被移除，无需再重复操作...' >&2
     fi;
-    rm -f "$path" 2> /dev/null
 fi;
-
