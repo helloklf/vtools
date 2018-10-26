@@ -150,7 +150,7 @@ class FloatVitualTouchBar// 获取应用的Context
                 vibrator!!.cancel()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     // vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(20, 10), DEFAULT_AMPLITUDE))
-                    vibrator!!.vibrate(VibrationEffect.createOneShot(20, 5))
+                    vibrator!!.vibrate(VibrationEffect.createOneShot(1, 1))
                 } else {
                     vibrator!!.vibrate(longArrayOf(20, 10), -1)
                 }
@@ -184,18 +184,6 @@ class FloatVitualTouchBar// 获取应用的Context
             }
 
             override fun onDown(e: MotionEvent?): Boolean {
-                if (vibratorOn) {
-                    if (vibrator == null) {
-                        vibrator = context.getSystemService(VIBRATOR_SERVICE) as Vibrator
-                    }
-                    vibrator!!.cancel()
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        // vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(20, 10), DEFAULT_AMPLITUDE))
-                        vibrator!!.vibrate(VibrationEffect.createOneShot(1, 1))
-                    } else {
-                        vibrator!!.vibrate(longArrayOf(1, 1), -1)
-                    }
-                }
                 return false
             }
 
@@ -261,7 +249,8 @@ class FloatVitualTouchBar// 获取应用的Context
                 } else {
                     return false;
                 }
-                return true;
+                //return true;
+                return false;
             }
         })
         bar.setOnTouchListener { v, event ->
