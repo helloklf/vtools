@@ -1,5 +1,6 @@
 package com.omarea.vtools.addin
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -32,12 +33,15 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
         return true
     }
 
-    open class ProgressHandler(context: Context) : Handler() {
+    open class ProgressHandler(context: Context, total: Int) : Handler() {
         protected var dialog: View
         protected var alert: android.app.AlertDialog
         protected var textView: TextView
         protected var progressBar: ProgressBar
+        private var total: Int = 0
+        private var current: Int = 0
 
+        @SuppressLint("SetTextI18n")
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
             if (msg.obj != null) {
@@ -57,7 +61,10 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                         val txt = obj
                                 .replace("[compile ", "[编译 ")
                                 .replace("[reset ", "[重置 ")
-                        textView.text = txt
+                        if (obj.contains("compile") || obj.contains("reset")) {
+                            current++
+                        }
+                        textView.text = txt + "\n(${current}/${total})"
                     }
                 }
             }
@@ -65,6 +72,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
 
         init {
             val layoutInflater = LayoutInflater.from(context)
+            this.total = total
             dialog = layoutInflater.inflate(R.layout.dialog_app_options, null)
             alert = android.app.AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
             textView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
@@ -92,68 +100,57 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
             return
         }
 
-        val arr = arrayOf("Speed编译(推荐）", "强制Speed编译", "Everything编译", "强制Everything编译", "Reset", "按默认方式优化（Oreo+）")
+        val arr = arrayOf("Speed编译(推荐）", "强制Speed编译", "Everything编译", "强制Everything编译", "Reset")
         var index = 0
-        AlertDialog.Builder(context)
+        val alert = AlertDialog.Builder(context)
                 .setTitle("请选择执行方式")
                 .setSingleChoiceItems(arr, index, { _, which ->
                     index = which
                 })
                 .setNegativeButton("确定", { _, _ ->
-                    if (index == arr.size - 1) {
-                        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-                            Toast.makeText(context, "系统版本过低（需要Android 8.0+），不支持！", Toast.LENGTH_SHORT).show()
-                            return@setNegativeButton
-                        } else {
-                            val commands = StringBuilder()
-                            commands.append("cmd package bg-dexopt-job")
-                            commands.append("\n\n")
-                            commands.append("echo '[operation completed]';")
-                            commands.append("\n\n")
-                            AsynSuShellUnit(ProgressHandler(context)).exec(commands.toString()).waitFor()
-                        }
-                    } else {
-                        val apps = getAllPackageNames()
-                        val commands = StringBuilder()
-                        val action = if (index == 4) "reset" else "compile"
-                        for (app in apps) {
-                            commands.append("echo '[${action} ${app}]'")
-                            commands.append(";\n`")
-                            when (index) {
-                                0 -> commands.append("cmd package compile -m speed ${app}")
-                                1 -> commands.append("cmd package compile -m speed -f ${app}")
-                                2 -> commands.append("cmd package compile -m everything ${app}")
-                                3 -> commands.append("cmd package compile -m everything -f ${app}")
-                                4 -> commands.append("cmd package compile --reset ${app}")
-                            }
-                            commands.append("` > /dev/null;\n\n")
-                        }
-                        commands.append("echo '[operation completed]';")
-                        commands.append("\n\n")
+                    val apps = getAllPackageNames()
+                    val commands = StringBuilder()
+                    val action = if (index == 4) "reset" else "compile"
+                    for (app in apps) {
+                        commands.append("echo '[${action} ${app}]'")
+                        commands.append(";\n`")
                         when (index) {
-                            0 -> commands.append("cmd package compile -m speed ${context.packageName}")
-                            1 -> commands.append("cmd package compile -m speed -f ${context.packageName}")
-                            2 -> commands.append("cmd package compile -m everything ${context.packageName}")
-                            3 -> commands.append("cmd package compile -m everything -f ${context.packageName}")
-                            4 -> commands.append("cmd package compile --reset ${context.packageName}")
+                            0 -> commands.append("cmd package compile -m speed ${app}")
+                            1 -> commands.append("cmd package compile -m speed -f ${app}")
+                            2 -> commands.append("cmd package compile -m everything ${app}")
+                            3 -> commands.append("cmd package compile -m everything -f ${app}")
+                            4 -> commands.append("cmd package compile --reset ${app}")
                         }
-                        commands.append("\n\n")
-                        AsynSuShellUnit(ProgressHandler(context)).exec(commands.toString()).waitFor()
+                        commands.append("` > /dev/null;\n\n")
                     }
+                    commands.append("echo '[operation completed]';")
+                    commands.append("\n\n")
+                    when (index) {
+                        0 -> commands.append("cmd package compile -m speed ${context.packageName}")
+                        1 -> commands.append("cmd package compile -m speed -f ${context.packageName}")
+                        2 -> commands.append("cmd package compile -m everything ${context.packageName}")
+                        3 -> commands.append("cmd package compile -m everything -f ${context.packageName}")
+                        4 -> commands.append("cmd package compile --reset ${context.packageName}")
+                    }
+                    commands.append("\n\n")
+                    AsynSuShellUnit(ProgressHandler(context, apps.size)).exec(commands.toString()).waitFor()
                 })
                 .setNeutralButton("查看说明", { _, _ ->
                     AlertDialog.Builder(context).setTitle("说明").setMessage("在Android N以后，为了减少应用程序空间占用和提高安装效率，引入了新的机制。在安装应用时，不再像6.0时代一样将整个应用编译成本地代码，通过cmd package compile命令，可用于手动触发编译，常用以下几种模式：\n\nSpeed：尽可能的提高运行效率\nEverything：编译可以被编译的一切\nReset命令用于清除配置脚本和已编译过的代码\n选择强制编译时，将重新编译已经编译过的应用。\nReset命令用于重置所有应用的Dex编译状态。\n\n 以8.0系统下斗鱼TV客户端为例，全新安装时base.odex仅为6.8MB，使用Speed模式编译后，base.odex文件增大到103MB。\n\n由于国内许多应用均使用了热更新技术，或使用其它自定义引擎（Weex、React等）来提高开发效率，但需要在运行时才解析并生成原生组件来渲染，甚至功能代码被托管在服务器端（每次运行都可能需要重新下载并解析）。这是导致应用启动慢或启动后卡顿的主要原因。因此Speed、Everything模式编译均不能为这类应用带来明显的性能提升！").setNegativeButton("了解更多", { dialog, which ->
                         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://source.android.com/devices/tech/dalvik/jit-compiler?hl=zh-cn")))
                     }).create().show()
                 })
-                .create().show()
+                .create()
+
+        alert!!.window!!.setWindowAnimations(R.style.windowAnim)
+        alert.show()
     }
 
     override fun run() {
         run2()
     }
 
-    fun modifyConfigOld () {
+    fun modifyConfigOld() {
         val arr = arrayOf(
                 "verify",
                 "speed",
@@ -164,7 +161,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
             "interpret-only" -> index = 0
             "speed" -> index = 1
         }
-        AlertDialog.Builder(context)
+        val alert = AlertDialog.Builder(context)
                 .setTitle("请选择Dex2oat配置")
                 .setSingleChoiceItems(arr, index, { _, which ->
                     index = which
@@ -185,7 +182,8 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                             stringBuilder.append("sed -i '\$adalvik.vm.image-dex2oat-filter=speed' /data/build.prop;")
                             stringBuilder.append("sed -i '\$adalvik.vm.dex2oat-filter=speed' /data/build.prop;")
                         }
-                        2 -> { }
+                        2 -> {
+                        }
                     }
 
                     stringBuilder.append(CommonCmds.MountSystemRW)
@@ -200,7 +198,10 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                 .setNeutralButton("查看说明", { _, _ ->
                     AlertDialog.Builder(context).setTitle("说明").setMessage("interpret-only模式安装应用更快。speed模式安装应用将会很慢，但是运行速度更快。").create().show()
                 })
-                .create().show()
+                .create()
+
+        alert!!.window!!.setWindowAnimations(R.style.windowAnim)
+        alert.show()
     }
 
     fun modifyConfig() {
@@ -230,7 +231,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                     index = 0
             }
         }
-        AlertDialog.Builder(context)
+        val alert = AlertDialog.Builder(context)
                 .setTitle("请选择pm.dexopt策略")
                 .setSingleChoiceItems(arr, index, { _, which ->
                     index = which
@@ -325,7 +326,9 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                         context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://source.android.com/devices/tech/dalvik/configure?hl=zh-cn")))
                     }).create().show()
                 })
-                .create().show()
+                .create()
+        alert!!.window!!.setWindowAnimations(R.style.windowAnim)
+        alert.show()
     }
 
     fun modifyThreadConfig() {

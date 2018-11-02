@@ -1,6 +1,8 @@
 package com.omarea.shared
 
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import com.omarea.shell.KeepShellAsync
@@ -40,6 +42,7 @@ class SystemScene(private var context: Context) {
     }
 
     fun onScreenOff() {
+        backToHome()
         if (spfAutoConfig.getBoolean(SpfConfig.WIFI + SpfConfig.OFF, false))
             keepShell.doCmd("svc wifi disable")
 
@@ -70,6 +73,24 @@ class SystemScene(private var context: Context) {
         }
         if (lowPowerMode) {
             switchLowPowerModeShell(true)
+        }
+    }
+
+    private fun backToHome() {
+        try {
+            // context.performGlobalAction(GLOBAL_ACTION_HOME)
+            val intent = Intent(Intent.ACTION_MAIN)
+            intent.addCategory(Intent.CATEGORY_HOME)
+            val res = context.getPackageManager().resolveActivity(intent, 0)
+            if (res.activityInfo == null) {
+            } else if (res.activityInfo.packageName == "android") {
+            } else {
+                try {
+                    val home = res.activityInfo.packageName
+                    context.startActivity(Intent().setComponent(ComponentName(home, res.activityInfo.name)))
+                } catch (ex: java.lang.Exception) {}
+            }
+        } catch (ex: Exception) {
         }
     }
 

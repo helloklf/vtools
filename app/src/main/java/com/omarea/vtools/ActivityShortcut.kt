@@ -7,6 +7,7 @@ import com.omarea.shared.CommonCmds
 import com.omarea.shared.ConfigInstaller
 import com.omarea.shared.ModeList
 import com.omarea.shell.Platform
+import com.omarea.shell.RootFile
 import java.io.File
 
 class ActivityShortcut : Activity() {
@@ -30,7 +31,7 @@ class ActivityShortcut : Activity() {
         val stringBuilder = StringBuilder()
         stringBuilder.append(String.format(CommonCmds.ToggleMode, action))
 
-        if (File(CommonCmds.POWER_CFG_PATH).exists()) {
+        if (RootFile.fileExists(CommonCmds.POWER_CFG_PATH)) {
             modeList.executePowercfgMode(action, packageName)
         } else {
             ConfigInstaller().installPowerConfig(this, stringBuilder.toString());

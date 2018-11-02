@@ -21,10 +21,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.omarea.shared.*
 import com.omarea.shared.model.CpuCoreInfo
-import com.omarea.shell.Files
-import com.omarea.shell.KeepShellPublic
-import com.omarea.shell.Platform
-import com.omarea.shell.Props
+import com.omarea.shell.*
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import com.omarea.ui.AdapterCpuCores
 import kotlinx.android.synthetic.main.layout_home.*
@@ -297,7 +294,7 @@ class FragmentHome : Fragment() {
             setModeState()
             return
         }
-        if (File(CommonCmds.POWER_CFG_PATH).exists()) {
+        if (RootFile.fileExists(CommonCmds.POWER_CFG_PATH)) {
             modeList.executePowercfgModeOnce(action, context!!.packageName)
         } else {
             val stringBuilder = StringBuilder()

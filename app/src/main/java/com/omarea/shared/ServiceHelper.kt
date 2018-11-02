@@ -154,7 +154,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
 
         screenHandler.postDelayed({
             onScreenOffCloseNetwork()
-        }, SCREEN_OFF_SWITCH_NETWORK_DELAY)
+        }, SCREEN_OFF_SWITCH_NETWORK_DELAY + 1000)
         // TODO: 关闭屏幕后清理后台
         screenHandler.postDelayed({
             if (!screenOn) stopTimer()
@@ -260,7 +260,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         if (!screenOn) {
             executePowercfgMode(POWERSAVE)
         }
-        if (!File(CommonCmds.POWER_CFG_PATH).exists()) {
+        if (!RootFile.fileExists(CommonCmds.POWER_CFG_PATH)) {
             ConfigInstaller().installPowerConfig(context, "")
         }
         executePowercfgMode(mode)

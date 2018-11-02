@@ -12,6 +12,7 @@ import android.support.v4.app.NotificationCompat
 import com.omarea.shell.KeepShell
 import com.omarea.shell.KernelProrp
 import com.omarea.shell.Props
+import com.omarea.shell.RootFile
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import com.omarea.shell.cpucontrol.ThermalControlUtils
 import com.omarea.shell.units.LMKUnit
@@ -219,7 +220,7 @@ class BootService : IntentService("vtools-boot") {
         val globalPowercfg = globalConfig.getString(SpfConfig.GLOBAL_SPF_POWERCFG, "")
         if (globalPowercfg.isNotEmpty()) {
             val modeList = ModeList()
-            if (File(CommonCmds.POWER_CFG_PATH).exists()) {
+            if (RootFile.fileExists(CommonCmds.POWER_CFG_PATH)) {
                 modeList.executePowercfgModeOnce(globalPowercfg, context!!.packageName)
             } else {
                 val stringBuilder = StringBuilder()
