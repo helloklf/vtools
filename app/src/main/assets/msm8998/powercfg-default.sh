@@ -153,9 +153,9 @@ if [ "$action" = "balance" ]; then
 
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
-    echo 15 > /proc/sys/kernel/sched_init_task_load
+    echo 20 > /proc/sys/kernel/sched_init_task_load
 
-    echo 0-1 > /dev/cpuset/background/cpus
+    echo 0-2 > /dev/cpuset/background/cpus
     echo 0-3 > /dev/cpuset/system-background/cpus
 
 	set_value "84 300000:85 595200:67 825600:75 1248000:78" /sys/devices/system/cpu/cpu0/cpufreq/$governor0/target_loads

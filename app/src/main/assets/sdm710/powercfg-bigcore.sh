@@ -114,7 +114,7 @@ if [ "$action" = "balance" ]; then
     echo 0 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/io_is_busy
     schedutil_cfg 6 1000 5000 0
 
-    echo 0-1 > /dev/cpuset/background/cpus
+    echo 0-2 > /dev/cpuset/background/cpus
     echo 0-3 > /dev/cpuset/system-background/cpus
 
 	exit 0

@@ -221,7 +221,7 @@ class BootService : IntentService("vtools-boot") {
         if (globalPowercfg.isNotEmpty()) {
             val modeList = ModeList()
             if (RootFile.fileExists(CommonCmds.POWER_CFG_PATH)) {
-                modeList.executePowercfgModeOnce(globalPowercfg, context!!.packageName)
+                modeList.executePowercfgMode(globalPowercfg, context!!.packageName)
             } else {
                 val stringBuilder = StringBuilder()
                 stringBuilder.append(String.format(CommonCmds.ToggleMode, globalPowercfg))

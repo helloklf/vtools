@@ -211,13 +211,12 @@ class FloatPowercfgSelector {
             context.sendBroadcast(intent)
         }
 
-
         val positiveBtn = view.findViewById<View>(R.id.positiveBtn) as Button
         positiveBtn.setOnClickListener {
             // 隐藏弹窗
             hidePopupWindow()
             if (selectedMode != mode) {
-                modeList.executePowercfgModeOnce(selectedMode, packageName)
+                modeList.executePowercfgMode(selectedMode, packageName)
                 modeList.setCurrent(selectedMode, packageName)
             }
             spfPowercfg.edit().putString(packageName, selectedMode).commit()

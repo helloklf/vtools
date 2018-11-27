@@ -69,7 +69,7 @@ class SystemScene(private var context: Context) {
             for (item in applist) {
                 keepShell.doCmd("dumpsys deviceidle whitelist -$item\nam set-inactive com.tencent.tim $item\n")
             }
-            keepShell.doCmd("dumpsys deviceidle step\ndumpsys deviceidle step\ndumpsys deviceidle step\ndumpsys deviceidle step\n")
+            keepShell.doCmd("dumpsys deviceidle step\ndumpsys deviceidle step\ndumpsys deviceidle step\ndumpsys deviceidle step\necho 3 > /proc/sys/vm/drop_caches\n")
         }
         if (lowPowerMode) {
             switchLowPowerModeShell(true)

@@ -23,7 +23,6 @@ import com.omarea.shell.KeepShellAsync
 import com.omarea.shell.Platform
 import com.omarea.shell.RootFile
 import com.omarea.vtools.R
-import java.io.File
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -47,7 +46,8 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             "com.omarea.vtools",
             "com.miui.touchassistant",
             "com.miui.contentextension",
-            "com.miui.systemAdSolution")
+            "com.miui.systemAdSolution"
+    )
     private var dyamicCore = false
     private var lockMode = false
     private var firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
@@ -56,14 +56,14 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
     private var screenOn = false
     private var lastScreenOnOff: Long = 0
     //屏幕关闭后切换网络延迟（ms）
-    private val SCREEN_OFF_SWITCH_NETWORK_DELAY: Long = 30000
+    private val SCREEN_OFF_SWITCH_NETWORK_DELAY: Long = 25000
     private var screenHandler = ScreenEventHandler({ onScreenOff() }, { onScreenOn() })
     private var handler = Handler(Looper.getMainLooper())
     private var notifyHelper = NotifyHelper(context, spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))
     private val sceneMode = SceneMode.getInstanceOrInit(context.contentResolver, AppConfigStore(context))!!
     private var timer: Timer? = null
-    private var sceneConfigChanged:BroadcastReceiver? = null
-    private var sceneAppChanged:BroadcastReceiver? = null
+    private var sceneConfigChanged: BroadcastReceiver? = null
+    private var sceneAppChanged: BroadcastReceiver? = null
 
     /**
      * 更新设置
@@ -311,6 +311,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
                 }
             }
         }
+
         init {
             this.dumpTopAppliction = WeakReference(dumpTopAppliction)
             this.packageName = WeakReference(packageName)
@@ -399,10 +400,10 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
             override fun onReceive(context: Context, intent: Intent) {
                 if (intent.extras != null) {
                     if (intent.extras.containsKey("app") && intent.extras.containsKey("mode")) {
-                        val mode = ""
+                        var mode = ""
                         val app = intent.getStringExtra("app")
                         if (intent.extras.containsKey("mode")) {
-                            intent.getStringExtra("mode")
+                            mode = intent.getStringExtra("mode")
                             if (app == lastModePackage && dyamicCore && screenOn) {
                                 if (lastMode != mode) {
                                     toggleConfig(mode)

@@ -74,16 +74,15 @@ then
     do
         app=`echo "$item" | cut -f2 -d ','`
         #echo "deviceidle whitelist -$app"
-        r=`dumpsys deviceidle whitelist -$app | grep Removed`
-        if [[ -n "$r" ]]
-        then
-            am set-inactive $app true 2> /dev/null
-        fi
+        dumpsys deviceidle whitelist -$app 1> /dev/null
+        am set-inactive $app true 2> /dev/null
     done
     dumpsys deviceidle step
     dumpsys deviceidle step
     dumpsys deviceidle step
     dumpsys deviceidle step
+
+    echo 3 > /proc/sys/vm/drop_caches
 
     echo '注意：开启省电模式后，Scene可能会无法保持后台'
     echo '并且，可能会收不到后台消息推送！'

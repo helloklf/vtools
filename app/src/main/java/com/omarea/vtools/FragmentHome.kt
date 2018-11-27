@@ -295,7 +295,7 @@ class FragmentHome : Fragment() {
             return
         }
         if (RootFile.fileExists(CommonCmds.POWER_CFG_PATH)) {
-            modeList.executePowercfgModeOnce(action, context!!.packageName)
+            modeList.executePowercfgMode(action, context!!.packageName)
         } else {
             val stringBuilder = StringBuilder()
             stringBuilder.append(String.format(CommonCmds.ToggleMode, action))

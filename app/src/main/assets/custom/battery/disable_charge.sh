@@ -19,11 +19,8 @@ function set_value()
 
 if [ -f /sys/class/power_supply/battery/battery_charging_enabled ]
 then
-    if [ ! `/sys/class/power_supply/battery/battery_charging_enabled` = '0' ]
-    then
-        set_value > /sys/class/power_supply/battery/battery_charging_enabled 0
-        setprop vtools.bp 1
-    fi
+    set_value > /sys/class/power_supply/battery/battery_charging_enabled 0
+    setprop vtools.bp 1
 elif [[ -f /sys/class/power_supply/battery/input_suspend ]]
 then
     echo 1 > /sys/class/power_supply/battery/input_suspend
