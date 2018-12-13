@@ -189,10 +189,13 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         .show()
             }
             */
+            /*
+            // 在线检查更新：停止维护，不需要了
             if (globalSPF!!.getLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, 0) + (1000 * 7200) < System.currentTimeMillis()) {
                 Update().checkUpdate(this)
                 globalSPF!!.edit().putLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, System.currentTimeMillis()).apply()
             }
+            */
         }
     }
 

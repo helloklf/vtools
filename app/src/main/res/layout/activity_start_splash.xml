@@ -77,17 +77,6 @@
             android:orientation="horizontal"
             tools:ignore="UselessParent">
 
-            <Button
-                android:id="@+id/dummy_button"
-                style="?metaButtonBarButtonStyle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:padding="20dp"
-                android:text="Design by 嘟嘟ski"
-                android:textAlignment="center"
-                android:textColor="#55ffffff" />
-
         </LinearLayout>
     </FrameLayout>
 

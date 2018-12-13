@@ -109,7 +109,7 @@
                     android:layout_marginTop="5dp"
                     android:text="支付宝首页搜索“511531087”领取红包并使用，我便能获得支付宝的少量奖赏。（点击复制红包码）" />
 
-                <TextView
+                <TextView android:visibility="gone"
                     android:id="@+id/pay_alipay_command"
                     style="@style/textSmall"
                     android:layout_width="wrap_content"
