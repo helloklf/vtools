@@ -226,20 +226,11 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_start_splash"
             android:theme="@style/FullscreenTheme" />
-        <activity
-            android:launchMode="singleInstance"
-            android:theme="@style/AppTheme.NoActionBarNight"
-            android:name=".HomeActivity"
-            android:label="@string/title_activity_home">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
-                <!--<category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.HOME" />-->
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+        <service
+            android:name=".MonitorService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

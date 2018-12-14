@@ -23,6 +23,7 @@ import com.omarea.shared.*
 import com.omarea.shared.model.CpuCoreInfo
 import com.omarea.shell.*
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
+import com.omarea.shell.cpucontrol.GpuUtils
 import com.omarea.ui.AdapterCpuCores
 import kotlinx.android.synthetic.main.layout_home.*
 import java.io.File
@@ -143,18 +144,6 @@ class FragmentHome : Fragment() {
             home_raminfo_text.text = "${format1(availMem / 1024.0)} / ${totalMem / 1024 + 1} GB"
             home_ramstate.text = ((totalMem - availMem) * 100 / totalMem).toString() + "%"
             home_raminfo.setData(totalMem.toFloat(), availMem.toFloat())
-            val sdFree = Files.getDirFreeSizeMB(Environment.getDataDirectory().absolutePath)
-            if (sdFree > 8192) {
-                datafree.text = "Data：" + sdFree / 1024 + " GB"
-            } else {
-                datafree.text = "Data：" + sdFree + " MB"
-            }
-            val sdSize = Files.getDirFreeSizeMB(Environment.getExternalStorageDirectory().absolutePath)
-            if (sdSize > 8192) {
-                sdfree.text = "SDCard：" + sdSize / 1024 + " GB"
-            } else {
-                sdfree.text = "SDCard：" + sdSize + " MB"
-            }
             val swapInfo = KeepShellPublic.doCmdSync("free -m | grep Swap")
             if (swapInfo.contains("Swap")) {
                 try {
@@ -216,10 +205,18 @@ class FragmentHome : Fragment() {
             }
             cores.add(core)
         }
+        val gpuFreq = GpuUtils.getGpuFreq() + "Mhz"
+        val gpuLoad = GpuUtils.getGpuLoad()
         myHandler.post {
             try {
+                home_gpu_freq.text = gpuFreq
+                home_gpu_load.text = "负载：" + gpuLoad + "%"
+                if (gpuLoad > -1) {
+                    home_gpu_chat.setData(100.toFloat(), (100 - gpuLoad).toFloat())
+                }
                 if (loads.containsKey(-1)) {
                     cpu_core_total_load.text = "负载：" + loads.get(-1)!!.toInt().toString() + "%"
+                    home_cpu_chat.setData(100.toFloat(), (100 - loads.get(-1)!!.toInt()).toFloat())
                 }
                 if (cpu_core_list.adapter == null) {
                     cpu_core_list.adapter = AdapterCpuCores(context!!, cores)

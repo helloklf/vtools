@@ -160,6 +160,8 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             if (!hasRoot)
                 hideRootMenu(navigationView.menu)
             else {
+                val intent = Intent(this, MonitorService::class.java)
+                startService(intent)
                 try {
                     setHomePage()
                 } catch (ex: Exception) {
