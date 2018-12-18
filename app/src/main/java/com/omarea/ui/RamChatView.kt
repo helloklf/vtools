@@ -2,12 +2,14 @@ package com.omarea.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.RectF
+import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
 import com.omarea.vtools.R
+import android.opengl.ETC1.getHeight
+import android.opengl.ETC1.getWidth
+
+
 
 class RamChatView : View {
     //-------------必须给的数据相关-------------
@@ -142,6 +144,7 @@ class RamChatView : View {
         } else {
             cyclePaint!!.color = resources.getColor(R.color.color_load_low)
         }
+        cyclePaint!!.setStrokeCap(Paint.Cap.ROUND)
         canvas.drawArc(RectF(0f, 0f, mRadius, mRadius), -90f, (ratioState * 3.6f) + 1f, false, cyclePaint!!)
         if (ratioState < ratio) {
             ratioState += 1

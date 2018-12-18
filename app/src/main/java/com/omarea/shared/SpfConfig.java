@@ -42,6 +42,7 @@ public class SpfConfig {
     public static String GLOBAL_SPF_BATTERY_MONITORY = "power_config_battery_monitor";
     public static String GLOBAL_SPF_POWERCFG_FIRST_MODE = "powercfg_first_mode";
     public static String GLOBAL_SPF_DYNAMIC_CONTROL = "dynamic_control";
+    public static String GLOBAL_SPF_DYNAMIC_CONTROL_SIMPLE = "dynamic_control_simple";
     public static String GLOBAL_SPF_LOCK_MODE = "lock_mode";
     public static String GLOBAL_SPF_POWERCFG = "global_powercfg";
     public static String GLOBAL_SPF_LAST_UPDATE = "global_lastupdate";

@@ -1,6 +1,7 @@
 package com.omarea.vtools
 
 import android.Manifest
+import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
@@ -28,6 +29,7 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import com.omarea.shared.AccessibleServiceHelper
 import com.omarea.shared.CrashHandler
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.Update
@@ -160,8 +162,10 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             if (!hasRoot)
                 hideRootMenu(navigationView.menu)
             else {
-                val intent = Intent(this, MonitorService::class.java)
-                startService(intent)
+                if (!AccessibleServiceHelper().serviceIsRunning(this) && globalSPF!!.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_SIMPLE, false)) {
+                    val intent = Intent(this, MonitorService::class.java)
+                    startService(intent)
+                }
                 try {
                     setHomePage()
                 } catch (ex: Exception) {

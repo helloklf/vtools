@@ -28,6 +28,7 @@
         <item>com.android.wallpapercropper</item>
     </string-array>
     <string-array name="powercfg_game">
+        <item>com.tencent.tmgp.speedmobile</item>
         <item>com.tencent.tmgp.pubgm</item>
         <item>com.tencent.tmgp.pubgmhd</item>
         <item>com.rarlab.rar</item>
@@ -36,12 +37,17 @@
         <item>com.niksoftware.snapseed</item>
         <item>com.goseet.vidtrim</item>
         <item>com.netease.hyxd</item>
+        <item>com.mihoyo.bh3</item>
+        <item>com.mihoyo.bh3.mi</item>
         <item>com.mihoyo.bh3.uc</item>
         <item>com.pinguo.edit.sdk</item>
         <item>com.ak.mi</item>
         <item>com.tencent.cldts</item>
         <item>com.pinguo.edit.sdk</item>
         <item>com.miHoYo.bh3.wdj</item>
+        <item>com.netease.dwrg</item>
+        <item>com.netease.mrzh</item>
+        <item>com.netease.mrzh.aligames</item>
     </string-array>
     <string-array name="powercfg_fast">
         <item>com.ludashi.benchmark</item>
@@ -56,6 +62,10 @@
         <item>com.miui.packageinstaller</item>
         <item>com.google.android.packageinstaller</item>
         <item>com.miui.backup</item>
+        <item>com.ludashi.vrbench</item>
+        <item>com.huahua.test</item>
+        <item>com.futuremark.dmandroid.application</item>
+        <item>com.futuremark.dmandroid.applicatioo</item>
     </string-array>
 
     <string name="btn_cancel">取消</string>

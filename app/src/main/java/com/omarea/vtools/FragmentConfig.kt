@@ -96,7 +96,35 @@ class FragmentConfig : Fragment() {
         super.onResume()
         bindService()
         val serviceState = AccessibleServiceHelper().serviceIsRunning(context!!)
-        btn_config_service_not_active.visibility = if (serviceState) View.GONE else View.VISIBLE
+        val simpleMode = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_SIMPLE, false)
+        btn_config_service_not_active.visibility = if (serviceState || simpleMode) View.GONE else View.VISIBLE
+        config_acc_opt.visibility = if (simpleMode) View.GONE else View.VISIBLE
+    }
+
+    private fun startService () {
+        val dialog = ProgressBarDialog(context!!)
+        dialog.showDialog("尝试使用ROOT权限开启服务...")
+        Thread(Runnable {
+            if (!AccessibleServiceHelper().startServiceUseRoot(context!!)) {
+                try {
+                    myHandler.post {
+                        val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                        startActivity(intent)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                } finally {
+                    myHandler.post {
+                        dialog.hideDialog()
+                    }
+                }
+            } else {
+                myHandler.post {
+                    dialog.hideDialog()
+                    btn_config_service_not_active.visibility = if (AccessibleServiceHelper().serviceIsRunning(context!!)) View.GONE else View.VISIBLE
+                }
+            }
+        }).start()
     }
 
     @SuppressLint("CommitPrefEdits", "ApplySharedPref")
@@ -120,29 +148,23 @@ class FragmentConfig : Fragment() {
         checkConfig()
 
         btn_config_service_not_active.setOnClickListener {
-            val dialog = ProgressBarDialog(context!!)
-            dialog.showDialog("尝试使用ROOT权限开启服务...")
-            Thread(Runnable {
-                if (!AccessibleServiceHelper().startServiceUseRoot(context!!)) {
-                    try {
-                        myHandler.post {
-                            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                            startActivity(intent)
-                        }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    } finally {
-                        myHandler.post {
-                            dialog.hideDialog()
-                        }
-                    }
-                } else {
-                    myHandler.post {
-                        dialog.hideDialog()
-                        btn_config_service_not_active.visibility = if (AccessibleServiceHelper().serviceIsRunning(context!!)) View.GONE else View.VISIBLE
-                    }
-                }
-            }).start()
+            AlertDialog.Builder(this.context).setTitle("选择模式")
+                    .setMessage("经典：使用辅助服务检测应用切换，这也是Scene以往的版本一直使用的方式\n\n简单：实验性，使用monitor检测应用切换，性能消耗更小（不支持应用安装自动点击）。\n\n注意，两种方式均需要Scene保持后台运行！")
+                    .setNegativeButton("经典", {
+                        _, _ ->
+                        startService()
+                    })
+                    .setPositiveButton("简单", {
+                        _, _ ->
+                        globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_SIMPLE, true).apply()
+
+                        val service = Intent(context, MonitorService::class.java)
+                        //service.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        context!!.startService(service)
+                        btn_config_service_not_active.visibility = View.GONE
+                    })
+                    .create()
+                    .show()
         }
 
         configlist_tabhost.setup()
@@ -434,13 +456,13 @@ class FragmentConfig : Fragment() {
 
     private fun initDefaultConfig() {
         for (item in resources.getStringArray(R.array.powercfg_igoned)) {
-            editor.putString(item, "igoned")
+            editor.putString(item, ModeList.IGONED)
         }
         for (item in resources.getStringArray(R.array.powercfg_fast)) {
-            editor.putString(item, "fast")
+            editor.putString(item, ModeList.FAST)
         }
         for (item in resources.getStringArray(R.array.powercfg_game)) {
-            editor.putString(item, "game")
+            editor.putString(item, ModeList.PERFORMANCE)
         }
         editor.commit()
     }

@@ -141,8 +141,7 @@ class FragmentHome : Fragment() {
             activityManager!!.getMemoryInfo(info)
             val totalMem = (info.totalMem / 1024 / 1024f).toInt()
             val availMem = (info.availMem / 1024 / 1024f).toInt()
-            home_raminfo_text.text = "${format1(availMem / 1024.0)} / ${totalMem / 1024 + 1} GB"
-            home_ramstate.text = ((totalMem - availMem) * 100 / totalMem).toString() + "%"
+            home_raminfo_text.text = "${((totalMem - availMem) * 100 / totalMem)}% (${totalMem / 1024 + 1}GB)"
             home_raminfo.setData(totalMem.toFloat(), availMem.toFloat())
             val swapInfo = KeepShellPublic.doCmdSync("free -m | grep Swap")
             if (swapInfo.contains("Swap")) {
@@ -153,19 +152,16 @@ class FragmentHome : Fragment() {
                         val use = swapInfos.substring(swapInfos.indexOf(" ")).trim().toInt()
                         val free = total - use
                         home_swapstate_chat.setData(total.toFloat(), free.toFloat())
-                        home_swapstate.text = (use * 100.0 / total).toInt().toString() + "%"
                         if (total > 99) {
-                            home_zramsize.text = "${format1(free / 1024.0)} / ${format1(total / 1024.0)} GB"
+                            home_zramsize.text = "${(use * 100.0 / total).toInt().toString()}% (${format1(total / 1024.0)}GB)"
                         } else {
-                            home_zramsize.text = "${free}/${total}MB"
+                            home_zramsize.text = "${(use * 100.0 / total).toInt().toString()}% (${total}MB)"
                         }
                     }
                 } catch (ex: java.lang.Exception) {
-                    home_swapstate.text = ""
                 }
                 // home_swapstate.text = swapInfo.substring(swapInfo.indexOf(" "), swapInfo.lastIndexOf(" ")).trim()
             } else {
-                home_swapstate.text = ""
             }
         } catch (ex: Exception) {
 
@@ -180,7 +176,7 @@ class FragmentHome : Fragment() {
             coreCount = CpuFrequencyUtils.getCoreCount()
             myHandler.post {
                 try {
-                    cpu_core_count.text = "核心数：$coreCount"
+                    cpu_core_count.text = "$coreCount 核心"
                 } catch (ex: Exception) {}
             }
         }

@@ -16,6 +16,7 @@ import com.omarea.shell.RootFile
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import com.omarea.shell.cpucontrol.ThermalControlUtils
 import com.omarea.shell.units.LMKUnit
+import com.omarea.vtools.MonitorService
 import com.omarea.vtools.R
 import java.io.File
 
@@ -64,6 +65,9 @@ class BootService : IntentService("vtools-boot") {
     override fun onHandleIntent(intent: Intent?) {
         swapConfig = this.getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)
         globalConfig = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+        if (!AccessibleServiceHelper().serviceIsRunning(this) && globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_SIMPLE, false)) {
+            startService(Intent(this, MonitorService::class.java))
+        }
 
         if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_START_DELAY, false)) {
             Thread.sleep(25 * 1000)

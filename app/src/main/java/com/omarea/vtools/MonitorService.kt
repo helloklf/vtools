@@ -13,20 +13,20 @@ import com.omarea.shell.AsynSuShellUnit
 class MonitorService : Service() {
     var serviceHelper: ServiceHelper2? = null
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        AsynSuShellUnit(object : Handler() {
-            override fun handleMessage(msg: Message?) {
-                super.handleMessage(msg)
-                if (msg != null && msg.what == 1) {
-                    onOutput(msg.obj.toString())
+        if (serviceHelper == null) {
+            AsynSuShellUnit(object : Handler() {
+                override fun handleMessage(msg: Message?) {
+                    super.handleMessage(msg)
+                    if (msg != null && msg.what == 1) {
+                        onOutput(msg.obj.toString())
+                    }
                 }
-            }
-        }).exec(if(Build.VERSION.SDK_INT > Build.VERSION_CODES.M) "am monitor" else "cmd activity monitor").waitFor(Runnable{
-            stopSelf()
-        })
-        if (serviceHelper != null) {
-            serviceHelper!!.onInterrupt()
+            }).exec(if(Build.VERSION.SDK_INT > Build.VERSION_CODES.M) "am monitor" else "cmd activity monitor").waitFor(Runnable{
+                stopSelf()
+            })
+            serviceHelper = ServiceHelper2(this)
+            Toast.makeText(this, "试验阶段的动态响应实现方案，如果出现问题，请换回经典方案（激活Scene的辅助服务）", Toast.LENGTH_LONG).show()
         }
-        serviceHelper = ServiceHelper2(this)
         return super.onStartCommand(intent, flags, startId)
     }
 
@@ -40,12 +40,12 @@ class MonitorService : Service() {
             return
         }
         val app = row.substring(row.indexOf(":") + 1).trim()
-        if (app == "com.android.systemui") {
+        if (app == "com.android.systemui" || app == "com.omarea.vtools") {
             return
         }
         if (last != app) {
             last = app
-            Toast.makeText(this, app, Toast.LENGTH_SHORT).show()
+            // Toast.makeText(this, app, Toast.LENGTH_SHORT).show()
         }
         serviceHelper!!.onFocusAppChanged(app)
     }
