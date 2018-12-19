@@ -29,6 +29,7 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Toast
 import com.omarea.shared.AccessibleServiceHelper
 import com.omarea.shared.CrashHandler
 import com.omarea.shared.SpfConfig
@@ -257,6 +258,30 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when (item.itemId) {
             R.id.action_settings -> startActivity(Intent(this.applicationContext, ActivitySceneOtherSettings::class.java))
             R.id.action_power -> DialogPower(this).showPowerMenu()
+            R.id.action_graph -> {
+                if (FloatMonitor.isShown == true) {
+                    FloatMonitor(this).hidePopupWindow()
+                    return false
+                }
+                if (Build.VERSION.SDK_INT >= 23) {
+                    if (Settings.canDrawOverlays(this)) {
+                        FloatMonitor(this).showPopupWindow()
+                        Toast.makeText(this, "长按悬浮窗即可关闭监视器\n触摸悬浮窗隐藏5秒", Toast.LENGTH_LONG).show()
+                    } else {
+                        //若没有权限，提示获取
+                        //val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                        //startActivity(intent);
+                        val intent = Intent()
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        intent.action = "android.settings.APPLICATION_DETAILS_SETTINGS"
+                        intent.data = Uri.fromParts("package", this.packageName, null)
+                        Toast.makeText(applicationContext, "请先为Scene授权显示悬浮窗权限！", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    FloatMonitor(this).showPopupWindow()
+                    Toast.makeText(this, "长按悬浮窗即可关闭监视器\n触摸悬浮窗隐藏5秒", Toast.LENGTH_LONG).show()
+                }
+            }
         }
         return super.onOptionsItemSelected(item)
     }

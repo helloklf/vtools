@@ -6,7 +6,7 @@
         android:icon="@drawable/graph"
         android:orderInCategory="100"
         android:title=""
-        android:visible="false"
+        android:visible="true"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/action_power"

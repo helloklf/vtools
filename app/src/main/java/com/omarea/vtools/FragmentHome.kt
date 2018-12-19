@@ -11,7 +11,6 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.os.Handler
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -21,7 +20,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.omarea.shared.*
 import com.omarea.shared.model.CpuCoreInfo
-import com.omarea.shell.*
+import com.omarea.shell.KeepShellPublic
+import com.omarea.shell.Platform
+import com.omarea.shell.Props
+import com.omarea.shell.RootFile
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import com.omarea.shell.cpucontrol.GpuUtils
 import com.omarea.ui.AdapterCpuCores
@@ -164,7 +166,6 @@ class FragmentHome : Fragment() {
             } else {
             }
         } catch (ex: Exception) {
-
         }
     }
 
