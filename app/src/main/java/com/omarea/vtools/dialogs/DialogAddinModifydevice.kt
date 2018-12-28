@@ -60,42 +60,42 @@ class DialogAddinModifydevice(var context: Context) {
         val dialogInstance = AlertDialog.Builder(context)
                 //.setTitle("机型信息修改")
                 .setView(dialog).setNegativeButton("保存重启", { _, _ ->
-            val sb = StringBuilder()
-            val model = editModel.text.trim()
-            val brand = editBrand.text.trim()
-            val product = editProductName.text.trim()
-            val device = editDevice.text.trim()
-            val manufacturer = editManufacturer.text.trim()
-            if (model.isNotEmpty() || brand.isNotEmpty() || product.isNotEmpty() || device.isNotEmpty() || manufacturer.isNotEmpty()) {
-                backupDefault()
-                sb.append(CommonCmds.MountSystemRW)
-                sb.append("cp /system/build.prop /data/build.prop;chmod 0755 /data/build.prop;")
+                    val sb = StringBuilder()
+                    val model = editModel.text.trim()
+                    val brand = editBrand.text.trim()
+                    val product = editProductName.text.trim()
+                    val device = editDevice.text.trim()
+                    val manufacturer = editManufacturer.text.trim()
+                    if (model.isNotEmpty() || brand.isNotEmpty() || product.isNotEmpty() || device.isNotEmpty() || manufacturer.isNotEmpty()) {
+                        backupDefault()
+                        sb.append(CommonCmds.MountSystemRW)
+                        sb.append("cp /system/build.prop /data/build.prop;chmod 0755 /data/build.prop;")
 
-                if (brand.isNotEmpty())
-                    sb.append("busybox sed -i 's/^ro.product.brand=.*/ro.product.brand=$brand/' /data/build.prop;")
-                if (product.isNotEmpty())
-                    sb.append("busybox sed -i 's/^ro.product.name=.*/ro.product.name=$product/' /data/build.prop;")
-                if (model.isNotEmpty())
-                    sb.append("busybox sed -i 's/^ro.product.model=.*/ro.product.model=$model/' /data/build.prop;")
-                if (manufacturer.isNotEmpty())
-                    sb.append("busybox sed -i 's/^ro.product.manufacturer=.*/ro.product.manufacturer=$manufacturer/' /data/build.prop;")
-                if (device.isNotEmpty())
-                    sb.append("busybox sed -i 's/^ro.product.device=.*/ro.product.device=$device/' /data/build.prop;")
+                        if (brand.isNotEmpty())
+                            sb.append("busybox sed -i 's/^ro.product.brand=.*/ro.product.brand=$brand/' /data/build.prop;")
+                        if (product.isNotEmpty())
+                            sb.append("busybox sed -i 's/^ro.product.name=.*/ro.product.name=$product/' /data/build.prop;")
+                        if (model.isNotEmpty())
+                            sb.append("busybox sed -i 's/^ro.product.model=.*/ro.product.model=$model/' /data/build.prop;")
+                        if (manufacturer.isNotEmpty())
+                            sb.append("busybox sed -i 's/^ro.product.manufacturer=.*/ro.product.manufacturer=$manufacturer/' /data/build.prop;")
+                        if (device.isNotEmpty())
+                            sb.append("busybox sed -i 's/^ro.product.device=.*/ro.product.device=$device/' /data/build.prop;")
 
-                sb.append("cp /system/build.prop /system/build.bak.prop\n")
-                sb.append("cp /data/build.prop /system/build.prop\n")
-                sb.append("rm /data/build.prop\n")
-                sb.append("chmod 0755 /system/build.prop\n")
-                sb.append("sync\n")
-                sb.append("reboot\n")
+                        sb.append("cp /system/build.prop /system/build.bak.prop\n")
+                        sb.append("cp /data/build.prop /system/build.prop\n")
+                        sb.append("rm /data/build.prop\n")
+                        sb.append("chmod 0755 /system/build.prop\n")
+                        sb.append("sync\n")
+                        sb.append("reboot\n")
 
-                KeepShellPublic.doCmdSync(sb.toString())
-            } else {
-                Toast.makeText(context, "什么也没有修改！", Toast.LENGTH_SHORT).show()
-            }
-        }).setPositiveButton("使用帮助", DialogInterface.OnClickListener { dialog, which ->
-            AlertDialog.Builder(context).setMessage(R.string.dialog_addin_device_desc).setNegativeButton(R.string.btn_confirm, { _, _ -> }).create().show()
-        }).create()
+                        KeepShellPublic.doCmdSync(sb.toString())
+                    } else {
+                        Toast.makeText(context, "什么也没有修改！", Toast.LENGTH_SHORT).show()
+                    }
+                }).setPositiveButton("使用帮助", DialogInterface.OnClickListener { dialog, which ->
+                    AlertDialog.Builder(context).setMessage(R.string.dialog_addin_device_desc).setNegativeButton(R.string.btn_confirm, { _, _ -> }).create().show()
+                }).create()
 
         dialogInstance.window!!.setWindowAnimations(R.style.windowAnim)
         dialogInstance.show()
@@ -112,9 +112,8 @@ class DialogAddinModifydevice(var context: Context) {
                     val deviceInfos = copyData.split("@")
                     AlertDialog.Builder(context)
                             .setTitle("可用的模板")
-                            .setMessage("检测到已复制的机型信息：\n\n" +copyData + "\n\n是否立即使用？")
-                            .setPositiveButton(R.string.btn_confirm, {
-                                _, _ ->
+                            .setMessage("检测到已复制的机型信息：\n\n" + copyData + "\n\n是否立即使用？")
+                            .setPositiveButton(R.string.btn_confirm, { _, _ ->
                                 editModel.setText(deviceInfos[0])
                                 editBrand.setText(deviceInfos[1])
                                 editProductName.setText(deviceInfos[3])
@@ -125,7 +124,8 @@ class DialogAddinModifydevice(var context: Context) {
                             .create().show()
                 }
             }
-        } catch (ex: Exception) {}
+        } catch (ex: Exception) {
+        }
     }
 
     private lateinit var editModel: EditText

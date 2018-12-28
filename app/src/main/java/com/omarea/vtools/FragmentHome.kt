@@ -86,7 +86,8 @@ class FragmentHome : Fragment() {
                     try {
                         updateRamInfo()
                         Toast.makeText(context, "缓存已清理...", Toast.LENGTH_SHORT).show()
-                    } catch (ex: java.lang.Exception) {}
+                    } catch (ex: java.lang.Exception) {
+                    }
                 }, 600)
             }).start()
         }
@@ -123,7 +124,7 @@ class FragmentHome : Fragment() {
     }
 
     private var coreCount = -1;
-    private var activityManager:ActivityManager? = null
+    private var activityManager: ActivityManager? = null
 
     private var minFreqs = HashMap<Int, String>()
     private var maxFreqs = HashMap<Int, String>()
@@ -133,6 +134,7 @@ class FragmentHome : Fragment() {
         bd = bd.setScale(1, RoundingMode.HALF_UP)
         return bd.toString()
     }
+
     @SuppressLint("SetTextI18n")
     private fun updateRamInfo() {
         try {
@@ -178,7 +180,8 @@ class FragmentHome : Fragment() {
             myHandler.post {
                 try {
                     cpu_core_count.text = "$coreCount 核心"
-                } catch (ex: Exception) {}
+                } catch (ex: Exception) {
+                }
             }
         }
         val cores = ArrayList<CpuCoreInfo>()
@@ -274,7 +277,7 @@ class FragmentHome : Fragment() {
                 AlertDialog.Builder(context)
                         .setTitle("暂不支持该设备")
                         .setMessage("根据许多魅族16th/16th Plus用户反馈，使用性能调度模式以后会无法正常开机（原因不详）。为了避免更多用户被坑，该功能现在将直接不再允许Meizu的sdm845、sdm710系列手机使用！")
-                        .setPositiveButton(R.string.btn_iknow, { _,_ -> })
+                        .setPositiveButton(R.string.btn_iknow, { _, _ -> })
                         .create()
                         .show()
                 return

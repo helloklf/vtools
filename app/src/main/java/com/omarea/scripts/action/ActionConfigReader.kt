@@ -30,8 +30,7 @@ object ActionConfigReader {
                 when (type) {
                     XmlPullParser.START_TAG -> if ("actions" == parser.name) {
                         actions = ArrayList()
-                    }
-                    else if ("action" == parser.name) {
+                    } else if ("action" == parser.name) {
                         action = ActionInfo()
                         for (i in 0 until parser.attributeCount) {
                             if (action == null) {
@@ -54,8 +53,7 @@ object ActionConfigReader {
                                 }
                             }
                         }
-                    }
-                    else if (action != null) {
+                    } else if (action != null) {
                         if ("title" == parser.name) {
                             action.title = parser.nextText()
                         } else if ("desc" == parser.name) {

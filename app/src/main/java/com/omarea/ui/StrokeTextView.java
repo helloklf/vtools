@@ -8,7 +8,6 @@ import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.omarea.vtools.R;
 
 /*
  * StrokeTextView的目标是给文字描边
@@ -27,18 +26,18 @@ public class StrokeTextView extends TextView {
 
     public StrokeTextView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        borderText = new TextView(context,attrs);
+        borderText = new TextView(context, attrs);
         init();
     }
 
     public StrokeTextView(Context context, AttributeSet attrs,
                           int defStyle) {
         super(context, attrs, defStyle);
-        borderText = new TextView(context,attrs,defStyle);
+        borderText = new TextView(context, attrs, defStyle);
         init();
     }
 
-    public void init(){
+    public void init() {
         TextPaint tp1 = borderText.getPaint();
         tp1.setStrokeWidth(2);                                  //设置描边宽度
         tp1.setStyle(Paint.Style.STROKE);                             //对文字只描边
@@ -47,7 +46,7 @@ public class StrokeTextView extends TextView {
     }
 
     @Override
-    public void setLayoutParams (ViewGroup.LayoutParams params){
+    public void setLayoutParams(ViewGroup.LayoutParams params) {
         super.setLayoutParams(params);
         borderText.setLayoutParams(params);
     }
@@ -57,7 +56,7 @@ public class StrokeTextView extends TextView {
         CharSequence tt = borderText.getText();
 
         //两个TextView上的文字必须一致
-        if(tt== null || !tt.equals(this.getText())){
+        if (tt == null || !tt.equals(this.getText())) {
             borderText.setText(getText());
             this.postInvalidate();
         }
@@ -65,7 +64,7 @@ public class StrokeTextView extends TextView {
         borderText.measure(widthMeasureSpec, heightMeasureSpec);
     }
 
-    protected void onLayout (boolean changed, int left, int top, int right, int bottom){
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         borderText.layout(left, top, right, bottom);
     }

@@ -61,7 +61,7 @@ class SystemScene(private var context: Context) {
         }
 
         val lowPowerMode = spfAutoConfig.getBoolean(SpfConfig.FORCEDOZE + SpfConfig.ON, false)
-        if (lowPowerMode || spfAutoConfig.getBoolean(SpfConfig.FORCEDOZE + SpfConfig.ON, false)){
+        if (lowPowerMode || spfAutoConfig.getBoolean(SpfConfig.FORCEDOZE + SpfConfig.ON, false)) {
             // 强制Doze: dumpsys deviceidle force-idle
             val applist = AppConfigStore(context).getDozeAppList()
             keepShell.doCmd("dumpsys deviceidle enable\ndumpsys deviceidle enable all\n")
@@ -88,14 +88,15 @@ class SystemScene(private var context: Context) {
                 try {
                     val home = res.activityInfo.packageName
                     context.startActivity(Intent().setComponent(ComponentName(home, res.activityInfo.name)))
-                } catch (ex: java.lang.Exception) {}
+                } catch (ex: java.lang.Exception) {
+                }
             }
         } catch (ex: Exception) {
         }
     }
 
     private var lowPowerModeShell: String? = ""
-    private fun switchLowPowerModeShell (powersave: Boolean) {
+    private fun switchLowPowerModeShell(powersave: Boolean) {
         if (lowPowerModeShell == null) {
             return
         }

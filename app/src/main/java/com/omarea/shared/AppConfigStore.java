@@ -95,7 +95,7 @@ public class AppConfigStore extends SQLiteOpenHelper {
         return list;
     }
 
-    public boolean needKeyCapture () {
+    public boolean needKeyCapture() {
         boolean r = false;
         try {
             SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();

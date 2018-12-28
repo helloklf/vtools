@@ -2,7 +2,6 @@ package com.omarea.vtools
 
 import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Context.VIBRATOR_SERVICE
 import android.content.SharedPreferences
@@ -10,7 +9,6 @@ import android.graphics.PixelFormat
 import android.graphics.Point
 import android.os.Build
 import android.os.VibrationEffect
-import android.os.VibrationEffect.DEFAULT_AMPLITUDE
 import android.os.Vibrator
 import android.provider.Settings
 import android.view.*
@@ -81,7 +79,7 @@ class FloatVitualTouchBar// 获取应用的Context
         params.height = LayoutParams.WRAP_CONTENT
 
         params.gravity = Gravity.BOTTOM
-        params.flags =  LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE or LayoutParams.FLAG_FULLSCREEN or LayoutParams.FLAG_LAYOUT_IN_SCREEN or LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE or LayoutParams.FLAG_FULLSCREEN or LayoutParams.FLAG_LAYOUT_IN_SCREEN or LayoutParams.FLAG_LAYOUT_NO_LIMITS
         // WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         // LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE or
 
@@ -137,6 +135,7 @@ class FloatVitualTouchBar// 获取应用的Context
         val scale = context.resources.displayMetrics.density
         return (dpValue * scale + 0.5f).toInt()
     }
+
     private fun performGlobalAction(context: AccessibilityService, event: Int) {
         if (isLandscapf && (lastEventTime + 1000 < System.currentTimeMillis() || lastEvent != event)) {
             lastEvent = event
@@ -169,6 +168,7 @@ class FloatVitualTouchBar// 获取应用的Context
         val gust = GestureDetector(context, object : GestureDetector.OnGestureListener {
             // 定义手势动作亮点之间的最小距离
             val FLIP_DISTANCE = dp2px(context, 70f)
+
             override fun onLongPress(e: MotionEvent?) {
                 if (e != null) {
                     if (e.getX() < bar.width * 0.33) {

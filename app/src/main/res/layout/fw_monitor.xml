@@ -1,29 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="top"
-    android:background="@drawable/shape_corner">
+    android:background="@drawable/shape_corner"
+    android:orientation="vertical">
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="true"
         android:orientation="horizontal"
-        android:layout_margin="4dp">
-
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:layout_marginTop="4dp">
         <LinearLayout
             android:orientation="vertical"
             android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <FrameLayout
-                android:layout_width="38dp"
-                android:layout_height="38dp">
+                android:layout_width="35dp"
+                android:layout_height="35dp">
                 <com.omarea.ui.CpuChatView
                     android:id="@+id/fw_cpu_load"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
                 <TextView
+                    android:textStyle="bold"
                     android:textColor="#ffffff"
                     android:text="CPU"
                     android:textSize="8dp"
@@ -33,6 +36,8 @@
                     android:layout_height="wrap_content" />
             </FrameLayout>
             <TextView
+                android:textStyle="bold"
+                android:layout_marginBottom="1dp"
                 android:textColor="#ffffff"
                 android:id="@+id/fw_cpu_freq"
                 android:text="0Mhz"
@@ -49,23 +54,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <FrameLayout
-                android:layout_width="38dp"
-                android:layout_height="38dp">
-                <com.omarea.ui.CpuChatView
+                android:layout_width="35dp"
+                android:layout_height="35dp">
+                <com.omarea.ui.FloatMonitorChatView
                     android:id="@+id/fw_gpu_load"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
+
                 <TextView
-                    android:textColor="#ffffff"
-                    android:text="GPU"
-                    android:textSize="8dp"
-                    android:layout_gravity="center"
-                    android:textAlignment="center"
+                    android:textStyle="bold"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="GPU"
+                    android:textAlignment="center"
+                    android:textAllCaps="false"
+                    android:textColor="#ffffff"
+                    android:textSize="8dp" />
             </FrameLayout>
 
             <TextView
+                android:textStyle="bold"
+                android:layout_marginBottom="1dp"
                 android:textColor="#ffffff"
                 android:id="@+id/fw_gpu_freq"
                 android:layout_width="wrap_content"
@@ -81,13 +91,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <FrameLayout
-                android:layout_width="38dp"
-                android:layout_height="38dp">
-                <com.omarea.ui.CpuChatView
+                android:layout_width="35dp"
+                android:layout_height="35dp">
+                <com.omarea.ui.FloatMonitorChatView
                     android:id="@+id/fw_ram_load"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
                 <TextView
+                    android:textStyle="bold"
                     android:textColor="#ffffff"
                     android:text="RAM"
                     android:textSize="8dp"
@@ -98,6 +109,8 @@
             </FrameLayout>
 
             <TextView
+                android:textStyle="bold"
+                android:layout_marginBottom="1dp"
                 android:textColor="#ffffff"
                 android:id="@+id/fw_ram_use"
                 android:layout_width="wrap_content"
@@ -107,4 +120,4 @@
                 android:textSize="6dp" />
         </LinearLayout>
     </LinearLayout>
-</FrameLayout>
+</LinearLayout>

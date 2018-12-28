@@ -75,8 +75,7 @@ class BackupRestoreUnit(var context: Context) {
         myHandler.post {
             val builder = AlertDialog.Builder(context)
             builder.setTitle(title)
-            builder.setPositiveButton(android.R.string.yes, {
-                _, _ ->
+            builder.setPositiveButton(android.R.string.yes, { _, _ ->
             })
             builder.setMessage(msg + "\n")
             builder.create().show()

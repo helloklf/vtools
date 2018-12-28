@@ -52,7 +52,7 @@ public class ViewConfig {
         XposedBridge.hookAllMethods(clazz, "getScaledMinimumFlingVelocity", new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-              param.setResult(5);
+                param.setResult(5);
             }
         });
         XposedBridge.hookAllMethods(clazz, "getScaledMaximumFlingVelocity", new XC_MethodHook() {

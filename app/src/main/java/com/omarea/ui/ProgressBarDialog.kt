@@ -43,7 +43,8 @@ open class ProgressBarDialog(private var context: Context) {
                     alertDialog!!.hide()
                     Toast.makeText(alertDialog!!.context, R.string.execute_fail, Toast.LENGTH_LONG).show()
                 }
-            } catch (ex: Exception) { }
+            } catch (ex: Exception) {
+            }
         }
     }
 
@@ -80,7 +81,8 @@ open class ProgressBarDialog(private var context: Context) {
                 alert!!.hide()
                 alert = null
             }
-        } catch (ex: Exception) { }
+        } catch (ex: Exception) {
+        }
     }
 
     @SuppressLint("InflateParams")

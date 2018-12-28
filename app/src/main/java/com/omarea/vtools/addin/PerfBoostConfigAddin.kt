@@ -12,7 +12,7 @@ import com.omarea.shell.Platform
  */
 
 class PerfBoostConfigAddin(private var context: Context) : AddinBase(context) {
-    fun install () {
+    fun install() {
         val soc = Platform().getCPUName()
         if (soc == "msm8998") {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
@@ -60,7 +60,7 @@ class PerfBoostConfigAddin(private var context: Context) : AddinBase(context) {
         copyFile(path)
     }
 
-    private fun copyFile (path: String?) {
+    private fun copyFile(path: String?) {
         if (path != null) {
             val installPath = "/system/vendor/etc/perf/perfboostsconfig.xml"
             command = StringBuilder()

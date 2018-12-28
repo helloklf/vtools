@@ -23,7 +23,7 @@ class AccessibilityServiceSceneKeyEvent : AccessibilityService() {
     private var eventHandlers: HashMap<Int, ButtonEventHandler> = HashMap()
     private lateinit var sharedPreferences: SharedPreferences
     private var floatVitualTouchBar: FloatVitualTouchBar? = null
-    private var sceneConfigChanged:BroadcastReceiver? = null
+    private var sceneConfigChanged: BroadcastReceiver? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -75,8 +75,7 @@ class AccessibilityServiceSceneKeyEvent : AccessibilityService() {
         if (floatVitualTouchBar != null && newConfig != null) {
             if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 floatVitualTouchBar!!.isLandscapf = false
-            }
-            else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            } else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 floatVitualTouchBar!!.isLandscapf = true
             }
         }

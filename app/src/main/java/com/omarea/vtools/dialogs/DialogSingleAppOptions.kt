@@ -150,11 +150,11 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         context.startActivity(localIntent)
     }
 
-    private fun moveToSystemExec () {
+    private fun moveToSystemExec() {
         val sb = StringBuilder()
         sb.append(CommonCmds.MountSystemRW)
         val appDir = File(app.path.toString()).parent
-        if ( appDir == "/data/app") {
+        if (appDir == "/data/app") {
             val parent = File(app.path.toString())
             val outPutPath = "/system/app/${parent.name}"
             sb.append("cp '${app.path}' '$outPutPath'\n")
@@ -177,7 +177,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         execShell(sb)
     }
 
-    private fun moveToSystem () {
+    private fun moveToSystem() {
         if (CheckRootStatus.isMagisk() && CheckRootStatus.isTmpfs("/system/app")) {
             android.support.v7.app.AlertDialog.Builder(context)
                     .setTitle("Magisk 副作用警告")
@@ -191,8 +191,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         AlertDialog.Builder(context)
                 .setTitle(app.appName)
                 .setMessage("转为系统应用后，将无法随意更新或卸载，并且可能会一直后台运行占用内存，继续转换吗？\n\n并非所有应用都可以转换为系统应用，有些转为系统应用后不能正常运行。\n\n确保你已解锁System分区，转换完成后，请重启手机！")
-                .setPositiveButton(R.string.btn_confirm, {
-                    _, _ ->
+                .setPositiveButton(R.string.btn_confirm, { _, _ ->
                     moveToSystemExec()
                 })
                 .setNegativeButton(R.string.btn_cancel, null)

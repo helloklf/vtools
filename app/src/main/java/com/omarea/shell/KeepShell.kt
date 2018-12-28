@@ -113,7 +113,7 @@ class KeepShell(private var rootMode: Boolean = true) {
             try {
                 mLock.lockInterruptibly()
 
-                val out =  p!!.outputStream
+                val out = p!!.outputStream
                 if (out != null) {
                     try {
                         out.write(br)

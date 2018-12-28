@@ -196,6 +196,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
             return ""
         }
     }
+
     private fun getBatteryIOForHuawei(): String {
         if (RootFile.itemExists("/sys/class/power_supply/Battery/uevent")) {
             path = "/sys/class/power_supply/Battery/uevent"

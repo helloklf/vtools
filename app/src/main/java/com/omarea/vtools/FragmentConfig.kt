@@ -101,7 +101,7 @@ class FragmentConfig : Fragment() {
         config_acc_opt.visibility = if (simpleMode) View.GONE else View.VISIBLE
     }
 
-    private fun startService () {
+    private fun startService() {
         val dialog = ProgressBarDialog(context!!)
         dialog.showDialog("尝试使用ROOT权限开启服务...")
         Thread(Runnable {
@@ -150,12 +150,10 @@ class FragmentConfig : Fragment() {
         btn_config_service_not_active.setOnClickListener {
             AlertDialog.Builder(this.context).setTitle("选择模式")
                     .setMessage("经典：使用辅助服务检测应用切换，这也是Scene以往的版本一直使用的方式\n\n简单：实验性，使用monitor检测应用切换，性能消耗更小（不支持应用安装自动点击）。\n\n注意，两种方式均需要Scene保持后台运行！")
-                    .setNegativeButton("经典", {
-                        _, _ ->
+                    .setPositiveButton("经典(推荐)", { _, _ ->
                         startService()
                     })
-                    .setPositiveButton("简单", {
-                        _, _ ->
+                    .setNegativeButton("简单(试验)", { _, _ ->
                         globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_SIMPLE, true).apply()
 
                         val service = Intent(context, MonitorService::class.java)

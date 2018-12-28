@@ -235,19 +235,19 @@ class BatteryUnit {
         KeepShellPublic.doCmdSync(cmd)
     }
 
-    fun pdSupported (): Boolean {
+    fun pdSupported(): Boolean {
         return RootFile.fileExists("/sys/class/power_supply/usb/pd_allowed")
     }
 
-    fun pdAllowed (): Boolean {
+    fun pdAllowed(): Boolean {
         return KernelProrp.getProp("/sys/class/power_supply/usb/pd_allowed") == "1"
     }
 
-    fun setAllowed (boolean: Boolean): Boolean {
+    fun setAllowed(boolean: Boolean): Boolean {
         return KernelProrp.setProp("/sys/class/power_supply/usb/pd_allowed", if (boolean) "1" else "0")
     }
 
-    fun pdActive (): Boolean {
+    fun pdActive(): Boolean {
         return KernelProrp.getProp("/sys/class/power_supply/usb/pd_active") == "1"
     }
 }

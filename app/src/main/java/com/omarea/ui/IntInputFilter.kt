@@ -4,7 +4,7 @@ import android.text.InputFilter
 import android.text.Spanned
 import java.util.regex.Pattern
 
-class IntInputFilter(private var maxLength:Int = 3) : InputFilter {
+class IntInputFilter(private var maxLength: Int = 3) : InputFilter {
     private val type = "int"
 
     override fun filter(source: CharSequence?, start: Int, end: Int, dest: Spanned, dstart: Int, dend: Int): CharSequence? {

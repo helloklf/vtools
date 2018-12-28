@@ -62,9 +62,10 @@ class ActivityAdvSettings : AppCompatActivity() {
             }
         }
     }
-    fun checkAppUsagePermission() : Boolean {
+
+    fun checkAppUsagePermission(): Boolean {
         val usageStatsManager = getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager?
-        if(usageStatsManager == null) {
+        if (usageStatsManager == null) {
             return false;
         }
         val currentTime = System.currentTimeMillis()

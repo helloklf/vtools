@@ -7,14 +7,14 @@ object KeepShellPublic {
     private var keepShell: KeepShell? = null
 
     //执行脚本
-    internal fun doCmdSync(cmd: String): String {
+    fun doCmdSync(cmd: String): String {
         if (keepShell == null) {
             keepShell = KeepShell()
         }
         return keepShell!!.doCmdSync(cmd)
     }
 
-    internal fun tryExit() {
+    fun tryExit() {
         if (keepShell != null) {
             keepShell!!.tryExit()
             keepShell = null

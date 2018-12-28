@@ -23,12 +23,12 @@ class FullScreenAddin(private var context: Activity) : AddinBase(context) {
         AlertDialog.Builder(context)
                 .setTitle("注意")
                 .setMessage("此操作会写入/system/media/theme/default/framework-res，需要重启才能生效。如需还原，则需删除/system/media/theme/default/framework-res！")
-                .setPositiveButton("知道了", {
-                    _, _ ->
+                .setPositiveButton("知道了", { _, _ ->
                 })
                 .create()
                 .show()
     }
+
     fun fullScreen() {
         val arr = arrayOf("全部隐藏", "隐藏导航栏", "隐藏状态栏", "恢复默认", "移走导航栏（试验）", "MIUI(专属)去导航栏")
         var index = 0
@@ -54,9 +54,9 @@ class FullScreenAddin(private var context: Activity) : AddinBase(context) {
                 .create().show()
     }
 
-    fun getNavHeight (): Int {
+    fun getNavHeight(): Int {
         val resources = context.getResources();
-        val resourceId = resources.getIdentifier("navigation_bar_height","dimen", "android");
+        val resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
         val height = resources.getDimensionPixelSize(resourceId);
         return height
     }

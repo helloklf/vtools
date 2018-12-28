@@ -403,7 +403,7 @@ class AppDetailsActivity : AppCompatActivity() {
         appConfigInfo = AppConfigStore(this).getAppConfig(app)
 
         app_details_hidebtn.setOnClickListener {
-            val isChecked =(it as Switch).isChecked
+            val isChecked = (it as Switch).isChecked
             appConfigInfo.disButton = isChecked
             if (isChecked && !needKeyCapture) {
                 saveConfig()
@@ -676,7 +676,8 @@ class AppDetailsActivity : AppCompatActivity() {
                 if (sdFile.exists()) {
                     size += getTotalSizeOfFilesInDir(sdFile)
                 }
-            } catch (ex: Exception) { }
+            } catch (ex: Exception) {
+            }
             val dumpR = KeepShellPublic.doCmdSync("dumpsys meminfo --S --package $app | grep TOTAL")
             var memSize = 0
             if (dumpR.isEmpty() || dumpR == "error") {

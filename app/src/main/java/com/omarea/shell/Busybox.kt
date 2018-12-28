@@ -114,12 +114,11 @@ class Busybox(private var context: Context) {
         dialog.show()
     }
 
-    private fun busyboxDownloadFail () {
+    private fun busyboxDownloadFail() {
         val dialog = AlertDialog.Builder(context)
                 .setTitle("安装失败")
                 .setMessage("在线安装Busybox失败，Scene无法继续运行，请用其它方式安装！\n")
-                .setPositiveButton(R.string.btn_confirm, {
-                    _,_ ->
+                .setPositiveButton(R.string.btn_confirm, { _, _ ->
                     android.os.Process.killProcess(android.os.Process.myPid())
                 })
                 .setCancelable(false)

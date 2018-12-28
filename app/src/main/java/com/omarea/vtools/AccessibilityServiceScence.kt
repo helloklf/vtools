@@ -79,7 +79,7 @@ override fun onCreate() {
 
     internal var serviceHelper: ServiceHelper? = null
 
-    private fun updateConfig () {
+    private fun updateConfig() {
         val spf = getSharedPreferences("adv", Context.MODE_PRIVATE)
         flagReportViewIds = spf.getBoolean("adv_find_viewid", flagReportViewIds)
         flagRequestKeyEvent = spf.getBoolean("adv_keyevent", AppConfigStore(this.applicationContext).needKeyCapture())

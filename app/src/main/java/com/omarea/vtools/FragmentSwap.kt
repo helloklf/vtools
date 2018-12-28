@@ -167,9 +167,9 @@ class FragmentSwap : Fragment() {
             val run = Runnable {
                 SysUtils.executeCommandWithOutput(true,
                         "echo 3 > /sys/block/zram0/max_comp_streams\n" +
-                        "sync\n" +
-                        "echo 3 > /proc/sys/vm/drop_caches\n" +
-                        "busybox swapoff /data/swapfile > /dev/null 2>&1")
+                                "sync\n" +
+                                "echo 3 > /proc/sys/vm/drop_caches\n" +
+                                "busybox swapoff /data/swapfile > /dev/null 2>&1")
                 myHandler.post({
                     processBarDialog.hideDialog()
                     getSwaps()
@@ -282,8 +282,8 @@ class FragmentSwap : Fragment() {
                     sb.append("if [ `cat /sys/block/zram0/disksize` != '" + sizeVal + "000000' ] ; then ")
                     sb.append(
                             "sync\n" +
-                            "echo 3 > /proc/sys/vm/drop_caches\n" +
-                            "swapoff /dev/block/zram0 >/dev/null 2>&1\n")
+                                    "echo 3 > /proc/sys/vm/drop_caches\n" +
+                                    "swapoff /dev/block/zram0 >/dev/null 2>&1\n")
                     sb.append("echo 1 > /sys/block/zram0/reset\n")
                     sb.append("echo " + sizeVal + "000000 > /sys/block/zram0/disksize\n")
                     sb.append("mkswap /dev/block/zram0 >/dev/null 2>&1\n")

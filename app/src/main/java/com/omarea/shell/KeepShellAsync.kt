@@ -42,6 +42,7 @@ class KeepShellAsync(private var context: Context?, private var rootMode: Boolea
             }
         }
     }
+
     private var p: Process? = null
     private var out: BufferedWriter? = null
     private var handler: Handler = Handler(Looper.getMainLooper())
@@ -91,7 +92,7 @@ class KeepShellAsync(private var context: Context?, private var rootMode: Boolea
         val thread = Thread(Runnable {
             try {
                 tryExit()
-                p = Runtime.getRuntime().exec(if(rootMode) "su" else "sh")
+                p = Runtime.getRuntime().exec(if (rootMode) "su" else "sh")
 
                 if (processHandler != null) {
                     processHandler!!.sendMessage(processHandler!!.obtainMessage(PROCESS_EVENT_STAR))

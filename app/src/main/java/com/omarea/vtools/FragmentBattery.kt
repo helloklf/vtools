@@ -91,7 +91,7 @@ class FragmentBattery : Fragment() {
                 }
                 var pdAllowed = false
                 var pdActive = false
-                if (pdSettingSupport){
+                if (pdSettingSupport) {
                     pdAllowed = batteryUnits.pdAllowed()
                     pdActive = batteryUnits.pdActive()
                 }
@@ -155,7 +155,7 @@ class FragmentBattery : Fragment() {
     @SuppressLint("ApplySharedPref")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        ResumeChanger = "sh " + FileWrite.writeFile(context!!.assets, "custom/battery/resume_charge.sh", "resume_charge.sh")
+        ResumeChanger = "sh " + FileWrite.writePrivateFile(context!!.assets, "custom/battery/resume_charge.sh", "resume_charge.sh", this.context!!)
         spf = context!!.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
         qcSettingSuupport = batteryUnits.qcSettingSuupport()
         pdSettingSupport = batteryUnits.pdSupported()
@@ -256,7 +256,7 @@ class FragmentBattery : Fragment() {
         }
 
         bp_disable_charge.setOnClickListener {
-            KeepShellPublic.doCmdSync( "sh " + FileWrite.writeFile(context!!.assets, "custom/battery/disable_charge.sh", "disable_charge.sh"))
+            KeepShellPublic.doCmdSync("sh " + FileWrite.writePrivateFile(context!!.assets, "custom/battery/disable_charge.sh", "disable_charge.sh", this.context!!))
             Toast.makeText(context!!, "充电功能已禁止！", Toast.LENGTH_SHORT).show()
         }
         bp_enable_charge.setOnClickListener {

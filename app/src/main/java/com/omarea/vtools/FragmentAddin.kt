@@ -60,7 +60,8 @@ class FragmentAddin : Fragment() {
 
             // add(createItem(getString(R.string.addin_drop_caches), getString(R.string.addin_drop_caches_desc), Runnable { SystemAddin(context!!).dropCache() }))
             add(createItem(getString(R.string.addin_thermal_remove), getString(R.string.addin_thermal_remove_desc), Runnable { ThermalAddin(context!!).showOption() }, false))
-            add(createItem(getString(R.string.addin_thermal_remove2), getString(R.string.addin_thermal_remove2_desc), Runnable { ThermalAddin(context!!).miuiSetThermalNo()
+            add(createItem(getString(R.string.addin_thermal_remove2), getString(R.string.addin_thermal_remove2_desc), Runnable {
+                ThermalAddin(context!!).miuiSetThermalNo()
             }, false))
             add(createItem(getString(R.string.addin_del_pwd), getString(R.string.addin_del_pwd_desc), Runnable { SystemAddin(context!!).deleteLockPwd() }))
             add(createItem(getString(R.string.addin_wifi), getString(R.string.addin_wifi_desc), Runnable { DialogAddinWIFI(context!!).show() }, false))

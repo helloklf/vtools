@@ -34,64 +34,69 @@ class StartSplashActivity : Activity() {
         checkRoot(CheckRootSuccess(this), CheckRootFail(this))
     }
 
-    private class CheckRootFail(context:StartSplashActivity) : Runnable {
-        private var context:WeakReference<StartSplashActivity>;
+    private class CheckRootFail(context: StartSplashActivity) : Runnable {
+        private var context: WeakReference<StartSplashActivity>;
         override fun run() {
             context.get()!!.next()
         }
+
         init {
             this.context = WeakReference(context)
         }
     }
 
-    private class CheckRootSuccess(context:StartSplashActivity) : Runnable {
-        private var context:WeakReference<StartSplashActivity>;
+    private class CheckRootSuccess(context: StartSplashActivity) : Runnable {
+        private var context: WeakReference<StartSplashActivity>;
         override fun run() {
             context.get()!!.start_state_text.text = "检查并获取必需权限..."
             context.get()!!.hasRoot = true
 
             context.get()!!.checkFileWrite(CheckFileWriteSuccess(context.get()!!))
         }
+
         init {
             this.context = WeakReference(context)
         }
     }
 
-    private class CheckFileWriteSuccess(context:StartSplashActivity) : Runnable {
-        private var context:WeakReference<StartSplashActivity>;
+    private class CheckFileWriteSuccess(context: StartSplashActivity) : Runnable {
+        private var context: WeakReference<StartSplashActivity>;
         override fun run() {
             context.get()!!.start_state_text.text = "检查Busybox是否安装..."
             Busybox(context.get()!!).forceInstall(BusyboxInstalled(context.get()!!))
         }
+
         init {
             this.context = WeakReference(context)
         }
     }
 
-    private class BusyboxInstalled(context:StartSplashActivity) : Runnable {
-        private var context:WeakReference<StartSplashActivity>;
+    private class BusyboxInstalled(context: StartSplashActivity) : Runnable {
+        private var context: WeakReference<StartSplashActivity>;
         override fun run() {
             ConfigInstallerThread(context.get()!!.applicationContext).start()
             context.get()!!.next()
         }
+
         init {
             this.context = WeakReference(context)
         }
     }
 
-    private class ConfigInstallerThread(context: Context): Thread() {
-        private var context:WeakReference<Context>;
+    private class ConfigInstallerThread(context: Context) : Thread() {
+        private var context: WeakReference<Context>;
         override fun run() {
             super.run()
             ConfigInstaller().configCodeVerify()
         }
+
         init {
             this.context = WeakReference(context)
         }
     }
 
-    private class ServiceCreateThread(context: Context): Runnable {
-        private var context:WeakReference<Context>;
+    private class ServiceCreateThread(context: Context) : Runnable {
+        private var context: WeakReference<Context>;
         override fun run() {
             //判断是否开启了充电加速和充电保护，如果开启了，自动启动后台服务
             val chargeConfig = context.get()!!.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
@@ -104,6 +109,7 @@ class StartSplashActivity : Activity() {
                 }
             }
         }
+
         init {
             this.context = WeakReference(context)
         }

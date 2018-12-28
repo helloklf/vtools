@@ -32,7 +32,7 @@ class AdapterBatteryStats(private val context: Context, private val list: ArrayL
 
     private var packageManager: PackageManager? = null
 
-    private fun loadIcon(convertView: View,packageName: String) {
+    private fun loadIcon(convertView: View, packageName: String) {
         convertView.findViewById<TextView>(R.id.itemTitle).text = packageName
         Thread(Runnable {
             try {
@@ -58,7 +58,7 @@ class AdapterBatteryStats(private val context: Context, private val list: ArrayL
         if (convertView == null) {
             convertView = View.inflate(context, R.layout.battery_stats_item, null)
         }
-        val batteryStats  = getItem(position)
+        val batteryStats = getItem(position)
         val modeView = convertView!!.findViewById<TextView>(R.id.itemModeName)
         modeView.text = ModeList.getModName(batteryStats.mode)
 
@@ -86,7 +86,7 @@ class AdapterBatteryStats(private val context: Context, private val list: ArrayL
         convertView.findViewById<TextView>(R.id.itemTemperature).text = batteryStats.temperature.toString() + "°C"
         val time = (batteryStats.count * timerRate / 60.0).toInt()
         val total = batteryStats.count * batteryStats.io * timerRate / 3600.0
-        convertView.findViewById<TextView>(R.id.itemCounts).text = "约${time}分钟,耗电" + String.format("%.1f",total) + "mAh"
+        convertView.findViewById<TextView>(R.id.itemCounts).text = "约${time}分钟,耗电" + String.format("%.1f", total) + "mAh"
         loadIcon(convertView, batteryStats.packageName)
         return convertView
     }

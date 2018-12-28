@@ -18,7 +18,6 @@ import com.omarea.shell.cpucontrol.ThermalControlUtils
 import com.omarea.shell.units.LMKUnit
 import com.omarea.vtools.MonitorService
 import com.omarea.vtools.R
-import java.io.File
 
 /**
  * Created by Hello on 2017/12/27.
@@ -45,6 +44,7 @@ class BootService : IntentService("vtools-boot") {
                     "chmod 0666 /sys/class/power_supply/bms/temp_warm;" +
                     "echo 500 > /sys/class/power_supply/bms/temp_warm;" +
                     "chmod 0666 /sys/class/power_supply/battery/constant_charge_current_max;\n"
+
     private fun computeLeves(qcLimit: Int): StringBuilder {
         val arr = StringBuilder()
         if (qcLimit > 300) {
@@ -106,13 +106,13 @@ class BootService : IntentService("vtools-boot") {
         if (cpuState != null) {
             // thermal
             if (cpuState.coreControl.isNotEmpty()) {
-                ThermalControlUtils.setCoreControlState(cpuState.coreControl == "1",  context);
+                ThermalControlUtils.setCoreControlState(cpuState.coreControl == "1", context);
             }
             if (cpuState.msmThermal.isNotEmpty()) {
-                ThermalControlUtils.setTheramlState(cpuState.msmThermal == "Y",  context);
+                ThermalControlUtils.setTheramlState(cpuState.msmThermal == "Y", context);
             }
             if (cpuState.vdd.isNotEmpty()) {
-                ThermalControlUtils.setVDDRestrictionState(cpuState.vdd == "1",  context);
+                ThermalControlUtils.setVDDRestrictionState(cpuState.vdd == "1", context);
             }
 
             // core online

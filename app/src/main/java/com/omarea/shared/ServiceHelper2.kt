@@ -1,6 +1,5 @@
 package com.omarea.shared
 
-import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint
 import android.app.KeyguardManager
 import android.content.BroadcastReceiver

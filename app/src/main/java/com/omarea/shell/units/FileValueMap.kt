@@ -3,8 +3,8 @@ package com.omarea.shell.units
 import com.omarea.shell.KeepShellPublic
 
 class FileValueMap {
-    fun mapFileValue (dir: String) : HashMap<String,String> {
-        val hashMap = HashMap<String, String> ()
+    fun mapFileValue(dir: String): HashMap<String, String> {
+        val hashMap = HashMap<String, String>()
 
         val cmds = StringBuilder("if [[ -e $dir ]]; then\n")
         cmds.append("cd $dir\n")

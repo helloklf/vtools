@@ -3,18 +3,14 @@ package com.omarea.shell
 import android.Manifest
 import android.app.AlertDialog
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import android.support.v4.content.PermissionChecker
 import android.util.Log
-import android.widget.Toast
 import com.omarea.shared.CommonCmds
 import com.omarea.vtools.R
-import java.lang.Exception
 
 /**
  * 检查获取root权限

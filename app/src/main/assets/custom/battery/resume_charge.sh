@@ -1,13 +1,5 @@
 #!/system/bin/sh
 
-function set_rw()
-{
-    if [[ -f "$1" ]];
-    then
-        chmod 0666 "$1"
-    fi
-}
-
 function set_value()
 {
     if [[ -f "$1" ]];
@@ -18,22 +10,26 @@ function set_value()
 }
 
 
-if [ -f /sys/class/power_supply/battery/constant_charge_current_max ]
+max='/sys/class/power_supply/battery/constant_charge_current_max'
+bce='/sys/class/power_supply/battery/battery_charging_enabled'
+suspend='/sys/class/power_supply/battery/input_suspend'
+
+if [[ -f $max ]]
 then
-    if [ `cat /sys/class/power_supply/battery/battery_charging_enabled` = '0' ]
-    then
-        set_value > /sys/class/power_supply/battery/battery_charging_enabled 3000000
-    fi
+    set_value $max 3000000
 fi;
 
-#"if [ -f /sys/class/power_supply/main/constant_charge_current_max ]; then echo 3000000 > /sys/class/power_supply/main/constant_charge_current_max;fi;\n" +
-#"if [ -f /sys/class/qcom-battery/restricted_current ]; then echo 3000000 > /sys/class/qcom-battery/restricted_current;fi;\n" +
 
-if [ -f '/sys/class/power_supply/battery/battery_charging_enabled' ]
+if [[ -f $bce ]]
 then
-    echo 1 > /sys/class/power_supply/battery/battery_charging_enabled;
+    set_value $bce 1
+    setprop vtools.bp 0
+elif [[ -f $suspend ]]
+then
+    set_value $suspend 0
+    setprop vtools.bp 0
 else
-    echo 0 > /sys/class/power_supply/battery/input_suspend;
+    echo 'error'
 fi;
 
-setprop vtools.bp 0;
+

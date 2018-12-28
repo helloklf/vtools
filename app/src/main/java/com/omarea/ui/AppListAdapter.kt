@@ -125,7 +125,7 @@ class AppListAdapter(apps: ArrayList<Appinfo>, private var keywords: String = ""
         return selectedItems
     }
 
-    private fun loadIcon(context: Context , viewHolder: ViewHolder, item: Appinfo) {
+    private fun loadIcon(context: Context, viewHolder: ViewHolder, item: Appinfo) {
         Thread(Runnable {
             var icon: Drawable? = null
             try {

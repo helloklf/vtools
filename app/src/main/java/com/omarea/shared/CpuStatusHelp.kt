@@ -10,7 +10,7 @@ import java.io.*
  */
 
 class CpuStatusHelp {
-    fun loadBootConfig (context: Context): CpuStatus? {
+    fun loadBootConfig(context: Context): CpuStatus? {
         val bootConfig = FileWrite.getPrivateFilePath(context, "cpuconfig.bak")
         val file = File(bootConfig)
         if (file.exists()) {
@@ -29,13 +29,14 @@ class CpuStatusHelp {
                     if (fileInputStream != null) {
                         fileInputStream.close()
                     }
-                } catch (ex: Exception) {}
+                } catch (ex: Exception) {
+                }
             }
         }
         return null
     }
 
-    fun saveBootConfig (context: Context, status: CpuStatus?): Boolean {
+    fun saveBootConfig(context: Context, status: CpuStatus?): Boolean {
         val bootConfig = FileWrite.getPrivateFilePath(context, "cpuconfig.bak")
         val file = File(bootConfig)
         if (status != null) {
@@ -57,7 +58,8 @@ class CpuStatusHelp {
                     if (fileOutputStream != null) {
                         fileOutputStream.close()
                     }
-                } catch (ex: Exception) {}
+                } catch (ex: Exception) {
+                }
             }
         } else {
             if (file.exists()) {

@@ -16,12 +16,12 @@ class AccessibilityServiceStart {
 
                         "if [ ! -n \"\$services\" ]\n" +
                         "then\n" +
-                            "   settings put secure enabled_accessibility_services \"\$service\"; \n" +
+                        "   settings put secure enabled_accessibility_services \"\$service\"; \n" +
                         "elif [ ! -n \"\$include\" ]\n" +
                         "then\n" +
-                            "   settings put secure enabled_accessibility_services \"\$services:\$service\"; \n" +
+                        "   settings put secure enabled_accessibility_services \"\$services:\$service\"; \n" +
                         "else\n" +
-                            "   settings put secure enabled_accessibility_services \"\$services\"; \n" +
+                        "   settings put secure enabled_accessibility_services \"\$services\"; \n" +
                         "fi\n" +
                         "settings put secure accessibility_enabled 1;\n"
         ) != "error"

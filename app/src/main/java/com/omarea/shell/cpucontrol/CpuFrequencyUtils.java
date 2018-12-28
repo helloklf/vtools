@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.omarea.shell.KeepShell;
+import com.omarea.shell.KeepShellPublic;
 import com.omarea.shell.KernelProrp;
 import com.omarea.shell.SuDo;
 import com.omarea.shell.units.FileValueMap;
@@ -53,6 +55,24 @@ public class CpuFrequencyUtils {
         }
         String cpu = "cpu" + getClusterInfo().get(cluster)[0];
         return KernelProrp.INSTANCE.getProp(Constants.scaling_cur_freq.replace("cpu0", cpu));
+    }
+
+    public static int getCurrentFrequency() {
+        String freqs = KeepShellPublic.INSTANCE.doCmdSync("cat /sys/devices/system/cpu/cpu*/cpufreq/cpuinfo_cur_freq");
+        int max = 0;
+        if (!freqs.equals("error")) {
+            String[] freqArr = freqs.split("\n");
+            for (String aFreqArr : freqArr) {
+                try {
+                    int freq = Integer.parseInt(aFreqArr);
+                    if (freq > max) {
+                        max = freq;
+                    }
+                } catch (Exception ignored) {
+                }
+            }
+        }
+        return max;
     }
 
     public static String getCurrentFrequency(String core) {
@@ -484,32 +504,6 @@ public class CpuFrequencyUtils {
                 } else {
                     String[] cpus = times.split("\n");
                     String[] cpus0 = lastCpuState.split("\n");
-                    // region 这个不能这么写，因为有时候会有CPU离线的情况...导致取不到数据
-                    /*
-                    if (cpus.length != cpus0.length) {
-                        return loads;
-                    }
-                    // 由于核心的离线或上线，导致两个时间段内，核心出现的顺序并不一定一致...所以，不能用顺序来读取行
-                    for (int rowIndex=0; rowIndex < cpus.length; rowIndex++) {
-                        String[] cols1 = cpus[rowIndex].replaceAll("  ", " ").split(" ");
-                        String[] cols0 = cpus0[rowIndex].replaceAll("  ", " ").split(" ");
-                        long total1 = cpuTotalTime(cols1);
-                        long idel1 = cpuIdelTime(cols1);
-                        long total0 = cpuTotalTime(cols0);
-                        long idel0 = cpuIdelTime(cols0);
-                        long timePoor = total1 - total0;
-                        long idelTimePoor = idel1 - idel0;
-                        if (idelTimePoor < 1) {
-                            loads.put(getCpuIndex(cols1), 100d);
-                        } else {
-                            double load = (100 - (idelTimePoor * 100.0 / timePoor));
-                            loads.put(getCpuIndex(cols1), load);
-                        }
-                    }
-                    lastCpuState = times;
-                    return loads;
-                    */
-                    // endregion
 
                     for (String cpuCurrentTime : cpus) {
                         String[] cols1 = cpuCurrentTime.replaceAll(" {2}", " ").split(" ");

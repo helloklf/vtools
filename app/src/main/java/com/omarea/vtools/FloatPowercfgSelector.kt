@@ -166,7 +166,7 @@ class FloatPowercfgSelector {
         val fw_app_light = view.findViewById<Switch>(R.id.fw_app_light)
         fw_app_light.isChecked = appConfig.aloneLight
         fw_app_light.setOnClickListener {
-            val isChecked =(it as Switch).isChecked
+            val isChecked = (it as Switch).isChecked
             appConfig.aloneLight = isChecked
             if (appConfig.aloneLightValue < 1) {
                 appConfig.aloneLightValue = 128

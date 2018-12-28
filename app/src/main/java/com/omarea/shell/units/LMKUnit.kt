@@ -17,31 +17,31 @@ class LMKUnit {
 
         // 8GB
         if (totalRamBytes > (6144 * 1024 * 1024L)) {
-            ratio = 1.3f
+            ratio = 1f
         }
         // 6GB
         else if (totalRamBytes > (4096 * 1024 * 1024L)) {
-            ratio = 1.1f
+            ratio = 0.9f
         }
         // 4GB
         else if (totalRamBytes > (3072 * 1024 * 1024L)) {
-            ratio = 0.9f
+            ratio = 0.7f
         }
         // 3GB
         else if (totalRamBytes > (2048 * 1024 * 1024L)) {
-            ratio = 0.8f
+            ratio = 0.5f
         }
         // 2GB
         else if (totalRamBytes > 1024 * 1024 * 1024) {
-            ratio = 0.6f
+            ratio = 0.4f
         }
         // 1GB
         else if (totalRamBytes > 1024 * 1024 * 1024) {
-            ratio = 0.4f
+            ratio = 0.2f
         }
         // < 1GB (这破手机还用毛啊！！！)
         else {
-            ratio = 0.20f
+            ratio = 0.15f
         }
 
         val foregroundApp = (40 * 1024 / 4 * ratio).toInt()

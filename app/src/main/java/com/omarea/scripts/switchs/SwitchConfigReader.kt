@@ -38,8 +38,7 @@ object SwitchConfigReader {
                 when (type) {
                     XmlPullParser.START_TAG -> if ("switchs" == parser.name) {
                         actions = ArrayList()
-                    }
-                    else if ("switch" == parser.name) {
+                    } else if ("switch" == parser.name) {
                         action = SwitchInfo()
                         for (i in 0 until parser.attributeCount) {
                             if (action == null) {
@@ -62,8 +61,7 @@ object SwitchConfigReader {
                                 }
                             }
                         }
-                    }
-                    else if (action != null) {
+                    } else if (action != null) {
                         if ("title" == parser.name) {
                             action.title = parser.nextText()
                         } else if ("desc" == parser.name) {

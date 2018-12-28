@@ -23,7 +23,7 @@ class CrashHandler constructor() : Thread.UncaughtExceptionHandler {
         Thread.setDefaultUncaughtExceptionHandler(this)
     }
 
-    override fun uncaughtException(thread: Thread, ex: Throwable){
+    override fun uncaughtException(thread: Thread, ex: Throwable) {
         if (ex.message != null) {
             try {
                 val trace = StringWriter()

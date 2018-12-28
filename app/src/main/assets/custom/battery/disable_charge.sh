@@ -1,13 +1,5 @@
 #!/system/bin/sh
 
-function set_rw()
-{
-    if [[ -f "$1" ]];
-    then
-        chmod 0666 "$1"
-    fi
-}
-
 function set_value()
 {
     if [[ -f "$1" ]];
@@ -17,18 +9,21 @@ function set_value()
     fi
 }
 
-if [ -f /sys/class/power_supply/battery/battery_charging_enabled ]
+max='/sys/class/power_supply/battery/constant_charge_current_max'
+bce='/sys/class/power_supply/battery/battery_charging_enabled'
+suspend='/sys/class/power_supply/battery/input_suspend'
+
+if [[ -f $bce ]]
 then
-    set_value > /sys/class/power_supply/battery/battery_charging_enabled 0
+    set_value $bce 0
     setprop vtools.bp 1
-elif [[ -f /sys/class/power_supply/battery/input_suspend ]]
+elif [[ -f $suspend ]]
 then
-    echo 1 > /sys/class/power_supply/battery/input_suspend
+    set_value $suspend 1
     setprop vtools.bp 1
-elif [ -f /sys/class/power_supply/battery/constant_charge_current_max ]
+elif [[ -f $max ]]
 then
-    chmod 664 /sys/class/power_supply/battery/constant_charge_current_max
-    echo 0 > /sys/class/power_supply/battery/constant_charge_current_max
+    set_value $max 0
     setprop vtools.bp 1
 else
     echo 'error'

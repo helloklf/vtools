@@ -1,7 +1,6 @@
 package com.omarea.vtools
 
 import android.Manifest
-import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
@@ -33,7 +32,6 @@ import android.widget.Toast
 import com.omarea.shared.AccessibleServiceHelper
 import com.omarea.shared.CrashHandler
 import com.omarea.shared.SpfConfig
-import com.omarea.shared.Update
 import com.omarea.shell.Platform
 import com.omarea.shell.units.BackupRestoreUnit
 import com.omarea.shell.units.BatteryUnit
@@ -265,8 +263,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
                 if (Build.VERSION.SDK_INT >= 23) {
                     if (Settings.canDrawOverlays(this)) {
-                        FloatMonitor(this).showPopupWindow()
-                        Toast.makeText(this, "长按悬浮窗即可关闭监视器\n触摸悬浮窗隐藏5秒", Toast.LENGTH_LONG).show()
+                        showFloatMonitor()
                     } else {
                         //若没有权限，提示获取
                         //val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
@@ -278,12 +275,33 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         Toast.makeText(applicationContext, "请先为Scene授权显示悬浮窗权限！", Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    FloatMonitor(this).showPopupWindow()
-                    Toast.makeText(this, "长按悬浮窗即可关闭监视器\n触摸悬浮窗隐藏5秒", Toast.LENGTH_LONG).show()
+                    showFloatMonitor()
                 }
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun showFloatMonitor() {
+        var postion = 1
+        val dialog = AlertDialog.Builder(this)
+                .setTitle("设置显示位置")
+                .setSingleChoiceItems(
+                        arrayOf("左上角", "顶部居中", "右上角", "右下角", "底部居中", "左下角"),
+                        postion,
+                        { dialog, which ->
+                            postion = which
+                        }
+                )
+                .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                    FloatMonitor(this).showPopupWindow(postion)
+                    Toast.makeText(this, "长按悬浮窗即可关闭监视器\n触摸悬浮窗隐藏5秒", Toast.LENGTH_LONG).show()
+                })
+                .setNegativeButton(R.string.btn_cancel, { _, _ ->
+                })
+                .create()
+        dialog.window!!.setWindowAnimations(R.style.windowAnim)
+        dialog.show()
     }
 
     //导航菜单选中

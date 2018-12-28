@@ -2,13 +2,12 @@ package com.omarea.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
 import com.omarea.vtools.R
-import android.opengl.ETC1.getHeight
-import android.opengl.ETC1.getWidth
-
 
 
 class RamChatView : View {

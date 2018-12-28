@@ -216,6 +216,7 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
             sendBroadcast(intent)
         }
     }
+
     public override fun onPause() {
         this.notifyService()
         super.onPause()

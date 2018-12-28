@@ -52,12 +52,12 @@ class ConfigInstaller {
         try {
             val cmd = StringBuilder()
             cmd.append("if [[ -f ${POWER_CFG_PATH} ]]; then \n")
-                cmd.append("busybox sed -i 's/\\r//' ${POWER_CFG_PATH};\n")
-                cmd.append("chmod 0775 ${POWER_CFG_PATH};\n")
+            cmd.append("busybox sed -i 's/\\r//' ${POWER_CFG_PATH};\n")
+            cmd.append("chmod 0775 ${POWER_CFG_PATH};\n")
             cmd.append("fi;\n")
             cmd.append("if [[ -f ${POWER_CFG_BASE} ]]; then \n")
-                cmd.append("busybox sed -i 's/\\r//' ${POWER_CFG_BASE};\n")
-                cmd.append("chmod 0777 ${POWER_CFG_BASE};\n")
+            cmd.append("busybox sed -i 's/\\r//' ${POWER_CFG_BASE};\n")
+            cmd.append("chmod 0777 ${POWER_CFG_BASE};\n")
             cmd.append("fi;\n")
             KeepShellPublic.doCmdSync(cmd.toString())
         } catch (ex: Exception) {

@@ -18,7 +18,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1000
-        versionName "2.0.0 preview"
+        versionName "2.0.0"
     }
     buildTypes {
         release {

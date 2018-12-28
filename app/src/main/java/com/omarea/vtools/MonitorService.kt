@@ -21,7 +21,7 @@ class MonitorService : Service() {
                         onOutput(msg.obj.toString())
                     }
                 }
-            }).exec(if(Build.VERSION.SDK_INT > Build.VERSION_CODES.M) "am monitor" else "cmd activity monitor").waitFor(Runnable{
+            }).exec(if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) "am monitor" else "cmd activity monitor").waitFor(Runnable {
                 stopSelf()
             })
             serviceHelper = ServiceHelper2(this)
@@ -35,7 +35,7 @@ class MonitorService : Service() {
     }
 
     var last = ""
-    private fun onOutput(row:String) {
+    private fun onOutput(row: String) {
         if (!(row.contains("Activity") && row.contains(":"))) {
             return
         }
