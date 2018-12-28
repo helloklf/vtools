@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.omarea.vtools.FragmentSwap">
+    tools:context="com.omarea.vtools.fragments.FragmentSwap">
 
     <com.omarea.ui.OverScrollView
         android:layout_width="match_parent"

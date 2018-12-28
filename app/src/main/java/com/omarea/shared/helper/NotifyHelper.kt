@@ -17,7 +17,7 @@ import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.KernelProrp
 import com.omarea.shell.RootFile
 import com.omarea.shell.SysUtils
-import com.omarea.vtools.ActivityQuickSwitchMode
+import com.omarea.vtools.activitys.ActivityQuickSwitchMode
 import com.omarea.vtools.R
 import kotlin.math.abs
 

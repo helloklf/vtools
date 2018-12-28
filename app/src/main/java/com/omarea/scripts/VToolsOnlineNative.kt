@@ -14,7 +14,7 @@ import com.omarea.shared.CommonCmds
 import com.omarea.shared.FileWrite
 import com.omarea.shell.KeepShellPublic
 import com.omarea.ui.ProgressBarDialog
-import com.omarea.vtools.ActivityAddinOnline
+import com.omarea.vtools.activitys.ActivityAddinOnline
 import com.omarea.vtools.R
 import org.json.JSONArray
 import org.json.JSONObject

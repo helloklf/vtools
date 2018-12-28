@@ -13,6 +13,7 @@ import android.widget.EditText
 import android.widget.Toast
 import com.omarea.shared.CommonCmds
 import com.omarea.shell.KeepShellPublic
+import com.omarea.shell.Props
 import com.omarea.vtools.R
 
 
@@ -21,6 +22,22 @@ import com.omarea.vtools.R
  */
 
 class DialogAddinModifydevice(var context: Context) {
+
+    val BACKUP_SUCCESS = "persist.vtools.device.backuped"
+    val BACKUP_BRAND = "persist.vtools.brand"
+    val BACKUP_MODEL = "persist.vtools.model"
+    val BACKUP_PRODUCT = "persist.vtools.product"
+    val BACKUP_DEVICE = "persist.vtools.device"
+    val BACKUP_MANUFACTURER = "persist.vtools.manufacturer"
+
+    private fun getBackupProp(prop: String, default: String): String {
+        val value = Props.getProp(prop)
+        if (value == "null" || value == "") {
+            return default
+        }
+
+        return value
+    }
 
     fun modifyDeviceInfo() {
         //SM-N9500@samsung@samsung@dream2qltezc@dream2qltechn
@@ -135,8 +152,7 @@ class DialogAddinModifydevice(var context: Context) {
     private lateinit var editManufacturer: EditText
 
     private fun loadCurrent() {
-        val spf = context.getSharedPreferences("deviceinfo", Context.MODE_PRIVATE)
-        if (spf.all.isEmpty()) {
+        if (getBackupProp(BACKUP_SUCCESS, "false") != "true") {
             return
         } else {
             editBrand.setText(android.os.Build.BRAND)
@@ -148,19 +164,18 @@ class DialogAddinModifydevice(var context: Context) {
     }
 
     private fun setDefault() {
-        val spf = context.getSharedPreferences("deviceinfo", Context.MODE_PRIVATE)
-        if (spf.all.isEmpty()) {
+        if (getBackupProp(BACKUP_SUCCESS, "false") != "true") {
             editBrand.setText(android.os.Build.BRAND)
             editModel.setText(android.os.Build.MODEL)
             editProductName.setText(android.os.Build.PRODUCT)
             editDevice.setText(android.os.Build.DEVICE)
             editManufacturer.setText(android.os.Build.MANUFACTURER)
         } else {
-            editBrand.setText(spf.getString("android.os.Build.BRAND", android.os.Build.BRAND))
-            editModel.setText(spf.getString("android.os.Build.MODEL", android.os.Build.MODEL))
-            editProductName.setText(spf.getString("android.os.Build.PRODUCT", android.os.Build.PRODUCT))
-            editDevice.setText(spf.getString("android.os.Build.DEVICE", android.os.Build.DEVICE))
-            editManufacturer.setText(spf.getString("android.os.Build.MANUFACTURER", android.os.Build.MANUFACTURER))
+            editBrand.setText(getBackupProp(BACKUP_BRAND, android.os.Build.BRAND))
+            editModel.setText(getBackupProp(BACKUP_MODEL, android.os.Build.MODEL))
+            editProductName.setText(getBackupProp(BACKUP_PRODUCT, android.os.Build.PRODUCT))
+            editDevice.setText(getBackupProp(BACKUP_DEVICE, android.os.Build.DEVICE))
+            editManufacturer.setText(getBackupProp(BACKUP_MANUFACTURER, android.os.Build.MANUFACTURER))
         }
     }
 
@@ -230,15 +245,11 @@ class DialogAddinModifydevice(var context: Context) {
 
     @SuppressLint("ApplySharedPref")
     private fun backupDefault() {
-        val spf = context.getSharedPreferences("deviceinfo", Context.MODE_PRIVATE)
-        if (spf.all.isEmpty()) {
-            spf.edit()
-                    .putString("android.os.Build.BRAND", android.os.Build.BRAND)
-                    .putString("android.os.Build.MODEL", android.os.Build.MODEL)
-                    .putString("android.os.Build.PRODUCT", android.os.Build.PRODUCT)
-                    .putString("android.os.Build.DEVICE", android.os.Build.DEVICE)
-                    .putString("android.os.Build.MANUFACTURER", android.os.Build.MANUFACTURER)
-                    .commit()
-        }
+        Props.setPorp(BACKUP_BRAND, android.os.Build.BRAND)
+        Props.setPorp(BACKUP_MODEL, android.os.Build.MODEL)
+        Props.setPorp(BACKUP_PRODUCT, android.os.Build.PRODUCT)
+        Props.setPorp(BACKUP_DEVICE, android.os.Build.DEVICE)
+        Props.setPorp(BACKUP_MANUFACTURER, android.os.Build.MANUFACTURER)
+        Props.setPorp(BACKUP_SUCCESS, "true")
     }
 }

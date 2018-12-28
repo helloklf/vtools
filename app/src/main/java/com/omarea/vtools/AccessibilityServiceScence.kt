@@ -15,6 +15,7 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityWindowInfo
 import android.widget.Toast
 import com.omarea.shared.*
+import com.omarea.vtools.services.MonitorService
 
 /**
  * Created by helloklf on 2016/8/27.
@@ -222,13 +223,13 @@ override fun onCreate() {
 
             if (flagRetriveWindow) {
                 try {
-                    AutoClickService().packageinstallerAutoClick(this.applicationContext, event)
+                    AutoClick().packageinstallerAutoClick(this.applicationContext, event)
                 } catch (ex: Exception) {
                 }
             }
         } else if (packageName == "com.miui.securitycenter") {
             try {
-                AutoClickService().miuiUsbInstallAutoClick(event)
+                AutoClick().miuiUsbInstallAutoClick(event)
             } catch (ex: Exception) {
             }
             return

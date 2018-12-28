@@ -234,7 +234,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
             if (data) {
                 sb.append("killall -9 $packageName;pkill -9 $packageName;pgrep $packageName |xargs kill -9;")
                 sb.append("cd $userdataPath/$packageName;")
-                sb.append("echo '[backup $packageName]';")
+                sb.append("echo '[backup ${item.appName}]';")
                 if (allowPigz)
                     sb.append("busybox tar cpf - * --exclude ./cache --exclude ./lib | pigz > \${backup_path}$packageName.tar.gz;")
                 else
@@ -278,18 +278,18 @@ open class DialogAppOptions(protected final var context: Context, protected var 
             val packageName = item.packageName.toString()
             val apkPath = item.path.toString()
             if (apk && File("$backupPath$packageName.apk").exists()) {
-                sb.append("echo '[install $packageName]';")
+                sb.append("echo '[install ${item.appName}]';")
 
                 sb.append("pm install -r $backupPath$packageName.apk;")
             } else if (apk && File(apkPath).exists()) {
-                sb.append("echo '[install $packageName]';")
+                sb.append("echo '[install ${item.appName}]';")
 
                 sb.append("pm install -r $apkPath;")
             }
             if (data && File("$backupPath$packageName.tar.gz").exists()) {
                 sb.append("if [ -d $userdataPath/$packageName ];")
                 sb.append(" then ")
-                sb.append("echo '[restore $packageName]';")
+                sb.append("echo '[restore ${item.appName}]';")
                 //sb.append("pm clear $packageName;")
                 sb.append("sync;")
                 sb.append("cd $userdataPath/$packageName;")
@@ -297,7 +297,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                 sb.append("chown -R -L `toybox ls -ld|cut -f3 -d ' '`:`toybox ls -ld|cut -f4 -d ' '` $userdataPath/$packageName/*;")
                 //sb.append("chown -R --reference=$userdataPath/$packageName *;")
                 sb.append(" else ")
-                sb.append("echo '[skip $packageName]';")
+                sb.append("echo '[skip ${item.appName}]';")
                 sb.append("sleep 1;")
                 sb.append("fi;")
             }
@@ -321,9 +321,9 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         val sb = StringBuilder()
         for (item in apps) {
             val packageName = item.packageName.toString()
-            sb.append("echo '[disable $packageName]';")
+            sb.append("echo '[disable ${item.appName}]';")
 
-            sb.append("pm disable $packageName;")
+            sb.append("pm disable ${item.appName};")
         }
 
         sb.append("echo '[operation completed]';")
@@ -337,7 +337,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         val sb = StringBuilder()
         for (item in apps) {
             val packageName = item.packageName.toString()
-            sb.append("echo '[enable $packageName]';")
+            sb.append("echo '[enable ${item.appName}]';")
 
             sb.append("pm enable $packageName;")
         }
@@ -361,7 +361,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         val sb = StringBuilder()
         for (item in apps) {
             val packageName = item.packageName.toString()
-            sb.append("echo '[hide $packageName]';")
+            sb.append("echo '[hide ${item.appName}]';")
 
             sb.append("pm hide $packageName;")
 
@@ -399,10 +399,10 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         for (item in apps) {
             val packageName = item.packageName.toString()
             // 先禁用再删除，避免老弹停止运行
-            sb.append("echo '[disable $packageName]';")
+            sb.append("echo '[disable ${item.appName}]';")
             sb.append("pm disable $packageName;")
 
-            sb.append("echo '[delete $packageName]'\n")
+            sb.append("echo '[delete ${item.appName}]'\n")
             val dir = item.dir.toString()
 
             sb.append("rm -rf $dir/oat\n")
@@ -427,7 +427,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         val sb = StringBuilder()
         for (item in apps) {
             val packageName = item.packageName.toString()
-            sb.append("echo '[delete $packageName]';")
+            sb.append("echo '[delete ${item.appName}]';")
 
             if (item.path != null) {
                 sb.append("rm -rf ${item.path};")
@@ -457,7 +457,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         val sb = StringBuilder()
         for (item in apps) {
             val packageName = item.packageName.toString()
-            sb.append("echo '[clear $packageName]';")
+            sb.append("echo '[clear ${item.appName}]';")
 
             sb.append("pm clear $packageName;")
         }
@@ -473,7 +473,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         val sb = StringBuilder()
         for (item in apps) {
             val packageName = item.packageName.toString()
-            sb.append("echo '[trim caches $packageName]';")
+            sb.append("echo '[trim caches ${item.appName}]';")
 
             sb.append("pm trim-caches $packageName;")
         }
@@ -495,7 +495,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         val sb = StringBuilder()
         for (item in apps) {
             val packageName = item.packageName.toString()
-            sb.append("echo '[uninstall $packageName]';")
+            sb.append("echo '[uninstall ${item.appName}]';")
 
             sb.append("pm uninstall $packageName;")
         }
@@ -517,7 +517,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         val sb = StringBuilder()
         for (item in apps) {
             val packageName = item.packageName.toString()
-            sb.append("echo '[uninstall $packageName]';")
+            sb.append("echo '[uninstall ${item.appName}]';")
 
             sb.append("pm uninstall -k $packageName;")
         }
@@ -534,7 +534,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         val sb = StringBuilder()
         for (item in apps) {
             val packageName = item.packageName.toString()
-            sb.append("echo '[compile $packageName]'\n")
+            sb.append("echo '[compile ${item.appName}]'\n")
 
             sb.append("cmd package compile -m speed $packageName\n\n")
         }

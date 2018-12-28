@@ -7,7 +7,7 @@
     android:clipToPadding="true"
     android:fitsSystemWindows="true"
     android:keepScreenOn="false"
-    tools:context=".ActivityFileSelector"
+    tools:context=".activitys.ActivityFileSelector"
     tools:openDrawer="start">
 
     <com.omarea.ui.OverScrollListView

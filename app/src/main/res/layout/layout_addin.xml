@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.omarea.vtools.FragmentAddin">
+    tools:context="com.omarea.vtools.fragments.FragmentAddin">
 
     <TabHost
         android:id="@+id/addin_tabhost"

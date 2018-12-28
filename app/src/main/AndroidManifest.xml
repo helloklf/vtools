@@ -76,7 +76,7 @@
                 android:resource="@xml/phone_accessibility" />
         </service>
         <service
-            android:name=".NotificationService"
+            android:name=".services.NotificationService"
             android:label="通知过滤服务"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>
@@ -101,7 +101,7 @@
         </service>
 
         <activity
-            android:name=".ActivityMain"
+            android:name=".activitys.ActivityMain"
             android:autoRemoveFromRecents="false"
             android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|fontScale|uiMode|layoutDirection"
             android:excludeFromRecents="false"
@@ -123,7 +123,7 @@
                 android:resource="@xml/shortcuts" />
         </activity>
         <activity
-            android:name=".ActivitySceneOtherSettings"
+            android:name=".activitys.ActivitySceneOtherSettings"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="true"
             android:label="Scene 杂项设置"
@@ -131,7 +131,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ActivityAdvSettings"
+            android:name=".activitys.ActivityAdvSettings"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="true"
             android:label="辅助功能逻辑"
@@ -139,7 +139,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".ActivityAccessibilityKeyEventSettings"
+            android:name=".activitys.ActivityAccessibilityKeyEventSettings"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="true"
             android:label="Scene-按键辅助"
@@ -148,7 +148,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
 
         <receiver
-            android:name=".ReceiverBoot"
+            android:name=".receiver.ReceiverBoot"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -160,23 +160,23 @@
         </receiver>
 
         <service
-            android:name=".ServiceBattery"
+            android:name=".services.ServiceBattery"
             android:enabled="true"
             android:permission="" />
         <service
-            android:name="com.omarea.shared.BootService"
+            android:name=".services.BootService"
             android:enabled="true"
             android:permission=""
             android:process=":boot" />
 
         <activity
-            android:name=".ActivityShortcut"
+            android:name=".activitys.ActivityShortcut"
             android:excludeFromRecents="true"
             android:finishOnTaskLaunch="false"
             android:label="@string/title_activity_shortcut"
             android:launchMode="standard" />
         <activity
-            android:name=".ActivityQuickSwitchMode"
+            android:name=".activitys.ActivityQuickSwitchMode"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="true"
             android:finishOnTaskLaunch="true"
@@ -191,7 +191,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ActivityAddinOnline"
+            android:name=".activitys.ActivityAddinOnline"
             android:excludeFromRecents="true"
             android:finishOnTaskLaunch="false"
             android:label="@string/title_activity_online"
@@ -199,7 +199,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".AppDetailsActivity"
+            android:name=".activitys.AppDetailsActivity"
             android:excludeFromRecents="true"
             android:label="应用场景"
             android:theme="@style/AppTheme.NoActionBar">
@@ -210,7 +210,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ActivityFileSelector"
+            android:name=".activitys.ActivityFileSelector"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_file_selector"
             android:launchMode="standard"
@@ -222,13 +222,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".StartSplashActivity"
+            android:name=".activitys.StartSplashActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_start_splash"
             android:theme="@style/FullscreenTheme" />
 
         <service
-            android:name=".MonitorService"
+            android:name=".services.MonitorService"
             android:enabled="true"
             android:exported="true"></service>
     </application>
