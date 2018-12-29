@@ -1,4 +1,4 @@
-package com.omarea.scripts;
+package com.omarea.krscripts;
 
 import android.database.DataSetObserver;
 import android.view.View;
@@ -7,9 +7,8 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
-
-import com.omarea.scripts.simple.shell.ExecuteCommandWithOutput;
-import com.omarea.scripts.switchs.SwitchInfo;
+import com.omarea.krscripts.switchs.SwitchInfo;
+import com.omarea.shell.KeepShellPublic;
 import com.omarea.vtools.R;
 
 import java.util.ArrayList;
@@ -47,13 +46,10 @@ public class SwitchAdapter implements ListAdapter {
         ViewHolder holder = (ViewHolder) view.getTag();
         SwitchInfo actionInfo = ((SwitchInfo) getItem(index));
         if (actionInfo.descPollingShell != null && !actionInfo.descPollingShell.isEmpty()) {
-            actionInfo.desc = ExecuteCommandWithOutput.executeCommandWithOutput(false, actionInfo.descPollingShell);
-        }
-        if (actionInfo.descPollingSUShell != null && !actionInfo.descPollingSUShell.isEmpty()) {
-            actionInfo.desc = ExecuteCommandWithOutput.executeCommandWithOutput(true, actionInfo.descPollingSUShell);
+            actionInfo.desc =  KeepShellPublic.INSTANCE.doCmdSync(actionInfo.descPollingShell);
         }
         if (actionInfo.getState != null && !actionInfo.getState.isEmpty()) {
-            String shellResult = ExecuteCommandWithOutput.executeCommandWithOutput(actionInfo.root, actionInfo.getState);
+            String shellResult = KeepShellPublic.INSTANCE.doCmdSync(actionInfo.getState);
             actionInfo.selected = shellResult != null && (shellResult.equals("1") || shellResult.toLowerCase().equals("true"));
         }
         holder.itemSwitch.setChecked(actionInfo.selected);

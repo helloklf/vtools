@@ -1,4 +1,4 @@
-package com.omarea.scripts.simple.shell;
+package com.omarea.krscripts.simple.shell;
 
 import android.os.Handler;
 import android.widget.TextView;

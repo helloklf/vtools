@@ -12,10 +12,10 @@ import android.widget.AdapterView
 import android.widget.SimpleAdapter
 import android.widget.TabHost
 import android.widget.Toast
-import com.omarea.scripts.action.ActionConfigReader
-import com.omarea.scripts.action.ActionListConfig
-import com.omarea.scripts.switchs.SwitchConfigReader
-import com.omarea.scripts.switchs.SwitchListConfig
+import com.omarea.krscripts.action.ActionConfigReader
+import com.omarea.krscripts.action.ActionListConfig
+import com.omarea.krscripts.switchs.SwitchConfigReader
+import com.omarea.krscripts.switchs.SwitchListConfig
 import com.omarea.shared.FileWrite
 import com.omarea.shell.SysUtils
 import com.omarea.shell.units.FlymeUnit

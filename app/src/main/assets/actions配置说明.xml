@@ -3,10 +3,9 @@
     <!--1.0.0 规范-->
     <!--
     //action
-            [root]=[true/false]，是否以root权限执行，默认为false。
             [confirm]=[true/false]，操作是否需要二次确认，避免误操作，默认为false
             [start]=[dir]，执行脚本时的起始位置，将在执行script前cd到起始位置，默认位置为/cache
-    <action root="true" confirm="false">
+    <action confirm="false">
         <title>功能标题</title>
         <desc>功能说明</desc>
         //script 点击后要执行的脚本（可以直接要执行的文件路径、或要执行的代码）
@@ -19,12 +18,12 @@
     -->
 
     <!--示例代码1.0.0-->
-    <!--<action root="true">
+    <!--<action>
         <title>脚本执行器测试</title>
         <desc>测试脚本执行器，执行指定路径的脚本文件</desc>
         <script>/system/xbin/yaodao/00WIFI密码.sh</script>
     </action>
-    <action root="true">
+    <action>
         <title>脚本执行器测试</title>
         <desc>测试脚本执行器，直接执行代码段</desc>
         <script>
@@ -37,7 +36,7 @@
 
     <!--1.0.1 规范-->
     <!--
-    <action root="true">
+    <action>
         <title>自定义DPI</title>
         <desc>允许你自定义手机DPI，1080P屏幕推荐DPI为400~480，设置太高或太低可能导致界面崩溃！</desc>
         <script>wm density $dpi;</script>
@@ -52,7 +51,7 @@
     <!--示例代码1.0.1-->
     <!--
     //1、通过单选列表指定参数
-    <action root="true">
+    <action>
         <title>切换状态栏风格</title>
         <desc>选择状态栏布局，[时间居中/默认]</desc>
         //可以在script中使用定义的参数
@@ -76,7 +75,7 @@
     </action>
 
     //2、通过文本框录入参数
-    <action root="true">
+    <action>
         <title>自定义DPI</title>
         <desc>允许你自定义手机DPI，1080P屏幕推荐DPI为400~480，设置太高或太低可能导致界面崩溃！</desc>
         <script>
@@ -102,7 +101,7 @@
 
     //3、为脚本文件或程序传参
         可参考 https://blog.csdn.net/czyt1988/article/details/79110450
-    <action root="true">
+    <action>
         <title>自定义DPI</title>
         <desc>允许你自定义手机DPI，1080P屏幕推荐DPI为400~480，设置太高或太低可能导致界面崩溃！</desc>
         //通过这种方式传参，则可以在脚本内通过 $1 $2...按顺序取得参数
@@ -115,7 +114,7 @@
     </action>
 
     //4、为内嵌脚本传参
-    <action root="true">
+    <action>
         <title>自定义DPI</title>
         <desc>允许你自定义手机DPI，1080P屏幕推荐DPI为400~480，设置太高或太低可能导致界面崩溃！</desc>
         //通过file:///android_asset协议调用内置脚本时，会自动按顺序传递参数到脚本，直接在脚本内通过 $1 $2...按顺序取得参数即可

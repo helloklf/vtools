@@ -1,10 +1,10 @@
-package com.omarea.scripts.switchs
+package com.omarea.krscripts.switchs
 
 import android.content.Context
 import android.util.Log
 import android.util.Xml
 import android.widget.Toast
-import com.omarea.scripts.ExtractAssets
+import com.omarea.krscripts.ExtractAssets
 import com.omarea.shell.KeepShellPublic
 import org.xmlpull.v1.XmlPullParser
 import java.io.InputStream
@@ -23,7 +23,6 @@ object SwitchConfigReader {
         } catch (ex: Exception) {
             return null
         }
-
     }
 
     fun readActionConfigXml(context: Context): ArrayList<SwitchInfo>? {
@@ -45,15 +44,8 @@ object SwitchConfigReader {
                                 break
                             }
                             when (parser.getAttributeName(i)) {
-                                "root" -> {
-                                    action.root = parser.getAttributeValue(i) == "true"
-                                }
-                                "confirm" -> {
-                                    action.confirm = parser.getAttributeValue(i) == "true"
-                                }
-                                "start" -> {
-                                    action.start = parser.getAttributeValue(i)
-                                }
+                                "confirm" -> action.confirm = parser.getAttributeValue(i) == "true"
+                                "start" -> action.start = parser.getAttributeValue(i)
                                 "support" -> {
                                     if (executeResultRoot(context, parser.getAttributeValue(i)) != "1") {
                                         action = null
@@ -66,26 +58,16 @@ object SwitchConfigReader {
                             action.title = parser.nextText()
                         } else if ("desc" == parser.name) {
                             for (i in 0 until parser.attributeCount) {
-                                val attrValue = parser.getAttributeValue(i)
-                                when (parser.getAttributeName(i)) {
-                                    "su" -> {
-                                        if (attrValue.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
-                                            val path = ExtractAssets(context).extractToFilesDir(attrValue.trim { it <= ' ' })
-                                            action.descPollingSUShell = "chmod 0755 $path\n$path"
-                                        } else {
-                                            action.descPollingSUShell = attrValue
-                                        }
-                                        action.desc = executeResultRoot(context, action.descPollingSUShell)
+                                val attrName = parser.getAttributeName(i)
+                                if (attrName == "su" || attrName == "sh") {
+                                    val attrValue = parser.getAttributeValue(i)
+                                    if (attrValue.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
+                                        val path = ExtractAssets(context).extractToFilesDir(attrValue.trim { it <= ' ' })
+                                        action.descPollingShell = "chmod 0755 $path\n$path"
+                                    } else {
+                                        action.descPollingShell = attrValue
                                     }
-                                    "sh" -> {
-                                        if (attrValue.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
-                                            val path = ExtractAssets(context).extractToFilesDir(attrValue.trim { it <= ' ' })
-                                            action.descPollingShell = "chmod 0755 $path\n$path"
-                                        } else {
-                                            action.descPollingShell = attrValue
-                                        }
-                                        action.desc = executeResultRoot(context, action.descPollingShell)
-                                    }
+                                    action.desc = executeResultRoot(context, action.descPollingShell)
                                 }
                             }
                             if (action.desc == null || action.desc.isEmpty())
@@ -141,15 +123,6 @@ object SwitchConfigReader {
         }
 
         return null
-    }
-
-    private fun executeResult(context: Context, script: String): String {
-        var script = script
-        if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
-            val path = ExtractAssets(context).extractToFilesDir(script.trim { it <= ' ' })
-            script = "chmod 0755 $path\n$path"
-        }
-        return KeepShellPublic.doCmdSync(script)
     }
 
     private fun executeResultRoot(context: Context, script: String): String {

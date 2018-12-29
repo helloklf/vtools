@@ -1,4 +1,4 @@
-package com.omarea.scripts.switchs;
+package com.omarea.krscripts.switchs;
 
 import android.content.DialogInterface;
 import android.support.v4.app.FragmentActivity;
@@ -7,8 +7,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.omarea.scripts.SwitchAdapter;
-import com.omarea.scripts.simple.shell.SimpleShellExecutor;
+import com.omarea.krscripts.SwitchAdapter;
+import com.omarea.krscripts.simple.shell.SimpleShellExecutor;
 import com.omarea.ui.OverScrollListView;
 import com.omarea.vtools.R;
 
@@ -92,12 +92,12 @@ public class SwitchListConfig {
         }
         cmds.append("\n\n");
         cmds.append("\n\n");
-        executeScript(action.title, action.root, cmds, startPath, onExit, new HashMap<String, String>() {{
+        executeScript(action.title, cmds, startPath, onExit, new HashMap<String, String>() {{
             put("state", (toValue ? "1" : "0"));
         }});
     }
 
-    private void executeScript(String title, Boolean root, StringBuilder cmds, String startPath, Runnable onExit, HashMap<String, String> params) {
-        new SimpleShellExecutor(context).execute(root, title, cmds, startPath, onExit, params);
+    private void executeScript(String title, StringBuilder cmds, String startPath, Runnable onExit, HashMap<String, String> params) {
+        new SimpleShellExecutor(context).execute(true, title, cmds, startPath, onExit, params);
     }
 }

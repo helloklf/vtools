@@ -1,4 +1,4 @@
-package com.omarea.scripts;
+package com.omarea.krscripts;
 
 import android.database.DataSetObserver;
 import android.view.View;
@@ -6,18 +6,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import com.omarea.scripts.action.ActionInfo;
-import com.omarea.scripts.simple.shell.ExecuteCommandWithOutput;
+import com.omarea.krscripts.action.ActionInfo;
+import com.omarea.shell.KeepShellPublic;
 import com.omarea.vtools.R;
-
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class ActionAdapter extends BaseAdapter {
     private ArrayList<ActionInfo> actionInfos;
-    private Timer timer;
 
     public ActionAdapter(ArrayList<ActionInfo> actionInfos) {
         this.actionInfos = actionInfos;
@@ -43,10 +38,7 @@ public class ActionAdapter extends BaseAdapter {
         ViewHolder holder = (ViewHolder) view.getTag();
         ActionInfo actionInfo = ((ActionInfo) getItem(index));
         if (actionInfo.descPollingShell != null && !actionInfo.descPollingShell.isEmpty()) {
-            actionInfo.desc = ExecuteCommandWithOutput.executeCommandWithOutput(false, actionInfo.descPollingShell);
-        }
-        if (actionInfo.descPollingSUShell != null && !actionInfo.descPollingSUShell.isEmpty()) {
-            actionInfo.desc = ExecuteCommandWithOutput.executeCommandWithOutput(true, actionInfo.descPollingSUShell);
+            actionInfo.desc = KeepShellPublic.INSTANCE.doCmdSync(actionInfo.descPollingShell);
         }
         holder.itemText.setText(actionInfo.desc);
     }
@@ -115,23 +107,6 @@ public class ActionAdapter extends BaseAdapter {
     @Override
     public boolean isEnabled(int position) {
         return true;
-    }
-
-    public void startPolling() {
-        stopPolling();
-        timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-            }
-        }, 1000);//延时1s执行
-    }
-
-    public void stopPolling() {
-        if (timer != null) {
-            timer.cancel();
-            timer = null;
-        }
     }
 
     protected class ViewHolder {

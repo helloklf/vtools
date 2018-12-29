@@ -1,4 +1,4 @@
-package com.omarea.scripts;
+package com.omarea.krscripts;
 
 import android.content.Context;
 

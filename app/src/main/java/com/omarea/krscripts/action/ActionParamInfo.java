@@ -1,4 +1,4 @@
-package com.omarea.scripts.action;
+package com.omarea.krscripts.action;
 
 import android.text.InputFilter;
 import android.text.Spanned;
@@ -20,7 +20,6 @@ public class ActionParamInfo {
     public ArrayList<ActionParamOption> options;
     //FIXME: 这是新增的，后面要把获取options的脚本放到这里，在执行时获取选项，而不是在读取配置时直接获取options
     public String optionsSh = "";
-    public String optionsSU = "";
 
     public static class ParamInfoFilter implements InputFilter {
         private ActionParamInfo paramInfo;

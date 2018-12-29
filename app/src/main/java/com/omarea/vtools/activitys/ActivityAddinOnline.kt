@@ -16,7 +16,6 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
-import com.omarea.scripts.VToolsOnlineNative
 import com.omarea.shared.ConfigInstaller
 import com.omarea.shared.SpfConfig
 import com.omarea.ui.ProgressBarDialog
@@ -159,15 +158,11 @@ class ActivityAddinOnline : AppCompatActivity() {
                 return super.shouldOverrideUrlLoading(view, request)
             }
         })
-        //vtools_online.setWebViewClient(WebViewClient())
         vtools_online.settings.javaScriptEnabled = true
         vtools_online.settings.setLoadWithOverviewMode(true);
         vtools_online.settings.setUseWideViewPort(true);
-        //vtools_online.loadUrl("http://192.168.2.144/")
 
-        //vtools_online.loadUrl("file:///android_asset/index.html")
-        //vtools_online.loadUrl("http://192.168.2.118:8080/#/scripts")
-        vtools_online.addJavascriptInterface(VToolsOnlineNative(this, vtools_online), "VToolsNative")
+        // vtools_online.addJavascriptInterface(VToolsOnlineNative(this, vtools_online), "VToolsNative")
     }
 
     override fun onDestroy() {
