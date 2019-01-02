@@ -245,11 +245,13 @@ class DialogAddinModifydevice(var context: Context) {
 
     @SuppressLint("ApplySharedPref")
     private fun backupDefault() {
-        Props.setPorp(BACKUP_BRAND, android.os.Build.BRAND)
-        Props.setPorp(BACKUP_MODEL, android.os.Build.MODEL)
-        Props.setPorp(BACKUP_PRODUCT, android.os.Build.PRODUCT)
-        Props.setPorp(BACKUP_DEVICE, android.os.Build.DEVICE)
-        Props.setPorp(BACKUP_MANUFACTURER, android.os.Build.MANUFACTURER)
-        Props.setPorp(BACKUP_SUCCESS, "true")
+        if (getBackupProp(BACKUP_SUCCESS, "false") != "true") {
+            Props.setPorp(BACKUP_BRAND, android.os.Build.BRAND)
+            Props.setPorp(BACKUP_MODEL, android.os.Build.MODEL)
+            Props.setPorp(BACKUP_PRODUCT, android.os.Build.PRODUCT)
+            Props.setPorp(BACKUP_DEVICE, android.os.Build.DEVICE)
+            Props.setPorp(BACKUP_MANUFACTURER, android.os.Build.MANUFACTURER)
+            Props.setPorp(BACKUP_SUCCESS, "true")
+        }
     }
 }
