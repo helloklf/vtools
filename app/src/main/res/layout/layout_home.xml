@@ -29,7 +29,8 @@
 
                 <android.support.v7.widget.CardView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp">
 
                     <LinearLayout
                         android:id="@+id/home_clear_ram"
@@ -37,20 +38,19 @@
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:paddingBottom="10dp"
-                        android:paddingLeft="20dp"
-                        android:paddingRight="20dp"
-                        android:paddingTop="10dp">
+                        android:padding="10dp">
 
                         <FrameLayout
                             android:layout_width="60dp"
                             android:layout_height="60dp">
+
                             <TextView
-                                android:textSize="11dp"
-                                android:text="RAM"
-                                android:layout_gravity="center"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="RAM"
+                                android:textSize="11dp" />
+
                             <com.omarea.ui.RamChatView
                                 android:id="@+id/home_raminfo"
                                 android:layout_width="60dp"
@@ -58,12 +58,13 @@
                                 app:free="0"
                                 app:total="1" />
                         </FrameLayout>
+
                         <LinearLayout
-                            android:layout_weight="1"
-                            android:layout_marginLeft="10dp"
-                            android:orientation="vertical"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
 
                             <TextView
                                 style="@style/textTitle"
@@ -74,21 +75,22 @@
                                 android:textSize="12dp" />
 
                             <TextView
-                                style="@style/textSmall"
                                 android:id="@+id/home_raminfo_text"
+                                style="@style/textSmall"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="left"
                                 android:text=""
                                 android:textSize="12dp" />
                         </LinearLayout>
+
                         <LinearLayout
-                            android:textAlignment="viewEnd"
-                            android:layout_weight="1"
-                            android:layout_marginRight="10dp"
-                            android:orientation="vertical"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:textAlignment="viewEnd">
 
                             <TextView
                                 style="@style/textTitle"
@@ -99,23 +101,26 @@
                                 android:textSize="12dp" />
 
                             <TextView
-                                style="@style/textSmall"
                                 android:id="@+id/home_zramsize"
+                                style="@style/textSmall"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="right"
                                 android:text="0% (0MB)"
                                 android:textSize="12dp" />
                         </LinearLayout>
+
                         <FrameLayout
                             android:layout_width="60dp"
                             android:layout_height="60dp">
+
                             <TextView
-                                android:textSize="10dp"
-                                android:text="SWAP"
-                                android:layout_gravity="center"
                                 android:layout_width="wrap_content"
-                                android:layout_height="wrap_content" />
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="SWAP"
+                                android:textSize="10dp" />
+
                             <com.omarea.ui.RamChatView
                                 android:id="@+id/home_swapstate_chat"
                                 android:layout_width="60dp"
@@ -127,99 +132,111 @@
                 </android.support.v7.widget.CardView>
 
                 <android.support.v7.widget.CardView
-                    android:layout_marginTop="1dp"
-                    android:layout_marginBottom="5dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                <LinearLayout
-                    android:id="@+id/home_gpuview"
-                    android:layout_width="match_parent"
-                    android:gravity="center_vertical"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="20dp"
-                    android:paddingRight="20dp"
-                    android:paddingTop="10dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <FrameLayout
-                        android:layout_width="60dp"
-                        android:layout_height="60dp">
-                        <com.omarea.ui.RamChatView
-                            app:free="0"
-                            app:total="100"
-                            android:id="@+id/home_gpu_chat"
-                            android:layout_width="60dp"
-                            android:layout_height="60dp" />
-                        <TextView
-                            android:textSize="12dp"
-                            android:text="GPU"
-                            android:layout_gravity="center"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                    </FrameLayout>
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp">
+
                     <LinearLayout
-                        android:layout_weight="1"
-                        android:layout_marginLeft="10dp"
-                        android:orientation="vertical"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-                        <TextView
-                            android:id="@+id/home_gpu_freq"
-                            style="@style/textTitle"
-                            android:text="- Mhz"
-                            android:layout_gravity="center_vertical"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                        <TextView
-                            android:layout_marginTop="3dp"
-                            android:id="@+id/home_gpu_load"
-                            style="@style/textSmall"
-                            android:text="- %"
-                            android:layout_gravity="center_vertical"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-                    <LinearLayout
-                        android:textAlignment="viewEnd"
-                        android:layout_weight="1"
-                        android:layout_marginRight="10dp"
-                        android:orientation="vertical"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-                        <TextView
-                            android:id="@+id/cpu_core_count"
-                            style="@style/textTitle"
-                            android:text="核心数"
-                            android:layout_gravity="center_vertical|end"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                        <TextView
-                            android:layout_marginTop="3dp"
-                            android:id="@+id/cpu_core_total_load"
-                            style="@style/textSmall"
-                            android:text="- %"
-                            android:layout_gravity="center_vertical|end"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                    </LinearLayout>
-                    <FrameLayout
-                        android:layout_width="60dp"
-                        android:layout_height="60dp">
-                        <com.omarea.ui.RamChatView
-                            app:free="0"
-                            app:total="100"
-                            android:id="@+id/home_cpu_chat"
+                        android:id="@+id/home_gpuview"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="10dp">
+
+                        <FrameLayout
                             android:layout_width="60dp"
-                            android:layout_height="60dp" />
-                        <TextView
-                            android:textSize="12dp"
-                            android:text="CPU"
-                            android:layout_gravity="center"
+                            android:layout_height="60dp">
+
+                            <com.omarea.ui.RamChatView
+                                android:id="@+id/home_gpu_chat"
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                app:free="0"
+                                app:total="100" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="GPU"
+                                android:textSize="12dp" />
+                        </FrameLayout>
+
+                        <LinearLayout
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
-                    </FrameLayout>
-                </LinearLayout>
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/home_gpu_freq"
+                                style="@style/textTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:text="- Mhz" />
+
+                            <TextView
+                                android:id="@+id/home_gpu_load"
+                                style="@style/textSmall"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginTop="3dp"
+                                android:text="- %" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:textAlignment="viewEnd">
+
+                            <TextView
+                                android:id="@+id/cpu_core_count"
+                                style="@style/textTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical|end"
+                                android:text="核心数" />
+
+                            <TextView
+                                android:id="@+id/cpu_core_total_load"
+                                style="@style/textSmall"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical|end"
+                                android:layout_marginTop="3dp"
+                                android:text="- %" />
+                        </LinearLayout>
+
+                        <FrameLayout
+                            android:layout_width="60dp"
+                            android:layout_height="60dp">
+
+                            <com.omarea.ui.RamChatView
+                                android:id="@+id/home_cpu_chat"
+                                android:layout_width="60dp"
+                                android:layout_height="60dp"
+                                app:free="0"
+                                app:total="100" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:text="CPU"
+                                android:textSize="12dp" />
+                        </FrameLayout>
+                    </LinearLayout>
                 </android.support.v7.widget.CardView>
+
                 <LinearLayout
                     android:id="@+id/home_mainview2"
                     android:layout_width="match_parent"
@@ -233,10 +250,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginBottom="5dp"
                         android:layout_marginLeft="30dp"
-                        android:layout_marginRight="22dp"
                         android:layout_marginTop="3dp"
+                        android:layout_marginRight="22dp"
+                        android:layout_marginBottom="5dp"
                         android:layout_weight="1"
                         android:clickable="false"
                         android:focusable="false"
@@ -295,15 +312,16 @@
                     android:textStyle="bold" />
             </TableRow>
         </TableLayout>
+
         <TextView
             android:id="@+id/home_help"
             style="@style/textSmall"
-            android:textColor="@color/colorAccent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:textAlignment="center"
             android:autoLink="none"
             android:text="点击此处，快速入门"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:textAlignment="center"
+            android:textColor="@color/colorAccent" />
     </LinearLayout>
 </FrameLayout>
