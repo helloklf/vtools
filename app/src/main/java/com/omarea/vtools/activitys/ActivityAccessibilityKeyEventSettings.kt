@@ -44,8 +44,8 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         spf = getSharedPreferences(SpfConfig.KEY_EVENT_SPF, Context.MODE_PRIVATE)
         spfOther = getSharedPreferences(SpfConfig.KEY_EVENT_ONTHER_CONFIG_SPF, Context.MODE_PRIVATE)
-        if (getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false))
-            this.setTheme(R.style.AppTheme_NoActionBarNight)
+
+        ThemeSwitch.switchTheme(this)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_accessibility_key_event_settings)

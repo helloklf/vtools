@@ -151,7 +151,7 @@
                     android:focusable="true"
                     android:padding="6dp"
                     android:text="@string/btn_cancel"
-                    android:textColor="@color/colorAccent" />
+                    android:textColor="?colorAccent" />
 
                 <Button
                     android:id="@+id/positiveBtn"
@@ -163,7 +163,7 @@
                     android:focusable="true"
                     android:padding="6dp"
                     android:text="@string/btn_confirm"
-                    android:textColor="@color/colorAccent"
+                    android:textColor="?colorAccent"
                     android:textSize="12dp" />
             </LinearLayout>
         </RelativeLayout>

@@ -24,7 +24,7 @@
                 android:layout_height="wrap_content">
                 <TextView
                     style="@style/textSmall"
-                    android:textColor="@color/colorAccent"
+                    android:textColor="?colorAccent"
                     android:text="查看由场景模式功能统计的应用耗电记录"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />

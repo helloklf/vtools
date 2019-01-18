@@ -21,9 +21,7 @@ class ActivityFileSelector : AppCompatActivity() {
     private var adapterFileSelector: AdapterFileSelector? = null
     var extension = ""
     override fun onCreate(savedInstanceState: Bundle?) {
-        val spf = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-        if (spf.getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false))
-            this.setTheme(R.style.AppTheme_NoActionBarNight)
+        ThemeSwitch.switchTheme(this)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_file_selector)

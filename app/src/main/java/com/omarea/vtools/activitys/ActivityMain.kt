@@ -89,8 +89,8 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             globalSPF!!.registerOnSharedPreferenceChangeListener(listener)
         }
-        if (globalSPF!!.getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false))
-            this.setTheme(R.style.AppTheme_NoActionBarNight)
+
+        ThemeSwitch.switchTheme(this)
         /*
         使用壁纸高斯模糊作为窗口背景
         val wallPaper = WallpaperManager.getInstance(this).getDrawable();

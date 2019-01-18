@@ -137,6 +137,82 @@
                 android:text="@string/settings_disable_selinux_desc"
                 android:textColor="?android:attr/textColorSecondary"
                 android:textSize="10dp" />
+
+            <TextView
+                android:padding="8dp"
+                android:text="@string/settings_theme"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <LinearLayout
+                android:padding="8dp"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <Button
+                    android:onClick="onThemeClick"
+                    android:tag="0"
+                    android:background="@color/colorBlue"
+                    android:layout_width="27dp"
+                    android:layout_height="27dp" />
+                <Button
+                    android:onClick="onThemeClick"
+                    android:tag="1"
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/colorAccent"
+                    android:layout_width="27dp"
+                    android:layout_height="27dp" />
+                <Button
+                    android:onClick="onThemeClick"
+                    android:tag="2"
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/color_load_mid"
+                    android:layout_width="27dp"
+                    android:layout_height="27dp" />
+                <Button
+                    android:onClick="onThemeClick"
+                    android:tag="3"
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/color_load_hight"
+                    android:layout_width="27dp"
+                    android:layout_height="27dp" />
+                <Button
+                    android:onClick="onThemeClick"
+                    android:tag="4"
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/newYearAccent"
+                    android:layout_width="27dp"
+                    android:layout_height="27dp" />
+                <Button
+                    android:onClick="onThemeClick"
+                    android:tag="5"
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/pink"
+                    android:layout_width="27dp"
+                    android:layout_height="27dp" />
+                <Button
+                    android:onClick="onThemeClick"
+                    android:tag="6"
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/pretty"
+                    android:layout_width="27dp"
+                    android:layout_height="27dp" />
+                <Button
+                    android:onClick="onThemeClick"
+                    android:tag="7"
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/violet"
+                    android:layout_width="27dp"
+                    android:layout_height="27dp" />
+                <Button
+                    android:onClick="onThemeClick"
+                    android:tag="8"
+                    android:layout_marginLeft="10dp"
+                    android:background="@color/black_overlay"
+                    android:layout_width="27dp"
+                    android:layout_height="27dp" />
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

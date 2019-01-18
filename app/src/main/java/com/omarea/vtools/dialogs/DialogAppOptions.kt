@@ -323,7 +323,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
             val packageName = item.packageName.toString()
             sb.append("echo '[disable ${item.appName}]';")
 
-            sb.append("pm disable ${item.appName};")
+            sb.append("pm disable ${packageName};")
         }
 
         sb.append("echo '[operation completed]';")

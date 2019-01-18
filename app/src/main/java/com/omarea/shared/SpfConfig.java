@@ -36,6 +36,7 @@ public class SpfConfig {
     public static String GLOBAL_SPF_NOTIFY = "accessbility_notify";
     public static String GLOBAL_SPF_AUTO_REMOVE_RECENT = "remove_recent";
     public static String GLOBAL_SPF_NIGHT_MODE = "app_night_mode";
+    public static String GLOBAL_SPF_THEME = "app_theme";
     public static String GLOBAL_SPF_MAC = "wifi_mac";
     public static String GLOBAL_SPF_MAC_AUTOCHANGE = "wifi_mac_autochange";
     public static String GLOBAL_SPF_ACCU_SWITCH = "power_config_accu_switch";

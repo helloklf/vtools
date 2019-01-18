@@ -19,14 +19,13 @@ import kotlinx.android.synthetic.main.activity_other_settings.*
 class ActivitySceneOtherSettings : AppCompatActivity() {
     private lateinit var spf: SharedPreferences
     private var myHandler = Handler()
-    private lateinit var globalSPF: SharedPreferences
 
     override fun onPostResume() {
         super.onPostResume()
         delegate.onPostResume()
 
-        home_app_nightmode.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false)
-        home_hide_in_recents.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, false)
+        home_app_nightmode.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false)
+        home_hide_in_recents.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, false)
 
         val serviceState = AccessibleServiceHelper().serviceIsRunning(this)
         vtoolsserviceSettings!!.visibility = if (serviceState) View.VISIBLE else View.GONE
@@ -39,28 +38,23 @@ class ActivitySceneOtherSettings : AppCompatActivity() {
     @SuppressLint("ApplySharedPref")
     override fun onCreate(savedInstanceState: Bundle?) {
         spf = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-        if (spf.getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false))
-            this.setTheme(R.style.AppTheme_NoActionBarNight)
+        ThemeSwitch.switchTheme(this)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_other_settings)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-
         home_hide_in_recents.setOnCheckedChangeListener({ _, checked ->
-            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, checked).commit()
+            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, checked).commit()
         })
         home_app_nightmode.setOnCheckedChangeListener({ _, checked ->
-            if (globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false) == checked) {
+            if (spf.getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false) == checked) {
                 return@setOnCheckedChangeListener
             }
-            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, checked).commit()
+            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, checked).commit()
             Toast.makeText(applicationContext, "此设置将在下次启动Scene时生效！", Toast.LENGTH_SHORT).show()
         })
-
-        spf = this.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
         settings_delaystart.setOnCheckedChangeListener({ _, checked ->
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DELAY, checked).commit()
@@ -79,6 +73,13 @@ class ActivitySceneOtherSettings : AppCompatActivity() {
                 spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, settings_disable_selinux.isChecked).commit()
             }
         }
+    }
+
+    fun onThemeClick(view: View) {
+        val tag = view.tag.toString().toInt()
+
+        spf.edit().putInt(SpfConfig.GLOBAL_SPF_THEME, tag).commit()
+        this.recreate()
     }
 
     override fun onDestroy() {

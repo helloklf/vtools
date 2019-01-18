@@ -132,6 +132,7 @@
     <string name="accessbility_delay_desc">Scene自启动完成25秒后再应用配置</string>
     <string name="settings_disable_selinux">自动SeLinux宽容模式</string>
     <string name="settings_disable_selinux_desc">自动开启SELinux宽容模式（部分软件中会称作“关闭Selinux”）。部分设备会卡死重启。如果不开有些功能会用不了，部分系统开启本功能会死机重启！</string>
+    <string name="settings_theme">主题</string>
 
     <string name="menu_home">概况</string>
     <string name="menu_paypal">捐赠打赏</string>

@@ -1,20 +1,18 @@
 <resources>
-
     <style name="NotificationInfo" parent="android:TextAppearance.Material.Notification.Info" />
-
     <style name="NotificationTitle" parent="android:TextAppearance.Material.Notification.Title" />
 
-    <style name="AppTheme" parent="Base.Theme.AppCompat.Light">
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowTranslucentNavigation">false</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@color/colorPrimary</item>
+        <item name="android:windowAnimationStyle">@style/activityAnim</item>
         <item name="android:windowBackground">@android:color/background_light</item>
+        <item name="android:navigationBarColor">@color/colorPrimary</item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowAnimationStyle">@style/activityAnim</item>
     </style>
 
     <style name="AppThemeNight" parent="Theme.AppCompat">
@@ -31,7 +29,7 @@
         <item name="android:windowAnimationStyle">@style/activityAnim</item>
     </style>
 
-    <style name="AppTheme.NoActionBar" parent="AppTheme">
+    <style name="AppThemeLight" parent="AppTheme">
         <item name="android:textColor">#888888</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="windowActionBar">true</item>
@@ -39,7 +37,64 @@
         <item name="android:windowAnimationStyle">@style/activityAnim</item>
     </style>
 
-    <style name="AppTheme.NoActionBarNight" parent="AppThemeNight">
+    <style name="AppThemeBlue" parent="AppThemeLight">
+        <item name="android:navigationBarColor">@color/colorBlue</item>
+        <item name="colorPrimary">@color/colorBlue</item>
+        <item name="colorPrimaryDark">@color/colorBlue</item>
+        <item name="colorAccent">@color/colorBlue</item>
+    </style>
+
+    <style name="AppThemeCyan" parent="AppThemeLight">
+        <item name="android:navigationBarColor">@color/colorAccent</item>
+        <item name="colorPrimary">@color/colorAccent</item>
+        <item name="colorPrimaryDark">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppThemeGreen" parent="AppThemeLight">
+        <item name="android:navigationBarColor">@color/color_load_mid</item>
+        <item name="colorPrimary">@color/color_load_mid</item>
+        <item name="colorPrimaryDark">@color/color_load_mid</item>
+        <item name="colorAccent">@color/color_load_mid</item>
+    </style>
+
+    <style name="AppThemeOrange" parent="AppThemeLight">
+        <item name="android:navigationBarColor">@color/color_load_hight</item>
+        <item name="colorPrimary">@color/color_load_hight</item>
+        <item name="colorPrimaryDark">@color/color_load_hight</item>
+        <item name="colorAccent">@color/color_load_hight</item>
+    </style>
+
+    <style name="AppThemeRed" parent="AppThemeLight">
+        <item name="android:navigationBarColor">@color/newYearAccent</item>
+        <item name="android:windowBackground">@color/newYearBgColor</item>
+        <item name="colorPrimary">@color/newYearAccent</item>
+        <item name="colorPrimaryDark">@color/newYearAccent</item>
+        <item name="colorAccent">@color/newYearAccent</item>
+    </style>
+
+    <style name="AppThemePink" parent="AppThemeLight">
+        <item name="android:navigationBarColor">@color/pink</item>
+        <item name="colorPrimary">@color/pink</item>
+        <item name="colorPrimaryDark">@color/pink</item>
+        <item name="colorAccent">@color/pink</item>
+    </style>
+
+    <style name="AppThemePretty" parent="AppThemeLight">
+        <item name="android:navigationBarColor">@color/pretty</item>
+        <item name="colorPrimary">@color/pretty</item>
+        <item name="colorPrimaryDark">@color/pretty</item>
+        <item name="colorAccent">@color/pretty</item>
+    </style>
+
+    <style name="AppThemeViolet" parent="AppThemeLight">
+        <item name="android:navigationBarColor">@color/violet</item>
+        <item name="colorPrimary">@color/violet</item>
+        <item name="colorPrimaryDark">@color/violet</item>
+        <item name="colorAccent">@color/violet</item>
+    </style>
+
+    <style name="AppThemeNoActionBarNight" parent="AppThemeNight">
         <item name="android:textColor">#888888</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="windowActionBar">true</item>

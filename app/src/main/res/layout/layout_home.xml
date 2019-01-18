@@ -322,6 +322,6 @@
             android:autoLink="none"
             android:text="点击此处，快速入门"
             android:textAlignment="center"
-            android:textColor="@color/colorAccent" />
+            android:textColor="?colorAccent" />
     </LinearLayout>
 </FrameLayout>

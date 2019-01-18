@@ -26,8 +26,6 @@ import java.nio.charset.Charset
 
 
 class ActivityAddinOnline : AppCompatActivity() {
-    private lateinit var spf: SharedPreferences
-
     override fun onPostResume() {
         super.onPostResume()
         delegate.onPostResume()
@@ -36,9 +34,7 @@ class ActivityAddinOnline : AppCompatActivity() {
 
     @SuppressLint("ApplySharedPref")
     override fun onCreate(savedInstanceState: Bundle?) {
-        spf = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-        if (spf.getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false))
-            this.setTheme(R.style.AppTheme_NoActionBarNight)
+        ThemeSwitch.switchTheme(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_addin_online)
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
