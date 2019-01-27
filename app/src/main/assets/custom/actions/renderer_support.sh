@@ -1,8 +1,6 @@
 #!/system/bin/sh
 
-render=`getprop debug.hwui.renderer`
-
-if [[ "$render" = "opengl" ]] || [[ "$render" = "skiagl" ]] || [[ "$render" = "skiavk" ]]
+if [[ "$ANDROID_SDK" -gt 24 ]]
 then
     echo 1
 else
