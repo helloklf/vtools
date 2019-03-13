@@ -353,19 +353,10 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 startActivity(sendIntent)
             }
             R.id.nav_profile -> {
-                if (Build.BRAND.toLowerCase() == "meizu" || Build.MANUFACTURER.toLowerCase() == "meizu") {
-                    val soc = Platform().getCPUName()
-                    if (soc == "sdm845" || soc == "710") {
-                        android.app.AlertDialog.Builder(this)
-                                .setTitle("暂不支持该设备")
-                                .setMessage("根据许多魅族16th/16th Plus用户反馈，使用性能调度模式以后会无法正常开机（原因不详）。为了避免更多用户被坑，该功能现在将直接不再允许Meizu的sdm845、sdm710系列手机使用！")
-                                .setPositiveButton(R.string.btn_iknow, { _, _ -> })
-                                .create()
-                                .show()
-                        return false
-                    }
-                }
                 fragment = FragmentConfig.createPage()
+            }
+            R.id.nav_app_freezer -> {
+                fragment = FragmentFreezer.createPage()
             }
             R.id.nav_additional -> fragment = FragmentAddin.createPage()
             R.id.nav_keyevent -> {
@@ -399,6 +390,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             menu.findItem(R.id.nav_img).isEnabled = false
             menu.findItem(R.id.nav_profile).isEnabled = false
             menu.findItem(R.id.nav_additional).isEnabled = false
+            menu.findItem(R.id.nav_app_freezer).isEnabled = false
         } catch (ex: Exception) {
 
         }

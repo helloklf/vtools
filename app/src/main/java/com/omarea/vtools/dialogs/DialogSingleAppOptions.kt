@@ -37,7 +37,8 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         AlertDialog.Builder(context).setTitle(app.appName)
                 .setCancelable(true)
                 .setItems(
-                        arrayOf("备份（apk、data）",
+                        arrayOf("打开（如果可以）",
+                                "备份（apk、data）",
                                 "备份（apk）",
                                 "卸载",
                                 "卸载（保留数据）",
@@ -50,21 +51,32 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                                 "禁用 + 隐藏",
                                 "转为系统应用"), { _, which ->
                     when (which) {
-                        0 -> backupAll(true, true)
-                        1 -> backupAll(true, false)
-                        2 -> uninstallAll()
-                        3 -> uninstallKeepDataAll()
-                        4 -> clearAll()
-                        5 -> trimCachesAll()
-                        6 -> toggleEnable()
-                        7 -> openDetails()
-                        8 -> copyPackageName()
-                        9 -> showInMarket()
-                        10 -> hideAll()
-                        11 -> moveToSystem()
+                        0 -> startApp()
+                        1 -> backupAll(true, true)
+                        2 -> backupAll(true, false)
+                        3 -> uninstallAll()
+                        4 -> uninstallKeepDataAll()
+                        5 -> clearAll()
+                        6 -> trimCachesAll()
+                        7 -> toggleEnable()
+                        8 -> openDetails()
+                        9 -> copyPackageName()
+                        10 -> showInMarket()
+                        11 -> hideAll()
+                        12 -> moveToSystem()
                     }
                 })
                 .show()
+    }
+
+    private fun startApp () {
+        val intent = this.context.getPackageManager().getLaunchIntentForPackage(app.packageName.toString())
+        if (intent != null) {
+            if (!app.enabled) {
+                enableAll()
+            }
+            this.context.startActivity(intent)
+        }
     }
 
     /**

@@ -4,12 +4,14 @@ apply plugin: 'kotlin-android-extensions'
 
 android {
     signingConfigs {
+        /*
         omarea_Signing {
             keyAlias 'omarea.com'
-            keyPassword 'I0140728'
+            keyPassword 'asdf1234'
             storeFile file('D:/omoarea.jks')
-            storePassword 'I0140728'
+            storePassword 'asdf1234'
         }
+        */
     }
     compileSdkVersion 28
     buildToolsVersion '28.0.3'
@@ -26,10 +28,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             minifyEnabled true
             debuggable false
-            signingConfig signingConfigs.omarea_Signing
+            // signingConfig signingConfigs.omarea_Signing
         }
         debug {
-            signingConfig signingConfigs.omarea_Signing
+            // signingConfig signingConfigs.omarea_Signing
             minifyEnabled false
         }
     }

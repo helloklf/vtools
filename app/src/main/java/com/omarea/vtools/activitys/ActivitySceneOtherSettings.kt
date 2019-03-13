@@ -24,7 +24,6 @@ class ActivitySceneOtherSettings : AppCompatActivity() {
         super.onPostResume()
         delegate.onPostResume()
 
-        home_app_nightmode.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false)
         home_hide_in_recents.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, false)
 
         val serviceState = AccessibleServiceHelper().serviceIsRunning(this)
@@ -47,13 +46,6 @@ class ActivitySceneOtherSettings : AppCompatActivity() {
 
         home_hide_in_recents.setOnCheckedChangeListener({ _, checked ->
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, checked).commit()
-        })
-        home_app_nightmode.setOnCheckedChangeListener({ _, checked ->
-            if (spf.getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false) == checked) {
-                return@setOnCheckedChangeListener
-            }
-            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, checked).commit()
-            Toast.makeText(applicationContext, "此设置将在下次启动Scene时生效！", Toast.LENGTH_SHORT).show()
         })
 
         settings_delaystart.setOnCheckedChangeListener({ _, checked ->

@@ -22,6 +22,11 @@
                 android:icon="@drawable/battery"
                 android:title="@string/menu_battery_stats" />
             <item
+                android:visible="false"
+                android:id="@+id/nav_app_freezer"
+                android:icon="@drawable/battery"
+                android:title="@string/menu_app_freezer" />
+            <item
                 android:id="@+id/nav_keyevent"
                 android:icon="@drawable/ic_menu_task"
                 android:title="@string/menu_keymap" />

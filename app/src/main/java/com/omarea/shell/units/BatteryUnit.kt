@@ -244,7 +244,9 @@ class BatteryUnit {
     }
 
     fun setAllowed(boolean: Boolean): Boolean {
-        return KernelProrp.setProp("/sys/class/power_supply/usb/pd_allowed", if (boolean) "1" else "0")
+        return KeepShellPublic.doCmdSync(
+                "chmod 777 /sys/class/power_supply/usb/pd_allowed\n" +
+                "echo " + (if (boolean) "1" else "0") + "> /sys/class/power_supply/usb/pd_allowed\n") != "error"
     }
 
     fun pdActive(): Boolean {

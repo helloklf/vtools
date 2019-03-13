@@ -77,26 +77,6 @@
                 android:textSize="10dp" />
 
             <Switch
-                android:id="@+id/home_app_nightmode"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:padding="8dp"
-                android:text="@string/home_app_night"
-                android:textColor="?android:attr/textColorPrimary"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingBottom="8dp"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:text="@string/home_app_night_desc"
-                android:textColor="?android:attr/textColorSecondary"
-                android:textSize="10dp" />
-
-            <Switch
                 android:id="@+id/settings_delaystart"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

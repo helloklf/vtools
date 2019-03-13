@@ -143,6 +143,7 @@
     <string name="menu_swap">SWAP设置</string>
     <string name="menu_battery">电池充电</string>
     <string name="menu_battery_stats">耗电统计</string>
+    <string name="menu_app_freezer">APP冷库</string>
     <string name="menu_keymap">按键辅助</string>
     <string name="menu_img">备份还原</string>
     <string name="menu_qq">Scene实验室</string>
@@ -157,8 +158,6 @@
     <string name="battery_uevent_title">$ cat /sys/class/power_supply/bms/uevent</string>
     <string name="home_hide_in_recents">强迫症</string>
     <string name="home_hide_in_recents_desc">不要在多任务界面显示Scene</string>
-    <string name="home_app_night">辣眼睛</string>
-    <string name="home_app_night_desc">开启暗色主题</string>
     <string name="applist_help">✔ 已备份\n✘ 备份的版本比安装的版本更高\n★ 已安装的版本比备份的版本旧\n☆ 已备份数据未备份APK\n\n目前所提供的应用数据备份功能，需要系统集成busybox、toybox，使用tar+gz压缩数据（如果系统支持，将使用pigz提高压缩速度），仅备份 “/data/data/应用包名” 下的数据，且不保证兼容所有系统和应用。\n\n“禁用+隐藏”非常适合精简ROM，但是应用一旦被设为隐藏你将无法通过其它应用管理工具来恢复或启动（除非恢复出厂设置或在Scene里手动解除隐藏），Scene会自动保存隐藏记录，你可以通过下面的按钮来解除隐藏。\n如果你卸载了Scene，则隐藏记录也会丢失，则无法再恢复！！</string>
     <string name="dialog_addin_device_warn">请不要输入特殊符号，卸载Scene后备份的机型信息也会丢失！\n已兼容应用变量的机型代码，复制后重新打开此窗口即可使用！</string>
     <string name="dialog_addin_device_desc">修改后可点击“还原”->“确认”恢复修改前的机型，卸载Scene会导致备份的机型信息丢失，请务必还原后再卸载！\n\n或者，你也可以通过重新刷入完整ROM来恢复机型信息！\n\n使用DualBootPatcher多系统软件切勿使用本功能修改机型！！！</string>

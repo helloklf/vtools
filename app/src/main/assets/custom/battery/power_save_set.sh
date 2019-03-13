@@ -3,6 +3,12 @@ state=$1
 settings put global low_power $1;
 settings put global low_power_sticky $1;
 
+function killproc()
+{
+    stop "$1" 2> /dev/null
+    killall -9 "$1" 2> /dev/null
+}
+
 # Whether or not app auto restriction is enabled. When it is enabled, settings app will  auto restrict the app if it has bad behavior(e.g. hold wakelock for long time).
 # [app_auto_restriction_enabled]
 
@@ -44,28 +50,19 @@ then
     settings put global low_power_sticky 1
 
     echo "关闭调试服务和日志进程"
-    stop cnss_diag 2> /dev/null
-    killall -9 cnss_diag 2> /dev/null
-    stop subsystem_ramdump 2> /dev/null
+    killproc cnss_diag
+    killproc subsystem_ramdump
+    killproc tcpdump
+    killproc logd
+    killproc adbd
     #stop thermal-engine 2> /dev/null
-    stop tcpdump 2> /dev/null
-    stop logd 2> /dev/null
-    stop adbd 2> /dev/null
     #killall -9 magiskd 2> /dev/null
-    killall -9 magisklogd 2> /dev/null
     if [[ -e /sys/zte_power_debug/switch ]]; then
         echo 0 > /sys/zte_power_debug/switch
     fi
     if [[ -e /sys/zte_power_debug/debug_enabled ]]; then
         echo N > /sys/kernel/debug/debug_enabled
     fi
-    stop cnss_diag 2> /dev/null
-    killall -9 cnss_diag 2> /dev/null
-    stop subsystem_ramdump 2> /dev/null
-    #stop thermal-engine 2> /dev/null
-    stop tcpdump 2> /dev/null
-    stop logd 2> /dev/null
-    stop adbd 2> /dev/null
     #killall -9 magiskd 2> /dev/null
     killall -9 magisklogd 2> /dev/null
 
