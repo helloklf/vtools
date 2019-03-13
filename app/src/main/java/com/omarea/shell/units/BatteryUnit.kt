@@ -244,9 +244,12 @@ class BatteryUnit {
     }
 
     fun setAllowed(boolean: Boolean): Boolean {
-        return KeepShellPublic.doCmdSync(
-                "chmod 777 /sys/class/power_supply/usb/pd_allowed\n" +
-                "echo " + (if (boolean) "1" else "0") + "> /sys/class/power_supply/usb/pd_allowed\n") != "error"
+        val builder = java.lang.StringBuilder()
+        builder.append("chmod 777 /sys/class/power_supply/usb/pd_allowed\n")
+        builder.append("echo ${if (boolean) "1" else "0"}> /sys/class/power_supply/usb/pd_allowed\n")
+        builder.append("chmod 777 /sys/class/power_supply/usb/pd_active\n")
+        builder.append("echo 1 > /sys/class/power_supply/usb/pd_active\n")
+        return KeepShellPublic.doCmdSync(builder.toString()) != "error"
     }
 
     fun pdActive(): Boolean {
