@@ -5,6 +5,7 @@ import android.os.Build
 import android.widget.Toast
 import com.omarea.shared.CommonCmds
 import com.omarea.shared.FileWrite
+import com.omarea.shared.MagiskExtend
 import com.omarea.shell.Platform
 
 /**
@@ -63,19 +64,25 @@ class PerfBoostConfigAddin(private var context: Context) : AddinBase(context) {
     private fun copyFile(path: String?) {
         if (path != null) {
             val installPath = "/system/vendor/etc/perf/perfboostsconfig.xml"
-            command = StringBuilder()
-                    .append(CommonCmds.MountSystemRW)
-                    .append(CommonCmds.MountVendorRW)
-                    .append("if [[ ! -e $installPath.bak ]]; then cp $installPath $installPath.bak; fi;\n")
-                    .append("rm -f $installPath\n")
-                    .append("cp $path $installPath\n")
-                    .append("chmod 755 $installPath\n")
-                    .append("verify=`busybox md5sum $path | cut -f1 -d ' '`\n")
-                    .append("md5=`busybox md5sum $installPath | cut -f1 -d ' '`\n")
-                    .append("if [[ \$md5 = \$verify ]]; then exit 0; else exit 1; fi;\n")
-                    .toString()
+            if (MagiskExtend.moduleInstalled()) {
+                MagiskExtend.replaceSystemFile(installPath, path)
 
-            super.run()
+                Toast.makeText(context, "已通过Magisk更改参数，请重启手机~", Toast.LENGTH_SHORT).show()
+            } else {
+                command = StringBuilder()
+                        .append(CommonCmds.MountSystemRW)
+                        .append(CommonCmds.MountVendorRW)
+                        .append("if [[ ! -e $installPath.bak ]]; then cp $installPath $installPath.bak; fi;\n")
+                        .append("rm -f $installPath\n")
+                        .append("cp $path $installPath\n")
+                        .append("chmod 755 $installPath\n")
+                        .append("verify=`busybox md5sum $path | cut -f1 -d ' '`\n")
+                        .append("md5=`busybox md5sum $installPath | cut -f1 -d ' '`\n")
+                        .append("if [[ \$md5 = \$verify ]]; then exit 0; else exit 1; fi;\n")
+                        .toString()
+
+                super.run()
+            }
         } else {
             Toast.makeText(context, "配置文件提取失败！", Toast.LENGTH_SHORT).show()
         }

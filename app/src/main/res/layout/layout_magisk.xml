@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.omarea.vtools.fragments.FragmentApplistions">
+
+    <TabHost
+        android:id="@+id/magisk_tabhost"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="false">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#33dddddd" />
+
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <FrameLayout
+                    android:id="@+id/magisk_tab1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <EditText
+                            android:paddingLeft="15dp"
+                            android:layout_gravity="top"
+                            android:gravity="top"
+                            android:textSize="13dp"
+                            android:text="# This file will be read by resetprop\n# Example: Change dpi\n# ro.sf.lcd_density=410"
+                            android:layout_weight="1"
+                            android:id="@+id/magisk_props"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                        <LinearLayout
+                            android:gravity="end"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <Button
+                                android:id="@+id/magisk_props_reset"
+                                android:background="@android:color/transparent"
+                                android:text="撤销更改"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            <Button
+                                android:id="@+id/magisk_props_save"
+                                android:background="@android:color/transparent"
+                                android:text="保存"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </FrameLayout>
+                <FrameLayout
+                    android:id="@+id/magisk_tab2"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <com.omarea.ui.OverScrollListView
+                        android:id="@+id/magisk_files"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </FrameLayout>
+                <FrameLayout
+                    android:id="@+id/magisk_tab3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <EditText
+                            android:paddingLeft="15dp"
+                            android:layout_gravity="top"
+                            android:gravity="top"
+                            android:textSize="13dp"
+                            android:text="# This file will be read by resetprop\n# Example: Change dpi\n# ro.sf.lcd_density=410"
+                            android:layout_weight="1"
+                            android:id="@+id/magisk_beforestart"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                        <LinearLayout
+                            android:gravity="end"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <Button
+                                android:id="@+id/magisk_beforestart_reset"
+                                android:background="@android:color/transparent"
+                                android:text="撤销更改"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            <Button
+                                android:id="@+id/magisk_beforestart_save"
+                                android:background="@android:color/transparent"
+                                android:text="保存"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </FrameLayout>
+                <FrameLayout
+                    android:id="@+id/magisk_tab4"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <EditText
+                            android:paddingLeft="15dp"
+                            android:layout_gravity="top"
+                            android:gravity="top"
+                            android:textSize="13dp"
+                            android:text="# "
+                            android:layout_weight="1"
+                            android:id="@+id/magisk_afterstart"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+                        <LinearLayout
+                            android:gravity="end"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                            <Button
+                                android:id="@+id/magisk_afterstart_reset"
+                                android:background="@android:color/transparent"
+                                android:text="撤销更改"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            <Button
+                                android:id="@+id/magisk_afterstart_save"
+                                android:background="@android:color/transparent"
+                                android:text="保存"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </FrameLayout>
+            </FrameLayout>
+        </LinearLayout>
+    </TabHost>
+
+</RelativeLayout>

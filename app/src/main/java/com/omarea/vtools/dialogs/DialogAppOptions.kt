@@ -12,6 +12,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import com.omarea.shared.CommonCmds
+import com.omarea.shared.MagiskExtend
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.model.Appinfo
 import com.omarea.shell.AsynSuShellUnit
@@ -378,7 +379,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
      */
     protected fun deleteAll() {
         confirm("删除应用", "已选择${apps.size}个应用，删除系统应用可能导致功能不正常，甚至无法开机，确定要继续删除？", Runnable {
-            if (CheckRootStatus.isMagisk() && (CheckRootStatus.isTmpfs("/system/app") || CheckRootStatus.isTmpfs("/system/priv-app"))) {
+            if (CheckRootStatus.isMagisk() && !MagiskExtend.moduleInstalled() && (CheckRootStatus.isTmpfs("/system/app") || CheckRootStatus.isTmpfs("/system/priv-app"))) {
                 android.support.v7.app.AlertDialog.Builder(context)
                         .setTitle("Magisk 副作用警告")
                         .setMessage("检测到你正在使用Magisk作为ROOT权限管理器，并且/system/app和/system/priv-app目录已被某些模块修改，这可能导致这些目录被Magisk劫持并且无法写入！！")
@@ -396,6 +397,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
     private fun _deleteAll() {
         val sb = StringBuilder()
         sb.append(CommonCmds.MountSystemRW)
+        var useMagisk = false
         for (item in apps) {
             val packageName = item.packageName.toString()
             // 先禁用再删除，避免老弹停止运行
@@ -403,15 +405,23 @@ open class DialogAppOptions(protected final var context: Context, protected var 
             sb.append("pm disable $packageName;")
 
             sb.append("echo '[delete ${item.appName}]'\n")
-            val dir = item.dir.toString()
+            if (MagiskExtend.moduleInstalled()) {
+                MagiskExtend.deleteSystemPath(item.path.toString());
+                useMagisk = true
+            } else {
+                val dir = item.dir.toString()
 
-            sb.append("rm -rf $dir/oat\n")
-            sb.append("rm -rf $dir/lib\n")
-            sb.append("rm -rf ${item.path}\n")
+                sb.append("rm -rf $dir/oat\n")
+                sb.append("rm -rf $dir/lib\n")
+                sb.append("rm -rf ${item.path}\n")
+            }
         }
 
         sb.append("echo '[operation completed]';")
         execShell(sb)
+        if (useMagisk) {
+            Toast.makeText(context, "已通过Magisk更改参数，请重启手机~", Toast.LENGTH_SHORT).show()
+        }
     }
 
     /**

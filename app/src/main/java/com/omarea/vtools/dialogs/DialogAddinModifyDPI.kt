@@ -10,7 +10,9 @@ import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
+import android.widget.Toast
 import com.omarea.shared.CommonCmds
+import com.omarea.shared.MagiskExtend
 import com.omarea.shell.KeepShellPublic
 import com.omarea.vtools.R
 
@@ -101,17 +103,24 @@ class DialogAddinModifyDPI(var context: Context) {
                 cmd.append("\n")
             }
             if (!qc && dpi >= 96) {
-                cmd.append(CommonCmds.MountSystemRW)
-                cmd.append("wm density reset\n")
-                cmd.append("sed '/ro.sf.lcd_density=/'d /system/build.prop > /data/build.prop\n")
-                cmd.append("sed '\$aro.sf.lcd_density=$dpi' /data/build.prop > /data/build2.prop\n")
-                cmd.append("cp /system/build.prop /system/build.prop.dpi_bak\n")
-                cmd.append("cp /data/build2.prop /system/build.prop\n")
-                cmd.append("rm /data/build.prop\n")
-                cmd.append("rm /data/build2.prop\n")
-                cmd.append("chmod 0755 /system/build.prop\n")
-                cmd.append("sync\n")
-                cmd.append("reboot\n")
+                if (MagiskExtend.moduleInstalled()) {
+                    KeepShellPublic.doCmdSync("wm density reset");
+                    MagiskExtend.setSystemProp("ro.sf.lcd_density", dpi.toString());
+                    MagiskExtend.setSystemProp("vendor.display.lcd_density", dpi.toString());
+                    Toast.makeText(context, "已通过Magisk更改参数，请重启手机~", Toast.LENGTH_SHORT).show()
+                } else {
+                    cmd.append(CommonCmds.MountSystemRW)
+                    cmd.append("wm density reset\n")
+                    cmd.append("sed '/ro.sf.lcd_density=/'d /system/build.prop > /data/build.prop\n")
+                    cmd.append("sed '\$aro.sf.lcd_density=$dpi' /data/build.prop > /data/build2.prop\n")
+                    cmd.append("cp /system/build.prop /system/build.prop.dpi_bak\n")
+                    cmd.append("cp /data/build2.prop /system/build.prop\n")
+                    cmd.append("rm /data/build.prop\n")
+                    cmd.append("rm /data/build2.prop\n")
+                    cmd.append("chmod 0755 /system/build.prop\n")
+                    cmd.append("sync\n")
+                    cmd.append("reboot\n")
+                }
             }
             if (cmd.isNotEmpty())
                 KeepShellPublic.doCmdSync(cmd.toString())

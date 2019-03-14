@@ -32,7 +32,6 @@ import android.widget.Toast
 import com.omarea.shared.AccessibleServiceHelper
 import com.omarea.shared.CrashHandler
 import com.omarea.shared.SpfConfig
-import com.omarea.shell.Platform
 import com.omarea.shell.units.BackupRestoreUnit
 import com.omarea.shell.units.BatteryUnit
 import com.omarea.vtools.R
@@ -355,8 +354,8 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_profile -> {
                 fragment = FragmentConfig.createPage()
             }
-            R.id.nav_app_freezer -> {
-                fragment = FragmentFreezer.createPage()
+            R.id.nav_app_magisk -> {
+                fragment = FragmentMagisk.createPage()
             }
             R.id.nav_additional -> fragment = FragmentAddin.createPage()
             R.id.nav_keyevent -> {
@@ -390,7 +389,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             menu.findItem(R.id.nav_img).isEnabled = false
             menu.findItem(R.id.nav_profile).isEnabled = false
             menu.findItem(R.id.nav_additional).isEnabled = false
-            menu.findItem(R.id.nav_app_freezer).isEnabled = false
+            menu.findItem(R.id.nav_app_magisk).isEnabled = false
         } catch (ex: Exception) {
 
         }

@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.widget.Toast
 import com.omarea.shared.CommonCmds
 import com.omarea.shared.FileWrite
+import com.omarea.shared.MagiskExtend
 
 /**
  * Created by Hello on 2017/11/01.
@@ -13,20 +14,24 @@ import com.omarea.shared.FileWrite
 class FullScreenAddin(private var context: Activity) : AddinBase(context) {
     fun hideNavgationBar() {
         FileWrite.writePrivateFile(context.assets, "framework-res", "framework-res", context)
-        command = StringBuilder()
-                .append(CommonCmds.MountSystemRW)
-                .append("cp ${FileWrite.getPrivateFileDir(context)}/framework-res /system/media/theme/default/framework-res\n")
-                .append("chmod 0755 /system/media/theme/default/framework-res\n")
-                .toString()
-
+        if (MagiskExtend.moduleInstalled()) {
+            MagiskExtend.replaceSystemFile("/system/media/theme/default/framework-res","${FileWrite.getPrivateFileDir(context)}/framework-res")
+            Toast.makeText(context, "已通过Magisk更改参数，请重启手机~", Toast.LENGTH_SHORT).show()
+        } else {
+            command = StringBuilder()
+                    .append(CommonCmds.MountSystemRW)
+                    .append("cp ${FileWrite.getPrivateFileDir(context)}/framework-res /system/media/theme/default/framework-res\n")
+                    .append("chmod 0755 /system/media/theme/default/framework-res\n")
+                    .toString()
+            AlertDialog.Builder(context)
+                    .setTitle("注意")
+                    .setMessage("此操作会写入/system/media/theme/default/framework-res，需要重启才能生效。如需还原，则需删除/system/media/theme/default/framework-res！")
+                    .setPositiveButton("知道了", { _, _ ->
+                    })
+                    .create()
+                    .show()
+        }
         super.run()
-        AlertDialog.Builder(context)
-                .setTitle("注意")
-                .setMessage("此操作会写入/system/media/theme/default/framework-res，需要重启才能生效。如需还原，则需删除/system/media/theme/default/framework-res！")
-                .setPositiveButton("知道了", { _, _ ->
-                })
-                .create()
-                .show()
     }
 
     fun fullScreen() {

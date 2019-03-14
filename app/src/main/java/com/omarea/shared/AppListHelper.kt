@@ -108,6 +108,10 @@ class AppListHelper(context: Context) {
         }
     }
 
+    fun isSystemApp (applicationInfo: ApplicationInfo): Boolean {
+        return (applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) !=0 || (applicationInfo.flags and ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0
+    }
+
     fun getAppList(systemApp: Boolean? = null, removeIgnore: Boolean = true): ArrayList<Appinfo> {
         val packageInfos = packageManager.getInstalledApplications(0)
 
@@ -118,8 +122,11 @@ class AppListHelper(context: Context) {
                 continue
             }
 
-            if ((systemApp == false && applicationInfo.sourceDir.startsWith("/system")) || (systemApp == true && !applicationInfo.sourceDir.startsWith("/system")))
+            // if ((systemApp == false && applicationInfo.sourceDir.startsWith("/system")) || (systemApp == true && !applicationInfo.sourceDir.startsWith("/system")))
+            //    continue
+            if ((systemApp == false && isSystemApp(applicationInfo)) || (systemApp == true && !isSystemApp(applicationInfo)))
                 continue
+            // ApplicationInfo.FLAG_SYSTEM
 
             val file = File(applicationInfo.publicSourceDir)
             if (!file.exists())
@@ -135,7 +142,8 @@ class AppListHelper(context: Context) {
             item.enabledState = checkBackup(applicationInfo)
             item.wranState = if (applicationInfo.enabled) "" else "已冻结"
             item.path = applicationInfo.sourceDir
-            item.appType = if (applicationInfo.sourceDir.startsWith("/system")) Appinfo.AppType.SYSTEM else Appinfo.AppType.USER
+            // item.appType = if (applicationInfo.sourceDir.startsWith("/system")) Appinfo.AppType.SYSTEM else Appinfo.AppType.USER
+            item.appType = if ((applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0) Appinfo.AppType.USER else Appinfo.AppType.SYSTEM
             try {
                 val packageInfo = packageManager.getPackageInfo(packageInfos[i].packageName, 0)
                 item.versionName = packageInfo.versionName

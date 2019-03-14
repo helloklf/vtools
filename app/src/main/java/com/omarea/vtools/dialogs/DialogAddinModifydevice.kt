@@ -12,6 +12,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import com.omarea.shared.CommonCmds
+import com.omarea.shared.MagiskExtend
 import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.Props
 import com.omarea.vtools.R
@@ -77,7 +78,6 @@ class DialogAddinModifydevice(var context: Context) {
         val dialogInstance = AlertDialog.Builder(context)
                 //.setTitle("机型信息修改")
                 .setView(dialog).setNegativeButton("保存重启", { _, _ ->
-                    val sb = StringBuilder()
                     val model = editModel.text.trim()
                     val brand = editBrand.text.trim()
                     val product = editProductName.text.trim()
@@ -85,28 +85,43 @@ class DialogAddinModifydevice(var context: Context) {
                     val manufacturer = editManufacturer.text.trim()
                     if (model.isNotEmpty() || brand.isNotEmpty() || product.isNotEmpty() || device.isNotEmpty() || manufacturer.isNotEmpty()) {
                         backupDefault()
-                        sb.append(CommonCmds.MountSystemRW)
-                        sb.append("cp /system/build.prop /data/build.prop;chmod 0755 /data/build.prop;")
+                        if (MagiskExtend.moduleInstalled()) {
+                            if (brand.isNotEmpty())
+                                MagiskExtend.setSystemProp("ro.product.brand", brand.toString())
+                            if (product.isNotEmpty())
+                                MagiskExtend.setSystemProp("ro.product.name", product.toString())
+                            if (model.isNotEmpty())
+                                MagiskExtend.setSystemProp("ro.product.model", model.toString())
+                            if (manufacturer.isNotEmpty())
+                                MagiskExtend.setSystemProp("ro.product.manufacturer", manufacturer.toString())
+                            if (device.isNotEmpty())
+                                MagiskExtend.setSystemProp("ro.product.device", device.toString())
+                            Toast.makeText(context, "已通过Magisk更改参数，请重启手机~", Toast.LENGTH_SHORT).show()
+                        } else {
+                            val sb = StringBuilder()
+                            sb.append(CommonCmds.MountSystemRW)
+                            sb.append("cp /system/build.prop /data/build.prop;chmod 0755 /data/build.prop;")
 
-                        if (brand.isNotEmpty())
-                            sb.append("busybox sed -i 's/^ro.product.brand=.*/ro.product.brand=$brand/' /data/build.prop;")
-                        if (product.isNotEmpty())
-                            sb.append("busybox sed -i 's/^ro.product.name=.*/ro.product.name=$product/' /data/build.prop;")
-                        if (model.isNotEmpty())
-                            sb.append("busybox sed -i 's/^ro.product.model=.*/ro.product.model=$model/' /data/build.prop;")
-                        if (manufacturer.isNotEmpty())
-                            sb.append("busybox sed -i 's/^ro.product.manufacturer=.*/ro.product.manufacturer=$manufacturer/' /data/build.prop;")
-                        if (device.isNotEmpty())
-                            sb.append("busybox sed -i 's/^ro.product.device=.*/ro.product.device=$device/' /data/build.prop;")
+                            if (brand.isNotEmpty())
+                                sb.append("busybox sed -i 's/^ro.product.brand=.*/ro.product.brand=$brand/' /data/build.prop;")
+                            if (product.isNotEmpty())
+                                sb.append("busybox sed -i 's/^ro.product.name=.*/ro.product.name=$product/' /data/build.prop;")
+                            if (model.isNotEmpty())
+                                sb.append("busybox sed -i 's/^ro.product.model=.*/ro.product.model=$model/' /data/build.prop;")
+                            if (manufacturer.isNotEmpty())
+                                sb.append("busybox sed -i 's/^ro.product.manufacturer=.*/ro.product.manufacturer=$manufacturer/' /data/build.prop;")
+                            if (device.isNotEmpty())
+                                sb.append("busybox sed -i 's/^ro.product.device=.*/ro.product.device=$device/' /data/build.prop;")
 
-                        sb.append("cp /system/build.prop /system/build.bak.prop\n")
-                        sb.append("cp /data/build.prop /system/build.prop\n")
-                        sb.append("rm /data/build.prop\n")
-                        sb.append("chmod 0755 /system/build.prop\n")
-                        sb.append("sync\n")
-                        sb.append("reboot\n")
+                            sb.append("cp /system/build.prop /system/build.bak.prop\n")
+                            sb.append("cp /data/build.prop /system/build.prop\n")
+                            sb.append("rm /data/build.prop\n")
+                            sb.append("chmod 0755 /system/build.prop\n")
+                            sb.append("sync\n")
+                            sb.append("reboot\n")
 
-                        KeepShellPublic.doCmdSync(sb.toString())
+                            KeepShellPublic.doCmdSync(sb.toString())
+                        }
                     } else {
                         Toast.makeText(context, "什么也没有修改！", Toast.LENGTH_SHORT).show()
                     }

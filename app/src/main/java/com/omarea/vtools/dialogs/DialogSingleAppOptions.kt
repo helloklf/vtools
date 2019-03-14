@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Handler
 import android.widget.Toast
 import com.omarea.shared.CommonCmds
+import com.omarea.shared.MagiskExtend
 import com.omarea.shared.model.Appinfo
 import com.omarea.shell.CheckRootStatus
 import com.omarea.vtools.R
@@ -189,8 +190,22 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         execShell(sb)
     }
 
+    private fun moveToSystemMagisk() {
+        val appDir = File(app.path.toString()).parent
+        if (appDir == "/data/app") {
+            val parent = File(app.path.toString())
+            val outPutPath = "/system/app/${parent.name}"
+            MagiskExtend.replaceSystemDir(outPutPath, app.path.toString());
+        } else {
+            val parent = File(appDir)
+            val outPutPath = "/system/app/${parent.name}"
+            MagiskExtend.replaceSystemDir(outPutPath, appDir);
+        }
+        Toast.makeText(context, "已通过Magisk完成操作，请重启手机~", Toast.LENGTH_LONG).show()
+    }
+
     private fun moveToSystem() {
-        if (CheckRootStatus.isMagisk() && CheckRootStatus.isTmpfs("/system/app")) {
+        if (CheckRootStatus.isMagisk() && CheckRootStatus.isTmpfs("/system/app") && !MagiskExtend.moduleInstalled()) {
             android.support.v7.app.AlertDialog.Builder(context)
                     .setTitle("Magisk 副作用警告")
                     .setMessage("检测到你正在使用Magisk，并使用了一些会添加系统应用的模块，这导致/system/app被Magisk劫持并且无法写入！！")
@@ -202,9 +217,13 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         }
         AlertDialog.Builder(context)
                 .setTitle(app.appName)
-                .setMessage("转为系统应用后，将无法随意更新或卸载，并且可能会一直后台运行占用内存，继续转换吗？\n\n并非所有应用都可以转换为系统应用，有些转为系统应用后不能正常运行。\n\n确保你已解锁System分区，转换完成后，请重启手机！")
+                .setMessage("转为系统应用后，将无法随意更新或卸载，并且可能会一直后台运行占用内存，继续转换吗？\n\n并非所有应用都可以转换为系统应用，有些转为系统应用后不能正常运行。\n\n确保你已解锁System分区或安装Magisk，转换完成后，请重启手机！")
                 .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                    moveToSystemExec()
+                    if (MagiskExtend.moduleInstalled()) {
+                        moveToSystemMagisk()
+                    } else {
+                        moveToSystemExec()
+                    }
                 })
                 .setNegativeButton(R.string.btn_cancel, null)
                 .setCancelable(true)

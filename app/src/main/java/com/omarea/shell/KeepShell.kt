@@ -121,6 +121,8 @@ class KeepShell(private var rootMode: Boolean = true) {
                         out.write(br)
                         out.write(cmd.toByteArray(Charset.defaultCharset()))
                         out.write(br)
+                        out.write("echo \"\"".toByteArray(Charset.defaultCharset()))
+                        out.write(br)
                         out.write("echo '$endTag'".toByteArray(Charset.defaultCharset()))
                         out.write(br)
                         out.flush()
