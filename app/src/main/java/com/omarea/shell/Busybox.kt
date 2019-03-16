@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 import com.omarea.shared.FileWrite
+import com.omarea.shared.MagiskExtend
 import com.omarea.shell.units.BusyboxInstallerUnit
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.vtools.R
@@ -25,6 +26,30 @@ class Busybox(private var context: Context) {
         } catch (e: Exception) {
             false
         }
+    }
+
+    /**
+     * 使用magisk模块安装busybox
+     */
+    private fun useMagiskModuleInstall (context: Context) {
+        if (!MagiskExtend.moduleInstalled()) {
+            MagiskExtend.magiskModuleInstall(context)
+        }
+        val privateBusybox = FileWrite.getPrivateFilePath(context, "busybox")
+        MagiskExtend.replaceSystemFile("/system/xbin/busybox", privateBusybox);
+        KeepShellPublic.doCmdSync(MagiskExtend.getMagiskReplaceFilePath("/system/xbin/busybox") + " --install " + MagiskExtend.getMagiskReplaceFilePath("/system/xbin"))
+        AlertDialog.Builder(context)
+                .setTitle("已完成")
+                .setMessage("已通过Magisk安装了Busybox，现在需要重启手机才能生效，立即重启吗？")
+                .setPositiveButton(R.string.btn_confirm, {
+                    _, _ ->
+                    KeepShellPublic.doCmdSync("sync\nsleep 2\nreboot\n")
+                })
+                .setNegativeButton(R.string.btn_cancel, {
+                    _, _ ->
+                })
+                .create()
+                .show()
     }
 
     fun forceInstall2(next: Runnable? = null) {
@@ -70,6 +95,10 @@ class Busybox(private var context: Context) {
                             if (id == taskId) {
                                 val path = getRealFilePath(context!!, downloadManager.getUriForDownloadedFile(taskId))
                                 if (path != null) {
+                                    if (MagiskExtend.magiskSupported()) {
+                                        useMagiskModuleInstall(context)
+                                        return
+                                    }
                                     val privateBusybox = FileWrite.getPrivateFilePath(context, "busybox")
                                     val cmd = StringBuilder("cp '$path' /cache/busybox;\n")
                                     cmd.append("chmod 7777 /cache/busybox;\n")
@@ -146,6 +175,11 @@ class Busybox(private var context: Context) {
                     .setPositiveButton(
                             R.string.btn_confirm,
                             { _, _ ->
+                                if (MagiskExtend.magiskSupported()) {
+                                    useMagiskModuleInstall(context)
+                                    return@setPositiveButton
+                                }
+
                                 val cmd = StringBuilder("cp $privateBusybox /cache/busybox;\n")
                                 cmd.append("chmod 7777 $privateBusybox;\n")
                                 cmd.append("$privateBusybox chmod 7777 /cache/busybox;\n")

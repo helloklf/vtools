@@ -1,5 +1,6 @@
 package com.omarea.vtools.dialogs
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Point
 import android.os.Build
@@ -13,6 +14,7 @@ import android.widget.EditText
 import android.widget.Toast
 import com.omarea.shared.CommonCmds
 import com.omarea.shared.MagiskExtend
+import com.omarea.shared.SpfConfig
 import com.omarea.shell.KeepShellPublic
 import com.omarea.vtools.R
 
@@ -21,8 +23,23 @@ import com.omarea.vtools.R
  */
 
 class DialogAddinModifyDPI(var context: Context) {
+    private val BACKUP_KEY:String = "screen_ratio"
+    private val DEFAULT_RATIO:Float = 16 / 9f
 
-    fun modifyDPI(display: Display) {
+    @SuppressLint("ApplySharedPref")
+    private fun backupDisplay(metrics: DisplayMetrics, context: Context) {
+        val spf = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE);
+        if (!spf.contains(BACKUP_KEY)) {
+            spf.edit().putFloat(BACKUP_KEY, metrics.heightPixels /  metrics.widthPixels.toFloat()).commit()
+        }
+    }
+
+    private fun getHeightScaleValue(width: Int): Int {
+        val spf = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE);
+        return (width * spf.getFloat(BACKUP_KEY, DEFAULT_RATIO)).toInt()
+    }
+
+    fun modifyDPI(display: Display, context: Context) {
         val layoutInflater = LayoutInflater.from(context)
         val dialog = layoutInflater.inflate(R.layout.dialog_addin_dpi, null)
         val dpiInput = dialog.findViewById(R.id.dialog_addin_dpi_dpiinput) as EditText
@@ -35,6 +52,8 @@ class DialogAddinModifyDPI(var context: Context) {
         val point = Point()
         display.getRealSize(point)
 
+        backupDisplay(dm, context);
+
         dpiInput.setText(dm.densityDpi.toString())
         widthInput.setText(point.x.toString())
         heightInput.setText(point.y.toString())
@@ -45,38 +64,37 @@ class DialogAddinModifyDPI(var context: Context) {
         val rate = dm.heightPixels / 1.0 / dm.widthPixels
         dialog.findViewById<Button>(R.id.dialog_dpi_720).setOnClickListener({
             widthInput.setText("720")
-            if (rate > 1.8) {
-                heightInput.setText("1440")
+            val height = getHeightScaleValue(720)
+            heightInput.setText(height.toString())
+            if (height > 1280) {
+                dpiInput.setText("280")
             } else {
-                heightInput.setText("1280")
+                dpiInput.setText("320")
             }
-            dpiInput.setText("320")
         })
         dialog.findViewById<Button>(R.id.dialog_dpi_1080).setOnClickListener({
             widthInput.setText("1080")
-            if (rate > 1.8) {
-                heightInput.setText("2160")
+            val height = getHeightScaleValue(1080)
+            heightInput.setText(height.toString())
+            if (height > 1920) {
+                dpiInput.setText("440")
             } else {
-                heightInput.setText("1920")
+                dpiInput.setText("480")
             }
-            dpiInput.setText("480")
         })
         dialog.findViewById<Button>(R.id.dialog_dpi_2k).setOnClickListener({
             widthInput.setText("1440")
-            if (rate > 1.8) {
-                heightInput.setText("2960")
+            val height = getHeightScaleValue(1440)
+            heightInput.setText(height.toString())
+            if (height > 2560) {
+                dpiInput.setText("560")
             } else {
-                heightInput.setText("2560")
+                dpiInput.setText("640")
             }
-            dpiInput.setText("640")
         })
         dialog.findViewById<Button>(R.id.dialog_dpi_4k).setOnClickListener({
             widthInput.setText("2160")
-            if (rate > 1.8) {
-                heightInput.setText("4440")
-            } else {
-                heightInput.setText("3840")
-            }
+            heightInput.setText(getHeightScaleValue(2160).toString())
             dpiInput.setText("960")
         })
         dialog.findViewById<Button>(R.id.dialog_dpi_reset).setOnClickListener({

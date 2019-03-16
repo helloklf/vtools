@@ -183,7 +183,19 @@ public class AdapterFileSelector extends BaseAdapter {
                 });
             } else {
                 view = View.inflate(parent.getContext(), R.layout.file_item, null);
-                ((TextView) (view.findViewById(R.id.ItemText))).setText(String.format("%sMB", String.format("%.2f", (file.length() / 1024 / 1024.0))));
+                long fileLength = file.length();
+                String fileSize;
+                if (fileLength < 1024) {
+                    fileSize = fileLength + "B";
+                } else if (fileLength < 1048576) {
+                    fileSize = String.format("%sKB", String.format("%.2f", (file.length() / 1024.0)));
+                } else if (fileLength < 1073741824) {
+                    fileSize = String.format("%sMB", String.format("%.2f", (file.length() / 1048576.0)));
+                } else {
+                    fileSize = String.format("%sGB", String.format("%.2f", (file.length() / 1073741824.0)));
+                }
+
+                ((TextView) (view.findViewById(R.id.ItemText))).setText(fileSize);
                 if (clickSelected) {
                     view.setOnClickListener(new View.OnClickListener() {
                         @Override

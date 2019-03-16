@@ -10,7 +10,34 @@ import java.io.File;
 public class MagiskExtend {
     public static String MAGISK_PATH = "/sbin/.core/img/scene_systemless/";
 
+    // 递归方式 计算文件的大小
+    private static long getTotalSizeOfFilesInDir(final File file) {
+        if (file.isFile())
+            return file.length();
+        final File[] children = file.listFiles();
+        long total = 0;
+        if (children != null)
+            for (final File child : children)
+                total += getTotalSizeOfFilesInDir(child);
+        return total;
+    }
+
+    /**
+     * 自动调整镜像大小
+     * @param require
+     */
+    private static void resizeMagiskImg(long require) {
+        long currentSize = new File(MAGISK_PATH).getTotalSpace();
+        long space = new File(MAGISK_PATH).getFreeSpace();
+        if (space < (require + 2097152)) {
+            long sizeMB = ((currentSize - space + require) / 1024 / 1024) + 2;
+            KeepShellPublic.INSTANCE.doCmdSync("imgtool resize /data/adb/magisk.img " + sizeMB);
+        }
+    }
+
     public static void magiskModuleInstall(Context context) {
+        resizeMagiskImg(1024 * 1024 * 5);
+
         String moduleProp = "id=scene_systemless\n" +
                 "name=Scene的附加模块\n" +
                 "version=v1\n" +
@@ -19,23 +46,21 @@ public class MagiskExtend {
                 "description=Scene提供的Magisk拓展模块，从而在不修改系统文件的情况下，更改一些参数\n" +
                 "minMagisk=17000\n";
         String systemProp = "# This file will be read by resetprop\n" +
-                "# Example: Change dpi\n" +
+                "# 示例: 更改 dpi\n" +
                 "# ro.sf.lcd_density=410\n" +
                 "# vendor.display.lcd_density=410\n";
         String service = "#!/system/bin/sh\n" +
-                "# Please don't hardcode /magisk/modname/... ; instead, please use $MODDIR/...\n" +
-                "# This will make your scripts compatible even if Magisk change its mount point in the future\n" +
+                "# 请不要硬编码/magisk/modname/...;相反，请使用$MODDIR/...\n" +
+                "# 这将使您的脚本兼容，即使Magisk以后改变挂载点\n" +
                 "MODDIR=${0%/*}\n" +
                 "\n" +
-                "# This script will be executed in late_start service mode\n" +
-                "# More info in the main Magisk thread\n";
+                "# 该脚本将在设备开机后作为延迟服务启动\n";
         String fsPostData = "#!/system/bin/sh\n" +
-                "# Please don't hardcode /magisk/modname/... ; instead, please use $MODDIR/...\n" +
-                "# This will make your scripts compatible even if Magisk change its mount point in the future\n" +
+                "# 请不要硬编码/magisk/modname/...;相反，请使用$MODDIR/...\n" +
+                "# 这将使您的脚本兼容，即使Magisk以后改变挂载点\n" +
                 "MODDIR=${0%/*}\n" +
                 "\n" +
-                "# This script will be executed in post-fs-data mode\n" +
-                "# More info in the main Magisk thread\n";
+                "# 此脚本将在post-fs-data模式下执行\n";
 
         writeModuleFile(moduleProp, "module.prop", context);
         writeModuleFile(systemProp, "system.prop", context);
@@ -46,6 +71,8 @@ public class MagiskExtend {
     }
 
     private static void writeModuleFile(String text, String name, Context context) {
+        resizeMagiskImg(text.length());
+
         if (!moduleInstalled()) {
             KeepShellPublic.INSTANCE.doCmdSync("mkdir -p " + MAGISK_PATH);
         }
@@ -81,6 +108,8 @@ public class MagiskExtend {
     }
 
     public static void setSystemProp(String prop, String value) {
+        resizeMagiskImg(prop.length() + 4 + value.length());
+
         KeepShellPublic.INSTANCE.doCmdSync(
             "sed -i '/" + prop + "=/'d " +  MAGISK_PATH + "system.prop\n" +
             "echo " + prop + "=\"" + value  +"\" >> " + MAGISK_PATH + "system.prop\n" +
@@ -97,18 +126,28 @@ public class MagiskExtend {
     }
 
     public static void replaceSystemFile(String orginPath, String newfile) {
+        resizeMagiskImg(getTotalSizeOfFilesInDir(new File(newfile)));
+
         if (RootFile.INSTANCE.itemExists(newfile)) {
-            String output = MAGISK_PATH.substring(0, MAGISK_PATH.length() - 1) + (orginPath.startsWith("/vendor") ? ("/system" + orginPath) : orginPath);
+            String output = getMagiskReplaceFilePath(orginPath);
             String dir = new File(output).getParent();
-            KeepShellPublic.INSTANCE.doCmdSync("mkdir -p \"" + dir + "\"\n" + "cp \"" + newfile + "\" \"" + output + "\"\n" +
+            KeepShellPublic.INSTANCE.doCmdSync(
+                    "mkdir -p \"" + dir + "\"\n" +
+                    "cp \"" + newfile + "\" \"" + output + "\"\n" +
                     "chmod 777 \"" + output + "\"" +
                     "\necho '' > " + MAGISK_PATH + "update");
         }
     }
 
+    public static String getMagiskReplaceFilePath(String systemPath) {
+        return MAGISK_PATH.substring(0, MAGISK_PATH.length() - 1) + (systemPath.startsWith("/vendor") ? ("/system" + systemPath) : systemPath);
+    }
+
     public static void replaceSystemDir(String orginPath, String newfile) {
+        resizeMagiskImg(getTotalSizeOfFilesInDir(new File(newfile)));
+
         if (RootFile.INSTANCE.itemExists(newfile)) {
-            String output = MAGISK_PATH.substring(0, MAGISK_PATH.length() - 1) + (orginPath.startsWith("/vendor") ? ("/system" + orginPath) : orginPath);
+            String output = getMagiskReplaceFilePath(orginPath);
             String dir = new File(output).getParent();
             KeepShellPublic.INSTANCE.doCmdSync("mkdir -p \"" + dir + "\"\n" + "cp -a \"" + newfile + "\" \"" + output + "\"\n" +
                     "chmod 777 \"" + output + "\"" +
@@ -117,7 +156,7 @@ public class MagiskExtend {
     }
 
     public static void cancelReplace(String orginPath) {
-        String output = MAGISK_PATH.substring(0, MAGISK_PATH.length() - 1) + (orginPath.startsWith("/vendor") ? ("/system" + orginPath) : orginPath);
+        String output = getMagiskReplaceFilePath(orginPath);
         KeepShellPublic.INSTANCE.doCmdSync("rm -f \""+ output + "\"");
     }
 
@@ -129,6 +168,8 @@ public class MagiskExtend {
     }
 
     public static void updateProps(String fromFile) {
+        resizeMagiskImg(getTotalSizeOfFilesInDir(new File(fromFile)));
+
         if (RootFile.INSTANCE.fileExists(fromFile)) {
             KeepShellPublic.INSTANCE.doCmdSync("cp \"" + fromFile + "\" " + MAGISK_PATH + "system.prop\n" +
                     "\nchmod 777 " + MAGISK_PATH + "service.sh" +
@@ -144,6 +185,8 @@ public class MagiskExtend {
     }
 
     public static void updateServiceSH(String fromFile) {
+        resizeMagiskImg(getTotalSizeOfFilesInDir(new File(fromFile)));
+
         if (RootFile.INSTANCE.fileExists(fromFile)) {
             KeepShellPublic.INSTANCE.doCmdSync("cp \"" + fromFile + "\" " + MAGISK_PATH + "service.sh\n" +
                     "\nchmod 777 " + MAGISK_PATH + "service.sh" +
@@ -159,6 +202,8 @@ public class MagiskExtend {
     }
 
     public static void updateFsPostDataSH(String fromFile) {
+        resizeMagiskImg(getTotalSizeOfFilesInDir(new File(fromFile)));
+
         if (RootFile.INSTANCE.fileExists(fromFile)) {
             KeepShellPublic.INSTANCE.doCmdSync("cp \"" + fromFile + "\" " + MAGISK_PATH + "post-fs-data.sh\n" +
                     "\nchmod 777 " + MAGISK_PATH + "post-fs-data.sh" +
