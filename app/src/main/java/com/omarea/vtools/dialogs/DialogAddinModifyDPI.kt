@@ -23,20 +23,33 @@ import com.omarea.vtools.R
  */
 
 class DialogAddinModifyDPI(var context: Context) {
-    private val BACKUP_KEY:String = "screen_ratio"
+    private val BACKUP_SCREEN_DPI:String = "screen_dpi"
+    private val BACKUP_SCREEN_RATIO:String = "screen_ratio"
+    private val BACKUP_SCREEN_WIDTH:String = "screen_width"
     private val DEFAULT_RATIO:Float = 16 / 9f
+    private val DEFAULT_DPI:Int = 320
+    private val DEFAULT_WIDTH:Int = 720
 
     @SuppressLint("ApplySharedPref")
-    private fun backupDisplay(metrics: DisplayMetrics, context: Context) {
+    private fun backupDisplay(point: Point, dm: DisplayMetrics, context: Context) {
         val spf = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE);
-        if (!spf.contains(BACKUP_KEY)) {
-            spf.edit().putFloat(BACKUP_KEY, metrics.heightPixels /  metrics.widthPixels.toFloat()).commit()
+        if (!spf.contains(BACKUP_SCREEN_RATIO)) {
+            spf.edit().putFloat(BACKUP_SCREEN_RATIO, point.y /  point.x.toFloat()).commit()
+        }
+        if (!spf.contains(BACKUP_SCREEN_DPI) || !spf.contains(BACKUP_SCREEN_WIDTH)) {
+            spf.edit().putInt(BACKUP_SCREEN_DPI, dm.densityDpi).commit()
+            spf.edit().putInt(BACKUP_SCREEN_WIDTH, point.x).commit()
         }
     }
 
     private fun getHeightScaleValue(width: Int): Int {
         val spf = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE);
-        return (width * spf.getFloat(BACKUP_KEY, DEFAULT_RATIO)).toInt()
+        return (width * spf.getFloat(BACKUP_SCREEN_RATIO, DEFAULT_RATIO)).toInt()
+    }
+
+    private fun getDpiScaleValue(width: Int): Int {
+        val spf = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE);
+        return (spf.getInt(BACKUP_SCREEN_DPI, DEFAULT_DPI) * width / spf.getInt(BACKUP_SCREEN_WIDTH, DEFAULT_WIDTH))
     }
 
     fun modifyDPI(display: Display, context: Context) {
@@ -52,7 +65,7 @@ class DialogAddinModifyDPI(var context: Context) {
         val point = Point()
         display.getRealSize(point)
 
-        backupDisplay(dm, context);
+        backupDisplay(point, dm, context);
 
         dpiInput.setText(dm.densityDpi.toString())
         widthInput.setText(point.x.toString())
@@ -63,39 +76,29 @@ class DialogAddinModifyDPI(var context: Context) {
 
         val rate = dm.heightPixels / 1.0 / dm.widthPixels
         dialog.findViewById<Button>(R.id.dialog_dpi_720).setOnClickListener({
-            widthInput.setText("720")
-            val height = getHeightScaleValue(720)
+            val width = 720
+            widthInput.setText(width.toString())
+            val height = getHeightScaleValue(width)
             heightInput.setText(height.toString())
-            if (height > 1280) {
-                dpiInput.setText("280")
-            } else {
-                dpiInput.setText("320")
-            }
+            dpiInput.setText((dm.densityDpi.toFloat() * width / point.x).toInt().toString())
         })
         dialog.findViewById<Button>(R.id.dialog_dpi_1080).setOnClickListener({
-            widthInput.setText("1080")
-            val height = getHeightScaleValue(1080)
-            heightInput.setText(height.toString())
-            if (height > 1920) {
-                dpiInput.setText("440")
-            } else {
-                dpiInput.setText("480")
-            }
+            val width = 1080
+            widthInput.setText(width.toString())
+            heightInput.setText(getHeightScaleValue(width).toString())
+            dpiInput.setText(getDpiScaleValue(width).toString())
         })
         dialog.findViewById<Button>(R.id.dialog_dpi_2k).setOnClickListener({
-            widthInput.setText("1440")
-            val height = getHeightScaleValue(1440)
-            heightInput.setText(height.toString())
-            if (height > 2560) {
-                dpiInput.setText("560")
-            } else {
-                dpiInput.setText("640")
-            }
+            val width = 1440
+            widthInput.setText(width.toString())
+            heightInput.setText(getHeightScaleValue(width).toString())
+            dpiInput.setText(getDpiScaleValue(width).toString())
         })
         dialog.findViewById<Button>(R.id.dialog_dpi_4k).setOnClickListener({
-            widthInput.setText("2160")
-            heightInput.setText(getHeightScaleValue(2160).toString())
-            dpiInput.setText("960")
+            val width = 2160
+            widthInput.setText(width.toString())
+            heightInput.setText(getHeightScaleValue(width).toString())
+            dpiInput.setText(getDpiScaleValue(width).toString())
         })
         dialog.findViewById<Button>(R.id.dialog_dpi_reset).setOnClickListener({
             val cmd = StringBuilder()

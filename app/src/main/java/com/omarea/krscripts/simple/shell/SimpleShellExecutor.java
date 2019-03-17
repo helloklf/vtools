@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.omarea.shared.FileWrite;
+import com.omarea.shared.MagiskExtend;
 import com.omarea.vtools.R;
 
 import java.io.BufferedReader;
@@ -58,6 +59,9 @@ public class SimpleShellExecutor {
                 }
                 envp.add(item + "=" + value);
             }
+        }
+        if (MagiskExtend.moduleInstalled()) {
+            envp.add("MAGISK_PATH=" + MagiskExtend.MAGISK_PATH);
         }
         envp.add("TEMP_DIR=" + dirUri + "/temp");
         envp.add("ANDROID_UID=" + dir.getParentFile().getParentFile().getName());

@@ -5,16 +5,30 @@
 #[dalvik.vm.image-dex2oat-threads]: [4]
 #[ro.sys.fw.dex2oat_thread_count]: [4]
 
+filepath=""
+if [[ -n "$MAGISK_PATH" ]];
+then
+    filepath="${MAGISK_PATH}system.prop"
+    echo "你已安装Magisk，本次修改将通过操作进行"
+    echo 'Step1.挂载System为读写（跳过）...'
+else
+    filepath="/system/build.prop"
 
-echo 'Step1.挂载System为读写...'
+    echo 'Step1.挂载System为读写...'
 
-$BUSYBOX mount -o rw,remount /system
-mount -o rw,remount /system
-$BUSYBOX mount -o remount,rw /dev/block/bootdevice/by-name/system /system
-mount -o remount,rw /dev/block/bootdevice/by-name/system /system 2> /dev/null
+    $BUSYBOX mount -o rw,remount /system
+    mount -o rw,remount /system
+    $BUSYBOX mount -o remount,rw /dev/block/bootdevice/by-name/system /system
+    mount -o remount,rw /dev/block/bootdevice/by-name/system /system 2> /dev/null
+
+    if [[ ! -e "/system/build.prop.bak" ]]; then
+        cp /system/build.prop /system/build.prop.bak
+        chmod 0755 /system/build.prop.bak
+    fi;
+fi;
 
 echo 'Step2.移除已有配置'
-$BUSYBOX sed '/dalvik.vm.boot-dex2oat-threads=.*/'d /system/build.prop > "/data/build.prop"
+$BUSYBOX sed '/dalvik.vm.boot-dex2oat-threads=.*/'d $filepath > "/data/build.prop"
 $BUSYBOX sed -i '/dalvik.vm.dex2oat-threads=.*/'d "/data/build.prop"
 $BUSYBOX sed -i '/dalvik.vm.image-dex2oat-threads=.*/'d "/data/build.prop"
 $BUSYBOX sed -i '/ro.sys.fw.dex2oat_thread_count=.*/'d "/data/build.prop"
@@ -39,14 +53,9 @@ if [[ -n $image ]]; then
 fi;
 
 echo 'Step3.写入文件'
-if [[ ! -e "/system/build.prop.bak" ]]; then
-    cp /system/build.prop /system/build.prop.bak
-fi;
-cp /data/build.prop /system/build.prop
-chmod 0755 /system/build.prop
+cp /data/build.prop $filepath
+chmod 0755 filepath
 rm /data/build.prop
-chmod 0755 /system/build.prop.bak
-
 
 echo '操作完成...'
 echo '现在，请重启手机使修改生效！'

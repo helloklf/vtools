@@ -4,7 +4,7 @@ state=$1
 echo '使用本功能，需要解锁system分区，否则修改无效！'
 echo 'MIUI自带的ROOT无法使用本功能'
 
-echo '挂载/system为读写(可能会报错，问题不大)'
+echo '挂载/system为读写'
 
 $BUSYBOX mount -o rw,remount /system
 mount -o rw,remount /system

@@ -15,6 +15,7 @@ import com.omarea.shared.CommonCmds
 import com.omarea.shared.MagiskExtend
 import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.Props
+import com.omarea.shell.RootFile
 import com.omarea.vtools.R
 
 
@@ -96,6 +97,12 @@ class DialogAddinModifydevice(var context: Context) {
                                 MagiskExtend.setSystemProp("ro.product.manufacturer", manufacturer.toString())
                             if (device.isNotEmpty())
                                 MagiskExtend.setSystemProp("ro.product.device", device.toString())
+                            // 小米 - 改model参数以后device_features要处理下
+                            if (RootFile.fileExists("/system/etc/device_features/${android.os.Build.PRODUCT}.xml")) {
+                                if (model != android.os.Build.PRODUCT) {
+                                    MagiskExtend.replaceSystemFile("/system/etc/device_features/${product}.xml", "/system/etc/device_features/${android.os.Build.PRODUCT}.xml")
+                                }
+                            }
                             Toast.makeText(context, "已通过Magisk更改参数，请重启手机~", Toast.LENGTH_SHORT).show()
                         } else {
                             val sb = StringBuilder()
@@ -117,6 +124,14 @@ class DialogAddinModifydevice(var context: Context) {
                             sb.append("cp /data/build.prop /system/build.prop\n")
                             sb.append("rm /data/build.prop\n")
                             sb.append("chmod 0755 /system/build.prop\n")
+
+                            // 小米 - 改model参数以后device_features要处理下
+                            if (RootFile.fileExists("/system/etc/device_features/${android.os.Build.PRODUCT}.xml")) {
+                                if (model != android.os.Build.PRODUCT) {
+                                    KeepShellPublic.doCmdSync("cp \"/system/etc/device_features/${android.os.Build.PRODUCT}.xml\" \"/system/etc/device_features/${product}.xml\"")
+                                }
+                            }
+
                             sb.append("sync\n")
                             sb.append("reboot\n")
 

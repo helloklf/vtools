@@ -166,44 +166,9 @@ class StartSplashActivity : Activity() {
     @SuppressLint("ApplySharedPref", "CommitPrefEdits")
     private fun checkRoot(next: Runnable, skip: Runnable) {
         val globalConfig = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-        if (globalConfig.contains(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE_CHECKING)) {
-            AlertDialog.Builder(this)
-                    .setTitle("兼容性问题")
-                    .setMessage("检测到你的设备在上次“兼容性检测”过程中断，“自动SELinux宽容模式”将不会被开启！\n\n因此，有些功能可能无法使用！")
-                    .setPositiveButton(R.string.btn_confirm, { dialog, which ->
-                        globalConfig.edit()
-                                .putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE_CHECKING, false)
-                                .remove(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE_CHECKING)
-                                .commit()
-                        CheckRootStatus(this, next, false).forceGetRoot()
-                    })
-                    .setCancelable(false)
-                    .create()
-                    .show()
-            return
-        }
-        if (!globalConfig.contains(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE)) {
-            CheckRootStatus(this, Runnable {
-                myHandler.post {
-                    globalConfig.edit().putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE_CHECKING, true)
-                            .commit()
-                    start_state_text.text = "兼容性检测，稍等10秒..."
-                    Thread(Runnable {
-                        KeepShellPublic.doCmdSync(CommonCmds.DisableSELinux + "\n sleep 10; \n")
-                        myHandler.post {
-                            next.run()
-                        }
-                        globalConfig.edit()
-                                .putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false)
-                                .remove(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE_CHECKING)
-                                .commit()
-                    }).start()
-                }
-            }, false).forceGetRoot()
-        } else {
-            val disableSeLinux = globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false)
-            CheckRootStatus(this, next, disableSeLinux).forceGetRoot()
-        }
+
+        val disableSeLinux = globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false)
+        CheckRootStatus(this, next, disableSeLinux).forceGetRoot()
     }
 
     private fun next() {
