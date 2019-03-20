@@ -8,7 +8,13 @@ import com.omarea.shell.RootFile;
 import java.io.File;
 
 public class MagiskExtend {
+    // source /data/adb/util_functions.sh
+
     public static String MAGISK_PATH = "/sbin/.core/img/scene_systemless/";
+    private static String MAGISK_MODULE_NAME = "scene_systemless";
+    private static String MAGISK_ROOT_PATH1 = "/sbin/.core/img";
+    private static String MAGISK_ROOT_PATH2 = "/sbin/.magisk/img";
+    private static int supported = -1;
 
     // 递归方式 计算文件的大小
     private static long getTotalSizeOfFilesInDir(final File file) {
@@ -36,7 +42,12 @@ public class MagiskExtend {
     }
 
     public static void magiskModuleInstall(Context context) {
-        resizeMagiskImg(1024 * 1024 * 5);
+        if (!RootFile.INSTANCE.fileExists("/data/adb/magisk_merge.img")) {
+            KeepShellPublic.INSTANCE.doCmdSync("imgtool create /data/adb/magisk_merge.img 64");
+        }
+        if (!RootFile.INSTANCE.fileExists("/data/adb/magisk.img")) {
+            KeepShellPublic.INSTANCE.doCmdSync("imgtool create /data/adb/magisk.img 64");
+        }
 
         String moduleProp = "id=scene_systemless\n" +
                 "name=Scene的附加模块\n" +
@@ -61,6 +72,10 @@ public class MagiskExtend {
                 "MODDIR=${0%/*}\n" +
                 "\n" +
                 "# 此脚本将在post-fs-data模式下执行\n";
+
+        KeepShellPublic.INSTANCE.doCmdSync("mkdir -p /dev/tmp/magisk_scene\n" +
+                "imgtool mount /data/adb/magisk_merge.img /dev/tmp/magisk_scene\n");
+        MAGISK_PATH = "/dev/tmp/magisk_scene/scene_systemless/";
 
         writeModuleFile(moduleProp, "module.prop", context);
         writeModuleFile(systemProp, "system.prop", context);
@@ -89,14 +104,24 @@ public class MagiskExtend {
      * @return 是否已安装
      */
     public static boolean magiskSupported() {
-        String magiskVersion = KeepShellPublic.INSTANCE.doCmdSync("magisk -V");
-        if (!magiskVersion.equals("error")) {
-            try {
-                return Integer.parseInt(magiskVersion) > 17000;
-            } catch (Exception ignored) {
+        if (supported == -1) {
+            String magiskVersion = KeepShellPublic.INSTANCE.doCmdSync("magisk -V");
+            if (!magiskVersion.equals("error")) {
+                try {
+                    if (RootFile.INSTANCE.dirExists(MAGISK_ROOT_PATH1)) {
+                        MAGISK_PATH = MAGISK_ROOT_PATH1 + "/" + MAGISK_MODULE_NAME + "/";
+                    } else if (RootFile.INSTANCE.dirExists(MAGISK_ROOT_PATH2)) {
+                        MAGISK_PATH = MAGISK_ROOT_PATH2 + "/" + MAGISK_MODULE_NAME + "/";
+                    }
+
+                    supported = Integer.parseInt(magiskVersion) >= 17000 ? 1 : 0;
+                } catch (Exception ignored) {
+                }
+            } else {
+                supported = 0;
             }
         }
-        return false;
+        return supported == 1;
     }
 
     /**
