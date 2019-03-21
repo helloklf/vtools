@@ -66,9 +66,12 @@ class FragmentMagisk : Fragment() {
         }
         magisk_props_save.setOnClickListener {
             if (FileWrite.writePrivateFile(magisk_props.text.toString().toByteArray(), "magisk_system.prop", context!!)) {
-                MagiskExtend.updateProps(FileWrite.getPrivateFilePath(context!!, "magisk_system.prop"));
-                magisk_props.setText(MagiskExtend.getProps());
-                Toast.makeText(context!!, "已保存更改，重启后生效 ^_~ ", Toast.LENGTH_LONG).show()
+                if (MagiskExtend.updateProps(FileWrite.getPrivateFilePath(context!!, "magisk_system.prop"))) {
+                    magisk_props.setText(MagiskExtend.getProps());
+                    Toast.makeText(context!!, "已保存更改，重启后生效 ^_~ ", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(context, "Magisk镜像空间不足，操作失败！~", Toast.LENGTH_LONG).show()
+                }
             } else {
                 Toast.makeText(context!!, "保存失败!_*", Toast.LENGTH_LONG).show()
             }
@@ -81,9 +84,12 @@ class FragmentMagisk : Fragment() {
         }
         magisk_beforestart_save.setOnClickListener {
             if (FileWrite.writePrivateFile(magisk_beforestart.text.toString().toByteArray(), "magisk_post-fs-data.sh", context!!)) {
-                MagiskExtend.updateFsPostDataSH(FileWrite.getPrivateFilePath(context!!, "magisk_post-fs-data.sh"));
-                magisk_beforestart.setText(MagiskExtend.getFsPostDataSH());
-                Toast.makeText(context!!, "已保存更改，重启后生效 ^_~ ", Toast.LENGTH_LONG).show()
+                if(MagiskExtend.updateFsPostDataSH(FileWrite.getPrivateFilePath(context!!, "magisk_post-fs-data.sh"))){
+                    magisk_beforestart.setText(MagiskExtend.getFsPostDataSH());
+                    Toast.makeText(context!!, "已保存更改，重启后生效 ^_~ ", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(context, "Magisk镜像空间不足，操作失败！~", Toast.LENGTH_LONG).show()
+                }
             } else {
                 Toast.makeText(context!!, "保存失败!_*", Toast.LENGTH_LONG).show()
             }
@@ -96,9 +102,12 @@ class FragmentMagisk : Fragment() {
         }
         magisk_afterstart_save.setOnClickListener {
             if (FileWrite.writePrivateFile(magisk_afterstart.text.toString().toByteArray(), "magisk_service.sh", context!!)) {
-                MagiskExtend.updateServiceSH(FileWrite.getPrivateFilePath(context!!, "magisk_service.sh"));
-                magisk_afterstart.setText(MagiskExtend.getServiceSH());
-                Toast.makeText(context!!, "已保存更改，重启后生效 ^_~ ", Toast.LENGTH_LONG).show()
+                if (MagiskExtend.updateServiceSH(FileWrite.getPrivateFilePath(context!!, "magisk_service.sh"))) {
+                    magisk_afterstart.setText(MagiskExtend.getServiceSH());
+                    Toast.makeText(context!!, "已保存更改，重启后生效 ^_~ ", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(context, "Magisk镜像空间不足，操作失败！~", Toast.LENGTH_LONG).show()
+                }
             } else {
                 Toast.makeText(context!!, "保存失败!_*", Toast.LENGTH_LONG).show()
             }

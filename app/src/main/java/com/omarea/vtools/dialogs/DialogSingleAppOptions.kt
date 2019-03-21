@@ -192,16 +192,21 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
 
     private fun moveToSystemMagisk() {
         val appDir = File(app.path.toString()).parent
+        var result = false
         if (appDir == "/data/app") {
             val parent = File(app.path.toString())
             val outPutPath = "/system/app/${parent.name}"
-            MagiskExtend.replaceSystemDir(outPutPath, app.path.toString());
+            result = MagiskExtend.createFileReplaceModule(outPutPath, app.path.toString(), app.packageName.toString()); // MagiskExtend.replaceSystemDir(outPutPath, app.path.toString()) || MagiskExtend.createFileReplaceModule(outPutPath, app.path.toString(), app.packageName.toString());
         } else {
             val parent = File(appDir)
             val outPutPath = "/system/app/${parent.name}"
-            MagiskExtend.replaceSystemDir(outPutPath, appDir);
+            result = MagiskExtend.createFileReplaceModule(outPutPath, appDir, app.packageName.toString()); // MagiskExtend.replaceSystemDir(outPutPath, appDir) || MagiskExtend.createFileReplaceModule(outPutPath, appDir, app.packageName.toString());
         }
-        Toast.makeText(context, "已通过Magisk完成操作，请重启手机~", Toast.LENGTH_LONG).show()
+        if (result) {
+            Toast.makeText(context, "已通过Magisk完成操作，请重启手机~", Toast.LENGTH_LONG).show()
+        } else {
+            Toast.makeText(context, "Magisk镜像空间不足，操作失败！~", Toast.LENGTH_LONG).show()
+        }
     }
 
     private fun moveToSystem() {

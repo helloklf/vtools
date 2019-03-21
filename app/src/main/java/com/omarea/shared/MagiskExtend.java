@@ -2,6 +2,7 @@ package com.omarea.shared;
 
 import android.content.Context;
 
+import com.omarea.shell.KeepShell;
 import com.omarea.shell.KeepShellPublic;
 import com.omarea.shell.RootFile;
 
@@ -32,27 +33,90 @@ public class MagiskExtend {
      * 自动调整镜像大小
      * @param require
      */
-    private static void resizeMagiskImg(long require) {
-        if (!RootFile.INSTANCE.fileExists("/data/adb/magisk_merge.img")) {
-            KeepShellPublic.INSTANCE.doCmdSync("cp /data/adb/magisk.img /data/adb/magisk_merge.img");
-        }
-
-        KeepShellPublic.INSTANCE.doCmdSync("mkdir -p /dev/tmp/magisk_scene\n");
-        KeepShellPublic.INSTANCE.doCmdSync(
-                "imgtool umount /data/adb/magisk_merge.img /dev/tmp/magisk_scene\n" +
-                "imgtool mount /data/adb/magisk_merge.img /dev/tmp/magisk_scene\n");
-        MAGISK_PATH = "/dev/tmp/magisk_scene/scene_systemless/";
-
-        long currentSize = new File(MAGISK_PATH).getTotalSpace();
+    private static boolean resizeMagiskImg(long require) {
         long space = new File(MAGISK_PATH).getFreeSpace();
+        /*
+        long currentSize = new File(MAGISK_PATH).getTotalSpace();
         if (space < (require + 2097152)) {
             long sizeMB = ((currentSize - space + require) / 1024 / 1024) + 2;
             KeepShellPublic.INSTANCE.doCmdSync(
-                    "imgtool umount /data/adb/magisk_merge.img /dev/tmp/magisk_scene\n" +
-                    "imgtool resize /data/adb/magisk_merge.img " + sizeMB);
+                    "imgtool umount /data/adb/magisk.img /dev/tmp/magisk_scene\n" +
+                    "imgtool resize /data/adb/magisk.img " + sizeMB +
+                    "imgtool umount /data/adb/magisk.img /sbin/.core/img\n" +
+                    "imgtool umount /data/adb/magisk.img /sbin/.magisk/img\n" +
+                    "mkdir -p /sbin/.core/img\n imgtool mount /data/adb/magisk.img /sbin/.core/img\n" +
+                    "mkdir -p /sbin/.magisk/img\n imgtool mount /data/adb/magisk.img /sbin/.magisk/img\n");
+            return false;
+        }
+        */
+        // 镜像空间不足
+        if (space < (require + 4096)) {
+            return false;
         }
 
-        KeepShellPublic.INSTANCE.doCmdSync("imgtool mount /data/adb/magisk_merge.img /dev/tmp/magisk_scene\n");
+        // KeepShellPublic.INSTANCE.doCmdSync("mkdir -p /dev/tmp/magisk_scene\n" + "imgtool mount /data/adb/magisk_merge.img /dev/tmp/magisk_scene\n");
+        return true;
+    }
+
+    /**
+     * 创建简单的文件替换模块
+     * @param newfile
+     * @param orginPath
+     * @param moduleName
+     * @return
+     */
+    public static boolean createFileReplaceModule(String orginPath, String newfile, String moduleName) {
+        if (RootFile.INSTANCE.itemExists(newfile)) {
+            long require = getTotalSizeOfFilesInDir(new File(newfile));
+
+            if (!RootFile.INSTANCE.fileExists("/data/adb/magisk.img")) {
+                KeepShellPublic.INSTANCE.doCmdSync("imgtool create /data/adb/magisk.img 64");
+            }
+            if (!RootFile.INSTANCE.fileExists("/data/adb/magisk_merge.img")) {
+                KeepShellPublic.INSTANCE.doCmdSync("imgtool create /data/adb/magisk_merge.img 128");
+            }
+
+            KeepShellPublic.INSTANCE.doCmdSync("mkdir -p /data/adb/magisk_merge_tmnt\n" +
+                    "imgtool umount /data/adb/magisk_merge.img /data/adb/magisk_merge_tmnt\n" +
+                    "imgtool mount /data/adb/magisk_merge.img /data/adb/magisk_merge_tmnt\n");
+
+            long currentSize = new File("/data/adb/magisk_merge_tmnt").getTotalSpace();
+            long space = new File("/data/adb/magisk_merge_tmnt").getFreeSpace();
+            if (space < (require + 2097152)) {
+                long sizeMB = ((currentSize - space + require) / 1024 / 1024) + 2;
+                KeepShellPublic.INSTANCE.doCmdSync(
+                    "imgtool umount /data/adb/magisk_merge.img /data/adb/magisk_merge_tmnt\n" +
+                    "imgtool resize /data/adb/magisk_merge.img " + sizeMB +
+                    "imgtool mount /data/adb/magisk_merge.img /data/adb/magisk_merge_tmnt\n");
+            }
+
+            String moduleProp = "id=" + moduleName +  "\\n" +
+                    "name=" + moduleName + "\\n" +
+                    "version=v1\\n" +
+                    "versionCode=1\\n" +
+                    "author=嘟嘟ski\\n" +
+                    "description=应用程序转系统应用模块\n" +
+                    "minMagisk=17000\\n";
+
+            String output = "/data/adb/magisk_merge_tmnt/" + moduleName + (orginPath.startsWith("/vendor") ? ("/system" + orginPath) : orginPath);
+            String dir = new File(output).getParent();
+            KeepShellPublic.INSTANCE.doCmdSync(
+                    "mkdir -p \"" + dir + "\"\n" +
+                    "echo \"" + moduleProp + "\" > \"/data/adb/magisk_merge_tmnt/" + moduleName + "/module.prop\"\n" +
+                    "echo '' > \"/data/adb/magisk_merge_tmnt/" + moduleName + "/auto_mount\"\n" +
+                    "cp -a \"" + newfile + "\" \"" + output + "\"\n" +
+                    "chmod 777 \"" + output + "\"");
+            if (RootFile.INSTANCE.dirExists(MAGISK_ROOT_PATH1)) {
+                KeepShellPublic.INSTANCE.doCmdSync("mkdir -p " + MAGISK_ROOT_PATH1 + "/" + moduleName + "\n" +
+                        "echo '' > " + MAGISK_ROOT_PATH1 + "/" + moduleName + "/update");
+            } else if (RootFile.INSTANCE.dirExists(MAGISK_ROOT_PATH2)) {
+                KeepShellPublic.INSTANCE.doCmdSync("mkdir -p " + MAGISK_ROOT_PATH2 + "/" + moduleName + "\n" +
+                        "echo '' > " + MAGISK_ROOT_PATH2 + "/" + moduleName + "/update");
+            }
+
+            return true;
+        }
+        return false;
     }
 
     public static void magiskModuleInstall(Context context) {
@@ -60,7 +124,7 @@ public class MagiskExtend {
             KeepShellPublic.INSTANCE.doCmdSync("imgtool create /data/adb/magisk.img 64");
         }
         if (!RootFile.INSTANCE.fileExists("/data/adb/magisk_merge.img")) {
-            KeepShellPublic.INSTANCE.doCmdSync("cp /data/adb/magisk.img /data/adb/magisk_merge.img");
+            KeepShellPublic.INSTANCE.doCmdSync("imgtool create /data/adb/magisk_merge.img 128");
         }
 
         String moduleProp = "id=scene_systemless\n" +
@@ -88,15 +152,20 @@ public class MagiskExtend {
                 "# 此脚本将在post-fs-data模式下执行\n";
 
         KeepShellPublic.INSTANCE.doCmdSync("mkdir -p /dev/tmp/magisk_scene\n" +
+                "imgtool umount /data/adb/magisk_merge.img /dev/tmp/magisk_scene\n" +
                 "imgtool mount /data/adb/magisk_merge.img /dev/tmp/magisk_scene\n");
+
+        writeModuleFile(moduleProp, "module.prop", context);
+        writeModuleFile("", "auto_mount", context);
+        writeModuleFile("", "update", context);
+
         MAGISK_PATH = "/dev/tmp/magisk_scene/scene_systemless/";
 
         writeModuleFile(moduleProp, "module.prop", context);
+        writeModuleFile("", "auto_mount", context);
         writeModuleFile(systemProp, "system.prop", context);
         writeModuleFile(service, "service.sh", context);
         writeModuleFile(fsPostData, "post-fs-data.sh", context);
-        writeModuleFile("", "auto_mount", context);
-        writeModuleFile("", "update", context);
     }
 
     private static void writeModuleFile(String text, String name, Context context) {
@@ -143,64 +212,59 @@ public class MagiskExtend {
      * @return
      */
     public static boolean moduleInstalled() {
-        if (!MAGISK_PATH.equals("/dev/tmp/magisk_scene/scene_systemless/")) {
-            if (RootFile.INSTANCE.fileExists("/data/adb/magisk_merge.img")) {
-                KeepShellPublic.INSTANCE.doCmdSync(
-                        "mkdir -p /dev/tmp/magisk_scene\n" +
-                                "imgtool umount /data/adb/magisk_merge.img /dev/tmp/magisk_scene\n" +
-                                "imgtool mount /data/adb/magisk_merge.img /dev/tmp/magisk_scene\n");
-                MAGISK_PATH = "/dev/tmp/magisk_scene/scene_systemless/";
-            }
-        }
-        return magiskSupported() && RootFile.INSTANCE.dirExists(MAGISK_PATH );
+        return magiskSupported() && RootFile.INSTANCE.fileExists(MAGISK_PATH + "module.prop");
     }
 
-    public static void setSystemProp(String prop, String value) {
-        resizeMagiskImg(prop.length() + 4 + value.length());
+    public static boolean setSystemProp(String prop, String value) {
+        if (!resizeMagiskImg(prop.length() + 4 + value.length())) {
+            return false;
+        }
 
         KeepShellPublic.INSTANCE.doCmdSync(
             "sed -i '/" + prop + "=/'d " +  MAGISK_PATH + "system.prop\n" +
-            "echo " + prop + "=\"" + value  +"\" >> " + MAGISK_PATH + "system.prop\n" +
-            "echo '' > " + MAGISK_PATH + "update");
+            "echo " + prop + "=\"" + value  +"\" >> " + MAGISK_PATH + "system.prop\n");
+        return true;
     }
 
     public static void deleteSystemPath(String orginPath) {
         if (RootFile.INSTANCE.itemExists(orginPath)) {
             String output = MAGISK_PATH.substring(0, MAGISK_PATH.length() - 1) + (orginPath.startsWith("/vendor") ? ("/system" + orginPath) : orginPath);
             String dir = new File(output).getParent();
-            KeepShellPublic.INSTANCE.doCmdSync("mkdir -p \"" + dir + "\"\necho '' > \"" + output + "\"" +
-                    "\necho '' > " + MAGISK_PATH + "update");
+            KeepShellPublic.INSTANCE.doCmdSync("mkdir -p \"" + dir + "\"\necho '' > \"" + output + "\"");
         }
     }
 
-    public static void replaceSystemFile(String orginPath, String newfile) {
-        resizeMagiskImg(getTotalSizeOfFilesInDir(new File(newfile)));
-
-        if (RootFile.INSTANCE.itemExists(newfile)) {
-            String output = getMagiskReplaceFilePath(orginPath);
-            String dir = new File(output).getParent();
-            KeepShellPublic.INSTANCE.doCmdSync(
-                    "mkdir -p \"" + dir + "\"\n" +
-                    "cp \"" + newfile + "\" \"" + output + "\"\n" +
-                    "chmod 777 \"" + output + "\"" +
-                    "\necho '' > " + MAGISK_PATH + "update");
+    public static boolean replaceSystemFile(String orginPath, String newfile) {
+        if (resizeMagiskImg(getTotalSizeOfFilesInDir(new File(newfile)))) {
+            if (RootFile.INSTANCE.itemExists(newfile)) {
+                String output = getMagiskReplaceFilePath(orginPath);
+                String dir = new File(output).getParent();
+                KeepShellPublic.INSTANCE.doCmdSync(
+                        "mkdir -p \"" + dir + "\"\n" +
+                                "cp \"" + newfile + "\" \"" + output + "\"\n" +
+                                "chmod 777 \"" + output + "\"");
+                return true;
+            }
         }
+
+        return false;
     }
 
     public static String getMagiskReplaceFilePath(String systemPath) {
         return MAGISK_PATH.substring(0, MAGISK_PATH.length() - 1) + (systemPath.startsWith("/vendor") ? ("/system" + systemPath) : systemPath);
     }
 
-    public static void replaceSystemDir(String orginPath, String newfile) {
-        resizeMagiskImg(getTotalSizeOfFilesInDir(new File(newfile)));
-
-        if (RootFile.INSTANCE.itemExists(newfile)) {
-            String output = getMagiskReplaceFilePath(orginPath);
-            String dir = new File(output).getParent();
-            KeepShellPublic.INSTANCE.doCmdSync("mkdir -p \"" + dir + "\"\n" + "cp -a \"" + newfile + "\" \"" + output + "\"\n" +
-                    "chmod 777 \"" + output + "\"" +
-                    "\necho '' > " + MAGISK_PATH + "update");
+    public static boolean replaceSystemDir(String orginPath, String newfile) {
+        if (resizeMagiskImg(getTotalSizeOfFilesInDir(new File(newfile)))) {
+            if (RootFile.INSTANCE.itemExists(newfile)) {
+                String output = getMagiskReplaceFilePath(orginPath);
+                String dir = new File(output).getParent();
+                KeepShellPublic.INSTANCE.doCmdSync("mkdir -p \"" + dir + "\"\n" + "cp -a \"" + newfile + "\" \"" + output + "\"\n" +
+                        "chmod 777 \"" + output + "\"");
+                return true;
+            }
         }
+        return false;
     }
 
     public static void cancelReplace(String orginPath) {
@@ -215,14 +279,15 @@ public class MagiskExtend {
         return "";
     }
 
-    public static void updateProps(String fromFile) {
-        resizeMagiskImg(getTotalSizeOfFilesInDir(new File(fromFile)));
-
-        if (RootFile.INSTANCE.fileExists(fromFile)) {
-            KeepShellPublic.INSTANCE.doCmdSync("cp \"" + fromFile + "\" " + MAGISK_PATH + "system.prop\n" +
-                    "\nchmod 777 " + MAGISK_PATH + "service.sh" +
-                    "\necho '' > " + MAGISK_PATH + "update");
+    public static boolean updateProps(String fromFile) {
+        if (resizeMagiskImg(getTotalSizeOfFilesInDir(new File(fromFile)))) {
+            if (RootFile.INSTANCE.fileExists(fromFile)) {
+                KeepShellPublic.INSTANCE.doCmdSync("cp \"" + fromFile + "\" " + MAGISK_PATH + "system.prop\n" +
+                        "\nchmod 777 " + MAGISK_PATH + "service.sh");
+            }
+            return true;
         }
+        return false;
     }
 
     public static String getServiceSH () {
@@ -232,14 +297,15 @@ public class MagiskExtend {
         return "";
     }
 
-    public static void updateServiceSH(String fromFile) {
-        resizeMagiskImg(getTotalSizeOfFilesInDir(new File(fromFile)));
-
-        if (RootFile.INSTANCE.fileExists(fromFile)) {
-            KeepShellPublic.INSTANCE.doCmdSync("cp \"" + fromFile + "\" " + MAGISK_PATH + "service.sh\n" +
-                    "\nchmod 777 " + MAGISK_PATH + "service.sh" +
-                    "\necho '' > " + MAGISK_PATH + "update");
+    public static boolean updateServiceSH(String fromFile) {
+        if (resizeMagiskImg(getTotalSizeOfFilesInDir(new File(fromFile)))) {
+            if (RootFile.INSTANCE.fileExists(fromFile)) {
+                KeepShellPublic.INSTANCE.doCmdSync("cp \"" + fromFile + "\" " + MAGISK_PATH + "service.sh\n" +
+                        "\nchmod 777 " + MAGISK_PATH + "service.sh");
+            }
+            return true;
         }
+        return false;
     }
 
     public static String getFsPostDataSH () {
@@ -249,13 +315,16 @@ public class MagiskExtend {
         return "";
     }
 
-    public static void updateFsPostDataSH(String fromFile) {
-        resizeMagiskImg(getTotalSizeOfFilesInDir(new File(fromFile)));
+    public static boolean updateFsPostDataSH(String fromFile) {
+        if (resizeMagiskImg(getTotalSizeOfFilesInDir(new File(fromFile)))) {
+            resizeMagiskImg(getTotalSizeOfFilesInDir(new File(fromFile)));
 
-        if (RootFile.INSTANCE.fileExists(fromFile)) {
-            KeepShellPublic.INSTANCE.doCmdSync("cp \"" + fromFile + "\" " + MAGISK_PATH + "post-fs-data.sh\n" +
-                    "\nchmod 777 " + MAGISK_PATH + "post-fs-data.sh" +
-                    "\necho '' > " + MAGISK_PATH + "update");
+            if (RootFile.INSTANCE.fileExists(fromFile)) {
+                KeepShellPublic.INSTANCE.doCmdSync("cp \"" + fromFile + "\" " + MAGISK_PATH + "post-fs-data.sh\n" +
+                        "\nchmod 777 " + MAGISK_PATH + "post-fs-data.sh");
+            }
+            return true;
         }
+        return false;
     }
 }
