@@ -77,17 +77,16 @@ public class MagiskExtend {
             }
 
             KeepShellPublic.INSTANCE.doCmdSync("mkdir -p /data/adb/magisk_merge_tmnt\n" +
-                    "imgtool umount /data/adb/magisk_merge.img /data/adb/magisk_merge_tmnt\n" +
-                    "imgtool mount /data/adb/magisk_merge.img /data/adb/magisk_merge_tmnt\n");
+                    "LOOP=`imgtool mount /data/adb/magisk_merge.img /data/adb/magisk_merge_tmnt`\n");
 
             long currentSize = new File("/data/adb/magisk_merge_tmnt").getTotalSpace();
             long space = new File("/data/adb/magisk_merge_tmnt").getFreeSpace();
             if (space < (require + 2097152)) {
                 long sizeMB = ((currentSize - space + require) / 1024 / 1024) + 2;
                 KeepShellPublic.INSTANCE.doCmdSync(
-                    "imgtool umount /data/adb/magisk_merge.img /data/adb/magisk_merge_tmnt\n" +
+                    "imgtool umount /data/adb/magisk_merge_tmnt $LOOP\n" +
                     "imgtool resize /data/adb/magisk_merge.img " + sizeMB +
-                    "imgtool mount /data/adb/magisk_merge.img /data/adb/magisk_merge_tmnt\n");
+                    "LOOP=`imgtool mount /data/adb/magisk_merge.img /data/adb/magisk_merge_tmnt`\n");
             }
 
             String moduleProp = "id=" + moduleName +  "\\n" +
@@ -115,6 +114,7 @@ public class MagiskExtend {
                         "echo \"" + moduleProp + "\" > \"" + MAGISK_ROOT_PATH2 + "/" + moduleName + "/module.prop\"\n" +
                         "echo '' > " + MAGISK_ROOT_PATH2 + "/" + moduleName + "/update");
             }
+            KeepShellPublic.INSTANCE.doCmdSync("imgtool umount /data/adb/magisk_merge_tmnt $LOOP");
 
             return true;
         }
