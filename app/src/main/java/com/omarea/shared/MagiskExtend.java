@@ -33,20 +33,34 @@ public class MagiskExtend {
      * @param require
      */
     private static void resizeMagiskImg(long require) {
+        if (!RootFile.INSTANCE.fileExists("/data/adb/magisk_merge.img")) {
+            KeepShellPublic.INSTANCE.doCmdSync("cp /data/adb/magisk.img /data/adb/magisk_merge.img");
+        }
+
+        KeepShellPublic.INSTANCE.doCmdSync("mkdir -p /dev/tmp/magisk_scene\n");
+        KeepShellPublic.INSTANCE.doCmdSync(
+                "imgtool umount /data/adb/magisk_merge.img /dev/tmp/magisk_scene\n" +
+                "imgtool mount /data/adb/magisk_merge.img /dev/tmp/magisk_scene\n");
+        MAGISK_PATH = "/dev/tmp/magisk_scene/scene_systemless/";
+
         long currentSize = new File(MAGISK_PATH).getTotalSpace();
         long space = new File(MAGISK_PATH).getFreeSpace();
         if (space < (require + 2097152)) {
             long sizeMB = ((currentSize - space + require) / 1024 / 1024) + 2;
-            KeepShellPublic.INSTANCE.doCmdSync("imgtool resize /data/adb/magisk.img " + sizeMB);
+            KeepShellPublic.INSTANCE.doCmdSync(
+                    "imgtool umount /data/adb/magisk_merge.img /dev/tmp/magisk_scene\n" +
+                    "imgtool resize /data/adb/magisk_merge.img " + sizeMB);
         }
+
+        KeepShellPublic.INSTANCE.doCmdSync("imgtool mount /data/adb/magisk_merge.img /dev/tmp/magisk_scene\n");
     }
 
     public static void magiskModuleInstall(Context context) {
-        if (!RootFile.INSTANCE.fileExists("/data/adb/magisk_merge.img")) {
-            KeepShellPublic.INSTANCE.doCmdSync("imgtool create /data/adb/magisk_merge.img 64");
-        }
         if (!RootFile.INSTANCE.fileExists("/data/adb/magisk.img")) {
             KeepShellPublic.INSTANCE.doCmdSync("imgtool create /data/adb/magisk.img 64");
+        }
+        if (!RootFile.INSTANCE.fileExists("/data/adb/magisk_merge.img")) {
+            KeepShellPublic.INSTANCE.doCmdSync("cp /data/adb/magisk.img /data/adb/magisk_merge.img");
         }
 
         String moduleProp = "id=scene_systemless\n" +
@@ -129,6 +143,15 @@ public class MagiskExtend {
      * @return
      */
     public static boolean moduleInstalled() {
+        if (!MAGISK_PATH.equals("/dev/tmp/magisk_scene/scene_systemless/")) {
+            if (RootFile.INSTANCE.fileExists("/data/adb/magisk_merge.img")) {
+                KeepShellPublic.INSTANCE.doCmdSync(
+                        "mkdir -p /dev/tmp/magisk_scene\n" +
+                                "imgtool umount /data/adb/magisk_merge.img /dev/tmp/magisk_scene\n" +
+                                "imgtool mount /data/adb/magisk_merge.img /dev/tmp/magisk_scene\n");
+                MAGISK_PATH = "/dev/tmp/magisk_scene/scene_systemless/";
+            }
+        }
         return magiskSupported() && RootFile.INSTANCE.dirExists(MAGISK_PATH );
     }
 

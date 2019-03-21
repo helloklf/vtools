@@ -20,4 +20,17 @@ object RootFile {
     fun deleteDirOrFile(path: String) {
         KeepShellPublic.doCmdSync("rm -rf \"$path\"")
     }
+
+    fun fileSize(path: String): Int {
+        val fileInfo = KeepShellPublic.doCmdSync("if [[ -e \"$path\" ]]; then ls -l \"" + path + "\"; fi;")
+        val fileInfos = fileInfo.split(" ")
+        if (fileInfos.size > 4) {
+            try {
+                return fileInfos[4].toInt()
+            } catch (ex: Exception) {
+                return -1
+            }
+        }
+        return 0
+    }
 }
