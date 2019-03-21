@@ -108,9 +108,11 @@ public class MagiskExtend {
                     "chmod 777 \"" + output + "\"");
             if (RootFile.INSTANCE.dirExists(MAGISK_ROOT_PATH1)) {
                 KeepShellPublic.INSTANCE.doCmdSync("mkdir -p " + MAGISK_ROOT_PATH1 + "/" + moduleName + "\n" +
+                        "echo \"" + moduleProp + "\" > \"" + MAGISK_ROOT_PATH1 + "/" + moduleName + "/module.prop\"\n" +
                         "echo '' > " + MAGISK_ROOT_PATH1 + "/" + moduleName + "/update");
             } else if (RootFile.INSTANCE.dirExists(MAGISK_ROOT_PATH2)) {
                 KeepShellPublic.INSTANCE.doCmdSync("mkdir -p " + MAGISK_ROOT_PATH2 + "/" + moduleName + "\n" +
+                        "echo \"" + moduleProp + "\" > \"" + MAGISK_ROOT_PATH2 + "/" + moduleName + "/module.prop\"\n" +
                         "echo '' > " + MAGISK_ROOT_PATH2 + "/" + moduleName + "/update");
             }
 

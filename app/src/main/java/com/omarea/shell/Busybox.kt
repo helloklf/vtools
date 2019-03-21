@@ -47,7 +47,14 @@ class Busybox(private var context: Context) {
         } else {
             val privateBusybox = FileWrite.getPrivateFilePath(context, "busybox")
             MagiskExtend.replaceSystemFile("/system/xbin/busybox", privateBusybox);
-            KeepShellPublic.doCmdSync(MagiskExtend.getMagiskReplaceFilePath("/system/xbin/busybox") + " --install " + MagiskExtend.getMagiskReplaceFilePath("/system/xbin"))
+            val busyboxPath = MagiskExtend.getMagiskReplaceFilePath("/system/xbin/busybox");
+            val busyboxDir = File(busyboxPath).parent
+            val cmd = "cd \"$busyboxDir\"\n" +
+                    "for applet in `./busybox --list`;\n" +
+                    "do\n" +
+                    "./busybox ln -sf busybox \$applet;\n" +
+                    "done\n";
+            KeepShellPublic.doCmdSync(cmd)
             AlertDialog.Builder(context)
                     .setTitle("已完成")
                     .setMessage("已通过Magisk安装了Busybox，现在需要重启手机才能生效，立即重启吗？")
