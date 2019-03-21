@@ -65,7 +65,7 @@ public class MagiskExtend {
      * @param moduleName
      * @return
      */
-    public static boolean createFileReplaceModule(String orginPath, String newfile, String moduleName) {
+    public static boolean createFileReplaceModule(String orginPath, String newfile, String moduleName, String moduleTitle) {
         if (RootFile.INSTANCE.itemExists(newfile)) {
             long require = getTotalSizeOfFilesInDir(new File(newfile));
 
@@ -91,11 +91,11 @@ public class MagiskExtend {
             }
 
             String moduleProp = "id=" + moduleName +  "\\n" +
-                    "name=" + moduleName + "\\n" +
+                    "name=" + moduleTitle + "\\n" +
                     "version=v1\\n" +
                     "versionCode=1\\n" +
                     "author=嘟嘟ski\\n" +
-                    "description=应用程序转系统应用模块\n" +
+                    "description=用于将第三方应用转换成系统应用的模块，由Scene创建并添加\n" +
                     "minMagisk=17000\\n";
 
             String output = "/data/adb/magisk_merge_tmnt/" + moduleName + (orginPath.startsWith("/vendor") ? ("/system" + orginPath) : orginPath);

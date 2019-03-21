@@ -196,11 +196,11 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         if (appDir == "/data/app") {
             val parent = File(app.path.toString())
             val outPutPath = "/system/app/${parent.name}"
-            result = MagiskExtend.createFileReplaceModule(outPutPath, app.path.toString(), app.packageName.toString()); // MagiskExtend.replaceSystemDir(outPutPath, app.path.toString()) || MagiskExtend.createFileReplaceModule(outPutPath, app.path.toString(), app.packageName.toString());
+            result = MagiskExtend.createFileReplaceModule(outPutPath, app.path.toString(), app.packageName.toString(), app.appName.toString()); // MagiskExtend.replaceSystemDir(outPutPath, app.path.toString()) || MagiskExtend.createFileReplaceModule(outPutPath, app.path.toString(), app.packageName.toString());
         } else {
             val parent = File(appDir)
             val outPutPath = "/system/app/${parent.name}"
-            result = MagiskExtend.createFileReplaceModule(outPutPath, appDir, app.packageName.toString()); // MagiskExtend.replaceSystemDir(outPutPath, appDir) || MagiskExtend.createFileReplaceModule(outPutPath, appDir, app.packageName.toString());
+            result = MagiskExtend.createFileReplaceModule(outPutPath, appDir, app.packageName.toString(), app.appName.toString()); // MagiskExtend.replaceSystemDir(outPutPath, appDir) || MagiskExtend.createFileReplaceModule(outPutPath, appDir, app.packageName.toString());
         }
         if (result) {
             Toast.makeText(context, "已通过Magisk完成操作，请重启手机~", Toast.LENGTH_LONG).show()

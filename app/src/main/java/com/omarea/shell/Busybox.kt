@@ -34,38 +34,28 @@ class Busybox(private var context: Context) {
     private fun useMagiskModuleInstall (context: Context) {
         if (!MagiskExtend.moduleInstalled()) {
             MagiskExtend.magiskModuleInstall(context)
-            AlertDialog.Builder(context)
-                    .setTitle("需要重启")
-                    .setMessage("已将Scene模块添加到Magisk镜像，现在需要重启手机才能继续安装Busybox。现在重启？")
-                    .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                        KeepShellPublic.doCmdSync("sync\nsleep 2\nreboot\n")
-                    })
-                    .setNegativeButton(R.string.btn_cancel, { _, _ ->
-                    })
-                    .create()
-                    .show()
-        } else {
-            val privateBusybox = FileWrite.getPrivateFilePath(context, "busybox")
-            MagiskExtend.replaceSystemFile("/system/xbin/busybox", privateBusybox);
-            val busyboxPath = MagiskExtend.getMagiskReplaceFilePath("/system/xbin/busybox");
-            val busyboxDir = File(busyboxPath).parent
-            val cmd = "cd \"$busyboxDir\"\n" +
-                    "for applet in `./busybox --list`;\n" +
-                    "do\n" +
-                    "./busybox ln -sf busybox \$applet;\n" +
-                    "done\n";
-            KeepShellPublic.doCmdSync(cmd)
-            AlertDialog.Builder(context)
-                    .setTitle("已完成")
-                    .setMessage("已通过Magisk安装了Busybox，现在需要重启手机才能生效，立即重启吗？")
-                    .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                        KeepShellPublic.doCmdSync("sync\nsleep 2\nreboot\n")
-                    })
-                    .setNegativeButton(R.string.btn_cancel, { _, _ ->
-                    })
-                    .create()
-                    .show()
         }
+
+        val privateBusybox = FileWrite.getPrivateFilePath(context, "busybox")
+        MagiskExtend.replaceSystemFile("/system/xbin/busybox", privateBusybox);
+        val busyboxPath = MagiskExtend.getMagiskReplaceFilePath("/system/xbin/busybox");
+        val busyboxDir = File(busyboxPath).parent
+        val cmd = "cd \"$busyboxDir\"\n" +
+                "for applet in `./busybox --list`;\n" +
+                "do\n" +
+                "./busybox ln -sf busybox \$applet;\n" +
+                "done\n";
+        KeepShellPublic.doCmdSync(cmd)
+        AlertDialog.Builder(context)
+                .setTitle("已完成")
+                .setMessage("已通过Magisk安装了Busybox，现在需要重启手机才能生效，立即重启吗？")
+                .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                    KeepShellPublic.doCmdSync("sync\nsleep 2\nreboot\n")
+                })
+                .setNegativeButton(R.string.btn_cancel, { _, _ ->
+                })
+                .create()
+                .show()
     }
 
     fun forceInstall2(next: Runnable? = null) {
