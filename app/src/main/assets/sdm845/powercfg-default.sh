@@ -89,8 +89,8 @@ if [ "$action" = "powersave" ]; then
     echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/io_is_busy
     schedutil_cfg 4 1000 10000 0
 
-    echo 0-2 > /dev/cpuset/background/cpus
-    echo 0-3 > /dev/cpuset/system-background/cpus
+    echo 0,4 > /dev/cpuset/background/cpus
+    echo 0-5 > /dev/cpuset/system-background/cpus
 
 	exit 0
 fi
@@ -114,8 +114,8 @@ if [ "$action" = "balance" ]; then
     echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/io_is_busy
     schedutil_cfg 4 1000 5000 0
 
-    echo 0-2 > /dev/cpuset/background/cpus
-    echo 0-3 > /dev/cpuset/system-background/cpus
+    echo 0-1,4 > /dev/cpuset/background/cpus
+    echo 0-5 > /dev/cpuset/system-background/cpus
 
 	exit 0
 fi
@@ -140,8 +140,8 @@ if [ "$action" = "performance" ]; then
     echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/io_is_busy
     schedutil_cfg 4 1000 1000 1
 
-    echo 0-1 > /dev/cpuset/background/cpus
-    echo 0-1 > /dev/cpuset/system-background/cpus
+    echo 0-1,4 > /dev/cpuset/background/cpus
+    echo 0-4 > /dev/cpuset/system-background/cpus
 
 	exit 0
 fi
@@ -165,8 +165,8 @@ if [ "$action" = "fast" ]; then
 	echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 1 > /proc/sys/kernel/sched_boost
 
-    echo 0 > /dev/cpuset/background/cpus
-    echo 0-1 > /dev/cpuset/system-background/cpus
+    echo 0-1 > /dev/cpuset/background/cpus
+    echo 0-4 > /dev/cpuset/system-background/cpus
 
 	exit 0
 fi

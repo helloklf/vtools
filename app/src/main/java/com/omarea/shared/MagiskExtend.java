@@ -66,14 +66,14 @@ public class MagiskExtend {
      * @return
      */
     public static boolean createFileReplaceModule(String orginPath, String newfile, String moduleName, String moduleTitle) {
-        if (RootFile.INSTANCE.itemExists(newfile)) {
+        if (MagiskExtend.magiskSupported() && RootFile.INSTANCE.itemExists(newfile)) {
             long require = getTotalSizeOfFilesInDir(new File(newfile));
 
             if (!RootFile.INSTANCE.fileExists("/data/adb/magisk.img")) {
                 KeepShellPublic.INSTANCE.doCmdSync("imgtool create /data/adb/magisk.img 64");
             }
             if (!RootFile.INSTANCE.fileExists("/data/adb/magisk_merge.img")) {
-                KeepShellPublic.INSTANCE.doCmdSync("imgtool create /data/adb/magisk_merge.img 128");
+                KeepShellPublic.INSTANCE.doCmdSync("imgtool create /data/adb/magisk_merge.img 256");
             }
 
             KeepShellPublic.INSTANCE.doCmdSync("mkdir -p /data/adb/magisk_merge_tmnt\n" +
@@ -103,8 +103,8 @@ public class MagiskExtend {
                     "mkdir -p \"" + dir + "\"\n" +
                     "echo \"" + moduleProp + "\" > \"/data/adb/magisk_merge_tmnt/" + moduleName + "/module.prop\"\n" +
                     "echo '' > \"/data/adb/magisk_merge_tmnt/" + moduleName + "/auto_mount\"\n" +
-                    "cp -a \"" + newfile + "\" \"" + output + "\"\n" +
-                    "chmod 777 \"" + output + "\"");
+                    "cp -pdrf \"" + newfile + "\" \"" + output + "\"\n" +
+                    "chmod -R 777 \"" + output + "\"");
             if (RootFile.INSTANCE.dirExists(MAGISK_ROOT_PATH1)) {
                 KeepShellPublic.INSTANCE.doCmdSync("mkdir -p " + MAGISK_ROOT_PATH1 + "/" + moduleName + "\n" +
                         "echo \"" + moduleProp + "\" > \"" + MAGISK_ROOT_PATH1 + "/" + moduleName + "/module.prop\"\n" +
@@ -262,7 +262,7 @@ public class MagiskExtend {
                 String output = getMagiskReplaceFilePath(orginPath);
                 String dir = new File(output).getParent();
                 KeepShellPublic.INSTANCE.doCmdSync("mkdir -p \"" + dir + "\"\n" + "cp -a \"" + newfile + "\" \"" + output + "\"\n" +
-                        "chmod 777 \"" + output + "\"");
+                        "chmod -R 777 \"" + output + "\"");
                 return true;
             }
         }

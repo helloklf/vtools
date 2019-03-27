@@ -178,7 +178,8 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         } else {
             val parent = File(appDir)
             val outPutPath = "/system/app/${parent.name}"
-            sb.append("cp -a '$appDir' '$outPutPath'\n")
+            sb.append("cp -pdrf '$appDir' '/system/app/'\n")
+            // sb.append("cp -a '$appDir' '$outPutPath'\n")
             sb.append("chmod -R 0755 '$outPutPath'\n")
             sb.append("chown -R system:system '$outPutPath'\n")
             sb.append("busybox chown -R system:system '$outPutPath'\n")
@@ -193,13 +194,13 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
     private fun moveToSystemMagisk() {
         val appDir = File(app.path.toString()).parent
         var result = false
-        if (appDir == "/data/app") {
+        if (appDir == "/data/app") { // /data/app/xxx.apk
             val parent = File(app.path.toString())
-            val outPutPath = "/system/app/${parent.name}"
+            val outPutPath = "/system/app/"
             result = MagiskExtend.createFileReplaceModule(outPutPath, app.path.toString(), app.packageName.toString(), app.appName.toString()); // MagiskExtend.replaceSystemDir(outPutPath, app.path.toString()) || MagiskExtend.createFileReplaceModule(outPutPath, app.path.toString(), app.packageName.toString());
-        } else {
+        } else { // /data/app/xxx.xxx.xxx/xxx.apk
             val parent = File(appDir)
-            val outPutPath = "/system/app/${parent.name}"
+            val outPutPath = "/system/app/" + app.packageName
             result = MagiskExtend.createFileReplaceModule(outPutPath, appDir, app.packageName.toString(), app.appName.toString()); // MagiskExtend.replaceSystemDir(outPutPath, appDir) || MagiskExtend.createFileReplaceModule(outPutPath, appDir, app.packageName.toString());
         }
         if (result) {
@@ -224,7 +225,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                 .setTitle(app.appName)
                 .setMessage("转为系统应用后，将无法随意更新或卸载，并且可能会一直后台运行占用内存，继续转换吗？\n\n并非所有应用都可以转换为系统应用，有些转为系统应用后不能正常运行。\n\n确保你已解锁System分区或安装Magisk，转换完成后，请重启手机！")
                 .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                    if (MagiskExtend.moduleInstalled()) {
+                    if (MagiskExtend.magiskSupported()) {
                         moveToSystemMagisk()
                     } else {
                         moveToSystemExec()
