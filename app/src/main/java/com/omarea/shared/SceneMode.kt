@@ -26,7 +26,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
     }
 
     var mode = -1;
-    var screenBrightness = -1;
+    // var screenBrightness = -1;
     var lastAppPackageName = "com.android.systemui"
     var config: AppConfigInfo? = null
     var lowPowerLevel = 2
@@ -34,7 +34,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
     private fun backupState(): Int {
         try {
             mode = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE)
-            screenBrightness = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS)
+            // screenBrightness = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS)
         } catch (e: Settings.SettingNotFoundException) {
             e.printStackTrace()
         }
@@ -48,34 +48,34 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
                 contentResolver.notifyChange(Settings.System.getUriFor("screen_brightness_mode"), null)
                 mode = -1
             }
+            /*
             if (screenBrightness > -1) {
                 Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, screenBrightness)
                 contentResolver.notifyChange(Settings.System.getUriFor("screen_brightness"), null)
                 screenBrightness = -1
             }
+            */
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    private fun setScreenLight(level: Int): Boolean {
+    private fun autoLightOff(): Boolean {
         try {
-            var l = level
-            if (l < 1) {
-                l = 1
-            }
             if (Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, 0)) {
                 contentResolver.notifyChange(Settings.System.getUriFor(Settings.System.SCREEN_BRIGHTNESS_MODE), null)
             } else {
                 Log.e("screen_brightness", "修改亮度失败！")
                 return false
             }
-            if (Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, l)) {
+            /*
+            if (Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, lightValue)) {
                 contentResolver.notifyChange(Settings.System.getUriFor(Settings.System.SCREEN_BRIGHTNESS), null)
             } else {
                 Log.e("screen_brightness", "修改亮度失败！")
                 return false
             }
+            */
         } catch (ex: Exception) {
             return false
         }
@@ -215,66 +215,40 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
             if (lastAppPackageName == packageName && !foceUpdateConfig) {
                 return
             }
-            if (config != null) {
-                try {
-                    if (config!!.aloneLight) {
-                        val currentConfig = store.getAppConfig(config!!.packageName)
-                        val sb = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS)
-                        if (currentConfig.aloneLightValue != sb) {
-                            currentConfig.aloneLightValue = sb
-                            store.setAppConfig(currentConfig)
-                        }
-                    }
-                } catch (ex: Exception) {
-                }
-            }
             if (lastAppPackageName != packageName)
                 autoBoosterApp(lastAppPackageName)
 
             config = store.getAppConfig(packageName)
-            if (config == null)
-                return
-            if (config!!.aloneLight) {
-                if (mode < 0) {
-                    backupState()
-                }
-                if (config!!.aloneLightValue < 1) {
-                    config!!.aloneLightValue = 128
-                }/* else if (config!!.aloneLightValue > 255) {
-                    config!!.aloneLightValue = 255
-                }*/
-                setScreenLight(config!!.aloneLightValue)
-            } else {
-                if (mode > -1) {
-                    resumeState()
-                    mode = -1
-                }
-            }
-
-            if (config!!.gpsOn) {
-                val mode = Settings.Secure.getInt(contentResolver, Settings.Secure.LOCATION_MODE)
-                backupLocationModeState()
-                if (mode != Settings.Secure.LOCATION_MODE_HIGH_ACCURACY) {
-                    Settings.Secure.putInt(contentResolver, Settings.Secure.LOCATION_MODE, Settings.Secure.LOCATION_MODE_HIGH_ACCURACY)
-                    contentResolver.notifyChange(Settings.System.getUriFor(Settings.Secure.LOCATION_MODE), null)
-                }
-            } else {
+            if (config == null) {
                 restoreLocationModeState()
-            }
-
-            if (config!!.disNotice) {
-                try {
-                    val mode = Settings.Global.getInt(contentResolver, "heads_up_notifications_enabled")
-                    backupHeadUp()
-                    if (mode != 0) {
-                        Settings.Global.putInt(contentResolver, "heads_up_notifications_enabled", 0)
-                        contentResolver.notifyChange(Settings.System.getUriFor("heads_up_notifications_enabled"), null)
-                    }
-                } catch (ex: Exception) {
-
-                }
-            } else {
+                resumeState()
                 restoreHeaddUp()
+            } else {
+                if (config!!.aloneLight) {
+                    backupState()
+                    autoLightOff()
+                }
+
+                if (config!!.gpsOn) {
+                    val mode = Settings.Secure.getInt(contentResolver, Settings.Secure.LOCATION_MODE)
+                    backupLocationModeState()
+                    if (mode != Settings.Secure.LOCATION_MODE_HIGH_ACCURACY) {
+                        Settings.Secure.putInt(contentResolver, Settings.Secure.LOCATION_MODE, Settings.Secure.LOCATION_MODE_HIGH_ACCURACY)
+                        contentResolver.notifyChange(Settings.System.getUriFor(Settings.Secure.LOCATION_MODE), null)
+                    }
+                }
+
+                if (config!!.disNotice) {
+                    try {
+                        val mode = Settings.Global.getInt(contentResolver, "heads_up_notifications_enabled")
+                        backupHeadUp()
+                        if (mode != 0) {
+                            Settings.Global.putInt(contentResolver, "heads_up_notifications_enabled", 0)
+                            contentResolver.notifyChange(Settings.System.getUriFor("heads_up_notifications_enabled"), null)
+                        }
+                    } catch (ex: Exception) {
+                    }
+                }
             }
 
             lastAppPackageName = packageName

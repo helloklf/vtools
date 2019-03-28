@@ -5,7 +5,6 @@ public class AppConfigInfo {
 
     // AppConfig
     public boolean aloneLight = false;
-    public int aloneLightValue = -1;
     public boolean disNotice = false;
     public boolean disButton = false;
     public boolean disBackgroundRun = false;

@@ -169,9 +169,6 @@ class FloatPowercfgSelector {
         fw_app_light.setOnClickListener {
             val isChecked = (it as Switch).isChecked
             appConfig.aloneLight = isChecked
-            if (appConfig.aloneLightValue < 1) {
-                appConfig.aloneLightValue = 128
-            }
             store.setAppConfig(appConfig)
 
             val intent = Intent(context.getString(R.string.scene_appchange_action))

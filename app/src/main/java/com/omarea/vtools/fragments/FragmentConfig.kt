@@ -575,8 +575,8 @@ class FragmentConfig : Fragment() {
         val configInfo = appConfigStore.getAppConfig(packageName)
         item.appConfigInfo = configInfo
         val desc = StringBuilder()
-        if (configInfo.aloneLight && configInfo.aloneLightValue > 0) {
-            desc.append("亮度：${configInfo.aloneLightValue}  ")
+        if (configInfo.aloneLight) {
+            desc.append("独立亮度 ")
         }
         if (configInfo.disNotice) {
             desc.append("屏蔽通知  ")

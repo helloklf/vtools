@@ -8,7 +8,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
-import android.provider.Settings
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -250,7 +249,6 @@ class AppDetailsActivity : AppCompatActivity() {
             app_details_permission.visibility = View.GONE
             app_details_auto.visibility = View.GONE
             app_details_assist.visibility = View.GONE
-            app_details_version.visibility = View.GONE
         }
 
         policyControl = PolicyControl(contentResolver)
@@ -433,83 +431,6 @@ class AppDetailsActivity : AppCompatActivity() {
             }
             appConfigInfo.aloneLight = (it as CheckBox).isChecked
         }
-        app_details_light.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            var mode = -1;
-            var screenBrightness = 100;
-            var onMove = false
-
-            fun getScreenMode(): Int {
-                try {
-                    mode = Settings.System.getInt(getContentResolver(),
-                            Settings.System.SCREEN_BRIGHTNESS_MODE)
-                } catch (e: Settings.SettingNotFoundException) {
-                    e.printStackTrace()
-                }
-                return mode
-            }
-
-            fun getScreenBrightness() {
-                try {
-                    screenBrightness = Settings.System.getInt(getContentResolver(),
-                            Settings.System.SCREEN_BRIGHTNESS)
-                } catch (e: Settings.SettingNotFoundException) {
-                    e.printStackTrace()
-                }
-            }
-
-            fun setScreenMode() {
-                try {
-                    Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, mode)
-                    getContentResolver().notifyChange(Settings.System.getUriFor("screen_brightness_mode"), null)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }
-
-            fun setScreenBrightness() {
-                Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, screenBrightness)
-                getContentResolver().notifyChange(Settings.System.getUriFor("screen_brightness_mode"), null)
-            }
-
-
-            override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                onMove = false
-                setScreenMode()
-                setScreenBrightness()
-                if (seekBar != null) {
-                    if (seekBar.progress < 20) {
-                        seekBar.progress = 20
-                    }
-                }
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar?) {
-                getScreenMode()
-                getScreenBrightness()
-                try {
-                    Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE, 0)
-                    val uri = Settings.System.getUriFor("screen_brightness_mode")
-                    getContentResolver().notifyChange(uri, null)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-                onMove = true
-            }
-
-            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                if (!onMove || progress < 10) {
-                    return
-                }
-                appConfigInfo.aloneLightValue = progress
-                try {
-                    Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS, progress)
-                    val uri = Settings.System.getUriFor("screen_brightness")
-                    getContentResolver().notifyChange(uri, null)
-                } catch (ex: Exception) {
-
-                }
-            }
-        })
         // TODO: 输入DPI
         if (appConfigInfo.dpi >= 96) {
             app_details_dpi.text = appConfigInfo.dpi.toString()
@@ -650,61 +571,7 @@ class AppDetailsActivity : AppCompatActivity() {
         val applicationInfo = packageInfo.applicationInfo
         app_details_name.text = applicationInfo.loadLabel(packageManager)
         app_details_packagename.text = packageInfo.packageName
-        app_details_path.text = applicationInfo.sourceDir
         app_details_icon.setImageDrawable(applicationInfo.loadIcon(packageManager))
-        app_details_versionname.text = packageInfo.versionName
-        app_details_versioncode.text = packageInfo.versionCode.toString()
-        app_details_time.text = Date(packageInfo.lastUpdateTime).toLocaleString()
-        app_details_light.isEnabled = WriteSettings().getPermission(this)
-        Thread(Runnable {
-            var size = getTotalSizeOfFilesInDir(File(applicationInfo.sourceDir).parentFile)
-            try {
-                if (applicationInfo.dataDir != null) {
-                    // size += getTotalSizeOfFilesInDir(File(applicationInfo.dataDir))
-                }
-                val dataFile = File("${CommonCmds.SDCardDir}/Android/data/$app")
-                val obbFile = File("${CommonCmds.SDCardDir}/Android/obb/$app")
-                val sdFile = File("${CommonCmds.SDCardDir}/$app")
-                if (dataFile.exists()) {
-                    size += getTotalSizeOfFilesInDir(dataFile)
-                }
-                if (obbFile.exists()) {
-                    size += getTotalSizeOfFilesInDir(obbFile)
-                }
-                if (sdFile.exists()) {
-                    size += getTotalSizeOfFilesInDir(sdFile)
-                }
-            } catch (ex: Exception) {
-            }
-            val dumpR = KeepShellPublic.doCmdSync("dumpsys meminfo --S --package $app | grep TOTAL")
-            var memSize = 0
-            if (dumpR.isEmpty() || dumpR == "error") {
-
-            } else {
-                val mem = KeepShellPublic.doCmdSync("dumpsys meminfo --package $app | grep TOTAL").split("\n", ignoreCase = true)
-                for (rowIndex in 0 until mem.size) {
-                    if (rowIndex % 2 == 0) {
-                        //TOTAL    17651    11740      672        0    18832    16424     2407
-                        val row = mem[rowIndex].trim().split("    ", ignoreCase = true)
-                        try {
-                            memSize += row[1].toInt()
-                        } catch (ex: Exception) {
-                        }
-                        Log.d("", row.toString())
-                    }
-                }
-            }
-            // 由于这是个异步操作，执行完时界面可能已经被销毁，因此需要做这个判断
-            if (app_details_size != null) {
-                app_details_size.post {
-                    try {
-                        app_details_size.text = String.format("%.2f", size / 1024.0 / 1024) + "MB"
-                        app_details_ram.text = String.format("%.2f", memSize / 1024.0) + "MB"
-                    } catch (ex: Exception) {
-                    }
-                }
-            }
-        }).start()
 
         val firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeList.BALANCE))
         app_details_dynamic.text = ModeList.getModName(powercfg.getString(app, firstMode))
@@ -733,13 +600,6 @@ class AppDetailsActivity : AppCompatActivity() {
         app_details_hidenotice.isChecked = appConfigInfo.disNotice
         app_details_disbackground.isChecked = appConfigInfo.disBackgroundRun
         app_details_aloowlight.isChecked = appConfigInfo.aloneLight
-        if (appConfigInfo.aloneLightValue > 0) {
-            // 部分手机具有4096级亮度
-            if (appConfigInfo.aloneLightValue > 255) {
-                app_details_light.max = 4096
-            }
-            app_details_light.setProgress(appConfigInfo.aloneLightValue)
-        }
         app_details_gps.isChecked = appConfigInfo.gpsOn
     }
 
@@ -759,7 +619,6 @@ class AppDetailsActivity : AppCompatActivity() {
         val originConfig = AppConfigStore(this).getAppConfig(appConfigInfo.packageName)
         if (
                 appConfigInfo.aloneLight != originConfig.aloneLight ||
-                appConfigInfo.aloneLightValue != originConfig.aloneLightValue ||
                 appConfigInfo.disNotice != originConfig.disNotice ||
                 appConfigInfo.disButton != originConfig.disButton ||
                 appConfigInfo.disBackgroundRun != originConfig.disBackgroundRun ||

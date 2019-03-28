@@ -225,12 +225,12 @@
             android:name=".activitys.StartSplashActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_start_splash"
-            android:theme="@style/FullscreenTheme" />
+            android:theme="@style/AppThemeLight" />
 
         <service
             android:name=".services.MonitorService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
     </application>
 
 </manifest>
