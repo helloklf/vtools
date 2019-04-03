@@ -104,7 +104,7 @@ class FloatVitualTouchBar(context: AccessibilityService) {
             if (this.rightView != null) {
                 mWindowManager!!.removeView(this.rightView)
             }
-            KeepShellPublic.doCmdSync("wm overscan reset")
+            // KeepShellPublic.doCmdSync("wm overscan reset")
             isShown = false
         }
     }
@@ -271,9 +271,11 @@ class FloatVitualTouchBar(context: AccessibilityService) {
                 params.y = -navHeight
                 params.x = 0
             */
+            /*
             if (touchLayout == 2) {
                 KeepShellPublic.doCmdSync("wm overscan 0,0,0,-" + navHeight)
             }
+            */
         } else {
         }
         mWindowManager!!.addView(view, params)
@@ -309,12 +311,15 @@ class FloatVitualTouchBar(context: AccessibilityService) {
             }
 
             override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
-                // 如果第一个触点事件的X坐标大于第二个触点事件的X坐标超过FLIP_DISTANCE
-                // 也就是手势从右向左滑
-                if (e2!!.getX() - e1!!.getX() > FLIP_DISTANCE) {
-                    performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
+                if (e2 != null && e1 != null) {
+                    if (e2.y - e1.y > FLIP_DISTANCE * 2) {
+                        performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS)
+                    } else if (e1.y - e2.y > FLIP_DISTANCE * 2) {
+                        performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
+                    } else if (e2.x - e1.x > FLIP_DISTANCE) {
+                        performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
+                    }
                 }
-                //return true;
                 return false;
             }
         })
@@ -379,9 +384,15 @@ class FloatVitualTouchBar(context: AccessibilityService) {
             }
 
             override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
-                if (e1!!.x - e2!!.x > FLIP_DISTANCE) {
-                    performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
-                    // performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
+                if (e2 != null && e1 != null) {
+                    if (e2.y - e1.y > FLIP_DISTANCE * 2) {
+                        performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS)
+                    } else if (e1.y - e2.y > FLIP_DISTANCE * 2) {
+                        performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
+                    } else if (e1.x - e2.x > FLIP_DISTANCE) {
+                        performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
+                        // performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
+                    }
                 }
                 return false;
             }
