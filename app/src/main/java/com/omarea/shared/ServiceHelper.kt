@@ -304,7 +304,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         private var serviceHelper: WeakReference<ServiceHelper>
         override fun run() {
             val packageName = this.packageName.get()!!
-            if (dumpTopAppliction.get()!!.dumpsysTopActivity(packageName) == packageName) {
+            if (dumpTopAppliction.get()!!.fromDumpsysWindow(packageName) == packageName) {
                 val serviceHelper = this.serviceHelper.get()
                 if (serviceHelper != null) {
                     serviceHelper.dumpSuccess(packageName)

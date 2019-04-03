@@ -426,10 +426,10 @@ class AppDetailsActivity : AppCompatActivity() {
             if (!WriteSettings().getPermission(this)) {
                 WriteSettings().setPermission(this)
                 Toast.makeText(applicationContext, getString(R.string.scene_need_write_sys_settings), Toast.LENGTH_SHORT).show()
-                (it as CheckBox).isChecked = false
+                (it as Switch).isChecked = false
                 return@setOnClickListener
             }
-            appConfigInfo.aloneLight = (it as CheckBox).isChecked
+            appConfigInfo.aloneLight = (it as Switch).isChecked
         }
         // TODO: 输入DPI
         if (appConfigInfo.dpi >= 96) {

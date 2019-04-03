@@ -11,25 +11,36 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.provider.Settings
+import android.util.Log
 import android.view.*
 import android.view.WindowManager.LayoutParams
 import android.widget.LinearLayout
 import android.widget.Toast
 import com.omarea.shared.SpfConfig
+import com.omarea.shell.KeepShellPublic
 import com.omarea.vtools.R
+import java.lang.Exception
 
 /**
  * 弹窗辅助类
  *
  * @ClassName WindowUtils
  */
-class FloatVitualTouchBar// 获取应用的Context
-(context: AccessibilityService) {
-    private var mView: View? = null
+class FloatVitualTouchBar(context: AccessibilityService) {
+    private var bottomView: View? = null
+    private var leftView: View? = null
+    private var rightView: View? = null
+
     private var mContext: AccessibilityService? = context
-    private var sharedPreferences: SharedPreferences? = null
-    private var reversalLayout = false
+    private var sharedPreferences: SharedPreferences? = context.getSharedPreferences(SpfConfig.KEY_EVENT_ONTHER_CONFIG_SPF, Context.MODE_PRIVATE)
+    private var touchLayout = 0
+    private var allowTap = false
     var isLandscapf = false
+
+    private var lastEventTime = 0L
+    private var lastEvent = -1
+    private var vibratorOn = false
+    private var vibrator: Vibrator = context.getSystemService(VIBRATOR_SERVICE) as Vibrator
 
     /**
      * 显示弹出框
@@ -49,51 +60,18 @@ class FloatVitualTouchBar// 获取应用的Context
         // 获取WindowManager
         mWindowManager = mContext!!.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
-        this.mView = setUpView(mContext!!)
+        vibratorOn = sharedPreferences!!.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_VIBRATOR, false)
+        allowTap = sharedPreferences!!.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_TAP, false)
 
-        val params = WindowManager.LayoutParams()
-
-        // 类型
-        params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
-        // 设置window type
-        //params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//6.0+
-            params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-        } else {
-            params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
+        try {
+            this.bottomView = setBottomView(mContext!!)
+            if (touchLayout == 2) {
+                this.leftView = setLeftView(mContext!!)
+                this.rightView = setRightView(mContext!!)
+            }
+        } catch (ex: Exception) {
+            Log.d("异常", ex.message)
         }
-        // WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
-
-        // 设置flag
-
-        //val flags = WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-        // | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-        // 如果设置了WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE，弹出的View收不到Back键的事件
-        //params.flags = flags
-        // 不设置这个弹出框的透明遮罩显示为黑色
-        params.format = PixelFormat.TRANSLUCENT
-        // FLAG_NOT_TOUCH_MODAL不阻塞事件传递到后面的窗口
-        // 设置 FLAG_NOT_FOCUSABLE 悬浮窗口较小时，后面的应用图标由不可长按变为可长按
-        // 不设置这个flag的话，home页的划屏会有问题
-
-        params.width = LayoutParams.MATCH_PARENT
-        params.height = LayoutParams.WRAP_CONTENT
-
-        params.gravity = Gravity.BOTTOM
-        params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE or LayoutParams.FLAG_FULLSCREEN or LayoutParams.FLAG_LAYOUT_IN_SCREEN or LayoutParams.FLAG_LAYOUT_NO_LIMITS
-        // WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-        // LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE or
-
-        val navHeight = 0 // (getNavBarHeight(mContext!!))
-        if (navHeight > 0) {
-            val display = mWindowManager!!.getDefaultDisplay()
-            val p = Point()
-            display.getRealSize(p)
-            params.y = -navHeight
-            params.x = 0
-        } else {
-        }
-        mWindowManager!!.addView(mView, params)
     }
 
     /**
@@ -102,32 +80,34 @@ class FloatVitualTouchBar// 获取应用的Context
      * @return
      */
     fun getNavBarHeight(context: Context): Int {
-        val result = 0
-        var resourceId = 0
+        var resourceId: Int
         val rid = context.resources.getIdentifier("config_showNavigationBar", "bool", "android")
         if (rid != 0) {
             resourceId = context.resources.getIdentifier("navigation_bar_height", "dimen", "android")
             return context.resources.getDimensionPixelSize(resourceId)
-        } else
+        } else {
             return 0
+        }
     }
 
     /**
      * 隐藏弹出框
      */
     fun hidePopupWindow() {
-        if (isShown!! &&
-                null != this.mView) {
-            mWindowManager!!.removeView(mView)
+        if (isShown!!) {
+            if (this.bottomView != null) {
+                mWindowManager!!.removeView(this.bottomView)
+            }
+            if (this.leftView != null) {
+                mWindowManager!!.removeView(this.leftView)
+            }
+            if (this.rightView != null) {
+                mWindowManager!!.removeView(this.rightView)
+            }
+            KeepShellPublic.doCmdSync("wm overscan reset")
             isShown = false
         }
     }
-
-
-    private var lastEventTime = 0L
-    private var lastEvent = -1
-    private var vibratorOn = false
-    private var vibrator: Vibrator? = null
 
     /**
      * dp转换成px
@@ -144,15 +124,12 @@ class FloatVitualTouchBar// 获取应用的Context
             Toast.makeText(context, "请重复手势~", Toast.LENGTH_SHORT).show()
         } else {
             if (vibratorOn) {
-                if (vibrator == null) {
-                    vibrator = context.getSystemService(VIBRATOR_SERVICE) as Vibrator
-                }
-                vibrator!!.cancel()
+                vibrator.cancel()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     // vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(20, 10), DEFAULT_AMPLITUDE))
-                    vibrator!!.vibrate(VibrationEffect.createOneShot(1, 1))
+                    vibrator.vibrate(VibrationEffect.createOneShot(1, 1))
                 } else {
-                    vibrator!!.vibrate(longArrayOf(20, 10), -1)
+                    vibrator.vibrate(longArrayOf(20, 10), -1)
                 }
             }
             context.performGlobalAction(event)
@@ -160,10 +137,8 @@ class FloatVitualTouchBar// 获取应用的Context
     }
 
     @SuppressLint("ApplySharedPref", "ClickableViewAccessibility")
-    private fun setUpView(context: AccessibilityService): View {
+    private fun setBottomView(context: AccessibilityService): View {
         val view = LayoutInflater.from(context).inflate(R.layout.fw_vitual_touch_bar, null)
-        vibratorOn = sharedPreferences!!.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_VIBRATOR, false)
-        val allowTap = sharedPreferences!!.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_TAP, false)
 
         val bar = view.findViewById<LinearLayout>(R.id.bottom_touch_bar)
         val gust = GestureDetector(context, object : GestureDetector.OnGestureListener {
@@ -171,11 +146,13 @@ class FloatVitualTouchBar// 获取应用的Context
             val FLIP_DISTANCE = dp2px(context, 70f)
 
             override fun onLongPress(e: MotionEvent?) {
-                if (e != null) {
-                    if (e.getX() < bar.width * 0.33) {
-                    } else if (e.getX() > bar.width * 0.67) {
-                    } else {
-                        performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS)
+                if (touchLayout != 2) {
+                    if (e != null) {
+                        if (e.getX() < bar.width * 0.33) {
+                        } else if (e.getX() > bar.width * 0.67) {
+                        } else {
+                            performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS)
+                        }
                     }
                 }
             }
@@ -190,20 +167,22 @@ class FloatVitualTouchBar// 获取应用的Context
 
             override fun onSingleTapUp(e: MotionEvent?): Boolean {
                 if (e != null && allowTap) {
-                    if (e.getX() < bar.width * 0.33) {
-                        if (!reversalLayout) {
-                            performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
+                    if (touchLayout != 2) {
+                        if (e.getX() < bar.width * 0.33) {
+                            if (touchLayout == 1) {
+                                performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
+                            } else {
+                                performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
+                            }
+                        } else if (e.getX() > bar.width * 0.67) {
+                            if (touchLayout == 1) {
+                                performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
+                            } else {
+                                performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
+                            }
                         } else {
-                            performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
+                            performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_HOME)
                         }
-                    } else if (e.getX() > bar.width * 0.67) {
-                        if (!reversalLayout) {
-                            performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
-                        } else {
-                            performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
-                        }
-                    } else {
-                        performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_HOME)
                     }
                 }
                 return false
@@ -213,42 +192,127 @@ class FloatVitualTouchBar// 获取应用的Context
             }
 
             override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
-                // 如果第一个触点事件的X坐标大于第二个触点事件的X坐标超过FLIP_DISTANCE
-                // 也就是手势从右向左滑
-                if (e1!!.getX() - e2!!.getX() > FLIP_DISTANCE) {
-                    if (reversalLayout) {
-                        performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
+                if (touchLayout == 2) {
+                    performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_HOME)
+                } else {
+                    // 如果第一个触点事件的X坐标大于第二个触点事件的X坐标超过FLIP_DISTANCE
+                    // 也就是手势从右向左滑
+                    if (e1!!.getX() - e2!!.getX() > FLIP_DISTANCE) {
+                        if (touchLayout == 1) {
+                            performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
+                        } else if (touchLayout == 0) {
+                            performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
+                        }
+                    }
+                    // 如果第二个触点事件的X坐标大于第一个触点事件的X坐标超过FLIP_DISTANCE
+                    // 也就是手势从右向左滑
+                    else if (e2.getX() - e1.getX() > FLIP_DISTANCE) {
+                        if (touchLayout == 1) {
+                            performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
+                        } else {
+                            performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
+                        }
+                    } else if (e1.getY() - e2.getY() > FLIP_DISTANCE) {
+                        val bw = bar.width
+                        var event = AccessibilityService.GLOBAL_ACTION_HOME
+                        if (e1.getX() < bw * 0.33 && e1.getX() < bw * 0.33) {
+                            if (touchLayout == 1) {
+                                event = AccessibilityService.GLOBAL_ACTION_RECENTS
+                            } else {
+                                event = AccessibilityService.GLOBAL_ACTION_BACK
+                            }
+                        } else if (e1.getX() > bw * 0.7 && e1.getX() > bw * 0.7) {
+                            if (touchLayout == 1) {
+                                event = AccessibilityService.GLOBAL_ACTION_BACK
+                            } else {
+                                event = AccessibilityService.GLOBAL_ACTION_RECENTS
+                            }
+                        }
+                        performGlobalAction(context, event)
                     } else {
-                        performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
+                        return false;
                     }
                 }
-                // 如果第二个触点事件的X坐标大于第一个触点事件的X坐标超过FLIP_DISTANCE
+                return false;
+            }
+        })
+        bar.setOnTouchListener { v, event ->
+            gust.onTouchEvent(event)
+        }
+
+        val params = WindowManager.LayoutParams()
+
+        // 类型
+        params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
+        // 设置window type
+        //params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//6.0+
+            params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+        } else {
+            params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
+        }
+
+        params.format = PixelFormat.TRANSLUCENT
+
+        params.width = LayoutParams.MATCH_PARENT
+        params.height = dp2px(context, 8f)
+
+        params.gravity = Gravity.BOTTOM
+        params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE or LayoutParams.FLAG_FULLSCREEN or LayoutParams.FLAG_LAYOUT_IN_SCREEN or LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        // WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        // LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE or FLAG_NOT_TOUCHABLE
+
+        val navHeight = getNavBarHeight(mContext!!)
+        if (navHeight > 0) {
+            /*
+                val display = mWindowManager!!.getDefaultDisplay()
+                val p = Point()
+                display.getRealSize(p)
+                params.y = -navHeight
+                params.x = 0
+            */
+            if (touchLayout == 2) {
+                KeepShellPublic.doCmdSync("wm overscan 0,0,0,-" + navHeight)
+            }
+        } else {
+        }
+        mWindowManager!!.addView(view, params)
+
+        return view
+    }
+
+    private fun setLeftView(context: AccessibilityService): View {
+        val view = LayoutInflater.from(context).inflate(R.layout.fw_vitual_touch_bar, null)
+
+        val bar = view.findViewById<LinearLayout>(R.id.bottom_touch_bar)
+        val gust = GestureDetector(context, object : GestureDetector.OnGestureListener {
+            // 定义手势动作亮点之间的最小距离
+            val FLIP_DISTANCE = dp2px(context, 70f)
+
+            override fun onLongPress(e: MotionEvent?) {
+                if (e != null) {
+                    performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
+                }
+            }
+            override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
+                return false
+            }
+            override fun onDown(e: MotionEvent?): Boolean {
+                return false
+            }
+
+            override fun onSingleTapUp(e: MotionEvent?): Boolean {
+                return false
+            }
+
+            override fun onShowPress(e: MotionEvent?) {
+            }
+
+            override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
+                // 如果第一个触点事件的X坐标大于第二个触点事件的X坐标超过FLIP_DISTANCE
                 // 也就是手势从右向左滑
-                else if (e2.getX() - e1.getX() > FLIP_DISTANCE) {
-                    if (reversalLayout) {
-                        performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
-                    } else {
-                        performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
-                    }
-                } else if (e1.getY() - e2.getY() > 5) {
-                    val bw = bar.width
-                    var event = AccessibilityService.GLOBAL_ACTION_HOME
-                    if (e1.getX() < bw * 0.33 && e1.getX() < bw * 0.33) {
-                        if (reversalLayout) {
-                            event = AccessibilityService.GLOBAL_ACTION_RECENTS
-                        } else {
-                            event = AccessibilityService.GLOBAL_ACTION_BACK
-                        }
-                    } else if (e1.getX() > bw * 0.7 && e1.getX() > bw * 0.7) {
-                        if (reversalLayout) {
-                            event = AccessibilityService.GLOBAL_ACTION_BACK
-                        } else {
-                            event = AccessibilityService.GLOBAL_ACTION_RECENTS
-                        }
-                    }
-                    performGlobalAction(context, event)
-                } else {
-                    return false;
+                if (e2!!.getX() - e1!!.getX() > FLIP_DISTANCE) {
+                    performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
                 }
                 //return true;
                 return false;
@@ -257,6 +321,98 @@ class FloatVitualTouchBar// 获取应用的Context
         bar.setOnTouchListener { v, event ->
             gust.onTouchEvent(event)
         }
+
+        val params = WindowManager.LayoutParams()
+
+        // 类型
+        params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
+        // 设置window type
+        //params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//6.0+
+            params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+        } else {
+            params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
+        }
+
+        params.format = PixelFormat.TRANSLUCENT
+
+        params.width = dp2px(context, 12f)
+        params.height = (context.resources.displayMetrics.widthPixels * 1.2).toInt()
+
+        params.gravity = Gravity.START or Gravity.BOTTOM
+        params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE or LayoutParams.FLAG_FULLSCREEN or LayoutParams.FLAG_LAYOUT_IN_SCREEN or LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        // WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        // LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE or FLAG_NOT_TOUCHABLE
+
+        mWindowManager!!.addView(view, params)
+
+        return view
+    }
+
+    private fun setRightView(context: AccessibilityService): View {
+        val view = LayoutInflater.from(context).inflate(R.layout.fw_vitual_touch_bar, null)
+
+        val bar = view.findViewById<LinearLayout>(R.id.bottom_touch_bar)
+        val gust = GestureDetector(context, object : GestureDetector.OnGestureListener {
+            // 定义手势动作亮点之间的最小距离
+            val FLIP_DISTANCE = dp2px(context, 70f)
+
+            override fun onLongPress(e: MotionEvent?) {
+                if (e != null) {
+                    performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
+                }
+            }
+
+            override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
+                return false
+            }
+
+            override fun onDown(e: MotionEvent?): Boolean {
+                return false
+            }
+
+            override fun onSingleTapUp(e: MotionEvent?): Boolean {
+                return false
+            }
+
+            override fun onShowPress(e: MotionEvent?) {
+            }
+
+            override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
+                if (e1!!.x - e2!!.x > FLIP_DISTANCE) {
+                    performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
+                    // performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
+                }
+                return false;
+            }
+        })
+        bar.setOnTouchListener { v, event ->
+            gust.onTouchEvent(event)
+        }
+
+        val params = WindowManager.LayoutParams()
+
+        // 类型
+        params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
+        // 设置window type
+        //params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//6.0+
+            params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+        } else {
+            params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
+        }
+
+        params.format = PixelFormat.TRANSLUCENT
+
+        params.width = dp2px(context, 12f)
+        params.height = (context.resources.displayMetrics.widthPixels * 1.2).toInt()
+
+        params.gravity = Gravity.END or Gravity.BOTTOM
+        params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE or LayoutParams.FLAG_FULLSCREEN or LayoutParams.FLAG_LAYOUT_IN_SCREEN or LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        // WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
+        // LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE or FLAG_NOT_TOUCHABLE
+
+        mWindowManager!!.addView(view, params)
 
         return view
     }
@@ -267,13 +423,12 @@ class FloatVitualTouchBar// 获取应用的Context
     }
 
     init {
-        sharedPreferences = context.getSharedPreferences(SpfConfig.KEY_EVENT_ONTHER_CONFIG_SPF, Context.MODE_PRIVATE)
-        reversalLayout = sharedPreferences!!.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_MAP, false)
+        touchLayout = sharedPreferences!!.getInt(SpfConfig.CONFIG_SPF_TOUCH_BAR_MAP, 0)
         sharedPreferences!!.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
             if (key == SpfConfig.CONFIG_SPF_TOUCH_BAR_MAP) {
-                reversalLayout = sharedPreferences!!.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_MAP, false)
+                touchLayout = sharedPreferences!!.getInt(SpfConfig.CONFIG_SPF_TOUCH_BAR_MAP, 0)
             } else if (key == SpfConfig.CONFIG_SPF_TOUCH_BAR) {
-                if (!sharedPreferences!!.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR, false)) {
+                if (sharedPreferences!!.getInt(SpfConfig.CONFIG_SPF_TOUCH_BAR_MAP, 0) == 0) {
                     hidePopupWindow()
                 } else {
                     showPopupWindow()

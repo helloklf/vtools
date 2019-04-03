@@ -134,13 +134,13 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
                 spfOther.edit().putBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR, isChecked).commit()
             }
         }
-        key_event_vitual_touch_bar_map.setSelection(if (spfOther.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_MAP, false)) 1 else 0)
+        key_event_vitual_touch_bar_map.setSelection(spfOther.getInt(SpfConfig.CONFIG_SPF_TOUCH_BAR_MAP, 0))
         key_event_vitual_touch_bar_map.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                spfOther.edit().putBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_MAP, key_event_vitual_touch_bar_map.selectedItemPosition == 1).commit()
+                spfOther.edit().putInt(SpfConfig.CONFIG_SPF_TOUCH_BAR_MAP, key_event_vitual_touch_bar_map.selectedItemPosition).commit()
             }
         }
         key_event_vitual_touch_bar_vibrator.isChecked = spfOther.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_VIBRATOR, false)

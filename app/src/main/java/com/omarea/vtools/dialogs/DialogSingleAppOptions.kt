@@ -97,7 +97,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                                 "在应用商店查看"), { _, which ->
                     when (which) {
                         0 -> deleteAll()
-                        1 -> uninstallKeepDataAll()
+                        1 -> hideAll()
                         2 -> clearAll()
                         3 -> trimCachesAll()
                         4 -> toggleEnable()

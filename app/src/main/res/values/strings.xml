@@ -282,6 +282,7 @@
     <string-array name="vitual_touch_bar_map">
         <item>返回-首页-任务</item>
         <item>任务-首页-返回</item>
+        <item>全面屏手势</item>
     </string-array>
     <string name="title_activity_file_selector">请选择文件</string>
     <string name="config_save_fail">配置保存失败！</string>

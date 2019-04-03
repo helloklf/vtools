@@ -83,11 +83,16 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
+        <!--
         <service
             android:name=".AccessibilityServiceSceneKeyEvent"
             android:label="Scene - 按键辅助"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
-            android:process=":keyevent">
+            android:process=":keyevent">-->
+        <service
+            android:name=".AccessibilityServiceSceneKeyEvent"
+            android:label="Scene - 按键辅助"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <category android:name="android.intent.category.LAUNCHER" />
 

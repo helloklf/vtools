@@ -12,22 +12,33 @@ import com.omarea.shell.AsynSuShellUnit
 
 class MonitorService : Service() {
     var serviceHelper: ServiceHelper2? = null
+    var task: AsynSuShellUnit? = null
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (serviceHelper == null) {
-            AsynSuShellUnit(object : Handler() {
+            task = AsynSuShellUnit(object : Handler() {
                 override fun handleMessage(msg: Message?) {
                     super.handleMessage(msg)
                     if (msg != null && msg.what == 1) {
                         onOutput(msg.obj.toString())
                     }
                 }
-            }).exec(if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) "am monitor" else "cmd activity monitor").waitFor(Runnable {
+            })
+            task!!.exec(if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) "am monitor" else "cmd activity monitor")
+            task!!.waitFor(Runnable {
                 stopSelf()
             })
             serviceHelper = ServiceHelper2(this)
             Toast.makeText(this, "试验阶段的动态响应实现方案，如果出现问题，请换回经典方案（激活Scene的辅助服务）", Toast.LENGTH_LONG).show()
         }
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    override fun onDestroy() {
+        if (task != null) {
+            task!!.destroy()
+            task = null
+        }
+        super.onDestroy()
     }
 
     override fun onBind(intent: Intent): IBinder {

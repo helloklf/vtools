@@ -4,25 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?colorAccent"
+    android:backgroundTintMode="screen"
+    android:clipToPadding="true"
+    android:fitsSystemWindows="false"
     tools:context=".activitys.StartSplashActivity">
 
-    <!-- The primary full-screen view. This can be replaced with whatever view
-         is needed to present your contentv e.g. VideoView, SurfaceView,
-         TextureView, etc. -->
-    <!--<com.jaredrummler.android.widget.AnimatedSvgView
-        android:id="@+id/animated_svg_view"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="25dp"
-        app:animatedSvgFillColors="@array/google_glyph_colors"
-        app:animatedSvgGlyphStrings="@array/google_glyph_strings"
-        app:animatedSvgFillStart="1200"
-        app:animatedSvgFillTime="1000"
-        app:animatedSvgImageSizeX="400"
-        app:animatedSvgImageSizeY="400"
-        app:animatedSvgTraceTime="2000"
-        app:animatedSvgTraceTimePerGlyph="1000"/>-->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -52,8 +38,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="40sp"
             android:layout_marginTop="15sp"
+            android:layout_marginBottom="40sp"
             android:text="现在，先校验一些权限设置..."
             android:textAlignment="center"
             android:textColor="#aaffffff"
