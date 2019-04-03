@@ -3,7 +3,7 @@
     android:accessibilityEventTypes="typeWindowStateChanged"
     android:accessibilityFeedbackType="feedbackGeneric"
     android:accessibilityFlags="flagRetrieveInteractiveWindows|flagReportViewIds|flagRequestAccessibilityButton"
-    android:canRequestEnhancedWebAccessibility="true"
+    android:canRequestEnhancedWebAccessibility="false"
     android:canRequestFilterKeyEvents="true"
     android:canRequestTouchExplorationMode="false"
     android:canRetrieveWindowContent="true"
