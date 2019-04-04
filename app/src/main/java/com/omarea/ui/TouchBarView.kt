@@ -54,6 +54,7 @@ public class TouchBarView: View {
         this.orientation = orientation
     }
 
+    // 动画（触摸效果）显示期间，将悬浮窗显示调大，以便显示完整的动效
     private fun setSizeOnTouch() {
         if (bakHeight > 0 || bakWidth > 0) {
             val  lp = this.layoutParams
@@ -63,11 +64,15 @@ public class TouchBarView: View {
             } else if (orientation == LEFT || orientation == RIGHT) {
                 lp.width = effectSize.toInt() * 2
                 lp.height = this.height + 200
+
+                // 由于调整触摸条的高度，导致touchStartY的相对位置改变，因此 这里也要对touchStartY进行修改
+                touchStartY += 200
             }
             this.layoutParams = lp
         }
     }
 
+    // 动画结束后缩小悬浮窗，以免影响正常操作
     private fun resumeBackupSize () {
         val  lp = this.layoutParams
         lp.width = bakWidth
@@ -99,11 +104,11 @@ public class TouchBarView: View {
             Log.d("TouchBarView", "x:" + event.x + "  y:" + event.y)
             when {
                 event.action == MotionEvent.ACTION_DOWN -> {
-                    setSizeOnTouch()
                     touchStartX = event.x
                     touchStartY = event.y
                     startTime = System.currentTimeMillis()
                     currentX = dp2px(context, 5f).toFloat()
+                    setSizeOnTouch()
                     invalidate()
                     cgangePer(effectSize)
                 }
@@ -197,20 +202,56 @@ public class TouchBarView: View {
         // 纵向触摸条
         if (orientation == LEFT) {
             if (touchStartY > 0) {
-                val path2 = Path()
-                path2.moveTo(0f, touchStartY) //设置Path的起点
-                path2.quadTo(currentX, touchStartY + 200f, 0f, touchStartY + 400f) //设置贝塞尔曲线的控制点坐标和终点坐标
-                canvas.drawPath(path2, p)//画出贝塞尔曲线
+                val path = Path()
+                val graphHeight = - currentX
+                val graphWidth = 200
+                val centerX = - graphHeight
+                val centerY = touchStartY // height / 2
+                val cushion = 500 // 左右两端的缓冲宽度（数值越大则约缓和）
+
+                path.moveTo((centerX + graphHeight), (centerY - cushion))
+                path.moveTo((centerX + graphHeight), (centerY - cushion))
+                path.quadTo((centerX + graphHeight * 2), (centerY - graphWidth), centerX, (centerY - graphWidth / 2)) // 左侧平缓弧线
+                path.quadTo((centerX - graphHeight * 2), centerY, centerX, (centerY + graphWidth / 2)) // 顶部圆拱
+                path.quadTo((centerX + graphHeight * 2), (centerY + graphWidth), (centerX + graphHeight), (centerY + cushion)) // 右侧平缓弧线
+
+                canvas.drawPath(path, p)
+
+                if (currentX > 30) {
+                    canvas.drawBitmap(
+                            BitmapFactory.decodeResource(context.getResources(), if (isLongTime()) R.drawable.touch_tasks else R.drawable.touch_arrow_right),
+                            null,
+                            RectF(10f, centerY - 30f, 70f, centerY + 30f),
+                            Paint())
+                }
             }
             else {
                 resumeBackupSize()
             }
         } else if (orientation == RIGHT) {
             if (touchStartY > 0) {
-                val path2 = Path()
-                path2.moveTo(this.width.toFloat(), touchStartY) //设置Path的起点
-                path2.quadTo(this.width - currentX, touchStartY + 200f, this.width.toFloat(), touchStartY + 400f) //设置贝塞尔曲线的控制点坐标和终点坐标
-                canvas.drawPath(path2, p)//画出贝塞尔曲线
+                val path = Path()
+                val graphHeight = currentX
+                val graphWidth = 200
+                val centerX = width - graphHeight
+                val centerY = touchStartY // height / 2
+                val cushion = 500 // 左右两端的缓冲宽度（数值越大则约缓和）
+
+                path.moveTo((centerX + graphHeight), (centerY - cushion))
+                path.moveTo((centerX + graphHeight), (centerY - cushion))
+                path.quadTo((centerX + graphHeight * 2), (centerY - graphWidth), centerX, (centerY - graphWidth / 2)) // 左侧平缓弧线
+                path.quadTo((centerX - graphHeight * 2), centerY, centerX, (centerY + graphWidth / 2)) // 顶部圆拱
+                path.quadTo((centerX + graphHeight * 2), (centerY + graphWidth), (centerX + graphHeight), (centerY + cushion)) // 右侧平缓弧线
+
+                canvas.drawPath(path, p)
+
+                if (currentX > 30) {
+                    canvas.drawBitmap(
+                        BitmapFactory.decodeResource(context.getResources(), if (isLongTime()) R.drawable.touch_tasks else R.drawable.touch_arrow_left),
+                        null,
+                        RectF(10f, centerY - 30f, 70f, centerY + 30f),
+                        Paint())
+                }
             }
             else {
                 resumeBackupSize()
@@ -237,7 +278,7 @@ public class TouchBarView: View {
                     canvas.drawBitmap(
                         BitmapFactory.decodeResource(context.getResources(), if (isLongTime()) R.drawable.touch_tasks else R.drawable.touch_home),
                         null,
-                        RectF(centerX - 30f, 10f, touchStartX + 30f, 70f),
+                        RectF(centerX - 30f, 10f, centerX + 30f, 70f),
                         Paint())
                 }
             } else {
