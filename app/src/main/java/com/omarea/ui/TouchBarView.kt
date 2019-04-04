@@ -44,11 +44,13 @@ public class TouchBarView : View {
     private var touchStartY = 0F
     private var touchCurrentX = 0F
     private var touchCurrentY = 0F
-    private var startTime = 0L // 开始触摸的时间
+    private var gestureStartTime = 0L // 手势开始时间（是指滑动到一定距离，认定触摸手势生效的时间）
     private val FLIP_DISTANCE = dp2px(context, 50f) // 触摸灵敏度（滑动多长距离认为是手势）
-    private val effectSize = dp2px(context, 14f).toFloat() // 特效大小
-    private val effectWidth = effectSize * 5 // 特效大小
-    val cushion = effectWidth * 3 // 左右两端的缓冲宽度（数值越大则约缓和）
+    private val effectSize = dp2px(context, 15f).toFloat() // 特效大小
+    private val effectWidth = effectSize * 6 // 特效大小
+    val cushion = effectWidth + effectWidth * 1.4f // 左右两端的缓冲宽度（数值越大则约缓和）
+    val longTouchTime = 250L
+    private var isTouchDown = false
 
     private var currentGraphSize = 0f
     private var vibrator: Vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
@@ -111,11 +113,12 @@ public class TouchBarView : View {
             invalidate()
         }
         va.start()
+        va.cancel()
     }
 
 
     private fun isLongTime(): Boolean {
-        return startTime > 0 && System.currentTimeMillis() - startTime > 250
+        return gestureStartTime > 0 && System.currentTimeMillis() - gestureStartTime > longTouchTime
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -124,9 +127,10 @@ public class TouchBarView : View {
             Log.d("TouchBarView", "x:" + event.x + "  y:" + event.y)
             when {
                 event.action == MotionEvent.ACTION_DOWN -> {
+                    isTouchDown = true
                     touchStartX = event.x
                     touchStartY = event.y
-                    startTime = 0
+                    gestureStartTime = 0
                     currentGraphSize = dp2px(context, 5f).toFloat()
                     setSizeOnTouch()
                     invalidate()
@@ -155,8 +159,14 @@ public class TouchBarView : View {
                     if (a - b > FLIP_DISTANCE) {
                         Log.d("TouchBarView 成功", "x:" + event.x + "  y:" + event.y)
                         currentGraphSize = effectSize
-                        if (startTime < 1) {
-                            startTime = System.currentTimeMillis()
+                        if (gestureStartTime < 1) {
+                            val currentTime = System.currentTimeMillis()
+                            gestureStartTime = currentTime
+                            postDelayed({
+                                if (currentTime == gestureStartTime) {
+                                    invalidate()
+                                }
+                            }, longTouchTime)
                         } else if (vibratorRun && isLongTime()) {
                             touchVibrator()
                             vibratorRun = false
@@ -164,13 +174,17 @@ public class TouchBarView : View {
                         invalidate()
                     } else {
                         vibratorRun = true
-                        startTime = 0
+                        gestureStartTime = 0
                         currentGraphSize = (a - b) / FLIP_DISTANCE * effectSize
                         invalidate()
                         Log.d("TouchBarView 移动", "x:" + event.x + "  y:" + event.y)
                     }
                 }
                 event.action == MotionEvent.ACTION_UP -> {
+                    if (!isTouchDown) {
+                        return false
+                    }
+                    isTouchDown = false
                     if (orientation == LEFT) {
                         if (event.y - touchStartY > FLIP_DISTANCE * 2) {
                             // 下滑打开通知栏
@@ -188,14 +202,17 @@ public class TouchBarView : View {
                                 performClick()
                             }
                         }
-                    } else if (orientation == RIGHT) {
+                    }
+                    else if (orientation == RIGHT) {
                         if (event.y - touchStartY > FLIP_DISTANCE * 2) {
                             // 下滑打开通知栏
                             // performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS)
-                        } else if (touchStartY - event.y > FLIP_DISTANCE * 2) {
+                        }
+                        else if (touchStartY - event.y > FLIP_DISTANCE * 2) {
                             // 上滑打开最近任务
                             // performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
-                        } else if (touchStartX - event.x > FLIP_DISTANCE) {
+                        }
+                        else if (touchStartX - event.x > FLIP_DISTANCE) {
                             // 向屏幕内侧滑动 - 停顿250ms 打开最近任务，不停顿则“返回”
                             if (isLongTime()) {
                                 // performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
@@ -205,7 +222,8 @@ public class TouchBarView : View {
                                 performClick()
                             }
                         }
-                    } else if (orientation == BOTTOM) {
+                    }
+                    else if (orientation == BOTTOM) {
                         if (touchStartY - event.y > FLIP_DISTANCE) {
                             if (isLongTime()) {
                                 performLongClick()
@@ -236,6 +254,8 @@ public class TouchBarView : View {
         touchStartX = 0f
         touchStartY = 0f
         currentGraphSize = 0f
+        gestureStartTime = 0
+        // resumeBackupSize()
         invalidate()
     }
 
@@ -243,24 +263,27 @@ public class TouchBarView : View {
      * 计算手势中的图标显示位置
      */
     private fun getEffectIconRectF(centerX: Float, centerY: Float): RectF {
-        val iconRadius = 25f
+        val iconRadius = 20f
         return RectF(centerX - iconRadius, centerY - iconRadius, centerX + iconRadius, centerY + iconRadius)
     }
 
     @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
+        if (!isTouchDown) {
+            resumeBackupSize()
+            return
+        }
 
-        if (this.bakWidth == 0 || this.bakHeight == 0) {
-            this.bakWidth = this.width
-            this.bakHeight = this.height
+        if (currentGraphSize < 10) {
+            return
         }
 
         val p = Paint()
         p.isAntiAlias = true
         p.style = Paint.Style.FILL
         p.color = 0x101010
-        p.alpha = 200
+        p.alpha = 240
 
         // 纵向触摸条
         if (orientation == LEFT) {
@@ -273,7 +296,7 @@ public class TouchBarView : View {
 
                 path.moveTo((centerX + graphHeight), (centerY - cushion))
                 path.quadTo((centerX + graphHeight * 2), (centerY - graphWidth), centerX, (centerY - graphWidth / 2)) // 左侧平缓弧线
-                path.quadTo((centerX - graphHeight * 2), centerY, centerX, (centerY + graphWidth / 2)) // 顶部圆拱
+                path.quadTo((centerX - graphHeight * 2.4f), centerY, centerX, (centerY + graphWidth / 2)) // 顶部圆拱
                 path.quadTo((centerX + graphHeight * 2), (centerY + graphWidth), (centerX + graphHeight), (centerY + cushion)) // 右侧平缓弧线
 
                 canvas.drawPath(path, p)
@@ -285,8 +308,6 @@ public class TouchBarView : View {
                             getEffectIconRectF(centerX, centerY),
                             p)
                 }
-            } else {
-                resumeBackupSize()
             }
         } else if (orientation == RIGHT) {
             if (touchStartY > 0) {
@@ -298,7 +319,7 @@ public class TouchBarView : View {
 
                 path.moveTo((centerX + graphHeight), (centerY - cushion))
                 path.quadTo((centerX + graphHeight * 2), (centerY - graphWidth), centerX, (centerY - graphWidth / 2)) // 左侧平缓弧线
-                path.quadTo((centerX - graphHeight * 2), centerY, centerX, (centerY + graphWidth / 2)) // 顶部圆拱
+                path.quadTo((centerX - graphHeight * 2.4f), centerY, centerX, (centerY + graphWidth / 2)) // 顶部圆拱
                 path.quadTo((centerX + graphHeight * 2), (centerY + graphWidth), (centerX + graphHeight), (centerY + cushion)) // 右侧平缓弧线
 
                 canvas.drawPath(path, p)
@@ -310,8 +331,6 @@ public class TouchBarView : View {
                             getEffectIconRectF(centerX, centerY),
                             p)
                 }
-            } else {
-                resumeBackupSize()
             }
         }
         // 横向触摸条
@@ -325,7 +344,7 @@ public class TouchBarView : View {
 
                 path.moveTo((centerX - cushion), (centerY + graphHeight)) //贝赛尔的起始点moveTo(x,y)
                 path.quadTo((centerX - graphWidth), (centerY + graphHeight * 2), (centerX - graphWidth / 2), centerY) // 左侧平缓弧线
-                path.quadTo(centerX, (centerY - graphHeight * 2), (centerX + graphWidth / 2), centerY) // 顶部圆拱
+                path.quadTo(centerX, (centerY - graphHeight * 2.5f), (centerX + graphWidth / 2), centerY) // 顶部圆拱
                 path.quadTo((centerX + graphWidth), (centerY + graphHeight * 2), (centerX + cushion), (centerY + graphHeight)) // 右侧平缓弧线
 
                 canvas.drawPath(path, p)
@@ -337,8 +356,6 @@ public class TouchBarView : View {
                             getEffectIconRectF(centerX, centerY),
                             p)
                 }
-            } else {
-                resumeBackupSize()
             }
         }
     }
