@@ -1,14 +1,14 @@
 package com.omarea.ui
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.Path
+import android.graphics.*
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import com.omarea.vtools.R
 
 public class TouchBarView: View {
@@ -38,7 +38,7 @@ public class TouchBarView: View {
 
     private var touchStartX = 0F
     private var touchStartY = 0F
-    private val effectSize = dp2px(context, 35f).toFloat()
+    private val effectSize = dp2px(context, 12.5f).toFloat()
     private var startTime = 0L // 开始触摸的时间
     private val FLIP_DISTANCE = dp2px(context, 70f)
 
@@ -59,9 +59,9 @@ public class TouchBarView: View {
             val  lp = this.layoutParams
             if (orientation == BOTTOM) {
                 lp.width = -1
-                lp.height = height + effectSize.toInt()
+                lp.height = effectSize.toInt() * 2
             } else if (orientation == LEFT || orientation == RIGHT) {
-                lp.width = this.width + effectSize.toInt()
+                lp.width = effectSize.toInt() * 2
                 lp.height = this.height + 200
             }
             this.layoutParams = lp
@@ -76,6 +76,23 @@ public class TouchBarView: View {
     }
 
 
+    fun cgangePer(per: Float) {
+        val perOld = this.currentX
+        val va = ValueAnimator.ofFloat(perOld, per)
+        va.duration = 250
+        va.interpolator = DecelerateInterpolator()
+        va.addUpdateListener { animation ->
+            currentX = animation.animatedValue as Float
+            invalidate()
+        }
+        va.start()
+    }
+
+
+    private fun isLongTime (): Boolean {
+        return System.currentTimeMillis() - startTime > 250
+    }
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if (event != null) {
@@ -88,6 +105,7 @@ public class TouchBarView: View {
                     startTime = System.currentTimeMillis()
                     currentX = dp2px(context, 5f).toFloat()
                     invalidate()
+                    cgangePer(effectSize)
                 }
                 event.action == MotionEvent.ACTION_MOVE -> {
                     Log.d("TouchBarView 移动", "x:" + event.x + "  y:" + event.y)
@@ -102,7 +120,7 @@ public class TouchBarView: View {
                             // performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
                         } else if (event.x  - touchStartX > FLIP_DISTANCE) {
                             // 向屏幕内侧滑动 - 停顿250ms 打开最近任务，不停顿则“返回”
-                            if (System.currentTimeMillis() - startTime > 250) {
+                            if (isLongTime()) {
                                 // performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
                                 performLongClick()
                             } else {
@@ -119,7 +137,7 @@ public class TouchBarView: View {
                             // performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
                         } else if (touchStartX - event.x > FLIP_DISTANCE) {
                             // 向屏幕内侧滑动 - 停顿250ms 打开最近任务，不停顿则“返回”
-                            if (System.currentTimeMillis() - startTime > 250) {
+                            if (isLongTime()) {
                                 // performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
                                 performLongClick()
                             } else {
@@ -129,7 +147,7 @@ public class TouchBarView: View {
                         }
                     } else if (orientation == BOTTOM) {
                         if (touchStartY - event.y > FLIP_DISTANCE) {
-                            if (System.currentTimeMillis() - startTime > 250) {
+                            if (isLongTime()) {
                                 performLongClick()
                             } else {
                                 performClick()
@@ -170,51 +188,29 @@ public class TouchBarView: View {
             this.bakHeight = this.height
         }
 
+        val p = Paint()
+        p.isAntiAlias = true
+        p.style = Paint.Style.FILL
+        p.color = 0x000000
+        p.alpha = 200
+
         // 纵向触摸条
         if (orientation == LEFT) {
             if (touchStartY > 0) {
-                val p = Paint()
-                p.isAntiAlias = true
-                p.style = Paint.Style.FILL
-                p.color = 0x000000
-                p.alpha = 200
-
                 val path2 = Path()
                 path2.moveTo(0f, touchStartY) //设置Path的起点
                 path2.quadTo(currentX, touchStartY + 200f, 0f, touchStartY + 400f) //设置贝塞尔曲线的控制点坐标和终点坐标
                 canvas.drawPath(path2, p)//画出贝塞尔曲线
-
-                if (currentX < effectSize) {
-                    currentX += 3
-                    this.invalidate()
-                } else if (currentX > effectSize) {
-                    currentX = effectSize
-                    this.invalidate()
-                }
             }
             else {
                 resumeBackupSize()
             }
         } else if (orientation == RIGHT) {
             if (touchStartY > 0) {
-                val p = Paint()
-                p.isAntiAlias = true
-                p.style = Paint.Style.FILL
-                p.color = 0x000000
-                p.alpha = 200
-
                 val path2 = Path()
                 path2.moveTo(this.width.toFloat(), touchStartY) //设置Path的起点
                 path2.quadTo(this.width - currentX, touchStartY + 200f, this.width.toFloat(), touchStartY + 400f) //设置贝塞尔曲线的控制点坐标和终点坐标
                 canvas.drawPath(path2, p)//画出贝塞尔曲线
-
-                if (currentX < effectSize) {
-                    currentX += 3
-                    this.invalidate()
-                } else if (currentX > effectSize) {
-                    currentX = effectSize
-                    this.invalidate()
-                }
             }
             else {
                 resumeBackupSize()
@@ -223,23 +219,26 @@ public class TouchBarView: View {
         // 横向触摸条
         else {
             if (touchStartX > 0) {
-                val p = Paint()
-                p.isAntiAlias = true
-                p.style = Paint.Style.FILL
-                p.color = 0x000000
-                p.alpha = 200
+                val path = Path()
+                val graphHeight = currentX // 35
+                val graphWidth = 200
+                val centerX = touchStartX // width / 2
+                val centerY = height - graphHeight
+                val cushion = 500 // 左右两端的缓冲宽度（数值越大则约缓和）
 
-                val path2 = Path()
-                path2.moveTo(touchStartX - 200f, this.height.toFloat()) //设置Path的起点
-                path2.quadTo(touchStartX, this.height.toFloat() - currentX, touchStartX + 200f, this.height.toFloat()) //设置贝塞尔曲线的控制点坐标和终点坐标
-                canvas.drawPath(path2, p)//画出贝塞尔曲线
+                path.moveTo((centerX - cushion), (centerY + graphHeight)) //贝赛尔的起始点moveTo(x,y)
+                path.quadTo((centerX - graphWidth), (centerY + graphHeight * 2), (centerX - graphWidth / 2), centerY) // 左侧平缓弧线
+                path.quadTo(centerX, (centerY - graphHeight * 2), (centerX + graphWidth / 2), centerY) // 顶部圆拱
+                path.quadTo((centerX + graphWidth), (centerY + graphHeight * 2), (centerX + cushion), (centerY + graphHeight)) // 右侧平缓弧线
 
-                if (currentX < effectSize) {
-                    currentX += 3
-                    this.invalidate()
-                } else if (currentX > effectSize) {
-                    currentX = effectSize
-                    this.invalidate()
+                canvas.drawPath(path, p)
+
+                if (currentX > 30) {
+                    canvas.drawBitmap(
+                        BitmapFactory.decodeResource(context.getResources(), if (isLongTime()) R.drawable.touch_tasks else R.drawable.touch_home),
+                        null,
+                        RectF(centerX - 30f, 10f, touchStartX + 30f, 70f),
+                        Paint())
                 }
             } else {
                 resumeBackupSize()
