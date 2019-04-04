@@ -186,13 +186,13 @@ public class TouchBarView : View {
                     }
                     isTouchDown = false
                     if (orientation == LEFT) {
-                        if (event.y - touchStartY > FLIP_DISTANCE * 2) {
+                        /*if (event.y - touchStartY > FLIP_DISTANCE * 2) {
                             // 下滑打开通知栏
                             // performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS)
                         } else if (touchStartY - event.y > FLIP_DISTANCE * 2) {
                             // 上滑打开最近任务
                             // performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
-                        } else if (event.x - touchStartX > FLIP_DISTANCE) {
+                        } else */ if (event.x - touchStartX > FLIP_DISTANCE) {
                             // 向屏幕内侧滑动 - 停顿250ms 打开最近任务，不停顿则“返回”
                             if (isLongTime()) {
                                 // performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
@@ -204,7 +204,7 @@ public class TouchBarView : View {
                         }
                     }
                     else if (orientation == RIGHT) {
-                        if (event.y - touchStartY > FLIP_DISTANCE * 2) {
+                        /* if (event.y - touchStartY > FLIP_DISTANCE * 2) {
                             // 下滑打开通知栏
                             // performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS)
                         }
@@ -212,7 +212,7 @@ public class TouchBarView : View {
                             // 上滑打开最近任务
                             // performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
                         }
-                        else if (touchStartX - event.x > FLIP_DISTANCE) {
+                        else */ if (touchStartX - event.x > FLIP_DISTANCE) {
                             // 向屏幕内侧滑动 - 停顿250ms 打开最近任务，不停顿则“返回”
                             if (isLongTime()) {
                                 // performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
