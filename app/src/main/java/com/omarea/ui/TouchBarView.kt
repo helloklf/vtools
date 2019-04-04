@@ -236,7 +236,7 @@ public class TouchBarView : View {
                 }
             }
         }
-        return super.onTouchEvent(event)
+        return true
     }
 
     /**
