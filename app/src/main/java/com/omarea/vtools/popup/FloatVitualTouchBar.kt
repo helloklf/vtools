@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Context.VIBRATOR_SERVICE
 import android.content.SharedPreferences
 import android.graphics.PixelFormat
-import android.graphics.Point
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -14,12 +13,10 @@ import android.provider.Settings
 import android.util.Log
 import android.view.*
 import android.view.WindowManager.LayoutParams
-import android.widget.LinearLayout
 import android.widget.Toast
 import com.omarea.shared.SpfConfig
-import com.omarea.shell.KeepShellPublic
+import com.omarea.ui.TouchBarView
 import com.omarea.vtools.R
-import java.lang.Exception
 
 /**
  * 弹窗辅助类
@@ -73,6 +70,7 @@ class FloatVitualTouchBar(context: AccessibilityService) {
             }
         } catch (ex: Exception) {
             Log.d("异常", ex.message)
+            Toast.makeText(mContext, "启动虚拟导航手势失败！", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -142,122 +140,133 @@ class FloatVitualTouchBar(context: AccessibilityService) {
     private fun setBottomView(context: AccessibilityService): View {
         val view = LayoutInflater.from(context).inflate(R.layout.fw_vitual_touch_bar, null)
 
-        val bar = view.findViewById<LinearLayout>(R.id.bottom_touch_bar)
-        val gust = GestureDetector(context, object : GestureDetector.OnGestureListener {
+        val bar = view.findViewById<TouchBarView>(R.id.bottom_touch_bar)
 
-            override fun onLongPress(e: MotionEvent?) {
-                if (touchLayout != 2) {
-                    if (e != null) {
-                        if (e.getX() < bar.width * 0.33) {
-                        } else if (e.getX() > bar.width * 0.67) {
-                        } else {
-                            performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS)
-                        }
-                    }
-                }
+        if (touchLayout == 2) {
+            bar.setOnClickListener {
+                performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_HOME)
             }
-
-            override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
-                return false
+            bar.setOnLongClickListener {
+                performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
+                return@setOnLongClickListener false
             }
+            bar.setSize(LayoutParams.MATCH_PARENT, dp2px(context, 12f), TouchBarView.BOTTOM)
+        } else {
+            val gust = GestureDetector(context, object : GestureDetector.OnGestureListener {
 
-            override fun onDown(e: MotionEvent?): Boolean {
-                return false
-            }
-
-            override fun onSingleTapUp(e: MotionEvent?): Boolean {
-                if (e != null && allowTap) {
+                override fun onLongPress(e: MotionEvent?) {
                     if (touchLayout != 2) {
-                        if (e.getX() < bar.width * 0.33) {
-                            if (touchLayout == 1) {
-                                performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
+                        if (e != null) {
+                            if (e.getX() < bar.width * 0.33) {
+                            } else if (e.getX() > bar.width * 0.67) {
                             } else {
-                                performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
+                                performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS)
                             }
-                        } else if (e.getX() > bar.width * 0.67) {
-                            if (touchLayout == 1) {
-                                performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
-                            } else {
-                                performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
-                            }
-                        } else {
-                            performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_HOME)
                         }
                     }
                 }
-                return false
-            }
 
-            override fun onShowPress(e: MotionEvent?) {
-            }
+                override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, distanceX: Float, distanceY: Float): Boolean {
+                    return false
+                }
 
-            override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
-                if (touchLayout == 2) {
-                } else {
-                    // 如果第一个触点事件的X坐标大于第二个触点事件的X坐标超过FLIP_DISTANCE
-                    // 也就是手势从右向左滑
-                    if (e1!!.getX() - e2!!.getX() > FLIP_DISTANCE) {
-                        if (touchLayout == 1) {
-                            performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
-                        } else if (touchLayout == 0) {
-                            performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
+                override fun onDown(e: MotionEvent?): Boolean {
+                    return false
+                }
+
+                override fun onSingleTapUp(e: MotionEvent?): Boolean {
+                    if (e != null && allowTap) {
+                        if (touchLayout != 2) {
+                            if (e.getX() < bar.width * 0.33) {
+                                if (touchLayout == 1) {
+                                    performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
+                                } else {
+                                    performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
+                                }
+                            } else if (e.getX() > bar.width * 0.67) {
+                                if (touchLayout == 1) {
+                                    performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
+                                } else {
+                                    performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
+                                }
+                            } else {
+                                performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_HOME)
+                            }
                         }
                     }
-                    // 如果第二个触点事件的X坐标大于第一个触点事件的X坐标超过FLIP_DISTANCE
-                    // 也就是手势从右向左滑
-                    else if (e2.getX() - e1.getX() > FLIP_DISTANCE) {
-                        if (touchLayout == 1) {
-                            performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
-                        } else {
-                            performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
-                        }
-                    } else if (e1.getY() - e2.getY() > FLIP_DISTANCE) {
-                        val bw = bar.width
-                        var event = AccessibilityService.GLOBAL_ACTION_HOME
-                        if (e1.getX() < bw * 0.33 && e1.getX() < bw * 0.33) {
-                            if (touchLayout == 1) {
-                                event = AccessibilityService.GLOBAL_ACTION_RECENTS
-                            } else {
-                                event = AccessibilityService.GLOBAL_ACTION_BACK
-                            }
-                        } else if (e1.getX() > bw * 0.7 && e1.getX() > bw * 0.7) {
-                            if (touchLayout == 1) {
-                                event = AccessibilityService.GLOBAL_ACTION_BACK
-                            } else {
-                                event = AccessibilityService.GLOBAL_ACTION_RECENTS
-                            }
-                        }
-                        performGlobalAction(context, event)
+                    return false
+                }
+
+                override fun onShowPress(e: MotionEvent?) {
+                }
+
+                override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
+                    if (touchLayout == 2) {
                     } else {
-                        return false;
-                    }
-                }
-                return false;
-            }
-        })
-
-        var touchStartY = 0F // 触摸开始位置
-        var startTime = 0L // 开始触摸的时间
-
-        bar.setOnTouchListener { v, event ->
-            Log.d("onTouchEvent", "action:" + event.action.toString()  + "， x:" + event.x + "，y:" + event.y)
-            if (touchLayout == 2) {
-                if (event.action == MotionEvent.ACTION_DOWN) {
-                    touchStartY = event.y
-                    startTime = System.currentTimeMillis()
-                } else if (event.action == MotionEvent.ACTION_UP) {
-                    if (touchStartY - event.y > 200) {
-                        // 向屏幕内侧滑动 - 停顿300ms 打开最近任务，不停顿则“返回首页”
-                        if (System.currentTimeMillis() - startTime > 300) {
-                            performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
+                        // 如果第一个触点事件的X坐标大于第二个触点事件的X坐标超过FLIP_DISTANCE
+                        // 也就是手势从右向左滑
+                        if (e1!!.getX() - e2!!.getX() > FLIP_DISTANCE) {
+                            if (touchLayout == 1) {
+                                performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
+                            } else if (touchLayout == 0) {
+                                performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
+                            }
+                        }
+                        // 如果第二个触点事件的X坐标大于第一个触点事件的X坐标超过FLIP_DISTANCE
+                        // 也就是手势从右向左滑
+                        else if (e2.getX() - e1.getX() > FLIP_DISTANCE) {
+                            if (touchLayout == 1) {
+                                performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
+                            } else {
+                                performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
+                            }
+                        } else if (e1.getY() - e2.getY() > FLIP_DISTANCE) {
+                            val bw = bar.width
+                            var event = AccessibilityService.GLOBAL_ACTION_HOME
+                            if (e1.getX() < bw * 0.33 && e1.getX() < bw * 0.33) {
+                                if (touchLayout == 1) {
+                                    event = AccessibilityService.GLOBAL_ACTION_RECENTS
+                                } else {
+                                    event = AccessibilityService.GLOBAL_ACTION_BACK
+                                }
+                            } else if (e1.getX() > bw * 0.7 && e1.getX() > bw * 0.7) {
+                                if (touchLayout == 1) {
+                                    event = AccessibilityService.GLOBAL_ACTION_BACK
+                                } else {
+                                    event = AccessibilityService.GLOBAL_ACTION_RECENTS
+                                }
+                            }
+                            performGlobalAction(context, event)
                         } else {
-                            performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_HOME)
+                            return false;
                         }
                     }
+                    return false;
                 }
-                return@setOnTouchListener true
-            } else {
-                gust.onTouchEvent(event)
+            })
+
+            var touchStartY = 0F // 触摸开始位置
+            var startTime = 0L // 开始触摸的时间
+            bar.setOnTouchListener { v, event ->
+                Log.d("onTouchEvent", "action:" + event.action.toString()  + "， x:" + event.x + "，y:" + event.y)
+                if (touchLayout == 2) {
+                    if (event.action == MotionEvent.ACTION_DOWN) {
+                        touchStartY = event.y
+                        startTime = System.currentTimeMillis()
+                    } else if (event.action == MotionEvent.ACTION_UP) {
+                        if (touchStartY - event.y > 200) {
+                            // 向屏幕内侧滑动 - 停顿250ms 打开最近任务，不停顿则“返回首页”
+                            if (System.currentTimeMillis() - startTime > 250) {
+                                performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
+                            } else {
+                                performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_HOME)
+                            }
+                        }
+                    }
+                    return@setOnTouchListener true
+                } else {
+                    gust.onTouchEvent(event)
+                }
             }
         }
 
@@ -275,7 +284,7 @@ class FloatVitualTouchBar(context: AccessibilityService) {
 
         params.format = PixelFormat.TRANSLUCENT
         params.width = LayoutParams.MATCH_PARENT
-        params.height = dp2px(context, 8f)
+        params.height = LayoutParams.WRAP_CONTENT
         params.gravity = Gravity.BOTTOM
         params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE or LayoutParams.FLAG_LAYOUT_IN_SCREEN
         // WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
@@ -305,9 +314,19 @@ class FloatVitualTouchBar(context: AccessibilityService) {
     @SuppressLint("ClickableViewAccessibility")
     private fun setLeftView(context: AccessibilityService): View {
         val view = LayoutInflater.from(context).inflate(R.layout.fw_vitual_touch_bar, null)
+        val bar = view.findViewById<TouchBarView>(R.id.bottom_touch_bar)
 
-        val bar = view.findViewById<LinearLayout>(R.id.bottom_touch_bar)
+        bar.setOnLongClickListener{ _ ->
+            performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
+            return@setOnLongClickListener false
+        }
+        bar.setOnClickListener{ _ ->
+            performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
+            return@setOnClickListener
+        }
+        bar.setSize(dp2px(context, 12f), (context.resources.displayMetrics.widthPixels * 1.2).toInt(), TouchBarView.LEFT)
 
+        /*
         var touchStartY = 0F // 触摸开始位置
         var touchStartX = 0F // 触摸开始位置
         var startTime = 0L // 开始触摸的时间
@@ -318,6 +337,8 @@ class FloatVitualTouchBar(context: AccessibilityService) {
                 touchStartX = event.x
                 startTime = System.currentTimeMillis()
             } else if (event.action == MotionEvent.ACTION_UP) {
+                (v as TouchBarView ).cleartEffect()
+
                 if (event.y - touchStartY > FLIP_DISTANCE * 2) {
                     // 下滑打开通知栏
                     performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS)
@@ -325,8 +346,8 @@ class FloatVitualTouchBar(context: AccessibilityService) {
                     // 上滑打开最近任务
                     performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
                 } else if (event.x  - touchStartX > FLIP_DISTANCE) {
-                    // 向屏幕内侧滑动 - 停顿300ms 打开最近任务，不停顿则“返回”
-                    if (System.currentTimeMillis() - startTime > 300) {
+                    // 向屏幕内侧滑动 - 停顿250ms 打开最近任务，不停顿则“返回”
+                    if (System.currentTimeMillis() - startTime > 250) {
                         performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
                     } else {
                         performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
@@ -335,6 +356,7 @@ class FloatVitualTouchBar(context: AccessibilityService) {
             }
             return@setOnTouchListener true
         }
+        */
 
         val params = WindowManager.LayoutParams()
 
@@ -350,8 +372,8 @@ class FloatVitualTouchBar(context: AccessibilityService) {
 
         params.format = PixelFormat.TRANSLUCENT
 
-        params.width = dp2px(context, 12f)
-        params.height = (context.resources.displayMetrics.widthPixels * 1.2).toInt()
+        params.width = LayoutParams.WRAP_CONTENT
+        params.height = LayoutParams.WRAP_CONTENT
 
         params.gravity = Gravity.START or Gravity.BOTTOM
         params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE or LayoutParams.FLAG_FULLSCREEN or LayoutParams.FLAG_LAYOUT_IN_SCREEN or LayoutParams.FLAG_LAYOUT_NO_LIMITS
@@ -367,8 +389,20 @@ class FloatVitualTouchBar(context: AccessibilityService) {
     private fun setRightView(context: AccessibilityService): View {
         val view = LayoutInflater.from(context).inflate(R.layout.fw_vitual_touch_bar, null)
 
-        val bar = view.findViewById<LinearLayout>(R.id.bottom_touch_bar)
+        val bar = view.findViewById<TouchBarView>(R.id.bottom_touch_bar)
 
+        bar.setOnLongClickListener{ _ ->
+            performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
+            return@setOnLongClickListener false
+        }
+        bar.setOnClickListener{ _ ->
+            performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
+            return@setOnClickListener
+        }
+
+        bar.setSize(dp2px(context, 12f), (context.resources.displayMetrics.widthPixels * 1.2).toInt(), TouchBarView.RIGHT)
+
+        /*
         var touchStartY = 0F // 触摸开始位置
         var touchStartX = 0F // 触摸开始位置
         var startTime = 0L // 开始触摸的时间
@@ -380,6 +414,8 @@ class FloatVitualTouchBar(context: AccessibilityService) {
                 touchStartX = event.x
                 startTime = System.currentTimeMillis()
             } else if (event.action == MotionEvent.ACTION_UP) {
+                (v as TouchBarView ).cleartEffect()
+
                 if (event.y - touchStartY > FLIP_DISTANCE * 2) {
                     // 下滑打开通知栏
                     performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS)
@@ -387,8 +423,8 @@ class FloatVitualTouchBar(context: AccessibilityService) {
                     // 上滑打开最近任务
                     performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
                 } else if (touchStartX - event.x > FLIP_DISTANCE) {
-                    // 向屏幕内侧滑动 - 停顿300ms 打开最近任务，不停顿则“返回”
-                    if (System.currentTimeMillis() - startTime > 300) {
+                    // 向屏幕内侧滑动 - 停顿250ms 打开最近任务，不停顿则“返回”
+                    if (System.currentTimeMillis() - startTime > 250) {
                         performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
                     } else {
                         performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
@@ -397,6 +433,7 @@ class FloatVitualTouchBar(context: AccessibilityService) {
             }
             return@setOnTouchListener true
         }
+        */
 
         val params = WindowManager.LayoutParams()
 
@@ -412,8 +449,8 @@ class FloatVitualTouchBar(context: AccessibilityService) {
 
         params.format = PixelFormat.TRANSLUCENT
 
-        params.width = dp2px(context, 12f)
-        params.height = (context.resources.displayMetrics.widthPixels * 1.2).toInt()
+        params.width = LayoutParams.WRAP_CONTENT
+        params.height = LayoutParams.WRAP_CONTENT
 
         params.gravity = Gravity.END or Gravity.BOTTOM
         params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE or LayoutParams.FLAG_FULLSCREEN or LayoutParams.FLAG_LAYOUT_IN_SCREEN or LayoutParams.FLAG_LAYOUT_NO_LIMITS

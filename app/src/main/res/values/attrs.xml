@@ -7,4 +7,6 @@
         <attr name="total" format="integer" />
         <attr name="free" format="integer" />
     </declare-styleable>
+    <declare-styleable name="TouchBarView">
+    </declare-styleable>
 </resources>
