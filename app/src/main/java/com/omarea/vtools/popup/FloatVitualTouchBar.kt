@@ -324,7 +324,7 @@ class FloatVitualTouchBar(context: AccessibilityService) {
             performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
             return@setOnClickListener
         }
-        bar.setSize(dp2px(context, 12f), (context.resources.displayMetrics.widthPixels * 1.2).toInt(), TouchBarView.LEFT)
+        bar.setSize(dp2px(context, 12f), (context.resources.displayMetrics.heightPixels * 0.6).toInt(), TouchBarView.LEFT)
 
         /*
         var touchStartY = 0F // 触摸开始位置
@@ -400,7 +400,7 @@ class FloatVitualTouchBar(context: AccessibilityService) {
             return@setOnClickListener
         }
 
-        bar.setSize(dp2px(context, 12f), (context.resources.displayMetrics.widthPixels * 1.2).toInt(), TouchBarView.RIGHT)
+        bar.setSize(dp2px(context, 12f), (context.resources.displayMetrics.heightPixels * 0.6).toInt(), TouchBarView.RIGHT)
 
         /*
         var touchStartY = 0F // 触摸开始位置

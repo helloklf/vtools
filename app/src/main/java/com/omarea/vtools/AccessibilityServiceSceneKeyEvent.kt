@@ -24,7 +24,6 @@ class AccessibilityServiceSceneKeyEvent : AccessibilityService() {
     private var eventHandlers: HashMap<Int, ButtonEventHandler> = HashMap()
     private lateinit var sharedPreferences: SharedPreferences
     private var floatVitualTouchBar: FloatVitualTouchBar? = null
-    private var sceneConfigChanged: BroadcastReceiver? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -40,30 +39,12 @@ class AccessibilityServiceSceneKeyEvent : AccessibilityService() {
             floatVitualTouchBar!!.hidePopupWindow()
             floatVitualTouchBar = null
         }
-        if (sceneConfigChanged != null) {
-            unregisterReceiver(sceneConfigChanged)
-            sceneConfigChanged = null
-        }
     }
 
     override fun onServiceConnected() {
         super.onServiceConnected()
         destroy()
         floatVitualTouchBar = FloatVitualTouchBar(this)
-
-        if (sceneConfigChanged == null) {
-            sceneConfigChanged = object : BroadcastReceiver() {
-                override fun onReceive(context: Context?, intent: Intent?) {
-                    updateKeyEventProcess()
-                    if (floatVitualTouchBar != null) {
-                        floatVitualTouchBar!!.hidePopupWindow()
-                        floatVitualTouchBar = null
-                    }
-                    floatVitualTouchBar = FloatVitualTouchBar(this@AccessibilityServiceSceneKeyEvent)
-                }
-            }
-        }
-        registerReceiver(sceneConfigChanged, IntentFilter(getString(R.string.scene_keyeventchange_action)))
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
@@ -71,13 +52,26 @@ class AccessibilityServiceSceneKeyEvent : AccessibilityService() {
         return super.onUnbind(intent)
     }
 
+    var isLandscapf = false
+
+    // 监测屏幕旋转
     override fun onConfigurationChanged(newConfig: Configuration?) {
         super.onConfigurationChanged(newConfig)
         if (floatVitualTouchBar != null && newConfig != null) {
             if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                floatVitualTouchBar!!.isLandscapf = false
+                isLandscapf = false
             } else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                floatVitualTouchBar!!.isLandscapf = true
+                isLandscapf = true
+            }
+            if (floatVitualTouchBar!!.isLandscapf  != isLandscapf) {
+                floatVitualTouchBar!!.isLandscapf = isLandscapf
+
+                updateKeyEventProcess()
+                if (floatVitualTouchBar != null) {
+                    floatVitualTouchBar!!.hidePopupWindow()
+                    floatVitualTouchBar = null
+                }
+                floatVitualTouchBar = FloatVitualTouchBar(this@AccessibilityServiceSceneKeyEvent)
             }
         }
     }
