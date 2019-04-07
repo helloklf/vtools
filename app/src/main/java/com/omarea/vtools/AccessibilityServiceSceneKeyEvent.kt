@@ -64,14 +64,12 @@ class AccessibilityServiceSceneKeyEvent : AccessibilityService() {
                 isLandscapf = true
             }
             if (floatVitualTouchBar!!.isLandscapf  != isLandscapf) {
-                floatVitualTouchBar!!.isLandscapf = isLandscapf
-
                 updateKeyEventProcess()
                 if (floatVitualTouchBar != null) {
                     floatVitualTouchBar!!.hidePopupWindow()
                     floatVitualTouchBar = null
                 }
-                floatVitualTouchBar = FloatVitualTouchBar(this@AccessibilityServiceSceneKeyEvent)
+                floatVitualTouchBar = FloatVitualTouchBar(this@AccessibilityServiceSceneKeyEvent, isLandscapf)
             }
         }
     }

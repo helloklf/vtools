@@ -23,7 +23,7 @@ import com.omarea.vtools.R
  *
  * @ClassName WindowUtils
  */
-class FloatVitualTouchBar(context: AccessibilityService) {
+class FloatVitualTouchBar(context: AccessibilityService, var isLandscapf:Boolean = false) {
     private var bottomView: View? = null
     private var leftView: View? = null
     private var rightView: View? = null
@@ -32,7 +32,6 @@ class FloatVitualTouchBar(context: AccessibilityService) {
     private var sharedPreferences: SharedPreferences? = context.getSharedPreferences(SpfConfig.KEY_EVENT_ONTHER_CONFIG_SPF, Context.MODE_PRIVATE)
     private var touchLayout = 0
     private var allowTap = false
-    var isLandscapf = false
 
     private var lastEventTime = 0L
     private var lastEvent = -1
@@ -80,7 +79,7 @@ class FloatVitualTouchBar(context: AccessibilityService) {
      * @return
      */
     fun getNavBarHeight(context: Context): Int {
-        var resourceId: Int
+        val resourceId: Int
         val rid = context.resources.getIdentifier("config_showNavigationBar", "bool", "android")
         if (rid != 0) {
             resourceId = context.resources.getIdentifier("navigation_bar_height", "dimen", "android")
