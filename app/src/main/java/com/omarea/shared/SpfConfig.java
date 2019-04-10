@@ -45,7 +45,7 @@ public class SpfConfig {
     public static String GLOBAL_SPF_DYNAMIC_CONTROL_SIMPLE = "dynamic_control_simple";
     public static String GLOBAL_SPF_LOCK_MODE = "lock_mode";
     public static String GLOBAL_SPF_POWERCFG = "global_powercfg";
-    public static String GLOBAL_SPF_LAST_UPDATE = "global_lastupdate";
+    public static String GLOBAL_SPF_CONTRACT = "global_contract";
 
     public static String SWAP_SPF = "swap"; //spf
     public static String SWAP_SPF_SWAP = "swap";

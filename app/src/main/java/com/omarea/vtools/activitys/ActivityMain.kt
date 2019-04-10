@@ -77,7 +77,9 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .build());
         */
         CrashHandler().init(this)
-        startActivityForResult(Intent(this.applicationContext, StartSplashActivity::class.java), 999)
+        val intent = Intent(this.applicationContext, StartSplashActivity::class.java)
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivityForResult(intent, 999)
         //setMaxAspect()
         if (globalSPF == null) {
             globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)

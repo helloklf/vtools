@@ -312,4 +312,6 @@
     <string name="scene_appchange_action">com.omarea.vtools.SceneAppChanged</string>
     <string name="scene_keyeventchange_action">com.omarea.vtools.KeyEventConfigChanged</string>
     <string name="title_activity_home">Scene桌面</string>
+
+    <string name="scene_contract">Scene是一款适用于玩机爱好者的应用，对于新手用户来说，其中的部分功能可能会过于危险。\n\n强烈建议不要在工作机，或有重要数据的手机上使用。\n\n使用过程中，务必认真阅读各个功能条目的提示和警告信息，以免误操作导致不可预料的后果。\n\n如果你的手机不能在系统出现问题无法进入界面时，恢复出厂设置和刷机，请不要使用！！！</string>
 </resources>

@@ -6,6 +6,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -44,7 +45,27 @@ class StartSplashActivity : Activity() {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
         //checkFileWrite()
-        checkRoot(CheckRootSuccess(this), CheckRootFail(this))
+        val config = getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
+        if (config.getBoolean(SpfConfig.GLOBAL_SPF_CONTRACT, false) != true) {
+            start_contract.visibility = View.VISIBLE
+            start_logo.visibility = View.GONE
+            contract_confirm.setOnClickListener {
+                start_contract.visibility = View.GONE
+                start_logo.visibility = View.VISIBLE
+                checkRoot(CheckRootSuccess(this), CheckRootFail(this))
+                config.edit().putBoolean(SpfConfig.GLOBAL_SPF_CONTRACT, true).apply()
+            }
+            contract_exit.setOnClickListener {
+                val intent = Intent()
+                intent.setAction(Intent.ACTION_MAIN)
+                intent.addCategory(Intent.CATEGORY_HOME)
+                startActivity(intent)
+            }
+        } else {
+            start_contract.visibility = View.GONE
+            start_logo.visibility = View.VISIBLE
+            checkRoot(CheckRootSuccess(this), CheckRootFail(this))
+        }
     }
 
     private class CheckRootFail(context: StartSplashActivity) : Runnable {
