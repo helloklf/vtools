@@ -94,6 +94,7 @@ class AccessibilityServiceSceneKeyEvent : AccessibilityService() {
             Toast.makeText(applicationContext, ex.message, Toast.LENGTH_SHORT).show()
         }
 
+        hidePopupWindow()
         if (sharedPreferences2.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR, false)) {
             floatVitualTouchBar = FloatVitualTouchBar(
                     this,

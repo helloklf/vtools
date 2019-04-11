@@ -160,7 +160,21 @@ class FloatVitualTouchBar(context: AccessibilityService, var isLandscapf:Boolean
             performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
             return@setOnClickListener
         }
-        bar.setSize(dp2px(context, 12f), (context.resources.displayMetrics.heightPixels * 0.6).toInt(), TouchBarView.LEFT)
+
+        val height = context.resources.displayMetrics.heightPixels
+        val width = context.resources.displayMetrics.widthPixels
+        var minSize = width
+        var maxSize = height
+        if (height < width) {
+            minSize = height
+            maxSize = width
+        }
+
+        if (isLandscapf) {
+            bar.setSize(dp2px(context, 12f), (minSize * 0.6).toInt(), TouchBarView.LEFT)
+        } else {
+            bar.setSize(dp2px(context, 12f), (maxSize * 0.6).toInt(), TouchBarView.LEFT)
+        }
 
         val params = WindowManager.LayoutParams()
 
@@ -204,7 +218,20 @@ class FloatVitualTouchBar(context: AccessibilityService, var isLandscapf:Boolean
             return@setOnClickListener
         }
 
-        bar.setSize(dp2px(context, 12f), (context.resources.displayMetrics.heightPixels * 0.6).toInt(), TouchBarView.RIGHT)
+        val height = context.resources.displayMetrics.heightPixels
+        val width = context.resources.displayMetrics.widthPixels
+        var minSize = width
+        var maxSize = height
+        if (height < width) {
+            minSize = height
+            maxSize = width
+        }
+
+        if (isLandscapf) {
+            bar.setSize(dp2px(context, 12f), (minSize * 0.6).toInt(), TouchBarView.RIGHT)
+        } else {
+            bar.setSize(dp2px(context, 12f), (maxSize * 0.6).toInt(), TouchBarView.RIGHT)
+        }
 
         val params = WindowManager.LayoutParams()
 

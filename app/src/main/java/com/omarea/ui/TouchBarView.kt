@@ -86,14 +86,9 @@ class TouchBarView : View {
         if (bakHeight > 0 || bakWidth > 0) {
             val lp = this.layoutParams
             if (orientation == BOTTOM) {
-                lp.width = -1
                 lp.height = FLIP_DISTANCE
             } else if (orientation == LEFT || orientation == RIGHT) {
                 lp.width = FLIP_DISTANCE
-                lp.height = this.height
-
-                // 由于调整触摸条的高度，导致touchStartY的相对位置改变，因此 这里也要对touchStartY进行修改
-                touchStartY
             }
             this.layoutParams = lp
         }
