@@ -67,6 +67,7 @@ then
     killall -9 magisklogd 2> /dev/null
 
     echo "清理后台休眠白名单"
+    echo "请稍等..."
     for item in `dumpsys deviceidle whitelist`
     do
         app=`echo "$item" | cut -f2 -d ','`
