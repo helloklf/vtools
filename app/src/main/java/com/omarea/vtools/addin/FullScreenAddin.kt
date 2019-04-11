@@ -15,8 +15,15 @@ class FullScreenAddin(private var context: Activity) : AddinBase(context) {
     fun hideNavgationBar() {
         FileWrite.writePrivateFile(context.assets, "framework-res", "framework-res", context)
         if (MagiskExtend.moduleInstalled()) {
-            MagiskExtend.replaceSystemFile("/system/media/theme/default/framework-res","${FileWrite.getPrivateFileDir(context)}/framework-res")
-            Toast.makeText(context, "已通过Magisk更改参数，请重启手机~", Toast.LENGTH_SHORT).show()
+            AlertDialog.Builder(context)
+                    .setTitle("注意")
+                    .setMessage("此操作会写入/system/media/theme/default/framework-res，需要重启才能生效。如需还原，请到Magisk助手删除对应位置的文件")
+                    .setPositiveButton("知道了", { _, _ ->
+                        MagiskExtend.replaceSystemFile("/system/media/theme/default/framework-res","${FileWrite.getPrivateFileDir(context)}/framework-res")
+                        Toast.makeText(context, "已通过Magisk更改参数，请重启手机~", Toast.LENGTH_SHORT).show()
+                    })
+                    .create()
+                    .show()
         } else {
             command = StringBuilder()
                     .append(CommonCmds.MountSystemRW)
@@ -30,8 +37,8 @@ class FullScreenAddin(private var context: Activity) : AddinBase(context) {
                     })
                     .create()
                     .show()
+            super.run()
         }
-        super.run()
     }
 
     fun fullScreen() {

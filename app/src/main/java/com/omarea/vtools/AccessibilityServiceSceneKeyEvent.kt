@@ -18,23 +18,21 @@ import com.omarea.vtools.popup.FloatVitualTouchBar
  */
 class AccessibilityServiceSceneKeyEvent : AccessibilityService() {
     override fun onInterrupt() {
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     private var eventHandlers: HashMap<Int, ButtonEventHandler> = HashMap()
     private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var sharedPreferences2: SharedPreferences
     private var floatVitualTouchBar: FloatVitualTouchBar? = null
+    private var configChanged: BroadcastReceiver? = null
 
     override fun onCreate() {
         super.onCreate()
         sharedPreferences = this.getSharedPreferences(SpfConfig.KEY_EVENT_SPF, Context.MODE_PRIVATE)
-        sharedPreferences.registerOnSharedPreferenceChangeListener({ sharedPreferences, key ->
-            updateKeyEventProcess()
-        })
-        updateKeyEventProcess()
+        sharedPreferences2 = this.getSharedPreferences(SpfConfig.KEY_EVENT_ONTHER_CONFIG_SPF, Context.MODE_PRIVATE)
     }
 
-    private fun destroy() {
+    private fun hidePopupWindow() {
         if (floatVitualTouchBar != null) {
             floatVitualTouchBar!!.hidePopupWindow()
             floatVitualTouchBar = null
@@ -43,12 +41,25 @@ class AccessibilityServiceSceneKeyEvent : AccessibilityService() {
 
     override fun onServiceConnected() {
         super.onServiceConnected()
-        destroy()
-        floatVitualTouchBar = FloatVitualTouchBar(this)
+
+        if (configChanged == null) {
+            configChanged = object : BroadcastReceiver() {
+                override fun onReceive(context: Context, intent: Intent) {
+                    updateKeyEventMap()
+                }
+            }
+            registerReceiver(configChanged, IntentFilter(getString(R.string.scene_keyeventchange_action)))
+        }
+        updateKeyEventMap()
     }
 
     override fun onUnbind(intent: Intent?): Boolean {
-        destroy()
+        if (configChanged != null) {
+            unregisterReceiver(configChanged)
+            configChanged = null
+        }
+
+        hidePopupWindow()
         return super.onUnbind(intent)
     }
 
@@ -63,19 +74,13 @@ class AccessibilityServiceSceneKeyEvent : AccessibilityService() {
             } else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 isLandscapf = true
             }
-            if (floatVitualTouchBar!!.isLandscapf  != isLandscapf) {
-                updateKeyEventProcess()
-                if (floatVitualTouchBar != null) {
-                    floatVitualTouchBar!!.hidePopupWindow()
-                    floatVitualTouchBar = null
-                }
-                floatVitualTouchBar = FloatVitualTouchBar(this@AccessibilityServiceSceneKeyEvent, isLandscapf)
-            }
+            updateKeyEventMap()
         }
     }
 
-    private fun updateKeyEventProcess() {
+    private fun updateKeyEventMap() {
         try {
+            eventHandlers.clear()
             for (item in sharedPreferences.all.keys) {
                 var keyCode = Int.MIN_VALUE
                 try {
@@ -87,6 +92,17 @@ class AccessibilityServiceSceneKeyEvent : AccessibilityService() {
             }
         } catch (ex: Exception) {
             Toast.makeText(applicationContext, ex.message, Toast.LENGTH_SHORT).show()
+        }
+
+        if (sharedPreferences2.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR, false)) {
+            floatVitualTouchBar = FloatVitualTouchBar(
+                    this,
+                    isLandscapf,
+                    sharedPreferences2.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_VIBRATOR, false)
+            )
+        } else if (floatVitualTouchBar != null) {
+            floatVitualTouchBar!!.hidePopupWindow()
+            floatVitualTouchBar = null
         }
     }
 
@@ -192,6 +208,7 @@ class AccessibilityServiceSceneKeyEvent : AccessibilityService() {
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
+        /*
         if ((event.getEventType() == AccessibilityEvent.TYPE_VIEW_LONG_CLICKED)) {
             if ("com.android.systemui".equals(event.getPackageName())) {
 
@@ -199,5 +216,6 @@ class AccessibilityServiceSceneKeyEvent : AccessibilityService() {
 
             }
         }
+        */
     }
 }

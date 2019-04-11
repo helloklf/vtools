@@ -69,7 +69,7 @@
                         android:layout_marginTop="10dp"
                         android:paddingLeft="8dp"
                         android:paddingRight="8dp"
-                        android:text="底部边缘触控" />
+                        android:text="边缘手势" />
 
                     <TextView
                         style="@style/textSmall"
@@ -78,57 +78,7 @@
                         android:layout_marginTop="6dp"
                         android:paddingLeft="8dp"
                         android:paddingRight="8dp"
-                        android:text="在屏幕底部显示手势导航条，需要为Scene开启悬浮窗（在应用上层显示）权限！" />
-                    <!--<TextView
-                        android:layout_marginTop="16dp"
-                        android:paddingLeft="8dp"
-                        android:paddingRight="8dp"
-                        android:text="触控区域高度"
-                        style="@style/textTitle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                    <SeekBar
-                        android:progress="25"
-                        android:layout_marginTop="6dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" android:max="100" />-->
-                    <TextView
-                        style="@style/textTitle"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:paddingLeft="8dp"
-                        android:paddingRight="8dp"
-                        android:text="布局方式" />
-
-                    <Spinner
-                        android:textSize="12dp"
-                        android:id="@+id/key_event_vitual_touch_bar_map"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:entries="@array/vitual_touch_bar_map" />
-
-                    <Switch
-                        android:textSize="12dp"
-                        android:layout_weight="1"
-                        android:layout_marginTop="6dp"
-                        android:paddingLeft="8dp"
-                        android:paddingRight="8dp"
-                        android:id="@+id/key_event_vitual_touch_bar_vibrator"
-                        android:text="震动反馈"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                    <Switch
-                        android:textSize="12dp"
-                        android:layout_weight="1"
-                        android:layout_marginTop="6dp"
-                        android:paddingLeft="8dp"
-                        android:paddingRight="8dp"
-                        android:id="@+id/key_event_vitual_touch_bar_tap"
-                        android:text="启用点击（默认只开启滑动操作）"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
+                        android:text="开启后，在屏幕左右两侧及底部，从边缘向屏幕中心滑动，或滑动后悬停进行手势操作。\n\n需要为Scene开启悬浮窗（在应用上层显示）权限！" />
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 

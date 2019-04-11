@@ -16,7 +16,7 @@ class MiuiAddin(private var context: Context) : AddinBase(context) {
         if (MagiskExtend.moduleInstalled()) {
             MagiskExtend.replaceSystemFile("/system/media/theme/default/com.android.systemui", "${FileWrite.getPrivateFileDir(context)}/com.android.systemui")
 
-            Toast.makeText(context, "已通过Magisk更改参数，请重启手机~", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "已通过Magisk更改参数，请重启手机~", Toast.LENGTH_LONG).show()
         } else {
             command = StringBuilder()
                     .append(CommonCmds.MountSystemRW)

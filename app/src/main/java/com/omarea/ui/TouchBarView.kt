@@ -11,14 +11,15 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
 import com.omarea.vtools.R
 
-public class TouchBarView : View {
+class TouchBarView : View {
     companion object {
-        public val RIGHT = 2
-        public val BOTTOM = 0
-        public val LEFT = 1
+        val RIGHT = 2
+        val BOTTOM = 0
+        val LEFT = 1
     }
 
     private var orientation = 0
@@ -44,13 +45,17 @@ public class TouchBarView : View {
     private var touchStartY = 0F
     private var touchCurrentX = 0F
     private var touchCurrentY = 0F
+
     private var gestureStartTime = 0L // 手势开始时间（是指滑动到一定距离，认定触摸手势生效的时间）
+    private var isLongTimeGesture = false
     private val FLIP_DISTANCE = dp2px(context, 50f) // 触摸灵敏度（滑动多长距离认为是手势）
     private val effectSize = dp2px(context, 15f).toFloat() // 特效大小
     private val effectWidth = effectSize * 6 // 特效大小
     val cushion = effectWidth + effectWidth * 1.4f // 左右两端的缓冲宽度（数值越大则约缓和）
     val longTouchTime = 250L
     private var isTouchDown = false
+    private var isGestureCompleted = false
+    private val iconRadius = dp2px(context, 8f)
 
     private var currentGraphSize = 0f
     private var vibrator: Vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
@@ -85,10 +90,10 @@ public class TouchBarView : View {
                 lp.height = FLIP_DISTANCE
             } else if (orientation == LEFT || orientation == RIGHT) {
                 lp.width = FLIP_DISTANCE
-                lp.height = this.height + 200
+                lp.height = this.height
 
                 // 由于调整触摸条的高度，导致touchStartY的相对位置改变，因此 这里也要对touchStartY进行修改
-                touchStartY += 200
+                touchStartY
             }
             this.layoutParams = lp
         }
@@ -96,6 +101,9 @@ public class TouchBarView : View {
 
     // 动画结束后缩小悬浮窗，以免影响正常操作
     private fun resumeBackupSize() {
+        touchStartX = 0f
+        touchStartY = 0f
+
         val lp = this.layoutParams
         lp.width = bakWidth
         lp.height = bakHeight
@@ -103,43 +111,47 @@ public class TouchBarView : View {
     }
 
 
+    var va: ValueAnimator? = null
     fun cgangePer(per: Float) {
-        val perOld = this.currentGraphSize
-        val va = ValueAnimator.ofFloat(perOld, per)
-        va.duration = 250
-        va.interpolator = DecelerateInterpolator()
-        va.addUpdateListener { animation ->
-            currentGraphSize = animation.animatedValue as Float
-            invalidate()
+        if (va != null && va!!.isRunning) {
+            va!!.cancel()
         }
-        va.start()
-        va.cancel()
-    }
-
-
-    private fun isLongTime(): Boolean {
-        return gestureStartTime > 0 && System.currentTimeMillis() - gestureStartTime > longTouchTime
+        va = ValueAnimator.ofFloat(this.currentGraphSize, per)
+        va!!.run {
+            duration = 200
+            interpolator = DecelerateInterpolator()
+            addUpdateListener { animation ->
+                currentGraphSize = animation.animatedValue as Float
+                invalidate()
+            }
+            start()
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         if (event != null) {
-            Log.d("TouchBarView", "x:" + event.x + "  y:" + event.y)
             when {
                 event.action == MotionEvent.ACTION_DOWN -> {
                     isTouchDown = true
+                    isGestureCompleted = false
                     touchStartX = event.x
                     touchStartY = event.y
                     gestureStartTime = 0
+                    isLongTimeGesture = false
                     currentGraphSize = dp2px(context, 5f).toFloat()
                     setSizeOnTouch()
                     invalidate()
                     // cgangePer(effectSize)
-                    currentGraphSize = 10f
+                    currentGraphSize = 5f
                     invalidate()
                     vibratorRun = true
                 }
                 event.action == MotionEvent.ACTION_MOVE -> {
+                    if (isGestureCompleted || !isTouchDown) {
+                        return false
+                    }
+
                     touchCurrentX = event.x
                     touchCurrentY = event.y
                     var a = -1f
@@ -156,80 +168,63 @@ public class TouchBarView : View {
                         a = touchStartY
                         b = touchCurrentY
                     }
+
                     if (a - b > FLIP_DISTANCE) {
-                        Log.d("TouchBarView 成功", "x:" + event.x + "  y:" + event.y)
                         currentGraphSize = effectSize
                         if (gestureStartTime < 1) {
                             val currentTime = System.currentTimeMillis()
                             gestureStartTime = currentTime
                             postDelayed({
-                                if (currentTime == gestureStartTime) {
-                                    invalidate()
+                                if (isTouchDown && !isGestureCompleted && currentTime == gestureStartTime) {
+                                    isLongTimeGesture = true
+                                    if (orientation == BOTTOM) {
+                                        performLongClick()
+                                        isGestureCompleted = true
+                                        cleartEffect()
+                                    } else {
+                                        invalidate()
+                                    }
                                 }
                             }, longTouchTime)
-                        } else if (vibratorRun && isLongTime()) {
+                        }
+                        else if (vibratorRun && isLongTimeGesture) {
                             touchVibrator()
                             vibratorRun = false
                         }
-                        invalidate()
                     } else {
                         vibratorRun = true
                         gestureStartTime = 0
-                        currentGraphSize = (a - b) / FLIP_DISTANCE * effectSize
-                        invalidate()
-                        Log.d("TouchBarView 移动", "x:" + event.x + "  y:" + event.y)
                     }
+                    var size = (a - b) / FLIP_DISTANCE * effectSize
+                    if (size > effectSize) {
+                        size = effectSize
+                    }
+                    currentGraphSize = size
+                    invalidate()
                 }
                 event.action == MotionEvent.ACTION_UP -> {
-                    if (!isTouchDown) {
+                    if (!isTouchDown || isGestureCompleted) {
                         return false
                     }
+
                     isTouchDown = false
+                    isGestureCompleted = true
+
                     if (orientation == LEFT) {
-                        /*if (event.y - touchStartY > FLIP_DISTANCE * 2) {
-                            // 下滑打开通知栏
-                            // performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS)
-                        } else if (touchStartY - event.y > FLIP_DISTANCE * 2) {
-                            // 上滑打开最近任务
-                            // performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
-                        } else */ if (event.x - touchStartX > FLIP_DISTANCE) {
+                        if (event.x - touchStartX > FLIP_DISTANCE) {
                             // 向屏幕内侧滑动 - 停顿250ms 打开最近任务，不停顿则“返回”
-                            if (isLongTime()) {
-                                // performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
-                                performLongClick()
-                            } else {
-                                // performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
-                                performClick()
-                            }
+                            if (isLongTimeGesture) performLongClick() else performClick()
                         }
                     }
                     else if (orientation == RIGHT) {
-                        /* if (event.y - touchStartY > FLIP_DISTANCE * 2) {
-                            // 下滑打开通知栏
-                            // performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_NOTIFICATIONS)
-                        }
-                        else if (touchStartY - event.y > FLIP_DISTANCE * 2) {
-                            // 上滑打开最近任务
-                            // performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
-                        }
-                        else */ if (touchStartX - event.x > FLIP_DISTANCE) {
+                        if (touchStartX - event.x > FLIP_DISTANCE) {
                             // 向屏幕内侧滑动 - 停顿250ms 打开最近任务，不停顿则“返回”
-                            if (isLongTime()) {
-                                // performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
-                                performLongClick()
-                            } else {
-                                // performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
-                                performClick()
-                            }
+                            if (isLongTimeGesture) performLongClick() else performClick()
                         }
                     }
                     else if (orientation == BOTTOM) {
                         if (touchStartY - event.y > FLIP_DISTANCE) {
-                            if (isLongTime()) {
-                                performLongClick()
-                            } else {
-                                performClick()
-                            }
+                            if (isLongTimeGesture) performLongClick() else performClick()
                         }
                     }
                     cleartEffect()
@@ -251,31 +246,45 @@ public class TouchBarView : View {
      * 清除手势效果
      */
     private fun cleartEffect() {
-        touchStartX = 0f
-        touchStartY = 0f
-        currentGraphSize = 0f
-        gestureStartTime = 0
         // resumeBackupSize()
         invalidate()
+
+        if (va != null && va!!.isRunning) {
+            va!!.cancel()
+        }
+        va = ValueAnimator.ofFloat(this.currentGraphSize, 5f)
+        va!!.run {
+            duration = 200
+            interpolator = AccelerateInterpolator()
+            addUpdateListener { animation ->
+                currentGraphSize = animation.animatedValue as Float
+                if (touchCurrentX > 0 || touchCurrentY > 0) {
+                    if (currentGraphSize < iconRadius) {
+                        touchCurrentX = 0f
+                        touchCurrentY = 0f
+                        gestureStartTime = 0
+                    }
+                }
+                if (currentGraphSize <= 6f && !isTouchDown) {
+                    resumeBackupSize()
+                }
+                invalidate()
+            }
+            start()
+        }
     }
 
     /**
      * 计算手势中的图标显示位置
      */
     private fun getEffectIconRectF(centerX: Float, centerY: Float): RectF {
-        val iconRadius = 20f
         return RectF(centerX - iconRadius, centerY - iconRadius, centerX + iconRadius, centerY + iconRadius)
     }
 
     @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        if (!isTouchDown) {
-            resumeBackupSize()
-            return
-        }
-
-        if (currentGraphSize < 10) {
+        if (currentGraphSize < 6f) {
             return
         }
 
@@ -303,7 +312,7 @@ public class TouchBarView : View {
 
                 if (touchCurrentX - touchStartX > FLIP_DISTANCE) {
                     canvas.drawBitmap(
-                            BitmapFactory.decodeResource(context.getResources(), if (isLongTime()) R.drawable.touch_tasks else R.drawable.touch_arrow_right),
+                            BitmapFactory.decodeResource(context.getResources(), if (isLongTimeGesture) R.drawable.touch_tasks else R.drawable.touch_arrow_right),
                             null,
                             getEffectIconRectF(centerX, centerY),
                             p)
@@ -326,7 +335,7 @@ public class TouchBarView : View {
 
                 if (touchStartX - touchCurrentX > FLIP_DISTANCE) {
                     canvas.drawBitmap(
-                            BitmapFactory.decodeResource(context.getResources(), if (isLongTime()) R.drawable.touch_tasks else R.drawable.touch_arrow_left),
+                            BitmapFactory.decodeResource(context.getResources(), if (isLongTimeGesture) R.drawable.touch_tasks else R.drawable.touch_arrow_left),
                             null,
                             getEffectIconRectF(centerX, centerY),
                             p)
@@ -351,7 +360,7 @@ public class TouchBarView : View {
 
                 if (touchStartY - touchCurrentY > FLIP_DISTANCE) {
                     canvas.drawBitmap(
-                            BitmapFactory.decodeResource(context.getResources(), if (isLongTime()) R.drawable.touch_tasks else R.drawable.touch_home),
+                            BitmapFactory.decodeResource(context.getResources(), if (isLongTimeGesture) R.drawable.touch_tasks else R.drawable.touch_home),
                             null,
                             getEffectIconRectF(centerX, centerY),
                             p)
