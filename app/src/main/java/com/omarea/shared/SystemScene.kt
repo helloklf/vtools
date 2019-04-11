@@ -67,7 +67,11 @@ class SystemScene(private var context: Context) {
             keepShell.doCmd("dumpsys deviceidle enable\ndumpsys deviceidle enable all\n")
             keepShell.doCmd("dumpsys deviceidle force-idle\n")
             for (item in applist) {
-                keepShell.doCmd("dumpsys deviceidle whitelist -$item\nam set-inactive com.tencent.tim $item\n")
+                keepShell.doCmd(
+                        "dumpsys deviceidle whitelist -$item\n" +
+                                "am set-inactive com.tencent.tim $item\n" +
+                                "am set-idle $item true 2>&1 > /dev/null\n" +
+                                "am make-uid-idle --user current $item 2>&1 > /dev/null\n")
             }
             keepShell.doCmd("dumpsys deviceidle step\ndumpsys deviceidle step\ndumpsys deviceidle step\ndumpsys deviceidle step\necho 3 > /proc/sys/vm/drop_caches\n")
         }

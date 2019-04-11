@@ -112,9 +112,9 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
                 "dumpsys deviceidle whitelist -$packageName;\n" +
                         "dumpsys deviceidle enable\n" +
                         "dumpsys deviceidle enable all\n" +
-                        "am set-inactive $packageName true 2> /dev/null\n" +
-                        "am set-idle $packageName true 2> /dev/null" +
-                        "am make-uid-idle --user current $packageName 2> /dev/null")
+                        "am set-inactive $packageName true 2>&1 > /dev/null\n" +
+                        "am set-idle $packageName true 2>&1 > /dev/null" +
+                        "am make-uid-idle --user current $packageName 2>&1 > /dev/null")
         // if (debugMode) showMsg("休眠 " + packageName)
     }
 
