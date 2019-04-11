@@ -108,7 +108,13 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
      * 休眠指定包名的应用
      */
     private fun dozeApp(packageName: String) {
-        KeepShellPublic.doCmdSync("dumpsys deviceidle whitelist -$packageName;\ndumpsys deviceidle enable;\ndumpsys deviceidle enable all;\nam set-inactive $packageName true")
+        KeepShellPublic.doCmdSync(
+                "dumpsys deviceidle whitelist -$packageName;\n" +
+                        "dumpsys deviceidle enable\n" +
+                        "dumpsys deviceidle enable all\n" +
+                        "am set-inactive $packageName true 2> /dev/null\n" +
+                        "am set-idle $packageName true 2> /dev/null" +
+                        "am make-uid-idle --user current $packageName 2> /dev/null")
         // if (debugMode) showMsg("休眠 " + packageName)
     }
 

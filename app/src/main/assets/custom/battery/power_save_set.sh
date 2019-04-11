@@ -73,6 +73,16 @@ then
         #echo "deviceidle whitelist -$app"
         dumpsys deviceidle whitelist -$app 1> /dev/null
         am set-inactive $app true 2> /dev/null
+        am set-idle $app true 2> /dev/null
+        # 9.0 让后台应用立即进入闲置状态
+        am make-uid-idle --user current $app 2> /dev/null
+    done
+    for item in `pm list packages -3  | cut -f2 -d ':'`
+    do
+        am set-inactive $app true 2> /dev/null
+        am set-idle $app true 2> /dev/null
+        # 9.0 让后台应用立即进入闲置状态
+        am make-uid-idle --user current $app 2> /dev/null
     done
     dumpsys deviceidle step
     dumpsys deviceidle step
