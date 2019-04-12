@@ -243,6 +243,7 @@ class TouchBarView : View {
     private fun cleartEffect() {
         // resumeBackupSize()
         invalidate()
+        isTouchDown = false
 
         if (va != null && va!!.isRunning) {
             va!!.cancel()
