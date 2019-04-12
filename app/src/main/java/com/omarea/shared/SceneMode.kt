@@ -233,15 +233,19 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
                 if (config!!.aloneLight) {
                     backupState()
                     autoLightOff()
+                } else {
+                    resumeState()
                 }
 
                 if (config!!.gpsOn) {
-                    val mode = Settings.Secure.getInt(contentResolver, Settings.Secure.LOCATION_MODE)
                     backupLocationModeState()
+                    val mode = Settings.Secure.getInt(contentResolver, Settings.Secure.LOCATION_MODE)
                     if (mode != Settings.Secure.LOCATION_MODE_HIGH_ACCURACY) {
                         Settings.Secure.putInt(contentResolver, Settings.Secure.LOCATION_MODE, Settings.Secure.LOCATION_MODE_HIGH_ACCURACY)
                         contentResolver.notifyChange(Settings.System.getUriFor(Settings.Secure.LOCATION_MODE), null)
                     }
+                } else {
+                    restoreLocationModeState()
                 }
 
                 if (config!!.disNotice) {
@@ -254,6 +258,8 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
                         }
                     } catch (ex: Exception) {
                     }
+                } else {
+                    restoreHeaddUp()
                 }
             }
 

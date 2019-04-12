@@ -4,17 +4,18 @@ import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Context.VIBRATOR_SERVICE
-import android.content.SharedPreferences
 import android.graphics.PixelFormat
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.provider.Settings
 import android.util.Log
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.WindowManager
 import android.view.WindowManager.LayoutParams
 import android.widget.Toast
-import com.omarea.shared.SpfConfig
 import com.omarea.ui.TouchBarView
 import com.omarea.vtools.R
 
@@ -110,12 +111,9 @@ class FloatVitualTouchBar(context: AccessibilityService, var isLandscapf:Boolean
 
         val params = WindowManager.LayoutParams()
 
-        // 类型
-        params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
         // 设置window type
-        //params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//6.0+
-            params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+            params.type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY // WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
         } else {
             params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
         }
@@ -179,11 +177,8 @@ class FloatVitualTouchBar(context: AccessibilityService, var isLandscapf:Boolean
         val params = WindowManager.LayoutParams()
 
         // 类型
-        params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
-        // 设置window type
-        //params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//6.0+
-            params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+            params.type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
         } else {
             params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
         }
@@ -236,11 +231,8 @@ class FloatVitualTouchBar(context: AccessibilityService, var isLandscapf:Boolean
         val params = WindowManager.LayoutParams()
 
         // 类型
-        params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
-        // 设置window type
-        //params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//6.0+
-            params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+            params.type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
         } else {
             params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
         }
