@@ -23,7 +23,7 @@ class Busybox(private var context: Context) {
         return try {
             Runtime.getRuntime().exec("busybox").destroy()
             true
-        } catch (e: Exception) {
+        } catch (ex: Exception) {
             false
         }
     }

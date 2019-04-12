@@ -73,7 +73,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
         init {
             val layoutInflater = LayoutInflater.from(context)
             this.total = total
-            dialog = layoutInflater.inflate(R.layout.dialog_app_options, null)
+            dialog = layoutInflater.inflate(R.layout.dialog_loading, null)
             alert = android.app.AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
             textView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
             progressBar = (dialog.findViewById(R.id.dialog_app_details_progress) as ProgressBar)

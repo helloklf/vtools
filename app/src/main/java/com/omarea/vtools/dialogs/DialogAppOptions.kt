@@ -113,7 +113,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
 
     protected fun execShell(sb: StringBuilder) {
         val layoutInflater = LayoutInflater.from(context)
-        val dialog = layoutInflater.inflate(R.layout.dialog_app_options, null)
+        val dialog = layoutInflater.inflate(R.layout.dialog_loading, null)
         val textView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
         textView.text = "正在获取权限"
         val alert = AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()

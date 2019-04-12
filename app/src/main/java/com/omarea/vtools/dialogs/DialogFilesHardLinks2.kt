@@ -41,7 +41,7 @@ class DialogFilesHardLinks2(private var context: Context) {
 
     private fun execShell(sb: StringBuilder) {
         val layoutInflater = LayoutInflater.from(context)
-        val dialog = layoutInflater.inflate(R.layout.dialog_app_options, null)
+        val dialog = layoutInflater.inflate(R.layout.dialog_loading, null)
         val textView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
         textView.minLines = 4
         textView.maxLines = 4
@@ -207,7 +207,7 @@ class DialogFilesHardLinks2(private var context: Context) {
 
         private fun execShell(sb: StringBuilder) {
             val layoutInflater = LayoutInflater.from(context)
-            val dialog = layoutInflater.inflate(R.layout.dialog_app_options, null)
+            val dialog = layoutInflater.inflate(R.layout.dialog_loading, null)
             val textView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
             textView.minLines = 4
             textView.maxLines = 4

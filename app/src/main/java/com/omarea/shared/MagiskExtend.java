@@ -1,6 +1,7 @@
 package com.omarea.shared;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import com.omarea.shell.KeepShellPublic;
 import com.omarea.shell.RootFile;
@@ -38,7 +39,7 @@ public class MagiskExtend {
      */
     private static boolean spaceValidation(long require) {
         // magisk 19开始，不用镜像了，理论上空间无限
-        if (MagiskVersion >= 19) {
+        if (MagiskVersion >= 19 || MAGISK_PATH.startsWith("/data")) {
             return true;
         }
 
@@ -157,15 +158,14 @@ public class MagiskExtend {
                 KeepShellPublic.INSTANCE.doCmdSync("imgtool create /data/adb/magisk_merge.img 128");
             }
 
-            KeepShellPublic.INSTANCE.doCmdSync("mkdir -p /dev/tmp/magisk_scene\n" +
-                    "imgtool umount /data/adb/magisk_merge.img /dev/tmp/magisk_scene\n" +
-                    "imgtool mount /data/adb/magisk_merge.img /dev/tmp/magisk_scene\n");
+            KeepShellPublic.INSTANCE.doCmdSync("mkdir -p /data/adb/magisk_merge_tmnt\n" +
+                    "$LOOP=`imgtool mount /data/adb/magisk_merge.img /data/adb/magisk_merge_tmnt`\n");
 
             writeModuleFile(moduleProp, "module.prop", context);
             writeModuleFile("", "auto_mount", context);
             writeModuleFile("", "update", context);
 
-            MAGISK_PATH = "/dev/tmp/magisk_scene/scene_systemless/";
+            MAGISK_PATH = "/data/adb/magisk_merge_tmnt/scene_systemless/";
             writeModuleFile("", "auto_mount", context);
         } else {
             writeModuleFile("", "update", context);
@@ -175,11 +175,10 @@ public class MagiskExtend {
         writeModuleFile(systemProp, "system.prop", context);
         writeModuleFile(service, "service.sh", context);
         writeModuleFile(fsPostData, "post-fs-data.sh", context);
+        // KeepShellPublic.INSTANCE.doCmdSync("imgtool umount /data/adb/magisk_merge_tmnt $LOOP");
     }
 
     private static void writeModuleFile(String text, String name, Context context) {
-        spaceValidation(text.length());
-
         if (!moduleInstalled()) {
             KeepShellPublic.INSTANCE.doCmdSync("mkdir -p " + MAGISK_PATH);
         }
@@ -200,7 +199,7 @@ public class MagiskExtend {
             String magiskVersion = KeepShellPublic.INSTANCE.doCmdSync("magisk -V");
             if (!magiskVersion.equals("error")) {
                 try {
-                    MagiskVersion = Integer.parseInt(magiskVersion) / 100;
+                    MagiskVersion = Integer.parseInt(magiskVersion) / 1000;
                     supported = MagiskVersion >= 17 ? 1 : 0;
 
                     if(supported == 1) {
@@ -255,8 +254,8 @@ public class MagiskExtend {
                 String dir = new File(output).getParent();
                 KeepShellPublic.INSTANCE.doCmdSync(
                         "mkdir -p \"" + dir + "\"\n" +
-                                "cp \"" + newfile + "\" \"" + output + "\"\n" +
-                                "chmod 777 \"" + output + "\"");
+                        "cp \"" + newfile + "\" \"" + output + "\"\n" +
+                        "chmod 777 \"" + output + "\"");
                 return true;
             }
         }

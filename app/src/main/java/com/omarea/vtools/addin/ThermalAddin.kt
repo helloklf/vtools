@@ -98,7 +98,7 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
         } else {
             AlertDialog.Builder(context)
                     .setTitle("确定")
-                    .setMessage("这个操作是永久性的，暂时没有做备份还原功能，如果你需要恢复之前的温控，则需要重新输入ROM（不需要清除数据），手动删除/data/thermal目录并重启手机！\n\n操作完后，请重启手机！")
+                    .setMessage("这个操作是永久性的，暂时没有做备份还原功能，如果你需要恢复之前的温控，则需要重新输入ROM（不需要清除数据），手动删除/data/thermal和/data/vendor/thermal目录并重启手机！\n\n操作完后，请重启手机！")
                     .setPositiveButton(R.string.btn_confirm, { _, _ ->
                         command = StringBuilder()
                                 .append(CommonCmds.MountSystemRW)
@@ -116,6 +116,7 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
                                 .append("\ncp664 $nolimits ${baseName}-tgame.conf")
                                 .append("\ncp664 $nolimits ${baseName}-extreme.conf")
                                 .append("\nrm -rf /data/thermal")
+                                .append("\nrm -rf /data/vendor/thermal")
                                 .append("\n")
                                 .toString()
                         super.run()
