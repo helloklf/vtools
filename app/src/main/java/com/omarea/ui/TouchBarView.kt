@@ -27,15 +27,9 @@ class TouchBarView : View {
     constructor(context: Context) : super(context) {}
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        @SuppressLint("CustomViewStyleable")
-        val array = context.obtainStyledAttributes(attrs, R.styleable.TouchBarView)
-        array.recycle()
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        @SuppressLint("CustomViewStyleable")
-        val array = context.obtainStyledAttributes(attrs, R.styleable.TouchBarView)
-        array.recycle()
     }
 
     private var bakWidth = 0
@@ -64,7 +58,6 @@ class TouchBarView : View {
     fun touchVibrator() {
         vibrator.cancel()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(20, 10), DEFAULT_AMPLITUDE))
             vibrator.vibrate(VibrationEffect.createOneShot(1, 1))
         } else {
             vibrator.vibrate(longArrayOf(20, 10), -1)
@@ -89,6 +82,13 @@ class TouchBarView : View {
                 lp.height = FLIP_DISTANCE
             } else if (orientation == LEFT || orientation == RIGHT) {
                 lp.width = FLIP_DISTANCE
+                if (touchStartY < effectWidth) {
+                    val toHeight = this.bakHeight + effectWidth.toInt()
+                    if (toHeight != lp.height) {
+                        lp.height = toHeight
+                        touchStartY += effectWidth
+                    }
+                }
             }
             this.layoutParams = lp
         }
@@ -104,7 +104,6 @@ class TouchBarView : View {
         lp.height = bakHeight
         this.layoutParams = lp
     }
-
 
     var va: ValueAnimator? = null
     fun cgangePer(per: Float) {
@@ -136,15 +135,14 @@ class TouchBarView : View {
                     isLongTimeGesture = false
                     currentGraphSize = dp2px(context, 5f).toFloat()
                     setSizeOnTouch()
-                    invalidate()
+                    currentGraphSize = 0f
+                    // invalidate()
                     // cgangePer(effectSize)
-                    currentGraphSize = 5f
-                    invalidate()
                     vibratorRun = true
                 }
                 event.action == MotionEvent.ACTION_MOVE -> {
                     if (isGestureCompleted || !isTouchDown) {
-                        return false
+                        return true
                     }
 
                     touchCurrentX = event.x
@@ -172,6 +170,10 @@ class TouchBarView : View {
                             postDelayed({
                                 if (isTouchDown && !isGestureCompleted && currentTime == gestureStartTime) {
                                     isLongTimeGesture = true
+                                    if (vibratorRun) {
+                                        touchVibrator()
+                                        vibratorRun = false
+                                    }
                                     if (orientation == BOTTOM) {
                                         performLongClick()
                                         isGestureCompleted = true
@@ -181,10 +183,6 @@ class TouchBarView : View {
                                     }
                                 }
                             }, longTouchTime)
-                        }
-                        else if (vibratorRun && isLongTimeGesture) {
-                            touchVibrator()
-                            vibratorRun = false
                         }
                     } else {
                         vibratorRun = true
@@ -199,7 +197,7 @@ class TouchBarView : View {
                 }
                 event.action == MotionEvent.ACTION_UP -> {
                     if (!isTouchDown || isGestureCompleted) {
-                        return false
+                        return true
                     }
 
                     isTouchDown = false
@@ -299,19 +297,26 @@ class TouchBarView : View {
                 val centerX = -graphHeight
                 val centerY = touchStartY // height / 2
 
-                path.moveTo((centerX + graphHeight), (centerY - cushion))
-                path.quadTo((centerX + graphHeight * 2), (centerY - graphWidth), centerX, (centerY - graphWidth / 2)) // 左侧平缓弧线
-                path.quadTo((centerX - graphHeight * 2.4f), centerY, centerX, (centerY + graphWidth / 2)) // 顶部圆拱
-                path.quadTo((centerX + graphHeight * 2), (centerY + graphWidth), (centerX + graphHeight), (centerY + cushion)) // 右侧平缓弧线
+                path.run {
+                    moveTo((centerX + graphHeight), (centerY - cushion))
+                    quadTo((centerX + graphHeight * 2), (centerY - graphWidth), centerX, (centerY - graphWidth / 2)) // 左侧平缓弧线
+                    quadTo((centerX - graphHeight * 2.4f), centerY, centerX, (centerY + graphWidth / 2)) // 顶部圆拱
+                    quadTo((centerX + graphHeight * 2), (centerY + graphWidth), (centerX + graphHeight), (centerY + cushion)) // 右侧平缓弧线
+                }
 
                 canvas.drawPath(path, p)
 
-                if (touchCurrentX - touchStartX > FLIP_DISTANCE) {
-                    canvas.drawBitmap(
-                            BitmapFactory.decodeResource(context.getResources(), if (isLongTimeGesture) R.drawable.touch_tasks else R.drawable.touch_arrow_right),
-                            null,
-                            getEffectIconRectF(centerX, centerY),
-                            p)
+                if (drawIcon && touchCurrentX - touchStartX > FLIP_DISTANCE) {
+                    try {
+                        canvas.drawBitmap(
+                                if (isLongTimeGesture) touch_tasks else touch_arrow_right,
+                                null,
+                                getEffectIconRectF(centerX, centerY),
+                                p)
+                    } catch (ex: Exception) {
+                        Log.e("图标渲染错误", ex.message)
+                        drawIcon = false
+                    }
                 }
             }
         } else if (orientation == RIGHT) {
@@ -322,19 +327,26 @@ class TouchBarView : View {
                 val centerX = width - graphHeight
                 val centerY = touchStartY // height / 2
 
-                path.moveTo((centerX + graphHeight), (centerY - cushion))
-                path.quadTo((centerX + graphHeight * 2), (centerY - graphWidth), centerX, (centerY - graphWidth / 2)) // 左侧平缓弧线
-                path.quadTo((centerX - graphHeight * 2.4f), centerY, centerX, (centerY + graphWidth / 2)) // 顶部圆拱
-                path.quadTo((centerX + graphHeight * 2), (centerY + graphWidth), (centerX + graphHeight), (centerY + cushion)) // 右侧平缓弧线
+                path.run {
+                    moveTo((centerX + graphHeight), (centerY - cushion))
+                    quadTo((centerX + graphHeight * 2), (centerY - graphWidth), centerX, (centerY - graphWidth / 2)) // 左侧平缓弧线
+                    quadTo((centerX - graphHeight * 2.4f), centerY, centerX, (centerY + graphWidth / 2)) // 顶部圆拱
+                    quadTo((centerX + graphHeight * 2), (centerY + graphWidth), (centerX + graphHeight), (centerY + cushion)) // 右侧平缓弧线
+                }
 
                 canvas.drawPath(path, p)
 
-                if (touchStartX - touchCurrentX > FLIP_DISTANCE) {
-                    canvas.drawBitmap(
-                            BitmapFactory.decodeResource(context.getResources(), if (isLongTimeGesture) R.drawable.touch_tasks else R.drawable.touch_arrow_left),
-                            null,
-                            getEffectIconRectF(centerX, centerY),
-                            p)
+                if (drawIcon && touchStartX - touchCurrentX > FLIP_DISTANCE) {
+                    try {
+                        canvas.drawBitmap(
+                                if (isLongTimeGesture) touch_tasks else touch_arrow_left,
+                                null,
+                                getEffectIconRectF(centerX, centerY),
+                                p)
+                    } catch (ex: Exception) {
+                        Log.e("图标渲染错误", ex.message)
+                        drawIcon = false
+                    }
                 }
             }
         }
@@ -347,21 +359,35 @@ class TouchBarView : View {
                 val centerX = touchStartX // width / 2
                 val centerY = height - graphHeight
 
-                path.moveTo((centerX - cushion), (centerY + graphHeight)) //贝赛尔的起始点moveTo(x,y)
-                path.quadTo((centerX - graphWidth), (centerY + graphHeight * 2), (centerX - graphWidth / 2), centerY) // 左侧平缓弧线
-                path.quadTo(centerX, (centerY - graphHeight * 2.5f), (centerX + graphWidth / 2), centerY) // 顶部圆拱
-                path.quadTo((centerX + graphWidth), (centerY + graphHeight * 2), (centerX + cushion), (centerY + graphHeight)) // 右侧平缓弧线
+                path.run {
+                    moveTo((centerX - cushion), (centerY + graphHeight)) //贝赛尔的起始点moveTo(x,y)
+                    quadTo((centerX - graphWidth), (centerY + graphHeight * 2), (centerX - graphWidth / 2), centerY) // 左侧平缓弧线
+                    quadTo(centerX, (centerY - graphHeight * 2.5f), (centerX + graphWidth / 2), centerY) // 顶部圆拱
+                    quadTo((centerX + graphWidth), (centerY + graphHeight * 2), (centerX + cushion), (centerY + graphHeight)) // 右侧平缓弧线
+                }
 
                 canvas.drawPath(path, p)
 
-                if (touchStartY - touchCurrentY > FLIP_DISTANCE) {
-                    canvas.drawBitmap(
-                            BitmapFactory.decodeResource(context.getResources(), if (isLongTimeGesture) R.drawable.touch_tasks else R.drawable.touch_home),
-                            null,
-                            getEffectIconRectF(centerX, centerY),
-                            p)
+                if (drawIcon && touchStartY - touchCurrentY > FLIP_DISTANCE) {
+                    try {
+                        canvas.drawBitmap(
+                                if (isLongTimeGesture) touch_tasks else touch_home,
+                                null,
+                                getEffectIconRectF(centerX, centerY),
+                                p)
+                    } catch (ex: Exception) {
+                        Log.e("图标渲染错误", ex.message)
+                        drawIcon = false
+                    }
                 }
             }
         }
     }
+
+    private var drawIcon = true
+
+    private val touch_arrow_left = BitmapFactory.decodeResource(context.getResources(), R.drawable.touch_arrow_left)
+    private val touch_arrow_right = BitmapFactory.decodeResource(context.getResources(), R.drawable.touch_arrow_right)
+    private val touch_tasks = BitmapFactory.decodeResource(context.getResources(), R.drawable.touch_tasks)
+    private val touch_home = BitmapFactory.decodeResource(context.getResources(), R.drawable.touch_home)
 }

@@ -76,7 +76,7 @@ class FloatVitualTouchBar(context: AccessibilityService, var isLandscapf:Boolean
     }
 
     private fun performGlobalAction(context: AccessibilityService, event: Int) {
-        if (isLandscapf && (lastEventTime + 1000 < System.currentTimeMillis() || lastEvent != event)) {
+        if (isLandscapf && (lastEventTime + 1500 < System.currentTimeMillis() || lastEvent != event)) {
             lastEvent = event
             lastEventTime = System.currentTimeMillis()
             Toast.makeText(context, "请重复手势~", Toast.LENGTH_SHORT).show()
@@ -171,7 +171,7 @@ class FloatVitualTouchBar(context: AccessibilityService, var isLandscapf:Boolean
         if (isLandscapf) {
             bar.setSize(dp2px(context, 12f), (minSize * 0.6).toInt(), TouchBarView.LEFT)
         } else {
-            bar.setSize(dp2px(context, 12f), (maxSize * 0.6).toInt(), TouchBarView.LEFT)
+            bar.setSize(dp2px(context, 12f), (minSize * 1.4).toInt(), TouchBarView.LEFT)
         }
 
         val params = WindowManager.LayoutParams()
@@ -225,7 +225,7 @@ class FloatVitualTouchBar(context: AccessibilityService, var isLandscapf:Boolean
         if (isLandscapf) {
             bar.setSize(dp2px(context, 12f), (minSize * 0.6).toInt(), TouchBarView.RIGHT)
         } else {
-            bar.setSize(dp2px(context, 12f), (maxSize * 0.6).toInt(), TouchBarView.RIGHT)
+            bar.setSize(dp2px(context, 12f), (minSize * 1.4).toInt(), TouchBarView.RIGHT)
         }
 
         val params = WindowManager.LayoutParams()
