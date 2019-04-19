@@ -74,11 +74,11 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
     }
 
     private fun startApp () {
+        if (!app.enabled) {
+            enableAll()
+        }
         val intent = this.context.getPackageManager().getLaunchIntentForPackage(app.packageName.toString())
         if (intent != null) {
-            if (!app.enabled) {
-                enableAll()
-            }
             this.context.startActivity(intent)
         }
     }
