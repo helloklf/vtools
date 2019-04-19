@@ -9,6 +9,7 @@ import android.os.Handler
 import android.widget.Toast
 import com.omarea.shared.CommonCmds
 import com.omarea.shared.MagiskExtend
+import com.omarea.shared.ShortcutHelper
 import com.omarea.shared.model.Appinfo
 import com.omarea.shell.CheckRootStatus
 import com.omarea.vtools.R
@@ -50,7 +51,8 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                                 "复制PackageName",
                                 "在应用商店查看",
                                 "禁用 + 隐藏",
-                                "转为系统应用"), { _, which ->
+                                "转为系统应用",
+                                "dex2oat编译"), { _, which ->
                     when (which) {
                         0 -> startApp()
                         1 -> backupAll(true, true)
@@ -65,6 +67,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                         10 -> showInMarket()
                         11 -> hideAll()
                         12 -> moveToSystem()
+                        13 -> dex2oatBuild()
                     }
                 })
                 .show()
@@ -235,5 +238,9 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                 .setCancelable(true)
                 .create()
                 .show()
+    }
+
+    private fun dex2oatBuild() {
+        super.buildAll();
     }
 }

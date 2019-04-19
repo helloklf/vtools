@@ -536,7 +536,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         execShell(sb)
     }
 
-    private fun buildAll() {
+    protected fun buildAll() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             Toast.makeText(context, "该功能只支持Android N（7.0）以上的系统！", Toast.LENGTH_SHORT).show()
             return
