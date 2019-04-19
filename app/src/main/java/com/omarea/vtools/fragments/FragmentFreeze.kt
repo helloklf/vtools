@@ -262,6 +262,7 @@ class FragmentFreeze : Fragment() {
             KeepShellPublic.doCmdSync("pm enable " + it)
         }
         processBarDialog.hideDialog()
+        loadData()
     }
 
     private fun removeAll() {
