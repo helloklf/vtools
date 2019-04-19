@@ -3,6 +3,8 @@ package com.omarea.vtools.activitys
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -33,7 +35,8 @@ class ActivityQuickStart : Activity() {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
 
-        if (intent.getPackage().isNullOrEmpty()) {
+        val extras = intent.extras
+        if (extras == null || !extras.containsKey("packageName")) {
             Toast.makeText(this, "该快捷方式无效！", Toast.LENGTH_SHORT).show()
             start_state_text.text = "无效的快捷方式！"
         } else {
@@ -57,21 +60,35 @@ class ActivityQuickStart : Activity() {
     }
 
     private fun startApp() {
-        if (!intent.getPackage().isNullOrEmpty()) {
-            try {
-                // LauncherApps().startMainActivity()
-                KeepShellPublic.doCmdSync("pm enable ${intent.getPackage()};")
-                startActivity(intent)
-                finish()
-            } catch (ex: Exception) {
-                Toast.makeText(this, "启动应用失败，" + ex.message, Toast.LENGTH_LONG).show()
-                start_state_text.text = "启动应用失败！"
+        try {
+            val app = intent.getStringExtra("packageName");
+            val pm = packageManager
+
+            val appInfo = pm.getApplicationInfo(app, 0)
+            if (appInfo != null) {
+                if (!appInfo.enabled) {
+                    KeepShellPublic.doCmdSync("pm enable ${app};")
+                }
+
+                val appIntent = pm.getLaunchIntentForPackage(app)
+                if (appIntent != null) {
+                    appIntent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
+                    // LauncherApps().startMainActivity()
+                    appIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                    startActivity(appIntent)
+                    finish()
+                } else {
+                    start_state_text.text = "该应用无法启动！"
+                }
+            } else {
+                start_state_text.text = "此应用已被卸载！"
             }
-            finish()
-            return
-        } else {
-            // ShortcutHelper().createShortcut(this, "com.tencent.mm")
+        } catch (ex: Exception) {
+            Toast.makeText(this, "启动应用失败，" + ex.message, Toast.LENGTH_LONG).show()
+            start_state_text.text = "启动应用失败！"
         }
+        finish()
+        return
     }
 
     private var hasRoot = false

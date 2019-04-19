@@ -20,6 +20,8 @@ import com.omarea.vtools.activitys.ActivityQuickStart;
 import com.omarea.vtools.activitys.ActivityShortcut;
 import com.omarea.vtools.receiver.ReceiverShortcut;
 
+import java.lang.reflect.Array;
+
 public class ShortcutHelper {
     public boolean createShortcut(Context context, Appinfo appinfo) {
         return createShortcut(context, appinfo.packageName.toString());
@@ -66,9 +68,11 @@ public class ShortcutHelper {
             PackageManager packageManager = context.getPackageManager();
 
             if (shortcutManager.isRequestPinShortcutSupported()) {
-                Intent shortcutInfoIntent = context.getPackageManager().getLaunchIntentForPackage(packageName);
-                shortcutInfoIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-                shortcutInfoIntent.setAction(Intent.ACTION_VIEW);
+                Intent appIntent = context.getPackageManager().getLaunchIntentForPackage(packageName);
+
+                Intent shortcutIntent = new Intent(Intent.ACTION_MAIN);
+                shortcutIntent.setClassName(context.getApplicationContext(), ActivityQuickStart.class.getName());
+                shortcutIntent.putExtra("packageName", appIntent.getPackage());
 
                 Bitmap icon = ((BitmapDrawable)applicationInfo.loadIcon(packageManager)).getBitmap();
 
@@ -76,8 +80,8 @@ public class ShortcutHelper {
                         //.setIcon(Icon.createWithResource(context, R.drawable.android))
                         .setIcon(Icon.createWithBitmap(icon))
                         .setShortLabel(applicationInfo.loadLabel(packageManager))
-                        .setIntent(shortcutInfoIntent)
-                        .setActivity(new ComponentName(context, ActivityQuickStart.class)) // 只有“主要”活动 - 定义过滤器Intent#ACTION_MAIN 和Intent#CATEGORY_LAUNCHER意图过滤器的活动 - 才能成为目标活动
+                        .setIntent(shortcutIntent)
+                        .setActivity(new ComponentName(context, ActivityMain.class)) // 只有“主要”活动 - 定义过滤器Intent#ACTION_MAIN 和Intent#CATEGORY_LAUNCHER意图过滤器的活动 - 才能成为目标活动
                         .build();
 
                 //当添加快捷方式的确认弹框弹出来时，将被回调

@@ -235,6 +235,7 @@
             android:label="@string/title_activity_start_splash"
             android:theme="@style/AppThemeLight" />
         <activity
+            android:excludeFromRecents="true"
             android:name=".activitys.ActivityQuickStart"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_shortcut"
@@ -242,7 +243,6 @@
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 

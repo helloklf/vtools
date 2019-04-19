@@ -68,6 +68,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             return
         } else {
             // ShortcutHelper().createShortcut(this, "com.tencent.mm")
+            ShortcutHelper().createShortcut(this, "com.tencent.mobileqq")
         }
 
         /*
