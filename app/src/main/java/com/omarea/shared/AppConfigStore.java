@@ -91,8 +91,8 @@ public class AppConfigStore extends SQLiteOpenHelper {
         ArrayList<String> list = new ArrayList<String>();
         try {
             SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-            Cursor cursor = sqLiteDatabase.rawQuery("select id from app_config where dis_background_run = 1", new String[]{});
-            if (cursor.moveToNext()) {
+            Cursor cursor = sqLiteDatabase.rawQuery("select *  from app_config where dis_background_run = 1", null);
+            while (cursor.moveToNext()) {
                 list.add(cursor.getString(0));
             }
             cursor.close();
@@ -104,11 +104,12 @@ public class AppConfigStore extends SQLiteOpenHelper {
 
 
     public ArrayList<String> getFreezeAppList() {
+        getDozeAppList();
         ArrayList<String> list = new ArrayList<String>();
         try {
             SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-            Cursor cursor = sqLiteDatabase.rawQuery("select id from app_config where freeze = 1", new String[]{});
-            if (cursor.moveToNext()) {
+            Cursor cursor = sqLiteDatabase.rawQuery("select * from app_config where freeze == 1", null);
+            while (cursor.moveToNext()) {
                 list.add(cursor.getString(0));
             }
             cursor.close();
@@ -122,7 +123,8 @@ public class AppConfigStore extends SQLiteOpenHelper {
         boolean r = false;
         try {
             SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-            Cursor cursor = sqLiteDatabase.rawQuery("select * from app_config where dis_button = 1", new String[]{});
+            Cursor cursor = sqLiteDatabase.rawQuery("select * from app_config where dis_button == 1", new String[]{});
+            cursor.moveToFirst();
             if (cursor.moveToNext()) {
                 r = true;
             }

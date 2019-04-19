@@ -30,6 +30,9 @@ public class ShortcutHelper {
     }
 
     public boolean removeShortcut(Context context, Appinfo appinfo) {
+        return removeShortcut(context, appinfo.packageName.toString());
+    }
+    public boolean removeShortcut(Context context, String packageName) {
         return false; // TODO:完善功能
     }
 

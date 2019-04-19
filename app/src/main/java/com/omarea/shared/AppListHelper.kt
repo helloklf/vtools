@@ -7,6 +7,9 @@ import android.content.pm.PackageManager
 import com.omarea.shared.model.Appinfo
 import java.io.File
 import java.util.*
+import android.content.Intent
+
+
 
 /**
  * Created by helloklf on 2017/12/01.
@@ -145,7 +148,7 @@ class AppListHelper(context: Context) {
             // item.appType = if (applicationInfo.sourceDir.startsWith("/system")) Appinfo.AppType.SYSTEM else Appinfo.AppType.USER
             item.appType = if ((applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0) Appinfo.AppType.USER else Appinfo.AppType.SYSTEM
             try {
-                val packageInfo = packageManager.getPackageInfo(packageInfos[i].packageName, 0)
+                val packageInfo = packageManager.getPackageInfo(applicationInfo.packageName, 0)
                 item.versionName = packageInfo.versionName
                 item.versionCode = packageInfo.versionCode
             } catch (ex: Exception) {
@@ -166,6 +169,44 @@ class AppListHelper(context: Context) {
 
     fun getAll(): ArrayList<Appinfo> {
         return getAppList(null, false)
+    }
+
+    fun getBootableApps(): ArrayList<Appinfo> {
+        val mainIntent = Intent(Intent.ACTION_MAIN, null)
+        mainIntent.addCategory(Intent.CATEGORY_LAUNCHER)
+
+        val packageInfos = packageManager.queryIntentActivities(mainIntent, 0)
+
+        val list = ArrayList<Appinfo>()/*在数组中存放数据*/
+        for (i in packageInfos.indices) {
+            val applicationInfo = packageInfos[i].activityInfo.applicationInfo
+
+            val file = File(applicationInfo.publicSourceDir)
+            if (!file.exists())
+                continue
+
+            val item = Appinfo.getItem()
+            //val d = packageInfo.loadIcon(packageManager)
+            item.appName = applicationInfo.loadLabel(packageManager)
+            item.packageName = applicationInfo.packageName
+            //item.icon = d
+            item.dir = file.parent
+            item.enabled = applicationInfo.enabled
+            item.enabledState = checkBackup(applicationInfo)
+            item.wranState = if (applicationInfo.enabled) "" else "已冻结"
+            item.path = applicationInfo.sourceDir
+            // item.appType = if (applicationInfo.sourceDir.startsWith("/system")) Appinfo.AppType.SYSTEM else Appinfo.AppType.USER
+            item.appType = if ((applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0) Appinfo.AppType.USER else Appinfo.AppType.SYSTEM
+            try {
+                val packageInfo = packageManager.getPackageInfo(applicationInfo.packageName, 0)
+                item.versionName = packageInfo.versionName
+                item.versionCode = packageInfo.versionCode
+            } catch (ex: Exception) {
+            }
+
+            list.add(item)
+        }
+        return (list)
     }
 
     fun getApkFilesInfoList(dirPath: String): ArrayList<Appinfo> {

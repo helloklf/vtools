@@ -35,15 +35,28 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/freeze_settings"
+                style="?android:buttonBarButtonStyle"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginRight="10dp"
+                android:padding="0dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/freeze_settings" />
+
             <ImageButton
                 android:id="@+id/freeze_add"
-                android:padding="0dp"
                 style="?android:buttonBarButtonStyle"
-                android:src="@drawable/settings"
-                android:layout_marginRight="10dp"
-                android:layout_gravity="center"
                 android:layout_width="40dp"
-                android:layout_height="40dp" />
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginRight="10dp"
+                android:padding="0dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/freeze_add" />
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
@@ -56,7 +69,6 @@
         android:layout_height="0dp">
 
         <com.omarea.ui.OverScrollGridView
-            android:columnWidth="70dp"
             android:numColumns="4"
             android:id="@+id/freeze_apps"
             android:layout_width="match_parent"
