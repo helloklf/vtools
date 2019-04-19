@@ -31,7 +31,7 @@
                 <TextView
                     android:layout_marginTop="5dp"
                     style="@style/textSmall"
-                    android:text="偏见应用功能由“场景模式”负责，此处只是为了方便管理偏见应用，而增加的独立界面。"
+                    android:text="偏见应用由“动态响应”负责冻结，设备息屏1分钟后，自动冻结下面列表中的应用"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </LinearLayout>

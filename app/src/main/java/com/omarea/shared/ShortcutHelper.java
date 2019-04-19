@@ -21,6 +21,7 @@ import com.omarea.vtools.activitys.ActivityShortcut;
 import com.omarea.vtools.receiver.ReceiverShortcut;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class ShortcutHelper {
     private String prefix = "*";
@@ -85,7 +86,7 @@ public class ShortcutHelper {
 
                 Bitmap icon = ((BitmapDrawable)applicationInfo.loadIcon(packageManager)).getBitmap();
 
-                ShortcutInfo info = new ShortcutInfo.Builder(context, packageName)
+                final ShortcutInfo info = new ShortcutInfo.Builder(context, packageName)
                         //.setIcon(Icon.createWithResource(context, R.drawable.android))
                         .setIcon(Icon.createWithBitmap(icon))
                         .setShortLabel(prefix + applicationInfo.loadLabel(packageManager))
@@ -96,6 +97,10 @@ public class ShortcutHelper {
                 //当添加快捷方式的确认弹框弹出来时，将被回调
                 // PendingIntent shortcutCallbackIntent = PendingIntent.getBroadcast(context, 0, new Intent(context, MyReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT);
                 PendingIntent shortcutCallbackIntent = PendingIntent.getBroadcast(context, 0, new Intent(context, ReceiverShortcut.class), PendingIntent.FLAG_UPDATE_CURRENT);
+
+                shortcutManager.updateShortcuts(new ArrayList<ShortcutInfo>(){{
+                    add(info);
+                }});
 
                 // shortcutManager.removeAllDynamicShortcuts();
                 if (shortcutManager.isRequestPinShortcutSupported()) {
