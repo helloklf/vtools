@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.Toast
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.CheckRootStatus
+import com.omarea.shell.KeepShellPublic
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_start_splash.*
 import java.lang.ref.WeakReference
@@ -59,6 +60,7 @@ class ActivityQuickStart : Activity() {
         if (!intent.getPackage().isNullOrEmpty()) {
             try {
                 // LauncherApps().startMainActivity()
+                KeepShellPublic.doCmdSync("pm enable ${intent.getPackage()};")
                 startActivity(intent)
                 finish()
             } catch (ex: Exception) {

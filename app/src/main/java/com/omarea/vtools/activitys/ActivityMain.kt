@@ -62,6 +62,13 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (!intent.getPackage().isNullOrEmpty()) {
+            startActivity(intent)
+            finish()
+            return
+        } else {
+            // ShortcutHelper().createShortcut(this, "com.tencent.mm")
+        }
 
         /*
         StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
