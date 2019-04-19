@@ -3,18 +3,16 @@ package com.omarea.ui
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import com.omarea.shared.ModeList
 import com.omarea.shared.model.Appinfo
 import com.omarea.vtools.R
 import java.io.File
@@ -24,7 +22,7 @@ import java.util.*
  * Created by Hello on 2018/01/26.
  */
 
-class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, private var keywords: String = "") : BaseAdapter() {
+class FreezeAppAdapter(private val context: Context, apps: ArrayList<Appinfo>, private var keywords: String = "") : BaseAdapter() {
     private val list: ArrayList<Appinfo>?
 
     init {
@@ -76,6 +74,11 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
             } finally {
                 if (icon != null) {
                     viewHolder.imgView!!.post {
+                        if (item.enabled) {
+                            viewHolder.imgView!!.colorFilter = null
+                        } else {
+                            viewHolder.imgView!!.setColorFilter(Color.parseColor("#888888"), PorterDuff.Mode.LIGHTEN)
+                        }
                         viewHolder.imgView!!.setImageDrawable(icon)
                     }
                 }
@@ -100,13 +103,13 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
         var convertView = view
         if (convertView == null) {
-            convertView = View.inflate(context, R.layout.scene_mode_item, null)
+            convertView = View.inflate(context, R.layout.app_item_freeze, null)
         }
         updateRow(position, convertView!!)
         return convertView
     }
 
-    fun updateRow(position: Int, listView: OverScrollListView, appinfo: Appinfo) {
+    fun updateRow(position: Int, listView: OverScrollGridView, appinfo: Appinfo) {
         try {
             val visibleFirstPosi = listView.firstVisiblePosition
             val visibleLastPosi = listView.lastVisiblePosition
@@ -125,62 +128,24 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
         val item = getItem(position)
         val viewHolder = ViewHolder()
         viewHolder.itemTitle = convertView.findViewById(R.id.ItemTitle)
-        viewHolder.enabledStateText = convertView.findViewById(R.id.ItemEnabledStateText)
-        viewHolder.itemText = convertView.findViewById(R.id.ItemText)
-        viewHolder.itemDesc = convertView.findViewById(R.id.ItemDesc)
         viewHolder.imgView = convertView.findViewById(R.id.ItemIcon)
         viewHolder.imgView!!.setTag(getItem(position).packageName)
-        // convertView.tag = viewHolder
-        viewHolder.itemTitle!!.text = keywordHightLight(if(item.appConfigInfo.freeze) ("*" + item.appName) else item.appName.toString())
-        viewHolder.itemText!!.text = keywordHightLight(item.packageName.toString())
+        viewHolder.itemTitle!!.text = item.appName.toString()
         if (item.icon == null) {
             loadIcon(viewHolder, item)
         } else {
+            if (item.enabled) {
+                viewHolder.imgView!!.colorFilter = null
+            } else {
+                viewHolder.imgView!!.setColorFilter(Color.parseColor("#888888"), PorterDuff.Mode.SRC)
+            }
             viewHolder.imgView!!.setImageDrawable(item.icon)
         }
-        if (item.enabledState != null) {
-            val config = item.enabledState
-            var enabledState = ""
-            enabledState = ModeList.getModName(config.toString())
-            when (config) {
-                ModeList.POWERSAVE -> {
-                    viewHolder.enabledStateText!!.setTextColor(Color.parseColor("#0091D5"))
-                }
-                ModeList.PERFORMANCE -> {
-                    enabledState = ModeList.getModName(config.toString())
-                    viewHolder.enabledStateText!!.setTextColor(Color.parseColor("#6ECB00"))
-                }
-                ModeList.FAST -> {
-                    enabledState = ModeList.getModName(config.toString())
-                    viewHolder.enabledStateText!!.setTextColor(Color.parseColor("#FF7E00"))
-                }
-                ModeList.IGONED -> {
-                    enabledState = ModeList.getModName(config.toString())
-                    viewHolder.enabledStateText!!.setTextColor(Color.parseColor("#888888"))
-                }
-                ModeList.BALANCE -> {
-                    enabledState = ModeList.getModName(config.toString())
-                    viewHolder.enabledStateText!!.setTextColor(Color.parseColor("#00B78A"))
-                }
-                else -> {
-                    viewHolder.enabledStateText!!.setTextColor(Color.parseColor("#00B78A"))
-                }
-            }
-            viewHolder.enabledStateText!!.visibility = VISIBLE
-            viewHolder.enabledStateText!!.text = enabledState
-        } else
-            viewHolder.enabledStateText!!.visibility = GONE
-
-        if (viewHolder.itemDesc != null)
-            viewHolder.itemDesc!!.text = item.desc
 
     }
 
     inner class ViewHolder {
         internal var itemTitle: TextView? = null
         internal var imgView: ImageView? = null
-        internal var itemText: TextView? = null
-        internal var itemDesc: TextView? = null
-        internal var enabledStateText: TextView? = null
     }
 }

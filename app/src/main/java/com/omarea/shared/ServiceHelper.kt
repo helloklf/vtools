@@ -174,6 +174,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
                 }
             }
             if (System.currentTimeMillis() - lastScreenOnOff >= SCREEN_OFF_SWITCH_NETWORK_DELAY) {
+                sceneMode.onScreenOff()
                 systemScene.onScreenOff()
             }
         }

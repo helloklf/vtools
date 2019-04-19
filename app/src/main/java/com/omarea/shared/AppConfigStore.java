@@ -10,8 +10,10 @@ import com.omarea.shared.model.AppConfigInfo;
 import java.util.ArrayList;
 
 public class AppConfigStore extends SQLiteOpenHelper {
+    private static final int DB_VERSION = 2;
+
     public AppConfigStore(Context context) {
-        super(context, "app-settings", null, 1);
+        super(context, "app-settings", null, DB_VERSION);
     }
 
     @Override
@@ -24,14 +26,19 @@ public class AppConfigStore extends SQLiteOpenHelper {
                     "dis_notice int default(0)," +
                     "dis_button int default(0)," +
                     "gps_on int default(0)," +
-                    "dis_background_run int default(0))");
+                    "dis_background_run int default(0)," +
+                    "freeze int default(0)" +
+                    ")");
         } catch (Exception ignored) {
         }
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        if (oldVersion == 1 && newVersion == 2) {
+            String sql = "Alter table app_config add column freeze int default(0)";
+            db.execSQL(sql);
+        }
     }
 
     public AppConfigInfo getAppConfig(String app) {
@@ -46,6 +53,7 @@ public class AppConfigStore extends SQLiteOpenHelper {
                 appConfigInfo.disButton = cursor.getInt(cursor.getColumnIndex("dis_button")) == 1;
                 appConfigInfo.gpsOn = cursor.getInt(cursor.getColumnIndex("gps_on")) == 1;
                 appConfigInfo.disBackgroundRun = cursor.getInt(cursor.getColumnIndex("dis_background_run")) == 1;
+                appConfigInfo.freeze = cursor.getInt(cursor.getColumnIndex("freeze")) == 1;
             }
             cursor.close();
             sqLiteDatabase.close();
@@ -60,18 +68,19 @@ public class AppConfigStore extends SQLiteOpenHelper {
         getWritableDatabase().beginTransaction();
         try {
             database.execSQL("delete from  app_config where id = ?", new String[]{appConfigInfo.packageName});
-            database.execSQL("insert into app_config(id, alone_light, light, dis_notice, dis_button, gps_on, dis_background_run) values (?, ?, ?, ?, ?, ?, ?)", new Object[]{
+            database.execSQL("insert into app_config(id, alone_light, light, dis_notice, dis_button, gps_on, dis_background_run, freeze) values (?, ?, ?, ?, ?, ?, ?, ?)", new Object[]{
                     appConfigInfo.packageName,
                     appConfigInfo.aloneLight ? 1 : 0,
                     0,
                     appConfigInfo.disNotice ? 1 : 0,
                     appConfigInfo.disButton ? 1 : 0,
                     appConfigInfo.gpsOn ? 1 : 0,
-                    appConfigInfo.disBackgroundRun ? 1 : 0
+                    appConfigInfo.disBackgroundRun ? 1 : 0,
+                    appConfigInfo.freeze ? 1 : 0
             });
             database.setTransactionSuccessful();
             return true;
-        } catch (Exception ignored) {
+        } catch (Exception ex) {
             return false;
         } finally {
             database.endTransaction();
@@ -83,6 +92,22 @@ public class AppConfigStore extends SQLiteOpenHelper {
         try {
             SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
             Cursor cursor = sqLiteDatabase.rawQuery("select id from app_config where dis_background_run = 1", new String[]{});
+            if (cursor.moveToNext()) {
+                list.add(cursor.getString(0));
+            }
+            cursor.close();
+            sqLiteDatabase.close();
+        } catch (Exception ignored) {
+        }
+        return list;
+    }
+
+
+    public ArrayList<String> getFreezeAppList() {
+        ArrayList<String> list = new ArrayList<String>();
+        try {
+            SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+            Cursor cursor = sqLiteDatabase.rawQuery("select id from app_config where freeze = 1", new String[]{});
             if (cursor.moveToNext()) {
                 list.add(cursor.getString(0));
             }

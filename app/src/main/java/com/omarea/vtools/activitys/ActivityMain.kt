@@ -31,7 +31,6 @@ import android.view.MenuItem
 import android.widget.Toast
 import com.omarea.shared.AccessibleServiceHelper
 import com.omarea.shared.CrashHandler
-import com.omarea.shared.ShortcutHelper
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.units.BackupRestoreUnit
 import com.omarea.shell.units.BatteryUnit
@@ -62,15 +61,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
-        if (!intent.getPackage().isNullOrEmpty()) {
-            startActivity(intent)
-            finish()
-            return
-        } else {
-            // ShortcutHelper().createShortcut(this, "com.tencent.mm")
-            ShortcutHelper().createShortcut(this, "com.tencent.mobileqq")
-        }
-
         /*
         StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
                 .detectDiskReads()
@@ -332,6 +322,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         when (id) {
             R.id.nav_home -> fragment = FragmentHome()
+            R.id.nav_freeze -> fragment = FragmentFreeze.createPage()
             R.id.nav_applictions -> fragment = FragmentApplistions.createPage()
             R.id.nav_swap -> fragment = FragmentSwap.createPage()
             R.id.nav_battery -> fragment = FragmentBattery.createPage()
@@ -402,6 +393,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             menu.findItem(R.id.nav_profile).isEnabled = false
             menu.findItem(R.id.nav_additional).isEnabled = false
             menu.findItem(R.id.nav_app_magisk).isEnabled = false
+            menu.findItem(R.id.nav_freeze).isEnabled = false
         } catch (ex: Exception) {
 
         }

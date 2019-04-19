@@ -23,8 +23,14 @@ import com.omarea.vtools.receiver.ReceiverShortcut;
 import java.lang.reflect.Array;
 
 public class ShortcutHelper {
+    private String prefix = "*";
+
     public boolean createShortcut(Context context, Appinfo appinfo) {
         return createShortcut(context, appinfo.packageName.toString());
+    }
+
+    public boolean removeShortcut(Context context, Appinfo appinfo) {
+        return false; // TODO:完善功能
     }
 
     public boolean createShortcut(Context context, String packageName) {
@@ -37,7 +43,7 @@ public class ShortcutHelper {
             PackageManager packageManager = context.getPackageManager();
 
             //快捷方式的名称
-            shortcut.putExtra(Intent.EXTRA_SHORTCUT_NAME, applicationInfo.loadLabel(packageManager));//快捷方式的名字
+            shortcut.putExtra(Intent.EXTRA_SHORTCUT_NAME, prefix + applicationInfo.loadLabel(packageManager));//快捷方式的名字
             shortcut.putExtra("duplicate", true); // 是否允许重复创建
 
             Bitmap icon = ((BitmapDrawable)applicationInfo.loadIcon(packageManager)).getBitmap();
@@ -79,7 +85,7 @@ public class ShortcutHelper {
                 ShortcutInfo info = new ShortcutInfo.Builder(context, packageName)
                         //.setIcon(Icon.createWithResource(context, R.drawable.android))
                         .setIcon(Icon.createWithBitmap(icon))
-                        .setShortLabel(applicationInfo.loadLabel(packageManager))
+                        .setShortLabel(prefix + applicationInfo.loadLabel(packageManager))
                         .setIntent(shortcutIntent)
                         .setActivity(new ComponentName(context, ActivityMain.class)) // 只有“主要”活动 - 定义过滤器Intent#ACTION_MAIN 和Intent#CATEGORY_LAUNCHER意图过滤器的活动 - 才能成为目标活动
                         .build();
@@ -92,8 +98,10 @@ public class ShortcutHelper {
                 if (shortcutManager.isRequestPinShortcutSupported()) {
                     shortcutManager.requestPinShortcut(info, shortcutCallbackIntent.getIntentSender());
                     // shortcutManager.getPinnedShortcuts();
+                    return true;
+                } else {
+                    return false;
                 }
-                return false;
             }
             return true;
         } catch (Exception ex) {

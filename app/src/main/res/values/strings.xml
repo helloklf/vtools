@@ -138,6 +138,7 @@
     <string name="menu_home">概况</string>
     <string name="menu_paypal">捐赠打赏</string>
     <string name="menu_cofig">场景模式</string>
+    <string name="menu_freeze">应用偏见</string>
     <string name="menu_core_control">CPU 控制</string>
     <string name="menu_additional">附加功能</string>
     <string name="menu_applictions">应用管理</string>

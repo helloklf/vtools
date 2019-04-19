@@ -8,6 +8,8 @@ import com.omarea.shared.model.AppConfigInfo
 import com.omarea.shell.KeepShellPublic
 
 class SceneMode private constructor(private var contentResolver: ContentResolver, private var store: AppConfigStore) {
+    private var freezList = ArrayList<String>();
+
     companion object {
         @Volatile
         var instance: SceneMode? = null
@@ -261,6 +263,10 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
                 } else {
                     restoreHeaddUp()
                 }
+
+                if (config!!.freeze && !freezList.contains(config!!.packageName)) {
+                    freezList.add(config!!.packageName)
+                }
             }
 
             lastAppPackageName = packageName
@@ -280,5 +286,16 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
         restoreLocationModeState()
         resumeState()
         config = null
+    }
+
+    fun onScreenOff() {
+        while (freezList.size > 0) {
+            val packageName = freezList.first()
+            val config = store.getAppConfig(packageName)
+            if (config.freeze) {
+                KeepShellPublic.doCmdSync("pm disable " + packageName)
+            }
+            freezList.remove(packageName)
+        }
     }
 }

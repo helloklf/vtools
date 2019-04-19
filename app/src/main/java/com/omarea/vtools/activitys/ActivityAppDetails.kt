@@ -444,6 +444,23 @@ class ActivityAppDetails : AppCompatActivity() {
         app_details_gps.setOnClickListener {
             appConfigInfo.gpsOn = (it as Switch).isChecked
         }
+
+        app_details_freeze.setOnClickListener {
+            val value = (it as Switch).isChecked
+            if (value) {
+                if(ShortcutHelper().createShortcut(this.applicationContext, appConfigInfo.packageName)) {
+                    appConfigInfo.freeze = true
+                    KeepShellPublic.doCmdSync("pm disable " + appConfigInfo.packageName)
+                    Toast.makeText(this, "当前应用已禁用，但你可以通过刚刚添加的快捷方式启动^_^", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(this, "创建启动快捷方式失败，没有它你没法启动被冻结的应用，所以你不能打开这个功能...", Toast.LENGTH_LONG).show()
+                    it.isChecked = false
+                }
+            } else {
+                appConfigInfo.freeze = value
+            }
+        }
+
         if (XposedCheck.xposedIsRunning()) {
             if (appConfigInfo.dpi >= 96) {
                 app_details_dpi.text = appConfigInfo.dpi.toString()
@@ -601,6 +618,7 @@ class ActivityAppDetails : AppCompatActivity() {
         app_details_disbackground.isChecked = appConfigInfo.disBackgroundRun
         app_details_aloowlight.isChecked = appConfigInfo.aloneLight
         app_details_gps.isChecked = appConfigInfo.gpsOn
+        app_details_freeze.isChecked = appConfigInfo.freeze
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -625,7 +643,8 @@ class ActivityAppDetails : AppCompatActivity() {
                 appConfigInfo.gpsOn != originConfig.gpsOn ||
                 appConfigInfo.dpi != originConfig.dpi ||
                 appConfigInfo.excludeRecent != originConfig.excludeRecent ||
-                appConfigInfo.smoothScroll != originConfig.smoothScroll
+                appConfigInfo.smoothScroll != originConfig.smoothScroll ||
+                appConfigInfo.freeze != originConfig.freeze
         ) {
             setResult(RESULT_OK, this.intent)
         } else {

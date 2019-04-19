@@ -18,6 +18,10 @@
                 android:icon="@drawable/ic_menu_profile"
                 android:title="@string/menu_cofig" />
             <item
+                android:id="@+id/nav_freeze"
+                android:icon="@drawable/ic_menu_freeze"
+                android:title="@string/menu_freeze" />
+            <item
                 android:id="@+id/nav_battery_stats"
                 android:icon="@drawable/battery"
                 android:title="@string/menu_battery_stats" />

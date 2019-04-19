@@ -4,23 +4,21 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.CheckRootStatus
 import com.omarea.shell.KeepShellPublic
 import com.omarea.vtools.R
-import kotlinx.android.synthetic.main.activity_start_splash.*
+import kotlinx.android.synthetic.main.activity_quick_start.*
 import java.lang.ref.WeakReference
 
 class ActivityQuickStart : Activity() {
+    lateinit var appPackageName:String
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        ThemeSwitch.switchTheme(this)
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_quick_start)
@@ -37,20 +35,32 @@ class ActivityQuickStart : Activity() {
 
         val extras = intent.extras
         if (extras == null || !extras.containsKey("packageName")) {
-            Toast.makeText(this, "该快捷方式无效！", Toast.LENGTH_SHORT).show()
             start_state_text.text = "无效的快捷方式！"
         } else {
-            checkRoot(CheckRootSuccess(this))
+            appPackageName = intent.getStringExtra("packageName");
+            val pm = packageManager
+
+            val appInfo = pm.getApplicationInfo(appPackageName, 0)
+            if (appInfo != null) {
+                if (appInfo.enabled) {
+                    startApp()
+                } else {
+                    checkRoot(CheckRootSuccess(this, appPackageName))
+                }
+            } else {
+                start_state_text.text = "此应用已被卸载！"
+            }
         }
     }
 
-    private class CheckRootSuccess(context: ActivityQuickStart) : Runnable {
+    private class CheckRootSuccess(context: ActivityQuickStart, private var appPackageName: String) : Runnable {
         private var context: WeakReference<ActivityQuickStart>;
         override fun run() {
-            context.get()!!.start_state_text.text = "检查并获取必需权限..."
+            context.get()!!.start_state_text.text = "正在启动应用..."
             context.get()!!.hasRoot = true
 
             // TODO:启动应用
+            KeepShellPublic.doCmdSync("pm enable ${appPackageName};")
             context.get()!!.startApp();
         }
 
@@ -59,35 +69,26 @@ class ActivityQuickStart : Activity() {
         }
     }
 
+
     private fun startApp() {
         try {
-            val app = intent.getStringExtra("packageName");
             val pm = packageManager
 
-            val appInfo = pm.getApplicationInfo(app, 0)
-            if (appInfo != null) {
-                if (!appInfo.enabled) {
-                    KeepShellPublic.doCmdSync("pm enable ${app};")
-                }
-
-                val appIntent = pm.getLaunchIntentForPackage(app)
-                if (appIntent != null) {
-                    appIntent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION
-                    // LauncherApps().startMainActivity()
-                    appIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    startActivity(appIntent)
+            val appIntent = pm.getLaunchIntentForPackage(appPackageName)
+            if (appIntent != null) {
+                // LauncherApps().startMainActivity()
+                appIntent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP // or Intent.FLAG_ACTIVITY_NO_ANIMATION
+                startActivity(appIntent)
+                // overridePendingTransition(0, 0)
+                start_state_text.postDelayed({
                     finish()
-                } else {
-                    start_state_text.text = "该应用无法启动！"
-                }
+                }, 1000)
             } else {
-                start_state_text.text = "此应用已被卸载！"
+                start_state_text.text = "该应用无法启动！"
             }
         } catch (ex: Exception) {
-            Toast.makeText(this, "启动应用失败，" + ex.message, Toast.LENGTH_LONG).show()
             start_state_text.text = "启动应用失败！"
         }
-        finish()
         return
     }
 
