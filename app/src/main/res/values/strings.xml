@@ -163,7 +163,7 @@
     <string name="dialog_addin_device_warn">请不要输入特殊符号，卸载Scene后备份的机型信息也会丢失！\n已兼容应用变量的机型代码，复制后重新打开此窗口即可使用！</string>
     <string name="dialog_addin_device_desc">修改后可点击“还原”->“确认”恢复修改前的机型，卸载Scene会导致备份的机型信息丢失，请务必还原后再卸载！\n\n或者，你也可以通过重新刷入完整ROM来恢复机型信息！\n\n使用DualBootPatcher多系统软件切勿使用本功能修改机型！！！</string>
     <string name="dialog_addin_device_inner">预设模板</string>
-    <string name="title_activity_shortcut">ActivityShortcut</string>
+    <string name="title_activity_shortcut">快捷启动</string>
     <string name="title_activity_online">Scene-Online</string>
 
     <string name="shortcut_disabled">暂不可用</string>

@@ -31,6 +31,7 @@ import android.view.MenuItem
 import android.widget.Toast
 import com.omarea.shared.AccessibleServiceHelper
 import com.omarea.shared.CrashHandler
+import com.omarea.shared.ShortcutHelper
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.units.BackupRestoreUnit
 import com.omarea.shell.units.BatteryUnit
@@ -61,6 +62,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
+
         /*
         StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
                 .detectDiskReads()
@@ -77,7 +79,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .build());
         */
         CrashHandler().init(this)
-        val intent = Intent(this.applicationContext, StartSplashActivity::class.java)
+        val intent = Intent(this.applicationContext, ActivityStartSplash::class.java)
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivityForResult(intent, 999)
         //setMaxAspect()

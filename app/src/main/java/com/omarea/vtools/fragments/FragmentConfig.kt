@@ -33,7 +33,7 @@ import com.omarea.vtools.*
 import com.omarea.vtools.activitys.ActivityAddinOnline
 import com.omarea.vtools.activitys.ActivityAdvSettings
 import com.omarea.vtools.activitys.ActivityFileSelector
-import com.omarea.vtools.activitys.AppDetailsActivity
+import com.omarea.vtools.activitys.ActivityAppDetails
 import com.omarea.vtools.services.MonitorService
 import kotlinx.android.synthetic.main.layout_config.*
 import org.json.JSONObject
@@ -193,7 +193,7 @@ class FragmentConfig : Fragment() {
         config_defaultlist.setOnItemClickListener { parent, view, position, id ->
             try {
                 val item = (parent.adapter.getItem(position) as Appinfo)
-                val intent = Intent(this.context, AppDetailsActivity::class.java)
+                val intent = Intent(this.context, ActivityAppDetails::class.java)
                 intent.putExtra("app", item.packageName)
                 startActivityForResult(intent, REQUEST_APP_CONFIG)
                 lastClickRow = view

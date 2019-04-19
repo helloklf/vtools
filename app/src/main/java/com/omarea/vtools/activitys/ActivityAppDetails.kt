@@ -34,7 +34,7 @@ import java.io.File
 import java.util.*
 
 
-class AppDetailsActivity : AppCompatActivity() {
+class ActivityAppDetails : AppCompatActivity() {
     var app = ""
     lateinit var policyControl: PolicyControl
     lateinit var appConfigInfo: AppConfigInfo

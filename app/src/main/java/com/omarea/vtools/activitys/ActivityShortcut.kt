@@ -18,9 +18,11 @@ class ActivityShortcut : Activity() {
         super.onCreate(savedInstanceState)
         if (Platform().dynamicSupport(this) || File(CommonCmds.POWER_CFG_PATH).exists()) {
             val action = intent.action
-            if (action != null && !action.isNullOrEmpty()) {
+            if (action == "powersave" || action == "balance" || action == "performance" || action == "fast") {
                 installConfig(action)
                 Toast.makeText(applicationContext, ModeList.getModName(action), Toast.LENGTH_SHORT).show()
+            } else if (!intent.getPackage().isNullOrEmpty()) {
+                startActivity(intent)
             }
         } else {
             Toast.makeText(applicationContext, getString(R.string.device_unsupport), Toast.LENGTH_LONG).show()

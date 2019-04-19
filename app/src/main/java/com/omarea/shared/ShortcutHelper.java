@@ -1,6 +1,7 @@
 package com.omarea.shared;
 
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -14,6 +15,8 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.widget.Toast;
 import com.omarea.shared.model.Appinfo;
+import com.omarea.vtools.activitys.ActivityMain;
+import com.omarea.vtools.activitys.ActivityQuickStart;
 import com.omarea.vtools.activitys.ActivityShortcut;
 import com.omarea.vtools.receiver.ReceiverShortcut;
 
@@ -63,11 +66,8 @@ public class ShortcutHelper {
             PackageManager packageManager = context.getPackageManager();
 
             if (shortcutManager.isRequestPinShortcutSupported()) {
-                // Intent shortcutInfoIntent = context.getPackageManager().getLaunchIntentForPackage(packageName);
-                // shortcutInfoIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-                // shortcutInfoIntent.setAction(Intent.ACTION_VIEW);
-
-                Intent shortcutInfoIntent = new Intent(context, ActivityShortcut.class);
+                Intent shortcutInfoIntent = context.getPackageManager().getLaunchIntentForPackage(packageName);
+                shortcutInfoIntent.addCategory(Intent.CATEGORY_LAUNCHER);
                 shortcutInfoIntent.setAction(Intent.ACTION_VIEW);
 
                 Bitmap icon = ((BitmapDrawable)applicationInfo.loadIcon(packageManager)).getBitmap();
@@ -77,6 +77,7 @@ public class ShortcutHelper {
                         .setIcon(Icon.createWithBitmap(icon))
                         .setShortLabel(applicationInfo.loadLabel(packageManager))
                         .setIntent(shortcutInfoIntent)
+                        .setActivity(new ComponentName(context, ActivityQuickStart.class)) // 只有“主要”活动 - 定义过滤器Intent#ACTION_MAIN 和Intent#CATEGORY_LAUNCHER意图过滤器的活动 - 才能成为目标活动
                         .build();
 
                 //当添加快捷方式的确认弹框弹出来时，将被回调
@@ -92,6 +93,7 @@ public class ShortcutHelper {
             }
             return true;
         } catch (Exception ex) {
+            Toast.makeText(context, "创建快捷方式失败" + ex.getMessage(), Toast.LENGTH_LONG).show();
             return false;
         }
     }

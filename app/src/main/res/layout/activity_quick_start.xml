@@ -9,62 +9,8 @@
     android:fitsSystemWindows="false"
     tools:context=".activitys.ActivityStartSplash">
 
-    <ScrollView
-        android:id="@+id/start_contract"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <LinearLayout
-            android:layout_gravity="center"
-            android:orientation="vertical"
-            android:padding="20dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:text="声明"
-                android:textSize="20dp"
-                android:layout_marginBottom="10dp"
-                android:textColor="@android:color/white"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-            <TextView
-                android:textSize="15dp"
-                android:autoLink="all"
-                android:textColor="#d0ffffff"
-                android:text="@string/scene_contract"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-            <LinearLayout
-                android:layout_marginTop="20dp"
-                android:gravity="right"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <Button
-                    android:id="@+id/contract_exit"
-                    android:textColor="@android:color/white"
-                    android:layout_width="60dp"
-                    android:layout_height="32dp"
-                    android:layout_marginEnd="6dp"
-                    android:background="@drawable/btn_bg"
-                    android:text="退出"
-                    android:textSize="14dp" />
-                <Button
-                    android:id="@+id/contract_confirm"
-                    android:textColor="@android:color/white"
-                    android:layout_width="60dp"
-                    android:layout_height="32dp"
-                    android:layout_marginEnd="6dp"
-                    android:background="@drawable/btn_bg"
-                    android:text="继续使用"
-                    android:textSize="14dp" />
-            </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
-
     <LinearLayout
         android:id="@+id/start_logo"
-        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -95,7 +41,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="15sp"
             android:layout_marginBottom="40sp"
-            android:text="现在，先校验一些权限设置..."
+            android:text="正准备启动应用"
             android:textAlignment="center"
             android:textColor="#aaffffff"
             android:textSize="12sp" />

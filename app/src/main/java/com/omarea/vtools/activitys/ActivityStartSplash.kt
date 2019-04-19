@@ -6,28 +6,24 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.PermissionChecker
-import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.View
-import com.omarea.shared.CommonCmds
 import com.omarea.shared.ConfigInstaller
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.Busybox
 import com.omarea.shell.CheckRootStatus
-import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.WriteSettings
 import com.omarea.vtools.R
 import com.omarea.vtools.services.ServiceBattery
 import kotlinx.android.synthetic.main.activity_start_splash.*
 import java.lang.ref.WeakReference
 
-class StartSplashActivity : Activity() {
+class ActivityStartSplash : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ThemeSwitch.switchTheme(this)
@@ -68,8 +64,8 @@ class StartSplashActivity : Activity() {
         }
     }
 
-    private class CheckRootFail(context: StartSplashActivity) : Runnable {
-        private var context: WeakReference<StartSplashActivity>;
+    private class CheckRootFail(context: ActivityStartSplash) : Runnable {
+        private var context: WeakReference<ActivityStartSplash>;
         override fun run() {
             context.get()!!.next()
         }
@@ -79,8 +75,8 @@ class StartSplashActivity : Activity() {
         }
     }
 
-    private class CheckRootSuccess(context: StartSplashActivity) : Runnable {
-        private var context: WeakReference<StartSplashActivity>;
+    private class CheckRootSuccess(context: ActivityStartSplash) : Runnable {
+        private var context: WeakReference<ActivityStartSplash>;
         override fun run() {
             context.get()!!.start_state_text.text = "检查并获取必需权限..."
             context.get()!!.hasRoot = true
@@ -93,8 +89,8 @@ class StartSplashActivity : Activity() {
         }
     }
 
-    private class CheckFileWriteSuccess(context: StartSplashActivity) : Runnable {
-        private var context: WeakReference<StartSplashActivity>;
+    private class CheckFileWriteSuccess(context: ActivityStartSplash) : Runnable {
+        private var context: WeakReference<ActivityStartSplash>;
         override fun run() {
             context.get()!!.start_state_text.text = "检查Busybox是否安装..."
             Busybox(context.get()!!).forceInstall(BusyboxInstalled(context.get()!!))
@@ -105,8 +101,8 @@ class StartSplashActivity : Activity() {
         }
     }
 
-    private class BusyboxInstalled(context: StartSplashActivity) : Runnable {
-        private var context: WeakReference<StartSplashActivity>;
+    private class BusyboxInstalled(context: ActivityStartSplash) : Runnable {
+        private var context: WeakReference<ActivityStartSplash>;
         override fun run() {
             ConfigInstallerThread(context.get()!!.applicationContext).start()
             context.get()!!.next()
@@ -160,7 +156,7 @@ class StartSplashActivity : Activity() {
             if (!(checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     ActivityCompat.requestPermissions(
-                            this@StartSplashActivity,
+                            this@ActivityStartSplash,
                             arrayOf(
                                     Manifest.permission.READ_EXTERNAL_STORAGE,
                                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -172,7 +168,7 @@ class StartSplashActivity : Activity() {
                     )
                 } else {
                     ActivityCompat.requestPermissions(
-                            this@StartSplashActivity,
+                            this@ActivityStartSplash,
                             arrayOf(
                                     Manifest.permission.READ_EXTERNAL_STORAGE,
                                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
