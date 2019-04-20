@@ -1,7 +1,9 @@
 package com.omarea.vtools.fragments
 
 import android.app.AlertDialog
+import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,11 +19,13 @@ import com.omarea.ui.FreezeAppAdapter
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.layout_freeze.*
+import java.lang.StringBuilder
 
 
 class FragmentFreeze : Fragment() {
     private lateinit var processBarDialog: ProgressBarDialog
     private var freezeApps = java.util.ArrayList<String>()
+    private var handler:Handler = Handler()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
@@ -31,13 +35,6 @@ class FragmentFreeze : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         processBarDialog = ProgressBarDialog(context!!)
         processBarDialog.showDialog()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (isDetached) {
-            return
-        }
 
         freeze_apps.setOnItemClickListener { parent, view, position, id ->
             try {
@@ -63,19 +60,69 @@ class FragmentFreeze : Fragment() {
         loadData()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (isDetached) {
+            return
+        }
+    }
+
     private fun loadData() {
-        freezeApps = AppConfigStore(this.context).freezeAppList
+        val store = AppConfigStore(this.context)
+        freezeApps = store.freezeAppList
+        val pinnedShortcuts = ShortcutHelper().getPinnedShortcuts(this.context);
+
+        val lostedShortcuts = ArrayList<Appinfo>()
+        val lostedShortcutsName = StringBuilder()
+
         val allApp = AppListHelper(this.context!!).getAll()
+        allApp.forEach {
+            if (pinnedShortcuts.contains(it.packageName) && !it.enabled) {
+                if (!freezeApps.contains(it.packageName)) {
+                    val config = store.getAppConfig(it.packageName.toString())
+                    config.freeze = true
+                    store.setAppConfig(config)
+                    freezeApps.add(it.packageName.toString())
+                }
+            }
+        }
+
         val freezeAppsInfo = ArrayList<Appinfo>()
-        freezeApps.forEach {
+        for (it in freezeApps) {
             val packageName = it
             val result = allApp.find { it.packageName == packageName }
             if (result != null) {
                 freezeAppsInfo.add(result)
+
+                if(!pinnedShortcuts.contains(it)) {
+                    lostedShortcuts.add(result)
+                    lostedShortcutsName.append(result.appName).append("\n")
+                }
             }
         }
         freeze_apps.adapter = FreezeAppAdapter(this.context!!, freezeAppsInfo)
         processBarDialog.hideDialog()
+
+        if (lostedShortcuts.size > 0) {
+            AlertDialog.Builder(context)
+                    .setTitle("快捷方式丢失")
+                    .setMessage("以下被加入偏见模式的应用，启动快捷方式已丢失或未创建成功，是否立即重新创建？\n\n" + lostedShortcutsName.toString())
+                    .setPositiveButton(R.string.btn_confirm, {
+                        _, _ ->
+                        processBarDialog.showDialog("请稍等...")
+                        CreateShortcutThread(lostedShortcuts, this.context!!, Runnable {
+                            handler.post {
+                                loadData()
+                                processBarDialog.hideDialog()
+                            }
+                        }).start()
+                    })
+                    .setNegativeButton(R.string.btn_cancel, {
+                        _, _ ->
+                    })
+                    .create()
+                    .show()
+        }
     }
 
     private fun showOptions(appInfo: Appinfo, position: Int, view: View) {
@@ -130,10 +177,10 @@ class FragmentFreeze : Fragment() {
     private fun toggleEnable(appInfo: Appinfo) {
         if (appInfo.enabled) {
             disableApp(appInfo)
-            Toast.makeText(this.context, "√ 已冻结应用", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this.context, "× 已冻结应用", Toast.LENGTH_SHORT).show()
         } else {
             enableApp(appInfo)
-            Toast.makeText(this.context, "× 已解冻应用", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this.context, "√ 已解冻应用", Toast.LENGTH_SHORT).show()
         }
         appInfo.enabled = !appInfo.enabled
     }
@@ -159,9 +206,22 @@ class FragmentFreeze : Fragment() {
         }
     }
 
+    private class CreateShortcutThread(private var apps: ArrayList<Appinfo>, private var context: Context, private var onCompleted: Runnable): Thread() {
+        override fun run() {
+            for (appinfo in apps) {
+                if (!appinfo.enabled) {
+                    KeepShellPublic.doCmdSync("pm enable " + appinfo.packageName)
+                }
+                Thread.sleep(5000)
+                ShortcutHelper().createShortcut(this.context, appinfo.packageName.toString())
+            }
+            onCompleted.run()
+        }
+    }
+
     private fun addFreezeAppDialog() {
-        processBarDialog.showDialog()
-        val allApp = AppListHelper(this.context!!).getBootableApps()
+        // processBarDialog.showDialog()
+        val allApp = AppListHelper(this.context!!).getBootableApps(false, true)
         val apps = allApp.filter { !freezeApps.contains(it.packageName) }
         val items = apps.map { it.appName.toString() }.toTypedArray()
         val states = items.map { false }.toBooleanArray()
@@ -188,29 +248,42 @@ class FragmentFreeze : Fragment() {
                 .setCancelable(false)
                 .create()
                 .show()
-        processBarDialog.hideDialog()
+        // processBarDialog.hideDialog()
     }
 
     private fun addFreezeApps(selectedItems: ArrayList<String>) {
-        processBarDialog.showDialog()
-        val store = AppConfigStore(context)
-        val shortcutHelper = ShortcutHelper()
-        selectedItems.forEach {
-            val config = store.getAppConfig(it)
-            if (shortcutHelper.createShortcut(context, it)) {
-                config.freeze = true
-                if (store.setAppConfig(config)) {
-                    Log.e("添加", config.packageName)
-                    KeepShellPublic.doCmdSync("pm disable " + it)
-                } else {
-                    Toast.makeText(context, "保存配置失败\n" + it, Toast.LENGTH_SHORT).show()
-                }
-            } else {
-                Toast.makeText(context, "添加快捷方式失败\n" + it, Toast.LENGTH_SHORT).show()
+        processBarDialog.showDialog("正在处理...")
+        val next = Runnable{
+            handler.post {
+                loadData()
+                processBarDialog.hideDialog()
             }
         }
-        loadData()
-        processBarDialog.hideDialog()
+        AddFreezeAppsThread(this.context!!, selectedItems, next).start()
+    }
+
+    private class AddFreezeAppsThread(private var context: Context, private var selectedItems: ArrayList<String>, private var onCompleted: Runnable) : Thread() {
+        override fun run() {
+            val store = AppConfigStore(context)
+            val shortcutHelper = ShortcutHelper()
+            for (it in selectedItems) {
+                val config = store.getAppConfig(it)
+                if (shortcutHelper.createShortcut(context, it)) {
+                    Thread.sleep(2005)
+                    config.freeze = true
+                    if (store.setAppConfig(config)) {
+                        Log.e("添加", config.packageName)
+                        KeepShellPublic.doCmdSync("pm disable " + it)
+                    } else {
+                        // Toast.makeText(context, "保存配置失败\n" + it, Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    // Toast.makeText(context, "添加快捷方式失败\n" + it, Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            onCompleted.run()
+        }
     }
 
     private fun freezeOptionsDialog() {
@@ -237,19 +310,30 @@ class FragmentFreeze : Fragment() {
 
     private fun createShortcutAll() {
         processBarDialog.showDialog()
-        val shortcutHelper = ShortcutHelper()
-        freezeApps.forEach {
-            KeepShellPublic.doCmdSync("pm enable " + it)
-            shortcutHelper.createShortcut(context, it)
-            KeepShellPublic.doCmdSync("pm disable " + it)
+        CreateShortcutAllThread(this.context!!, freezeApps, Runnable {
+            handler.post {
+                processBarDialog.hideDialog()
+                loadData()
+            }
+        }).start()
+    }
+
+    private class CreateShortcutAllThread(private var context: Context, private var freezeApps:ArrayList<String>, private var onCompleted:Runnable): Thread() {
+        override fun run() {
+            val shortcutHelper = ShortcutHelper()
+            for (it in freezeApps) {
+                KeepShellPublic.doCmdSync("pm enable " + it)
+                Thread.sleep(5000)
+                shortcutHelper.createShortcut(context, it)
+                // KeepShellPublic.doCmdSync("pm disable " + it)
+            }
+            onCompleted.run()
         }
-        processBarDialog.hideDialog()
-        loadData()
     }
 
     private fun disableAll() {
         processBarDialog.showDialog()
-        freezeApps.forEach {
+        for (it in freezeApps) {
             KeepShellPublic.doCmdSync("pm disable " + it)
         }
         processBarDialog.hideDialog()
@@ -258,7 +342,7 @@ class FragmentFreeze : Fragment() {
 
     private fun enableAll() {
         processBarDialog.showDialog()
-        freezeApps.forEach {
+        for (it in freezeApps) {
             KeepShellPublic.doCmdSync("pm enable " + it)
         }
         processBarDialog.hideDialog()
@@ -267,16 +351,29 @@ class FragmentFreeze : Fragment() {
 
     private fun removeAll() {
         processBarDialog.showDialog()
-        val store = AppConfigStore(context)
-        val shortcutHelper = ShortcutHelper()
-        freezeApps.forEach {
-            val config = store.getAppConfig(it)
-            config.freeze = false
-            store.setAppConfig(config)
-            shortcutHelper.removeShortcut(context, it)
+        RemoveAllThread(this.context!!, freezeApps, Runnable {
+            handler.post {
+                loadData()
+                processBarDialog.hideDialog()
+            }
+        }).start()
+    }
+
+    private class RemoveAllThread(private var context: Context, private var freezeApps:ArrayList<String>, private var onCompleted:Runnable):Thread() {
+        override fun run() {
+
+            val store = AppConfigStore(context)
+            val shortcutHelper = ShortcutHelper()
+            for (it in freezeApps) {
+                KeepShellPublic.doCmdSync("pm enable " + it)
+                val config = store.getAppConfig(it)
+                config.freeze = false
+                store.setAppConfig(config)
+                shortcutHelper.removeShortcut(context, it)
+            }
+
+            onCompleted.run()
         }
-        loadData()
-        processBarDialog.hideDialog()
     }
 
     companion object {

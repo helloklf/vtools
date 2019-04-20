@@ -117,6 +117,8 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
                     Manifest.permission.CHANGE_CONFIGURATION,
                     Manifest.permission.WRITE_SECURE_SETTINGS,
                     Manifest.permission.SYSTEM_ALERT_WINDOW
+                    // Manifest.permission.UNINSTALL_SHORTCUT,
+                    // Manifest.permission.INSTALL_SHORTCUT
             )
             requiredPermission.forEach {
                 if (it == Manifest.permission.SYSTEM_ALERT_WINDOW) {

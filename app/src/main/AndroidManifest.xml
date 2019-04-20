@@ -167,6 +167,17 @@
             </intent-filter>
         </receiver>
 
+        <receiver
+            android:name=".receiver.ReceiverShortcut"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="@string/" />
+
+                <category android:name="android.intent.category.HOME" />
+            </intent-filter>
+        </receiver>
+
         <service
             android:name=".services.ServiceBattery"
             android:enabled="true"

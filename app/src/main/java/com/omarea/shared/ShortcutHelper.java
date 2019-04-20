@@ -13,8 +13,10 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.v4.util.Consumer;
 import android.widget.Toast;
 import com.omarea.shared.model.Appinfo;
+import com.omarea.vtools.R;
 import com.omarea.vtools.activitys.ActivityMain;
 import com.omarea.vtools.activitys.ActivityQuickStart;
 import com.omarea.vtools.activitys.ActivityShortcut;
@@ -22,9 +24,11 @@ import com.omarea.vtools.receiver.ReceiverShortcut;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ShortcutHelper {
     private String prefix = "*";
+    private static int requestCount = 0;
 
     public boolean createShortcut(Context context, Appinfo appinfo) {
         return createShortcut(context, appinfo.packageName.toString());
@@ -33,8 +37,21 @@ public class ShortcutHelper {
     public boolean removeShortcut(Context context, Appinfo appinfo) {
         return removeShortcut(context, appinfo.packageName.toString());
     }
+
     public boolean removeShortcut(Context context, String packageName) {
-        return false; // TODO:完善功能
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
+            return disableShortcutOreo(context, packageName);
+        } else {
+            return false; // TODO:完善功能
+        }
+    }
+
+    public ArrayList<String> getPinnedShortcuts(Context context) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
+            return getPinnedShortcutsOreo(context);
+        } else {
+            return new ArrayList<String>(); // TODO:完善功能
+        }
     }
 
     public boolean createShortcut(Context context, String packageName) {
@@ -65,7 +82,7 @@ public class ShortcutHelper {
 
             return true;
         } catch (Exception ex) {
-            Toast.makeText(context, "创建快捷方式失败" + ex.getMessage(), Toast.LENGTH_LONG).show();
+            // Toast.makeText(context, "创建快捷方式失败" + ex.getMessage(), Toast.LENGTH_LONG).show();
             return false;
         }
     }
@@ -95,15 +112,23 @@ public class ShortcutHelper {
                         .build();
 
                 //当添加快捷方式的确认弹框弹出来时，将被回调
-                // PendingIntent shortcutCallbackIntent = PendingIntent.getBroadcast(context, 0, new Intent(context, MyReceiver.class), PendingIntent.FLAG_UPDATE_CURRENT);
-                PendingIntent shortcutCallbackIntent = PendingIntent.getBroadcast(context, 0, new Intent(context, ReceiverShortcut.class), PendingIntent.FLAG_UPDATE_CURRENT);
+                Intent callback = new Intent(context, ReceiverShortcut.class);
+                callback.setAction(context.getString(R.string.scene_create_shortcut_action));
+                callback.putExtra("packageName", appIntent.getPackage());
 
-                shortcutManager.updateShortcuts(new ArrayList<ShortcutInfo>(){{
-                    add(info);
-                }});
-
+                requestCount++;
+                PendingIntent shortcutCallbackIntent = PendingIntent.getBroadcast(context, requestCount, callback, PendingIntent.FLAG_CANCEL_CURRENT);
                 // shortcutManager.removeAllDynamicShortcuts();
                 if (shortcutManager.isRequestPinShortcutSupported()) {
+                    List<ShortcutInfo> items = shortcutManager.getPinnedShortcuts();
+                    for (ShortcutInfo item : items) {
+                        if(item.getId().equals(info.getId())) {
+                            shortcutManager.updateShortcuts(new ArrayList<ShortcutInfo>(){{
+                                add(info);
+                            }});
+                            return true;
+                        }
+                    }
                     shortcutManager.requestPinShortcut(info, shortcutCallbackIntent.getIntentSender());
                     // shortcutManager.getPinnedShortcuts();
                     return true;
@@ -113,8 +138,43 @@ public class ShortcutHelper {
             }
             return true;
         } catch (Exception ex) {
-            Toast.makeText(context, "创建快捷方式失败" + ex.getMessage(), Toast.LENGTH_LONG).show();
+            // Toast.makeText(context, "处理快捷方式失败" + ex.getMessage(), Toast.LENGTH_LONG).show();
             return false;
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private boolean disableShortcutOreo(Context context, final String packageName) {
+        try {
+            ShortcutManager shortcutManager = (ShortcutManager) context.getSystemService(Context.SHORTCUT_SERVICE);
+
+            shortcutManager.removeDynamicShortcuts(new ArrayList<String>(){{
+                add(packageName);
+            }});
+            shortcutManager.disableShortcuts(new ArrayList<String>(){{
+                add(packageName);
+            }});
+            return true;
+        } catch (Exception ex) {
+            // Toast.makeText(context, "处理快捷方式失败" + ex.getMessage(), Toast.LENGTH_LONG).show();
+            return false;
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private ArrayList<String> getPinnedShortcutsOreo(Context context) {
+        ArrayList<String> packages = new ArrayList<String>();
+        try {
+            ShortcutManager shortcutManager = (ShortcutManager) context.getSystemService(Context.SHORTCUT_SERVICE);
+            List<ShortcutInfo> items = shortcutManager.getPinnedShortcuts();
+            for (ShortcutInfo shortcutInfo : items) {
+                CharSequence shortLabel = shortcutInfo.getShortLabel();
+                if (shortLabel != null && shortLabel.toString().startsWith(prefix)) {
+                    packages.add(shortcutInfo.getId());
+                }
+            }
+        } catch (Exception ignored) {
+        }
+        return packages;
     }
 }

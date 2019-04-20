@@ -171,7 +171,7 @@ class AppListHelper(context: Context) {
         return getAppList(null, false)
     }
 
-    fun getBootableApps(): ArrayList<Appinfo> {
+    fun getBootableApps(systemApp: Boolean? = null, removeIgnore: Boolean = true): ArrayList<Appinfo> {
         val mainIntent = Intent(Intent.ACTION_MAIN, null)
         mainIntent.addCategory(Intent.CATEGORY_LAUNCHER)
 
@@ -180,6 +180,14 @@ class AppListHelper(context: Context) {
         val list = ArrayList<Appinfo>()/*在数组中存放数据*/
         for (i in packageInfos.indices) {
             val applicationInfo = packageInfos[i].activityInfo.applicationInfo
+            if (removeIgnore && ignore.contains(applicationInfo.packageName) || exclude(applicationInfo.packageName)) {
+                continue
+            }
+
+            // if ((systemApp == false && applicationInfo.sourceDir.startsWith("/system")) || (systemApp == true && !applicationInfo.sourceDir.startsWith("/system")))
+            //    continue
+            if ((systemApp == false && isSystemApp(applicationInfo)) || (systemApp == true && !isSystemApp(applicationInfo)))
+                continue
 
             val file = File(applicationInfo.publicSourceDir)
             if (!file.exists())
