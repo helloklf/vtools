@@ -212,7 +212,7 @@ class FragmentFreeze : Fragment() {
                 if (!appinfo.enabled) {
                     KeepShellPublic.doCmdSync("pm enable " + appinfo.packageName)
                 }
-                Thread.sleep(5000)
+                Thread.sleep(2000)
                 ShortcutHelper().createShortcut(this.context, appinfo.packageName.toString())
             }
             onCompleted.run()
@@ -309,7 +309,7 @@ class FragmentFreeze : Fragment() {
     }
 
     private fun createShortcutAll() {
-        processBarDialog.showDialog()
+        processBarDialog.showDialog("请稍等，这可能有点慢...")
         CreateShortcutAllThread(this.context!!, freezeApps, Runnable {
             handler.post {
                 processBarDialog.hideDialog()
@@ -323,7 +323,7 @@ class FragmentFreeze : Fragment() {
             val shortcutHelper = ShortcutHelper()
             for (it in freezeApps) {
                 KeepShellPublic.doCmdSync("pm enable " + it)
-                Thread.sleep(5000)
+                Thread.sleep(2000)
                 shortcutHelper.createShortcut(context, it)
                 // KeepShellPublic.doCmdSync("pm disable " + it)
             }

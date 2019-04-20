@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.os.Build
+import android.provider.Settings
 import android.view.*
 import android.view.WindowManager.LayoutParams
 import android.widget.*
@@ -49,16 +50,19 @@ class FloatPowercfgSelector {
 
         val params = WindowManager.LayoutParams()
 
-        // 类型
-        params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
-        // 设置window type
-        //params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//6.0+
-            params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (Settings.canDrawOverlays(this.mContext)) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//6.0+
+                    params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                } else {
+                    params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
+                }
+            } else {
+                params.type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
+            }
         } else {
             params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
         }
-        // WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
 
         // 设置flag
 

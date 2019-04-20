@@ -9,6 +9,7 @@ import com.omarea.shell.KeepShellPublic
 
 class SceneMode private constructor(private var contentResolver: ContentResolver, private var store: AppConfigStore) {
     private var freezList = ArrayList<String>();
+    private val freezAppLimit = 5
 
     companion object {
         @Volatile
@@ -264,8 +265,12 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
                     restoreHeaddUp()
                 }
 
-                if (config!!.freeze && !freezList.contains(config!!.packageName)) {
+                if (config!!.freeze) {
+                    if (freezList.contains(config!!.packageName)) {
+                        freezList.remove(config!!.packageName)
+                    }
                     freezList.add(config!!.packageName)
+                    clearFreezeAppLimit()
                 }
             }
 
@@ -290,6 +295,17 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
 
     fun onScreenOff() {
         while (freezList.size > 0) {
+            val packageName = freezList.first()
+            val config = store.getAppConfig(packageName)
+            if (config.freeze) {
+                KeepShellPublic.doCmdSync("pm disable " + packageName)
+            }
+            freezList.remove(packageName)
+        }
+    }
+
+    fun clearFreezeAppLimit() {
+        while (freezList.size > freezAppLimit) {
             val packageName = freezList.first()
             val config = store.getAppConfig(packageName)
             if (config.freeze) {

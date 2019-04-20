@@ -298,6 +298,11 @@ class BootService : IntentService("vtools-boot") {
             activityManager.getMemoryInfo(info)
             LMKUnit().autoSetLMK(info.totalMem, keepShell)
         }
+
+        for (item in AppConfigStore(context).freezeAppList) {
+            keepShell.doCmdSync("pm disable " + item)
+        }
+
         keepShell.tryExit()
         stopSelf()
     }
