@@ -3,11 +3,8 @@ package com.omarea.vtools.popup
 import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Context.VIBRATOR_SERVICE
 import android.graphics.PixelFormat
 import android.os.Build
-import android.os.VibrationEffect
-import android.os.Vibrator
 import android.provider.Settings
 import android.util.Log
 import android.view.Gravity
@@ -24,7 +21,7 @@ import com.omarea.vtools.R
  *
  * @ClassName WindowUtils
  */
-class FloatVitualTouchBar(context: AccessibilityService, var isLandscapf:Boolean = false, private var vibratorOn:Boolean = false) {
+class FloatVitualTouchBar(context: AccessibilityService, var isLandscapf:Boolean = false) {
     private var bottomView: View? = null
     private var leftView: View? = null
     private var rightView: View? = null
@@ -33,7 +30,6 @@ class FloatVitualTouchBar(context: AccessibilityService, var isLandscapf:Boolean
 
     private var lastEventTime = 0L
     private var lastEvent = -1
-    private var vibrator: Vibrator = context.getSystemService(VIBRATOR_SERVICE) as Vibrator
 
     /**
      * 获取导航栏高度
@@ -81,15 +77,6 @@ class FloatVitualTouchBar(context: AccessibilityService, var isLandscapf:Boolean
             lastEventTime = System.currentTimeMillis()
             Toast.makeText(context, "请重复手势~", Toast.LENGTH_SHORT).show()
         } else {
-            if (vibratorOn) {
-                vibrator.cancel()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    // vibrator.vibrate(VibrationEffect.createWaveform(longArrayOf(20, 10), DEFAULT_AMPLITUDE))
-                    vibrator.vibrate(VibrationEffect.createOneShot(1, 1))
-                } else {
-                    vibrator.vibrate(longArrayOf(20, 10), -1)
-                }
-            }
             context.performGlobalAction(event)
         }
     }

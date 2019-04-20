@@ -256,6 +256,20 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:enabled="false"
+            android:excludeFromRecents="true"
+            android:icon="@drawable/freeze_logo"
+            android:name=".activitys.ActivityFreezeApps"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_freeze"
+            android:theme="@style/AppThemeLight">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name=".services.MonitorService"

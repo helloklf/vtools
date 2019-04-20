@@ -26,7 +26,9 @@ class FreezeAppAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
     private val list: ArrayList<Appinfo>?
 
     init {
-        this.list = filterAppList(apps, keywords)
+        val data = filterAppList(apps, keywords)
+        data.sortBy{ !it.enabled }
+        this.list = data
     }
 
     override fun getCount(): Int {
@@ -75,9 +77,9 @@ class FreezeAppAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
                 if (icon != null) {
                     viewHolder.imgView!!.post {
                         if (item.enabled) {
-                            viewHolder.imgView!!.colorFilter = null
+                            viewHolder.imgView!!.alpha = 1f
                         } else {
-                            viewHolder.imgView!!.setColorFilter(Color.parseColor("#888888"), PorterDuff.Mode.LIGHTEN)
+                            viewHolder.imgView!!.alpha = 0.3f
                         }
                         viewHolder.imgView!!.setImageDrawable(icon)
                     }
@@ -135,9 +137,9 @@ class FreezeAppAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
             loadIcon(viewHolder, item)
         } else {
             if (item.enabled) {
-                viewHolder.imgView!!.colorFilter = null
+                viewHolder.imgView!!.alpha = 1f
             } else {
-                viewHolder.imgView!!.setColorFilter(Color.parseColor("#888888"), PorterDuff.Mode.SRC)
+                viewHolder.imgView!!.alpha = 0.3f
             }
             viewHolder.imgView!!.setImageDrawable(item.icon)
         }

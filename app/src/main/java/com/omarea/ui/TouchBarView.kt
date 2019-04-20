@@ -222,6 +222,14 @@ class TouchBarView : View {
                     }
                     cleartEffect()
                 }
+                event.action == MotionEvent.ACTION_CANCEL -> {
+                    cleartEffect()
+                    return true
+                }
+                event.action == MotionEvent.ACTION_OUTSIDE -> {
+                    cleartEffect()
+                    return false
+                }
             }
         }
         return true

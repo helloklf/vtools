@@ -11,6 +11,9 @@ public class ReceiverShortcut extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         if (intent != null && intent.hasExtra("packageName")) {
             String packageName = intent.getStringExtra("packageName");
+            if (packageName.equals(context.getPackageName())) {
+                return;
+            }
             KeepShellPublic.INSTANCE.doCmdSync("pm disable " + packageName);
         }
     }

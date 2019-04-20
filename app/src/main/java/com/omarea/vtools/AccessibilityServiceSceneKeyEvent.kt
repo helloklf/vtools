@@ -98,8 +98,7 @@ class AccessibilityServiceSceneKeyEvent : AccessibilityService() {
         if (sharedPreferences2.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR, false)) {
             floatVitualTouchBar = FloatVitualTouchBar(
                     this,
-                    isLandscapf,
-                    sharedPreferences2.getBoolean(SpfConfig.CONFIG_SPF_TOUCH_BAR_VIBRATOR, false)
+                    isLandscapf
             )
         } else if (floatVitualTouchBar != null) {
             floatVitualTouchBar!!.hidePopupWindow()
