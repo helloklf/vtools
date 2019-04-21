@@ -277,10 +277,6 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
                 } else {
                     restoreHeaddUp()
                 }
-
-                if (config!!.freeze) {
-                    updateFreezeAppHistory(config!!.packageName)
-                }
             }
 
             lastAppPackageName = packageName
@@ -357,7 +353,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
      */
     fun clearFreezeAppTimeLimit() {
         val currentTime = System.currentTimeMillis()
-        val clearList = freezList.filter { currentTime - it.lastTime> freezAppTimeLimit }
+        val clearList = freezList.filter { currentTime - it.lastTime> freezAppTimeLimit && it.packageName != lastAppPackageName }
         clearList.forEach {
             val config = store.getAppConfig(it.packageName)
             if (config.freeze) {
