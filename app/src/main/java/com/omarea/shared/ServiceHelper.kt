@@ -122,13 +122,29 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         if (timer == null) {
             this.screenOn = !isScreenLocked()
             if (!screenOn) return
-            val time = if (batteryMonitro) 2000L else 10000L
+            var ticks = 0
             timer = Timer(true)
-            timer!!.scheduleAtFixedRate(object : TimerTask() {
-                override fun run() {
-                    notifyHelper.notify()
-                }
-            }, 0, time)
+            if (batteryMonitro) {
+                timer!!.scheduleAtFixedRate(object : TimerTask() {
+                    override fun run() {
+                        notifyHelper.notify()
+                        ticks %= 30
+                        if (ticks == 0) {
+                            sceneMode.clearFreezeAppTimeLimit()
+                        }
+                    }
+                }, 0, 2000L)
+            } else {
+                timer!!.scheduleAtFixedRate(object : TimerTask() {
+                    override fun run() {
+                        notifyHelper.notify()
+                        ticks %= 6
+                        if (ticks == 0) {
+                            sceneMode.clearFreezeAppTimeLimit()
+                        }
+                    }
+                }, 0, 10000L)
+            }
         }
     }
 

@@ -8,8 +8,16 @@ import com.omarea.shared.model.AppConfigInfo
 import com.omarea.shell.KeepShellPublic
 
 class SceneMode private constructor(private var contentResolver: ContentResolver, private var store: AppConfigStore) {
-    private var freezList = ArrayList<String>();
+    private class FreezeAppHistory {
+        var lastTime:Long = 0
+        var packageName: String = ""
+    }
+
+    private var freezList = ArrayList<FreezeAppHistory>()
+    // 偏见应用解冻数量限制
     private val freezAppLimit = 5
+    // 偏见应用后台超时时间
+    private val freezAppTimeLimit = 120000
 
     companion object {
         @Volatile
@@ -227,6 +235,11 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
             if (lastAppPackageName != packageName)
                 autoBoosterApp(lastAppPackageName)
 
+            // 离开偏见应用时，记录偏见应用最后活动时间
+            if (config != null && config!!.freeze) {
+                updateFreezeAppHistory(config!!.packageName)
+            }
+
             config = store.getAppConfig(packageName)
             if (config == null) {
                 restoreLocationModeState()
@@ -266,11 +279,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
                 }
 
                 if (config!!.freeze) {
-                    if (freezList.contains(config!!.packageName)) {
-                        freezList.remove(config!!.packageName)
-                    }
-                    freezList.add(config!!.packageName)
-                    clearFreezeAppLimit()
+                    updateFreezeAppHistory(config!!.packageName)
                 }
             }
 
@@ -294,24 +303,67 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
     }
 
     fun onScreenOff() {
-        while (freezList.size > 0) {
-            val packageName = freezList.first()
-            val config = store.getAppConfig(packageName)
-            if (config.freeze) {
-                KeepShellPublic.doCmdSync("pm disable " + packageName)
+        clearFreezeApp()
+    }
+
+    /**
+     * 添加偏见历史记录
+     */
+    fun updateFreezeAppHistory(packageName:String) {
+        for (it in freezList) {
+            if (it.packageName == packageName) {
+                freezList.remove(it)
+                break
             }
-            freezList.remove(packageName)
+        }
+        val history = FreezeAppHistory()
+        history.lastTime = System.currentTimeMillis()
+        history.packageName = packageName
+
+        freezList.add(history)
+        clearFreezeAppCountLimit()
+    }
+
+    /**
+     * 冻结所有解冻的偏见应用
+     */
+    fun clearFreezeApp() {
+        while (freezList.size > 0) {
+            val firstItem = freezList.first()
+            val config = store.getAppConfig(firstItem.packageName)
+            if (config.freeze) {
+                KeepShellPublic.doCmdSync("pm disable " + firstItem.packageName)
+            }
+            freezList.remove(firstItem)
         }
     }
 
-    fun clearFreezeAppLimit() {
+    /**
+     * 当解冻的偏见应用数量超过限制，冻结最先解冻的应用
+     */
+    fun clearFreezeAppCountLimit() {
         while (freezList.size > freezAppLimit) {
-            val packageName = freezList.first()
-            val config = store.getAppConfig(packageName)
+            val firstItem = freezList.first()
+            val config = store.getAppConfig(firstItem.packageName)
             if (config.freeze) {
-                KeepShellPublic.doCmdSync("pm disable " + packageName)
+                KeepShellPublic.doCmdSync("pm disable " + firstItem.packageName)
             }
-            freezList.remove(packageName)
+            freezList.remove(firstItem)
+        }
+    }
+
+    /**
+     * 冻结已经后台超时的偏见应用
+     */
+    fun clearFreezeAppTimeLimit() {
+        val currentTime = System.currentTimeMillis()
+        val clearList = freezList.filter { currentTime - it.lastTime> freezAppTimeLimit }
+        clearList.forEach {
+            val config = store.getAppConfig(it.packageName)
+            if (config.freeze) {
+                KeepShellPublic.doCmdSync("pm disable " + it.packageName)
+            }
+            freezList.remove(it)
         }
     }
 }
