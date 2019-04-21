@@ -26,7 +26,7 @@ import java.lang.ref.WeakReference
 class ActivityStartSplash : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        ThemeSwitch.switchTheme(this)
+        // ThemeSwitch.switchTheme(this)
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_start_splash)

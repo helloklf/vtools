@@ -106,6 +106,9 @@ class FragmentFreeze : Fragment() {
             store.close()
 
             handler.post {
+                if (freeze_apps == null) {
+                    return@post
+                }
                 freeze_apps.adapter = FreezeAppAdapter(this.context!!.applicationContext, freezeAppsInfo)
                 processBarDialog.hideDialog()
 

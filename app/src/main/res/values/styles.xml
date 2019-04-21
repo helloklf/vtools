@@ -37,6 +37,14 @@
         <item name="android:windowAnimationStyle">@style/activityAnim</item>
     </style>
 
+    <style name="AppThemeTransparent" parent="@android:style/Theme.Translucent.NoTitleBar.Fullscreen">
+        <item name="android:windowBackground">@android:color/transparent</item> <!-- 背景色透明度 -->
+        <item name="android:windowNoTitle">true</item><!-- 无标题 -->
+        <item name="android:windowIsTranslucent">true</item><!-- 半透明,设置为false无透明效果 -->
+        <item name="android:backgroundDimEnabled">true</item><!-- 模糊 -->
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item> <!-- 窗口样式Dialog -->
+    </style>
+
     <style name="AppThemeBlue" parent="AppThemeLight">
         <item name="android:navigationBarColor">@color/colorBlue</item>
         <item name="colorPrimary">@color/colorBlue</item>

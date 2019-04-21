@@ -250,7 +250,7 @@
             android:name=".activitys.ActivityQuickStart"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_shortcut"
-            android:theme="@style/AppThemeLight">
+            android:theme="@style/AppThemeTransparent">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -259,7 +259,7 @@
         <activity
             android:launchMode="singleTop"
             android:enabled="false"
-            android:excludeFromRecents="true"
+            android:excludeFromRecents="false"
             android:icon="@drawable/freeze_logo"
             android:roundIcon="@drawable/freeze_logo"
             android:name=".activitys.ActivityFreezeApps"
