@@ -146,13 +146,6 @@ override fun onCreate() {
         getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_SIMPLE, false).apply()
     }
 
-    private fun tryGetActivity(componentName: ComponentName): ActivityInfo? {
-        try {
-            return packageManager.getActivityInfo(componentName, 0)
-        } catch (e: PackageManager.NameNotFoundException) {
-            return null
-        }
-    }
 
     fun topAppPackageName(): String {
         var packageName = "";
@@ -184,127 +177,92 @@ override fun onCreate() {
 
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
-        if (event.packageName == null || event.className == null)
-            return
-        //android.app.AlertDialog
-
-        //val root = rootInActiveWindow
-        //if (root == null) {
-        //    return
-        //}
-
-        /*
-        if(event.source != null && event.source.window != null)
-            if (event.source.window.type != -1) {
-
-            }
-        if(event.source.parent != null && event.source.window != null) {
-            if (event.source.window.type != -1) {
-            }
-        }
-        val componentName = ComponentName(
-                event.packageName.toString(),
-                event.className.toString()
-        )
-        val activityInfo = tryGetActivity(componentName)
-        val isActivity = activityInfo != null
-        if(isActivity) {
-
-        }
-        */
-
-        val packageName = event.packageName.toString()
-        if (packageName == "android" || packageName == "com.android.systemui") {
-            return
-        }
-        if (packageName.contains("packageinstaller")) {
-            if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity")
+        try {
+            if (event.packageName == null || event.className == null)
                 return
 
-            if (flagRetriveWindow) {
+            val packageName = event.packageName.toString()
+            if (packageName == "android" || packageName == "com.android.systemui") {
+                return
+            }
+            if (packageName.contains("packageinstaller")) {
+                if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity")
+                    return
+
+                if (flagRetriveWindow) {
+                    try {
+                        AutoClick().packageinstallerAutoClick(this.applicationContext, event)
+                    } catch (ex: Exception) {
+                    }
+                }
+            } else if (packageName == "com.miui.securitycenter") {
                 try {
-                    AutoClick().packageinstallerAutoClick(this.applicationContext, event)
+                    AutoClick().miuiUsbInstallAutoClick(event)
                 } catch (ex: Exception) {
                 }
-            }
-        } else if (packageName == "com.miui.securitycenter") {
-            try {
-                AutoClick().miuiUsbInstallAutoClick(event)
-            } catch (ex: Exception) {
-            }
-            return
-        }
-
-        // 针对一加部分系统的修复
-        if ((packageName == "net.oneplus.h2launcher" || packageName == "net.oneplus.launcher") && event.className == "android.widget.LinearLayout") {
-            return
-        }
-
-        /*
-        val rootWindow = rootInActiveWindow
-        val source = event.source //rootInActiveWindow //event.source
-
-        if (source == null || rootWindow.windowId != source.windowId) {
-            return
-        }
-        val windowInfo = source.window
-        */
-
-        if (flagReportViewIds) {
-            val windows_ = windows
-            if (windows_ == null || windows_.isEmpty()) {
                 return
             }
-            if (windows_.size > 1) {
-                var lastWindow: AccessibilityWindowInfo? = null
-                for (window in windows_.iterator()) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && window.isInPictureInPictureMode) {
-                        continue
-                    }
-                    if (window.type == AccessibilityWindowInfo.TYPE_APPLICATION) {
-                        lastWindow = window
-                    } else {
-                        continue
-                    }
-                }
-                if (lastWindow == null) {
+
+            // 针对一加部分系统的修复
+            if ((packageName == "net.oneplus.h2launcher" || packageName == "net.oneplus.launcher") && event.className == "android.widget.LinearLayout") {
+                return
+            }
+
+            if (flagReportViewIds) {
+                val windows_ = windows
+                if (windows_ == null || windows_.isEmpty()) {
                     return
-                }
-                val windowInfo = lastWindow
-
-                /**
-                Window          层级(zOrder - window.layer)
-                --------------------------------------------
-                应用Window	    1~99
-                子Window	    1000~1999
-                系统Window	    2000~2999
-                 */
-                try {
-                    val source = event.source
-                    if (source == null) return
-
-                    if (source.windowId != windowInfo.id) {
+                } else if (windows_.size > 1) {
+                    var lastWindow: AccessibilityWindowInfo? = null
+                    for (window in windows_.iterator()) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && window.isInPictureInPictureMode) {
+                            continue
+                        }
+                        if (window.type == AccessibilityWindowInfo.TYPE_APPLICATION) {
+                            lastWindow = window
+                        } else {
+                            continue
+                        }
+                    }
+                    if (lastWindow == null) {
                         return
                     }
-                } catch (ex: Exception) {
-                }
-            }
-            lastPackageName = packageName
-            serviceHelper?.onFocusAppChanged(lastPackageName)
-        } else {
-            lastPackageName = packageName
-            serviceHelper?.onFocusAppChanged(lastPackageName)
-        }
+                    val windowInfo = lastWindow
 
-        handler.postDelayed({
-            if (lastPackageName != packageName) {
-                val lastEvent = topAppPackageName()
-                if (lastEvent.isNotEmpty() && lastEvent != lastPackageName) {
-                    serviceHelper?.onFocusAppChanged(lastEvent)
-                    lastPackageName = lastEvent
+                    /**
+                    Window          层级(zOrder - window.layer)
+                    --------------------------------------------
+                    应用Window	    1~99
+                    子Window	    1000~1999
+                    系统Window	    2000~2999
+                     */
+                    try {
+                        val source = event.source
+                        if (source == null || source.windowId != windowInfo.id) {
+                            return
+                        }
+                    } catch (ex: Exception) {
+                    }
                 }
+                lastPackageName = packageName
+                serviceHelper?.onFocusAppChanged(lastPackageName)
+            } else {
+                lastPackageName = packageName
+                serviceHelper?.onFocusAppChanged(lastPackageName)
             }
-        }, 2000)
+
+            handler.postDelayed({
+                if (lastPackageName != packageName) {
+                    val lastEvent = topAppPackageName()
+                    if (lastEvent.isNotEmpty() && lastEvent != lastPackageName) {
+                        serviceHelper?.onFocusAppChanged(lastEvent)
+                        lastPackageName = lastEvent
+                    }
+                }
+            }, 2000)
+        } finally {
+            event.recycle()
+        }
     }
 
     /*

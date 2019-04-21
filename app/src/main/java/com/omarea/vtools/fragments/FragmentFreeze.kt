@@ -103,9 +103,10 @@ class FragmentFreeze : Fragment() {
                     }
                 }
             }
+            store.close()
 
             handler.post {
-                freeze_apps.adapter = FreezeAppAdapter(this.context!!, freezeAppsInfo)
+                freeze_apps.adapter = FreezeAppAdapter(this.context!!.applicationContext, freezeAppsInfo)
                 processBarDialog.hideDialog()
 
                 if (lostedShortcuts.size > 0) {
@@ -171,6 +172,7 @@ class FragmentFreeze : Fragment() {
         val config = store.getAppConfig(appInfo.packageName.toString())
         config.freeze = false
         store.setAppConfig(config)
+        store.close()
 
         ShortcutHelper().removeShortcut(this.context!!, appInfo)
     }
@@ -290,6 +292,7 @@ class FragmentFreeze : Fragment() {
                     // Toast.makeText(context, "添加快捷方式失败\n" + it, Toast.LENGTH_SHORT).show()
                 }
             }
+            store.close()
 
             onCompleted.run()
         }
@@ -395,6 +398,7 @@ class FragmentFreeze : Fragment() {
                 store.setAppConfig(config)
                 shortcutHelper.removeShortcut(context, it)
             }
+            store.close()
 
             onCompleted.run()
         }

@@ -37,10 +37,10 @@ class ActivityFreezeApps : FragmentActivity() {
                 .commit()
 
         // 使用壁纸高斯模糊作为窗口背景
-        val wallPaper = WallpaperManager.getInstance(this).getDrawable();
-        this.getWindow().setBackgroundDrawable(wallPaper);
+        // val wallPaper = WallpaperManager.getInstance(this).getDrawable();
+        // this.getWindow().setBackgroundDrawable(wallPaper);
 
-        this.getWindow().setBackgroundDrawable(BitmapDrawable(resources, rsBlur((wallPaper as BitmapDrawable).bitmap, 25)))
+        // this.getWindow().setBackgroundDrawable(BitmapDrawable(resources, rsBlur((wallPaper as BitmapDrawable).bitmap, 25)))
     }
 
     private fun rsBlur(source: Bitmap, radius: Int): Bitmap {
@@ -69,5 +69,12 @@ class ActivityFreezeApps : FragmentActivity() {
         renderScript.destroy();
 
         return inputBmp;
+    }
+
+    override fun onPause() {
+        supportFragmentManager.fragments.clear()
+        super.onPause()
+        this.finish()
+        System.gc()
     }
 }

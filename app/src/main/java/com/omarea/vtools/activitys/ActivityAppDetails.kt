@@ -2,6 +2,7 @@ package com.omarea.vtools.activitys
 
 import android.annotation.SuppressLint
 import android.content.*
+import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -249,6 +250,11 @@ class ActivityAppDetails : AppCompatActivity() {
             app_details_permission.visibility = View.GONE
             app_details_auto.visibility = View.GONE
             app_details_assist.visibility = View.GONE
+            app_details_freeze.isEnabled = false
+        }
+
+        if ((packageManager.getPackageInfo(app, 0).applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0) {
+            app_freez_config.visibility = View.GONE
         }
 
         policyControl = PolicyControl(contentResolver)

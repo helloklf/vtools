@@ -257,9 +257,11 @@
             </intent-filter>
         </activity>
         <activity
+            android:launchMode="singleTop"
             android:enabled="false"
             android:excludeFromRecents="true"
             android:icon="@drawable/freeze_logo"
+            android:roundIcon="@drawable/freeze_logo"
             android:name=".activitys.ActivityFreezeApps"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_freeze"

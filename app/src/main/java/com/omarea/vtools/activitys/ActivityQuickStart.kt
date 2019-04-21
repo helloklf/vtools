@@ -80,9 +80,6 @@ class ActivityQuickStart : Activity() {
                 appIntent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP // or Intent.FLAG_ACTIVITY_NO_ANIMATION
                 startActivity(appIntent)
                 // overridePendingTransition(0, 0)
-                start_state_text.postDelayed({
-                    finish()
-                }, 1000)
             } else {
                 start_state_text.text = "该应用无法启动！"
             }
@@ -90,6 +87,11 @@ class ActivityQuickStart : Activity() {
             start_state_text.text = "启动应用失败！"
         }
         return
+    }
+
+    override fun onPause() {
+        super.onPause()
+        this.finish()
     }
 
     private var hasRoot = false

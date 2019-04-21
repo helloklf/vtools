@@ -12,6 +12,11 @@ import com.omarea.vtools.popup.FloatPowercfgSelector
 
 class ActivityQuickSwitchMode : Activity() {
 
+    override fun onPause() {
+        super.onPause()
+        this.finish()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //val window = window
