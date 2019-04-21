@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.ComponentName
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
@@ -64,57 +65,59 @@ class FragmentFreeze : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        if (isDetached) {
-            return
-        }
     }
 
     private fun loadData() {
         Thread(Runnable {
-            val store = AppConfigStore(this.context)
-            freezeApps = store.freezeAppList
-            val pinnedShortcuts = ShortcutHelper().getPinnedShortcuts(this.context);
+            try {
+                val store = AppConfigStore(this.context)
+                freezeApps = store.freezeAppList
+                val pinnedShortcuts = ShortcutHelper().getPinnedShortcuts(this.context);
 
-            val lostedShortcuts = ArrayList<Appinfo>()
-            val lostedShortcutsName = StringBuilder()
+                val lostedShortcuts = ArrayList<Appinfo>()
+                val lostedShortcutsName = StringBuilder()
 
-            val allApp = AppListHelper(this.context!!).getAll()
-            allApp.forEach {
-                if (pinnedShortcuts.contains(it.packageName) && !it.enabled) {
-                    if (!freezeApps.contains(it.packageName)) {
-                        val config = store.getAppConfig(it.packageName.toString())
-                        config.freeze = true
-                        store.setAppConfig(config)
-                        freezeApps.add(it.packageName.toString())
+                val allApp = AppListHelper(this.context!!).getAll()
+                allApp.forEach {
+                    if (pinnedShortcuts.contains(it.packageName) && !it.enabled) {
+                        if (!freezeApps.contains(it.packageName)) {
+                            val config = store.getAppConfig(it.packageName.toString())
+                            config.freeze = true
+                            store.setAppConfig(config)
+                            freezeApps.add(it.packageName.toString())
+                        }
                     }
                 }
-            }
 
-            val freezeAppsInfo = ArrayList<Appinfo>()
-            for (it in freezeApps) {
-                val packageName = it
-                val result = allApp.find { it.packageName == packageName }
-                if (result != null) {
-                    freezeAppsInfo.add(result)
+                val freezeAppsInfo = ArrayList<Appinfo>()
+                for (it in freezeApps) {
+                    val packageName = it
+                    val result = allApp.find { it.packageName == packageName }
+                    if (result != null) {
+                        freezeAppsInfo.add(result)
 
-                    if (!pinnedShortcuts.contains(it)) {
-                        lostedShortcuts.add(result)
-                        lostedShortcutsName.append(result.appName).append("\n")
+                        if (!pinnedShortcuts.contains(it)) {
+                            lostedShortcuts.add(result)
+                            lostedShortcutsName.append(result.appName).append("\n")
+                        }
                     }
                 }
-            }
-            store.close()
+                store.close()
 
-            handler.post {
-                if (freeze_apps == null) {
-                    return@post
-                }
-                freeze_apps.adapter = FreezeAppAdapter(this.context!!.applicationContext, freezeAppsInfo)
-                processBarDialog.hideDialog()
+                handler.post {
+                    try {
+                        freeze_apps.adapter = FreezeAppAdapter(this.context!!.applicationContext, freezeAppsInfo)
+                        processBarDialog.hideDialog()
 
-                if (lostedShortcuts.size > 0) {
-                    shortcutsLostDialog(lostedShortcutsName.toString(), lostedShortcuts)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) { // 即时是Oreo也可能出现获取不到已添加的快捷方式的情况，例如换了第三方桌面
+                            if (lostedShortcuts.size > 0) {
+                                shortcutsLostDialog(lostedShortcutsName.toString(), lostedShortcuts)
+                            }
+                        }
+                    } catch (ex: java.lang.Exception) {}
                 }
+            } catch (ex: java.lang.Exception) {
+
             }
         }).start()
     }
@@ -177,7 +180,7 @@ class FragmentFreeze : Fragment() {
         store.setAppConfig(config)
         store.close()
 
-        ShortcutHelper().removeShortcut(this.context!!, appInfo)
+        ShortcutHelper().removeShortcut(this.context!!, appInfo.packageName.toString())
     }
 
     private fun enableApp(appInfo: Appinfo) {
@@ -213,7 +216,7 @@ class FragmentFreeze : Fragment() {
         if (!appInfo.enabled) {
             enableApp(appInfo)
         }
-        if (ShortcutHelper().createShortcut(this.context!!, appInfo)) {
+        if (ShortcutHelper().createShortcut(this.context!!, appInfo.packageName.toString())) {
             Toast.makeText(this.context, "创建完成", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(this.context, "创建失败", Toast.LENGTH_SHORT).show()
@@ -269,8 +272,10 @@ class FragmentFreeze : Fragment() {
         processBarDialog.showDialog("正在处理...")
         val next = Runnable {
             handler.post {
-                loadData()
-                processBarDialog.hideDialog()
+                try {
+                    loadData()
+                    processBarDialog.hideDialog()
+                } catch (ex: java.lang.Exception) {}
             }
         }
         AddFreezeAppsThread(this.context!!, selectedItems, next).start()
@@ -286,7 +291,6 @@ class FragmentFreeze : Fragment() {
                     Thread.sleep(2005)
                     config.freeze = true
                     if (store.setAppConfig(config)) {
-                        Log.e("添加", config.packageName)
                         KeepShellPublic.doCmdSync("pm disable " + it)
                     } else {
                         // Toast.makeText(context, "保存配置失败\n" + it, Toast.LENGTH_SHORT).show()
@@ -385,6 +389,7 @@ class FragmentFreeze : Fragment() {
             handler.post {
                 loadData()
                 processBarDialog.hideDialog()
+                Toast.makeText(context, "你可能需要手动删除已添加的快捷方式！", Toast.LENGTH_LONG).show()
             }
         }).start()
     }

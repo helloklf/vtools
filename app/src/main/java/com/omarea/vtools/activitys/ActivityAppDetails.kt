@@ -253,7 +253,7 @@ class ActivityAppDetails : AppCompatActivity() {
             app_details_freeze.isEnabled = false
         }
 
-        if ((packageManager.getPackageInfo(app, 0).applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0) {
+        if ((packageManager.getPackageInfo(app, 0).applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0 || packageManager.getLaunchIntentForPackage(app) == null) {
             app_freez_config.visibility = View.GONE
         }
 

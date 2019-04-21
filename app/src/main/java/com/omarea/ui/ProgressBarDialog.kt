@@ -97,7 +97,12 @@ open class ProgressBarDialog(private var context: Context) {
             textView!!.text = text
             alert = AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
             alert!!.window!!.setWindowAnimations(R.style.windowAnim)
-            alert!!.show()
+
+            try {
+                alert!!.show()
+            } catch (ex: java.lang.Exception) {
+
+            }
         }
         return alert
     }

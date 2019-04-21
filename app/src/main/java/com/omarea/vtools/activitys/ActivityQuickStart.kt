@@ -72,13 +72,17 @@ class ActivityQuickStart : Activity() {
     private fun startApp() {
         val pm = packageManager
         val appIntent = pm.getLaunchIntentForPackage(appPackageName)
-        if (appIntent != null) {
-            // LauncherApps().startMainActivity()
-            appIntent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION or Intent.FLAG_ACTIVITY_NEW_TASK
-            startActivity(appIntent)
-            // overridePendingTransition(0, 0)
-        } else {
-            start_state_text.text = "该应用无法启动！"
+        try {
+            if (appIntent != null) {
+                // LauncherApps().startMainActivity()
+                appIntent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION or Intent.FLAG_ACTIVITY_NEW_TASK
+                startActivity(appIntent)
+                // overridePendingTransition(0, 0)
+            } else {
+                start_state_text.text = "该应用无法启动！"
+            }
+        } catch (ex: Exception) {
+            start_state_text.text = "启动应用失败！"
         }
     }
 

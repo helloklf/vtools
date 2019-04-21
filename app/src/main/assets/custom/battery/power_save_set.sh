@@ -53,8 +53,8 @@ then
     killproc cnss_diag
     killproc subsystem_ramdump
     killproc tcpdump
-    killproc logd
-    killproc adbd
+    # killproc logd
+    # killproc adbd
     #stop thermal-engine 2> /dev/null
     #killall -9 magiskd 2> /dev/null
     if [[ -e /sys/zte_power_debug/switch ]]; then

@@ -15,6 +15,12 @@ settings put global low_power_sticky $1;
 # Whether or not to enable the User Absent, Radios Off feature on small battery devices.         * Type: int (0 for false, 1 for true)
 # user_absent_radios_off_for_small_battery_enabled
 
+function killproc()
+{
+    stop "$1" 2> /dev/null
+    killall -9 "$1" 2> /dev/null
+}
+
 echo '充电状态下可能无法使用省电模式'
 echo '-'
 
@@ -44,12 +50,12 @@ then
     settings put global low_power_sticky 1
 
     echo "关闭调试服务和日志进程"
-    stop woodpeckerd 2> /dev/null
-    stop debuggerd 2> /dev/null
-    stop debuggerd64 2> /dev/null
-    stop atfwd 2> /dev/null
-    stop perfd 2> /dev/null
-    stop logd 2> /dev/null
+    killproc woodpeckerd
+    # killproc debuggerd
+    # killproc debuggerd64
+    killproc atfwd
+    killproc perfd
+
     if [[ -e /sys/zte_power_debug/switch ]]; then
         echo 0 > /sys/zte_power_debug/switch
     fi
@@ -61,10 +67,10 @@ then
     stop subsystem_ramdump 2> /dev/null
     #stop thermal-engine 2> /dev/null
     stop tcpdump 2> /dev/null
-    stop logd 2> /dev/null
-    stop adbd 2> /dev/null
-    #killall -9 magiskd 2> /dev/null
-    killall -9 magisklogd 2> /dev/null
+    # killproc logd
+    # killproc adbd
+    # killproc magiskd
+    killproc magisklogd
 
     echo "清理后台休眠白名单"
     echo "请稍等..."

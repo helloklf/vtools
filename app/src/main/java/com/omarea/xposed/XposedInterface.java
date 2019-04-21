@@ -6,6 +6,7 @@ import android.app.AndroidAppHelper;
 import android.app.Notification;
 import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.XModuleResources;
