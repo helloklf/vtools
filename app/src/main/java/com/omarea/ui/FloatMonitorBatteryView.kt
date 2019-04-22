@@ -157,11 +157,11 @@ class FloatMonitorBatteryView : View {
         }
         */
         // cyclePaint!!.alpha = 255
-        if (ratioState > 90) {
+        if (ratioState > 79) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_low)
-        } else if (ratioState > 75) {
+        } else if (ratioState > 40) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_mid)
-        } else if (ratioState > 30) {
+        } else if (ratioState > 25) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_hight)
         } else {
             cyclePaint!!.color = resources.getColor(R.color.color_load_veryhight)
