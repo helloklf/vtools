@@ -1,14 +1,13 @@
 package com.omarea.shared
 
 import android.content.Context
+import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import com.omarea.shared.model.Appinfo
 import java.io.File
 import java.util.*
-import android.content.Intent
-
 
 
 /**

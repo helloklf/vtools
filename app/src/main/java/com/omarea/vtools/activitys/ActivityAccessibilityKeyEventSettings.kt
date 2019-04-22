@@ -14,7 +14,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.*
-import com.omarea.shared.AccessibleServiceHelper
+import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shared.SpfConfig
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_accessibility_key_event_settings.*

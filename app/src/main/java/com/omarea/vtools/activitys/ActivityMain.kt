@@ -29,7 +29,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import com.omarea.shared.AccessibleServiceHelper
+import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shared.CrashHandler
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.units.BackupRestoreUnit
@@ -290,17 +290,10 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun showFloatMonitor() {
         var postion = 1
         val dialog = AlertDialog.Builder(this)
-                .setTitle("设置显示位置")
-                .setSingleChoiceItems(
-                        arrayOf("左上角", "顶部居中", "右上角", "右下角", "底部居中", "左下角"),
-                        postion,
-                        { dialog, which ->
-                            postion = which
-                        }
-                )
+                .setTitle("悬浮窗提示")
+                .setMessage("在悬浮窗显示期间，可以随时拖动调整其位置。如需关闭，双击悬浮窗即可~")
                 .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                    FloatMonitor(this).showPopupWindow(postion)
-                    Toast.makeText(this, "长按悬浮窗即可关闭监视器\n触摸悬浮窗隐藏5秒", Toast.LENGTH_LONG).show()
+                    FloatMonitor(this).showPopupWindow()
                 })
                 .setNegativeButton(R.string.btn_cancel, { _, _ ->
                 })

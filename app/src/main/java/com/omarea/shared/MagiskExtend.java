@@ -1,7 +1,6 @@
 package com.omarea.shared;
 
 import android.content.Context;
-import android.widget.Toast;
 
 import com.omarea.shell.KeepShellPublic;
 import com.omarea.shell.RootFile;

@@ -8,8 +8,7 @@ import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.View
-import android.widget.Toast
-import com.omarea.shared.AccessibleServiceHelper
+import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shared.CommonCmds
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.KeepShellPublic

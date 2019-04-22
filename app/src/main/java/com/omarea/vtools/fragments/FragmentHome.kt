@@ -2,14 +2,12 @@ package com.omarea.vtools.fragments
 
 import android.annotation.SuppressLint
 import android.app.ActivityManager
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.Snackbar
@@ -19,6 +17,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.omarea.shared.*
+import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shared.model.CpuCoreInfo
 import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.Platform

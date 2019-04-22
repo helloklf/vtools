@@ -10,6 +10,7 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.support.v4.app.NotificationCompat
 import com.omarea.shared.*
+import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shell.KeepShell
 import com.omarea.shell.KernelProrp
 import com.omarea.shell.Props

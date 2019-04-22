@@ -7,6 +7,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
+
 import com.omarea.krscripts.switchs.SwitchInfo;
 import com.omarea.shell.KeepShellPublic;
 import com.omarea.vtools.R;

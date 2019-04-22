@@ -12,8 +12,8 @@
         android:layout_height="55dp"
         android:layout_gravity="center_vertical">
 
-        <com.omarea.ui.CpuChatView
-            android:id="@+id/core_cpu_loading_chat"
+        <com.omarea.ui.CpuChartView
+            android:id="@+id/core_cpu_loading_chart"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:free="0"

@@ -20,8 +20,8 @@ import com.omarea.shared.FileWrite
 import com.omarea.shell.SysUtils
 import com.omarea.shell.units.FlymeUnit
 import com.omarea.ui.ProgressBarDialog
-import com.omarea.vtools.activitys.ActivityAddinOnline
 import com.omarea.vtools.R
+import com.omarea.vtools.activitys.ActivityAddinOnline
 import com.omarea.vtools.addin.*
 import com.omarea.vtools.dialogs.DialogAddinModifyDPI
 import com.omarea.vtools.dialogs.DialogAddinModifydevice

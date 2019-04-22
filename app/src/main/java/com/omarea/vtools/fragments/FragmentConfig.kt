@@ -22,6 +22,7 @@ import android.widget.CheckBox
 import android.widget.Switch
 import android.widget.Toast
 import com.omarea.shared.*
+import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shared.model.Appinfo
 import com.omarea.shell.Platform
 import com.omarea.ui.OverScrollListView
@@ -29,12 +30,11 @@ import com.omarea.ui.ProgressBarDialog
 import com.omarea.ui.SceneModeAdapter
 import com.omarea.ui.SearchTextWatcher
 import com.omarea.vaddin.IAppConfigAidlInterface
-import com.omarea.vtools.*
+import com.omarea.vtools.R
 import com.omarea.vtools.activitys.ActivityAddinOnline
 import com.omarea.vtools.activitys.ActivityAdvSettings
-import com.omarea.vtools.activitys.ActivityFileSelector
 import com.omarea.vtools.activitys.ActivityAppDetails
-import com.omarea.vtools.services.MonitorService
+import com.omarea.vtools.activitys.ActivityFileSelector
 import kotlinx.android.synthetic.main.layout_config.*
 import org.json.JSONObject
 import java.io.File
@@ -154,6 +154,8 @@ class FragmentConfig : Fragment() {
         checkConfig()
 
         btn_config_service_not_active.setOnClickListener {
+            startService()
+            /*
             AlertDialog.Builder(this.context).setTitle("选择模式")
                     .setMessage("经典：使用辅助服务检测应用切换，这也是Scene以往的版本一直使用的方式\n\n简单：实验性，使用monitor检测应用切换，性能消耗更小（不支持应用安装自动点击）。\n\n注意，两种方式均需要Scene保持后台运行！")
                     .setPositiveButton("经典(推荐)", { _, _ ->
@@ -169,6 +171,7 @@ class FragmentConfig : Fragment() {
                     })
                     .create()
                     .show()
+            */
         }
 
         configlist_tabhost.setup()

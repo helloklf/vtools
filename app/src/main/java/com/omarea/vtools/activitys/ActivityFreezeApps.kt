@@ -1,9 +1,7 @@
 package com.omarea.vtools.activitys
 
-import android.app.WallpaperManager
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.drawable.BitmapDrawable
 import android.os.Build
 import android.os.Bundle
 import android.renderscript.Allocation
@@ -18,7 +16,7 @@ import com.omarea.vtools.fragments.FragmentFreeze
 class ActivityFreezeApps : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        ThemeSwitch.switchTheme(this)
+        // ThemeSwitch.switchTheme(this)
 
         setContentView(R.layout.activity_freeze_apps)
         actionBar?.setDisplayHomeAsUpEnabled(true)

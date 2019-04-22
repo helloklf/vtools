@@ -87,6 +87,17 @@ public class AppConfigStore extends SQLiteOpenHelper {
         }
     }
 
+
+    public boolean removeAppConfig(String packageName) {
+        try {
+
+            SQLiteDatabase database = getWritableDatabase();
+            database.execSQL("delete from  app_config where id = ?", new String[]{packageName});
+            return true;
+        } catch (Exception ex) {
+            return false;
+    }
+    }
     public ArrayList<String> getDozeAppList() {
         ArrayList<String> list = new ArrayList<String>();
         try {

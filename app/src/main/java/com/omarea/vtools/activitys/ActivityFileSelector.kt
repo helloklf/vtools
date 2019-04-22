@@ -1,7 +1,6 @@
 package com.omarea.vtools.activitys
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -9,7 +8,6 @@ import android.support.v7.widget.Toolbar
 import android.view.KeyEvent
 import android.widget.Toast
 import com.omarea.shared.CommonCmds
-import com.omarea.shared.SpfConfig
 import com.omarea.ui.AdapterFileSelector
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.vtools.R

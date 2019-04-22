@@ -2,8 +2,6 @@ package com.omarea.vtools.activitys
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -17,7 +15,6 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import com.omarea.shared.ConfigInstaller
-import com.omarea.shared.SpfConfig
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_addin_online.*

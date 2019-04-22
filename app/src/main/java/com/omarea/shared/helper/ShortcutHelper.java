@@ -1,4 +1,4 @@
-package com.omarea.shared;
+package com.omarea.shared.helper;
 
 import android.app.PendingIntent;
 import android.content.ComponentName;
@@ -17,6 +17,7 @@ import android.graphics.drawable.Icon;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+
 import com.omarea.vtools.R;
 import com.omarea.vtools.activitys.ActivityQuickStart;
 import com.omarea.vtools.receiver.ReceiverShortcut;

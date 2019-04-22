@@ -17,8 +17,8 @@ import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.KernelProrp
 import com.omarea.shell.RootFile
 import com.omarea.shell.SysUtils
-import com.omarea.vtools.activitys.ActivityQuickSwitchMode
 import com.omarea.vtools.R
+import com.omarea.vtools.activitys.ActivityQuickSwitchMode
 import kotlin.math.abs
 
 
@@ -87,7 +87,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         for (item in batteryInfos) {
             val info = item.trim()
             val index = info.indexOf(":")
-            if (index > Int.MIN_VALUE && index < info.length) {
+            if (index > Int.MIN_VALUE && index < info.length - 1) {
                 val value = info.substring(info.indexOf(":") + 1).trim()
                 if (info.startsWith("status")) {
                     if (!statusReaded) {

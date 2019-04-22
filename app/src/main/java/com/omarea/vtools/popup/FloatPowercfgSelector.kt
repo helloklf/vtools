@@ -11,7 +11,7 @@ import android.provider.Settings
 import android.view.*
 import android.view.WindowManager.LayoutParams
 import android.widget.*
-import com.omarea.shared.AccessibleServiceHelper
+import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shared.AppConfigStore
 import com.omarea.shared.ModeList
 import com.omarea.shared.SpfConfig

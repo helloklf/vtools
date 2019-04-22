@@ -51,9 +51,9 @@ class AdapterCpuCores(private val context: Context, private val list: ArrayList<
             convertView = View.inflate(context, R.layout.cpu_core_item, null)
         }
         val coreInfo = getItem(position)
-        val cpuChatView = convertView!!.findViewById<CpuChatView>(R.id.core_cpu_loading_chat)
-        cpuChatView.setData(100f, 100 - coreInfo.loadRatio.toFloat() + 0.5f)
-        cpuChatView.invalidate()
+        val cpuChartView = convertView!!.findViewById<CpuChartView>(R.id.core_cpu_loading_chart)
+        cpuChartView.setData(100f, 100 - coreInfo.loadRatio.toFloat() + 0.5f)
+        cpuChartView.invalidate()
 
         val index = convertView.findViewById<TextView>(R.id.cpu_core_load)
         index.text = coreInfo.loadRatio.toInt().toString() + "%"

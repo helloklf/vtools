@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
-import android.widget.Toast
 import com.omarea.shell.KeepShellAsync
 import com.omarea.shell.KeepShellPublic
 

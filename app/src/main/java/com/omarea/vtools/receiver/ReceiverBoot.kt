@@ -4,8 +4,8 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import com.omarea.vtools.services.BootService
 import com.omarea.shared.SpfConfig
+import com.omarea.vtools.services.BootService
 import com.omarea.vtools.services.ServiceBattery
 
 

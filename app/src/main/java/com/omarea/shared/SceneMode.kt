@@ -15,9 +15,9 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
 
     private var freezList = ArrayList<FreezeAppHistory>()
     // 偏见应用解冻数量限制
-    private val freezAppLimit = 5
+    private val freezAppLimit = 5 // 5个
     // 偏见应用后台超时时间
-    private val freezAppTimeLimit = 120000
+    private val freezAppTimeLimit = 300000 // 5分钟
 
     companion object {
         @Volatile

@@ -13,13 +13,17 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Switch
+import android.widget.Toast
 import com.omarea.shared.*
+import com.omarea.shared.helper.AccessibleServiceHelper
+import com.omarea.shared.helper.ShortcutHelper
 import com.omarea.shared.model.AppConfigInfo
 import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.NoticeListing
@@ -32,7 +36,6 @@ import com.omarea.xposed.XposedCheck
 import kotlinx.android.synthetic.main.activity_app_details.*
 import org.json.JSONObject
 import java.io.File
-import java.util.*
 
 
 class ActivityAppDetails : AppCompatActivity() {

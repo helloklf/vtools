@@ -3,6 +3,7 @@ package com.omarea.vtools.activitys;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+
 import com.omarea.shared.SpfConfig;
 import com.omarea.vtools.R;
 

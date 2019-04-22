@@ -9,7 +9,6 @@ import android.os.Handler
 import android.widget.Toast
 import com.omarea.shared.CommonCmds
 import com.omarea.shared.MagiskExtend
-import com.omarea.shared.ShortcutHelper
 import com.omarea.shared.model.Appinfo
 import com.omarea.shell.CheckRootStatus
 import com.omarea.vtools.R

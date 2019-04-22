@@ -1,4 +1,4 @@
-package com.omarea.shared
+package com.omarea.shared.helper
 
 import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.Context

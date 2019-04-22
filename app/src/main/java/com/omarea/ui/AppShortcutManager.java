@@ -8,8 +8,8 @@ import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
 
-import com.omarea.vtools.activitys.ActivityShortcut;
 import com.omarea.vtools.R;
+import com.omarea.vtools.activitys.ActivityShortcut;
 
 import java.util.ArrayList;
 

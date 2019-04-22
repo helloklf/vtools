@@ -12,7 +12,7 @@ import android.view.animation.DecelerateInterpolator
 import com.omarea.vtools.R
 
 
-class FloatMonitorChatView : View {
+class CpuChartView : View {
     //-------------必须给的数据相关-------------
     private val str = arrayOf("已用", "可用")
     private var ratio = 0
@@ -157,9 +157,9 @@ class FloatMonitorChatView : View {
         }
         */
         // cyclePaint!!.alpha = 255
-        if (ratioState > 90) {
+        if (ratioState > 85) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_veryhight)
-        } else if (ratioState > 75) {
+        } else if (ratioState > 65) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_hight)
         } else if (ratioState > 20) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_mid)

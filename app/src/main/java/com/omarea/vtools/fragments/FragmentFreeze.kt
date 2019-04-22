@@ -8,14 +8,13 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.omarea.shared.AppConfigStore
 import com.omarea.shared.AppListHelper
-import com.omarea.shared.ShortcutHelper
+import com.omarea.shared.helper.ShortcutHelper
 import com.omarea.shared.model.Appinfo
 import com.omarea.shell.KeepShellPublic
 import com.omarea.ui.FreezeAppAdapter
@@ -39,7 +38,7 @@ class FragmentFreeze : Fragment() {
         processBarDialog = ProgressBarDialog(context!!)
         processBarDialog.showDialog()
 
-        freeze_apps.setOnItemClickListener { parent, view, position, id ->
+        freeze_apps.setOnItemClickListener { parent, view, position, _ ->
             try {
                 val appInfo = (parent.adapter.getItem(position) as Appinfo)
                 toggleEnable(appInfo)
@@ -47,7 +46,7 @@ class FragmentFreeze : Fragment() {
             } catch (ex: Exception) {
             }
         }
-        freeze_apps.setOnItemLongClickListener { parent, view, position, id ->
+        freeze_apps.setOnItemLongClickListener { parent, view, position, _ ->
             val item = (parent.adapter.getItem(position) as Appinfo)
             showOptions(item, position, view)
             true
@@ -100,6 +99,8 @@ class FragmentFreeze : Fragment() {
                             lostedShortcuts.add(result)
                             lostedShortcutsName.append(result.appName).append("\n")
                         }
+                    } else {
+                        store.removeAppConfig(it);
                     }
                 }
                 store.close()
@@ -316,7 +317,7 @@ class FragmentFreeze : Fragment() {
                                 "重建快捷方式",
                                 "全部解冻",
                                 "全部冻结",
-                                if (enabled) "隐藏桌面“快捷启动”" else "显示桌面“快捷启动”",
+                                if (enabled) "从桌面隐藏本界面入口" else "添加本界面入口到桌面",
                                 "清空全部"), { _, which ->
 
                     when (which) {
