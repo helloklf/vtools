@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <switchs>
-    <resource file="file:///android_asset/custom/switchs/flyme7/libsupol.so" />
-    <resource file="file:///android_asset/custom/switchs/flyme7/su" />
-    <resource file="file:///android_asset/custom/switchs/flyme7/supolicy" />
+    <resource file="file:///android_asset/custom/switchs/flyme7_root/libsupol.so" />
+    <resource file="file:///android_asset/custom/switchs/flyme7_root/su" />
+    <resource file="file:///android_asset/custom/switchs/flyme7_root/supolicy" />
 
     <!--
         [confirm]=[true/false]执行脚本前是否需要确认
@@ -25,11 +25,11 @@
         <getstate>file:///android_asset/custom/switchs/lowram_device_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/lowram_device_set.sh</setstate>
     </switch>
-    <switch confirm="true" support="file:///android_asset/custom/switchs/flyme7_support.sh">
+    <switch confirm="true" support="file:///android_asset/custom/switchs/flyme7_root/flyme7_support.sh">
         <title>Flyme7启用SuperSU</title>
         <desc>将Flyme7的ROOT管理程序从系统自带切换为SuperSU，非Flyme7的魅族手机，请勿使用！！！</desc>
-        <getstate>file:///android_asset/custom/switchs/flyme7_supersu_get.sh</getstate>
-        <setstate>file:///android_asset/custom/switchs/flyme7_supersu_set.sh</setstate>
+        <getstate>file:///android_asset/custom/switchs/flyme7_root/flyme7_supersu_get.sh</getstate>
+        <setstate>file:///android_asset/custom/switchs/flyme7_root/flyme7_supersu_set.sh</setstate>
     </switch>
     <switch>
         <title>Camera2 HAL、EIS</title>
