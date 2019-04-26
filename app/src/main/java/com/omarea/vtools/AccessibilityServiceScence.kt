@@ -262,7 +262,7 @@ override fun onCreate() {
                 }
             }, 2000)
         } finally {
-            event.recycle()
+            // event.recycle()
         }
     }
 

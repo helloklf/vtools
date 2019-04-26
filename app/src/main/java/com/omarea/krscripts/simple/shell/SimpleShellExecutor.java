@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Environment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -95,11 +96,11 @@ public class SimpleShellExecutor {
             final OutputStream outputStream = process.getOutputStream();
             DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
             try {
-                String start = startPath;
-                if (startPath != null) {
+                String start = null;
+                if (startPath != null && !startPath.isEmpty()) {
                     start = startPath;
                 } else {
-                    start = context.getFilesDir().getAbsolutePath();
+                    start = FileWrite.INSTANCE.getPrivateFileDir(context);
                 }
 
                 if (root) {

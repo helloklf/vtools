@@ -9,6 +9,7 @@ import android.widget.ListView;
 
 import com.omarea.krscripts.SwitchAdapter;
 import com.omarea.krscripts.simple.shell.SimpleShellExecutor;
+import com.omarea.shared.FileWrite;
 import com.omarea.ui.OverScrollListView;
 import com.omarea.vtools.R;
 
@@ -82,7 +83,7 @@ public class SwitchListConfig {
         final StringBuilder cmds = new StringBuilder();
         cmds.append(script);
 
-        String startPath = context.getFilesDir().getAbsolutePath();
+        String startPath = null;
         if (action.start != null) {
             startPath = action.start;
         }

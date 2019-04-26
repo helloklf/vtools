@@ -15,10 +15,17 @@ public class ExtractAssets {
         this.context = context;
     }
 
-    public String extractToFilesDir(String fileName) {
+    public String extractScript(String fileName) {
         if (fileName.startsWith("file:///android_asset/")) {
             fileName = fileName.substring("file:///android_asset/".length());
         }
         return FileWrite.INSTANCE.writePrivateShellFile(fileName, fileName, context);
+    }
+
+    public String extractResource(String fileName) {
+        if (fileName.startsWith("file:///android_asset/")) {
+            fileName = fileName.substring("file:///android_asset/".length());
+        }
+        return FileWrite.INSTANCE.writePrivateFile(context.getAssets(), fileName, fileName, context);
     }
 }

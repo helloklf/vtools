@@ -277,6 +277,10 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
                 } else {
                     restoreHeaddUp()
                 }
+
+                if (config!!.freeze) {
+                    removeFreezeAppHistory(packageName)
+                }
             }
 
             lastAppPackageName = packageName
@@ -306,18 +310,23 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
      * 添加偏见历史记录
      */
     fun updateFreezeAppHistory(packageName:String) {
-        for (it in freezList) {
-            if (it.packageName == packageName) {
-                freezList.remove(it)
-                break
-            }
-        }
+        removeFreezeAppHistory(packageName)
+
         val history = FreezeAppHistory()
         history.lastTime = System.currentTimeMillis()
         history.packageName = packageName
 
         freezList.add(history)
         clearFreezeAppCountLimit()
+    }
+
+    fun removeFreezeAppHistory(packageName: String) {
+        for (it in freezList) {
+            if (it.packageName == packageName) {
+                freezList.remove(it)
+                break
+            }
+        }
     }
 
     /**

@@ -35,60 +35,71 @@ object SwitchConfigReader {
             var action: SwitchInfo? = null
             while (type != XmlPullParser.END_DOCUMENT) {// 如果事件不等于文档结束事件就继续循环
                 when (type) {
-                    XmlPullParser.START_TAG -> if ("switchs" == parser.name) {
-                        actions = ArrayList()
-                    } else if ("switch" == parser.name) {
-                        action = SwitchInfo()
-                        for (i in 0 until parser.attributeCount) {
-                            if (action == null) {
-                                break
-                            }
-                            when (parser.getAttributeName(i)) {
-                                "confirm" -> action.confirm = parser.getAttributeValue(i) == "true"
-                                "start" -> action.start = parser.getAttributeValue(i)
-                                "support" -> {
-                                    if (executeResultRoot(context, parser.getAttributeValue(i)) != "1") {
-                                        action = null
-                                    }
-                                }
-                            }
-                        }
-                    } else if (action != null) {
-                        if ("title" == parser.name) {
-                            action.title = parser.nextText()
-                        } else if ("desc" == parser.name) {
+                    XmlPullParser.START_TAG -> {
+                        if ("switchs" == parser.name) {
+                            actions = ArrayList()
+                        } else if ("switch" == parser.name) {
+                            action = SwitchInfo()
                             for (i in 0 until parser.attributeCount) {
-                                val attrName = parser.getAttributeName(i)
-                                if (attrName == "su" || attrName == "sh") {
-                                    val attrValue = parser.getAttributeValue(i)
-                                    if (attrValue.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
-                                        val path = ExtractAssets(context).extractToFilesDir(attrValue.trim { it <= ' ' })
-                                        action.descPollingShell = "chmod 0755 $path\n$path"
-                                    } else {
-                                        action.descPollingShell = attrValue
+                                if (action == null) {
+                                    break
+                                }
+                                when (parser.getAttributeName(i)) {
+                                    "confirm" -> action.confirm = parser.getAttributeValue(i) == "true"
+                                    "start" -> action.start = parser.getAttributeValue(i)
+                                    "support" -> {
+                                        if (executeResultRoot(context, parser.getAttributeValue(i)) != "1") {
+                                            action = null
+                                        }
                                     }
-                                    action.desc = executeResultRoot(context, action.descPollingShell)
                                 }
                             }
-                            if (action.desc == null || action.desc.isEmpty())
-                                action.desc = parser.nextText()
-                        } else if ("getstate" == parser.name) {
-                            val script = parser.nextText()
-                            if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
-                                action.getStateType = SwitchInfo.ActionScript.ASSETS_FILE
-                                val path = ExtractAssets(context).extractToFilesDir(script.trim { it <= ' ' })
-                                action.getState = "chmod 0755 $path\n$path"
-                            } else {
-                                action.getState = script
+                        } else if (action != null) {
+                            if ("title" == parser.name) {
+                                action.title = parser.nextText()
+                            } else if ("desc" == parser.name) {
+                                for (i in 0 until parser.attributeCount) {
+                                    val attrName = parser.getAttributeName(i)
+                                    if (attrName == "su" || attrName == "sh") {
+                                        val attrValue = parser.getAttributeValue(i)
+                                        if (attrValue.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
+                                            val path = ExtractAssets(context).extractScript(attrValue.trim { it <= ' ' })
+                                            action.descPollingShell = "chmod 0755 $path\n$path"
+                                        } else {
+                                            action.descPollingShell = attrValue
+                                        }
+                                        action.desc = executeResultRoot(context, action.descPollingShell)
+                                    }
+                                }
+                                if (action.desc == null || action.desc.isEmpty())
+                                    action.desc = parser.nextText()
+                            } else if ("getstate" == parser.name) {
+                                val script = parser.nextText()
+                                if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
+                                    action.getStateType = SwitchInfo.ActionScript.ASSETS_FILE
+                                    val path = ExtractAssets(context).extractScript(script.trim { it <= ' ' })
+                                    action.getState = "chmod 0755 $path\n$path"
+                                } else {
+                                    action.getState = script
+                                }
+                            } else if ("setstate" == parser.name) {
+                                val script = parser.nextText()
+                                if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
+                                    action.setStateType = SwitchInfo.ActionScript.ASSETS_FILE
+                                    val path = ExtractAssets(context).extractScript(script.trim { it <= ' ' })
+                                    action.setState = "chmod 0755 $path\n$path"
+                                } else {
+                                    action.setState = script
+                                }
                             }
-                        } else if ("setstate" == parser.name) {
-                            val script = parser.nextText()
-                            if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
-                                action.setStateType = SwitchInfo.ActionScript.ASSETS_FILE
-                                val path = ExtractAssets(context).extractToFilesDir(script.trim { it <= ' ' })
-                                action.setState = "chmod 0755 $path\n$path"
-                            } else {
-                                action.setState = script
+                        } else if ("resource" == parser.name) {
+                            for (i in 0 until parser.attributeCount) {
+                                if (parser.getAttributeName(i) == "file") {
+                                    val file = parser.getAttributeValue(i).trim()
+                                    if (file.startsWith(ASSETS_FILE)) {
+                                        ExtractAssets(context).extractResource(file)
+                                    }
+                                }
                             }
                         }
                     }
@@ -128,7 +139,7 @@ object SwitchConfigReader {
     private fun executeResultRoot(context: Context, script: String): String {
         var script = script
         if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
-            val path = ExtractAssets(context).extractToFilesDir(script.trim { it <= ' ' })
+            val path = ExtractAssets(context).extractScript(script.trim { it <= ' ' })
             script = "chmod 0755 $path\n$path"
         }
         return KeepShellPublic.doCmdSync(script)

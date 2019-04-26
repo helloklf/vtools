@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <switchs>
+    <resource file="file:///android_asset/custom/switchs/flyme7/libsupol.so" />
+    <resource file="file:///android_asset/custom/switchs/flyme7/su" />
+    <resource file="file:///android_asset/custom/switchs/flyme7/supolicy" />
+
     <!--
         [confirm]=[true/false]执行脚本前是否需要确认
     -->
@@ -21,9 +25,15 @@
         <getstate>file:///android_asset/custom/switchs/lowram_device_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/lowram_device_set.sh</setstate>
     </switch>
+    <switch confirm="true" support="file:///android_asset/custom/switchs/flyme7_support.sh">
+        <title>Flyme7启用SuperSU</title>
+        <desc>将Flyme7的ROOT管理程序从系统自带切换为SuperSU，非Flyme7的魅族手机，请勿使用！！！</desc>
+        <getstate>file:///android_asset/custom/switchs/flyme7_supersu_get.sh</getstate>
+        <setstate>file:///android_asset/custom/switchs/flyme7_supersu_set.sh</setstate>
+    </switch>
     <switch>
-        <title>Camera2 HAL3</title>
-        <desc>启用HAL3，从而支持谷歌相机HDR+功能或避免闪退（谷歌相机需要自行下载适合自己机型的版本）。可能导致相机无法开启或切换缓慢</desc>
+        <title>Camera2 HAL、EIS</title>
+        <desc>启用HAL和EIS，从而支持谷歌相机HDR+功能或避免闪退（谷歌相机需要自行下载适合自己机型的版本）。可能导致相机无法开启或切换缓慢</desc>
         <getstate>file:///android_asset/custom/switchs/gcm_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/gcm_set.sh</setstate>
     </switch>
