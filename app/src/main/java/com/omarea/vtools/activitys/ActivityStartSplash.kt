@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -24,12 +25,23 @@ import kotlinx.android.synthetic.main.activity_start_splash.*
 import java.lang.ref.WeakReference
 
 class ActivityStartSplash : Activity() {
+    private var globalSPF: SharedPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        ThemeSwitch.switchTheme(this)
-        super.onCreate(savedInstanceState)
+        if (globalSPF == null) {
+            globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+        }
+        if (globalSPF!!.getInt(SpfConfig.GLOBAL_SPF_THEME, 1) != 8) {
+            ThemeSwitch.switchTheme(this)
+        }
 
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_start_splash)
+
+        if (globalSPF!!.getInt(SpfConfig.GLOBAL_SPF_THEME, 1) == 8) {
+            splash_root.setBackgroundColor(Color.argb(255, 0, 0, 0))
+        }
+
         actionBar?.setDisplayHomeAsUpEnabled(true)
         //  得到当前界面的装饰视图
         if (Build.VERSION.SDK_INT >= 21) {
