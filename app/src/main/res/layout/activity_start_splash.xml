@@ -7,6 +7,7 @@
     android:backgroundTintMode="screen"
     android:clipToPadding="true"
     android:fitsSystemWindows="false"
+    android:id="@+id/splash_root"
     tools:context=".activitys.ActivityStartSplash">
 
     <ScrollView
