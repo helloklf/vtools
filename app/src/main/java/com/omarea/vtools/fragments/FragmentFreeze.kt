@@ -14,6 +14,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.omarea.shared.AppConfigStore
 import com.omarea.shared.AppListHelper
+import com.omarea.shared.SceneMode
 import com.omarea.shared.helper.ShortcutHelper
 import com.omarea.shared.model.Appinfo
 import com.omarea.shell.KeepShellPublic
@@ -207,10 +208,13 @@ class FragmentFreeze : Fragment() {
         if (!appInfo.enabled) {
             enableApp(appInfo)
         }
-        val intent = this.context!!.getPackageManager().getLaunchIntentForPackage(appInfo.packageName.toString())
-        if (intent != null) {
-            this.context!!.startActivity(intent)
-        }
+        try {
+            val intent = this.context!!.getPackageManager().getLaunchIntentForPackage(appInfo.packageName.toString())
+            if (intent != null) {
+                this.context!!.startActivity(intent)
+                SceneMode.setFreezeAppStartTime(appInfo.packageName.toString())
+            }
+        } catch (ex: java.lang.Exception) {}
     }
 
     private fun createShortcut(appInfo: Appinfo) {

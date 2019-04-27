@@ -8,18 +8,21 @@ import com.omarea.shared.model.AppConfigInfo
 import com.omarea.shell.KeepShellPublic
 
 class SceneMode private constructor(private var contentResolver: ContentResolver, private var store: AppConfigStore) {
-    private class FreezeAppHistory {
-        var lastTime:Long = 0
+    class FreezeAppHistory {
+        var startTime:Long = 0
+        var leaveTime:Long = 0
         var packageName: String = ""
     }
 
-    private var freezList = ArrayList<FreezeAppHistory>()
-    // 偏见应用解冻数量限制
-    private val freezAppLimit = 5 // 5个
-    // 偏见应用后台超时时间
-    private val freezAppTimeLimit = 300000 // 5分钟
-
     companion object {
+        private var freezList = ArrayList<FreezeAppHistory>()
+        // 偏见应用解冻数量限制
+        private val freezAppLimit = 5 // 5个
+        // 偏见应用后台超时时间
+        private val freezAppTimeLimit = 300000 // 5分钟
+
+        var lastAppPackageName = "com.android.systemui"
+
         @Volatile
         var instance: SceneMode? = null
 
@@ -34,11 +37,72 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
             }
             return instance!!
         }
+
+        fun setFreezeAppLeaveTime(packageName:String) {
+            val currentHistory = removeFreezeAppHistory(packageName)
+
+            val history = if (currentHistory != null) currentHistory else FreezeAppHistory()
+            history.leaveTime = System.currentTimeMillis()
+            history.packageName = packageName
+
+            freezList.add(history)
+            clearFreezeAppCountLimit()
+        }
+
+        fun setFreezeAppStartTime(packageName:String) {
+            removeFreezeAppHistory(packageName)
+
+            val history = FreezeAppHistory()
+            history.startTime = System.currentTimeMillis()
+            history.leaveTime = -1
+            history.packageName = packageName
+
+            freezList.add(history)
+            clearFreezeAppCountLimit()
+        }
+
+        fun removeFreezeAppHistory(packageName: String): FreezeAppHistory? {
+            for (it in freezList) {
+                if (it.packageName == packageName) {
+                    freezList.remove(it)
+                    return it
+                }
+            }
+            return null
+        }
+
+        /**
+         * 当解冻的偏见应用数量超过限制，冻结最先解冻的应用
+         */
+        fun clearFreezeAppCountLimit() {
+            while (freezList.size > freezAppLimit) {
+                val firstItem = freezList.first()
+                // val config = store.getAppConfig(firstItem.packageName)
+                // if (config.freeze) {
+                    KeepShellPublic.doCmdSync("pm disable " + firstItem.packageName)
+                // }
+                freezList.remove(firstItem)
+            }
+        }
+
+        /**
+         * 冻结已经后台超时的偏见应用
+         */
+        fun clearFreezeAppTimeLimit() {
+            val currentTime = System.currentTimeMillis()
+            val clearList = freezList.filter { it.leaveTime > -1 && currentTime - it.leaveTime> freezAppTimeLimit && it.packageName != lastAppPackageName }
+            clearList.forEach {
+                // val config = store.getAppConfig(it.packageName)
+                // if (config.freeze) {
+                    KeepShellPublic.doCmdSync("pm disable " + it.packageName)
+                // }
+                freezList.remove(it)
+            }
+        }
     }
 
     var mode = -1;
     // var screenBrightness = -1;
-    var lastAppPackageName = "com.android.systemui"
     var config: AppConfigInfo? = null
     var lowPowerLevel = 2
 
@@ -237,7 +301,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
 
             // 离开偏见应用时，记录偏见应用最后活动时间
             if (config != null && config!!.freeze) {
-                updateFreezeAppHistory(config!!.packageName)
+                setFreezeAppLeaveTime(config!!.packageName)
             }
 
             config = store.getAppConfig(packageName)
@@ -279,7 +343,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
                 }
 
                 if (config!!.freeze) {
-                    removeFreezeAppHistory(packageName)
+                    setFreezeAppStartTime(packageName)
                 }
             }
 
@@ -307,29 +371,6 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
     }
 
     /**
-     * 添加偏见历史记录
-     */
-    fun updateFreezeAppHistory(packageName:String) {
-        removeFreezeAppHistory(packageName)
-
-        val history = FreezeAppHistory()
-        history.lastTime = System.currentTimeMillis()
-        history.packageName = packageName
-
-        freezList.add(history)
-        clearFreezeAppCountLimit()
-    }
-
-    fun removeFreezeAppHistory(packageName: String) {
-        for (it in freezList) {
-            if (it.packageName == packageName) {
-                freezList.remove(it)
-                break
-            }
-        }
-    }
-
-    /**
      * 冻结所有解冻的偏见应用
      */
     fun clearFreezeApp() {
@@ -340,35 +381,6 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
                 KeepShellPublic.doCmdSync("pm disable " + firstItem.packageName)
             }
             freezList.remove(firstItem)
-        }
-    }
-
-    /**
-     * 当解冻的偏见应用数量超过限制，冻结最先解冻的应用
-     */
-    fun clearFreezeAppCountLimit() {
-        while (freezList.size > freezAppLimit) {
-            val firstItem = freezList.first()
-            val config = store.getAppConfig(firstItem.packageName)
-            if (config.freeze) {
-                KeepShellPublic.doCmdSync("pm disable " + firstItem.packageName)
-            }
-            freezList.remove(firstItem)
-        }
-    }
-
-    /**
-     * 冻结已经后台超时的偏见应用
-     */
-    fun clearFreezeAppTimeLimit() {
-        val currentTime = System.currentTimeMillis()
-        val clearList = freezList.filter { currentTime - it.lastTime> freezAppTimeLimit && it.packageName != lastAppPackageName }
-        clearList.forEach {
-            val config = store.getAppConfig(it.packageName)
-            if (config.freeze) {
-                KeepShellPublic.doCmdSync("pm disable " + it.packageName)
-            }
-            freezList.remove(it)
         }
     }
 }

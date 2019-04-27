@@ -130,7 +130,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
                         notifyHelper.notify()
                         ticks %= 30
                         if (ticks == 0) {
-                            sceneMode.clearFreezeAppTimeLimit()
+                            SceneMode.clearFreezeAppTimeLimit()
                         }
                     }
                 }, 0, 2000L)
@@ -140,7 +140,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
                         notifyHelper.notify()
                         ticks %= 6
                         if (ticks == 0) {
-                            sceneMode.clearFreezeAppTimeLimit()
+                            SceneMode.clearFreezeAppTimeLimit()
                         }
                     }
                 }, 0, 10000L)

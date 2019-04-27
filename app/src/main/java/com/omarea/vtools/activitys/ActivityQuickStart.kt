@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import com.omarea.shared.SceneMode
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.CheckRootStatus
 import com.omarea.shell.KeepShellPublic
@@ -71,13 +72,14 @@ class ActivityQuickStart : Activity() {
 
     private fun startApp() {
         val pm = packageManager
-        val appIntent = pm.getLaunchIntentForPackage(appPackageName)
         try {
+            val appIntent = pm.getLaunchIntentForPackage(appPackageName)
             if (appIntent != null) {
                 // LauncherApps().startMainActivity()
                 appIntent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION or Intent.FLAG_ACTIVITY_NEW_TASK
                 startActivity(appIntent)
                 // overridePendingTransition(0, 0)
+                SceneMode.setFreezeAppStartTime(appPackageName)
             } else {
                 start_state_text.text = "该应用无法启动！"
             }
