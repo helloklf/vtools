@@ -1,7 +1,7 @@
-# 微工具箱
+# Scene
 
 > 使用本工具前，请确保你已经ROOT手机，并已安装busybox。你最好是个玩机专家，至少也该会刷机和修复系统。因为应用中部分高级功能可能会影响系统正常启动！！！
-> 在骁龙835/821/820的设备上具有最佳体验，其它设备功能将受到限制。
+> 在使用【骁龙845/835/821/820】【Exynos8890】处理器的设备上具有最佳体验，其它设备功能将受到限制。
 
 ---
 
@@ -12,10 +12,19 @@
 **应用界面展示**
 
 
-![](https://github.com/helloklf/vtools/raw/master/Screenshot/Screenshot_1.png)
+![](https://github.com/helloklf/vtools/raw/master/docs/Screenshot/1.png)
 
-![](https://github.com/helloklf/vtools/raw/master/Screenshot/Screenshot_2.png)
+![](https://github.com/helloklf/vtools/raw/master/docs/Screenshot/2.png)
 
-![](https://github.com/helloklf/vtools/raw/master/Screenshot/Screenshot_3.png)
+![](https://github.com/helloklf/vtools/raw/master/docs/Screenshot/3.png)
 
-![](https://github.com/helloklf/vtools/raw/master/Screenshot/Screenshot_4.png)
+![](https://github.com/helloklf/vtools/raw/master/docs/Screenshot/4.png)
+
+![](https://github.com/helloklf/vtools/raw/master/docs/Screenshot/5.png)
+
+![](https://github.com/helloklf/vtools/raw/master/docs/Screenshot/6.png)
+
+![](https://github.com/helloklf/vtools/raw/master/docs/Screenshot/7.png)
+
+![](https://github.com/helloklf/vtools/raw/master/docs/Screenshot/8.png)
+
