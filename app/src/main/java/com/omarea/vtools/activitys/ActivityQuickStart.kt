@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ApplicationInfo
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -41,7 +42,12 @@ class ActivityQuickStart : Activity() {
             appPackageName = intent.getStringExtra("packageName");
             val pm = packageManager
 
-            val appInfo = pm.getApplicationInfo(appPackageName, 0)
+            var appInfo: ApplicationInfo? = null
+            try {
+                appInfo = pm.getApplicationInfo(appPackageName, 0)
+            } catch (ex: Exception) {
+                start_state_text.text = "此应用已被卸载！"
+            }
             if (appInfo != null) {
                 if (appInfo.enabled) {
                     startApp()
