@@ -1,5 +1,4 @@
 #!/system/bin/sh
-state=$1
 
 echo '屏蔽MIUI在线更新下载地址(需要解锁System分区)...'
 

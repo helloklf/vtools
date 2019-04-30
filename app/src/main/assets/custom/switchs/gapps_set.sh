@@ -1,5 +1,4 @@
 #!/system/bin/sh
-state=$1
 
 if [ $state = '1' ]; then
     pm enable com.google.android.gsf

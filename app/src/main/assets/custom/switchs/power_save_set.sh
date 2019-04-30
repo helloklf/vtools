@@ -1,7 +1,7 @@
 #!/system/bin/sh
-state=$1
-settings put global low_power $1;
-settings put global low_power_sticky $1;
+
+settings put global low_power $state;
+settings put global low_power_sticky $state;
 
 # Whether or not app auto restriction is enabled. When it is enabled, settings app will  auto restrict the app if it has bad behavior(e.g. hold wakelock for long time).
 # [app_auto_restriction_enabled]

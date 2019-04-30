@@ -1,5 +1,4 @@
 #!/system/bin/sh
-state=$1
 
 echo '使用本功能，需要解锁system分区，否则修改无效！'
 echo 'MIUI自带的ROOT无法使用本功能'

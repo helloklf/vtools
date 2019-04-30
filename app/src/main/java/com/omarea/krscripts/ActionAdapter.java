@@ -6,11 +6,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-
 import com.omarea.krscripts.action.ActionInfo;
-import com.omarea.shell.KeepShellPublic;
 import com.omarea.vtools.R;
-
 import java.util.ArrayList;
 
 public class ActionAdapter extends BaseAdapter {
@@ -40,7 +37,7 @@ public class ActionAdapter extends BaseAdapter {
         ViewHolder holder = (ViewHolder) view.getTag();
         ActionInfo actionInfo = ((ActionInfo) getItem(index));
         if (actionInfo.descPollingShell != null && !actionInfo.descPollingShell.isEmpty()) {
-            actionInfo.desc = KeepShellPublic.INSTANCE.doCmdSync(actionInfo.descPollingShell);
+            actionInfo.desc = ScriptEnvironmen.executeResultRoot(listview.getContext(), actionInfo.descPollingShell);
         }
         holder.itemText.setText(actionInfo.desc);
     }

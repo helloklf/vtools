@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <switchs>
-    <resource file="file:///android_asset/custom/switchs/flyme7_root/libsupol.so" />
-    <resource file="file:///android_asset/custom/switchs/flyme7_root/su" />
-    <resource file="file:///android_asset/custom/switchs/flyme7_root/supolicy" />
+    <resource file="file:///android_asset/custom/switchs/resources/props.sh" />
 
     <!--
         [confirm]=[true/false]执行脚本前是否需要确认

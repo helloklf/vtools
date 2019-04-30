@@ -37,9 +37,9 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
         }
     }
 
-    var FastChangerBase = "sh " + FileWrite.writePrivateFile(service.assets, "custom/battery/fast_charge.sh", "fast_charge.sh", service)
-    var ResumeChanger = "sh " + FileWrite.writePrivateFile(service.assets, "custom/battery/resume_charge.sh", "resume_charge.sh", service)
-    var DisableChanger = "sh " + FileWrite.writePrivateFile(service.assets, "custom/battery/disable_charge.sh", "disable_charge.sh", service)
+    var FastChangerBase = "sh " + FileWrite.writePrivateShellFile("custom/battery/fast_charge.sh", "fast_charge.sh", service)
+    var ResumeChanger = "sh " + FileWrite.writePrivateShellFile("custom/battery/resume_charge.sh", "resume_charge.sh", service)
+    var DisableChanger = "sh " + FileWrite.writePrivateShellFile("custom/battery/disable_charge.sh", "disable_charge.sh", service)
 
     /*
      "chmod 0777 /sys/class/power_supply/usb/pd_allowed;" +

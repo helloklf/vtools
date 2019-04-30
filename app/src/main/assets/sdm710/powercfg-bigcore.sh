@@ -23,6 +23,19 @@ fi
 # /sys/devices/system/cpu/cpu6/cpufreq/scaling_available_frequencies
 # 300000 345600 422400 499200 576000 652800 729600 806400 902400 979200 1056000 1132800 1190400 1267200 1344000 1420800 1497600 1574400 1651200 1728000 1804800 1881600 1958400 2035200 2112000 2208000 2265600 2323200 2342400 2361600 2457600
 
+function set_value()
+{
+    value=$1
+    path=$2
+    if [[ -f $path ]]; then
+        current_value="$(cat $path)"
+        if [[ ! "$current_value" = "$value" ]]; then
+            chmod 0664 "$path"
+            echo "$value" > "$path"
+        fi;
+    fi;
+}
+
 function gpu_config()
 {
     gpu_freqs=`cat /sys/class/kgsl/kgsl-3d0/devfreq/available_frequencies`

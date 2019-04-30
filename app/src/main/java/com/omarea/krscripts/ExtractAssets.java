@@ -23,6 +23,9 @@ public class ExtractAssets {
     }
 
     public String extractResource(String fileName) {
+        if (fileName.endsWith(".sh")) {
+            return extractScript(fileName);
+        }
         if (fileName.startsWith("file:///android_asset/")) {
             fileName = fileName.substring("file:///android_asset/".length());
         }

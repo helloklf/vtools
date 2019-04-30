@@ -1,5 +1,4 @@
 #!/system/bin/sh
-state=$1
 
 chattr -i $SDCARD_PATH/netease/cloudmusic/Ad 2> /dev/null
 $BUSYBOX chattr -i $SDCARD_PATH/netease/cloudmusic/Ad 2> /dev/null

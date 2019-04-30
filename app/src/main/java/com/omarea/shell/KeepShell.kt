@@ -75,7 +75,7 @@ class KeepShell(private var rootMode: Boolean = true) {
                             Log.e("KeepShellPublic", errorReader.readLine())
                         }
                     } catch (ex: Exception) {
-                        Log.e("KeepShellPublic", ex.message)
+                        Log.e("c", ex.message)
                     }
                 }).start()
             } catch (ex: Exception) {

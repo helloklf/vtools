@@ -5,7 +5,7 @@ import android.util.Log
 import android.util.Xml
 import android.widget.Toast
 import com.omarea.krscripts.ExtractAssets
-import com.omarea.shell.KeepShellPublic
+import com.omarea.krscripts.ScriptEnvironmen
 import org.xmlpull.v1.XmlPullParser
 import java.io.InputStream
 import java.util.*
@@ -53,27 +53,14 @@ object ActionConfigReader {
                             for (i in 0 until parser.attributeCount) {
                                 val attrName = parser.getAttributeName(i)
                                 if (attrName == "su" || attrName == "sh") {
-                                    val attrValue = parser.getAttributeValue(i)
-                                    if (attrValue.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
-                                        val path = ExtractAssets(context).extractScript(attrValue.trim { it <= ' ' })
-                                        action.descPollingShell = "chmod 0755 $path\n$path"
-                                    } else {
-                                        action.descPollingShell = attrValue
-                                    }
+                                    action.descPollingShell = parser.getAttributeValue(i)
                                     action.desc = executeResultRoot(context, action.descPollingShell)
                                 }
                             }
                             if (action.desc == null || action.desc.isEmpty())
                                 action.desc = parser.nextText()
                         } else if ("script" == parser.name) {
-                            val script = parser.nextText()
-                            if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
-                                action.scriptType = ActionInfo.ActionScript.ASSETS_FILE
-                                val path = ExtractAssets(context).extractScript(script.trim { it <= ' ' })
-                                action.script = "chmod 0755 $path\n$path"
-                            } else {
-                                action.script = script
-                            }
+                            action.script = parser.nextText()
                         } else if ("param" == parser.name) {
                             if (actionParamInfos == null) {
                                 actionParamInfos = ArrayList()
@@ -90,23 +77,13 @@ object ActionConfigReader {
                                     attrName == "maxlength" -> actionParamInfo.maxLength = Integer.parseInt(parser.getAttributeValue(i))
                                     attrName == "value-sh" || attrName == "value-su" -> {
                                         val script = parser.getAttributeValue(i)
-                                        if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
-                                            val path = ExtractAssets(context).extractScript(script.trim { it <= ' ' })
-                                            actionParamInfo.valueShell = "chmod 0755 $path\n$path"
-                                        } else {
-                                            actionParamInfo.valueShell = script
-                                        }
+                                        actionParamInfo.valueShell = script
                                     }
                                     attrName == "options-sh" || attrName == "options-su" -> {
                                         if (actionParamInfo.options == null)
                                             actionParamInfo.options = ArrayList<ActionParamInfo.ActionParamOption>()
                                         val script = parser.getAttributeValue(i)
-                                        if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
-                                            val path = ExtractAssets(context).extractScript(script.trim { it <= ' ' })
-                                            actionParamInfo.optionsSh = "chmod 0755 $path\n$path"
-                                        } else {
-                                            actionParamInfo.optionsSh = script
-                                        }
+                                        actionParamInfo.optionsSh = script
                                     }
                                 }
                             }
@@ -180,12 +157,7 @@ object ActionConfigReader {
         return null
     }
 
-    private fun executeResultRoot(context: Context, script: String): String {
-        var script = script
-        if (script.trim { it <= ' ' }.startsWith(ASSETS_FILE)) {
-            val path = ExtractAssets(context).extractScript(script.trim { it <= ' ' })
-            script = "chmod 0755 $path\n$path"
-        }
-        return KeepShellPublic.doCmdSync(script)
+    private fun executeResultRoot(context: Context, scriptIn: String): String {
+        return ScriptEnvironmen.executeResultRoot(context, scriptIn);
     }
 }

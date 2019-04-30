@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-if [[ ! "$1" = "1" ]]
+if [[ ! "$state" = "1" ]]
 then
     stop adbd
     echo '远程调试服务已停止'

@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-config=$1
+config=$state
 path=/system/vendor/bin/perfd
 
 if [[ ! -f $path ]]; then

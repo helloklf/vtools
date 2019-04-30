@@ -7,9 +7,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
-
 import com.omarea.krscripts.switchs.SwitchInfo;
-import com.omarea.shell.KeepShellPublic;
 import com.omarea.vtools.R;
 
 import java.util.ArrayList;
@@ -47,10 +45,10 @@ public class SwitchAdapter implements ListAdapter {
         ViewHolder holder = (ViewHolder) view.getTag();
         SwitchInfo actionInfo = ((SwitchInfo) getItem(index));
         if (actionInfo.descPollingShell != null && !actionInfo.descPollingShell.isEmpty()) {
-            actionInfo.desc =  KeepShellPublic.INSTANCE.doCmdSync(actionInfo.descPollingShell);
+            actionInfo.desc =  ScriptEnvironmen.executeResultRoot(listview.getContext(), actionInfo.descPollingShell);
         }
         if (actionInfo.getState != null && !actionInfo.getState.isEmpty()) {
-            String shellResult = KeepShellPublic.INSTANCE.doCmdSync(actionInfo.getState);
+            String shellResult = ScriptEnvironmen.executeResultRoot(listview.getContext(), actionInfo.getState);
             actionInfo.selected = shellResult != null && (shellResult.equals("1") || shellResult.toLowerCase().equals("true"));
         }
         holder.itemSwitch.setChecked(actionInfo.selected);

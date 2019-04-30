@@ -1,7 +1,6 @@
 #!/system/bin/sh
 
-state="$1"
-if [ "$1" = '1' ];then
+if [ "$state" = '1' ];then
     state="true"
 else
     state="false"

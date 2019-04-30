@@ -36,4 +36,5 @@ fi
 if [ `cat $prefs | grep DisableMTR | cut -f3 -d '=' | cut -f2 -d '"'` = '1' ]; then
     mt='';
 fi
+
 echo $text $render $mt;

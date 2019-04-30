@@ -1,13 +1,14 @@
 package com.omarea.krscripts.action
 
+import android.content.Context
 import android.os.Handler
 import android.support.v4.app.FragmentActivity
 import android.support.v7.app.AlertDialog
 import android.view.View
 import android.widget.*
 import com.omarea.krscripts.ActionAdapter
+import com.omarea.krscripts.ScriptEnvironmen
 import com.omarea.krscripts.simple.shell.SimpleShellExecutor
-import com.omarea.shell.KeepShellPublic
 import com.omarea.ui.OverScrollListView
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.vtools.R
@@ -53,8 +54,6 @@ class ActionListConfig(private val context: FragmentActivity) {
 
     private fun executeScript(action: ActionInfo, onExit: Runnable) {
         val script = action.script ?: return
-        val cmds = StringBuilder()
-        cmds.append(script)
 
         var startPath:String? = null
         if (action.start != null) {
@@ -73,9 +72,9 @@ class ActionListConfig(private val context: FragmentActivity) {
                 Thread(Runnable {
                     for (actionParamInfo in actionParamInfos) {
                         if (actionParamInfo.valueSUShell != null) {
-                            actionParamInfo.valueFromShell = KeepShellPublic.doCmdSync(actionParamInfo.valueSUShell)
+                            actionParamInfo.valueFromShell = executeResultRoot(context, actionParamInfo.valueSUShell)
                         } else if (actionParamInfo.valueShell != null) {
-                            actionParamInfo.valueFromShell = KeepShellPublic.doCmdSync(actionParamInfo.valueShell)
+                            actionParamInfo.valueFromShell = executeResultRoot(context, actionParamInfo.valueShell)
                         }
                     }
                     handler.post {
@@ -93,7 +92,7 @@ class ActionListConfig(private val context: FragmentActivity) {
                                 if (actionParamInfo.optionsSh != null && !actionParamInfo.optionsSh.isEmpty()) {
                                     var shellResult = ""
                                     if (actionParamInfo.optionsSh != null && !actionParamInfo.optionsSh.isEmpty()) {
-                                        shellResult = KeepShellPublic.doCmdSync(actionParamInfo.optionsSh)
+                                        shellResult = executeResultRoot(context, actionParamInfo.optionsSh)
                                     }
                                     if (shellResult != "error" && shellResult != "null" && !shellResult.isEmpty()) {
                                         for (item in shellResult.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
@@ -223,7 +222,7 @@ class ActionListConfig(private val context: FragmentActivity) {
                         AlertDialog.Builder(context)
                                 .setTitle(action.title)
                                 .setView(view)
-                                .setPositiveButton("确定") { dialog, which -> executeScript(action.title, cmds, finalStartPath, onExit, readInput(actionParamInfos, linearLayout, cmds, action)) }
+                                .setPositiveButton("确定") { dialog, which -> executeScript(action.title, script, finalStartPath, onExit, readInput(actionParamInfos, linearLayout)) }
                                 .create()
                                 .show()
                     }
@@ -233,11 +232,10 @@ class ActionListConfig(private val context: FragmentActivity) {
                 return
             }
         }
-        cmds.append("\n\n")
-        executeScript(action.title, cmds, startPath, onExit, null)
+        executeScript(action.title, script, startPath, onExit, null)
     }
 
-    private fun readInput(actionParamInfos: ArrayList<ActionParamInfo>, linearLayout: LinearLayout, cmds: StringBuilder, actionInfo: ActionInfo): HashMap<String, String> {
+    private fun readInput(actionParamInfos: ArrayList<ActionParamInfo>, linearLayout: LinearLayout): HashMap<String, String> {
         val params = HashMap<String, String>()
         for (actionParamInfo in actionParamInfos) {
             val view = linearLayout.findViewWithTag<View>(actionParamInfo)
@@ -253,18 +251,16 @@ class ActionListConfig(private val context: FragmentActivity) {
                 } else
                     actionParamInfo.value = item.toString()
             }
-            cmds.insert(0, actionParamInfo.name + "=\"" + actionParamInfo.value.replace("\"".toRegex(), " ") + "\"\n")
-            if (actionInfo.scriptType == ActionInfo.ActionScript.ASSETS_FILE) {
-                cmds.append(" $")
-                cmds.append(actionParamInfo.name)
-            }
             params[actionParamInfo.name] = actionParamInfo.value
         }
-        cmds.append("\n\n")
         return params
     }
 
-    private fun executeScript(title: String, cmds: StringBuilder, startPath: String?, onExit: Runnable, params: HashMap<String, String>?) {
-        SimpleShellExecutor(context).execute(true, title, cmds, startPath, onExit, params)
+    private fun executeResultRoot(context: Context, scriptIn: String): String {
+        return ScriptEnvironmen.executeResultRoot(context, scriptIn);
+    }
+
+    private fun executeScript(title: String, script: String, startPath: String?, onExit: Runnable, params: HashMap<String, String>?) {
+        SimpleShellExecutor(context).execute(title, script, startPath, onExit, params)
     }
 }

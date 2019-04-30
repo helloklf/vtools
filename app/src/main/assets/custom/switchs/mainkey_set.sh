@@ -1,11 +1,5 @@
 #!/system/bin/sh
 
-state=$1
-if [ "$1" = '1' ];then
-    state="0"
-else
-    state="1"
-fi
 prop="qemu.hw.mainkeys"
 
 function magisk_set_system_prop() {

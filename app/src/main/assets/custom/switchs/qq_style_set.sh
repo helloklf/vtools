@@ -18,7 +18,7 @@ echo ""
 echo $qqsdcard
 echo $qqdata
 
-if [[ $1 = '0' ]]
+if [[ $state = '0' ]]
 then
     rm -rf ${qqsdcard}/.font_info
     echo "" > ${qqsdcard}/.font_info
