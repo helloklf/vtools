@@ -1,6 +1,7 @@
 package com.omarea.krscripts;
 
 import android.database.DataSetObserver;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
@@ -68,32 +69,53 @@ public class SwitchAdapter implements ListAdapter {
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
+        SwitchInfo item = (SwitchInfo) getItem(position);
+
         View convertView = view;
         ViewHolder viewHolder;
-        SwitchInfo item = (SwitchInfo) getItem(position);
+
         try {
             if (convertView == null) {
                 viewHolder = new ViewHolder();
                 convertView = View.inflate(parent.getContext(), R.layout.switch_row_item, null);
                 viewHolder.itemSwitch = convertView.findViewById(R.id.Title);
                 viewHolder.itemText = convertView.findViewById(R.id.Desc);
-                viewHolder.itemSwitch.setText((item.title));
-                viewHolder.itemText.setText(item.desc);
-                viewHolder.itemSwitch.setChecked(item.selected);
-                viewHolder.itemSwitch.setTag(item);
-                convertView.setTag(viewHolder);
+                viewHolder.itemSeparator = convertView.findViewById(R.id.Separator);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
-                viewHolder.itemSwitch.setText((item.title));
-                viewHolder.itemText.setText(item.desc);
-                viewHolder.itemSwitch.setChecked(item.selected);
-                viewHolder.itemSwitch.setTag(item);
             }
-        } catch (Exception ignored) {
 
+            if (isNullOrEmpty(item.desc)) {
+                viewHolder.itemText.setVisibility(View.GONE);
+            } else {
+                viewHolder.itemText.setText(item.desc);
+                viewHolder.itemText.setVisibility(View.VISIBLE);
+            }
+
+            if (isNullOrEmpty(item.title)) {
+                viewHolder.itemSwitch.setVisibility(View.GONE);
+            } else {
+                viewHolder.itemSwitch.setText(item.title);
+                viewHolder.itemSwitch.setChecked(item.selected);
+                viewHolder.itemSwitch.setVisibility(View.VISIBLE);
+            }
+
+            if (isNullOrEmpty(item.separator)) {
+                viewHolder.itemSeparator.setVisibility(View.GONE);
+            } else {
+                viewHolder.itemSeparator.setText(item.separator);
+                viewHolder.itemSeparator.setVisibility(View.VISIBLE);
+            }
+            convertView.setTag(viewHolder);
+            viewHolder.itemSwitch.setTag(item);
+        } catch (Exception ignored) {
         }
 
         return convertView;
+    }
+
+    private boolean isNullOrEmpty(String text) {
+        return text == null || text.trim().equals("");
     }
 
     @Override
@@ -122,6 +144,7 @@ public class SwitchAdapter implements ListAdapter {
     }
 
     protected class ViewHolder {
+        TextView itemSeparator = null;
         Switch itemSwitch = null;
         TextView itemText = null;
     }

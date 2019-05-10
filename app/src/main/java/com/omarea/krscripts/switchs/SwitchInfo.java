@@ -1,6 +1,7 @@
 package com.omarea.krscripts.switchs;
 
 public class SwitchInfo {
+    public String separator;
     public String title;
     public String desc;
     public String descPollingShell;

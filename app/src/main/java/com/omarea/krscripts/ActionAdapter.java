@@ -1,6 +1,7 @@
 package com.omarea.krscripts;
 
 import android.database.DataSetObserver;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -65,22 +66,44 @@ public class ActionAdapter extends BaseAdapter {
         try {
             if (convertView == null) {
                 viewHolder = new ViewHolder();
-                convertView = View.inflate(parent.getContext(), R.layout.action_row_item, null);
+                convertView = View.inflate(parent.getContext(), R.layout.kraction_row_item, null);
                 viewHolder.itemTitle = convertView.findViewById(R.id.Title);
                 viewHolder.itemText = convertView.findViewById(R.id.Desc);
-                convertView.setTag(viewHolder);
-                viewHolder.itemTitle.setText((item.title));
-                viewHolder.itemText.setText(item.desc);
+                viewHolder.itemSeparator = convertView.findViewById(R.id.Separator);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
-                viewHolder.itemTitle.setText((item.title));
-                viewHolder.itemText.setText(item.desc);
             }
-        } catch (Exception ignored) {
 
+            if (isNullOrEmpty(item.desc)) {
+                viewHolder.itemText.setVisibility(View.GONE);
+            } else {
+                viewHolder.itemText.setText(item.desc);
+                viewHolder.itemText.setVisibility(View.VISIBLE);
+            }
+
+            if (isNullOrEmpty(item.title)) {
+                viewHolder.itemTitle.setVisibility(View.GONE);
+            } else {
+                viewHolder.itemTitle.setText(item.title);
+                viewHolder.itemTitle.setVisibility(View.VISIBLE);
+            }
+
+            if (isNullOrEmpty(item.separator)) {
+                viewHolder.itemSeparator.setVisibility(View.GONE);
+            } else {
+                viewHolder.itemSeparator.setText(item.separator);
+                viewHolder.itemSeparator.setVisibility(View.VISIBLE);
+            }
+            convertView.setTag(viewHolder);
+            viewHolder.itemTitle.setTag(item);
+        } catch (Exception ignored) {
         }
 
         return convertView;
+    }
+
+    private boolean isNullOrEmpty(String text) {
+        return text == null || text.trim().equals("");
     }
 
     @Override
@@ -109,6 +132,7 @@ public class ActionAdapter extends BaseAdapter {
     }
 
     protected class ViewHolder {
+        TextView itemSeparator = null;
         TextView itemTitle = null;
         TextView itemText = null;
     }

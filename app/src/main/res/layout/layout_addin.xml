@@ -43,6 +43,8 @@
 
                     <com.omarea.ui.OverScrollListView
                         android:id="@+id/list_actions"
+                        android:dividerHeight="0dp"
+                        android:divider="@android:color/transparent"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
 
@@ -63,6 +65,8 @@
 
                     <com.omarea.ui.OverScrollListView
                         android:id="@+id/list_switchs"
+                        android:dividerHeight="0dp"
+                        android:divider="@android:color/transparent"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
                 </FrameLayout>

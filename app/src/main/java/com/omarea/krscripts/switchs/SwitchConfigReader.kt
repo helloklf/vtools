@@ -38,6 +38,24 @@ object SwitchConfigReader {
                     XmlPullParser.START_TAG -> {
                         if ("switchs" == parser.name) {
                             actions = ArrayList()
+                        } else if ("separator" == parser.name) {
+                            if (actions != null) {
+                                val separator = SwitchInfo()
+                                separator.separator = parser.nextText()
+                                actions.add(separator)
+                            }
+                        } else if ("group" == parser.name) {
+                            if (actions != null) {
+                                for (i in 0 until parser.attributeCount) {
+                                    val attrName = parser.getAttributeName(i)
+                                    if (attrName == "title") {
+                                        val separator = SwitchInfo()
+                                        separator.separator = parser.getAttributeValue(i)
+                                        actions.add(separator)
+                                        break
+                                    }
+                                }
+                            }
                         } else if ("switch" == parser.name) {
                             action = SwitchInfo()
                             for (i in 0 until parser.attributeCount) {
@@ -51,6 +69,15 @@ object SwitchConfigReader {
                                         if (executeResultRoot(context, parser.getAttributeValue(i)) != "1") {
                                             action = null
                                         }
+                                    }
+                                }
+                            }
+                        } else if ("resource" == parser.name) {
+                            for (i in 0 until parser.attributeCount) {
+                                if (parser.getAttributeName(i) == "file") {
+                                    val file = parser.getAttributeValue(i).trim()
+                                    if (file.startsWith(ASSETS_FILE)) {
+                                        ExtractAssets(context).extractResource(file)
                                     }
                                 }
                             }
@@ -71,15 +98,6 @@ object SwitchConfigReader {
                                 action.getState = parser.nextText()
                             } else if ("setstate" == parser.name) {
                                 action.setState = parser.nextText()
-                            }
-                        } else if ("resource" == parser.name) {
-                            for (i in 0 until parser.attributeCount) {
-                                if (parser.getAttributeName(i) == "file") {
-                                    val file = parser.getAttributeValue(i).trim()
-                                    if (file.startsWith(ASSETS_FILE)) {
-                                        ExtractAssets(context).extractResource(file)
-                                    }
-                                }
                             }
                         }
                     }

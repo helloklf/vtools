@@ -20,15 +20,15 @@ android {
         applicationId "com.omarea.vtools"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 1022
-        versionName "2.2.2"
+        versionCode 1023
+        versionName "2.2.3"
     }
     buildTypes {
         release {
-            shrinkResources true
+            // shrinkResources true
             zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            minifyEnabled true
+            minifyEnabled false
             debuggable false
             // signingConfig signingConfigs.omarea_Signing
         }

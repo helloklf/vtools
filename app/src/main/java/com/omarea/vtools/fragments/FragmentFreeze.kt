@@ -151,7 +151,8 @@ class FragmentFreeze : Fragment() {
                                 "打开",
                                 "创建快捷方式",
                                 if (appInfo.enabled) "冻结" else "解冻",
-                                "移除"), { _, which ->
+                                "移除",
+                                "移除并卸载"), { _, which ->
 
                     when (which) {
                         0 -> startApp(appInfo)
@@ -162,6 +163,10 @@ class FragmentFreeze : Fragment() {
                         }
                         3 -> {
                             removeConfig(appInfo)
+                            loadData()
+                        }
+                        4 -> {
+                            removeAndUninstall(appInfo)
                             loadData()
                         }
                     }
@@ -183,6 +188,11 @@ class FragmentFreeze : Fragment() {
         store.close()
 
         ShortcutHelper().removeShortcut(this.context!!, appInfo.packageName.toString())
+    }
+
+    private fun removeAndUninstall(appInfo: Appinfo) {
+        removeConfig(appInfo)
+        KeepShellPublic.doCmdSync("pm uninstall --user " + context!!.filesDir.getParentFile().getParentFile().getName() + " " + appInfo.packageName)
     }
 
     private fun enableApp(appInfo: Appinfo) {

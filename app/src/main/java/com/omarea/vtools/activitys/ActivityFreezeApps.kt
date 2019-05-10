@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentActivity
 import android.view.View
 import com.omarea.vtools.R
 import com.omarea.vtools.fragments.FragmentFreeze
+import java.lang.Exception
 
 class ActivityFreezeApps : FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,9 +71,7 @@ class ActivityFreezeApps : FragmentActivity() {
     }
 
     override fun onPause() {
-        supportFragmentManager.fragments.clear()
         super.onPause()
-        this.finish()
         System.gc()
     }
 }

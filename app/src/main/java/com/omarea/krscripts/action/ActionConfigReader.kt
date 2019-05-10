@@ -30,6 +30,24 @@ object ActionConfigReader {
                 when (type) {
                     XmlPullParser.START_TAG -> if ("actions" == parser.name) {
                         actions = ArrayList()
+                    } else if ("separator" == parser.name) {
+                        if (actions != null) {
+                            val separator = ActionInfo()
+                            separator.separator = parser.nextText()
+                            actions.add(separator)
+                        }
+                    } else if ("group" == parser.name) {
+                        if (actions != null) {
+                            for (i in 0 until parser.attributeCount) {
+                                val attrName = parser.getAttributeName(i)
+                                if (attrName == "title") {
+                                    val separator = ActionInfo()
+                                    separator.separator = parser.getAttributeValue(i)
+                                    actions.add(separator)
+                                    break
+                                }
+                            }
+                        }
                     } else if ("action" == parser.name) {
                         action = ActionInfo()
                         for (i in 0 until parser.attributeCount) {
@@ -43,6 +61,15 @@ object ActionConfigReader {
                                     if (executeResultRoot(context, parser.getAttributeValue(i)) != "1") {
                                         action = null
                                     }
+                                }
+                            }
+                        }
+                    } else if ("resource" == parser.name) {
+                        for (i in 0 until parser.attributeCount) {
+                            if (parser.getAttributeName(i) == "file") {
+                                val file = parser.getAttributeValue(i).trim()
+                                if (file.startsWith(ASSETS_FILE)) {
+                                    ExtractAssets(context).extractResource(file)
                                 }
                             }
                         }
@@ -105,15 +132,6 @@ object ActionConfigReader {
                             if (option.value == null)
                                 option.value = option.desc
                             actionParamInfo.options.add(option)
-                        } else if ("resource" == parser.name) {
-                            for (i in 0 until parser.attributeCount) {
-                                if (parser.getAttributeName(i) == "file") {
-                                    val file = parser.getAttributeValue(i).trim()
-                                    if (file.startsWith(ASSETS_FILE)) {
-                                        ExtractAssets(context).extractResource(file)
-                                    }
-                                }
-                            }
                         }
                     }
                     XmlPullParser.END_TAG -> if ("action" == parser.name && actions != null && action != null) {

@@ -1,18 +1,33 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <actions>
-    <action support="file:///android_asset/custom/actions/tmgp_support.sh">
-        <title>王者荣耀配置修改</title>
-        <desc su="file:///android_asset/custom/actions/tmgp_get.sh" />
-        <script>file:///android_asset/custom/actions/tmgp_set.sh</script>
-        <params>
-            <param name="render"
-                options-sh="file:///android_asset/custom/actions/tmgp_options.sh" />
-            <param name="thread" value="0">
-                <option val="1">多线程优化</option>
-                <option val="3">默认</option>
-            </param>
-        </params>
-    </action>
+    <group title="应用程序">
+        <action support="file:///android_asset/custom/actions/tmgp_support.sh">
+            <title>王者荣耀配置修改</title>
+            <desc su="file:///android_asset/custom/actions/tmgp_get.sh" />
+            <script>file:///android_asset/custom/actions/tmgp_set.sh</script>
+            <params>
+                <param name="render"
+                    options-sh="file:///android_asset/custom/actions/tmgp_options.sh" />
+                <param name="thread" value="0">
+                    <option val="1">多线程优化</option>
+                    <option val="3">默认</option>
+                </param>
+            </params>
+        </action>
+        <action confirm="true">
+            <title>修复淘宝闪退</title>
+            <desc>清理优酷和淘宝下载的热更新文件，出现淘宝或优酷闪退的，可以试试</desc>
+            <script>file:///android_asset/custom/actions/app_simple.sh</script>
+        </action>
+        <action support="file:///android_asset/custom/actions/gapps_support.sh">
+            <title>打开Google设置</title>
+            <desc>本功能为了方便隐藏了“Google设置”的定制系统，打开“Google设置”</desc>
+            <script>
+                am start -n com.google.android.gms/.app.settings.GoogleSettingsLink 2> /dev/null
+            </script>
+        </action>
+    </group>
+
     <!--<action root="false">
         <title>环境变量</title>
         <desc>了解Scene提供的环境变量</desc>
@@ -27,100 +42,75 @@
             <param name="action" value="12123123" />
         </params>
     </action>-->
-    <action>
-        <title>修改dex2oat线程数</title>
-        <desc>增加核心线程数（不超过CPU核心数量）可以提高应用安装效率，但会造成应用安装过程中卡顿！</desc>
-        <script>file:///android_asset/custom/actions/dex2oat_threads_set.sh</script>
-        <params>
-            <param name="boot" desc="启动时(boot-dex2oat-threads)"
-                options-sh="file:///android_asset/custom/actions/thread_count_options.sh"
-                value-sh="getprop dalvik.vm.boot-dex2oat-threads" />
-            <param name="dex2oat" desc="启动后(dex2oat-threads)"
-                options-sh="file:///android_asset/custom/actions/thread_count_options.sh"
-                value-sh="getprop dalvik.vm.dex2oat-threads" />
-            <param name="image" desc="编译启动映像(image-dex2oat-threads)"
-                options-sh="file:///android_asset/custom/actions/thread_count_options.sh"
-                value-sh="getprop dalvik.vm.image-dex2oat-threads" />
-            <param name="other" desc="dex2oat_thread_count" readonly="readonly">
-                <option value="">默认</option>
-            </param>
-        </params>
-    </action>
+
+    <group title="系统性能">
+        <action>
+            <title>修改dex2oat线程数</title>
+            <desc>增加核心线程数（不超过CPU核心数量）可以提高应用安装效率，但会造成应用安装过程中卡顿！</desc>
+            <script>file:///android_asset/custom/actions/dex2oat_threads_set.sh</script>
+            <params>
+                <param name="boot" desc="启动时(boot-dex2oat-threads)"
+                    options-sh="file:///android_asset/custom/actions/thread_count_options.sh"
+                    value-sh="getprop dalvik.vm.boot-dex2oat-threads" />
+                <param name="dex2oat" desc="启动后(dex2oat-threads)"
+                    options-sh="file:///android_asset/custom/actions/thread_count_options.sh"
+                    value-sh="getprop dalvik.vm.dex2oat-threads" />
+                <param name="image" desc="编译启动映像(image-dex2oat-threads)"
+                    options-sh="file:///android_asset/custom/actions/thread_count_options.sh"
+                    value-sh="getprop dalvik.vm.image-dex2oat-threads" />
+                <param name="other" desc="dex2oat_thread_count" readonly="readonly">
+                    <option value="">默认</option>
+                </param>
+            </params>
+        </action>
+        <action confirm="true">
+            <title>优化系统应用</title>
+            <desc>适用于Android N+，使用Speed模式对系统应用进行dex2oat编译。建议官改系统刷完开机后进行此操作，从而恢复流畅度！</desc>
+            <script>file:///android_asset/custom/actions/sys_compile.sh</script>
+        </action>
+        <action support="file:///android_asset/custom/actions/renderer_support.sh">
+            <title>HWUI渲染引擎</title>
+            <desc sh="file:///android_asset/custom/actions/renderer_desc.sh" />
+            <params>
+                <param name="renderer"
+                    options-sh="file:///android_asset/custom/actions/renderer_options.sh"
+                    value-sh="file:///android_asset/custom/actions/renderer_get.sh" />
+            </params>
+            <script>file:///android_asset/custom/actions/renderer_set.sh</script>
+        </action>
+        <action>
+            <title>过渡动画时长</title>
+            <desc>调整各种动画时长</desc>
+            <params>
+                <param name="window_animation_scale" desc="弹窗动画时长"
+                    options-sh="file:///android_asset/custom/actions/anima_level_options.sh"
+                    value="1" value-sh="settings get global window_animation_scale" />
+                <param name="transition_animation_scale" desc="界面切换动画时长"
+                    options-sh="file:///android_asset/custom/actions/anima_level_options.sh"
+                    value="1" value-sh="settings get global transition_animation_scale" />
+                <param name="animator_duration_scale" desc="动画程序时长"
+                    options-sh="file:///android_asset/custom/actions/anima_level_options.sh"
+                    value="1" value-sh="settings get global animator_duration_scale" />
+            </params>
+            <script>
+                settings put global window_animation_scale $window_animation_scale
+                settings put global transition_animation_scale $transition_animation_scale
+                settings put global animator_duration_scale $animator_duration_scale
+                echo 'OK!'
+            </script>
+        </action>
+    </group>
+
+    <separator>电池</separator>
     <action confirm="true">
         <title>清理电池优化白名单</title>
         <desc>适用于Android M+，清理Doze模式白名单应用（某些系统喜欢把一些应用自动添加到白名单，导致这些应用无法被休眠！）</desc>
         <script>file:///android_asset/custom/actions/doze_clear.sh</script>
     </action>
-    <action>
-        <title>查看已挂载分区</title>
-        <desc>通过简单的命令，查看当前已挂载的分区</desc>
-        <script>df -h</script>
-    </action>
     <action confirm="true">
         <title>清空耗电记录</title>
         <desc>清空应用耗电记录和电池曲线数据，并不是还原电池寿命！</desc>
         <script>file:///android_asset/custom/actions/battery_history_clear.sh</script>
-    </action>
-    <action>
-        <title>去除！和×</title>
-        <desc>通过修改网络检测服务器为国内地址，修复状态栏的WIFI、LTE图标一直显示！或×</desc>
-        <params>
-            <param name="state" desc="操作类型">
-                <option value="1">去除！和×</option>
-                <option value="0">还原</option>
-            </param>
-        </params>
-        <script>file:///android_asset/custom/actions/network_checker_set.sh</script>
-    </action>
-    <action confirm="true">
-        <title>优化系统应用</title>
-        <desc>适用于Android N+，使用Speed模式对系统应用进行dex2oat编译。建议官改系统刷完开机后进行此操作，从而恢复流畅度！</desc>
-        <script>file:///android_asset/custom/actions/sys_compile.sh</script>
-    </action>
-    <action confirm="true">
-        <title>磁盘测速</title>
-        <desc>使用简单的命令检测磁盘连续读写速度，需要好几分钟</desc>
-        <script>file:///android_asset/custom/actions/disk_test.sh</script>
-    </action>
-    <action>
-        <title>过渡动画时长</title>
-        <desc>调整各种动画时长</desc>
-        <params>
-            <param name="window_animation_scale" desc="弹窗动画时长"
-                options-sh="file:///android_asset/custom/actions/anima_level_options.sh" value="1"
-                value-sh="settings get global window_animation_scale" />
-            <param name="transition_animation_scale" desc="界面切换动画时长"
-                options-sh="file:///android_asset/custom/actions/anima_level_options.sh" value="1"
-                value-sh="settings get global transition_animation_scale" />
-            <param name="animator_duration_scale" desc="动画程序时长"
-                options-sh="file:///android_asset/custom/actions/anima_level_options.sh" value="1"
-                value-sh="settings get global animator_duration_scale" />
-        </params>
-        <script>
-            settings put global window_animation_scale $window_animation_scale
-            settings put global transition_animation_scale $transition_animation_scale
-            settings put global animator_duration_scale $animator_duration_scale
-            echo 'OK!'
-        </script>
-    </action>
-    <action confirm="true" support="file:///android_asset/custom/actions/miui_support.sh">
-        <title>开启MIUI9、MIUI10的隐藏温控选项</title>
-        <desc>看人品，也许是可以开出来，但不一定啦！据说稳定版是不行的。</desc>
-        <script>file:///android_asset/custom/actions/miui_thermal_set.sh</script>
-    </action>
-    <action confirm="true">
-        <title>修复淘宝闪退</title>
-        <desc>清理优酷和淘宝下载的热更新文件，出现淘宝或优酷闪退的，可以试试</desc>
-        <script>file:///android_asset/custom/actions/app_simple.sh</script>
-    </action>
-    <action support="file:///android_asset/custom/actions/renderer_support.sh">
-        <title>HWUI渲染引擎</title>
-        <desc sh="file:///android_asset/custom/actions/renderer_desc.sh" />
-        <params>
-            <param name="renderer" options-sh="file:///android_asset/custom/actions/renderer_options.sh"
-                value-sh="file:///android_asset/custom/actions/renderer_get.sh" />
-        </params>
-        <script>file:///android_asset/custom/actions/renderer_set.sh</script>
     </action>
     <action>
         <title>低电量级别</title>
@@ -134,5 +124,37 @@
                 value-sh="settings get global low_power_trigger_level_max" />
         </params>
         <script>file:///android_asset/custom/actions/low_power_level_set.sh</script>
+    </action>
+
+    <separator>原生系统</separator>
+    <action>
+        <title>去除！和×</title>
+        <desc>通过修改网络检测服务器为国内地址，修复状态栏的WIFI、LTE图标一直显示！或×</desc>
+        <params>
+            <param name="state" desc="操作类型">
+                <option value="1">去除！和×</option>
+                <option value="0">还原</option>
+            </param>
+        </params>
+        <script>file:///android_asset/custom/actions/network_checker_set.sh</script>
+    </action>
+
+    <separator>MIUI专属</separator>
+    <action confirm="true" support="file:///android_asset/custom/actions/miui_support.sh">
+        <title>开启MIUI9、MIUI10的隐藏温控选项</title>
+        <desc>看人品，也许是可以开出来，但不一定啦！据说稳定版是不行的。</desc>
+        <script>file:///android_asset/custom/actions/miui_thermal_set.sh</script>
+    </action>
+
+    <separator>杂项</separator>
+    <action>
+        <title>查看已挂载分区</title>
+        <desc>通过简单的命令，查看当前已挂载的分区</desc>
+        <script>df -h</script>
+    </action>
+    <action confirm="true">
+        <title>磁盘测速</title>
+        <desc>使用简单的命令检测磁盘连续读写速度，需要好几分钟</desc>
+        <script>file:///android_asset/custom/actions/disk_test.sh</script>
     </action>
 </actions>

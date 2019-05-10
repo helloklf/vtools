@@ -5,23 +5,12 @@
     <!--
         [confirm]=[true/false]执行脚本前是否需要确认
     -->
+    <separator>系统通用</separator>
     <switch>
         <title>虚拟键设备</title>
         <desc>标识当前设备没有实体按键，MIUI系统可以通过本功能启用全面屏手势，其它系统可以启用虚拟键。重启生效！</desc>
         <getstate>file:///android_asset/custom/switchs/mainkey_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/mainkey_set.sh</setstate>
-    </switch>
-    <switch support="file:///android_asset/custom/switchs/android_n.sh">
-        <title>自由窗口</title>
-        <desc>开启（原生）系统的窗口模式，在多任务界面显示窗口化按钮</desc>
-        <getstate>file:///android_asset/custom/switchs/freeform_get.sh</getstate>
-        <setstate>file:///android_asset/custom/switchs/freeform_set.sh</setstate>
-    </switch>
-    <switch confirm="true">
-        <title>低内存设备</title>
-        <desc>开启低内存设备标识，从而激活一些为低端机设计的特性（仅限纯原生系统！！！），定制系统开启后可能无法开机！！！</desc>
-        <getstate>file:///android_asset/custom/switchs/lowram_device_get.sh</getstate>
-        <setstate>file:///android_asset/custom/switchs/lowram_device_set.sh</setstate>
     </switch>
     <switch>
         <title>Camera2 HAL、EIS</title>
@@ -33,8 +22,18 @@
         <title>Force Software GLES</title>
         <desc>强制软件GLES渲染，开启此选项可能增加耗电甚至界面黑屏，如果默认开启，可尝试关闭</desc>
         <getstate>getprop persist.sys.force_sw_gles</getstate>
-        <setstate>setprop  persist.sys.force_sw_gles $state</setstate>
+        <setstate>
+            setprop  persist.sys.force_sw_gles $state
+            echo '可能需要重启才会生效'
+        </setstate>
     </switch>
+    <switch support="file:///android_asset/custom/switchs/android_n.sh">
+        <title>强制分屏</title>
+        <desc>适用于Android 7.0+，同开发者设置中的“强制将Activity设为可调整大小”选项。开启此项，从而对声明支持分屏的应用进行分屏操作！</desc>
+        <getstate>file:///android_asset/custom/switchs/force_resize_get.sh</getstate>
+        <setstate>file:///android_asset/custom/switchs/force_resize_set.sh</setstate>
+    </switch>
+
     <switch support="file:///android_asset/custom/switchs/msm_booster_support.sh">
         <title>Performance Boost Config</title>
         <desc>系统根据你启动应用或切换界面的操作，短时间内将CPU频率提高到最佳值（并且不受频率自定义频率限制），提高流畅度增加耗电</desc>
@@ -53,6 +52,28 @@
         <getstate>file:///android_asset/custom/switchs/gapps_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/gapps_set.sh</setstate>
     </switch>
+
+    <separator>原生系统</separator>
+    <switch support="file:///android_asset/custom/switchs/android_n.sh">
+        <title>自由窗口</title>
+        <desc>开启（原生）系统的窗口模式，在多任务界面显示窗口化按钮</desc>
+        <getstate>file:///android_asset/custom/switchs/freeform_get.sh</getstate>
+        <setstate>file:///android_asset/custom/switchs/freeform_set.sh</setstate>
+    </switch>
+    <switch confirm="true">
+        <title>低内存设备</title>
+        <desc>开启低内存设备标识，从而激活一些为低端机设计的特性（仅限纯原生系统！！！），定制系统开启后可能无法开机！！！</desc>
+        <getstate>file:///android_asset/custom/switchs/lowram_device_get.sh</getstate>
+        <setstate>file:///android_asset/custom/switchs/lowram_device_set.sh</setstate>
+    </switch>
+    <switch>
+        <title>省电模式</title>
+        <desc>开关安卓系统自带的省电模式（不是第三方UI自带的省电模式）</desc>
+        <getstate>file:///android_asset/custom/switchs/power_save_get.sh</getstate>
+        <setstate>file:///android_asset/custom/switchs/power_save_set.sh</setstate>
+    </switch>
+
+    <separator>MIUI专属</separator>
     <switch support="file:///android_asset/custom/switchs/miui_support.sh">
         <title>MIUI10 状态栏缺口</title>
         <desc>在MIUI10中开启MI8、8SE刘海屏状态栏中间的缺口，减少图标数量，在MiX2和Mi6上测试可用。重启生效！</desc>
@@ -77,6 +98,8 @@
         <getstate>file:///android_asset/custom/switchs/miui_security_keyboard_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/miui_security_keyboard_set.sh</setstate>
     </switch>
+
+    <separator>第三方软件</separator>
     <switch>
         <title>网易云首屏广告</title>
         <desc>如果禁用，则会通过修改Ad缓存文件夹写入权限，达到禁用广告的目的</desc>
@@ -89,28 +112,18 @@
         <getstate>file:///android_asset/custom/switchs/qq_style_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/qq_style_set.sh</setstate>
     </switch>
-    <switch support="file:///android_asset/custom/switchs/android_n.sh">
-        <title>强制分屏</title>
-        <desc>适用于Android 7.0+，同开发者设置中的“强制将Activity设为可调整大小”选项。开启此项，从而对声明支持分屏的应用进行分屏操作！</desc>
-        <getstate>file:///android_asset/custom/switchs/force_resize_get.sh</getstate>
-        <setstate>file:///android_asset/custom/switchs/force_resize_set.sh</setstate>
-    </switch>
+
+    <separator>开发者</separator>
     <switch>
-        <title>省电模式</title>
-        <desc>开关安卓系统自带的省电模式（不是第三方UI自带的省电模式）</desc>
-        <getstate>file:///android_asset/custom/switchs/power_save_get.sh</getstate>
-        <setstate>file:///android_asset/custom/switchs/power_save_set.sh</setstate>
+        <title>远程ADB调试</title>
+        <desc>开启设备的网络调试端口，方便开发人员免数据线连接电脑，千万不要在公共WIFI网络环境下开启本选项！</desc>
+        <getstate>file:///android_asset/custom/switchs/adb_remote_get.sh</getstate>
+        <setstate>file:///android_asset/custom/switchs/adb_remote_set.sh</setstate>
     </switch>
     <switch>
         <title>隐藏错误弹窗</title>
         <desc>不要显示应用崩溃和未响应的弹窗</desc>
         <getstate>file:///android_asset/custom/switchs/hide_errordialog_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/hide_errordialog_set.sh</setstate>
-    </switch>
-    <switch>
-        <title>远程ADB调试</title>
-        <desc>开启设备的网络调试端口，方便开发人员免数据线连接电脑，千万不要在公共WIFI网络环境下开启本选项！</desc>
-        <getstate>file:///android_asset/custom/switchs/adb_remote_get.sh</getstate>
-        <setstate>file:///android_asset/custom/switchs/adb_remote_set.sh</setstate>
     </switch>
 </switchs>
