@@ -5,7 +5,7 @@ function cat_prop_is_1()
 {
     prop="$1"
     status=`grep $prop /system/build.prop|cut -d '=' -f2`
-    if [ "$status" = "1" ]; then
+    if [ "$status" = "1" ] || [ "$status" = "true" ]; then
         echo 1;
         exit 0
     fi
@@ -16,7 +16,7 @@ function cat_prop_is_1()
         status=`grep $prop $MAGISK_PATH/system.prop | cut -d '=' -f2`
     fi
 
-    if [ "$status" = 1 ]; then
+    if [ "$status" = 1 ] || [ "$status" = "true" ]; then
         echo 1;
     else
         echo 0
@@ -28,7 +28,7 @@ function cat_prop_is_0()
 {
     prop="$1"
     status=`grep $prop /system/build.prop|cut -d '=' -f2`
-    if [ "$status" = "1" ]; then
+    if [ "$status" = "1" ] || [ "$status" = "true" ]; then
         echo 0;
         exit 0
     fi
@@ -39,7 +39,7 @@ function cat_prop_is_0()
         status=`grep $prop $MAGISK_PATH/system.prop | cut -d '=' -f2`
     fi
 
-    if [ "$status" = 1 ]; then
+    if [ "$status" = 1 ] || [ "$status" = "true" ]; then
         echo 0;
     else
         echo 1

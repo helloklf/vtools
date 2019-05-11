@@ -183,7 +183,7 @@ override fun onCreate() {
                 return
 
             val packageName = event.packageName.toString()
-            if (packageName == "android" || packageName == "com.android.systemui") {
+            if (packageName == "android" || packageName == "custom/switchs/resources/com.android.systemui") {
                 return
             }
             if (packageName.contains("packageinstaller")) {

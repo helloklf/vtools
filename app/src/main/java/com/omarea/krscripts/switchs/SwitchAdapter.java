@@ -1,14 +1,14 @@
-package com.omarea.krscripts;
+package com.omarea.krscripts.switchs;
 
 import android.database.DataSetObserver;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
-import com.omarea.krscripts.switchs.SwitchInfo;
+
+import com.omarea.krscripts.ScriptEnvironmen;
 import com.omarea.vtools.R;
 
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ public class SwitchAdapter implements ListAdapter {
         ViewHolder holder = (ViewHolder) view.getTag();
         SwitchInfo actionInfo = ((SwitchInfo) getItem(index));
         if (actionInfo.descPollingShell != null && !actionInfo.descPollingShell.isEmpty()) {
-            actionInfo.desc =  ScriptEnvironmen.executeResultRoot(listview.getContext(), actionInfo.descPollingShell);
+            actionInfo.desc = ScriptEnvironmen.executeResultRoot(listview.getContext(), actionInfo.descPollingShell);
         }
         if (actionInfo.getState != null && !actionInfo.getState.isEmpty()) {
             String shellResult = ScriptEnvironmen.executeResultRoot(listview.getContext(), actionInfo.getState);

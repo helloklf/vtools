@@ -41,7 +41,7 @@ class ServiceHelper2(private var context: Context) : ModeList(context) {
     private var ignoredList = arrayListOf(
             "com.miui.securitycenter",
             "android",
-            "com.android.systemui",
+            "custom/switchs/resources/com.android.systemui",
             "com.omarea.vtools",
             "com.miui.touchassistant",
             "com.miui.contentextension",
@@ -284,7 +284,7 @@ class ServiceHelper2(private var context: Context) : ModeList(context) {
         }
 
         if (lastPackage == packageName || ignoredList.contains(packageName)) return
-        if (lastPackage == null) lastPackage = "com.android.systemui"
+        if (lastPackage == null) lastPackage = "custom/switchs/resources/com.android.systemui"
 
         if (accuSwitch)
             DumpTopApplictionThread(dumpTopAppliction, packageName, this).start()

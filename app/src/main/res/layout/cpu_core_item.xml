@@ -50,7 +50,7 @@
             android:textAlignment="center"
             android:textColor="?android:attr/textColorPrimary"
             android:textStyle="bold"
-            android:textSize="13dp" />
+            android:textSize="12dp" />
 
         <TextView
             android:id="@+id/cpu_core_freq_ranage"

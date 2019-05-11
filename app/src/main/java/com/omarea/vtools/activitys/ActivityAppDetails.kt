@@ -249,7 +249,7 @@ class ActivityAppDetails : AppCompatActivity() {
         app = this.intent.extras.getString("app")
         needKeyCapture = AppConfigStore(this.applicationContext).needKeyCapture()
 
-        if (app == "android" || app == "com.android.systemui" || app == "com.android.webview" || app == "mokee.platform" || app == "com.miui.rom") {
+        if (app == "android" || app == "custom/switchs/resources/com.android.systemui" || app == "com.android.webview" || app == "mokee.platform" || app == "com.miui.rom") {
             app_details_permission.visibility = View.GONE
             app_details_auto.visibility = View.GONE
             app_details_assist.visibility = View.GONE

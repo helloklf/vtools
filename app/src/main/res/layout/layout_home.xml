@@ -256,6 +256,7 @@
                         android:focusable="false"
                         android:focusableInTouchMode="false"
                         android:listSelector="@android:color/transparent"
+                        android:scrollbars="none"
                         android:numColumns="4" />
                 </LinearLayout>
             </LinearLayout>
@@ -310,14 +311,16 @@
             </TableRow>
         </TableLayout>
 
-        <TextView
+        <Button
             android:id="@+id/home_help"
+            android:padding="0dp"
+            android:background="@android:color/transparent"
             style="@style/textSmall"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="20dp"
             android:layout_marginTop="5dp"
             android:autoLink="none"
-            android:text="点击此处，快速入门"
+            android:text="点击 访问🌍Scene官网"
             android:textAlignment="center"
             android:textColor="?colorAccent" />
     </LinearLayout>

@@ -18,7 +18,6 @@ import com.omarea.krscripts.switchs.SwitchConfigReader
 import com.omarea.krscripts.switchs.SwitchListConfig
 import com.omarea.shared.FileWrite
 import com.omarea.shell.SysUtils
-import com.omarea.shell.units.FlymeUnit
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.vtools.R
 import com.omarea.vtools.activitys.ActivityAddinOnline
@@ -57,8 +56,6 @@ class FragmentAddin : Fragment() {
     private fun initAddin(view: View) {
         val listItem = ArrayList<HashMap<String, Any>>().apply {
             add(createItem(getString(R.string.addin_fullscreen_on), getString(R.string.addin_fullscreen_on_desc), Runnable { FullScreenAddin(activity!!).fullScreen() }, false))
-            add(createItem(getString(R.string.addin_flyme_static_blur), getString(R.string.addin_flyme_static_blur_desc), Runnable { FlymeUnit().staticBlur() }))
-            add(createItem(getString(R.string.addin_miui_hide_search), getString(R.string.addin_miui_hide_search_desc), Runnable { MiuiAddin(context!!).hideSearch() }))
 
             // add(createItem(getString(R.string.addin_drop_caches), getString(R.string.addin_drop_caches_desc), Runnable { SystemAddin(context!!).dropCache() }))
             add(createItem(getString(R.string.addin_thermal_remove), getString(R.string.addin_thermal_remove_desc), Runnable { ThermalAddin(context!!).showOption() }, false))

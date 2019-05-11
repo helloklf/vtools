@@ -6,7 +6,6 @@ import android.support.v4.app.FragmentActivity
 import android.support.v7.app.AlertDialog
 import android.view.View
 import android.widget.*
-import com.omarea.krscripts.ActionAdapter
 import com.omarea.krscripts.ScriptEnvironmen
 import com.omarea.krscripts.simple.shell.SimpleShellExecutor
 import com.omarea.ui.OverScrollListView
@@ -55,7 +54,7 @@ class ActionListConfig(private val context: FragmentActivity) {
     private fun executeScript(action: ActionInfo, onExit: Runnable) {
         val script = action.script ?: return
 
-        var startPath:String? = null
+        var startPath: String? = null
         if (action.start != null) {
             startPath = action.start
         }

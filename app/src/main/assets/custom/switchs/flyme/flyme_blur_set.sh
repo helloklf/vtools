@@ -2,13 +2,14 @@
 
 source ./custom/switchs/resources/props.sh
 
+prop="persist.sys.static_blur_mode"
+
 if [[ $state = 1 ]]
 then
-    value=0
+    value=true
 else
-    value=1
+    value=false
 fi
-prop="qemu.hw.mainkeys"
 
 magisk_set_system_prop $prop $value
 

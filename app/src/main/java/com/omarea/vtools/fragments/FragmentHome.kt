@@ -219,6 +219,9 @@ class FragmentHome : Fragment() {
                     home_cpu_chat.setData(100.toFloat(), (100 - loads.get(-1)!!.toInt()).toFloat())
                 }
                 if (cpu_core_list.adapter == null) {
+                    if (cores.size < 6) {
+                        cpu_core_list.numColumns = 2
+                    }
                     cpu_core_list.adapter = AdapterCpuCores(context!!, cores)
                 } else {
                     (cpu_core_list.adapter as AdapterCpuCores).setData(cores)

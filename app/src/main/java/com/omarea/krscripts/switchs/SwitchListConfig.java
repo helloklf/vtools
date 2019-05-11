@@ -6,12 +6,9 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-
-import com.omarea.krscripts.SwitchAdapter;
 import com.omarea.krscripts.simple.shell.SimpleShellExecutor;
 import com.omarea.ui.OverScrollListView;
 import com.omarea.vtools.R;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 

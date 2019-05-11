@@ -1,14 +1,15 @@
-package com.omarea.krscripts;
+package com.omarea.krscripts.action;
 
 import android.database.DataSetObserver;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import com.omarea.krscripts.action.ActionInfo;
+
+import com.omarea.krscripts.ScriptEnvironmen;
 import com.omarea.vtools.R;
+
 import java.util.ArrayList;
 
 public class ActionAdapter extends BaseAdapter {

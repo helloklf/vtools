@@ -193,7 +193,7 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
 
         // 平滑滚动
         if (prefs.getBoolean(packageName + "_scroll", false) || prefs.getBoolean("android_scroll", false)) {
-            if (!packageName.equals("android") && !packageName.equals("com.android.systemui")) {
+            if (!packageName.equals("android") && !packageName.equals("custom/switchs/resources/com.android.systemui")) {
                 new ViewConfig().handleLoadPackage(loadPackageParam);
             }
         }
@@ -226,7 +226,7 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
         // 专属选项
         switch (packageName) {
             // 隐藏状态栏ROOT图标
-            case "com.android.systemui":
+            case "custom/switchs/resources/com.android.systemui":
                 if (prefs.getBoolean("com.android.systemui_hide_su", false)) {
                     new SystemUI().hideSUIcon(loadPackageParam);
                 }
