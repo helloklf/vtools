@@ -51,7 +51,7 @@ class AdapterCpuCores(private val context: Context, private val list: ArrayList<
             convertView = View.inflate(context, R.layout.cpu_core_item, null)
         }
         val coreInfo = getItem(position)
-        val cpuChartView = convertView!!.findViewById<CpuChartView>(R.id.core_cpu_loading_chart)
+        val cpuChartView = convertView!!.findViewById<CpuChartBarView>(R.id.core_cpu_loading_chart)
         cpuChartView.setData(100f, 100 - coreInfo.loadRatio.toFloat() + 0.5f)
         cpuChartView.invalidate()
 

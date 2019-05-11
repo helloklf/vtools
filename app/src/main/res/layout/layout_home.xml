@@ -250,16 +250,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_gravity="center_vertical"
-                        android:layout_marginLeft="30dp"
-                        android:layout_marginTop="3dp"
-                        android:layout_marginRight="22dp"
-                        android:layout_marginBottom="5dp"
+                        android:layout_margin="5dp"
                         android:layout_weight="1"
                         android:clickable="false"
                         android:focusable="false"
                         android:focusableInTouchMode="false"
                         android:listSelector="@android:color/transparent"
-                        android:numColumns="2" />
+                        android:numColumns="4" />
                 </LinearLayout>
             </LinearLayout>
         </FrameLayout>

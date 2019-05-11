@@ -3,20 +3,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:paddingBottom="8dp"
-    android:paddingTop="8dp">
+    android:layout_gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingTop="8dp"
+    android:paddingBottom="23dp">
 
     <FrameLayout
         android:layout_width="55dp"
         android:layout_height="55dp"
-        android:layout_gravity="center_vertical">
+        android:layout_gravity="center">
 
-        <com.omarea.ui.CpuChartView
+        <com.omarea.ui.CpuChartBarView
             android:id="@+id/core_cpu_loading_chart"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:free="0"
+            android:alpha="0.5"
+            app:free="1"
             app:total="1" />
 
         <TextView
@@ -24,36 +26,40 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text=""
+            android:text="0%"
             android:textSize="12dp"
             android:textStyle="bold" />
     </FrameLayout>
 
     <LinearLayout
+        android:layout_marginTop="3dp"
         android:id="@+id/center"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_gravity="center"
         android:layout_weight="1"
         android:orientation="vertical"
         android:paddingLeft="7dp">
 
         <TextView
             android:id="@+id/cpu_core_current_freq"
-            android:layout_width="120dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="1"
             android:text="2048Mhz"
+            android:textAlignment="center"
             android:textColor="?android:attr/textColorPrimary"
+            android:textStyle="bold"
             android:textSize="13dp" />
 
         <TextView
             android:id="@+id/cpu_core_freq_ranage"
-            android:layout_width="120dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="300Mhz ~ 2048Mhz"
+            android:textAlignment="center"
             android:textColor="#8888"
-            android:textSize="10dp" />
+            android:textSize="9dp" />
     </LinearLayout>
 </LinearLayout>
