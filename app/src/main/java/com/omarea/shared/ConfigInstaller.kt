@@ -22,7 +22,7 @@ class ConfigInstaller {
             //KeepShellPublic.doCmdSync(CommonCmds.InstallPowerToggleConfigToCache + "\n\n" + CommonCmds.ExecuteConfig + "\n" + after)
             KeepShellPublic.doCmdSync(cmd.toString())
             configCodeVerify()
-            ModeList(context).setCurrentPowercfg("")
+            ModeList().setCurrentPowercfg("")
             KeepShellPublic.doCmdSync(afterCmds)
         } catch (ex: Exception) {
             Log.e("script-parse", ex.message)
@@ -40,7 +40,7 @@ class ConfigInstaller {
                     .append("chmod 0777 ${POWER_CFG_BASE};")
             //KeepShellPublic.doCmdSync(CommonCmds.InstallPowerToggleConfigToCache + "\n\n" + CommonCmds.ExecuteConfig + "\n" + after)
             KeepShellPublic.doCmdSync(cmd.toString())
-            ModeList(context).setCurrentPowercfg("")
+            ModeList().setCurrentPowercfg("")
             return true
         } catch (ex: Exception) {
             Log.e("script-parse", ex.message)

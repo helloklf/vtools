@@ -139,7 +139,7 @@ class FragmentConfig : Fragment() {
             packageManager = context!!.packageManager
         }
 
-        modeList = ModeList(context!!)
+        modeList = ModeList()
         processBarDialog = ProgressBarDialog(context!!)
         applistHelper = AppListHelper(context!!)
         spfPowercfg = context!!.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
@@ -644,7 +644,12 @@ class FragmentConfig : Fragment() {
                 val dialog = AlertDialog.Builder(context)
                         .setTitle(getString(R.string.first_start_select_config))
                         .setCancelable(false)
-                        .setSingleChoiceItems(arrayOf(getString(R.string.conservative), getString(R.string.radicalness), getString(R.string.get_online_config)), 0, { _, which ->
+                        .setSingleChoiceItems(
+                                arrayOf(
+                                        getString(R.string.conservative),
+                                        getString(R.string.radicalness),
+                                        getString(R.string.get_online_config)
+                                ), 0, { _, which ->
                             i = which
                         })
                         .setNegativeButton(R.string.btn_confirm, { _, _ ->
@@ -682,9 +687,43 @@ class FragmentConfig : Fragment() {
 
 
     private fun getOnlineConfig() {
+        var i = 0
+        val dialog = AlertDialog.Builder(context)
+                .setTitle(getString(R.string.first_start_select_config))
+                .setCancelable(true)
+                .setSingleChoiceItems(
+                        arrayOf(
+                                getString(R.string.online_config_v1),
+                                getString(R.string.online_config_v2)
+                        ), 0, { _, which ->
+                    i = which
+                })
+                .setNegativeButton(R.string.btn_confirm, { _, _ ->
+                    if (i  == 0) {
+                        getOnlineConfigV1()
+                    } else if (i == 1) {
+                        getOnlineConfigV2()
+                    }
+                }).create()
+
+        dialog.window!!.setWindowAnimations(R.style.windowAnim)
+        dialog.show()
+    }
+    private fun getOnlineConfigV1() {
         try {
             val intent = Intent(this.context, ActivityAddinOnline::class.java)
             intent.putExtra("url", "https://github.com/yc9559/cpufreq-interactive-opt/tree/master/vtools-powercfg")
+            startActivityForResult(intent, REQUEST_POWERCFG_ONLINE)
+        } catch (ex: Exception) {
+            Toast.makeText(context!!, "启动在线页面失败！", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+    private fun getOnlineConfigV2() {
+        try {
+            val intent = Intent(this.context, ActivityAddinOnline::class.java)
+            intent.putExtra("url", "https://github.com/yc9559/wipe-v2/releases")
             startActivityForResult(intent, REQUEST_POWERCFG_ONLINE)
         } catch (ex: Exception) {
             Toast.makeText(context!!, "启动在线页面失败！", Toast.LENGTH_SHORT).show()

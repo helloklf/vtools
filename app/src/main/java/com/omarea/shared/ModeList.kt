@@ -1,6 +1,5 @@
 package com.omarea.shared
 
-import android.content.Context
 import com.omarea.shell.KeepShellAsync
 import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.Props
@@ -30,19 +29,12 @@ open class ModeList {
                 else -> return "未知模式"
             }
         }
+
+        private var currentPowercfg: String = ""
+        private var currentPowercfgApp: String = ""
     }
 
     internal var keepShellAsync: KeepShellAsync? = null
-    private var context: Context? = null
-    private var currentPowercfg: String = ""
-    private var currentPowercfgApp: String = ""
-
-    constructor() {
-    }
-
-    constructor(context: Context) {
-        this.context = context
-    }
 
     internal fun getModIcon(mode: String): Int {
         when (mode) {
@@ -65,15 +57,15 @@ open class ModeList {
     }
 
     internal fun getCurrentPowerMode(): String? {
-        if (!this.currentPowercfg.isEmpty()) {
-            return this.currentPowercfg
+        if (!currentPowercfg.isEmpty()) {
+            return currentPowercfg
         }
         return Props.getProp("vtools.powercfg")
     }
 
     internal fun getCurrentPowermodeApp(): String? {
-        if (!this.currentPowercfgApp.isEmpty()) {
-            return this.currentPowercfgApp
+        if (!currentPowercfgApp.isEmpty()) {
+            return currentPowercfgApp
         }
         return Props.getProp("vtools.powercfg_app")
     }
@@ -97,12 +89,6 @@ open class ModeList {
     }
 
     internal fun keepShellExec(cmd: String) {
-        /*
-        if (keepShellAsync == null) {
-            keepShellAsync = KeepShellAsync(context)
-        }
-        keepShellAsync!!.doCmd(cmd)
-        */
         KeepShellPublic.doCmdSync(cmd)
     }
 

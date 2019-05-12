@@ -249,7 +249,7 @@ class ActivityAppDetails : AppCompatActivity() {
         app = this.intent.extras.getString("app")
         needKeyCapture = AppConfigStore(this.applicationContext).needKeyCapture()
 
-        if (app == "android" || app == "custom/switchs/resources/com.android.systemui" || app == "com.android.webview" || app == "mokee.platform" || app == "com.miui.rom") {
+        if (app == "android" || app == "com.android.systemui" || app == "com.android.webview" || app == "mokee.platform" || app == "com.miui.rom") {
             app_details_permission.visibility = View.GONE
             app_details_auto.visibility = View.GONE
             app_details_assist.visibility = View.GONE
@@ -269,7 +269,7 @@ class ActivityAppDetails : AppCompatActivity() {
                 Snackbar.make(it, getString(R.string.dynamic_config_notinstalled), Snackbar.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            val modeList = ModeList(this)
+            val modeList = ModeList()
             val powercfg = getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
             val currentMode = powercfg.getString(app, getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeList.BALANCE))
             var index = 0

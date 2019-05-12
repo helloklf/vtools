@@ -31,7 +31,7 @@ import java.util.*
  *
  * Created by helloklf on 2016/10/1.
  */
-class ServiceHelper(private var context: AccessibilityService) : ModeList(context) {
+class ServiceHelper(private var context: AccessibilityService) : ModeList() {
     private var systemScene = SystemScene(context)
     private var lastPackage: String? = null
     private var lastModePackage: String? = "com.system.ui"
@@ -42,7 +42,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
     private var ignoredList = arrayListOf(
             "com.miui.securitycenter",
             "android",
-            "custom/switchs/resources/com.android.systemui",
+            "com.android.systemui",
             "com.omarea.vtools",
             "com.miui.touchassistant",
             "com.miui.contentextension",
@@ -301,7 +301,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList(contex
         }
 
         if (lastPackage == packageName || ignoredList.contains(packageName)) return
-        if (lastPackage == null) lastPackage = "custom/switchs/resources/com.android.systemui"
+        if (lastPackage == null) lastPackage = "com.android.systemui"
 
         if (accuSwitch)
             DumpTopApplictionThread(dumpTopAppliction, packageName, this).start()

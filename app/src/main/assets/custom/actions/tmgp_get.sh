@@ -34,7 +34,7 @@ if [ `cat $prefs | grep EnableMTR | cut -f3 -d '=' | cut -f2 -d '"'` = '1' ]; th
     mt='多线程';
 fi
 if [ `cat $prefs | grep DisableMTR | cut -f3 -d '=' | cut -f2 -d '"'` = '1' ]; then
-    mt='';
+    mt=''
 fi
 
 echo $text $render $mt;

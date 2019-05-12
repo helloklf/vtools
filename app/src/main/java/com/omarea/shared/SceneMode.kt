@@ -21,7 +21,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
         // 偏见应用后台超时时间
         private val freezAppTimeLimit = 300000 // 5分钟
 
-        var lastAppPackageName = "custom/switchs/resources/com.android.systemui"
+        var lastAppPackageName = "com.android.systemui"
 
         @Volatile
         var instance: SceneMode? = null
@@ -360,7 +360,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
     }
 
     fun clearState() {
-        lastAppPackageName = "custom/switchs/resources/com.android.systemui"
+        lastAppPackageName = "com.android.systemui"
         restoreLocationModeState()
         resumeState()
         config = null

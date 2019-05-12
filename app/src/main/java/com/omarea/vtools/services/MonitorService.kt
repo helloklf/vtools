@@ -51,7 +51,7 @@ class MonitorService : Service() {
             return
         }
         val app = row.substring(row.indexOf(":") + 1).trim()
-        if (app == "custom/switchs/resources/com.android.systemui" || app == "com.omarea.vtools") {
+        if (app == "com.android.systemui" || app == "com.omarea.vtools") {
             return
         }
         if (last != app) {

@@ -15,11 +15,19 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import com.omarea.shared.ConfigInstaller
+import com.omarea.shared.FileWrite
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_addin_online.*
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.IOException
 import java.net.URL
 import java.nio.charset.Charset
+import java.util.zip.ZipFile
+import java.util.zip.ZipInputStream
+import java.util.zip.ZipOutputStream
 
 
 class ActivityAddinOnline : AppCompatActivity() {
@@ -94,6 +102,66 @@ class ActivityAddinOnline : AppCompatActivity() {
         }).start()
     }
 
+    private fun downloadPowercfgV2(url: String) {
+        val progressBarDialog = ProgressBarDialog(this)
+        progressBarDialog.showDialog("正在获取配置，稍等...")
+        Thread(Runnable {
+            try {
+                val myURL = URL(url)
+                val conn = myURL.openConnection()
+                conn.connect()
+                conn.getInputStream()
+                val inputStream = conn.getInputStream()
+                val buffer = inputStream.readBytes()
+                val cacheName = "caches/powercfg_downloaded.zip"
+                if (FileWrite.writePrivateFile(buffer, cacheName, baseContext)) {
+                    val cachePath = FileWrite.getPrivateFilePath(baseContext, cacheName)
+
+                    val zipInputStream = ZipInputStream(FileInputStream(File(cachePath)))
+                    while (true) {
+                        val zipEntry = zipInputStream.nextEntry
+                        if (zipEntry == null) {
+                            throw java.lang.Exception("下载的文件无效，未从中找到powercfg.sh")
+                        } else if (zipEntry.name == "powercfg.sh") {
+                            val byteArray = zipInputStream.readBytes()
+                            val powercfg = byteArray.toString(Charset.defaultCharset())
+                            if (powercfg.startsWith("#!/") && ConfigInstaller().installPowerConfigByText(this, powercfg)) {
+                                vtools_online.post {
+                                    AlertDialog.Builder(this)
+                                            .setTitle("配置文件已安装")
+                                            .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                                                setResult(Activity.RESULT_OK)
+                                                finish()
+                                            })
+                                            .setCancelable(false)
+                                            .create()
+                                            .show()
+                                }
+                            } else {
+                                vtools_online.post {
+                                    Toast.makeText(applicationContext, "下载配置文件失败或文件无效！", Toast.LENGTH_LONG).show()
+                                }
+                            }
+                            vtools_online.post {
+                                progressBarDialog.hideDialog()
+                            }
+                            break
+                        } else {
+                            zipInputStream.skip(zipEntry.size)
+                        }
+                    }
+                } else {
+                    throw IOException("文件存储失败")
+                }
+            } catch (ex: Exception) {
+                vtools_online.post {
+                    progressBarDialog.hideDialog()
+                    Toast.makeText(applicationContext, "下载配置文件失败！", Toast.LENGTH_LONG).show()
+                }
+            }
+        }).start()
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
     override fun onStart() {
         super.onStart()
@@ -112,6 +180,7 @@ class ActivityAddinOnline : AppCompatActivity() {
         vtools_online.setWebViewClient(object : WebViewClient() {
             private fun tryGetPowercfg(view: WebView?, url: String?): Boolean {
                 if (url != null && view != null) {
+                    // v1
                     // https://github.com/yc9559/cpufreq-interactive-opt/blob/master/vtools-powercfg/20180603/sd_845/powercfg.apk 源码地址
                     // https://github.com/yc9559/cpufreq-interactive-opt/raw/master/vtools-powercfg/20180603/sd_845/powercfg.apk 点击raw指向的链接
                     // https://raw.githubusercontent.com/yc9559/cpufreq-interactive-opt/master/vtools-powercfg/20180603/sd_845/powercfg.apk 然后重定向到具体文件
@@ -122,8 +191,24 @@ class ActivityAddinOnline : AppCompatActivity() {
                                 .setMessage("在当前页面上检测到可用于动态响应的配置脚本，是否立即将其安装到本地？\n\n配置：$configPath\n\n作者：yc9559\n\n")
                                 .setPositiveButton(R.string.btn_confirm, { _, _ ->
                                     val configAbsPath = "https://github.com/yc9559/cpufreq-interactive-opt/raw/master/$configPath"
-                                    // view.loadUrl(configAbsPath)
                                     downloadPowercfg(configAbsPath)
+                                })
+                                .setCancelable(false)
+                                .setNeutralButton(R.string.btn_cancel, { _, _ ->
+                                    view.loadUrl(url)
+                                })
+                                .create()
+                                .show()
+                    } else if (url.startsWith("https://github.com/yc9559/wipe-v2/releases/download/") && url.endsWith(".zip")) {
+                        // v2
+                        // https://github.com/yc9559/wipe-v2/releases/download/0.1.190503-dev/sdm625.zip
+                        val configPath = url.substring(url.lastIndexOf("/") + 1).replace(".zip", "")
+                        AlertDialog.Builder(vtools_online.context)
+                                .setTitle("配置安装提示")
+                                .setMessage("你刚刚点击的内容，似乎是一个可用于动态响应的配置脚本，是否立即将其安装到本地？\n\n配置：$configPath\n\n作者：yc9559\n\n")
+                                .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                                    val configAbsPath = url
+                                    downloadPowercfgV2(configAbsPath)
                                 })
                                 .setCancelable(false)
                                 .setNeutralButton(R.string.btn_cancel, { _, _ ->

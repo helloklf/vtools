@@ -235,6 +235,12 @@
     <string name="not_support_config">未找到可用的模式配置脚本</string>
     <string name="not_support_config_desc">本应用目前还没有为您当前Soc提供性能配置文件，但你可以自己创建配置文件，并放到/data目录下，文件命名为powercfg，权限设为0755.\n\n或者，试试YC大佬是否有为你的设备提供可用的配置文件，找到适用的配置，点击powercfg.apk，工具箱会自动帮你安装！</string>
     <string name="first_start_select_config">首次使用，先选择配置偏好</string>
+
+    <string name="get_online_config">在线获取配置脚本</string>
+    <string name="online_config_versions">选择配置脚本库来源</string>
+    <string name="online_config_v1">yc9559定制v1</string>
+    <string name="online_config_v2">yc9559定制v2（目前仅支持骁龙）</string>
+
     <string name="conservative">保守 - 更加省电</string>
     <string name="radicalness">激进 - 性能优先</string>
     <string name="config_installed">配置安装成功！</string>
@@ -305,8 +311,6 @@
     <string name="scene_need_write_sys_settings">请先授权允许Scene“修改系统设置”！</string>
     <string name="start_app_fail">启动应用失败！</string>
     <string name="scene_need_notic_listing">请先授权允许Scene“通知使用权限”！</string>
-
-    <string name="get_online_config">在线获取配置脚本</string>
 
     <string name="title_activity_start_splash">Scene 启动中...</string>
     <string name="scene_key_capture_change_action">com.omarea.vtools.SceneAccessibleConfigChanged</string>
