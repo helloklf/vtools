@@ -7,6 +7,9 @@ import android.content.SharedPreferences
 import android.os.Build
 import com.omarea.shell.KeepShellAsync
 import com.omarea.shell.KeepShellPublic
+import android.net.wifi.WifiManager
+
+
 
 /**
  * Created by SYSTEM on 2018/07/19.
@@ -16,18 +19,48 @@ class SystemScene(private var context: Context) {
     private var spfAutoConfig: SharedPreferences = context.getSharedPreferences(SpfConfig.BOOSTER_SPF_CFG_SPF, Context.MODE_PRIVATE)
     private var keepShell = KeepShellAsync(context)
 
+    private fun isWifiApOpen(context: Context): Boolean {
+        try {
+            val manager = context.getApplicationContext().getSystemService(Context.WIFI_SERVICE) as WifiManager
+            //通过放射获取 getWifiApState()方法
+            val method = manager.javaClass.getDeclaredMethod("getWifiApState")
+            //调用getWifiApState() ，获取返回值
+            val state = method.invoke(manager) as Int
+            //通过放射获取 WIFI_AP的开启状态属性
+            val field = manager.javaClass.getDeclaredField("WIFI_AP_STATE_ENABLED")
+            //获取属性值
+            val value = field.get(manager) as Int
+            //判断是否开启
+            return if (state == value) {
+                true
+            } else {
+                false
+            }
+        } catch (e: Exception) {
+        }
+
+        return false
+    }
+
     fun onScreenOn() {
         if (spfAutoConfig.getBoolean(SpfConfig.FORCEDOZE + SpfConfig.OFF, false)) {
             KeepShellPublic.doCmdSync("dumpsys deviceidle unforce\ndumpsys deviceidle enable all\n")
         }
-        if (spfAutoConfig.getBoolean(SpfConfig.WIFI + SpfConfig.ON, false))
-            KeepShellPublic.doCmdSync("svc wifi enable")
+
+        if (spfAutoConfig.getBoolean(SpfConfig.WIFI + SpfConfig.ON, false)) {
+            if (!isWifiApOpen(context)) {
+                KeepShellPublic.doCmdSync("svc wifi enable")
+            }
+        }
+        if (spfAutoConfig.getBoolean(SpfConfig.DATA + SpfConfig.ON, false)){
+            if (!isWifiApOpen(context)) {
+                KeepShellPublic.doCmdSync("svc data enable")
+            }
+        }
 
         if (spfAutoConfig.getBoolean(SpfConfig.NFC + SpfConfig.ON, false))
             KeepShellPublic.doCmdSync("svc nfc enable")
 
-        if (spfAutoConfig.getBoolean(SpfConfig.DATA + SpfConfig.ON, false))
-            KeepShellPublic.doCmdSync("svc data enable")
 
         if (spfAutoConfig.getBoolean(SpfConfig.GPS + SpfConfig.ON, false)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
@@ -43,14 +76,20 @@ class SystemScene(private var context: Context) {
 
     fun onScreenOff() {
         backToHome()
-        if (spfAutoConfig.getBoolean(SpfConfig.WIFI + SpfConfig.OFF, false))
-            KeepShellPublic.doCmdSync("svc wifi disable")
+        if (spfAutoConfig.getBoolean(SpfConfig.WIFI + SpfConfig.OFF, false)) {
+            if (!isWifiApOpen(context)) {
+                KeepShellPublic.doCmdSync("svc wifi disable")
+            }
+        }
 
         if (spfAutoConfig.getBoolean(SpfConfig.NFC + SpfConfig.OFF, false))
             KeepShellPublic.doCmdSync("svc nfc disable")
 
-        if (spfAutoConfig.getBoolean(SpfConfig.DATA + SpfConfig.OFF, false))
-            KeepShellPublic.doCmdSync("svc data disable")
+        if (spfAutoConfig.getBoolean(SpfConfig.DATA + SpfConfig.OFF, false)) {
+            if (!isWifiApOpen(context)) {
+                KeepShellPublic.doCmdSync("svc data disable")
+            }
+        }
 
         if (spfAutoConfig.getBoolean(SpfConfig.GPS + SpfConfig.OFF, false)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

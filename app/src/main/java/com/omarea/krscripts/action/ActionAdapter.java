@@ -1,5 +1,6 @@
 package com.omarea.krscripts.action;
 
+import android.content.Context;
 import android.database.DataSetObserver;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 
 public class ActionAdapter extends BaseAdapter {
     private ArrayList<ActionInfo> actionInfos;
+    private Context context;
 
     public ActionAdapter(ArrayList<ActionInfo> actionInfos) {
         this.actionInfos = actionInfos;
@@ -64,10 +66,15 @@ public class ActionAdapter extends BaseAdapter {
         View convertView = view;
         final ViewHolder viewHolder;
         final ActionInfo item = (ActionInfo) getItem(position);
+
+        if (context == null) {
+            context = parent.getContext();
+        }
+
         try {
             if (convertView == null) {
                 viewHolder = new ViewHolder();
-                convertView = View.inflate(parent.getContext(), R.layout.kraction_row_item, null);
+                convertView = View.inflate(context, R.layout.kraction_row_item, null);
                 viewHolder.itemTitle = convertView.findViewById(R.id.Title);
                 viewHolder.itemText = convertView.findViewById(R.id.Desc);
                 viewHolder.itemSeparator = convertView.findViewById(R.id.Separator);

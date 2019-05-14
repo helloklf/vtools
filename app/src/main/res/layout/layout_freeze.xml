@@ -70,10 +70,27 @@
         android:layout_width="match_parent"
         android:layout_height="0dp">
 
-        <com.omarea.ui.OverScrollGridView
-            android:numColumns="4"
-            android:id="@+id/freeze_apps"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+            <EditText
+                android:id="@+id/freeze_apps_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:hint="搜索应用名"
+                android:inputType="textFilter"
+                android:padding="8dp"
+                android:singleLine="true"
+                android:maxLength="10"
+                android:textSize="16dp" />
+            <com.omarea.ui.OverScrollGridView
+                android:numColumns="4"
+                android:id="@+id/freeze_apps"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:layout_height="0dp" />
+        </LinearLayout>
     </android.support.v7.widget.CardView>
 </LinearLayout>

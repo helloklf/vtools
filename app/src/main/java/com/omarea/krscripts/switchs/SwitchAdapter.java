@@ -1,5 +1,6 @@
 package com.omarea.krscripts.switchs;
 
+import android.content.Context;
 import android.database.DataSetObserver;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 
 public class SwitchAdapter implements ListAdapter {
     private ArrayList<SwitchInfo> actionInfos;
+    private Context context;
 
     public SwitchAdapter(ArrayList<SwitchInfo> actionInfos) {
         this.actionInfos = actionInfos;
@@ -74,10 +76,14 @@ public class SwitchAdapter implements ListAdapter {
         View convertView = view;
         ViewHolder viewHolder;
 
+        if (context == null) {
+            context = parent.getContext();
+        }
+
         try {
             if (convertView == null) {
                 viewHolder = new ViewHolder();
-                convertView = View.inflate(parent.getContext(), R.layout.switch_row_item, null);
+                convertView = View.inflate(context, R.layout.switch_row_item, null);
                 viewHolder.itemSwitch = convertView.findViewById(R.id.Title);
                 viewHolder.itemText = convertView.findViewById(R.id.Desc);
                 viewHolder.itemSeparator = convertView.findViewById(R.id.Separator);

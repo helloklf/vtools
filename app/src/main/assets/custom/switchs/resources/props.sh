@@ -4,6 +4,18 @@
 function cat_prop_is_1()
 {
     prop="$1"
+    if [[ -d "$MAGISK_PATH" ]] && [[ -f "$MAGISK_PATH/system.prop" ]]
+    then
+        status=`grep $prop $MAGISK_PATH/system.prop | cut -d '=' -f2`
+    fi
+    if [ "$status" = "1" ] || [ "$status" = "true" ]; then
+        echo 1;
+        exit 0
+    elif [ "$status" = "0" ] || [ "$status" = "false" ]; then
+        echo 0;
+        exit 0
+    fi
+
     status=`grep $prop /system/build.prop|cut -d '=' -f2`
     if [ "$status" = "1" ] || [ "$status" = "true" ]; then
         echo 1;
@@ -11,39 +23,50 @@ function cat_prop_is_1()
     fi
 
 
-    if [[ -d "$MAGISK_PATH" ]] && [[ -f "$MAGISK_PATH/system.prop" ]]
+    if [[ -f "/vendor/build.prop" ]]
     then
-        status=`grep $prop $MAGISK_PATH/system.prop | cut -d '=' -f2`
+        status=`grep $prop /vendor/build.prop | cut -d '=' -f2`
+    fi
+    if [ "$status" = "1" ] || [ "$status" = "true" ]; then
+        echo 1;
+        exit 0
     fi
 
-    if [ "$status" = 1 ] || [ "$status" = "true" ]; then
-        echo 1;
-    else
-        echo 0
-    fi;
+    echo 0
 }
 
 # 从build.prop文件读取prop的值是否为0
 function cat_prop_is_0()
 {
     prop="$1"
-    status=`grep $prop /system/build.prop|cut -d '=' -f2`
-    if [ "$status" = "1" ] || [ "$status" = "true" ]; then
-        echo 0;
-        exit 0
-    fi
-
-
     if [[ -d "$MAGISK_PATH" ]] && [[ -f "$MAGISK_PATH/system.prop" ]]
     then
         status=`grep $prop $MAGISK_PATH/system.prop | cut -d '=' -f2`
     fi
-
-    if [ "$status" = 1 ] || [ "$status" = "true" ]; then
+    if [ "$status" = "0" ] || [ "$status" = "false" ]; then
+        echo 1;
+        exit 0
+    elif [ "$status" = "1" ] || [ "$status" = "true" ]; then
         echo 0;
-    else
-        echo 1
-    fi;
+        exit 0
+    fi
+
+    status=`grep $prop /system/build.prop|cut -d '=' -f2`
+    if [ "$status" = "0" ] || [ "$status" = "false" ]; then
+        echo 1;
+        exit 0
+    fi
+
+    if [[ -f "/vendor/build.prop" ]]
+    then
+        status=`grep $prop /vendor/build.prop | cut -d '=' -f2`
+    fi
+    if [ "$status" = "0" ] || [ "$status" = "false" ]; then
+        echo 1;
+        exit 0
+    fi
+
+    echo 0
 }
 
 function magisk_set_system_prop() {

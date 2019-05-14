@@ -1,6 +1,8 @@
 package com.omarea.krscripts.switchs;
 
-public class SwitchInfo {
+import com.omarea.krscripts.ConfigItem;
+
+public class SwitchInfo extends ConfigItem {
     public String separator;
     public String title;
     public String desc;
@@ -9,12 +11,5 @@ public class SwitchInfo {
     public String setState;
     public boolean selected;
     public String start;
-    public ActionScript getStateType = ActionScript.SCRIPT;
-    public ActionScript setStateType = ActionScript.SCRIPT;
     public boolean confirm;
-
-    public enum ActionScript {
-        SCRIPT,
-        ASSETS_FILE
-    }
 }
