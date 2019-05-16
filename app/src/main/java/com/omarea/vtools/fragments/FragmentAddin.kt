@@ -11,12 +11,12 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.SimpleAdapter
 import android.widget.TabHost
-import android.widget.Toast
 import com.omarea.krscripts.action.ActionConfigReader
 import com.omarea.krscripts.action.ActionListConfig
 import com.omarea.krscripts.switchs.SwitchConfigReader
 import com.omarea.krscripts.switchs.SwitchListConfig
-import com.omarea.shared.FileWrite
+import com.omarea.shared.MagiskExtend
+import com.omarea.shell.Platform
 import com.omarea.shell.SysUtils
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.vtools.R
@@ -27,7 +27,6 @@ import com.omarea.vtools.dialogs.DialogAddinModifydevice
 import com.omarea.vtools.dialogs.DialogAddinWIFI
 import com.omarea.vtools.dialogs.DialogCustomMAC
 import kotlinx.android.synthetic.main.layout_addin.*
-import java.io.File
 import java.util.*
 
 
@@ -59,9 +58,11 @@ class FragmentAddin : Fragment() {
 
             // add(createItem(getString(R.string.addin_drop_caches), getString(R.string.addin_drop_caches_desc), Runnable { SystemAddin(context!!).dropCache() }))
             add(createItem(getString(R.string.addin_thermal_remove), getString(R.string.addin_thermal_remove_desc), Runnable { ThermalAddin(context!!).showOption() }, false))
-            add(createItem(getString(R.string.addin_thermal_remove2), getString(R.string.addin_thermal_remove2_desc), Runnable {
-                ThermalAddin(context!!).miuiSetThermalNo()
-            }, false))
+            if (!MagiskExtend.moduleInstalled()) {
+                add(createItem(getString(R.string.addin_thermal_remove2), getString(R.string.addin_thermal_remove2_desc), Runnable {
+                    ThermalAddin(context!!).miuiSetThermalNo()
+                }, false))
+            }
             // add(createItem(getString(R.string.addin_del_pwd), getString(R.string.addin_del_pwd_desc), Runnable { SystemAddin(context!!).deleteLockPwd() }))
             add(createItem(getString(R.string.addin_wifi), getString(R.string.addin_wifi_desc), Runnable { DialogAddinWIFI(context!!).show() }, false))
 
@@ -101,41 +102,37 @@ class FragmentAddin : Fragment() {
         }
     }
 
-    private var customConfigLoaded = false
-    private fun loadConfig() {
-        if (customConfigLoaded)
+    private var actionsConfigLoaded = false
+    private fun loadActionsConfig() {
+        if (actionsConfigLoaded)
             return
         val progressBarDialog = ProgressBarDialog(context!!)
         progressBarDialog.showDialog("读取配置，稍等...")
         Thread(Runnable {
             val actions = ActionConfigReader.readActionConfigXml(this.activity!!)
-            if (actions == null) {
-                myHandler.post {
-                    progressBarDialog.hideDialog()
-                }
-                return@Runnable
-            }
-            val onlineAddinDir = File(FileWrite.getPrivateFileDir(this.context!!) + "online-addin/")
-            if (onlineAddinDir.exists() && onlineAddinDir.isDirectory) {
-                val onlineAddins = onlineAddinDir.list { dir, name ->
-                    name.endsWith(".xml")
-                }
-                for (addinFile in onlineAddins) {
-                    try {
-                        val result = ActionConfigReader.readActionConfigXml(this.activity!!, File("$onlineAddinDir/$addinFile").inputStream())
-                        if (result != null && result.size > 0)
-                            actions.addAll(result)
-                    } catch (ex: Exception) {
-                        myHandler.post {
-                            Toast.makeText(context, addinFile + "读取解析失败\n" + ex.message, Toast.LENGTH_LONG).show()
-                        }
-                    }
-                }
-            }
             myHandler.post {
-                ActionListConfig(this.activity!!).setListData(actions);
-                SwitchListConfig(this.activity!!).setListData(SwitchConfigReader.readActionConfigXml(this.activity!!));
-                customConfigLoaded = true
+                progressBarDialog.hideDialog()
+                if (actions != null) {
+                    ActionListConfig(this.activity!!).setListData(actions);
+                    actionsConfigLoaded = true
+                }
+            }
+        }).start()
+    }
+
+    private var switchssConfigLoaded = false
+    private fun loadSwitchsConfig() {
+        if (switchssConfigLoaded)
+            return
+        val progressBarDialog = ProgressBarDialog(context!!)
+        progressBarDialog.showDialog("读取配置，稍等...")
+        Thread(Runnable {
+            val switchs = SwitchConfigReader.readActionConfigXml(this.activity!!)
+            myHandler.post {
+                if (switchs != null) {
+                    switchssConfigLoaded = true
+                    SwitchListConfig(this.activity!!).setListData(switchs);
+                }
                 progressBarDialog.hideDialog()
             }
         }).start()
@@ -145,12 +142,15 @@ class FragmentAddin : Fragment() {
         val tabHost = view.findViewById(R.id.addin_tabhost) as TabHost
         tabHost.setup()
         tabHost.addTab(tabHost.newTabSpec("tab_1").setContent(R.id.tab0).setIndicator("", context!!.getDrawable(R.drawable.android)))
-        tabHost.addTab(tabHost.newTabSpec("tab_2").setContent(R.id.tab1).setIndicator("", context!!.getDrawable(R.drawable.shell)))
-        tabHost.addTab(tabHost.newTabSpec("tab_3").setContent(R.id.tab2).setIndicator("", context!!.getDrawable(R.drawable.switchs)))
+        tabHost.addTab(tabHost.newTabSpec("tab_actions").setContent(R.id.tab1).setIndicator("", context!!.getDrawable(R.drawable.shell)))
+        tabHost.addTab(tabHost.newTabSpec("tab_switchs").setContent(R.id.tab2).setIndicator("", context!!.getDrawable(R.drawable.switchs)))
         tabHost.currentTab = 0
         tabHost.setOnTabChangedListener({ tabId ->
-            if (tabId != "tab_1") {
-                loadConfig()
+            if (tabId == "tab_actions") {
+                loadActionsConfig()
+            }
+            if (tabId == "tab_switchs") {
+                loadSwitchsConfig()
             }
         })
 
