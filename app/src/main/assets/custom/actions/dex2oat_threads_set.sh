@@ -8,7 +8,7 @@
 filepath=""
 if [[ -n "$MAGISK_PATH" ]];
 then
-    filepath="${MAGISK_PATH}system.prop"
+    filepath="${MAGISK_PATH}/system.prop"
     echo "你已安装Magisk，本次修改将通过操作进行"
     echo 'Step1.挂载System为读写（跳过）...'
 else

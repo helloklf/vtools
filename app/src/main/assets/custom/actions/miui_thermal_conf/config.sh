@@ -26,7 +26,10 @@ function replace_file() {
 function remove_file() {
     if [[ "$platform" = "msmnile" ]]
     then
-        rm -f "$dir/thermal$1.conf"
+        if [[ -f "$dir/thermal$1.conf" ]]
+        then
+            rm -f "$dir/thermal$1.conf"
+        fi
     else
         rm -f "$dir/thermal-engine-${platform}$1.conf"
     fi
@@ -54,7 +57,12 @@ function replace_configs()
 
     if [[ "$platform" = "msmnile" ]]
     then
-        replace_file "$config" "-chg-only"
+        if [[ "$mode" = "danger" ]]
+        then
+            echo "# empty\n" > "$dir/thermal-chg-only.conf"
+        else
+            remove_file "-chg-only"
+        fi
         replace_file "$config" "-devices"
         replace_file "$config" "-engine"
     fi

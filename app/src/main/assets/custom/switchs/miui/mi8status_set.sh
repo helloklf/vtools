@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-source ./custom/switchs/resources/props.sh
+source ./custom/common/props.sh
 
 prop="ro.miui.notch"
 

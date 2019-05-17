@@ -46,7 +46,7 @@ public class ScriptEnvironmen {
             }
 
             if (MagiskExtend.moduleInstalled()) {
-                envShell = envShell.replace("${MAGISK_PATH}", MagiskExtend.MAGISK_PATH);
+                envShell = envShell.replace("${MAGISK_PATH}", (MagiskExtend.MAGISK_PATH.endsWith("/") ? (MagiskExtend.MAGISK_PATH.substring(0, MagiskExtend.MAGISK_PATH.length() -1 )) : MagiskExtend.MAGISK_PATH));
             } else {
                 envShell = envShell.replace("${MAGISK_PATH}", "");
             }

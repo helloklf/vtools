@@ -11,32 +11,33 @@ rm -f $cache 2> /dev/null
 echo '\n常规写入测试...'
 sync
 echo 3 > /proc/sys/vm/drop_caches
-sleep 3
-$BUSYBOX dd if=/dev/zero of=$cache bs=1024000 count=2048 conv=sync
+echo "progress:[-1/5]"
 
+$BUSYBOX dd if=/dev/zero of=$cache bs=1024000 count=2048 conv=sync 1>&2
 rm -f $cache 2> /dev/null
 sync
 echo 3 > /proc/sys/vm/drop_caches
+echo "progress:[1/5]"
 
 echo '\n同步写入测试...'
-sleep 3
-$BUSYBOX dd if=/dev/zero of=$cache bs=1024000 count=2048 conv=fsync
+$BUSYBOX dd if=/dev/zero of=$cache bs=1024000 count=2048 conv=fsync 1>&2
 sync
 echo 3 > /proc/sys/vm/drop_caches
+echo "progress:[2/5]"
 
 if [[ -e /dev/block/sda ]];
 then
     echo '\n缓存速度测试...'
-    sleep 3
-    $BUSYBOX hdparm -T /dev/block/sda
+    $BUSYBOX hdparm -T /dev/block/sda 1>&2
+    echo "progress:[3/5]"
 
     echo '\n读取测试...'
-    sleep 3
-    $BUSYBOX hdparm -t /dev/block/sda
+    $BUSYBOX hdparm -t /dev/block/sda 1>&2
+    echo "progress:[4/5]"
 else
     echo '\n常规读取测试...'
-    sleep 3
-    $BUSYBOX dd if=$cache of=/dev/null
+    $BUSYBOX dd if=$cache of=/dev/null 1>&2
+    echo "progress:[4/5]"
 fi
 
 echo ''
@@ -45,3 +46,4 @@ rm -f $cache 2> /dev/null
 sync
 echo 3 > /proc/sys/vm/drop_caches
 echo ''
+echo "progress:[5/5]"

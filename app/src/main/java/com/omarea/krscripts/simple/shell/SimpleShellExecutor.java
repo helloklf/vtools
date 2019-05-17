@@ -1,20 +1,12 @@
 package com.omarea.krscripts.simple.shell;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Environment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import com.omarea.krscripts.ExtractAssets;
 import com.omarea.shared.FileWrite;
 import com.omarea.shared.MagiskExtend;
-import com.omarea.vtools.R;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -28,7 +20,6 @@ import java.util.HashMap;
 /**
  * Created by Hello on 2018/04/01.
  */
-
 public class SimpleShellExecutor {
     private Context context;
     private boolean started = false;
@@ -61,7 +52,7 @@ public class SimpleShellExecutor {
             }
         }
         if (MagiskExtend.moduleInstalled()) {
-            envp.add("MAGISK_PATH=" + MagiskExtend.MAGISK_PATH);
+            envp.add("MAGISK_PATH=" + (MagiskExtend.MAGISK_PATH.endsWith("/") ? (MagiskExtend.MAGISK_PATH.substring(0, MagiskExtend.MAGISK_PATH.length() -1 )) : MagiskExtend.MAGISK_PATH));
         }
         envp.add("TEMP_DIR=" + dirUri + "/temp");
         envp.add("ANDROID_UID=" + dir.getParentFile().getParentFile().getName());
@@ -83,9 +74,16 @@ public class SimpleShellExecutor {
         }
 
         if (process != null) {
-            TextView textView = setLogView(title);
-
-            final ShellHandler shellHandler = new SimpleShellHandler(textView);
+            final Process finalProcess = process;
+            final ShellHandler shellHandler = new SimpleShellHandler(context, title, new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        finalProcess.destroy();
+                    } catch (Exception ex) {
+                    }
+                }
+            });
             setHandler(process, shellHandler, onExit);
 
             final OutputStream outputStream = process.getOutputStream();
@@ -132,31 +130,6 @@ public class SimpleShellExecutor {
             started = true;
         }
         return started;
-    }
-
-    /**
-     * 创建并获取日志输出界面
-     *
-     * @return
-     */
-    private TextView setLogView(String title) {
-        if (title == null) {
-            title = context.getString(R.string.shell_executor);
-        }
-        LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View view = layoutInflater.inflate(R.layout.dialog_shell_executor, null);
-        TextView textView = view.findViewById(R.id.shell_output);
-        new AlertDialog.Builder(context)
-                .setTitle(title)
-                .setView(view)
-                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                })
-                .create()
-                .show();
-        return textView;
     }
 
     /**

@@ -75,6 +75,7 @@
     <string name="btn_confirm">确定</string>
     <string name="btn_iknow">知道了</string>
     <string name="btn_exit">退出</string>
+    <string name="btn_hide">隐藏</string>
     <string name="btn_skip">忽略</string>
     <string name="btn_refresh">重试</string>
     <string name="error_su_timeout">等待超时，请确保你的Root管理器正在后台运行，并重试！\n\n请确保你没有阻止“授权管理器(SuperSu、Magisk Manager等)”自启动，并允许后台弹出窗口、显示悬浮窗等权限。如果一直没有弹出授权对话框，建议重启手机再试！\n</string>

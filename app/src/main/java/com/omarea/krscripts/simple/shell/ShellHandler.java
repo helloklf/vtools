@@ -1,6 +1,8 @@
 package com.omarea.krscripts.simple.shell;
 
 import android.os.Handler;
+import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 /**
@@ -34,4 +36,9 @@ public abstract class ShellHandler extends Handler {
     static int EVENT_EXIT = -2;
 
     TextView textView;
+    ProgressBar shellProgress;
+    TextView shellTitle;
+    Button btnExit;
+    Button btnHide;
+    boolean finished;
 }

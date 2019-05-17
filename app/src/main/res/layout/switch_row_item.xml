@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingLeft="15dp"
-    android:paddingTop="6dp"
     android:paddingRight="15dp"
     android:paddingBottom="0dp">
 
@@ -13,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="0dp"
+        android:layout_marginBottom="2dp"
         android:alpha="0.5"
         android:clickable="false"
         android:focusable="false"
@@ -22,6 +21,9 @@
         android:textSize="13dp" />
 
     <LinearLayout
+        android:id="@+id/contents"
+        android:background="@color/color_opacity_card"
+        android:paddingTop="6dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -33,11 +35,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="0dp"
+            android:alpha="0.8"
             android:clickable="false"
             android:focusable="false"
             android:text="这只是测试文本，这只是测试文本"
             android:textColor="?android:attr/textColorPrimary"
-            android:alpha="0.8"
             android:textSize="13dp"
             android:textStyle="bold" />
 
@@ -45,9 +47,9 @@
             android:id="@+id/Desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="45dp"
             android:text="这只是测试文本，这只是测试文本，这只是测试文本，这只是测试文本，这只是测试文本，"
             android:textColor="?android:attr/textColorSecondary"
-            android:layout_marginRight="45dp"
             android:textSize="10dp" />
 
         <View

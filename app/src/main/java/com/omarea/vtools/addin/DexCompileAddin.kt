@@ -18,6 +18,7 @@ import com.omarea.shared.CommonCmds
 import com.omarea.shell.AsynSuShellUnit
 import com.omarea.shell.Props
 import com.omarea.vtools.R
+import java.lang.Exception
 import java.util.*
 
 /**
@@ -44,29 +45,32 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
         @SuppressLint("SetTextI18n")
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
-            if (msg.obj != null) {
-                if (msg.what == 0) {
-                    textView.text = "正在执行操作..."
-                } else {
-                    val obj = msg.obj.toString()
-                    if (obj == "[operation completed]") {
-                        progressBar.progress = 100
-                        textView.text = "操作完成！"
-                        this.postDelayed({
-                            alert.dismiss()
-                            alert.hide()
-                        }, 2000)
-                    } else if (Regex("^\\[.*]\$").matches(obj)) {
-                        progressBar.progress = msg.what
-                        val txt = obj
-                                .replace("[compile ", "[编译 ")
-                                .replace("[reset ", "[重置 ")
-                        if (obj.contains("compile") || obj.contains("reset")) {
-                            current++
+            try {
+                if (msg.obj != null) {
+                    if (msg.what == 0) {
+                        textView.text = "正在执行操作..."
+                    } else {
+                        val obj = msg.obj.toString()
+                        if (obj == "[operation completed]") {
+                            progressBar.progress = 100
+                            textView.text = "操作完成！"
+                            this.postDelayed({
+                                alert.dismiss()
+                                alert.hide()
+                            }, 2000)
+                        } else if (Regex("^\\[.*]\$").matches(obj)) {
+                            progressBar.progress = msg.what
+                            val txt = obj
+                                    .replace("[compile ", "[编译 ")
+                                    .replace("[reset ", "[重置 ")
+                            if (obj.contains("compile") || obj.contains("reset")) {
+                                current++
+                            }
+                            textView.text = txt + "\n(${current}/${total})"
                         }
-                        textView.text = txt + "\n(${current}/${total})"
                     }
                 }
+            } catch (ex: Exception) {
             }
         }
 
@@ -130,7 +134,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                         1 -> commands.append("cmd package compile -m speed -f ${context.packageName}")
                         2 -> commands.append("cmd package compile -m everything ${context.packageName}")
                         3 -> commands.append("cmd package compile -m everything -f ${context.packageName}")
-                        4 -> commands.append("cmd package compile --reset ${context.packageName}")
+                        // 4 -> commands.append("cmd package compile --reset ${context.packageName}") // 会导致自身被强制关闭
                     }
                     commands.append("\n\n")
                     AsynSuShellUnit(ProgressHandler(context, apps.size)).exec(commands.toString()).waitFor()

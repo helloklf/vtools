@@ -1,11 +1,16 @@
 #!/system/bin/sh
 
-path=/system/vendor/etc/perf/perfboostsconfig.xml
+input=./custom/common/empty
+output=/system/vendor/etc/perf/perfboostsconfig.xml
 
-if [[ -f $path ]]; then
-    echo 1
-elif [[ -f "${path}.bak" ]]; then
+source ./custom/common/magisk_plus.sh
+
+file_mixture_hooked "$input" "$output"
+result="$?"
+
+if [[ "$result" = 1 ]]
+then
     echo 0
 else
-    echo 0
+    echo 1
 fi

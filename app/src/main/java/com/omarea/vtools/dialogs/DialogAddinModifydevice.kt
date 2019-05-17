@@ -233,14 +233,6 @@ class DialogAddinModifydevice(var context: Context) {
         editManufacturer.setText("OPPO")
     }
 
-    private fun setIPhoneX() {
-        editBrand.setText("iPhone")
-        editModel.setText("X")
-        editProductName.setText("hydrogen")
-        editDevice.setText("hydrogen")
-        editManufacturer.setText("iPhone")
-    }
-
     private fun setS9Plus() {
         editBrand.setText("samsung")
         editModel.setText("SM-G9650")

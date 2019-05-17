@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingLeft="15dp"
-    android:paddingTop="6dp"
     android:paddingRight="15dp"
     android:paddingBottom="0dp">
 
@@ -14,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:layout_marginBottom="0dp"
+        android:layout_marginBottom="2dp"
         android:alpha="0.5"
         android:clickable="false"
         android:focusable="false"
@@ -23,9 +22,12 @@
         android:textSize="13dp" />
 
     <LinearLayout
+        android:id="@+id/contents"
+        android:background="@color/color_opacity_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:paddingTop="6dp"
         android:paddingLeft="13dp"
         android:paddingRight="13dp">
 

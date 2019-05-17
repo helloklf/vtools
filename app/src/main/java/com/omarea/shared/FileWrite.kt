@@ -19,7 +19,10 @@ object FileWrite {
         try {
             val inputStream = ass.open(file)
             val datas = ByteArray(2 * 1024 * 1024)
-            val len = inputStream.read(datas)
+            var len = inputStream.read(datas)
+            if (len < 0) {
+                len = 0
+            }
 
             /*
             //获取SD卡的目录
@@ -64,7 +67,10 @@ object FileWrite {
             val inputStream = assetManager.open(file)
             val datas = ByteArray(2 * 1024 * 1024)
             //inputStream.available()
-            val len = inputStream.read(datas)
+            var len = inputStream.read(datas)
+            if (len < 0) {
+                len = 0
+            }
             val dir = File(FileWrite.baseUrl)
             if (!dir.exists())
                 dir.mkdirs()
@@ -102,7 +108,10 @@ object FileWrite {
             val inputStream = assetManager.open(file)
             val datas = ByteArray(2 * 1024 * 1024)
             //inputStream.available()
-            val len = inputStream.read(datas)
+            var len = inputStream.read(datas)
+            if (len < 0) {
+                len = 0
+            }
             val dir = File(getPrivateFileDir(context))
             if (!dir.exists())
                 dir.mkdirs()
@@ -122,6 +131,7 @@ object FileWrite {
             return filePath
             //getApplicationContext().getClassLoader().getResourceAsStream("");
         } catch (e: IOException) {
+            Log.e("writePrivateFile", e.message)
             e.printStackTrace()
         }
         return null
@@ -168,7 +178,10 @@ object FileWrite {
             val inputStream = assetManager.open(fileName)
             val datas = ByteArray(2 * 1024 * 1024)
             //inputStream.available()
-            val len = inputStream.read(datas)
+            var len = inputStream.read(datas)
+            if (len < 0) {
+                len = 0
+            }
             val codes = String(datas, 0, len).replace(Regex("\r\n"), "\n").replace(Regex("\r\t"), "\t")
             return codes.toByteArray(Charsets.UTF_8)
         } catch (ex: Exception) {

@@ -87,23 +87,19 @@ public class SwitchAdapter implements ListAdapter {
                 viewHolder.itemSwitch = convertView.findViewById(R.id.Title);
                 viewHolder.itemText = convertView.findViewById(R.id.Desc);
                 viewHolder.itemSeparator = convertView.findViewById(R.id.Separator);
+                viewHolder.contents = convertView.findViewById(R.id.contents);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
 
-            if (isNullOrEmpty(item.desc)) {
-                viewHolder.itemText.setVisibility(View.GONE);
+            if (isNullOrEmpty(item.desc) && isNullOrEmpty(item.title)) {
+                viewHolder.contents.setVisibility(View.GONE);
             } else {
-                viewHolder.itemText.setText(item.desc);
-                viewHolder.itemText.setVisibility(View.VISIBLE);
-            }
+                viewHolder.contents.setVisibility(View.VISIBLE);
 
-            if (isNullOrEmpty(item.title)) {
-                viewHolder.itemSwitch.setVisibility(View.GONE);
-            } else {
+                viewHolder.itemText.setText(item.desc);
                 viewHolder.itemSwitch.setText(item.title);
                 viewHolder.itemSwitch.setChecked(item.selected);
-                viewHolder.itemSwitch.setVisibility(View.VISIBLE);
             }
 
             if (isNullOrEmpty(item.separator)) {
@@ -151,6 +147,7 @@ public class SwitchAdapter implements ListAdapter {
 
     protected class ViewHolder {
         TextView itemSeparator = null;
+        View contents = null;
         Switch itemSwitch = null;
         TextView itemText = null;
     }

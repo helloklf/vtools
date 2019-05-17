@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-source ./custom/switchs/resources/props.sh
+source ./custom/common/props.sh
 
 if [ "$state" = '1' ];then
     value="true"

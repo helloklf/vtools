@@ -78,22 +78,18 @@ public class ActionAdapter extends BaseAdapter {
                 viewHolder.itemTitle = convertView.findViewById(R.id.Title);
                 viewHolder.itemText = convertView.findViewById(R.id.Desc);
                 viewHolder.itemSeparator = convertView.findViewById(R.id.Separator);
+                viewHolder.contents = convertView.findViewById(R.id.contents);
             } else {
                 viewHolder = (ViewHolder) convertView.getTag();
             }
 
-            if (isNullOrEmpty(item.desc)) {
-                viewHolder.itemText.setVisibility(View.GONE);
+            if (isNullOrEmpty(item.desc) && isNullOrEmpty(item.title)) {
+                viewHolder.contents.setVisibility(View.GONE);
             } else {
-                viewHolder.itemText.setText(item.desc);
-                viewHolder.itemText.setVisibility(View.VISIBLE);
-            }
+                viewHolder.contents.setVisibility(View.VISIBLE);
 
-            if (isNullOrEmpty(item.title)) {
-                viewHolder.itemTitle.setVisibility(View.GONE);
-            } else {
+                viewHolder.itemText.setText(item.desc);
                 viewHolder.itemTitle.setText(item.title);
-                viewHolder.itemTitle.setVisibility(View.VISIBLE);
             }
 
             if (isNullOrEmpty(item.separator)) {
@@ -141,6 +137,7 @@ public class ActionAdapter extends BaseAdapter {
 
     protected class ViewHolder {
         TextView itemSeparator = null;
+        View contents = null;
         TextView itemTitle = null;
         TextView itemText = null;
     }
