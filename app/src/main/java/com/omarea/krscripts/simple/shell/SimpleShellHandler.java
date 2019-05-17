@@ -10,6 +10,8 @@ import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import com.omarea.vtools.R;
+
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class SimpleShellHandler extends ShellHandler {
@@ -36,6 +38,7 @@ public class SimpleShellHandler extends ShellHandler {
                 .setView(view)
                 .setCancelable(false)
                 .create();
+        Objects.requireNonNull(dialog.getWindow()).setWindowAnimations(R.style.windowAnim);
         dialog.show();
 
         btnHide.setOnClickListener(new View.OnClickListener() {

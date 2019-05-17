@@ -81,6 +81,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
             alert = android.app.AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
             textView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
             progressBar = (dialog.findViewById(R.id.dialog_app_details_progress) as ProgressBar)
+            alert.window!!.setWindowAnimations(R.style.windowAnim)
             alert.show()
             textView.text = "正在获取权限"
         }

@@ -11,7 +11,7 @@
         android:visibility="gone"
         android:id="@+id/Separator"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="2dp"
         android:alpha="0.5"
@@ -23,11 +23,12 @@
 
     <LinearLayout
         android:id="@+id/contents"
-        android:background="@color/color_opacity_card"
+        android:background="@drawable/krscript_item_ripple"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingTop="6dp"
+        android:paddingBottom="10dp"
         android:paddingLeft="13dp"
         android:paddingRight="13dp">
 
@@ -52,12 +53,5 @@
             android:text="这只是测试文本，这只是测试文本，这只是测试文本，这只是测试文本，这只是测试文本，"
             android:textColor="?android:attr/textColorSecondary"
             android:textSize="10dp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_marginTop="10dp"
-            android:alpha="0.4"
-            android:background="@android:color/darker_gray" />
     </LinearLayout>
 </LinearLayout>

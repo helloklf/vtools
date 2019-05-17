@@ -11,12 +11,14 @@
         android:layout_height="match_parent">
 
         <LinearLayout
+            android:background="@color/color_opacity_card"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TabWidget
                 android:id="@android:id/tabs"
+                android:background="?android:colorBackground"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
@@ -27,11 +29,16 @@
 
                 <FrameLayout
                     android:id="@+id/tab0"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
                     <com.omarea.ui.OverScrollListView
                         android:id="@+id/addin_system_listview"
+                        android:listSelector="@android:color/transparent"
+                        android:divider="@color/color_list_divider"
+                        android:dividerHeight="1sp"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
                 </FrameLayout>
@@ -43,19 +50,12 @@
 
                     <com.omarea.ui.OverScrollListView
                         android:id="@+id/list_actions"
-                        android:dividerHeight="0dp"
-                        android:divider="@android:color/transparent"
+                        android:listSelector="@android:color/transparent"
+                        android:divider="@color/color_list_divider"
+                        android:dividerHeight="1sp"
+                        android:paddingBottom="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
-
-                    <android.support.design.widget.FloatingActionButton
-                        android:visibility="gone"
-                        android:id="@+id/addin_online"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom|center"
-                        android:layout_margin="@dimen/fab_margin"
-                        android:src="@drawable/add" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -65,8 +65,10 @@
 
                     <com.omarea.ui.OverScrollListView
                         android:id="@+id/list_switchs"
-                        android:dividerHeight="0dp"
-                        android:divider="@android:color/transparent"
+                        android:listSelector="@android:color/transparent"
+                        android:divider="@color/color_list_divider"
+                        android:dividerHeight="1sp"
+                        android:paddingBottom="10dp"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
                 </FrameLayout>

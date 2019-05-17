@@ -75,7 +75,6 @@ class SystemScene(private var context: Context) {
     }
 
     fun onScreenOff() {
-        backToHome()
         if (spfAutoConfig.getBoolean(SpfConfig.WIFI + SpfConfig.OFF, false)) {
             if (!isWifiApOpen(context)) {
                 KeepShellPublic.doCmdSync("svc wifi disable")
@@ -101,6 +100,7 @@ class SystemScene(private var context: Context) {
 
         val lowPowerMode = spfAutoConfig.getBoolean(SpfConfig.FORCEDOZE + SpfConfig.ON, false)
         if (lowPowerMode || spfAutoConfig.getBoolean(SpfConfig.FORCEDOZE + SpfConfig.ON, false)) {
+            backToHome()
             // 强制Doze: dumpsys deviceidle force-idle
             val applist = AppConfigStore(context).getDozeAppList()
             KeepShellPublic.doCmdSync("dumpsys deviceidle enable\ndumpsys deviceidle enable all\n")
@@ -119,6 +119,9 @@ class SystemScene(private var context: Context) {
         }
     }
 
+    /**
+     * 返回桌面
+     */
     private fun backToHome() {
         try {
             // context.performGlobalAction(GLOBAL_ACTION_HOME)

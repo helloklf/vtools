@@ -29,7 +29,7 @@
             android:layout_gravity="center_vertical"
             android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:indeterminate="false" />
+            android:indeterminate="true" />
     </LinearLayout>
     <com.omarea.ui.OverScrollView
         android:layout_weight="1"

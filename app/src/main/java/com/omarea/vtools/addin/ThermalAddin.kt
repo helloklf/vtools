@@ -30,7 +30,7 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
         }
         val arr = arrayOf("移除温控文件（需要重启）", "恢复温控文件（需要重启）", "临时关闭温控")
         var index = 0
-        AlertDialog.Builder(context)
+        val dialog = AlertDialog.Builder(context)
                 .setTitle("请选择操作")
                 .setSingleChoiceItems(arr, index, { _, which ->
                     index = which
@@ -42,7 +42,9 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
                         2 -> closeThermal()
                     }
                 })
-                .create().show()
+                .create()
+        dialog.window!!.setWindowAnimations(R.style.windowAnim)
+        dialog.show()
     }
 
     fun miuiSetThermalNo() {
@@ -72,7 +74,7 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
 
     private fun replaceThermalConfig(nolimits: String, baseName: String) {
         if (MagiskExtend.moduleInstalled()) {
-            AlertDialog.Builder(context)
+            val dialog = AlertDialog.Builder(context)
                     .setTitle("确定")
                     .setMessage("本次操作将通过Magisk覆盖系统文件，需要重启后生效！")
                     .setPositiveButton(R.string.btn_confirm, { _, _ ->
@@ -94,9 +96,11 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
                     .setNegativeButton(R.string.btn_cancel, { _, _ ->
                     })
                     .create()
-                    .show()
+
+            dialog.window!!.setWindowAnimations(R.style.windowAnim)
+            dialog.show()
         } else {
-            AlertDialog.Builder(context)
+            val dialog = AlertDialog.Builder(context)
                     .setTitle("确定")
                     .setMessage("这个操作是永久性的，暂时没有做备份还原功能，如果你需要恢复之前的温控，则需要重新输入ROM（不需要清除数据），手动删除/data/thermal和/data/vendor/thermal目录并重启手机！\n\n操作完后，请重启手机！")
                     .setPositiveButton(R.string.btn_confirm, { _, _ ->
@@ -124,13 +128,14 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
                     .setNegativeButton(R.string.btn_cancel, { _, _ ->
                     })
                     .create()
-                    .show()
+            dialog.window!!.setWindowAnimations(R.style.windowAnim)
+            dialog.show()
         }
     }
 
     private fun removeThermal() {
         if (MagiskExtend.moduleInstalled()) {
-            AlertDialog.Builder(context)
+            val dialog = AlertDialog.Builder(context)
                     .setTitle("确定")
                     .setMessage("本次操作将通过Magisk覆盖系统文件，需要重启后生效！")
                     .setPositiveButton(R.string.btn_confirm, { _, _ ->
@@ -142,7 +147,8 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
                     .setNegativeButton(R.string.btn_cancel, { _, _ ->
                     })
                     .create()
-                    .show()
+            dialog.window!!.setWindowAnimations(R.style.windowAnim)
+            dialog.show()
         } else {
             if (RootFile.fileExists("/system/vendor/bin/thermal-engine.bak")) {
                 Toast.makeText(context, "你已执行过这个操作，不需要再次执行，如果未生效请重启手机！", Toast.LENGTH_SHORT).show()

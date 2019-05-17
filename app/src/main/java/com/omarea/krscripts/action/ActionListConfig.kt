@@ -39,13 +39,14 @@ class ActionListConfig(private val context: FragmentActivity) {
 
     private fun onActionClick(action: ActionInfo, onExit: Runnable) {
         if (action.confirm) {
-            AlertDialog.Builder(context)
+            val dialog = AlertDialog.Builder(context)
                     .setTitle(action.title)
                     .setMessage(action.desc)
                     .setPositiveButton("执行") { dialog, which -> executeScript(action, onExit) }
                     .setNegativeButton("取消") { dialog, which -> }
                     .create()
-                    .show()
+            dialog.window!!.setWindowAnimations(R.style.windowAnim)
+            dialog.show()
         } else {
             executeScript(action, onExit)
         }
@@ -218,12 +219,13 @@ class ActionListConfig(private val context: FragmentActivity) {
                                 editText.layoutParams = lp
                             }
                         }
-                        AlertDialog.Builder(context)
+                        val dialog = AlertDialog.Builder(context)
                                 .setTitle(action.title)
                                 .setView(view)
                                 .setPositiveButton("确定") { dialog, which -> executeScript(action.title, script, finalStartPath, onExit, readInput(actionParamInfos, linearLayout)) }
                                 .create()
-                                .show()
+                        dialog.window!!.setWindowAnimations(R.style.windowAnim)
+                        dialog.show()
                     }
                 }).start()
 

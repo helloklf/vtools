@@ -1,30 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@android:color/transparent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="5dp"
-    android:orientation="vertical"
-    android:paddingBottom="10dp"
     android:paddingLeft="15dp"
-    android:paddingRight="15dp"
-    android:paddingTop="5dp">
-
-    <TextView
-        android:id="@+id/Title"
+    android:paddingRight="15dp">
+    <LinearLayout
+        android:background="@drawable/krscript_item_ripple"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_margin="5dp"
-        android:textAllCaps="false"
-        android:textColor="?android:attr/textColorPrimary"
-        android:textStyle="bold" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="10dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="5dp">
 
-    <TextView
-        android:id="@+id/Desc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:textColor="?android:attr/textColorSecondary"
-        android:textSize="10dp" />
-</LinearLayout>
+        <TextView
+            android:id="@+id/Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_margin="5dp"
+            android:textAllCaps="false"
+            android:textColor="?android:attr/textColorPrimary"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/Desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:textColor="?android:attr/textColorSecondary"
+            android:textSize="10dp" />
+    </LinearLayout>
+</FrameLayout>

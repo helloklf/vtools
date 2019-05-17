@@ -11,6 +11,7 @@ import com.omarea.ui.OverScrollListView;
 import com.omarea.vtools.R;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class SwitchListConfig {
     private FragmentActivity context;
@@ -50,7 +51,7 @@ public class SwitchListConfig {
     private void onActionClick(final SwitchInfo action, final Runnable onExit) {
         final boolean toValue = !action.selected;
         if (action.confirm) {
-            new AlertDialog.Builder(context)
+            AlertDialog dialog = new AlertDialog.Builder(context)
                     .setTitle(action.title)
                     .setMessage(action.desc)
                     .setPositiveButton("执行", new DialogInterface.OnClickListener() {
@@ -64,8 +65,9 @@ public class SwitchListConfig {
                         public void onClick(DialogInterface dialog, int which) {
                         }
                     })
-                    .create()
-                    .show();
+                    .create();
+            Objects.requireNonNull(dialog.getWindow()).setWindowAnimations(R.style.windowAnim);
+            dialog.show();
         } else {
             executeScript(action, toValue, onExit);
         }

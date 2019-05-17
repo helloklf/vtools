@@ -75,7 +75,9 @@ class FragmentImg : Fragment() {
                             BackupRestoreUnit(activity!!).saveBoot()
                         }
                         builder.setMessage(context!!.getString(R.string.backup_boot_exists))
-                        builder.create().show()
+                        val dialog = builder.create()
+                        dialog.window!!.setWindowAnimations(R.style.windowAnim)
+                        dialog.show()
                     } else {
                         //导出boot
                         BackupRestoreUnit(activity!!).saveBoot()
@@ -100,7 +102,9 @@ class FragmentImg : Fragment() {
                             BackupRestoreUnit(context!!).saveRecovery()
                         }
                         builder.setMessage(context!!.getString(R.string.backup_rec_exists))
-                        builder.create().show()
+                        val dialog = builder.create()
+                        dialog.window!!.setWindowAnimations(R.style.windowAnim)
+                        dialog.show()
                     } else {
                         //导出rec
                         BackupRestoreUnit(context!!).saveRecovery()
@@ -133,14 +137,16 @@ class FragmentImg : Fragment() {
                 val path = data.extras.getString("file")
                 //刷入recovery
                 if (File(path).exists()) {
-                    AlertDialog.Builder(context!!)
+                    val dialog = AlertDialog.Builder(context!!)
                             .setTitle(getString(R.string.flash_confirm))
                             .setNegativeButton(android.R.string.cancel, null)
                             .setPositiveButton(android.R.string.yes) { _, _ ->
                                 BackupRestoreUnit(context!!).flashRecovery(path)
                             }
                             .setMessage("此操作将刷入${path}到系统Recovery分区，应用无法验证该文件是否有效，你需要自己确保该recovery镜像适合本设备使用！")
-                            .create().show()
+                            .create()
+                    dialog.window!!.setWindowAnimations(R.style.windowAnim)
+                    dialog.show()
                 } else {
                     Toast.makeText(context!!, "所选的文件没找到！", Toast.LENGTH_SHORT).show()
                 }
@@ -150,14 +156,16 @@ class FragmentImg : Fragment() {
                 val path = data.extras.getString("file")
                 //刷入recovery
                 if (File(path).exists()) {
-                    AlertDialog.Builder(context!!)
+                    val dialog = AlertDialog.Builder(context!!)
                             .setTitle(getString(R.string.flash_confirm))
                             .setNegativeButton(android.R.string.cancel, null)
                             .setPositiveButton(android.R.string.yes) { _, _ ->
                                 BackupRestoreUnit(activity!!).flashBoot(path)
                             }
                             .setMessage("此操作将刷入${path}到系统Boot分区，我十分不推荐你这么做，刷入无效的Boot文件可能导致你的设备无法启动。如果你没有办法在设备无法启动时紧急恢复。")
-                            .create().show()
+                            .create()
+                    dialog.window!!.setWindowAnimations(R.style.windowAnim)
+                    dialog.show()
                 }
             }
         }
