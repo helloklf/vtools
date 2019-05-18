@@ -116,6 +116,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList() {
     }
 
     private fun startTimer() {
+        this.screenOn = !isScreenLocked()
         if (!screenOn) {
             return
         }
@@ -404,8 +405,9 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList() {
                     startTimer() // 服务启动后开启定时更新通知任务
                     toggleConfig(DEFAULT)
                 }
-            } else
+            } else {
                 toggleConfig(lastMode)
+            }
         }).start()
 
         sceneConfigChanged = object : BroadcastReceiver() {
