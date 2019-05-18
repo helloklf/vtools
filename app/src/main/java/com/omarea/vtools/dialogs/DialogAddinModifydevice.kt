@@ -55,26 +55,8 @@ class DialogAddinModifydevice(var context: Context) {
         (dialog.findViewById(R.id.dialog_addin_default) as Button).setOnClickListener {
             setDefault()
         }
-        (dialog.findViewById(R.id.dialog_addin_x20) as Button).setOnClickListener {
-            setX20()
-        }
-        (dialog.findViewById(R.id.dialog_addin_r11) as Button).setOnClickListener {
-            setR11Plus()
-        }
-        (dialog.findViewById(R.id.dialog_addin_mix3) as Button).setOnClickListener {
-            setMIX3()
-        }
-        (dialog.findViewById(R.id.dialog_addin_mrs) as Button).setOnClickListener {
-            setMateRS()
-        }
-        (dialog.findViewById(R.id.dialog_addin_s9plus) as Button).setOnClickListener {
-            setS9Plus()
-        }
-        (dialog.findViewById(R.id.dialog_addin_r15) as Button).setOnClickListener {
-            setR15Plus()
-        }
-        (dialog.findViewById(R.id.dialog_addin_8848) as Button).setOnClickListener {
-            set8848()
+        (dialog.findViewById(R.id.dialog_chooser) as Button).setOnClickListener {
+            templateChooser()
         }
         val dialogInstance = AlertDialog.Builder(context)
                 //.setTitle("机型信息修改")
@@ -156,22 +138,30 @@ class DialogAddinModifydevice(var context: Context) {
             if (content.isNotEmpty()) {
                 val copyData = String(Base64.decode(content.toString().trim(), Base64.DEFAULT))
                 if (Regex("^.*@.*@.*@.*@.*\$").matches(copyData)) {
-                    val deviceInfos = copyData.split("@")
-                    AlertDialog.Builder(context)
+                    val qd = AlertDialog.Builder(context)
                             .setTitle("可用的模板")
                             .setMessage("检测到已复制的机型信息：\n\n" + copyData + "\n\n是否立即使用？")
                             .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                                editModel.setText(deviceInfos[0])
-                                editBrand.setText(deviceInfos[1])
-                                editProductName.setText(deviceInfos[3])
-                                editDevice.setText(deviceInfos[4])
-                                editManufacturer.setText(deviceInfos[2])
+                                splitCodeStr(copyData)
                             })
                             .setNegativeButton(R.string.btn_cancel, null)
-                            .create().show()
+                            .create()
+                    qd.window!!.setWindowAnimations(R.style.windowAnim)
+                    qd.show()
                 }
             }
         } catch (ex: Exception) {
+        }
+    }
+
+    private fun splitCodeStr(codeStr:String) {
+        if (Regex("^.*@.*@.*@.*@.*\$").matches(codeStr)) {
+            val deviceInfos = codeStr.split("@")
+            editModel.setText(deviceInfos[0])
+            editBrand.setText(deviceInfos[1])
+            editManufacturer.setText(deviceInfos[2])
+            editProductName.setText(deviceInfos[3])
+            editDevice.setText(deviceInfos[4])
         }
     }
 
@@ -210,59 +200,31 @@ class DialogAddinModifydevice(var context: Context) {
     }
 
     private fun setMIX3() {
-        editBrand.setText("Xiaomi")
-        editModel.setText("MIX 3")
-        editProductName.setText("perseus")
-        editDevice.setText("perseus")
-        editManufacturer.setText("Xiaomi")
+        splitCodeStr("MIX 3@Xiaomi@perseus@perseus@Xiaomi")
     }
 
     private fun setX20() {
-        editBrand.setText("vivo")
-        editModel.setText("vivo X20")
-        editProductName.setText("X20")
-        editDevice.setText("X20")
-        editManufacturer.setText("vivo")
+        splitCodeStr("vivo X20@vivo@X20@X20@vivo")
     }
 
     private fun setR11Plus() {
-        editBrand.setText("OPPO")
-        editModel.setText("OPPO R11 Plus")
-        editProductName.setText("R11 Plus")
-        editDevice.setText("R11 Plus")
-        editManufacturer.setText("OPPO")
+        splitCodeStr("OPPO R11 Plus@OPPO@R11 Plus@R11 Plus@OPPO")
     }
 
     private fun setS9Plus() {
-        editBrand.setText("samsung")
-        editModel.setText("SM-G9650")
-        editProductName.setText("star2qltezc")
-        editDevice.setText("star2qltechn")
-        editManufacturer.setText("samsung")
+        splitCodeStr("SM-G9650@samsung@star2qltechn@star2qltechn@samsung")
     }
 
     private fun setR15Plus() {
-        editBrand.setText("OPPO")
-        editModel.setText("PAAM00")
-        editProductName.setText("OPPO PAAM00")
-        editDevice.setText("PAAM00")
-        editManufacturer.setText("OPPO")
+        splitCodeStr("PAAM00@OPPO@OPPO PAAM00@PAAM00@OPPO")
     }
 
     private fun set8848() {
-        editBrand.setText("ERENEBEN")
-        editModel.setText("EBEN M2")
-        editProductName.setText("EBEN M2")
-        editDevice.setText("EBEN M2")
-        editManufacturer.setText("ERENEBEN")
+        splitCodeStr("EBEN M2@ERENEBEN@EBEN M2@EBEN M2@ERENEBEN")
     }
 
     private fun setMateRS() {
-        editBrand.setText("HUAWEI")
-        editModel.setText("NEO-AL00")
-        editProductName.setText("NEO-AL00")
-        editDevice.setText("NEO-AL00")
-        editManufacturer.setText("HUAWEI")
+        splitCodeStr("NEO-AL00@HUAWEI@NEO-AL00@NEO-AL00@HUAWEI")
     }
 
     @SuppressLint("ApplySharedPref")
@@ -275,5 +237,22 @@ class DialogAddinModifydevice(var context: Context) {
             Props.setPorp(BACKUP_MANUFACTURER, android.os.Build.MANUFACTURER)
             Props.setPorp(BACKUP_SUCCESS, "true")
         }
+    }
+
+
+    private fun templateChooser() {
+        var index = -1;
+        val dialog = AlertDialog.Builder(context)
+                .setTitle("选取内置模板")
+                .setSingleChoiceItems(R.array.device_templates, index, { dialog, which ->
+                    index = which
+                })
+                .setPositiveButton(R.string.btn_confirm, { dialog, which ->
+                    val codeStr = context.resources.getStringArray(R.array.device_templates_data)[index]
+                    splitCodeStr(codeStr)
+                })
+                .create()
+        dialog.window!!.setWindowAnimations(R.style.windowAnim)
+        dialog.show()
     }
 }

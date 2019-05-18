@@ -8,6 +8,12 @@ else
     exit 3
 fi
 
+if [[ ! -n "$MAGISK_PATH" ]]
+then
+    echo 'Scene 附加模块未启用，请先前往Magisk助手初始化模块' 1>&2
+    exit 4
+fi
+
 dir="${MAGISK_PATH}/system/vendor/etc"
 
 current_save="$dir/thermal-engine.current.ini"

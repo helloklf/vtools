@@ -16,7 +16,6 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityWindowInfo
 import android.widget.Toast
 import com.omarea.shared.*
-import com.omarea.vtools.services.MonitorService
 
 /**
  * Created by helloklf on 2016/8/27.
@@ -142,8 +141,6 @@ override fun onCreate() {
         if (serviceHelper == null)
             serviceHelper = ServiceHelper(this)
 
-        // 简单模式和增强模式不能同时使用
-        stopService(Intent(this, MonitorService::class.java))
         getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_SIMPLE, false).apply()
     }
 

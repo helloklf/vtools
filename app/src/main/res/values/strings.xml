@@ -162,7 +162,7 @@
     <string name="home_hide_in_recents">强迫症</string>
     <string name="home_hide_in_recents_desc">不要在多任务界面显示Scene</string>
     <string name="applist_help">✔ 已备份\n✘ 备份的版本比安装的版本更高\n★ 已安装的版本比备份的版本旧\n☆ 已备份数据未备份APK\n\n目前所提供的应用数据备份功能，需要系统集成busybox、toybox，使用tar+gz压缩数据（如果系统支持，将使用pigz提高压缩速度），仅备份 “/data/data/应用包名” 下的数据，且不保证兼容所有系统和应用。\n\n“禁用+隐藏”非常适合精简ROM，但是应用一旦被设为隐藏你将无法通过其它应用管理工具来恢复或启动（除非恢复出厂设置或在Scene里手动解除隐藏），Scene会自动保存隐藏记录，你可以通过下面的按钮来解除隐藏。\n如果你卸载了Scene，则隐藏记录也会丢失，则无法再恢复！！</string>
-    <string name="dialog_addin_device_warn">请不要输入特殊符号，卸载Scene后备份的机型信息也会丢失！\n已兼容应用变量的机型代码，复制后重新打开此窗口即可使用！</string>
+    <string name="dialog_addin_device_warn">机型信息请不要输入特殊符号！\n已兼容应用变量的机型代码，复制后重新打开此窗口即可使用！</string>
     <string name="dialog_addin_device_desc">修改后可点击“还原”->“确认”恢复修改前的机型，卸载Scene会导致备份的机型信息丢失，请务必还原后再卸载！\n\n或者，你也可以通过重新刷入完整ROM来恢复机型信息！\n\n使用DualBootPatcher多系统软件切勿使用本功能修改机型！！！</string>
     <string name="dialog_addin_device_inner">预设模板</string>
     <string name="title_activity_shortcut">快捷启动</string>
@@ -322,4 +322,35 @@
     <string name="title_activity_home">Scene桌面</string>
 
     <string name="scene_contract">Scene是一款适用于玩机爱好者的应用，对于新手用户来说，其中的部分功能可能会过于危险。\n\n强烈建议不要在工作机，或有重要数据的手机上使用。\n\n使用过程中，务必认真阅读各个功能条目的提示和警告信息，以免误操作导致不可预料的后果。\n\n如果你的手机在系统故障不能开机时，没法恢复出厂设置和刷机，请不要使用！！！</string>
+
+    <string-array name="device_templates">
+        <item>Xiaomi MIX3</item>
+        <item>vivo X20</item>
+        <item>vivo IQOO</item>
+        <item>OPPO R11 Plus</item>
+        <item>OPPO R15</item>
+        <item>OPPO R17</item>
+        <item>OPPO Reno</item>
+        <item>Samsung S9+</item>
+        <item>8848钛金手机</item>
+        <item>HUAWEI MateRS</item>
+        <item>HUAWEI Mate20Pro</item>
+        <item>HUAWEI P30</item>
+        <item>HUAWEI P30Pro</item>
+    </string-array>
+    <string-array name="device_templates_data">
+        <item>MIX 3@Xiaomi@Xiaomi@perseus@perseus</item>
+        <item>vivo X20@vivo@vivo@X20@X20</item>
+        <item>v1824a@vivo@vivo@v1824a@v1824a</item>
+        <item>OPPO R11 Plus@OPP@OPPOO@R11 Plus@R11 Plus</item>
+        <item>PAAM00@OPPO@OPPO@OPPO PAAM00@PAAM00</item>
+        <item>PBEM00@OPPO@OPPO@OPPO PBEM00@PBEM00</item>
+        <item>PACT00@OPPO@OPPO@OPPO PACT00@PACT00</item>
+        <item>SM-G9650@samsung@samsung@star2qltechn@star2qltechn</item>
+        <item>EBEN M2@ERENEBEN@ERENEBEN@EBEN M2@EBEN M2</item>
+        <item>NEO-AL00@HUAWEI@HUAWEI@NEO-AL00@NEO-AL00</item>
+        <item>LYA-AL00@HUAWEI@HUAWEI@LYA-AL00@LYA-AL00</item>
+        <item>ELE-AL00@HUAWEI@HUAWEI@ELE-AL00@ELE-AL00</item>
+        <item>VOG-TL00@HUAWEI@HUAWEI@VOG-TL00@VOG-TL00</item>
+    </string-array>
 </resources>

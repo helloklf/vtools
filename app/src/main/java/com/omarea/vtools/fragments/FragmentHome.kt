@@ -111,8 +111,6 @@ class FragmentHome : Fragment() {
         setModeState()
         maxFreqs.clear()
         minFreqs.clear()
-        updateInfo()
-
         stopTimer()
         timer = Timer()
         timer!!.schedule(object : TimerTask() {

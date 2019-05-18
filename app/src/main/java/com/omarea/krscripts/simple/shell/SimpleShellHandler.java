@@ -10,7 +10,6 @@ import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import com.omarea.vtools.R;
-
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -59,10 +58,12 @@ public class SimpleShellHandler extends ShellHandler {
             }
         });
 
-        if (forceStop != null) {
-            btnExit.setVisibility(View.VISIBLE);
-        } else {
-            btnExit.setVisibility(View.GONE);
+        if (btnExit != null) {
+            if (forceStop != null) {
+                btnExit.setVisibility(View.VISIBLE);
+            } else {
+                btnExit.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -111,7 +112,9 @@ public class SimpleShellHandler extends ShellHandler {
     }
 
     private void onExit(Object msg) {
-        btnHide.setVisibility(View.GONE);
+        if (btnHide != null) {
+            btnHide.setVisibility(View.GONE);
+        }
         finished = true;
         onProgress(1, 1);
 

@@ -35,7 +35,7 @@ class DialogCustomMAC(private var context: Context) {
             spf!!.edit().putBoolean(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE, isChecked).commit()
         })
 
-        AlertDialog.Builder(context).setTitle("自定义WIFI MAC").setView(dialog).setNegativeButton("确定", { _, _ ->
+        val instance = AlertDialog.Builder(context).setTitle("自定义WIFI MAC").setView(dialog).setNegativeButton("确定", { _, _ ->
             val mac = macInput.text.toString().toLowerCase()
             if (!Regex("[\\w\\d]{2}:[\\w\\d]{2}:[\\w\\d]{2}:[\\w\\d]{2}:[\\w\\d]{2}:[\\w\\d]{2}$", RegexOption.IGNORE_CASE).matches(mac)) {
                 Toast.makeText(context, "输入的MAC地址无效，格式应如 ec:d0:9f:af:95:01", Toast.LENGTH_LONG).show()
@@ -56,6 +56,8 @@ class DialogCustomMAC(private var context: Context) {
             } else {
                 Toast.makeText(context, "MAC已修改", Toast.LENGTH_SHORT).show()
             }
-        }).create().show()
+        }).create()
+        instance.window!!.setWindowAnimations(R.style.windowAnim)
+        instance.show()
     }
 }

@@ -159,7 +159,7 @@
                 <resource file="file:///android_asset/custom/actions/miui_thermal_conf/8998-danger.conf" />
             </resources>
             <title>更改温控配置</title>
-            <desc sh="file:///android_asset/custom/actions/miui_thermal_conf/desc.sh">本功能适用于骁龙823、845、855处理器，MIUI官方系统！</desc>
+            <desc sh="file:///android_asset/custom/actions/miui_thermal_conf/desc.sh">本功能适用于骁龙835、845、855处理器，MIUI官方系统！</desc>
             <param name="mode" desc="温控模式"
                 options-sh="file:///android_asset/custom/actions/miui_thermal_conf/options.sh"
                 value-sh="file:///android_asset/custom/actions/miui_thermal_conf/current.sh" />
@@ -170,6 +170,15 @@
     </group>
 
     <group title="杂项">
+        <action>
+            <title>重启SystemUI</title>
+            <desc>结束SystemUI进程，使其重新加载</desc>
+            <script>
+                am kill com.android.systemui 2> /dev/null
+                killall -9 com.android.systemui 2> /dev/null
+                # killall -9 zygote # 热启动
+            </script>
+        </action>
         <action>
             <title>查看已挂载分区</title>
             <desc>通过简单的命令，查看当前已挂载的分区</desc>

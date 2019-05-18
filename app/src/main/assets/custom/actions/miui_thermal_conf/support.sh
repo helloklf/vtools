@@ -4,7 +4,7 @@ platform=`getprop ro.board.platform`
 
 if [[ "$platform" = "sdm845" ]] || [[ "$platform" = "msm8998" ]] || [[ "$platform" = "msmnile" ]]
 then
-    if [[ -n `getprop ro.miui.ui.version.name` ]] && [[ -d "$MAGISK_PATH" ]]
+    if [[ -n `getprop ro.miui.ui.version.name` ]]
     then
         echo 1
     else

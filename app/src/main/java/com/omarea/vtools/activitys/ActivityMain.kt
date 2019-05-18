@@ -38,7 +38,6 @@ import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogPower
 import com.omarea.vtools.fragments.*
 import com.omarea.vtools.popup.FloatMonitor
-import com.omarea.vtools.services.MonitorService
 import kotlinx.android.synthetic.main.activity_main.*
 
 class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {

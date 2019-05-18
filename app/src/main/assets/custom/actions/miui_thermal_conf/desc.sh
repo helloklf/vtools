@@ -27,4 +27,4 @@ case "$mode" in
     ;;
 esac
 
-echo "本功能适用于骁龙823、845、855处理器，MIUI官方系统\n当前：$modename"
+echo "本功能适用于骁龙835、845、855处理器，MIUI官方系统\n当前：$modename"
