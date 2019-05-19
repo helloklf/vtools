@@ -138,6 +138,8 @@ class FloatPowercfgSelector {
         val btn_defaultmode = view.findViewById<TextView>(R.id.btn_defaultmode)
         val btn_gamemode = view.findViewById<TextView>(R.id.btn_gamemode)
         val btn_fastmode = view.findViewById<TextView>(R.id.btn_fastmode)
+        val fw_float_monitor = view.findViewById<ImageButton>(R.id.fw_float_monitor)
+        val fw_screen_record = view.findViewById<ImageButton>(R.id.fw_screen_record)
 
         var selectedMode = mode
         val updateUI = Runnable {
@@ -260,9 +262,20 @@ class FloatPowercfgSelector {
                 else -> false
             }
         }
+
+        fw_float_monitor.alpha = if (FloatMonitor.isShown == true) 1f else 0.5f
+        fw_float_monitor.setOnClickListener {
+            if (FloatMonitor.isShown == true) {
+                FloatMonitor(context).hidePopupWindow()
+                fw_float_monitor.alpha = 0.5f
+            } else {
+                FloatMonitor(context).showPopupWindow()
+                fw_float_monitor.alpha = 1f
+            }
+        }
+
         updateUI.run()
         return view
-
     }
 
     companion object {
