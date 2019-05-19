@@ -58,9 +58,9 @@ class FragmentAddin : Fragment() {
 
             val platform = com.omarea.shell.Platform().getCPUName()
 
-            if (!(platform == "sdm845" || platform == "msm8998" || platform == "msmnile")) {
+            // if (!(platform == "sdm845" || platform == "msm8998" || platform == "msmnile")) {
                 add(createItem(getString(R.string.addin_thermal_remove), getString(R.string.addin_thermal_remove_desc), Runnable { ThermalAddin(context!!).showOption() }, false))
-            }
+            // }
 
             if (!(MagiskExtend.moduleInstalled() && (platform == "sdm845" || platform == "msm8998" || platform == "msmnile"))) {
                 add(createItem(getString(R.string.addin_thermal_remove2), getString(R.string.addin_thermal_remove2_desc), Runnable {
