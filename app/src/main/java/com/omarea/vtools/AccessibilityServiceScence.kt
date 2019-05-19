@@ -140,8 +140,6 @@ override fun onCreate() {
         super.onServiceConnected()
         if (serviceHelper == null)
             serviceHelper = ServiceHelper(this)
-
-        getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_SIMPLE, false).apply()
     }
 
 

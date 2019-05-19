@@ -29,7 +29,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shared.CrashHandler
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.units.BackupRestoreUnit
@@ -165,10 +164,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             if (!hasRoot)
                 hideRootMenu(navigationView.menu)
             else {
-                if (!AccessibleServiceHelper().serviceIsRunning(this) && globalSPF!!.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_SIMPLE, false)) {
-                    val intent = Intent(this, MonitorService::class.java)
-                    startService(intent)
-                }
                 try {
                     setHomePage()
                 } catch (ex: Exception) {

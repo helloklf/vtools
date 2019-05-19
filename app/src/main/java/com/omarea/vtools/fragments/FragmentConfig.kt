@@ -102,9 +102,7 @@ class FragmentConfig : Fragment() {
         super.onResume()
         bindService()
         val serviceState = AccessibleServiceHelper().serviceIsRunning(context!!)
-        val simpleMode = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_SIMPLE, false)
-        btn_config_service_not_active.visibility = if (serviceState || simpleMode) View.GONE else View.VISIBLE
-        config_acc_opt.visibility = if (simpleMode) View.GONE else View.VISIBLE
+        btn_config_service_not_active.visibility = if (serviceState) View.GONE else View.VISIBLE
     }
 
     private fun startService() {
