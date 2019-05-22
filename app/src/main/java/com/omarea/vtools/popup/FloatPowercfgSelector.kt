@@ -8,6 +8,7 @@ import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.os.Build
 import android.provider.Settings
+import android.text.Layout
 import android.view.*
 import android.view.WindowManager.LayoutParams
 import android.widget.*
@@ -81,6 +82,7 @@ class FloatPowercfgSelector {
         params.height = LayoutParams.MATCH_PARENT
 
         params.gravity = Gravity.CENTER
+        params.windowAnimations = R.style.windowAnim
 
         mWindowManager!!.addView(mView, params)
     }
@@ -118,7 +120,8 @@ class FloatPowercfgSelector {
 
         val spfPowercfg = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         val globalSPF = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-        val mode = spfPowercfg.getString(packageName, globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance"))
+        val dynamic = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, false)
+        val mode = if (dynamic) spfPowercfg.getString(packageName, globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance")) else modeList.getCurrentPowerMode()
 
         try {
             val pm = context.packageManager
@@ -128,9 +131,10 @@ class FloatPowercfgSelector {
             (view.findViewById<View>(R.id.fw_title) as TextView).text = packageName
         }
 
+        view.findViewById<CheckBox>(R.id.fw_dynamic_state).isChecked = dynamic
 
         if (!context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false)) {
-            view.findViewById<RelativeLayout>(R.id.popup_window).setBackgroundColor(Color.WHITE)
+            view.findViewById<LinearLayout>(R.id.popup_window).setBackgroundColor(Color.WHITE)
             view.findViewById<TextView>(R.id.fw_title).setTextColor(Color.BLACK)
         }
 
@@ -143,37 +147,51 @@ class FloatPowercfgSelector {
 
         var selectedMode = mode
         val updateUI = Runnable {
-            btn_powersave.text = "省电"
-            btn_defaultmode.text = "均衡"
-            btn_gamemode.text = "性能"
-            btn_fastmode.text = "极速"
+            btn_powersave.setTextColor(0x66ffffff)
+            btn_defaultmode.setTextColor(0x66ffffff)
+            btn_gamemode.setTextColor(0x66ffffff)
+            btn_fastmode.setTextColor(0x66ffffff)
             when (selectedMode) {
-                ModeList.BALANCE -> btn_defaultmode.text = "均衡 √"
-                ModeList.PERFORMANCE -> btn_gamemode.text = "性能 √"
-                ModeList.POWERSAVE -> btn_powersave!!.text = "省电 √"
-                ModeList.FAST -> btn_fastmode!!.text = "极速 √"
+                ModeList.BALANCE -> btn_defaultmode.setTextColor(Color.WHITE)
+                ModeList.PERFORMANCE -> btn_gamemode.setTextColor(Color.WHITE)
+                ModeList.POWERSAVE -> btn_powersave.setTextColor(Color.WHITE)
+                ModeList.FAST -> btn_fastmode.setTextColor(Color.WHITE)
             }
         }
+        val switchMode = Runnable {
+            modeList.executePowercfgMode(selectedMode, packageName)
+            if (dynamic) {
+                spfPowercfg.edit().putString(packageName, selectedMode).commit()
+                reStartService(packageName, selectedMode)
+            }
+
+            NotifyHelper(context, true).notify()
+        }
+
         btn_powersave.setOnClickListener {
             selectedMode = ModeList.POWERSAVE
+            switchMode.run()
             updateUI.run()
         }
         btn_defaultmode.setOnClickListener {
             selectedMode = ModeList.BALANCE
+            switchMode.run()
             updateUI.run()
         }
         btn_gamemode.setOnClickListener {
             selectedMode = ModeList.PERFORMANCE
+            switchMode.run()
             updateUI.run()
         }
         btn_fastmode.setOnClickListener {
             selectedMode = ModeList.FAST
+            switchMode.run()
             updateUI.run()
         }
-        val fw_app_light = view.findViewById<Switch>(R.id.fw_app_light)
+        val fw_app_light = view.findViewById<CheckBox>(R.id.fw_app_light)
         fw_app_light.isChecked = appConfig.aloneLight
         fw_app_light.setOnClickListener {
-            val isChecked = (it as Switch).isChecked
+            val isChecked = (it as CheckBox).isChecked
             appConfig.aloneLight = isChecked
             store.setAppConfig(appConfig)
 
@@ -181,20 +199,22 @@ class FloatPowercfgSelector {
             intent.putExtra("app", packageName)
             context.sendBroadcast(intent)
         }
-        val fw_app_dis_notice = view.findViewById<Switch>(R.id.fw_app_dis_notice)
+        val fw_app_dis_notice = view.findViewById<CheckBox>(R.id.fw_app_dis_notice)
         fw_app_dis_notice.isChecked = appConfig.disNotice
         fw_app_dis_notice.setOnClickListener {
-            appConfig.disNotice = (it as Switch).isChecked
+            appConfig.disNotice = (it as CheckBox).isChecked
             store.setAppConfig(appConfig)
 
             val intent = Intent(context.getString(R.string.scene_appchange_action))
             intent.putExtra("app", packageName)
             context.sendBroadcast(intent)
         }
-        val fw_app_dis_button = view.findViewById<Switch>(R.id.fw_app_dis_button)
+
+        // 点击禁用通知
+        val fw_app_dis_button = view.findViewById<CheckBox>(R.id.fw_app_dis_button)
         fw_app_dis_button.isChecked = appConfig.disButton
         fw_app_dis_button.setOnClickListener {
-            val isChecked = (it as Switch).isChecked
+            val isChecked = (it as CheckBox).isChecked
             if (isChecked) {
                 if (!NoticeListing().getPermission(context)) {
                     NoticeListing().setPermission(context)
@@ -214,27 +234,6 @@ class FloatPowercfgSelector {
             intent.putExtra("app", packageName)
             context.sendBroadcast(intent)
         }
-
-        val positiveBtn = view.findViewById<View>(R.id.positiveBtn) as Button
-        positiveBtn.setOnClickListener {
-            // 隐藏弹窗
-            hidePopupWindow()
-            if (selectedMode != mode) {
-                modeList.executePowercfgMode(selectedMode, packageName)
-                modeList.setCurrent(selectedMode, packageName)
-            }
-            spfPowercfg.edit().putString(packageName, selectedMode).commit()
-            it.postDelayed({
-                NotifyHelper(context, true).notify()
-                reStartService(packageName, selectedMode)
-            }, 1000)
-
-            //Intent intent = context.getPackageManager().getLaunchIntentForPackage(packageName);
-            //context.startActivity(intent);
-        }
-
-        val negativeBtn = view.findViewById<View>(R.id.negativeBtn) as Button
-        negativeBtn.setOnClickListener { hidePopupWindow() }
 
         // 点击窗口外部区域可消除
         // 这点的实现主要将悬浮窗设置为全屏大小，外层有个透明背景，中间一部分视为内容区域
@@ -267,11 +266,15 @@ class FloatPowercfgSelector {
         fw_float_monitor.setOnClickListener {
             if (FloatMonitor.isShown == true) {
                 FloatMonitor(context).hidePopupWindow()
-                fw_float_monitor.alpha = 0.5f
+                fw_float_monitor.alpha = 0.3f
             } else {
                 FloatMonitor(context).showPopupWindow()
                 fw_float_monitor.alpha = 1f
             }
+        }
+
+        view.findViewById<ImageButton>(R.id.fw_float_close).setOnClickListener {
+            hidePopupWindow()
         }
 
         updateUI.run()

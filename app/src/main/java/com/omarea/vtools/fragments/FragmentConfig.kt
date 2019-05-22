@@ -25,10 +25,7 @@ import com.omarea.shared.*
 import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shared.model.Appinfo
 import com.omarea.shell.Platform
-import com.omarea.ui.OverScrollListView
-import com.omarea.ui.ProgressBarDialog
-import com.omarea.ui.SceneModeAdapter
-import com.omarea.ui.SearchTextWatcher
+import com.omarea.ui.*
 import com.omarea.vaddin.IAppConfigAidlInterface
 import com.omarea.vtools.R
 import com.omarea.vtools.activitys.ActivityAddinOnline
@@ -54,9 +51,9 @@ class FragmentConfig : Fragment() {
     private var displayList: ArrayList<Appinfo>? = null
     private var packageManager: PackageManager? = null
     private lateinit var appConfigStore: AppConfigStore
-    private var firstMode = "balance"
-    private var vAddinsInstalled = false
+    private var firstMode = ModeList.DEFAULT
     private var aidlConn: IAppConfigAidlInterface? = null
+    private val configInstaller = ConfigInstaller()
 
     private var conn = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -143,7 +140,7 @@ class FragmentConfig : Fragment() {
         spfPowercfg = context!!.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         editor = spfPowercfg.edit()
-        firstMode = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance")
+        firstMode = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeList.DEFAULT)!!
         appConfigStore = AppConfigStore(this.context)
 
         if (spfPowercfg.all.isEmpty()) {
@@ -153,23 +150,6 @@ class FragmentConfig : Fragment() {
 
         btn_config_service_not_active.setOnClickListener {
             startService()
-            /*
-            AlertDialog.Builder(this.context).setTitle("选择模式")
-                    .setMessage("经典：使用辅助服务检测应用切换，这也是Scene以往的版本一直使用的方式\n\n简单：实验性，使用monitor检测应用切换，性能消耗更小（不支持应用安装自动点击）。\n\n注意，两种方式均需要Scene保持后台运行！")
-                    .setPositiveButton("经典(推荐)", { _, _ ->
-                        startService()
-                    })
-                    .setNegativeButton("简单(试验)", { _, _ ->
-                        globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_SIMPLE, true).apply()
-
-                        val service = Intent(context, MonitorService::class.java)
-                        //service.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        context!!.startService(service)
-                        btn_config_service_not_active.visibility = View.GONE
-                    })
-                    .create()
-                    .show()
-            */
         }
 
         configlist_tabhost.setup()
@@ -213,11 +193,14 @@ class FragmentConfig : Fragment() {
                 else -> originIndex = 4
             }
             var currentMode = originIndex
-            val dialog = AlertDialog.Builder(context)
+            DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle(item.appName.toString())
-                    .setSingleChoiceItems(arrayOf("省电模式（阅读）", "均衡模式（日常）", "性能模式（游戏）", "极速模式（跑分）", "跟随默认模式", "忽略切换"), originIndex, DialogInterface.OnClickListener { dialog, which ->
-                        currentMode = which
-                    })
+                    .setSingleChoiceItems(
+                            R.array.powercfg_modes2,
+                            originIndex,
+                            { dialog, which ->
+                                currentMode = which
+                            })
                     .setPositiveButton(R.string.btn_confirm, { _, _ ->
                         if (currentMode != originIndex) {
                             var modeName = ""
@@ -241,10 +224,7 @@ class FragmentConfig : Fragment() {
                             notifyService(item.packageName.toString(), modeName)
                         }
                     })
-                    .setNeutralButton(R.string.btn_cancel, null)
-                    .create()
-            dialog.window!!.setWindowAnimations(R.style.windowAnim)
-            dialog.show()
+                    .setNeutralButton(R.string.btn_cancel, null))
             true
         }
 
@@ -253,7 +233,6 @@ class FragmentConfig : Fragment() {
         }))
         configlist_modes.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
@@ -262,17 +241,20 @@ class FragmentConfig : Fragment() {
         }
         configlist_type.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
-                //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
             }
-
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 loadList()
             }
         }
         dynamic_control.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)
         dynamic_control.setOnClickListener {
-            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, (it as Switch).isChecked).commit()
-            reStartService()
+            val value = (it as Switch).isChecked
+            if (value && !configInstaller.configInstalled()) {
+                dynamic_control.isChecked = false
+            } else {
+                globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, value).commit()
+                reStartService()
+            }
         }
 
         loadList()
@@ -307,7 +289,6 @@ class FragmentConfig : Fragment() {
         bindSPF(auto_switch_forcedoze_on, spfAutoConfig, SpfConfig.FORCEDOZE + SpfConfig.ON, false)
         bindSPF(auto_switch_powersave_on, spfAutoConfig, SpfConfig.POWERSAVE + SpfConfig.ON, false)
 
-        bindSPF(dynamic_control, globalSPF, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)
         bindSPF(dynamic_lock_mode, globalSPF, SpfConfig.GLOBAL_SPF_LOCK_MODE, true)
         bindSPF(settings_autoinstall, globalSPF, SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false)
         config_customer_powercfg.setOnClickListener {
@@ -349,7 +330,10 @@ class FragmentConfig : Fragment() {
             return
         }
         if (requestCode == REQUEST_POWERCFG_FILE) {
-            if (resultCode == Activity.RESULT_OK && data != null && data.extras.containsKey("file")) {
+            if (resultCode == Activity.RESULT_OK && data != null) {
+                if (data.extras == null || !data.extras.containsKey("file")) {
+                    return
+                }
                 val path = data.extras.getString("file")
                 val file = File(path)
                 if (file.exists()) {
@@ -360,9 +344,8 @@ class FragmentConfig : Fragment() {
                     val lines = file.readText(Charset.defaultCharset()).replace("\r", "")
                     val configStar = lines.split("\n").firstOrNull()
                     if (configStar != null && configStar.startsWith("#!/") && configStar.endsWith("sh")) {
-                        if (ConfigInstaller().installPowerConfigByText(context!!, lines)) {
-                            Toast.makeText(context, "动态响应配置脚本已安装！", Toast.LENGTH_SHORT).show()
-                            reStartService()
+                        if (configInstaller.installPowerConfigByText(context!!, lines)) {
+                            configInstalled()
                         } else {
                             Toast.makeText(context, "由于某些原因，安装配置脚本失败，请重试！", Toast.LENGTH_LONG).show()
                         }
@@ -376,7 +359,7 @@ class FragmentConfig : Fragment() {
             return
         } else if (requestCode == REQUEST_POWERCFG_ONLINE) {
             if (resultCode == Activity.RESULT_OK) {
-                reStartService()
+                configInstalled()
             }
         } else if (requestCode == REQUEST_APP_CONFIG && data != null && displayList != null) {
             try {
@@ -444,13 +427,13 @@ class FragmentConfig : Fragment() {
 
         @SuppressLint("ApplySharedPref")
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            var mode = "balance"
+            var mode = ModeList.DEFAULT
             when (position) {
-                0 -> mode = "powersave"
-                1 -> mode = "balance"
-                2 -> mode = "performance"
-                3 -> mode = "fast"
-                4 -> mode = "igoned"
+                0 -> mode = ModeList.POWERSAVE
+                1 -> mode = ModeList.BALANCE
+                2 -> mode = ModeList.PERFORMANCE
+                3 -> mode = ModeList.FAST
+                4 -> mode = ModeList.IGONED
             }
             if (globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "") != mode) {
                 globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, mode).commit()
@@ -623,7 +606,7 @@ class FragmentConfig : Fragment() {
 
     //检查配置脚本是否已经安装
     private fun checkConfig() {
-        val support = Platform().dynamicSupport(context!!)
+        val support = configInstaller.dynamicSupport(context!!)
         if (support) {
             config_cfg_select.visibility = View.VISIBLE
             config_cfg_select_0.setOnClickListener {
@@ -634,37 +617,38 @@ class FragmentConfig : Fragment() {
             }
         }
         when {
-            File(CommonCmds.POWER_CFG_PATH).exists() -> {
+            configInstaller.configInstalled() -> {
                 //TODO：检查是否更新
             }
             support -> {
                 var i = 0
-                val dialog = AlertDialog.Builder(context)
+                DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle(getString(R.string.first_start_select_config))
                         .setCancelable(false)
                         .setSingleChoiceItems(
                                 arrayOf(
                                         getString(R.string.conservative),
                                         getString(R.string.radicalness),
-                                        getString(R.string.get_online_config)
+                                        getString(R.string.get_online_config),
+                                        getString(R.string.skipnow)
                                 ), 0, { _, which ->
                             i = which
                         })
                         .setNegativeButton(R.string.btn_confirm, { _, _ ->
-                            if (i > 1) {
+                            if (i == 3) {
+                                // 跳过配置安装时，关闭动态响应
+                                globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, false).apply()
+                            } else if (i == 2) {
                                 getOnlineConfig()
-                                return@setNegativeButton
+                            } else {
+                                installConfig(i == 1)
                             }
-                            installConfig(i == 1)
-                        }).create()
-
-                dialog.window!!.setWindowAnimations(R.style.windowAnim)
-                dialog.show()
+                        }))
             }
             else -> {
-                val dialog = AlertDialog.Builder(context)
+                DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle(getString(R.string.not_support_config))
-                        .setMessage(String.format(getString(R.string.not_support_config_desc), CommonCmds.POWER_CFG_PATH))
+                        .setMessage(R.string.not_support_config_desc)
                         .setPositiveButton(getString(R.string.get_online_config), { _, _ ->
                             getOnlineConfig()
                         })
@@ -675,10 +659,7 @@ class FragmentConfig : Fragment() {
                             val content_url = Uri.parse("https://github.com/helloklf/vtools")
                             intent.data = content_url
                             startActivity(intent)
-                        })
-                        .create()
-                dialog.window!!.setWindowAnimations(R.style.windowAnim)
-                dialog.show()
+                        }))
             }
         }
     }
@@ -686,7 +667,7 @@ class FragmentConfig : Fragment() {
 
     private fun getOnlineConfig() {
         var i = 0
-        val dialog = AlertDialog.Builder(context)
+        DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setTitle(getString(R.string.first_start_select_config))
                 .setCancelable(true)
                 .setSingleChoiceItems(
@@ -697,16 +678,14 @@ class FragmentConfig : Fragment() {
                     i = which
                 })
                 .setNegativeButton(R.string.btn_confirm, { _, _ ->
-                    if (i  == 0) {
+                    if (i == 0) {
                         getOnlineConfigV1()
                     } else if (i == 1) {
                         getOnlineConfigV2()
                     }
-                }).create()
-
-        dialog.window!!.setWindowAnimations(R.style.windowAnim)
-        dialog.show()
+                }))
     }
+
     private fun getOnlineConfigV1() {
         try {
             val intent = Intent(this.context, ActivityAddinOnline::class.java)
@@ -732,17 +711,31 @@ class FragmentConfig : Fragment() {
     private fun installConfig(useBigCore: Boolean) {
         if (context == null) return
 
-        if (!Platform().dynamicSupport(context!!)) {
+        if (!configInstaller.dynamicSupport(context!!)) {
             Snackbar.make(view!!, R.string.not_support_config, Snackbar.LENGTH_LONG).show()
             return
         }
 
-        try {
-            ConfigInstaller().installPowerConfig(context!!, "", useBigCore)
+        configInstaller.installPowerConfig(context!!, "", useBigCore)
+        configInstalled()
+    }
+
+    private fun configInstalled() {
+        if (globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)) {
             Snackbar.make(view!!, getString(R.string.config_installed), Snackbar.LENGTH_LONG).show()
             reStartService()
-        } catch (ex: Exception) {
-            Snackbar.make(view!!, getString(R.string.config_install_fail) + ex.message, Snackbar.LENGTH_LONG).show()
+        } else {
+            DialogHelper.animDialog(AlertDialog.Builder(context)
+                    .setMessage("配置脚本已安装，是否开启动态响应？")
+                    .setPositiveButton(R.string.btn_confirm,{
+                        _,_ ->
+                        globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true).apply()
+                        dynamic_control.isChecked = true
+                        reStartService()
+                    })
+                    .setNegativeButton(R.string.btn_cancel, {
+                        _,_ ->
+                    }))
         }
     }
 

@@ -16,9 +16,9 @@ function mixture_hook_file()
         module_installed
         mg="$?"
 
-        echo '本操作将通过Magisk进行'
         if [[ "$mg" = 1 ]]
         then
+            echo '本操作将通过Magisk进行'
             if [[ $mode = 1 ]]
             then
                 magisk_replace_file $resource $output

@@ -1,14 +1,20 @@
 package com.omarea.shared
 
+import android.Manifest
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.os.Build
 import com.omarea.shell.KeepShellAsync
 import com.omarea.shell.KeepShellPublic
 import android.net.wifi.WifiManager
-
+import android.os.Handler
+import android.support.v4.content.ContextCompat
+import android.util.Log
+import android.support.v4.content.ContextCompat.getSystemService
+import kotlin.math.log
 
 
 /**
@@ -18,6 +24,35 @@ import android.net.wifi.WifiManager
 class SystemScene(private var context: Context) {
     private var spfAutoConfig: SharedPreferences = context.getSharedPreferences(SpfConfig.BOOSTER_SPF_CFG_SPF, Context.MODE_PRIVATE)
     private var keepShell = KeepShellAsync(context)
+
+    private fun isWifiApOpenOreo(context: Context, isStarted: Runnable, isStopped: Runnable){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (
+                    (ContextCompat.checkSelfPermission(context, Manifest.permission.CHANGE_WIFI_STATE) == PackageManager.PERMISSION_GRANTED) &&
+                    ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+            ) {
+                try {
+                    val wifiManager = context.getApplicationContext().getSystemService(Context.WIFI_SERVICE) as WifiManager
+                    wifiManager.startLocalOnlyHotspot(object : WifiManager.LocalOnlyHotspotCallback() {
+                        override fun onStarted(reservation: WifiManager.LocalOnlyHotspotReservation?) {
+                            super.onStarted(reservation)
+                            isStarted.run()
+                        }
+
+                        override fun onStopped() {
+                            super.onStopped()
+                            isStopped.run()
+                        }
+                    }, Handler())
+                } catch (ex: java.lang.Exception) {
+                    Log.e("isWifiApOpenOreo", "" + ex.message)
+                    isStopped.run()
+                }
+            } else {
+                isStopped.run()
+            }
+        }
+    }
 
     private fun isWifiApOpen(context: Context): Boolean {
         try {
@@ -37,9 +72,28 @@ class SystemScene(private var context: Context) {
                 false
             }
         } catch (e: Exception) {
+            Log.e("isWifiApOpen", "" + e.localizedMessage)
         }
 
         return false
+    }
+
+    private fun onScreenOffDisableNetwork() {
+        if (spfAutoConfig.getBoolean(SpfConfig.WIFI + SpfConfig.OFF, false)) {
+            KeepShellPublic.doCmdSync("svc wifi disable")
+        }
+        if (spfAutoConfig.getBoolean(SpfConfig.DATA + SpfConfig.OFF, false)) {
+            KeepShellPublic.doCmdSync("svc data disable")
+        }
+    }
+
+    private fun onScreenOnEnableNetwork() {
+        if (spfAutoConfig.getBoolean(SpfConfig.WIFI + SpfConfig.OFF, false)) {
+            KeepShellPublic.doCmdSync("svc wifi enable")
+        }
+        if (spfAutoConfig.getBoolean(SpfConfig.DATA + SpfConfig.OFF, false)) {
+            KeepShellPublic.doCmdSync("svc data enable")
+        }
     }
 
     fun onScreenOn() {
@@ -47,14 +101,13 @@ class SystemScene(private var context: Context) {
             KeepShellPublic.doCmdSync("dumpsys deviceidle unforce\ndumpsys deviceidle enable all\n")
         }
 
-        if (spfAutoConfig.getBoolean(SpfConfig.WIFI + SpfConfig.ON, false)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            isWifiApOpenOreo(context, Runnable {  }, Runnable {
+                onScreenOnEnableNetwork()
+            })
+        } else {
             if (!isWifiApOpen(context)) {
-                KeepShellPublic.doCmdSync("svc wifi enable")
-            }
-        }
-        if (spfAutoConfig.getBoolean(SpfConfig.DATA + SpfConfig.ON, false)){
-            if (!isWifiApOpen(context)) {
-                KeepShellPublic.doCmdSync("svc data enable")
+                onScreenOnEnableNetwork()
             }
         }
 
@@ -75,20 +128,19 @@ class SystemScene(private var context: Context) {
     }
 
     fun onScreenOff() {
-        if (spfAutoConfig.getBoolean(SpfConfig.WIFI + SpfConfig.OFF, false)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            isWifiApOpenOreo(context, Runnable {  }, Runnable {
+                onScreenOffDisableNetwork()
+            })
+        } else {
             if (!isWifiApOpen(context)) {
-                KeepShellPublic.doCmdSync("svc wifi disable")
+                onScreenOffDisableNetwork()
             }
         }
 
         if (spfAutoConfig.getBoolean(SpfConfig.NFC + SpfConfig.OFF, false))
             KeepShellPublic.doCmdSync("svc nfc disable")
 
-        if (spfAutoConfig.getBoolean(SpfConfig.DATA + SpfConfig.OFF, false)) {
-            if (!isWifiApOpen(context)) {
-                KeepShellPublic.doCmdSync("svc data disable")
-            }
-        }
 
         if (spfAutoConfig.getBoolean(SpfConfig.GPS + SpfConfig.OFF, false)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

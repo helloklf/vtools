@@ -301,7 +301,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/btn_powersave"
                 android:background="@color/color_powersave"
-                android:text="省电"
+                android:text="@string/powersave_short"
                 android:textColor="#66ffffff"
                 android:textStyle="bold" />
 
@@ -312,7 +312,7 @@
                 android:id="@+id/btn_defaultmode"
                 android:layout_marginLeft="4dp"
                 android:background="@color/color_balance"
-                android:text="均衡"
+                android:text="@string/balance_short"
                 android:textColor="#66ffffff"
                 android:textStyle="bold" />
 
@@ -323,7 +323,7 @@
                 android:id="@+id/btn_gamemode"
                 android:layout_marginLeft="4dp"
                 android:background="@color/color_perf"
-                android:text="性能"
+                android:text="@string/performance_short"
                 android:textColor="#66ffffff"
                 android:textStyle="bold" />
 
@@ -334,7 +334,7 @@
                 android:id="@+id/btn_fastmode"
                 android:layout_marginLeft="4dp"
                 android:background="@color/color_fast"
-                android:text="极速"
+                android:text="@string/fast_short"
                 android:textColor="#66ffffff"
                 android:textStyle="bold" />
         </LinearLayout>

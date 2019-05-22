@@ -3,6 +3,15 @@
 action=$1
 stop perfd
 
+echo 1 > /sys/devices/system/cpu/cpu0/online
+echo 1 > /sys/devices/system/cpu/cpu1/online
+echo 1 > /sys/devices/system/cpu/cpu2/online
+echo 1 > /sys/devices/system/cpu/cpu3/online
+echo 1 > /sys/devices/system/cpu/cpu4/online
+echo 1 > /sys/devices/system/cpu/cpu5/online
+echo 1 > /sys/devices/system/cpu/cpu6/online
+echo 1 > /sys/devices/system/cpu/cpu7/online
+
 echo 0 > /sys/module/msm_thermal/core_control/enabled
 echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
 echo N > /sys/module/msm_thermal/parameters/enabled
@@ -84,7 +93,7 @@ function schedutil_cfg()
 }
 
 if [ "$action" = "powersave" ]; then
-	set_cpu_freq 5000 1420800 5000 1612800
+	set_cpu_freq 5000 1516800 5000 1612800
 
 	echo "0" > /sys/module/cpu_boost/parameters/input_boost_freq
 	echo 0 > /sys/module/cpu_boost/parameters/input_boost_ms
@@ -102,14 +111,11 @@ if [ "$action" = "powersave" ]; then
     echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/io_is_busy
     schedutil_cfg 4 1000 10000 0
 
-    echo 0-2 > /dev/cpuset/background/cpus
-    echo 0-3 > /dev/cpuset/system-background/cpus
-
 	exit 0
 fi
 
 if [ "$action" = "balance" ]; then
-	set_cpu_freq 5000 1420800 5000 1996800
+	set_cpu_freq 5000 1766400 5000 1996800
 
     echo "0:1228800 1:1228800 2:1228800 3:1228800 4:0 5:0 6:0 7:0" > /sys/module/cpu_boost/parameters/input_boost_freq
     echo 40 > /sys/module/cpu_boost/parameters/input_boost_ms
@@ -126,9 +132,6 @@ if [ "$action" = "balance" ]; then
 	echo 1056000 > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/hispeed_freq
     echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/io_is_busy
     schedutil_cfg 4 1000 5000 0
-
-    echo 0-2 > /dev/cpuset/background/cpus
-    echo 0-3 > /dev/cpuset/system-background/cpus
 
 	exit 0
 fi
@@ -153,14 +156,11 @@ if [ "$action" = "performance" ]; then
     echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/io_is_busy
     schedutil_cfg 4 1000 1000 1
 
-    echo 0-1 > /dev/cpuset/background/cpus
-    echo 0-1 > /dev/cpuset/system-background/cpus
-
 	exit 0
 fi
 
 if [ "$action" = "fast" ]; then
-	set_cpu_freq 5000 3000000 1267200 3000000
+	set_cpu_freq 5000 3000000 1267200 3500000
 
     echo "0:0 1:0 2:0 3:0 4:1804800 5:1804800 6:1804800 7:1804800" > /sys/module/cpu_boost/parameters/input_boost_freq
     echo 80 > /sys/module/cpu_boost/parameters/input_boost_ms
@@ -177,9 +177,6 @@ if [ "$action" = "fast" ]; then
 
 	echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 1 > /proc/sys/kernel/sched_boost
-
-    echo 0 > /dev/cpuset/background/cpus
-    echo 0-1 > /dev/cpuset/system-background/cpus
 
 	exit 0
 fi

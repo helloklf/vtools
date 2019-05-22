@@ -125,7 +125,7 @@
         <item name="android:textSize">11dp</item>
     </style>
     <!--activity 对话框样式  -->
-    <style name="FloatActivity" parent="Theme.AppCompat">
+    <style name="FloatActivity" parent="Theme.AppCompat.Light">
         <!-- float_box为我们定义的窗口背景-->
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:opacity">@integer/opacity</item>

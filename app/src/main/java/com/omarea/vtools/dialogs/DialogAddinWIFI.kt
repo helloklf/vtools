@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Build
 import android.widget.Toast
 import com.omarea.shell.SysUtils
+import com.omarea.ui.DialogHelper
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import javax.xml.parsers.DocumentBuilderFactory
@@ -40,10 +41,11 @@ class DialogAddinWIFI(private var context: Context) {
                     .replace("\"", "")
                     .trim()
 
-            AlertDialog.Builder(context)
+            DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle("已保存的WIFI记录")
                     .setMessage(wifiInfo)
-                    .setNeutralButton("确定", { _, _ -> }).create().show()
+                    .setNeutralButton("确定", { _, _ -> })
+                    .create())
         } else {
             Toast.makeText(context, "没有读取到这个文件，也许不支持您的设备吧！", Toast.LENGTH_LONG).show()
         }
@@ -85,12 +87,11 @@ class DialogAddinWIFI(private var context: Context) {
                     }
                     stringBuild.append("\n\n")
                 }
-                System.out.print(networkList)
 
-                AlertDialog.Builder(context)
+                DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("已保存的WIFI记录")
                         .setMessage(stringBuild.toString().trim())
-                        .setNeutralButton("确定", { _, _ -> }).create().show()
+                        .setNeutralButton("确定", { _, _ -> }))
             } else {
                 showOld()
             }

@@ -10,11 +10,9 @@ import android.content.SharedPreferences
 import android.os.Build
 import android.support.v4.app.NotificationCompat
 import com.omarea.shared.*
-import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shell.KeepShell
 import com.omarea.shell.KernelProrp
 import com.omarea.shell.Props
-import com.omarea.shell.RootFile
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import com.omarea.shell.cpucontrol.ThermalControlUtils
 import com.omarea.shell.units.LMKUnit
@@ -220,13 +218,14 @@ class BootService : IntentService("vtools-boot") {
         }
 
         val globalPowercfg = globalConfig.getString(SpfConfig.GLOBAL_SPF_POWERCFG, "")
-        if (globalPowercfg.isNotEmpty()) {
+        if (!globalPowercfg.isNullOrEmpty()) {
             val modeList = ModeList()
-            if (RootFile.fileExists(CommonCmds.POWER_CFG_PATH)) {
+            val configInstaller = ConfigInstaller()
+            if (configInstaller.configInstalled()) {
                 modeList.executePowercfgMode(globalPowercfg, context!!.packageName)
             } else {
                 val stringBuilder = StringBuilder()
-                stringBuilder.append(String.format(CommonCmds.ToggleMode, globalPowercfg))
+                modeList.executePowercfgMode(globalPowercfg)
                 ConfigInstaller().installPowerConfig(context!!, stringBuilder.toString());
             }
         }

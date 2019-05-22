@@ -14,6 +14,8 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission
         android:name="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE"
         tools:ignore="ProtectedPermissions" />
@@ -111,7 +113,7 @@
         <activity
             android:name=".activitys.ActivityMain"
             android:autoRemoveFromRecents="false"
-            android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|fontScale|uiMode|layoutDirection"
+            android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|fontScale|uiMode|layoutDirection|navigation|keyboard|touchscreen|locale|colorMode"
             android:excludeFromRecents="false"
             android:exported="true"
             android:label="@string/app_name"

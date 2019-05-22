@@ -21,7 +21,7 @@ class NotificationService : NotificationListenerService() {
         if (sbn.isClearable) {
             val instance = SceneMode.getInstanceOrInit(null, null)
             if (instance == null) {
-                Log.e("vtool-disnotice", "辅助服务未启动")
+                // Log.e("vtool-disnotice", "辅助服务未启动")
                 return
             } else {
                 /*

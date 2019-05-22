@@ -14,16 +14,4 @@ class Platform {
 
         return cpu
     }
-
-    //
-    fun dynamicSupport(context: Context): Boolean {
-        val cpuName = getCPUName()
-        val names = context.assets.list("")
-        for (i in names.indices) {
-            if (names[i].equals(cpuName)) {
-                return true
-            }
-        }
-        return false;
-    }
 }

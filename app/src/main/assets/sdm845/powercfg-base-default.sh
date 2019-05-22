@@ -37,16 +37,17 @@ echo 1 > /sys/devices/system/cpu/cpu7/online
 #echo 95 > /sys/devices/system/cpu/cpu4/core_ctl/busy_up_thres
 #echo 60 > /sys/devices/system/cpu/cpu4/core_ctl/busy_down_thres
 
-echo 5 > /proc/sys/vm/dirty_background_ratio
+echo 1 > /proc/sys/vm/laptop_mode
+echo 25 > /proc/sys/vm/dirty_background_ratio
 echo 50 > /proc/sys/vm/overcommit_ratio
 echo 100 > /proc/sys/vm/swap_ratio
 echo 100 > /proc/sys/vm/vfs_cache_pressure
-echo 20 > /proc/sys/vm/dirty_ratio
+echo 50 > /proc/sys/vm/dirty_ratio
 echo 3 > /proc/sys/vm/page-cluster
-echo 2000 > /proc/sys/vm/dirty_expire_centisecs
-echo 5000 > /proc/sys/vm/dirty_writeback_centisecs
+echo 30000 > /proc/sys/vm/dirty_expire_centisecs
+echo 60000 > /proc/sys/vm/dirty_writeback_centisecs
 
-echo 512 > /sys/block/sda/queue/read_ahead_kb
+echo 2048 > /sys/block/sda/queue/read_ahead_kb
 echo 0 > /sys/block/sda/queue/iostats
 
 echo "0:1324800" > /sys/module/cpu_boost/parameters/input_boost_freq
@@ -67,9 +68,8 @@ echo 0 > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
 #echo 0 > /sys/zte_power_debug/switch
 #echo N > /sys/kernel/debug/debug_enabled
 
-
-echo 0-3 > /dev/cpuset/background/cpus
-echo 0-5 > /dev/cpuset/system-background/cpus
+echo 0-1 > /dev/cpuset/background/cpus
+echo 0-3 > /dev/cpuset/system-background/cpus
 echo 0-7 > /dev/cpuset/foreground/cpus
 echo 0-7 > /dev/cpuset/top-app/cpus
 echo 4-7 > /dev/cpuset/foreground/boost/cpus

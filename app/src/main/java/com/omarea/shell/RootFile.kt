@@ -13,6 +13,10 @@ object RootFile {
         return KeepShellPublic.doCmdSync("if [[ -f \"$path\" ]]; then echo 1; fi;").equals("1")
     }
 
+    fun fileNotEmpty(path: String): Boolean {
+        return KeepShellPublic.doCmdSync("if [[ -f \"$path\" ]] && [[ -s \"$path\" ]]; then echo 1; fi;").equals("1")
+    }
+
     fun dirExists(path: String): Boolean {
         return KeepShellPublic.doCmdSync("if [[ -d \"$path\" ]]; then echo 1; fi;").equals("1")
     }

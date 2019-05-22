@@ -13,10 +13,11 @@ import java.io.File
 
 class ActivityShortcut : Activity() {
     private var modeList = ModeList()
+    val configInstaller = ConfigInstaller()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (Platform().dynamicSupport(this) || File(CommonCmds.POWER_CFG_PATH).exists()) {
+        if (configInstaller.dynamicSupport(this.applicationContext) || configInstaller.configInstalled()) {
             val action = intent.action
             if (action == "powersave" || action == "balance" || action == "performance" || action == "fast") {
                 installConfig(action)
@@ -31,13 +32,9 @@ class ActivityShortcut : Activity() {
     }
 
     private fun installConfig(action: String) {
-        val stringBuilder = StringBuilder()
-        stringBuilder.append(String.format(CommonCmds.ToggleMode, action))
-
-        if (RootFile.fileExists(CommonCmds.POWER_CFG_PATH)) {
-            modeList.executePowercfgMode(action, packageName)
-        } else {
-            ConfigInstaller().installPowerConfig(this, stringBuilder.toString());
+        if (!configInstaller.configInstalled()) {
+            ConfigInstaller().installPowerConfig(this);
         }
+        modeList.executePowercfgMode(action, packageName)
     }
 }

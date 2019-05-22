@@ -17,6 +17,7 @@ import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.KernelProrp
 import com.omarea.shell.RootFile
 import com.omarea.shell.SysUtils
+import com.omarea.shell.units.BatteryUnit
 import com.omarea.vtools.R
 import com.omarea.vtools.activitys.ActivityQuickSwitchMode
 import kotlin.math.abs
@@ -32,6 +33,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
     private var notification: Notification? = null
     private var notificationManager: NotificationManager? = null
     private var batteryHistoryStore: BatteryHistoryStore? = null
+    private var batteryUnit = com.omarea.shell.units.BatteryUnit()
 
     private fun getAppName(packageName: String): CharSequence? {
         try {
@@ -44,18 +46,6 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
     private var batteryTemp = "?°C"
     private var batteryCapacity = ""
     private var batteryStatus = "0"
-
-    private var batteryUnit = Int.MIN_VALUE
-    private fun getBatteryUnit(): Int {
-        if (batteryUnit == Int.MIN_VALUE) {
-            val full = KernelProrp.getProp("/sys/class/power_supply/battery/charge_full_design")
-            if (full.length >= 4) {
-                return full.length - 4
-            }
-            batteryUnit = Int.MIN_VALUE
-        }
-        return batteryUnit
-    }
 
     private fun getCapacity(): Int {
         if (batteryCapacity.isEmpty() || batteryCapacity == "%?") {
@@ -122,98 +112,6 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         }
     }
 
-    private fun getBatterySensor(): String? {
-        var batterySensor: String? = null
-        if (batterySensor == "init") {
-            batterySensor = SysUtils.executeCommandWithOutput(false, "for sensor in /sys/class/thermal/*; do\n" +
-                    "\ttype=\"\$(cat \$sensor/type)\"\n" +
-                    "\tif [[ \"\$type\" = \"battery\" && -f \"\$sensor/temp\" ]]; then\n" +
-                    "\t\techo \"\$sensor/temp\";\n" +
-                    "\t\texit 0;\n" +
-                    "\tfi;\n" +
-                    "done;")
-            if (batterySensor != null) {
-                batterySensor = batterySensor!!.trim()
-            } else {
-                batterySensor = null
-            }
-        }
-        return batterySensor
-    }
-
-    var path: String? = null
-    private var isHuawei = false
-    private var isOther = false
-    private fun getBatteryIO(): String {
-        if (isHuawei) {
-            return getBatteryIOForHuawei()
-        }
-        if (path == null) {
-            if (RootFile.itemExists("/sys/class/power_supply/battery/current_now")) {
-                path = "/sys/class/power_supply/battery/current_now"
-            } else if (RootFile.itemExists("/sys/class/power_supply/battery/BatteryAverageCurrent")) {
-                path = "/sys/class/power_supply/battery/BatteryAverageCurrent"
-            } else {
-                val io = getBatteryIOForHuawei()
-                if (!io.isEmpty()) {
-                    isHuawei = true
-                }
-                return io;
-            }
-        }
-
-        var io = KernelProrp.getProp(path!!)
-        if (io.isEmpty()) {
-            return ""
-        }
-        try {
-            val unit = getBatteryUnit()
-            var start = ""
-            if (io.startsWith("+")) {
-                start = "+"
-                io = io.substring(1, io.length)
-            } else if (io.startsWith("-")) {
-                start = "-"
-                io = io.substring(1, io.length)
-            } else {
-                start = ""
-            }
-            if (unit != Int.MIN_VALUE && io.length > unit) {
-                val v = io.substring(0, io.length - unit)
-                if (v.length > 4) {
-                    return start + v.substring(0, v.length - 3)
-                }
-                return start + v
-            } else if (io.length <= 4) {
-                return start + io
-            } else if (io.length >= 8) {
-                return start + io.substring(0, io.length - 6)
-            } else if (io.length >= 5) {
-                return start + io.substring(0, io.length - 3)
-            }
-            return start + io
-        } catch (ex: Exception) {
-            return ""
-        }
-    }
-
-    private fun getBatteryIOForHuawei(): String {
-        if (RootFile.itemExists("/sys/class/power_supply/Battery/uevent")) {
-            path = "/sys/class/power_supply/Battery/uevent"
-        } else if (RootFile.itemExists("/sys/class/power_supply/bms/uevent")) {
-            path = "/sys/class/power_supply/bms/uevent"
-        } else {
-            return ""
-        }
-
-        try {
-            val io = KernelProrp.getProp(path!!, "POWER_SUPPLY_CURRENT_NOW=")
-            return io.replace("POWER_SUPPLY_CURRENT_NOW=", "").replace("error", "")
-        } catch (ex: Exception) {
-            return ""
-        }
-    }
-
     //显示通知
     internal fun notify() {
         updateNotic()
@@ -253,7 +151,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
         var modeImage = BitmapFactory.decodeResource(context.resources, getModImage(mode))
         try {
             updateBatteryInfo()
-            val io = getBatteryIO()
+            val io = batteryUnit.getBatteryIOMa()
             if (io.isNotEmpty()) {
                 batteryIO = io + "mA"
             } else {

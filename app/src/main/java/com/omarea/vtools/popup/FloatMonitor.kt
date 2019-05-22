@@ -29,16 +29,7 @@ class FloatMonitor(context: Context) {
     private var timer: Timer? = null
     private var startMonitorTime = 0L
     private var gpuLoadAvg = HashMap<Int, Int>()
-    private var postionMode = 1
     private var cpuLoadUtils = CpuLoadUtils()
-    private var postionModes = arrayOf(
-        Gravity.START or Gravity.TOP,
-        Gravity.TOP or Gravity.CENTER_HORIZONTAL,
-        Gravity.TOP or Gravity.END,
-        Gravity.END or Gravity.BOTTOM,
-        Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL,
-        Gravity.BOTTOM or Gravity.START
-    )
 
     /**
      * 显示弹出框
@@ -62,6 +53,7 @@ class FloatMonitor(context: Context) {
         mView = setUpView(mContext!!)
 
         val params = LayoutParams()
+        val monitorStorage = mContext!!.getSharedPreferences("float_monitor_storage", Context.MODE_PRIVATE)
 
         // 类型
         params.type = LayoutParams.TYPE_SYSTEM_ALERT
@@ -76,8 +68,8 @@ class FloatMonitor(context: Context) {
         params.height = LayoutParams.WRAP_CONTENT
 
         params.gravity = Gravity.TOP or Gravity.LEFT
-        params.x = 0
-        params.y = 0
+        params.x = monitorStorage.getInt("x", 0)
+        params.y = monitorStorage.getInt("y", 0)
 
         params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE
 
@@ -134,6 +126,8 @@ class FloatMonitor(context: Context) {
                             if (System.currentTimeMillis() - touchStartTime < 300) {
                                 if (Math.abs(event.rawX - touchStartRawX) < 15 && Math.abs(event.rawY - touchStartRawY) < 15) {
                                     onClick()
+                                } else {
+                                    monitorStorage.edit().putInt("x", params.x).putInt("y", params.x).apply()
                                 }
                             }
                             isTouchDown = false

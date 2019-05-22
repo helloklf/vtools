@@ -66,7 +66,7 @@ class FragmentSwap : Fragment() {
             put("type", getString(R.string.type))
             put("size", getString(R.string.size))
             put("used", getString(R.string.used))
-            put("priority", getString(R.string.priority))
+            put("priority", getString(R.string.order)) // put("priority", getString(R.string.priority))
         }
         list.add(thr)
 

@@ -2,6 +2,7 @@ package com.omarea.vtools.fragments
 
 import android.annotation.SuppressLint
 import android.app.ActivityManager
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Context.ACTIVITY_SERVICE
 import android.content.Intent
@@ -43,6 +44,7 @@ class FragmentHome : Fragment() {
 
     private lateinit var globalSPF: SharedPreferences
     private var timer: Timer? = null
+    private val configInstaller = ConfigInstaller()
     private fun showMsg(msg: String) {
         this.view?.let { Snackbar.make(it, msg, Snackbar.LENGTH_LONG).show() }
     }
@@ -56,7 +58,7 @@ class FragmentHome : Fragment() {
 
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
-        if (Platform().dynamicSupport(context!!) || File(CommonCmds.POWER_CFG_PATH).exists()) {
+        if (configInstaller.dynamicSupport(context!!) || configInstaller.configInstalled()) {
             powermode_toggles.visibility = View.VISIBLE
         } else {
             powermode_toggles.visibility = View.GONE
@@ -272,20 +274,30 @@ class FragmentHome : Fragment() {
 
     @SuppressLint("ApplySharedPref")
     private fun installConfig(action: String, message: String) {
-        val dynamic = AccessibleServiceHelper().serviceIsRunning(context!!)
+        val dynamic = AccessibleServiceHelper().serviceIsRunning(context!!) && spf.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)
         if (!dynamic && modeList.getCurrentPowerMode() == action) {
             modeList.setCurrent("", "")
             globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, "").commit()
-            Toast.makeText(context, "已取消开机后自动设置模式，你现在需要重启手机才能恢复系统默认调度！", Toast.LENGTH_LONG).show()
+            AlertDialog.Builder(context)
+                    .setTitle("提示")
+                    .setMessage("需要重启手机才能恢复默认调度，是否立即重启？")
+                    .setNegativeButton(R.string.btn_cancel, {
+                        _, _ ->
+                    })
+                    .setPositiveButton(R.string.btn_confirm, {
+                        _, _ ->
+                        KeepShellPublic.doCmdSync("sync\nsleep 1\nreboot")
+                    })
+                    .create()
+                    .show()
             setModeState()
             return
         }
-        if (RootFile.fileExists(CommonCmds.POWER_CFG_PATH)) {
+        if (configInstaller.configInstalled()) {
             modeList.executePowercfgMode(action, context!!.packageName)
         } else {
-            val stringBuilder = StringBuilder()
-            stringBuilder.append(String.format(CommonCmds.ToggleMode, action))
-            ConfigInstaller().installPowerConfig(context!!, stringBuilder.toString());
+            ConfigInstaller().installPowerConfig(context!!);
+            modeList.executePowercfgMode(action)
         }
         setModeState()
         showMsg(message)
@@ -296,7 +308,19 @@ class FragmentHome : Fragment() {
             globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, "").commit()
         } else {
             globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, action).commit()
-            Toast.makeText(context, "重启手机后Scene会尝试自动设置为当前选中的模式，如需取消自动设置请再次点击！", Toast.LENGTH_LONG).show()
+            if (!globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_POWERCFG_FRIST_NOTIFY, false)) {
+                AlertDialog.Builder(context).setTitle("提示")
+                        .setMessage("如果你允许Scene自启动，下次开机后，Scene还会自动启用你刚刚选择的模式。\n\n如果你需要关闭调度，请再次点击相同的模式取消选中状态，然后重启手机！")
+                        .setNegativeButton(R.string.btn_confirm, {
+                            _, _ ->
+                        })
+                        .setPositiveButton(R.string.btn_dontshow, {
+                            _, _ ->
+                            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_POWERCFG_FRIST_NOTIFY, true).commit()
+                        })
+                        .create()
+                        .show()
+            }
         }
     }
 }

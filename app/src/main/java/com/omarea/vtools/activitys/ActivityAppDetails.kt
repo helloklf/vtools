@@ -10,7 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.support.design.widget.Snackbar
-import android.support.v7.app.AlertDialog
+import android.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.KeyEvent
@@ -29,6 +29,7 @@ import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.NoticeListing
 import com.omarea.shell.Platform
 import com.omarea.shell.WriteSettings
+import com.omarea.ui.DialogHelper
 import com.omarea.ui.IntInputFilter
 import com.omarea.vaddin.IAppConfigAidlInterface
 import com.omarea.vtools.R
@@ -36,7 +37,6 @@ import com.omarea.xposed.XposedCheck
 import kotlinx.android.synthetic.main.activity_app_details.*
 import org.json.JSONObject
 import java.io.File
-
 
 class ActivityAppDetails : AppCompatActivity() {
     var app = ""
@@ -46,6 +46,7 @@ class ActivityAppDetails : AppCompatActivity() {
     private var _result = RESULT_CANCELED
     private var vAddinsInstalled = false
     private var aidlConn: IAppConfigAidlInterface? = null
+    private val configInstaller = ConfigInstaller()
 
     private var needKeyCapture = false
 
@@ -246,7 +247,20 @@ class ActivityAppDetails : AppCompatActivity() {
         setContentView(R.layout.activity_app_details)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        app = this.intent.extras.getString("app")
+        val intent = this.intent
+        if (intent == null) {
+            setResult(_result, this.intent)
+            finish()
+            return
+        }
+        val extras = this.intent.extras
+        if (extras == null || !extras.containsKey("app")) {
+            setResult(_result, this.intent)
+            finish()
+            return
+        }
+
+        app = extras.getString("app")!!
         needKeyCapture = AppConfigStore(this.applicationContext).needKeyCapture()
 
         if (app == "android" || app == "com.android.systemui" || app == "com.android.webview" || app == "mokee.platform" || app == "com.miui.rom") {
@@ -262,7 +276,7 @@ class ActivityAppDetails : AppCompatActivity() {
 
         policyControl = PolicyControl(contentResolver)
 
-        dynamicCpu = (Platform().dynamicSupport(this) || File(CommonCmds.POWER_CFG_PATH).exists())
+        dynamicCpu = configInstaller.dynamicSupport(this.applicationContext) || configInstaller.configInstalled()
 
         app_details_dynamic.setOnClickListener {
             if (!dynamicCpu) {
@@ -310,8 +324,7 @@ class ActivityAppDetails : AppCompatActivity() {
                     })
                     .setNegativeButton(R.string.btn_cancel, DialogInterface.OnClickListener { dialog, which -> })
                     .create()
-            dialog.window!!.setWindowAnimations(R.style.windowAnim)
-            dialog.show()
+            DialogHelper.animDialog(dialog)
         }
         app_details_floatwindow.setOnClickListener {
             val isChecked = (it as Switch).isChecked
@@ -582,7 +595,7 @@ class ActivityAppDetails : AppCompatActivity() {
         val powercfg = getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         val spfGlobal = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
-        dynamicCpu = (Platform().dynamicSupport(this) || File(CommonCmds.POWER_CFG_PATH).exists())
+        dynamicCpu = configInstaller.dynamicSupport(this.applicationContext) || configInstaller.configInstalled()
 
         var packageInfo: PackageInfo? = null
         try {

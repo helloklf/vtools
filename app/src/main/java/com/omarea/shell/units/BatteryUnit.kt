@@ -12,6 +12,10 @@ import java.io.File
  */
 
 class BatteryUnit {
+    companion object {
+        var isHuawei = false
+        var ioInfoSupported = true
+    }
     //是否兼容此设备
     val isSupport: Boolean
         get() = RootFile.itemExists("/sys/class/power_supply/bms/uevent") || qcSettingSuupport() || bpSettingSuupport() || pdSupported()
@@ -152,7 +156,8 @@ class BatteryUnit {
             POWER_SUPPLY_CONSTANT_CHARGE_VOLTAGE=4389899
             POWER_SUPPLY_CC_STEP=0
             POWER_SUPPLY_CC_STEP_SEL=0
-            */ val batteryMAH: String
+            */
+    val batteryMAH: String
         get() {
             var path = ""
             if (RootFile.fileExists("/sys/class/power_supply/bms/uevent")) {
@@ -301,5 +306,122 @@ class BatteryUnit {
             }
         }
         return batteryStatus
+    }
+
+    var batteryIOFilePath: String? = null
+    private fun getBatteryIOForHuawei(): String {
+        if (RootFile.itemExists("/sys/class/power_supply/Battery/uevent")) {
+            batteryIOFilePath = "/sys/class/power_supply/Battery/uevent"
+        } else if (RootFile.itemExists("/sys/class/power_supply/bms/uevent")) {
+            batteryIOFilePath = "/sys/class/power_supply/bms/uevent"
+        } else {
+            return ""
+        }
+
+        try {
+            val io = KernelProrp.getProp(batteryIOFilePath!!, "POWER_SUPPLY_CURRENT_NOW=")
+            return io.replace("POWER_SUPPLY_CURRENT_NOW=", "").replace("error", "")
+        } catch (ex: Exception) {
+            return ""
+        }
+    }
+
+    private fun getBatterySensor(): String? {
+        var batterySensor: String? = null
+        if (batterySensor == "init") {
+            batterySensor = KeepShellPublic.doCmdSync("for sensor in /sys/class/thermal/*; do\n" +
+                    "\ttype=\"\$(cat \$sensor/type)\"\n" +
+                    "\tif [[ \"\$type\" = \"battery\" && -f \"\$sensor/temp\" ]]; then\n" +
+                    "\t\techo \"\$sensor/temp\";\n" +
+                    "\t\texit 0;\n" +
+                    "\tfi;\n" +
+                    "done;")
+            if (batterySensor != "error") {
+                batterySensor = batterySensor!!.trim()
+            } else {
+                batterySensor = null
+            }
+        }
+        return batterySensor
+    }
+
+    private var batteryUnit = Int.MIN_VALUE
+    private fun getBatteryUnit(): Int {
+        if (batteryUnit == Int.MIN_VALUE) {
+            val full = KernelProrp.getProp("/sys/class/power_supply/battery/charge_full_design")
+            if (full.length >= 4) {
+                return full.length - 4
+            }
+            batteryUnit = Int.MIN_VALUE
+        }
+        return batteryUnit
+    }
+
+    public fun getBatteryIOMa(): String {
+        val ioStr = getBatteryIOOrigin()
+        if (ioStr == null) {
+            return "?"
+        } else {
+            try {
+                var io = ioStr
+                val unit = getBatteryUnit()
+                var start = ""
+                if (io.startsWith("+")) {
+                    start = "+"
+                    io = io.substring(1, io.length)
+                } else if (io.startsWith("-")) {
+                    start = "-"
+                    io = io.substring(1, io.length)
+                } else {
+                    start = ""
+                }
+                if (unit != Int.MIN_VALUE && io.length > unit) {
+                    val v = io.substring(0, io.length - unit)
+                    if (v.length > 4) {
+                        return (start + v.substring(0, v.length - 3))
+                    }
+                    return (start + v)
+                } else if (io.length <= 4) {
+                    return (start + io)
+                } else if (io.length >= 8) {
+                    return (start + io.substring(0, io.length - 6))
+                } else if (io.length >= 5) {
+                    return (start + io.substring(0, io.length - 3))
+                }
+                return (start + io)
+            } catch (ex: Exception) {
+                return "?"
+            }
+        }
+    }
+
+    public fun getBatteryIOOrigin():String? {
+        if (isHuawei) {
+            return getBatteryIOForHuawei()
+        }
+        if (ioInfoSupported && batteryIOFilePath == null) {
+            if (RootFile.itemExists("/sys/class/power_supply/battery/current_now")) {
+                batteryIOFilePath = "/sys/class/power_supply/battery/current_now"
+            } else if (RootFile.itemExists("/sys/class/power_supply/battery/BatteryAverageCurrent")) {
+                batteryIOFilePath = "/sys/class/power_supply/battery/BatteryAverageCurrent"
+            } else {
+                val io = getBatteryIOForHuawei()
+                if (!io.isEmpty()) {
+                    isHuawei = true
+                } else {
+                    ioInfoSupported = false
+                }
+                return io;
+            }
+        }
+        if (!ioInfoSupported) {
+            return null
+        }
+        val io = KernelProrp.getProp(batteryIOFilePath!!)
+        if (io.isEmpty()) {
+            return null
+        } else {
+            return io;
+        }
     }
 }

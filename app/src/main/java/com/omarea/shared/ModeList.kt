@@ -11,6 +11,9 @@ import com.omarea.vtools.R
 
 open class ModeList {
     companion object {
+        const val POWER_CFG_PATH = "/data/powercfg.sh"
+        const val POWER_CFG_BASE = "/data/powercfg-base.sh"
+
         internal var DEFAULT = "balance";
         internal var POWERSAVE = "powersave";
         internal var PERFORMANCE = "performance";
@@ -56,14 +59,14 @@ open class ModeList {
         }
     }
 
-    internal fun getCurrentPowerMode(): String? {
+    internal fun getCurrentPowerMode(): String {
         if (!currentPowercfg.isEmpty()) {
             return currentPowercfg
         }
         return Props.getProp("vtools.powercfg")
     }
 
-    internal fun getCurrentPowermodeApp(): String? {
+    internal fun getCurrentPowermodeApp(): String {
         if (!currentPowercfgApp.isEmpty()) {
             return currentPowercfgApp
         }
@@ -93,7 +96,7 @@ open class ModeList {
     }
 
     internal fun executePowercfgMode(mode: String): ModeList {
-        keepShellExec("sh ${CommonCmds.POWER_CFG_PATH} " + mode)
+        keepShellExec("sh ${POWER_CFG_PATH} " + mode)
         setCurrentPowercfg(mode)
         return this
     }
@@ -104,13 +107,11 @@ open class ModeList {
         return this
     }
 
-    internal fun densityKeepShell(): ModeList {
+    internal fun destroyKeepShell(): ModeList {
         if (keepShellAsync != null) {
             keepShellAsync!!.tryExit()
             keepShellAsync = null
         }
         return this
     }
-
-
 }

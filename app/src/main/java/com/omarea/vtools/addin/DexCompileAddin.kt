@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Handler
 import android.os.Message
 import android.support.v7.app.AlertDialog
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ProgressBar
@@ -18,7 +19,6 @@ import com.omarea.shared.CommonCmds
 import com.omarea.shell.AsynSuShellUnit
 import com.omarea.shell.Props
 import com.omarea.vtools.R
-import java.lang.Exception
 import java.util.*
 
 /**
@@ -60,13 +60,11 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                             }, 2000)
                         } else if (Regex("^\\[.*]\$").matches(obj)) {
                             progressBar.progress = msg.what
-                            val txt = obj
-                                    .replace("[compile ", "[编译 ")
-                                    .replace("[reset ", "[重置 ")
+                            val text = obj.replace("[compile ", "[编译 ").replace("[reset ", "[重置 ")
                             if (obj.contains("compile") || obj.contains("reset")) {
                                 current++
                             }
-                            textView.text = txt + "\n(${current}/${total})"
+                            textView.text = text + "\n(${current}/${total})"
                         }
                     }
                 }
@@ -95,7 +93,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
         for (i in packageInfos.indices) {
             list.add(packageInfos[i].packageName)
         }
-        list.remove(context.packageName)
+
         return list
     }
 
@@ -105,7 +103,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
             return
         }
 
-        val arr = arrayOf("Speed编译(推荐）", "强制Speed编译", "Everything编译", "强制Everything编译", "Reset")
+        val arr = arrayOf("执行编译", "重置(清除编译)")
         var index = 0
         val alert = AlertDialog.Builder(context)
                 .setTitle("请选择执行方式")
@@ -114,6 +112,17 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                 })
                 .setNegativeButton("确定", { _, _ ->
                     val apps = getAllPackageNames()
+                    if (index == 1) {
+                        // miui com.miui.contentcatcher 停止会导致所有应用被关闭 - 屏蔽它
+                        if (apps.contains("com.miui.contentcatcher")) {
+                            apps.remove("com.miui.contentcatcher")
+                        }
+                        if (apps.contains("com.miui.catcherpatch")) {
+                            apps.remove("com.miui.catcherpatch")
+                        }
+                        apps.remove(context.packageName)
+                    }
+
                     val commands = StringBuilder()
                     val action = if (index == 4) "reset" else "compile"
                     for (app in apps) {
@@ -121,10 +130,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                         commands.append(";\n`")
                         when (index) {
                             0 -> commands.append("cmd package compile -m speed ${app}")
-                            1 -> commands.append("cmd package compile -m speed -f ${app}")
-                            2 -> commands.append("cmd package compile -m everything ${app}")
-                            3 -> commands.append("cmd package compile -m everything -f ${app}")
-                            4 -> commands.append("cmd package compile --reset ${app}")
+                            1 -> commands.append("cmd package compile --reset ${app}")
                         }
                         commands.append("` > /dev/null;\n\n")
                     }
@@ -132,23 +138,28 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                     commands.append("\n\n")
                     when (index) {
                         0 -> commands.append("cmd package compile -m speed ${context.packageName}")
-                        1 -> commands.append("cmd package compile -m speed -f ${context.packageName}")
-                        2 -> commands.append("cmd package compile -m everything ${context.packageName}")
-                        3 -> commands.append("cmd package compile -m everything -f ${context.packageName}")
-                        // 4 -> commands.append("cmd package compile --reset ${context.packageName}") // 会导致自身被强制关闭
                     }
                     commands.append("\n\n")
                     AsynSuShellUnit(ProgressHandler(context, apps.size)).exec(commands.toString()).waitFor()
                 })
                 .setNeutralButton("查看说明", { _, _ ->
-                    AlertDialog.Builder(context).setTitle("说明").setMessage("在Android N以后，为了减少应用程序空间占用和提高安装效率，引入了新的机制。在安装应用时，不再像6.0时代一样将整个应用编译成本地代码，通过cmd package compile命令，可用于手动触发编译，常用以下几种模式：\n\nSpeed：尽可能的提高运行效率\nEverything：编译可以被编译的一切\nReset命令用于清除配置脚本和已编译过的代码\n选择强制编译时，将重新编译已经编译过的应用。\nReset命令用于重置所有应用的Dex编译状态。\n\n 以8.0系统下斗鱼TV客户端为例，全新安装时base.odex仅为6.8MB，使用Speed模式编译后，base.odex文件增大到103MB。\n\n由于国内许多应用均使用了热更新技术，或使用其它自定义引擎（Weex、React等）来提高开发效率，但需要在运行时才解析并生成原生组件来渲染，甚至功能代码被托管在服务器端（每次运行都可能需要重新下载并解析）。这是导致应用启动慢或启动后卡顿的主要原因。因此Speed、Everything模式编译均不能为这类应用带来明显的性能提升！").setNegativeButton("了解更多", { dialog, which ->
-                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://source.android.com/devices/tech/dalvik/jit-compiler?hl=zh-cn")))
-                    }).create().show()
+                    helpInfo()
                 })
                 .create()
 
         alert!!.window!!.setWindowAnimations(R.style.windowAnim)
         alert.show()
+    }
+
+    private fun helpInfo () {
+        AlertDialog.Builder(context)
+                .setTitle("说明")
+                .setMessage(R.string.addin_dex2oat_helpinfo)
+                .setNegativeButton("了解更多", { dialog, which ->
+                    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(context.getString(R.string.addin_dex2oat_helplink))))
+                })
+                .create()
+                .show()
     }
 
     override fun run() {
@@ -187,8 +198,6 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                             stringBuilder.append("sed -i '\$adalvik.vm.image-dex2oat-filter=speed' /data/build.prop;")
                             stringBuilder.append("sed -i '\$adalvik.vm.dex2oat-filter=speed' /data/build.prop;")
                         }
-                        2 -> {
-                        }
                     }
 
                     stringBuilder.append(CommonCmds.MountSystemRW)
@@ -210,7 +219,6 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
     }
 
     fun modifyConfig() {
-
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
             Toast.makeText(context, "系统版本过低，至少需要Android 7.0！", Toast.LENGTH_SHORT).show()
             modifyConfigOld()
@@ -218,17 +226,18 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
         }
 
         val arr = arrayOf(
-                "快速安装（闲时编译）",
-                "Speed模式（尽量编译）",
-                "Everything模式（完全编译）",
-                "节省空间（永不编译）",
+                "不编译（优化安装速度）",
+                "编译（优化运行速度）",
                 "恢复默认")
         val intallMode = Props.getProp("pm.dexopt.install")
         var index = 0
         when (intallMode) {
-            "extract" -> index = 0
+            "extract",
+            "quicken",
+            "interpret-only",
+            "verify-none" -> index = 0
             "speed" -> index = 1
-            "everything" -> index = 2
+            "everything" -> index = 1
             else -> {
                 if (Props.getProp("pm.dexopt.core-app") == "verify-none") {
                     index = 3
@@ -287,34 +296,6 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                                 stringBuilder.append("sed -i '\$adalvik.vm.dex2oat-filter=speed' /data/build.prop;")
                             }
                         }
-                        2 -> {
-                            stringBuilder.append("sed -i '\$apm.dexopt.bg-dexopt=speed' /data/build.prop;")
-                            stringBuilder.append("sed -i '\$apm.dexopt.core-app=speed' /data/build.prop;")
-                            stringBuilder.append("sed -i '\$apm.dexopt.forced-dexopt=speed' /data/build.prop;")
-                            stringBuilder.append("sed -i '\$apm.dexopt.install=everything' /data/build.prop;")
-                            stringBuilder.append("sed -i '\$apm.dexopt.nsys-library=speed' /data/build.prop;")
-                            stringBuilder.append("sed -i '\$apm.dexopt.shared-apk=speed' /data/build.prop;")
-                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-                                stringBuilder.append("sed -i '\$adalvik.vm.image-dex2oat-filter=speed' /data/build.prop;")
-                                stringBuilder.append("sed -i '\$adalvik.vm.dex2oat-filter=speed' /data/build.prop;")
-                            }
-                        }
-                        3 -> {
-                            stringBuilder.append("sed -i '\$apm.dexopt.bg-dexopt=verify-none' /data/build.prop;")
-                            stringBuilder.append("sed -i '\$apm.dexopt.boot=verify-none' /data/build.prop;")
-                            stringBuilder.append("sed -i '\$apm.dexopt.core-app=verify-none' /data/build.prop;")
-                            stringBuilder.append("sed -i '\$apm.dexopt.first-boot=verify-none' /data/build.prop;")
-                            stringBuilder.append("sed -i '\$apm.dexopt.forced-dexopt=verify-none' /data/build.prop;")
-                            stringBuilder.append("sed -i '\$apm.dexopt.nsys-library=verify-none' /data/build.prop;")
-                            stringBuilder.append("sed -i '\$apm.dexopt.shared-apk=verify-none' /data/build.prop;")
-                            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-                                stringBuilder.append("sed -i '\$adalvik.vm.image-dex2oat-filter=verify-none' /data/build.prop;")
-                                stringBuilder.append("sed -i '\$adalvik.vm.dex2oat-filter=verify-none' /data/build.prop;")
-                            }
-                        }
-                        4 -> {
-                            //
-                        }
                     }
 
                     stringBuilder.append(CommonCmds.MountSystemRW)
@@ -327,21 +308,10 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                     Toast.makeText(context, "配置已修改，但需要重启才能生效！", Toast.LENGTH_SHORT).show()
                 })
                 .setNeutralButton("查看说明", { _, _ ->
-                    AlertDialog.Builder(context).setTitle("说明").setMessage("在Android N以后，为了减少应用程序空间占用和提高安装效率，引入了新的机制。在安装应用时，不再像6.0时代一样将整个应用编译成本地代码，仅在设备空闲时编译优化常用的代码块。\n\n我们可以改变这种策略，让PM程序在安装应用时编译更多内容，降低在运行时的CPU占用提高流畅度。\n\n建议修改后重启手机，并进行一次“强制编译Dex”操作！\n\n以8.0系统下斗鱼TV客户端为例，全新安装时base.odex仅为6.8MB，使用Speed模式编译后（Everything模式编码空间占用相近，但编译更慢），base.odex文件增大到103MB。\n\n由于国内许多应用均使用了热更新技术，或使用其它自定义引擎（Weex、React等）来提高开发效率，但需要在运行时才解析并生成原生组件来渲染，甚至功能代码被托管在服务器端（每次运行都可能需要重新下载并解析）。这是导致应用启动慢或启动后卡顿的主要原因。因此Speed、Everything模式编译均不能为这类应用带来明显的性能提升！").setNegativeButton("了解更多", { dialog, which ->
-                        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://source.android.com/devices/tech/dalvik/configure?hl=zh-cn")))
-                    }).create().show()
+                    helpInfo()
                 })
                 .create()
         alert!!.window!!.setWindowAnimations(R.style.windowAnim)
         alert.show()
-    }
-
-    fun modifyThreadConfig() {
-        /*
-        [dalvik.vm.boot-dex2oat-threads]: [8]
-        [dalvik.vm.dex2oat-threads]: [4]
-        [dalvik.vm.image-dex2oat-threads]: [4]
-        [ro.sys.fw.dex2oat_thread_count]: [4]
-        */
     }
 }

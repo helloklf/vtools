@@ -81,12 +81,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //setMaxAspect()
         if (globalSPF == null) {
             globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-            val listener = SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
-                if (key == SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT) {
-                    setExcludeFromRecents(sharedPreferences.getBoolean(key, false))
-                }
-            }
-            globalSPF!!.registerOnSharedPreferenceChangeListener(listener)
         }
 
         ThemeSwitch.switchTheme(this)
@@ -136,7 +130,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         if (requestCode == 999) {
             hasRoot = resultCode == Activity.RESULT_OK
-            setExcludeFromRecents()
             // AppShortcutManager(this.applicationContext).removeMenu()
             // checkUseState()
             /*
@@ -228,6 +221,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     //返回键事件
     override fun onBackPressed() {
+        Log.e("onBackPressed", ">>>")
         try {
             val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
             when {
@@ -236,6 +230,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     supportFragmentManager.popBackStack()
                 }
                 else -> {
+                    setExcludeFromRecents(true)
                     super.onBackPressed()
                     this.finishActivity(0)
                 }

@@ -18,16 +18,16 @@ android {
         applicationId "com.omarea.vtools"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 1037
-        versionName "2.3.7"
+        versionCode 1038
+        versionName "2.3.8"
     }
     buildTypes {
         release {
-            shrinkResources true
+            // shrinkResources true
             zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            minifyEnabled true
-            debuggable false
+            minifyEnabled false
+            debuggable true
             // signingConfig signingConfigs.omarea_Signing
         }
         debug {

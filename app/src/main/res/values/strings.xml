@@ -1,5 +1,14 @@
 <resources>
     <integer name="opacity">0</integer>
+    <string-array name="powercfg_force_igoned">
+        <item>com.miui.securitycenter</item>
+        <item>android</item>
+        <item>com.android.systemui</item>
+        <item>com.omarea.vtools</item>
+        <item>com.miui.touchassistant</item>
+        <item>com.miui.contentextension</item>
+        <item>com.miui.systemAdSolution</item>
+    </string-array>
     <string-array name="powercfg_igoned">
         <item>com.zbar.lib</item>
         <item>eu.chainfire.supersu</item>
@@ -135,6 +144,8 @@
     <string name="settings_disable_selinux">自动SeLinux宽容模式</string>
     <string name="settings_disable_selinux_desc">自动开启SELinux宽容模式（部分软件中会称作“关闭Selinux”）。部分设备会卡死重启。如果不开有些功能会用不了，部分系统开启本功能会死机重启！</string>
     <string name="settings_theme">主题</string>
+    <string name="settings_logcat_title">错误日志</string>
+    <string name="settings_logcat_desc">当Scene发生错误闪退时，点击下面的按钮通过logcat抓取日志，发送给开发者以便解决问题</string>
 
     <string name="menu_home">概况</string>
     <string name="menu_paypal">捐赠打赏</string>
@@ -197,9 +208,11 @@
     <string name="addin_mac">修改MAC地址</string>
     <string name="addin_mac_desc">自定义手机WIFI网卡MAC地址，仅支持部分设备</string>
     <string name="addin_force_dex_compile">强制odex2oat</string>
-    <string name="addin_force_dex_compile_desc">适用于Android N+，对已安装的应用进行dex2oat编译，从而降低运行时的CPU占用，此过程可能需要半小时甚至更久（期间会占用大量CPU、RAM资源），并增加10%~30%的磁盘占用！\n系统更新后可能需要重新进行此操作！</string>
-    <string name="addin_pm_dexopt">调整默认odex2oat策略</string>
-    <string name="addin_pm_dexopt_desc">适用于Android N+，调整PackageManager应用安装时的dex2oat编译级别，选择更快的安装（运行时编译）或安装时完整的编译，重启后生效，更新系统后需要重新设置</string>
+    <string name="addin_force_dex_compile_desc">用于Android N+，对应用进行dex2oat编译，从而降低运行时的CPU和RAM占用。此过程需要半小时甚至更久（期间会占用大量CPU、RAM资源）。完成后的磁盘占用增加10%~30%！\n系统更新后需要重新编译！</string>
+    <string name="addin_dex2oat_helpinfo">在Android N以后，为了减少应用空间占用和提高安装效率，在安装应用时不再对dex进行完整编译，导致运行速度下降。本功能会通过cmd package compile命令，手动触发应用dex2oat编译。\n\n以Oreo系统下斗鱼TV客户端为例，全新安装时base.odex仅为6.8MB，编译后增大到103MB。\n\n但国内许多应用采用热更新技术，运行时经常需要从服务器下载最新代码并解析渲染，这是这些应用启动慢或启动后卡顿的主要原因。因此dex2oat编译并不能为这类应用带来明显的性能提升！</string>
+    <string name="addin_dex2oat_helplink">https://source.android.com/devices/tech/dalvik/jit-compiler?hl=zh-cn</string>
+    <string name="addin_pm_dexopt">应用安装odex2oat策略</string>
+    <string name="addin_pm_dexopt_desc">适用于Android N+，调整PackageManager应用安装时的dex2oat编译策略，更新系统后需要重新设置</string>
     <string name="addin_thermal_remove">删除、恢复、禁用温控</string>
     <string name="addin_thermal_remove_desc">禁用温控可让手机的性能更加稳定，但会显著增加发热，同时也会导致MIUI系统的CPU智能调度失效，并可能导致相机启动缓慢，需要重启手机。</string>
     <string name="addin_thermal_remove2">MIUI解除性能限制</string>
@@ -218,6 +231,7 @@
     <string name="zram_resizing">正在调整，这可能要很久…</string>
     <string name="zram_size_area">请输入ZRAM大小，值应在0 – 2048之间！</string>
     <string name="priority">优先级</string>
+    <string name="order">顺序</string>
     <string name="used">已用</string>
     <string name="size">大小</string>
     <string name="type">类型</string>
@@ -228,13 +242,17 @@
     <string name="balance">均衡模式</string>
     <string name="performance">性能模式</string>
     <string name="fast">极速模式</string>
+    <string name="powersave_short">省电</string>
+    <string name="balance_short">均衡</string>
+    <string name="performance_short">性能</string>
+    <string name="fast_short">极速</string>
     <string name="app_selected_none">一个应用也没有选中！</string>
     <string name="use">用户</string>
     <string name="backuped">已备份</string>
     <string name="help">帮助</string>
     <string name="more">了解更多</string>
     <string name="not_support_config">未找到可用的模式配置脚本</string>
-    <string name="not_support_config_desc">本应用目前还没有为您当前Soc提供性能配置文件，但你可以自己创建配置文件，并放到/data目录下，文件命名为powercfg，权限设为0755.\n\n或者，试试YC大佬是否有为你的设备提供可用的配置文件，找到适用的配置，点击powercfg.apk，工具箱会自动帮你安装！</string>
+    <string name="not_support_config_desc">应用没有自带适用于你手机的性能配置脚本。你可以选择“在线获取脚本”看看是否有适于你手机的配置可供下载，或选择“了解更多”查看自定义配置教程！</string>
     <string name="first_start_select_config">首次使用，先选择配置偏好</string>
 
     <string name="get_online_config">在线获取配置脚本</string>
@@ -244,21 +262,16 @@
 
     <string name="conservative">保守 - 更加省电</string>
     <string name="radicalness">激进 - 性能优先</string>
+    <string name="skipnow">暂时跳过</string>
     <string name="config_installed">配置安装成功！</string>
-    <string name="config_install_fail">安装配置脚本失败!\n</string>
     <string name="ro_product_model">ro.product.model=</string>
     <string name="ro_product_brand">ro.product.brand=</string>
     <string name="ro_product_name">ro.product.name=</string>
     <string name="ro_product_device">ro.product.device=</string>
     <string name="ro_product_manufacturer">ro.product.manufacturer=</string>
-    <string name="r11">R11+</string>
-    <string name="x20">X20</string>
-    <string name="mrs">Mate RS</string>
-    <string name="_8848">8848</string>
-    <string name="r15">R15</string>
     <string name="auto_start">自启动</string>
     <string name="boot_after_auto_modify">开机后自动修改</string>
-    <string name="core_control_helpinfo">这是一个功能简陋的CPU控制器，但实际上CPU的调度工作非常复杂，单纯的提高或降低频率限制，并不一定能提高流畅度或节省电量。\n\n部分的手机底层具有自动调节CPU参数的机制，会导致自定义的参数很快失效（小米手机请先到“附加功能-自定义”中禁用perfd和Performance Boost Config，否则CPU频率修改不会生效！）。\n\n此外，热插拔温控功能可能也会影响你对CPU参数的修改！\n\ninteractive调度适用于大多数手机，反应迅速（schedutil更好），ondemand调度则会更缓慢的切换频率，conservative、powersave、performance模式均不推荐使用！。\n\n优先Big核心会在获得绝佳的流畅体验的同时，耗电和发热显著增高。</string>
+    <string name="core_control_helpinfo">这是一个功能简陋的CPU控制器，实际上CPU的调度非常复杂，单纯调整频率限制未必能省电或提高流畅度。\n\n部分的手机底层具有CPU参数动态调整机制，会导致自定义的参数很快失效（小米手机请先到“附加功能-自定义”中禁用perfd和Performance Boost Config，否则CPU频率修改不会生效！）。\n\n此外，热插拔温控功能可能也会影响你对CPU参数的修改！\n\ninteractive调度适用于大多数手机，反应迅速（schedutil更好），ondemand调度则会更缓慢的切换频率，conservative、powersave、performance模式均不推荐使用！。\n\n优先Big核心会在获得绝佳的流畅体验的同时，耗电和发热显著增高。</string>
     <string name="shell_executor">脚本执行</string>
     <string-array name="powercfg_modes2">
         <item>省电模式（阅读）</item>
@@ -268,7 +281,7 @@
         <item>跟随默认模式</item>
         <item>忽略切换</item>
     </string-array>
-    <string-array name="powercfg_modes">
+    <string-array name="default_powercfg_mode_options">
         <item>省电模式</item>
         <item>均衡模式</item>
         <item>性能模式</item>
@@ -287,11 +300,6 @@
         <item>用户程序</item>
         <item>系统应用</item>
         <item>所有应用</item>
-    </string-array>
-    <string-array name="vitual_touch_bar_map">
-        <item>返回-首页-任务</item>
-        <item>任务-首页-返回</item>
-        <item>全面屏手势</item>
     </string-array>
     <string name="title_activity_file_selector">请选择文件</string>
     <string name="config_save_fail">配置保存失败！</string>

@@ -69,6 +69,12 @@
             <getstate>file:///android_asset/custom/switchs/power_save_get.sh</getstate>
             <setstate>file:///android_asset/custom/switchs/power_save_set.sh</setstate>
         </switch>
+        <switch>
+            <title>悬浮通知</title>
+            <desc>收到消息时在屏幕顶部显示悬浮通知</desc>
+            <getstate>settings get global heads_up_notifications_enabled</getstate>
+            <setstate>settings put global heads_up_notifications_enabled $state</setstate>
+        </switch>
     </group>
 
     <group title="MIUI专属">

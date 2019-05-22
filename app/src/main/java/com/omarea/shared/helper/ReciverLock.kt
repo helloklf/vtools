@@ -29,6 +29,8 @@ class ReciverLock(private var callbacks: Handler) : BroadcastReceiver() {
                     System.out.print(">>>>>" + ex.message)
                 }
             }
+            Intent.ACTION_USER_PRESENT,
+            Intent.ACTION_USER_UNLOCKED,
             Intent.ACTION_SCREEN_ON -> {
                 val ms = System.currentTimeMillis()
                 lastChange = System.currentTimeMillis()
@@ -45,22 +47,6 @@ class ReciverLock(private var callbacks: Handler) : BroadcastReceiver() {
                             }
                         }
                     }, 5500)
-                } catch (ex: Exception) {
-                    System.out.print(">>>>>" + ex.message)
-                }
-            }
-            Intent.ACTION_USER_PRESENT -> {
-                lastChange = System.currentTimeMillis()
-                try {
-                    callbacks.sendMessage(callbacks.obtainMessage(7))
-                } catch (ex: Exception) {
-                    System.out.print(">>>>>" + ex.message)
-                }
-            }
-            Intent.ACTION_USER_UNLOCKED -> {
-                lastChange = System.currentTimeMillis()
-                try {
-                    callbacks.sendMessage(callbacks.obtainMessage(7))
                 } catch (ex: Exception) {
                     System.out.print(">>>>>" + ex.message)
                 }

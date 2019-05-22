@@ -1,16 +1,19 @@
 package com.omarea.vtools.activitys
 
 import android.annotation.SuppressLint
+import android.content.ClipData
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.View
 import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shared.CommonCmds
 import com.omarea.shared.SpfConfig
+import com.omarea.shell.AppErrorLogcat
 import com.omarea.shell.KeepShellPublic
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_other_settings.*
@@ -31,6 +34,12 @@ class ActivitySceneOtherSettings : AppCompatActivity() {
         settings_autoinstall.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false)
         settings_delaystart.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DELAY, false)
         settings_disable_selinux.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false)
+        settings_logcat.setOnClickListener {
+            val log = AppErrorLogcat().catLogInfo()
+            settings_log_content.visibility = View.VISIBLE
+            settings_log_content.setText(log)
+            settings_log_content.setSelection(0, log.length)
+        }
     }
 
     @SuppressLint("ApplySharedPref")
