@@ -174,9 +174,7 @@ class ActivityStartSplash : Activity() {
                                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
                                     Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,
                                     Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
-                                    Manifest.permission.WAKE_LOCK,
-                                    Manifest.permission.CHANGE_WIFI_STATE,
-                                    Manifest.permission.ACCESS_COARSE_LOCATION
+                                    Manifest.permission.WAKE_LOCK
                             ),
                             0x11
                     )
@@ -187,9 +185,7 @@ class ActivityStartSplash : Activity() {
                                     Manifest.permission.READ_EXTERNAL_STORAGE,
                                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
                                     Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,
-                                    Manifest.permission.WAKE_LOCK,
-                                    Manifest.permission.CHANGE_WIFI_STATE,
-                                    Manifest.permission.ACCESS_COARSE_LOCATION
+                                    Manifest.permission.WAKE_LOCK
                             ),
                             0x11
                     )

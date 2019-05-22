@@ -116,9 +116,7 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.CHANGE_CONFIGURATION,
                     Manifest.permission.WRITE_SECURE_SETTINGS,
-                    Manifest.permission.SYSTEM_ALERT_WINDOW,
-                    Manifest.permission.CHANGE_WIFI_STATE,
-                    Manifest.permission.ACCESS_COARSE_LOCATION
+                    Manifest.permission.SYSTEM_ALERT_WINDOW
                     // Manifest.permission.UNINSTALL_SHORTCUT,
                     // Manifest.permission.INSTALL_SHORTCUT
             )

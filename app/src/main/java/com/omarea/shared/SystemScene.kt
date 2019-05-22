@@ -25,35 +25,6 @@ class SystemScene(private var context: Context) {
     private var spfAutoConfig: SharedPreferences = context.getSharedPreferences(SpfConfig.BOOSTER_SPF_CFG_SPF, Context.MODE_PRIVATE)
     private var keepShell = KeepShellAsync(context)
 
-    private fun isWifiApOpenOreo(context: Context, isStarted: Runnable, isStopped: Runnable){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            if (
-                    (ContextCompat.checkSelfPermission(context, Manifest.permission.CHANGE_WIFI_STATE) == PackageManager.PERMISSION_GRANTED) &&
-                    ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-            ) {
-                try {
-                    val wifiManager = context.getApplicationContext().getSystemService(Context.WIFI_SERVICE) as WifiManager
-                    wifiManager.startLocalOnlyHotspot(object : WifiManager.LocalOnlyHotspotCallback() {
-                        override fun onStarted(reservation: WifiManager.LocalOnlyHotspotReservation?) {
-                            super.onStarted(reservation)
-                            isStarted.run()
-                        }
-
-                        override fun onStopped() {
-                            super.onStopped()
-                            isStopped.run()
-                        }
-                    }, Handler())
-                } catch (ex: java.lang.Exception) {
-                    Log.e("isWifiApOpenOreo", "" + ex.message)
-                    isStopped.run()
-                }
-            } else {
-                isStopped.run()
-            }
-        }
-    }
-
     private fun isWifiApOpen(context: Context): Boolean {
         try {
             val manager = context.getApplicationContext().getSystemService(Context.WIFI_SERVICE) as WifiManager
@@ -101,14 +72,8 @@ class SystemScene(private var context: Context) {
             KeepShellPublic.doCmdSync("dumpsys deviceidle unforce\ndumpsys deviceidle enable all\n")
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            isWifiApOpenOreo(context, Runnable {  }, Runnable {
-                onScreenOnEnableNetwork()
-            })
-        } else {
-            if (!isWifiApOpen(context)) {
-                onScreenOnEnableNetwork()
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O || !isWifiApOpen(context)) {
+            onScreenOnEnableNetwork()
         }
 
         if (spfAutoConfig.getBoolean(SpfConfig.NFC + SpfConfig.ON, false))
@@ -128,14 +93,8 @@ class SystemScene(private var context: Context) {
     }
 
     fun onScreenOff() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            isWifiApOpenOreo(context, Runnable {  }, Runnable {
-                onScreenOffDisableNetwork()
-            })
-        } else {
-            if (!isWifiApOpen(context)) {
-                onScreenOffDisableNetwork()
-            }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O || !isWifiApOpen(context)) {
+            onScreenOffDisableNetwork()
         }
 
         if (spfAutoConfig.getBoolean(SpfConfig.NFC + SpfConfig.OFF, false))
