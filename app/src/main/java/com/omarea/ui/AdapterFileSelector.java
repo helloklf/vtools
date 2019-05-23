@@ -153,7 +153,7 @@ public class AdapterFileSelector extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         final View view;
         if (hasParent && position == 0) {
-            view = View.inflate(parent.getContext(), R.layout.dir_item, null);
+            view = View.inflate(parent.getContext(), R.layout.list_item_dir, null);
             ((TextView) (view.findViewById(R.id.ItemTitle))).setText("...");
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -165,7 +165,7 @@ public class AdapterFileSelector extends BaseAdapter {
         } else {
             final File file = (File) getItem(position);
             if (file.isDirectory()) {
-                view = View.inflate(parent.getContext(), R.layout.dir_item, null);
+                view = View.inflate(parent.getContext(), R.layout.list_item_dir, null);
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -182,7 +182,7 @@ public class AdapterFileSelector extends BaseAdapter {
                     }
                 });
             } else {
-                view = View.inflate(parent.getContext(), R.layout.file_item, null);
+                view = View.inflate(parent.getContext(), R.layout.list_item_file, null);
                 long fileLength = file.length();
                 String fileSize;
                 if (fileLength < 1024) {

@@ -48,7 +48,7 @@ class AdapterCpuCores(private val context: Context, private val list: ArrayList<
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var convertView = convertView
         if (convertView == null) {
-            convertView = View.inflate(context, R.layout.cpu_core_item, null)
+            convertView = View.inflate(context, R.layout.list_item_cpu_core, null)
         }
         val coreInfo = getItem(position)
         val cpuChartView = convertView!!.findViewById<CpuChartBarView>(R.id.core_cpu_loading_chart)

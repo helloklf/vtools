@@ -40,7 +40,7 @@ public class StringAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = View.inflate(context, R.layout.text_item, null);
+            convertView = View.inflate(context, R.layout.list_item_text, null);
         }
         String text = getItem(position).toString();
         ((TextView) convertView).setText(text);

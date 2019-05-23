@@ -67,9 +67,9 @@ class FragmentApplistions : Fragment() {
         tabHost.addTab(tabHost.newTabSpec("tab_3").setContent(R.id.tab_apps_helper).setIndicator(getString(R.string.help)))
         tabHost.currentTab = 3
 
-        apps_userlist.addHeaderView(this.layoutInflater.inflate(R.layout.app_list_headerview, null))
-        apps_systemlist.addHeaderView(this.layoutInflater.inflate(R.layout.app_list_headerview, null))
-        apps_backupedlist.addHeaderView(this.layoutInflater.inflate(R.layout.app_list_headerview, null))
+        apps_userlist.addHeaderView(this.layoutInflater.inflate(R.layout.list_header_app, null))
+        apps_systemlist.addHeaderView(this.layoutInflater.inflate(R.layout.list_header_app, null))
+        apps_backupedlist.addHeaderView(this.layoutInflater.inflate(R.layout.list_header_app, null))
 
         val onItemLongClick = AdapterView.OnItemLongClickListener { parent, _, position, id ->
             if (position < 1)

@@ -188,7 +188,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
             }
         }
 
-        val remoteViews = RemoteViews(context.packageName, R.layout.notify0)
+        val remoteViews = RemoteViews(context.packageName, R.layout.layout_notification)
         remoteViews.setTextViewText(R.id.notify_title, getAppName(packageName))
         remoteViews.setTextViewText(R.id.notify_text, getModName(mode))
         remoteViews.setTextViewText(R.id.notify_battery_text, "$batteryIO ${status.level}% $batteryTemp")

@@ -41,7 +41,7 @@ public class AdapterSwaplist extends BaseAdapter {
         ViewHolder viewHolder;
         if (convertView == null) {
             viewHolder = new ViewHolder();
-            convertView = View.inflate(context, R.layout.swap_item, null);
+            convertView = View.inflate(context, R.layout.list_item_swap, null);
             viewHolder.itemPath = convertView.findViewById(R.id.itemPath);
             viewHolder.itemType = convertView.findViewById(R.id.itemType);
             viewHolder.itemSize = convertView.findViewById(R.id.itemSize);

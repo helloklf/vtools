@@ -169,7 +169,7 @@ class AppListAdapter(apps: ArrayList<Appinfo>, private var keywords: String = ""
         val context = parent.context
         if (convertView == null) {
             viewHolder = ViewHolder()
-            convertView = View.inflate(context, R.layout.app_item, null)
+            convertView = View.inflate(context, R.layout.list_item_app, null)
             viewHolder!!.itemTitle = convertView!!.findViewById(R.id.ItemTitle)
             viewHolder!!.enabledStateText = convertView.findViewById(R.id.ItemEnabledStateText)
             viewHolder!!.itemText = convertView.findViewById(R.id.ItemText)

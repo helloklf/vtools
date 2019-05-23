@@ -56,7 +56,7 @@ class AdapterBatteryStats(private val context: Context, private val list: ArrayL
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         var convertView = convertView
         if (convertView == null) {
-            convertView = View.inflate(context, R.layout.battery_stats_item, null)
+            convertView = View.inflate(context, R.layout.list_item_battery_record, null)
         }
         val batteryStats = getItem(position)
         val modeView = convertView!!.findViewById<TextView>(R.id.itemModeName)

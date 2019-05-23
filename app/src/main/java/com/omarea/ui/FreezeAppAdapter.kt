@@ -128,7 +128,7 @@ class FreezeAppAdapter(private val context: Context, private var apps: ArrayList
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
         var convertView = view
         if (convertView == null) {
-            convertView = View.inflate(context, R.layout.app_item_freeze, null)
+            convertView = View.inflate(context, R.layout.list_item_freeze_app, null)
         }
         updateRow(position, convertView!!)
         return convertView

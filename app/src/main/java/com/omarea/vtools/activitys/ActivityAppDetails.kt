@@ -490,7 +490,7 @@ class ActivityAppDetails : AppCompatActivity() {
             }
             app_details_dpi.setOnClickListener {
                 var dialog: AlertDialog? = null
-                val view = layoutInflater.inflate(R.layout.dpi_input, null)
+                val view = layoutInflater.inflate(R.layout.dialog_dpi_input, null)
                 val inputDpi = view.findViewById<EditText>(R.id.input_dpi)
                 inputDpi.setFilters(arrayOf(IntInputFilter()));
                 if (appConfigInfo.dpi >= 96) {

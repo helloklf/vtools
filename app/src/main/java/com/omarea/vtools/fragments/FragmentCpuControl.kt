@@ -479,7 +479,7 @@ class FragmentCpuControl : Fragment() {
             }
 
             cpu_inputboost_freq.setOnClickListener({ view ->
-                val dialogView = layoutInflater.inflate(R.layout.cpu_inputboost_dialog, null)
+                val dialogView = layoutInflater.inflate(R.layout.dialog_cpu_inputboost, null)
                 val currentValues = cpu_inputboost_freq.text.toString().split(" ")
 
                 val clusterInfos = CpuFrequencyUtils.getClusterInfo()

@@ -158,7 +158,7 @@ class ActionListConfig(private val context: FragmentActivity) {
                                             break
                                     }
                                 }
-                                spinner.adapter = SimpleAdapter(context, options, R.layout.string_item, arrayOf("title"), intArrayOf(R.id.text))
+                                spinner.adapter = SimpleAdapter(context, options, R.layout.list_item_text, arrayOf("title"), intArrayOf(R.id.text))
                                 spinner.tag = actionParamInfo
                                 if (options.size > 6) {
                                     //TODO:列表过长时切换为弹窗

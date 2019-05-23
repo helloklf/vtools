@@ -100,7 +100,7 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
         var convertView = view
         if (convertView == null) {
-            convertView = View.inflate(context, R.layout.scene_mode_item, null)
+            convertView = View.inflate(context, R.layout.list_item_scenen_app, null)
         }
         updateRow(position, convertView!!)
         return convertView

@@ -83,7 +83,7 @@ public class SwitchAdapter implements ListAdapter {
         try {
             if (convertView == null) {
                 viewHolder = new ViewHolder();
-                convertView = View.inflate(context, R.layout.switch_row_item, null);
+                convertView = View.inflate(context, R.layout.list_item_kr_switch, null);
                 viewHolder.itemSwitch = convertView.findViewById(R.id.Title);
                 viewHolder.itemText = convertView.findViewById(R.id.Desc);
                 viewHolder.itemSeparator = convertView.findViewById(R.id.Separator);

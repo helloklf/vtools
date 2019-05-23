@@ -82,7 +82,7 @@ class FragmentAddin : Fragment() {
 
         val mSimpleAdapter = SimpleAdapter(
                 view.context, listItem,
-                R.layout.action_row_item,
+                R.layout.list_item_action,
                 arrayOf("Title", "Desc"),
                 intArrayOf(R.id.Title, R.id.Desc)
         )

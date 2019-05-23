@@ -74,7 +74,7 @@ public class ActionAdapter extends BaseAdapter {
         try {
             if (convertView == null) {
                 viewHolder = new ViewHolder();
-                convertView = View.inflate(context, R.layout.kraction_row_item, null);
+                convertView = View.inflate(context, R.layout.list_item_kr_action, null);
                 viewHolder.itemTitle = convertView.findViewById(R.id.Title);
                 viewHolder.itemText = convertView.findViewById(R.id.Desc);
                 viewHolder.itemSeparator = convertView.findViewById(R.id.Separator);
