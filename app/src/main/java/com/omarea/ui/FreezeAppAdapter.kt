@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.omarea.shared.model.Appinfo
-import java.util.*
 import com.omarea.vtools.R
+import java.util.*
 
 /**
  * Created by Hello on 2018/01/26.

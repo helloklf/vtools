@@ -1,15 +1,10 @@
 package com.omarea.shell
 
 import android.app.AlertDialog
-import android.app.DownloadManager
-import android.content.*
-import android.net.Uri
-import android.os.Environment
-import android.provider.MediaStore
+import android.content.Context
 import com.omarea.shared.FileWrite
 import com.omarea.shared.MagiskExtend
 import com.omarea.shell.units.BusyboxInstallerUnit
-import com.omarea.ui.ProgressBarDialog
 import com.omarea.vtools.R
 import java.io.File
 

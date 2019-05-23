@@ -8,14 +8,13 @@ import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.os.Build
 import android.provider.Settings
-import android.text.Layout
 import android.view.*
 import android.view.WindowManager.LayoutParams
 import android.widget.*
-import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shared.AppConfigStore
 import com.omarea.shared.ModeList
 import com.omarea.shared.SpfConfig
+import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shared.helper.NotifyHelper
 import com.omarea.shell.NoticeListing
 import com.omarea.vtools.R

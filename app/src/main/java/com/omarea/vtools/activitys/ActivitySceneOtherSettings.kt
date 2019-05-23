@@ -1,18 +1,16 @@
 package com.omarea.vtools.activitys
 
 import android.annotation.SuppressLint
-import android.content.ClipData
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
-import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.View
-import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shared.CommonCmds
 import com.omarea.shared.SpfConfig
+import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shell.AppErrorLogcat
 import com.omarea.shell.KeepShellPublic
 import com.omarea.vtools.R

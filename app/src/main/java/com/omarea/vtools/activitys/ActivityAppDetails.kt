@@ -1,6 +1,7 @@
 package com.omarea.vtools.activitys
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.*
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
@@ -10,7 +11,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.support.design.widget.Snackbar
-import android.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.KeyEvent
@@ -27,7 +27,6 @@ import com.omarea.shared.helper.ShortcutHelper
 import com.omarea.shared.model.AppConfigInfo
 import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.NoticeListing
-import com.omarea.shell.Platform
 import com.omarea.shell.WriteSettings
 import com.omarea.ui.DialogHelper
 import com.omarea.ui.IntInputFilter

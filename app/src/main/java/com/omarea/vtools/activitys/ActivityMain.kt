@@ -160,7 +160,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 try {
                     setHomePage()
                 } catch (ex: Exception) {
-                    AlertDialog.Builder(this).setTitle(getString(R.string.sorry)).setMessage("启动应用失败\n" + ex.message).setNegativeButton("重试", { _, _ ->
+                    AlertDialog.Builder(this).setTitle(getString(R.string.sorry)).setMessage("启动应用失败\n" + ex.message).setNegativeButton(getString(R.string.btn_retry), { _, _ ->
                         setHomePage()
                     }).create().show()
                 }
@@ -266,7 +266,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         intent.action = "android.settings.APPLICATION_DETAILS_SETTINGS"
                         intent.data = Uri.fromParts("package", this.packageName, null)
-                        Toast.makeText(applicationContext, "请先为Scene授权显示悬浮窗权限！", Toast.LENGTH_LONG).show();
+                        Toast.makeText(applicationContext, getString(R.string.permission_float), Toast.LENGTH_LONG).show();
                     }
                 } else {
                     showFloatMonitor()
@@ -277,10 +277,8 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun showFloatMonitor() {
-        var postion = 1
         val dialog = AlertDialog.Builder(this)
-                .setTitle("悬浮窗提示")
-                .setMessage("在悬浮窗显示期间，可以随时拖动调整其位置。如需关闭，双击悬浮窗即可~")
+                .setMessage(getString(R.string.float_monitor_tips))
                 .setPositiveButton(R.string.btn_confirm, { _, _ ->
                     FloatMonitor(this).showPopupWindow()
                 })

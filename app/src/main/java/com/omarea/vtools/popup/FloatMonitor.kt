@@ -22,13 +22,11 @@ import com.omarea.ui.FloatMonitorBatteryView
 import com.omarea.ui.FloatMonitorChartView
 import com.omarea.vtools.R
 import java.util.*
-import kotlin.collections.HashMap
 
 class FloatMonitor(context: Context) {
     private var mContext: Context? = context
     private var timer: Timer? = null
     private var startMonitorTime = 0L
-    private var gpuLoadAvg = HashMap<Int, Int>()
     private var cpuLoadUtils = CpuLoadUtils()
 
     /**
@@ -42,7 +40,7 @@ class FloatMonitor(context: Context) {
         startMonitorTime = System.currentTimeMillis()
 
         if (Build.VERSION.SDK_INT >= 23 && !Settings.canDrawOverlays(mContext)) {
-            Toast.makeText(mContext, "未授予“显示悬浮窗/在应用上层显示”权限", Toast.LENGTH_LONG).show()
+            Toast.makeText(mContext, mContext!!.getString(R.string.permission_float), Toast.LENGTH_LONG).show()
             return
         }
 
@@ -96,7 +94,6 @@ class FloatMonitor(context: Context) {
 
             private fun onClick() {
                 if (System.currentTimeMillis() - lastClickTime < 300) {
-                    Toast.makeText(mContext, "已通过双击关闭悬浮窗", Toast.LENGTH_SHORT).show()
                     hidePopupWindow()
                 } else {
                     lastClickTime = System.currentTimeMillis()
@@ -186,19 +183,6 @@ class FloatMonitor(context: Context) {
     var sum = -1
     var totalMem = 0
     var availMem = 0
-    private fun getGpuLoadAvg(): Int {
-        try {
-            var total = 0L
-            var items = 0L
-            for (item in gpuLoadAvg) {
-                total += (item.key * item.value)
-                items += item.value
-            }
-            return (total / items).toInt()
-        } catch (ex: java.lang.Exception) {
-        }
-        return 0
-    }
 
     private fun updateInfo() {
         val cpuFreq = CpuFrequencyUtils.getCurrentFrequency()
@@ -234,11 +218,6 @@ class FloatMonitor(context: Context) {
             gpuFreqText!!.text = gpuFreq
             if (gpuLoad > -1) {
                 gpuChart!!.setData(100f, (100f - gpuLoad))
-                if (gpuLoadAvg.containsKey(gpuLoad)) {
-                    gpuLoadAvg[gpuLoad]!!.plus(1)
-                } else {
-                    gpuLoadAvg.put(gpuLoad, 1)
-                }
             }
 
             /*
@@ -303,18 +282,6 @@ class FloatMonitor(context: Context) {
      */
     fun hidePopupWindow() {
         stopTimer()
-        try {
-            val loads = cpuLoadUtils.cpuLoad
-            if (loads != null && loads.containsKey(-1)) {
-                val time = String.format("%.1f", System.currentTimeMillis() - startMonitorTime / 1000 / 60.0)
-                val timeMinute = String.format("%.1f", time)
-                val gpuLoadAvg = getGpuLoadAvg()
-                Toast.makeText(mContext, "${timeMinute}分钟，\n平均负载\n\nCPU: ${loads.get(-1)!!.toInt()}%\nGPU: ${gpuLoadAvg}%", Toast.LENGTH_LONG).show()
-            }
-            gpuLoadAvg.clear()
-        } catch (ex: java.lang.Exception) {
-
-        }
         if (isShown!! && null != mView) {
             mWindowManager!!.removeView(mView)
             mView = null

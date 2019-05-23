@@ -3,7 +3,6 @@ package com.omarea.krscripts.switchs
 import android.content.Context
 import android.util.Log
 import android.util.Xml
-import android.widget.Toast
 import com.omarea.krscripts.ExtractAssets
 import com.omarea.krscripts.ScriptEnvironmen
 import org.xmlpull.v1.XmlPullParser

@@ -21,13 +21,10 @@ import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_addin_online.*
 import java.io.File
 import java.io.FileInputStream
-import java.io.FileOutputStream
 import java.io.IOException
 import java.net.URL
 import java.nio.charset.Charset
-import java.util.zip.ZipFile
 import java.util.zip.ZipInputStream
-import java.util.zip.ZipOutputStream
 
 
 class ActivityAddinOnline : AppCompatActivity() {

@@ -1,7 +1,5 @@
 package com.omarea.shell
 
-import android.content.Context
-
 /**
  * 读取CPU信息
  * Created by helloklf on 2017/6/3.

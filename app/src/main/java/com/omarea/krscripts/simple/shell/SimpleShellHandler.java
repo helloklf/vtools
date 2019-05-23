@@ -9,7 +9,9 @@ import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
+
 import com.omarea.vtools.R;
+
 import java.util.Objects;
 import java.util.regex.Pattern;
 

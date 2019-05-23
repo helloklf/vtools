@@ -58,7 +58,7 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
                     val alert = AlertDialog.Builder(context)
                     alert.setCancelable(false)
                     alert.setTitle(R.string.error_root)
-                    alert.setNegativeButton(R.string.btn_refresh, { _, _ ->
+                    alert.setNegativeButton(R.string.btn_retry, { _, _ ->
                         if (therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
                             therad!!.interrupt()
                             therad = null
@@ -88,7 +88,7 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
                 alert.setCancelable(false)
                 alert.setTitle(R.string.error_root)
                 alert.setMessage(R.string.error_su_timeout)
-                alert.setNegativeButton(R.string.btn_refresh, { _, _ ->
+                alert.setNegativeButton(R.string.btn_retry, { _, _ ->
                     if (therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
                         therad!!.interrupt()
                         therad = null

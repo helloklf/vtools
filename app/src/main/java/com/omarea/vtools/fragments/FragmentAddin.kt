@@ -1,6 +1,5 @@
 package com.omarea.vtools.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
@@ -16,12 +15,13 @@ import com.omarea.krscripts.action.ActionListConfig
 import com.omarea.krscripts.switchs.SwitchConfigReader
 import com.omarea.krscripts.switchs.SwitchListConfig
 import com.omarea.shared.MagiskExtend
-import com.omarea.shell.Platform
 import com.omarea.shell.SysUtils
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.vtools.R
-import com.omarea.vtools.activitys.ActivityAddinOnline
-import com.omarea.vtools.addin.*
+import com.omarea.vtools.addin.DexCompileAddin
+import com.omarea.vtools.addin.FullScreenAddin
+import com.omarea.vtools.addin.PerfBoostConfigAddin
+import com.omarea.vtools.addin.ThermalAddin
 import com.omarea.vtools.dialogs.DialogAddinModifyDPI
 import com.omarea.vtools.dialogs.DialogAddinModifydevice
 import com.omarea.vtools.dialogs.DialogAddinWIFI

@@ -13,6 +13,7 @@ import android.content.res.XResources;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Display;
+
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;

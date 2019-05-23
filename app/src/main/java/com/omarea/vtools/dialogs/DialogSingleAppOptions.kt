@@ -42,6 +42,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                                 "备份（apk、data）",
                                 "备份（apk）",
                                 "卸载",
+                                "仅从当前用户卸载",
                                 "卸载（保留数据）",
                                 "清空数据",
                                 "清除缓存",
@@ -57,16 +58,17 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                         1 -> backupAll(true, true)
                         2 -> backupAll(true, false)
                         3 -> uninstallAll()
-                        4 -> uninstallKeepDataAll()
-                        5 -> clearAll()
-                        6 -> trimCachesAll()
-                        7 -> toggleEnable()
-                        8 -> openDetails()
-                        9 -> copyPackageName()
-                        10 -> showInMarket()
-                        11 -> hideAll()
-                        12 -> moveToSystem()
-                        13 -> dex2oatBuild()
+                        4 -> uninstallAllOnlyUser()
+                        5 -> uninstallKeepDataAll()
+                        6 -> clearAll()
+                        7 -> trimCachesAll()
+                        8 -> toggleEnable()
+                        9 -> openDetails()
+                        10 -> copyPackageName()
+                        11 -> showInMarket()
+                        12 -> hideAll()
+                        13 -> moveToSystem()
+                        14 -> dex2oatBuild()
                     }
                 })
                 .show()
@@ -90,6 +92,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                 .setCancelable(true)
                 .setItems(
                         arrayOf("删除",
+                                "仅从当前用户卸载",
                                 "禁用 + 隐藏",
                                 "清空数据",
                                 "清除缓存",
@@ -99,13 +102,14 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                                 "在应用商店查看"), { _, which ->
                     when (which) {
                         0 -> deleteAll()
-                        1 -> hideAll()
-                        2 -> clearAll()
-                        3 -> trimCachesAll()
-                        4 -> toggleEnable()
-                        5 -> openDetails()
-                        6 -> copyPackageName()
-                        7 -> showInMarket()
+                        1 -> uninstallAllOnlyUser()
+                        2 -> hideAll()
+                        3 -> clearAll()
+                        4 -> trimCachesAll()
+                        5 -> toggleEnable()
+                        6 -> openDetails()
+                        7 -> copyPackageName()
+                        8 -> showInMarket()
                     }
                 })
                 .show()

@@ -4,9 +4,11 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
 import android.widget.Toast;
+
 import com.omarea.krscripts.ExtractAssets;
 import com.omarea.shared.FileWrite;
 import com.omarea.shared.MagiskExtend;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -23,9 +25,7 @@ import java.util.HashMap;
 public class SimpleShellExecutor {
     private Context context;
     private boolean started = false;
-
     private static final String ASSETS_FILE = "file:///android_asset/";
-
     public SimpleShellExecutor(Context context) {
         this.context = context;
     }

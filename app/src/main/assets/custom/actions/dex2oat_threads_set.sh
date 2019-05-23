@@ -54,7 +54,7 @@ fi;
 
 echo 'Step3.写入文件'
 cp /data/build.prop $filepath
-chmod 0755 filepath
+chmod 0755 $filepath
 rm /data/build.prop
 
 echo '操作完成...'

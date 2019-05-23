@@ -148,6 +148,8 @@
         </action>
         <action support="file:///android_asset/custom/actions/miui_thermal_conf/support.sh">
             <resources>
+                <resource file="file:///android_asset/custom/actions/miui_thermal_conf/msmnile-high.conf" />
+                <resource file="file:///android_asset/custom/actions/miui_thermal_conf/msmnile-nolimits.conf" />
                 <resource file="file:///android_asset/custom/actions/miui_thermal_conf/msmnile-danger.conf" />
 
                 <resource file="file:///android_asset/custom/actions/miui_thermal_conf/sdm845-high.conf" />

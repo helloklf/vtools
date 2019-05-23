@@ -6,6 +6,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Handler
 import android.os.Message
+import android.os.UserManager
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ProgressBar
@@ -21,6 +22,7 @@ import com.omarea.shell.KeepShellPublic
 import com.omarea.vtools.R
 import java.io.File
 import java.util.*
+
 
 /**
  * Created by helloklf on 2017/12/04.
@@ -43,6 +45,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                         arrayOf("备份（apk、data）",
                                 "备份（apk）",
                                 "卸载",
+                                "仅从当前用户卸载",
                                 "卸载（保留数据）",
                                 "清空数据",
                                 "清除缓存",
@@ -54,13 +57,14 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                         0 -> backupAll(true, true)
                         1 -> backupAll(true, false)
                         2 -> uninstallAll()
-                        3 -> uninstallKeepDataAll()
-                        4 -> clearAll()
-                        5 -> trimCachesAll()
-                        6 -> disableAll()
-                        7 -> enableAll()
-                        8 -> hideAll()
-                        9 -> buildAll()
+                        3 -> uninstallAllOnlyUser()
+                        4 -> uninstallKeepDataAll()
+                        5 -> clearAll()
+                        6 -> trimCachesAll()
+                        7 -> disableAll()
+                        8 -> enableAll()
+                        9 -> hideAll()
+                        10 -> buildAll()
                     }
                 })
                 .show()
@@ -71,6 +75,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                 .setCancelable(true)
                 .setItems(
                         arrayOf("删除",
+                                "仅从当前用户卸载",
                                 "清空数据",
                                 "清除缓存",
                                 "冻结",
@@ -79,12 +84,13 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                                 "dex2oat编译"), { _, which ->
                     when (which) {
                         0 -> deleteAll()
-                        1 -> clearAll()
-                        2 -> trimCachesAll()
-                        3 -> disableAll()
-                        4 -> enableAll()
-                        5 -> hideAll()
-                        6 -> buildAll()
+                        1 -> uninstallAllOnlyUser()
+                        2 -> clearAll()
+                        3 -> trimCachesAll()
+                        4 -> disableAll()
+                        5 -> enableAll()
+                        6 -> hideAll()
+                        7 -> buildAll()
                     }
                 })
                 .show()
@@ -496,7 +502,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
      * 卸载选中
      */
     protected fun uninstallAll() {
-        confirm("卸载", "已选中${apps.size}个应用，正在卸载${apps.size}个应用，继续吗？", Runnable {
+        confirm("彻底卸载", "已选中${apps.size}个应用，正在卸载${apps.size}个应用，继续吗？", Runnable {
             _uninstallAll()
         })
     }
@@ -505,12 +511,38 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         val sb = StringBuilder()
         for (item in apps) {
             val packageName = item.packageName.toString()
-            sb.append("echo '[uninstall ${item.appName}]';")
+            sb.append("echo '[uninstall ${item.appName}]'\n")
 
-            sb.append("pm uninstall $packageName;")
+            sb.append("pm uninstall $packageName\n")
         }
 
-        sb.append("echo '[operation completed]';")
+        sb.append("echo '[operation completed]'\n")
+        execShell(sb)
+    }
+
+    protected fun uninstallAllOnlyUser() {
+        val um = context.getSystemService(Context.USER_SERVICE) as UserManager?
+        val userHandle = android.os.Process.myUserHandle()
+        if (um != null) {
+            val uid = um.getSerialNumberForUser(userHandle)
+            confirm("从当前用户(" + uid + ")卸载", "已选中${apps.size}个应用，正在卸载${apps.size}个应用，继续吗？", Runnable {
+                _uninstallAllOnlyUser(uid)
+            })
+        } else {
+            Toast.makeText(context, "获取用户ID失败！", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun _uninstallAllOnlyUser(uid: Long) {
+        val sb = StringBuilder()
+        for (item in apps) {
+            val packageName = item.packageName.toString()
+            sb.append("echo '[uninstall ${item.appName}]'\n")
+
+            sb.append("pm uninstall --user $uid $packageName\n")
+        }
+
+        sb.append("echo '[operation completed]'\n")
         execShell(sb)
     }
 

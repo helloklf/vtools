@@ -86,7 +86,7 @@
     <string name="btn_exit">退出</string>
     <string name="btn_hide">隐藏</string>
     <string name="btn_skip">忽略</string>
-    <string name="btn_refresh">重试</string>
+    <string name="btn_retry">重试</string>
     <string name="error_su_timeout">等待超时，请确保你的Root管理器正在后台运行，并重试！\n\n请确保你没有阻止“授权管理器(SuperSu、Magisk Manager等)”自启动，并允许后台弹出窗口、显示悬浮窗等权限。如果一直没有弹出授权对话框，建议重启手机再试！\n</string>
     <string name="execute_success">执行成功</string>
     <string name="execute_fail">执行失败</string>
@@ -330,6 +330,8 @@
     <string name="title_activity_home">Scene桌面</string>
 
     <string name="scene_contract">Scene是一款适用于玩机爱好者的应用，对于新手用户来说，其中的部分功能可能会过于危险。\n\n强烈建议不要在工作机，或有重要数据的手机上使用。\n\n使用过程中，务必认真阅读各个功能条目的提示和警告信息，以免误操作导致不可预料的后果。\n\n如果你的手机在系统故障不能开机时，没法恢复出厂设置和刷机，请不要使用！！！</string>
+    <string name="permission_float">请先为Scene授权显示悬浮窗权限！</string>
+    <string name="float_monitor_tips">在悬浮窗显示期间，可以随时拖动调整其位置。如需关闭，双击悬浮窗即可~</string>
 
     <string-array name="device_templates">
         <item>Xiaomi MIX3</item>

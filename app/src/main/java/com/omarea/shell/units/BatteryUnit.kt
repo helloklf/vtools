@@ -1,6 +1,5 @@
 package com.omarea.shell.units
 
-import android.util.Log
 import com.omarea.shared.model.BatteryStatus
 import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.KernelProrp

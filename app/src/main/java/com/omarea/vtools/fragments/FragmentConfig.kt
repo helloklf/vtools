@@ -24,7 +24,6 @@ import android.widget.Toast
 import com.omarea.shared.*
 import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shared.model.Appinfo
-import com.omarea.shell.Platform
 import com.omarea.ui.*
 import com.omarea.vaddin.IAppConfigAidlInterface
 import com.omarea.vtools.R

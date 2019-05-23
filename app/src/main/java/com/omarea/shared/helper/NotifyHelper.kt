@@ -14,10 +14,6 @@ import com.omarea.shared.BatteryHistoryStore
 import com.omarea.shared.ModeList
 import com.omarea.shared.model.BatteryStatus
 import com.omarea.shell.KeepShellPublic
-import com.omarea.shell.KernelProrp
-import com.omarea.shell.RootFile
-import com.omarea.shell.SysUtils
-import com.omarea.shell.units.BatteryUnit
 import com.omarea.vtools.R
 import com.omarea.vtools.activitys.ActivityQuickSwitchMode
 import kotlin.math.abs

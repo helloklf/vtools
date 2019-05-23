@@ -1,20 +1,14 @@
 package com.omarea.shared
 
-import android.Manifest
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
+import android.net.wifi.WifiManager
 import android.os.Build
+import android.util.Log
 import com.omarea.shell.KeepShellAsync
 import com.omarea.shell.KeepShellPublic
-import android.net.wifi.WifiManager
-import android.os.Handler
-import android.support.v4.content.ContextCompat
-import android.util.Log
-import android.support.v4.content.ContextCompat.getSystemService
-import kotlin.math.log
 
 
 /**

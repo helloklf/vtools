@@ -22,8 +22,8 @@ config="./custom/actions/miui_thermal_conf/${platform}-${mode}.conf"
 function replace_file() {
     if [[ "$platform" = "msmnile" ]]
     then
-        cp "$1" "$dir/thermal$1.conf"
-        chmod 755 "$dir/thermal$1.conf"
+        cp "$1" "$dir/thermal$2.conf"
+        chmod 755 "$dir/thermal$2.conf"
     else
         cp "$1" "$dir/thermal-engine-${platform}$2.conf"
         chmod 755 "$dir/thermal-engine-${platform}$2.conf"
