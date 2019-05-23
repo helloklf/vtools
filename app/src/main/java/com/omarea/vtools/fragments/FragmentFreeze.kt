@@ -25,7 +25,7 @@ import com.omarea.ui.FreezeAppAdapter
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.vtools.R
 import com.omarea.vtools.activitys.ActivityFreezeApps
-import kotlinx.android.synthetic.main.layout_freeze.*
+import kotlinx.android.synthetic.main.fragment_freeze.*
 
 
 class FragmentFreeze : Fragment() {
@@ -35,7 +35,7 @@ class FragmentFreeze : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.layout_freeze, container, false)
+            inflater.inflate(R.layout.fragment_freeze, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

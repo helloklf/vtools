@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.omarea.vtools.fragments.FragmentHome">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/color_opacity_card"
         android:orientation="vertical"
         android:padding="12dp">
 
@@ -33,7 +29,7 @@
                 <LinearLayout
                     android:id="@+id/home_clear_ram"
                     android:layout_width="0dp"
-                    android:layout_marginRight="4dp"
+                    android:layout_marginEnd="4dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:background="@drawable/krscript_item_ripple"
@@ -61,9 +57,9 @@
                     </FrameLayout>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginStart="10dp"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
@@ -71,7 +67,7 @@
                             style="@style/textTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="left"
+                            android:layout_gravity="start"
                             android:text="物理内存"
                             android:textSize="12dp" />
 
@@ -80,7 +76,7 @@
                             style="@style/textSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="left"
+                            android:layout_gravity="start"
                             android:text=""
                             android:textSize="12dp" />
                     </LinearLayout>
@@ -91,16 +87,16 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginStart="4dp"
                     android:background="@drawable/krscript_item_ripple"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:padding="10dp">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="10dp"
+                        android:layout_marginEnd="10dp"
                         android:layout_weight="1"
                         android:orientation="vertical"
                         android:textAlignment="viewEnd">
@@ -152,7 +148,7 @@
 
                 <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_marginRight="4dp"
+                    android:layout_marginEnd="4dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:background="@drawable/krscript_item_ripple"
@@ -180,9 +176,9 @@
                     </FrameLayout>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
+                        android:layout_marginStart="10dp"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
@@ -208,7 +204,7 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginStart="4dp"
                     android:layout_weight="1"
                     android:background="@drawable/krscript_item_ripple"
                     android:gravity="center_vertical"
@@ -216,9 +212,9 @@
                     android:padding="10dp">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginRight="10dp"
+                        android:layout_marginEnd="10dp"
                         android:layout_weight="1"
                         android:orientation="vertical"
                         android:textAlignment="viewEnd">
@@ -273,11 +269,10 @@
                 <com.omarea.ui.OverScrollGridView
                     android:id="@+id/cpu_core_list"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
                     android:padding="0dp"
                     android:layout_margin="0dp"
-                    android:layout_weight="1"
                     android:clickable="false"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
@@ -300,7 +295,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/btn_powersave"
-                android:background="@color/color_powersave"
+                android:background="@drawable/powercfg_powersave"
                 android:text="@string/powersave_short"
                 android:textColor="#66ffffff"
                 android:textStyle="bold" />
@@ -310,8 +305,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/btn_defaultmode"
-                android:layout_marginLeft="4dp"
-                android:background="@color/color_balance"
+                android:layout_marginStart="4dp"
+                android:background="@drawable/powercfg_balance"
                 android:text="@string/balance_short"
                 android:textColor="#66ffffff"
                 android:textStyle="bold" />
@@ -321,8 +316,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/btn_gamemode"
-                android:layout_marginLeft="4dp"
-                android:background="@color/color_perf"
+                android:layout_marginStart="4dp"
+                android:background="@drawable/powercfg_performance"
                 android:text="@string/performance_short"
                 android:textColor="#66ffffff"
                 android:textStyle="bold" />
@@ -332,8 +327,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/btn_fastmode"
-                android:layout_marginLeft="4dp"
-                android:background="@color/color_fast"
+                android:layout_marginStart="4dp"
+                android:background="@drawable/powercfg_fast"
                 android:text="@string/fast_short"
                 android:textColor="#66ffffff"
                 android:textStyle="bold" />

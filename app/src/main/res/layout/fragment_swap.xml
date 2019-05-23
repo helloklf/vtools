@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.omarea.ui.OverScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/krscript_item_ripple_inactive"
+                android:padding="12dp"
+                android:showDividers="beginning"
+                android:stretchColumns="0">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_marginBottom="20dp"
+                    android:text="@string/swap_swap" />
+
+                <TableRow>
+
+                    <SeekBar
+                        android:id="@+id/txt_swap_size"
+                        android:layout_height="30dp"
+                        android:max="4096" />
+
+                    <TextView
+                        android:id="@+id/txt_swap_size_display"
+                        android:layout_width="60dp"
+                        android:layout_gravity="center_vertical"
+                        android:text="" />
+                </TableRow>
+
+                <TextView
+                    android:text="@string/swap_path"
+                    android:textSize="11dp" />
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_marginBottom="20dp">
+
+                    <LinearLayout
+                        android:layout_gravity="end"
+                        android:layout_span="2"
+                        android:orientation="horizontal"
+                        android:paddingTop="10dp">
+
+                        <Button
+                            style="?android:buttonBarStyle"
+                            android:id="@+id/btn_swap_create"
+                            android:layout_width="60dp"
+                            android:layout_height="32dp"
+                            android:layout_marginEnd="6dp"
+                            android:background="@drawable/btn_bg"
+                            android:text="@string/swap_create" />
+
+                        <Button
+                            style="?android:buttonBarStyle"
+                            android:id="@+id/btn_swap_start"
+                            android:layout_width="60dp"
+                            android:layout_height="32dp"
+                            android:layout_marginEnd="6dp"
+                            android:background="@drawable/btn_bg"
+                            android:text="@string/swap_start" />
+
+                        <Button
+                            style="?android:buttonBarStyle"
+                            android:id="@+id/btn_swap_close"
+                            android:layout_width="60dp"
+                            android:layout_height="32dp"
+                            android:layout_marginEnd="6dp"
+                            android:background="@drawable/btn_bg"
+                            android:text="@string/swap_stop" />
+
+                        <Button
+                            style="?android:buttonBarStyle"
+                            android:id="@+id/btn_swap_delete"
+                            android:layout_width="60dp"
+                            android:layout_height="32dp"
+                            android:background="@drawable/btn_bg"
+                            android:text="@string/swap_delete" />
+                    </LinearLayout>
+                </TableRow>
+
+                <CheckBox
+                    android:id="@+id/chk_swap_autostart"
+                    android:layout_marginBottom="12dp"
+                    android:text="@string/swap_auto_start" />
+
+                <CheckBox
+                    android:id="@+id/chk_swap_disablezram"
+                    android:layout_marginBottom="20dp"
+                    android:text="@string/swap_preferred" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_marginBottom="6dp"
+                    android:text="@string/swap_swap_desc" />
+            </TableLayout>
+
+            <TableLayout
+                android:id="@+id/swap_config_zram"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/krscript_item_ripple_inactive"
+                android:padding="12dp"
+                android:showDividers="beginning"
+                android:stretchColumns="0">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_marginBottom="20dp"
+                    android:text="@string/swap_zram" />
+
+                <TableRow
+                    android:focusable="true"
+                    android:focusableInTouchMode="true">
+
+                    <SeekBar
+                        android:id="@+id/txt_zram_size"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:max="2048" />
+
+                    <TextView
+                        android:id="@+id/txt_zram_size_display"
+                        android:layout_width="60dp"
+                        android:layout_gravity="center_vertical"
+                        android:text="" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="20dp"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true">
+
+                    <CheckBox
+                        android:id="@+id/chk_zram_autostart"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/swap_auto_start" />
+
+                    <Button
+                        android:id="@+id/btn_zram_resize"
+                        android:layout_width="60dp"
+                        android:layout_height="32dp"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/btn_bg"
+                        android:text="@string/swap_zram_adjustment" />
+                </TableRow>
+
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_marginBottom="6dp"
+                    android:text="@string/swap_zram_desc" />
+            </TableLayout>
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/krscript_item_ripple_inactive"
+                android:padding="12dp"
+                android:showDividers="beginning"
+                android:stretchColumns="0">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_marginBottom="20dp"
+                    android:text="@string/swap_swappiness" />
+
+                <TableRow
+                    android:focusable="true"
+                    android:focusableInTouchMode="true">
+
+                    <SeekBar
+                        android:id="@+id/txt_swap_swappiness"
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp" />
+
+                    <TextView
+                        android:id="@+id/txt_zramstus_swappiness"
+                        android:layout_width="60dp"
+                        android:layout_gravity="center_vertical"
+                        android:text=""
+                        android:textAlignment="center" />
+                </TableRow>
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="6dp"
+                    android:text="@string/swap_swappiness_desc" />
+
+            </TableLayout>
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/krscript_item_ripple_inactive"
+                android:padding="12dp"
+                android:showDividers="beginning"
+                android:stretchColumns="0">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_marginBottom="20dp"
+                    android:text="Swaps" />
+
+                <TextView
+                    android:id="@+id/swap_swappiness_display"
+                    style="@style/textSmall"
+                    android:layout_marginBottom="20dp"
+                    android:text="Swappiness" />
+
+                <ListView
+                    android:id="@+id/list_swaps2"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginBottom="12dp"
+                    android:textSize="10dp" />
+            </TableLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/krscript_item_ripple_inactive"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:text="@string/low_memory_killer" />
+
+                <Switch
+                    android:id="@+id/swap_auto_lmk"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lmk_optimize" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/lmk_optimize_desc" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/swap_current_state" />
+
+                    <TextView
+                        android:id="@+id/swap_lmk_current"
+                        style="@style/textSmall"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/krscript_item_ripple_inactive"
+                android:padding="12dp"
+                android:showDividers="beginning"
+                android:stretchColumns="0">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_marginBottom="20dp"
+                    android:text="@string/swap_memory_info" />
+
+                <TableRow
+                    android:focusable="true"
+                    android:focusableInTouchMode="true">
+
+                    <TextView
+                        android:id="@+id/txt_mem"
+                        style="@style/textSmall"
+                        android:layout_width="60dp"
+                        android:layout_gravity="center_vertical" />
+                </TableRow>
+            </TableLayout>
+        </TableLayout>
+    </com.omarea.ui.OverScrollView>
+</FrameLayout>

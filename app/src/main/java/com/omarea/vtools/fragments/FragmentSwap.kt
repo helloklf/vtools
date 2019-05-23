@@ -24,7 +24,7 @@ import com.omarea.shell.units.LMKUnit
 import com.omarea.ui.AdapterSwaplist
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.vtools.R
-import kotlinx.android.synthetic.main.layout_swap.*
+import kotlinx.android.synthetic.main.fragment_swap.*
 import java.io.File
 import java.util.ArrayList
 import java.util.HashMap
@@ -40,7 +40,7 @@ class FragmentSwap : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        view = inflater.inflate(R.layout.layout_swap, container, false)
+        view = inflater.inflate(R.layout.fragment_swap, container, false)
 
         myHandler = Handler()
         swapConfig = context!!.getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)

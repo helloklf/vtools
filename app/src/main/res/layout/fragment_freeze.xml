@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <LinearLayout
+        android:alpha="0.9"
+        android:layout_margin="16dp"
+        android:background="@drawable/krscript_item_ripple_inactive"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_weight="1"
+            android:padding="6dp"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                style="@style/textSmall"
+                android:textColor="?colorAccent"
+                android:text="偏见应用"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+            <TextView
+                android:layout_marginTop="5dp"
+                style="@style/textSmall"
+                android:text="偏见应用由“动态响应”负责冻结，设备息屏1分钟后，自动冻结下面列表中的应用"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/freeze_settings"
+            style="?android:buttonBarButtonStyle"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:padding="0dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/freeze_settings" />
+
+        <ImageButton
+            android:id="@+id/freeze_add"
+            style="?android:buttonBarButtonStyle"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:padding="0dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/freeze_add" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:alpha="0.9"
+        android:layout_weight="1"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:background="@drawable/krscript_item_ripple_inactive"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+        <EditText
+            android:id="@+id/freeze_apps_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:hint="搜索应用名"
+            android:inputType="textFilter"
+            android:padding="8dp"
+            android:singleLine="true"
+            android:maxLength="10"
+            android:textSize="16dp" />
+        <com.omarea.ui.OverScrollGridView
+            android:numColumns="4"
+            android:id="@+id/freeze_apps"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="0dp" />
+    </LinearLayout>
+</LinearLayout>

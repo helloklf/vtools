@@ -17,7 +17,7 @@ import android.widget.*
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.vtools.R
-import kotlinx.android.synthetic.main.activity_accessibility_key_event_settings.*
+import kotlinx.android.synthetic.main.activity_key_event_settings.*
 import java.util.*
 
 
@@ -48,7 +48,7 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
         ThemeSwitch.switchTheme(this)
 
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_accessibility_key_event_settings)
+        setContentView(R.layout.activity_key_event_settings)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         setSwitchClick()

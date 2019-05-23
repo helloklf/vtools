@@ -31,7 +31,7 @@ import com.omarea.vtools.activitys.ActivityAddinOnline
 import com.omarea.vtools.activitys.ActivityAdvSettings
 import com.omarea.vtools.activitys.ActivityAppDetails
 import com.omarea.vtools.activitys.ActivityFileSelector
-import kotlinx.android.synthetic.main.layout_config.*
+import kotlinx.android.synthetic.main.fragment_config.*
 import org.json.JSONObject
 import java.io.File
 import java.nio.charset.Charset
@@ -91,7 +91,7 @@ class FragmentConfig : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.layout_config, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_config, container, false)
     private lateinit var modeList: ModeList
 
     override fun onResume() {

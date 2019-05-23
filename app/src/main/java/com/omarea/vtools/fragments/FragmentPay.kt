@@ -13,14 +13,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.omarea.shared.Alipay
 import com.omarea.vtools.R
-import kotlinx.android.synthetic.main.layout_pay.*
+import kotlinx.android.synthetic.main.fragment_pay.*
 
 
 class FragmentPay : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.layout_pay, container, false)
+            inflater.inflate(R.layout.fragment_pay, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

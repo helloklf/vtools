@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="color_opacity_card">#20646464</color>
     <color name="color_list_divider">@android:color/transparent</color>
+
+    <color name="window_background_light">#EBEBEB</color>
+    <color name="window_background_dark">#292929</color>
 
     <color name="color_powersave">#0091D5</color>
     <color name="color_balance">#00B78A</color>
-    <color name="color_perf">#6ECB00</color>
+    <color name="color_performance">#6ECB00</color>
     <color name="color_fast">#FF7E00</color>
 
     <color name="color_load_none">#00d5d9</color>

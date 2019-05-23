@@ -26,7 +26,7 @@ import com.omarea.vtools.dialogs.DialogAddinModifyDPI
 import com.omarea.vtools.dialogs.DialogAddinModifydevice
 import com.omarea.vtools.dialogs.DialogAddinWIFI
 import com.omarea.vtools.dialogs.DialogCustomMAC
-import kotlinx.android.synthetic.main.layout_addin.*
+import kotlinx.android.synthetic.main.fragment_addin.*
 import java.util.*
 
 
@@ -42,7 +42,7 @@ class FragmentAddin : Fragment() {
         return item
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.layout_addin, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_addin, container, false)
 
     private fun getIP(): String {
         var r = SysUtils.executeCommandWithOutput(false, "ifconfig wlan0 | grep \"inet addr\" | awk '{ print \$2}' | awk -F: '{print \$2}'")

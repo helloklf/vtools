@@ -18,7 +18,7 @@ import com.omarea.shared.CommonCmds
 import com.omarea.shell.units.BackupRestoreUnit
 import com.omarea.vtools.R
 import com.omarea.vtools.activitys.ActivityFileSelector
-import kotlinx.android.synthetic.main.layout_img.*
+import kotlinx.android.synthetic.main.fragment_img.*
 import java.io.File
 import java.util.*
 
@@ -39,7 +39,7 @@ class FragmentImg : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.layout_img, container, false)
+            inflater.inflate(R.layout.fragment_img, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val listItem = ArrayList<HashMap<String, Any>>()/*在数组中存放数据*/

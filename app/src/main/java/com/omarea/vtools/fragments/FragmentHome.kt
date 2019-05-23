@@ -28,7 +28,7 @@ import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import com.omarea.shell.cpucontrol.GpuUtils
 import com.omarea.ui.AdapterCpuCores
 import com.omarea.vtools.R
-import kotlinx.android.synthetic.main.layout_home.*
+import kotlinx.android.synthetic.main.fragment_home.*
 import java.math.BigDecimal
 import java.math.RoundingMode
 import java.util.*
@@ -38,7 +38,7 @@ import kotlin.collections.HashMap
 class FragmentHome : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.layout_home, container, false)
+        return inflater.inflate(R.layout.fragment_home, container, false)
     }
 
     private lateinit var globalSPF: SharedPreferences

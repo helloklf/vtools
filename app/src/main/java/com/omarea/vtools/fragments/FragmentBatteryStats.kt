@@ -9,13 +9,13 @@ import android.widget.Toast
 import com.omarea.shared.BatteryHistoryStore
 import com.omarea.ui.AdapterBatteryStats
 import com.omarea.vtools.R
-import kotlinx.android.synthetic.main.layout_battery_stats.*
+import kotlinx.android.synthetic.main.fragment_battery_stats.*
 
 
 class FragmentBatteryStats : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.layout_battery_stats, container, false)
+            inflater.inflate(R.layout.fragment_battery_stats, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

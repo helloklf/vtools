@@ -26,7 +26,7 @@ import com.omarea.ui.SearchTextWatcher
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogAppOptions
 import com.omarea.vtools.dialogs.DialogSingleAppOptions
-import kotlinx.android.synthetic.main.layout_applictions.*
+import kotlinx.android.synthetic.main.fragment_applictions.*
 import java.lang.ref.WeakReference
 
 
@@ -53,7 +53,7 @@ class FragmentApplistions : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.layout_applictions, container, false)
+            inflater.inflate(R.layout.fragment_applictions, container, false)
 
     @SuppressLint("InflateParams")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

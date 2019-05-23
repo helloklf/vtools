@@ -224,7 +224,25 @@
     <string name="addin_bpc">Performance Boost Config精简</string>
     <string name="addin_bpc_desc">关闭Performance Boost Config中的一些选项，避免CPU频繁被拉高频率造成耗电，但保留应用启动升频，会略微降低体验。需要重启！</string>
     <string name="addin_execute">确定执行？</string>
+
     <string name="swap_on_close">正在关闭SWAP，这可能很慢</string>
+    <string name="swap_current_state">当前状态：</string>
+    <string name="swap_memory_info">Memory Info</string>
+    <string name="swap_swappiness_desc">说明：Swappiness决定ZRAM/SWAP使用积极程度，0表示尽量不用，100表示尽量使用</string>
+    <string name="swap_swappiness">Swappiness</string>
+    <string name="swap_zram">ZRAM</string>
+    <string name="swap_zram_adjustment">调整</string>
+    <string name="swap_zram_desc">说明：ZRAM即内存压缩技术，通过压缩RAM中的数据减少其空间占用。对性能影响小，但后台能力提升不大。</string>
+    <string name="swap_swap">SWAP</string>
+    <string name="swap_path">存储位置：/data/swapfile</string>
+    <string name="swap_create">创建</string>
+    <string name="swap_start">启动</string>
+    <string name="swap_stop">关闭</string>
+    <string name="swap_delete">删除</string>
+    <string name="swap_preferred">优先使用（如果有多个SWAP或ZRAM）</string>
+    <string name="swap_swap_desc">说明：SWAP即磁盘交换技术，在RAM不足时，将一部分数据暂时转移到磁盘中，从而缓解RAM的压力，对性能影响大。SWAP建议设为RAM大小的25%-50%。</string>
+    <string name="swap_auto_start">开机自启（要允许Scene自启动）</string>
+
     <string name="on_execute_please_wait">正在执行操作，请稍等…</string>
     <string name="executed">操作已完成！</string>
     <string name="file_creating">创建文件中</string>
@@ -332,6 +350,12 @@
     <string name="scene_contract">Scene是一款适用于玩机爱好者的应用，对于新手用户来说，其中的部分功能可能会过于危险。\n\n强烈建议不要在工作机，或有重要数据的手机上使用。\n\n使用过程中，务必认真阅读各个功能条目的提示和警告信息，以免误操作导致不可预料的后果。\n\n如果你的手机在系统故障不能开机时，没法恢复出厂设置和刷机，请不要使用！！！</string>
     <string name="permission_float">请先为Scene授权显示悬浮窗权限！</string>
     <string name="float_monitor_tips">在悬浮窗显示期间，可以随时拖动调整其位置。如需关闭，双击悬浮窗即可~</string>
+    <string name="lmk_optimize_desc">允许Scene根据你的设备内存情况，自动调整LMK参数，从而增强后台能力（可能导致低内存时卡顿）。如需恢复，请关闭该选项重启手机，如需开机后自动设置，请允许工具箱自启动</string>
+    <string name="lmk_optimize">低内存优化</string>
+    <string name="low_memory_killer">Low Memory Killer</string>
+    <string name="key_map_desc">这是一个比较简单的按键映射程序，也不会增加更多可设置的按键，因为它通过辅助服务实现，只支持这么多按键事件！  你需要保持“Scene - 按键辅助”持续后台运行才能使用按键自定义功能！  修改配置以后，需要重新启动“Scene - 按键辅助”才会生效！</string>
+    <string name="key_map_dege">边缘手势</string>
+    <string name="key_map_dege_desc">开启后，在屏幕左右两侧及底部，从边缘向屏幕中心滑动，或滑动后悬停进行手势操作。  需要为Scene开启悬浮窗（在应用上层显示）权限！</string>
 
     <string-array name="device_templates">
         <item>Xiaomi MIX3</item>

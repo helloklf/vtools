@@ -15,7 +15,7 @@ import com.omarea.shell.RootFile
 import com.omarea.ui.AdapterFileSelector
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.vtools.R
-import kotlinx.android.synthetic.main.layout_magisk.*
+import kotlinx.android.synthetic.main.fragment_magisk.*
 import java.io.File
 
 
@@ -24,7 +24,7 @@ class FragmentMagisk : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.layout_magisk, container, false)
+            inflater.inflate(R.layout.fragment_magisk, container, false)
 
     @SuppressLint("InflateParams")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

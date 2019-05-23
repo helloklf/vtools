@@ -21,7 +21,7 @@ import com.omarea.shell.KeepShellPublic
 import com.omarea.shell.units.BatteryUnit
 import com.omarea.vtools.R
 import com.omarea.vtools.services.ServiceBattery
-import kotlinx.android.synthetic.main.layout_battery.*
+import kotlinx.android.synthetic.main.fragment_battery.*
 import java.util.*
 
 
@@ -30,7 +30,7 @@ class FragmentBattery : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        view = inflater.inflate(R.layout.layout_battery, container, false)
+        view = inflater.inflate(R.layout.fragment_battery, container, false)
         return view
     }
 
