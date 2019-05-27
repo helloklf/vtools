@@ -1,4 +1,4 @@
-package com.omarea.krscripts.switchs;
+package com.omarea.krscripts;
 
 import com.omarea.krscripts.ConfigItem;
 

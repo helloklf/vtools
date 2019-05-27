@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<switchs>
+    <resource file="file:///android_asset/custom/common/props.sh" />
+    <resource file="file:///android_asset/custom/common/magisk.sh" />
+    <resource file="file:///android_asset/custom/common/magisk_plus.sh" />
+    <resource file="file:///android_asset/custom/common/empty" />
+
+    <group title="应用程序">
+        <action support="file:///android_asset/custom/actions/tmgp_support.sh">
+            <title>王者荣耀配置修改</title>
+            <desc su="file:///android_asset/custom/actions/tmgp_get.sh" />
+            <script>file:///android_asset/custom/actions/tmgp_set.sh</script>
+            <params>
+                <param name="render"
+                    options-sh="file:///android_asset/custom/actions/tmgp_options.sh" />
+                <param name="thread" value="0">
+                    <option val="1">多线程优化</option>
+                    <option val="3">默认</option>
+                </param>
+            </params>
+        </action>
+        <action confirm="true">
+            <title>修复淘宝闪退</title>
+            <desc>清理优酷和淘宝下载的热更新文件，出现淘宝或优酷闪退的，可以试试</desc>
+            <script>file:///android_asset/custom/actions/app_simple.sh</script>
+        </action>
+        <action support="file:///android_asset/custom/actions/gapps_support.sh">
+            <title>打开Google设置</title>
+            <desc>本功能为了方便隐藏了“Google设置”的定制系统，打开“Google设置”</desc>
+            <script>
+                am start -n com.google.android.gms/.app.settings.GoogleSettingsLink 2> /dev/null
+            </script>
+        </action>
+        <switch>
+            <title>网易云首屏广告</title>
+            <desc>如果禁用，则会通过修改Ad缓存文件夹写入权限，达到禁用广告的目的</desc>
+            <getstate>file:///android_asset/custom/switchs/cloudmusic_ad_get.sh</getstate>
+            <setstate>file:///android_asset/custom/switchs/cloudmusic_ad_set.sh</setstate>
+        </switch>
+        <switch>
+            <title>QQ个性化</title>
+            <desc>禁用此选项将去除QQ的个性化字体、气泡、头像挂件</desc>
+            <getstate>file:///android_asset/custom/switchs/qq_style_get.sh</getstate>
+            <setstate>file:///android_asset/custom/switchs/qq_style_set.sh</setstate>
+        </switch>
+        <switch support="file:///android_asset/custom/switchs/gapps_support.sh">
+            <title>启用Google服务</title>
+            <desc>关闭此选项以临时禁用谷歌框架节省电量</desc>
+            <getstate>file:///android_asset/custom/switchs/gapps_get.sh</getstate>
+            <setstate>file:///android_asset/custom/switchs/gapps_set.sh</setstate>
+        </switch>
+    </group>
+
+    <group title="杂项">
+        <action>
+            <title>重启SystemUI</title>
+            <desc>结束SystemUI进程，使其重新加载</desc>
+            <script>
+                am kill com.android.systemui 2> /dev/null
+                killall -9 com.android.systemui 2> /dev/null
+                # killall -9 zygote # 热启动
+            </script>
+        </action>
+        <action>
+            <title>查看已挂载分区</title>
+            <desc>通过简单的命令，查看当前已挂载的分区</desc>
+            <script>df -h</script>
+        </action>
+        <action confirm="true">
+            <title>磁盘测速</title>
+            <desc>使用简单的命令检测磁盘连续读写速度，需要好几分钟</desc>
+            <script>file:///android_asset/custom/actions/disk_test.sh</script>
+        </action>
+        <!--<action>
+            <title>进度条测试 *</title>
+            <script>
+                echo "progress:[-1/0]"
+                sleep 5
+                i=0
+                while [ $i -le  100 ]; do
+                    echo "progress:[$i/100]"
+                    sleep 0.1
+                    i=`expr 2 + $i`
+                done
+                echo '完成'
+            </script>
+        </action>-->
+    </group>
+
+    <group title="开发者">
+        <switch>
+            <title>远程ADB调试</title>
+            <desc>开启设备的网络调试端口，方便开发人员免数据线连接电脑，千万不要在公共WIFI网络环境下开启本选项！</desc>
+            <getstate>file:///android_asset/custom/switchs/adb_remote_get.sh</getstate>
+            <setstate>file:///android_asset/custom/switchs/adb_remote_set.sh</setstate>
+        </switch>
+        <switch>
+            <title>隐藏错误弹窗</title>
+            <desc>不要显示应用崩溃和未响应的弹窗</desc>
+            <getstate>file:///android_asset/custom/switchs/hide_errordialog_get.sh</getstate>
+            <setstate>file:///android_asset/custom/switchs/hide_errordialog_set.sh</setstate>
+        </switch>
+    </group>
+</switchs>

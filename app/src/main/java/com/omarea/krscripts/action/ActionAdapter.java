@@ -2,33 +2,35 @@ package com.omarea.krscripts.action;
 
 import android.content.Context;
 import android.database.DataSetObserver;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 
+import com.omarea.krscripts.ActionInfo;
+import com.omarea.krscripts.ConfigItem;
 import com.omarea.krscripts.ScriptEnvironmen;
+import com.omarea.krscripts.SwitchInfo;
 import com.omarea.vtools.R;
 
 import java.util.ArrayList;
 
 public class ActionAdapter extends BaseAdapter {
-    private ArrayList<ActionInfo> actionInfos;
+    private ArrayList<ConfigItem> actionInfos;
     private Context context;
 
-    public ActionAdapter(ArrayList<ActionInfo> actionInfos) {
+    public ActionAdapter(ArrayList<ConfigItem> actionInfos) {
         this.actionInfos = actionInfos;
     }
 
     @Override
-    public void registerDataSetObserver(DataSetObserver observer) {
-    }
+    public void registerDataSetObserver(DataSetObserver observer) { }
 
     @Override
-    public void unregisterDataSetObserver(DataSetObserver observer) {
-
-    }
+    public void unregisterDataSetObserver(DataSetObserver observer) { }
 
     @Override
     public int getCount() {
@@ -38,12 +40,28 @@ public class ActionAdapter extends BaseAdapter {
     public void update(int index, ListView listview) {
         int visiblePosition = listview.getFirstVisiblePosition();
         View view = listview.getChildAt(index - visiblePosition);
-        ViewHolder holder = (ViewHolder) view.getTag();
-        ActionInfo actionInfo = ((ActionInfo) getItem(index));
-        if (actionInfo.descPollingShell != null && !actionInfo.descPollingShell.isEmpty()) {
-            actionInfo.desc = ScriptEnvironmen.executeResultRoot(listview.getContext(), actionInfo.descPollingShell);
+        ActionViewHolder actionViewHolder = (ActionViewHolder) view.getTag();
+        if (actionViewHolder != null) {
+            ActionInfo actionInfo = ((ActionInfo) getItem(index));
+            if (actionInfo.descPollingShell != null && !actionInfo.descPollingShell.isEmpty()) {
+                actionInfo.desc = ScriptEnvironmen.executeResultRoot(listview.getContext(), actionInfo.descPollingShell);
+            }
+            actionViewHolder.itemText.setText(actionInfo.desc);
+        } else {
+            SwitchViewHolder holder = (SwitchViewHolder) view.getTag();
+            if (holder != null) {
+                SwitchInfo actionInfo = ((SwitchInfo) getItem(index));
+                if (actionInfo.descPollingShell != null && !actionInfo.descPollingShell.isEmpty()) {
+                    actionInfo.desc = ScriptEnvironmen.executeResultRoot(listview.getContext(), actionInfo.descPollingShell);
+                }
+                if (actionInfo.getState != null && !actionInfo.getState.isEmpty()) {
+                    String shellResult = ScriptEnvironmen.executeResultRoot(listview.getContext(), actionInfo.getState);
+                    actionInfo.selected = shellResult.equals("1") || shellResult.toLowerCase().equals("true");
+                }
+                holder.itemSwitch.setChecked(actionInfo.selected);
+                holder.itemText.setText(actionInfo.desc);
+            }
         }
-        holder.itemText.setText(actionInfo.desc);
     }
 
     @Override
@@ -63,45 +81,81 @@ public class ActionAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View view, ViewGroup parent) {
-        View convertView = view;
-        final ViewHolder viewHolder;
-        final ActionInfo item = (ActionInfo) getItem(position);
-
         if (context == null) {
             context = parent.getContext();
         }
 
+        final Object item = getItem(position);
+
         try {
-            if (convertView == null) {
-                viewHolder = new ViewHolder();
-                convertView = View.inflate(context, R.layout.list_item_kr_action, null);
-                viewHolder.itemTitle = convertView.findViewById(R.id.Title);
-                viewHolder.itemText = convertView.findViewById(R.id.Desc);
-                viewHolder.itemSeparator = convertView.findViewById(R.id.Separator);
-                viewHolder.contents = convertView.findViewById(R.id.contents);
-            } else {
-                viewHolder = (ViewHolder) convertView.getTag();
+            try {
+                ActionInfo actionInfo = (ActionInfo)item;
+                if (actionInfo != null) {
+                    return renderActionItem(actionInfo);
+                }
+            } catch (ClassCastException ex) {
+                SwitchInfo switchInfo = (SwitchInfo)item;
+                return renderSwitchItem(switchInfo);
             }
-
-            if (isNullOrEmpty(item.desc) && isNullOrEmpty(item.title)) {
-                viewHolder.contents.setVisibility(View.GONE);
-            } else {
-                viewHolder.contents.setVisibility(View.VISIBLE);
-
-                viewHolder.itemText.setText(item.desc);
-                viewHolder.itemTitle.setText(item.title);
-            }
-
-            if (isNullOrEmpty(item.separator)) {
-                viewHolder.itemSeparator.setVisibility(View.GONE);
-            } else {
-                viewHolder.itemSeparator.setText(item.separator);
-                viewHolder.itemSeparator.setVisibility(View.VISIBLE);
-            }
-            convertView.setTag(viewHolder);
-            viewHolder.itemTitle.setTag(item);
-        } catch (Exception ignored) {
+        } catch (Exception ex) {
+            Log.e("ActionAdapter", "" + ex.getLocalizedMessage());
         }
+
+        return view;
+    }
+
+    private View renderActionItem(ActionInfo item) {
+        ActionViewHolder viewHolder = new ActionViewHolder();
+        View convertView = View.inflate(context, R.layout.list_item_kr_action, null);
+        viewHolder.itemTitle = convertView.findViewById(R.id.Title);
+        viewHolder.itemText = convertView.findViewById(R.id.Desc);
+        viewHolder.itemSeparator = convertView.findViewById(R.id.Separator);
+        viewHolder.contents = convertView.findViewById(R.id.contents);
+
+        if (isNullOrEmpty(item.desc) && isNullOrEmpty(item.title)) {
+            viewHolder.contents.setVisibility(View.GONE);
+        } else {
+            viewHolder.contents.setVisibility(View.VISIBLE);
+
+            viewHolder.itemText.setText(item.desc);
+            viewHolder.itemTitle.setText(item.title);
+        }
+
+        if (isNullOrEmpty(item.separator)) {
+            viewHolder.itemSeparator.setVisibility(View.GONE);
+        } else {
+            viewHolder.itemSeparator.setText(item.separator);
+            viewHolder.itemSeparator.setVisibility(View.VISIBLE);
+        }
+        convertView.setTag(viewHolder);
+        return convertView;
+    }
+
+    private View renderSwitchItem(SwitchInfo item) {
+        SwitchViewHolder viewHolder = new SwitchViewHolder();
+        View convertView = View.inflate(context, R.layout.list_item_kr_switch, null);
+        viewHolder.itemSwitch = convertView.findViewById(R.id.Title);
+        viewHolder.itemText = convertView.findViewById(R.id.Desc);
+        viewHolder.itemSeparator = convertView.findViewById(R.id.Separator);
+        viewHolder.contents = convertView.findViewById(R.id.contents);
+        if (isNullOrEmpty(item.desc) && isNullOrEmpty(item.title)) {
+            viewHolder.contents.setVisibility(View.GONE);
+        } else {
+            viewHolder.contents.setVisibility(View.VISIBLE);
+
+            viewHolder.itemText.setText(item.desc);
+            viewHolder.itemSwitch.setText(item.title);
+            viewHolder.itemSwitch.setChecked(item.selected);
+        }
+
+        if (isNullOrEmpty(item.separator)) {
+            viewHolder.itemSeparator.setVisibility(View.GONE);
+        } else {
+            viewHolder.itemSeparator.setText(item.separator);
+            viewHolder.itemSeparator.setVisibility(View.VISIBLE);
+        }
+        convertView.setTag(viewHolder);
+        viewHolder.itemSwitch.setTag(item);
 
         return convertView;
     }
@@ -135,10 +189,17 @@ public class ActionAdapter extends BaseAdapter {
         return true;
     }
 
-    protected class ViewHolder {
+    protected class ActionViewHolder {
         TextView itemSeparator = null;
         View contents = null;
         TextView itemTitle = null;
+        TextView itemText = null;
+    }
+
+    protected class SwitchViewHolder {
+        TextView itemSeparator = null;
+        View contents = null;
+        Switch itemSwitch = null;
         TextView itemText = null;
     }
 }

@@ -46,8 +46,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <com.omarea.ui.OverScrollListView
-                        android:id="@+id/list_actions"
+                    <com.omarea.krscripts.action.ActionListView
+                        android:id="@+id/list_page1"
                         android:listSelector="@android:color/transparent"
                         android:divider="@color/color_list_divider"
                         android:dividerHeight="1sp"
@@ -61,8 +61,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <com.omarea.ui.OverScrollListView
-                        android:id="@+id/list_switchs"
+                    <com.omarea.krscripts.action.ActionListView
+                        android:id="@+id/list_page2"
                         android:listSelector="@android:color/transparent"
                         android:divider="@color/color_list_divider"
                         android:dividerHeight="1sp"

@@ -7,10 +7,11 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
+import com.omarea.krscripts.ActionInfo
+import com.omarea.krscripts.ConfigItem
 import com.omarea.krscripts.ScriptEnvironmen
 import com.omarea.krscripts.simple.shell.SimpleShellExecutor
-import com.omarea.krscripts.switchs.SwitchAdapter
-import com.omarea.krscripts.switchs.SwitchInfo
+import com.omarea.krscripts.SwitchInfo
 import com.omarea.ui.DialogHelper
 import com.omarea.ui.OverScrollListView
 import com.omarea.ui.ProgressBarDialog
@@ -29,7 +30,7 @@ class ActionListView : OverScrollListView {
         this.progressBarDialog = ProgressBarDialog(context)
     }
 
-    fun setListData(actionInfos: ArrayList<ActionInfo>?) {
+    fun setListData(actionInfos: ArrayList<ConfigItem>?) {
         if (actionInfos != null) {
             this.overScrollMode = ListView.OVER_SCROLL_ALWAYS
             this.adapter = ActionAdapter(actionInfos)
@@ -37,11 +38,11 @@ class ActionListView : OverScrollListView {
                 val item = parent.adapter.getItem(position)
                 if (item is ActionInfo) {
                     onActionClick(item, Runnable {
-                        post { (adapter as ActionAdapter).update(position, this) }
+                        // post { (adapter as ActionAdapter).update(position, this) }
                     })
                 } else if (item is SwitchInfo) {
                     onSwitchClick(item, Runnable {
-                        post { (adapter as ActionAdapter).update(position, this) }
+                        // post { (adapter as ActionAdapter).update(position, this) }
                     })
                 }
             }

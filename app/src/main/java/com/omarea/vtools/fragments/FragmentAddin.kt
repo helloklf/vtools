@@ -12,9 +12,6 @@ import android.widget.AdapterView
 import android.widget.SimpleAdapter
 import android.widget.TabHost
 import com.omarea.krscripts.action.ActionConfigReader
-import com.omarea.krscripts.action.ActionListConfig
-import com.omarea.krscripts.switchs.SwitchConfigReader
-import com.omarea.krscripts.switchs.SwitchListConfig
 import com.omarea.shared.MagiskExtend
 import com.omarea.shell.SysUtils
 import com.omarea.ui.ProgressBarDialog
@@ -109,36 +106,37 @@ class FragmentAddin : Fragment() {
         }
     }
 
-    private var actionsConfigLoaded = false
+    private var page1ConfigLoaded = false
+    private var page2ConfigLoaded = false
+
     private fun loadActionsConfig() {
-        if (actionsConfigLoaded)
+        if (page1ConfigLoaded)
             return
         val progressBarDialog = ProgressBarDialog(context!!)
         progressBarDialog.showDialog("读取配置，稍等...")
         Thread(Runnable {
-            val actions = ActionConfigReader.readActionConfigXml(this.activity!!)
+            val items = ActionConfigReader(this.activity!!).readConfigXml("page1.xml")
             myHandler.post {
                 progressBarDialog.hideDialog()
-                if (actions != null) {
-                    ActionListConfig(this.activity!!).setListData(actions);
-                    actionsConfigLoaded = true
+                if (items != null) {
+                    list_page1.setListData(items)
+                    page1ConfigLoaded = true
                 }
             }
         }).start()
     }
 
-    private var switchssConfigLoaded = false
     private fun loadSwitchsConfig() {
-        if (switchssConfigLoaded)
+        if (page2ConfigLoaded)
             return
         val progressBarDialog = ProgressBarDialog(context!!)
         progressBarDialog.showDialog("读取配置，稍等...")
         Thread(Runnable {
-            val switchs = SwitchConfigReader.readActionConfigXml(this.activity!!)
+            val items = ActionConfigReader(this.activity!!).readConfigXml("page2.xml")
             myHandler.post {
-                if (switchs != null) {
-                    switchssConfigLoaded = true
-                    SwitchListConfig(this.activity!!).setListData(switchs);
+                if (items != null) {
+                    page2ConfigLoaded = true
+                    list_page2.setListData(items)
                 }
                 progressBarDialog.hideDialog()
             }
@@ -148,15 +146,15 @@ class FragmentAddin : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val tabHost = view.findViewById(R.id.addin_tabhost) as TabHost
         tabHost.setup()
-        tabHost.addTab(tabHost.newTabSpec("tab_1").setContent(R.id.tab0).setIndicator("", context!!.getDrawable(R.drawable.android)))
-        tabHost.addTab(tabHost.newTabSpec("tab_actions").setContent(R.id.tab1).setIndicator("", context!!.getDrawable(R.drawable.shell)))
-        tabHost.addTab(tabHost.newTabSpec("tab_switchs").setContent(R.id.tab2).setIndicator("", context!!.getDrawable(R.drawable.switchs)))
+        tabHost.addTab(tabHost.newTabSpec("tab_1").setContent(R.id.tab0).setIndicator("", context!!.getDrawable(R.drawable.system)))
+        tabHost.addTab(tabHost.newTabSpec("tab_page1").setContent(R.id.tab1).setIndicator("", context!!.getDrawable(R.drawable.android)))
+        tabHost.addTab(tabHost.newTabSpec("tab_page2").setContent(R.id.tab2).setIndicator("", context!!.getDrawable(R.drawable.app)))
         tabHost.currentTab = 0
         tabHost.setOnTabChangedListener({ tabId ->
-            if (tabId == "tab_actions") {
+            if (tabId == "tab_page1") {
                 loadActionsConfig()
             }
-            if (tabId == "tab_switchs") {
+            if (tabId == "tab_page2") {
                 loadSwitchsConfig()
             }
         })
