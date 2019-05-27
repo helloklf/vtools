@@ -3,7 +3,7 @@
     <color name="color_list_divider">@android:color/transparent</color>
 
     <color name="window_background_light">#EBEBEB</color>
-    <color name="window_background_dark">#292929</color>
+    <color name="window_background_dark">#000000</color>
 
     <color name="color_powersave">#0091D5</color>
     <color name="color_balance">#00B78A</color>
@@ -22,7 +22,8 @@
     <color name="colorPrimaryDark">#00b9c2</color>
 
     <color name="newYearAccent">#dc4b2f</color>
-    <color name="newYearBgColor">#fffaf2</color>
+    <color name="newYearBgColor">#F5EFE7</color>
+    <!--<color name="newYearBgColor">#fffaf2</color>-->
 
     <color name="colorBlue">#138ed6</color>
     <color name="pink">#fc6bc5</color>

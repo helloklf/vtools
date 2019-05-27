@@ -250,6 +250,7 @@ class FragmentConfig : Fragment() {
             val value = (it as Switch).isChecked
             if (value && !configInstaller.configInstalled()) {
                 dynamic_control.isChecked = false
+                Toast.makeText(context, "你需要先安装配置脚本", Toast.LENGTH_SHORT).show()
             } else {
                 globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, value).commit()
                 reStartService()

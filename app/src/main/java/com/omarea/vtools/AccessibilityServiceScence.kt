@@ -36,7 +36,6 @@ class AccessibilityServiceScence : AccessibilityService() {
 
     private var lastPackageName = ""
 
-
     /*
 override fun onCreate() {
     super.onCreate()

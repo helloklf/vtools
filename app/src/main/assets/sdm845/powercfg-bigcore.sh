@@ -148,31 +148,31 @@ if [ "$action" = "performance" ]; then
 
     echo "73 960000:72 1478400:78 1804800:87" > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/target_loads
     echo 1478400 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
-    echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/io_is_busy
+    echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/io_is_busy
     schedutil_cfg 0 1000 1000 1
 
     echo "78 1420800:80 2016000:87" > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/target_loads
     echo 1267200 > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/hispeed_freq
-    echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/io_is_busy
+    echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/io_is_busy
     schedutil_cfg 4 1000 1000 1
 
 	exit 0
 fi
 
 if [ "$action" = "fast" ]; then
-	set_cpu_freq 5000 3000000 1267200 3500000
+	set_cpu_freq 5000 2500000 1267200 3500000
 
     echo "0:0 1:0 2:0 3:0 4:1804800 5:1804800 6:1804800 7:1804800" > /sys/module/cpu_boost/parameters/input_boost_freq
     echo 80 > /sys/module/cpu_boost/parameters/input_boost_ms
 
     echo "72 960000:72 1478400:78 1804800:87" > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/target_loads
 	echo 1036800 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
-    echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/io_is_busy
+    echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/io_is_busy
     schedutil_cfg 0 1000 1000 1
 
     echo "73 1420800:78 2016000:87" > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/target_loads
 	echo 1420800 > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/hispeed_freq
-    echo 0 > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/io_is_busy
+    echo 1 > /sys/devices/system/cpu/cpu4/cpufreq/schedutil/io_is_busy
     schedutil_cfg 4 1000 1000 1
 
 	echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel

@@ -53,10 +53,10 @@ class SystemScene(private var context: Context) {
     }
 
     private fun onScreenOnEnableNetwork() {
-        if (spfAutoConfig.getBoolean(SpfConfig.WIFI + SpfConfig.OFF, false)) {
+        if (spfAutoConfig.getBoolean(SpfConfig.WIFI + SpfConfig.ON, false)) {
             KeepShellPublic.doCmdSync("svc wifi enable")
         }
-        if (spfAutoConfig.getBoolean(SpfConfig.DATA + SpfConfig.OFF, false)) {
+        if (spfAutoConfig.getBoolean(SpfConfig.DATA + SpfConfig.ON, false)) {
             KeepShellPublic.doCmdSync("svc data enable")
         }
     }

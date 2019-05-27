@@ -111,7 +111,7 @@
         <activity
             android:name=".activitys.ActivityMain"
             android:autoRemoveFromRecents="false"
-            android:configChanges="keyboardHidden|orientation|screenSize|screenLayout|fontScale|uiMode|layoutDirection|navigation|keyboard|touchscreen|locale|colorMode"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="false"
             android:exported="true"
             android:label="@string/app_name"
@@ -185,8 +185,11 @@
         <service
             android:name=".services.BootService"
             android:enabled="true"
-            android:permission=""
-            android:process=":boot" />
+            android:permission="" />
+        <service
+            android:name=".services.CompileService"
+            android:enabled="true"
+            android:permission="" />
 
         <activity
             android:name=".activitys.ActivityShortcut"

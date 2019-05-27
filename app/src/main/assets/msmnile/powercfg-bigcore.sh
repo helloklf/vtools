@@ -153,7 +153,7 @@ if [ "$action" = "performance" ]; then
 fi
 
 if [ "$action" = "fast" ]; then
-	set_cpu_freq 5000 3000000 1267200 3000000 1267200 3500000
+	set_cpu_freq 5000 2500000 1267200 3000000 1267200 3500000
 
     echo "0:0 1:0 2:0 3:0 4:1804800 5:1804800 6:1804800 7:1804800" > /sys/module/cpu_boost/parameters/input_boost_freq
     echo 80 > /sys/module/cpu_boost/parameters/input_boost_ms

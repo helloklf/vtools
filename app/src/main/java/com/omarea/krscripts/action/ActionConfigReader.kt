@@ -135,15 +135,12 @@ object ActionConfigReader {
                         }
                     }
                     XmlPullParser.END_TAG -> if ("action" == parser.name && actions != null && action != null) {
-                        if (action.title == null) {
+                        if (action.title == null)
                             action.title = ""
-                        }
-                        if (action.desc == null) {
+                        if (action.desc == null)
                             action.desc = ""
-                        }
-                        if (action.script == null) {
+                        if (action.script == null)
                             action.script = ""
-                        }
                         action.params = actionParamInfos
 
                         actions.add(action)

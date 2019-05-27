@@ -1,5 +1,6 @@
 package com.omarea.vtools.fragments
 
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
@@ -68,14 +69,14 @@ class FragmentAddin : Fragment() {
                 }, false))
             }
 
-            // add(createItem(getString(R.string.addin_drop_caches), getString(R.string.addin_drop_caches_desc), Runnable { SystemAddin(context!!).dropCache() }))
-            // add(createItem(getString(R.string.addin_del_pwd), getString(R.string.addin_del_pwd_desc), Runnable { SystemAddin(context!!).deleteLockPwd() }))
             add(createItem(getString(R.string.addin_wifi), getString(R.string.addin_wifi_desc), Runnable { DialogAddinWIFI(context!!).show() }, false))
 
             add(createItem(getString(R.string.addin_dpi), getString(R.string.addin_dpi_desc), Runnable { DialogAddinModifyDPI(context!!).modifyDPI(activity!!.windowManager.defaultDisplay, context!!) }, false))
             add(createItem(getString(R.string.addin_deviceinfo), getString(R.string.addin_deviceinfo_desc), Runnable { DialogAddinModifydevice(context!!).modifyDeviceInfo() }, false))
             add(createItem(getString(R.string.addin_mac), getString(R.string.addin_mac_desc), Runnable { DialogCustomMAC(context!!).modifyMAC() }, false))
-            add(createItem(getString(R.string.addin_force_dex_compile), getString(R.string.addin_force_dex_compile_desc), Runnable { DexCompileAddin(context!!).run() }, false))
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
+                add(createItem(getString(R.string.addin_force_dex_compile), getString(R.string.addin_force_dex_compile_desc), Runnable { DexCompileAddin(context!!).run() }, false))
+            }
             add(createItem(getString(R.string.addin_pm_dexopt), getString(R.string.addin_pm_dexopt_desc), Runnable { DexCompileAddin(context!!).modifyConfig() }, false))
             add(createItem(getString(R.string.addin_bpc), getString(R.string.addin_bpc_desc), Runnable { PerfBoostConfigAddin(context!!).install() }))
         }
@@ -96,12 +97,12 @@ class FragmentAddin : Fragment() {
             (item["Action"] as Runnable).run()
         } else {
             val dialog = AlertDialog.Builder(context!!)
-                    .setTitle(getString(R.string.addin_execute))
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .setPositiveButton(android.R.string.yes) { _, _ ->
+                    .setTitle(item["Title"].toString())
+                    .setNegativeButton(R.string.btn_cancel, null)
+                    .setPositiveButton(R.string.addin_continue) { _, _ ->
                         (item["Action"] as Runnable).run()
                     }
-                    .setMessage(item["Title"].toString() + "：" + item["Desc"])
+                    .setMessage(item["Desc"].toString())
                     .create()
             dialog.window!!.setWindowAnimations(R.style.windowAnim)
             dialog.show()

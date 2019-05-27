@@ -171,7 +171,9 @@
 
     <string name="battery_uevent_title">$ cat /sys/class/power_supply/bms/uevent</string>
     <string name="home_hide_in_recents">强迫症</string>
-    <string name="home_hide_in_recents_desc">不要在多任务界面显示Scene</string>
+    <string name="home_hide_in_recents_desc">不要在多任务界面显示Scene（本功能已下线，用返回键关闭Scene界面时自动隐藏后台）</string>
+    <string name="auto_start_compile">自动编译</string>
+    <string name="auto_start_compile_desc">开机完成Scene自启动后，对新应用进行dex2oat编译</string>
     <string name="applist_help">✔ 已备份\n✘ 备份的版本比安装的版本更高\n★ 已安装的版本比备份的版本旧\n☆ 已备份数据未备份APK\n\n目前所提供的应用数据备份功能，需要系统集成busybox、toybox，使用tar+gz压缩数据（如果系统支持，将使用pigz提高压缩速度），仅备份 “/data/data/应用包名” 下的数据，且不保证兼容所有系统和应用。\n\n“禁用+隐藏”非常适合精简ROM，但是应用一旦被设为隐藏你将无法通过其它应用管理工具来恢复或启动（除非恢复出厂设置或在Scene里手动解除隐藏），Scene会自动保存隐藏记录，你可以通过下面的按钮来解除隐藏。\n如果你卸载了Scene，则隐藏记录也会丢失，则无法再恢复！！</string>
     <string name="dialog_addin_device_warn">机型信息请不要输入特殊符号！\n已兼容应用变量的机型代码，复制后重新打开此窗口即可使用！</string>
     <string name="dialog_addin_device_desc">修改后可点击“还原”->“确认”恢复修改前的机型，卸载Scene会导致备份的机型信息丢失，请务必还原后再卸载！\n\n或者，你也可以通过重新刷入完整ROM来恢复机型信息！\n\n使用DualBootPatcher多系统软件切勿使用本功能修改机型！！！</string>
@@ -202,28 +204,26 @@
     <string name="addin_miui_hide_search">MIUI9去通知中心搜索</string>
     <string name="addin_miui_hide_search_desc">默认隐藏MIUI9系统下拉通知中心的搜索框，重启后生效</string>
     <string name="addin_dpi">DPI、分辨率修改</string>
-    <string name="addin_dpi_desc">自定义手机DPI或分辨率，这可能导致设备无法正常启动或UI错误</string>
+    <string name="addin_dpi_desc">自定义手机DPI或分辨率，可能导致设备无法正常启动，或UI错误</string>
     <string name="addin_deviceinfo">机型修改</string>
-    <string name="addin_deviceinfo_desc">通过更改build.prop，把机型修改成别的手机，可能会导致部分系统不能开机或出现Bug</string>
+    <string name="addin_deviceinfo_desc">通过更改build.prop伪装机型，部分手机可能会无法开机或出现Bug</string>
     <string name="addin_mac">修改MAC地址</string>
     <string name="addin_mac_desc">自定义手机WIFI网卡MAC地址，仅支持部分设备</string>
-    <string name="addin_force_dex_compile">强制odex2oat</string>
-    <string name="addin_force_dex_compile_desc">用于Android N+，对应用进行dex2oat编译，从而降低运行时的CPU和RAM占用。此过程需要半小时甚至更久（期间会占用大量CPU、RAM资源）。完成后的磁盘占用增加10%~30%！\n系统更新后需要重新编译！</string>
+    <string name="addin_force_dex_compile">强制odex2oat编译</string>
+    <string name="addin_force_dex_compile_desc">对应用进行dex2oat编译，降低运行时的CPU和RAM占用。编译过程可能需要半个小时，系统更新后需要重新编译！</string>
     <string name="addin_dex2oat_helpinfo">在Android N以后，为了减少应用空间占用和提高安装效率，在安装应用时不再对dex进行完整编译，导致运行速度下降。本功能会通过cmd package compile命令，手动触发应用dex2oat编译。\n\n以Oreo系统下斗鱼TV客户端为例，全新安装时base.odex仅为6.8MB，编译后增大到103MB。\n\n但国内许多应用采用热更新技术，运行时经常需要从服务器下载最新代码并解析渲染，这是这些应用启动慢或启动后卡顿的主要原因。因此dex2oat编译并不能为这类应用带来明显的性能提升！</string>
     <string name="addin_dex2oat_helplink">https://source.android.com/devices/tech/dalvik/jit-compiler?hl=zh-cn</string>
     <string name="addin_pm_dexopt">应用安装odex2oat策略</string>
     <string name="addin_pm_dexopt_desc">适用于Android N+，调整PackageManager应用安装时的dex2oat编译策略，更新系统后需要重新设置</string>
     <string name="addin_thermal_remove">删除、恢复、禁用温控</string>
-    <string name="addin_thermal_remove_desc">禁用温控可让手机的性能更加稳定，但会显著增加发热，同时也会导致MIUI系统的CPU智能调度失效，并可能导致相机启动缓慢，需要重启手机。</string>
+    <string name="addin_thermal_remove_desc">删除、禁用温控可以让手机持续高性能，但会增加发热、导致智能调度失效，还可能导致相机启动缓慢</string>
     <string name="addin_thermal_remove2">MIUI解除性能限制</string>
     <string name="addin_thermal_remove2_desc">适用于部分手机，全局使用“无限制”模式，理论上没有副作用，比直接删除温控可靠，需要重启手机。</string>
-    <string name="addin_del_pwd">删除锁屏密码</string>
-    <string name="addin_del_pwd_desc">如果你的设备处于加密状态（大部分设备默认都是），请不要点这个！！！</string>
     <string name="addin_wifi">查看保存的WIFI</string>
-    <string name="addin_wifi_desc">查看已保存的WIFI信息，通过读取/data/misc/wifi/wpa_supplicant.conf 或 /data/misc/wifi/WifiConfigStore.xml（Android Oreo+）</string>
+    <string name="addin_wifi_desc">解析/data/misc/wifi目录下的wpa_supplicant.conf或WifiConfigStore.xml</string>
     <string name="addin_bpc">Performance Boost Config精简</string>
     <string name="addin_bpc_desc">关闭Performance Boost Config中的一些选项，避免CPU频繁被拉高频率造成耗电，但保留应用启动升频，会略微降低体验。需要重启！</string>
-    <string name="addin_execute">确定执行？</string>
+    <string name="addin_continue">继续</string>
 
     <string name="swap_on_close">正在关闭SWAP，这可能很慢</string>
     <string name="swap_current_state">当前状态：</string>
@@ -345,6 +345,8 @@
     <string name="scene_appchange_action">com.omarea.vtools.SceneAppChanged</string>
     <string name="scene_keyeventchange_action">com.omarea.vtools.KeyEventConfigChanged</string>
     <string name="scene_create_shortcut_action">com.omarea.vtools.CreateShortcut</string>
+    <string name="scene_speed_compile">com.omarea.vtools.SpeedCompile</string>
+    <string name="scene_everything_compile">com.omarea.vtools.EverythingCompile</string>
     <string name="title_activity_home">Scene桌面</string>
 
     <string name="scene_contract">Scene是一款适用于玩机爱好者的应用，对于新手用户来说，其中的部分功能可能会过于危险。\n\n强烈建议不要在工作机，或有重要数据的手机上使用。\n\n使用过程中，务必认真阅读各个功能条目的提示和警告信息，以免误操作导致不可预料的后果。\n\n如果你的手机在系统故障不能开机时，没法恢复出厂设置和刷机，请不要使用！！！</string>
@@ -356,6 +358,14 @@
     <string name="key_map_desc">这是一个比较简单的按键映射程序，也不会增加更多可设置的按键，因为它通过辅助服务实现，只支持这么多按键事件！  你需要保持“Scene - 按键辅助”持续后台运行才能使用按键自定义功能！  修改配置以后，需要重新启动“Scene - 按键辅助”才会生效！</string>
     <string name="key_map_dege">边缘手势</string>
     <string name="key_map_dege_desc">开启后，在屏幕左右两侧及底部，从边缘向屏幕中心滑动，或滑动后悬停进行手势操作。  需要为Scene开启悬浮窗（在应用上层显示）权限！</string>
+    <string name="busybox_install_classical">经典</string>
+    <string name="busybox_install_module">模块</string>
+    <string name="busybox_install_mode">请选择安装方式</string>
+    <string name="busybox_install_desc">经典：直接写入System分区，立即生效，更新系统后需要重新安装\n\n模块(推荐)：\n创建Magisk模块来安装Busybox，重启生效，更新系统后不用重新安装\n\n如果其中一种方式无法正常安装，可以换一种方式试试！</string>
+    <string name="busybox_installed_magisk">已通过Magisk安装了Busybox，现在需要重启手机才能生效，立即重启吗？</string>
+    <string name="busybox_install_fail">自动安装Busybox失败。也许System分区没被解锁。因此，部分功能可能无法使用！</string>
+    <string name="dex2oat_completed">dex2oat编译完成</string>
+    <string name="dex2oat_compiling">dex2oat compiling</string>
 
     <string-array name="device_templates">
         <item>Xiaomi MIX3</item>
@@ -371,12 +381,13 @@
         <item>HUAWEI Mate20Pro</item>
         <item>HUAWEI P30</item>
         <item>HUAWEI P30Pro</item>
+        <item>ONEPLUS 7 Pro</item>
     </string-array>
     <string-array name="device_templates_data">
         <item>MIX 3@Xiaomi@Xiaomi@perseus@perseus</item>
         <item>vivo X20@vivo@vivo@X20@X20</item>
         <item>v1824a@vivo@vivo@v1824a@v1824a</item>
-        <item>OPPO R11 Plus@OPP@OPPOO@R11 Plus@R11 Plus</item>
+        <item>OPPO R11 Plus@OPPO@OPPO@R11 Plus@R11 Plus</item>
         <item>PAAM00@OPPO@OPPO@OPPO PAAM00@PAAM00</item>
         <item>PBEM00@OPPO@OPPO@OPPO PBEM00@PBEM00</item>
         <item>PACT00@OPPO@OPPO@OPPO PACT00@PACT00</item>
@@ -386,5 +397,6 @@
         <item>LYA-AL00@HUAWEI@HUAWEI@LYA-AL00@LYA-AL00</item>
         <item>ELE-AL00@HUAWEI@HUAWEI@ELE-AL00@ELE-AL00</item>
         <item>VOG-TL00@HUAWEI@HUAWEI@VOG-TL00@VOG-TL00</item>
+        <item>GM1910@ONEPLUS@ONEPLUS@ONEPLUS GM1910@GM1910</item>
     </string-array>
 </resources>

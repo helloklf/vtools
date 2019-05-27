@@ -5,6 +5,7 @@ import android.content.Context
 import com.omarea.shared.FileWrite
 import com.omarea.shared.MagiskExtend
 import com.omarea.shell.units.BusyboxInstallerUnit
+import com.omarea.ui.DialogHelper
 import com.omarea.vtools.R
 import java.io.File
 
@@ -41,16 +42,62 @@ class Busybox(private var context: Context) {
                 "./busybox ln -sf busybox \$applet;\n" +
                 "done\n";
         KeepShellPublic.doCmdSync(cmd)
-        AlertDialog.Builder(context)
-                .setTitle("已完成")
-                .setMessage("已通过Magisk安装了Busybox，现在需要重启手机才能生效，立即重启吗？")
+        DialogHelper.animDialog(AlertDialog.Builder(context)
+                .setMessage(R.string.busybox_installed_magisk)
                 .setPositiveButton(R.string.btn_confirm, { _, _ ->
                     KeepShellPublic.doCmdSync("sync\nsleep 2\nreboot\n")
                 })
                 .setNegativeButton(R.string.btn_cancel, { _, _ ->
+                }))
+    }
+
+    private fun installUseRoot(privateBusybox: String, onSuccess: Runnable?) {
+        val cmd = StringBuilder("cp $privateBusybox /cache/busybox;\n")
+        cmd.append("chmod 7777 $privateBusybox;\n")
+        cmd.append("$privateBusybox chmod 7777 /cache/busybox;\n")
+        cmd.append("chmod 7777 /cache/busybox;\n")
+        cmd.append("/cache/busybox mount -o rw,remount /system\n" +
+                "/cache/busybox mount -f -o rw,remount /system\n" +
+                "mount -o rw,remount /system\n" +
+                "/cache/busybox mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
+                "mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
+                "/cache/busybox mount -o rw,remount /system/xbin\n" +
+                "/cache/busybox mount -f -o rw,remount /system/xbin\n" +
+                "mount -o rw,remount /system/xbin\n")
+        cmd.append("cp $privateBusybox /system/xbin/busybox;")
+        cmd.append("$privateBusybox chmod 0777 /system/xbin/busybox;")
+        cmd.append("chmod 0777 /system/xbin/busybox;")
+        cmd.append("$privateBusybox chown root:root /system/xbin/busybox;")
+        cmd.append("chown root:root /system/xbin/busybox;")
+        cmd.append("/system/xbin/busybox --install /system/xbin;")
+
+        KeepShellPublic.doCmdSync(cmd.toString())
+        if (!busyboxInstalled()) {
+            DialogHelper.animDialog(AlertDialog.Builder(context)
+                    .setMessage(R.string.busybox_install_fail)
+                    .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                    }))
+        }
+        onSuccess?.run()
+    }
+
+    // 选择busybox安装方式
+    private fun installModeChooser(privateBusybox: String, onSuccess: Runnable?) {
+        DialogHelper.animDialog(AlertDialog.Builder(context)
+                .setTitle(R.string.busybox_install_mode)
+                .setMessage(R.string.busybox_install_desc)
+                .setNegativeButton(R.string.btn_cancel, {
+                    _, _  ->
+                    android.os.Process.killProcess(android.os.Process.myPid())
                 })
-                .create()
-                .show()
+                .setNeutralButton(R.string.busybox_install_classical, {
+                    _, _ ->
+                    installUseRoot(privateBusybox, onSuccess)
+                })
+                .setPositiveButton(R.string.busybox_install_module, {
+                    _, _ ->
+                    useMagiskModuleInstall(context)
+                }))
     }
 
     fun forceInstall(next: Runnable? = null) {
@@ -59,7 +106,7 @@ class Busybox(private var context: Context) {
             return
         }
         if (!busyboxInstalled()) {
-            val dialog = AlertDialog.Builder(context)
+            DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle(R.string.question_install_busybox)
                     .setMessage(R.string.question_install_busybox_desc)
                     .setNegativeButton(
@@ -72,47 +119,13 @@ class Busybox(private var context: Context) {
                             R.string.btn_confirm,
                             { _, _ ->
                                 if (MagiskExtend.magiskSupported()) {
-                                    useMagiskModuleInstall(context)
-                                    return@setPositiveButton
+                                    installModeChooser(privateBusybox, next)
+                                } else {
+                                    installUseRoot(privateBusybox, next)
                                 }
-
-                                val cmd = StringBuilder("cp $privateBusybox /cache/busybox;\n")
-                                cmd.append("chmod 7777 $privateBusybox;\n")
-                                cmd.append("$privateBusybox chmod 7777 /cache/busybox;\n")
-                                cmd.append("chmod 7777 /cache/busybox;\n")
-                                cmd.append("/cache/busybox mount -o rw,remount /system\n" +
-                                        "/cache/busybox mount -f -o rw,remount /system\n" +
-                                        "mount -o rw,remount /system\n" +
-                                        "/cache/busybox mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
-                                        "mount -f -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
-                                        "/cache/busybox mount -o rw,remount /system/xbin\n" +
-                                        "/cache/busybox mount -f -o rw,remount /system/xbin\n" +
-                                        "mount -o rw,remount /system/xbin\n")
-                                cmd.append("cp $privateBusybox /system/xbin/busybox;")
-                                cmd.append("$privateBusybox chmod 0777 /system/xbin/busybox;")
-                                cmd.append("chmod 0777 /system/xbin/busybox;")
-                                cmd.append("$privateBusybox chown root:root /system/xbin/busybox;")
-                                cmd.append("chown root:root /system/xbin/busybox;")
-                                cmd.append("/system/xbin/busybox --install /system/xbin;")
-
-                                KeepShellPublic.doCmdSync(cmd.toString())
-                                if (!busyboxInstalled()) {
-                                    val dialog = AlertDialog.Builder(context)
-                                            .setTitle("安装Busybox失败")
-                                            .setMessage("已尝试自动安装Busybox，但它依然不可用。也许System分区没被解锁。因此，部分功能可能无法使用！")
-                                            .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                                            })
-                                            .create()
-                                    dialog.window!!.setWindowAnimations(R.style.windowAnim)
-                                    dialog.show()
-                                }
-                                next?.run()
                             }
                     )
-                    .setCancelable(false)
-                    .create()
-            dialog.window!!.setWindowAnimations(R.style.windowAnim)
-            dialog.show()
+                    .setCancelable(false))
         } else {
             BusyboxInstallerUnit().installShellTools()
             next?.run()

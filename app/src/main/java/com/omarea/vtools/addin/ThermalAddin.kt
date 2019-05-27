@@ -28,7 +28,7 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
         if (!isSupprt()) {
             return
         }
-        val arr = arrayOf("移除温控文件（需要重启）", "恢复温控文件（需要重启）", "临时关闭温控")
+        val arr = arrayOf("移除温控文件（需要重启）", "恢复温控文件（需要重启）", "临时关闭温控（重启失效）")
         var index = 0
         val dialog = AlertDialog.Builder(context)
                 .setTitle("请选择操作")

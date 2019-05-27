@@ -315,6 +315,6 @@ class BootService : IntentService("vtools-boot") {
                 nm.notify(1, NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_menu_digital).setSubText(getString(R.string.app_name)).setContentText(getString(R.string.boot_success)).build())
             }
         }
-        System.exit(0)
+        // System.exit(0)
     }
 }

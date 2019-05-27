@@ -120,7 +120,8 @@ class FloatPowercfgSelector {
         val spfPowercfg = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         val globalSPF = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         val dynamic = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, false)
-        val mode = if (dynamic) spfPowercfg.getString(packageName, globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance")) else modeList.getCurrentPowerMode()
+        val defaultMode = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance")
+        var selectedMode = if (dynamic) spfPowercfg.getString(packageName, defaultMode) else modeList.getCurrentPowerMode()
 
         try {
             val pm = context.packageManager
@@ -144,7 +145,6 @@ class FloatPowercfgSelector {
         val fw_float_monitor = view.findViewById<ImageButton>(R.id.fw_float_monitor)
         val fw_screen_record = view.findViewById<ImageButton>(R.id.fw_screen_record)
 
-        var selectedMode = mode
         val updateUI = Runnable {
             btn_powersave.setTextColor(0x66ffffff)
             btn_defaultmode.setTextColor(0x66ffffff)
@@ -160,7 +160,11 @@ class FloatPowercfgSelector {
         val switchMode = Runnable {
             modeList.executePowercfgMode(selectedMode, packageName)
             if (dynamic) {
-                spfPowercfg.edit().putString(packageName, selectedMode).commit()
+                if (selectedMode == defaultMode) {
+                    spfPowercfg.edit().remove(packageName).commit()
+                } else {
+                    spfPowercfg.edit().putString(packageName, selectedMode).commit()
+                }
                 reStartService(packageName, selectedMode)
             }
 

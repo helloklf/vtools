@@ -33,7 +33,6 @@
                     android:layout_height="wrap_content"
                     android:layout_column="0"
                     android:layout_row="5"
-                    android:gravity="left"
                     android:padding="8dp"
                     android:text="@string/accessbility_autoclick"
                     android:textColor="?android:attr/textColorPrimary"
@@ -56,25 +55,43 @@
             </GridLayout>
 
             <Switch
-                android:visibility="gone"
+                android:enabled="false"
                 android:id="@+id/home_hide_in_recents"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
-                android:gravity="left"
                 android:padding="8dp"
                 android:text="@string/home_hide_in_recents"
                 android:textColor="?android:attr/textColorPrimary"
                 android:textStyle="bold" />
 
             <TextView
-                android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingBottom="8dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
                 android:text="@string/home_hide_in_recents_desc"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="10dp" />
+
+            <Switch
+                android:id="@+id/auto_start_compile"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:padding="8dp"
+                android:text="@string/auto_start_compile"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="8dp"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="@string/auto_start_compile_desc"
                 android:textColor="?android:attr/textColorSecondary"
                 android:textSize="10dp" />
 
@@ -104,7 +121,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:gravity="left"
                 android:padding="8dp"
                 android:text="@string/settings_disable_selinux"
                 android:textColor="?android:attr/textColorPrimary"

@@ -60,7 +60,10 @@ class AutoClick {
                 var node: AccessibilityNodeInfo
                 for (i in nodes.indices) {
                     node = nodes[i]
-                    if (node.className.toString().toLowerCase().contains("button") && node.isEnabled) {
+                    if (node.className.toString().toLowerCase().contains("button")) {
+                        if (!node.isEnabled) {
+                            node.isEnabled = true
+                        }
                         if (node.text != autoClickKeyWords2[ki])
                             continue
                         node.performAction(AccessibilityNodeInfo.ACTION_CLICK)
@@ -76,7 +79,10 @@ class AutoClick {
             var node: AccessibilityNodeInfo
             for (i in next2Nodes.indices) {
                 node = next2Nodes[i]
-                if (node.className.toString().toLowerCase().contains("button") && node.isEnabled) {
+                if (node.className.toString().toLowerCase().contains("button")) {
+                    if (!node.isEnabled) {
+                        node.isEnabled = true
+                    }
                     node.performAction(AccessibilityNodeInfo.ACTION_CLICK)
                 }
             }

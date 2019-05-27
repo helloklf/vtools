@@ -11,146 +11,131 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <android.support.v7.widget.CardView
+        <LinearLayout
+            android:focusable="true"
+            android:background="@drawable/krscript_item_ripple"
             android:id="@+id/pay_paypal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                style="@style/textTitle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
+                android:text="Paypal"
+                android:textColor="?colorAccent" />
+        </LinearLayout>
 
-                <TextView
-                    style="@style/textTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Paypal"
-                    android:textColor="?colorAccent" />
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
+        <LinearLayout
+            android:focusable="true"
+            android:background="@drawable/krscript_item_ripple"
             android:id="@+id/pay_alipay"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp">
+            android:layout_marginRight="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                style="@style/textTitle"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
+                android:text="支付宝"
+                android:textColor="?colorAccent" />
+        </LinearLayout>
 
-                <TextView
-                    style="@style/textTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="支付宝"
-                    android:textColor="?colorAccent" />
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
+        <LinearLayout
             android:id="@+id/pay_wxpay"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
-
-                <TextView
-                    style="@style/textTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="微信"
-                    android:textColor="?colorAccent" />
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
+            android:layout_marginRight="16dp"
+            android:focusable="true"
+            android:background="@drawable/krscript_item_ripple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                style="@style/textTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="微信"
+                android:textColor="?colorAccent" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:focusable="true"
+            android:background="@drawable/krscript_item_ripple"
             android:layout_marginBottom="16dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
-
-                <TextView
-                    style="@style/textTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="免费捐赠（支付宝红包）"
-                    android:textColor="?colorAccent" />
-
-                <TextView
-                    android:id="@+id/pay_alipay_code"
-                    style="@style/textSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="支付宝首页搜索“511531087”领取红包并使用，我便能获得支付宝的少量奖赏。（点击复制红包码）" />
-
-                <TextView android:visibility="gone"
-                    android:id="@+id/pay_alipay_command"
-                    style="@style/textSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="或点击此处复制吱口令，打开支付宝领取红包并使用，我便能获得支付宝的少量奖赏。" />
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
+            android:layout_marginRight="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                style="@style/textTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="免费捐赠（支付宝红包）"
+                android:textColor="?colorAccent" />
+
+            <TextView
+                android:id="@+id/pay_alipay_code"
+                style="@style/textSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="支付宝首页搜索“511531087”领取红包并使用，我便能获得支付宝的少量奖赏。（点击复制红包码）" />
+
+            <TextView android:visibility="gone"
+                android:id="@+id/pay_alipay_command"
+                style="@style/textSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="或点击此处复制吱口令，打开支付宝领取红包并使用，我便能获得支付宝的少量奖赏。" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:focusable="true"
+            android:background="@drawable/krscript_item_ripple"
             android:layout_marginBottom="16dp"
             android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp">
+            android:layout_marginRight="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-            <LinearLayout
+            <TextView
+                style="@style/textSmall"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="捐赠说明：\n"
+                android:textColor="?colorAccent" />
+
+            <TextView
+                style="@style/textSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
+                android:text="如果你喜欢我的软件，可以通过以上支付方式向我捐赠，捐赠金额不限，￥0.01也是爱\n" />
 
-                <TextView
-                    style="@style/textSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="捐赠说明：\n"
-                    android:textColor="?colorAccent" />
-
-                <TextView
-                    style="@style/textSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="如果你喜欢我的软件，可以通过以上支付方式向我捐赠，捐赠金额不限，￥0.01也是爱\n" />
-
-                <TextView
-                    style="@style/textSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="你知道的，你的捐赠是对开发者辛勤劳动的肯定。在我们凌晨熬夜修Bug或绞尽脑汁探索新功能时，会有你们的鼓励化为动力\n" />
-            </LinearLayout>
-        </android.support.v7.widget.CardView>
+            <TextView
+                style="@style/textSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="你知道的，你的捐赠是对开发者辛勤劳动的肯定。在我们凌晨熬夜修Bug或绞尽脑汁探索新功能时，会有你们的鼓励化为动力\n" />
+        </LinearLayout>
     </LinearLayout>
 </com.omarea.ui.OverScrollView>

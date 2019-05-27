@@ -8,6 +8,7 @@ import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.View
+import android.widget.Switch
 import com.omarea.shared.CommonCmds
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.helper.AccessibleServiceHelper
@@ -32,12 +33,7 @@ class ActivitySceneOtherSettings : AppCompatActivity() {
         settings_autoinstall.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false)
         settings_delaystart.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DELAY, false)
         settings_disable_selinux.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false)
-        settings_logcat.setOnClickListener {
-            val log = AppErrorLogcat().catLogInfo()
-            settings_log_content.visibility = View.VISIBLE
-            settings_log_content.setText(log)
-            settings_log_content.setSelection(0, log.length)
-        }
+        auto_start_compile.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_STARTED_COMPILE, false)
     }
 
     @SuppressLint("ApplySharedPref")
@@ -69,6 +65,21 @@ class ActivitySceneOtherSettings : AppCompatActivity() {
             } else {
                 KeepShellPublic.doCmdSync(CommonCmds.ResumeSELinux)
                 spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, settings_disable_selinux.isChecked).commit()
+            }
+        }
+        settings_logcat.setOnClickListener {
+            val log = AppErrorLogcat().catLogInfo()
+            settings_log_content.visibility = View.VISIBLE
+            settings_log_content.setText(log)
+            settings_log_content.setSelection(0, log.length)
+        }
+        auto_start_compile.setOnClickListener {
+            val value = (it as Switch).isChecked
+            if (value) {
+                spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_STARTED_COMPILE, value).commit()
+            } else {
+                KeepShellPublic.doCmdSync(CommonCmds.ResumeSELinux)
+                spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_STARTED_COMPILE, value).commit()
             }
         }
     }
