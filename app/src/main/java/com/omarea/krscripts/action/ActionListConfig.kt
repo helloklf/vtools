@@ -1,13 +1,14 @@
 package com.omarea.krscripts.action
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Handler
 import android.support.v4.app.FragmentActivity
-import android.support.v7.app.AlertDialog
 import android.view.View
 import android.widget.*
 import com.omarea.krscripts.ScriptEnvironmen
 import com.omarea.krscripts.simple.shell.SimpleShellExecutor
+import com.omarea.ui.DialogHelper
 import com.omarea.ui.OverScrollListView
 import com.omarea.ui.ProgressBarDialog
 import com.omarea.vtools.R
@@ -39,14 +40,11 @@ class ActionListConfig(private val context: FragmentActivity) {
 
     private fun onActionClick(action: ActionInfo, onExit: Runnable) {
         if (action.confirm) {
-            val dialog = AlertDialog.Builder(context)
+            DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle(action.title)
                     .setMessage(action.desc)
                     .setPositiveButton("执行") { dialog, which -> executeScript(action, onExit) }
-                    .setNegativeButton("取消") { dialog, which -> }
-                    .create()
-            dialog.window!!.setWindowAnimations(R.style.windowAnim)
-            dialog.show()
+                    .setNegativeButton("取消") { dialog, which -> })
         } else {
             executeScript(action, onExit)
         }
@@ -71,9 +69,7 @@ class ActionListConfig(private val context: FragmentActivity) {
                 progressBarDialog.showDialog("正在读取数据...")
                 Thread(Runnable {
                     for (actionParamInfo in actionParamInfos) {
-                        if (actionParamInfo.valueSUShell != null) {
-                            actionParamInfo.valueFromShell = executeResultRoot(context, actionParamInfo.valueSUShell)
-                        } else if (actionParamInfo.valueShell != null) {
+                        if (actionParamInfo.valueShell != null) {
                             actionParamInfo.valueFromShell = executeResultRoot(context, actionParamInfo.valueShell)
                         }
                     }

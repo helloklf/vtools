@@ -8,11 +8,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ActionParamInfo {
+    // 参数名：必需保持唯一
     public String name;
+
+    // 描述
     public String desc;
+
+    // 值
     public String value;
     public String valueShell;
-    public String valueSUShell;
     public String valueFromShell;
     public int maxLength = -1;
     public String type;
