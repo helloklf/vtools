@@ -46,7 +46,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <com.omarea.krscripts.action.ActionListView
+                    <com.omarea.krscripts.config.ActionListView
                         android:id="@+id/list_page1"
                         android:listSelector="@android:color/transparent"
                         android:divider="@color/color_list_divider"
@@ -61,7 +61,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <com.omarea.krscripts.action.ActionListView
+                    <com.omarea.krscripts.config.ActionListView
                         android:id="@+id/list_page2"
                         android:listSelector="@android:color/transparent"
                         android:divider="@color/color_list_divider"

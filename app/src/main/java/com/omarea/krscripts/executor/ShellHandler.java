@@ -1,4 +1,4 @@
-package com.omarea.krscripts.simple.shell;
+package com.omarea.krscripts.executor;
 
 import android.os.Handler;
 import android.widget.Button;

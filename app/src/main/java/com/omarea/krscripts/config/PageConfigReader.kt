@@ -1,10 +1,14 @@
-package com.omarea.krscripts.action
+package com.omarea.krscripts.config
 
 import android.content.Context
 import android.util.Log
 import android.util.Xml
 import android.widget.Toast
-import com.omarea.krscripts.*
+import com.omarea.krscripts.executor.ExtractAssets
+import com.omarea.krscripts.executor.ScriptEnvironmen
+import com.omarea.krscripts.model.ActionInfo
+import com.omarea.krscripts.model.ConfigItemBase
+import com.omarea.krscripts.model.SwitchInfo
 import org.xmlpull.v1.XmlPullParser
 import java.io.InputStream
 import java.util.*
@@ -12,7 +16,7 @@ import java.util.*
 /**
  * Created by Hello on 2018/04/01.
  */
-class ActionConfigReader(private var context: Context) {
+class PageConfigReader(private var context: Context) {
     private val ASSETS_FILE = "file:///android_asset/"
     private fun getConfig(context: Context, filePath: String): InputStream? {
         try {
@@ -22,13 +26,13 @@ class ActionConfigReader(private var context: Context) {
         }
     }
 
-    fun readConfigXml(filePath: String): ArrayList<ConfigItem>? {
+    fun readConfigXml(filePath: String): ArrayList<ConfigItemBase>? {
         try {
             val fileInputStream = getConfig(context, filePath) ?: return ArrayList()
             val parser = Xml.newPullParser()// 获取xml解析器
             parser.setInput(fileInputStream, "utf-8")// 参数分别为输入流和字符编码
             var type = parser.eventType
-            val actions: ArrayList<ConfigItem> = ArrayList<ConfigItem>()
+            val actions: ArrayList<ConfigItemBase> = ArrayList<ConfigItemBase>()
             var action: ActionInfo? = null
             var switch: SwitchInfo? = null
             while (type != XmlPullParser.END_DOCUMENT) {// 如果事件不等于文档结束事件就继续循环

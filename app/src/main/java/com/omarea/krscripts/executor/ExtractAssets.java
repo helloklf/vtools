@@ -1,4 +1,4 @@
-package com.omarea.krscripts;
+package com.omarea.krscripts.executor;
 
 import android.content.Context;
 
@@ -15,7 +15,7 @@ public class ExtractAssets {
         this.context = context;
     }
 
-    public String extractScript(String fileName) {
+    String extractScript(String fileName) {
         if (fileName.startsWith("file:///android_asset/")) {
             fileName = fileName.substring("file:///android_asset/".length());
         }

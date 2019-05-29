@@ -1,11 +1,10 @@
-package com.omarea.krscripts.simple.shell;
+package com.omarea.krscripts.executor;
 
 import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
 import android.widget.Toast;
 
-import com.omarea.krscripts.ExtractAssets;
 import com.omarea.shared.FileWrite;
 import com.omarea.shared.MagiskExtend;
 

@@ -1,4 +1,4 @@
-package com.omarea.krscripts.action;
+package com.omarea.krscripts.config;
 
 import android.content.Context;
 import android.database.DataSetObserver;
@@ -10,19 +10,19 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.omarea.krscripts.ActionInfo;
-import com.omarea.krscripts.ConfigItem;
-import com.omarea.krscripts.ScriptEnvironmen;
-import com.omarea.krscripts.SwitchInfo;
+import com.omarea.krscripts.model.ActionInfo;
+import com.omarea.krscripts.model.ConfigItemBase;
+import com.omarea.krscripts.executor.ScriptEnvironmen;
+import com.omarea.krscripts.model.SwitchInfo;
 import com.omarea.vtools.R;
 
 import java.util.ArrayList;
 
-public class ActionAdapter extends BaseAdapter {
-    private ArrayList<ConfigItem> actionInfos;
+public class ActionListAdapter extends BaseAdapter {
+    private ArrayList<ConfigItemBase> actionInfos;
     private Context context;
 
-    public ActionAdapter(ArrayList<ConfigItem> actionInfos) {
+    public ActionListAdapter(ArrayList<ConfigItemBase> actionInfos) {
         this.actionInfos = actionInfos;
     }
 
@@ -98,7 +98,7 @@ public class ActionAdapter extends BaseAdapter {
                 return renderSwitchItem(switchInfo);
             }
         } catch (Exception ex) {
-            Log.e("ActionAdapter", "" + ex.getLocalizedMessage());
+            Log.e("ActionListAdapter", "" + ex.getLocalizedMessage());
         }
 
         return view;

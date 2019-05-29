@@ -1,4 +1,4 @@
-package com.omarea.krscripts.simple.shell;
+package com.omarea.krscripts.executor;
 
 import android.app.AlertDialog;
 import android.content.Context;

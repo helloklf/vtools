@@ -1,4 +1,4 @@
-package com.omarea.krscripts.action;
+package com.omarea.krscripts.config;
 
 import android.text.InputFilter;
 import android.text.Spanned;

@@ -1,8 +1,6 @@
-package com.omarea.krscripts;
+package com.omarea.krscripts.model;
 
-import com.omarea.krscripts.ConfigItem;
-
-public class SwitchInfo extends ConfigItem {
+public class SwitchInfo extends ConfigItemBase {
     public String descPollingShell;
     public String getState;
     public String setState;

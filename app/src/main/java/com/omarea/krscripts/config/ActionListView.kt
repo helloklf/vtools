@@ -1,4 +1,4 @@
-package com.omarea.krscripts.action
+package com.omarea.krscripts.config
 
 import android.app.AlertDialog
 import android.content.Context
@@ -7,11 +7,11 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
-import com.omarea.krscripts.ActionInfo
-import com.omarea.krscripts.ConfigItem
-import com.omarea.krscripts.ScriptEnvironmen
-import com.omarea.krscripts.simple.shell.SimpleShellExecutor
-import com.omarea.krscripts.SwitchInfo
+import com.omarea.krscripts.model.ActionInfo
+import com.omarea.krscripts.model.ConfigItemBase
+import com.omarea.krscripts.executor.ScriptEnvironmen
+import com.omarea.krscripts.executor.SimpleShellExecutor
+import com.omarea.krscripts.model.SwitchInfo
 import com.omarea.ui.DialogHelper
 import com.omarea.ui.OverScrollListView
 import com.omarea.ui.ProgressBarDialog
@@ -30,19 +30,19 @@ class ActionListView : OverScrollListView {
         this.progressBarDialog = ProgressBarDialog(context)
     }
 
-    fun setListData(actionInfos: ArrayList<ConfigItem>?) {
+    fun setListData(actionInfos: ArrayList<ConfigItemBase>?) {
         if (actionInfos != null) {
             this.overScrollMode = ListView.OVER_SCROLL_ALWAYS
-            this.adapter = ActionAdapter(actionInfos)
+            this.adapter = ActionListAdapter(actionInfos)
             this.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
                 val item = parent.adapter.getItem(position)
                 if (item is ActionInfo) {
                     onActionClick(item, Runnable {
-                        // post { (adapter as ActionAdapter).update(position, this) }
+                        // post { (adapter as ActionListAdapter).update(position, this) }
                     })
                 } else if (item is SwitchInfo) {
                     onSwitchClick(item, Runnable {
-                        // post { (adapter as ActionAdapter).update(position, this) }
+                        // post { (adapter as ActionListAdapter).update(position, this) }
                     })
                 }
             }

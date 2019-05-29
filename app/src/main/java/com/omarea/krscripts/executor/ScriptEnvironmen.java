@@ -1,4 +1,4 @@
-package com.omarea.krscripts;
+package com.omarea.krscripts.executor;
 
 import android.content.Context;
 import android.os.Build;

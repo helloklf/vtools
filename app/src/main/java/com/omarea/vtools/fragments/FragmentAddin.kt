@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.SimpleAdapter
 import android.widget.TabHost
-import com.omarea.krscripts.action.ActionConfigReader
+import com.omarea.krscripts.config.PageConfigReader
 import com.omarea.shared.MagiskExtend
 import com.omarea.shell.SysUtils
 import com.omarea.ui.ProgressBarDialog
@@ -115,7 +115,7 @@ class FragmentAddin : Fragment() {
         val progressBarDialog = ProgressBarDialog(context!!)
         progressBarDialog.showDialog("读取配置，稍等...")
         Thread(Runnable {
-            val items = ActionConfigReader(this.activity!!).readConfigXml("page1.xml")
+            val items = PageConfigReader(this.activity!!).readConfigXml("page1.xml")
             myHandler.post {
                 progressBarDialog.hideDialog()
                 if (items != null) {
@@ -132,7 +132,7 @@ class FragmentAddin : Fragment() {
         val progressBarDialog = ProgressBarDialog(context!!)
         progressBarDialog.showDialog("读取配置，稍等...")
         Thread(Runnable {
-            val items = ActionConfigReader(this.activity!!).readConfigXml("page2.xml")
+            val items = PageConfigReader(this.activity!!).readConfigXml("page2.xml")
             myHandler.post {
                 if (items != null) {
                     page2ConfigLoaded = true

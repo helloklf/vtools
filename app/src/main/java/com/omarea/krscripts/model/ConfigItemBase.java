@@ -1,6 +1,6 @@
-package com.omarea.krscripts;
+package com.omarea.krscripts.model;
 
-public class ConfigItem {
+public class ConfigItemBase {
     public String separator;
     public String title;
     public String desc;
