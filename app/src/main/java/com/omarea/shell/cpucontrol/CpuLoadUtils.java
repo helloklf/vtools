@@ -2,7 +2,7 @@ package com.omarea.shell.cpucontrol;
 
 import android.annotation.SuppressLint;
 
-import com.omarea.shell.KernelProrp;
+import com.omarea.common.shell.KernelProrp;
 
 import java.util.HashMap;
 

@@ -1,7 +1,7 @@
 package com.omarea.shell.cpucontrol;
 
-import com.omarea.shell.KernelProrp;
-import com.omarea.shell.RootFile;
+import com.omarea.common.shell.KernelProrp;
+import com.omarea.common.shell.RootFile;
 
 public class GpuUtils {
     public static String getGpuFreq() {

@@ -1,6 +1,6 @@
 package com.omarea.shell.units
 
-import com.omarea.shell.KeepShellPublic
+import com.omarea.common.shell.KeepShellPublic
 
 /**
  * Created by Hello on 2017/11/01.

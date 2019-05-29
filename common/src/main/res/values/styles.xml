@@ -1,0 +1,16 @@
+<resources>
+    <style name="activityAnim">
+        <item name="android:activityOpenEnterAnimation">@anim/activity_open_enter</item>
+        <item name="android:activityOpenExitAnimation">@anim/activity_open_exit</item>
+        <item name="android:activityCloseEnterAnimation">@anim/activity_close_enter</item>
+        <item name="android:activityCloseExitAnimation">@anim/activity_close_exit</item>
+        <item name="android:taskOpenEnterAnimation">@anim/task_open_enter</item>
+        <item name="android:taskOpenExitAnimation">@anim/task_open_exit</item>
+        <item name="android:taskCloseEnterAnimation">@anim/task_close_enter</item>
+        <item name="android:taskCloseExitAnimation">@anim/task_close_exit</item>
+    </style>
+    <style name="windowAnim">
+        <item name="android:windowExitAnimation">@anim/dialog_exit</item>
+        <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
+    </style>
+</resources>

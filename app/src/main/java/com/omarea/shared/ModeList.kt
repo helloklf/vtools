@@ -1,7 +1,7 @@
 package com.omarea.shared
 
-import com.omarea.shell.KeepShellAsync
-import com.omarea.shell.KeepShellPublic
+import com.omarea.common.shell.KeepShellAsync
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.shell.Props
 import com.omarea.vtools.R
 

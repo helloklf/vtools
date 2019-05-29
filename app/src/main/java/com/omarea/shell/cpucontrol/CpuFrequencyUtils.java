@@ -4,8 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.omarea.shell.KeepShellPublic;
-import com.omarea.shell.KernelProrp;
+import com.omarea.common.shell.KeepShellPublic;
+import com.omarea.common.shell.KernelProrp;
 import com.omarea.shell.SuDo;
 import com.omarea.shell.units.FileValueMap;
 

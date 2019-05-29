@@ -5,7 +5,7 @@ import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import com.omarea.shared.model.AppConfigInfo
-import com.omarea.shell.KeepShellPublic
+import com.omarea.common.shell.KeepShellPublic
 
 class SceneMode private constructor(private var contentResolver: ContentResolver, private var store: AppConfigStore) {
     class FreezeAppHistory {

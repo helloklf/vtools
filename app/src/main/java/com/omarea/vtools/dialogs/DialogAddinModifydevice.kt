@@ -12,10 +12,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import com.omarea.shared.CommonCmds
-import com.omarea.shared.MagiskExtend
-import com.omarea.shell.KeepShellPublic
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.shell.Props
-import com.omarea.shell.RootFile
+import com.omarea.common.shell.RootFile
 import com.omarea.vtools.R
 
 
@@ -68,21 +67,21 @@ class DialogAddinModifydevice(var context: Context) {
                     val manufacturer = editManufacturer.text.trim()
                     if (model.isNotEmpty() || brand.isNotEmpty() || product.isNotEmpty() || device.isNotEmpty() || manufacturer.isNotEmpty()) {
                         backupDefault()
-                        if (MagiskExtend.moduleInstalled()) {
+                        if (com.omarea.common.shared.MagiskExtend.moduleInstalled()) {
                             if (brand.isNotEmpty())
-                                MagiskExtend.setSystemProp("ro.product.brand", brand.toString())
+                                com.omarea.common.shared.MagiskExtend.setSystemProp("ro.product.brand", brand.toString())
                             if (product.isNotEmpty())
-                                MagiskExtend.setSystemProp("ro.product.name", product.toString())
+                                com.omarea.common.shared.MagiskExtend.setSystemProp("ro.product.name", product.toString())
                             if (model.isNotEmpty())
-                                MagiskExtend.setSystemProp("ro.product.model", model.toString())
+                                com.omarea.common.shared.MagiskExtend.setSystemProp("ro.product.model", model.toString())
                             if (manufacturer.isNotEmpty())
-                                MagiskExtend.setSystemProp("ro.product.manufacturer", manufacturer.toString())
+                                com.omarea.common.shared.MagiskExtend.setSystemProp("ro.product.manufacturer", manufacturer.toString())
                             if (device.isNotEmpty())
-                                MagiskExtend.setSystemProp("ro.product.device", device.toString())
+                                com.omarea.common.shared.MagiskExtend.setSystemProp("ro.product.device", device.toString())
                             // 小米 - 改model参数以后device_features要处理下
                             if (RootFile.fileExists("/system/etc/device_features/${android.os.Build.PRODUCT}.xml")) {
                                 if (model != android.os.Build.PRODUCT) {
-                                    MagiskExtend.replaceSystemFile("/system/etc/device_features/${product}.xml", "/system/etc/device_features/${android.os.Build.PRODUCT}.xml")
+                                    com.omarea.common.shared.MagiskExtend.replaceSystemFile("/system/etc/device_features/${product}.xml", "/system/etc/device_features/${android.os.Build.PRODUCT}.xml")
                                 }
                             }
                             Toast.makeText(context, "已通过Magisk更改参数，请重启手机~", Toast.LENGTH_SHORT).show()

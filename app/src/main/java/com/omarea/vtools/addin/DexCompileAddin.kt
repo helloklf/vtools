@@ -15,9 +15,9 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import com.omarea.shared.CommonCmds
-import com.omarea.shell.AsynSuShellUnit
+import com.omarea.common.shell.AsynSuShellUnit
 import com.omarea.shell.Props
-import com.omarea.ui.DialogHelper
+import com.omarea.common.ui.DialogHelper
 import com.omarea.vtools.R
 import com.omarea.vtools.services.CompileService
 import java.util.*

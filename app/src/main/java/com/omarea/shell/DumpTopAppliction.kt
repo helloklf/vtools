@@ -1,6 +1,7 @@
 package com.omarea.shell
 
 import android.util.Log
+import com.omarea.common.shell.KeepShellPublic
 
 /**
  * Created by SYSTEM on 2018/07/19.

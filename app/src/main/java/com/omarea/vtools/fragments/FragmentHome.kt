@@ -22,7 +22,7 @@ import com.omarea.shared.ModeList
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shared.model.CpuCoreInfo
-import com.omarea.shell.KeepShellPublic
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.shell.Props
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import com.omarea.shell.cpucontrol.GpuUtils

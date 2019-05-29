@@ -1,7 +1,7 @@
 package com.omarea.vtools.addin
 
 import android.content.Context
-import com.omarea.ui.ProgressBarDialog
+import com.omarea.common.ui.ProgressBarDialog
 
 /**
  * Created by Hello on 2018/02/20.

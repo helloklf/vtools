@@ -5,9 +5,9 @@ import android.content.Context
 import android.os.Handler
 import android.widget.Toast
 import com.omarea.shared.CommonCmds
-import com.omarea.shell.KeepShellPublic
-import com.omarea.shell.RootFile
-import com.omarea.ui.ProgressBarDialog
+import com.omarea.common.shell.KeepShellPublic
+import com.omarea.common.shell.RootFile
+import com.omarea.common.ui.ProgressBarDialog
 
 /**
  * Created by Hello on 2017/11/01.

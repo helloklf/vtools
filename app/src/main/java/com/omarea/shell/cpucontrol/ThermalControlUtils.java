@@ -3,8 +3,8 @@ package com.omarea.shell.cpucontrol;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.omarea.shell.KernelProrp;
-import com.omarea.shell.RootFile;
+import com.omarea.common.shell.KernelProrp;
+import com.omarea.common.shell.RootFile;
 import com.omarea.shell.SuDo;
 
 import java.util.ArrayList;

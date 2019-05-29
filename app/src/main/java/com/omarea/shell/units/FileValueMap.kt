@@ -1,6 +1,6 @@
 package com.omarea.shell.units
 
-import com.omarea.shell.KeepShellPublic
+import com.omarea.common.shell.KeepShellPublic
 
 class FileValueMap {
     fun mapFileValue(dir: String): HashMap<String, String> {

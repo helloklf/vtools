@@ -10,13 +10,13 @@
     tools:context=".activitys.ActivityFileSelector"
     tools:openDrawer="start">
 
-    <com.omarea.ui.OverScrollListView
+    <com.omarea.common.ui.OverScrollListView
         android:id="@+id/file_selector_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="56dp">
 
-    </com.omarea.ui.OverScrollListView>
+    </com.omarea.common.ui.OverScrollListView>
 
     <include
         layout="@layout/layout_app_bar"

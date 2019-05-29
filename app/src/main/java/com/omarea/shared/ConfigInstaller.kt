@@ -2,16 +2,16 @@ package com.omarea.shared
 
 import android.content.Context
 import android.util.Log
-import com.omarea.shell.KeepShellPublic
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.shell.Platform
-import com.omarea.shell.RootFile
+import com.omarea.common.shell.RootFile
 import java.nio.charset.Charset
 
 class ConfigInstaller {
     fun installPowerConfig(context: Context, afterCmds: String = "", biCore: Boolean = false) {
         try {
-            val powercfg = FileWrite.writePrivateShellFile(Platform().getCPUName() + (if (biCore) "/powercfg-bigcore.sh" else "/powercfg-default.sh"), "powercfg.sh", context)
-            val powercfgBase = FileWrite.writePrivateShellFile(Platform().getCPUName() + (if (biCore) "/powercfg-base-bigcore.sh" else "/powercfg-base-default.sh"), "powercfg-base.sh", context)
+            val powercfg = com.omarea.common.shared.FileWrite.writePrivateShellFile(Platform().getCPUName() + (if (biCore) "/powercfg-bigcore.sh" else "/powercfg-default.sh"), "powercfg.sh", context)
+            val powercfgBase = com.omarea.common.shared.FileWrite.writePrivateShellFile(Platform().getCPUName() + (if (biCore) "/powercfg-base-bigcore.sh" else "/powercfg-base-default.sh"), "powercfg-base.sh", context)
 
             val cmd = StringBuilder()
                     .append("cp ${powercfg} ${ModeList.POWER_CFG_PATH};")
@@ -32,11 +32,11 @@ class ConfigInstaller {
 
     fun installPowerConfigByText(context: Context, powercfg: String, powercfgBase: String = "#!/system/bin/sh"): Boolean {
         try {
-            FileWrite.writePrivateFile(powercfg.replace("\r", "").toByteArray(Charset.forName("UTF-8")), "powercfg.sh", context)
-            FileWrite.writePrivateFile(powercfgBase.replace("\r", "").toByteArray(Charset.forName("UTF-8")), "powercfg-base.sh", context)
+            com.omarea.common.shared.FileWrite.writePrivateFile(powercfg.replace("\r", "").toByteArray(Charset.forName("UTF-8")), "powercfg.sh", context)
+            com.omarea.common.shared.FileWrite.writePrivateFile(powercfgBase.replace("\r", "").toByteArray(Charset.forName("UTF-8")), "powercfg-base.sh", context)
             val cmd = StringBuilder()
-                    .append("cp ${FileWrite.getPrivateFilePath(context, "powercfg.sh")} ${ModeList.POWER_CFG_PATH};")
-                    .append("cp ${FileWrite.getPrivateFilePath(context, "powercfg-base.sh")} ${ModeList.POWER_CFG_BASE};")
+                    .append("cp ${com.omarea.common.shared.FileWrite.getPrivateFilePath(context, "powercfg.sh")} ${ModeList.POWER_CFG_PATH};")
+                    .append("cp ${com.omarea.common.shared.FileWrite.getPrivateFilePath(context, "powercfg-base.sh")} ${ModeList.POWER_CFG_BASE};")
                     .append("chmod 0777 ${ModeList.POWER_CFG_PATH};")
                     .append("chmod 0777 ${ModeList.POWER_CFG_BASE};")
             //KeepShellPublic.doCmdSync(CommonCmds.InstallPowerToggleConfigToCache + "\n\n" + CommonCmds.ExecuteConfig + "\n" + after)

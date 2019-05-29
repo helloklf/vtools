@@ -9,6 +9,7 @@ import android.os.Looper
 import android.provider.Settings
 import android.support.v4.content.PermissionChecker
 import android.util.Log
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.shared.CommonCmds
 import com.omarea.vtools.R
 

@@ -18,10 +18,10 @@ import com.omarea.shared.AppListHelper
 import com.omarea.shared.CommonCmds
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.model.Appinfo
-import com.omarea.shell.KeepShellPublic
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.ui.AppListAdapter
-import com.omarea.ui.OverScrollListView
-import com.omarea.ui.ProgressBarDialog
+import com.omarea.common.ui.OverScrollListView
+import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.ui.SearchTextWatcher
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogAppOptions

@@ -11,7 +11,7 @@ import java.io.*
  */
 class CpuConfigStorage {
     fun loadBootConfig(context: Context): CpuStatus? {
-        val bootConfig = FileWrite.getPrivateFilePath(context, "cpuconfig.bak")
+        val bootConfig = com.omarea.common.shared.FileWrite.getPrivateFilePath(context, "cpuconfig.bak")
         val file = File(bootConfig)
         if (file.exists()) {
             var fileInputStream: FileInputStream? = null;
@@ -37,7 +37,7 @@ class CpuConfigStorage {
     }
 
     fun saveBootConfig(context: Context, status: CpuStatus?): Boolean {
-        val bootConfig = FileWrite.getPrivateFilePath(context, "cpuconfig.bak")
+        val bootConfig = com.omarea.common.shared.FileWrite.getPrivateFilePath(context, "cpuconfig.bak")
         val file = File(bootConfig)
         if (status != null) {
             var fileOutputStream: FileOutputStream? = null

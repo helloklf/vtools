@@ -10,8 +10,8 @@ mount -o rw,remount /system
 $BUSYBOX mount -o remount,rw /dev/block/bootdevice/by-name/system /system
 mount -o remount,rw /dev/block/bootdevice/by-name/system /system 2> /dev/null
 
-model=`getprop ro.product.model`
-for config in `ls /system/etc/device_features/$model.xml`
+model=`getprop ro.product.device`
+for config in `ls "/system/etc/device_features/$model.xml"`
 do
     if [ ! -f "$config.bak" ]; then
         echo '备份文件...'

@@ -13,9 +13,8 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
 import com.omarea.shared.CommonCmds
-import com.omarea.shared.MagiskExtend
 import com.omarea.shared.SpfConfig
-import com.omarea.shell.KeepShellPublic
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.vtools.R
 
 /**
@@ -124,10 +123,10 @@ class DialogAddinModifyDPI(var context: Context) {
                 cmd.append("\n")
             }
             if (!qc && dpi >= 96) {
-                if (MagiskExtend.moduleInstalled()) {
+                if (com.omarea.common.shared.MagiskExtend.moduleInstalled()) {
                     KeepShellPublic.doCmdSync("wm density reset");
-                    MagiskExtend.setSystemProp("ro.sf.lcd_density", dpi.toString());
-                    MagiskExtend.setSystemProp("vendor.display.lcd_density", dpi.toString());
+                    com.omarea.common.shared.MagiskExtend.setSystemProp("ro.sf.lcd_density", dpi.toString());
+                    com.omarea.common.shared.MagiskExtend.setSystemProp("vendor.display.lcd_density", dpi.toString());
                     Toast.makeText(context, "已通过Magisk更改参数，请重启手机~", Toast.LENGTH_SHORT).show()
                 } else {
                     cmd.append(CommonCmds.MountSystemRW)

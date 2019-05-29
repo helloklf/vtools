@@ -2,7 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.omarea.ui.OverScrollView
+    <com.omarea.common.ui.OverScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -842,5 +842,5 @@
                     android:text="可能需要关闭温控栏的“核心控制”（高通设备），并关闭热插拔才能设置CPU核心离线状态！" />
             </GridLayout>
         </LinearLayout>
-    </com.omarea.ui.OverScrollView>
+    </com.omarea.common.ui.OverScrollView>
 </FrameLayout>

@@ -2,10 +2,9 @@ package com.omarea.shell
 
 import android.app.AlertDialog
 import android.content.Context
-import com.omarea.shared.FileWrite
-import com.omarea.shared.MagiskExtend
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.shell.units.BusyboxInstallerUnit
-import com.omarea.ui.DialogHelper
+import com.omarea.common.ui.DialogHelper
 import com.omarea.vtools.R
 import java.io.File
 
@@ -28,13 +27,13 @@ class Busybox(private var context: Context) {
      * 使用magisk模块安装busybox
      */
     private fun useMagiskModuleInstall (context: Context) {
-        if (!MagiskExtend.moduleInstalled()) {
-            MagiskExtend.magiskModuleInstall(context)
+        if (!com.omarea.common.shared.MagiskExtend.moduleInstalled()) {
+            com.omarea.common.shared.MagiskExtend.magiskModuleInstall(context)
         }
 
-        val privateBusybox = FileWrite.getPrivateFilePath(context, "busybox")
-        MagiskExtend.replaceSystemFile("/system/xbin/busybox", privateBusybox);
-        val busyboxPath = MagiskExtend.getMagiskReplaceFilePath("/system/xbin/busybox");
+        val privateBusybox = com.omarea.common.shared.FileWrite.getPrivateFilePath(context, "busybox")
+        com.omarea.common.shared.MagiskExtend.replaceSystemFile("/system/xbin/busybox", privateBusybox);
+        val busyboxPath = com.omarea.common.shared.MagiskExtend.getMagiskReplaceFilePath("/system/xbin/busybox");
         val busyboxDir = File(busyboxPath).parent
         val cmd = "cd \"$busyboxDir\"\n" +
                 "for applet in `./busybox --list`;\n" +
@@ -101,8 +100,8 @@ class Busybox(private var context: Context) {
     }
 
     fun forceInstall(next: Runnable? = null) {
-        val privateBusybox = FileWrite.getPrivateFilePath(context, "busybox")
-        if (!(File(privateBusybox).exists() || FileWrite.writePrivateFile(context.assets, "busybox.zip", "busybox", context) == privateBusybox)) {
+        val privateBusybox = com.omarea.common.shared.FileWrite.getPrivateFilePath(context, "busybox")
+        if (!(File(privateBusybox).exists() || com.omarea.common.shared.FileWrite.writePrivateFile(context.assets, "busybox.zip", "busybox", context) == privateBusybox)) {
             return
         }
         if (!busyboxInstalled()) {
@@ -118,7 +117,7 @@ class Busybox(private var context: Context) {
                     .setPositiveButton(
                             R.string.btn_confirm,
                             { _, _ ->
-                                if (MagiskExtend.magiskSupported()) {
+                                if (com.omarea.common.shared.MagiskExtend.magiskSupported()) {
                                     installModeChooser(privateBusybox, next)
                                 } else {
                                     installUseRoot(privateBusybox, next)

@@ -2,7 +2,7 @@ package com.omarea.vtools.dialogs
 
 import android.app.AlertDialog
 import android.content.Context
-import com.omarea.shell.KeepShellPublic
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.vtools.R
 
 /**

@@ -10,7 +10,7 @@ import android.os.Environment
 import android.os.Handler
 import android.provider.MediaStore
 import android.widget.Toast
-import com.omarea.shell.KeepShellPublic
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.vtools.R
 import org.json.JSONObject
 import java.io.BufferedReader

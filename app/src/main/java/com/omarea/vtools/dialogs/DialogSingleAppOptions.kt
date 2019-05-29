@@ -8,7 +8,7 @@ import android.net.Uri
 import android.os.Handler
 import android.widget.Toast
 import com.omarea.shared.CommonCmds
-import com.omarea.shared.MagiskExtend
+import com.omarea.common.shared.MagiskExtend
 import com.omarea.shared.model.Appinfo
 import com.omarea.shell.CheckRootStatus
 import com.omarea.vtools.R
@@ -203,11 +203,11 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         if (appDir == "/data/app") { // /data/app/xxx.apk
             val parent = File(app.path.toString())
             val outPutPath = "/system/app/"
-            result = MagiskExtend.createFileReplaceModule(outPutPath, app.path.toString(), app.packageName.toString(), app.appName.toString()); // MagiskExtend.replaceSystemDir(outPutPath, app.path.toString()) || MagiskExtend.createFileReplaceModule(outPutPath, app.path.toString(), app.packageName.toString());
+            result = com.omarea.common.shared.MagiskExtend.createFileReplaceModule(outPutPath, app.path.toString(), app.packageName.toString(), app.appName.toString()); // MagiskExtend.replaceSystemDir(outPutPath, app.path.toString()) || MagiskExtend.createFileReplaceModule(outPutPath, app.path.toString(), app.packageName.toString());
         } else { // /data/app/xxx.xxx.xxx/xxx.apk
             val parent = File(appDir)
             val outPutPath = "/system/app/" + app.packageName
-            result = MagiskExtend.createFileReplaceModule(outPutPath, appDir, app.packageName.toString(), app.appName.toString()); // MagiskExtend.replaceSystemDir(outPutPath, appDir) || MagiskExtend.createFileReplaceModule(outPutPath, appDir, app.packageName.toString());
+            result = com.omarea.common.shared.MagiskExtend.createFileReplaceModule(outPutPath, appDir, app.packageName.toString(), app.appName.toString()); // MagiskExtend.replaceSystemDir(outPutPath, appDir) || MagiskExtend.createFileReplaceModule(outPutPath, appDir, app.packageName.toString());
         }
         if (result) {
             Toast.makeText(context, "已通过Magisk完成操作，请重启手机~", Toast.LENGTH_LONG).show()
@@ -217,7 +217,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
     }
 
     private fun moveToSystem() {
-        if (CheckRootStatus.isMagisk() && CheckRootStatus.isTmpfs("/system/app") && !MagiskExtend.moduleInstalled()) {
+        if (CheckRootStatus.isMagisk() && CheckRootStatus.isTmpfs("/system/app") && !com.omarea.common.shared.MagiskExtend.moduleInstalled()) {
             android.support.v7.app.AlertDialog.Builder(context)
                     .setTitle("Magisk 副作用警告")
                     .setMessage("检测到你正在使用Magisk，并使用了一些会添加系统应用的模块，这导致/system/app被Magisk劫持并且无法写入！！")
@@ -231,7 +231,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                 .setTitle(app.appName)
                 .setMessage("转为系统应用后，将无法随意更新或卸载，并且可能会一直后台运行占用内存，继续转换吗？\n\n并非所有应用都可以转换为系统应用，有些转为系统应用后不能正常运行。\n\n确保你已解锁System分区或安装Magisk，转换完成后，请重启手机！")
                 .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                    if (MagiskExtend.magiskSupported()) {
+                    if (com.omarea.common.shared.MagiskExtend.magiskSupported()) {
                         moveToSystemMagisk()
                     } else {
                         moveToSystemExec()

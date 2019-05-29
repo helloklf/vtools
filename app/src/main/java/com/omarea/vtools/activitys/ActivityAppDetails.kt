@@ -25,10 +25,10 @@ import com.omarea.shared.*
 import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shared.helper.ShortcutHelper
 import com.omarea.shared.model.AppConfigInfo
-import com.omarea.shell.KeepShellPublic
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.shell.NoticeListing
 import com.omarea.shell.WriteSettings
-import com.omarea.ui.DialogHelper
+import com.omarea.common.ui.DialogHelper
 import com.omarea.ui.IntInputFilter
 import com.omarea.vaddin.IAppConfigAidlInterface
 import com.omarea.vtools.R
@@ -127,7 +127,7 @@ class ActivityAppDetails : AppCompatActivity() {
     private fun installVAddin() {
         val addin = "addin/xposed-addin.apk"
         // 解压应用内部集成的插件文件
-        val addinPath = FileWrite.writePrivateFile(assets, addin, "addin/xposed-addin.apk", this)
+        val addinPath = com.omarea.common.shared.FileWrite.writePrivateFile(assets, addin, "addin/xposed-addin.apk", this)
 
         // 如果应用内部集成的插件文件获取失败
         if (addinPath == null) {
@@ -155,7 +155,7 @@ class ActivityAppDetails : AppCompatActivity() {
         } else {
             // 让用户手动安装
             try {
-                val apk = FileWrite.writeFile(assets, addin, true)
+                val apk = com.omarea.common.shared.FileWrite.writeFile(assets, addin, true)
 
                 val intent = Intent(Intent.ACTION_VIEW);
                 intent.setDataAndType(Uri.fromFile(File((if (apk != null) apk else addinPath))), "application/vnd.android.package-archive");

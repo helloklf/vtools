@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">krscript</string>
+    <string name="btn_confirm">确定</string>
+    <string name="shell_executor">脚本执行器</string>
+    <string name="btn_cancel">取消</string>
+    <string name="btn_exit">退出</string>
+    <string name="btn_hide">隐藏</string>
+</resources>

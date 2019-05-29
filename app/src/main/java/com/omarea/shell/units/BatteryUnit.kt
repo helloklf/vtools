@@ -1,9 +1,9 @@
 package com.omarea.shell.units
 
 import com.omarea.shared.model.BatteryStatus
-import com.omarea.shell.KeepShellPublic
-import com.omarea.shell.KernelProrp
-import com.omarea.shell.RootFile
+import com.omarea.common.shell.KeepShellPublic
+import com.omarea.common.shell.KernelProrp
+import com.omarea.common.shell.RootFile
 import java.io.File
 
 /**

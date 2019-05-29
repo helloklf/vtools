@@ -5,7 +5,7 @@ import android.content.Context
 import android.os.Build
 import android.widget.Toast
 import com.omarea.shell.SysUtils
-import com.omarea.ui.DialogHelper
+import com.omarea.common.ui.DialogHelper
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import javax.xml.parsers.DocumentBuilderFactory

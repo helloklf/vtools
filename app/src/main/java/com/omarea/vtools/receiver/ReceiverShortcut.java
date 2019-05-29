@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import com.omarea.shell.KeepShellPublic;
+import com.omarea.common.shell.KeepShellPublic;
 
 public class ReceiverShortcut extends BroadcastReceiver {
     @Override

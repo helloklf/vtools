@@ -14,9 +14,8 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.shared.ConfigInstaller
-import com.omarea.shared.FileWrite
-import com.omarea.ui.ProgressBarDialog
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_addin_online.*
 import java.io.File
@@ -25,7 +24,6 @@ import java.io.IOException
 import java.net.URL
 import java.nio.charset.Charset
 import java.util.zip.ZipInputStream
-
 
 class ActivityAddinOnline : AppCompatActivity() {
     override fun onPostResume() {
@@ -111,8 +109,8 @@ class ActivityAddinOnline : AppCompatActivity() {
                 val inputStream = conn.getInputStream()
                 val buffer = inputStream.readBytes()
                 val cacheName = "caches/powercfg_downloaded.zip"
-                if (FileWrite.writePrivateFile(buffer, cacheName, baseContext)) {
-                    val cachePath = FileWrite.getPrivateFilePath(baseContext, cacheName)
+                if (com.omarea.common.shared.FileWrite.writePrivateFile(buffer, cacheName, baseContext)) {
+                    val cachePath = com.omarea.common.shared.FileWrite.getPrivateFilePath(baseContext, cacheName)
 
                     val zipInputStream = ZipInputStream(FileInputStream(File(cachePath)))
                     while (true) {

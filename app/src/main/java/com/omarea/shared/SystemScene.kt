@@ -7,8 +7,8 @@ import android.content.SharedPreferences
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.util.Log
-import com.omarea.shell.KeepShellAsync
-import com.omarea.shell.KeepShellPublic
+import com.omarea.common.shell.KeepShellAsync
+import com.omarea.common.shell.KeepShellPublic
 
 
 /**
@@ -152,7 +152,7 @@ class SystemScene(private var context: Context) {
             return
         }
         if (lowPowerModeShell!!.isEmpty()) {
-            lowPowerModeShell = FileWrite.writePrivateShellFile("custom/battery/power_save_set.sh", "power_save_set.sh", context)
+            lowPowerModeShell = com.omarea.common.shared.FileWrite.writePrivateShellFile("custom/battery/power_save_set.sh", "power_save_set.sh", context)
         }
         if (lowPowerModeShell.isNullOrEmpty()) {
             return

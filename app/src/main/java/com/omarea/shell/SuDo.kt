@@ -5,6 +5,8 @@ import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
+import com.omarea.common.shell.KeepShellPublic
+import com.omarea.common.shell.ShellEvents
 import java.io.BufferedReader
 import java.io.DataOutputStream
 import java.io.IOException

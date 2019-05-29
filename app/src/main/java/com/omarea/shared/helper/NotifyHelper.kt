@@ -13,7 +13,7 @@ import android.widget.RemoteViews
 import com.omarea.shared.BatteryHistoryStore
 import com.omarea.shared.ModeList
 import com.omarea.shared.model.BatteryStatus
-import com.omarea.shell.KeepShellPublic
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.vtools.R
 import com.omarea.vtools.activitys.ActivityQuickSwitchMode
 import kotlin.math.abs

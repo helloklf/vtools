@@ -13,12 +13,11 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import com.omarea.shared.CommonCmds
-import com.omarea.shared.MagiskExtend
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.model.Appinfo
-import com.omarea.shell.AsynSuShellUnit
+import com.omarea.common.shell.AsynSuShellUnit
 import com.omarea.shell.CheckRootStatus
-import com.omarea.shell.KeepShellPublic
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.vtools.R
 import java.io.File
 import java.util.*
@@ -385,7 +384,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
      */
     protected fun deleteAll() {
         confirm("删除应用", "已选择${apps.size}个应用，删除系统应用可能导致功能不正常，甚至无法开机，确定要继续删除？", Runnable {
-            if (CheckRootStatus.isMagisk() && !MagiskExtend.moduleInstalled() && (CheckRootStatus.isTmpfs("/system/app") || CheckRootStatus.isTmpfs("/system/priv-app"))) {
+            if (CheckRootStatus.isMagisk() && !com.omarea.common.shared.MagiskExtend.moduleInstalled() && (CheckRootStatus.isTmpfs("/system/app") || CheckRootStatus.isTmpfs("/system/priv-app"))) {
                 android.support.v7.app.AlertDialog.Builder(context)
                         .setTitle("Magisk 副作用警告")
                         .setMessage("检测到你正在使用Magisk作为ROOT权限管理器，并且/system/app和/system/priv-app目录已被某些模块修改，这可能导致这些目录被Magisk劫持并且无法写入！！")
@@ -411,8 +410,8 @@ open class DialogAppOptions(protected final var context: Context, protected var 
             sb.append("pm disable $packageName;")
 
             sb.append("echo '[delete ${item.appName}]'\n")
-            if (MagiskExtend.moduleInstalled()) {
-                MagiskExtend.deleteSystemPath(item.path.toString());
+            if (com.omarea.common.shared.MagiskExtend.moduleInstalled()) {
+                com.omarea.common.shared.MagiskExtend.deleteSystemPath(item.path.toString());
                 useMagisk = true
             } else {
                 val dir = item.dir.toString()

@@ -20,9 +20,9 @@ import com.omarea.shared.AppListHelper
 import com.omarea.shared.SceneMode
 import com.omarea.shared.helper.ShortcutHelper
 import com.omarea.shared.model.Appinfo
-import com.omarea.shell.KeepShellPublic
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.ui.FreezeAppAdapter
-import com.omarea.ui.ProgressBarDialog
+import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.vtools.R
 import com.omarea.vtools.activitys.ActivityFreezeApps
 import kotlinx.android.synthetic.main.fragment_freeze.*

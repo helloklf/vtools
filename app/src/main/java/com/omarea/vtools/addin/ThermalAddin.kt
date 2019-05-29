@@ -4,10 +4,9 @@ import android.app.AlertDialog
 import android.content.Context
 import android.widget.Toast
 import com.omarea.shared.CommonCmds
-import com.omarea.shared.MagiskExtend
-import com.omarea.shell.KeepShellPublic
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.shell.Platform
-import com.omarea.shell.RootFile
+import com.omarea.common.shell.RootFile
 import com.omarea.vtools.R
 
 /**
@@ -73,22 +72,22 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
     }
 
     private fun replaceThermalConfig(nolimits: String, baseName: String) {
-        if (MagiskExtend.moduleInstalled()) {
+        if (com.omarea.common.shared.MagiskExtend.moduleInstalled()) {
             val dialog = AlertDialog.Builder(context)
                     .setTitle("确定")
                     .setMessage("本次操作将通过Magisk覆盖系统文件，需要重启后生效！")
                     .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                        MagiskExtend.replaceSystemFile("${baseName}.conf", nolimits)
-                        MagiskExtend.replaceSystemFile("${baseName}-normal.conf", nolimits)
-                        MagiskExtend.replaceSystemFile("${baseName}-camera.conf", nolimits)
-                        MagiskExtend.replaceSystemFile("${baseName}-class0.conf", nolimits)
-                        MagiskExtend.replaceSystemFile("${baseName}-high.conf", nolimits)
-                        MagiskExtend.replaceSystemFile("${baseName}-map.conf", nolimits)
-                        MagiskExtend.replaceSystemFile("${baseName}-phone.conf", nolimits)
-                        MagiskExtend.replaceSystemFile("${baseName}-pubgmhd.conf", nolimits)
-                        MagiskExtend.replaceSystemFile("${baseName}-sgame.conf", nolimits)
-                        MagiskExtend.replaceSystemFile("${baseName}-tgame.conf", nolimits)
-                        MagiskExtend.replaceSystemFile("${baseName}-extreme.conf", nolimits)
+                        com.omarea.common.shared.MagiskExtend.replaceSystemFile("${baseName}.conf", nolimits)
+                        com.omarea.common.shared.MagiskExtend.replaceSystemFile("${baseName}-normal.conf", nolimits)
+                        com.omarea.common.shared.MagiskExtend.replaceSystemFile("${baseName}-camera.conf", nolimits)
+                        com.omarea.common.shared.MagiskExtend.replaceSystemFile("${baseName}-class0.conf", nolimits)
+                        com.omarea.common.shared.MagiskExtend.replaceSystemFile("${baseName}-high.conf", nolimits)
+                        com.omarea.common.shared.MagiskExtend.replaceSystemFile("${baseName}-map.conf", nolimits)
+                        com.omarea.common.shared.MagiskExtend.replaceSystemFile("${baseName}-phone.conf", nolimits)
+                        com.omarea.common.shared.MagiskExtend.replaceSystemFile("${baseName}-pubgmhd.conf", nolimits)
+                        com.omarea.common.shared.MagiskExtend.replaceSystemFile("${baseName}-sgame.conf", nolimits)
+                        com.omarea.common.shared.MagiskExtend.replaceSystemFile("${baseName}-tgame.conf", nolimits)
+                        com.omarea.common.shared.MagiskExtend.replaceSystemFile("${baseName}-extreme.conf", nolimits)
                         KeepShellPublic.doCmdSync("rm -rf /data/thermal")
 
                         Toast.makeText(context, "已通过Magisk更改参数，请重启手机~", Toast.LENGTH_SHORT).show()
@@ -134,15 +133,15 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
     }
 
     private fun removeThermal() {
-        if (MagiskExtend.moduleInstalled()) {
+        if (com.omarea.common.shared.MagiskExtend.moduleInstalled()) {
             val dialog = AlertDialog.Builder(context)
                     .setTitle("确定")
                     .setMessage("本次操作将通过Magisk覆盖系统文件，需要重启后生效！")
                     .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                        MagiskExtend.deleteSystemPath("/system/vendor/bin/thermal-engine")
-                        MagiskExtend.deleteSystemPath("/system/vendor/lib64/libthermalclient.so")
-                        MagiskExtend.deleteSystemPath("/system/vendor/lib64/libthermalioctl.so")
-                        MagiskExtend.deleteSystemPath("/system/vendor/lib/libthermalclient.so")
+                        com.omarea.common.shared.MagiskExtend.deleteSystemPath("/system/vendor/bin/thermal-engine")
+                        com.omarea.common.shared.MagiskExtend.deleteSystemPath("/system/vendor/lib64/libthermalclient.so")
+                        com.omarea.common.shared.MagiskExtend.deleteSystemPath("/system/vendor/lib64/libthermalioctl.so")
+                        com.omarea.common.shared.MagiskExtend.deleteSystemPath("/system/vendor/lib/libthermalclient.so")
                     })
                     .setNegativeButton(R.string.btn_cancel, { _, _ ->
                     })
@@ -169,11 +168,11 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
                             "cp /system/vendor/lib/libthermalclient.so /system/vendor/lib/libthermalclient.so.bak\n" +
                             "rm -f /system/vendor/lib/libthermalclient.so\n")
                     .toString()
-            if (MagiskExtend.moduleInstalled()) {
-                MagiskExtend.cancelReplace("/system/vendor/bin/thermal-engine")
-                MagiskExtend.cancelReplace("/system/vendor/lib64/libthermalclient.so")
-                MagiskExtend.cancelReplace("/system/vendor/lib64/libthermalioctl.so")
-                MagiskExtend.cancelReplace("/system/vendor/lib/libthermalclient.so")
+            if (com.omarea.common.shared.MagiskExtend.moduleInstalled()) {
+                com.omarea.common.shared.MagiskExtend.cancelReplace("/system/vendor/bin/thermal-engine")
+                com.omarea.common.shared.MagiskExtend.cancelReplace("/system/vendor/lib64/libthermalclient.so")
+                com.omarea.common.shared.MagiskExtend.cancelReplace("/system/vendor/lib64/libthermalioctl.so")
+                com.omarea.common.shared.MagiskExtend.cancelReplace("/system/vendor/lib/libthermalclient.so")
             }
 
             super.run()

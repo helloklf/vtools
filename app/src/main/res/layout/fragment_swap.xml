@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.omarea.ui.OverScrollView
+    <com.omarea.common.ui.OverScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -322,5 +322,5 @@
                 </TableRow>
             </TableLayout>
         </TableLayout>
-    </com.omarea.ui.OverScrollView>
+    </com.omarea.common.ui.OverScrollView>
 </FrameLayout>

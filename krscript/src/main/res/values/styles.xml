@@ -1,0 +1,12 @@
+<resources>
+    <style name="textTitle">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">14dp</item>
+    </style>
+
+    <style name="textSmall">
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:textSize">11dp</item>
+    </style>
+</resources>

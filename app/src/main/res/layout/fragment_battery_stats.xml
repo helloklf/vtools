@@ -39,7 +39,7 @@
             android:layout_height="40dp" />
     </LinearLayout>
 
-    <com.omarea.ui.OverScrollListView
+    <com.omarea.common.ui.OverScrollListView
         android:layout_weight="1"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="16dp"

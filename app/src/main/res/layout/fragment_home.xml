@@ -266,7 +266,7 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <com.omarea.ui.OverScrollGridView
+                <com.omarea.common.ui.OverScrollGridView
                     android:id="@+id/cpu_core_list"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
