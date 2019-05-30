@@ -36,7 +36,9 @@ class ActivityAddinOnline : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         ThemeSwitch.switchTheme(this)
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_addin_online)
+
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)

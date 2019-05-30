@@ -35,6 +35,7 @@ class CrashHandler constructor() : Thread.UncaughtExceptionHandler {
             } catch (ex: Exception) {
             }
         }
+        ex.printStackTrace()
         Log.e("vtools-Exception", ex.message)
         try {
             if (mContext != null) {

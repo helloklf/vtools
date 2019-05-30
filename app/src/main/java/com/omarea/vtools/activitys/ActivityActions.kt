@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import com.omarea.common.ui.ProgressBarDialog
@@ -20,11 +21,14 @@ class ActionPage : AppCompatActivity() {
     private var pageConfig:String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        ThemeSwitch.switchTheme(this)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_action_page)
+
         val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
-        setTitle(R.string.app_name)
+        // setTitle(R.string.app_name)
 
         // 显示返回按钮
         getSupportActionBar()!!.setHomeButtonEnabled(true);
@@ -34,6 +38,9 @@ class ActionPage : AppCompatActivity() {
             finish()
         });
 
+        /*
+        // 设置个漂亮的白色顶栏
+
         val window = window
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
         window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -41,12 +48,12 @@ class ActionPage : AppCompatActivity() {
         window.statusBarColor = Color.WHITE
         window.navigationBarColor = Color.WHITE
 
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             getWindow().decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
         } else {
             getWindow().decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
+        */
 
         // 读取intent里的参数
         val intent = this.intent

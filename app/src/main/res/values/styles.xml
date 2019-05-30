@@ -15,6 +15,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="AppThemeNight" parent="Theme.AppCompat">
@@ -29,6 +31,8 @@
         <item name="android:textColorSecondary">@android:color/darker_gray</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowAnimationStyle">@style/activityAnim</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="AppThemeLight" parent="AppTheme">
@@ -49,6 +53,7 @@
 
     <style name="AppThemeBlue" parent="AppThemeLight">
         <item name="android:navigationBarColor">@color/colorBlue</item>
+        <item name="android:statusBarColor">@color/colorBlue</item>
         <item name="colorPrimary">@color/colorBlue</item>
         <item name="colorPrimaryDark">@color/colorBlue</item>
         <item name="colorAccent">@color/colorBlue</item>
@@ -56,6 +61,7 @@
 
     <style name="AppThemeCyan" parent="AppThemeLight">
         <item name="android:navigationBarColor">@color/colorAccent</item>
+        <item name="android:statusBarColor">@color/colorAccent</item>
         <item name="colorPrimary">@color/colorAccent</item>
         <item name="colorPrimaryDark">@color/colorAccent</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -63,6 +69,7 @@
 
     <style name="AppThemeGreen" parent="AppThemeLight">
         <item name="android:navigationBarColor">@color/color_load_mid</item>
+        <item name="android:statusBarColor">@color/color_load_mid</item>
         <item name="colorPrimary">@color/color_load_mid</item>
         <item name="colorPrimaryDark">@color/color_load_mid</item>
         <item name="colorAccent">@color/color_load_mid</item>
@@ -70,6 +77,7 @@
 
     <style name="AppThemeOrange" parent="AppThemeLight">
         <item name="android:navigationBarColor">@color/color_load_hight</item>
+        <item name="android:statusBarColor">@color/color_load_hight</item>
         <item name="colorPrimary">@color/color_load_hight</item>
         <item name="colorPrimaryDark">@color/color_load_hight</item>
         <item name="colorAccent">@color/color_load_hight</item>
@@ -77,6 +85,7 @@
 
     <style name="AppThemeRed" parent="AppThemeLight">
         <item name="android:navigationBarColor">@color/newYearAccent</item>
+        <item name="android:statusBarColor">@color/newYearAccent</item>
         <item name="android:windowBackground">@color/newYearBgColor</item>
         <item name="colorPrimary">@color/newYearAccent</item>
         <item name="colorPrimaryDark">@color/newYearAccent</item>
@@ -85,6 +94,7 @@
 
     <style name="AppThemePink" parent="AppThemeLight">
         <item name="android:navigationBarColor">@color/pink</item>
+        <item name="android:statusBarColor">@color/pink</item>
         <item name="colorPrimary">@color/pink</item>
         <item name="colorPrimaryDark">@color/pink</item>
         <item name="colorAccent">@color/pink</item>
@@ -92,6 +102,7 @@
 
     <style name="AppThemePretty" parent="AppThemeLight">
         <item name="android:navigationBarColor">@color/pretty</item>
+        <item name="android:statusBarColor">@color/pretty</item>
         <item name="colorPrimary">@color/pretty</item>
         <item name="colorPrimaryDark">@color/pretty</item>
         <item name="colorAccent">@color/pretty</item>
@@ -99,6 +110,7 @@
 
     <style name="AppThemeViolet" parent="AppThemeLight">
         <item name="android:navigationBarColor">@color/violet</item>
+        <item name="android:statusBarColor">@color/violet</item>
         <item name="colorPrimary">@color/violet</item>
         <item name="colorPrimaryDark">@color/violet</item>
         <item name="colorAccent">@color/violet</item>
@@ -112,10 +124,16 @@
         <item name="android:windowAnimationStyle">@style/activityAnim</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+    <style name="AppThemeWhite" parent="AppThemeLight">
+        <item name="android:navigationBarColor">@android:color/white</item>
+        <item name="android:statusBarColor">@android:color/white</item>
+        <item name="colorPrimary">@color/colorAccent</item>
+        <item name="colorPrimaryDark">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
-    <style name="AppTheme.AppBarOverlay.Light" parent="ThemeOverlay.AppCompat.ActionBar">
-        <item name="colorControlNormal">?android:colorAccent</item>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="colorControlNormal">?android:textColorPrimary</item>
     </style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
@@ -181,5 +199,8 @@
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+    <style name="AppTheme.AppBarOverlay.Light" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="colorControlNormal">?android:textColorPrimary</item>
     </style>
 </resources>

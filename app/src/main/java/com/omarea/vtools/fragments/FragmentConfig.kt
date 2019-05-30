@@ -157,9 +157,9 @@ class FragmentConfig : Fragment() {
 
         configlist_tabhost.setup()
 
-        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("def_tab").setContent(R.id.configlist_tab0).setIndicator("应用场景"))
-        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("tab_3").setContent(R.id.blacklist_tab3).setIndicator(context!!.getString(R.string.autobooster_tab_system_scene)))
-        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("confg_tab").setContent(R.id.configlist_tab5).setIndicator("设置"))
+        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("def_tab").setContent(R.id.configlist_tab0).setIndicator("", context!!.getDrawable(R.drawable.tab_app)))
+        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("tab_3").setContent(R.id.blacklist_tab3).setIndicator("", context!!.getDrawable(R.drawable.tab_power)))
+        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("confg_tab").setContent(R.id.configlist_tab5).setIndicator("", context!!.getDrawable(R.drawable.tab_setting)))
         configlist_tabhost.currentTab = 0
 
         accu_switch.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
@@ -174,13 +174,13 @@ class FragmentConfig : Fragment() {
             Toast.makeText(context!!, "已自动清空耗电统计数据，以便于重新采集！", Toast.LENGTH_SHORT).show()
             reStartService()
         }
-        config_defaultlist.setOnItemClickListener { parent, view, position, id ->
+        config_defaultlist.setOnItemClickListener { parent, view2, position, id ->
             try {
                 val item = (parent.adapter.getItem(position) as Appinfo)
                 val intent = Intent(this.context, ActivityAppDetails::class.java)
                 intent.putExtra("app", item.packageName)
                 startActivityForResult(intent, REQUEST_APP_CONFIG)
-                lastClickRow = view
+                lastClickRow = view2
             } catch (ex: Exception) {
             }
         }

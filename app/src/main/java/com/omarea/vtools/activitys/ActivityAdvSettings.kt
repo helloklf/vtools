@@ -11,6 +11,7 @@ import android.os.Handler
 import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.view.View
 import android.widget.Switch
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_adv_settings.*
@@ -27,10 +28,22 @@ class ActivityAdvSettings : AppCompatActivity() {
 
     @SuppressLint("ApplySharedPref")
     override fun onCreate(savedInstanceState: Bundle?) {
+        ThemeSwitch.switchTheme(this)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_adv_settings)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+
+        val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
+        // setTitle(R.string.app_name)
+
+        // 显示返回按钮
+        getSupportActionBar()!!.setHomeButtonEnabled(true);
+        getSupportActionBar()!!.setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener({
+            _ ->
+            finish()
+        })
 
         spf = getSharedPreferences("adv", Context.MODE_PRIVATE)
 

@@ -5,22 +5,10 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <android.support.design.widget.AppBarLayout
+    <include
+        layout="@layout/layout_app_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:elevation="0dp"
-        android:theme="@style/AppTheme.AppBarOverlay.Light">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/white"
-            android:elevation="0dp"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:subtitleTextColor="@android:color/black"
-            app:titleTextColor="@android:color/black" />
-    </android.support.design.widget.AppBarLayout>
+        android:layout_height="match_parent" />
 
     <com.omarea.krscript.ui.ActionListView
         android:layout_marginTop="?android:actionBarSize"

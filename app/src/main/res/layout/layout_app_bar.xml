@@ -4,21 +4,26 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="false"
-    tools:context="com.omarea.vtools.activitys.ActivityMain">
+    android:fitsSystemWindows="false">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="0dp"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:foregroundTint="?android:textColorSecondary"
+        android:foregroundTintMode="screen"
+        android:theme="@style/AppTheme.AppBarOverlay.Light">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:foregroundTint="@color/colorAccent"
+            android:foregroundTintMode="src_over"
+            android:background="?android:statusBarColor"
             android:elevation="0dp"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:subtitleTextColor="?android:textColorSecondary"
+            app:titleTextColor="?android:textColorPrimary" />
     </android.support.design.widget.AppBarLayout>
 </android.support.design.widget.CoordinatorLayout>

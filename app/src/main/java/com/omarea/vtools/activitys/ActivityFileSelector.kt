@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.KeyEvent
+import android.view.View
 import android.widget.Toast
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.shared.CommonCmds
@@ -23,8 +24,19 @@ class ActivityFileSelector : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_file_selector)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+
+        val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
+        // setTitle(R.string.app_name)
+
+        // 显示返回按钮
+        getSupportActionBar()!!.setHomeButtonEnabled(true);
+        getSupportActionBar()!!.setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener({
+            _ ->
+            finish()
+        })
+
         if (intent.extras.containsKey("extension")) {
             extension = intent.extras.getString("extension")
             if (!extension.startsWith(".")) {

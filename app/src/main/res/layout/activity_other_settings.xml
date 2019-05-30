@@ -151,14 +151,16 @@
                 android:padding="8dp">
 
                 <Button
-                    android:layout_width="27dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="27dp"
                     android:background="@color/colorBlue"
                     android:onClick="onThemeClick"
                     android:tag="0" />
 
                 <Button
-                    android:layout_width="27dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="27dp"
                     android:layout_marginLeft="10dp"
                     android:background="@color/colorAccent"
@@ -166,7 +168,8 @@
                     android:tag="1" />
 
                 <Button
-                    android:layout_width="27dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="27dp"
                     android:layout_marginLeft="10dp"
                     android:background="@color/color_load_mid"
@@ -174,7 +177,8 @@
                     android:tag="2" />
 
                 <Button
-                    android:layout_width="27dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="27dp"
                     android:layout_marginLeft="10dp"
                     android:background="@color/color_load_hight"
@@ -182,7 +186,8 @@
                     android:tag="3" />
 
                 <Button
-                    android:layout_width="27dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="27dp"
                     android:layout_marginLeft="10dp"
                     android:background="@color/newYearAccent"
@@ -190,7 +195,8 @@
                     android:tag="4" />
 
                 <Button
-                    android:layout_width="27dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="27dp"
                     android:layout_marginLeft="10dp"
                     android:background="@color/pink"
@@ -198,7 +204,8 @@
                     android:tag="5" />
 
                 <Button
-                    android:layout_width="27dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="27dp"
                     android:layout_marginLeft="10dp"
                     android:background="@color/pretty"
@@ -206,7 +213,8 @@
                     android:tag="6" />
 
                 <Button
-                    android:layout_width="27dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="27dp"
                     android:layout_marginLeft="10dp"
                     android:background="@color/violet"
@@ -214,12 +222,22 @@
                     android:tag="7" />
 
                 <Button
-                    android:layout_width="27dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="27dp"
                     android:layout_marginLeft="10dp"
                     android:background="@color/black_overlay"
                     android:onClick="onThemeClick"
                     android:tag="8" />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="27dp"
+                    android:layout_marginLeft="10dp"
+                    android:background="@android:color/white"
+                    android:onClick="onThemeClick"
+                    android:tag="9" />
             </LinearLayout>
 
             <TextView
@@ -267,7 +285,6 @@
                 android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
-
 
     <include
         layout="@layout/layout_app_bar"

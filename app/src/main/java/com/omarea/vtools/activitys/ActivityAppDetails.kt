@@ -244,8 +244,20 @@ class ActivityAppDetails : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_app_details)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+
+        val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
+        // setTitle(R.string.app_name)
+
+        // 显示返回按钮
+        getSupportActionBar()!!.setHomeButtonEnabled(true);
+        getSupportActionBar()!!.setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener({
+            _ ->
+            // finish()
+            saveConfigAndFinish()
+        });
+
         val intent = this.intent
         if (intent == null) {
             setResult(_result, this.intent)

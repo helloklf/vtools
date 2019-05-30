@@ -49,8 +49,19 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_keyevent_settings)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+
+        val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
+        // setTitle(R.string.app_name)
+
+        // 显示返回按钮
+        getSupportActionBar()!!.setHomeButtonEnabled(true);
+        getSupportActionBar()!!.setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener({
+            _ ->
+            finish()
+        })
+
         setSwitchClick()
         key_event_state.setOnClickListener {
             try {

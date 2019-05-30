@@ -50,7 +50,7 @@ class FragmentMagisk : Fragment() {
         magisk_tabhost.addTab(magisk_tabhost.newTabSpec("system.prop").setContent(R.id.magisk_tab1).setIndicator("system.prop"))
         magisk_tabhost.addTab(magisk_tabhost.newTabSpec("system.file").setContent(R.id.magisk_tab2).setIndicator("system"))
         magisk_tabhost.addTab(magisk_tabhost.newTabSpec("before_start").setContent(R.id.magisk_tab3).setIndicator("post-fs-data"))
-        magisk_tabhost.addTab(magisk_tabhost.newTabSpec("after_start").setContent(R.id.magisk_tab4).setIndicator("service"))
+        // magisk_tabhost.addTab(magisk_tabhost.newTabSpec("after_start").setContent(R.id.magisk_tab4).setIndicator("service"))
         magisk_tabhost.currentTab = 0
 
         magisk_props.setText(com.omarea.common.shared.MagiskExtend.getProps());

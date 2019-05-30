@@ -20,6 +20,7 @@ class ActivityFreezeApps : FragmentActivity() {
 
         setContentView(R.layout.activity_freeze_apps)
         actionBar?.setDisplayHomeAsUpEnabled(true)
+
         //  得到当前界面的装饰视图
         if (Build.VERSION.SDK_INT >= 21) {
             val decorView = getWindow().getDecorView();

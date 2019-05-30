@@ -3,6 +3,8 @@ package com.omarea.vtools.activitys;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
+import android.view.View;
 
 import com.omarea.shared.SpfConfig;
 import com.omarea.vtools.R;
@@ -51,6 +53,13 @@ public class ThemeSwitch {
             }
             case 8: {
                 activity.setTheme(R.style.AppThemeNoActionBarNight);
+                break;
+            }
+            case 9: {
+                activity.setTheme(R.style.AppThemeWhite);
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                }
                 break;
             }
         }

@@ -147,8 +147,8 @@ class FragmentAddin : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val tabHost = view.findViewById(R.id.addin_tabhost) as TabHost
         tabHost.setup()
-        tabHost.addTab(tabHost.newTabSpec("tab_1").setContent(R.id.tab0).setIndicator("", context!!.getDrawable(R.drawable.system)))
-        tabHost.addTab(tabHost.newTabSpec("tab_page2").setContent(R.id.tab2).setIndicator("", context!!.getDrawable(R.drawable.app)))
+        tabHost.addTab(tabHost.newTabSpec("tab_1").setContent(R.id.tab0).setIndicator("", context!!.getDrawable(R.drawable.addin_favorites)))
+        tabHost.addTab(tabHost.newTabSpec("tab_page2").setContent(R.id.tab2).setIndicator("", context!!.getDrawable(R.drawable.addin_pages)))
         tabHost.currentTab = 0
         tabHost.setOnTabChangedListener({ tabId ->
             if (tabId == "tab_page2") {

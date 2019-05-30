@@ -277,7 +277,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:theme="@style/AppTheme.NoActionBar"
             android:name=".activitys.ActionPage" />
     </application>
 

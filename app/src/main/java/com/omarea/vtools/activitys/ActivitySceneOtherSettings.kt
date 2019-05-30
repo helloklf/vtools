@@ -43,8 +43,26 @@ class ActivitySceneOtherSettings : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_other_settings)
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+
+        val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
+        // setTitle(R.string.app_name)
+
+        // 显示返回按钮
+        getSupportActionBar()!!.setHomeButtonEnabled(true);
+        getSupportActionBar()!!.setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener({
+            _ ->
+            finish()
+        })
+
+        // 显示返回按钮
+        getSupportActionBar()!!.setHomeButtonEnabled(true);
+        getSupportActionBar()!!.setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener({
+            _ ->
+            finish()
+        });
 
         home_hide_in_recents.setOnCheckedChangeListener({ _, checked ->
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, checked).commit()
@@ -87,14 +105,14 @@ class ActivitySceneOtherSettings : AppCompatActivity() {
     fun onThemeClick(view: View) {
         val tag = view.tag.toString().toInt()
 
-        spf.edit().putInt(SpfConfig.GLOBAL_SPF_THEME, tag).commit()
+        spf.edit().putInt(SpfConfig.GLOBAL_SPF_THEME, tag).apply()
         this.recreate()
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
-        spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, settings_disable_selinux.isChecked).commit()
+        spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, settings_disable_selinux.isChecked).apply()
     }
 
     public override fun onPause() {

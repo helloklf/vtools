@@ -16,17 +16,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
-            <TabWidget
-                android:id="@android:id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#33dddddd" />
-
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_weight="1"
+                android:layout_height="0dp">
 
                 <FrameLayout
                     android:id="@+id/configlist_tab0"
@@ -538,82 +532,82 @@
                                 android:paddingRight="70dp"
                                 android:text="切换配置模式严格检查当前前台应用，避免悬浮窗抢占焦点导致意外的模式切换，但这会在频繁切换应用时增加耗电" />
 
-                            <android.support.v7.widget.CardView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                            <LinearLayout
+                                android:background="@drawable/krscript_item_ripple_inactive"
                                 android:layout_marginLeft="8dp"
                                 android:layout_marginTop="30dp"
                                 android:layout_marginRight="8dp"
-                                android:layout_marginBottom="20dp">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="vertical"
-                                    android:padding="8dp">
-
-                                    <TextView
-                                        style="@style/textSmall"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginBottom="10dp"
-                                        android:text="改动说明："
-                                        android:textColor="?colorAccent" />
-
-                                    <TextView
-                                        style="@style/textSmall"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:text="动态响应配置脚本位置为/data/powercfg.sh、/data/powercfg-base.sh（非必需，仅启动场景模式时执行一次），直接在Scene里选择脚本“保守/激进( 由本应用作者提供)”即可完成安装或更新。\n\n另外，非常感谢yc支持Scene，提供了更多机型的配置脚本文件，你也可以在本界面点击“在线”去安装。\n\n切换或更新配置脚本后，建议重启手机，以免出现配置冲突！" />
-
-                                    <TextView
-                                        style="@style/textSmall"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginTop="10dp"
-                                        android:text="长按应用可快速选择配置模式哦！"
-                                        android:textColor="?colorAccent" />
-
-                                </LinearLayout>
-                            </android.support.v7.widget.CardView>
-
-                            <android.support.v7.widget.CardView
+                                android:layout_marginBottom="20dp"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="8dp">
+
+                                <TextView
+                                    style="@style/textSmall"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="10dp"
+                                    android:text="改动说明："
+                                    android:textColor="?colorAccent" />
+
+                                <TextView
+                                    style="@style/textSmall"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="动态响应配置脚本位置为/data/powercfg.sh、/data/powercfg-base.sh（非必需，仅启动场景模式时执行一次），直接在Scene里选择脚本“保守/激进( 由本应用作者提供)”即可完成安装或更新。\n\n另外，非常感谢yc支持Scene，提供了更多机型的配置脚本文件，你也可以在本界面点击“在线”去安装。\n\n切换或更新配置脚本后，建议重启手机，以免出现配置冲突！" />
+
+                                <TextView
+                                    style="@style/textSmall"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp"
+                                    android:text="长按应用可快速选择配置模式哦！"
+                                    android:textColor="?colorAccent" />
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:background="@drawable/krscript_item_ripple_inactive"
                                 android:layout_marginLeft="8dp"
                                 android:layout_marginTop="10dp"
                                 android:layout_marginRight="8dp"
-                                android:layout_marginBottom="20dp">
+                                android:layout_marginBottom="20dp"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:padding="8dp">
 
-                                <LinearLayout
+                                <TextView
+                                    android:id="@+id/config_adv"
+                                    style="@style/textTitle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="10dp"
+                                    android:text="专家选项 >>"
+                                    android:textColor="?colorAccent" />
+
+                                <TextView
+                                    style="@style/textSmall"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:orientation="vertical"
-                                    android:padding="8dp">
-
-                                    <TextView
-                                        android:id="@+id/config_adv"
-                                        style="@style/textTitle"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginBottom="10dp"
-                                        android:text="专家选项 >>"
-                                        android:textColor="?colorAccent" />
-
-                                    <TextView
-                                        style="@style/textSmall"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:text="改变“场景模式”辅助功能基本运作逻辑的选项。一般保持默认就好了！！！" />
-                                </LinearLayout>
-                            </android.support.v7.widget.CardView>
+                                    android:text="改变“场景模式”辅助功能基本运作逻辑的选项。一般保持默认就好了！！！" />
+                            </LinearLayout>
                         </LinearLayout>
                     </com.omarea.common.ui.OverScrollView>
                 </FrameLayout>
             </FrameLayout>
+
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#33dddddd" />
+
         </LinearLayout>
 
         <Button
+            android:layout_gravity="bottom"
             android:id="@+id/btn_config_service_not_active"
             android:layout_width="match_parent"
             android:layout_height="55dp"
