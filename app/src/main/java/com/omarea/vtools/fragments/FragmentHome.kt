@@ -17,12 +17,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.shared.ConfigInstaller
 import com.omarea.shared.ModeList
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shared.model.CpuCoreInfo
-import com.omarea.common.shell.KeepShellPublic
 import com.omarea.shell.Props
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import com.omarea.shell.cpucontrol.GpuUtils
@@ -280,11 +280,9 @@ class FragmentHome : Fragment() {
             AlertDialog.Builder(context)
                     .setTitle("提示")
                     .setMessage("需要重启手机才能恢复默认调度，是否立即重启？")
-                    .setNegativeButton(R.string.btn_cancel, {
-                        _, _ ->
+                    .setNegativeButton(R.string.btn_cancel, { _, _ ->
                     })
-                    .setPositiveButton(R.string.btn_confirm, {
-                        _, _ ->
+                    .setPositiveButton(R.string.btn_confirm, { _, _ ->
                         KeepShellPublic.doCmdSync("sync\nsleep 1\nreboot")
                     })
                     .create()
@@ -310,11 +308,9 @@ class FragmentHome : Fragment() {
             if (!globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_POWERCFG_FRIST_NOTIFY, false)) {
                 AlertDialog.Builder(context).setTitle("提示")
                         .setMessage("如果你允许Scene自启动，下次开机后，Scene还会自动启用你刚刚选择的模式。\n\n如果你需要关闭调度，请再次点击相同的模式取消选中状态，然后重启手机！")
-                        .setNegativeButton(R.string.btn_confirm, {
-                            _, _ ->
+                        .setNegativeButton(R.string.btn_confirm, { _, _ ->
                         })
-                        .setPositiveButton(R.string.btn_dontshow, {
-                            _, _ ->
+                        .setPositiveButton(R.string.btn_dontshow, { _, _ ->
                             globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_POWERCFG_FRIST_NOTIFY, true).commit()
                         })
                         .create()

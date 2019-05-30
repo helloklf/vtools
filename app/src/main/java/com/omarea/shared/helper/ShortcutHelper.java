@@ -26,11 +26,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ShortcutHelper {
-    private String prefix = "*";
     private static int requestCount = 0;
+    private String prefix = "*";
 
     /**
      * 移除快捷方式（实践表明，不管什么版本的系统，基本上都不好使）
+     *
      * @param context
      * @param packageName
      * @return
@@ -183,8 +184,8 @@ public class ShortcutHelper {
                 if (shortcutManager.isRequestPinShortcutSupported()) {
                     List<ShortcutInfo> items = shortcutManager.getPinnedShortcuts();
                     for (ShortcutInfo item : items) {
-                        if(item.getId().equals(info.getId())) {
-                            shortcutManager.updateShortcuts(new ArrayList<ShortcutInfo>(){{
+                        if (item.getId().equals(info.getId())) {
+                            shortcutManager.updateShortcuts(new ArrayList<ShortcutInfo>() {{
                                 add(info);
                             }});
                             return true;
@@ -209,10 +210,10 @@ public class ShortcutHelper {
         try {
             ShortcutManager shortcutManager = (ShortcutManager) context.getSystemService(Context.SHORTCUT_SERVICE);
 
-            shortcutManager.removeDynamicShortcuts(new ArrayList<String>(){{
+            shortcutManager.removeDynamicShortcuts(new ArrayList<String>() {{
                 add(packageName);
             }});
-            shortcutManager.disableShortcuts(new ArrayList<String>(){{
+            shortcutManager.disableShortcuts(new ArrayList<String>() {{
                 add(packageName);
             }});
             return true;

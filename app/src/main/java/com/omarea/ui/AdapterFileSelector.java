@@ -9,8 +9,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.omarea.common.ui.ProgressBarDialog;
 import com.omarea.vtools.R;
+
 import java.io.File;
 import java.io.FileFilter;
 
@@ -69,7 +71,7 @@ public class AdapterFileSelector extends BaseAdapter {
                     File[] files = dir.listFiles(new FileFilter() {
                         @Override
                         public boolean accept(File pathname) {
-                        return pathname.exists() && (!pathname.isFile() || extension == null || extension.isEmpty() || pathname.getName().endsWith(extension));
+                            return pathname.exists() && (!pathname.isFile() || extension == null || extension.isEmpty() || pathname.getName().endsWith(extension));
                         }
                     });
 
@@ -124,7 +126,7 @@ public class AdapterFileSelector extends BaseAdapter {
         }
     }
 
-    public void refresh () {
+    public void refresh() {
         if (this.currentDir != null) {
             this.loadDir(currentDir);
         }
@@ -223,27 +225,28 @@ public class AdapterFileSelector extends BaseAdapter {
                 }
             }
             if (longClickDelete) {
-                view.setOnLongClickListener(new View.OnLongClickListener(){
+                view.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
-                    public boolean onLongClick(View v) {new AlertDialog.Builder(view.getContext()).setTitle("删除所选文件？")
-                            .setMessage(file.getAbsolutePath())
-                            .setPositiveButton(R.string.btn_confirm, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    if (!file.exists()) {
-                                        Toast.makeText(view.getContext(), "所选的文件已被删除，请重新选择！", Toast.LENGTH_SHORT).show();
-                                        return;
+                    public boolean onLongClick(View v) {
+                        new AlertDialog.Builder(view.getContext()).setTitle("删除所选文件？")
+                                .setMessage(file.getAbsolutePath())
+                                .setPositiveButton(R.string.btn_confirm, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        if (!file.exists()) {
+                                            Toast.makeText(view.getContext(), "所选的文件已被删除，请重新选择！", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                        selectedFile = file;
+                                        fileDelete.run();
                                     }
-                                    selectedFile = file;
-                                    fileDelete.run();
-                                }
-                            })
-                            .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
+                                })
+                                .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
 
-                                }
-                            }).create().show();
+                                    }
+                                }).create().show();
                         return true;
                     }
                 });

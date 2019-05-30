@@ -56,6 +56,17 @@ public class KeepShell(private var rootMode: Boolean = true) {
                     "exit 1\n" +
                     "fi;\n"
 
+    fun checkRoot(): Boolean {
+        val r = doCmdSync(checkRootState)
+        if (r == "error" || r.contains("permission denied") || r.contains("not allowed") || r.equals("not found")) {
+            return false
+        } else if (r == "root") {
+            return true
+        } else {
+            return false
+        }
+    }
+
     private fun getRuntimeShell() {
         if (p != null) return
         val getSu = Thread(Runnable {

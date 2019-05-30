@@ -249,9 +249,9 @@
             android:label="@string/title_activity_start_splash"
             android:theme="@style/AppThemeLight" />
         <activity
-            android:excludeFromRecents="true"
             android:name=".activitys.ActivityQuickStart"
             android:configChanges="orientation|keyboardHidden|screenSize"
+            android:excludeFromRecents="true"
             android:label="@string/title_activity_shortcut"
             android:theme="@style/AppThemeTransparent">
             <intent-filter>
@@ -260,21 +260,25 @@
             </intent-filter>
         </activity>
         <activity
-            android:launchMode="singleTop"
+            android:name=".activitys.ActivityFreezeApps"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:enabled="false"
             android:excludeFromRecents="false"
             android:icon="@drawable/freeze_logo"
-            android:roundIcon="@drawable/freeze_logo"
-            android:name=".activitys.ActivityFreezeApps"
-            android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_freeze"
+            android:launchMode="singleTop"
+            android:roundIcon="@drawable/freeze_logo"
             android:theme="@style/AppThemeLight">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:theme="@style/AppTheme.NoActionBar"
+            android:name=".activitys.ActionPage" />
     </application>
 
 </manifest>

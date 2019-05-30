@@ -8,10 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.omarea.shared.CommonCmds
 import com.omarea.common.shell.RootFile
-import com.omarea.ui.AdapterFileSelector
 import com.omarea.common.ui.ProgressBarDialog
+import com.omarea.shared.CommonCmds
+import com.omarea.ui.AdapterFileSelector
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.fragment_magisk.*
 import java.io.File
@@ -30,14 +30,12 @@ class FragmentMagisk : Fragment() {
             if (!com.omarea.common.shared.MagiskExtend.moduleInstalled()) {
                 AlertDialog.Builder(context!!).setTitle("安装Magisk拓展？")
                         .setMessage("安装Scene提供的Magisk拓展模块，从而在不修改系统文件的情况下，更改一些参数~")
-                        .setPositiveButton(R.string.btn_confirm, {
-                            _, _ ->
+                        .setPositiveButton(R.string.btn_confirm, { _, _ ->
                             com.omarea.common.shared.MagiskExtend.magiskModuleInstall(this.context)
                             Toast.makeText(context, "操作已执行~", Toast.LENGTH_LONG).show()
                             this@FragmentMagisk.activity!!.recreate()
                         })
-                        .setNegativeButton(R.string.btn_cancel, {
-                            _, _ ->
+                        .setNegativeButton(R.string.btn_cancel, { _, _ ->
                         })
                         .create()
                         .show()
@@ -79,7 +77,7 @@ class FragmentMagisk : Fragment() {
         }
         magisk_beforestart_save.setOnClickListener {
             if (com.omarea.common.shared.FileWrite.writePrivateFile(magisk_beforestart.text.toString().toByteArray(), "magisk_post-fs-data.sh", context!!)) {
-                if(com.omarea.common.shared.MagiskExtend.updateFsPostDataSH(com.omarea.common.shared.FileWrite.getPrivateFilePath(context!!, "magisk_post-fs-data.sh"))){
+                if (com.omarea.common.shared.MagiskExtend.updateFsPostDataSH(com.omarea.common.shared.FileWrite.getPrivateFilePath(context!!, "magisk_post-fs-data.sh"))) {
                     magisk_beforestart.setText(com.omarea.common.shared.MagiskExtend.getFsPostDataSH());
                     Toast.makeText(context!!, "已保存更改，重启后生效 ^_~ ", Toast.LENGTH_LONG).show()
                 } else {

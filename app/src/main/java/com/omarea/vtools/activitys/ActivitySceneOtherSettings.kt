@@ -9,11 +9,11 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.Switch
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.shared.CommonCmds
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shell.AppErrorLogcat
-import com.omarea.common.shell.KeepShellPublic
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_other_settings.*
 

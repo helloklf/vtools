@@ -22,7 +22,6 @@ public class ActionParamInfo {
     public String type;
     public boolean readonly;
     public ArrayList<ActionParamOption> options;
-    //FIXME: 这是新增的，后面要把获取options的脚本放到这里，在执行时获取选项，而不是在读取配置时直接获取options
     public String optionsSh = "";
 
     public static class ParamInfoFilter implements InputFilter {

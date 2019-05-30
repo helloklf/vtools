@@ -21,7 +21,7 @@ import com.omarea.vtools.R
  *
  * @ClassName WindowUtils
  */
-class FloatVitualTouchBar(context: AccessibilityService, var isLandscapf:Boolean = false) {
+class FloatVitualTouchBar(context: AccessibilityService, var isLandscapf: Boolean = false) {
     private var bottomView: View? = null
     private var leftView: View? = null
     private var rightView: View? = null
@@ -137,11 +137,11 @@ class FloatVitualTouchBar(context: AccessibilityService, var isLandscapf:Boolean
         val view = LayoutInflater.from(context).inflate(R.layout.fw_vitual_touch_bar, null)
         val bar = view.findViewById<TouchBarView>(R.id.bottom_touch_bar)
 
-        bar.setOnLongClickListener{ _ ->
+        bar.setOnLongClickListener { _ ->
             performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
             return@setOnLongClickListener false
         }
-        bar.setOnClickListener{ _ ->
+        bar.setOnClickListener { _ ->
             performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
             return@setOnClickListener
         }
@@ -191,11 +191,11 @@ class FloatVitualTouchBar(context: AccessibilityService, var isLandscapf:Boolean
 
         val bar = view.findViewById<TouchBarView>(R.id.bottom_touch_bar)
 
-        bar.setOnLongClickListener{ _ ->
+        bar.setOnLongClickListener { _ ->
             performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_RECENTS)
             return@setOnLongClickListener false
         }
-        bar.setOnClickListener{ _ ->
+        bar.setOnClickListener { _ ->
             performGlobalAction(context, AccessibilityService.GLOBAL_ACTION_BACK)
             return@setOnClickListener
         }

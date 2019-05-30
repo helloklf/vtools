@@ -19,9 +19,9 @@
             android:id="@+id/notify_mode"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginBottom="5dp"
             android:layout_marginStart="5dp"
             android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:gravity="center_vertical"
             android:src="@drawable/shortcut_p2" />
 
@@ -99,10 +99,10 @@
             android:id="@+id/notify_battery_icon"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginEnd="5dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
             android:gravity="center_vertical"
             android:src="@drawable/b_2" />
     </LinearLayout>

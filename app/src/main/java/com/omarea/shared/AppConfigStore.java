@@ -96,8 +96,9 @@ public class AppConfigStore extends SQLiteOpenHelper {
             return true;
         } catch (Exception ex) {
             return false;
+        }
     }
-    }
+
     public ArrayList<String> getDozeAppList() {
         ArrayList<String> list = new ArrayList<String>();
         try {

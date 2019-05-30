@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<actions>
+    <resource file="file:///android_asset/custom/common/props.sh" />
+    <resource file="file:///android_asset/custom/common/magisk.sh" />
+    <resource file="file:///android_asset/custom/common/magisk_plus.sh" />
+    <resource file="file:///android_asset/custom/common/empty" />
+
+    <group title="界面">
+        <switch>
+            <title>虚拟键设备</title>
+            <desc>标识当前设备没有实体按键，MIUI系统可以通过本功能启用全面屏手势，其它系统可以启用虚拟键。重启生效！</desc>
+            <getstate>file:///android_asset/custom/switchs/mainkey_get.sh</getstate>
+            <setstate>file:///android_asset/custom/switchs/mainkey_set.sh</setstate>
+        </switch>
+        <action>
+            <title>过渡动画时长</title>
+            <desc>调整各种动画时长</desc>
+            <params>
+                <param name="window_animation_scale" desc="弹窗动画时长"
+                    options-sh="file:///android_asset/custom/actions/anima_level_options.sh"
+                    value="1" value-sh="settings get global window_animation_scale" />
+                <param name="transition_animation_scale" desc="界面切换动画时长"
+                    options-sh="file:///android_asset/custom/actions/anima_level_options.sh"
+                    value="1" value-sh="settings get global transition_animation_scale" />
+                <param name="animator_duration_scale" desc="动画程序时长"
+                    options-sh="file:///android_asset/custom/actions/anima_level_options.sh"
+                    value="1" value-sh="settings get global animator_duration_scale" />
+            </params>
+            <script>
+                settings put global window_animation_scale $window_animation_scale
+                settings put global transition_animation_scale $transition_animation_scale
+                settings put global animator_duration_scale $animator_duration_scale
+                echo 'OK!'
+            </script>
+        </action>
+    </group>
+
+    <group title="性能">
+        <switch>
+            <title>Force Software GLES</title>
+            <desc>强制软件GLES渲染，开启此选项可能增加耗电甚至界面黑屏，如果默认开启，可尝试关闭</desc>
+            <getstate>getprop persist.sys.force_sw_gles</getstate>
+            <setstate>
+                setprop persist.sys.force_sw_gles $state
+                echo '可能需要重启才会生效'
+            </setstate>
+        </switch>
+        <switch support="file:///android_asset/custom/switchs/android_n.sh">
+            <title>强制分屏</title>
+            <desc>适用于Android 7.0+，同开发者设置中的“强制将Activity设为可调整大小”选项。开启此项，从而对声明支持分屏的应用进行分屏操作！</desc>
+            <getstate>file:///android_asset/custom/switchs/force_resize_get.sh</getstate>
+            <setstate>file:///android_asset/custom/switchs/force_resize_set.sh</setstate>
+        </switch>
+        <switch support="file:///android_asset/custom/switchs/qualcomm/msm_booster_support.sh">
+            <title>Performance Boost Config</title>
+            <desc>系统根据你启动应用或切换界面的操作，短时间内将CPU频率提高到最佳值（并且不受频率自定义频率限制），提高流畅度增加耗电</desc>
+            <getstate>file:///android_asset/custom/switchs/qualcomm/msm_booster_get.sh</getstate>
+            <setstate>file:///android_asset/custom/switchs/qualcomm/msm_booster_set.sh</setstate>
+        </switch>
+        <switch support="file:///android_asset/custom/switchs/qualcomm/msm_perfd_support.sh">
+            <title>Perfd</title>
+            <desc>系统根据你启动应用或切换界面的操作，短时间内将CPU频率提高到最佳值（并且不受频率自定义频率限制），提高流畅度增加耗电</desc>
+            <getstate>file:///android_asset/custom/switchs/qualcomm/msm_perfd_get.sh</getstate>
+            <setstate>file:///android_asset/custom/switchs/qualcomm/msm_perfd_set.sh</setstate>
+        </switch>
+        <action>
+            <title>低电量级别</title>
+            <desc>设置低电量级别，以及触发低电量模式的级别</desc>
+            <params>
+                <param name="level" desc="低电量模式触发级别"
+                    options-sh="file:///android_asset/custom/actions/power_level_options.sh"
+                    value-sh="settings get global low_power_trigger_level" />
+                <param name="levelmax" desc="低电量提示级别"
+                    options-sh="file:///android_asset/custom/actions/power_level_options.sh"
+                    value-sh="settings get global low_power_trigger_level_max" />
+            </params>
+            <script>file:///android_asset/custom/actions/low_power_level_set.sh</script>
+        </action>
+        <action>
+            <title>修改dex2oat线程数</title>
+            <desc>增加核心线程数（不超过CPU核心数量）可以提高应用安装效率，但会造成应用安装过程中卡顿！</desc>
+            <script>file:///android_asset/custom/actions/dex2oat_threads_set.sh</script>
+            <params>
+                <param name="boot" desc="启动时(boot-dex2oat-threads)"
+                    options-sh="file:///android_asset/custom/actions/thread_count_options.sh"
+                    value-sh="getprop dalvik.vm.boot-dex2oat-threads" />
+                <param name="dex2oat" desc="启动后(dex2oat-threads)"
+                    options-sh="file:///android_asset/custom/actions/thread_count_options.sh"
+                    value-sh="getprop dalvik.vm.dex2oat-threads" />
+                <param name="image" desc="编译启动映像(image-dex2oat-threads)"
+                    options-sh="file:///android_asset/custom/actions/thread_count_options.sh"
+                    value-sh="getprop dalvik.vm.image-dex2oat-threads" />
+                <param name="other" desc="dex2oat_thread_count" readonly="readonly">
+                    <option value="">默认</option>
+                </param>
+            </params>
+        </action>
+        <action confirm="true">
+            <title>优化系统应用</title>
+            <desc>适用于Android N+，使用Speed模式对系统应用进行dex2oat编译。建议官改系统刷完开机后进行此操作，从而恢复流畅度！</desc>
+            <script>file:///android_asset/custom/actions/sys_compile.sh</script>
+        </action>
+        <action support="file:///android_asset/custom/actions/renderer_support.sh">
+            <title>HWUI渲染引擎</title>
+            <desc sh="file:///android_asset/custom/actions/renderer_desc.sh" />
+            <params>
+                <param name="renderer"
+                    options-sh="file:///android_asset/custom/actions/renderer_options.sh"
+                    value-sh="file:///android_asset/custom/actions/renderer_get.sh" />
+            </params>
+            <script>file:///android_asset/custom/actions/renderer_set.sh</script>
+        </action>
+    </group>
+
+    <group title="功能">
+        <switch>
+            <title>Camera2 HAL、EIS</title>
+            <desc>启用HAL和EIS，从而支持谷歌相机HDR+功能或避免闪退（谷歌相机需要自行下载适合自己机型的版本）。可能导致相机无法开启或切换缓慢</desc>
+            <getstate>file:///android_asset/custom/switchs/gcm_get.sh</getstate>
+            <setstate>file:///android_asset/custom/switchs/gcm_set.sh</setstate>
+        </switch>
+        <action confirm="true">
+            <title>清理电池优化白名单</title>
+            <desc>适用于Android M+，清理Doze模式白名单应用（某些系统喜欢把一些应用自动添加到白名单，导致这些应用无法被休眠！）</desc>
+            <script>file:///android_asset/custom/actions/doze_clear.sh</script>
+        </action>
+        <action confirm="true">
+            <title>清空耗电记录</title>
+            <desc>清空应用耗电记录和电池曲线数据，并不是还原电池寿命！</desc>
+            <script>file:///android_asset/custom/actions/battery_history_clear.sh</script>
+        </action>
+    </group>
+</actions>

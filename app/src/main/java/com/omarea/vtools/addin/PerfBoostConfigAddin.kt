@@ -4,8 +4,6 @@ import android.content.Context
 import android.os.Build
 import android.widget.Toast
 import com.omarea.shared.CommonCmds
-import com.omarea.common.shared.FileWrite
-import com.omarea.common.shared.MagiskExtend
 import com.omarea.shell.Platform
 
 /**

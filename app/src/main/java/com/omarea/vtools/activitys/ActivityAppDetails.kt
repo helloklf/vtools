@@ -21,14 +21,14 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Switch
 import android.widget.Toast
+import com.omarea.common.shell.KeepShellPublic
+import com.omarea.common.ui.DialogHelper
 import com.omarea.shared.*
 import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shared.helper.ShortcutHelper
 import com.omarea.shared.model.AppConfigInfo
-import com.omarea.common.shell.KeepShellPublic
 import com.omarea.shell.NoticeListing
 import com.omarea.shell.WriteSettings
-import com.omarea.common.ui.DialogHelper
 import com.omarea.ui.IntInputFilter
 import com.omarea.vaddin.IAppConfigAidlInterface
 import com.omarea.vtools.R
@@ -469,7 +469,7 @@ class ActivityAppDetails : AppCompatActivity() {
         app_details_freeze.setOnClickListener {
             val value = (it as Switch).isChecked
             if (value) {
-                if(ShortcutHelper().createShortcut(this.applicationContext, appConfigInfo.packageName)) {
+                if (ShortcutHelper().createShortcut(this.applicationContext, appConfigInfo.packageName)) {
                     appConfigInfo.freeze = true
                     KeepShellPublic.doCmdSync("pm disable " + appConfigInfo.packageName)
                     Toast.makeText(this, "当前应用已禁用，但你可以通过刚刚添加的快捷方式启动^_^", Toast.LENGTH_LONG).show()

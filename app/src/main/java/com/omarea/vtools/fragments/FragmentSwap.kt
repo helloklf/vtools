@@ -14,15 +14,15 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.Switch
 import android.widget.Toast
-import com.omarea.shared.SpfConfig
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.shell.RootFile
+import com.omarea.common.ui.ProgressBarDialog
+import com.omarea.shared.SpfConfig
 import com.omarea.shell.SysUtils
 import com.omarea.shell.units.ChangeZRAM
 import com.omarea.shell.units.LMKUnit
 import com.omarea.ui.AdapterSwaplist
-import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.fragment_swap.*
 import java.io.File

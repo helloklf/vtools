@@ -1,5 +1,7 @@
 <resources>
+
     <style name="NotificationInfo" parent="android:TextAppearance.Material.Notification.Info" />
+
     <style name="NotificationTitle" parent="android:TextAppearance.Material.Notification.Title" />
 
     <style name="AppTheme" parent="Theme.AppCompat.Light">
@@ -110,7 +112,11 @@
         <item name="android:windowAnimationStyle">@style/activityAnim</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+    </style>
+    <style name="AppTheme.AppBarOverlay.Light" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="colorControlNormal">?android:colorAccent</item>
+    </style>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
@@ -156,10 +162,12 @@
         <item name="android:taskCloseEnterAnimation">@anim/task_close_enter</item>
         <item name="android:taskCloseExitAnimation">@anim/task_close_exit</item>
     </style>
+
     <style name="windowAnim">
         <item name="android:windowExitAnimation">@anim/dialog_exit</item>
         <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
     </style>
+
     <style name="SeachViewActivityTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">#fff</item>
         <item name="colorPrimaryDark">#fff</item>
@@ -168,5 +176,10 @@
         <item name="android:textColorSecondary">@android:color/white</item>
         <!--修改searchView样式-->
         <!--<item name="searchViewStyle">@style/SearchViewStyle</item>-->
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 </resources>

@@ -152,12 +152,10 @@ class TouchBarView : View {
                     if (orientation == LEFT) {
                         a = touchCurrentX
                         b = touchStartX
-                    }
-                    else if (orientation == RIGHT) {
+                    } else if (orientation == RIGHT) {
                         a = touchStartX
                         b = touchCurrentX
-                    }
-                    else if (orientation == BOTTOM) {
+                    } else if (orientation == BOTTOM) {
                         a = touchStartY
                         b = touchCurrentY
                     }
@@ -208,14 +206,12 @@ class TouchBarView : View {
                             // 向屏幕内侧滑动 - 停顿250ms 打开最近任务，不停顿则“返回”
                             if (isLongTimeGesture) performLongClick() else performClick()
                         }
-                    }
-                    else if (orientation == RIGHT) {
+                    } else if (orientation == RIGHT) {
                         if (touchStartX - event.x > FLIP_DISTANCE) {
                             // 向屏幕内侧滑动 - 停顿250ms 打开最近任务，不停顿则“返回”
                             if (isLongTimeGesture) performLongClick() else performClick()
                         }
-                    }
-                    else if (orientation == BOTTOM) {
+                    } else if (orientation == BOTTOM) {
                         if (touchStartY - event.y > FLIP_DISTANCE) {
                             if (isLongTimeGesture) performLongClick() else performClick()
                         }

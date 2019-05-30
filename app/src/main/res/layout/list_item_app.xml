@@ -20,10 +20,10 @@
         android:layout_height="45dp"
         android:layout_gravity="center"
         android:layout_toRightOf="@+id/select_state"
-        android:maxHeight="45dp"
         android:maxWidth="45dp"
-        android:minHeight="45dp"
-        android:minWidth="45dp" />
+        android:maxHeight="45dp"
+        android:minWidth="45dp"
+        android:minHeight="45dp" />
 
     <TextView
         android:id="@+id/ItemEnabledStateText"
@@ -39,8 +39,8 @@
         android:id="@+id/ItemWranText"
         android:layout_width="40dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
         android:layout_below="@id/ItemEnabledStateText"
+        android:layout_alignParentRight="true"
         android:minWidth="40dp"
         android:textAlignment="textEnd"
         android:textColor="#d00"
@@ -82,8 +82,8 @@
         android:id="@+id/ItemPath"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/center"
         android:layout_below="@id/center"
+        android:layout_alignLeft="@+id/center"
         android:layout_toLeftOf="@+id/ItemEnabledStateText"
         android:paddingLeft="7dp"
         android:text=""

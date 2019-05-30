@@ -10,10 +10,10 @@ import android.os.Build
 import android.support.v4.app.NotificationCompat
 import android.util.Log
 import android.widget.RemoteViews
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.shared.BatteryHistoryStore
 import com.omarea.shared.ModeList
 import com.omarea.shared.model.BatteryStatus
-import com.omarea.common.shell.KeepShellPublic
 import com.omarea.vtools.R
 import com.omarea.vtools.activitys.ActivityQuickSwitchMode
 import kotlin.math.abs

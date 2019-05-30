@@ -31,8 +31,8 @@
                     android:id="@+id/settings_autoinstall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_column="0"
                     android:layout_row="5"
+                    android:layout_column="0"
                     android:padding="8dp"
                     android:text="@string/accessbility_autoclick"
                     android:textColor="?android:attr/textColorPrimary"
@@ -43,11 +43,11 @@
                     android:id="@+id/textView11"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_column="0"
                     android:layout_row="6"
-                    android:paddingBottom="8dp"
+                    android:layout_column="0"
                     android:paddingLeft="8dp"
                     android:paddingRight="8dp"
+                    android:paddingBottom="8dp"
                     android:text="@string/accessbility_autoclick_desc"
                     android:textColor="?android:attr/textColorSecondary"
                     android:textSize="10dp"
@@ -55,11 +55,11 @@
             </GridLayout>
 
             <Switch
-                android:enabled="false"
                 android:id="@+id/home_hide_in_recents"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
+                android:enabled="false"
                 android:padding="8dp"
                 android:text="@string/home_hide_in_recents"
                 android:textColor="?android:attr/textColorPrimary"
@@ -68,9 +68,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="8dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
+                android:paddingBottom="8dp"
                 android:text="@string/home_hide_in_recents_desc"
                 android:textColor="?android:attr/textColorSecondary"
                 android:textSize="10dp" />
@@ -88,9 +88,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="8dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
+                android:paddingBottom="8dp"
                 android:text="@string/auto_start_compile_desc"
                 android:textColor="?android:attr/textColorSecondary"
                 android:textSize="10dp" />
@@ -108,9 +108,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="8dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
+                android:paddingBottom="8dp"
                 android:text="@string/accessbility_delay_desc"
                 android:textColor="?android:attr/textColorSecondary"
                 android:textSize="10dp" />
@@ -129,128 +129,142 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="8dp"
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
+                android:paddingBottom="8dp"
                 android:text="@string/settings_disable_selinux_desc"
                 android:textColor="?android:attr/textColorSecondary"
                 android:textSize="10dp" />
 
             <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:padding="8dp"
                 android:text="@string/settings_theme"
                 android:textColor="?android:attr/textColorPrimary"
-                android:textStyle="bold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:textStyle="bold" />
+
             <LinearLayout
-                android:padding="8dp"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="8dp">
+
                 <Button
-                    android:onClick="onThemeClick"
-                    android:tag="0"
-                    android:background="@color/colorBlue"
                     android:layout_width="27dp"
-                    android:layout_height="27dp" />
-                <Button
+                    android:layout_height="27dp"
+                    android:background="@color/colorBlue"
                     android:onClick="onThemeClick"
-                    android:tag="1"
+                    android:tag="0" />
+
+                <Button
+                    android:layout_width="27dp"
+                    android:layout_height="27dp"
                     android:layout_marginLeft="10dp"
                     android:background="@color/colorAccent"
-                    android:layout_width="27dp"
-                    android:layout_height="27dp" />
-                <Button
                     android:onClick="onThemeClick"
-                    android:tag="2"
+                    android:tag="1" />
+
+                <Button
+                    android:layout_width="27dp"
+                    android:layout_height="27dp"
                     android:layout_marginLeft="10dp"
                     android:background="@color/color_load_mid"
-                    android:layout_width="27dp"
-                    android:layout_height="27dp" />
-                <Button
                     android:onClick="onThemeClick"
-                    android:tag="3"
+                    android:tag="2" />
+
+                <Button
+                    android:layout_width="27dp"
+                    android:layout_height="27dp"
                     android:layout_marginLeft="10dp"
                     android:background="@color/color_load_hight"
-                    android:layout_width="27dp"
-                    android:layout_height="27dp" />
-                <Button
                     android:onClick="onThemeClick"
-                    android:tag="4"
+                    android:tag="3" />
+
+                <Button
+                    android:layout_width="27dp"
+                    android:layout_height="27dp"
                     android:layout_marginLeft="10dp"
                     android:background="@color/newYearAccent"
-                    android:layout_width="27dp"
-                    android:layout_height="27dp" />
-                <Button
                     android:onClick="onThemeClick"
-                    android:tag="5"
+                    android:tag="4" />
+
+                <Button
+                    android:layout_width="27dp"
+                    android:layout_height="27dp"
                     android:layout_marginLeft="10dp"
                     android:background="@color/pink"
-                    android:layout_width="27dp"
-                    android:layout_height="27dp" />
-                <Button
                     android:onClick="onThemeClick"
-                    android:tag="6"
+                    android:tag="5" />
+
+                <Button
+                    android:layout_width="27dp"
+                    android:layout_height="27dp"
                     android:layout_marginLeft="10dp"
                     android:background="@color/pretty"
-                    android:layout_width="27dp"
-                    android:layout_height="27dp" />
-                <Button
                     android:onClick="onThemeClick"
-                    android:tag="7"
+                    android:tag="6" />
+
+                <Button
+                    android:layout_width="27dp"
+                    android:layout_height="27dp"
                     android:layout_marginLeft="10dp"
                     android:background="@color/violet"
-                    android:layout_width="27dp"
-                    android:layout_height="27dp" />
-                <Button
                     android:onClick="onThemeClick"
-                    android:tag="8"
+                    android:tag="7" />
+
+                <Button
+                    android:layout_width="27dp"
+                    android:layout_height="27dp"
                     android:layout_marginLeft="10dp"
                     android:background="@color/black_overlay"
-                    android:layout_width="27dp"
-                    android:layout_height="27dp" />
+                    android:onClick="onThemeClick"
+                    android:tag="8" />
             </LinearLayout>
 
             <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:padding="8dp"
                 android:text="@string/settings_logcat_title"
                 android:textColor="?android:attr/textColorPrimary"
-                android:textStyle="bold"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:textStyle="bold" />
+
             <LinearLayout
-                android:layout_marginBottom="8dp"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:orientation="horizontal"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp">
+
                 <TextView
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
                     android:text="@string/settings_logcat_desc"
                     android:textColor="?android:attr/textColorSecondary"
                     android:textSize="10dp" />
+
                 <Button
-                    android:layout_gravity="center_vertical"
-                    android:textSize="9dp"
-                    android:layout_marginLeft="10dp"
                     android:id="@+id/settings_logcat"
                     style="@style/Widget.AppCompat.ActionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="10dp"
                     android:background="@drawable/btn_bg"
                     android:text="@string/settings_logcat_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp" />
+                    android:textSize="9dp" />
             </LinearLayout>
+
             <EditText
-                android:visibility="gone"
-                android:textSize="10dp"
                 android:id="@+id/settings_log_content"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:textSize="10dp"
+                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 

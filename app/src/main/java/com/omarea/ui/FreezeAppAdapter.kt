@@ -32,7 +32,7 @@ class FreezeAppAdapter(private val context: Context, private var apps: ArrayList
 
         override fun performFiltering(constraint: CharSequence?): FilterResults {
             val results = Filter.FilterResults()
-            val prefix:String = if (constraint == null) "" else constraint.toString()
+            val prefix: String = if (constraint == null) "" else constraint.toString()
 
             if (prefix.isEmpty()) {
                 val list: ArrayList<Appinfo>

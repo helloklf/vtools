@@ -1,4 +1,4 @@
-package com.omarea.krscript.config;
+package com.omarea.krscript.ui;
 
 import android.content.Context;
 import android.database.DataSetObserver;
@@ -41,26 +41,26 @@ public class ActionListAdapter extends BaseAdapter {
         View view = listview.getChildAt(index - visiblePosition);
         Object tag = view.getTag();
         try {
-            ActionViewHolder actionViewHolder = (ActionViewHolder) view.getTag();
+            ActionViewHolder actionViewHolder = (ActionViewHolder) tag;
             ActionInfo actionInfo = ((ActionInfo) getItem(index));
-            if (actionInfo.descPollingShell != null && !actionInfo.descPollingShell.isEmpty()) {
-                actionInfo.desc = ScriptEnvironmen.executeResultRoot(listview.getContext(), actionInfo.descPollingShell);
+            if (actionInfo.getDescPollingShell() != null && !actionInfo.getDescPollingShell().isEmpty()) {
+                actionInfo.setDesc(ScriptEnvironmen.executeResultRoot(listview.getContext(), actionInfo.getDescPollingShell()));
             }
-            actionViewHolder.itemText.setText(actionInfo.desc);
+            actionViewHolder.itemText.setText(actionInfo.getDesc());
         } catch (Exception ex) {
             try {
-                SwitchViewHolder holder = (SwitchViewHolder) view.getTag();
+                SwitchViewHolder holder = (SwitchViewHolder) tag;
                 if (holder != null) {
                     SwitchInfo actionInfo = ((SwitchInfo) getItem(index));
                     if (actionInfo.descPollingShell != null && !actionInfo.descPollingShell.isEmpty()) {
-                        actionInfo.desc = ScriptEnvironmen.executeResultRoot(listview.getContext(), actionInfo.descPollingShell);
+                        actionInfo.setDesc(ScriptEnvironmen.executeResultRoot(listview.getContext(), actionInfo.descPollingShell));
                     }
                     if (actionInfo.getState != null && !actionInfo.getState.isEmpty()) {
                         String shellResult = ScriptEnvironmen.executeResultRoot(listview.getContext(), actionInfo.getState);
                         actionInfo.selected = shellResult.equals("1") || shellResult.toLowerCase().equals("true");
                     }
                     holder.itemSwitch.setChecked(actionInfo.selected);
-                    holder.itemText.setText(actionInfo.desc);
+                    holder.itemText.setText(actionInfo.getDesc());
                 }
             } catch (Exception ex2) {
 
@@ -116,19 +116,19 @@ public class ActionListAdapter extends BaseAdapter {
         viewHolder.itemSeparator = convertView.findViewById(R.id.Separator);
         viewHolder.contents = convertView.findViewById(R.id.contents);
 
-        if (isNullOrEmpty(item.desc) && isNullOrEmpty(item.title)) {
+        if (isNullOrEmpty(item.getDesc()) && isNullOrEmpty(item.getTitle())) {
             viewHolder.contents.setVisibility(View.GONE);
         } else {
             viewHolder.contents.setVisibility(View.VISIBLE);
 
-            viewHolder.itemText.setText(item.desc);
-            viewHolder.itemTitle.setText(item.title);
+            viewHolder.itemText.setText(item.getDesc());
+            viewHolder.itemTitle.setText(item.getTitle());
         }
 
-        if (isNullOrEmpty(item.separator)) {
+        if (isNullOrEmpty(item.getSeparator())) {
             viewHolder.itemSeparator.setVisibility(View.GONE);
         } else {
-            viewHolder.itemSeparator.setText(item.separator);
+            viewHolder.itemSeparator.setText(item.getSeparator());
             viewHolder.itemSeparator.setVisibility(View.VISIBLE);
         }
         convertView.setTag(viewHolder);
@@ -142,20 +142,20 @@ public class ActionListAdapter extends BaseAdapter {
         viewHolder.itemText = convertView.findViewById(R.id.Desc);
         viewHolder.itemSeparator = convertView.findViewById(R.id.Separator);
         viewHolder.contents = convertView.findViewById(R.id.contents);
-        if (isNullOrEmpty(item.desc) && isNullOrEmpty(item.title)) {
+        if (isNullOrEmpty(item.getDesc()) && isNullOrEmpty(item.getTitle())) {
             viewHolder.contents.setVisibility(View.GONE);
         } else {
             viewHolder.contents.setVisibility(View.VISIBLE);
 
-            viewHolder.itemText.setText(item.desc);
-            viewHolder.itemSwitch.setText(item.title);
+            viewHolder.itemText.setText(item.getDesc());
+            viewHolder.itemSwitch.setText(item.getTitle());
             viewHolder.itemSwitch.setChecked(item.selected);
         }
 
-        if (isNullOrEmpty(item.separator)) {
+        if (isNullOrEmpty(item.getSeparator())) {
             viewHolder.itemSeparator.setVisibility(View.GONE);
         } else {
-            viewHolder.itemSeparator.setText(item.separator);
+            viewHolder.itemSeparator.setText(item.getSeparator());
             viewHolder.itemSeparator.setVisibility(View.VISIBLE);
         }
         convertView.setTag(viewHolder);

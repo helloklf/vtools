@@ -9,9 +9,9 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.support.v4.app.NotificationCompat
-import com.omarea.shared.*
 import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KernelProrp
+import com.omarea.shared.*
 import com.omarea.shell.Props
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import com.omarea.shell.cpucontrol.ThermalControlUtils

@@ -27,7 +27,8 @@ import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.shared.*
 import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shared.model.Appinfo
-import com.omarea.ui.*
+import com.omarea.ui.SceneModeAdapter
+import com.omarea.ui.SearchTextWatcher
 import com.omarea.vaddin.IAppConfigAidlInterface
 import com.omarea.vtools.R
 import com.omarea.vtools.activitys.ActivityAddinOnline
@@ -244,6 +245,7 @@ class FragmentConfig : Fragment() {
         configlist_type.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
+
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 loadList()
             }
@@ -730,14 +732,12 @@ class FragmentConfig : Fragment() {
         } else {
             DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setMessage("配置脚本已安装，是否开启动态响应？")
-                    .setPositiveButton(R.string.btn_confirm,{
-                        _,_ ->
+                    .setPositiveButton(R.string.btn_confirm, { _, _ ->
                         globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true).apply()
                         dynamic_control.isChecked = true
                         reStartService()
                     })
-                    .setNegativeButton(R.string.btn_cancel, {
-                        _,_ ->
+                    .setNegativeButton(R.string.btn_cancel, { _, _ ->
                     }))
         }
     }

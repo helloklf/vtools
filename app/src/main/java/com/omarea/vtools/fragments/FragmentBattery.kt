@@ -15,8 +15,8 @@ import android.widget.SeekBar
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
-import com.omarea.shared.SpfConfig
 import com.omarea.common.shell.KeepShellPublic
+import com.omarea.shared.SpfConfig
 import com.omarea.shell.units.BatteryUnit
 import com.omarea.vtools.R
 import com.omarea.vtools.services.ServiceBattery

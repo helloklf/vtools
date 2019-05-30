@@ -27,33 +27,18 @@
 
                 <FrameLayout
                     android:id="@+id/tab0"
-                    android:paddingTop="15dp"
-                    android:paddingBottom="15dp"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:paddingTop="15dp"
+                    android:paddingBottom="15dp">
 
                     <com.omarea.common.ui.OverScrollListView
                         android:id="@+id/addin_system_listview"
-                        android:listSelector="@android:color/transparent"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:divider="@color/color_list_divider"
                         android:dividerHeight="1sp"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-                </FrameLayout>
-
-                <FrameLayout
-                    android:id="@+id/tab1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <com.omarea.krscript.config.ActionListView
-                        android:id="@+id/list_page1"
-                        android:listSelector="@android:color/transparent"
-                        android:divider="@color/color_list_divider"
-                        android:dividerHeight="1sp"
-                        android:paddingBottom="10dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:listSelector="@android:color/transparent" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -61,14 +46,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <com.omarea.krscript.config.ActionListView
+                    <com.omarea.krscript.ui.PageListView
                         android:id="@+id/list_page2"
-                        android:listSelector="@android:color/transparent"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:divider="@color/color_list_divider"
                         android:dividerHeight="1sp"
-                        android:paddingBottom="10dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:listSelector="@android:color/transparent"
+                        android:padding="10dp" />
                 </FrameLayout>
             </FrameLayout>
         </LinearLayout>

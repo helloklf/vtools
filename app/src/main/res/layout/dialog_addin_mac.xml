@@ -34,7 +34,7 @@
         android:id="@+id/dialog_addin_mac_autochange"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
         android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
         android:text="@string/boot_after_auto_modify" />
 </LinearLayout>

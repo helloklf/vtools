@@ -4,10 +4,10 @@ import android.app.AlertDialog
 import android.content.Context
 import android.os.Handler
 import android.widget.Toast
-import com.omarea.shared.CommonCmds
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.RootFile
 import com.omarea.common.ui.ProgressBarDialog
+import com.omarea.shared.CommonCmds
 
 /**
  * Created by Hello on 2017/11/01.

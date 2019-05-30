@@ -14,14 +14,14 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
+import com.omarea.common.shell.KeepShellPublic
+import com.omarea.common.ui.OverScrollListView
+import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.shared.AppListHelper
 import com.omarea.shared.CommonCmds
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.model.Appinfo
-import com.omarea.common.shell.KeepShellPublic
 import com.omarea.ui.AppListAdapter
-import com.omarea.common.ui.OverScrollListView
-import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.ui.SearchTextWatcher
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogAppOptions

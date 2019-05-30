@@ -59,15 +59,15 @@
         android:id="@+id/dialog_addin_dpi_quickchange"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
         android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
         android:text="快速更改（Android7.0+）" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="6dp"
         android:text="@string/dialog_addin_device_inner"
         android:textColor="#888"
         android:textSize="12dp" />

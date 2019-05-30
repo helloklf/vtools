@@ -12,12 +12,13 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import com.omarea.common.shell.AsynSuShellUnit
+import com.omarea.common.shell.KeepShellPublic
+import com.omarea.common.ui.DialogHelper
 import com.omarea.shared.CommonCmds
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.model.Appinfo
-import com.omarea.common.shell.AsynSuShellUnit
 import com.omarea.shell.CheckRootStatus
-import com.omarea.common.shell.KeepShellPublic
 import com.omarea.vtools.R
 import java.io.File
 import java.util.*
@@ -38,7 +39,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
     }
 
     fun selectUserAppOptions() {
-        AlertDialog.Builder(context).setTitle("请选择操作")
+        DialogHelper.animDialog(AlertDialog.Builder(context).setTitle("请选择操作")
                 .setCancelable(true)
                 .setItems(
                         arrayOf("备份（apk、data）",
@@ -65,12 +66,11 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                         9 -> hideAll()
                         10 -> buildAll()
                     }
-                })
-                .show()
+                }))
     }
 
     fun selectSystemAppOptions() {
-        AlertDialog.Builder(context).setTitle("请选择操作")
+        DialogHelper.animDialog(AlertDialog.Builder(context).setTitle("请选择操作")
                 .setCancelable(true)
                 .setItems(
                         arrayOf("删除",
@@ -91,8 +91,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                         6 -> hideAll()
                         7 -> buildAll()
                     }
-                })
-                .show()
+                }))
     }
 
     fun selectBackupOptions() {
@@ -175,16 +174,14 @@ open class DialogAppOptions(protected final var context: Context, protected var 
     }
 
     protected fun confirm(title: String, msg: String, next: Runnable?) {
-        AlertDialog.Builder(context)
+        DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setTitle(title)
                 .setMessage(msg)
                 .setNegativeButton("确定", { _, _ ->
                     next?.run()
                 })
                 .setNeutralButton("取消", { _, _ ->
-                })
-                .create()
-                .show()
+                }))
     }
 
     /**

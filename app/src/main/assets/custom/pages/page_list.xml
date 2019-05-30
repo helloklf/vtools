@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<pages>
+    <page title="通用功能" desc="基本上所有安卓手机都能用" config="custom/pages/general.xml" />
+    <page title="MIUI专属" desc="适用于MIUI系统的选项" config="custom/pages/miui.xml" />
+    <page title="AOSP专属" desc="越接近原生的系统越适用" config="custom/pages/aosp.xml" />
+    <page title="Flyme专属" desc="适用于Flyme系统的选项" config="custom/pages/flyme.xml" />
+    <page title="应用程序" desc="第三方应用程序相关选项" config="custom/pages/applications.xml" />
+    <page title="开发者工具" desc="适用于开发者的功能" config="custom/pages/developer.xml" />
+    <page title="杂项" desc="其它杂七杂八的功能" config="custom/pages/miui.xml" />
+</pages>

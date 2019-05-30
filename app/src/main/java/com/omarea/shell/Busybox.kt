@@ -3,8 +3,8 @@ package com.omarea.shell
 import android.app.AlertDialog
 import android.content.Context
 import com.omarea.common.shell.KeepShellPublic
-import com.omarea.shell.units.BusyboxInstallerUnit
 import com.omarea.common.ui.DialogHelper
+import com.omarea.shell.units.BusyboxInstallerUnit
 import com.omarea.vtools.R
 import java.io.File
 
@@ -26,7 +26,7 @@ class Busybox(private var context: Context) {
     /**
      * 使用magisk模块安装busybox
      */
-    private fun useMagiskModuleInstall (context: Context) {
+    private fun useMagiskModuleInstall(context: Context) {
         if (!com.omarea.common.shared.MagiskExtend.moduleInstalled()) {
             com.omarea.common.shared.MagiskExtend.magiskModuleInstall(context)
         }
@@ -85,16 +85,13 @@ class Busybox(private var context: Context) {
         DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setTitle(R.string.busybox_install_mode)
                 .setMessage(R.string.busybox_install_desc)
-                .setNegativeButton(R.string.btn_cancel, {
-                    _, _  ->
+                .setNegativeButton(R.string.btn_cancel, { _, _ ->
                     android.os.Process.killProcess(android.os.Process.myPid())
                 })
-                .setNeutralButton(R.string.busybox_install_classical, {
-                    _, _ ->
+                .setNeutralButton(R.string.busybox_install_classical, { _, _ ->
                     installUseRoot(privateBusybox, onSuccess)
                 })
-                .setPositiveButton(R.string.busybox_install_module, {
-                    _, _ ->
+                .setPositiveButton(R.string.busybox_install_module, { _, _ ->
                     useMagiskModuleInstall(context)
                 }))
     }

@@ -1,10 +1,10 @@
 package com.omarea.vtools.dialogs
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Point
 import android.os.Build
-import android.support.v7.app.AlertDialog
 import android.util.DisplayMetrics
 import android.view.Display
 import android.view.LayoutInflater
@@ -12,9 +12,10 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
+import com.omarea.common.shell.KeepShellPublic
+import com.omarea.common.ui.DialogHelper
 import com.omarea.shared.CommonCmds
 import com.omarea.shared.SpfConfig
-import com.omarea.common.shell.KeepShellPublic
 import com.omarea.vtools.R
 
 /**
@@ -22,18 +23,18 @@ import com.omarea.vtools.R
  */
 
 class DialogAddinModifyDPI(var context: Context) {
-    private val BACKUP_SCREEN_DPI:String = "screen_dpi"
-    private val BACKUP_SCREEN_RATIO:String = "screen_ratio"
-    private val BACKUP_SCREEN_WIDTH:String = "screen_width"
-    private val DEFAULT_RATIO:Float = 16 / 9f
-    private val DEFAULT_DPI:Int = 320
-    private val DEFAULT_WIDTH:Int = 720
+    private val BACKUP_SCREEN_DPI: String = "screen_dpi"
+    private val BACKUP_SCREEN_RATIO: String = "screen_ratio"
+    private val BACKUP_SCREEN_WIDTH: String = "screen_width"
+    private val DEFAULT_RATIO: Float = 16 / 9f
+    private val DEFAULT_DPI: Int = 320
+    private val DEFAULT_WIDTH: Int = 720
 
     @SuppressLint("ApplySharedPref")
     private fun backupDisplay(point: Point, dm: DisplayMetrics, context: Context) {
         val spf = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE);
         if (!spf.contains(BACKUP_SCREEN_RATIO)) {
-            spf.edit().putFloat(BACKUP_SCREEN_RATIO, point.y /  point.x.toFloat()).commit()
+            spf.edit().putFloat(BACKUP_SCREEN_RATIO, point.y / point.x.toFloat()).commit()
         }
         if (!spf.contains(BACKUP_SCREEN_DPI) || !spf.contains(BACKUP_SCREEN_WIDTH)) {
             spf.edit().putInt(BACKUP_SCREEN_DPI, dm.densityDpi).commit()
@@ -107,7 +108,7 @@ class DialogAddinModifyDPI(var context: Context) {
             KeepShellPublic.doCmdSync(cmd.toString())
         })
 
-        val dialogInstance = AlertDialog.Builder(context).setTitle("DPI、分辨率").setView(dialog).setNegativeButton("确定", { _, _ ->
+        DialogHelper.animDialog(AlertDialog.Builder(context).setTitle("DPI、分辨率").setView(dialog).setNegativeButton("确定", { _, _ ->
             val dpi = if (dpiInput.text.isNotEmpty()) (dpiInput.text.toString().toInt()) else (0)
             val width = if (widthInput.text.isNotEmpty()) (widthInput.text.toString().toInt()) else (0)
             val height = if (heightInput.text.isNotEmpty()) (heightInput.text.toString().toInt()) else (0)
@@ -144,9 +145,6 @@ class DialogAddinModifyDPI(var context: Context) {
             }
             if (cmd.isNotEmpty())
                 KeepShellPublic.doCmdSync(cmd.toString())
-        }).create()
-
-        dialogInstance.window!!.setWindowAnimations(R.style.windowAnim)
-        dialogInstance.show()
+        }))
     }
 }

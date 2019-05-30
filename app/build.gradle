@@ -23,12 +23,16 @@ android {
     }
     buildTypes {
         release {
-            // shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            debuggable false
+            // signingConfig signingConfigs.omarea_Signing
+        }
+        release_mini {
+            shrinkResources true
             zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            minifyEnabled false
+            minifyEnabled true
             debuggable true
-            // signingConfig signingConfigs.omarea_Signing
         }
         debug {
             // signingConfig signingConfigs.omarea_Signing

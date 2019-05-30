@@ -3,10 +3,10 @@ package com.omarea.vtools.addin
 import android.app.AlertDialog
 import android.content.Context
 import android.widget.Toast
-import com.omarea.shared.CommonCmds
 import com.omarea.common.shell.KeepShellPublic
-import com.omarea.shell.Platform
 import com.omarea.common.shell.RootFile
+import com.omarea.shared.CommonCmds
+import com.omarea.shell.Platform
 import com.omarea.vtools.R
 
 /**

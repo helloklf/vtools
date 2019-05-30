@@ -12,15 +12,15 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:focusable="true"
-            android:background="@drawable/krscript_item_ripple"
             android:id="@+id/pay_paypal"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/krscript_item_ripple"
+            android:focusable="true"
             android:orientation="vertical"
             android:padding="20dp">
 
@@ -33,14 +33,14 @@
         </LinearLayout>
 
         <LinearLayout
-            android:focusable="true"
-            android:background="@drawable/krscript_item_ripple"
             android:id="@+id/pay_alipay"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/krscript_item_ripple"
+            android:focusable="true"
             android:orientation="vertical"
             android:padding="20dp">
 
@@ -54,13 +54,13 @@
 
         <LinearLayout
             android:id="@+id/pay_wxpay"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:focusable="true"
-            android:background="@drawable/krscript_item_ripple"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/krscript_item_ripple"
+            android:focusable="true"
             android:orientation="vertical"
             android:padding="20dp">
 
@@ -73,13 +73,13 @@
         </LinearLayout>
 
         <LinearLayout
-            android:focusable="true"
-            android:background="@drawable/krscript_item_ripple"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/krscript_item_ripple"
+            android:focusable="true"
             android:orientation="vertical"
             android:padding="20dp">
 
@@ -98,23 +98,24 @@
                 android:layout_marginTop="5dp"
                 android:text="支付宝首页搜索“511531087”领取红包并使用，我便能获得支付宝的少量奖赏。（点击复制红包码）" />
 
-            <TextView android:visibility="gone"
+            <TextView
                 android:id="@+id/pay_alipay_command"
                 style="@style/textSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="或点击此处复制吱口令，打开支付宝领取红包并使用，我便能获得支付宝的少量奖赏。" />
+                android:text="或点击此处复制吱口令，打开支付宝领取红包并使用，我便能获得支付宝的少量奖赏。"
+                android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout
-            android:focusable="true"
-            android:background="@drawable/krscript_item_ripple"
-            android:layout_marginBottom="16dp"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/krscript_item_ripple"
+            android:focusable="true"
             android:orientation="vertical"
             android:padding="20dp">
 

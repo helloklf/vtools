@@ -13,12 +13,12 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import com.omarea.common.shell.KernelProrp
+import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.shared.CpuConfigStorage
 import com.omarea.shared.model.CpuStatus
-import com.omarea.common.shell.KernelProrp
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import com.omarea.shell.cpucontrol.ThermalControlUtils
-import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.ui.StringAdapter
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.fragment_cpu_control.*

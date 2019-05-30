@@ -103,7 +103,7 @@ class FloatMonitor(context: Context) {
             @SuppressLint("ClickableViewAccessibility")
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                 if (event != null) {
-                    when(event.action) {
+                    when (event.action) {
                         MotionEvent.ACTION_DOWN -> {
                             touchStartX = event.getX()
                             touchStartY = event.getY()

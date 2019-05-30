@@ -7,8 +7,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Handler
 import android.widget.Toast
+import com.omarea.common.ui.DialogHelper
 import com.omarea.shared.CommonCmds
-import com.omarea.common.shared.MagiskExtend
 import com.omarea.shared.model.Appinfo
 import com.omarea.shell.CheckRootStatus
 import com.omarea.vtools.R
@@ -35,7 +35,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
      * 显示用户应用选项
      */
     private fun showUserAppOptions() {
-        AlertDialog.Builder(context).setTitle(app.appName)
+        DialogHelper.animDialog(AlertDialog.Builder(context).setTitle(app.appName)
                 .setCancelable(true)
                 .setItems(
                         arrayOf("打开（如果可以）",
@@ -70,11 +70,10 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                         13 -> moveToSystem()
                         14 -> dex2oatBuild()
                     }
-                })
-                .show()
+                }))
     }
 
-    private fun startApp () {
+    private fun startApp() {
         if (!app.enabled) {
             enableAll()
         }
@@ -88,7 +87,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
      * 显示系统应用选项
      */
     private fun showSystemAppOptions() {
-        AlertDialog.Builder(context).setTitle(app.appName)
+        DialogHelper.animDialog(AlertDialog.Builder(context).setTitle(app.appName)
                 .setCancelable(true)
                 .setItems(
                         arrayOf("删除",
@@ -111,15 +110,14 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                         7 -> copyPackageName()
                         8 -> showInMarket()
                     }
-                })
-                .show()
+                }))
     }
 
     /**
      * 显示备份的应用选项
      */
     private fun showBackupAppOptions() {
-        AlertDialog.Builder(context).setTitle(app.appName)
+        DialogHelper.animDialog(AlertDialog.Builder(context).setTitle(app.appName)
                 .setCancelable(true)
                 .setItems(
                         arrayOf("删除备份",
@@ -136,8 +134,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                         4 -> copyPackageName()
                         5 -> showInMarket()
                     }
-                })
-                .show()
+                }))
     }
 
     private fun toggleEnable() {
@@ -227,7 +224,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                     .show()
             return
         }
-        AlertDialog.Builder(context)
+        DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setTitle(app.appName)
                 .setMessage("转为系统应用后，将无法随意更新或卸载，并且可能会一直后台运行占用内存，继续转换吗？\n\n并非所有应用都可以转换为系统应用，有些转为系统应用后不能正常运行。\n\n确保你已解锁System分区或安装Magisk，转换完成后，请重启手机！")
                 .setPositiveButton(R.string.btn_confirm, { _, _ ->
@@ -238,9 +235,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                     }
                 })
                 .setNegativeButton(R.string.btn_cancel, null)
-                .setCancelable(true)
-                .create()
-                .show()
+                .setCancelable(true))
     }
 
     private fun dex2oatBuild() {

@@ -10,19 +10,19 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
-        android:maxHeight="50dp"
         android:maxWidth="50dp"
-        android:minHeight="50dp"
-        android:minWidth="50dp" />
+        android:maxHeight="50dp"
+        android:minWidth="50dp"
+        android:minHeight="50dp" />
 
     <TextView
         android:id="@+id/ItemTitle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:lines="1"
+        android:overScrollMode="always"
         android:text=""
         android:textAlignment="center"
-        android:overScrollMode="always"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="10dp"
         android:textStyle="bold" />

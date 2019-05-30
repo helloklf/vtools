@@ -4,13 +4,13 @@ import android.content.ContentResolver
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
-import com.omarea.shared.model.AppConfigInfo
 import com.omarea.common.shell.KeepShellPublic
+import com.omarea.shared.model.AppConfigInfo
 
 class SceneMode private constructor(private var contentResolver: ContentResolver, private var store: AppConfigStore) {
     class FreezeAppHistory {
-        var startTime:Long = 0
-        var leaveTime:Long = 0
+        var startTime: Long = 0
+        var leaveTime: Long = 0
         var packageName: String = ""
     }
 
@@ -38,7 +38,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
             return instance!!
         }
 
-        fun setFreezeAppLeaveTime(packageName:String) {
+        fun setFreezeAppLeaveTime(packageName: String) {
             val currentHistory = removeFreezeAppHistory(packageName)
 
             val history = if (currentHistory != null) currentHistory else FreezeAppHistory()
@@ -49,7 +49,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
             clearFreezeAppCountLimit()
         }
 
-        fun setFreezeAppStartTime(packageName:String) {
+        fun setFreezeAppStartTime(packageName: String) {
             removeFreezeAppHistory(packageName)
 
             val history = FreezeAppHistory()
@@ -79,7 +79,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
                 val firstItem = freezList.first()
                 // val config = store.getAppConfig(firstItem.packageName)
                 // if (config.freeze) {
-                    KeepShellPublic.doCmdSync("pm disable " + firstItem.packageName)
+                KeepShellPublic.doCmdSync("pm disable " + firstItem.packageName)
                 // }
                 freezList.remove(firstItem)
             }
@@ -90,11 +90,11 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
          */
         fun clearFreezeAppTimeLimit() {
             val currentTime = System.currentTimeMillis()
-            val clearList = freezList.filter { it.leaveTime > -1 && currentTime - it.leaveTime> freezAppTimeLimit && it.packageName != lastAppPackageName }
+            val clearList = freezList.filter { it.leaveTime > -1 && currentTime - it.leaveTime > freezAppTimeLimit && it.packageName != lastAppPackageName }
             clearList.forEach {
                 // val config = store.getAppConfig(it.packageName)
                 // if (config.freeze) {
-                    KeepShellPublic.doCmdSync("pm disable " + it.packageName)
+                KeepShellPublic.doCmdSync("pm disable " + it.packageName)
                 // }
                 freezList.remove(it)
             }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -59,8 +58,8 @@
                         android:paddingTop="10dp">
 
                         <Button
-                            style="?android:buttonBarStyle"
                             android:id="@+id/btn_swap_create"
+                            style="?android:buttonBarStyle"
                             android:layout_width="60dp"
                             android:layout_height="32dp"
                             android:layout_marginEnd="6dp"
@@ -68,8 +67,8 @@
                             android:text="@string/swap_create" />
 
                         <Button
-                            style="?android:buttonBarStyle"
                             android:id="@+id/btn_swap_start"
+                            style="?android:buttonBarStyle"
                             android:layout_width="60dp"
                             android:layout_height="32dp"
                             android:layout_marginEnd="6dp"
@@ -77,8 +76,8 @@
                             android:text="@string/swap_start" />
 
                         <Button
-                            style="?android:buttonBarStyle"
                             android:id="@+id/btn_swap_close"
+                            style="?android:buttonBarStyle"
                             android:layout_width="60dp"
                             android:layout_height="32dp"
                             android:layout_marginEnd="6dp"
@@ -86,8 +85,8 @@
                             android:text="@string/swap_stop" />
 
                         <Button
-                            style="?android:buttonBarStyle"
                             android:id="@+id/btn_swap_delete"
+                            style="?android:buttonBarStyle"
                             android:layout_width="60dp"
                             android:layout_height="32dp"
                             android:background="@drawable/btn_bg"

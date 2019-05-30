@@ -3,8 +3,8 @@ package com.omarea.shared
 import android.content.Context
 import android.util.Log
 import com.omarea.common.shell.KeepShellPublic
-import com.omarea.shell.Platform
 import com.omarea.common.shell.RootFile
+import com.omarea.shell.Platform
 import java.nio.charset.Charset
 
 class ConfigInstaller {
@@ -77,7 +77,7 @@ class ConfigInstaller {
         return false;
     }
 
-    fun configInstalled() : Boolean {
+    fun configInstalled(): Boolean {
         return RootFile.fileNotEmpty(ModeList.POWER_CFG_PATH)
     }
 }

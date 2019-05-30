@@ -110,8 +110,8 @@ class AppListHelper(context: Context) {
         }
     }
 
-    fun isSystemApp (applicationInfo: ApplicationInfo): Boolean {
-        return (applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) !=0 || (applicationInfo.flags and ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0
+    fun isSystemApp(applicationInfo: ApplicationInfo): Boolean {
+        return (applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0 || (applicationInfo.flags and ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0
     }
 
     fun getAppList(systemApp: Boolean? = null, removeIgnore: Boolean = true): ArrayList<Appinfo> {

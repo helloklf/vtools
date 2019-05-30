@@ -363,6 +363,7 @@
     <string name="busybox_install_fail">自动安装Busybox失败。也许System分区没被解锁。因此，部分功能可能无法使用！</string>
     <string name="dex2oat_completed">dex2oat编译完成</string>
     <string name="dex2oat_compiling">dex2oat compiling</string>
+    <string name="R.string.please_wait">请稍等</string>
 
     <string-array name="device_templates">
         <item>Xiaomi MIX3</item>

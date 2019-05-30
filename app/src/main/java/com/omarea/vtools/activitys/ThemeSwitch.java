@@ -8,18 +8,8 @@ import com.omarea.shared.SpfConfig;
 import com.omarea.vtools.R;
 
 public class ThemeSwitch {
-    enum Themes {
-        BLUE, // 蓝色
-        CYAN, // 水鸭青
-        GREEN, // 绿色
-        ORANAGE, // 成色
-        RED, // 红色
-        PINK, // 粉色
-        PRETTY, // 骚？
-        VIOLET, // 紫色
-        BLACK // 黑色
-    }
     private static SharedPreferences globalSPF = null;
+
     static void switchTheme(Activity activity) {
         if (globalSPF == null) {
             globalSPF = activity.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE);
@@ -64,5 +54,17 @@ public class ThemeSwitch {
                 break;
             }
         }
+    }
+
+    enum Themes {
+        BLUE, // 蓝色
+        CYAN, // 水鸭青
+        GREEN, // 绿色
+        ORANAGE, // 成色
+        RED, // 红色
+        PINK, // 粉色
+        PRETTY, // 骚？
+        VIOLET, // 紫色
+        BLACK // 黑色
     }
 }

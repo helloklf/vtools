@@ -14,6 +14,14 @@ object KeepShellPublic {
         return keepShell!!.doCmdSync(cmd)
     }
 
+    //执行脚本
+    fun checkRoot(): Boolean {
+        if (keepShell == null) {
+            keepShell = KeepShell()
+        }
+        return keepShell!!.checkRoot()
+    }
+
     fun tryExit() {
         if (keepShell != null) {
             keepShell!!.tryExit()

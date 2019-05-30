@@ -14,10 +14,10 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import com.omarea.shared.CommonCmds
 import com.omarea.common.shell.AsynSuShellUnit
-import com.omarea.shell.Props
 import com.omarea.common.ui.DialogHelper
+import com.omarea.shared.CommonCmds
+import com.omarea.shell.Props
 import com.omarea.vtools.R
 import com.omarea.vtools.services.CompileService
 import java.util.*
@@ -120,7 +120,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                         } else {
                             try {
                                 val service = Intent(context, CompileService::class.java)
-                                service.action = context.getString(if(index == 1) R.string.scene_speed_compile else R.string.scene_everything_compile)
+                                service.action = context.getString(if (index == 1) R.string.scene_speed_compile else R.string.scene_everything_compile)
                                 context.startService(service)
                                 Toast.makeText(context, "开始后台编译，请查看通知了解进度", Toast.LENGTH_SHORT).show()
                             } catch (ex: java.lang.Exception) {
@@ -167,7 +167,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                 }))
     }
 
-    private fun helpInfo () {
+    private fun helpInfo() {
         DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setTitle("说明")
                 .setMessage(R.string.addin_dex2oat_helpinfo)

@@ -1,9 +1,9 @@
 package com.omarea.shell.units
 
-import com.omarea.shared.model.BatteryStatus
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.shell.RootFile
+import com.omarea.shared.model.BatteryStatus
 import java.io.File
 
 /**
@@ -15,6 +15,7 @@ class BatteryUnit {
         var isHuawei = false
         var ioInfoSupported = true
     }
+
     //是否兼容此设备
     val isSupport: Boolean
         get() = RootFile.itemExists("/sys/class/power_supply/bms/uevent") || qcSettingSuupport() || bpSettingSuupport() || pdSupported()
@@ -394,7 +395,7 @@ class BatteryUnit {
         }
     }
 
-    public fun getBatteryIOOrigin():String? {
+    public fun getBatteryIOOrigin(): String? {
         if (isHuawei) {
             return getBatteryIOForHuawei()
         }

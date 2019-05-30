@@ -10,10 +10,10 @@
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_gravity="center_vertical"
-        android:maxHeight="45dp"
         android:maxWidth="45dp"
-        android:minHeight="45dp"
+        android:maxHeight="45dp"
         android:minWidth="45dp"
+        android:minHeight="45dp"
         android:src="@drawable/file" />
 
     <LinearLayout

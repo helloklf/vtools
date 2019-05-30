@@ -6,7 +6,7 @@ import android.os.Build
 import android.view.Display
 import android.view.WindowManager
 
-class ScreenState(private var context:Context) {
+class ScreenState(private var context: Context) {
     fun isScreenLocked(): Boolean {
         val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val display = windowManager.defaultDisplay
@@ -22,7 +22,7 @@ class ScreenState(private var context:Context) {
         }
     }
 
-    fun isScreenOn():Boolean {
+    fun isScreenOn(): Boolean {
         return !isScreenLocked()
     }
 }

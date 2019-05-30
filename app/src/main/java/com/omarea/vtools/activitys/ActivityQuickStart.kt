@@ -9,16 +9,16 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.shared.SceneMode
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.CheckRootStatus
-import com.omarea.common.shell.KeepShellPublic
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_quick_start.*
 import java.lang.ref.WeakReference
 
 class ActivityQuickStart : Activity() {
-    lateinit var appPackageName:String
+    lateinit var appPackageName: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

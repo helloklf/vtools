@@ -15,14 +15,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Filterable
 import android.widget.Toast
+import com.omarea.common.shell.KeepShellPublic
+import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.shared.AppConfigStore
 import com.omarea.shared.AppListHelper
 import com.omarea.shared.SceneMode
 import com.omarea.shared.helper.ShortcutHelper
 import com.omarea.shared.model.Appinfo
-import com.omarea.common.shell.KeepShellPublic
 import com.omarea.ui.FreezeAppAdapter
-import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.vtools.R
 import com.omarea.vtools.activitys.ActivityFreezeApps
 import kotlinx.android.synthetic.main.fragment_freeze.*
@@ -73,7 +73,7 @@ class FragmentFreeze : Fragment() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                (freeze_apps.adapter as Filterable).getFilter().filter(if(s == null) "" else s.toString())
+                (freeze_apps.adapter as Filterable).getFilter().filter(if (s == null) "" else s.toString())
             }
         })
     }
@@ -131,7 +131,8 @@ class FragmentFreeze : Fragment() {
                                 shortcutsLostDialog(lostedShortcutsName.toString(), lostedShortcuts)
                             }
                         }
-                    } catch (ex: java.lang.Exception) {}
+                    } catch (ex: java.lang.Exception) {
+                    }
                 }
             } catch (ex: java.lang.Exception) {
 
@@ -139,7 +140,7 @@ class FragmentFreeze : Fragment() {
         }).start()
     }
 
-    private fun shortcutsLostDialog(lostedShortcutsName:String, lostedShortcuts: ArrayList<Appinfo>) {
+    private fun shortcutsLostDialog(lostedShortcutsName: String, lostedShortcuts: ArrayList<Appinfo>) {
         AlertDialog.Builder(context)
                 .setTitle("快捷方式丢失")
                 .setMessage("以下被加入偏见模式的应用，启动快捷方式已丢失或未创建成功，是否立即重新创建？\n\n$lostedShortcutsName")
@@ -239,7 +240,8 @@ class FragmentFreeze : Fragment() {
                 this.context!!.startActivity(intent)
                 SceneMode.setFreezeAppStartTime(appInfo.packageName.toString())
             }
-        } catch (ex: java.lang.Exception) {}
+        } catch (ex: java.lang.Exception) {
+        }
     }
 
     private fun createShortcut(appInfo: Appinfo) {
@@ -305,7 +307,8 @@ class FragmentFreeze : Fragment() {
                 try {
                     loadData()
                     processBarDialog.hideDialog()
-                } catch (ex: java.lang.Exception) {}
+                } catch (ex: java.lang.Exception) {
+                }
             }
         }
         AddFreezeAppsThread(this.context!!, selectedItems, next).start()

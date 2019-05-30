@@ -1,22 +1,21 @@
 package com.omarea.vtools.dialogs
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
-import android.content.DialogInterface
-import android.support.v7.app.AlertDialog
 import android.util.Base64
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import com.omarea.shared.CommonCmds
 import com.omarea.common.shell.KeepShellPublic
-import com.omarea.shell.Props
 import com.omarea.common.shell.RootFile
+import com.omarea.common.ui.DialogHelper
+import com.omarea.shared.CommonCmds
+import com.omarea.shell.Props
 import com.omarea.vtools.R
-
 
 /**
  * Created by Hello on 2017/12/03.
@@ -57,7 +56,7 @@ class DialogAddinModifydevice(var context: Context) {
         (dialog.findViewById(R.id.dialog_chooser) as Button).setOnClickListener {
             templateChooser()
         }
-        val dialogInstance = AlertDialog.Builder(context)
+        DialogHelper.animDialog(AlertDialog.Builder(context)
                 //.setTitle("机型信息修改")
                 .setView(dialog).setNegativeButton("保存重启", { _, _ ->
                     val model = editModel.text.trim()
@@ -121,12 +120,9 @@ class DialogAddinModifydevice(var context: Context) {
                     } else {
                         Toast.makeText(context, "什么也没有修改！", Toast.LENGTH_SHORT).show()
                     }
-                }).setPositiveButton("使用帮助", DialogInterface.OnClickListener { dialog, which ->
-                    AlertDialog.Builder(context).setMessage(R.string.dialog_addin_device_desc).setNegativeButton(R.string.btn_confirm, { _, _ -> }).create().show()
-                }).create()
-
-        dialogInstance.window!!.setWindowAnimations(R.style.windowAnim)
-        dialogInstance.show()
+                }).setPositiveButton("使用帮助", { _, _ ->
+                    DialogHelper.animDialog(AlertDialog.Builder(context).setMessage(R.string.dialog_addin_device_desc).setNegativeButton(R.string.btn_confirm, { _, _ -> }))
+                }))
         loadCurrent()
 
         try {
@@ -137,23 +133,20 @@ class DialogAddinModifydevice(var context: Context) {
             if (content.isNotEmpty()) {
                 val copyData = String(Base64.decode(content.toString().trim(), Base64.DEFAULT))
                 if (Regex("^.*@.*@.*@.*@.*\$").matches(copyData)) {
-                    val qd = AlertDialog.Builder(context)
+                    DialogHelper.animDialog(AlertDialog.Builder(context)
                             .setTitle("可用的模板")
                             .setMessage("检测到已复制的机型信息：\n\n" + copyData + "\n\n是否立即使用？")
                             .setPositiveButton(R.string.btn_confirm, { _, _ ->
                                 splitCodeStr(copyData)
                             })
-                            .setNegativeButton(R.string.btn_cancel, null)
-                            .create()
-                    qd.window!!.setWindowAnimations(R.style.windowAnim)
-                    qd.show()
+                            .setNegativeButton(R.string.btn_cancel, null))
                 }
             }
         } catch (ex: Exception) {
         }
     }
 
-    private fun splitCodeStr(codeStr:String) {
+    private fun splitCodeStr(codeStr: String) {
         if (Regex("^.*@.*@.*@.*@.*\$").matches(codeStr)) {
             val deviceInfos = codeStr.split("@")
             editModel.setText(deviceInfos[0])
@@ -198,34 +191,6 @@ class DialogAddinModifydevice(var context: Context) {
         }
     }
 
-    private fun setMIX3() {
-        splitCodeStr("MIX 3@Xiaomi@perseus@perseus@Xiaomi")
-    }
-
-    private fun setX20() {
-        splitCodeStr("vivo X20@vivo@X20@X20@vivo")
-    }
-
-    private fun setR11Plus() {
-        splitCodeStr("OPPO R11 Plus@OPPO@R11 Plus@R11 Plus@OPPO")
-    }
-
-    private fun setS9Plus() {
-        splitCodeStr("SM-G9650@samsung@star2qltechn@star2qltechn@samsung")
-    }
-
-    private fun setR15Plus() {
-        splitCodeStr("PAAM00@OPPO@OPPO PAAM00@PAAM00@OPPO")
-    }
-
-    private fun set8848() {
-        splitCodeStr("EBEN M2@ERENEBEN@EBEN M2@EBEN M2@ERENEBEN")
-    }
-
-    private fun setMateRS() {
-        splitCodeStr("NEO-AL00@HUAWEI@NEO-AL00@NEO-AL00@HUAWEI")
-    }
-
     @SuppressLint("ApplySharedPref")
     private fun backupDefault() {
         if (getBackupProp(BACKUP_SUCCESS, "false") != "true") {
@@ -241,7 +206,7 @@ class DialogAddinModifydevice(var context: Context) {
 
     private fun templateChooser() {
         var index = -1;
-        val dialog = AlertDialog.Builder(context)
+        DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setTitle("选取内置模板")
                 .setSingleChoiceItems(R.array.device_templates, index, { dialog, which ->
                     index = which
@@ -249,9 +214,6 @@ class DialogAddinModifydevice(var context: Context) {
                 .setPositiveButton(R.string.btn_confirm, { dialog, which ->
                     val codeStr = context.resources.getStringArray(R.array.device_templates_data)[index]
                     splitCodeStr(codeStr)
-                })
-                .create()
-        dialog.window!!.setWindowAnimations(R.style.windowAnim)
-        dialog.show()
+                }))
     }
 }

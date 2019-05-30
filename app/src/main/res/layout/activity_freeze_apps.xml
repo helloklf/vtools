@@ -3,15 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTintMode="screen"
     android:background="?colorAccent"
+    android:backgroundTintMode="screen"
     android:clipToPadding="true"
     android:fitsSystemWindows="false"
     tools:context=".activitys.ActivityFreezeApps">
+
     <FrameLayout
-        android:layout_marginTop="?android:actionBarSize"
-        android:layout_marginBottom="10dp"
+        android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/fragment_container"/>
+        android:layout_marginTop="?android:actionBarSize"
+        android:layout_marginBottom="10dp" />
 </FrameLayout>

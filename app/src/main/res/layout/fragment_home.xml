@@ -21,17 +21,17 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:padding="4dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="4dp">
 
                 <LinearLayout
                     android:id="@+id/home_clear_ram"
                     android:layout_width="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_marginEnd="4dp"
                     android:layout_weight="1"
-                    android:layout_height="wrap_content"
                     android:background="@drawable/krscript_item_ripple"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
@@ -85,9 +85,9 @@
 
                 <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
+                    android:layout_weight="1"
                     android:background="@drawable/krscript_item_ripple"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
@@ -122,6 +122,7 @@
                     <FrameLayout
                         android:layout_width="60dp"
                         android:layout_height="60dp">
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -140,16 +141,16 @@
             </LinearLayout>
 
             <LinearLayout
-                android:padding="4dp"
                 android:id="@+id/home_gpuview"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:padding="4dp">
 
                 <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_marginEnd="4dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
                     android:layout_weight="1"
                     android:background="@drawable/krscript_item_ripple"
                     android:gravity="center_vertical"
@@ -271,63 +272,63 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
-                    android:padding="0dp"
                     android:layout_margin="0dp"
                     android:clickable="false"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
                     android:listSelector="@android:color/transparent"
                     android:numColumns="4"
+                    android:padding="0dp"
                     android:scrollbars="none" />
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:id="@+id/powermode_toggles"
-            android:layout_marginBottom="4dp"
-            android:visibility="visible"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_width="match_parent">
+            android:layout_marginBottom="4dp"
+            android:orientation="horizontal"
+            android:visibility="visible">
 
             <Button
-                android:layout_weight="1"
+                android:id="@+id/btn_powersave"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/btn_powersave"
+                android:layout_weight="1"
                 android:background="@drawable/powercfg_powersave"
                 android:text="@string/powersave_short"
                 android:textColor="#66ffffff"
                 android:textStyle="bold" />
 
             <Button
-                android:layout_weight="1"
+                android:id="@+id/btn_defaultmode"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/btn_defaultmode"
                 android:layout_marginStart="4dp"
+                android:layout_weight="1"
                 android:background="@drawable/powercfg_balance"
                 android:text="@string/balance_short"
                 android:textColor="#66ffffff"
                 android:textStyle="bold" />
 
             <Button
-                android:layout_weight="1"
+                android:id="@+id/btn_gamemode"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/btn_gamemode"
                 android:layout_marginStart="4dp"
+                android:layout_weight="1"
                 android:background="@drawable/powercfg_performance"
                 android:text="@string/performance_short"
                 android:textColor="#66ffffff"
                 android:textStyle="bold" />
 
             <Button
-                android:layout_weight="1"
+                android:id="@+id/btn_fastmode"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/btn_fastmode"
                 android:layout_marginStart="4dp"
+                android:layout_weight="1"
                 android:background="@drawable/powercfg_fast"
                 android:text="@string/fast_short"
                 android:textColor="#66ffffff"

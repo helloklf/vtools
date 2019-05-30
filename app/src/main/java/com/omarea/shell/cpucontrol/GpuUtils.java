@@ -4,6 +4,10 @@ import com.omarea.common.shell.KernelProrp;
 import com.omarea.common.shell.RootFile;
 
 public class GpuUtils {
+    private static final String GPU_LOAD_PATH_1 = "/sys/class/kgsl/kgsl-3d0/devfreq/gpu_load";
+    private static final String GPU_LOAD_PATH_2 = "/sys/class/kgsl/kgsl-3d0/gpu_busy_percentage";
+    private static String gpuLoadPath = null;
+
     public static String getGpuFreq() {
         String freq = KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/devfreq/cur_freq");
         if (freq.length() > 6) {
@@ -12,15 +16,11 @@ public class GpuUtils {
         return freq;
     }
 
-    private static final String GPU_LOAD_PATH_1 = "/sys/class/kgsl/kgsl-3d0/devfreq/gpu_load";
-    private static final String GPU_LOAD_PATH_2 = "/sys/class/kgsl/kgsl-3d0/gpu_busy_percentage";
-    private static String gpuLoadPath = null;
-
     public static int getGpuLoad() {
         if (gpuLoadPath == null) {
-            if (RootFile.INSTANCE.fileExists(GPU_LOAD_PATH_1)){
+            if (RootFile.INSTANCE.fileExists(GPU_LOAD_PATH_1)) {
                 gpuLoadPath = GPU_LOAD_PATH_1;
-            } else if (RootFile.INSTANCE.fileExists(GPU_LOAD_PATH_2)){
+            } else if (RootFile.INSTANCE.fileExists(GPU_LOAD_PATH_2)) {
                 gpuLoadPath = GPU_LOAD_PATH_2;
             } else {
                 gpuLoadPath = "";
