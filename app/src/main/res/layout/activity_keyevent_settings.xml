@@ -18,8 +18,8 @@
             android:id="@+id/key_sets"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="56dp">
+            android:layout_marginTop="?android:actionBarSize"
+            android:orientation="vertical">
 
             <Button
                 android:id="@+id/key_event_state"
@@ -33,26 +33,16 @@
                 android:padding="13dp"
                 android:text="" />
 
-            <TextView
-                style="@style/textSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:padding="8dp"
-                android:text="@string/key_map_desc" />
+            <LinearLayout style="@style/ListCardItem">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:orientation="vertical"
-                android:padding="8dp">
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/key_map_desc" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/ListCardItem">
 
                 <Switch
                     android:id="@+id/key_event_vitual_touch_bar"
@@ -74,15 +64,7 @@
                     android:text="@string/key_map_dege_desc" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:orientation="vertical"
-                android:padding="8dp">
+            <LinearLayout style="@style/ListCardItem">
 
                 <Switch
                     android:id="@+id/key_home"
@@ -141,15 +123,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:orientation="vertical"
-                android:padding="8dp">
+            <LinearLayout style="@style/ListCardItem">
 
                 <Switch
                     style="@style/textTitle"
@@ -207,15 +181,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:orientation="vertical"
-                android:padding="8dp">
+            <LinearLayout style="@style/ListCardItem">
 
                 <Switch
                     style="@style/textTitle"
@@ -273,15 +239,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:orientation="vertical"
-                android:padding="8dp">
+            <LinearLayout style="@style/ListCardItem">
 
                 <Switch
                     style="@style/textTitle"

@@ -275,7 +275,6 @@ class ActivityAppDetails : AppCompatActivity() {
         needKeyCapture = AppConfigStore(this.applicationContext).needKeyCapture()
 
         if (app == "android" || app == "com.android.systemui" || app == "com.android.webview" || app == "mokee.platform" || app == "com.miui.rom") {
-            app_details_permission.visibility = View.GONE
             app_details_auto.visibility = View.GONE
             app_details_assist.visibility = View.GONE
             app_details_freeze.isEnabled = false
@@ -337,47 +336,6 @@ class ActivityAppDetails : AppCompatActivity() {
                     .create()
             DialogHelper.animDialog(dialog)
         }
-        app_details_floatwindow.setOnClickListener {
-            val isChecked = (it as Switch).isChecked
-            var r = ""
-            if (isChecked) {
-                r = KeepShellPublic.doCmdSync("pm grant $app android.permission.SYSTEM_ALERT_WINDOW")
-            } else {
-                r = KeepShellPublic.doCmdSync("pm revoke $app android.permission.SYSTEM_ALERT_WINDOW")
-            }
-            if (r == "error") {
-                (it as Switch).isChecked = !isChecked
-                Toast.makeText(applicationContext, getString(R.string.permission_modify_fail), Toast.LENGTH_SHORT).show()
-            }
-        }
-        app_details_usagedata.setOnClickListener {
-            val isChecked = (it as Switch).isChecked
-            var r = ""
-            if (isChecked) {
-                r = KeepShellPublic.doCmdSync("pm grant $app android.permission.PACKAGE_USAGE_STATS")
-            } else {
-                r = KeepShellPublic.doCmdSync("pm revoke $app android.permission.PACKAGE_USAGE_STATS")
-            }
-            if (r == "error") {
-                (it as Switch).isChecked = !isChecked
-                Toast.makeText(applicationContext, getString(R.string.permission_modify_fail), Toast.LENGTH_SHORT).show()
-            }
-        }
-        app_details_modifysettings.setOnClickListener {
-            val isChecked = (it as Switch).isChecked
-            var r = ""
-            if (isChecked) {
-                r = KeepShellPublic.doCmdSync("pm grant $app android.permission.WRITE_SECURE_SETTINGS")
-            } else {
-                r = KeepShellPublic.doCmdSync("pm revoke $app android.permission.WRITE_SECURE_SETTINGS")
-            }
-            if (r == "error") {
-                (it as Switch).isChecked = !isChecked
-                Toast.makeText(applicationContext, getString(R.string.permission_modify_fail), Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        //immersive.preconfirms=*
 
         app_details_hidenav.setOnClickListener {
             if (!WriteSettings().getPermission(this)) {
@@ -412,13 +370,6 @@ class ActivityAppDetails : AppCompatActivity() {
             }
         }
 
-        app_details_disdoze.setOnClickListener {
-            if ((it as Switch).isChecked) {
-                KeepShellPublic.doCmdSync("dumpsys deviceidle whitelist +$app")
-            } else {
-                KeepShellPublic.doCmdSync("dumpsys deviceidle whitelist -$app")
-            }
-        }
         app_details_icon.setOnClickListener {
             try {
                 saveConfig()
@@ -625,9 +576,6 @@ class ActivityAppDetails : AppCompatActivity() {
 
         val firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeList.BALANCE))
         app_details_dynamic.text = ModeList.getModName(powercfg.getString(app, firstMode))
-        app_details_floatwindow.isChecked = checkPermission("android.permission.SYSTEM_ALERT_WINDOW", app)
-        app_details_usagedata.isChecked = checkPermission("android.permission.PACKAGE_USAGE_STATS", app)
-        app_details_modifysettings.isChecked = checkPermission("android.permission.WRITE_SECURE_SETTINGS", app)
 
         if (policyControl.isFullScreen(app)) {
             app_details_hidenav.isChecked = true
@@ -635,15 +583,6 @@ class ActivityAppDetails : AppCompatActivity() {
         } else {
             app_details_hidenav.isChecked = policyControl.isHideNavbarOnly(app)
             app_details_hidestatus.isChecked = policyControl.isHideStatusOnly(app)
-        }
-
-
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
-            app_details_disdoze.isEnabled = true
-            val disDoze = KeepShellPublic.doCmdSync("dumpsys deviceidle whitelist | grep $app")
-            if (disDoze.contains(app)) {
-                app_details_disdoze.isChecked = true
-            }
         }
 
         app_details_hidebtn.isChecked = appConfigInfo.disButton

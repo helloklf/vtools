@@ -4,13 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:background="@drawable/krscript_item_ripple_inactive"
+    <LinearLayout style="@style/ListCardItem"
         android:orientation="horizontal">
-
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -46,11 +41,7 @@
 
     <com.omarea.common.ui.OverScrollListView
         android:id="@+id/battery_stats"
-        android:layout_width="match_parent"
+        style="@style/ListCardItemLast"
         android:layout_height="0dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="10dp"
-        android:layout_weight="1"
-        android:background="@drawable/krscript_item_ripple_inactive" />
+        android:layout_weight="1" />
 </LinearLayout>

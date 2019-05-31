@@ -31,7 +31,8 @@
     <android.support.design.widget.NavigationView
         android:fitsSystemWindows="false"
         android:id="@+id/nav_view"
-        android:background="@drawable/krscript_item_ripple_inactive"
+        app:insetForeground="@android:color/transparent"
+        android:background="?android:statusBarColor"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"

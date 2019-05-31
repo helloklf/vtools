@@ -18,7 +18,6 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:foregroundTint="@color/colorAccent"
             android:foregroundTintMode="src_over"
             android:background="?android:statusBarColor"
             android:elevation="0dp"

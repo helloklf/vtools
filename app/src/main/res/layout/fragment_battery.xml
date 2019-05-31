@@ -15,61 +15,31 @@
             android:focusableInTouchMode="true"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:orientation="vertical"
-                android:paddingBottom="10dp">
-
+            <LinearLayout style="@style/ListCardItem">
                 <TextView
                     android:id="@+id/battrystatus"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="8dp"
                     android:text="电池信息："
                     android:textColor="?colorAccent"
                     android:textSize="11dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:orientation="vertical">
-
                 <TextView
                     style="@style/textSmall"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="8dp"
                     android:text="使用充电加速建议保持Scene后台运行！" />
 
                 <TextView
                     style="@style/textSmall"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:paddingBottom="8dp"
                     android:text="电池保护功能，必须让Scene保持后台运行！" />
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/settings_pd_support"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:orientation="vertical">
+                android:id="@+id/settings_pd_support" style="@style/ListCardItem">
 
                 <Switch
                     android:id="@+id/settings_pd"
@@ -111,14 +81,7 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:orientation="vertical">
+            <LinearLayout style="@style/ListCardItem">
 
                 <Switch
                     android:id="@+id/settings_qc"
@@ -163,16 +126,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/bp_cardview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:orientation="vertical"
-                android:paddingBottom="10dp"
-                android:visibility="gone">
+                android:id="@+id/bp_cardview" style="@style/ListCardItem" android:visibility="gone">
 
                 <Switch
                     android:id="@+id/settings_bp"
@@ -243,24 +197,12 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:orientation="vertical">
+            <LinearLayout style="@style/ListCardItem">
 
                 <TextView
                     style="@style/textSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="8dp"
-                    android:paddingTop="16dp"
-                    android:paddingRight="8dp"
-                    android:paddingBottom="8dp"
                     android:text="@string/battery_uevent_title"
                     android:textColor="?colorAccent" />
 
@@ -268,21 +210,10 @@
                     android:id="@+id/battery_uevent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="21dp"
-                    android:layout_marginRight="21dp"
-                    android:layout_marginBottom="16dp"
                     android:textSize="11sp" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:orientation="vertical"
-                android:padding="8dp">
+            <LinearLayout style="@style/ListCardItemLast">
 
                 <TextView
                     android:layout_width="match_parent"

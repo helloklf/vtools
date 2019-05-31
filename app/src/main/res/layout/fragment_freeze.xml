@@ -4,12 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
+    <LinearLayout style="@style/ListCardItem"
         android:alpha="0.9"
-        android:background="@drawable/krscript_item_ripple_inactive"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -57,16 +53,10 @@
             android:src="@drawable/freeze_add" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="10dp"
+    <LinearLayout style="@style/ListCardItemLast"
         android:layout_weight="1"
-        android:alpha="0.9"
-        android:background="@drawable/krscript_item_ripple_inactive"
-        android:orientation="vertical">
+        android:layout_height="0dp"
+        android:alpha="0.9">
 
         <EditText
             android:id="@+id/freeze_apps_search"
@@ -82,7 +72,7 @@
 
         <com.omarea.common.ui.OverScrollGridView
             android:id="@+id/freeze_apps"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:numColumns="4" />

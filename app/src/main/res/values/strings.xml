@@ -262,8 +262,6 @@
     <string name="performance_short">性能</string>
     <string name="fast_short">极速</string>
     <string name="app_selected_none">一个应用也没有选中！</string>
-    <string name="use">用户</string>
-    <string name="backuped">已备份</string>
     <string name="help">帮助</string>
     <string name="more">了解更多</string>
     <string name="not_support_config">未找到可用的模式配置脚本</string>

@@ -9,18 +9,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical" android:paddingBottom="@dimen/activity_vertical_margin">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:orientation="vertical"
-                android:padding="16dp">
-
+            <LinearLayout style="@style/ListCardItem">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -36,19 +27,7 @@
                     android:text="@string/core_control_helpinfo" />
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:orientation="vertical"
-                android:paddingLeft="10dp"
-                android:paddingTop="20dp"
-                android:paddingRight="10dp"
-                android:paddingBottom="20dp">
-
+            <LinearLayout style="@style/ListCardItem">
                 <Switch
                     android:id="@+id/cpu_apply_onboot"
                     android:layout_width="wrap_content"
@@ -67,15 +46,7 @@
                     android:textSize="13dp" />
             </LinearLayout>
 
-            <GridLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:padding="16dp">
-
+            <GridLayout style="@style/ListCardItem">
                 <TextView
                     android:layout_row="0"
                     android:layout_columnSpan="2"
@@ -181,15 +152,7 @@
 
             </GridLayout>
 
-            <GridLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:padding="16dp">
-
+            <GridLayout style="@style/ListCardItem">
                 <TextView
                     android:layout_row="0"
                     android:layout_columnSpan="2"
@@ -272,15 +235,7 @@
             </GridLayout>
 
             <GridLayout
-                android:id="@+id/big_core_configs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:padding="16dp">
-
+                android:id="@+id/big_core_configs" style="@style/ListCardItem">
                 <TextView
                     android:layout_row="0"
                     android:layout_columnSpan="2"
@@ -363,14 +318,7 @@
             </GridLayout>
 
             <GridLayout
-                android:id="@+id/adreno_gpu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:padding="16dp">
+                android:id="@+id/adreno_gpu" style="@style/ListCardItem">
 
                 <TextView
                     android:layout_row="0"
@@ -499,15 +447,7 @@
                     android:text="大多数时候，GPU性能受功耗级别（Power Level）限制而不是频率设定。\n注意：功耗级别0表示最大高性能，数值越大则性能越低" />
             </GridLayout>
 
-            <GridLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:padding="16dp">
-
+            <GridLayout style="@style/ListCardItem">
                 <TextView
                     android:layout_row="0"
                     android:layout_columnSpan="2"
@@ -556,15 +496,7 @@
 
             </GridLayout>
 
-            <GridLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:padding="16dp">
-
+            <GridLayout style="@style/ListCardItem">
                 <TextView
                     android:layout_row="0"
                     android:layout_columnSpan="2"
@@ -669,15 +601,7 @@
 
             </GridLayout>
 
-            <GridLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="16dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:padding="16dp">
-
+            <GridLayout style="@style/ListCardItem">
                 <TextView
                     android:layout_row="0"
                     android:layout_columnSpan="2"
@@ -739,16 +663,7 @@
                     android:layout_gravity="end" />
             </GridLayout>
 
-            <GridLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="16dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:padding="16dp">
-
+            <GridLayout style="@style/ListCardItemLast">
                 <TextView
                     android:layout_row="0"
                     android:layout_columnSpan="2"

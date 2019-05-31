@@ -21,13 +21,7 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                style="@style/ListCardItem"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -72,14 +66,8 @@
             </LinearLayout>
 
             <LinearLayout
-                android:background="@drawable/krscript_item_ripple_inactive"
                 android:id="@+id/app_details_auto"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                style="@style/ListCardItem">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -135,72 +123,8 @@
             </LinearLayout>
 
             <LinearLayout
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:id="@+id/app_details_permission"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    style="@style/textTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="10dp"
-                    android:text="特殊权限" />
-
-                <Switch
-                    android:id="@+id/app_details_floatwindow"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingBottom="10dp"
-                    android:text="显示悬浮窗" />
-
-                <Switch
-                    android:id="@+id/app_details_usagedata"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingBottom="10dp"
-                    android:text="获取应用使用记录" />
-
-                <Switch
-                    android:id="@+id/app_details_modifysettings"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingBottom="10dp"
-                    android:text="修改系统安全设置" />
-
-                <Switch
-                    android:id="@+id/app_details_disdoze"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:paddingBottom="10dp"
-                    android:text="禁止Doze" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:background="@drawable/krscript_item_ripple_inactive"
                 android:id="@+id/app_details_assist"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                style="@style/ListCardItem">
 
                 <TextView
                     style="@style/textTitle"
@@ -271,14 +195,8 @@
             </LinearLayout>
 
             <LinearLayout
-                android:background="@drawable/krscript_item_ripple_inactive"
                 android:id="@+id/app_freez_config"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                style="@style/ListCardItem">
 
                 <Switch
                     android:id="@+id/app_details_freeze"
@@ -299,35 +217,17 @@
             </LinearLayout>
 
             <TextView
-                android:background="@drawable/krscript_item_ripple_inactive"
                 android:id="@+id/app_details_vaddins_notinstall"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
+                style="@style/ListCardItem"
                 android:text="高级设定组件未安装，请先点击此处安装！" />
 
             <TextView
                 android:id="@+id/app_details_vaddins_notactive"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:text="使用高级设定，请在Xposed管理器中勾选本应用并重启手机！" />
+                style="@style/ListCardItem"
+                android:text="使用高级设定，请在Xposed管理器中勾选本应用并重启手机！"
+                android:visibility="gone" />
 
-            <LinearLayout
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+            <LinearLayout style="@style/ListCardItemLast">
 
                 <TextView
                     style="@style/textTitle"

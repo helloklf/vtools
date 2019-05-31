@@ -174,7 +174,8 @@
                 android:textColor="?android:attr/textColorSecondary"
                 android:textSize="10dp" />
 
-            <android.support.v7.widget.CardView
+            <LinearLayout
+                android:background="@drawable/krscript_item_ripple_inactive"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="16dp"
@@ -189,7 +190,7 @@
                     android:padding="10dp"
                     android:text="修改以上设置，均需要重启辅助服务才会生效！！！"
                     android:textColor="?colorAccent" />
-            </android.support.v7.widget.CardView>
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
 

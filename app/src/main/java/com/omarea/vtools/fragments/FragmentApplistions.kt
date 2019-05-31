@@ -61,10 +61,10 @@ class FragmentApplistions : Fragment() {
 
         val tabHost = view.findViewById(R.id.blacklist_tabhost) as TabHost
         tabHost.setup()
-        tabHost.addTab(tabHost.newTabSpec("tab_1").setContent(R.id.tab_apps_user).setIndicator(getString(R.string.use)))
-        tabHost.addTab(tabHost.newTabSpec("tab_2").setContent(R.id.tab_apps_system).setIndicator(getString(R.string.system)))
-        tabHost.addTab(tabHost.newTabSpec("tab_3").setContent(R.id.tab_apps_backuped).setIndicator(getString(R.string.backuped)))
-        tabHost.addTab(tabHost.newTabSpec("tab_3").setContent(R.id.tab_apps_helper).setIndicator(getString(R.string.help)))
+        tabHost.addTab(tabHost.newTabSpec("tab_1").setContent(R.id.tab_apps_user).setIndicator("", context!!.getDrawable(R.drawable.tab_more)))
+        tabHost.addTab(tabHost.newTabSpec("tab_2").setContent(R.id.tab_apps_system).setIndicator("", context!!.getDrawable(R.drawable.tab_system)))
+        tabHost.addTab(tabHost.newTabSpec("tab_3").setContent(R.id.tab_apps_backuped).setIndicator("", context!!.getDrawable(R.drawable.tab_storage)))
+        tabHost.addTab(tabHost.newTabSpec("tab_3").setContent(R.id.tab_apps_helper).setIndicator("", context!!.getDrawable(R.drawable.tab_help)))
         tabHost.currentTab = 3
 
         apps_userlist.addHeaderView(this.layoutInflater.inflate(R.layout.list_header_app, null))

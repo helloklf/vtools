@@ -57,10 +57,12 @@ public class ThemeSwitch {
             }
             case 9: {
                 activity.setTheme(R.style.AppThemeWhite);
-                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-                }
                 break;
+            }
+        }
+        if (theme != 8) {
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             }
         }
     }

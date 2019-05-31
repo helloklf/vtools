@@ -13,14 +13,7 @@
             android:orientation="vertical">
 
             <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:padding="12dp"
+                style="@style/ListCardItem"
                 android:showDividers="beginning"
                 android:stretchColumns="0">
 
@@ -112,13 +105,7 @@
 
             <TableLayout
                 android:id="@+id/swap_config_zram"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:padding="12dp"
+                style="@style/ListCardItem"
                 android:showDividers="beginning"
                 android:stretchColumns="0">
 
@@ -172,13 +159,7 @@
             </TableLayout>
 
             <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:padding="12dp"
+                style="@style/ListCardItem"
                 android:showDividers="beginning"
                 android:stretchColumns="0">
 
@@ -213,13 +194,7 @@
             </TableLayout>
 
             <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:padding="12dp"
+                style="@style/ListCardItem"
                 android:showDividers="beginning"
                 android:stretchColumns="0">
 
@@ -243,13 +218,7 @@
             </TableLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:orientation="vertical"
+                style="@style/ListCardItem"
                 android:padding="12dp">
 
                 <TextView
@@ -294,13 +263,7 @@
             </LinearLayout>
 
             <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/krscript_item_ripple_inactive"
-                android:padding="12dp"
+                style="@style/ListCardItemLast"
                 android:showDividers="beginning"
                 android:stretchColumns="0">
 

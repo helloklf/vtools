@@ -13,16 +13,7 @@
 
         <LinearLayout
             android:id="@+id/pay_paypal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/krscript_item_ripple"
-            android:focusable="true"
-            android:orientation="vertical"
-            android:padding="20dp">
+            style="@style/ListCardItemClickable">
 
             <TextView
                 style="@style/textTitle"
@@ -34,16 +25,7 @@
 
         <LinearLayout
             android:id="@+id/pay_alipay"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/krscript_item_ripple"
-            android:focusable="true"
-            android:orientation="vertical"
-            android:padding="20dp">
-
+            style="@style/ListCardItemClickable">
             <TextView
                 style="@style/textTitle"
                 android:layout_width="wrap_content"
@@ -54,15 +36,7 @@
 
         <LinearLayout
             android:id="@+id/pay_wxpay"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/krscript_item_ripple"
-            android:focusable="true"
-            android:orientation="vertical"
-            android:padding="20dp">
+            style="@style/ListCardItemClickable">
 
             <TextView
                 style="@style/textTitle"
@@ -73,15 +47,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/krscript_item_ripple"
-            android:focusable="true"
-            android:orientation="vertical"
-            android:padding="20dp">
+            style="@style/ListCardItemClickable">
 
             <TextView
                 style="@style/textTitle"
@@ -109,15 +75,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@drawable/krscript_item_ripple"
-            android:focusable="true"
-            android:orientation="vertical"
-            android:padding="20dp">
+            style="@style/ListCardItemClickableLast">
 
             <TextView
                 style="@style/textSmall"
