@@ -104,7 +104,7 @@ class SystemScene(private var context: Context) {
         }
 
         val lowPowerMode = spfAutoConfig.getBoolean(SpfConfig.FORCEDOZE + SpfConfig.ON, false)
-        if (lowPowerMode || spfAutoConfig.getBoolean(SpfConfig.FORCEDOZE + SpfConfig.ON, false)) {
+        if (lowPowerMode || spfAutoConfig.getBoolean(SpfConfig.POWERSAVE + SpfConfig.ON, false)) {
             backToHome()
             // 强制Doze: dumpsys deviceidle force-idle
             val applist = AppConfigStore(context).getDozeAppList()

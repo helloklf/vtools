@@ -197,13 +197,15 @@ class FragmentFreeze : Fragment() {
             enableApp(appInfo)
         }
 
+        val packageName = appInfo.packageName.toString()
         val store = AppConfigStore(context)
-        val config = store.getAppConfig(appInfo.packageName.toString())
+        val config = store.getAppConfig(packageName)
         config.freeze = false
         store.setAppConfig(config)
         store.close()
 
-        ShortcutHelper().removeShortcut(this.context!!, appInfo.packageName.toString())
+        SceneMode.removeFreezeAppHistory(packageName)
+        ShortcutHelper().removeShortcut(this.context!!, packageName)
     }
 
     private fun removeAndUninstall(appInfo: Appinfo) {
@@ -438,6 +440,7 @@ class FragmentFreeze : Fragment() {
                 config.freeze = false
                 store.setAppConfig(config)
                 shortcutHelper.removeShortcut(context, it)
+                SceneMode.removeFreezeAppHistory(it)
             }
             store.close()
 

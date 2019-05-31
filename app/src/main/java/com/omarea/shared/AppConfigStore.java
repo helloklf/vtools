@@ -90,7 +90,6 @@ public class AppConfigStore extends SQLiteOpenHelper {
 
     public boolean removeAppConfig(String packageName) {
         try {
-
             SQLiteDatabase database = getWritableDatabase();
             database.execSQL("delete from  app_config where id = ?", new String[]{packageName});
             return true;

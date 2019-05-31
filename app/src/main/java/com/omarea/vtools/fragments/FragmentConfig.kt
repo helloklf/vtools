@@ -157,9 +157,9 @@ class FragmentConfig : Fragment() {
 
         configlist_tabhost.setup()
 
-        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("def_tab").setContent(R.id.configlist_tab0).setIndicator("", context!!.getDrawable(R.drawable.tab_app)))
-        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("tab_3").setContent(R.id.blacklist_tab3).setIndicator("", context!!.getDrawable(R.drawable.tab_power)))
-        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("confg_tab").setContent(R.id.configlist_tab5).setIndicator("", context!!.getDrawable(R.drawable.tab_setting)))
+        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("def_tab").setContent(R.id.configlist_tab0).setIndicator("APP场景", context!!.getDrawable(R.drawable.tab_app)))
+        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("tab_3").setContent(R.id.blacklist_tab3).setIndicator("系统场景", context!!.getDrawable(R.drawable.tab_power)))
+        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("confg_tab").setContent(R.id.configlist_tab5).setIndicator("设置", context!!.getDrawable(R.drawable.tab_setting)))
         configlist_tabhost.currentTab = 0
 
         accu_switch.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)

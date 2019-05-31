@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Environment
 import android.util.Log
 import com.omarea.shared.helper.NotifyHelper
+import com.omarea.shell.AppErrorLogcat
 import java.io.File
 import java.io.FileOutputStream
 import java.io.PrintWriter
@@ -35,8 +36,7 @@ class CrashHandler constructor() : Thread.UncaughtExceptionHandler {
             } catch (ex: Exception) {
             }
         }
-        ex.printStackTrace()
-        Log.e("vtools-Exception", ex.message)
+        AppErrorLogcat().catLogInfo2File(android.os.Process.myPid())
         try {
             if (mContext != null) {
                 NotifyHelper(mContext!!, true).hideNotify()
