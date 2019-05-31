@@ -29,6 +29,7 @@ import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shared.model.Appinfo
 import com.omarea.ui.SceneModeAdapter
 import com.omarea.ui.SearchTextWatcher
+import com.omarea.ui.TabIconHelper
 import com.omarea.vaddin.IAppConfigAidlInterface
 import com.omarea.vtools.R
 import com.omarea.vtools.activitys.ActivityAddinOnline
@@ -155,12 +156,17 @@ class FragmentConfig : Fragment() {
             startService()
         }
 
+        val tabIconHelper = TabIconHelper(configlist_tabhost, this.activity!!)
         configlist_tabhost.setup()
 
-        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("def_tab").setContent(R.id.configlist_tab0).setIndicator("APP场景", context!!.getDrawable(R.drawable.tab_app)))
-        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("tab_3").setContent(R.id.blacklist_tab3).setIndicator("系统场景", context!!.getDrawable(R.drawable.tab_power)))
-        configlist_tabhost.addTab(configlist_tabhost.newTabSpec("confg_tab").setContent(R.id.configlist_tab5).setIndicator("设置", context!!.getDrawable(R.drawable.tab_setting)))
+        tabIconHelper.newTabSpec("APP场景", context!!.getDrawable(R.drawable.tab_app)!!, R.id.configlist_tab0)
+        tabIconHelper.newTabSpec("系统场景", context!!.getDrawable(R.drawable.tab_security)!!, R.id.blacklist_tab3)
+        tabIconHelper.newTabSpec("设置", context!!.getDrawable(R.drawable.tab_settings)!!, R.id.configlist_tab5)
         configlist_tabhost.currentTab = 0
+        configlist_tabhost.setOnTabChangedListener({ tabId ->
+            tabIconHelper.updateHighlight()
+        })
+
 
         accu_switch.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
         accu_switch.setOnClickListener {

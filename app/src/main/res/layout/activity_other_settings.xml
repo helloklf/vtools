@@ -235,9 +235,9 @@
                     android:layout_weight="1"
                     android:layout_height="27dp"
                     android:layout_marginLeft="10dp"
-                    android:background="@android:color/white"
+                    android:background="@drawable/sun"
                     android:onClick="onThemeClick"
-                    android:tag="9" />
+                    android:tag="-1" />
             </LinearLayout>
 
             <TextView

@@ -134,6 +134,7 @@
 
             <TabWidget
                 android:id="@android:id/tabs"
+                android:background="@drawable/tab_widget_background"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>

@@ -1,9 +1,11 @@
 package com.omarea.vtools.activitys;
 
 import android.app.Activity;
+import android.app.UiModeManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 
 import com.omarea.shared.SpfConfig;
@@ -17,7 +19,18 @@ public class ThemeSwitch {
             globalSPF = activity.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE);
         }
 
-        int theme = globalSPF.getInt(SpfConfig.GLOBAL_SPF_THEME, 1);
+        int theme = 1;
+        if ((!globalSPF.contains(SpfConfig.GLOBAL_SPF_THEME)) || globalSPF.getInt(SpfConfig.GLOBAL_SPF_THEME, -1) == -1) {
+            UiModeManager uiModeManager = (UiModeManager) activity.getApplicationContext().getSystemService(Context.UI_MODE_SERVICE);
+            if (uiModeManager.getNightMode() == UiModeManager.MODE_NIGHT_YES) {
+                theme = 8;
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                theme = 7;
+            }
+        } else {
+            theme = globalSPF.getInt(SpfConfig.GLOBAL_SPF_THEME, 1);
+        }
+
         switch (theme) {
             case 0: {
                 activity.setTheme(R.style.AppThemeBlue);
@@ -49,6 +62,9 @@ public class ThemeSwitch {
             }
             case 7: {
                 activity.setTheme(R.style.AppThemeViolet);
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                }
                 break;
             }
             case 8: {
@@ -56,13 +72,8 @@ public class ThemeSwitch {
                 break;
             }
             case 9: {
-                activity.setTheme(R.style.AppThemeWhite);
+                activity.setTheme(R.style.AppThemeViolet);
                 break;
-            }
-        }
-        if (theme != 8) {
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
             }
         }
     }

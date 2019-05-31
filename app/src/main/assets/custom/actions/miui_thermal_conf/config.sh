@@ -41,6 +41,25 @@ function remove_file() {
     fi
 }
 
+function lock_dir() {
+    local dir="$1"
+    if [[ -d "$dir" ]]
+    then
+        rm -rf "$dir" 2> /dev/null
+        echo '' > "$dir"
+        chattr +i "$dir" 2> /dev/null
+    fi
+}
+
+function ulock_dir() {
+    local dir="$1"
+    if [[ -f "$dir" ]]
+    then
+        chattr -i "$dir" 2> /dev/null
+        rm -rf "$dir" 2> /dev/null
+    fi
+}
+
 function replace_configs()
 {
     if [[ -f "$config" ]]
@@ -83,15 +102,8 @@ function replace_configs()
     replace_file "$config" "-extreme"
     replace_file "$config" "-nolimits"
 
-    if [[ -d "/data/thermal" ]]
-    then
-        rm -rf /data/thermal
-    fi
-
-    if [[ -d "/data/vendor/thermal" ]]
-    then
-        rm -rf /data/vendor/thermal
-    fi
+    lock_dir /data/thermal
+    lock_dir /data/vendor/thermal
 
     echo '## 重启手机后生效'
 }
@@ -121,15 +133,8 @@ function remove_configs()
     remove_file "-extreme"
     remove_file "-nolimits"
 
-    if [[ -d "/data/thermal" ]]
-    then
-        rm -rf /data/thermal
-    fi
-
-    if [[ -d "/data/vendor/thermal" ]]
-    then
-        rm -rf /data/vendor/thermal
-    fi
+    ulock_dir /data/thermal
+    ulock_dir /data/vendor/thermal
 
     echo '## 重启手机后生效'
 }

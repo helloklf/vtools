@@ -16,10 +16,10 @@ import android.widget.TabHost
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.config.PageClickHandler
-import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.config.PageListReader
 import com.omarea.krscript.model.PageInfo
 import com.omarea.shell.SysUtils
+import com.omarea.ui.TabIconHelper
 import com.omarea.vtools.R
 import com.omarea.vtools.activitys.ActionPage
 import com.omarea.vtools.addin.DexCompileAddin
@@ -32,6 +32,7 @@ import com.omarea.vtools.dialogs.DialogAddinWIFI
 import com.omarea.vtools.dialogs.DialogCustomMAC
 import kotlinx.android.synthetic.main.fragment_addin.*
 import java.util.*
+
 
 class FragmentAddin : Fragment() {
     private var myHandler = Handler()
@@ -120,8 +121,13 @@ class FragmentAddin : Fragment() {
             myHandler.post {
                 page2ConfigLoaded = true
                 list_page2.setListData(items, object : PageClickHandler {
-                    override fun openPage(title: String, config: String) { _openPage(title, config) }
-                    override fun openPage(pageInfo: PageInfo) { _openPage(pageInfo.title, pageInfo.pageConfigPath) }
+                    override fun openPage(title: String, config: String) {
+                        _openPage(title, config)
+                    }
+
+                    override fun openPage(pageInfo: PageInfo) {
+                        _openPage(pageInfo.title, pageInfo.pageConfigPath)
+                    }
                 })
                 progressBarDialog.hideDialog()
             }
@@ -133,7 +139,7 @@ class FragmentAddin : Fragment() {
         _openPage(pageInfo.title, pageInfo.pageConfigPath)
     }
 
-    fun _openPage(title:String, config:String) {
+    fun _openPage(title: String, config: String) {
         try {
             val intent = Intent(context, ActionPage::class.java)
             intent.putExtra("title", title)
@@ -147,15 +153,19 @@ class FragmentAddin : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val tabHost = view.findViewById(R.id.addin_tabhost) as TabHost
         tabHost.setup()
-        tabHost.addTab(tabHost.newTabSpec("tab_1").setContent(R.id.tab0).setIndicator("", context!!.getDrawable(R.drawable.addin_favorites)))
-        tabHost.addTab(tabHost.newTabSpec("tab_page2").setContent(R.id.tab2).setIndicator("", context!!.getDrawable(R.drawable.addin_pages)))
-        tabHost.currentTab = 0
+
+        val tabIconHelper = TabIconHelper(tabHost, this.activity!!)
+        tabIconHelper.newTabSpec("收藏", context!!.getDrawable(R.drawable.addin_favorites)!!, R.id.tab0)
+        val configTab = tabIconHelper.newTabSpec("全部", context!!.getDrawable(R.drawable.addin_pages)!!, R.id.tab2)
+
         tabHost.setOnTabChangedListener({ tabId ->
-            if (tabId == "tab_page2") {
+            if (tabId == configTab) {
                 loadSwitchsConfig()
             }
+            tabIconHelper.updateHighlight()
         })
 
+        tabHost.currentTab = 0
         initAddin(view)
     }
 

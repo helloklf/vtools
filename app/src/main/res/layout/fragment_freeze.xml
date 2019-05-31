@@ -56,6 +56,7 @@
     <LinearLayout style="@style/ListCardItemLast"
         android:layout_weight="1"
         android:layout_height="0dp"
+        android:orientation="vertical"
         android:alpha="0.9">
 
         <EditText
@@ -72,7 +73,7 @@
 
         <com.omarea.common.ui.OverScrollGridView
             android:id="@+id/freeze_apps"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:numColumns="4" />

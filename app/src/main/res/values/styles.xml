@@ -52,11 +52,12 @@
     </style>
 
     <style name="AppThemeBlue" parent="AppThemeLight">
-        <item name="android:navigationBarColor">@android:color/white</item>
-        <item name="android:statusBarColor">@android:color/white</item>
+        <item name="android:navigationBarColor">@color/colorBlue</item>
+        <item name="android:statusBarColor">@color/colorBlue</item>
         <item name="colorPrimary">@color/colorBlue</item>
         <item name="colorPrimaryDark">@color/colorBlue</item>
         <item name="colorAccent">@color/colorBlue</item>
+        <item name="android:actionBarTheme">@style/AppTheme.AppBarOverlay.Dark</item>
     </style>
 
     <style name="AppThemeCyan" parent="AppThemeLight">
@@ -65,6 +66,7 @@
         <item name="colorPrimary">@color/colorAccent</item>
         <item name="colorPrimaryDark">@color/colorAccent</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:actionBarTheme">@style/AppTheme.AppBarOverlay.Dark</item>
     </style>
 
     <style name="AppThemeGreen" parent="AppThemeLight">
@@ -73,6 +75,7 @@
         <item name="colorPrimary">@color/color_load_mid</item>
         <item name="colorPrimaryDark">@color/color_load_mid</item>
         <item name="colorAccent">@color/color_load_mid</item>
+        <item name="android:actionBarTheme">@style/AppTheme.AppBarOverlay.Dark</item>
     </style>
 
     <style name="AppThemeOrange" parent="AppThemeLight">
@@ -81,6 +84,7 @@
         <item name="colorPrimary">@color/color_load_hight</item>
         <item name="colorPrimaryDark">@color/color_load_hight</item>
         <item name="colorAccent">@color/color_load_hight</item>
+        <item name="android:actionBarTheme">@style/AppTheme.AppBarOverlay.Dark</item>
     </style>
 
     <style name="AppThemeRed" parent="AppThemeLight">
@@ -90,6 +94,7 @@
         <item name="colorPrimary">@color/newYearAccent</item>
         <item name="colorPrimaryDark">@color/newYearAccent</item>
         <item name="colorAccent">@color/newYearAccent</item>
+        <item name="android:actionBarTheme">@style/AppTheme.AppBarOverlay.Dark</item>
     </style>
 
     <style name="AppThemePink" parent="AppThemeLight">
@@ -98,6 +103,7 @@
         <item name="colorPrimary">@color/pink</item>
         <item name="colorPrimaryDark">@color/pink</item>
         <item name="colorAccent">@color/pink</item>
+        <item name="android:actionBarTheme">@style/AppTheme.AppBarOverlay.Dark</item>
     </style>
 
     <style name="AppThemePretty" parent="AppThemeLight">
@@ -106,6 +112,7 @@
         <item name="colorPrimary">@color/pretty</item>
         <item name="colorPrimaryDark">@color/pretty</item>
         <item name="colorAccent">@color/pretty</item>
+        <item name="android:actionBarTheme">@style/AppTheme.AppBarOverlay.Dark</item>
     </style>
 
     <style name="AppThemeViolet" parent="AppThemeLight">
@@ -114,6 +121,7 @@
         <item name="colorPrimary">@color/violet</item>
         <item name="colorPrimaryDark">@color/violet</item>
         <item name="colorAccent">@color/violet</item>
+        <item name="android:actionBarTheme">@style/AppTheme.AppBarOverlay.Dark</item>
     </style>
 
     <style name="AppThemeNoActionBarNight" parent="AppThemeNight">
@@ -122,14 +130,7 @@
         <item name="windowActionBar">true</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowAnimationStyle">@style/activityAnim</item>
-    </style>
-
-    <style name="AppThemeWhite" parent="AppThemeLight">
-        <item name="android:navigationBarColor">@color/lightPink</item>
-        <item name="android:statusBarColor">@color/lightPink</item>
-        <item name="colorPrimary">@color/lightPink</item>
-        <item name="colorPrimaryDark">@color/lightPink</item>
-        <item name="colorAccent">@color/lightPink</item>
+        <item name="android:actionBarTheme">@style/AppTheme.AppBarOverlay.Dark</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
@@ -148,26 +149,12 @@
         <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="android:textSize">11dp</item>
     </style>
+
     <!--activity 对话框样式  -->
     <style name="FloatActivity" parent="Theme.AppCompat.Light">
         <!-- float_box为我们定义的窗口背景-->
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:opacity">@integer/opacity</item>
-    </style>
-
-    <style name="FullscreenTheme" parent="AppTheme">
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="android:windowTranslucentStatus">false</item>
-        <item name="android:windowTranslucentNavigation">false</item>
-        <item name="android:statusBarColor">@color/colorPrimary</item>
-        <item name="android:navigationBarColor">@color/colorPrimary</item>
-        <item name="android:windowBackground">@null</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimary</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="metaButtonBarStyle">?android:attr/buttonBarStyle</item>
-        <item name="metaButtonBarButtonStyle">?android:attr/buttonBarButtonStyle</item>
     </style>
 
     <style name="activityAnim">
@@ -186,22 +173,12 @@
         <item name="android:windowEnterAnimation">@anim/dialog_enter</item>
     </style>
 
-    <style name="SeachViewActivityTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">#fff</item>
-        <item name="colorPrimaryDark">#fff</item>
-        <item name="colorAccent">#fff</item>
-        <!--toolbar菜单项图标的颜色-->
-        <item name="android:textColorSecondary">@android:color/white</item>
-        <!--修改searchView样式-->
-        <!--<item name="searchViewStyle">@style/SearchViewStyle</item>-->
-    </style>
-
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-    <style name="AppTheme.AppBarOverlay.Light" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
-    </style>
+
+    <style name="AppTheme.AppBarOverlay.Dark" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="ListCardItem">
         <item name="android:layout_marginLeft">@dimen/activity_horizontal_margin</item>
@@ -217,15 +194,8 @@
         <item name="android:layout_marginBottom">@dimen/activity_vertical_margin</item>
     </style>
 
-    <style name="ListCardItemClickable">
-        <item name="android:layout_marginLeft">@dimen/activity_horizontal_margin</item>
-        <item name="android:layout_marginRight">@dimen/activity_horizontal_margin</item>
-        <item name="android:layout_marginTop">@dimen/activity_vertical_margin</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
+    <style name="ListCardItemClickable" parent="ListCardItem">
         <item name="android:background">@drawable/krscript_item_ripple</item>
-        <item name="android:orientation">vertical</item>
-        <item name="android:padding">16dp</item>
         <item name="android:focusable">true</item>
         <item name="android:clickable">true</item>
     </style>

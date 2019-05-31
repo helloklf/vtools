@@ -23,6 +23,7 @@ import com.omarea.shared.SpfConfig
 import com.omarea.shared.model.Appinfo
 import com.omarea.ui.AppListAdapter
 import com.omarea.ui.SearchTextWatcher
+import com.omarea.ui.TabIconHelper
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogAppOptions
 import com.omarea.vtools.dialogs.DialogSingleAppOptions
@@ -61,10 +62,15 @@ class FragmentApplistions : Fragment() {
 
         val tabHost = view.findViewById(R.id.blacklist_tabhost) as TabHost
         tabHost.setup()
-        tabHost.addTab(tabHost.newTabSpec("tab_1").setContent(R.id.tab_apps_user).setIndicator("用户", context!!.getDrawable(R.drawable.tab_more)))
-        tabHost.addTab(tabHost.newTabSpec("tab_2").setContent(R.id.tab_apps_system).setIndicator("系统", context!!.getDrawable(R.drawable.tab_system)))
-        tabHost.addTab(tabHost.newTabSpec("tab_3").setContent(R.id.tab_apps_backuped).setIndicator("已备份", context!!.getDrawable(R.drawable.tab_storage)))
-        tabHost.addTab(tabHost.newTabSpec("tab_3").setContent(R.id.tab_apps_helper).setIndicator("帮助", context!!.getDrawable(R.drawable.tab_help)))
+        val tabIconHelper = TabIconHelper(tabHost, this.activity!!)
+
+        tabIconHelper.newTabSpec("用户", context!!.getDrawable(R.drawable.tab_app)!!, R.id.tab_apps_user)
+        tabIconHelper.newTabSpec("系统", context!!.getDrawable(R.drawable.tab_security)!!, R.id.tab_apps_system)
+        tabIconHelper.newTabSpec("已备份", context!!.getDrawable(R.drawable.tab_package)!!, R.id.tab_apps_backuped)
+        tabIconHelper.newTabSpec("帮助", context!!.getDrawable(R.drawable.tab_help)!!, R.id.tab_apps_helper)
+        tabHost.setOnTabChangedListener({ tabId ->
+            tabIconHelper.updateHighlight()
+        })
         tabHost.currentTab = 3
 
         apps_userlist.addHeaderView(this.layoutInflater.inflate(R.layout.list_header_app, null))

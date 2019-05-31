@@ -13,6 +13,7 @@ import android.os.Handler
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.PermissionChecker
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
 import com.omarea.shared.ConfigInstaller
 import com.omarea.shared.SpfConfig
@@ -40,18 +41,21 @@ class ActivityStartSplash : Activity() {
 
         if (globalSPF!!.getInt(SpfConfig.GLOBAL_SPF_THEME, 1) == 8) {
             splash_root.setBackgroundColor(Color.argb(255, 0, 0, 0))
+            getWindow().setNavigationBarColor(Color.argb(255, 0, 0, 0))
+        } else {
+            getWindow().setNavigationBarColor(getColorAccent())
         }
 
-        actionBar?.setDisplayHomeAsUpEnabled(true)
         //  得到当前界面的装饰视图
         if (Build.VERSION.SDK_INT >= 21) {
             val decorView = getWindow().getDecorView();
             //让应用主题内容占用系统状态栏的空间,注意:下面两个参数必须一起使用 stable 牢固的
-            val option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            val option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE // or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
             decorView.setSystemUiVisibility(option);
             //设置状态栏颜色为透明
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
+            getWindow().setStatusBarColor(Color.TRANSPARENT)
         }
+
         //checkFileWrite()
         val config = getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
         if (config.getBoolean(SpfConfig.GLOBAL_SPF_CONTRACT, false) != true) {
@@ -74,6 +78,12 @@ class ActivityStartSplash : Activity() {
             start_logo.visibility = View.VISIBLE
             checkRoot(CheckRootSuccess(this), CheckRootFail(this))
         }
+    }
+
+    fun getColorAccent(): Int {
+        val typedValue = TypedValue()
+        this.theme.resolveAttribute(R.attr.colorAccent, typedValue, true)
+        return typedValue.data
     }
 
     private class CheckRootFail(context: ActivityStartSplash) : Runnable {

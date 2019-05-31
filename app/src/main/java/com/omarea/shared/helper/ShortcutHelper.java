@@ -166,7 +166,6 @@ public class ShortcutHelper {
                 Bitmap icon = drawableToBitmap(applicationInfo.loadIcon(packageManager));
 
                 final ShortcutInfo info = new ShortcutInfo.Builder(context, packageName)
-                        //.setIcon(Icon.createWithResource(context, R.drawable.android))
                         .setIcon(Icon.createWithBitmap(icon))
                         .setShortLabel(prefix + applicationInfo.loadLabel(packageManager))
                         .setIntent(shortcutIntent)

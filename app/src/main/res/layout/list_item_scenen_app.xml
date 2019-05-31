@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="10dp"
-    android:background="@drawable/krscript_item_ripple_inactive">
+    android:padding="10dp">
 
     <ImageView
         android:id="@+id/ItemIcon"

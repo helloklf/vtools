@@ -86,12 +86,6 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
-        <!--
-        <service
-            android:name=".AccessibilityServiceSceneKeyEvent"
-            android:label="Scene - 按键辅助"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
-            android:process=":keyevent">-->
         <service
             android:name=".AccessibilityServiceSceneKeyEvent"
             android:label="Scene - 按键辅助"
@@ -116,8 +110,7 @@
             android:exported="true"
             android:label="@string/app_name"
             android:launchMode="singleInstance"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeLight">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -136,24 +129,21 @@
             android:excludeFromRecents="true"
             android:label="Scene 杂项设置"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeLight" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activitys.ActivityAdvSettings"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="true"
             android:label="辅助功能逻辑"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeLight" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activitys.ActivityAccessibilityKeyEventSettings"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="true"
             android:label="Scene-按键辅助"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeLight" />
+            android:screenOrientation="portrait" />
 
         <receiver
             android:name=".receiver.ReceiverBoot"
@@ -173,7 +163,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="@string/" />
-
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
@@ -223,11 +212,9 @@
         <activity
             android:name=".activitys.ActivityAppDetails"
             android:excludeFromRecents="true"
-            android:label="应用场景"
-            android:theme="@style/AppThemeLight">
+            android:label="应用场景">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -235,8 +222,7 @@
             android:name=".activitys.ActivityFileSelector"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_file_selector"
-            android:launchMode="standard"
-            android:theme="@style/AppThemeLight">
+            android:launchMode="standard">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -246,8 +232,7 @@
         <activity
             android:name=".activitys.ActivityStartSplash"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_start_splash"
-            android:theme="@style/AppThemeLight" />
+            android:label="@string/title_activity_start_splash" />
         <activity
             android:name=".activitys.ActivityQuickStart"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -267,8 +252,7 @@
             android:icon="@drawable/freeze_logo"
             android:label="@string/title_activity_freeze"
             android:launchMode="singleTop"
-            android:roundIcon="@drawable/freeze_logo"
-            android:theme="@style/AppThemeLight">
+            android:roundIcon="@drawable/freeze_logo">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -276,8 +260,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activitys.ActionPage" />
+        <activity android:name=".activitys.ActionPage" />
     </application>
 
 </manifest>
