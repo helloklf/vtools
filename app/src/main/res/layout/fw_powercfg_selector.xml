@@ -7,202 +7,198 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <android.support.v7.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="6dp">
+    <LinearLayout
+        android:background="@drawable/krscript_item_ripple_inactive"
+        android:id="@+id/popup_window"
+        android:layout_margin="6dp"
+        android:layout_width="290dp"
+        android:layout_height="200dp"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/popup_window"
-            android:layout_width="290dp"
-            android:layout_height="200dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="12dp"
+            android:paddingTop="12dp"
+            android:paddingRight="12dp"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:id="@+id/fw_title"
+                style="@style/textTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:lines="1"
+                android:paddingRight="12dp"
+                android:text="@string/app_name" />
+
+            <ImageButton
+                android:id="@+id/fw_float_close"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center_vertical"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/close" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingLeft="12dp"
-                android:paddingTop="12dp"
-                android:paddingRight="12dp"
-                android:paddingBottom="10dp">
+                android:layout_marginBottom="5dp">
 
                 <TextView
-                    android:id="@+id/fw_title"
+                    android:id="@+id/btn_powersave"
+                    style="@style/textTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/powercfg_powersave"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:text="@string/powersave_short"
+                    android:textAlignment="center"
+                    android:textSize="12dp" />
+
+                <TextView
+                    android:id="@+id/btn_defaultmode"
+                    style="@style/textTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/powercfg_balance"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:text="@string/balance_short"
+                    android:textAlignment="center"
+                    android:textSize="12dp" />
+
+                <TextView
+                    android:id="@+id/btn_gamemode"
+                    style="@style/textTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/powercfg_performance"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:text="@string/performance_short"
+                    android:textAlignment="center"
+                    android:textSize="12dp" />
+
+                <TextView
+                    android:id="@+id/btn_fastmode"
                     style="@style/textTitle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:lines="1"
-                    android:paddingRight="12dp"
-                    android:text="@string/app_name" />
-
-                <ImageButton
-                    android:id="@+id/fw_float_close"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_gravity="center_vertical"
-                    android:background="@android:color/transparent"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/close" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="5dp">
-
-                    <TextView
-                        android:id="@+id/btn_powersave"
-                        style="@style/textTitle"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/powercfg_powersave"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:text="@string/powersave_short"
-                        android:textAlignment="center"
-                        android:textSize="12dp" />
-
-                    <TextView
-                        android:id="@+id/btn_defaultmode"
-                        style="@style/textTitle"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/powercfg_balance"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:text="@string/balance_short"
-                        android:textAlignment="center"
-                        android:textSize="12dp" />
-
-                    <TextView
-                        android:id="@+id/btn_gamemode"
-                        style="@style/textTitle"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="5dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/powercfg_performance"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:text="@string/performance_short"
-                        android:textAlignment="center"
-                        android:textSize="12dp" />
-
-                    <TextView
-                        android:id="@+id/btn_fastmode"
-                        style="@style/textTitle"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@drawable/powercfg_fast"
-                        android:paddingTop="10dp"
-                        android:paddingBottom="10dp"
-                        android:text="@string/fast_short"
-                        android:textAlignment="center"
-                        android:textSize="12dp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:orientation="horizontal">
-
-                    <CheckBox
-                        android:id="@+id/fw_app_light"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="独立亮度"
-                        android:textColor="#888"
-                        android:textSize="12dp" />
-
-                    <CheckBox
-                        android:id="@+id/fw_app_dis_notice"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="屏蔽通知"
-                        android:textColor="#888"
-                        android:textSize="12dp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <CheckBox
-                        android:id="@+id/fw_app_dis_button"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="屏蔽按键"
-                        android:textColor="#888"
-                        android:textSize="12dp" />
-
-                    <CheckBox
-                        android:id="@+id/fw_dynamic_state"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_weight="1"
-                        android:enabled="false"
-                        android:lines="1"
-                        android:text="动态响应"
-                        android:textColor="#888"
-                        android:textSize="12dp" />
-                </LinearLayout>
-
+                    android:background="@drawable/powercfg_fast"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:text="@string/fast_short"
+                    android:textAlignment="center"
+                    android:textSize="12dp" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="left"
-                android:orientation="horizontal"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
-                android:paddingBottom="10dp">
+                android:layout_marginTop="5dp"
+                android:orientation="horizontal">
 
-                <ImageButton
-                    android:id="@+id/fw_screen_record"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginRight="10dp"
-                    android:background="@android:color/transparent"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/record"
-                    android:visibility="gone" />
+                <CheckBox
+                    android:id="@+id/fw_app_light"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="独立亮度"
+                    android:textColor="#888"
+                    android:textSize="12dp" />
 
-                <ImageButton
-                    android:id="@+id/fw_float_monitor"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_gravity="center_vertical"
-                    android:alpha="0.3"
-                    android:background="@android:color/transparent"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/dialog" />
+                <CheckBox
+                    android:id="@+id/fw_app_dis_notice"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="屏蔽通知"
+                    android:textColor="#888"
+                    android:textSize="12dp" />
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/fw_app_dis_button"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="屏蔽按键"
+                    android:textColor="#888"
+                    android:textSize="12dp" />
+
+                <CheckBox
+                    android:id="@+id/fw_dynamic_state"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:enabled="false"
+                    android:lines="1"
+                    android:text="动态响应"
+                    android:textColor="#888"
+                    android:textSize="12dp" />
+            </LinearLayout>
+
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="left"
+            android:orientation="horizontal"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingBottom="10dp">
+
+            <ImageButton
+                android:id="@+id/fw_screen_record"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="10dp"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/record"
+                android:visibility="gone" />
+
+            <ImageButton
+                android:id="@+id/fw_float_monitor"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center_vertical"
+                android:alpha="0.3"
+                android:background="@android:color/transparent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/dialog" />
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

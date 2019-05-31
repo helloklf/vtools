@@ -83,6 +83,8 @@
     </style>
 
     <style name="AppTheme.AppBarOverlay.Light" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="titleTextColor">?android:textColorPrimary</item>
+        <item name="subtitleTextColor">?android:textColorSecondary</item>
         <item name="colorControlNormal">?android:textColorPrimary</item>
         <item name="android:foregroundTint">?android:textColorPrimary</item>
         <item name="android:drawableTint">?android:textColorPrimary</item>

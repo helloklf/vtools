@@ -200,9 +200,7 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-    <style name="AppTheme.AppBarOverlay.Light" parent="ThemeOverlay.AppCompat.ActionBar">
-        <item name="colorControlNormal">?android:textColorPrimary</item>
-        <item name="android:foregroundTint">?android:textColorPrimary</item>
+    <style name="AppTheme.AppBarOverlay.Light" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
     </style>
 
     <style name="ListCardItem">

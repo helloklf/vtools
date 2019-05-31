@@ -21,8 +21,6 @@
             android:foregroundTintMode="src_over"
             android:background="?android:statusBarColor"
             android:elevation="0dp"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            app:subtitleTextColor="?android:textColorSecondary"
-            app:titleTextColor="?android:textColorPrimary" />
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
     </android.support.design.widget.AppBarLayout>
 </android.support.design.widget.CoordinatorLayout>
