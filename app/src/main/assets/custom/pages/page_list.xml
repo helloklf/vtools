@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <pages>
     <page title="通用功能" desc="基本上所有安卓手机都能用" config="custom/pages/general.xml" />
+    <page title="性能调节" desc="与设备运行性能相关的选项" config="custom/pages/performance.xml" />
+    <page title="电池、充电" desc="与电池相关的选项" config="custom/pages/power.xml" />
     <page title="MIUI专属" desc="适用于MIUI系统的选项" config="custom/pages/miui.xml" />
     <page title="AOSP专属" desc="越接近原生的系统越适用" config="custom/pages/aosp.xml" />
     <page title="Flyme专属" desc="适用于Flyme系统的选项" config="custom/pages/flyme.xml" />

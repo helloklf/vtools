@@ -25,7 +25,7 @@ public class ThemeSwitch {
             if (uiModeManager.getNightMode() == UiModeManager.MODE_NIGHT_YES) {
                 theme = 8;
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                theme = 7;
+                theme = 9;
             }
         } else {
             theme = globalSPF.getInt(SpfConfig.GLOBAL_SPF_THEME, 1);
@@ -62,9 +62,6 @@ public class ThemeSwitch {
             }
             case 7: {
                 activity.setTheme(R.style.AppThemeViolet);
-                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-                }
                 break;
             }
             case 8: {
@@ -72,7 +69,10 @@ public class ThemeSwitch {
                 break;
             }
             case 9: {
-                activity.setTheme(R.style.AppThemeViolet);
+                activity.setTheme(R.style.AppThemeWhite);
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    activity.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                }
                 break;
             }
         }

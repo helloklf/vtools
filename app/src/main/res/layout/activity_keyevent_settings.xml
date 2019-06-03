@@ -11,6 +11,7 @@
     tools:openDrawer="start">
 
     <com.omarea.common.ui.OverScrollView
+        android:paddingTop="?android:actionBarSize"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -18,7 +19,6 @@
             android:id="@+id/key_sets"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="?android:actionBarSize"
             android:orientation="vertical">
 
             <Button

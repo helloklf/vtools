@@ -24,6 +24,16 @@
         <desc>使用简单的命令检测磁盘连续读写速度，需要好几分钟</desc>
         <script>file:///android_asset/custom/actions/disk_test.sh</script>
     </action>
+
+    <!--<group title="性能分析">
+        <action>
+            <title>CPU负载进程</title>
+            <desc>显示当前CPU占用最高的10个应用</desc>
+            <script>
+                top -m 5 -n 20
+            </script>
+        </action>
+    </group>-->
     <!--<action>
         <title>进度条测试 *</title>
         <script>

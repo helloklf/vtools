@@ -8736,11 +8736,13 @@ exports.default = _default;
             "button",
             { staticClass: "download", on: { click: _vm.download } },
             [_vm._v("获取Scene")]
-          )
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "last-version" }, [
+            _vm._v("最新版本：2.3.13")
+          ])
         ])
       ]),
-      _vm._v(" "),
-      _c("br"),
       _vm._v(" "),
       _c("div", { ref: "phone", staticClass: "pictures" }, [_vm._m(1)]),
       _vm._v(" "),
@@ -9001,7 +9003,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55433" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50269" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

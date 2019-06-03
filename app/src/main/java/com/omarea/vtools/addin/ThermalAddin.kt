@@ -1,10 +1,12 @@
 package com.omarea.vtools.addin
 
 import android.app.AlertDialog
+import android.app.Dialog
 import android.content.Context
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.RootFile
+import com.omarea.common.ui.DialogHelper
 import com.omarea.shared.CommonCmds
 import com.omarea.shell.Platform
 import com.omarea.vtools.R
@@ -29,7 +31,7 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
         }
         val arr = arrayOf("移除温控文件（需要重启）", "恢复温控文件（需要重启）", "临时关闭温控（重启失效）")
         var index = 0
-        val dialog = AlertDialog.Builder(context)
+        DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setTitle("请选择操作")
                 .setSingleChoiceItems(arr, index, { _, which ->
                     index = which
@@ -40,10 +42,7 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
                         1 -> resumeThermal()
                         2 -> closeThermal()
                     }
-                })
-                .create()
-        dialog.window!!.setWindowAnimations(R.style.windowAnim)
-        dialog.show()
+                }))
     }
 
     fun miuiSetThermalNo() {
@@ -73,7 +72,7 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
 
     private fun replaceThermalConfig(nolimits: String, baseName: String) {
         if (com.omarea.common.shared.MagiskExtend.moduleInstalled()) {
-            val dialog = AlertDialog.Builder(context)
+            DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle("确定")
                     .setMessage("本次操作将通过Magisk覆盖系统文件，需要重启后生效！")
                     .setPositiveButton(R.string.btn_confirm, { _, _ ->
@@ -93,13 +92,9 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
                         Toast.makeText(context, "已通过Magisk更改参数，请重启手机~", Toast.LENGTH_SHORT).show()
                     })
                     .setNegativeButton(R.string.btn_cancel, { _, _ ->
-                    })
-                    .create()
-
-            dialog.window!!.setWindowAnimations(R.style.windowAnim)
-            dialog.show()
+                    }))
         } else {
-            val dialog = AlertDialog.Builder(context)
+            DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle("确定")
                     .setMessage("这个操作是永久性的，暂时没有做备份还原功能，如果你需要恢复之前的温控，则需要重新输入ROM（不需要清除数据），手动删除/data/thermal和/data/vendor/thermal目录并重启手机！\n\n操作完后，请重启手机！")
                     .setPositiveButton(R.string.btn_confirm, { _, _ ->
@@ -125,16 +120,13 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
                         super.run()
                     })
                     .setNegativeButton(R.string.btn_cancel, { _, _ ->
-                    })
-                    .create()
-            dialog.window!!.setWindowAnimations(R.style.windowAnim)
-            dialog.show()
+                    }))
         }
     }
 
     private fun removeThermal() {
         if (com.omarea.common.shared.MagiskExtend.moduleInstalled()) {
-            val dialog = AlertDialog.Builder(context)
+            DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle("确定")
                     .setMessage("本次操作将通过Magisk覆盖系统文件，需要重启后生效！")
                     .setPositiveButton(R.string.btn_confirm, { _, _ ->
@@ -144,10 +136,7 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
                         com.omarea.common.shared.MagiskExtend.deleteSystemPath("/system/vendor/lib/libthermalclient.so")
                     })
                     .setNegativeButton(R.string.btn_cancel, { _, _ ->
-                    })
-                    .create()
-            dialog.window!!.setWindowAnimations(R.style.windowAnim)
-            dialog.show()
+                    }))
         } else {
             if (RootFile.fileExists("/system/vendor/bin/thermal-engine.bak")) {
                 Toast.makeText(context, "你已执行过这个操作，不需要再次执行，如果未生效请重启手机！", Toast.LENGTH_SHORT).show()

@@ -136,6 +136,8 @@ function remove_configs()
     ulock_dir /data/thermal
     ulock_dir /data/vendor/thermal
 
+    rm -rf "$current_save"
+
     echo '## 重启手机后生效'
 }
 

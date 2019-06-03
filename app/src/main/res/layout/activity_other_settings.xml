@@ -162,7 +162,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="27dp"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="6dp"
                     android:background="@color/colorAccent"
                     android:onClick="onThemeClick"
                     android:tag="1" />
@@ -171,7 +171,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="27dp"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="6dp"
                     android:background="@color/color_load_mid"
                     android:onClick="onThemeClick"
                     android:tag="2" />
@@ -180,7 +180,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="27dp"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="6dp"
                     android:background="@color/color_load_hight"
                     android:onClick="onThemeClick"
                     android:tag="3" />
@@ -189,7 +189,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="27dp"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="6dp"
                     android:background="@color/newYearAccent"
                     android:onClick="onThemeClick"
                     android:tag="4" />
@@ -198,7 +198,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="27dp"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="6dp"
                     android:background="@color/pink"
                     android:onClick="onThemeClick"
                     android:tag="5" />
@@ -207,7 +207,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="27dp"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="6dp"
                     android:background="@color/pretty"
                     android:onClick="onThemeClick"
                     android:tag="6" />
@@ -216,7 +216,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="27dp"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="6dp"
                     android:background="@color/violet"
                     android:onClick="onThemeClick"
                     android:tag="7" />
@@ -225,7 +225,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="27dp"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="6dp"
                     android:background="@color/black_overlay"
                     android:onClick="onThemeClick"
                     android:tag="8" />
@@ -234,7 +234,16 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="27dp"
-                    android:layout_marginLeft="10dp"
+                    android:layout_marginLeft="6dp"
+                    android:background="@android:color/white"
+                    android:onClick="onThemeClick"
+                    android:tag="9" />
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="27dp"
+                    android:layout_marginLeft="6dp"
                     android:background="@drawable/sun"
                     android:onClick="onThemeClick"
                     android:tag="-1" />

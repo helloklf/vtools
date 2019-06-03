@@ -3,6 +3,7 @@ package com.omarea.vtools.addin
 import android.app.Activity
 import android.app.AlertDialog
 import android.widget.Toast
+import com.omarea.common.ui.DialogHelper
 import com.omarea.shared.CommonCmds
 
 /**
@@ -13,28 +14,24 @@ class FullScreenAddin(private var context: Activity) : AddinBase(context) {
     fun hideNavgationBar() {
         com.omarea.common.shared.FileWrite.writePrivateFile(context.assets, "framework-res", "framework-res", context)
         if (com.omarea.common.shared.MagiskExtend.moduleInstalled()) {
-            AlertDialog.Builder(context)
-                    .setTitle("注意")
-                    .setMessage("此操作会写入/system/media/theme/default/framework-res，需要重启才能生效。如需还原，请到Magisk助手删除对应位置的文件")
-                    .setPositiveButton("知道了", { _, _ ->
-                        com.omarea.common.shared.MagiskExtend.replaceSystemFile("/system/media/theme/default/framework-res", "${com.omarea.common.shared.FileWrite.getPrivateFileDir(context)}/framework-res")
-                        Toast.makeText(context, "已通过Magisk更改参数，请重启手机~", Toast.LENGTH_SHORT).show()
-                    })
-                    .create()
-                    .show()
+           DialogHelper.animDialog( AlertDialog.Builder(context)
+                   .setTitle("注意")
+                   .setMessage("此操作会写入/system/media/theme/default/framework-res，需要重启才能生效。如需还原，请到Magisk助手删除对应位置的文件")
+                   .setPositiveButton("知道了", { _, _ ->
+                       com.omarea.common.shared.MagiskExtend.replaceSystemFile("/system/media/theme/default/framework-res", "${com.omarea.common.shared.FileWrite.getPrivateFileDir(context)}/framework-res")
+                       Toast.makeText(context, "已通过Magisk更改参数，请重启手机~", Toast.LENGTH_SHORT).show()
+                   }))
         } else {
             command = StringBuilder()
                     .append(CommonCmds.MountSystemRW)
                     .append("cp ${com.omarea.common.shared.FileWrite.getPrivateFileDir(context)}/framework-res /system/media/theme/default/framework-res\n")
                     .append("chmod 0755 /system/media/theme/default/framework-res\n")
                     .toString()
-            AlertDialog.Builder(context)
+            DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle("注意")
                     .setMessage("此操作会写入/system/media/theme/default/framework-res，需要重启才能生效。如需还原，则需删除/system/media/theme/default/framework-res！")
                     .setPositiveButton("知道了", { _, _ ->
-                    })
-                    .create()
-                    .show()
+                    }))
             super.run()
         }
     }
@@ -42,7 +39,7 @@ class FullScreenAddin(private var context: Activity) : AddinBase(context) {
     fun fullScreen() {
         val arr = arrayOf("全部隐藏", "隐藏导航栏", "隐藏状态栏", "恢复默认", "移走导航栏（试验）", "MIUI(专属)去导航栏")
         var index = 0
-        AlertDialog.Builder(context)
+        DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setTitle("请选择操作")
                 .setSingleChoiceItems(arr, index, { _, which ->
                     index = which
@@ -60,8 +57,7 @@ class FullScreenAddin(private var context: Activity) : AddinBase(context) {
                     }
                     if (index < 4)
                         Toast.makeText(context, "腾讯系列聊天软件不兼容状态栏隐藏，自动加入忽略列表！", Toast.LENGTH_LONG).show()
-                })
-                .create().show()
+                }))
     }
 
     fun getNavHeight(): Int {

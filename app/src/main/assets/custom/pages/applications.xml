@@ -5,7 +5,7 @@
     <resource file="file:///android_asset/custom/common/magisk_plus.sh" />
     <resource file="file:///android_asset/custom/common/empty" />
 
-    <group title="界面">
+    <group title="流氓杀手">
         <switch>
             <title>网易云首屏广告</title>
             <desc>如果禁用，则会通过修改Ad缓存文件夹写入权限，达到禁用广告的目的</desc>
@@ -18,9 +18,14 @@
             <getstate>file:///android_asset/custom/switchs/qq_style_get.sh</getstate>
             <setstate>file:///android_asset/custom/switchs/qq_style_set.sh</setstate>
         </switch>
+        <action confirm="true">
+            <title>修复淘宝闪退</title>
+            <desc>清理优酷和淘宝下载的热更新文件，出现淘宝或优酷闪退的，可以试试</desc>
+            <script>file:///android_asset/custom/actions/app_simple.sh</script>
+        </action>
     </group>
 
-    <group title="性能">
+    <group title="性能优化">
         <action support="file:///android_asset/custom/actions/tmgp_support.sh">
             <title>王者荣耀配置修改</title>
             <desc su="file:///android_asset/custom/actions/tmgp_get.sh" />
@@ -36,12 +41,7 @@
         </action>
     </group>
 
-    <group title="功能">
-        <action confirm="true">
-            <title>修复淘宝闪退</title>
-            <desc>清理优酷和淘宝下载的热更新文件，出现淘宝或优酷闪退的，可以试试</desc>
-            <script>file:///android_asset/custom/actions/app_simple.sh</script>
-        </action>
+    <group title="Google相关">
         <action support="file:///android_asset/custom/actions/gapps_support.sh">
             <title>打开Google设置</title>
             <desc>本功能为了方便隐藏了“Google设置”的定制系统，打开“Google设置”</desc>
@@ -54,6 +54,12 @@
             <desc>关闭此选项以临时禁用谷歌框架节省电量</desc>
             <getstate>file:///android_asset/custom/switchs/gapps_get.sh</getstate>
             <setstate>file:///android_asset/custom/switchs/gapps_set.sh</setstate>
+        </switch>
+        <switch>
+            <title>Camera2 HAL、EIS</title>
+            <desc>启用HAL和EIS，从而支持谷歌相机HDR+功能或避免闪退（谷歌相机需要自行下载适合自己机型的版本）。可能导致相机无法开启或切换缓慢</desc>
+            <getstate>file:///android_asset/custom/switchs/gcm_get.sh</getstate>
+            <setstate>file:///android_asset/custom/switchs/gcm_set.sh</setstate>
         </switch>
     </group>
 

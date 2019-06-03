@@ -43,19 +43,16 @@
 
                 <Switch
                     android:id="@+id/settings_pd"
+                    style="@style/textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:padding="8dp"
                     android:text="USB-PD快充" />
 
                 <TextView
+                    style="@style/textSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:text="启用USB-PD快充协议。（手动开关此选项可能会被系统自动还原...）"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textSize="11dp" />
+                    android:text="启用USB-PD快充协议。（手动开关此选项可能会被系统自动还原...）" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -67,9 +64,6 @@
                         style="@style/textSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="8dp"
-                        android:paddingTop="8dp"
-                        android:paddingBottom="4dp"
                         android:text="当前状态：" />
 
                     <TextView
@@ -82,46 +76,39 @@
             </LinearLayout>
 
             <LinearLayout style="@style/ListCardItem">
-
                 <Switch
                     android:id="@+id/settings_qc"
+                    style="@style/textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:padding="8dp"
                     android:text="@string/accessbility_charger" />
 
                 <TextView
+                    style="@style/textSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:text="@string/accessbility_charger_desc"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textSize="11dp" />
+                    android:text="@string/accessbility_charger_desc" />
 
                 <SeekBar
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:id="@+id/settings_qc_limit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:max="9999" />
 
                 <TextView
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:id="@+id/settings_qc_limit_desc"
                     style="@style/textSmall"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="8dp"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="4dp"
                     android:text="@string/settings_qc_limit_desc" />
 
                 <TextView
                     android:id="@+id/settings_qc_limit_current"
                     style="@style/textSmall"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="8dp"
-                    android:paddingBottom="8dp"
                     android:text="Current Limit:" />
             </LinearLayout>
 
@@ -132,31 +119,30 @@
                     android:id="@+id/settings_bp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="8dp"
+                    style="@style/textTitle"
                     android:text="@string/accessbility_bp"
                     tools:ignore="RtlHardcoded" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:text="@string/accessbility_bp_desc"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textSize="11sp" />
+                    style="@style/textSmall"
+                    android:text="@string/accessbility_bp_desc" />
 
                 <SeekBar
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:id="@+id/settings_bp_level"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:max="100" />
 
                 <TextView
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:id="@+id/accessbility_bp_level_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:text="@string/accessbility_bp_level_desc"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
+                    style="@style/textSmall"
+                    android:text="@string/accessbility_bp_level_desc" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -166,22 +152,21 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:paddingLeft="8dp"
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
+                        style="@style/textTitle"
                         android:text="手动控制" />
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="right"
-                        android:orientation="horizontal"
-                        android:padding="8dp">
+                        android:layout_gravity="end"
+                        android:orientation="horizontal">
 
                         <Button
                             android:id="@+id/bp_disable_charge"
                             android:layout_width="wrap_content"
                             android:layout_height="36dp"
-                            android:layout_marginRight="10dp"
+                            android:layout_marginEnd="@dimen/activity_horizontal_margin"
                             android:background="@drawable/btn_bg"
                             android:elevation="2dp"
                             android:text="禁止充电" />
@@ -210,15 +195,16 @@
                     android:id="@+id/battery_uevent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="11sp" />
+                    style="@style/textSmall" />
             </LinearLayout>
 
             <LinearLayout style="@style/ListCardItemLast">
 
                 <TextView
+                    style="@style/textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
                     android:text="电池使用记录" />
 
                 <LinearLayout
@@ -232,7 +218,7 @@
                         style="?android:buttonBarStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="36dp"
-                        android:layout_marginEnd="10dp"
+                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
                         android:background="@drawable/btn_bg"
                         android:elevation="2dp"
                         android:text="查看记录" />
@@ -242,7 +228,6 @@
                         style="?android:buttonBarStyle"
                         android:layout_width="wrap_content"
                         android:layout_height="36dp"
-                        android:layout_marginEnd="10dp"
                         android:background="@drawable/btn_bg"
                         android:elevation="2dp"
                         android:text="删除记录" />

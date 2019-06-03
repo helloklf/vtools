@@ -19,14 +19,14 @@
 
                 <TextView
                     style="@style/textTitle"
-                    android:layout_marginBottom="20dp"
                     android:text="@string/swap_swap" />
 
-                <TableRow>
-
+                <TableRow
+                    android:layout_marginTop="@dimen/activity_vertical_margin">
                     <SeekBar
                         android:id="@+id/txt_swap_size"
                         android:layout_height="30dp"
+                        android:layout_gravity="center_vertical"
                         android:max="4096" />
 
                     <TextView
@@ -37,18 +37,18 @@
                 </TableRow>
 
                 <TextView
-                    android:text="@string/swap_path"
-                    android:textSize="11dp" />
+                    style="@style/textSmall"
+                    android:text="@string/swap_path" />
 
                 <TableRow
                     android:layout_width="match_parent"
-                    android:layout_marginBottom="20dp">
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin">
 
                     <LinearLayout
                         android:layout_gravity="end"
                         android:layout_span="2"
-                        android:orientation="horizontal"
-                        android:paddingTop="10dp">
+                        android:orientation="horizontal">
 
                         <Button
                             android:id="@+id/btn_swap_create"
@@ -89,17 +89,15 @@
 
                 <CheckBox
                     android:id="@+id/chk_swap_autostart"
-                    android:layout_marginBottom="12dp"
                     android:text="@string/swap_auto_start" />
 
                 <CheckBox
                     android:id="@+id/chk_swap_disablezram"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
                     android:text="@string/swap_preferred" />
 
                 <TextView
                     style="@style/textSmall"
-                    android:layout_marginBottom="6dp"
                     android:text="@string/swap_swap_desc" />
             </TableLayout>
 
@@ -111,15 +109,13 @@
 
                 <TextView
                     style="@style/textTitle"
-                    android:layout_marginBottom="20dp"
                     android:text="@string/swap_zram" />
 
                 <TableRow
-                    android:focusable="true"
-                    android:focusableInTouchMode="true">
+                    android:layout_marginTop="@dimen/activity_vertical_margin">
 
                     <SeekBar
-                        android:id="@+id/txt_zram_size"
+                        android:id="@+id/seekbar_zram_size"
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
                         android:max="2048" />
@@ -132,8 +128,7 @@
                 </TableRow>
 
                 <TableRow
-                    android:layout_marginTop="6dp"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:focusable="true"
                     android:focusableInTouchMode="true">
 
@@ -153,8 +148,8 @@
 
 
                 <TextView
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     style="@style/textSmall"
-                    android:layout_marginBottom="6dp"
                     android:text="@string/swap_zram_desc" />
             </TableLayout>
 
@@ -165,15 +160,13 @@
 
                 <TextView
                     style="@style/textTitle"
-                    android:layout_marginBottom="20dp"
                     android:text="@string/swap_swappiness" />
 
                 <TableRow
-                    android:focusable="true"
-                    android:focusableInTouchMode="true">
+                    android:layout_marginTop="@dimen/activity_vertical_margin">
 
                     <SeekBar
-                        android:id="@+id/txt_swap_swappiness"
+                        android:id="@+id/seekbar_swap_swappiness"
                         android:layout_width="match_parent"
                         android:layout_height="30dp" />
 
@@ -187,8 +180,7 @@
 
                 <TextView
                     style="@style/textSmall"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="6dp"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:text="@string/swap_swappiness_desc" />
 
             </TableLayout>
@@ -200,36 +192,33 @@
 
                 <TextView
                     style="@style/textTitle"
-                    android:layout_marginBottom="20dp"
                     android:text="Swaps" />
 
                 <TextView
                     android:id="@+id/swap_swappiness_display"
                     style="@style/textSmall"
-                    android:layout_marginBottom="20dp"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
                     android:text="Swappiness" />
 
                 <ListView
                     android:id="@+id/list_swaps2"
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_marginBottom="12dp"
+                    android:layout_height="110dp"
                     android:textSize="10dp" />
             </TableLayout>
 
             <LinearLayout
-                style="@style/ListCardItem"
-                android:padding="12dp">
+                style="@style/ListCardItem">
 
                 <TextView
                     style="@style/textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="20dp"
                     android:text="@string/low_memory_killer" />
 
                 <Switch
                     android:id="@+id/swap_auto_lmk"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/lmk_optimize" />
@@ -243,7 +232,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:orientation="horizontal">
 
                     <TextView
@@ -269,18 +258,16 @@
 
                 <TextView
                     style="@style/textTitle"
-                    android:layout_marginBottom="20dp"
                     android:text="@string/swap_memory_info" />
 
                 <TableRow
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:focusable="true"
                     android:focusableInTouchMode="true">
 
                     <TextView
                         android:id="@+id/txt_mem"
-                        style="@style/textSmall"
-                        android:layout_width="60dp"
-                        android:layout_gravity="center_vertical" />
+                        style="@style/textSmall" />
                 </TableRow>
             </TableLayout>
         </TableLayout>

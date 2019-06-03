@@ -1,10 +1,11 @@
-package com.omarea.shared
+package com.omarea.shared.helper
 
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import com.omarea.shared.CommonCmds
 import com.omarea.shared.model.Appinfo
 import java.io.File
 import java.util.*

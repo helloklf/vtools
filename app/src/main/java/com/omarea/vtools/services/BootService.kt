@@ -233,28 +233,32 @@ class BootService : IntentService("vtools-boot") {
         if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false) || swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) {
             if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) {
                 val sizeVal = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0)
-                sb.append("if [ `cat /sys/block/zram0/disksize` != '" + sizeVal + "000000' ] ; then ")
-                sb.append("swapoff /dev/block/zram0 2>/dev/null;")
-                sb.append("echo 1 > /sys/block/zram0/reset;")
-                sb.append("echo " + sizeVal + "000000 > /sys/block/zram0/disksize;")
-                sb.append("mkswap /dev/block/zram0 2> /dev/null;")
-                sb.append("fi;")
+                sb.append("if [ `cat /sys/block/zram0/disksize` != '" + (sizeVal * 1024 * 1024L) + "' ] ; then ")
+                sb.append("swapoff /dev/block/zram0 2>/dev/null\n")
+                sb.append("echo 1 > /sys/block/zram0/reset\n")
+                if (sizeVal > 2047) {
+                    sb.append("echo " + sizeVal + "M > /sys/block/zram0/disksize\n")
+                } else {
+                    sb.append("echo " + (sizeVal * 1024 * 1024L) + " > /sys/block/zram0/disksize\n")
+                }
+                sb.append("mkswap /dev/block/zram0 2> /dev/null\n")
+                sb.append("fi\n")
                 sb.append("\n")
-                sb.append("swapon /dev/block/zram0 2> /dev/null;")
+                sb.append("swapon /dev/block/zram0 2> /dev/null\n")
             }
             if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)) {
                 //sb.append("swapon /data/swapfile -p 32767;")
                 if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, false))
-                    sb.append("swapon /data/swapfile -p 32760;")
+                    sb.append("swapon /data/swapfile -p 32760\n")
                 else
-                    sb.append("swapon /data/swapfile;")
+                    sb.append("swapon /data/swapfile\n")
             }
         }
 
-        sb.append("echo 3 > /sys/block/zram0/max_comp_streams;")
+        sb.append("echo 3 > /sys/block/zram0/max_comp_streams\n")
 
-        sb.append("echo 65 > /proc/sys/vm/swappiness;")
-        sb.append("echo " + swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65) + " > /proc/sys/vm/swappiness;")
+        sb.append("echo 65 > /proc/sys/vm/swappiness\n")
+        sb.append("echo " + swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65) + " > /proc/sys/vm/swappiness\n")
 
         sb.append("\n\n")
         sb.append("setprop vtools.boot 1")

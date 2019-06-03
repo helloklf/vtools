@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<actions>
+    <resource file="file:///android_asset/custom/common/props.sh" />
+    <resource file="file:///android_asset/custom/common/magisk.sh" />
+    <resource file="file:///android_asset/custom/common/magisk_plus.sh" />
+    <resource file="file:///android_asset/custom/common/empty" />
+
+    <action>
+        <title>低电量级别</title>
+        <desc>设置低电量级别，以及触发低电量模式的级别</desc>
+        <params>
+            <param name="level" desc="低电量模式触发级别"
+                options-sh="file:///android_asset/custom/actions/power_level_options.sh"
+                value-sh="settings get global low_power_trigger_level" />
+            <param name="levelmax" desc="低电量提示级别"
+                options-sh="file:///android_asset/custom/actions/power_level_options.sh"
+                value-sh="settings get global low_power_trigger_level_max" />
+        </params>
+        <script>file:///android_asset/custom/actions/low_power_level_set.sh</script>
+    </action>
+    <action confirm="true">
+        <title>清理电池优化白名单</title>
+        <desc>适用于Android M+，清理Doze模式白名单应用（某些系统喜欢把一些应用自动添加到白名单，导致这些应用无法被休眠！）</desc>
+        <script>file:///android_asset/custom/actions/doze_clear.sh</script>
+    </action>
+    <action confirm="true">
+        <title>清空耗电记录</title>
+        <desc>清空应用耗电记录和电池曲线数据，并不是还原电池寿命！</desc>
+        <script>file:///android_asset/custom/actions/battery_history_clear.sh</script>
+    </action>
+</actions>

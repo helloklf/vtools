@@ -77,10 +77,12 @@ class FragmentSwap : Fragment() {
             tr.put("type", params[1].replace("file", "文件").replace("partition", "分区"))
 
             val size = params[2]
-            tr.put("size", if (size.length > 3) (size.substring(0, size.length - 3) + "m") else "0")
+            // tr.put("size", if (size.length > 3) (size.substring(0, size.length - 3) + "m") else "0")
+            tr.put("size", swapUsedSizeParseMB(size))
 
             val used = params[3]
-            tr.put("used", if (used.length > 3) (used.substring(0, used.length - 3) + "m") else "0")
+            // tr.put("used", if (used.length > 3) (used.substring(0, used.length - 3) + "m") else "0")
+            tr.put("used", swapUsedSizeParseMB(used))
 
             tr.put("priority", params[4])
             list.add(tr)
@@ -102,7 +104,15 @@ class FragmentSwap : Fragment() {
         swap_lmk_current.text = lmk
     }
 
-    override fun onResume() {
+    fun swapUsedSizeParseMB(sizeStr: String): String {
+        try {
+            return (sizeStr.toLong() / 1024).toString()
+        } catch (ex: java.lang.Exception) {
+            return sizeStr
+        }
+    }
+
+    override fun onResume(){
         super.onResume()
         if (isDetached) {
             return
@@ -140,23 +150,22 @@ class FragmentSwap : Fragment() {
         txt_swap_size.progress = swapSize
         txt_swap_size.max = totalMem
         txt_swap_size_display.text = "${swapSize}MB"
-        if (totalMem > 2048)
-            txt_zram_size.max = 2048
-        else
-            txt_zram_size.max = totalMem
+        seekbar_zram_size.max = totalMem
         var zramSize = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0)
         if (zramSize > totalMem)
             zramSize = totalMem
-        txt_zram_size.progress = zramSize
+        seekbar_zram_size.progress = zramSize
         txt_zram_size_display.text = "${zramSize}MB"
-        txt_swap_swappiness.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65)
+        seekbar_swap_swappiness.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65)
+        txt_zramstus_swappiness.text = seekbar_swap_swappiness.progress.toString()
+
         txt_swap_size.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
             txt_swap_size_display.text = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 0).toString() + "MB"
         }, swapConfig, SpfConfig.SWAP_SPF_SWAP_SWAPSIZE))
-        txt_zram_size.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
+        seekbar_zram_size.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
             txt_zram_size_display.text = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0).toString() + "MB"
         }, swapConfig, SpfConfig.SWAP_SPF_ZRAM_SIZE))
-        txt_swap_swappiness.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
+        seekbar_swap_swappiness.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
             val swappiness = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 0)
             txt_zramstus_swappiness.text = swappiness.toString()
             KeepShellPublic.doCmdSync("echo $swappiness > /proc/sys/vm/swappiness;")
@@ -250,7 +259,7 @@ class FragmentSwap : Fragment() {
             val disablezram = chk_swap_disablezram.isChecked
 
             val sb = StringBuilder()
-            sb.append("echo 3 > /sys/block/zram0/max_comp_streams;")
+            sb.append("echo 3 > /sys/block/zram0/max_comp_streams\n")
             if (disablezram) {
                 sb.append("swapon /data/swapfile -p 32767\n")
                 //sb.append("swapoff /dev/block/zram0\n")
@@ -272,26 +281,30 @@ class FragmentSwap : Fragment() {
             }).start()
         }
         btn_zram_resize.setOnClickListener {
-            val sizeVal = txt_zram_size.progress
+            val sizeVal = seekbar_zram_size.progress
 
-            if (sizeVal < 2049 && sizeVal > -1) {
+            if (sizeVal < 8192 && sizeVal > -1) {
                 processBarDialog.showDialog(getString(R.string.zram_resizing))
 
                 val run = Thread({
                     val sb = StringBuilder()
                     sb.append("echo 3 > /sys/block/zram0/max_comp_streams;")
-                    sb.append("if [ `cat /sys/block/zram0/disksize` != '" + sizeVal + "000000' ] ; then ")
+                    sb.append("if [ `cat /sys/block/zram0/disksize` != '" + (sizeVal * 1024 * 1024L) + "' ] ; then ")
                     sb.append(
                             "sync\n" +
                                     "echo 3 > /proc/sys/vm/drop_caches\n" +
                                     "swapoff /dev/block/zram0 >/dev/null 2>&1\n")
                     sb.append("echo 1 > /sys/block/zram0/reset\n")
-                    sb.append("echo " + sizeVal + "000000 > /sys/block/zram0/disksize\n")
+                    if (sizeVal > 2047) {
+                        sb.append("echo " + sizeVal + "M > /sys/block/zram0/disksize\n")
+                    } else {
+                        sb.append("echo " + (sizeVal * 1024 * 1024L) + " > /sys/block/zram0/disksize\n")
+                    }
                     sb.append("mkswap /dev/block/zram0 >/dev/null 2>&1\n")
-                    sb.append("fi;")
+                    sb.append("fi\n")
                     sb.append("\n")
-                    sb.append("swapon /dev/block/zram0 >/dev/null 2>&1;")
-                    sb.append("sleep 2;")
+                    sb.append("swapon /dev/block/zram0 >/dev/null 2>&1\n")
+                    sb.append("sleep 2\n")
                     SysUtils.executeCommandWithOutput(true, sb.toString())
                     myHandler.post(getSwaps)
                     myHandler.post {

@@ -8,6 +8,7 @@
 /build
 ./app/build
 ./app/release
+./app/release_mini
 /captures
 app/release/app-release.apk
 app/build.gradle
