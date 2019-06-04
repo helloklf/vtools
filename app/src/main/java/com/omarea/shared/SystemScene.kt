@@ -9,6 +9,7 @@ import android.os.Build
 import android.util.Log
 import com.omarea.common.shell.KeepShellAsync
 import com.omarea.common.shell.KeepShellPublic
+import com.omarea.shared.helper.LocationHelper
 
 
 /**
@@ -73,13 +74,10 @@ class SystemScene(private var context: Context) {
         if (spfAutoConfig.getBoolean(SpfConfig.NFC + SpfConfig.ON, false))
             KeepShellPublic.doCmdSync("svc nfc enable")
 
-
         if (spfAutoConfig.getBoolean(SpfConfig.GPS + SpfConfig.ON, false)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                KeepShellPublic.doCmdSync("settings put secure location_providers_allowed -gps;settings put secure location_providers_allowed +gps")
-            else
-                KeepShellPublic.doCmdSync("settings put secure location_providers_allowed gps,network")
+            LocationHelper().enableGPS()
         }
+
         val lowPowerMode = spfAutoConfig.getBoolean(SpfConfig.FORCEDOZE + SpfConfig.OFF, false)
         if (lowPowerMode) {
             switchLowPowerModeShell(false)
@@ -96,11 +94,7 @@ class SystemScene(private var context: Context) {
 
 
         if (spfAutoConfig.getBoolean(SpfConfig.GPS + SpfConfig.OFF, false)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                KeepShellPublic.doCmdSync("settings put secure location_providers_allowed -gps;")
-            } else {
-                KeepShellPublic.doCmdSync("settings put secure location_providers_allowed network")
-            }
+            LocationHelper().disableGPS()
         }
 
         val lowPowerMode = spfAutoConfig.getBoolean(SpfConfig.FORCEDOZE + SpfConfig.ON, false)

@@ -63,8 +63,8 @@ class ActionPage : AppCompatActivity() {
                 if (extras.containsKey("title")) {
                     setTitle(extras.getString("title"))
                 }
-                if (extras.containsKey("config")) {
-                    pageConfig = extras.getString("config")!!
+                if (extras.containsKey("currentAppConfig")) {
+                    pageConfig = extras.getString("currentAppConfig")!!
                 }
                 if (pageConfig.isEmpty()) {
                     setResult(2)

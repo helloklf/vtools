@@ -49,6 +49,7 @@ public class AppConfigStore extends SQLiteOpenHelper {
             Cursor cursor = sqLiteDatabase.rawQuery("select * from app_config where id = ?", new String[]{app});
             if (cursor.moveToNext()) {
                 appConfigInfo.aloneLight = cursor.getInt(cursor.getColumnIndex("alone_light")) == 1;
+                appConfigInfo.aloneLightValue = cursor.getInt(cursor.getColumnIndex("light"));
                 appConfigInfo.disNotice = cursor.getInt(cursor.getColumnIndex("dis_notice")) == 1;
                 appConfigInfo.disButton = cursor.getInt(cursor.getColumnIndex("dis_button")) == 1;
                 appConfigInfo.gpsOn = cursor.getInt(cursor.getColumnIndex("gps_on")) == 1;
@@ -71,7 +72,7 @@ public class AppConfigStore extends SQLiteOpenHelper {
             database.execSQL("insert into app_config(id, alone_light, light, dis_notice, dis_button, gps_on, dis_background_run, freeze) values (?, ?, ?, ?, ?, ?, ?, ?)", new Object[]{
                     appConfigInfo.packageName,
                     appConfigInfo.aloneLight ? 1 : 0,
-                    0,
+                    appConfigInfo.aloneLightValue,
                     appConfigInfo.disNotice ? 1 : 0,
                     appConfigInfo.disButton ? 1 : 0,
                     appConfigInfo.gpsOn ? 1 : 0,

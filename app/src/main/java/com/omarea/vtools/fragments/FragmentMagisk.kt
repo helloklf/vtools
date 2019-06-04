@@ -8,17 +8,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.omarea.common.shared.RootFileInfo
 import com.omarea.common.shell.RootFile
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.shared.CommonCmds
-import com.omarea.ui.AdapterFileSelector
+import com.omarea.ui.AdapterRootFileSelector
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.fragment_magisk.*
 import java.io.File
 
 
 class FragmentMagisk : Fragment() {
-    private var adapterFileSelector: AdapterFileSelector? = null
+    private var adapterFileSelector: AdapterRootFileSelector? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
@@ -113,12 +114,12 @@ class FragmentMagisk : Fragment() {
                 Toast.makeText(context, "没有读取文件的权限！", Toast.LENGTH_LONG).show()
                 return
             }
-            adapterFileSelector = AdapterFileSelector(File(com.omarea.common.shared.MagiskExtend.MAGISK_PATH + "system"), Runnable {
-                val file: File? = adapterFileSelector!!.selectedFile
+            adapterFileSelector = AdapterRootFileSelector(RootFileInfo(com.omarea.common.shared.MagiskExtend.MAGISK_PATH + "system"), Runnable {
+                val file: RootFileInfo? = adapterFileSelector!!.selectedFile
                 if (file != null) {
                 }
             }, ProgressBarDialog(this.context!!), null, false, true, Runnable {
-                val file: File? = adapterFileSelector!!.selectedFile
+                val file: RootFileInfo? = adapterFileSelector!!.selectedFile
                 if (file != null) {
                     RootFile.deleteDirOrFile(file.absolutePath);
                     adapterFileSelector!!.refresh();

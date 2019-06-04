@@ -27,10 +27,6 @@ class ActivitySceneOtherSettings : AppCompatActivity() {
 
         home_hide_in_recents.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, false)
 
-        val serviceState = AccessibleServiceHelper().serviceIsRunning(this)
-        vtoolsserviceSettings!!.visibility = if (serviceState) View.VISIBLE else View.GONE
-
-        settings_autoinstall.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false)
         settings_delaystart.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DELAY, false)
         settings_disable_selinux.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false)
         auto_start_compile.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_STARTED_COMPILE, false)
@@ -70,9 +66,6 @@ class ActivitySceneOtherSettings : AppCompatActivity() {
 
         settings_delaystart.setOnCheckedChangeListener({ _, checked ->
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DELAY, checked).commit()
-        })
-        settings_autoinstall.setOnCheckedChangeListener({ _, checked ->
-            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_INSTALL, checked).commit()
         })
         settings_disable_selinux.setOnClickListener {
             if (settings_disable_selinux.isChecked) {

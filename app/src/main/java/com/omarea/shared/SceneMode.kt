@@ -5,6 +5,7 @@ import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import com.omarea.common.shell.KeepShellPublic
+import com.omarea.shared.helper.LocationHelper
 import com.omarea.shared.model.AppConfigInfo
 
 class SceneMode private constructor(private var contentResolver: ContentResolver, private var store: AppConfigStore) {
@@ -77,8 +78,8 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
         fun clearFreezeAppCountLimit() {
             while (freezList.size > freezAppLimit) {
                 val firstItem = freezList.first()
-                // val config = store.getAppConfig(firstItem.packageName)
-                // if (config.freeze) {
+                // val currentAppConfig = store.getAppConfig(firstItem.packageName)
+                // if (currentAppConfig.freeze) {
                 KeepShellPublic.doCmdSync("pm disable " + firstItem.packageName)
                 // }
                 freezList.remove(firstItem)
@@ -92,8 +93,8 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
             val currentTime = System.currentTimeMillis()
             val clearList = freezList.filter { it.leaveTime > -1 && currentTime - it.leaveTime > freezAppTimeLimit && it.packageName != lastAppPackageName }
             clearList.forEach {
-                // val config = store.getAppConfig(it.packageName)
-                // if (config.freeze) {
+                // val currentAppConfig = store.getAppConfig(it.packageName)
+                // if (currentAppConfig.freeze) {
                 KeepShellPublic.doCmdSync("pm disable " + it.packageName)
                 // }
                 freezList.remove(it)
@@ -101,56 +102,54 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
         }
     }
 
-    var mode = -1;
-    // var screenBrightness = -1;
-    var config: AppConfigInfo? = null
+    var brightnessMode = -1;
+    var screenBrightness = -1;
+    var currentAppConfig: AppConfigInfo? = null
     var lowPowerLevel = 2
 
     private fun backupState(): Int {
         try {
-            mode = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE)
-            // screenBrightness = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS)
+            brightnessMode = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE)
+            screenBrightness = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS)
         } catch (e: Settings.SettingNotFoundException) {
             e.printStackTrace()
         }
-        return mode
+        return brightnessMode
     }
 
     private fun resumeState() {
         try {
-            if (mode > -1) {
-                Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, mode)
-                contentResolver.notifyChange(Settings.System.getUriFor("screen_brightness_mode"), null)
-                mode = -1
+            val modeBackup = brightnessMode;
+            if (brightnessMode > -1) {
+                Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, brightnessMode)
+                contentResolver.notifyChange(Settings.System.getUriFor( Settings.System.SCREEN_BRIGHTNESS_MODE), null)
+                brightnessMode = -1
             }
-            /*
-            if (screenBrightness > -1) {
+            if (screenBrightness > -1 && modeBackup == Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL) {
                 Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, screenBrightness)
-                contentResolver.notifyChange(Settings.System.getUriFor("screen_brightness"), null)
+                contentResolver.notifyChange(Settings.System.getUriFor(Settings.System.SCREEN_BRIGHTNESS), null)
                 screenBrightness = -1
             }
-            */
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
-    private fun autoLightOff(): Boolean {
+    private fun autoLightOff(lightValue: Int = -1): Boolean {
         try {
-            if (Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, 0)) {
+            if (Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL)) {
                 contentResolver.notifyChange(Settings.System.getUriFor(Settings.System.SCREEN_BRIGHTNESS_MODE), null)
             } else {
                 Log.e("screen_brightness", "修改亮度失败！")
                 return false
             }
-            /*
-            if (Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, lightValue)) {
+
+            if (lightValue > -1 && Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, lightValue)) {
                 contentResolver.notifyChange(Settings.System.getUriFor(Settings.System.SCREEN_BRIGHTNESS), null)
             } else {
                 Log.e("screen_brightness", "修改亮度失败！")
                 return false
             }
-            */
         } catch (ex: Exception) {
             return false
         }
@@ -162,8 +161,8 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
      * @return 是否拦截
      */
     fun onNotificationPosted(): Boolean {
-        if (config != null) {
-            return config!!.disNotice
+        if (currentAppConfig != null) {
+            return currentAppConfig!!.disNotice
         }
         return false
     }
@@ -173,8 +172,8 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
      * @return 是否阻拦按键事件
      */
     fun onKeyDown(): Boolean {
-        if (config != null) {
-            return config!!.disButton
+        if (currentAppConfig != null) {
+            return currentAppConfig!!.disButton
         }
         return false
     }
@@ -207,11 +206,11 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
      * 自动清理前一个应用后台
      */
     private fun autoBoosterApp(packageName: String) {
-        if (config == null) {
+        if (currentAppConfig == null) {
             return
         }
         val level = getBatteryCapacity()
-        if (config!!.disBackgroundRun || (level > -1 && level < lowPowerLevel)) {
+        if (currentAppConfig!!.disBackgroundRun || (level > -1 && level < lowPowerLevel)) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 dozeApp(packageName)
             } else {
@@ -220,17 +219,21 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
         }
     }
 
-    private var locationMode = -1
+    private var locationMode = ""
     private fun backupLocationModeState() {
         // TODO:优化
-        locationMode = Settings.Secure.getInt(contentResolver, Settings.Secure.LOCATION_MODE)
+        locationMode = Settings.Secure.getString(contentResolver, Settings.Secure.LOCATION_PROVIDERS_ALLOWED)
     }
 
     private fun restoreLocationModeState() {
-        if (locationMode > -1) {
-            Settings.Secure.putInt(contentResolver, Settings.Secure.LOCATION_MODE, locationMode)
-            contentResolver.notifyChange(Settings.System.getUriFor(Settings.Secure.LOCATION_MODE), null)
-            locationMode = -1
+        if (!locationMode.contains("gps")) {
+           if (locationMode.contains("network")) {
+               LocationHelper().disableGPS()
+               locationMode = ""
+           } else {
+               LocationHelper().disableLocation()
+               locationMode = ""
+           }
         }
     }
 
@@ -289,9 +292,30 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
     }
 
     /**
+     * 从应用离开时
+     */
+    fun onAppLeave(appConfigInfo: AppConfigInfo) {
+        // 离开偏见应用时，记录偏见应用最后活动时间
+        if (appConfigInfo.freeze) {
+            setFreezeAppLeaveTime(appConfigInfo.packageName)
+        }
+        if (appConfigInfo.aloneLight) {
+            // 独立亮度 记录最后的亮度值
+            try {
+                val light = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS)
+                if (light != appConfigInfo.aloneLightValue) {
+                    appConfigInfo.aloneLightValue = light
+                    store.setAppConfig(appConfigInfo)
+                }
+            } catch (ex: java.lang.Exception) {
+            }
+        }
+    }
+
+    /**
      * 前台应用切换
      */
-    fun onFocusdAppChange(packageName: String, foceUpdateConfig: Boolean = false) {
+    fun onAppEnter(packageName: String, foceUpdateConfig: Boolean = false) {
         try {
             if (lastAppPackageName == packageName && !foceUpdateConfig) {
                 return
@@ -299,36 +323,34 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
             if (lastAppPackageName != packageName)
                 autoBoosterApp(lastAppPackageName)
 
-            // 离开偏见应用时，记录偏见应用最后活动时间
-            if (config != null && config!!.freeze) {
-                setFreezeAppLeaveTime(config!!.packageName)
+            if (currentAppConfig != null) {
+                onAppLeave(currentAppConfig!!)
             }
 
-            config = store.getAppConfig(packageName)
-            if (config == null) {
+            currentAppConfig = store.getAppConfig(packageName)
+            if (currentAppConfig == null) {
                 restoreLocationModeState()
                 resumeState()
                 restoreHeaddUp()
             } else {
-                if (config!!.aloneLight) {
+                if (currentAppConfig!!.aloneLight) {
                     backupState()
-                    autoLightOff()
+                    autoLightOff(currentAppConfig!!.aloneLightValue)
                 } else {
                     resumeState()
                 }
 
-                if (config!!.gpsOn) {
+                if (currentAppConfig!!.gpsOn) {
                     backupLocationModeState()
-                    val mode = Settings.Secure.getInt(contentResolver, Settings.Secure.LOCATION_MODE)
-                    if (mode != Settings.Secure.LOCATION_MODE_HIGH_ACCURACY) {
-                        Settings.Secure.putInt(contentResolver, Settings.Secure.LOCATION_MODE, Settings.Secure.LOCATION_MODE_HIGH_ACCURACY)
-                        contentResolver.notifyChange(Settings.System.getUriFor(Settings.Secure.LOCATION_MODE), null)
+                    val mode = Settings.Secure.getString(contentResolver, Settings.Secure.LOCATION_PROVIDERS_ALLOWED)
+                    if (!mode.contains("gps")) {
+                        LocationHelper().enableGPS()
                     }
                 } else {
                     restoreLocationModeState()
                 }
 
-                if (config!!.disNotice) {
+                if (currentAppConfig!!.disNotice) {
                     try {
                         val mode = Settings.Global.getInt(contentResolver, "heads_up_notifications_enabled")
                         backupHeadUp()
@@ -342,20 +364,20 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
                     restoreHeaddUp()
                 }
 
-                if (config!!.freeze) {
+                if (currentAppConfig!!.freeze) {
                     setFreezeAppStartTime(packageName)
                 }
             }
 
             lastAppPackageName = packageName
         } catch (ex: Exception) {
-            Log.e("onFocusdAppChange", ex.message)
+            Log.e("onAppEnter", ex.message)
         }
     }
 
     fun updateAppConfig() {
         if (!lastAppPackageName.isEmpty()) {
-            onFocusdAppChange(lastAppPackageName, true)
+            onAppEnter(lastAppPackageName, true)
         }
     }
 
@@ -363,7 +385,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
         lastAppPackageName = "com.android.systemui"
         restoreLocationModeState()
         resumeState()
-        config = null
+        currentAppConfig = null
     }
 
     fun onScreenOff() {

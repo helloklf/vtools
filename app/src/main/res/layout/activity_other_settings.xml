@@ -13,285 +13,229 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="56dp">
+        android:paddingTop="?android:actionBarSize">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
             android:orientation="vertical">
 
-            <GridLayout
-                android:id="@+id/vtoolsserviceSettings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <LinearLayout style="@style/ListCardItem">
 
                 <Switch
-                    android:id="@+id/settings_autoinstall"
+                    android:id="@+id/home_hide_in_recents"
+                    style="@style/textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_row="5"
-                    android:layout_column="0"
-                    android:padding="8dp"
-                    android:text="@string/accessbility_autoclick"
-                    android:textColor="?android:attr/textColorPrimary"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
+                    android:enabled="false"
+                    android:text="@string/home_hide_in_recents" />
 
                 <TextView
-                    android:id="@+id/textView11"
+                    style="@style/textSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_row="6"
-                    android:layout_column="0"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:paddingBottom="8dp"
-                    android:text="@string/accessbility_autoclick_desc"
-                    android:textColor="?android:attr/textColorSecondary"
+                    android:text="@string/home_hide_in_recents_desc" />
+
+                <Switch
+                    android:id="@+id/auto_start_compile"
+                    style="@style/textTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:text="@string/auto_start_compile" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/auto_start_compile_desc" />
+
+                <Switch
+                    android:id="@+id/settings_delaystart"
+                    style="@style/textTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:text="@string/accessbility_delay" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/accessbility_delay_desc" />
+
+
+                <Switch
+                    android:id="@+id/settings_disable_selinux"
+                    style="@style/textTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:text="@string/settings_disable_selinux" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_disable_selinux_desc" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/ListCardItem">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_theme" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingTop="8dp">
+
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_height="27dp"
+                        android:layout_weight="1"
+                        android:background="@color/colorBlue"
+                        android:onClick="onThemeClick"
+                        android:tag="0" />
+
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_height="27dp"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:background="@color/colorAccent"
+                        android:onClick="onThemeClick"
+                        android:tag="1" />
+
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_height="27dp"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:background="@color/color_load_mid"
+                        android:onClick="onThemeClick"
+                        android:tag="2" />
+
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_height="27dp"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:background="@color/color_load_hight"
+                        android:onClick="onThemeClick"
+                        android:tag="3" />
+
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_height="27dp"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:background="@color/newYearAccent"
+                        android:onClick="onThemeClick"
+                        android:tag="4" />
+
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_height="27dp"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:background="@color/pink"
+                        android:onClick="onThemeClick"
+                        android:tag="5" />
+
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_height="27dp"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:background="@color/pretty"
+                        android:onClick="onThemeClick"
+                        android:tag="6" />
+
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_height="27dp"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:background="@color/violet"
+                        android:onClick="onThemeClick"
+                        android:tag="7" />
+
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_height="27dp"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:background="@color/black_overlay"
+                        android:onClick="onThemeClick"
+                        android:tag="8" />
+
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_height="27dp"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:background="@android:color/white"
+                        android:onClick="onThemeClick"
+                        android:tag="9" />
+
+                    <Button
+                        android:layout_width="0dp"
+                        android:layout_height="27dp"
+                        android:layout_marginStart="6dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/sun"
+                        android:onClick="onThemeClick"
+                        android:tag="-1" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout style="@style/ListCardItem">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_logcat_title" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_weight="1"
+                        android:text="@string/settings_logcat_desc"
+                        android:textColor="?android:attr/textColorSecondary"
+                        android:textSize="10dp" />
+
+                    <Button
+                        android:id="@+id/settings_logcat"
+                        style="@style/Widget.AppCompat.ActionButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="10dp"
+                        android:background="@drawable/btn_bg"
+                        android:text="@string/settings_logcat_title"
+                        android:textSize="9dp" />
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/settings_log_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:textSize="10dp"
                     android:visibility="gone" />
-            </GridLayout>
-
-            <Switch
-                android:id="@+id/home_hide_in_recents"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:enabled="false"
-                android:padding="8dp"
-                android:text="@string/home_hide_in_recents"
-                android:textColor="?android:attr/textColorPrimary"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:paddingBottom="8dp"
-                android:text="@string/home_hide_in_recents_desc"
-                android:textColor="?android:attr/textColorSecondary"
-                android:textSize="10dp" />
-
-            <Switch
-                android:id="@+id/auto_start_compile"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:padding="8dp"
-                android:text="@string/auto_start_compile"
-                android:textColor="?android:attr/textColorPrimary"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:paddingBottom="8dp"
-                android:text="@string/auto_start_compile_desc"
-                android:textColor="?android:attr/textColorSecondary"
-                android:textSize="10dp" />
-
-            <Switch
-                android:id="@+id/settings_delaystart"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:padding="8dp"
-                android:text="@string/accessbility_delay"
-                android:textColor="?android:attr/textColorPrimary"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:paddingBottom="8dp"
-                android:text="@string/accessbility_delay_desc"
-                android:textColor="?android:attr/textColorSecondary"
-                android:textSize="10dp" />
-
-
-            <Switch
-                android:id="@+id/settings_disable_selinux"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:padding="8dp"
-                android:text="@string/settings_disable_selinux"
-                android:textColor="?android:attr/textColorPrimary"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:paddingBottom="8dp"
-                android:text="@string/settings_disable_selinux_desc"
-                android:textColor="?android:attr/textColorSecondary"
-                android:textSize="10dp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:text="@string/settings_theme"
-                android:textColor="?android:attr/textColorPrimary"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="8dp">
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="27dp"
-                    android:background="@color/colorBlue"
-                    android:onClick="onThemeClick"
-                    android:tag="0" />
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="27dp"
-                    android:layout_marginLeft="6dp"
-                    android:background="@color/colorAccent"
-                    android:onClick="onThemeClick"
-                    android:tag="1" />
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="27dp"
-                    android:layout_marginLeft="6dp"
-                    android:background="@color/color_load_mid"
-                    android:onClick="onThemeClick"
-                    android:tag="2" />
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="27dp"
-                    android:layout_marginLeft="6dp"
-                    android:background="@color/color_load_hight"
-                    android:onClick="onThemeClick"
-                    android:tag="3" />
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="27dp"
-                    android:layout_marginLeft="6dp"
-                    android:background="@color/newYearAccent"
-                    android:onClick="onThemeClick"
-                    android:tag="4" />
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="27dp"
-                    android:layout_marginLeft="6dp"
-                    android:background="@color/pink"
-                    android:onClick="onThemeClick"
-                    android:tag="5" />
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="27dp"
-                    android:layout_marginLeft="6dp"
-                    android:background="@color/pretty"
-                    android:onClick="onThemeClick"
-                    android:tag="6" />
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="27dp"
-                    android:layout_marginLeft="6dp"
-                    android:background="@color/violet"
-                    android:onClick="onThemeClick"
-                    android:tag="7" />
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="27dp"
-                    android:layout_marginLeft="6dp"
-                    android:background="@color/black_overlay"
-                    android:onClick="onThemeClick"
-                    android:tag="8" />
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="27dp"
-                    android:layout_marginLeft="6dp"
-                    android:background="@android:color/white"
-                    android:onClick="onThemeClick"
-                    android:tag="9" />
-
-                <Button
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="27dp"
-                    android:layout_marginLeft="6dp"
-                    android:background="@drawable/sun"
-                    android:onClick="onThemeClick"
-                    android:tag="-1" />
             </LinearLayout>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="8dp"
-                android:text="@string/settings_logcat_title"
-                android:textColor="?android:attr/textColorPrimary"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:orientation="horizontal"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
-                    android:text="@string/settings_logcat_desc"
-                    android:textColor="?android:attr/textColorSecondary"
-                    android:textSize="10dp" />
-
-                <Button
-                    android:id="@+id/settings_logcat"
-                    style="@style/Widget.AppCompat.ActionButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="10dp"
-                    android:background="@drawable/btn_bg"
-                    android:text="@string/settings_logcat_title"
-                    android:textSize="9dp" />
-            </LinearLayout>
-
-            <EditText
-                android:id="@+id/settings_log_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="10dp"
-                android:visibility="gone" />
         </LinearLayout>
     </ScrollView>
 

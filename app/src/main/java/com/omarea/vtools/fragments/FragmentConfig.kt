@@ -403,7 +403,7 @@ class FragmentConfig : Fragment() {
         if (AccessibleServiceHelper().serviceIsRunning(context!!)) {
             val intent = Intent(context!!.getString(R.string.scene_appchange_action))
             intent.putExtra("app", app)
-            intent.putExtra("mode", mode)
+            intent.putExtra("brightnessMode", mode)
             context!!.sendBroadcast(intent)
         }
     }

@@ -23,7 +23,7 @@ object FileWrite {
     fun writeFile(ass: AssetManager, file: String, hasExtName: Boolean): String? {
         try {
             val inputStream = ass.open(file)
-            val datas = ByteArray(2 * 1024 * 1024)
+            val datas = ByteArray(inputStream.available())
             var len = inputStream.read(datas)
             if (len < 0) {
                 len = 0
@@ -70,7 +70,7 @@ object FileWrite {
     fun writeFile(assetManager: AssetManager, file: String, outName: String): String? {
         try {
             val inputStream = assetManager.open(file)
-            val datas = ByteArray(2 * 1024 * 1024)
+            val datas = ByteArray(inputStream.available())
             //inputStream.available()
             var len = inputStream.read(datas)
             if (len < 0) {
@@ -111,7 +111,7 @@ object FileWrite {
     fun writePrivateFile(assetManager: AssetManager, file: String, outName: String, context: Context): String? {
         try {
             val inputStream = assetManager.open(file)
-            val datas = ByteArray(2 * 1024 * 1024)
+            val datas = ByteArray(inputStream.available())
             //inputStream.available()
             var len = inputStream.read(datas)
             if (len < 0) {
@@ -181,7 +181,7 @@ object FileWrite {
         try {
             val assetManager = context.assets
             val inputStream = assetManager.open(fileName)
-            val datas = ByteArray(2 * 1024 * 1024)
+            val datas = ByteArray(inputStream.available())
             //inputStream.available()
             var len = inputStream.read(datas)
             if (len < 0) {

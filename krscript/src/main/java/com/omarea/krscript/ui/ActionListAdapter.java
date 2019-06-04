@@ -138,17 +138,19 @@ public class ActionListAdapter extends BaseAdapter {
     private View renderSwitchItem(SwitchInfo item) {
         SwitchViewHolder viewHolder = new SwitchViewHolder();
         View convertView = View.inflate(context, R.layout.list_item_kr_switch, null);
-        viewHolder.itemSwitch = convertView.findViewById(R.id.Title);
+        viewHolder.itemSwitch = convertView.findViewById(R.id.Switch);
+        viewHolder.itemTitle = convertView.findViewById(R.id.Title);
         viewHolder.itemText = convertView.findViewById(R.id.Desc);
         viewHolder.itemSeparator = convertView.findViewById(R.id.Separator);
         viewHolder.contents = convertView.findViewById(R.id.contents);
+
         if (isNullOrEmpty(item.getDesc()) && isNullOrEmpty(item.getTitle())) {
             viewHolder.contents.setVisibility(View.GONE);
         } else {
             viewHolder.contents.setVisibility(View.VISIBLE);
 
             viewHolder.itemText.setText(item.getDesc());
-            viewHolder.itemSwitch.setText(item.getTitle());
+            viewHolder.itemTitle.setText(item.getTitle());
             viewHolder.itemSwitch.setChecked(item.selected);
         }
 
@@ -203,6 +205,7 @@ public class ActionListAdapter extends BaseAdapter {
     protected class SwitchViewHolder {
         TextView itemSeparator = null;
         View contents = null;
+        TextView itemTitle = null;
         Switch itemSwitch = null;
         TextView itemText = null;
     }
