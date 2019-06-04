@@ -1,18 +1,14 @@
 package com.omarea.vtools.activitys
 
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.View
-import android.view.WindowManager
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.config.PageConfigReader
-import kotlinx.android.synthetic.main.activity_action_page.*
 import com.omarea.vtools.R
+import kotlinx.android.synthetic.main.activity_action_page.*
 
 class ActionPage : AppCompatActivity() {
     val progressBarDialog = ProgressBarDialog(this)
@@ -63,8 +59,8 @@ class ActionPage : AppCompatActivity() {
                 if (extras.containsKey("title")) {
                     setTitle(extras.getString("title"))
                 }
-                if (extras.containsKey("currentAppConfig")) {
-                    pageConfig = extras.getString("currentAppConfig")!!
+                if (extras.containsKey("config")) {
+                    pageConfig = extras.getString("config")!!
                 }
                 if (pageConfig.isEmpty()) {
                     setResult(2)
@@ -78,7 +74,7 @@ class ActionPage : AppCompatActivity() {
         super.onResume()
 
         if (!actionsLoaded) {
-            progressBarDialog.showDialog(getString(R.string.R_string_please_wait))
+            progressBarDialog.showDialog(getString(R.string.please_wait))
             Thread(Runnable {
                 val items = PageConfigReader(this.applicationContext).readConfigXml(pageConfig)
                 handler.post {

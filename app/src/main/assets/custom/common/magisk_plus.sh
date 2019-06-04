@@ -3,8 +3,8 @@
 source ./custom/common/magisk.sh
 
 # 混合模式替换文件(如果有magisk就用magisk，否则就用root直接替换系统文件)
-# mixture_hook_file "./custom/switchs/resources/com.android.systemui" "/system/media/theme/default/com.android.systemui" "$brightnessMode"
-# $brightnessMode 可是 1 或者 0，1表示替换，0表示取消替换
+# mixture_hook_file "./custom/switchs/resources/com.android.systemui" "/system/media/theme/default/com.android.systemui" "$mode"
+# $mode 可是 1 或者 0，1表示替换，0表示取消替换
 function mixture_hook_file()
 {
     local resource="$1"

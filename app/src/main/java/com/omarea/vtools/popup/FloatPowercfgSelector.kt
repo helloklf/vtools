@@ -104,7 +104,7 @@ class FloatPowercfgSelector {
         if (AccessibleServiceHelper().serviceIsRunning(mContext!!)) {
             val intent = Intent(mContext!!.getString(R.string.scene_appchange_action))
             intent.putExtra("app", app)
-            intent.putExtra("brightnessMode", mode)
+            intent.putExtra("mode", mode)
             mContext!!.sendBroadcast(intent)
         }
     }

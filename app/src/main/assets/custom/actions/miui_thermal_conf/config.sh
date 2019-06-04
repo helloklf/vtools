@@ -17,7 +17,7 @@ fi
 dir="${MAGISK_PATH}/system/vendor/etc"
 
 current_save="$dir/thermal-engine.current.ini"
-config="./custom/actions/miui_thermal_conf/${platform}-${brightnessMode}.conf"
+config="./custom/actions/miui_thermal_conf/${platform}-${mode}.conf"
 
 function replace_file() {
     if [[ "$platform" = "msmnile" ]]
@@ -82,7 +82,7 @@ function replace_configs()
 
     if [[ "$platform" = "msmnile" ]]
     then
-        if [[ "$brightnessMode" = "danger" ]]
+        if [[ "$mode" = "danger" ]]
         then
             echo "# empty\n" > "$dir/thermal-chg-only.conf"
         else
@@ -141,7 +141,7 @@ function remove_configs()
     echo '## 重启手机后生效'
 }
 
-case "$brightnessMode" in
+case "$mode" in
     "default")
         remove_configs
         exit 0
@@ -164,5 +164,5 @@ case "$brightnessMode" in
     ;;
 esac
 
-replace_configs "$brightnessMode"
-echo "$brightnessMode" > "$current_save"
+replace_configs "$mode"
+echo "$mode" > "$current_save"

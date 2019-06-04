@@ -505,7 +505,7 @@ class ActivityAppDetails : AppCompatActivity() {
         if (AccessibleServiceHelper().serviceIsRunning(this)) {
             val intent = Intent(this.getString(R.string.scene_appchange_action))
             intent.putExtra("app", app)
-            intent.putExtra("brightnessMode", mode)
+            intent.putExtra("mode", mode)
             sendBroadcast(intent)
         }
     }

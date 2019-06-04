@@ -3,7 +3,9 @@ package com.omarea.vtools.fragments
 import android.app.AlertDialog
 import android.content.ComponentName
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -14,12 +16,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Filterable
+import android.widget.Switch
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
+import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.shared.AppConfigStore
-import com.omarea.shared.helper.AppListHelper
+import com.omarea.shared.FreezeAppIconManager
 import com.omarea.shared.SceneMode
+import com.omarea.shared.SpfConfig
+import com.omarea.shared.helper.AppListHelper
 import com.omarea.shared.helper.ShortcutHelper
 import com.omarea.shared.model.Appinfo
 import com.omarea.ui.FreezeAppAdapter
@@ -32,6 +38,9 @@ class FragmentFreeze : Fragment() {
     private lateinit var processBarDialog: ProgressBarDialog
     private var freezeApps = java.util.ArrayList<String>()
     private var handler: Handler = Handler()
+    private lateinit var config: SharedPreferences
+    private lateinit var freezeHideList: SharedPreferences
+    private lateinit var iconManager: FreezeAppIconManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
@@ -39,10 +48,14 @@ class FragmentFreeze : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        config = this.context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+        freezeHideList = this.context!!.getSharedPreferences(SpfConfig.FREEZE_HIDELIST_SPF, Context.MODE_PRIVATE)
+        iconManager = FreezeAppIconManager(this.context!!)
         processBarDialog = ProgressBarDialog(context!!)
+
         processBarDialog.showDialog()
 
-        freeze_apps.setOnItemClickListener { parent, view, position, _ ->
+        freeze_apps.setOnItemClickListener { parent, itemView, position, _ ->
             try {
                 val appInfo = (parent.adapter.getItem(position) as Appinfo)
                 toggleEnable(appInfo)
@@ -50,49 +63,50 @@ class FragmentFreeze : Fragment() {
             } catch (ex: Exception) {
             }
         }
-        freeze_apps.setOnItemLongClickListener { parent, view, position, _ ->
+
+        freeze_apps.setOnItemLongClickListener { parent, itemView, position, _ ->
             val item = (parent.adapter.getItem(position) as Appinfo)
-            showOptions(item, position, view)
+            showOptions(item, position, itemView)
             true
         }
 
-        freeze_add.setOnClickListener {
-            addFreezeAppDialog()
-        }
+        // 设置界面
         freeze_settings.setOnClickListener {
+            showFreezeSettings()
+        }
+
+        // 菜单按钮
+        freeze_menu.setOnClickListener {
             freezeOptionsDialog()
         }
 
         loadData()
 
         freeze_apps_search.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-            }
-
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun afterTextChanged(s: Editable?) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 (freeze_apps.adapter as Filterable).getFilter().filter(if (s == null) "" else s.toString())
             }
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
     private fun loadData() {
         Thread(Runnable {
             try {
+                // 数据库
                 val store = AppConfigStore(this.context)
+                // 数据库中记录的已添加的偏见应用
                 freezeApps = store.freezeAppList
+                // 已添加到桌面的快捷方式
                 val pinnedShortcuts = ShortcutHelper().getPinnedShortcuts(this.context);
 
                 val lostedShortcuts = ArrayList<Appinfo>()
                 val lostedShortcutsName = StringBuilder()
 
                 val allApp = AppListHelper(this.context!!).getAll()
+
+                // 遍历应用 检测已添加快捷方式并冻结的应用（如果不在数据库中，自动添加到数据，通常由于Scene数据被清理导致）
                 allApp.forEach {
                     if (pinnedShortcuts.contains(it.packageName) && !it.enabled) {
                         if (!freezeApps.contains(it.packageName)) {
@@ -105,18 +119,32 @@ class FragmentFreeze : Fragment() {
                 }
 
                 val freezeAppsInfo = ArrayList<Appinfo>()
+                // 遍历偏见应用列表 获取应用详情
                 for (it in freezeApps) {
                     val packageName = it
                     val result = allApp.find { it.packageName == packageName }
                     if (result != null) {
                         freezeAppsInfo.add(result)
 
+                        // 检查是否添加了快捷方式，如果没有则记录下来
                         if (!pinnedShortcuts.contains(it)) {
                             lostedShortcuts.add(result)
                             lostedShortcutsName.append(result.appName).append("\n")
                         }
                     } else {
-                        store.removeAppConfig(it);
+                        // 如果是隐藏状态的应用，自然是获取不到应用详情的，尝试读取本地缓存数据
+                        val appInfo = Appinfo()
+                        appInfo.packageName = it
+                        appInfo.enabled = false
+
+                        if (freezeHideList.contains(it)) {
+                            appInfo.appName = freezeHideList.getString(it, it)
+                        } else {
+                            appInfo.appName = it
+                        }
+                        val cachedIcon = iconManager.loadIcon(packageName)
+                        appInfo.icon = cachedIcon
+                        freezeAppsInfo.add(appInfo)
                     }
                 }
                 store.close()
@@ -127,6 +155,7 @@ class FragmentFreeze : Fragment() {
                         processBarDialog.hideDialog()
 
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) { // 即时是Oreo也可能出现获取不到已添加的快捷方式的情况，例如换了第三方桌面
+                            // 如果发现有快捷方式丢失，提示是否重新添加
                             if (lostedShortcuts.size > 0) {
                                 shortcutsLostDialog(lostedShortcutsName.toString(), lostedShortcuts)
                             }
@@ -135,17 +164,56 @@ class FragmentFreeze : Fragment() {
                     }
                 }
             } catch (ex: java.lang.Exception) {
-
             }
         }).start()
     }
 
+
+    fun showFreezeSettings() {
+        val config = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+
+        val view = View.inflate(context, R.layout.dialog_freeze_settings, null)
+        val switch = view.findViewById<Switch>(R.id.freeze_privacy)
+        val fingerprintVerify  = view.findViewById<Switch>(R.id.freeze_fingerprint_verify)
+        val pretend  = view.findViewById<Switch>(R.id.freeze_pretend)
+
+        switch.isChecked = config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_PRIVACY, false)
+        switch.setOnClickListener {
+            config.edit().putBoolean(SpfConfig.GLOBAL_SPF_FREEZE_PRIVACY, (it as Switch).isChecked).apply()
+        }
+        fingerprintVerify.isChecked = config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_FINGERPRINT, false)
+        fingerprintVerify.setOnClickListener {
+            config.edit().putBoolean(SpfConfig.GLOBAL_SPF_FREEZE_FINGERPRINT, (it as Switch).isChecked).apply()
+        }
+        pretend.isChecked = config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_PRETEND, false)
+        pretend.setOnClickListener {
+            config.edit().putBoolean(SpfConfig.GLOBAL_SPF_FREEZE_PRETEND, (it as Switch).isChecked).apply()
+        }
+
+        DialogHelper.animDialog(
+                AlertDialog.Builder(context)
+                        .setView(view)
+                        .setCancelable(true)
+                        .setOnDismissListener {
+                            loadData()
+                        }
+        )
+    }
+
+    /**
+     * 显示快捷方式丢失，提示添加
+     */
     private fun shortcutsLostDialog(lostedShortcutsName: String, lostedShortcuts: ArrayList<Appinfo>) {
-        AlertDialog.Builder(context)
-                .setTitle("快捷方式丢失")
-                .setMessage("以下被加入偏见模式的应用，启动快捷方式已丢失或未创建成功，是否立即重新创建？\n\n$lostedShortcutsName")
+        // 私密模式下，不提示添加快捷方式
+        if (config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_PRIVACY, false)) {
+            return
+        }
+
+        DialogHelper.animDialog(AlertDialog.Builder(context)
+                .setTitle(getString(R.string.freeze_shortcut_lost))
+                .setMessage(getString(R.string.freeze_shortcut_lost_desc) + "\n\n$lostedShortcutsName")
                 .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                    processBarDialog.showDialog("请稍等...")
+                    processBarDialog.showDialog(getString(R.string.please_wait))
                     CreateShortcutThread(lostedShortcuts, this.context!!, Runnable {
                         handler.post {
                             loadData()
@@ -154,21 +222,19 @@ class FragmentFreeze : Fragment() {
                     }).start()
                 })
                 .setNegativeButton(R.string.btn_cancel, { _, _ ->
-                })
-                .create()
-                .show()
+                }))
     }
 
     private fun showOptions(appInfo: Appinfo, position: Int, view: View) {
-        AlertDialog.Builder(this.context!!)
+        DialogHelper.animDialog(AlertDialog.Builder(this.context!!)
                 .setTitle(appInfo.appName)
                 .setItems(
                         arrayOf(
-                                "打开",
-                                "创建快捷方式",
-                                if (appInfo.enabled) "冻结" else "解冻",
-                                "移除",
-                                "移除并卸载"), { _, which ->
+                                getString(R.string.freeze_open),
+                                getString(R.string.freeze_shortcut_rebuild),
+                                if (appInfo.enabled) getString(R.string.freeze_diasble) else getString(R.string.freeze_enable),
+                                getString(R.string.freeze_remove),
+                                getString(R.string.freeze_remove_uninstall)), { _, which ->
 
                     when (which) {
                         0 -> startApp(appInfo)
@@ -187,9 +253,7 @@ class FragmentFreeze : Fragment() {
                         }
                     }
                 })
-                .setCancelable(true)
-                .create()
-                .show()
+                .setCancelable(true))
     }
 
     private fun removeConfig(appInfo: Appinfo) {
@@ -214,20 +278,40 @@ class FragmentFreeze : Fragment() {
     }
 
     private fun enableApp(appInfo: Appinfo) {
-        KeepShellPublic.doCmdSync("pm enable " + appInfo.packageName)
+        enableApp(appInfo.packageName.toString())
+    }
+    private fun enableApp(packageName: String) {
+        KeepShellPublic.doCmdSync("pm unhide " + packageName + "\n" + "pm enable " + packageName)
     }
 
     private fun disableApp(appInfo: Appinfo) {
-        KeepShellPublic.doCmdSync("pm disable " + appInfo.packageName)
+        disableApp(appInfo.packageName.toString())
+    }
+
+    private fun disableApp(packageName: String) {
+        val icon = getAppIcon(packageName)
+        if (icon != null) {
+            iconManager.saveIcon(icon, packageName)
+        }
+
+        if (isPrivacyMode()) {
+            KeepShellPublic.doCmdSync("pm enable " + packageName + "\n" + "pm hide " + packageName)
+        } else {
+            KeepShellPublic.doCmdSync("pm unhide " + packageName + "\n" + "pm disable " + packageName)
+        }
+    }
+
+    private fun getAppIcon(packageName: String): Drawable? {
+        return context!!.packageManager.getApplicationIcon(packageName)
     }
 
     private fun toggleEnable(appInfo: Appinfo) {
         if (appInfo.enabled) {
             disableApp(appInfo)
-            Toast.makeText(this.context, "× 已冻结应用", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this.context, getString(R.string.freeze_disable_completed), Toast.LENGTH_SHORT).show()
         } else {
             enableApp(appInfo)
-            Toast.makeText(this.context, "√ 已解冻应用", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this.context, getString(R.string.freeze_enable_completed), Toast.LENGTH_SHORT).show()
         }
         appInfo.enabled = !appInfo.enabled
     }
@@ -251,9 +335,9 @@ class FragmentFreeze : Fragment() {
             enableApp(appInfo)
         }
         if (ShortcutHelper().createShortcut(this.context!!, appInfo.packageName.toString())) {
-            Toast.makeText(this.context, "创建完成", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this.context, getString(R.string.freeze_shortcut_add_success), Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(this.context, "创建失败", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this.context, getString(R.string.freeze_shortcut_add_fail), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -261,7 +345,7 @@ class FragmentFreeze : Fragment() {
         override fun run() {
             for (appinfo in apps) {
                 if (!appinfo.enabled) {
-                    KeepShellPublic.doCmdSync("pm enable " + appinfo.packageName)
+                    KeepShellPublic.doCmdSync("pm unhide " + appinfo.packageName + "\n" + "pm enable " + appinfo.packageName)
                 }
                 Thread.sleep(3000)
                 ShortcutHelper().createShortcut(this.context, appinfo.packageName.toString())
@@ -277,8 +361,8 @@ class FragmentFreeze : Fragment() {
         val items = apps.map { it.appName.toString() }.toTypedArray()
         val states = items.map { false }.toBooleanArray()
 
-        AlertDialog.Builder(this.context)
-                .setTitle("添加偏见应用")
+        DialogHelper.animDialog(AlertDialog.Builder(this.context)
+                .setTitle(getString(R.string.freeze_add))
                 .setMultiChoiceItems(
                         items,
                         states,
@@ -296,15 +380,25 @@ class FragmentFreeze : Fragment() {
                 })
                 .setNegativeButton(R.string.btn_cancel, { _, _ ->
                 })
-                .setCancelable(true)
-                .create()
-                .show()
+                .setCancelable(true))
         // processBarDialog.hideDialog()
     }
 
+    private fun isPrivacyMode(): Boolean {
+        return config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_PRIVACY, false)
+    }
+
     private fun addFreezeApps(selectedItems: ArrayList<String>) {
-        processBarDialog.showDialog("正在处理...")
+        processBarDialog.showDialog(getString(R.string.please_wait))
         val next = Runnable {
+            if (isPrivacyMode()) {
+                val packageManager = context!!.packageManager
+                val editable = freezeHideList.edit()
+                for (packageName in selectedItems) {
+                    editable.putString(packageName, packageManager.getPackageInfo(packageName, 0).applicationInfo.loadLabel(packageManager).toString());
+                }
+                editable.apply()
+            }
             handler.post {
                 try {
                     loadData()
@@ -317,26 +411,31 @@ class FragmentFreeze : Fragment() {
     }
 
     private class AddFreezeAppsThread(private var context: Context, private var selectedItems: ArrayList<String>, private var onCompleted: Runnable) : Thread() {
+        val packageManager = context.packageManager
         override fun run() {
             val store = AppConfigStore(context)
-            val shortcutHelper = ShortcutHelper()
+            val iconManager = FreezeAppIconManager(context)
+
             for (it in selectedItems) {
                 val config = store.getAppConfig(it)
-                if (shortcutHelper.createShortcut(context, it)) {
-                    Thread.sleep(2005)
-                    config.freeze = true
-                    if (store.setAppConfig(config)) {
-                        KeepShellPublic.doCmdSync("pm disable " + it)
-                    } else {
-                        // Toast.makeText(context, "保存配置失败\n" + it, Toast.LENGTH_SHORT).show()
+
+                config.freeze = true
+                if (store.setAppConfig(config)) {
+                    val icon = getAppIcon(it)
+                    if (icon != null) {
+                        iconManager.saveIcon(icon, it)
                     }
                 } else {
-                    // Toast.makeText(context, "添加快捷方式失败\n" + it, Toast.LENGTH_SHORT).show()
+                    // Toast.makeText(context, "保存配置失败\n" + it, Toast.LENGTH_SHORT).show()
                 }
             }
             store.close()
 
             onCompleted.run()
+        }
+
+        private fun getAppIcon(packageName: String): Drawable? {
+            return packageManager.getApplicationIcon(packageName)
         }
     }
 
@@ -344,41 +443,63 @@ class FragmentFreeze : Fragment() {
         val p = context!!.packageManager
         val startActivity = ComponentName(this.context!!.applicationContext, ActivityFreezeApps::class.java)
         val enabled = p.getComponentEnabledSetting(startActivity) == PackageManager.COMPONENT_ENABLED_STATE_ENABLED
-        AlertDialog.Builder(this.context!!)
-                .setTitle("偏好应用管理")
+        DialogHelper.animDialog(AlertDialog.Builder(this.context!!)
+                .setTitle(getString(R.string.freeze_apps_manage))
                 .setItems(
                         arrayOf(
-                                "重建快捷方式",
-                                "全部解冻",
-                                "全部冻结",
-                                if (enabled) "从桌面隐藏本界面入口" else "添加本界面入口到桌面",
-                                "清空全部"), { _, which ->
+                                getString(R.string.freeze_add_app),
+                                getString(R.string.freeze_shortcut_rebuild),
+                                getString(R.string.freeze_enable_all),
+                                getString(R.string.freeze_disable_all),
+                                if (enabled) getString(R.string.freeze_hidden_entrance) else getString(R.string.freeze_show_entrance),
+                                getString(R.string.freeze_clear_all)), { _, which ->
 
                     when (which) {
-                        0 -> createShortcutAll()
-                        1 -> enableAll()
-                        2 -> disableAll()
+                        0 -> addFreezeAppDialog()
+                        1 -> createShortcutAll()
+                        2 -> {
+                            processBarDialog.showDialog()
+                            for (it in freezeApps) {
+                                enableApp(it)
+                            }
+                            processBarDialog.hideDialog()
+                            loadData()
+                        }
                         3 -> {
+                            processBarDialog.showDialog()
+                            for (it in freezeApps) {
+                                disableApp(it)
+                            }
+                            processBarDialog.hideDialog()
+                            loadData()
+                        }
+                        4 -> {
                             try {
                                 if (enabled) {
                                     p.setComponentEnabledSetting(startActivity, PackageManager.COMPONENT_ENABLED_STATE_DISABLED, PackageManager.DONT_KILL_APP)
                                 } else {
                                     p.setComponentEnabledSetting(startActivity, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP)
                                 }
-                                Toast.makeText(this.context, "√ 图标显示状态已切换", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this.context, getString(R.string.freeze_entrance_changed), Toast.LENGTH_SHORT).show()
                             } catch (ex: java.lang.Exception) {
                             }
                         }
-                        4 -> removeAll()
+                        5 -> {
+                            processBarDialog.showDialog()
+                            RemoveAllThread(this.context!!, freezeApps, Runnable {
+                                handler.post {
+                                    loadData()
+                                    processBarDialog.hideDialog()
+                                    Toast.makeText(context, getString(R.string.freeze_shortcut_delete_desc), Toast.LENGTH_LONG).show()
+                                }
+                            }).start()
+                        }
                     }
-                })
-                .setCancelable(true)
-                .create()
-                .show()
+                }))
     }
 
     private fun createShortcutAll() {
-        processBarDialog.showDialog("请稍等，这可能有点慢...")
+        processBarDialog.showDialog(getString(R.string.please_wait))
         CreateShortcutAllThread(this.context!!, freezeApps, Runnable {
             handler.post {
                 processBarDialog.hideDialog()
@@ -391,42 +512,12 @@ class FragmentFreeze : Fragment() {
         override fun run() {
             val shortcutHelper = ShortcutHelper()
             for (it in freezeApps) {
-                KeepShellPublic.doCmdSync("pm enable " + it)
-                Thread.sleep(3000)
+                KeepShellPublic.doCmdSync("pm unhide " + it + "\n" + "pm enable " + it)
+                sleep(3000)
                 shortcutHelper.createShortcut(context, it)
-                // KeepShellPublic.doCmdSync("pm disable " + it)
             }
             onCompleted.run()
         }
-    }
-
-    private fun disableAll() {
-        processBarDialog.showDialog()
-        for (it in freezeApps) {
-            KeepShellPublic.doCmdSync("pm disable " + it)
-        }
-        processBarDialog.hideDialog()
-        loadData()
-    }
-
-    private fun enableAll() {
-        processBarDialog.showDialog()
-        for (it in freezeApps) {
-            KeepShellPublic.doCmdSync("pm enable " + it)
-        }
-        processBarDialog.hideDialog()
-        loadData()
-    }
-
-    private fun removeAll() {
-        processBarDialog.showDialog()
-        RemoveAllThread(this.context!!, freezeApps, Runnable {
-            handler.post {
-                loadData()
-                processBarDialog.hideDialog()
-                Toast.makeText(context, "你可能需要手动删除已添加的快捷方式！", Toast.LENGTH_LONG).show()
-            }
-        }).start()
     }
 
     private class RemoveAllThread(private var context: Context, private var freezeApps: ArrayList<String>, private var onCompleted: Runnable) : Thread() {
@@ -435,7 +526,7 @@ class FragmentFreeze : Fragment() {
             val store = AppConfigStore(context)
             val shortcutHelper = ShortcutHelper()
             for (it in freezeApps) {
-                KeepShellPublic.doCmdSync("pm enable " + it)
+                KeepShellPublic.doCmdSync("pm unhide " + it + "\n" + "pm enable " + it)
                 val config = store.getAppConfig(it)
                 config.freeze = false
                 store.setAppConfig(config)

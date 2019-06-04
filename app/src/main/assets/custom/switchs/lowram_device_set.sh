@@ -7,7 +7,7 @@ if [ "$state" = '1' ];then
 else
     value="false"
 fi
-prop="ro.currentAppConfig.low_ram"
+prop="ro.config.low_ram"
 
 magisk_set_system_prop $prop $value
 

@@ -47,6 +47,9 @@ public class SpfConfig {
     public static String GLOBAL_SPF_POWERCFG = "global_powercfg";
     public static String GLOBAL_SPF_CONTRACT = "global_contract";
     public static String GLOBAL_SPF_POWERCFG_FRIST_NOTIFY = "global_powercfg_notifyed";
+    public static String GLOBAL_SPF_FREEZE_PRIVACY = "global_freeze_privacy";
+    public static String GLOBAL_SPF_FREEZE_FINGERPRINT = "global_freeze_fingerprint";
+    public static String GLOBAL_SPF_FREEZE_PRETEND = "global_freeze_pretend";
 
     public static String SWAP_SPF = "swap"; //spf
     public static String SWAP_SPF_SWAP = "swap";
@@ -62,5 +65,6 @@ public class SpfConfig {
     public static String CONFIG_SPF_TOUCH_BAR = "touch_bar";
 
     public static String APP_HIDE_HISTORY_SPF = "app_hide_spf";
+    public static String FREEZE_HIDELIST_SPF = "freeze_hidelist";
 
 }

@@ -129,7 +129,7 @@ case "$target" in
 			# Register specifies APM switch settings and APM FSM state
 			echo 0xb1112b0 1 > $DCC_PATH/config
 
-			# Register specifies CPR brightnessMode change state and also #online cores input to CPR HW
+			# Register specifies CPR mode change state and also #online cores input to CPR HW
 			echo 0xb018798 1 > $DCC_PATH/config
 
 			echo  1 > $DCC_PATH/enable
@@ -277,15 +277,15 @@ if [ -f /sys/devices/soc0/select_image ]; then
     echo $oem_version > /sys/devices/soc0/image_crm_version
 fi
 
-# Change console log level as per console currentAppConfig property
+# Change console log level as per console config property
 console_config=`getprop persist.console.silent.config`
 case "$console_config" in
     "1")
-        echo "Enable console currentAppConfig to $console_config"
+        echo "Enable console config to $console_config"
         echo 0 > /proc/sys/kernel/printk
         ;;
     *)
-        echo "Enable console currentAppConfig to $console_config"
+        echo "Enable console config to $console_config"
         ;;
 esac
 

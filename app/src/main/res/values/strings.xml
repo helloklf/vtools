@@ -241,6 +241,7 @@
     <string name="swap_auto_start">开机自启（要允许Scene自启动）</string>
 
     <string name="on_execute_please_wait">正在执行操作，请稍等…</string>
+    <string name="please_wait">请稍等…</string>
     <string name="executed">操作已完成！</string>
     <string name="file_creating">创建文件中</string>
     <string name="zram_resizing">正在调整，这可能要很久…</string>
@@ -361,7 +362,36 @@
     <string name="busybox_install_fail">自动安装Busybox失败。也许System分区没被解锁。因此，部分功能可能无法使用！</string>
     <string name="dex2oat_completed">dex2oat编译完成</string>
     <string name="dex2oat_compiling">dex2oat compiling</string>
-    <string name="R.string.please_wait">请稍等</string>
+
+    <string name="freeze_fingerprint_verify">指纹验证 *敬请期待</string>
+    <string name="freeze_fingerprint_verify_desc">需要验证指纹才能启动[隐藏]的应用</string>
+    <string name="freeze_privacy">私密模式 *敬请期待</string>
+    <string name="freeze_privacy_desc">使用[隐藏]代替[冻结]，隐藏后像卸载了一样，但数据不会丢失</string>
+    <string name="freeze_privacy_warn">请务必在卸载Scene前清除所有偏见应用，否则你就再也找不到它们了！</string>
+    <string name="freeze_pretend">应用伪装 *敬请期待</string>
+    <string name="freeze_pretend_desc">添加快捷方式到桌面时，使用假的图标和应用名</string>
+    <string name="freeze_shortcut_lost">快捷方式丢失</string>
+    <string name="freeze_shortcut_lost_desc">以下被加入偏见模式的应用，启动快捷方式已丢失或未创建成功，是否立即重新创建？</string>
+    <string name="freeze_add">添加偏见应用</string>
+    <string name="freeze_apps_manage">偏好应用管理</string>
+    <string name="freeze_disable_completed">× 已冻结应用</string>
+    <string name="freeze_enable_completed">√ 已解冻应用</string>
+    <string name="freeze_shortcut_add_success">创建完成</string>
+    <string name="freeze_shortcut_add_fail">创建失败</string>
+    <string name="freeze_add_app">添加应用</string>
+    <string name="freeze_shortcut_rebuild">重建快捷方式</string>
+    <string name="freeze_enable_all">全部解冻</string>
+    <string name="freeze_disable_all">全部冻结</string>
+    <string name="freeze_hidden_entrance">从桌面隐藏本界面入口</string>
+    <string name="freeze_show_entrance">添加本界面入口到桌面</string>
+    <string name="freeze_clear_all">清空全部</string>
+    <string name="freeze_entrance_changed">√ 图标显示状态已切换</string>
+    <string name="freeze_shortcut_delete_desc">你可能需要手动删除已添加的快捷方式！</string>
+    <string name="freeze_open">打开</string>
+    <string name="freeze_diasble">冻结</string>
+    <string name="freeze_enable">解冻</string>
+    <string name="freeze_remove">移除</string>
+    <string name="freeze_remove_uninstall">移除并卸载</string>
 
     <string-array name="device_templates">
         <item>Xiaomi MIX3</item>

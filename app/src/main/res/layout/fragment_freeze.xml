@@ -39,16 +39,18 @@
             android:layout_marginRight="10dp"
             android:padding="0dp"
             android:scaleType="centerInside"
+            android:tint="?android:colorAccent"
             android:src="@drawable/freeze_settings" />
 
         <ImageButton
-            android:id="@+id/freeze_add"
+            android:id="@+id/freeze_menu"
             style="?android:buttonBarButtonStyle"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_gravity="center"
             android:layout_marginRight="10dp"
             android:padding="0dp"
+            android:tint="?android:colorAccent"
             android:scaleType="centerInside"
             android:src="@drawable/freeze_add" />
     </LinearLayout>

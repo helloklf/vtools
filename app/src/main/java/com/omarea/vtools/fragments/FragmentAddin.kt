@@ -143,7 +143,7 @@ class FragmentAddin : Fragment() {
         try {
             val intent = Intent(context, ActionPage::class.java)
             intent.putExtra("title", title)
-            intent.putExtra("currentAppConfig", config)
+            intent.putExtra("config", config)
             startActivity(intent)
         } catch (ex: java.lang.Exception) {
             Log.e("_openPage", "" + ex.message)

@@ -219,21 +219,21 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
         }
     }
 
-    private var locationMode = ""
+    private var locationMode = "none"
     private fun backupLocationModeState() {
-        // TODO:优化
         locationMode = Settings.Secure.getString(contentResolver, Settings.Secure.LOCATION_PROVIDERS_ALLOWED)
     }
 
     private fun restoreLocationModeState() {
-        if (!locationMode.contains("gps")) {
-           if (locationMode.contains("network")) {
-               LocationHelper().disableGPS()
-               locationMode = ""
-           } else {
-               LocationHelper().disableLocation()
-               locationMode = ""
-           }
+        if (locationMode != "none") {
+            if (!locationMode.contains("gps")) {
+                if (locationMode.contains("network")) {
+                    LocationHelper().disableGPS()
+                } else {
+                    LocationHelper().disableLocation()
+                }
+                locationMode = "none"
+            }
         }
     }
 
