@@ -229,7 +229,7 @@
     <string name="swap_swappiness">Swappiness</string>
     <string name="swap_zram">ZRAM</string>
     <string name="swap_zram_adjustment">调整</string>
-    <string name="swap_zram_desc">说明：ZRAM即内存压缩技术，通过压缩RAM中的数据减少其空间占用。对性能影响小，但后台能力提升不大。</string>
+    <string name="swap_zram_desc">说明：ZRAM即内存压缩技术，通过压缩RAM中的数据减少其空间占用，大量使用会增加CPU负担</string>
     <string name="swap_swap">SWAP</string>
     <string name="swap_path">存储位置：/data/swapfile</string>
     <string name="swap_create">创建</string>
@@ -237,8 +237,11 @@
     <string name="swap_stop">关闭</string>
     <string name="swap_delete">删除</string>
     <string name="swap_preferred">优先使用（如果有多个SWAP或ZRAM）</string>
-    <string name="swap_swap_desc">说明：SWAP即磁盘交换技术，在RAM不足时，将一部分数据暂时转移到磁盘中，从而缓解RAM的压力，对性能影响大。SWAP建议设为RAM大小的25%-50%。</string>
+    <string name="swap_swap_desc">说明：SWAP即磁盘交换技术，在RAM不足时，将一部分数据暂时转移到磁盘中暂存，对后台能力提升明显，但性能较差</string>
     <string name="swap_auto_start">开机自启（要允许Scene自启动）</string>
+    <string name="swap_zram_stat">ZRAM 统计</string>
+    <string name="swap_zram_stat_desc">ZRAM的压缩率在20~45%之间都是正常的</string>
+    <string name="swap_zram_stat_format">数据压缩算法：%s\n原始数据大小：%s\n压缩后的大小：%s\n物理内存占用：%s\n最高内存占用：%s\n内存占用限制：%s\n压缩率：%s</string>
 
     <string name="on_execute_please_wait">正在执行操作，请稍等…</string>
     <string name="please_wait">请稍等…</string>
@@ -335,7 +338,6 @@
     <string name="start_app_fail">启动应用失败！</string>
     <string name="scene_need_notic_listing">请先授权允许Scene“通知使用权限”！</string>
 
-    <string name="title_activity_start_splash">Scene 启动中...</string>
     <string name="scene_key_capture_change_action">com.omarea.vtools.SceneAccessibleConfigChanged</string>
     <string name="scene_change_action">com.omarea.vtools.SceneConfigChanged</string>
     <string name="scene_appchange_action">com.omarea.vtools.SceneAppChanged</string>
@@ -343,6 +345,7 @@
     <string name="scene_create_shortcut_action">com.omarea.vtools.CreateShortcut</string>
     <string name="scene_speed_compile">com.omarea.vtools.SpeedCompile</string>
     <string name="scene_everything_compile">com.omarea.vtools.EverythingCompile</string>
+    <string name="scene_reset_compile">com.omarea.vtools.ResetCompile</string>
     <string name="title_activity_home">Scene桌面</string>
 
     <string name="scene_contract">Scene是一款适用于玩机爱好者的应用，对于新手用户来说，其中的部分功能可能会过于危险。\n\n强烈建议不要在工作机，或有重要数据的手机上使用。\n\n使用过程中，务必认真阅读各个功能条目的提示和警告信息，以免误操作导致不可预料的后果。\n\n如果你的手机在系统故障不能开机时，没法恢复出厂设置和刷机，请不要使用！！！</string>
@@ -361,7 +364,8 @@
     <string name="busybox_installed_magisk">已通过Magisk安装了Busybox，现在需要重启手机才能生效，立即重启吗？</string>
     <string name="busybox_install_fail">自动安装Busybox失败。也许System分区没被解锁。因此，部分功能可能无法使用！</string>
     <string name="dex2oat_completed">dex2oat编译完成</string>
-    <string name="dex2oat_compiling">dex2oat compiling</string>
+    <string name="dex2oat_compiling">dex2oat编译中</string>
+    <string name="dex2oat_reset_running">dex2oat重置中</string>
 
     <string name="freeze_fingerprint_verify">指纹验证 *敬请期待</string>
     <string name="freeze_fingerprint_verify_desc">需要验证指纹才能启动[隐藏]的应用</string>

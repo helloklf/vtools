@@ -195,11 +195,10 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
     /**
      * 杀死指定包名的应用
      */
-    private fun killApp(packageName: String, showMsg: Boolean = true) {
+    private fun killApp(packageName: String) {
         //keepShell2.doCmd("killall -9 $packageName;pkill -9 $packageName;pgrep $packageName |xargs kill -9;")
         // KeepShellPublic.doCmdSync("am stop $packageName;am force-stop $packageName;")
         KeepShellPublic.doCmdSync("am kill-all $packageName;am force-stop $packageName;")
-        //if (debugMode && showMsg) showMsg("结束 " + packageName)
     }
 
     /**

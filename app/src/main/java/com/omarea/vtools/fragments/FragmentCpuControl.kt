@@ -14,8 +14,11 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import com.omarea.common.shell.KernelProrp
+import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.shared.CpuConfigStorage
+import com.omarea.shared.SpfConfig
+import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shared.model.CpuStatus
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import com.omarea.shell.cpucontrol.ThermalControlUtils
@@ -921,6 +924,18 @@ class FragmentCpuControl : Fragment() {
         Thread(Runnable {
             initData()
         }).start()
+
+        val globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+        val dynamic = AccessibleServiceHelper().serviceIsRunning(context!!) && globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)
+        if (dynamic) {
+            DialogHelper.animDialog(AlertDialog.Builder(context!!)
+                    .setTitle("请注意")
+                    .setMessage("检测到你已开启“动态响应”，你手动对CPU、GPU的修改随时可能被覆盖。\n\n同时，手动调整参数还可能对“动态响应”的工作造成不利影响！")
+                    .setPositiveButton(R.string.btn_confirm, {
+                        _, _ ->
+                    })
+                    .setCancelable(false))
+        }
     }
 
     private fun loadBootConfig() {

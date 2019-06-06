@@ -50,6 +50,7 @@ public class SpfConfig {
     public static String GLOBAL_SPF_FREEZE_PRIVACY = "global_freeze_privacy";
     public static String GLOBAL_SPF_FREEZE_FINGERPRINT = "global_freeze_fingerprint";
     public static String GLOBAL_SPF_FREEZE_PRETEND = "global_freeze_pretend";
+    public static String GLOBAL_SPF_LAST_UPDATE = "global_last_update";
 
     public static String SWAP_SPF = "swap"; //spf
     public static String SWAP_SPF_SWAP = "swap";

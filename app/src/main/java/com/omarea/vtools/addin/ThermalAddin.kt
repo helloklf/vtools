@@ -1,7 +1,6 @@
 package com.omarea.vtools.addin
 
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.Context
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic

@@ -1,9 +1,8 @@
 package com.omarea.vtools.activitys
 
-import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.ActivityManager
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -18,26 +17,28 @@ import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
-import android.support.v4.content.PermissionChecker
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import com.omarea.shared.CrashHandler
+import com.omarea.common.ui.DialogHelper
+import com.omarea.shared.ConfigInstaller
 import com.omarea.shared.SpfConfig
+import com.omarea.shell.CheckRootStatus
 import com.omarea.shell.units.BackupRestoreUnit
 import com.omarea.shell.units.BatteryUnit
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogPower
 import com.omarea.vtools.fragments.*
 import com.omarea.vtools.popup.FloatMonitor
+import com.omarea.vtools.services.ServiceBattery
 import kotlinx.android.synthetic.main.activity_main.*
+import java.lang.ref.WeakReference
 
 class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var hasRoot = false
@@ -54,6 +55,38 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         } catch (ex: Exception) {
             Log.e("excludeRecent", ex.message)
+        }
+    }
+
+    private class ServiceCreateThread(context: Context) : Runnable {
+        private var context: WeakReference<Context>;
+        override fun run() {
+            //判断是否开启了充电加速和充电保护，如果开启了，自动启动后台服务
+            val chargeConfig = context.get()!!.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
+            if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) || chargeConfig!!.getBoolean(SpfConfig.CHARGE_SPF_BP, false)) {
+                try {
+                    val intent = Intent(context.get()!!, ServiceBattery::class.java)
+                    context.get()!!.startService(intent)
+                } catch (ex: Exception) {
+                    Log.e("startChargeService", ex.message)
+                }
+            }
+        }
+
+        init {
+            this.context = WeakReference(context)
+        }
+    }
+
+    private class ConfigInstallerThread(context: Context) : Thread() {
+        private var context: WeakReference<Context>;
+        override fun run() {
+            super.run()
+            ConfigInstaller().configCodeVerify()
+        }
+
+        init {
+            this.context = WeakReference(context)
         }
     }
 
@@ -74,11 +107,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 .detectAll()
                 .build());
         */
-        CrashHandler().init(this)
-        val intent = Intent(this.applicationContext, ActivityStartSplash::class.java)
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivityForResult(intent, 999)
-        //setMaxAspect()
+
         if (globalSPF == null) {
             globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         }
@@ -93,6 +122,54 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         */
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        hasRoot = CheckRootStatus.lastCheckResult
+        // AppShortcutManager(this.applicationContext).removeMenu()
+        // checkUseState()
+        /*
+        supportFragmentManager.addOnBackStackChangedListener {
+            if (supportFragmentManager.backStackEntryCount > 0) {
+                val item = supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 1)
+                title = item.name
+            } else {
+                title = getString(R.string.app_name)
+            }
+        }
+        */
+
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        drawer_layout.addDrawerListener(toggle)
+        toggle.syncState()
+
+        val navigationView = findViewById<NavigationView>(R.id.nav_view)
+        navigationView.setNavigationItemSelectedListener(this)
+        navigationView.menu.findItem(R.id.nav_battery).isEnabled = BatteryUnit().isSupport
+
+        if (!hasRoot) {
+            hideRootMenu(navigationView.menu)
+        } else {
+            try {
+                setHomePage()
+            } catch (ex: Exception) {
+                DialogHelper.animDialog(
+                        AlertDialog.Builder(this).setTitle(getString(R.string.sorry))
+                                .setMessage("启动应用失败\n" + ex.message).setNegativeButton(getString(R.string.btn_retry), { _, _ ->
+                                    setHomePage()
+                                }))
+            }
+            if (!BackupRestoreUnit.isSupport()) {
+                navigationView.menu.findItem(R.id.nav_img).isEnabled = false
+            }
+            ConfigInstallerThread(applicationContext).start()
+            ServiceCreateThread(applicationContext).run()
+        }
+        // 每天都检查更新
+        // if (globalSPF!!.getLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, 0) + (3600 * 24 * 1000) < System.currentTimeMillis()) {
+        //    Update().checkUpdate(this)
+        //    globalSPF!!.edit().putLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, System.currentTimeMillis()).apply()
+        // }
     }
 
     private fun rsBlur(source: Bitmap, radius: Int): Bitmap {
@@ -123,86 +200,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return inputBmp;
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (this.isDestroyed) {
-            return
-        }
-        if (requestCode == 999) {
-            hasRoot = resultCode == Activity.RESULT_OK
-            // AppShortcutManager(this.applicationContext).removeMenu()
-            // checkUseState()
-            /*
-            supportFragmentManager.addOnBackStackChangedListener {
-                if (supportFragmentManager.backStackEntryCount > 0) {
-                    val item = supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 1)
-                    title = item.name
-                } else {
-                    title = getString(R.string.app_name)
-                }
-            }
-            */
-
-
-            val toolbar = findViewById<Toolbar>(R.id.toolbar)
-            setSupportActionBar(toolbar)
-            val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-            drawer_layout.addDrawerListener(toggle)
-            toggle.syncState()
-
-            val navigationView = findViewById<NavigationView>(R.id.nav_view)
-            navigationView.setNavigationItemSelectedListener(this)
-            navigationView.menu.findItem(R.id.nav_battery).isEnabled = BatteryUnit().isSupport
-
-            if (!hasRoot)
-                hideRootMenu(navigationView.menu)
-            else {
-                try {
-                    setHomePage()
-                } catch (ex: Exception) {
-                    AlertDialog.Builder(this).setTitle(getString(R.string.sorry)).setMessage("启动应用失败\n" + ex.message).setNegativeButton(getString(R.string.btn_retry), { _, _ ->
-                        setHomePage()
-                    }).create().show()
-                }
-                if (!BackupRestoreUnit.isSupport()) {
-                    navigationView.menu.findItem(R.id.nav_img).isEnabled = false
-                }
-            }
-            /*
-            val file = File(Environment.getExternalStorageDirectory().absolutePath + "/vtools-error.log")
-            if (file.exists()) {
-                val error = String(FileInputStream(file).readBytes())
-                AlertDialog.Builder(this)
-                        .setTitle("异常退出记录")
-                        .setMessage("检测到Scene在之前的运行过程中出现错误，错误信息如下：\n\n" + error + "\n\n请截屏错误信息，或将本机存储目录下的vtools-error.log发送给开发者，以便解决问题！")
-                        .setNegativeButton(R.string.btn_iknow, {
-                            _, _ ->
-                        })
-                        .setPositiveButton(R.string.btn_delete, {
-                            _, _ ->
-                            file.delete()
-                        })
-                        .create()
-                        .show()
-            }
-            */
-            /*
-            // 在线检查更新：停止维护，不需要了
-            if (globalSPF!!.getLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, 0) + (1000 * 7200) < System.currentTimeMillis()) {
-                Update().checkUpdate(this)
-                globalSPF!!.edit().putLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, System.currentTimeMillis()).apply()
-            }
-            */
-        }
-    }
-
-    fun checkUseState() {
-        if (!(checkPermission(Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(Manifest.permission.PACKAGE_USAGE_STATS))) {
-            val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS)
-            startActivity(intent)
-        }
-    }
-
     private fun setHomePage() {
         val fragmentManager = supportFragmentManager
         fragmentManager.fragments.clear()
@@ -214,10 +211,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
     }
-
-    private fun checkPermission(permission: String): Boolean =
-            PermissionChecker.checkSelfPermission(this@ActivityMain, permission) == PermissionChecker.PERMISSION_GRANTED
-
 
     //返回键事件
     override fun onBackPressed() {
@@ -277,16 +270,13 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun showFloatMonitor() {
-        val dialog = AlertDialog.Builder(this)
+        DialogHelper.animDialog(AlertDialog.Builder(this)
                 .setMessage(getString(R.string.float_monitor_tips))
                 .setPositiveButton(R.string.btn_confirm, { _, _ ->
                     FloatMonitor(this).showPopupWindow()
                 })
                 .setNegativeButton(R.string.btn_cancel, { _, _ ->
-                })
-                .create()
-        dialog.window!!.setWindowAnimations(R.style.windowAnim)
-        dialog.show()
+                }))
     }
 
     //导航菜单选中
@@ -309,11 +299,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_img -> fragment = FragmentImg.createPage()
             R.id.nav_battery_stats -> fragment = FragmentBatteryStats.createPage()
             R.id.nav_core_control -> fragment = FragmentCpuControl.newInstance()
-            R.id.nav_paypal -> {
-                fragment = FragmentPay.createPage()
-                // Alipay(this).jumpAlipay()
-                // startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.me/duduski")))
-            }
+            R.id.nav_paypal -> fragment = FragmentPay.createPage()
             R.id.nav_qq -> {
                 val key = "6ffXO4eTZVN0eeKmp-2XClxizwIc7UIu" //""e-XL2In7CgIpeK_sG75s-vAiu7n5DnlS"
                 val intent = Intent()
@@ -375,7 +361,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             menu.findItem(R.id.nav_app_magisk).isEnabled = false
             menu.findItem(R.id.nav_freeze).isEnabled = false
         } catch (ex: Exception) {
-
         }
     }
 

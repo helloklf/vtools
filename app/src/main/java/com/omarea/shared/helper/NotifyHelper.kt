@@ -116,16 +116,16 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
     private fun updateNotic() {
         try {
             var currentMode = getCurrentPowerMode()
-            if (currentMode == null || currentMode.length == 0) {
+            if (currentMode.length == 0) {
                 currentMode = ""
             }
 
             var currentApp = getCurrentPowermodeApp()
-            if (currentApp == null || currentApp.length == 0) {
+            if (currentApp.length == 0) {
                 currentApp = context.packageName
             }
 
-            notifyPowerModeChange(currentApp!!, currentMode)
+            notifyPowerModeChange(currentApp, currentMode)
         } catch (ex: Exception) {
             Log.e("NotifyHelper", ex.localizedMessage)
         }

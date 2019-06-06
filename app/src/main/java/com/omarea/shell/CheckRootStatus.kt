@@ -20,39 +20,16 @@ import com.omarea.vtools.R
 
 class CheckRootStatus(var context: Context, private var next: Runnable? = null, private var disableSeLinux: Boolean = false) {
     var myHandler: Handler = Handler(Looper.getMainLooper())
-    val isRootUser = "if [[ `id -u 2>&1` = '0' ]]; then\n" +
-            "\techo 'root';\n" +
-            "elif [[ `\$UID` = '0' ]]; then\n" +
-            "\techo 'root';\n" +
-            "elif [[ `whoami 2>&1` = 'root' ]]; then\n" +
-            "\techo 'root';\n" +
-            "elif [[ `set | grep 'USER_ID=0'` = 'USER_ID=0' ]]; then\n" +
-            "\techo 'root';\n" +
-            "else\n" +
-            "\texit -1;\n" +
-            "fi;"
-
-    //是否已经Root
-    private fun isRoot(disableSeLinux: Boolean): Boolean {
-        val r = KeepShellPublic.doCmdSync(isRootUser)
-        Log.d("getsu", r)
-        if (r == "error" || r.contains("permission denied") || r.contains("not allowed") || r.equals("not found")) {
-            return false
-        } else if (r == "root") {
-            if (disableSeLinux)
-                KeepShellPublic.doCmdSync(CommonCmds.DisableSELinux)
-            return true
-        } else {
-            return false
-        }
-    }
-
 
     var therad: Thread? = null
     fun forceGetRoot() {
         var completed = false
         therad = Thread {
-            if (!isRoot(disableSeLinux)) {
+            rootStatus = KeepShellPublic.checkRoot()
+            if (rootStatus && disableSeLinux) {
+                KeepShellPublic.doCmdSync(CommonCmds.DisableSELinux)
+            }
+            if (!rootStatus) {
                 completed = true
                 myHandler.post {
                     KeepShellPublic.tryExit()
@@ -108,6 +85,7 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
     }
 
     companion object {
+        private var rootStatus = false
         private fun checkPermission(context: Context, permission: String): Boolean = PermissionChecker.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED
         fun grantPermission(context: Context) {
             val cmds = StringBuilder()
@@ -164,6 +142,12 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
             */
             KeepShellPublic.doCmdSync(cmds.toString())
         }
+
+        // 最后的ROOT检测结果
+        val lastCheckResult: Boolean
+            get (){
+                return this.rootStatus
+            }
 
         public fun isMagisk(): Boolean {
             return SysUtils.executeCommandWithOutput(false, "su -v").contains("MAGISKSU")

@@ -224,9 +224,10 @@ class BootService : IntentService("vtools-boot") {
             if (configInstaller.configInstalled()) {
                 modeList.executePowercfgMode(globalPowercfg, context!!.packageName)
             } else {
-                val stringBuilder = StringBuilder()
-                modeList.executePowercfgMode(globalPowercfg)
-                ConfigInstaller().installPowerConfig(context!!, stringBuilder.toString());
+                if(configInstaller.dynamicSupport(context!!)) {
+                    configInstaller.installPowerConfig(context);
+                    modeList.executePowercfgMode(globalPowercfg)
+                }
             }
         }
 

@@ -9,9 +9,11 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.omarea.common.shared.RootFileInfo;
 import com.omarea.common.ui.ProgressBarDialog;
 import com.omarea.vtools.R;
+
 import java.util.ArrayList;
 
 public class AdapterRootFileSelector extends BaseAdapter {

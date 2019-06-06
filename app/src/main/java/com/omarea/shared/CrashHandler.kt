@@ -2,7 +2,6 @@ package com.omarea.shared
 
 import android.content.Context
 import android.os.Environment
-import android.util.Log
 import com.omarea.shared.helper.NotifyHelper
 import com.omarea.shell.AppErrorLogcat
 import java.io.File

@@ -57,6 +57,8 @@ class CompileService : IntentService("vtools-compile") {
                 compile_method = "speed"
             } else if (intent.action == getString(R.string.scene_everything_compile)) {
                 compile_method = "everything"
+            } else if (intent.action == getString(R.string.scene_reset_compile)) {
+                compile_method = "reset"
             }
         }
 
@@ -65,15 +67,29 @@ class CompileService : IntentService("vtools-compile") {
         val packageNames = getAllPackageNames()
         val total = packageNames.size
         var current = 0
-        for (packageName in packageNames) {
-            if (true) {
-                updateNotification(getString(R.string.dex2oat_compiling), "[$current/$total] ${packageName}")
-                keepShell!!.doCmdSync("cmd package compile -m ${compile_method} ${packageName}")
-                current++
-            } else {
-                break
+        if (compile_method == "reset") {
+            for (packageName in packageNames) {
+                if (true) {
+                    updateNotification(getString(R.string.dex2oat_reset_running), "[$current/$total] ${packageName}")
+                    keepShell!!.doCmdSync("cmd package compile --reset ${packageName}")
+                    current++
+                } else {
+                    break
+                }
             }
+        } else {
+            for (packageName in packageNames) {
+                if (true) {
+                    updateNotification(getString(R.string.dex2oat_compiling), "[$current/$total] ${packageName}")
+                    keepShell!!.doCmdSync("cmd package compile -m ${compile_method} ${packageName}")
+                    current++
+                } else {
+                    break
+                }
+            }
+            keepShell!!.doCmdSync("cmd package compile -m ${compile_method} ${packageName}")
         }
+        Thread.sleep(2000)
         keepShell!!.tryExit()
         keepShell = null
         compiling = false
@@ -82,8 +98,6 @@ class CompileService : IntentService("vtools-compile") {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
-
         if (compileCanceled) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 nm.cancel(990)
@@ -93,5 +107,7 @@ class CompileService : IntentService("vtools-compile") {
         } else {
             updateNotification("complete!", getString(R.string.dex2oat_completed))
         }
+
+        super.onDestroy()
     }
 }

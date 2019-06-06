@@ -61,46 +61,7 @@
             android:value="54" />
         <meta-data
             android:name="android.max_aspect"
-            android:value="2.4" />
-
-        <service
-            android:name=".AccessibilityServiceScence"
-            android:label="Scene - 场景模式"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
-
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.accessibilityservice.AccessibilityService" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/phone_accessibility" />
-        </service>
-        <service
-            android:name=".services.NotificationService"
-            android:label="通知过滤服务"
-            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
-            <intent-filter>
-                <action android:name="android.service.notification.NotificationListenerService" />
-            </intent-filter>
-        </service>
-        <service
-            android:name=".AccessibilityServiceSceneKeyEvent"
-            android:label="Scene - 按键辅助"
-            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER" />
-
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.accessibilityservice.AccessibilityService" />
-            </intent-filter>
-
-            <meta-data
-                android:name="android.accessibilityservice"
-                android:resource="@xml/keyevent_accessibility" />
-        </service>
+            android:value="2.8" />
 
         <activity
             android:name=".activitys.ActivityMain"
@@ -109,16 +70,12 @@
             android:excludeFromRecents="false"
             android:exported="true"
             android:label="@string/app_name"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
-                <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
             <meta-data
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
@@ -128,58 +85,22 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="true"
             android:label="Scene 杂项设置"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activitys.ActivityAdvSettings"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="true"
             android:label="辅助功能逻辑"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activitys.ActivityAccessibilityKeyEventSettings"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="true"
             android:label="Scene-按键辅助"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-
-        <receiver
-            android:name=".receiver.ReceiverBoot"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
-
-                <category android:name="android.intent.category.HOME" />
-            </intent-filter>
-        </receiver>
-
-        <receiver
-            android:name=".receiver.ReceiverShortcut"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="@string/" />
-                <category android:name="android.intent.category.HOME" />
-            </intent-filter>
-        </receiver>
-
-        <service
-            android:name=".services.ServiceBattery"
-            android:enabled="true"
-            android:permission="" />
-        <service
-            android:name=".services.BootService"
-            android:enabled="true"
-            android:permission="" />
-        <service
-            android:name=".services.CompileService"
-            android:enabled="true"
-            android:permission="" />
-
         <activity
             android:name=".activitys.ActivityShortcut"
             android:excludeFromRecents="true"
@@ -232,7 +153,18 @@
         <activity
             android:name=".activitys.ActivityStartSplash"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_start_splash" />
+            android:launchMode="singleTask"
+            android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
+        </activity>
         <activity
             android:name=".activitys.ActivityQuickStart"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -251,7 +183,7 @@
             android:excludeFromRecents="false"
             android:icon="@drawable/freeze_logo"
             android:label="@string/title_activity_freeze"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:roundIcon="@drawable/freeze_logo">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -261,6 +193,78 @@
             </intent-filter>
         </activity>
         <activity android:name=".activitys.ActionPage" />
+
+        <receiver
+            android:name=".receiver.ReceiverBoot"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.HOME" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".receiver.ReceiverShortcut"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="@string/" />
+                <category android:name="android.intent.category.HOME" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".AccessibilityServiceScence"
+            android:label="Scene - 场景模式"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/phone_accessibility" />
+        </service>
+        <service
+            android:name=".services.NotificationService"
+            android:label="通知过滤服务"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".AccessibilityServiceSceneKeyEvent"
+            android:label="Scene - 按键辅助"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/keyevent_accessibility" />
+        </service>
+        <service
+            android:name=".services.ServiceBattery"
+            android:enabled="true"
+            android:permission="" />
+        <service
+            android:name=".services.BootService"
+            android:enabled="true"
+            android:permission="" />
+        <service
+            android:name=".services.CompileService"
+            android:enabled="true"
+            android:permission="" />
     </application>
 
 </manifest>

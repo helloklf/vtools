@@ -82,7 +82,8 @@ class FragmentHome : Fragment() {
             home_raminfo_text.text = "稍等一下"
             Thread(Runnable {
                 KeepShellPublic.doCmdSync("sync\n" +
-                        "echo 3 > /proc/sys/vm/drop_caches")
+                        "echo 3 > /proc/sys/vm/drop_caches\n" +
+                        "echo 1 > /proc/sys/vm/compact_memory")
                 myHandler.postDelayed({
                     try {
                         updateRamInfo()

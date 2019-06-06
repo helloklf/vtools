@@ -195,7 +195,7 @@ class ActionListView : OverScrollListView {
                         DialogHelper.animDialog(AlertDialog.Builder(context)
                                 .setTitle(action.title)
                                 .setView(view)
-                                .setPositiveButton(R.string.btn_confirm) { _, _ -> actionExecute(action.title!!, script, finalStartPath, onExit, readParamsValue(actionParamInfos, linearLayout)) })
+                                .setPositiveButton(R.string.btn_confirm) { _, _ -> actionExecute(action.title, script, finalStartPath, onExit, readParamsValue(actionParamInfos, linearLayout)) })
                     }
                 }).start()
 

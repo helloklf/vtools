@@ -125,6 +125,7 @@ class FragmentFreeze : Fragment() {
                     val result = allApp.find { it.packageName == packageName }
                     if (result != null) {
                         freezeAppsInfo.add(result)
+                        freezeHideList.edit().putString(packageName, result.appName.toString()).apply()
 
                         // 检查是否添加了快捷方式，如果没有则记录下来
                         if (!pinnedShortcuts.contains(it)) {

@@ -47,16 +47,11 @@ class ActivityQuickStart : Activity() {
             try {
                 appInfo = pm.getApplicationInfo(appPackageName, 0)
             } catch (ex: Exception) {
-                start_state_text.text = "此应用已被卸载！"
             }
-            if (appInfo != null) {
-                if (appInfo.enabled) {
-                    startApp()
-                } else {
-                    checkRoot(CheckRootSuccess(this, appPackageName))
-                }
+            if (appInfo != null && appInfo.enabled) {
+                startApp()
             } else {
-                start_state_text.text = "此应用已被卸载！"
+                checkRoot(CheckRootSuccess(this, appPackageName))
             }
         }
     }
@@ -68,8 +63,8 @@ class ActivityQuickStart : Activity() {
             context.get()!!.hasRoot = true
 
             // TODO:启动应用
-            KeepShellPublic.doCmdSync("pm enable ${appPackageName};")
-            context.get()!!.startApp();
+            KeepShellPublic.doCmdSync("pm unhide ${appPackageName}\npm enable ${appPackageName}\n")
+            context.get()!!.startApp()
         }
 
         init {
@@ -89,10 +84,20 @@ class ActivityQuickStart : Activity() {
                     // overridePendingTransition(0, 0)
                     SceneMode.setFreezeAppStartTime(appPackageName)
                 }).start()
-            } else {
-                start_state_text.text = "该应用无法启动！"
+                return
             }
         } catch (ex: Exception) {
+            start_state_text.text = "启动应用失败！"
+        }
+
+        var appInfo: ApplicationInfo? = null
+        try {
+            appInfo = pm.getApplicationInfo(appPackageName, 0)
+        } catch (ex: Exception) {
+        }
+        if (appInfo == null) {
+            start_state_text.text = "应用似乎已被卸载！"
+        } else {
             start_state_text.text = "启动应用失败！"
         }
     }

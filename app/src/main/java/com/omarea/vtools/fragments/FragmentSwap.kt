@@ -102,6 +102,54 @@ class FragmentSwap : Fragment() {
         swap_auto_lmk.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, false)
         val lmk = KernelProrp.getProp("/sys/module/lowmemorykiller/parameters/minfree")
         swap_lmk_current.text = lmk
+
+        // 压缩算法
+        val comp_algorithm = KernelProrp.getProp("/sys/block/zram0/comp_algorithm")
+        // 最大压缩流
+        // val max_comp_streams = KernelProrp.getProp("/sys/block/zram0/max_comp_streams")
+        // 存储在此磁盘中的未压缩数据大小
+        val orig_data_size = KernelProrp.getProp("/sys/block/zram0/orig_data_size")
+        // 存储在此磁盘中的压缩数据大小
+        val compr_data_size = KernelProrp.getProp("/sys/block/zram0/compr_data_size")
+        // 为此磁盘分配的内存量
+        val mem_used_total = KernelProrp.getProp("/sys/block/zram0/mem_used_total")
+        // 可用于存储的最大内存量
+        val mem_limit = KernelProrp.getProp("/sys/block/zram0/mem_limit")
+        // 消耗的最大内存量
+        val mem_used_max = KernelProrp.getProp("/sys/block/zram0/mem_used_max")
+        // 写入此磁盘的相同元素填充页面的数量 不占用内存
+        // val same_pages = KernelProrp.getProp("/sys/block/zram0/same_pages")
+        // 压缩期间释放的页数
+        // val pages_compacted = KernelProrp.getProp("/sys/block/zram0/pages_compacted")
+        // 不可压缩数据
+        // val huge_pages = KernelProrp.getProp("/sys/block/zram0/huge_pages")
+
+        zram0_stat.text = String.format(
+                getString(R.string.swap_zram_stat_format),
+                comp_algorithm,
+                zramInfoValueParseMB(orig_data_size),
+                zramInfoValueParseMB(compr_data_size),
+                zramInfoValueParseMB(mem_used_total),
+                zramInfoValueParseMB(mem_used_max),
+                if(mem_limit == "0") "" else mem_limit,
+                zramCompressionRatio(orig_data_size, compr_data_size),
+                zramCompressionRatio(orig_data_size, mem_used_total))
+    }
+
+    private fun zramInfoValueParseMB(sizeStr: String): String {
+        try {
+            return (sizeStr.toLong() / 1024 / 1024).toString() + "MB"
+        } catch (ex: java.lang.Exception) {
+            return sizeStr
+        }
+    }
+
+    private fun zramCompressionRatio(origDataSize:String, comprDataSize:String): String {
+        try {
+            return (comprDataSize.toLong() * 1000 / origDataSize.toLong() / 10.0).toString() + "%"
+        } catch (ex: java.lang.Exception) {
+            return "$comprDataSize/$origDataSize"
+        }
     }
 
     fun swapUsedSizeParseMB(sizeStr: String): String {
@@ -233,6 +281,7 @@ class FragmentSwap : Fragment() {
 
         if (!KeepShellPublic.doCmdSync("if [[ -e /dev/block/zram0 ]]; then echo 1; else echo 0; fi;").equals("1")) {
             swap_config_zram.visibility = View.GONE
+            zram_stat.visibility = View.GONE
         }
 
         btn_swap_create.setOnClickListener {

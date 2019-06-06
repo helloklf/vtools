@@ -11,6 +11,9 @@ result="$?"
 if [[ "$result" = 1 ]]
 then
     echo 0
+elif [[ ! -f $output ]]
+then
+    echo 0
 else
     echo 1
 fi
