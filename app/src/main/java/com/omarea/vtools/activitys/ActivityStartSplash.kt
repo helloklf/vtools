@@ -24,14 +24,18 @@ import kotlinx.android.synthetic.main.activity_start_splash.*
 import java.lang.ref.WeakReference
 
 class ActivityStartSplash : Activity() {
+    companion object {
+        var isColdBoot = true
+    }
     private var globalSPF: SharedPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (CheckRootStatus.lastCheckResult) {
-            val intent = Intent(this.applicationContext, ActivityMain::class.java)
-            startActivity(intent)
+        if (!isTaskRoot) {
+            // val intent = Intent(this.applicationContext, ActivityMain::class.java)
+            // intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION or Intent.FLAG_ACTIVITY_NEW_TASK
+            // startActivity(intent)
             finish();
             return;
         }
@@ -230,7 +234,13 @@ class ActivityStartSplash : Activity() {
         val intent = Intent(this.applicationContext, ActivityMain::class.java)
         // intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         // intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK // Intent.FLAG_ACTIVITY_CLEAR_TOP
+        // intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
         finish()
+    }
+
+    override fun onDestroy() {
+        isColdBoot = false
+        super.onDestroy()
     }
 }

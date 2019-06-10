@@ -22,15 +22,28 @@
             <title>夜间模式</title>
             <desc>切换夜间模式开关设置</desc>
             <params>
-                <param name="state" value-sh="settings get secure ui_night_mode">
+                <param desc="夜间模式" name="state" value-sh="settings get secure ui_night_mode">
                     <option value="0">自动</option>
                     <option value="1">关闭</option>
                     <option value="2">开启</option>
+                </param>
+                <param desc="附加操作" name="hotreboot">
+                    <option value="0">不需要</option>
+                    <option value="1">切换后热重启</option>
                 </param>
             </params>
             <script>
                 settings put secure ui_night_mode $state
                 echo '这得看人品，不一定能切换成功'
+                if [[ $hotreboot = "1" ]]
+                then
+                    echo '5秒后自动 热重启'
+                    echo '这会黑屏一会儿'
+                    sleep 5
+                    busybox killall system_server
+                else
+                    echo '部分系统可能需要重启手机才会生效'
+                fi
             </script>
         </action>
         <action>

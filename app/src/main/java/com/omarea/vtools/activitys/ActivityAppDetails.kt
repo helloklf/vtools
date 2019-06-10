@@ -21,6 +21,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Switch
 import android.widget.Toast
+import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.shared.*
@@ -155,7 +156,7 @@ class ActivityAppDetails : AppCompatActivity() {
         } else {
             // 让用户手动安装
             try {
-                val apk = com.omarea.common.shared.FileWrite.writeFile(assets, addin, true)
+                val apk = FileWrite.writeFile(applicationContext, addin, true)
 
                 val intent = Intent(Intent.ACTION_VIEW);
                 intent.setDataAndType(Uri.fromFile(File((if (apk != null) apk else addinPath))), "application/vnd.android.package-archive");

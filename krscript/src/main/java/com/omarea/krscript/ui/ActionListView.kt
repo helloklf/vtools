@@ -72,15 +72,15 @@ class ActionListView : OverScrollListView {
     /**
      * 执行switch的操作
      */
-    private fun switchExecute(action: SwitchInfo, toValue: Boolean, onExit: Runnable) {
-        val script = action.setState ?: return
+    private fun switchExecute(switchInfo: SwitchInfo, toValue: Boolean, onExit: Runnable) {
+        val script = switchInfo.setState ?: return
 
         var startPath: String? = null
-        if (action.start != null) {
-            startPath = action.start
+        if (switchInfo.start != null) {
+            startPath = switchInfo.start
         }
 
-        SimpleShellExecutor(context).execute(action.title, script, startPath, onExit, object : java.util.HashMap<String, String>() {
+        SimpleShellExecutor(context).execute(switchInfo, script, startPath, onExit, object : java.util.HashMap<String, String>() {
             init {
                 put("state", if (toValue) "1" else "0")
             }
@@ -195,14 +195,14 @@ class ActionListView : OverScrollListView {
                         DialogHelper.animDialog(AlertDialog.Builder(context)
                                 .setTitle(action.title)
                                 .setView(view)
-                                .setPositiveButton(R.string.btn_confirm) { _, _ -> actionExecute(action.title, script, finalStartPath, onExit, readParamsValue(actionParamInfos, linearLayout)) })
+                                .setPositiveButton(R.string.btn_confirm) { _, _ -> actionExecute(action, script, finalStartPath, onExit, readParamsValue(actionParamInfos, linearLayout)) })
                     }
                 }).start()
 
                 return
             }
         }
-        actionExecute(action.title!!, script, startPath, onExit, null)
+        actionExecute(action, script, startPath, onExit, null)
     }
 
     /**
@@ -331,7 +331,7 @@ class ActionListView : OverScrollListView {
         return ScriptEnvironmen.executeResultRoot(context, shellScript);
     }
 
-    private fun actionExecute(title: String, script: String, startPath: String?, onExit: Runnable, params: HashMap<String, String>?) {
-        SimpleShellExecutor(context).execute(title, script, startPath, onExit, params)
+    private fun actionExecute(configItem: ConfigItemBase, script: String, startPath: String?, onExit: Runnable, params: HashMap<String, String>?) {
+        SimpleShellExecutor(context).execute(configItem, script, startPath, onExit, params)
     }
 }

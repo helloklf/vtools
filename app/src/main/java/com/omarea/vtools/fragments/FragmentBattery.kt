@@ -189,7 +189,9 @@ class FragmentBattery : Fragment() {
         settings_qc_limit.setOnSeekBarChangeListener(OnSeekBarChangeListener2(Runnable {
             val level = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000)
             startBatteryService()
-            batteryUnits.setChargeInputLimit(level)
+            if (spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
+                batteryUnits.setChargeInputLimit(level)
+            }
         }, spf, settings_qc_limit_desc))
 
         if (!qcSettingSuupport) {

@@ -134,7 +134,7 @@ echo 3 > /proc/sys/vm/drop_caches
 echo "progress:[-1/5]"
 backup_vm_params
 modify_vm_params
-$BUSYBOX dd if=/dev/zero of=$cache bs=1048576 count=2048 conv=sync 1>&2
+$BUSYBOX dd if=/dev/zero of=$cache bs=1048576 count=1024 conv=sync 1>&2
 sync
 echo 3 > /proc/sys/vm/drop_caches
 
@@ -145,7 +145,7 @@ sync
 echo 3 > /proc/sys/vm/drop_caches
 echo "progress:[-1/5]"
 
-$BUSYBOX dd if=/dev/zero of=$cache bs=1048576 count=2048 conv=sync 1>&2
+$BUSYBOX dd if=/dev/zero of=$cache bs=1048576 count=1024 conv=sync 1>&2
 rm -f $cache 2> /dev/null
 sync
 echo 3 > /proc/sys/vm/drop_caches
@@ -153,7 +153,7 @@ echo "progress:[1/5]"
 modify_vm_params3
 
 echo '\n同步写测试...'
-$BUSYBOX dd if=/dev/zero of=$cache bs=1048576 count=2048 conv=fsync 1>&2
+$BUSYBOX dd if=/dev/zero of=$cache bs=1048576 count=1024 conv=fsync 1>&2
 sync
 echo 3 > /proc/sys/vm/drop_caches
 echo "progress:[2/5]"
@@ -168,9 +168,10 @@ then
     echo '\n常规 读测试...'
     $BUSYBOX hdparm -t /dev/block/sda 1>&2
     echo "progress:[4/5]"
-else
+elif [[ -e /dev/block/mmcblk0 ]]
+then
     echo '\n常规 读取测试...'
-    $BUSYBOX dd if=$cache of=/dev/null 1>&2
+    $BUSYBOX dd if=/dev/block/mmcblk0 of=/dev/null bs=1048576 count=2048 1>&2
     echo "progress:[4/5]"
 fi
 

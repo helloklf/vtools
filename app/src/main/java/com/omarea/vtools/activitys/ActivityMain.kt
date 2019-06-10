@@ -26,6 +26,10 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import com.omarea.common.shared.MagiskExtend
+import com.omarea.common.shell.KeepShellPublic
+import com.omarea.common.shell.KernelProrp
+import com.omarea.common.shell.RootFile
 import com.omarea.common.ui.DialogHelper
 import com.omarea.shared.ConfigInstaller
 import com.omarea.shared.SpfConfig
@@ -87,6 +91,35 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         init {
             this.context = WeakReference(context)
+        }
+    }
+
+    private class ThermalCheckThread(private var context: Context):Thread() {
+        override fun run() {
+            super.run()
+
+            if (MagiskExtend.magiskSupported() && KernelProrp.getProp("${MagiskExtend.MAGISK_PATH}system/vendor/etc/thermal-engine.current.ini") != "") {
+                if (RootFile.dirExists("/data/thermal")) {
+                    KeepShellPublic.doCmdSync(
+                            "rm -rf /data/thermal 2> /dev/null\n" +
+                            "echo '' > /data/thermal\n" +
+                            "chattr +i /data/thermal 2> /dev/null")
+                } else if (RootFile.dirExists("/data/vendor/thermal")) {
+                    KeepShellPublic.doCmdSync(
+                            "rm -rf /data/vendor/thermal 2> /dev/null\n" +
+                            "echo '' > /data/vendor/thermal\n" +
+                            "chattr +i /data/vendor/thermal 2> /dev/null")
+                } else {
+                    return
+                }
+                DialogHelper.animDialog(
+                        AlertDialog.Builder(context)
+                                .setMessage("检测到系统自动创建了温控副本，这会导致在附加功能中切换的温控失效。\n\nScene已自动将副本删除，但可能需要重启手机才能解决问题")
+                        .setPositiveButton(R.string.btn_confirm, {
+                            _, _ ->
+
+                        }))
+            }
         }
     }
 
@@ -162,8 +195,9 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             if (!BackupRestoreUnit.isSupport()) {
                 navigationView.menu.findItem(R.id.nav_img).isEnabled = false
             }
-            ConfigInstallerThread(applicationContext).start()
-            ServiceCreateThread(applicationContext).run()
+            ConfigInstallerThread(this).start()
+            ServiceCreateThread(this).run()
+            ThermalCheckThread(this).run()
         }
         // 每天都检查更新
         // if (globalSPF!!.getLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, 0) + (3600 * 24 * 1000) < System.currentTimeMillis()) {
@@ -214,7 +248,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     //返回键事件
     override fun onBackPressed() {
-        Log.e("onBackPressed", ">>>")
         try {
             val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
             when {

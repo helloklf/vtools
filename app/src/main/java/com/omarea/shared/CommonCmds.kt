@@ -22,7 +22,6 @@ object CommonCmds {
             "busybox mount -o rw,remount /vendor\n" +
                     "mount -o rw,remount /vendor\n"
 
-    const val POWER_CFG_PATH = "/data/powercfg.sh"
     const val POWER_CFG_BASE = "/data/powercfg-base.sh"
 
     const val ExecuteConfig = "sh ${POWER_CFG_BASE};\n"

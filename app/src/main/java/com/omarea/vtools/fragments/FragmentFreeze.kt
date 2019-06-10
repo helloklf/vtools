@@ -329,6 +329,7 @@ class FragmentFreeze : Fragment() {
             }
         } catch (ex: java.lang.Exception) {
         }
+        this.activity!!.finish()
     }
 
     private fun createShortcut(appInfo: Appinfo) {

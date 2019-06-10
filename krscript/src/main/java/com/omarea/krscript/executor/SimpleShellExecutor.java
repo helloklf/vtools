@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import com.omarea.common.shared.FileWrite;
 import com.omarea.common.shared.MagiskExtend;
+import com.omarea.krscript.model.ConfigItemBase;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -32,7 +33,7 @@ public class SimpleShellExecutor {
     /**
      * 执行脚本
      */
-    public boolean execute(String title, String cmds, String startPath, Runnable onExit, HashMap<String, String> params) {
+    public boolean execute(ConfigItemBase configItem, String cmds, String startPath, Runnable onExit, HashMap<String, String> params) {
         if (started) {
             return false;
         }
@@ -74,7 +75,7 @@ public class SimpleShellExecutor {
 
         if (process != null) {
             final Process finalProcess = process;
-            final ShellHandler shellHandler = new SimpleShellHandler(context, title, new Runnable() {
+            final Runnable forceStopRunnable = configItem.getInterruptible() ? (new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -82,7 +83,8 @@ public class SimpleShellExecutor {
                     } catch (Exception ex) {
                     }
                 }
-            });
+            }) : null;
+            final ShellHandler shellHandler = new SimpleShellHandler(context, configItem.getTitle(), forceStopRunnable, configItem.getAutoOff());
             setHandler(process, shellHandler, onExit);
 
             final OutputStream outputStream = process.getOutputStream();

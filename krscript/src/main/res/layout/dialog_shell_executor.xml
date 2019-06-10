@@ -48,7 +48,7 @@
             android:typeface="monospace" />
     </com.omarea.common.ui.OverScrollView>
     <LinearLayout
-        android:gravity="start"
+        android:gravity="end"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

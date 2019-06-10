@@ -17,9 +17,13 @@ import java.util.regex.Pattern;
 
 public class SimpleShellHandler extends ShellHandler {
     Context context;
+    private boolean autoOff = false;
+    private Runnable forceStop = null;
 
-    public SimpleShellHandler(Context context, String title, final Runnable forceStop) {
+    public SimpleShellHandler(Context context, String title, final Runnable forceStop, boolean autoOff) {
         this.context = context;
+        this.autoOff = autoOff;
+        this.forceStop = forceStop;
 
         if (title.isEmpty()) {
             title = context.getString(R.string.shell_executor);
@@ -35,7 +39,7 @@ public class SimpleShellHandler extends ShellHandler {
 
         this.shellTitle.setText(title);
 
-        final AlertDialog dialog = new AlertDialog.Builder(context)
+        dialog = new AlertDialog.Builder(context)
                 .setView(view)
                 .setCancelable(false)
                 .create();
@@ -52,24 +56,19 @@ public class SimpleShellHandler extends ShellHandler {
         btnExit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dialog.dismiss();
-                cleanUp();
-                if (forceStop != null && !finished) {
-                    forceStop.run();
-                }
+                exit();
             }
         });
 
-        if (btnExit != null) {
-            if (forceStop != null) {
-                btnExit.setVisibility(View.VISIBLE);
-            } else {
-                btnExit.setVisibility(View.GONE);
-            }
+        if (this.forceStop != null) {
+            btnExit.setVisibility(View.VISIBLE);
+        } else {
+            btnExit.setVisibility(View.GONE);
         }
     }
 
     private void cleanUp() {
+        dialog = null;
         shellTitle = null;
         shellProgress = null;
         textView = null;
@@ -120,13 +119,19 @@ public class SimpleShellHandler extends ShellHandler {
         finished = true;
         onProgress(1, 1);
 
-        if (msg != null && msg instanceof Integer) {
+        if (msg instanceof Integer) {
             if ((Integer) msg == 0)
                 updateLog("\n\n" + context.getString(R.string.execute_success), "#138ed6");
             else
                 updateLog("\n\nexit value: " + msg, "#138ed6");
         } else
             updateLog(msg, "#5500cc");
+        if (autoOff && dialog != null) {
+            dialog.dismiss();
+            dialog = null;
+        } else if (btnExit != null) {
+            btnExit.setVisibility(View.VISIBLE);
+        }
     }
 
     private void onReader(Object msg) {
@@ -202,6 +207,16 @@ public class SimpleShellHandler extends ShellHandler {
                     textView.append(msg);
                 }
             });
+        }
+    }
+
+    private void exit() {
+        if (dialog != null) {
+            dialog.dismiss();
+        }
+        cleanUp();
+        if (forceStop != null && !finished) {
+            forceStop.run();
         }
     }
 }

@@ -13,13 +13,13 @@ import com.omarea.shell.Platform
 class PerfBoostConfigAddin(private var context: Context) : AddinBase(context) {
     fun install() {
         val soc = Platform().getCPUName()
-        if (soc == "msm8998") {
+        if (soc == "powercfg/msm8998") {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                 Toast.makeText(context, "只支持Android 8.0以后的系统！", Toast.LENGTH_SHORT).show()
                 return
             }
             msm8898()
-        } else if (soc == "sdm845") {
+        } else if (soc == "powercfg/sdm845") {
             sdm845()
         } else if (soc == "sdm630") {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {

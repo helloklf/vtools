@@ -66,6 +66,8 @@ class PageConfigReader(private var context: Context) {
                                 }
                                 when (parser.getAttributeName(i)) {
                                     "confirm" -> action.confirm = parser.getAttributeValue(i) == "true"
+                                    "auto-off" -> action.autoOff = parser.getAttributeValue(i) == "true"
+                                    "interruptible" -> action.interruptible = parser.getAttributeValue(i) != "false"
                                     "start" -> action.start = parser.getAttributeValue(i)
                                     "support" -> {
                                         if (executeResultRoot(context, parser.getAttributeValue(i)) != "1") {
@@ -83,6 +85,8 @@ class PageConfigReader(private var context: Context) {
                                 }
                                 when (parser.getAttributeName(i)) {
                                     "confirm" -> switch.confirm = parser.getAttributeValue(i) == "true"
+                                    "auto-off" -> switch.autoOff = parser.getAttributeValue(i) == "true"
+                                    "interruptible" -> switch.interruptible = parser.getAttributeValue(i) != "false"
                                     "start" -> switch.start = parser.getAttributeValue(i)
                                     "support" -> {
                                         if (executeResultRoot(context, parser.getAttributeValue(i)) != "1") {

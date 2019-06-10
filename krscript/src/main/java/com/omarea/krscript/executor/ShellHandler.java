@@ -1,5 +1,6 @@
 package com.omarea.krscript.executor;
 
+import android.app.Dialog;
 import android.os.Handler;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -40,5 +41,6 @@ public abstract class ShellHandler extends Handler {
     TextView shellTitle;
     Button btnExit;
     Button btnHide;
+    Dialog dialog;
     boolean finished;
 }
