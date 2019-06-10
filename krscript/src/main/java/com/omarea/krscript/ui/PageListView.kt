@@ -6,7 +6,7 @@ import android.widget.AdapterView
 import android.widget.ListView
 import com.omarea.common.ui.OverScrollListView
 import com.omarea.common.ui.ProgressBarDialog
-import com.omarea.krscript.config.PageClickHandler
+import com.omarea.krscript.model.PageClickHandler
 import com.omarea.krscript.model.PageInfo
 import java.util.*
 
@@ -25,7 +25,7 @@ class PageListView : OverScrollListView {
         if (pageInfos != null) {
             this.overScrollMode = ListView.OVER_SCROLL_ALWAYS
             this.adapter = PageListAdapter(pageInfos)
-            this.onItemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
+            this.onItemClickListener = OnItemClickListener { parent, _, position, _ ->
                 val item = parent.adapter.getItem(position) as PageInfo
                 pageClickHandler.openPage(item)
             }

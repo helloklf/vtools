@@ -1,4 +1,4 @@
-package com.omarea.krscript.config
+package com.omarea.krscript.model
 
 import com.omarea.krscript.model.PageInfo
 

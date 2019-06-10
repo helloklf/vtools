@@ -7,16 +7,18 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
-import com.omarea.krscript.model.ActionInfo
-import com.omarea.krscript.model.ConfigItemBase
-import com.omarea.krscript.executor.ScriptEnvironmen
-import com.omarea.krscript.executor.SimpleShellExecutor
-import com.omarea.krscript.model.SwitchInfo
+import android.widget.AdapterView.OnItemClickListener
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.OverScrollListView
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.R
 import com.omarea.krscript.config.ActionParamInfo
+import com.omarea.krscript.executor.ScriptEnvironmen
+import com.omarea.krscript.executor.SimpleShellExecutor
+import com.omarea.krscript.model.ActionInfo
+import com.omarea.krscript.model.ActionLongClickHandler
+import com.omarea.krscript.model.ConfigItemBase
+import com.omarea.krscript.model.SwitchInfo
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -31,11 +33,11 @@ class ActionListView : OverScrollListView {
         this.progressBarDialog = ProgressBarDialog(context)
     }
 
-    fun setListData(actionInfos: ArrayList<ConfigItemBase>?) {
+    fun setListData(actionInfos: ArrayList<ConfigItemBase>?, actionLongClickHandler: ActionLongClickHandler? = null) {
         if (actionInfos != null) {
             this.overScrollMode = ListView.OVER_SCROLL_ALWAYS
             this.adapter = ActionListAdapter(actionInfos)
-            this.onItemClickListener = AdapterView.OnItemClickListener { parent, _, position, _ ->
+            this.onItemClickListener = OnItemClickListener { parent, _, position, _ ->
                 val item = parent.adapter.getItem(position)
                 if (item is ActionInfo) {
                     onActionClick(item, Runnable {
@@ -47,6 +49,45 @@ class ActionListView : OverScrollListView {
                     })
                 }
             }
+            this.setOnItemLongClickListener { parent, view, position, id ->
+                if (actionLongClickHandler != null) {
+                    val item = parent.adapter.getItem(position)
+                    if (item is ActionInfo) {
+                        actionLongClickHandler.addToFavorites(item)
+                    } else if (item is SwitchInfo) {
+                        actionLongClickHandler.addToFavorites(item)
+                    }
+                    true
+                } else {
+                    false
+                }
+            }
+        }
+    }
+
+    fun triggerAction(id: String, onCompleted: Runnable): Boolean {
+        val actionListAdapter = (adapter as ActionListAdapter)
+        val position = actionListAdapter.getPositionById(id)
+        if (position < 0) {
+            return false
+        } else {
+            val item = actionListAdapter.getItem(position)
+            if (item is ActionInfo) {
+                onActionClick(item, Runnable {
+                    post {
+                        (adapter as ActionListAdapter).update(position, this)
+                        onCompleted.run()
+                    }
+                })
+            } else if (item is SwitchInfo) {
+                onSwitchClick(item, Runnable {
+                    post {
+                        (adapter as ActionListAdapter).update(position, this)
+                        onCompleted.run()
+                    }
+                })
+            }
+            return true
         }
     }
 
@@ -208,7 +249,7 @@ class ActionListView : OverScrollListView {
     /**
      * 获取Param的Options
      */
-    private fun getParamOptions(actionParamInfo: ActionParamInfo):ArrayList<HashMap<String, Any>>? {
+    private fun getParamOptions(actionParamInfo: ActionParamInfo): ArrayList<HashMap<String, Any>>? {
         val options = ArrayList<HashMap<String, Any>>()
         var shellResult = ""
         if (!actionParamInfo.optionsSh.isNullOrEmpty()) {
@@ -244,16 +285,14 @@ class ActionListView : OverScrollListView {
                     })
                 }
             }
-        }
-        else if (actionParamInfo.options != null) {
+        } else if (actionParamInfo.options != null) {
             for (option in actionParamInfo.options) {
                 val opt = HashMap<String, Any>()
                 opt["title"] = option.desc
                 opt["item"] = option
                 options.add(opt)
             }
-        }
-        else {
+        } else {
             return null
         }
 

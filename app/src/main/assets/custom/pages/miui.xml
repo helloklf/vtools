@@ -82,7 +82,7 @@
     </group>
 
     <group title="功能">
-        <switch>
+        <switch id="miui_update">
             <title>【MIUI10】在线更新检查</title>
             <desc>关闭此开关可以屏蔽在线更新检查</desc>
             <getstate>file:///android_asset/custom/switchs/miui/miui_update_get.sh</getstate>

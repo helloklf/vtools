@@ -15,7 +15,7 @@ import android.widget.SimpleAdapter
 import android.widget.TabHost
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
-import com.omarea.krscript.config.PageClickHandler
+import com.omarea.krscript.model.PageClickHandler
 import com.omarea.krscript.config.PageListReader
 import com.omarea.krscript.model.PageInfo
 import com.omarea.shell.SysUtils

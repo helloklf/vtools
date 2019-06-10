@@ -62,8 +62,7 @@ public class ActionListAdapter extends BaseAdapter {
                     holder.itemSwitch.setChecked(actionInfo.selected);
                     holder.itemText.setText(actionInfo.getDesc());
                 }
-            } catch (Exception ex2) {
-
+            } catch (Exception ignored) {
             }
         }
     }
@@ -71,6 +70,17 @@ public class ActionListAdapter extends BaseAdapter {
     @Override
     public Object getItem(int position) {
         return actionInfos != null ? actionInfos.get(position) : null;
+    }
+
+    public int getPositionById(String id) {
+        if (this.actionInfos != null) {
+            for (int i=0;i<this.actionInfos.size();i++) {
+                if (this.actionInfos.get(i).getId().equals(id)) {
+                    return i;
+                }
+            }
+        }
+        return -1;
     }
 
     @Override

@@ -65,6 +65,7 @@ class PageConfigReader(private var context: Context) {
                                     break
                                 }
                                 when (parser.getAttributeName(i)) {
+                                    "id" -> action.id = parser.getAttributeValue(i)
                                     "confirm" -> action.confirm = parser.getAttributeValue(i) == "true"
                                     "auto-off" -> action.autoOff = parser.getAttributeValue(i) == "true"
                                     "interruptible" -> action.interruptible = parser.getAttributeValue(i) != "false"
@@ -84,6 +85,7 @@ class PageConfigReader(private var context: Context) {
                                     break
                                 }
                                 when (parser.getAttributeName(i)) {
+                                    "id" -> switch.id = parser.getAttributeValue(i)
                                     "confirm" -> switch.confirm = parser.getAttributeValue(i) == "true"
                                     "auto-off" -> switch.autoOff = parser.getAttributeValue(i) == "true"
                                     "interruptible" -> switch.interruptible = parser.getAttributeValue(i) != "false"
