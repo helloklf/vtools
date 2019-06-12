@@ -23,6 +23,14 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
 
     var therad: Thread? = null
     fun forceGetRoot() {
+        if(lastCheckResult) {
+            myHandler.post {
+                if (next != null)
+                    next!!.run()
+            }
+            return
+        }
+
         var completed = false
         therad = Thread {
             rootStatus = KeepShellPublic.checkRoot()

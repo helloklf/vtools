@@ -27,6 +27,7 @@ class BootService : IntentService("vtools-boot") {
     private lateinit var globalConfig: SharedPreferences
     private var isFirstBoot = true
     private var bootCancel = false
+    private lateinit var nm: NotificationManager
 
 
     val FastChangerBase =
@@ -44,24 +45,8 @@ class BootService : IntentService("vtools-boot") {
                     "echo 500 > /sys/class/power_supply/bms/temp_warm;" +
                     "chmod 0666 /sys/class/power_supply/battery/constant_charge_current_max;\n"
 
-    private fun computeLeves(qcLimit: Int): StringBuilder {
-        val arr = StringBuilder()
-        if (qcLimit > 300) {
-            var level = 300
-            while (level < qcLimit) {
-                arr.append("echo ${level}000 > /sys/class/power_supply/battery/constant_charge_current_max\n")
-                arr.append("echo ${level}000 > /sys/class/power_supply/main/constant_charge_current_max\n")
-                arr.append("echo ${level}000 > /sys/class/qcom-battery/restricted_current\n")
-                level += 300
-            }
-        }
-        arr.append("echo ${qcLimit}000 > /sys/class/power_supply/battery/constant_charge_current_max\n")
-        arr.append("echo ${qcLimit}000 > /sys/class/power_supply/main/constant_charge_current_max\n")
-        arr.append("echo ${qcLimit}000 > /sys/class/qcom-battery/restricted_current\n\n")
-        return arr;
-    }
-
     override fun onHandleIntent(intent: Intent?) {
+        nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         swapConfig = this.getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)
         globalConfig = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
@@ -76,30 +61,23 @@ class BootService : IntentService("vtools-boot") {
             bootCancel = true
             return
         }
-        Thread(Runnable {
-            val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                nm.createNotificationChannel(NotificationChannel("vtool-boot", getString(R.string.notice_channel_boot), NotificationManager.IMPORTANCE_LOW))
-                nm.notify(1, NotificationCompat.Builder(this, "vtool-boot").setSmallIcon(R.drawable.ic_menu_digital).setSubText(getString(R.string.app_name)).setContentText(getString(R.string.boot_script_running)).build())
-            } else {
-                nm.notify(1, NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_menu_digital).setSubText(getString(R.string.app_name)).setContentText(getString(R.string.boot_script_running)).build())
-            }
-        }).start()
+        updateNotification(getString(R.string.app_name), getString(R.string.boot_script_running))
         autoBoot()
     }
 
 
     private fun autoBoot() {
-        val sb = StringBuilder()
+        val keepShell = KeepShell()
 
         if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false)) {
-            sb.append(CommonCmds.DisableSELinux)
-            sb.append("\n\n")
+            keepShell.doCmdSync(CommonCmds.DisableSELinux)
         }
 
         val context = this.applicationContext
         val cpuState = CpuConfigStorage().loadBootConfig(context)
         if (cpuState != null) {
+            updateNotification(getString(R.string.app_name), getString(R.string.boot_cpuset))
+
             // thermal
             if (cpuState.coreControl.isNotEmpty()) {
                 ThermalControlUtils.setCoreControlState(cpuState.coreControl == "1", context);
@@ -197,7 +175,9 @@ class BootService : IntentService("vtools-boot") {
         if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE, false)) {
             val mac = globalConfig.getString(SpfConfig.GLOBAL_SPF_MAC, "")
             if (mac != "") {
-                sb.append("chmod 0755 /sys/class/net/wlan0/address\n" +
+                updateNotification(getString(R.string.app_name), getString(R.string.boot_modify_mac))
+
+                keepShell.doCmdSync("chmod 0755 /sys/class/net/wlan0/address\n" +
                         "svc wifi disable\n" +
                         "ifconfig wlan0 down\n" +
                         "echo '$mac' > /sys/class/net/wlan0/address\n" +
@@ -209,16 +189,22 @@ class BootService : IntentService("vtools-boot") {
             }
         }
 
-
+        //判断是否开启了充电加速和充电保护，如果开启了，自动启动后台服务
         val chargeConfig = getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
-        if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) || chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_BP, false)) {
-            sb.append(FastChangerBase)
-            val qcLimit = chargeConfig.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000)
-            sb.append(computeLeves(qcLimit).toString())
+        if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) || chargeConfig!!.getBoolean(SpfConfig.CHARGE_SPF_BP, false)) {
+            updateNotification(getString(R.string.app_name), getString(R.string.boot_charge_booster))
+
+            try {
+                val intent = Intent(context, ServiceBattery::class.java)
+                startService(intent)
+            } catch (ex: Exception) {
+            }
         }
 
         val globalPowercfg = globalConfig.getString(SpfConfig.GLOBAL_SPF_POWERCFG, "")
         if (!globalPowercfg.isNullOrEmpty()) {
+            updateNotification(getString(R.string.app_name), getString(R.string.boot_use_powercfg))
+
             val modeList = ModeList()
             val configInstaller = ConfigInstaller()
             if (configInstaller.configInstalled()) {
@@ -231,94 +217,124 @@ class BootService : IntentService("vtools-boot") {
             }
         }
 
-        if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false) || swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) {
-            if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) {
-                val sizeVal = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0)
-                sb.append("if [ `cat /sys/block/zram0/disksize` != '" + (sizeVal * 1024 * 1024L) + "' ] ; then ")
-                sb.append("swapoff /dev/block/zram0 2>/dev/null\n")
-                sb.append("echo 1 > /sys/block/zram0/reset\n")
-                if (sizeVal > 2047) {
-                    sb.append("echo " + sizeVal + "M > /sys/block/zram0/disksize\n")
-                } else {
-                    sb.append("echo " + (sizeVal * 1024 * 1024L) + " > /sys/block/zram0/disksize\n")
-                }
-                sb.append("mkswap /dev/block/zram0 2> /dev/null\n")
-                sb.append("fi\n")
-                sb.append("\n")
-                sb.append("swapon /dev/block/zram0 2> /dev/null\n")
-            }
-            if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)) {
-                //sb.append("swapon /data/swapfile -p 32767;")
-                if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, false))
-                    sb.append("swapon /data/swapfile -p 32760\n")
-                else
-                    sb.append("swapon /data/swapfile\n")
+        if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) {
+            updateNotification(getString(R.string.app_name), getString(R.string.boot_resize_zram))
+
+            val sizeVal = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0)
+            val algorithm = swapConfig.getString(SpfConfig.SWAP_SPF_ALGORITHM, "")
+            resizeZram(sizeVal, algorithm!!, keepShell)
+        }
+
+        if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)) {
+            updateNotification(getString(R.string.app_name), getString(R.string.boot_swapon))
+
+            if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, false)) {
+                keepShell.doCmdSync("swapon /data/swapfile -p 32760\n")
+            } else {
+                keepShell.doCmdSync("swapon /data/swapfile\n")
             }
         }
 
-        sb.append("echo 3 > /sys/block/zram0/max_comp_streams\n")
-
-        sb.append("echo 65 > /proc/sys/vm/swappiness\n")
-        sb.append("echo " + swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65) + " > /proc/sys/vm/swappiness\n")
-
-        sb.append("\n\n")
-        sb.append("setprop vtools.boot 1")
-        sb.append("\n\n")
-        sb.append("fstrim /data\n")
-        sb.append("fstrim /system\n")
-        sb.append("fstrim /cache\n")
-        sb.append("fstrim /vendor\n")
-        val keepShell = KeepShell()
-        keepShell.doCmdSync(sb.toString())
-
-        /*
-        if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DOZELIST_AUTOSET, false)) {
-            val sb2 = StringBuilder("")
-            sb2.append("\n\n")
-            val spf = getSharedPreferences(SpfConfig.WHITE_LIST_SPF, Context.MODE_PRIVATE)
-            for (item in spf.all) {
-                if (item.value == true) {
-                    sb2.append("dumpsys deviceidle whitelist +${item.key} > null\n")
-                } else {
-                    sb2.append("dumpsys deviceidle whitelist -${item.key} > null\n")
-                }
-                sb2.append("\n")
-            }
-            sb2.append("\n\n")
-            sb2.append("\n\n")
-            sb2.append("setprop vtools.boot 2")
-            sb2.append("\n\n")
-
-            Thread.sleep(120 * 1000)
-            keepShell.doCmdSync(sb2.toString())
+        if (swapConfig.contains(SpfConfig.SWAP_SPF_SWAPPINESS)) {
+            keepShell.doCmdSync("echo 65 > /proc/sys/vm/swappiness\n")
+            keepShell.doCmdSync("echo " + swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65) + " > /proc/sys/vm/swappiness\n")
         }
-        */
+
+        updateNotification(getString(R.string.app_name), getString(R.string.boot_trim))
+        val trimCmd = StringBuilder()
+        trimCmd.append("setprop vtools.boot 1\n")
+        trimCmd.append("fstrim /data\n")
+        trimCmd.append("fstrim /system\n")
+        trimCmd.append("fstrim /cache\n")
+        trimCmd.append("fstrim /vendor\n")
+
+        keepShell.doCmdSync(trimCmd.toString())
 
         if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, false)) {
+            updateNotification(getString(R.string.app_name), getString(R.string.boot_lmk))
+
             val activityManager = context!!.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
             val info = ActivityManager.MemoryInfo()
             activityManager.getMemoryInfo(info)
             LMKUnit().autoSetLMK(info.totalMem, keepShell)
         }
 
+        updateNotification(getString(R.string.app_name), getString(R.string.boot_freeze))
         for (item in AppConfigStore(context).freezeAppList) {
             keepShell.doCmdSync("pm disable " + item)
         }
 
         keepShell.tryExit()
+        Thread.sleep(2000)
         stopSelf()
+    }
+
+    /**
+     * 获取当前的ZRAM压缩算法
+     */
+    var compAlgorithm: String
+        get() {
+            val compAlgorithmItems = KernelProrp.getProp("/sys/block/zram0/comp_algorithm").split(" ")
+            val result = compAlgorithmItems.find {
+                it.startsWith("[") && it.endsWith("]")
+            }
+            if (result != null) {
+                return result.replace("[", "").replace("]", "").trim()
+            }
+            return ""
+        }
+        set (value) {
+            KernelProrp.setProp("/sys/block/zram0/comp_algorithm", value)
+        }
+
+
+    fun resizeZram(sizeVal: Int, algorithm: String = "", keepShell: KeepShell) {
+        val currentSize = keepShell.doCmdSync("cat /sys/block/zram0/disksize")
+        if (currentSize != "" + (sizeVal * 1024 * 1024L) || (algorithm.isNotEmpty() && algorithm != compAlgorithm)) {
+            val sb = StringBuilder()
+            sb.append("echo 3 > /sys/block/zram0/max_comp_streams\n")
+            sb.append("sync\n")
+            sb.append("echo 3 > /proc/sys/vm/drop_caches\n")
+            sb.append("swapoff /dev/block/zram0 >/dev/null 2>&1\n")
+            sb.append("echo 1 > /sys/block/zram0/reset\n")
+
+            if (algorithm.isNotEmpty()) {
+                sb.append("echo \"$algorithm\" > /sys/block/zram0/comp_algorithm\n")
+            }
+
+            if (sizeVal > 2047) {
+                sb.append("echo " + sizeVal + "M > /sys/block/zram0/disksize\n")
+            } else {
+                sb.append("echo " + (sizeVal * 1024 * 1024L) + " > /sys/block/zram0/disksize\n")
+            }
+
+            sb.append("echo 3 > /sys/block/zram0/max_comp_streams\n")
+            sb.append("mkswap /dev/block/zram0 >/dev/null 2>&1\n")
+            sb.append("swapon /dev/block/zram0 >/dev/null 2>&1\n")
+            keepShell.doCmdSync(sb.toString())
+        }
+    }
+
+
+    private fun updateNotification(title: String, text: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            nm.createNotificationChannel(NotificationChannel("vtool-boot", getString(R.string.notice_channel_boot), NotificationManager.IMPORTANCE_LOW))
+            nm.notify(900, NotificationCompat.Builder(this, "vtool-boot").setSmallIcon(R.drawable.ic_menu_digital).setSubText(title).setContentText(text).build())
+        } else {
+            nm.notify(900, NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_menu_digital).setSubText(title).setContentText(text).build())
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (!bootCancel) {
-            val nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        if (bootCancel) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                nm.createNotificationChannel(NotificationChannel("vtool-boot", getString(R.string.notice_channel_boot), NotificationManager.IMPORTANCE_LOW))
-                nm.notify(1, NotificationCompat.Builder(this, "vtool-boot").setSmallIcon(R.drawable.ic_menu_digital).setSubText(getString(R.string.app_name)).setContentText(getString(R.string.boot_success)).build())
+                nm.cancel(900)
             } else {
-                nm.notify(1, NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_menu_digital).setSubText(getString(R.string.app_name)).setContentText(getString(R.string.boot_success)).build())
+                nm.cancel(900)
             }
+        } else {
+            updateNotification(getString(R.string.app_name), getString(R.string.boot_success))
         }
         // System.exit(0)
     }

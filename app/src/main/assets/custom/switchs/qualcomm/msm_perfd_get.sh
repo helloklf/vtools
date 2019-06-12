@@ -3,7 +3,7 @@
 input=./custom/common/empty
 output=/system/vendor/bin/perfd
 
-source ./custom/common/magisk_plus.sh
+source ./custom/common/magisk_replace.sh
 
 file_mixture_hooked "$input" "$output"
 result="$?"

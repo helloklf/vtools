@@ -2,7 +2,7 @@
 <actions>
     <resource file="file:///android_asset/custom/common/props.sh" />
     <resource file="file:///android_asset/custom/common/magisk.sh" />
-    <resource file="file:///android_asset/custom/common/magisk_plus.sh" />
+    <resource file="file:///android_asset/custom/common/magisk_replace.sh" />
     <resource file="file:///android_asset/custom/common/empty" />
 
     <group title="界面">
@@ -75,7 +75,7 @@
             <script>file:///android_asset/custom/actions/miui_thermal_conf/config.sh</script>
         </action>
         <action confirm="true" support="file:///android_asset/custom/actions/miui_support.sh">
-            <title>开启MIUI9、MIUI10的隐藏温控选项</title>
+            <title>开启MIUI9、MIUI10隐藏的温控选项</title>
             <desc>看人品，也许是可以开出来，但不一定啦！据说稳定版是不行的。</desc>
             <script>file:///android_asset/custom/actions/miui_thermal_set.sh</script>
         </action>

@@ -12,6 +12,7 @@ import android.util.Log
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellAsync
 import com.omarea.shared.SpfConfig
+import com.omarea.shell.units.BatteryUnit
 import com.omarea.vtools.R
 
 
@@ -36,55 +37,19 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
         }
     }
 
-    var FastChangerBase = "sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("custom/battery/fast_charge.sh", "fast_charge.sh", service)
+    private var batteryUnits = BatteryUnit()
     var ResumeChanger = "sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("custom/battery/resume_charge.sh", "resume_charge.sh", service)
     var DisableChanger = "sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("custom/battery/disable_charge.sh", "disable_charge.sh", service)
-
-    /*
-     "chmod 0777 /sys/class/power_supply/usb/pd_allowed;" +
-     "echo 1 > /sys/class/power_supply/usb/pd_allowed;" +
-     "chmod 0666 /sys/class/power_supply/main/constant_charge_current_max;" +
-     "chmod 0666 /sys/class/qcom-battery/restricted_current;" +
-     "chmod 0666 /sys/class/qcom-battery/restricted_charging;" +
-     "echo 0 > /sys/class/qcom-battery/restricted_charging;" +
-     "echo 0 > /sys/class/power_supply/battery/restricted_charging;" +
-     "echo 0 > /sys/class/power_supply/battery/safety_timer_enabled;" +
-     "chmod 0666 /sys/class/power_supply/bms/temp_warm;" +
-     "echo 500 > /sys/class/power_supply/bms/temp_warm;" +
-     "chmod 0666 /sys/class/power_supply/battery/constant_charge_current_max;"
-    */
 
     //快速充电
     private fun fastCharger() {
         try {
             if (!sharedPreferences.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false))
                 return
-
-            if (FastChangerBase.isNotEmpty()) {
-                keepShellAsync!!.doCmd(FastChangerBase)
-                FastChangerBase = ""
-            }
-            keepShellAsync!!.doCmd(computeLeves(qcLimit).toString())
+            batteryUnits.setChargeInputLimit(qcLimit, service)
         } catch (ex: Exception) {
             Log.e("ChargeService", ex.stackTrace.toString())
         }
-    }
-
-    private fun computeLeves(qcLimit: Int): StringBuilder {
-        val arr = StringBuilder()
-        if (qcLimit > 2000) {
-            var level = 2000
-            while (level < qcLimit) {
-                arr.append("echo ${level}000 > /sys/class/power_supply/battery/constant_charge_current_max\n")
-                arr.append("echo ${level}000 > /sys/class/power_supply/main/constant_charge_current_max\n")
-                arr.append("echo ${level}000 > /sys/class/qcom-battery/restricted_current\n")
-                level += 300
-            }
-        }
-        arr.append("echo ${qcLimit}000 > /sys/class/power_supply/battery/constant_charge_current_max\n")
-        arr.append("echo ${qcLimit}000 > /sys/class/power_supply/main/constant_charge_current_max\n")
-        arr.append("echo ${qcLimit}000 > /sys/class/qcom-battery/restricted_current\n")
-        return arr;
     }
 
     override fun onReceive(context: Context, intent: Intent) {

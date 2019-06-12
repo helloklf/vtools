@@ -2,7 +2,7 @@
 <actions>
     <resource file="file:///android_asset/custom/common/props.sh" />
     <resource file="file:///android_asset/custom/common/magisk.sh" />
-    <resource file="file:///android_asset/custom/common/magisk_plus.sh" />
+    <resource file="file:///android_asset/custom/common/magisk_replace.sh" />
     <resource file="file:///android_asset/custom/common/empty" />
 
     <action>

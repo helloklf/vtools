@@ -24,14 +24,17 @@
                 <TableRow
                     android:layout_marginTop="@dimen/activity_vertical_margin">
                     <SeekBar
+                        android:paddingEnd="0dp"
+                        android:paddingStart="0dp"
                         android:id="@+id/txt_swap_size"
-                        android:layout_height="30dp"
                         android:layout_gravity="center_vertical"
                         android:max="4096" />
 
                     <TextView
+                        android:layout_marginStart="@dimen/activity_horizontal_margin"
+                        style="@style/textSmall"
                         android:id="@+id/txt_swap_size_display"
-                        android:layout_width="60dp"
+                        android:layout_width="45dp"
                         android:layout_gravity="center_vertical"
                         android:text="" />
                 </TableRow>
@@ -115,16 +118,40 @@
                     android:layout_marginTop="@dimen/activity_vertical_margin">
 
                     <SeekBar
+                        android:paddingEnd="0dp"
+                        android:paddingStart="0dp"
                         android:id="@+id/seekbar_zram_size"
                         android:layout_width="match_parent"
-                        android:layout_height="30dp"
                         android:max="2048" />
 
                     <TextView
+                        android:layout_marginStart="@dimen/activity_horizontal_margin"
+                        style="@style/textSmall"
                         android:id="@+id/txt_zram_size_display"
-                        android:layout_width="60dp"
+                        android:layout_width="45dp"
                         android:layout_gravity="center_vertical"
                         android:text="" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginTop="@dimen/activity_vertical_margin">
+
+                    <TextView
+                        android:text="@string/swap_zram_compact_algorithm"
+                        style="@style/textTitle"
+                        android:paddingEnd="0dp"
+                        android:paddingStart="0dp"
+                        android:layout_width="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:max="2048" />
+
+                    <TextView
+                        android:layout_marginStart="@dimen/activity_horizontal_margin"
+                        style="@style/textTitle"
+                        android:textAlignment="center"
+                        android:id="@+id/zram_compact_algorithm"
+                        android:layout_width="55dp"
+                        android:layout_gravity="center_vertical" />
                 </TableRow>
 
                 <TableRow
@@ -187,15 +214,17 @@
                     android:layout_marginTop="@dimen/activity_vertical_margin">
 
                     <SeekBar
+                        android:paddingEnd="0dp"
+                        android:paddingStart="0dp"
                         android:id="@+id/seekbar_swap_swappiness"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp" />
+                        android:layout_width="match_parent" />
 
                     <TextView
+                        android:layout_marginStart="@dimen/activity_horizontal_margin"
+                        style="@style/textSmall"
                         android:id="@+id/txt_zramstus_swappiness"
-                        android:layout_width="60dp"
+                        android:layout_width="45dp"
                         android:layout_gravity="center_vertical"
-                        android:text=""
                         android:textAlignment="center" />
                 </TableRow>
 

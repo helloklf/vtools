@@ -93,6 +93,20 @@ class FragmentHome : Fragment() {
                 }, 600)
             }).start()
         }
+        home_clear_swap.setOnClickListener {
+            home_zramsize_text.text = "稍等一下"
+            Thread(Runnable {
+                KeepShellPublic.doCmdSync("sync\n" +
+                        "echo 1 > /proc/sys/vm/compact_memory")
+                myHandler.postDelayed({
+                    try {
+                        updateRamInfo()
+                        Toast.makeText(context, "内存碎屏已整理...", Toast.LENGTH_SHORT).show()
+                    } catch (ex: java.lang.Exception) {
+                    }
+                }, 600)
+            }).start()
+        }
         home_help.setOnClickListener {
             try {
                 val uri = Uri.parse("http://vtools.omarea.com/")
@@ -157,9 +171,9 @@ class FragmentHome : Fragment() {
                         val free = total - use
                         home_swapstate_chat.setData(total.toFloat(), free.toFloat())
                         if (total > 99) {
-                            home_zramsize.text = "${(use * 100.0 / total).toInt().toString()}% (${format1(total / 1024.0)}GB)"
+                            home_zramsize_text.text = "${(use * 100.0 / total).toInt().toString()}% (${format1(total / 1024.0)}GB)"
                         } else {
-                            home_zramsize.text = "${(use * 100.0 / total).toInt().toString()}% (${total}MB)"
+                            home_zramsize_text.text = "${(use * 100.0 / total).toInt().toString()}% (${total}MB)"
                         }
                     }
                 } catch (ex: java.lang.Exception) {

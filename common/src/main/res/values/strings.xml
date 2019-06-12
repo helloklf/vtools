@@ -3,4 +3,5 @@
     <string name="execute_success">执行成功</string>
     <string name="execute_fail">执行失败</string>
     <string name="execute_wait">正在执行，请稍等…</string>
+    <string name="btn_confirm">确定</string>
 </resources>

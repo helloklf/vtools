@@ -82,6 +82,7 @@
     <string name="btn_delete">删除</string>
     <string name="btn_dontshow">不再显示</string>
     <string name="btn_confirm">确定</string>
+    <string name="btn_help">帮助</string>
     <string name="btn_iknow">知道了</string>
     <string name="btn_exit">退出</string>
     <string name="btn_hide">隐藏</string>
@@ -133,7 +134,6 @@
     <string name="accessbility_bp">充电保护</string>
     <string name="accessbility_bp_desc">充电到指定百分比时自动禁止充电功能，浅充浅放有助于保护电池。但可能导致电量显示不精准。</string>
     <string name="accessbility_bp_level_desc">电量限制值（%）</string>
-    <string name="settings_qc_limit_desc">充电速度限制(mA)</string>
     <string name="accessbility_notify">常驻通知</string>
     <string name="accessbility_notify_desc">运行场景模式服务时显示常驻通知，以监视运行状态和电池状态</string>
     <string name="accessbility_delay">慢点儿</string>
@@ -230,6 +230,11 @@
     <string name="swap_zram">ZRAM</string>
     <string name="swap_zram_adjustment">调整</string>
     <string name="swap_zram_desc">说明：ZRAM即内存压缩技术，通过压缩RAM中的数据减少其空间占用，大量使用会增加CPU负担</string>
+    <string name="swap_zram_comp_options">压缩算法</string>
+    <string name="swap_zram_comp_algorithm_desc">建议\n\n压缩速度快的算法：lzo、lz4\n压缩率低的算法：deflate\n注意：“压缩率”是指“压缩后大小/原始大小”，越低越好！\n\n具体对比\n\n 压缩速度：\n lz4 &gt; lzo &gt; gz &gt; snappy &gt; deflate &gt; bz2\n 压缩率：\n defalte &lt; gz &lt; lz4 &lt; bz2 &lt; lzo &lt; snappy\n 解压速度：\n zo &gt; lz4 &gt; deflate &gt; gz &gt; snappy &gt; bz2
+    </string>
+    <string name="swap_zram_comp_algorithm_wran">更改未生效</string>
+    <string name="swap_zram_comp_algorithm_wran_desc">ZRAM正在使用中，现在无法更改压缩算法。\n\n如需让设置生效，请点击下方的“调整”按钮</string>
     <string name="swap_swap">SWAP</string>
     <string name="swap_path">存储位置：/data/swapfile</string>
     <string name="swap_create">创建</string>
@@ -323,6 +328,16 @@
     <string name="boot_success">已完成开机自启动</string>
     <string name="notice_channel_boot">自启动提示</string>
     <string name="boot_script_running">正在执行自启动脚本…</string>
+    <string name="boot_cpuset">设置CPU控制参数…</string>
+    <string name="boot_modify_mac">修改MAC地址…</string>
+    <string name="boot_charge_booster">开启充电加速…</string>
+    <string name="boot_use_powercfg">应用调度配置…</string>
+    <string name="boot_resize_zram">设置ZRAM容量…</string>
+    <string name="boot_swapon">启动SWAP…</string>
+    <string name="boot_trim">运行fstrim…</string>
+    <string name="boot_lmk">调整LMK参数…</string>
+    <string name="boot_freeze">冻结偏见应用…</string>
+
     <string name="flash_confirm">确认刷入？</string>
     <string name="scene_addin_installing">稍等，正在安装“Scene - 高级设定”插件…</string>
     <string name="scene_addin_miss">插件未集成到应用包，请单独下载！</string>
@@ -396,6 +411,7 @@
     <string name="freeze_enable">解冻</string>
     <string name="freeze_remove">移除</string>
     <string name="freeze_remove_uninstall">移除并卸载</string>
+    <string name="swap_zram_compact_algorithm">压缩算法</string>
 
     <string-array name="device_templates">
         <item>Xiaomi MIX3</item>
@@ -405,6 +421,7 @@
         <item>OPPO R15</item>
         <item>OPPO R17</item>
         <item>OPPO Reno</item>
+        <item>OPPO Reno 10X</item>
         <item>Samsung S9+</item>
         <item>8848钛金手机</item>
         <item>HUAWEI MateRS</item>
@@ -421,6 +438,7 @@
         <item>PAAM00@OPPO@OPPO@OPPO PAAM00@PAAM00</item>
         <item>PBEM00@OPPO@OPPO@OPPO PBEM00@PBEM00</item>
         <item>PACT00@OPPO@OPPO@OPPO PACT00@PACT00</item>
+        <item>PCCM00@OPPO@OPPO@OPPO PCCM00@PCCM00</item>
         <item>SM-G9650@samsung@samsung@star2qltechn@star2qltechn</item>
         <item>EBEN M2@ERENEBEN@ERENEBEN@EBEN M2@EBEN M2</item>
         <item>NEO-AL00@HUAWEI@HUAWEI@NEO-AL00@NEO-AL00</item>

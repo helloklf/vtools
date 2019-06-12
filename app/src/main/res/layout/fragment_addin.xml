@@ -48,7 +48,7 @@
                         android:divider="@color/color_list_divider"
                         android:dividerHeight="1sp"
                         android:listSelector="@android:color/transparent"
-                        android:padding="10dp" />
+                        android:padding="@dimen/activity_horizontal_margin" />
                 </FrameLayout>
             </FrameLayout>
 

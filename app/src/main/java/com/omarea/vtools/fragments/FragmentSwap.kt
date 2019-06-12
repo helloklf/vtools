@@ -2,6 +2,7 @@ package com.omarea.vtools.fragments
 
 import android.annotation.SuppressLint
 import android.app.ActivityManager
+import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -13,15 +14,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.Switch
+import android.widget.TextView
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
-import com.omarea.common.shell.RootFile
+import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.shared.SpfConfig
-import com.omarea.shell.SysUtils
-import com.omarea.shell.units.ChangeZRAM
 import com.omarea.shell.units.LMKUnit
+import com.omarea.shell.units.SwapUnit
 import com.omarea.ui.AdapterSwaplist
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.fragment_swap.*
@@ -34,15 +35,15 @@ import kotlin.collections.LinkedHashMap
 class FragmentSwap : Fragment() {
     private lateinit var processBarDialog: ProgressBarDialog
     internal lateinit var view: View
-    private lateinit var myHandler: Handler
+    private val myHandler = Handler()
     private lateinit var swapConfig: SharedPreferences
     private var totalMem = 2048
+    private val swapUnit = SwapUnit()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         view = inflater.inflate(R.layout.fragment_swap, container, false)
 
-        myHandler = Handler()
         swapConfig = context!!.getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)
 
         val activityManager = context!!.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
@@ -104,7 +105,7 @@ class FragmentSwap : Fragment() {
         swap_lmk_current.text = lmk
 
         // 压缩算法
-        val comp_algorithm = KernelProrp.getProp("/sys/block/zram0/comp_algorithm")
+        val comp_algorithm = swapUnit.compAlgorithm
         // 最大压缩流
         // val max_comp_streams = KernelProrp.getProp("/sys/block/zram0/max_comp_streams")
         // 存储在此磁盘中的未压缩数据大小
@@ -131,9 +132,11 @@ class FragmentSwap : Fragment() {
                 zramInfoValueParseMB(compr_data_size),
                 zramInfoValueParseMB(mem_used_total),
                 zramInfoValueParseMB(mem_used_max),
-                if(mem_limit == "0") "" else mem_limit,
+                if (mem_limit == "0") "" else mem_limit,
                 zramCompressionRatio(orig_data_size, compr_data_size),
                 zramCompressionRatio(orig_data_size, mem_used_total))
+
+        zram_compact_algorithm.text = comp_algorithm
     }
 
     private fun zramInfoValueParseMB(sizeStr: String): String {
@@ -144,7 +147,7 @@ class FragmentSwap : Fragment() {
         }
     }
 
-    private fun zramCompressionRatio(origDataSize:String, comprDataSize:String): String {
+    private fun zramCompressionRatio(origDataSize: String, comprDataSize: String): String {
         try {
             return (comprDataSize.toLong() * 1000 / origDataSize.toLong() / 10.0).toString() + "%"
         } catch (ex: java.lang.Exception) {
@@ -160,7 +163,7 @@ class FragmentSwap : Fragment() {
         }
     }
 
-    override fun onResume(){
+    override fun onResume() {
         super.onResume()
         if (isDetached) {
             return
@@ -178,7 +181,7 @@ class FragmentSwap : Fragment() {
         chk_zram_autostart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)
 
         var swapSize = 0
-        if (RootFile.itemExists("/data/swapfile")) {
+        if (swapUnit.swapExists) {
             var size = 0L
             try {
                 size = KeepShellPublic.doCmdSync("ls -l /data/swapfile | awk '{ print \$5 }'").toLong()
@@ -223,11 +226,7 @@ class FragmentSwap : Fragment() {
         btn_swap_close.setOnClickListener {
             processBarDialog.showDialog(getString(R.string.swap_on_close))
             val run = Runnable {
-                SysUtils.executeCommandWithOutput(true,
-                        "echo 3 > /sys/block/zram0/max_comp_streams\n" +
-                                "sync\n" +
-                                "echo 3 > /proc/sys/vm/drop_caches\n" +
-                                "busybox swapoff /data/swapfile > /dev/null 2>&1")
+                swapUnit.swapOff()
                 myHandler.post({
                     processBarDialog.hideDialog()
                     getSwaps()
@@ -238,11 +237,8 @@ class FragmentSwap : Fragment() {
         btn_swap_delete.setOnClickListener {
             processBarDialog.showDialog(getString(R.string.swap_on_close))
             val run = Runnable {
-                val sb = StringBuilder()
-                sb.append("echo 3 > /sys/block/zram0/max_comp_streams;")
-                sb.append("sync\necho 3 > /proc/sys/vm/drop_caches\nswapoff /data/swapfile >/dev/null 2>&1;")
-                sb.append("rm -f /data/swapfile;")
-                SysUtils.executeCommandWithOutput(true, sb.toString())
+                swapUnit.swapDelete()
+
                 myHandler.post({
                     processBarDialog.hideDialog()
                     getSwaps()
@@ -263,11 +259,36 @@ class FragmentSwap : Fragment() {
                 Toast.makeText(context!!, "需要重启手机才会恢复默认的LMK参数！", Toast.LENGTH_SHORT).show()
             }
         }
-    }
 
-    private var showWait = {
-        processBarDialog.showDialog()
-        Toast.makeText(context, getString(R.string.on_execute_please_wait), Toast.LENGTH_SHORT).show()
+        zram_compact_algorithm.setOnClickListener {
+            val current = swapUnit.compAlgorithm
+            val options = swapUnit.compAlgorithmOptions
+            var selectedIndex = options.indexOf(current)
+            DialogHelper.animDialog(AlertDialog.Builder(context)
+                    .setTitle(R.string.swap_zram_comp_options)
+                    .setSingleChoiceItems(options, selectedIndex, { _, index ->
+                        selectedIndex = index
+                    })
+                    .setNeutralButton(R.string.btn_help, { _, _ ->
+                        DialogHelper.helpInfo(context!!, R.string.help, R.string.swap_zram_comp_algorithm_desc)
+                    })
+                    .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                        val algorithm = options.get(selectedIndex)
+                        swapUnit.compAlgorithm = algorithm
+                        swapConfig.edit().putString(SpfConfig.SWAP_SPF_ALGORITHM, algorithm).apply()
+
+                        if (swapUnit.zramEnabled) {
+                            DialogHelper.helpInfo(
+                                    context!!,
+                                    R.string.swap_zram_comp_algorithm_wran,
+                                    R.string.swap_zram_comp_algorithm_wran_desc)
+                            (it as TextView).text = algorithm
+                        } else {
+                            (it as TextView).text = swapUnit.compAlgorithm
+                        }
+                        //
+                    }))
+        }
     }
 
     private var showSwapOpened = {
@@ -279,7 +300,7 @@ class FragmentSwap : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        if (!KeepShellPublic.doCmdSync("if [[ -e /dev/block/zram0 ]]; then echo 1; else echo 0; fi;").equals("1")) {
+        if (!swapUnit.zramSupport) {
             swap_config_zram.visibility = View.GONE
             zram_stat.visibility = View.GONE
         }
@@ -292,7 +313,7 @@ class FragmentSwap : Fragment() {
                 myHandler.post({
                     processBarDialog.showDialog(getString(R.string.file_creating))
                 })
-                ChangeZRAM(context!!).createSwapFile(size)
+                swapUnit.mkswap(size)
                 myHandler.post(getSwaps)
                 val time = System.currentTimeMillis() - startTime
                 myHandler.post({
@@ -305,26 +326,16 @@ class FragmentSwap : Fragment() {
 
         btn_swap_start.setOnClickListener {
             val autostart = chk_swap_autostart.isChecked
-            val disablezram = chk_swap_disablezram.isChecked
-
-            val sb = StringBuilder()
-            sb.append("echo 3 > /sys/block/zram0/max_comp_streams\n")
-            if (disablezram) {
-                sb.append("swapon /data/swapfile -p 32767\n")
-                //sb.append("swapoff /dev/block/zram0\n")
-            } else {
-                sb.append("swapon /data/swapfile\n")
-            }
+            val hightPriority = chk_swap_disablezram.isChecked
 
             val edit = swapConfig.edit()
             edit.putBoolean(SpfConfig.SWAP_SPF_SWAP, autostart)
-            edit.putBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, disablezram)
+            edit.putBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, hightPriority)
             edit.commit()
 
             Thread(Runnable {
-                if (disablezram)
-                    myHandler.post(showWait)
-                SysUtils.executeCommandWithOutput(true, sb.toString())
+                swapUnit.swapOn(hightPriority)
+
                 myHandler.post(getSwaps)
                 myHandler.post(showSwapOpened)
             }).start()
@@ -336,25 +347,9 @@ class FragmentSwap : Fragment() {
                 processBarDialog.showDialog(getString(R.string.zram_resizing))
 
                 val run = Thread({
-                    val sb = StringBuilder()
-                    sb.append("echo 3 > /sys/block/zram0/max_comp_streams;")
-                    sb.append("if [ `cat /sys/block/zram0/disksize` != '" + (sizeVal * 1024 * 1024L) + "' ] ; then ")
-                    sb.append(
-                            "sync\n" +
-                                    "echo 3 > /proc/sys/vm/drop_caches\n" +
-                                    "swapoff /dev/block/zram0 >/dev/null 2>&1\n")
-                    sb.append("echo 1 > /sys/block/zram0/reset\n")
-                    if (sizeVal > 2047) {
-                        sb.append("echo " + sizeVal + "M > /sys/block/zram0/disksize\n")
-                    } else {
-                        sb.append("echo " + (sizeVal * 1024 * 1024L) + " > /sys/block/zram0/disksize\n")
-                    }
-                    sb.append("mkswap /dev/block/zram0 >/dev/null 2>&1\n")
-                    sb.append("fi\n")
-                    sb.append("\n")
-                    sb.append("swapon /dev/block/zram0 >/dev/null 2>&1\n")
-                    sb.append("sleep 2\n")
-                    SysUtils.executeCommandWithOutput(true, sb.toString())
+                    val algorithm = swapConfig.getString(SpfConfig.SWAP_SPF_ALGORITHM, "")
+                    swapUnit.resizeZram(sizeVal, algorithm!!)
+
                     myHandler.post(getSwaps)
                     myHandler.post {
                         processBarDialog.hideDialog()

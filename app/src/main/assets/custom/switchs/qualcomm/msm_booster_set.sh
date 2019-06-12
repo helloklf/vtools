@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-source ./custom/common/magisk_plus.sh
+source ./custom/common/magisk_replace.sh
 
 input=./custom/common/empty
 output=/system/vendor/etc/perf/perfboostsconfig.xml

@@ -84,6 +84,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/home_clear_swap"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
@@ -110,7 +111,7 @@
                             android:textSize="12dp" />
 
                         <TextView
-                            android:id="@+id/home_zramsize"
+                            android:id="@+id/home_zramsize_text"
                             style="@style/textSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

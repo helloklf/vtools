@@ -32,7 +32,7 @@ class ActivityStartSplash : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (!isTaskRoot) {
+        if (CheckRootStatus.lastCheckResult && !isTaskRoot) {
             // val intent = Intent(this.applicationContext, ActivityMain::class.java)
             // intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION or Intent.FLAG_ACTIVITY_NEW_TASK
             // startActivity(intent)

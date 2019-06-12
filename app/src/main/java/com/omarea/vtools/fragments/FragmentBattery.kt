@@ -55,7 +55,7 @@ class FragmentBattery : Fragment() {
         settings_bp_level.progress = spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85)
         accessbility_bp_level_desc.text = "充电限制电量：" + spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85) + "%"
         settings_qc_limit.progress = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000)
-        settings_qc_limit_desc.text = "设定上限电流：" + spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000) + "mA"
+        settings_qc_limit_desc.text = "" + spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000) + "mA"
 
         if (broadcast == null) {
             broadcast = object : BroadcastReceiver() {
@@ -190,7 +190,7 @@ class FragmentBattery : Fragment() {
             val level = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000)
             startBatteryService()
             if (spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
-                batteryUnits.setChargeInputLimit(level)
+                batteryUnits.setChargeInputLimit(level, context!!)
             }
         }, spf, settings_qc_limit_desc))
 
@@ -274,7 +274,7 @@ class FragmentBattery : Fragment() {
             if (spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, Int.MIN_VALUE) == progress) {
                 return
             }
-            spf.edit().putInt(SpfConfig.CHARGE_SPF_BP_LEVEL, progress).commit()
+            spf.edit().putInt(SpfConfig.CHARGE_SPF_BP_LEVEL, progress).apply()
             next.run()
         }
 
@@ -288,13 +288,12 @@ class FragmentBattery : Fragment() {
     }
 
     class OnSeekBarChangeListener2(private var next: Runnable, private var spf: SharedPreferences, private var settings_qc_limit_desc: TextView) : SeekBar.OnSeekBarChangeListener {
-        @SuppressLint("ApplySharedPref")
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
             val progress = seekBar!!.progress
             if (spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, Int.MIN_VALUE) == progress) {
                 return
             }
-            spf.edit().putInt(SpfConfig.CHARGE_SPF_QC_LIMIT, progress).commit()
+            spf.edit().putInt(SpfConfig.CHARGE_SPF_QC_LIMIT, progress).apply()
             next.run()
         }
 
@@ -303,7 +302,7 @@ class FragmentBattery : Fragment() {
         }
 
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-            settings_qc_limit_desc.text = "充电上限电流：" + progress + "mA"
+            settings_qc_limit_desc.text = "" + progress + "mA"
         }
     }
 

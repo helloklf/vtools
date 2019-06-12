@@ -89,27 +89,36 @@
                     android:layout_height="wrap_content"
                     android:text="@string/accessbility_charger_desc" />
 
-                <SeekBar
+                <LinearLayout
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:id="@+id/settings_qc_limit"
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:max="9999" />
+                    android:layout_height="wrap_content">
+                    <SeekBar
+                        android:paddingEnd="0dp"
+                        android:paddingStart="0dp"
+                        android:id="@+id/settings_qc_limit"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:max="6000" />
+
+                    <TextView
+                        android:id="@+id/settings_qc_limit_desc"
+                        android:layout_marginStart="@dimen/activity_horizontal_margin"
+                        style="@style/textSmall"
+                        android:gravity="center_vertical"
+                        android:layout_width="45dp"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
 
                 <TextView
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:id="@+id/settings_qc_limit_desc"
-                    style="@style/textSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/settings_qc_limit_desc" />
-
-                <TextView
                     android:id="@+id/settings_qc_limit_current"
                     style="@style/textSmall"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Current Limit:" />
+                    android:layout_height="wrap_content"/>
             </LinearLayout>
 
             <LinearLayout
@@ -130,6 +139,8 @@
                     android:text="@string/accessbility_bp_desc" />
 
                 <SeekBar
+                    android:paddingEnd="0dp"
+                    android:paddingStart="0dp"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:id="@+id/settings_bp_level"
                     android:layout_width="match_parent"

@@ -3,7 +3,7 @@
 resource=./custom/switchs/resources/com.android.systemui
 output=/system/media/theme/default/com.android.systemui
 
-source ./custom/common/magisk_plus.sh
+source ./custom/common/magisk_replace.sh
 
 if [[ "$state" = 1 ]]
 then

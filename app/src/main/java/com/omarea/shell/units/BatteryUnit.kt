@@ -1,5 +1,6 @@
 package com.omarea.shell.units
 
+import android.content.Context
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.shell.RootFile
@@ -223,23 +224,10 @@ class BatteryUnit {
         return RootFile.itemExists("/sys/class/power_supply/battery/battery_charging_enabled") || RootFile.itemExists("/sys/class/power_supply/battery/input_suspend")
     }
 
-    //修改充电速度限制
-    fun setChargeInputLimit(limit: Int) {
-        val cmd = "echo 0 > /sys/class/power_supply/battery/restricted_charging;" +
-                "echo 0 > /sys/class/power_supply/battery/safety_timer_enabled;" +
-                "chmod 755 /sys/class/power_supply/bms/temp_warm;" +
-                "echo 480 > /sys/class/power_supply/bms/temp_warm;" +
-                "chmod 755 /sys/class/power_supply/battery/constant_charge_current_max;" +
-                "echo 2000000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
-                "echo 2500000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
-                "echo 3000000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
-                "echo 3500000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
-                "echo 4000000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
-                "echo 4500000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
-                "echo 5000000 > /sys/class/power_supply/battery/constant_charge_current_max;" +
-                "echo " + limit + "000 > /sys/class/power_supply/battery/constant_charge_current_max;"
+    fun setChargeInputLimit(limit: Int, context: Context) {
+        val fastChangerBase = "sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("custom/battery/fast_charge.sh", "fast_charge.sh", context)
 
-        KeepShellPublic.doCmdSync(cmd)
+        KeepShellPublic.doCmdSync(fastChangerBase + " " + limit)
     }
 
     fun pdSupported(): Boolean {

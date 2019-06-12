@@ -66,7 +66,7 @@ class FragmentAddin : Fragment() {
             add(createItem(getString(R.string.addin_thermal_remove), getString(R.string.addin_thermal_remove_desc), Runnable { ThermalAddin(context!!).showOption() }, false))
             // }
 
-            if (!(com.omarea.common.shared.MagiskExtend.moduleInstalled() && (platform == "powercfg/sdm845" || platform == "powercfg/msm8998" || platform == "powercfg/msmnile"))) {
+            if (!(com.omarea.common.shared.MagiskExtend.moduleInstalled() && (platform == "sdm845" || platform == "msm8998" || platform == "msmnile"))) {
                 add(createItem(getString(R.string.addin_thermal_remove2), getString(R.string.addin_thermal_remove2_desc), Runnable {
                     ThermalAddin(context!!).miuiSetThermalNo()
                 }, false))

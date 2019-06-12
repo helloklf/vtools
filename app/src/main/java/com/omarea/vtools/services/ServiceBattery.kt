@@ -8,14 +8,12 @@ import android.content.IntentFilter
 import android.os.IBinder
 import com.omarea.vtools.receiver.ReciverBatterychanged
 
+@Suppress("DEPRECATION")
 class ServiceBattery : Service() {
-
     internal var batteryChangedReciver: ReciverBatterychanged? = null
 
 
     override fun onBind(intent: Intent): IBinder? {
-        // TODO: Return the communication channel to the service.
-        // throw UnsupportedOperationException("Not yet implemented")
         return null
     }
 
@@ -51,15 +49,15 @@ class ServiceBattery : Service() {
     }
 
     companion object {
-
         //服务是否在运行
         fun serviceIsRunning(context: Context): Boolean {
             val m = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager?
             if (m != null) {
+                val className = ServiceBattery::class.java.simpleName
                 val serviceInfos = m.getRunningServices(5000)
                 for (serviceInfo in serviceInfos) {
                     if (serviceInfo.service.packageName == context.packageName) {
-                        if (serviceInfo.service.className.endsWith(".ServiceBattery")) {
+                        if (serviceInfo.service.className.endsWith(className)) {
                             return true
                         }
                     }
