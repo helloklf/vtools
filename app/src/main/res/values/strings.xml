@@ -130,7 +130,7 @@
     <string name="accessbility_autoclick">安装点击</string>
     <string name="accessbility_autoclick_desc">安装第三方应用时，自动帮你点“下一步”</string>
     <string name="accessbility_charger">充电加速 *实验性</string>
-    <string name="accessbility_charger_desc">尝试提高充电最大电流限制，但不代表实际充电速度</string>
+    <string name="accessbility_charger_desc">尝试提高充电最大电流限制，但不代表实际充电速度\n此设置只在充电器已连接，且电量低于80%才生效</string>
     <string name="accessbility_bp">充电保护</string>
     <string name="accessbility_bp_desc">充电到指定百分比时自动禁止充电功能，浅充浅放有助于保护电池。但可能导致电量显示不精准。</string>
     <string name="accessbility_bp_level_desc">电量限制值（%）</string>
@@ -231,7 +231,7 @@
     <string name="swap_zram_adjustment">调整</string>
     <string name="swap_zram_desc">说明：ZRAM即内存压缩技术，通过压缩RAM中的数据减少其空间占用，大量使用会增加CPU负担</string>
     <string name="swap_zram_comp_options">压缩算法</string>
-    <string name="swap_zram_comp_algorithm_desc">建议\n\n压缩速度快的算法：lzo、lz4\n压缩率低的算法：deflate\n注意：“压缩率”是指“压缩后大小/原始大小”，越低越好！\n\n具体对比\n\n 压缩速度：\n lz4 &gt; lzo &gt; gz &gt; snappy &gt; deflate &gt; bz2\n 压缩率：\n defalte &lt; gz &lt; lz4 &lt; bz2 &lt; lzo &lt; snappy\n 解压速度：\n zo &gt; lz4 &gt; deflate &gt; gz &gt; snappy &gt; bz2
+    <string name="swap_zram_comp_algorithm_desc">建议\n\n压缩速度快的算法：lzo、lz4\n压缩率低的算法：deflate\n注意：“压缩率”是指“压缩后大小/原始大小”，越低越好！\n\n具体对比\n\n 压缩速度：\n lz4 &gt; lzo &gt; gz &gt; snappy &gt; deflate &gt; bz2\n 压缩率：\n defalte &lt; gz &lt; lz4 &lt; bz2 &lt; lzo &lt; snappy\n 解压速度：\n lzo &gt; lz4 &gt; deflate &gt; gz &gt; snappy &gt; bz2
     </string>
     <string name="swap_zram_comp_algorithm_wran">更改未生效</string>
     <string name="swap_zram_comp_algorithm_wran_desc">ZRAM正在使用中，现在无法更改压缩算法。\n\n如需让设置生效，请点击下方的“调整”按钮</string>

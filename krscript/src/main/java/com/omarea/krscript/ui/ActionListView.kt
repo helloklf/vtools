@@ -166,7 +166,7 @@ class ActionListView : OverScrollListView {
                 Thread(Runnable {
                     for (actionParamInfo in actionParamInfos) {
                         if (actionParamInfo.valueShell != null) {
-                            actionParamInfo.valueFromShell = executeScriptGetResult(context, actionParamInfo.valueShell)
+                            actionParamInfo.valueFromShell = executeScriptGetResult(context, actionParamInfo.valueShell!!)
                         }
                     }
                     handler.post {
@@ -286,9 +286,9 @@ class ActionListView : OverScrollListView {
                 }
             }
         } else if (actionParamInfo.options != null) {
-            for (option in actionParamInfo.options) {
+            for (option in actionParamInfo.options!!) {
                 val opt = HashMap<String, Any>()
-                opt["title"] = option.desc
+                opt.set("title", if(option.desc == null) "" else option.desc!!)
                 opt["item"] = option
                 options.add(opt)
             }
@@ -310,9 +310,9 @@ class ActionListView : OverScrollListView {
 
         val valList = ArrayList<String>()
         if (actionParamInfo.valueFromShell != null)
-            valList.add(actionParamInfo.valueFromShell)
+            valList.add(actionParamInfo.valueFromShell!!)
         if (actionParamInfo.value != null) {
-            valList.add(actionParamInfo.value)
+            valList.add(actionParamInfo.value!!)
         }
         if (valList.size > 0) {
             for (j in valList.indices) {
@@ -335,9 +335,9 @@ class ActionListView : OverScrollListView {
      */
     private fun getCheckState(actionParamInfo: ActionParamInfo, defaultValue: Boolean): Boolean {
         if (actionParamInfo.valueFromShell != null) {
-            return actionParamInfo.valueFromShell == "1" || actionParamInfo.valueFromShell.toLowerCase() == "true"
+            return actionParamInfo.valueFromShell == "1" || actionParamInfo.valueFromShell!!.toLowerCase() == "true"
         } else if (actionParamInfo.value != null) {
-            return actionParamInfo.value == "1" || actionParamInfo.value.toLowerCase() == "true"
+            return actionParamInfo.value == "1" || actionParamInfo.value!!.toLowerCase() == "true"
         }
         return defaultValue
     }
@@ -361,7 +361,7 @@ class ActionListView : OverScrollListView {
                 } else
                     actionParamInfo.value = item.toString()
             }
-            params[actionParamInfo.name] = actionParamInfo.value
+            params.set(actionParamInfo.name!!, actionParamInfo.value!!)
         }
         return params
     }

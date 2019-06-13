@@ -1,6 +1,7 @@
 package com.omarea.shell.units
 
 import android.content.Context
+import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.shell.RootFile
@@ -15,6 +16,7 @@ class BatteryUnit {
     companion object {
         var isHuawei = false
         var ioInfoSupported = true
+        private var fastChangerScript = ""
     }
 
     //是否兼容此设备
@@ -224,10 +226,20 @@ class BatteryUnit {
         return RootFile.itemExists("/sys/class/power_supply/battery/battery_charging_enabled") || RootFile.itemExists("/sys/class/power_supply/battery/input_suspend")
     }
 
-    fun setChargeInputLimit(limit: Int, context: Context) {
-        val fastChangerBase = "sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("custom/battery/fast_charge.sh", "fast_charge.sh", context)
+    fun setChargeInputLimit(limit: Int, context: Context): Boolean {
+        if (fastChangerScript.isEmpty()) {
+            val output = FileWrite.writePrivateShellFile("custom/battery/fast_charge.sh", "fast_charge.sh", context)
+            if (output != null) {
+                fastChangerScript = "sh " + output + " "
+            }
+        }
 
-        KeepShellPublic.doCmdSync(fastChangerBase + " " + limit)
+        if (fastChangerScript.isNotEmpty()) {
+            KeepShellPublic.doCmdSync(fastChangerScript + limit)
+            return true
+        } else {
+            return false
+        }
     }
 
     fun pdSupported(): Boolean {

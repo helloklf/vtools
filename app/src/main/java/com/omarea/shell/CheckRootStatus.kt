@@ -8,8 +8,8 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import android.support.v4.content.PermissionChecker
-import android.util.Log
 import com.omarea.common.shell.KeepShellPublic
+import com.omarea.common.ui.DialogHelper
 import com.omarea.shared.CommonCmds
 import com.omarea.vtools.R
 
@@ -23,73 +23,64 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
 
     var therad: Thread? = null
     fun forceGetRoot() {
-        if(lastCheckResult) {
-            myHandler.post {
-                if (next != null)
-                    next!!.run()
+        if (lastCheckResult) {
+            if (next != null) {
+                myHandler.post(next)
             }
-            return
-        }
-
-        var completed = false
-        therad = Thread {
-            rootStatus = KeepShellPublic.checkRoot()
-            if (rootStatus && disableSeLinux) {
-                KeepShellPublic.doCmdSync(CommonCmds.DisableSELinux)
-            }
-            if (!rootStatus) {
-                completed = true
-                myHandler.post {
-                    KeepShellPublic.tryExit()
-                    val alert = AlertDialog.Builder(context)
-                    alert.setCancelable(false)
-                    alert.setTitle(R.string.error_root)
-                    alert.setNegativeButton(R.string.btn_retry, { _, _ ->
-                        if (therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
-                            therad!!.interrupt()
-                            therad = null
-                        }
-                        forceGetRoot()
-                    })
-                    alert.setNeutralButton(R.string.btn_exit, { _, _ ->
-                        System.exit(0)
-                        //android.os.Process.killProcess(android.os.Process.myPid())
-                    })
-                    val dialog = alert.create()
-                    dialog.window!!.setWindowAnimations(R.style.windowAnim)
-                    dialog.show()
+        } else {
+            var completed = false
+            therad = Thread {
+                rootStatus = KeepShellPublic.checkRoot()
+                if (rootStatus && disableSeLinux) {
+                    KeepShellPublic.doCmdSync(CommonCmds.DisableSELinux)
                 }
-            } else {
-                completed = true
-                myHandler.post {
-                    if (next != null)
-                        next!!.run()
-                }
-            }
-        };
-        therad!!.start()
-        myHandler.postDelayed({
-            if (!completed) {
-                val alert = AlertDialog.Builder(context)
-                alert.setCancelable(false)
-                alert.setTitle(R.string.error_root)
-                alert.setMessage(R.string.error_su_timeout)
-                alert.setNegativeButton(R.string.btn_retry, { _, _ ->
-                    if (therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
-                        therad!!.interrupt()
-                        therad = null
+                if (!rootStatus) {
+                    completed = true
+                    myHandler.post {
+                        KeepShellPublic.tryExit()
+                        DialogHelper.animDialog(AlertDialog.Builder(context)
+                                .setCancelable(false)
+                                .setTitle(R.string.error_root)
+                                .setNegativeButton(R.string.btn_retry, { _, _ ->
+                                    if (therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
+                                        therad!!.interrupt()
+                                        therad = null
+                                    }
+                                    forceGetRoot()
+                                })
+                                .setNeutralButton(R.string.btn_exit, { _, _ ->
+                                    System.exit(0)
+                                    //android.os.Process.killProcess(android.os.Process.myPid())
+                                }))
                     }
-                    forceGetRoot()
-                })
-                alert.setNeutralButton(R.string.btn_exit, { _, _ ->
-                    System.exit(0)
-                    //android.os.Process.killProcess(android.os.Process.myPid())
-                })
-                val dialog = alert.create()
-                dialog.window!!.setWindowAnimations(R.style.windowAnim)
-                dialog.show()
-            }
-        }, 15000)
+                } else {
+                    completed = true
+                    if (next != null) {
+                        myHandler.post(next)
+                    }
+                }
+            };
+            therad!!.start()
+            myHandler.postDelayed({
+                if (!completed) {
+                    DialogHelper.animDialog(AlertDialog.Builder(context)
+                            .setCancelable(false)
+                            .setTitle(R.string.error_root)
+                            .setMessage(R.string.error_su_timeout)
+                            .setNegativeButton(R.string.btn_retry, { _, _ ->
+                                if (therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
+                                    therad!!.interrupt()
+                                    therad = null
+                                }
+                                forceGetRoot()
+                            })
+                            .setNeutralButton(R.string.btn_exit, { _, _ ->
+                                System.exit(0)
+                                //android.os.Process.killProcess(android.os.Process.myPid())
+                            }))
+                }
+            }, 15000)
+        }
     }
 
     companion object {
@@ -153,7 +144,7 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
 
         // 最后的ROOT检测结果
         val lastCheckResult: Boolean
-            get (){
+            get () {
                 return this.rootStatus
             }
 

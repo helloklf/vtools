@@ -101,7 +101,7 @@ class FragmentHome : Fragment() {
                 myHandler.postDelayed({
                     try {
                         updateRamInfo()
-                        Toast.makeText(context, "内存碎屏已整理...", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "内存碎片已整理...", Toast.LENGTH_SHORT).show()
                     } catch (ex: java.lang.Exception) {
                     }
                 }, 600)

@@ -187,16 +187,21 @@ class PageConfigReader(private var context: Context) {
                         val script = parser.getAttributeValue(i)
                         actionParamInfo.optionsSh = script
                     }
+                    attrName == "support" -> {
+                        if (executeResultRoot(context, parser.getAttributeValue(i)) != "1") {
+                            actionParamInfo.supported = false
+                        }
+                    }
                 }
             }
-            if (actionParamInfo.name != null && actionParamInfo.name.trim { it <= ' ' } != "") {
+            if (actionParamInfo.supported && actionParamInfo.name != null && actionParamInfo.name!!.isNotEmpty()) {
                 actionParamInfos!!.add(actionParamInfo)
             }
         }
         else if (actionParamInfo != null && "option" == parser.name) {
             val actionParamInfo = actionParamInfo!!
             if (actionParamInfo.options == null) {
-                actionParamInfo.options = ArrayList<ActionParamInfo.ActionParamOption>()
+                actionParamInfo.options = ArrayList()
             }
             val option = ActionParamInfo.ActionParamOption()
             for (i in 0 until parser.attributeCount) {
@@ -208,7 +213,7 @@ class PageConfigReader(private var context: Context) {
             option.desc = parser.nextText()
             if (option.value == null)
                 option.value = option.desc
-            actionParamInfo.options.add(option)
+            actionParamInfo.options!!.add(option)
         }
         else if ("resource" == parser.name) {
             for (i in 0 until parser.attributeCount) {

@@ -52,12 +52,12 @@
                     style="@style/textSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="启用USB-PD快充协议。（手动开关此选项可能会被系统自动还原...）" />
+                    android:text="启用USB-PD快充协议(强烈建议，不要尝试手动开关此选项！！！)" />
 
                 <LinearLayout
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
                     android:orientation="horizontal">
 
                     <TextView

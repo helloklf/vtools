@@ -45,7 +45,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.lang.ref.WeakReference
 
 class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
-    private var hasRoot = false
     private var globalSPF: SharedPreferences? = null
 
     private fun setExcludeFromRecents(exclude: Boolean? = null) {
@@ -156,7 +155,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        hasRoot = CheckRootStatus.lastCheckResult
         // AppShortcutManager(this.applicationContext).removeMenu()
         // checkUseState()
         /*
@@ -180,9 +178,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navigationView.setNavigationItemSelectedListener(this)
         navigationView.menu.findItem(R.id.nav_battery).isEnabled = BatteryUnit().isSupport
 
-        if (!hasRoot) {
-            hideRootMenu(navigationView.menu)
-        } else {
+        if (CheckRootStatus.lastCheckResult) {
             try {
                 setHomePage()
             } catch (ex: Exception) {
@@ -198,6 +194,8 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             ConfigInstallerThread(this).start()
             ServiceCreateThread(this).run()
             ThermalCheckThread(this).run()
+        } else {
+            hideRootMenu(navigationView.menu)
         }
         // 每天都检查更新
         // if (globalSPF!!.getLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, 0) + (3600 * 24 * 1000) < System.currentTimeMillis()) {
