@@ -146,7 +146,7 @@ class SystemScene(private var context: Context) {
             return
         }
         if (lowPowerModeShell!!.isEmpty()) {
-            lowPowerModeShell = com.omarea.common.shared.FileWrite.writePrivateShellFile("custom/battery/power_save_set.sh", "power_save_set.sh", context)
+            lowPowerModeShell = com.omarea.common.shared.FileWrite.writePrivateShellFile("addin/power_save_set.sh", "addin/power_save_set.sh", context)
         }
         if (lowPowerModeShell.isNullOrEmpty()) {
             return

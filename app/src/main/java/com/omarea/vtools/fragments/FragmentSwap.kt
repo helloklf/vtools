@@ -38,11 +38,12 @@ class FragmentSwap : Fragment() {
     private val myHandler = Handler()
     private lateinit var swapConfig: SharedPreferences
     private var totalMem = 2048
-    private val swapUnit = SwapUnit()
+    private lateinit var swapUnit: SwapUnit
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         view = inflater.inflate(R.layout.fragment_swap, container, false)
+        swapUnit = SwapUnit(context!!)
 
         swapConfig = context!!.getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)
 
@@ -96,10 +97,18 @@ class FragmentSwap : Fragment() {
         list_swaps2.adapter = datas
 
         txt_mem.text = KernelProrp.getProp("/proc/meminfo")
-        btn_swap_create.isEnabled = !File("/data/swapfile").exists()
-        btn_swap_start.isEnabled = !txt.contains("/data/swapfile") && !txt.contains("/swapfile") && File("/data/swapfile").exists()
-        btn_swap_close.isEnabled = txt.contains("/data/swapfile") || txt.contains("/swapfile")
-        btn_swap_delete.isEnabled = File("/data/swapfile").exists()
+        btn_swap_create.isEnabled = !swapUnit.swapExists
+
+        val currentSwap = swapUnit.currentSwapDevice
+        if (currentSwap.isNotEmpty()) {
+            btn_swap_start.isEnabled = false
+            btn_swap_close.isEnabled = true
+        } else {
+            btn_swap_start.isEnabled = true
+            btn_swap_close.isEnabled = false
+        }
+
+        btn_swap_delete.isEnabled = swapUnit.swapExists
         swap_auto_lmk.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, false)
         val lmk = KernelProrp.getProp("/sys/module/lowmemorykiller/parameters/minfree")
         swap_lmk_current.text = lmk
@@ -136,7 +145,7 @@ class FragmentSwap : Fragment() {
                 zramCompressionRatio(orig_data_size, compr_data_size),
                 zramCompressionRatio(orig_data_size, mem_used_total))
 
-        zram_compact_algorithm.text = comp_algorithm
+        zram_compact_algorithm.text = swapConfig.getString(SpfConfig.SWAP_SPF_ALGORITHM, comp_algorithm)
     }
 
     private fun zramInfoValueParseMB(sizeStr: String): String {
@@ -182,40 +191,28 @@ class FragmentSwap : Fragment() {
 
         var swapSize = 0
         if (swapUnit.swapExists) {
-            var size = 0L
-            try {
-                size = KeepShellPublic.doCmdSync("ls -l /data/swapfile | awk '{ print \$5 }'").toLong()
-            } catch (ex: Exception) {
-                try {
-                    size = File("/data/swapfile").length()
-                } catch (ex: Exception) {
-
-                }
-            }
-            swapSize = (size / 1024 / 1024).toInt()
+            swapSize = swapUnit.swapFileSize
         } else {
             swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 0)
         }
-        if (swapSize > totalMem)
-            swapSize = totalMem
-        txt_swap_size.progress = swapSize
-        txt_swap_size.max = totalMem
+
+        seekbar_swap_size.progress = swapSize / 128
         txt_swap_size_display.text = "${swapSize}MB"
-        seekbar_zram_size.max = totalMem
+        seekbar_zram_size.max = totalMem / 128
         var zramSize = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0)
         if (zramSize > totalMem)
             zramSize = totalMem
-        seekbar_zram_size.progress = zramSize
+        seekbar_zram_size.progress = zramSize / 128
         txt_zram_size_display.text = "${zramSize}MB"
         seekbar_swap_swappiness.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65)
         txt_zramstus_swappiness.text = seekbar_swap_swappiness.progress.toString()
 
-        txt_swap_size.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
+        seekbar_swap_size.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
             txt_swap_size_display.text = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 0).toString() + "MB"
-        }, swapConfig, SpfConfig.SWAP_SPF_SWAP_SWAPSIZE))
+        }, swapConfig, SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 128))
         seekbar_zram_size.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
             txt_zram_size_display.text = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0).toString() + "MB"
-        }, swapConfig, SpfConfig.SWAP_SPF_ZRAM_SIZE))
+        }, swapConfig, SpfConfig.SWAP_SPF_ZRAM_SIZE, 128))
         seekbar_swap_swappiness.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
             val swappiness = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 0)
             txt_zramstus_swappiness.text = swappiness.toString()
@@ -306,7 +303,7 @@ class FragmentSwap : Fragment() {
         }
 
         btn_swap_create.setOnClickListener {
-            val size = txt_swap_size.progress
+            val size = seekbar_swap_size.progress * 128
 
             val run = Runnable {
                 val startTime = System.currentTimeMillis()
@@ -333,15 +330,17 @@ class FragmentSwap : Fragment() {
             edit.putBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, hightPriority)
             edit.commit()
 
+            processBarDialog.showDialog("稍等...")
             Thread(Runnable {
                 swapUnit.swapOn(hightPriority)
 
                 myHandler.post(getSwaps)
                 myHandler.post(showSwapOpened)
+                processBarDialog.hideDialog()
             }).start()
         }
         btn_zram_resize.setOnClickListener {
-            val sizeVal = seekbar_zram_size.progress
+            val sizeVal = seekbar_zram_size.progress * 128
 
             if (sizeVal < 8192 && sizeVal > -1) {
                 processBarDialog.showDialog(getString(R.string.zram_resizing))
@@ -380,7 +379,7 @@ class FragmentSwap : Fragment() {
         }
     }
 
-    class OnSeekBarChangeListener(private var next: Runnable, private var spf: SharedPreferences, private var spfProp: String) : SeekBar.OnSeekBarChangeListener {
+    class OnSeekBarChangeListener(private var next: Runnable, private var spf: SharedPreferences, private var spfProp: String, private var ratio: Int = 1) : SeekBar.OnSeekBarChangeListener {
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
         }
 
@@ -389,10 +388,11 @@ class FragmentSwap : Fragment() {
 
         @SuppressLint("ApplySharedPref")
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-            if (spf.getInt(spfProp, Int.MIN_VALUE) == progress) {
+            val value = progress * ratio
+            if (spf.getInt(spfProp, Int.MIN_VALUE) == value) {
                 return
             }
-            spf.edit().putInt(spfProp, progress).commit()
+            spf.edit().putInt(spfProp, value).commit()
             next.run()
         }
     }

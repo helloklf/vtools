@@ -24,18 +24,12 @@ import kotlinx.android.synthetic.main.activity_start_splash.*
 import java.lang.ref.WeakReference
 
 class ActivityStartSplash : Activity() {
-    companion object {
-        var isColdBoot = true
-    }
     private var globalSPF: SharedPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         if (CheckRootStatus.lastCheckResult && !isTaskRoot) {
-            // val intent = Intent(this.applicationContext, ActivityMain::class.java)
-            // intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION or Intent.FLAG_ACTIVITY_NEW_TASK
-            // startActivity(intent)
             finish();
             return;
         }
@@ -52,7 +46,6 @@ class ActivityStartSplash : Activity() {
         setContentView(R.layout.activity_start_splash)
         updateThemeStyle()
 
-        //checkFileWrite()
         if (getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_CONTRACT, false) != true) {
             initContractAction()
         } else {
@@ -220,7 +213,9 @@ class ActivityStartSplash : Activity() {
         val globalConfig = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
         val disableSeLinux = globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false)
-        CheckRootStatus(this, next, disableSeLinux).forceGetRoot()
+        CheckRootStatus(this, next, disableSeLinux, Runnable {
+            startToFinish()
+        }).forceGetRoot()
     }
 
     /**
@@ -228,19 +223,9 @@ class ActivityStartSplash : Activity() {
      */
     private fun startToFinish() {
         start_state_text.text = "启动完成！"
-        setResult(if (hasRoot) RESULT_OK else RESULT_CANCELED)
-        // finish()
 
         val intent = Intent(this.applicationContext, ActivityMain::class.java)
-        // intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        // intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK // Intent.FLAG_ACTIVITY_CLEAR_TOP
-        // intent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION or Intent.FLAG_ACTIVITY_NEW_TASK
         startActivity(intent)
         finish()
-    }
-
-    override fun onDestroy() {
-        isColdBoot = false
-        super.onDestroy()
     }
 }

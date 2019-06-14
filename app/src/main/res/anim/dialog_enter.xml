@@ -6,7 +6,7 @@
         android:duration="@android:integer/config_mediumAnimTime"
         android:fromYDelta="-10%p"
         android:interpolator="@android:anim/accelerate_decelerate_interpolator"
-        android:toYDelta="0%p"></translate>
+        android:toYDelta="0%p" />
     <scale
         android:duration="@android:integer/config_mediumAnimTime"
         android:fromXScale="0.6"

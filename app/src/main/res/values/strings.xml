@@ -86,7 +86,7 @@
     <string name="btn_iknow">知道了</string>
     <string name="btn_exit">退出</string>
     <string name="btn_hide">隐藏</string>
-    <string name="btn_skip">忽略</string>
+    <string name="btn_skip">跳过</string>
     <string name="btn_retry">重试</string>
     <string name="error_su_timeout">等待超时，请确保你的Root管理器正在后台运行，并重试！\n\n请确保你没有阻止“授权管理器(SuperSu、Magisk Manager等)”自启动，并允许后台弹出窗口、显示悬浮窗等权限。如果一直没有弹出授权对话框，建议重启手机再试！\n</string>
 
@@ -97,7 +97,7 @@
     <string name="share_link">你也来试试Scene吧，我觉得还不错，下载地址：\n http://vtools.omarea.com/</string>
     <!--<string name="feedback_link">mqqwpa://im/chat?chat_type=wpa&amp;uin=1191634433</string>-->
 
-    <string name="app_name">Scene</string>
+    <string name="app_name">Scene Dev</string>
     <string name="app_name_mode_switch">Scene-快速切换模式</string>
 
     <string name="accessibility_service_description">Scene增强服务\n你需要激活本服务，才能使用以下功能：\n\n1.动态响应（根据前台应用自动调整性能）.\n\n2.自动行为（在开关屏幕时切换网络或切换应用时回收进程）.\n\n3.自动安装（安装第三方应用时自动点击下一步）</string>
@@ -171,6 +171,8 @@
     <string name="home_hide_in_recents_desc">不要在多任务界面显示Scene（本功能已下线，用返回键关闭Scene界面时自动隐藏后台）</string>
     <string name="auto_start_compile">自动编译</string>
     <string name="auto_start_compile_desc">开机完成Scene自启动后，对新应用进行dex2oat编译</string>
+    <string name="auto_start_fstrim">自动fstrim</string>
+    <string name="auto_start_fstrim_desc">开机完成Scene自启动后，自动执行fstrim</string>
     <string name="applist_help">✔ 已备份\n✘ 备份的版本比安装的版本更高\n★ 已安装的版本比备份的版本旧\n☆ 已备份数据未备份APK\n\n目前所提供的应用数据备份功能，需要系统集成busybox、toybox，使用tar+gz压缩数据（如果系统支持，将使用pigz提高压缩速度），仅备份 “/data/data/应用包名” 下的数据，且不保证兼容所有系统和应用。\n\n“禁用+隐藏”非常适合精简ROM，但是应用一旦被设为隐藏你将无法通过其它应用管理工具来恢复或启动（除非恢复出厂设置或在Scene里手动解除隐藏），Scene会自动保存隐藏记录，你可以通过下面的按钮来解除隐藏。\n如果你卸载了Scene，则隐藏记录也会丢失，则无法再恢复！！</string>
     <string name="dialog_addin_device_warn">机型信息请不要输入特殊符号！\n已兼容应用变量的机型代码，复制后重新打开此窗口即可使用！</string>
     <string name="dialog_addin_device_desc">修改后可点击“还原”->“确认”恢复修改前的机型，卸载Scene会导致备份的机型信息丢失，请务必还原后再卸载！\n\n或者，你也可以通过重新刷入完整ROM来恢复机型信息！\n\n使用DualBootPatcher多系统软件切勿使用本功能修改机型！！！</string>

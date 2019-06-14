@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:orientation="vertical">
+    <TextView
+        android:textAlignment="center"
+        android:textSize="40dp"
+        android:textColor="@color/colorAccent"
+        android:layout_marginBottom="20dp"
+        android:text="SCENE * 未ROOT"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:textSize="11dp"
+        style="@style/textSmall"
+        android:textAlignment="center"
+        android:text="未能获取ROOT权限，大部分功能都已禁用"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/btn_retry"
+        android:layout_marginTop="50dp"
+        android:text="@string/btn_retry"
+        android:layout_gravity="center_horizontal"
+        style="@style/Widget.AppCompat.ActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+</LinearLayout>

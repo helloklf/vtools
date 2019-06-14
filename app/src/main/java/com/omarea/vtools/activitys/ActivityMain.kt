@@ -93,7 +93,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    private class ThermalCheckThread(private var context: Context):Thread() {
+    private class ThermalCheckThread(private var context: Context) : Thread() {
         override fun run() {
             super.run()
 
@@ -101,23 +101,21 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 if (RootFile.dirExists("/data/thermal")) {
                     KeepShellPublic.doCmdSync(
                             "rm -rf /data/thermal 2> /dev/null\n" +
-                            "echo '' > /data/thermal\n" +
-                            "chattr +i /data/thermal 2> /dev/null")
+                                    "echo '' > /data/thermal\n" +
+                                    "chattr +i /data/thermal 2> /dev/null")
                 } else if (RootFile.dirExists("/data/vendor/thermal")) {
                     KeepShellPublic.doCmdSync(
                             "rm -rf /data/vendor/thermal 2> /dev/null\n" +
-                            "echo '' > /data/vendor/thermal\n" +
-                            "chattr +i /data/vendor/thermal 2> /dev/null")
+                                    "echo '' > /data/vendor/thermal\n" +
+                                    "chattr +i /data/vendor/thermal 2> /dev/null")
                 } else {
                     return
                 }
                 DialogHelper.animDialog(
                         AlertDialog.Builder(context)
                                 .setMessage("检测到系统自动创建了温控副本，这会导致在附加功能中切换的温控失效。\n\nScene已自动将副本删除，但可能需要重启手机才能解决问题")
-                        .setPositiveButton(R.string.btn_confirm, {
-                            _, _ ->
-
-                        }))
+                                .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                                }))
             }
         }
     }
@@ -182,11 +180,10 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             try {
                 setHomePage()
             } catch (ex: Exception) {
-                DialogHelper.animDialog(
-                        AlertDialog.Builder(this).setTitle(getString(R.string.sorry))
-                                .setMessage("启动应用失败\n" + ex.message).setNegativeButton(getString(R.string.btn_retry), { _, _ ->
-                                    setHomePage()
-                                }))
+                DialogHelper.animDialog(AlertDialog.Builder(this).setTitle(getString(R.string.sorry))
+                        .setMessage("启动应用失败\n" + ex.message).setNegativeButton(getString(R.string.btn_retry), { _, _ ->
+                            setHomePage()
+                        }))
             }
             if (!BackupRestoreUnit.isSupport()) {
                 navigationView.menu.findItem(R.id.nav_img).isEnabled = false
@@ -195,6 +192,9 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             ServiceCreateThread(this).run()
             ThermalCheckThread(this).run()
         } else {
+            try {
+                setNotRootPage()
+            } catch (ex: java.lang.Exception) {}
             hideRootMenu(navigationView.menu)
         }
         // 每天都检查更新
@@ -238,6 +238,14 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val transaction = fragmentManager.beginTransaction()
         transaction.replace(R.id.main_content, FragmentHome())
         // transaction.addToBackStack(getString(R.string.app_name))
+        transaction.commit()
+    }
+
+    private fun setNotRootPage() {
+        val fragmentManager = supportFragmentManager
+        fragmentManager.fragments.clear()
+        val transaction = fragmentManager.beginTransaction()
+        transaction.replace(R.id.main_content, FragmentNotRoot())
         transaction.commit()
     }
 
@@ -397,6 +405,9 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     public override fun onPause() {
         super.onPause()
+        if (!CheckRootStatus.lastCheckResult) {
+            finish()
+        }
     }
 
     override fun onDestroy() {

@@ -18,11 +18,11 @@ import com.omarea.vtools.R
  * Created by helloklf on 2017/6/3.
  */
 
-class CheckRootStatus(var context: Context, private var next: Runnable? = null, private var disableSeLinux: Boolean = false) {
+public class CheckRootStatus(var context: Context, private var next: Runnable? = null, private var disableSeLinux: Boolean = false, private var skip:Runnable? = null) {
     var myHandler: Handler = Handler(Looper.getMainLooper())
 
     var therad: Thread? = null
-    fun forceGetRoot() {
+    public fun forceGetRoot() {
         if (lastCheckResult) {
             if (next != null) {
                 myHandler.post(next)
@@ -31,17 +31,26 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
             var completed = false
             therad = Thread {
                 rootStatus = KeepShellPublic.checkRoot()
-                if (rootStatus && disableSeLinux) {
-                    KeepShellPublic.doCmdSync(CommonCmds.DisableSELinux)
+                if(completed == true) {
+                    return@Thread
                 }
-                if (!rootStatus) {
-                    completed = true
+
+                completed = true
+
+                if (lastCheckResult) {
+                    if (disableSeLinux) {
+                        KeepShellPublic.doCmdSync(CommonCmds.DisableSELinux)
+                    }
+                    if (next != null) {
+                        myHandler.post(next)
+                    }
+                } else {
                     myHandler.post {
                         KeepShellPublic.tryExit()
-                        DialogHelper.animDialog(AlertDialog.Builder(context)
+                        val builder = AlertDialog.Builder(context)
                                 .setCancelable(false)
                                 .setTitle(R.string.error_root)
-                                .setNegativeButton(R.string.btn_retry, { _, _ ->
+                                .setPositiveButton(R.string.btn_retry, { _, _ ->
                                     if (therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
                                         therad!!.interrupt()
                                         therad = null
@@ -51,12 +60,14 @@ class CheckRootStatus(var context: Context, private var next: Runnable? = null, 
                                 .setNeutralButton(R.string.btn_exit, { _, _ ->
                                     System.exit(0)
                                     //android.os.Process.killProcess(android.os.Process.myPid())
-                                }))
-                    }
-                } else {
-                    completed = true
-                    if (next != null) {
-                        myHandler.post(next)
+                                })
+                        if (skip != null) {
+                            builder.setNegativeButton(R.string.btn_skip, {
+                                _, _ ->
+                                myHandler.post(skip)
+                            })
+                        }
+                        DialogHelper.animDialog(builder)
                     }
                 }
             };

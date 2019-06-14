@@ -134,32 +134,32 @@ class BatteryUnit {
 
     //获取电池容量
     /*
-            POWER_SUPPLY_NAME=bms
-            POWER_SUPPLY_CAPACITY=30
-            POWER_SUPPLY_CAPACITY_RAW=77
-            POWER_SUPPLY_TEMP=320
-            POWER_SUPPLY_VOLTAGE_NOW=3697500
-            POWER_SUPPLY_VOLTAGE_OCV=3777837
-            POWER_SUPPLY_CURRENT_NOW=440917
-            POWER_SUPPLY_RESISTANCE_ID=58000
-            POWER_SUPPLY_RESISTANCE=200195
-            POWER_SUPPLY_BATTERY_TYPE=sagit_atl
-            POWER_SUPPLY_CHARGE_FULL_DESIGN=3349000
-            POWER_SUPPLY_VOLTAGE_MAX_DESIGN=4400000
-            POWER_SUPPLY_CYCLE_COUNT=69
-            POWER_SUPPLY_CYCLE_COUNT_ID=1
-            POWER_SUPPLY_CHARGE_NOW_RAW=1244723
-            POWER_SUPPLY_CHARGE_NOW=0
-            POWER_SUPPLY_CHARGE_FULL=3272000
-            POWER_SUPPLY_CHARGE_COUNTER=1036650
-            POWER_SUPPLY_TIME_TO_FULL_AVG=26438
-            POWER_SUPPLY_TIME_TO_EMPTY_AVG=30561
-            POWER_SUPPLY_SOC_REPORTING_READY=1
-            POWER_SUPPLY_DEBUG_BATTERY=0
-            POWER_SUPPLY_CONSTANT_CHARGE_VOLTAGE=4389899
-            POWER_SUPPLY_CC_STEP=0
-            POWER_SUPPLY_CC_STEP_SEL=0
-            */
+        POWER_SUPPLY_NAME=bms
+        POWER_SUPPLY_CAPACITY=30
+        POWER_SUPPLY_CAPACITY_RAW=77
+        POWER_SUPPLY_TEMP=320
+        POWER_SUPPLY_VOLTAGE_NOW=3697500
+        POWER_SUPPLY_VOLTAGE_OCV=3777837
+        POWER_SUPPLY_CURRENT_NOW=440917
+        POWER_SUPPLY_RESISTANCE_ID=58000
+        POWER_SUPPLY_RESISTANCE=200195
+        POWER_SUPPLY_BATTERY_TYPE=sagit_atl
+        POWER_SUPPLY_CHARGE_FULL_DESIGN=3349000
+        POWER_SUPPLY_VOLTAGE_MAX_DESIGN=4400000
+        POWER_SUPPLY_CYCLE_COUNT=69
+        POWER_SUPPLY_CYCLE_COUNT_ID=1
+        POWER_SUPPLY_CHARGE_NOW_RAW=1244723
+        POWER_SUPPLY_CHARGE_NOW=0
+        POWER_SUPPLY_CHARGE_FULL=3272000
+        POWER_SUPPLY_CHARGE_COUNTER=1036650
+        POWER_SUPPLY_TIME_TO_FULL_AVG=26438
+        POWER_SUPPLY_TIME_TO_EMPTY_AVG=30561
+        POWER_SUPPLY_SOC_REPORTING_READY=1
+        POWER_SUPPLY_DEBUG_BATTERY=0
+        POWER_SUPPLY_CONSTANT_CHARGE_VOLTAGE=4389899
+        POWER_SUPPLY_CC_STEP=0
+        POWER_SUPPLY_CC_STEP_SEL=0
+    */
     val batteryMAH: String
         get() {
             var path = ""
@@ -226,19 +226,29 @@ class BatteryUnit {
         return RootFile.itemExists("/sys/class/power_supply/battery/battery_charging_enabled") || RootFile.itemExists("/sys/class/power_supply/battery/input_suspend")
     }
 
+    private var changeLimitRunning = false
     fun setChargeInputLimit(limit: Int, context: Context): Boolean {
-        if (fastChangerScript.isEmpty()) {
-            val output = FileWrite.writePrivateShellFile("custom/battery/fast_charge.sh", "fast_charge.sh", context)
-            if (output != null) {
-                fastChangerScript = "sh " + output + " "
-            }
-        }
+        synchronized(changeLimitRunning) {
+            if (changeLimitRunning) {
+                return false
+            } else {
+                changeLimitRunning = true
+                if (fastChangerScript.isEmpty()) {
+                    val output = FileWrite.writePrivateShellFile("addin/fast_charge.sh", "fast_charge.sh", context)
+                    if (output != null) {
+                        fastChangerScript = "sh " + output + " "
+                    }
+                }
 
-        if (fastChangerScript.isNotEmpty()) {
-            KeepShellPublic.doCmdSync(fastChangerScript + limit)
-            return true
-        } else {
-            return false
+                if (fastChangerScript.isNotEmpty()) {
+                    KeepShellPublic.doCmdSync(fastChangerScript + limit)
+                    changeLimitRunning = false
+                    return true
+                } else {
+                    changeLimitRunning = false
+                    return false
+                }
+            }
         }
     }
 

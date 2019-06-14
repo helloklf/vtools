@@ -43,18 +43,12 @@ public class KeepShell(private var rootMode: Boolean = true) {
     private var enterLockTime = 0L
 
     private var checkRootState =
-            "if [[ `id -u 2>&1` = '0' ]]; then\n" +
-                    "echo 'root';\n" +
-                    "elif [[ `\$UID` = '0' ]]; then\n" +
-                    "echo 'root';\n" +
-                    "elif [[ `whoami 2>&1` = 'root' ]]; then\n" +
-                    "echo 'root';\n" +
-                    "elif [[ `set | grep 'USER_ID=0'` = 'USER_ID=0' ]]; then\n" +
-                    "echo 'root';\n" +
-                    "else\n" +
-                    "exit 1\n" +
-                    "exit 1\n" +
-                    "fi;\n"
+            "if [[ \$(id -u 2>&1) == '0' ]] || [[ \$(\$UID) == '0' ]] || [[ \$(whoami 2>&1) == 'root' ]] || [[ \$(set | grep 'USER_ID=0') == 'USER_ID=0' ]]; then\n" +
+            "  echo 'root'\n" +
+            "else\n" +
+            "  exit 1\n" +
+            "  exit 1\n" +
+            "fi\n"
 
     fun checkRoot(): Boolean {
         val r = doCmdSync(checkRootState)

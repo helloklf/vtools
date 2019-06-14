@@ -54,7 +54,7 @@ class FragmentBattery : Fragment() {
         settings_bp.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_BP, false)
         settings_bp_level.progress = spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85)
         accessbility_bp_level_desc.text = "充电限制电量：" + spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85) + "%"
-        settings_qc_limit.progress = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000)
+        settings_qc_limit.progress = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 3300) / 100
         settings_qc_limit_desc.text = "" + spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000) + "mA"
 
         if (broadcast == null) {
@@ -156,7 +156,7 @@ class FragmentBattery : Fragment() {
     @SuppressLint("ApplySharedPref")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        ResumeChanger = "sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("custom/battery/resume_charge.sh", "resume_charge.sh", this.context!!)
+        ResumeChanger = "sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("addin/resume_charge.sh", "addin/resume_charge.sh", this.context!!)
         spf = context!!.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
         qcSettingSuupport = batteryUnits.qcSettingSuupport()
         pdSettingSupport = batteryUnits.pdSupported()
@@ -259,7 +259,7 @@ class FragmentBattery : Fragment() {
         }
 
         bp_disable_charge.setOnClickListener {
-            KeepShellPublic.doCmdSync("sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("custom/battery/disable_charge.sh", "disable_charge.sh", this.context!!))
+            KeepShellPublic.doCmdSync("sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("addin/disable_charge.sh", "addin/disable_charge.sh", this.context!!))
             Toast.makeText(context!!, "充电功能已禁止！", Toast.LENGTH_SHORT).show()
         }
         bp_enable_charge.setOnClickListener {
@@ -289,7 +289,7 @@ class FragmentBattery : Fragment() {
 
     class OnSeekBarChangeListener2(private var next: Runnable, private var spf: SharedPreferences, private var settings_qc_limit_desc: TextView) : SeekBar.OnSeekBarChangeListener {
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
-            val progress = seekBar!!.progress
+            val progress = seekBar!!.progress * 100
             if (spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, Int.MIN_VALUE) == progress) {
                 return
             }
@@ -302,7 +302,7 @@ class FragmentBattery : Fragment() {
         }
 
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-            settings_qc_limit_desc.text = "" + progress + "mA"
+            settings_qc_limit_desc.text = "" + progress * 100 + "mA"
         }
     }
 

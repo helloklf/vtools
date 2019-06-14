@@ -29,6 +29,7 @@ class ActivitySceneOtherSettings : AppCompatActivity() {
         settings_delaystart.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DELAY, false)
         settings_disable_selinux.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false)
         auto_start_compile.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_STARTED_COMPILE, false)
+        auto_start_fstrim.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_STARTED_FSTRIM, false)
     }
 
     @SuppressLint("ApplySharedPref")
@@ -90,6 +91,15 @@ class ActivitySceneOtherSettings : AppCompatActivity() {
             } else {
                 KeepShellPublic.doCmdSync(CommonCmds.ResumeSELinux)
                 spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_STARTED_COMPILE, value).commit()
+            }
+        }
+        auto_start_fstrim.setOnClickListener {
+            val value = (it as Switch).isChecked
+            if (value) {
+                spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_STARTED_FSTRIM, value).commit()
+            } else {
+                KeepShellPublic.doCmdSync(CommonCmds.ResumeSELinux)
+                spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_STARTED_FSTRIM, value).commit()
             }
         }
     }

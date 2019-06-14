@@ -38,8 +38,8 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
     }
 
     private var batteryUnits = BatteryUnit()
-    var ResumeChanger = "sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("custom/battery/resume_charge.sh", "resume_charge.sh", service)
-    var DisableChanger = "sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("custom/battery/disable_charge.sh", "disable_charge.sh", service)
+    var ResumeChanger = "sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("addin/resume_charge.sh", "addin/resume_charge.sh", service)
+    var DisableChanger = "sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("addin/disable_charge.sh", "addin/disable_charge.sh", service)
 
     //快速充电
     private fun fastCharger() {

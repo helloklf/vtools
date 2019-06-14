@@ -102,7 +102,7 @@
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:max="6000" />
+                        android:max="60" />
 
                     <TextView
                         android:id="@+id/settings_qc_limit_desc"

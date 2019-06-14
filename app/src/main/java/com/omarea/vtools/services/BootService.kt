@@ -9,12 +9,14 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.support.v4.app.NotificationCompat
+import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KernelProrp
 import com.omarea.shared.*
 import com.omarea.shell.Props
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import com.omarea.shell.cpucontrol.ThermalControlUtils
+import com.omarea.shell.units.BatteryUnit
 import com.omarea.shell.units.LMKUnit
 import com.omarea.vtools.R
 
@@ -28,22 +30,6 @@ class BootService : IntentService("vtools-boot") {
     private var isFirstBoot = true
     private var bootCancel = false
     private lateinit var nm: NotificationManager
-
-
-    val FastChangerBase =
-    //"chmod 0777 /sys/class/power_supply/usb/pd_active;" +
-            "chmod 0777 /sys/class/power_supply/usb/pd_allowed;" +
-                    //"echo 1 > /sys/class/power_supply/usb/pd_active;" +
-                    "echo 1 > /sys/class/power_supply/usb/pd_allowed;" +
-                    "chmod 0666 /sys/class/power_supply/main/constant_charge_current_max;" +
-                    "chmod 0666 /sys/class/qcom-battery/restricted_current;" +
-                    "chmod 0666 /sys/class/qcom-battery/restricted_charging;" +
-                    "echo 0 > /sys/class/qcom-battery/restricted_charging;" +
-                    "echo 0 > /sys/class/power_supply/battery/restricted_charging;" +
-                    "echo 0 > /sys/class/power_supply/battery/safety_timer_enabled;" +
-                    "chmod 0666 /sys/class/power_supply/bms/temp_warm;" +
-                    "echo 500 > /sys/class/power_supply/bms/temp_warm;" +
-                    "chmod 0666 /sys/class/power_supply/battery/constant_charge_current_max;\n"
 
     override fun onHandleIntent(intent: Intent?) {
         nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -199,6 +185,7 @@ class BootService : IntentService("vtools-boot") {
                 startService(intent)
             } catch (ex: Exception) {
             }
+            BatteryUnit().setChargeInputLimit(chargeConfig.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 3300), this.applicationContext)
         }
 
         val globalPowercfg = globalConfig.getString(SpfConfig.GLOBAL_SPF_POWERCFG, "")
@@ -227,11 +214,19 @@ class BootService : IntentService("vtools-boot") {
 
         if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)) {
             updateNotification(getString(R.string.app_name), getString(R.string.boot_swapon))
-
-            if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, false)) {
-                keepShell.doCmdSync("swapon /data/swapfile -p 32760\n")
+            val swapControlScript = FileWrite.writePrivateShellFile( "addin/swap_control.sh", "addin/swap_control.sh", context)
+            if (swapControlScript != null) {
+                if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, false)) {
+                    keepShell.doCmdSync("sh $swapControlScript enable_swap 32760\n")
+                } else {
+                    keepShell.doCmdSync("sh $swapControlScript enable_swap\n")
+                }
             } else {
-                keepShell.doCmdSync("swapon /data/swapfile\n")
+                if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, false)) {
+                    keepShell.doCmdSync("swapon /data/swapfile -p 32760\n")
+                } else {
+                    keepShell.doCmdSync("swapon /data/swapfile\n")
+                }
             }
         }
 
@@ -240,15 +235,17 @@ class BootService : IntentService("vtools-boot") {
             keepShell.doCmdSync("echo " + swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65) + " > /proc/sys/vm/swappiness\n")
         }
 
-        updateNotification(getString(R.string.app_name), getString(R.string.boot_trim))
-        val trimCmd = StringBuilder()
-        trimCmd.append("setprop vtools.boot 1\n")
-        trimCmd.append("fstrim /data\n")
-        trimCmd.append("fstrim /system\n")
-        trimCmd.append("fstrim /cache\n")
-        trimCmd.append("fstrim /vendor\n")
+        if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_STARTED_FSTRIM, false)) {
+            updateNotification(getString(R.string.app_name), getString(R.string.boot_trim))
+            val trimCmd = StringBuilder()
+            trimCmd.append("setprop vtools.boot 1\n")
+            trimCmd.append("fstrim /data\n")
+            trimCmd.append("fstrim /system\n")
+            trimCmd.append("fstrim /cache\n")
+            trimCmd.append("fstrim /vendor\n")
+            keepShell.doCmdSync(trimCmd.toString())
+        }
 
-        keepShell.doCmdSync(trimCmd.toString())
 
         if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, false)) {
             updateNotification(getString(R.string.app_name), getString(R.string.boot_lmk))

@@ -1,27 +1,69 @@
 package com.omarea.shell.units
 
+import android.content.Context
+import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.shell.RootFile
+import com.omarea.shell.Props
+import java.io.File
 
 /**
  * Created by Hello on 2017/11/01.
  */
 
-class SwapUnit() {
+class SwapUnit(private var context: Context) {
     private var swapfilePath: String = "/data/swapfile"
+    private var swapControlScript = FileWrite.writePrivateShellFile( "addin/swap_control.sh", "addin/swap_control.sh", context)
+    private var zramControlScript = FileWrite.writePrivateShellFile( "addin/zram_control.sh", "addin/zram_control.sh", context)
 
     val swapExists: Boolean
         get() {
-            return RootFile.itemExists("/data/swapfile")
+            return RootFile.itemExists(swapfilePath)
         }
+
+    // 当前已经激活的swap设备
+    val currentSwapDevice: String
+        get() {
+            if (swapExists) {
+                val ret = KernelProrp.getProp("/proc/swaps")
+                val txt = ret.replace("\t\t", "\t").replace("\t", " ")
+                if(txt.contains("/data/swapfile") || txt.contains("/swapfile")) {
+                    return "/data/swapfile"
+                } else {
+                    val loopNumber = Props.getProp("vtools.swap.loop")
+                    if (loopNumber.isNotEmpty() && loopNumber != "error" && txt.contains("loop" + loopNumber)) {
+                        return "/dev/block/loop" + loopNumber
+                    }
+                }
+            }
+            return ""
+        }
+
+    val swapFileSize: Int
+            get() {
+                if (swapExists) {
+
+                    var size = 0L
+                    try {
+                        size = KeepShellPublic.doCmdSync("ls -l /data/swapfile | awk '{ print \$5 }'").toLong()
+                    } catch (ex: Exception) {
+                        try {
+                            size = File("/data/swapfile").length()
+                        } catch (ex: Exception) {
+
+                        }
+                    }
+                    return (size / 1024 / 1024).toInt()
+                }
+                return 0
+    }
 
     fun mkswap(size: Int) {
         val sb = StringBuilder()
         sb.append("swapoff $swapfilePath >/dev/null 2>&1;\n")
         sb.append("dd if=/dev/zero of=$swapfilePath bs=1048576 count=$size;\n")
-        sb.append("mkswap $swapfilePath;\n")
         val keepShell = KeepShell()
         keepShell.doCmdSync(sb.toString())
         keepShell.tryExit()
@@ -29,32 +71,60 @@ class SwapUnit() {
 
     fun swapOn(hightPriority: Boolean) {
         val sb = StringBuilder()
-        sb.append("echo 3 > /sys/block/zram0/max_comp_streams\n")
-        if (hightPriority) {
-            sb.append("swapon $swapfilePath -p 32767\n")
-            //sb.append("swapoff /dev/block/zram0\n")
+
+        if (swapControlScript != null) {
+            sb.append("sh ")
+            sb.append(swapControlScript)
+            sb.append(" ")
+            sb.append("enable_swap")
+            if (hightPriority) {
+                sb.append(" ")
+                sb.append("32760")
+            }
         } else {
-            sb.append("swapon $swapfilePath\n")
+            // sb.append("echo 3 > /sys/block/zram0/max_comp_streams\n")
+            sb.append("mkswap $swapfilePath;\n")
+            if (hightPriority) {
+                sb.append("swapon $swapfilePath -p 32760\n")
+            } else {
+                sb.append("swapon $swapfilePath\n")
+            }
         }
+
         val keepShell = KeepShell()
         keepShell.doCmdSync(sb.toString())
         keepShell.tryExit()
     }
 
     fun swapOff() {
+        val sb = StringBuilder("sync\necho 3 > /proc/sys/vm/drop_caches\n")
+
+        if (swapControlScript != null) {
+            sb.append("sh ")
+            sb.append(swapControlScript)
+            sb.append(" ")
+            sb.append("diable_swap")
+        } else {
+            sb.append("busybox swapoff $swapfilePath > /dev/null 2>&1")
+        }
+
         val keepShell = KeepShell()
-        keepShell.doCmdSync("echo 3 > /sys/block/zram0/max_comp_streams\n" +
-                "sync\n" +
-                "echo 3 > /proc/sys/vm/drop_caches\n" +
-                "busybox swapoff /data/swapfile > /dev/null 2>&1")
+        keepShell.doCmdSync(sb.toString())
         keepShell.tryExit()
     }
 
     fun swapDelete() {
-        val sb = StringBuilder()
-        sb.append("echo 3 > /sys/block/zram0/max_comp_streams;")
-        sb.append("sync\necho 3 > /proc/sys/vm/drop_caches\nswapoff /data/swapfile >/dev/null 2>&1;")
-        sb.append("rm -f /data/swapfile;")
+        val sb = StringBuilder("sync\necho 3 > /proc/sys/vm/drop_caches\n")
+
+        if (swapControlScript != null) {
+            sb.append("sh ")
+            sb.append(swapControlScript)
+            sb.append(" ")
+            sb.append("diable_swap")
+        } else {
+            sb.append("busybox swapoff $swapfilePath > /dev/null 2>&1")
+        }
+        sb.append("\nrm -f $swapfilePath;")
 
         val keepShell = KeepShell()
         keepShell.doCmdSync(sb.toString())
