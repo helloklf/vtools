@@ -85,6 +85,8 @@ class FragmentBattery : Fragment() {
 
         timer = Timer()
 
+        var limit = ""
+        var batteryInfo = ""
         timer!!.schedule(object : TimerTask() {
             override fun run() {
                 if (isDetached) {
@@ -96,9 +98,14 @@ class FragmentBattery : Fragment() {
                     pdAllowed = batteryUnits.pdAllowed()
                     pdActive = batteryUnits.pdActive()
                 }
+                if (qcSettingSuupport) {
+                    limit = batteryUnits.getqcLimit()
+                }
+                batteryInfo = batteryUnits.batteryInfo
+
                 myHandler.post {
                     if (qcSettingSuupport) {
-                        settings_qc_limit_current.text = "实际上限电流：" + batteryUnits.getqcLimit()
+                        settings_qc_limit_current.text = "实际上限电流：" + limit
                     }
                     battrystatus.text = "电池信息：" +
                             batteryMAH +
@@ -107,7 +114,7 @@ class FragmentBattery : Fragment() {
                             voltage + "v"
 
                     settings_qc.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) && serviceRunning
-                    battery_uevent.text = batteryUnits.batteryInfo
+                    battery_uevent.text = batteryInfo
 
                     if (pdSettingSupport) {
                         settings_pd.isChecked = pdAllowed

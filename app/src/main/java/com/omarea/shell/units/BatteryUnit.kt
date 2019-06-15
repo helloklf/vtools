@@ -2,10 +2,12 @@ package com.omarea.shell.units
 
 import android.content.Context
 import com.omarea.common.shared.FileWrite
+import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.shell.RootFile
 import com.omarea.shared.model.BatteryStatus
+import com.omarea.shell.Props
 import java.io.File
 
 /**
@@ -227,21 +229,43 @@ class BatteryUnit {
     }
 
     private var changeLimitRunning = false
+    private var keepShell: KeepShell? = null
+    private var isFristRun = true
     fun setChargeInputLimit(limit: Int, context: Context): Boolean {
         synchronized(changeLimitRunning) {
             if (changeLimitRunning) {
                 return false
             } else {
+                if (keepShell == null) {
+                    keepShell = KeepShell()
+                }
+
                 changeLimitRunning = true
+
                 if (fastChangerScript.isEmpty()) {
-                    val output = FileWrite.writePrivateShellFile("addin/fast_charge.sh", "fast_charge.sh", context)
-                    if (output != null) {
+                    val output = FileWrite.writePrivateShellFile("addin/fast_charge.sh", "addin/fast_charge.sh", context)
+                    val output2 = FileWrite.writePrivateShellFile("addin/fast_charge_run_once.sh", "addin/fast_charge_run_once.sh", context)
+                    if (output != null && output2 != null) {
+                        if (isFristRun) {
+                            keepShell!!.doCmdSync("sh " + output2)
+                            isFristRun = false
+                        }
+
                         fastChangerScript = "sh " + output + " "
                     }
                 }
 
                 if (fastChangerScript.isNotEmpty()) {
-                    KeepShellPublic.doCmdSync(fastChangerScript + limit)
+
+                    if (limit > 3000) {
+                        var current = 3000
+                        while (current < limit) {
+                            keepShell!!.doCmdSync(fastChangerScript + current)
+                            current += 300
+                        }
+                        keepShell!!.doCmdSync(fastChangerScript + limit)
+                    }
+                    keepShell!!.doCmdSync(fastChangerScript + limit)
                     changeLimitRunning = false
                     return true
                 } else {
