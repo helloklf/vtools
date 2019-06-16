@@ -12,10 +12,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SeekBar
-import android.widget.Switch
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.ui.DialogHelper
@@ -97,18 +94,36 @@ class FragmentSwap : Fragment() {
         list_swaps2.adapter = datas
 
         txt_mem.text = KernelProrp.getProp("/proc/meminfo")
-        btn_swap_create.isEnabled = !swapUnit.swapExists
+        val swapFileExists = swapUnit.swapExists
+        btn_swap_create.isEnabled = !swapFileExists
+        if (swapFileExists) {
+            seekbar_swap_size.isEnabled = false
+            seekbar_swap_size.isClickable = false
+            seekbar_swap_size.isFocusable = false
+            seekbar_swap_size.isSelected = false
+        } else {
+            seekbar_swap_size.isEnabled = true
+            seekbar_swap_size.isClickable = true
+            seekbar_swap_size.isFocusable = true
+            seekbar_swap_size.isSelected = true
+        }
 
         val currentSwap = swapUnit.currentSwapDevice
         if (currentSwap.isNotEmpty()) {
             btn_swap_start.isEnabled = false
+            btn_swap_delete.isEnabled = false
             btn_swap_close.isEnabled = true
+            chk_swap_use_loop.isEnabled = false
+            chk_swap_preferred.isEnabled = false
         } else {
-            btn_swap_start.isEnabled = true
+            btn_swap_start.isEnabled = swapFileExists
+            btn_swap_delete.isEnabled = swapFileExists
+
             btn_swap_close.isEnabled = false
+            chk_swap_use_loop.isEnabled = true
+            chk_swap_preferred.isEnabled = true
         }
 
-        btn_swap_delete.isEnabled = swapUnit.swapExists
         swap_auto_lmk.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, false)
         val lmk = KernelProrp.getProp("/sys/module/lowmemorykiller/parameters/minfree")
         swap_lmk_current.text = lmk
@@ -185,9 +200,10 @@ class FragmentSwap : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         processBarDialog = ProgressBarDialog(this.context!!)
 
-        chk_swap_disablezram.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, false)
+        chk_swap_preferred.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, false)
         chk_swap_autostart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)
         chk_zram_autostart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)
+        chk_swap_use_loop.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false)
 
         var swapSize = 0
         if (swapUnit.swapExists) {
@@ -323,7 +339,7 @@ class FragmentSwap : Fragment() {
 
         btn_swap_start.setOnClickListener {
             val autostart = chk_swap_autostart.isChecked
-            val hightPriority = chk_swap_disablezram.isChecked
+            val hightPriority = chk_swap_preferred.isChecked
 
             val edit = swapConfig.edit()
             edit.putBoolean(SpfConfig.SWAP_SPF_SWAP, autostart)
@@ -332,7 +348,7 @@ class FragmentSwap : Fragment() {
 
             processBarDialog.showDialog("稍等...")
             Thread(Runnable {
-                swapUnit.swapOn(hightPriority)
+                swapUnit.swapOn(hightPriority, swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false))
 
                 myHandler.post(getSwaps)
                 myHandler.post(showSwapOpened)
@@ -361,7 +377,7 @@ class FragmentSwap : Fragment() {
             }
         }
 
-        chk_swap_disablezram.setOnCheckedChangeListener { _, isChecked ->
+        chk_swap_preferred.setOnCheckedChangeListener { _, isChecked ->
             Toast.makeText(context, "该选项会在下次启动Swap时生效，而不是现在！", Toast.LENGTH_SHORT).show()
             swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, isChecked).commit()
         }
@@ -376,6 +392,26 @@ class FragmentSwap : Fragment() {
                 Toast.makeText(context, "注意：你需要允许Scene自启动，下次开机才会生效！", Toast.LENGTH_SHORT).show()
             }
             swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP, isChecked).commit()
+        }
+        chk_swap_use_loop.setOnClickListener {
+            if ((it as CheckBox).isChecked) {
+                DialogHelper.animDialog(AlertDialog.Builder(context!!)
+                        .setTitle(R.string.swap_use_loop)
+                        .setMessage(R.string.swap_use_loop_desc)
+                        .setPositiveButton(R.string.btn_confirm, {
+                            _, _ ->
+                            it.isChecked = true
+                            swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, true).apply()
+                        })
+                        .setNeutralButton(R.string.btn_cancel, {
+                            _, _ ->
+                            it.isChecked = false
+                            swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false).apply()
+                        })
+                        .setCancelable(false))
+            } else {
+                swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false).apply()
+            }
         }
     }
 

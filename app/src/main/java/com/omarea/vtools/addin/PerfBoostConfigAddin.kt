@@ -16,23 +16,23 @@ class PerfBoostConfigAddin(private var context: Context) : AddinBase(context) {
         if (soc == "msm8998") {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                 Toast.makeText(context, "只支持Android 8.0以后的系统！", Toast.LENGTH_SHORT).show()
-                return
+            } else {
+                msm8898()
             }
-            msm8898()
         } else if (soc == "sdm845") {
             sdm845()
         } else if (soc == "sdm630") {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                 Toast.makeText(context, "只支持Android 8.0以后的系统！", Toast.LENGTH_SHORT).show()
-                return
+            } else {
+                sdm630()
             }
-            sdm630()
         } else if (soc == "sdm660") {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
                 Toast.makeText(context, "只支持Android 8.0以后的系统！", Toast.LENGTH_SHORT).show()
-                return
+            } else {
+                sdm660()
             }
-            sdm660()
         } else {
             Toast.makeText(context, "暂未适配这个处理器，暂时只支持 骁龙835、845、660AIE、630！", Toast.LENGTH_SHORT).show()
         }

@@ -47,7 +47,7 @@ class BootService : IntentService("vtools-boot") {
             bootCancel = true
             return
         }
-        updateNotification(getString(R.string.app_name), getString(R.string.boot_script_running))
+        updateNotification(getString(R.string.boot_script_running))
         autoBoot()
     }
 
@@ -62,7 +62,7 @@ class BootService : IntentService("vtools-boot") {
         val context = this.applicationContext
         val cpuState = CpuConfigStorage().loadBootConfig(context)
         if (cpuState != null) {
-            updateNotification(getString(R.string.app_name), getString(R.string.boot_cpuset))
+            updateNotification(getString(R.string.boot_cpuset))
 
             // thermal
             if (cpuState.coreControl.isNotEmpty()) {
@@ -161,7 +161,7 @@ class BootService : IntentService("vtools-boot") {
         if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE, false)) {
             val mac = globalConfig.getString(SpfConfig.GLOBAL_SPF_MAC, "")
             if (mac != "") {
-                updateNotification(getString(R.string.app_name), getString(R.string.boot_modify_mac))
+                updateNotification(getString(R.string.boot_modify_mac))
 
                 keepShell.doCmdSync("chmod 0755 /sys/class/net/wlan0/address\n" +
                         "svc wifi disable\n" +
@@ -178,7 +178,7 @@ class BootService : IntentService("vtools-boot") {
         //判断是否开启了充电加速和充电保护，如果开启了，自动启动后台服务
         val chargeConfig = getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
         if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) || chargeConfig!!.getBoolean(SpfConfig.CHARGE_SPF_BP, false)) {
-            updateNotification(getString(R.string.app_name), getString(R.string.boot_charge_booster))
+            updateNotification(getString(R.string.boot_charge_booster))
 
             try {
                 val intent = Intent(context, ServiceBattery::class.java)
@@ -190,7 +190,7 @@ class BootService : IntentService("vtools-boot") {
 
         val globalPowercfg = globalConfig.getString(SpfConfig.GLOBAL_SPF_POWERCFG, "")
         if (!globalPowercfg.isNullOrEmpty()) {
-            updateNotification(getString(R.string.app_name), getString(R.string.boot_use_powercfg))
+            updateNotification(getString(R.string.boot_use_powercfg))
 
             val modeList = ModeList()
             val configInstaller = ConfigInstaller()
@@ -205,7 +205,7 @@ class BootService : IntentService("vtools-boot") {
         }
 
         if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) {
-            updateNotification(getString(R.string.app_name), getString(R.string.boot_resize_zram))
+            updateNotification(getString(R.string.boot_resize_zram))
 
             val sizeVal = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0)
             val algorithm = swapConfig.getString(SpfConfig.SWAP_SPF_ALGORITHM, "")
@@ -213,9 +213,10 @@ class BootService : IntentService("vtools-boot") {
         }
 
         if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)) {
-            updateNotification(getString(R.string.app_name), getString(R.string.boot_swapon))
+            Thread.sleep(10000)
+            updateNotification(getString(R.string.boot_swapon))
             val swapControlScript = FileWrite.writePrivateShellFile( "addin/swap_control.sh", "addin/swap_control.sh", context)
-            if (swapControlScript != null) {
+            if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false) && swapControlScript != null) {
                 if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, false)) {
                     keepShell.doCmdSync("sh $swapControlScript enable_swap 32760\n")
                 } else {
@@ -236,7 +237,7 @@ class BootService : IntentService("vtools-boot") {
         }
 
         if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_STARTED_FSTRIM, false)) {
-            updateNotification(getString(R.string.app_name), getString(R.string.boot_trim))
+            updateNotification(getString(R.string.boot_trim))
             val trimCmd = StringBuilder()
             trimCmd.append("setprop vtools.boot 1\n")
             trimCmd.append("fstrim /data\n")
@@ -248,7 +249,7 @@ class BootService : IntentService("vtools-boot") {
 
 
         if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, false)) {
-            updateNotification(getString(R.string.app_name), getString(R.string.boot_lmk))
+            updateNotification(getString(R.string.boot_lmk))
 
             val activityManager = context!!.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
             val info = ActivityManager.MemoryInfo()
@@ -256,7 +257,7 @@ class BootService : IntentService("vtools-boot") {
             LMKUnit().autoSetLMK(info.totalMem, keepShell)
         }
 
-        updateNotification(getString(R.string.app_name), getString(R.string.boot_freeze))
+        updateNotification(getString(R.string.boot_freeze))
         for (item in AppConfigStore(context).freezeAppList) {
             keepShell.doCmdSync("pm disable " + item)
         }
@@ -313,12 +314,12 @@ class BootService : IntentService("vtools-boot") {
     }
 
 
-    private fun updateNotification(title: String, text: String) {
+    private fun updateNotification(text: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             nm.createNotificationChannel(NotificationChannel("vtool-boot", getString(R.string.notice_channel_boot), NotificationManager.IMPORTANCE_LOW))
-            nm.notify(900, NotificationCompat.Builder(this, "vtool-boot").setSmallIcon(R.drawable.ic_menu_digital).setSubText(title).setContentText(text).build())
+            nm.notify(900, NotificationCompat.Builder(this, "vtool-boot").setSmallIcon(R.drawable.ic_menu_digital).setContentTitle(getString(R.string.notice_channel_boot)).setContentText(text).build())
         } else {
-            nm.notify(900, NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_menu_digital).setSubText(title).setContentText(text).build())
+            nm.notify(900, NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_menu_digital).setContentTitle(getString(R.string.notice_channel_boot)).setContentText(text).build())
         }
     }
 
@@ -331,7 +332,7 @@ class BootService : IntentService("vtools-boot") {
                 nm.cancel(900)
             }
         } else {
-            updateNotification(getString(R.string.app_name), getString(R.string.boot_success))
+            updateNotification(getString(R.string.boot_success))
         }
         // System.exit(0)
     }

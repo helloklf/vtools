@@ -244,6 +244,8 @@
     <string name="swap_stop">关闭</string>
     <string name="swap_delete">删除</string>
     <string name="swap_preferred">优先使用（如果有多个SWAP或ZRAM）</string>
+    <string name="swap_use_loop">挂载为环回设备</string>
+    <string name="swap_use_loop_desc">如果不开启此项也能正常使用SWAP，就没必要开。\n\n除非是无法启动SWAP，或启动SWAP后手机死机，才需要开启此选项！\n\n例如：小米手机升级到Android P后，就可能需要勾选此项才能正常使用SWAP</string>
     <string name="swap_swap_desc">说明：SWAP即磁盘交换技术，在RAM不足时，将一部分数据暂时转移到磁盘中暂存，对后台能力提升明显，但性能较差</string>
     <string name="swap_auto_start">开机自启（要允许Scene自启动）</string>
     <string name="swap_zram_stat">ZRAM 统计</string>
@@ -278,11 +280,12 @@
     <string name="not_support_config">未找到可用的模式配置脚本</string>
     <string name="not_support_config_desc">应用没有自带适用于你手机的性能配置脚本。你可以选择“在线获取脚本”看看是否有适于你手机的配置可供下载，或选择“了解更多”查看自定义配置教程！</string>
     <string name="first_start_select_config">首次使用，先选择配置偏好</string>
+    <string name="config_online_options">选择在线脚本库</string>
 
     <string name="get_online_config">在线获取配置脚本</string>
     <string name="online_config_versions">选择配置脚本库来源</string>
     <string name="online_config_v1">yc9559定制v1</string>
-    <string name="online_config_v2">yc9559定制v2（目前仅支持骁龙）</string>
+    <string name="online_config_v2">yc9559定制v2</string>
 
     <string name="conservative">保守 - 更加省电</string>
     <string name="radicalness">激进 - 性能优先</string>

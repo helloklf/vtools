@@ -95,9 +95,13 @@
                     android:text="@string/swap_auto_start" />
 
                 <CheckBox
-                    android:id="@+id/chk_swap_disablezram"
-                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:id="@+id/chk_swap_preferred"
                     android:text="@string/swap_preferred" />
+
+                <CheckBox
+                    android:id="@+id/chk_swap_use_loop"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:text="@string/swap_use_loop" />
 
                 <TextView
                     style="@style/textSmall"

@@ -2,10 +2,7 @@ package com.omarea.shell.units
 
 import android.content.Context
 import com.omarea.common.shared.FileWrite
-import com.omarea.common.shell.KeepShell
-import com.omarea.common.shell.KeepShellPublic
-import com.omarea.common.shell.KernelProrp
-import com.omarea.common.shell.RootFile
+import com.omarea.common.shell.*
 import com.omarea.shared.model.BatteryStatus
 import com.omarea.shell.Props
 import java.io.File
@@ -229,17 +226,12 @@ class BatteryUnit {
     }
 
     private var changeLimitRunning = false
-    private var keepShell: KeepShell? = null
     private var isFristRun = true
     fun setChargeInputLimit(limit: Int, context: Context): Boolean {
         synchronized(changeLimitRunning) {
             if (changeLimitRunning) {
                 return false
             } else {
-                if (keepShell == null) {
-                    keepShell = KeepShell()
-                }
-
                 changeLimitRunning = true
 
                 if (fastChangerScript.isEmpty()) {
@@ -247,7 +239,7 @@ class BatteryUnit {
                     val output2 = FileWrite.writePrivateShellFile("addin/fast_charge_run_once.sh", "addin/fast_charge_run_once.sh", context)
                     if (output != null && output2 != null) {
                         if (isFristRun) {
-                            keepShell!!.doCmdSync("sh " + output2)
+                            KeepShellAsync.getInstance("setChargeInputLimit").doCmd("sh " + output2)
                             isFristRun = false
                         }
 
@@ -260,12 +252,12 @@ class BatteryUnit {
                     if (limit > 3000) {
                         var current = 3000
                         while (current < limit) {
-                            keepShell!!.doCmdSync(fastChangerScript + current)
+                            KeepShellAsync.getInstance("setChargeInputLimit").doCmd(fastChangerScript + current)
                             current += 300
                         }
-                        keepShell!!.doCmdSync(fastChangerScript + limit)
+                        KeepShellAsync.getInstance("setChargeInputLimit").doCmd(fastChangerScript + limit)
                     }
-                    keepShell!!.doCmdSync(fastChangerScript + limit)
+                    KeepShellAsync.getInstance("setChargeInputLimit").doCmd(fastChangerScript + limit)
                     changeLimitRunning = false
                     return true
                 } else {

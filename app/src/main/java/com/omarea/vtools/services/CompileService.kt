@@ -38,9 +38,31 @@ class CompileService : IntentService("vtools-compile") {
     private fun updateNotification(title: String, text: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             nm.createNotificationChannel(NotificationChannel("vtool-compile", "后台编译", NotificationManager.IMPORTANCE_LOW))
-            nm.notify(990, NotificationCompat.Builder(this, "vtool-compile").setSmallIcon(R.drawable.process).setSubText(title).setContentText(text).build())
+            nm.notify(990, NotificationCompat.Builder(this, "vtool-compile").setSmallIcon(R.drawable.process)
+                    .setContentTitle(title)
+                    .setContentText(text)
+                    .build())
         } else {
             nm.notify(990, NotificationCompat.Builder(this).setSmallIcon(R.drawable.process).setSubText(title).setContentText(text).build())
+        }
+    }
+
+    private fun updateNotification(title: String, text: String, total: Int, current: Int) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            nm.createNotificationChannel(NotificationChannel("vtool-compile", "后台编译", NotificationManager.IMPORTANCE_LOW))
+            nm.notify(990, NotificationCompat.Builder(this, "vtool-compile")
+                    .setSmallIcon(R.drawable.process)
+                    .setContentTitle(title)
+                    .setContentText(text)
+                    .setProgress(total,current,false)
+                    .build())
+        } else {
+            nm.notify(990, NotificationCompat.Builder(this)
+                    .setSmallIcon(R.drawable.process)
+                    .setContentTitle(title)
+                    .setContentText(text)
+                    .setProgress(total,current,false)
+                    .build())
         }
     }
 
@@ -70,7 +92,7 @@ class CompileService : IntentService("vtools-compile") {
         if (compile_method == "reset") {
             for (packageName in packageNames) {
                 if (true) {
-                    updateNotification(getString(R.string.dex2oat_reset_running), "[$current/$total] ${packageName}")
+                    updateNotification(getString(R.string.dex2oat_reset_running), packageName, total, current)
                     keepShell!!.doCmdSync("cmd package compile --reset ${packageName}")
                     current++
                 } else {
@@ -80,7 +102,7 @@ class CompileService : IntentService("vtools-compile") {
         } else {
             for (packageName in packageNames) {
                 if (true) {
-                    updateNotification(getString(R.string.dex2oat_compiling), "[$current/$total] ${packageName}")
+                    updateNotification(getString(R.string.dex2oat_compiling) + "["+ compile_method + "]", "[$current/$total]$packageName", total, current)
                     keepShell!!.doCmdSync("cmd package compile -m ${compile_method} ${packageName}")
                     current++
                 } else {

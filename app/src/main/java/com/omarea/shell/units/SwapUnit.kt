@@ -69,10 +69,10 @@ class SwapUnit(private var context: Context) {
         keepShell.tryExit()
     }
 
-    fun swapOn(hightPriority: Boolean) {
+    fun swapOn(hightPriority: Boolean, useLoop: Boolean = false) {
         val sb = StringBuilder()
 
-        if (swapControlScript != null) {
+        if (useLoop && swapControlScript != null) {
             sb.append("sh ")
             sb.append(swapControlScript)
             sb.append(" ")
@@ -99,7 +99,7 @@ class SwapUnit(private var context: Context) {
     fun swapOff() {
         val sb = StringBuilder("sync\necho 3 > /proc/sys/vm/drop_caches\n")
 
-        if (swapControlScript != null) {
+        if (currentSwapDevice.contains("loop") && swapControlScript != null) {
             sb.append("sh ")
             sb.append(swapControlScript)
             sb.append(" ")
@@ -116,7 +116,7 @@ class SwapUnit(private var context: Context) {
     fun swapDelete() {
         val sb = StringBuilder("sync\necho 3 > /proc/sys/vm/drop_caches\n")
 
-        if (swapControlScript != null) {
+        if (currentSwapDevice.contains("loop") && swapControlScript != null) {
             sb.append("sh ")
             sb.append(swapControlScript)
             sb.append(" ")

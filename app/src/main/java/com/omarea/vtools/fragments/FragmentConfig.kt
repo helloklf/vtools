@@ -680,7 +680,7 @@ class FragmentConfig : Fragment() {
     private fun getOnlineConfig() {
         var i = 0
         DialogHelper.animDialog(AlertDialog.Builder(context)
-                .setTitle(getString(R.string.first_start_select_config))
+                .setTitle(getString(R.string.config_online_options))
                 .setCancelable(true)
                 .setSingleChoiceItems(
                         arrayOf(

@@ -57,6 +57,7 @@ public class SpfConfig {
     public static String SWAP_SPF_SWAP = "swap";
     public static String SWAP_SPF_SWAP_SWAPSIZE = "swap_size";
     public static String SWAP_SPF_SWAP_FIRST = "swap_first";
+    public static String SWAP_SPF_SWAP_USE_LOOP = "swap_use_loop";
     public static String SWAP_SPF_ZRAM = "zram";
     public static String SWAP_SPF_ZRAM_SIZE = "zram_size";
     public static String SWAP_SPF_SWAPPINESS = "swappiness";
