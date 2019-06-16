@@ -143,13 +143,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         ThemeSwitch.switchTheme(this)
-        /*
-        使用壁纸高斯模糊作为窗口背景
-        val wallPaper = WallpaperManager.getInstance(this).getDrawable();
-        this.getWindow().setBackgroundDrawable(wallPaper);
 
-        this.getWindow().setBackgroundDrawable(BitmapDrawable(resources, rsBlur((wallPaper as BitmapDrawable).bitmap, 25)))
-        */
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -202,34 +196,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         //    Update().checkUpdate(this)
         //    globalSPF!!.edit().putLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, System.currentTimeMillis()).apply()
         // }
-    }
-
-    private fun rsBlur(source: Bitmap, radius: Int): Bitmap {
-        val inputBmp = source
-        val renderScript = RenderScript.create(this);
-
-        // Allocate memory for Renderscript to work with
-        //(2)
-        val input = Allocation.createFromBitmap(renderScript, inputBmp);
-        val output = Allocation.createTyped(renderScript, input.getType());
-        //(3)
-        // Load up an instance of the specific script that we want to use.
-        val scriptIntrinsicBlur = ScriptIntrinsicBlur.create(renderScript, Element.U8_4(renderScript));
-        //(4)
-        scriptIntrinsicBlur.setInput(input);
-        //(5)
-        // Set the blur radius
-        scriptIntrinsicBlur.setRadius(radius.toFloat());
-        //(6)
-        // Start the ScriptIntrinisicBlur
-        scriptIntrinsicBlur.forEach(output);
-        //(7)
-        // Copy the output to the blurred bitmap
-        output.copyTo(inputBmp);
-        //(8)
-        renderScript.destroy();
-
-        return inputBmp;
     }
 
     private fun setHomePage() {

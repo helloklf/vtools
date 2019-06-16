@@ -30,6 +30,7 @@ class ActivitySceneOtherSettings : AppCompatActivity() {
         settings_disable_selinux.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false)
         auto_start_compile.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_STARTED_COMPILE, false)
         auto_start_fstrim.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_STARTED_FSTRIM, false)
+        settings_theme_wallpaper.isChecked = spf.getInt(SpfConfig.GLOBAL_SPF_THEME, 1) == 10
     }
 
     @SuppressLint("ApplySharedPref")
@@ -106,8 +107,12 @@ class ActivitySceneOtherSettings : AppCompatActivity() {
 
     fun onThemeClick(view: View) {
         val tag = view.tag.toString().toInt()
+        if (tag == 10 && spf.getInt(SpfConfig.GLOBAL_SPF_THEME, 1) == 10) {
+            spf.edit().putInt(SpfConfig.GLOBAL_SPF_THEME, 1).apply()
+        } else {
+            spf.edit().putInt(SpfConfig.GLOBAL_SPF_THEME, tag).apply()
+        }
 
-        spf.edit().putInt(SpfConfig.GLOBAL_SPF_THEME, tag).apply()
         this.recreate()
     }
 

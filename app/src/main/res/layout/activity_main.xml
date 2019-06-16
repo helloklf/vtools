@@ -5,7 +5,6 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToPadding="true"
     android:fitsSystemWindows="false"
     android:keepScreenOn="false"
     tools:openDrawer="start">
@@ -31,8 +30,10 @@
     <android.support.design.widget.NavigationView
         android:fitsSystemWindows="false"
         android:id="@+id/nav_view"
+        android:padding="0dp"
+        android:scrollbars="none"
         app:insetForeground="@android:color/transparent"
-        android:background="?android:colorBackground"
+        android:background="@drawable/menu_background"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"

@@ -141,6 +141,8 @@
     <string name="settings_disable_selinux">自动SeLinux宽容模式</string>
     <string name="settings_disable_selinux_desc">自动开启SELinux宽容模式（部分软件中会称作“关闭Selinux”）。部分设备会卡死重启。如果不开有些功能会用不了，部分系统开启本功能会死机重启！</string>
     <string name="settings_theme">主题</string>
+    <string name="settings_theme_wallpaper">使用壁纸</string>
+    <string name="settings_theme_wallpaper_desc">使用系统壁纸作为窗口背景，显示为半透明界面</string>
     <string name="settings_logcat_title">错误日志</string>
     <string name="settings_logcat_desc">当Scene发生错误闪退时，点击下面的按钮通过logcat抓取日志，发送给开发者以便解决问题</string>
 
