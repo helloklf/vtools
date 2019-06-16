@@ -23,9 +23,8 @@ elif [[ $action = "delete" ]]; then
         exit 1
     fi
 
-    echo "注意：本操作可能会导致系统崩溃或出现未知问题，" 1>&2
-    echo "并且本软件也不提供恢复操作，请务必留有完整刷机包，" 1>&2
-    echo "或备份system和vendor分区，必要时通过刷机或还原备份来恢复温控！" 1>&2
+    echo "注意：删除后可能无法开机，请务必留有完整刷机包！！！" 1>&2
+    echo "另外，删除以后Scene是没法帮你还原这些文件的" 1>&2
     echo '如果你还没准备好，请点击右侧“退出”按钮'
     echo '如果继续，操作将在30秒后开始...'
 
@@ -38,17 +37,15 @@ elif [[ $action = "delete" ]]; then
 
     mount_all # 挂载目录为读写
 
-    for file in `find /vendor -name thermal* -type f`; do
+    for file in `find /vendor -name *thermal* -type f`; do
         rm -f $file
     done
 
-    for file in `find /vendor -name thermal* -type f`; do
-        rm -f $file
-    done
-
-    for file in `find /system -name thermal* -type f`; do
+    for file in `find /system -name *thermal* -type f`; do
         rm -f $file
     done
 
     echo '如果没有出现错误提示，现在重启手机就可以了...'
+    echo '注意：重启后请务通过“查看找到的温控文件”，检查是否真的删除成功' 1>&2
+    echo '因为有可能 /system 和 /vendor分区不可修改，重启就恢复了' 1>&2
 fi

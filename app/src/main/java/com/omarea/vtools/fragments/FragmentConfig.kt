@@ -168,7 +168,6 @@ class FragmentConfig : Fragment() {
             tabIconHelper.updateHighlight()
         })
 
-
         accu_switch.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
         accu_switch.setOnClickListener {
             globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, (it as Switch).isChecked).commit()
@@ -304,13 +303,7 @@ class FragmentConfig : Fragment() {
         bindSPF(dynamic_lock_mode, globalSPF, SpfConfig.GLOBAL_SPF_LOCK_MODE, true)
         bindSPF(settings_autoinstall, globalSPF, SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false)
         config_customer_powercfg.setOnClickListener {
-            try {
-                val intent = Intent(this.context, ActivityFileSelector::class.java)
-                intent.putExtra("extension", "sh")
-                startActivityForResult(intent, REQUEST_POWERCFG_FILE)
-            } catch (ex: Exception) {
-                Toast.makeText(context!!, "启动内置文件选择器失败！", Toast.LENGTH_SHORT).show()
-            }
+            chooseLocalConfig()
         }
         config_customer_powercfg_online.setOnClickListener {
             getOnlineConfig()
@@ -642,18 +635,23 @@ class FragmentConfig : Fragment() {
                                         getString(R.string.conservative),
                                         getString(R.string.radicalness),
                                         getString(R.string.get_online_config),
+                                        getString(R.string.choose_local_config),
                                         getString(R.string.skipnow)
                                 ), 0, { _, which ->
                             i = which
                         })
                         .setNegativeButton(R.string.btn_confirm, { _, _ ->
-                            if (i == 3) {
+                            if (i == 4) {
                                 // 跳过配置安装时，关闭动态响应
                                 globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, false).apply()
+                            } else if (i == 3) {
+                                chooseLocalConfig()
                             } else if (i == 2) {
                                 getOnlineConfig()
-                            } else {
-                                installConfig(i == 1)
+                            } else if (i == 1) {
+                                installConfig(true)
+                            } else if (i == 0) {
+                                installConfig(false)
                             }
                         }))
             }
@@ -676,6 +674,15 @@ class FragmentConfig : Fragment() {
         }
     }
 
+    private fun chooseLocalConfig() {
+        try {
+            val intent = Intent(this.context, ActivityFileSelector::class.java)
+            intent.putExtra("extension", "sh")
+            startActivityForResult(intent, REQUEST_POWERCFG_FILE)
+        } catch (ex: Exception) {
+            Toast.makeText(context!!, "启动内置文件选择器失败！", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     private fun getOnlineConfig() {
         var i = 0

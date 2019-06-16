@@ -283,6 +283,7 @@
     <string name="config_online_options">选择在线脚本库</string>
 
     <string name="get_online_config">在线获取配置脚本</string>
+    <string name="choose_local_config">导入自定义配置脚本</string>
     <string name="online_config_versions">选择配置脚本库来源</string>
     <string name="online_config_v1">yc9559定制v1</string>
     <string name="online_config_v2">yc9559定制v2</string>

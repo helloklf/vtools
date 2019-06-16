@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="0dp"
+        android:background="?android:statusBarColor"
         android:theme="?android:actionBarTheme">
 
         <android.support.v7.widget.Toolbar
@@ -16,7 +17,6 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:foregroundTintMode="src_over"
-            android:background="?android:statusBarColor"
             android:elevation="0dp"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
     </android.support.design.widget.AppBarLayout>
