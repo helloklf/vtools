@@ -8,12 +8,14 @@ import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
 import android.view.View
+import android.view.WindowManager
 import com.omarea.shared.SpfConfig
 import com.omarea.vtools.R
 
@@ -92,37 +94,64 @@ object ThemeSwitch {
                 }
                 */
 
-                val wallPaper = WallpaperManager.getInstance(activity).getDrawable();
+                val wallpape = WallpaperManager.getInstance(activity);
+                val wallpaperInfo = wallpape.getWallpaperInfo()
+                if (wallpaperInfo != null && wallpaperInfo.packageName != null) {
+                    activity.window.setBackgroundDrawable(null);
+                    activity.window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER);
+                } else {
+                    val wallpapeDrawable = wallpape.getDrawable();
 
-                // 根据壁纸色彩设置主题
-                val bitmap = (wallPaper as BitmapDrawable).bitmap
-                val x = bitmap.width / 2
-                val y = bitmap.height / 2
-                val pixel = bitmap.getPixel(x, y)
-                // 获取颜色
-                val redValue = Color.red(pixel)
-                val blueValue = Color.blue(pixel)
-                val greenValue = Color.green(pixel)
-
-                if (redValue > 150 && blueValue > 150 && greenValue > 150) {
-                    activity.setTheme(R.style.AppThemeWallpaperLight)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                        } else {
-                            activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                    if (isDarkColor(wallpapeDrawable)) {
+                        activity.setTheme(R.style.AppThemeWallpaper)
+                    } else {
+                        activity.setTheme(R.style.AppThemeWallpaperLight)
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                            } else {
+                                activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                            }
                         }
                     }
-                } else {
-                    activity.setTheme(R.style.AppThemeWallpaper)
+
+                    activity.window.setBackgroundDrawable(wallpapeDrawable);
+                    // 使用壁纸高斯模糊作为窗口背景
+                    // activity.window.setBackgroundDrawable(BitmapDrawable(activity.resources, rsBlur((wallPaper as BitmapDrawable).bitmap, 25, activity)))
                 }
-
-                activity.window.setBackgroundDrawable(wallPaper);
-
-                // 使用壁纸高斯模糊作为窗口背景
-                // activity.window.setBackgroundDrawable(BitmapDrawable(activity.resources, rsBlur((wallPaper as BitmapDrawable).bitmap, 25, activity)))
             }
         }
+    }
+
+    private fun isDarkColor(wallPaper: Drawable): Boolean {
+        // 根据壁纸色彩设置主题
+        val bitmap = (wallPaper as BitmapDrawable).bitmap
+        val h = bitmap.height - 1
+        val w = bitmap.width - 1
+
+        var darkPoint = 0
+        var lightPoint = 0
+
+        // 采样点数
+        val pointCount = if(h > 8 && w > 8) 8 else 1
+
+        for (i in 0..pointCount) {
+            val y = h / pointCount * i
+            val x = w / pointCount * i
+            val pixel = bitmap.getPixel(x, y)
+
+            // 获取颜色
+            val redValue = Color.red(pixel)
+            val blueValue = Color.blue(pixel)
+            val greenValue = Color.green(pixel)
+
+            if (redValue > 150 && blueValue > 150 && greenValue > 150) {
+                lightPoint += 1
+            } else {
+                darkPoint += 1
+            }
+        }
+        return darkPoint > lightPoint
     }
 
     private fun rsBlur(source: Bitmap, radius: Int, context: Context): Bitmap {

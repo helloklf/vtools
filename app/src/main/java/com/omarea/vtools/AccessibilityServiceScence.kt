@@ -85,7 +85,7 @@ override fun onCreate() {
     private fun updateConfig() {
         val spf = getSharedPreferences("adv", Context.MODE_PRIVATE)
         flagReportViewIds = spf.getBoolean("adv_find_viewid", flagReportViewIds)
-        flagRequestKeyEvent = spf.getBoolean("adv_keyevent", AppConfigStore(this.applicationContext).needKeyCapture())
+        flagRequestKeyEvent = true; // spf.getBoolean("adv_keyevent", AppConfigStore(this.applicationContext).needKeyCapture())
         flagRetriveWindow = spf.getBoolean("adv_retrieve_window", flagRetriveWindow)
 
         eventWindowStateChange = spf.getBoolean("adv_event_window_state", eventWindowStateChange)
@@ -287,6 +287,7 @@ override fun onCreate() {
     private var longClickTime: Long = 500;
     private var serviceIsConnected = false
     override fun onKeyEvent(event: KeyEvent): Boolean {
+        // Log.d("onKeyEvent", "keyCode " + event.keyCode);
         if (!serviceIsConnected) {
             return false
         }

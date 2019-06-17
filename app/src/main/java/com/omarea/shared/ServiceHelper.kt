@@ -58,7 +58,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList() {
         firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
         accuSwitch = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
         batteryMonitro = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
-        lockMode = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_LOCK_MODE, true)
+        lockMode = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_LOCK_MODE, false)
 
         initConfig()
         notifyHelper.setNotify(spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))

@@ -8,20 +8,23 @@
         <item name="colorPrimaryDark">@color/lightPink</item>
         <item name="colorAccent">@color/lightPink</item>
         <item name="android:actionBarTheme">@style/AppTheme.AppBarOverlay.Light</item>
+        <item name="android:colorForegroundInverse">#ffffff</item>
     </style>
 
     <style name="AppThemeWallpaperLight" parent="AppThemeWhite">
         <item name="android:navigationBarColor">#00ffffff</item>
         <item name="android:statusBarColor">#d0ffffff</item>
         <item name="android:windowContentOverlay">@null</item>
+        <item name="android:colorForegroundInverse">#d0ffffff</item>
     </style>
 
     <style name="AppThemeWallpaper" parent="AppThemeNight">
-        <item name="android:navigationBarColor">#00000000</item>
+        <item name="android:navigationBarColor">#c0000000</item>
         <item name="android:statusBarColor">#c0000000</item>
         <item name="colorPrimary">@color/lightPink</item>
         <item name="colorPrimaryDark">@color/lightPink</item>
         <item name="colorAccent">@color/lightPink</item>
+        <item name="android:colorForegroundInverse">#c0000000</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay.Light" parent="ThemeOverlay.AppCompat.ActionBar">
@@ -38,7 +41,7 @@
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowTranslucentNavigation">false</item>
         <item name="android:statusBarColor">#151515</item>
-        <item name="android:navigationBarColor">@android:color/background_dark</item>
+        <item name="android:navigationBarColor">#151515</item>
         <item name="colorPrimary">@android:color/background_dark</item>
         <item name="colorPrimaryDark">@android:color/background_dark</item>
         <item name="android:windowBackground">@color/window_background_dark</item>
@@ -47,5 +50,6 @@
         <item name="android:windowAnimationStyle">@style/activityAnim</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:colorForegroundInverse">#151515</item>
     </style>
 </resources>

@@ -48,7 +48,7 @@
         </action>
         <action>
             <title>旋转屏幕</title>
-            <desc>强制旋转屏幕放心</desc>
+            <desc>强制旋转屏幕方向</desc>
             <params>
                 <param name="state" value-sh="settings get secure ui_night_mode">
                     <option value="0">正常</option>
