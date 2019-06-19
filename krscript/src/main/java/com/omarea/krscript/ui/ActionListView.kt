@@ -121,7 +121,7 @@ class ActionListView : OverScrollListView {
             startPath = switchInfo.start
         }
 
-        SimpleShellExecutor(context).execute(switchInfo, script, startPath, onExit, object : java.util.HashMap<String, String>() {
+        SimpleShellExecutor(context).execute(switchInfo, script, onExit, object : java.util.HashMap<String, String>() {
             init {
                 put("state", if (toValue) "1" else "0")
             }
@@ -371,6 +371,6 @@ class ActionListView : OverScrollListView {
     }
 
     private fun actionExecute(configItem: ConfigItemBase, script: String, startPath: String?, onExit: Runnable, params: HashMap<String, String>?) {
-        SimpleShellExecutor(context).execute(configItem, script, startPath, onExit, params)
+        SimpleShellExecutor(context).execute(configItem, script, onExit, params)
     }
 }

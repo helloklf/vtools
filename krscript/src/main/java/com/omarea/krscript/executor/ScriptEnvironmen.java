@@ -6,60 +6,69 @@ import android.os.Environment;
 import com.omarea.common.shared.FileWrite;
 import com.omarea.common.shared.MagiskExtend;
 import com.omarea.common.shell.KeepShellPublic;
+
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ScriptEnvironmen {
-    private static final String envFile = "krshell_environment.sh";
     private static boolean inited = false;
     private static String environmentPath = "";
 
-    public static boolean init(Context context) {
+    private static final String ASSETS_FILE = "file:///android_asset/";
+
+    private static boolean init(Context context){
+        return init(context, "custom/executor.sh");
+    }
+
+    /**
+     * 初始化执行器
+     * @param context Context
+     * @param executor 执行器在Assets中的位置
+     * @return 是否初始化成功
+     */
+    public static boolean init(Context context, String executor) {
         if (inited) {
             return true;
         }
         try {
-            InputStream inputStream = context.getAssets().open(envFile);
+            String fileName = executor;
+            if (fileName.startsWith(ASSETS_FILE)) {
+                fileName = fileName.substring(ASSETS_FILE.length());
+            }
+
+            InputStream inputStream = context.getAssets().open(fileName);
             byte[] bytes = new byte[inputStream.available()];
             long length = inputStream.read(bytes, 0, bytes.length);
             String envShell = new String(bytes, Charset.defaultCharset()).replaceAll("\r", "");
 
-
-            final File dir = context.getFilesDir();
-            final String dirUri = dir.getAbsolutePath();
-
-            String busybox = FileWrite.INSTANCE.getPrivateFilePath(context, "busybox");
-
-            envShell = envShell.replace("${TEMP_DIR}", "\"" + dirUri + "/temp\"")
-                    .replace("${ANDROID_UID}", dir.getParentFile().getParentFile().getName())
-                    .replace("${ANDROID_SDK}", "" + Build.VERSION.SDK_INT)
-                    .replace("${SDCARD_PATH}", Environment.getExternalStorageDirectory().getAbsolutePath());
-            if (new File(busybox).exists()) {
-                envShell = envShell.replace("${ANDROID_SDK}", "" + busybox);
-            } else {
-                envShell = envShell.replace("${ANDROID_SDK}", "busybox");
+            HashMap<String, String> environment = getEnvironment(context);
+            for (String key : environment.keySet()) {
+                String value = environment.get(key);
+                if (value == null) {
+                    value = "";
+                }
+                envShell = envShell.replace("${" + key + "}", value);
             }
 
-            if (MagiskExtend.moduleInstalled()) {
-                envShell = envShell.replace("${MAGISK_PATH}", (MagiskExtend.MAGISK_PATH.endsWith("/") ? (MagiskExtend.MAGISK_PATH.substring(0, MagiskExtend.MAGISK_PATH.length() -1 )) : MagiskExtend.MAGISK_PATH));
-            } else {
-                envShell = envShell.replace("${MAGISK_PATH}", "");
-            }
 
-            inited = FileWrite.INSTANCE.writePrivateFile(envShell.getBytes(Charset.defaultCharset()), envFile, context);
+            inited = FileWrite.INSTANCE.writePrivateFile(envShell.getBytes(Charset.defaultCharset()), executor, context);
             if (inited) {
-                environmentPath = FileWrite.INSTANCE.getPrivateFilePath(context, envFile);
+                environmentPath = FileWrite.INSTANCE.getPrivateFilePath(context, executor);
             }
+
             return inited;
         } catch (Exception ex) {
             return false;
         }
     }
-
-    private static final String ASSETS_FILE = "file:///android_asset/";
 
     public static String getStartPath(Context context, String startPath) {
         String start = null;
@@ -96,6 +105,12 @@ public class ScriptEnvironmen {
         return "";
     }
 
+    /**
+     * 写入缓存（脚本代码存入脚本文件）
+     * @param context
+     * @param script
+     * @return
+     */
     private static String createShellCache(Context context, String script) {
         String md5 = md5(script);
         String outputPath = "/kr-script/cache/" + md5 + ".sh";
@@ -103,16 +118,26 @@ public class ScriptEnvironmen {
             return outputPath;
         }
 
-        byte[] bytes = ("#!/system/bin/sh\n\n" + script).getBytes();
+        byte[] bytes = ("#!/system/bin/sh\n\n" + script)
+                .replaceAll("\r\n", "\n")
+                .replaceAll("\r\t", "\t")
+                .replaceAll("\r", "\n")
+                .getBytes();
         if (FileWrite.INSTANCE.writePrivateFile(bytes, outputPath, context)) {
             return FileWrite.INSTANCE.getPrivateFilePath(context, outputPath);
         }
         return "";
     }
 
+    /**
+     * 执行脚本
+     * @param context
+     * @param fileName
+     * @return
+     */
     private static String extractScript(Context context, String fileName) {
-        if (fileName.startsWith("file:///android_asset/")) {
-            fileName = fileName.substring("file:///android_asset/".length());
+        if (fileName.startsWith(ASSETS_FILE)) {
+            fileName = fileName.substring(ASSETS_FILE.length());
         }
         return FileWrite.INSTANCE.writePrivateShellFile(fileName, fileName, context);
     }
@@ -128,13 +153,14 @@ public class ScriptEnvironmen {
 
         String script2 = script.trim();
         String startPath = getStartPath(context, null);
+        String cachePath = "";
         if (script2.startsWith(ASSETS_FILE)) {
-            String path = extractScript(context, script2);
-            return environmentPath + " \"" + path + "\"" + " \"" + startPath + "\"";
+            cachePath = extractScript(context, script2);
         } else {
-            String path = createShellCache(context, script);
-            return environmentPath + " \"" + path + "\"" + " \"" + startPath + "\"";
+            cachePath = createShellCache(context, script);
         }
+
+        return environmentPath + " \"" + cachePath + "\"" + " \"" + startPath + "\"";
     }
 
     public static String executeResultRoot(Context context, String script) {
@@ -157,12 +183,109 @@ public class ScriptEnvironmen {
         }
     }
 
-    public static String executeShell(Context context, String scriptPath, String startPath) {
+    private static String executeShell(Context context, String scriptPath, String startPath) {
         if (!inited) {
             init(context);
         }
 
         return KeepShellPublic.INSTANCE.doCmdSync(environmentPath + " \"" + scriptPath + "\"" + " \"" + startPath + "\"");
+    }
+
+    /**
+     * 获取框架的环境变量
+     * @param context
+     * @return
+     */
+    private static HashMap<String, String> getEnvironment(Context context) {
+        final File dir = context.getFilesDir();
+        final String dirUri = dir.getAbsolutePath();
+        HashMap<String, String> params = new HashMap<>();
+
+        if (MagiskExtend.moduleInstalled()) {
+            String magiskPath = MagiskExtend.MAGISK_PATH.endsWith("/") ? (MagiskExtend.MAGISK_PATH.substring(0, MagiskExtend.MAGISK_PATH.length() - 1)) : MagiskExtend.MAGISK_PATH;
+            params.put("MAGISK_PATH", magiskPath);
+        }
+        params.put("TEMP_DIR", dirUri + "/temp");
+        params.put("ANDROID_UID", dir.getParentFile().getParentFile().getName());
+        params.put("ANDROID_SDK", "" + Build.VERSION.SDK_INT);
+        params.put("SDCARD_PATH", Environment.getExternalStorageDirectory().getAbsolutePath());
+        String busyboxPath = FileWrite.INSTANCE.getPrivateFilePath(context, "busybox");
+        if (new File(FileWrite.INSTANCE.getPrivateFilePath(context, "busybox")).exists()) {
+            params.put("BUSYBOX", busyboxPath);
+        } else {
+            params.put("BUSYBOX", "busybox");
+        }
+
+        return params;
+    }
+
+    /**
+     *
+     * @param context
+     * @param params
+     * @return
+     */
+    private static ArrayList<String> getVariables(Context context, HashMap<String, String> params) {
+        ArrayList<String> envp = new ArrayList<>();
+
+        HashMap<String, String> environment = getEnvironment(context);
+        for (String key : environment.keySet()) {
+            String value = environment.get(key);
+            if (value == null) {
+                value = "";
+            }
+            envp.add(key + "=" + value);
+        }
+
+        if (params != null) {
+            for (String key : params.keySet()) {
+                String value = params.get(key);
+                if (value == null) {
+                    value = "";
+                }
+                envp.add(key + "=" + value);
+            }
+        }
+
+        return envp;
+    }
+
+    /**
+     * 使用执行器运行脚本
+     * @param context Context
+     * @param dataOutputStream Runtime进程的输出流
+     * @param cmds 要执行的脚本
+     * @param params 参数类别
+     */
+    public static void executeShell(
+            Context context,
+            DataOutputStream dataOutputStream,
+            String cmds,
+            HashMap<String, String> params) {
+        ArrayList<String> envp = getVariables(context, params);
+        StringBuilder envpCmds = new StringBuilder();
+        if (envp.size() > 0) {
+            for (String param : envp) {
+                envpCmds.append("export ").append(param).append("\n");
+            }
+        }
+        try {
+            dataOutputStream.write(envpCmds.toString().getBytes("UTF-8"));
+
+            String start = FileWrite.INSTANCE.getPrivateFileDir(context);
+
+            dataOutputStream.write(String.format("cd \"%s\"\n\n", start).getBytes("UTF-8"));
+
+            dataOutputStream.write(getExecuteScript(context, cmds).getBytes("UTF-8"));
+
+            dataOutputStream.writeBytes("\n\n");
+            dataOutputStream.writeBytes("sleep 0.2;\n");
+            dataOutputStream.writeBytes("exit\n");
+            dataOutputStream.writeBytes("exit\n");
+            dataOutputStream.flush();
+        } catch (UnsupportedEncodingException ex) {
+        } catch (IOException ex) {
+        }
     }
 }
 

@@ -26,6 +26,7 @@ public class SimpleShellExecutor {
     private Context context;
     private boolean started = false;
     private static final String ASSETS_FILE = "file:///android_asset/";
+
     public SimpleShellExecutor(Context context) {
         this.context = context;
     }
@@ -33,38 +34,12 @@ public class SimpleShellExecutor {
     /**
      * 执行脚本
      */
-    public boolean execute(ConfigItemBase configItem, String cmds, String startPath, Runnable onExit, HashMap<String, String> params) {
+    public boolean execute(ConfigItemBase configItem, String cmds, Runnable onExit, HashMap<String, String> params) {
         if (started) {
             return false;
         }
 
         Process process = null;
-        final File dir = context.getFilesDir();
-        final String dirUri = dir.getAbsolutePath();
-        ArrayList<String> envp = new ArrayList<>();
-        if (params != null) {
-            for (String item : params.keySet()) {
-                String value = params.get(item);
-                if (value == null) {
-                    value = "";
-                }
-                envp.add(item + "=" + value);
-            }
-        }
-        if (MagiskExtend.moduleInstalled()) {
-            envp.add("MAGISK_PATH=" + (MagiskExtend.MAGISK_PATH.endsWith("/") ? (MagiskExtend.MAGISK_PATH.substring(0, MagiskExtend.MAGISK_PATH.length() -1 )) : MagiskExtend.MAGISK_PATH));
-        }
-        envp.add("TEMP_DIR=" + dirUri + "/temp");
-        envp.add("ANDROID_UID=" + dir.getParentFile().getParentFile().getName());
-        envp.add("ANDROID_SDK=" + Build.VERSION.SDK_INT);
-        envp.add("SDCARD_PATH=" + Environment.getExternalStorageDirectory().getAbsolutePath());
-        String busyboxPath = FileWrite.INSTANCE.getPrivateFilePath(context, "busybox");
-        if (new File(FileWrite.INSTANCE.getPrivateFilePath(context, "busybox")).exists()) {
-            envp.add("BUSYBOX=" + busyboxPath);
-        } else {
-            envp.add("BUSYBOX=busybox");
-        }
-
         try {
             process = Runtime.getRuntime().exec("su");
         } catch (Exception ex) {
@@ -90,41 +65,10 @@ public class SimpleShellExecutor {
             final OutputStream outputStream = process.getOutputStream();
             DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
             try {
-                String start = null;
-                if (startPath != null && !startPath.isEmpty()) {
-                    start = startPath;
-                } else {
-                    start = FileWrite.INSTANCE.getPrivateFileDir(context);
-                }
-
-                StringBuilder envpCmds = new StringBuilder();
-                if (envp.size() > 0) {
-                    for (String param : envp) {
-                        envpCmds.append("export ").append(param).append("\n");
-                    }
-                }
-                dataOutputStream.write(envpCmds.toString().getBytes("UTF-8"));
-                dataOutputStream.write(String.format("cd '%s'\n", start).getBytes("UTF-8"));
-
                 shellHandler.sendMessage(shellHandler.obtainMessage(ShellHandler.EVENT_START, "shell@android:\n\n"));
+                dataOutputStream.writeBytes("sleep 0.2;\n");
 
-                dataOutputStream.writeBytes("sleep 0.2;\n");
-                if (cmds.startsWith(ASSETS_FILE)) {
-                    String path = new ExtractAssets(context).extractScript(cmds);
-                    String scripts = "chmod 755 \"" + path +
-                            "\"\n" +
-                            "sh \"" +
-                            path +
-                            "\"\n";
-                    dataOutputStream.write((scripts).getBytes("UTF-8"));
-                } else {
-                    dataOutputStream.write(cmds.replaceAll("\r\n", "\n").replaceAll("\r\t", "\t").getBytes("UTF-8"));
-                }
-                dataOutputStream.writeBytes("\n\n");
-                dataOutputStream.writeBytes("sleep 0.2;\n");
-                dataOutputStream.writeBytes("exit\n");
-                dataOutputStream.writeBytes("exit\n");
-                dataOutputStream.flush();
+                ScriptEnvironmen.executeShell(context, dataOutputStream, cmds, params);
             } catch (Exception ex) {
                 process.destroy();
             }

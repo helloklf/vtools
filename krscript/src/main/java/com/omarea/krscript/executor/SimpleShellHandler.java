@@ -80,20 +80,20 @@ public class SimpleShellHandler extends ShellHandler {
     public void handleMessage(Message msg) {
         super.handleMessage(msg);
         switch (msg.what) {
-            case -2:
+            case ShellHandler.EVENT_EXIT:
                 onExit(msg.obj);
                 break;
-            case 0: {
+            case ShellHandler.EVENT_START: {
                 onStart(msg.obj);
                 break;
             }
-            case 2:
+            case ShellHandler.EVENT_REDE:
                 onReader(msg.obj);
                 break;
-            case 4:
+            case ShellHandler.EVENT_READ_ERROR:
                 onError(msg.obj);
                 break;
-            case 6: {
+            case ShellHandler.EVENT_WRITE: {
                 onWrite(msg.obj);
                 break;
             }
@@ -105,7 +105,7 @@ public class SimpleShellHandler extends ShellHandler {
     }
 
     private void onStart(Object msg) {
-        updateLog(msg, "#000000");
+        // updateLog(msg, "#000000");
     }
 
     private void onError(Object msg) {
