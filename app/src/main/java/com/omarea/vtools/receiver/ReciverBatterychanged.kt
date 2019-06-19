@@ -33,7 +33,7 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
                 Toast.makeText(service, msg, if (longMsg) Toast.LENGTH_LONG else Toast.LENGTH_SHORT).show()
             }
         } catch (ex: Exception) {
-            Log.e("BatteryService", ex.message)
+            Log.e("BatteryService", "" + ex.message)
         }
     }
 
@@ -48,7 +48,7 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
                 return
             batteryUnits.setChargeInputLimit(qcLimit, service)
         } catch (ex: Exception) {
-            Log.e("ChargeService", ex.stackTrace.toString())
+            Log.e("ChargeService", "" + ex.stackTrace.toString())
         }
     }
 

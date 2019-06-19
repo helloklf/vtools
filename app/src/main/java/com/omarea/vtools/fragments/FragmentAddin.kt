@@ -146,7 +146,7 @@ class FragmentAddin : Fragment() {
             intent.putExtra("config", config)
             startActivity(intent)
         } catch (ex: java.lang.Exception) {
-            Log.e("_openPage", "" + ex.message)
+            Log.e("_openPage", "" + "" + ex.message)
         }
     }
 

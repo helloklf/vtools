@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <pages>
+    <resource dir="file:///android_asset/custom/common" />
+
     <page title="通用功能" desc="基本上所有安卓手机都能用" config="custom/pages/general.xml" />
     <page title="性能调节" desc="与设备运行性能相关的选项" config="custom/pages/performance.xml" />
     <page title="电池、充电" desc="与电池相关的选项" config="custom/pages/power.xml" />

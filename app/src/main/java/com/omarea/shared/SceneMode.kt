@@ -370,7 +370,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
 
             lastAppPackageName = packageName
         } catch (ex: Exception) {
-            Log.e("onAppEnter", ex.message)
+            Log.e("onAppEnter", "" + ex.message)
         }
     }
 

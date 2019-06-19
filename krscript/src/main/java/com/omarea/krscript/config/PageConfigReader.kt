@@ -111,6 +111,11 @@ class PageConfigReader(private var context: Context) {
                                     if (file.startsWith(ASSETS_FILE)) {
                                         ExtractAssets(context).extractResource(file)
                                     }
+                                } else if (parser.getAttributeName(i) == "dir") {
+                                    val file = parser.getAttributeValue(i).trim()
+                                    if (file.startsWith(ASSETS_FILE)) {
+                                        ExtractAssets(context).extractResources(file)
+                                    }
                                 }
                             }
                         }
@@ -136,7 +141,7 @@ class PageConfigReader(private var context: Context) {
             return actions
         } catch (ex: Exception) {
             Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
-            Log.d("VTools ReadConfig Fail！", ex.message)
+            Log.d("VTools ReadConfig Fail！", "" + ex.message)
         }
 
         return null
@@ -222,6 +227,11 @@ class PageConfigReader(private var context: Context) {
                     if (file.startsWith(ASSETS_FILE)) {
                         ExtractAssets(context).extractResource(file)
                     }
+                } else if (parser.getAttributeName(i) == "dir") {
+                    val file = parser.getAttributeValue(i).trim()
+                    if (file.startsWith(ASSETS_FILE)) {
+                        ExtractAssets(context).extractResources(file)
+                    }
                 }
             }
         }
@@ -264,6 +274,11 @@ class PageConfigReader(private var context: Context) {
                     val file = parser.getAttributeValue(i).trim()
                     if (file.startsWith(ASSETS_FILE)) {
                         ExtractAssets(context).extractResource(file)
+                    }
+                } else if (parser.getAttributeName(i) == "dir") {
+                    val file = parser.getAttributeValue(i).trim()
+                    if (file.startsWith(ASSETS_FILE)) {
+                        ExtractAssets(context).extractResources(file)
                     }
                 }
             }

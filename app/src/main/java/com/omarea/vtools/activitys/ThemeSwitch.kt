@@ -97,7 +97,8 @@ object ThemeSwitch {
                 val wallpape = WallpaperManager.getInstance(activity);
                 val wallpaperInfo = wallpape.getWallpaperInfo()
                 if (wallpaperInfo != null && wallpaperInfo.packageName != null) {
-                    activity.window.setBackgroundDrawable(null);
+                    activity.setTheme(R.style.AppThemeWallpaper)
+                    // activity.window.setBackgroundDrawable(activity.getDrawable(R.drawable.window_transparent));
                     activity.window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER);
                 } else {
                     val wallpapeDrawable = wallpape.getDrawable();

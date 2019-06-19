@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <switchs>
-    <resource file="file:///android_asset/custom/common/props.sh" />
-    <resource file="file:///android_asset/custom/common/magisk.sh" />
-    <resource file="file:///android_asset/custom/common/magisk_replace.sh" />
-    <resource file="file:///android_asset/custom/common/empty" />
 
     <action id="addin_restart_systemui" auto-off="true">
         <title>重启SystemUI</title>

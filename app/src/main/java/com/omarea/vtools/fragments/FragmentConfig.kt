@@ -386,7 +386,7 @@ class FragmentConfig : Fragment() {
                     //loadList(false)
                 }
             } catch (ex: Exception) {
-                Log.e("update-list", ex.message)
+                Log.e("update-list", "" + ex.message)
             }
         }
     }

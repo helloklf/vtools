@@ -662,7 +662,7 @@ class FragmentCpuControl : Fragment() {
                 saveBootConfig()
             }
         } catch (ex: Exception) {
-            Log.e("bindEvent", ex.message)
+            Log.e("bindEvent", "" + ex.message)
         }
     }
 

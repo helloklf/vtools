@@ -57,7 +57,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
             }
         } catch (ex: Exception) {
-            Log.e("excludeRecent", ex.message)
+            Log.e("excludeRecent", "" + ex.message)
         }
     }
 
@@ -71,7 +71,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     val intent = Intent(context.get()!!, ServiceBattery::class.java)
                     context.get()!!.startService(intent)
                 } catch (ex: Exception) {
-                    Log.e("startChargeService", ex.message)
+                    Log.e("startChargeService", "" + ex.message)
                 }
             }
         }

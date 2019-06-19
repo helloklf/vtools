@@ -98,7 +98,7 @@ object FileWrite {
             return filePath
             //getApplicationContext().getClassLoader().getResourceAsStream("");
         } catch (e: IOException) {
-            Log.e("writePrivateFile", e.message)
+            Log.e("writePrivateFile", "" + e.message)
             e.printStackTrace()
         }
         return null
@@ -152,7 +152,7 @@ object FileWrite {
             val codes = String(datas, 0, len).replace(Regex("\r\n"), "\n").replace(Regex("\r\t"), "\t")
             return codes.toByteArray(Charsets.UTF_8)
         } catch (ex: Exception) {
-            Log.e("script-parse", ex.message)
+            Log.e("script-parse", "" + ex.message)
             return "".toByteArray()
         }
     }

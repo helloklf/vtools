@@ -142,6 +142,7 @@
     <style name="AppThemeWallpaperLight" parent="AppThemeWhite">
         <item name="android:navigationBarColor">#00ffffff</item>
         <item name="colorPrimaryDark">@color/lightPink</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
     <style name="AppThemeWallpaper" parent="AppTheme.AppBarOverlay.Dark">
         <item name="android:navigationBarColor">#00000000</item>
@@ -149,6 +150,7 @@
         <item name="colorPrimary">@color/lightPink</item>
         <item name="colorPrimaryDark">@color/lightPink</item>
         <item name="colorAccent">@color/lightPink</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <style name="AppThemeNoActionBarNight" parent="AppThemeNight">

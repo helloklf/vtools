@@ -16,6 +16,7 @@
         <item name="android:statusBarColor">#d0ffffff</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:colorForegroundInverse">#d0ffffff</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <style name="AppThemeWallpaper" parent="AppThemeNight">
@@ -25,6 +26,7 @@
         <item name="colorPrimaryDark">@color/lightPink</item>
         <item name="colorAccent">@color/lightPink</item>
         <item name="android:colorForegroundInverse">#c0000000</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay.Light" parent="ThemeOverlay.AppCompat.ActionBar">

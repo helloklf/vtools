@@ -127,7 +127,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
 
             notifyPowerModeChange(currentApp, currentMode)
         } catch (ex: Exception) {
-            Log.e("NotifyHelper", ex.localizedMessage)
+            Log.e("NotifyHelper", "" + ex.localizedMessage)
         }
     }
 
@@ -175,7 +175,7 @@ internal class NotifyHelper(private var context: Context, notify: Boolean = fals
             }
             modeImage = BitmapFactory.decodeResource(context.resources, getModImage(mode))
         } catch (ex: Exception) {
-            Log.e("NotifyHelper", ex.message)
+            Log.e("NotifyHelper", "" + ex.message)
         }
 
         if (batteryHistoryStore == null) {

@@ -32,7 +32,7 @@ class ConfigInstaller {
                 KeepShellPublic.doCmdSync(afterCmds)
             }
         } catch (ex: Exception) {
-            Log.e("script-parse", ex.message)
+            Log.e("script-parse", "" + ex.message)
         }
     }
 
@@ -52,7 +52,7 @@ class ConfigInstaller {
             ModeList().setCurrentPowercfg("")
             return true
         } catch (ex: Exception) {
-            Log.e("script-parse", ex.message)
+            Log.e("script-parse", "" + ex.message)
             return false
         }
     }
@@ -70,7 +70,7 @@ class ConfigInstaller {
             cmd.append("fi;\n")
             KeepShellPublic.doCmdSync(cmd.toString())
         } catch (ex: Exception) {
-            Log.e("script-parse", ex.message)
+            Log.e("script-parse", "" + ex.message)
         }
     }
 

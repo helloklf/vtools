@@ -41,7 +41,7 @@ class Alipay(private var context: Context) {
             openUri(context, url)
             return true
         } catch (e: Exception) {
-            Log.e("alipay-jump", e.message)
+            Log.e("alipay-jump", "" + e.message)
         }
         return false
     }

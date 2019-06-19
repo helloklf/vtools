@@ -65,4 +65,36 @@ public class ExtractAssets {
 
         return filePath;
     }
+
+    public String extractResources(String dir) {
+        if (dir == null || dir.isEmpty()) {
+            return null;
+        }
+
+        if (extractHisotry.containsKey(dir)) {
+            return extractHisotry.get(dir);
+        }
+
+        if (dir.startsWith("file:///android_asset/")) {
+            dir = dir.substring("file:///android_asset/".length());
+        } else if (dir.endsWith("/")) {
+            dir = dir.substring(0, dir.length() - 1);
+        }
+
+        try {
+            String[] files = context.getAssets().list(dir);
+            if (files != null) {
+                for (String file : files) {
+                    FileWrite.INSTANCE.writePrivateFile(context.getAssets(), dir + "/" + file, dir + "/" + file, context);
+                }
+                String outputDir = FileWrite.INSTANCE.getPrivateFilePath(context, dir);
+                extractHisotry.put(dir, outputDir);
+                return outputDir;
+            }
+            return "";
+        } catch (Exception ignored) {
+        }
+
+        return "";
+    }
 }

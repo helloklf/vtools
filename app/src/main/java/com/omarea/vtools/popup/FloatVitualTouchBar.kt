@@ -255,7 +255,7 @@ class FloatVitualTouchBar(context: AccessibilityService, var isLandscapf: Boolea
                 this.leftView = setLeftView(mContext!!)
                 this.rightView = setRightView(mContext!!)
             } catch (ex: Exception) {
-                Log.d("异常", ex.message)
+                Log.d("异常", "" + ex.message)
                 Toast.makeText(mContext, "启动虚拟导航手势失败！", Toast.LENGTH_LONG).show()
             }
         }

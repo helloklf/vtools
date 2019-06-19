@@ -1,10 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <actions>
-    <resource file="file:///android_asset/custom/common/props.sh" />
-    <resource file="file:///android_asset/custom/common/magisk.sh" />
-    <resource file="file:///android_asset/custom/common/magisk_replace.sh" />
-    <resource file="file:///android_asset/custom/common/empty" />
-
     <switch support="file:///android_asset/custom/switchs/android_n.sh">
         <title>强制分屏</title>
         <desc>适用于Android 7.0+，同开发者设置中的“强制将Activity设为可调整大小”选项。开启此项，从而对声明支持分屏的应用进行分屏操作！</desc>

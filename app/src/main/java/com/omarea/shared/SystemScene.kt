@@ -38,7 +38,7 @@ class SystemScene(private var context: Context) {
                 false
             }
         } catch (e: Exception) {
-            Log.e("isWifiApOpen", "" + e.localizedMessage)
+            Log.e("isWifiApOpen", "" + "" + e.localizedMessage)
         }
 
         return false

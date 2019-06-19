@@ -318,7 +318,7 @@ class TouchBarView : View {
                                 getEffectIconRectF(centerX, centerY),
                                 p)
                     } catch (ex: Exception) {
-                        Log.e("图标渲染错误", ex.message)
+                        Log.e("图标渲染错误", "" + ex.message)
                         drawIcon = false
                     }
                 }
@@ -348,7 +348,7 @@ class TouchBarView : View {
                                 getEffectIconRectF(centerX, centerY),
                                 p)
                     } catch (ex: Exception) {
-                        Log.e("图标渲染错误", ex.message)
+                        Log.e("图标渲染错误", "" + ex.message)
                         drawIcon = false
                     }
                 }
@@ -380,7 +380,7 @@ class TouchBarView : View {
                                 getEffectIconRectF(centerX, centerY),
                                 p)
                     } catch (ex: Exception) {
-                        Log.e("图标渲染错误", ex.message)
+                        Log.e("图标渲染错误", "" + ex.message)
                         drawIcon = false
                     }
                 }
