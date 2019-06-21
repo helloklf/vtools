@@ -17,6 +17,7 @@ import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.model.PageClickHandler
 import com.omarea.krscript.config.PageListReader
+import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.PageInfo
 import com.omarea.shell.SysUtils
 import com.omarea.ui.TabIconHelper
@@ -117,6 +118,7 @@ class FragmentAddin : Fragment() {
         val progressBarDialog = ProgressBarDialog(context!!)
         progressBarDialog.showDialog("读取配置，稍等...")
         Thread(Runnable {
+            ScriptEnvironmen.init(this.context!!, "custom/executor.sh");
             val items = PageListReader(this.activity!!).readPageList("custom/pages/page_list.xml")
             myHandler.post {
                 page2ConfigLoaded = true

@@ -74,6 +74,7 @@ public class CheckRootStatus(var context: Context, private var next: Runnable? =
             therad!!.start()
             myHandler.postDelayed({
                 if (!completed) {
+                    KeepShellPublic.tryExit()
                     DialogHelper.animDialog(AlertDialog.Builder(context)
                             .setCancelable(false)
                             .setTitle(R.string.error_root)

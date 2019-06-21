@@ -6,9 +6,9 @@ prop="persist.sys.static_blur_mode"
 
 if [[ $state = 1 ]]
 then
-    value=true
-else
     value=false
+else
+    value=true
 fi
 
 magisk_set_system_prop $prop $value

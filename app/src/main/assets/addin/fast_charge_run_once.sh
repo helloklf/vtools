@@ -38,6 +38,7 @@ function change_limit() {
 set_value /sys/class/qcom-battery/restricted_charging 0
 set_value /sys/class/power_supply/battery/restricted_charging 0
 set_value /sys/class/power_supply/usb/pd_allowed 1
+set_value /sys/class/power_supply/allow_hvdcp3 1
 set_value /sys/class/power_supply/battery/subsystem/usb/pd_allowed 1
 set_value /sys/class/power_supply/battery/safety_timer_enabled 0
 set_value /sys/class/power_supply/bms/temp_warm 500

@@ -25,7 +25,7 @@ public class ScriptEnvironmen {
     private static final String ASSETS_FILE = "file:///android_asset/";
 
     private static boolean init(Context context){
-        return init(context, "custom/executor.sh");
+        return init(context, "kr-script/executor.sh");
     }
 
     /**
@@ -55,29 +55,21 @@ public class ScriptEnvironmen {
                 if (value == null) {
                     value = "";
                 }
-                envShell = envShell.replace("${" + key + "}", value);
+                envShell = envShell.replace("$({" + key + "})", value);
             }
+            String outputPathAbs = FileWrite.INSTANCE.getPrivateFilePath(context, fileName);
+            envShell = envShell.replace("$({EXECUTOR_PATH})", outputPathAbs);
 
 
-            inited = FileWrite.INSTANCE.writePrivateFile(envShell.getBytes(Charset.defaultCharset()), executor, context);
+            inited = FileWrite.INSTANCE.writePrivateFile(envShell.getBytes(Charset.defaultCharset()), fileName, context);
             if (inited) {
-                environmentPath = FileWrite.INSTANCE.getPrivateFilePath(context, executor);
+                environmentPath = outputPathAbs;
             }
 
             return inited;
         } catch (Exception ex) {
             return false;
         }
-    }
-
-    public static String getStartPath(Context context, String startPath) {
-        String start = null;
-        if (startPath != null && !startPath.isEmpty()) {
-            start = startPath;
-        } else {
-            start = FileWrite.INSTANCE.getPrivateFileDir(context);
-        }
-        return start;
     }
 
     public static String md5(String string) {
@@ -152,7 +144,7 @@ public class ScriptEnvironmen {
         }
 
         String script2 = script.trim();
-        String startPath = getStartPath(context, null);
+        String startPath = getStartPath(context);
         String cachePath = "";
         if (script2.startsWith(ASSETS_FILE)) {
             cachePath = extractScript(context, script2);
@@ -173,22 +165,29 @@ public class ScriptEnvironmen {
         }
 
         String script2 = script.trim();
-        String startPath = getStartPath(context, null);
+        String path = "";
         if (script2.startsWith(ASSETS_FILE)) {
-            String path = extractScript(context, script2);
-            return executeShell(context, path, startPath);
+            path = extractScript(context, script2);
         } else {
-            String path = createShellCache(context, script);
-            return executeShell(context, path, startPath);
+            path = createShellCache(context, script);
         }
+        return executeShell(context, path);
     }
 
-    private static String executeShell(Context context, String scriptPath, String startPath) {
+    private static String executeShell(Context context, String scriptPath) {
         if (!inited) {
             init(context);
         }
 
-        return KeepShellPublic.INSTANCE.doCmdSync(environmentPath + " \"" + scriptPath + "\"" + " \"" + startPath + "\"");
+        return KeepShellPublic.INSTANCE.doCmdSync(environmentPath + " \"" + scriptPath + "\"" + " \"" + getStartPath(context) + "\"");
+    }
+
+    private static String getStartPath(Context context) {
+        String dir = FileWrite.INSTANCE.getPrivateFileDir(context);
+        if (dir.endsWith("/")) {
+            return dir.substring(0, dir.length() - 1);
+        }
+        return dir;
     }
 
     /**
@@ -205,7 +204,9 @@ public class ScriptEnvironmen {
             String magiskPath = MagiskExtend.MAGISK_PATH.endsWith("/") ? (MagiskExtend.MAGISK_PATH.substring(0, MagiskExtend.MAGISK_PATH.length() - 1)) : MagiskExtend.MAGISK_PATH;
             params.put("MAGISK_PATH", magiskPath);
         }
-        params.put("TEMP_DIR", dirUri + "/temp");
+        params.put("START_DIR", getStartPath(context));
+        // params.put("EXECUTOR_PATH", environmentPath);
+        params.put("TEMP_DIR", context.getCacheDir().getAbsolutePath());
         params.put("ANDROID_UID", dir.getParentFile().getParentFile().getName());
         params.put("ANDROID_SDK", "" + Build.VERSION.SDK_INT);
         params.put("SDCARD_PATH", Environment.getExternalStorageDirectory().getAbsolutePath());
@@ -227,15 +228,6 @@ public class ScriptEnvironmen {
      */
     private static ArrayList<String> getVariables(Context context, HashMap<String, String> params) {
         ArrayList<String> envp = new ArrayList<>();
-
-        HashMap<String, String> environment = getEnvironment(context);
-        for (String key : environment.keySet()) {
-            String value = environment.get(key);
-            if (value == null) {
-                value = "";
-            }
-            envp.add(key + "=" + value);
-        }
 
         if (params != null) {
             for (String key : params.keySet()) {
@@ -272,9 +264,7 @@ public class ScriptEnvironmen {
         try {
             dataOutputStream.write(envpCmds.toString().getBytes("UTF-8"));
 
-            String start = FileWrite.INSTANCE.getPrivateFileDir(context);
-
-            dataOutputStream.write(String.format("cd \"%s\"\n\n", start).getBytes("UTF-8"));
+            dataOutputStream.write(String.format("cd \"%s\"\n\n", getStartPath(context)).getBytes("UTF-8"));
 
             dataOutputStream.write(getExecuteScript(context, cmds).getBytes("UTF-8"));
 

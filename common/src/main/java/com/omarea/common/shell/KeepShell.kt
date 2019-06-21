@@ -44,7 +44,7 @@ public class KeepShell(private var rootMode: Boolean = true) {
 
     private var checkRootState =
             "if [[ \$(id -u 2>&1) == '0' ]] || [[ \$(\$UID) == '0' ]] || [[ \$(whoami 2>&1) == 'root' ]] || [[ \$(set | grep 'USER_ID=0') == 'USER_ID=0' ]]; then\n" +
-            "  echo 'root'\n" +
+            "  echo '###root###'\n" +
             "else\n" +
             "  exit 1\n" +
             "  exit 1\n" +
@@ -52,10 +52,11 @@ public class KeepShell(private var rootMode: Boolean = true) {
 
     fun checkRoot(): Boolean {
         val r = doCmdSync(checkRootState)
-        if (r == "error" || r.contains("permission denied") || r.contains("not allowed") || r.equals("not found")) {
-            return false
-        } else if (r == "root") {
+        if (r.contains("##root###")) {
             return true
+        }
+        else if (r == "error" || r.contains("permission denied") || r.contains("not allowed") || r.equals("not found")) {
+            return false
         } else {
             return false
         }

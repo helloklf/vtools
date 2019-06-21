@@ -75,9 +75,11 @@ class Busybox(private var context: Context) {
             DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setMessage(R.string.busybox_install_fail)
                     .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                        onSuccess?.run()
                     }))
+        } else {
+            onSuccess?.run()
         }
-        onSuccess?.run()
     }
 
     // 选择busybox安装方式

@@ -83,15 +83,17 @@ public class ExtractAssets {
 
         try {
             String[] files = context.getAssets().list(dir);
-            if (files != null) {
+            if (files != null && files.length > 0) {
                 for (String file : files) {
-                    FileWrite.INSTANCE.writePrivateFile(context.getAssets(), dir + "/" + file, dir + "/" + file, context);
+                    String relativePath = dir + "/" + file;
+                    extractResources(relativePath);
                 }
                 String outputDir = FileWrite.INSTANCE.getPrivateFilePath(context, dir);
                 extractHisotry.put(dir, outputDir);
                 return outputDir;
+            } else {
+                return extractResource(dir);
             }
-            return "";
         } catch (Exception ignored) {
         }
 
