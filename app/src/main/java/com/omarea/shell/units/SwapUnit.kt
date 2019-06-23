@@ -146,7 +146,7 @@ class SwapUnit(private var context: Context) {
         val currentSize = keepShell.doCmdSync("cat /sys/block/zram0/disksize")
         if (currentSize != "" + (sizeVal * 1024 * 1024L) || (algorithm.isNotEmpty() && algorithm != compAlgorithm)) {
             val sb = StringBuilder()
-            sb.append("echo 3 > /sys/block/zram0/max_comp_streams\n")
+            sb.append("echo 4 > /sys/block/zram0/max_comp_streams\n")
             sb.append("sync\n")
             sb.append("echo 3 > /proc/sys/vm/drop_caches\n")
             sb.append("swapoff /dev/block/zram0 >/dev/null 2>&1\n")

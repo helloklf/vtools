@@ -420,6 +420,7 @@
     <string name="freeze_remove">移除</string>
     <string name="freeze_remove_uninstall">移除并卸载</string>
     <string name="swap_zram_compact_algorithm">压缩算法</string>
+    <string name="wallpaper_rw_permission">需要“读写本地存储”的权限才能使用系统壁纸作为软件背景</string>
 
     <string-array name="device_templates">
         <item>Xiaomi MIX3</item>
@@ -453,6 +454,6 @@
         <item>LYA-AL00@HUAWEI@HUAWEI@LYA-AL00@LYA-AL00</item>
         <item>ELE-AL00@HUAWEI@HUAWEI@ELE-AL00@ELE-AL00</item>
         <item>VOG-TL00@HUAWEI@HUAWEI@VOG-TL00@VOG-TL00</item>
-        <item>GM1910@ONEPLUS@ONEPLUS@ONEPLUS GM1910@GM1910</item>
+        <item>GM1910@ONEPLUS@ONEPLUS@GM1910@GM1910</item>
     </string-array>
 </resources>

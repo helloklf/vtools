@@ -98,13 +98,15 @@ function _restore_file() {
         fi
     else
         echo "还原 $output"
+        # 移除副本
+        rm -f $output
         # 物理还原文件
         mount_all
         if [[ -f "$output.bak" ]]
         then
+            echo "cp $output.bak $output"
             cp "$output.bak" "$output"
         fi
-        rm -f $output
     fi
 }
 

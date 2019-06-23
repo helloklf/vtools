@@ -98,30 +98,6 @@ function modify_vm_params2()
     fi
 }
 
-function modify_vm_params3()
-{
-    if [[ -f /proc/sys/vm/laptop_mode ]]
-    then
-        echo 0 > /proc/sys/vm/laptop_mode
-    fi
-    if [[ -f /proc/sys/vm/dirty_background_ratio ]]
-    then
-        echo 0 > /proc/sys/vm/dirty_background_ratio
-    fi
-    if [[ -f /proc/sys/vm/dirty_ratio ]]
-    then
-        echo 0 > /proc/sys/vm/dirty_ratio
-    fi
-    if [[ -f /proc/sys/vm/dirty_expire_centisecs ]]
-    then
-        echo 50 > /proc/sys/vm/dirty_expire_centisecs
-    fi
-    if [[ -f /proc/sys/vm/dirty_writeback_centisecs ]]
-    then
-        echo 50 > /proc/sys/vm/dirty_writeback_centisecs
-    fi
-}
-
 echo '测试需要2G以上的可用存储空间'
 echo '建议把CPU开到最高性能再测啦！'
 echo '同步写会使缓存增益失效，更能反映存储芯片的的真实性能！'
@@ -150,7 +126,6 @@ rm -f $cache 2> /dev/null
 sync
 echo 3 > /proc/sys/vm/drop_caches
 echo "progress:[1/5]"
-modify_vm_params3
 
 echo '\n同步写测试...'
 $BUSYBOX dd if=/dev/zero of=$cache bs=1048576 count=1024 conv=fsync 1>&2

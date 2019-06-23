@@ -7,12 +7,25 @@
             <getstate>file:///android_asset/custom/switchs/cloudmusic_ad_get.sh</getstate>
             <setstate>file:///android_asset/custom/switchs/cloudmusic_ad_set.sh</setstate>
         </switch>
-        <switch>
+        <action>
             <title>QQ个性化</title>
             <desc>禁用此选项将去除QQ的个性化字体、气泡、头像挂件</desc>
-            <getstate>file:///android_asset/custom/switchs/qq_style_get.sh</getstate>
-            <setstate>file:///android_asset/custom/switchs/qq_style_set.sh</setstate>
-        </switch>
+            <params>
+                <param name="font" desc="个性字体">
+                    <option value="1">启用</option>
+                    <option value="0">禁用</option>
+                </param>
+                <param name="bubble" desc="个性气泡">
+                    <option value="1">启用</option>
+                    <option value="0">禁用</option>
+                </param>
+                <param name="pendant" desc="头像挂件">
+                    <option value="1">启用</option>
+                    <option value="0">禁用</option>
+                </param>
+            </params>
+            <script>file:///android_asset/custom/actions/tencent/qq_style_set.sh</script>
+        </action>
         <action confirm="true">
             <title>修复淘宝闪退</title>
             <desc>清理优酷和淘宝下载的热更新文件，出现淘宝或优酷闪退的，可以试试</desc>

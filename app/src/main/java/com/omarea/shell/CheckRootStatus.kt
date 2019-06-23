@@ -8,6 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import android.support.v4.content.PermissionChecker
+import android.util.Log
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.shared.CommonCmds
@@ -18,7 +19,7 @@ import com.omarea.vtools.R
  * Created by helloklf on 2017/6/3.
  */
 
-public class CheckRootStatus(var context: Context, private var next: Runnable? = null, private var disableSeLinux: Boolean = false, private var skip:Runnable? = null) {
+public class CheckRootStatus(var context: Context, private var next: Runnable? = null, private var disableSeLinux: Boolean = false, private var skip: Runnable? = null) {
     var myHandler: Handler = Handler(Looper.getMainLooper())
 
     var therad: Thread? = null
@@ -31,7 +32,7 @@ public class CheckRootStatus(var context: Context, private var next: Runnable? =
             var completed = false
             therad = Thread {
                 rootStatus = KeepShellPublic.checkRoot()
-                if(completed == true) {
+                if (completed == true) {
                     return@Thread
                 }
 
@@ -51,6 +52,7 @@ public class CheckRootStatus(var context: Context, private var next: Runnable? =
                                 .setCancelable(false)
                                 .setTitle(R.string.error_root)
                                 .setPositiveButton(R.string.btn_retry, { _, _ ->
+                                    KeepShellPublic.tryExit()
                                     if (therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
                                         therad!!.interrupt()
                                         therad = null
@@ -62,8 +64,7 @@ public class CheckRootStatus(var context: Context, private var next: Runnable? =
                                     //android.os.Process.killProcess(android.os.Process.myPid())
                                 })
                         if (skip != null) {
-                            builder.setNegativeButton(R.string.btn_skip, {
-                                _, _ ->
+                            builder.setNegativeButton(R.string.btn_skip, { _, _ ->
                                 myHandler.post(skip)
                             })
                         }
@@ -72,26 +73,30 @@ public class CheckRootStatus(var context: Context, private var next: Runnable? =
                 }
             };
             therad!!.start()
-            myHandler.postDelayed({
+            Thread(Runnable {
+                Thread.sleep(1000 * 15)
+
                 if (!completed) {
                     KeepShellPublic.tryExit()
-                    DialogHelper.animDialog(AlertDialog.Builder(context)
-                            .setCancelable(false)
-                            .setTitle(R.string.error_root)
-                            .setMessage(R.string.error_su_timeout)
-                            .setNegativeButton(R.string.btn_retry, { _, _ ->
-                                if (therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
-                                    therad!!.interrupt()
-                                    therad = null
-                                }
-                                forceGetRoot()
-                            })
-                            .setNeutralButton(R.string.btn_exit, { _, _ ->
-                                System.exit(0)
-                                //android.os.Process.killProcess(android.os.Process.myPid())
-                            }))
+                    myHandler.post({
+                        DialogHelper.animDialog(AlertDialog.Builder(context)
+                                .setCancelable(false)
+                                .setTitle(R.string.error_root)
+                                .setMessage(R.string.error_su_timeout)
+                                .setNegativeButton(R.string.btn_retry, { _, _ ->
+                                    if (therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
+                                        therad!!.interrupt()
+                                        therad = null
+                                    }
+                                    forceGetRoot()
+                                })
+                                .setNeutralButton(R.string.btn_exit, { _, _ ->
+                                    System.exit(0)
+                                    //android.os.Process.killProcess(android.os.Process.myPid())
+                                }))
+                    })
                 }
-            }, 15000)
+            })
         }
     }
 
@@ -121,16 +126,23 @@ public class CheckRootStatus(var context: Context, private var next: Runnable? =
                                 // val intent = Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + context.getPackageName()));
                                 // context.startActivity(intent);
                             } catch (ex: Exception) {
-
                             }
                         }
                     } else {
                         if (!checkPermission(context, it)) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                val option = it.substring("android.permission.".length)
+                                cmds.append("appops set ${context.packageName} ${option} allow\n")
+                            }
                             cmds.append("pm grant ${context.packageName} $it\n")
                         }
                     }
                 } else {
                     if (!checkPermission(context, it)) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            val option = it.substring("android.permission.".length)
+                            cmds.append("appops set ${context.packageName} ${option} allow\n")
+                        }
                         cmds.append("pm grant ${context.packageName} $it\n")
                     }
                 }
@@ -156,7 +168,7 @@ public class CheckRootStatus(var context: Context, private var next: Runnable? =
 
         // 最后的ROOT检测结果
         val lastCheckResult: Boolean
-            get () {
+            get() {
                 return this.rootStatus
             }
 

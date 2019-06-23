@@ -64,6 +64,6 @@ class FullScreenAddin(private var context: Activity) : AddinBase(context) {
         val resources = context.getResources();
         val resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android");
         val height = resources.getDimensionPixelSize(resourceId);
-        return height
+        return height + 1
     }
 }

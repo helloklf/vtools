@@ -1,15 +1,18 @@
 package com.omarea.vtools.activitys
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
+import android.support.v4.content.PermissionChecker
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.Switch
 import com.omarea.common.shell.KeepShellPublic
+import com.omarea.common.ui.DialogHelper
 import com.omarea.shared.CommonCmds
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.AppErrorLogcat
@@ -105,15 +108,29 @@ class ActivitySceneOtherSettings : AppCompatActivity() {
         }
     }
 
+    private fun checkPermission(context: Context, permission: String): Boolean = PermissionChecker.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED
+
+    private fun hasRWPermission(): Boolean {
+        return checkPermission(this.applicationContext, Manifest.permission.READ_EXTERNAL_STORAGE)
+                &&
+                checkPermission(this.applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    }
+
     fun onThemeClick(view: View) {
         val tag = view.tag.toString().toInt()
         if (tag == 10 && spf.getInt(SpfConfig.GLOBAL_SPF_THEME, 1) == 10) {
             spf.edit().putInt(SpfConfig.GLOBAL_SPF_THEME, 1).apply()
+            this.recreate()
         } else {
-            spf.edit().putInt(SpfConfig.GLOBAL_SPF_THEME, tag).apply()
+            if (tag == 10 && !hasRWPermission()) {
+                DialogHelper.helpInfo(view.context, "", getString(R.string.wallpaper_rw_permission))
+                (view as Switch).isChecked = false
+            } else {
+                spf.edit().putInt(SpfConfig.GLOBAL_SPF_THEME, tag).apply()
+                this.recreate()
+            }
         }
 
-        this.recreate()
     }
 
     override fun onDestroy() {

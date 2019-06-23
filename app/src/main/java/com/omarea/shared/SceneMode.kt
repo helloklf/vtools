@@ -108,11 +108,13 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
     var lowPowerLevel = 2
 
     private fun backupState(): Int {
-        try {
-            brightnessMode = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE)
-            screenBrightness = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS)
-        } catch (e: Settings.SettingNotFoundException) {
-            e.printStackTrace()
+        if (brightnessMode != -1) {
+            try {
+                brightnessMode = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE)
+                screenBrightness = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS)
+            } catch (e: Settings.SettingNotFoundException) {
+                e.printStackTrace()
+            }
         }
         return brightnessMode
     }
@@ -220,7 +222,9 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
 
     private var locationMode = "none"
     private fun backupLocationModeState() {
-        locationMode = Settings.Secure.getString(contentResolver, Settings.Secure.LOCATION_PROVIDERS_ALLOWED)
+        if (locationMode!= "none") {
+            locationMode = Settings.Secure.getString(contentResolver, Settings.Secure.LOCATION_PROVIDERS_ALLOWED)
+        }
     }
 
     private fun restoreLocationModeState() {

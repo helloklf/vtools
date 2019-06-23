@@ -1,8 +1,7 @@
 package com.omarea.vtools.activitys
 
-import android.app.Activity
-import android.app.UiModeManager
-import android.app.WallpaperManager
+import android.Manifest
+import android.app.*
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
@@ -14,13 +13,18 @@ import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
+import android.support.v4.content.PermissionChecker
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
+import com.omarea.common.ui.DialogHelper
 import com.omarea.shared.SpfConfig
 import com.omarea.vtools.R
 
 object ThemeSwitch {
     private var globalSPF: SharedPreferences? = null
+
+    private fun checkPermission(context: Context, permission: String): Boolean = PermissionChecker.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED
 
     internal fun switchTheme(activity: Activity) {
         if (globalSPF == null) {
@@ -78,49 +82,57 @@ object ThemeSwitch {
                 }
             }
             10 -> {
-                /* // 根据夜间模式设置主题
-                val uiModeManager = activity.applicationContext.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
-                if (uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES) {
-                    activity.setTheme(R.style.AppThemeWallpaper)
+                if (checkPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    setWallpaperTheme(activity)
                 } else {
-                    activity.setTheme(R.style.AppThemeWallpaperLight)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                        } else {
-                            activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                        }
-                    }
-                }
-                */
-
-                val wallpape = WallpaperManager.getInstance(activity);
-                val wallpaperInfo = wallpape.getWallpaperInfo()
-                if (wallpaperInfo != null && wallpaperInfo.packageName != null) {
-                    activity.setTheme(R.style.AppThemeWallpaper)
-                    // activity.window.setBackgroundDrawable(activity.getDrawable(R.drawable.window_transparent));
-                    activity.window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER);
-                } else {
-                    val wallpapeDrawable = wallpape.getDrawable();
-
-                    if (isDarkColor(wallpapeDrawable)) {
-                        activity.setTheme(R.style.AppThemeWallpaper)
-                    } else {
-                        activity.setTheme(R.style.AppThemeWallpaperLight)
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                            } else {
-                                activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                            }
-                        }
-                    }
-
-                    activity.window.setBackgroundDrawable(wallpapeDrawable);
-                    // 使用壁纸高斯模糊作为窗口背景
-                    // activity.window.setBackgroundDrawable(BitmapDrawable(activity.resources, rsBlur((wallPaper as BitmapDrawable).bitmap, 25, activity)))
+                    DialogHelper.helpInfo(activity, "", activity.getString(R.string.wallpaper_rw_permission))
                 }
             }
+        }
+    }
+
+    private fun setWallpaperTheme(activity: Activity) {
+        /* // 根据夜间模式设置主题
+        val uiModeManager = activity.applicationContext.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
+        if (uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES) {
+            activity.setTheme(R.style.AppThemeWallpaper)
+        } else {
+            activity.setTheme(R.style.AppThemeWallpaperLight)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                } else {
+                    activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                }
+            }
+        }
+        */
+
+        val wallpape = WallpaperManager.getInstance(activity);
+        val wallpaperInfo = wallpape.getWallpaperInfo()
+        if (wallpaperInfo != null && wallpaperInfo.packageName != null) {
+            activity.setTheme(R.style.AppThemeWallpaper)
+            // activity.window.setBackgroundDrawable(activity.getDrawable(R.drawable.window_transparent));
+            activity.window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER);
+        } else {
+            val wallpapeDrawable = wallpape.getDrawable();
+
+            if (isDarkColor(wallpapeDrawable)) {
+                activity.setTheme(R.style.AppThemeWallpaper)
+            } else {
+                activity.setTheme(R.style.AppThemeWallpaperLight)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                    } else {
+                        activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                    }
+                }
+            }
+
+            activity.window.setBackgroundDrawable(wallpapeDrawable);
+            // 使用壁纸高斯模糊作为窗口背景
+            // activity.window.setBackgroundDrawable(BitmapDrawable(activity.resources, rsBlur((wallPaper as BitmapDrawable).bitmap, 25, activity)))
         }
     }
 

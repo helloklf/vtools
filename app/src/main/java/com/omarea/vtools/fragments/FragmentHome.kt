@@ -18,6 +18,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
+import com.omarea.common.ui.DialogHelper
 import com.omarea.shared.ConfigInstaller
 import com.omarea.shared.ModeList
 import com.omarea.shared.SpfConfig
@@ -286,7 +287,6 @@ class FragmentHome : Fragment() {
         super.onPause()
     }
 
-    @SuppressLint("ApplySharedPref")
     private fun installConfig(action: String, message: String) {
         val dynamic = AccessibleServiceHelper().serviceIsRunning(context!!) && spf.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)
         if (!dynamic && modeList.getCurrentPowerMode() == action) {
@@ -317,19 +317,29 @@ class FragmentHome : Fragment() {
         minFreqs.clear()
         updateInfo()
         if (dynamic) {
-            globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, "").commit()
+            globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, "").apply()
+            DialogHelper.animDialog(
+                    AlertDialog
+                            .Builder(context)
+                            .setTitle("提示")
+                            .setMessage("“场景模式-动态响应”已被激活，你手动选择的模式随时可能被覆盖。\n\n如果你需要长期使用手动控制，请前往“场景模式”的设置界面关闭“动态响应”！")
+                            .setNegativeButton(R.string.btn_confirm, { _, _ ->
+                            })
+                            .setCancelable(false))
         } else {
-            globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, action).commit()
+            globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, action).apply()
             if (!globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_POWERCFG_FRIST_NOTIFY, false)) {
-                AlertDialog.Builder(context).setTitle("提示")
-                        .setMessage("如果你允许Scene自启动，下次开机后，Scene还会自动启用你刚刚选择的模式。\n\n如果你需要关闭调度，请再次点击相同的模式取消选中状态，然后重启手机！")
-                        .setNegativeButton(R.string.btn_confirm, { _, _ ->
-                        })
-                        .setPositiveButton(R.string.btn_dontshow, { _, _ ->
-                            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_POWERCFG_FRIST_NOTIFY, true).commit()
-                        })
-                        .create()
-                        .show()
+                DialogHelper.animDialog(
+                        AlertDialog
+                                .Builder(context)
+                                .setTitle("提示")
+                                .setMessage("如果你允许Scene自启动，下次开机后，Scene还会自动启用你刚刚选择的模式。\n\n如果你需要关闭调度，请再次点击相同的模式取消选中状态，然后重启手机！")
+                                .setNegativeButton(R.string.btn_confirm, { _, _ ->
+                                })
+                                .setPositiveButton(R.string.btn_dontshow, { _, _ ->
+                                    globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_POWERCFG_FRIST_NOTIFY, true).apply()
+                                })
+                                .setCancelable(false))
             }
         }
     }

@@ -203,6 +203,8 @@ public class ScriptEnvironmen {
         if (MagiskExtend.moduleInstalled()) {
             String magiskPath = MagiskExtend.MAGISK_PATH.endsWith("/") ? (MagiskExtend.MAGISK_PATH.substring(0, MagiskExtend.MAGISK_PATH.length() - 1)) : MagiskExtend.MAGISK_PATH;
             params.put("MAGISK_PATH", magiskPath);
+        } else {
+            params.put("MAGISK_PATH", "");
         }
         params.put("START_DIR", getStartPath(context));
         // params.put("EXECUTOR_PATH", environmentPath);

@@ -18,7 +18,7 @@ class DialogHelper {
         }
 
         fun helpInfo(context: Context, title:String, message: String) {
-            DialogHelper.animDialog(
+            animDialog(
                     AlertDialog.Builder(context)
                             .setTitle(title)
                             .setMessage(message)
@@ -27,7 +27,7 @@ class DialogHelper {
         }
 
         fun helpInfo(context: Context, title:Int, message: Int) {
-            DialogHelper.animDialog(
+            animDialog(
                     AlertDialog.Builder(context)
                             .setTitle(title)
                             .setMessage(message)

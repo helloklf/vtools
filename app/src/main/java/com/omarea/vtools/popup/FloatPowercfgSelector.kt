@@ -158,6 +158,7 @@ class FloatPowercfgSelector {
             }
         }
         val switchMode = Runnable {
+            updateUI.run()
             modeList.executePowercfgMode(selectedMode, packageName)
             if (dynamic) {
                 if (selectedMode == defaultMode) {
@@ -174,22 +175,18 @@ class FloatPowercfgSelector {
         btn_powersave.setOnClickListener {
             selectedMode = ModeList.POWERSAVE
             switchMode.run()
-            updateUI.run()
         }
         btn_defaultmode.setOnClickListener {
             selectedMode = ModeList.BALANCE
             switchMode.run()
-            updateUI.run()
         }
         btn_gamemode.setOnClickListener {
             selectedMode = ModeList.PERFORMANCE
             switchMode.run()
-            updateUI.run()
         }
         btn_fastmode.setOnClickListener {
             selectedMode = ModeList.FAST
             switchMode.run()
-            updateUI.run()
         }
         val fw_app_light = view.findViewById<CheckBox>(R.id.fw_app_light)
         fw_app_light.isChecked = appConfig.aloneLight

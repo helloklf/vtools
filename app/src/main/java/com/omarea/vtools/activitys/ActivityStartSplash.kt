@@ -3,6 +3,7 @@ package com.omarea.vtools.activitys
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -29,9 +30,15 @@ class ActivityStartSplash : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (CheckRootStatus.lastCheckResult && !isTaskRoot) {
-            finish();
-            return;
+        if (CheckRootStatus.lastCheckResult) {
+            if (isTaskRoot) {
+                val intent = Intent(this.applicationContext, ActivityMain::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                startActivity(intent)
+                overridePendingTransition(0, 0)
+            }
+            finish()
+            return
         }
 
         CrashHandler().init(this.applicationContext)
@@ -208,7 +215,7 @@ class ActivityStartSplash : Activity() {
 
     private var hasRoot = false
     private var myHandler = Handler()
-    @SuppressLint("ApplySharedPref", "CommitPrefEdits")
+
     private fun checkRoot(next: Runnable, skip: Runnable) {
         val globalConfig = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 

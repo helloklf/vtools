@@ -359,8 +359,8 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList() {
             override fun onReceive(context: Context, intent: Intent) {
                 val extras = intent.extras
                 if (extras != null && extras.containsKey("app")) {
-                    if (extras.containsKey("brightnessMode")) {
-                        val mode = intent.getStringExtra("brightnessMode")
+                    if (extras.containsKey("mode")) {
+                        val mode = intent.getStringExtra("mode")
                         val app = intent.getStringExtra("app")
                         if (dyamicCore && screenOn && app == lastModePackage) {
                             toggleConfig(mode)
