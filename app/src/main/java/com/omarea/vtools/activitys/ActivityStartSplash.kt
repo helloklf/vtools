@@ -35,7 +35,7 @@ class ActivityStartSplash : Activity() {
                 val intent = Intent(this.applicationContext, ActivityMain::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
-                overridePendingTransition(0, 0)
+                // overridePendingTransition(0, 0)
             }
             finish()
             return

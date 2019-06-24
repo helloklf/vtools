@@ -108,7 +108,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
     var lowPowerLevel = 2
 
     private fun backupState(): Int {
-        if (brightnessMode != -1) {
+        if (brightnessMode == -1) {
             try {
                 brightnessMode = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE)
                 screenBrightness = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS)
@@ -122,16 +122,16 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
     private fun resumeState() {
         try {
             val modeBackup = brightnessMode;
-            if (brightnessMode > -1) {
-                Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, brightnessMode)
+            if (modeBackup > -1) {
+                Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, modeBackup)
                 contentResolver.notifyChange(Settings.System.getUriFor( Settings.System.SCREEN_BRIGHTNESS_MODE), null)
-                brightnessMode = -1
             }
+            brightnessMode = -1
             if (screenBrightness > -1 && modeBackup == Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL) {
                 Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, screenBrightness)
                 contentResolver.notifyChange(Settings.System.getUriFor(Settings.System.SCREEN_BRIGHTNESS), null)
-                screenBrightness = -1
             }
+            screenBrightness = -1
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -222,7 +222,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
 
     private var locationMode = "none"
     private fun backupLocationModeState() {
-        if (locationMode!= "none") {
+        if (locationMode == "none") {
             locationMode = Settings.Secure.getString(contentResolver, Settings.Secure.LOCATION_PROVIDERS_ALLOWED)
         }
     }
@@ -235,8 +235,8 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
                 } else {
                     LocationHelper().disableLocation()
                 }
-                locationMode = "none"
             }
+            locationMode = "none"
         }
     }
 

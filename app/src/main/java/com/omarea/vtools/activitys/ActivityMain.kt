@@ -115,7 +115,8 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         AlertDialog.Builder(context)
                                 .setMessage("检测到系统自动创建了温控副本，这会导致在附加功能中切换的温控失效。\n\nScene已自动将副本删除，但可能需要重启手机才能解决问题")
                                 .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                                }))
+                                })
+                                .setCancelable(false))
             }
         }
     }

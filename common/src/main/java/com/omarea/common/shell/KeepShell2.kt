@@ -12,7 +12,7 @@ import java.util.concurrent.locks.ReentrantLock
 /**
  * Created by Hello on 2018/01/23.
  */
-public class KeepShell(private var rootMode: Boolean = true) {
+public class KeepShell2(private var rootMode: Boolean = true) {
     private var p: Process? = null
     private var out: OutputStream? = null
     private var reader: BufferedReader? = null
@@ -44,7 +44,7 @@ public class KeepShell(private var rootMode: Boolean = true) {
 
     private var checkRootState =
             "if [[ \$(id -u 2>&1) == '0' ]] || [[ \$(\$UID) == '0' ]] || [[ \$(whoami 2>&1) == 'root' ]] || [[ \$(set | grep 'USER_ID=0') == 'USER_ID=0' ]]; then\n" +
-            "  echo 'root'\n" +
+            "  echo '###root###'\n" +
             "else\n" +
             "  exit 1\n" +
             "  exit 1\n" +
@@ -52,10 +52,11 @@ public class KeepShell(private var rootMode: Boolean = true) {
 
     fun checkRoot(): Boolean {
         val r = doCmdSync(checkRootState)
-        if (r == "error" || r.contains("permission denied") || r.contains("not allowed") || r.equals("not found")) {
-            return false
-        } else if (r == "root") {
+        if (r.contains("##root###")) {
             return true
+        }
+        else if (r == "error" || r.contains("permission denied") || r.contains("not allowed") || r.equals("not found")) {
+            return false
         } else {
             return false
         }
@@ -100,68 +101,92 @@ public class KeepShell(private var rootMode: Boolean = true) {
 
     private var br = "\n\n".toByteArray(Charset.defaultCharset())
 
+    interface ExecuteAsyncResult {
+        fun onResult(result: String)
+    }
+
+    class ExecuteAsyncThread(private var p:Process, private var cmd: String, private var executeAsyncResult: ExecuteAsyncResult) : Thread() {
+        companion object {
+            private val br = "\n\n".toByteArray(Charset.defaultCharset())
+        }
+
+        override fun run() {
+            try {
+                val uuid = UUID.randomUUID().toString().subSequence(0, 8)
+                val startTag = "--start--$uuid--"
+                val endTag = "--end--$uuid--"
+
+                val out = p.outputStream
+                val reader = p.inputStream.bufferedReader()
+                try {
+                    out.write(br)
+                    out.write("echo '$startTag'".toByteArray(Charset.defaultCharset()))
+                    out.write(br)
+                    out.write(cmd.toByteArray(Charset.defaultCharset()))
+                    out.write(br)
+                    out.write("echo \"\"".toByteArray(Charset.defaultCharset()))
+                    out.write(br)
+                    out.write("echo '$endTag'".toByteArray(Charset.defaultCharset()))
+                    out.write(br)
+                    out.flush()
+                } catch (ex: java.lang.Exception) {
+                    Log.e("out!!.write", "" + ex.message)
+                }
+
+                val results = StringBuilder()
+                var unstart = true
+                while (true) {
+                    val line = reader.readLine()
+                    if (line == null || line.contains("--end--")) {
+                        break
+                    } else if (line.equals(startTag)) {
+                        unstart = false
+                    } else if (!unstart) {
+                        results.append(line)
+                        results.append("\n")
+                    }
+                }
+                // Log.e("shell-unlock", cmd)
+                // Log.d("Shell", cmd.toString() + "\n" + "Result:"+results.toString().trim())
+
+                executeAsyncResult.onResult(results.toString().trim())
+            } catch (e: IOException) {
+                Log.e("KeepShellAsync", "" + e.message)
+                executeAsyncResult.onResult("error")
+            }
+        }
+    }
+
     //执行脚本
     public fun doCmdSync(cmd: String): String {
         if (mLock.isLocked && enterLockTime > 0 && System.currentTimeMillis() - enterLockTime > LOCK_TIMEOUT) {
             tryExit()
             Log.e("doCmdSync-Lock", "线程等待超时${System.currentTimeMillis()} - $enterLockTime > $LOCK_TIMEOUT")
         }
-        val uuid = UUID.randomUUID().toString().subSequence(0, 8)
         getRuntimeShell()
-        if (out != null) {
-            val startTag = "--start--$uuid--"
-            val endTag = "--end--$uuid--"
-            // Log.e("shell-lock", cmd)
+        var result = "error"
+        if (out != null && p != null) {
             try {
                 mLock.lockInterruptibly()
-
-                val out = p!!.outputStream
-                if (out != null) {
-                    try {
-                        out.write(br)
-                        out.write("echo '$startTag'".toByteArray(Charset.defaultCharset()))
-                        out.write(br)
-                        out.write(cmd.toByteArray(Charset.defaultCharset()))
-                        out.write(br)
-                        out.write("echo \"\"".toByteArray(Charset.defaultCharset()))
-                        out.write(br)
-                        out.write("echo '$endTag'".toByteArray(Charset.defaultCharset()))
-                        out.write(br)
-                        out.flush()
-                    } catch (ex: java.lang.Exception) {
-                        Log.e("out!!.write", "" + ex.message)
+                val t = ExecuteAsyncThread(p!!, cmd, object: ExecuteAsyncResult{
+                    override fun onResult(resultOut: String) {
+                        result = resultOut
                     }
-
-                    val results = StringBuilder()
-                    var unstart = true
-                    while (true && reader != null) {
-                        val line = reader!!.readLine()
-                        if (line == null || line.contains("--end--")) {
-                            break
-                        } else if (line.equals(startTag)) {
-                            unstart = false
-                        } else if (!unstart) {
-                            results.append(line)
-                            results.append("\n")
-                        }
-                    }
-                    // Log.e("shell-unlock", cmd)
-                    // Log.d("Shell", cmd.toString() + "\n" + "Result:"+results.toString().trim())
-                    return results.toString().trim()
-                } else {
-                    return "error"
+                })
+                t.start()
+                t.join(15000)
+                if (result == "error") {
+                    tryExit()
                 }
-            } catch (e: IOException) {
+            } catch (ex: java.lang.Exception) {
                 tryExit()
-                Log.e("KeepShellAsync", "" + e.message)
-                return "error"
             } finally {
                 enterLockTime = 0L
                 mLock.unlock()
             }
         } else {
             tryExit()
-            return "error"
         }
+        return result
     }
 }
