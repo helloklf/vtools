@@ -16,19 +16,18 @@ function change_limit() {
 
     for path in $paths
     do
+        chmod 0664 $path
         echo $limit > $path
     done
 
     if [[ -f /sys/class/qcom-battery/restricted_current ]]; then
+        chmod 0664 /sys/class/qcom-battery/restricted_current
         echo $limit > /sys/class/qcom-battery/restricted_current
     fi
 }
 
 if [[ `getprop vtools.fastcharge` = "" ]]; then
     ./fast_charge_run_once.sh
-
-    # 部分设备不支持超过3000的值，所以首次执行先设为3000吧
-    change_limit 3000
 
     setprop vtools.fastcharge 1
 fi

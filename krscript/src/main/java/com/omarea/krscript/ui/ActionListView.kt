@@ -15,10 +15,7 @@ import com.omarea.krscript.R
 import com.omarea.krscript.config.ActionParamInfo
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.executor.SimpleShellExecutor
-import com.omarea.krscript.model.ActionInfo
-import com.omarea.krscript.model.ActionLongClickHandler
-import com.omarea.krscript.model.ConfigItemBase
-import com.omarea.krscript.model.SwitchInfo
+import com.omarea.krscript.model.*
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -28,13 +25,18 @@ class ActionListView : OverScrollListView {
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
 
     private val progressBarDialog: ProgressBarDialog
+    private var actionShortClickHandler: ActionShortClickHandler? = null
 
     init {
         this.progressBarDialog = ProgressBarDialog(context)
     }
 
-    fun setListData(actionInfos: ArrayList<ConfigItemBase>?, actionLongClickHandler: ActionLongClickHandler? = null) {
+    fun setListData(
+            actionInfos: ArrayList<ConfigItemBase>?,
+            actionShortClickHandler: ActionShortClickHandler? = null,
+            actionLongClickHandler: ActionLongClickHandler? = null) {
         if (actionInfos != null) {
+            this.actionShortClickHandler = actionShortClickHandler
             this.overScrollMode = ListView.OVER_SCROLL_ALWAYS
             this.adapter = ActionListAdapter(actionInfos)
             this.onItemClickListener = OnItemClickListener { parent, _, position, _ ->
@@ -100,10 +102,10 @@ class ActionListView : OverScrollListView {
             DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle(switchInfo.title)
                     .setMessage(switchInfo.desc)
-                    .setPositiveButton("执行", { _, _ ->
+                    .setPositiveButton(context.getString(R.string.btn_execute), { _, _ ->
                         switchExecute(switchInfo, toValue, onExit)
                     })
-                    .setNegativeButton("取消", { _, _ ->
+                    .setNegativeButton(context.getString(R.string.btn_cancel), { _, _ ->
                     }))
         } else {
             switchExecute(switchInfo, toValue, onExit)
@@ -116,16 +118,11 @@ class ActionListView : OverScrollListView {
     private fun switchExecute(switchInfo: SwitchInfo, toValue: Boolean, onExit: Runnable) {
         val script = switchInfo.setState ?: return
 
-        var startPath: String? = null
-        if (switchInfo.start != null) {
-            startPath = switchInfo.start
-        }
-
         SimpleShellExecutor(context).execute(switchInfo, script, onExit, object : java.util.HashMap<String, String>() {
             init {
                 put("state", if (toValue) "1" else "0")
             }
-        })
+        }, null)
     }
 
     /**
@@ -136,8 +133,10 @@ class ActionListView : OverScrollListView {
             DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle(action.title)
                     .setMessage(action.desc)
-                    .setPositiveButton("执行") { _, _ -> actionExecute(action, onExit) }
-                    .setNegativeButton("取消") { _, _ -> })
+                    .setPositiveButton(context.getString(R.string.btn_execute)) { _, _ ->
+                        actionExecute(action, onExit)
+                    }
+                    .setNegativeButton(context.getString(R.string.btn_cancel)) { _, _ -> })
         } else {
             actionExecute(action, onExit)
         }
@@ -149,10 +148,6 @@ class ActionListView : OverScrollListView {
     private fun actionExecute(action: ActionInfo, onExit: Runnable) {
         val script = action.script ?: return
 
-        var startPath: String? = null
-        if (action.start != null) {
-            startPath = action.start
-        }
         if (action.params != null) {
             val actionParamInfos = action.params!!
             if (actionParamInfos.size > 0) {
@@ -161,8 +156,7 @@ class ActionListView : OverScrollListView {
                 val linearLayout = view.findViewById<LinearLayout>(R.id.params_list)
 
                 val handler = Handler()
-                val finalStartPath = startPath
-                progressBarDialog.showDialog("正在读取数据...")
+                progressBarDialog.showDialog(context.getString(R.string.onloading))
                 Thread(Runnable {
                     for (actionParamInfo in actionParamInfos) {
                         if (actionParamInfo.valueShell != null) {
@@ -233,17 +227,25 @@ class ActionListView : OverScrollListView {
                                 editText.layoutParams = lp
                             }
                         }
-                        DialogHelper.animDialog(AlertDialog.Builder(context)
-                                .setTitle(action.title)
-                                .setView(view)
-                                .setPositiveButton(R.string.btn_confirm) { _, _ -> actionExecute(action, script, finalStartPath, onExit, readParamsValue(actionParamInfos, linearLayout)) })
+                        if (actionShortClickHandler != null) {
+                            actionShortClickHandler!!.onParamsView(view, Runnable { }, Runnable {
+                                actionExecute(action, script, onExit, readParamsValue(actionParamInfos, linearLayout))
+                            })
+                        } else {
+                            DialogHelper.animDialog(AlertDialog.Builder(context)
+                                    .setTitle(action.title)
+                                    .setView(view)
+                                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                                        actionExecute(action, script, onExit, readParamsValue(actionParamInfos, linearLayout))
+                                    })
+                        }
                     }
                 }).start()
 
                 return
             }
         }
-        actionExecute(action, script, startPath, onExit, null)
+        actionExecute(action, script, onExit, null)
     }
 
     /**
@@ -252,7 +254,7 @@ class ActionListView : OverScrollListView {
     private fun getParamOptions(actionParamInfo: ActionParamInfo): ArrayList<HashMap<String, Any>>? {
         val options = ArrayList<HashMap<String, Any>>()
         var shellResult = ""
-        if (!actionParamInfo.optionsSh.isNullOrEmpty()) {
+        if (!actionParamInfo.optionsSh.isEmpty()) {
             shellResult = executeScriptGetResult(context, actionParamInfo.optionsSh)
         }
 
@@ -288,7 +290,7 @@ class ActionListView : OverScrollListView {
         } else if (actionParamInfo.options != null) {
             for (option in actionParamInfo.options!!) {
                 val opt = HashMap<String, Any>()
-                opt.set("title", if(option.desc == null) "" else option.desc!!)
+                opt.set("title", if (option.desc == null) "" else option.desc!!)
                 opt["item"] = option
                 options.add(opt)
             }
@@ -345,10 +347,10 @@ class ActionListView : OverScrollListView {
     /**
      * 读取界面上填入的参数值
      */
-    private fun readParamsValue(actionParamInfos: ArrayList<ActionParamInfo>, linearLayout: LinearLayout): HashMap<String, String> {
+    private fun readParamsValue(actionParamInfos: ArrayList<ActionParamInfo>, viewList: View): HashMap<String, String> {
         val params = HashMap<String, String>()
         for (actionParamInfo in actionParamInfos) {
-            val view = linearLayout.findViewWithTag<View>(actionParamInfo.name)
+            val view = viewList.findViewWithTag<View>(actionParamInfo.name)
             if (view is EditText) {
                 actionParamInfo.value = view.text.toString()
             } else if (view is CheckBox) {
@@ -370,7 +372,12 @@ class ActionListView : OverScrollListView {
         return ScriptEnvironmen.executeResultRoot(context, shellScript);
     }
 
-    private fun actionExecute(configItem: ConfigItemBase, script: String, startPath: String?, onExit: Runnable, params: HashMap<String, String>?) {
-        SimpleShellExecutor(context).execute(configItem, script, onExit, params)
+    private fun actionExecute(configItem: ConfigItemBase, script: String, onExit: Runnable, params: HashMap<String, String>?) {
+        if (actionShortClickHandler != null) {
+            val shellHandler = actionShortClickHandler!!.onExecute(configItem, onExit)
+            SimpleShellExecutor(context).execute(configItem, script, onExit, params, shellHandler)
+        } else {
+            SimpleShellExecutor(context).execute(configItem, script, onExit, params, null)
+        }
     }
 }

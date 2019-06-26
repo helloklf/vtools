@@ -1,29 +1,34 @@
 package com.omarea.krscript.executor;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
-import android.graphics.Color;
-import android.os.Message;
-import android.text.Spannable;
 import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.omarea.krscript.R;
+import com.omarea.krscript.model.ShellHandlerBase;
 
 import java.util.Objects;
-import java.util.regex.Pattern;
 
-public class SimpleShellHandler extends ShellHandler {
-    Context context;
-    private boolean autoOff = false;
-    private Runnable forceStop = null;
+public class SimpleShellHandler extends ShellHandlerBase {
+    private Context context;
+    private boolean autoOff;
+    private TextView textView;
+    private ProgressBar shellProgress;
+    private TextView shellTitle;
+    private Button btnExit;
+    private Button btnHide;
+    public Dialog dialog;
 
-    public SimpleShellHandler(Context context, String title, final Runnable forceStop, boolean autoOff) {
+    SimpleShellHandler(Context context, String title, final Runnable forceStop, boolean autoOff) {
         this.context = context;
         this.autoOff = autoOff;
-        this.forceStop = forceStop;
 
         if (title.isEmpty()) {
             title = context.getString(R.string.shell_executor);
@@ -53,66 +58,29 @@ public class SimpleShellHandler extends ShellHandler {
                 cleanUp();
             }
         });
+
         btnExit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                exit();
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+                cleanUp();
+                if (forceStop != null && !finished) {
+                    forceStop.run();
+                }
             }
         });
 
-        if (this.forceStop != null) {
+        if (forceStop != null) {
             btnExit.setVisibility(View.VISIBLE);
         } else {
             btnExit.setVisibility(View.GONE);
         }
     }
 
-    private void cleanUp() {
-        dialog = null;
-        shellTitle = null;
-        shellProgress = null;
-        textView = null;
-        btnExit = null;
-        btnHide = null;
-    }
-
     @Override
-    public void handleMessage(Message msg) {
-        super.handleMessage(msg);
-        switch (msg.what) {
-            case ShellHandler.EVENT_EXIT:
-                onExit(msg.obj);
-                break;
-            case ShellHandler.EVENT_START: {
-                onStart(msg.obj);
-                break;
-            }
-            case ShellHandler.EVENT_REDE:
-                onReader(msg.obj);
-                break;
-            case ShellHandler.EVENT_READ_ERROR:
-                onError(msg.obj);
-                break;
-            case ShellHandler.EVENT_WRITE: {
-                onWrite(msg.obj);
-                break;
-            }
-        }
-    }
-
-    private void onWrite(Object msg) {
-        updateLog(msg, "#808080");
-    }
-
-    private void onStart(Object msg) {
-        // updateLog(msg, "#000000");
-    }
-
-    private void onError(Object msg) {
-        updateLog(msg, "#ff0000");
-    }
-
-    private void onExit(Object msg) {
+    protected void onExit(Object msg) {
         if (btnHide != null) {
             btnHide.setVisibility(View.GONE);
         }
@@ -134,21 +102,8 @@ public class SimpleShellHandler extends ShellHandler {
         }
     }
 
-    private void onReader(Object msg) {
-        if (msg != null) {
-            String log = msg.toString().trim();
-            if(Pattern.matches("^progress:\\[[\\-0-9\\\\]{1,}/[0-9\\\\]{1,}]$", log)) {
-                String [] values = log.substring("progress:[".length(), log.indexOf("]")).split("/");
-                int start = Integer.parseInt(values[0]);
-                int total = Integer.parseInt(values[1]);
-                onProgress(start, total);
-            } else {
-                updateLog(msg, "#00cc55");
-            }
-        }
-    }
-
-    private void onProgress(int current, int total){
+    @Override
+    protected void onProgress(int current, int total) {
         if (this.shellProgress != null) {
             if (current == -1) {
                 this.shellProgress.setVisibility(View.VISIBLE);
@@ -164,19 +119,9 @@ public class SimpleShellHandler extends ShellHandler {
         }
     }
 
-    /**
-     * 输出指定颜色的内容
-     *
-     * @param msg
-     * @param color
-     */
-    private void updateLog(final Object msg, final String color) {
-        if (msg != null && textView != null) {
-            String msgStr = msg.toString();
-            SpannableString spannableString = new SpannableString(msgStr);
-            spannableString.setSpan(new ForegroundColorSpan(Color.parseColor(color)), 0, msgStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            updateLog(spannableString);
-        }
+    @Override
+    protected void onStart(Object msg) {
+
     }
 
     /**
@@ -184,39 +129,26 @@ public class SimpleShellHandler extends ShellHandler {
      *
      * @param msg
      */
-    private void updateLog(final SpannableString msg) {
+    @Override
+    protected void updateLog(final SpannableString msg) {
         if (this.textView != null && msg != null) {
             this.textView.post(new Runnable() {
                 @Override
                 public void run() {
                     textView.append(msg);
+                    ((ScrollView) textView.getParent()).fullScroll(ScrollView.FOCUS_DOWN);
                 }
             });
         }
     }
 
-    /**
-     * 无格式输出
-     * @param msg
-     */
-    private void updateLog(final String msg) {
-        if (this.textView != null && msg != null) {
-            this.textView.post(new Runnable() {
-                @Override
-                public void run() {
-                    textView.append(msg);
-                }
-            });
-        }
-    }
-
-    private void exit() {
-        if (dialog != null) {
-            dialog.dismiss();
-        }
-        cleanUp();
-        if (forceStop != null && !finished) {
-            forceStop.run();
-        }
+    @Override
+    protected void cleanUp() {
+        dialog = null;
+        shellTitle = null;
+        shellProgress = null;
+        textView = null;
+        btnExit = null;
+        btnHide = null;
     }
 }

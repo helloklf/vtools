@@ -4,45 +4,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:orientation="horizontal"
+    <TextView
+        android:paddingTop="15dp"
+        android:paddingBottom="6dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:id="@+id/shell_title"
+        style="@style/textTitle"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent" />
+
+    <ProgressBar
+        android:id="@+id/shell_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:max="100"
+        android:progress="0"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <TextView
-            android:paddingTop="15dp"
-            android:paddingBottom="12dp"
-            android:paddingStart="20dp"
-            android:paddingEnd="10dp"
-            android:layout_weight="1"
-            android:text="正在执行..."
-            android:id="@+id/shell_title"
-            style="@style/textTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        <ProgressBar
-            android:layout_marginStart="6dp"
-            android:paddingEnd="20dp"
-            android:id="@+id/shell_progress"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:max="100"
-            android:progress="0"
-            android:layout_gravity="center_vertical"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:indeterminate="true" />
-    </LinearLayout>
+        android:layout_height="wrap_content"
+        android:indeterminate="true" />
+
     <com.omarea.common.ui.OverScrollView
         android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
         android:keepScreenOn="false">
 
         <TextView
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:paddingBottom="6dp"
+            android:paddingBottom="25dp"
+            android:minHeight="300dp"
             android:id="@+id/shell_output"
-            style="@style/textSmall"
+            android:textSize="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:typeface="monospace" />

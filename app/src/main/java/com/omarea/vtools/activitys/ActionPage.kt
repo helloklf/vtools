@@ -3,18 +3,22 @@ package com.omarea.vtools.activitys
 import android.app.AlertDialog
 import android.content.ComponentName
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.text.SpannableString
+import android.view.KeyEvent
 import android.view.View
+import android.widget.ProgressBar
+import android.widget.ScrollView
+import android.widget.TextView
 import android.widget.Toast
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.config.PageConfigReader
-import com.omarea.krscript.model.ActionInfo
-import com.omarea.krscript.model.ActionLongClickHandler
-import com.omarea.krscript.model.SwitchInfo
+import com.omarea.krscript.model.*
 import com.omarea.krscript.shortcut.ActionShortcutManager
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_action_page.*
@@ -80,6 +84,11 @@ class ActionPage : AppCompatActivity() {
                 }
             }
         }
+
+        action_page_tabhost.setup()
+        action_page_tabhost.addTab(action_page_tabhost.newTabSpec("a").setContent(R.id.main_list).setIndicator(""))
+        action_page_tabhost.addTab(action_page_tabhost.newTabSpec("b").setContent(R.id.action_params).setIndicator(""))
+        action_page_tabhost.addTab(action_page_tabhost.newTabSpec("c").setContent(R.id.action_log).setIndicator(""))
     }
 
     /**
@@ -149,6 +158,107 @@ class ActionPage : AppCompatActivity() {
         }
     }
 
+    private var actionShortClickHandler = object : ActionShortClickHandler {
+        override fun onParamsView(view: View, onCancel: Runnable, onComplete: Runnable) {
+            action_params_editor.removeAllViews()
+            action_params_editor.addView(view)
+            action_page_tabhost.currentTab = 1
+            action_cancel.setOnClickListener {
+                action_page_tabhost.currentTab = 0
+                onCancel.run()
+            }
+            btn_confirm.setOnClickListener {
+                action_params_editor.removeAllViews()
+                onComplete.run()
+            }
+        }
+
+        override fun onExecute(configItem: ConfigItemBase, onExit: Runnable): ShellHandlerBase? {
+            var finished = false
+            val currentTitle = title
+
+            btn_hide.setOnClickListener {
+                action_page_tabhost.currentTab = 0
+                setTitle(currentTitle)
+            }
+            btn_exit.setOnClickListener {
+                action_page_tabhost.currentTab = 0
+                setTitle(currentTitle)
+                if (!finished) {
+                    // TODO:强制停止
+                }
+            }
+            if (configItem.interruptible) {
+                btn_hide.visibility = View.VISIBLE
+                btn_exit.visibility = View.VISIBLE
+            } else {
+                btn_hide.visibility = View.GONE
+                btn_exit.visibility = View.GONE
+            }
+
+            action_page_tabhost.currentTab = 2
+            setTitle(configItem.title)
+            action_progress.visibility = View.VISIBLE
+            return MyShellHandler(Runnable {
+                onExit.run()
+                finished = true
+
+                btn_hide.visibility = View.GONE
+                btn_exit.visibility = View.VISIBLE
+                action_progress.visibility = View.GONE
+                finished = true
+            }, shell_output, action_progress);
+        }
+    }
+
+    private class MyShellHandler(private var onExit: Runnable, private var logView: TextView, private var shellProgress: ProgressBar) : ShellHandlerBase()
+    {
+        override fun onProgress(current: Int, total: Int) {
+            if (current == -1) {
+                this.shellProgress.setVisibility(View.VISIBLE)
+                this.shellProgress.setIndeterminate(true)
+            } else if (current == total) {
+                this.shellProgress.setVisibility(View.GONE)
+            } else {
+                this.shellProgress.setVisibility(View.VISIBLE)
+                this.shellProgress.setIndeterminate(false)
+                this.shellProgress.setMax(total)
+                this.shellProgress.setProgress(current)
+            }
+        }
+
+        override fun cleanUp() {
+        }
+
+        override fun onStart(msg: Any?) {
+            this.logView.text = "";
+        }
+
+        override fun onExit(msg: Any?) {
+            updateLog("\n\n脚本运行结束\n\n", Color.BLUE)
+            onExit.run()
+        }
+
+        override fun updateLog(msg: SpannableString?) {
+            if (msg != null) {
+                this.logView.post({
+                    logView.append(msg)
+                    (logView.getParent() as ScrollView).fullScroll(ScrollView.FOCUS_DOWN)
+                })
+            }
+        }
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK && action_page_tabhost.currentTab != 0) {
+            if (action_page_tabhost.currentTab == 1) {
+                action_page_tabhost.currentTab = 0;
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+
     override fun onResume() {
         super.onResume()
 
@@ -158,12 +268,16 @@ class ActionPage : AppCompatActivity() {
                 val items = PageConfigReader(this.applicationContext).readConfigXml(pageConfig)
                 handler.post {
                     if (items != null && items.size != 0) {
-                        main_list.setListData(items, addToFavorites)
+                        main_list.setListData(
+                                items,
+                                actionShortClickHandler,
+                                addToFavorites
+                        )
                         if (autoRun.isNotEmpty()) {
                             val onCompleted = Runnable {
                                 // finish()
                             }
-                            if(!main_list.triggerAction(autoRun, onCompleted)) {
+                            if (!main_list.triggerAction(autoRun, onCompleted)) {
                                 Toast.makeText(this, "指定项已丢失", Toast.LENGTH_SHORT).show()
                             }
                         }

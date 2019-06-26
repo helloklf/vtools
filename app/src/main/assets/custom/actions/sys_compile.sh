@@ -3,6 +3,6 @@
 for item in `pm list packages -s`
 do
 	app=${item:8}
-	echo "compile -> $app"
-	cmd package compile -m speed $app
+	echo "> $app"
+	cmd package compile -m speed $app 1>/dev/null
 done

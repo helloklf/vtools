@@ -20,20 +20,6 @@ function set_value()
 }
 
 paths=`ls /sys/class/power_supply/*/constant_charge_current_max`
-# 更改限制 change_limit ?mA
-function change_limit() {
-    echo "更改限制值为：${1}mA"
-    local limit="${1}000"
-
-    for path in $paths
-    do
-        echo $limit > $path
-    done
-
-    if [[ -f /sys/class/qcom-battery/restricted_current ]]; then
-        echo $limit > /sys/class/qcom-battery/restricted_current
-    fi
-}
 
 set_value /sys/class/qcom-battery/restricted_charging 0
 set_value /sys/class/power_supply/battery/restricted_charging 0
@@ -51,5 +37,3 @@ do
     chmod 0664 $path
 done
 
-# 部分设备不支持超过3000的值，所以首次执行先设为3000吧
-change_limit 3000
