@@ -12,6 +12,7 @@
             android:orientation="vertical">
 
             <LinearLayout style="@style/ListCardItem">
+
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -28,6 +29,7 @@
             </LinearLayout>
 
             <LinearLayout style="@style/ListCardItem">
+
                 <Switch
                     android:id="@+id/cpu_apply_onboot"
                     android:layout_width="wrap_content"
@@ -47,6 +49,7 @@
             </LinearLayout>
 
             <GridLayout style="@style/ListCardItem">
+
                 <TextView
                     android:layout_row="0"
                     android:layout_columnSpan="2"
@@ -153,6 +156,7 @@
             </GridLayout>
 
             <GridLayout style="@style/ListCardItem">
+
                 <TextView
                     android:layout_row="0"
                     android:layout_columnSpan="2"
@@ -235,7 +239,9 @@
             </GridLayout>
 
             <GridLayout
-                android:id="@+id/big_core_configs" style="@style/ListCardItem">
+                android:id="@+id/big_core_configs"
+                style="@style/ListCardItem">
+
                 <TextView
                     android:layout_row="0"
                     android:layout_columnSpan="2"
@@ -318,7 +324,8 @@
             </GridLayout>
 
             <GridLayout
-                android:id="@+id/adreno_gpu" style="@style/ListCardItem">
+                android:id="@+id/adreno_gpu"
+                style="@style/ListCardItem">
 
                 <TextView
                     android:layout_row="0"
@@ -448,6 +455,7 @@
             </GridLayout>
 
             <GridLayout style="@style/ListCardItem">
+
                 <TextView
                     android:layout_row="0"
                     android:layout_columnSpan="2"
@@ -497,6 +505,7 @@
             </GridLayout>
 
             <GridLayout style="@style/ListCardItem">
+
                 <TextView
                     android:layout_row="0"
                     android:layout_columnSpan="2"
@@ -602,6 +611,7 @@
             </GridLayout>
 
             <GridLayout style="@style/ListCardItem">
+
                 <TextView
                     android:layout_row="0"
                     android:layout_columnSpan="2"
@@ -664,6 +674,7 @@
             </GridLayout>
 
             <GridLayout style="@style/ListCardItemLast">
+
                 <TextView
                     android:layout_row="0"
                     android:layout_columnSpan="2"

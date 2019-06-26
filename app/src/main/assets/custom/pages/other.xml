@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <switchs>
 
-    <action id="addin_restart_systemui" auto-off="true">
+    <action auto-off="true" id="addin_restart_systemui">
         <title>重启SystemUI</title>
         <desc>结束SystemUI进程，使其重新加载</desc>
         <script>

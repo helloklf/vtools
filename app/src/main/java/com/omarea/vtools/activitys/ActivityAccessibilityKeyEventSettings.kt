@@ -57,8 +57,7 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
         // 显示返回按钮
         getSupportActionBar()!!.setHomeButtonEnabled(true);
         getSupportActionBar()!!.setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener({
-            _ ->
+        toolbar.setNavigationOnClickListener({ _ ->
             finish()
         })
 

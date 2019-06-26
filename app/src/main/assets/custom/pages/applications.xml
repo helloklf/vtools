@@ -34,7 +34,7 @@
     </group>
 
     <group title="性能优化">
-        <action support="file:///android_asset/custom/actions/tmgp_support.sh" id="tgmp_config">
+        <action id="tgmp_config" support="file:///android_asset/custom/actions/tmgp_support.sh">
             <title>王者荣耀配置修改</title>
             <desc su="file:///android_asset/custom/actions/tmgp_get.sh" />
             <script>file:///android_asset/custom/actions/tmgp_set.sh</script>
@@ -50,20 +50,22 @@
     </group>
 
     <group title="Google相关">
-        <action support="file:///android_asset/custom/actions/gapps_support.sh" id="google_settings" auto-off="true">
+        <action auto-off="true" id="google_settings"
+            support="file:///android_asset/custom/actions/gapps_support.sh">
             <title>打开Google设置</title>
             <desc>本功能为了方便隐藏了“Google设置”的定制系统，打开“Google设置”</desc>
             <script>
                 am start -n com.google.android.gms/.app.settings.GoogleSettingsLink 2> /dev/null
             </script>
         </action>
-        <switch support="file:///android_asset/custom/switchs/gapps_support.sh" id="google_service" auto-off="true">
+        <switch auto-off="true" id="google_service"
+            support="file:///android_asset/custom/switchs/gapps_support.sh">
             <title>启用Google服务</title>
             <desc>关闭此选项以临时禁用谷歌框架节省电量</desc>
             <getstate>file:///android_asset/custom/switchs/gapps_get.sh</getstate>
             <setstate>file:///android_asset/custom/switchs/gapps_set.sh</setstate>
         </switch>
-        <switch id="google_hal_eis" auto-off="true">
+        <switch auto-off="true" id="google_hal_eis">
             <title>Camera2 HAL、EIS</title>
             <desc>启用HAL和EIS，从而支持谷歌相机HDR+功能或避免闪退（谷歌相机需要自行下载适合自己机型的版本）。可能导致相机无法开启或切换缓慢</desc>
             <getstate>file:///android_asset/custom/switchs/gcm_get.sh</getstate>

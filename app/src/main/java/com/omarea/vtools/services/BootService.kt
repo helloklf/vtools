@@ -197,7 +197,7 @@ class BootService : IntentService("vtools-boot") {
             if (configInstaller.configInstalled()) {
                 modeList.executePowercfgMode(globalPowercfg, context!!.packageName)
             } else {
-                if(configInstaller.dynamicSupport(context!!)) {
+                if (configInstaller.dynamicSupport(context!!)) {
                     configInstaller.installPowerConfig(context);
                     modeList.executePowercfgMode(globalPowercfg)
                 }
@@ -215,7 +215,7 @@ class BootService : IntentService("vtools-boot") {
         if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)) {
             Thread.sleep(10000)
             updateNotification(getString(R.string.boot_swapon))
-            val swapControlScript = FileWrite.writePrivateShellFile( "addin/swap_control.sh", "addin/swap_control.sh", context)
+            val swapControlScript = FileWrite.writePrivateShellFile("addin/swap_control.sh", "addin/swap_control.sh", context)
             if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false) && swapControlScript != null) {
                 if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, false)) {
                     keepShell.doCmdSync("sh $swapControlScript enable_swap 32760\n")
@@ -281,7 +281,7 @@ class BootService : IntentService("vtools-boot") {
             }
             return ""
         }
-        set (value) {
+        set(value) {
             KernelProrp.setProp("/sys/block/zram0/comp_algorithm", value)
         }
 

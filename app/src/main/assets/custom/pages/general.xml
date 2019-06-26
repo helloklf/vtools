@@ -17,14 +17,14 @@
         <desc>调整各种动画时长</desc>
         <params>
             <param name="window_animation_scale" desc="弹窗动画时长"
-                options-sh="file:///android_asset/custom/actions/anima_level_options.sh"
-                value="1" value-sh="settings get global window_animation_scale" />
+                options-sh="file:///android_asset/custom/actions/anima_level_options.sh" value="1"
+                value-sh="settings get global window_animation_scale" />
             <param name="transition_animation_scale" desc="界面切换动画时长"
-                options-sh="file:///android_asset/custom/actions/anima_level_options.sh"
-                value="1" value-sh="settings get global transition_animation_scale" />
+                options-sh="file:///android_asset/custom/actions/anima_level_options.sh" value="1"
+                value-sh="settings get global transition_animation_scale" />
             <param name="animator_duration_scale" desc="动画程序时长"
-                options-sh="file:///android_asset/custom/actions/anima_level_options.sh"
-                value="1" value-sh="settings get global animator_duration_scale" />
+                options-sh="file:///android_asset/custom/actions/anima_level_options.sh" value="1"
+                value-sh="settings get global animator_duration_scale" />
         </params>
         <script>
             settings put global window_animation_scale $window_animation_scale

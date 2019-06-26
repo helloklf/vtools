@@ -175,8 +175,8 @@ class FragmentFreeze : Fragment() {
 
         val view = View.inflate(context, R.layout.dialog_freeze_settings, null)
         val switch = view.findViewById<Switch>(R.id.freeze_privacy)
-        val fingerprintVerify  = view.findViewById<Switch>(R.id.freeze_fingerprint_verify)
-        val pretend  = view.findViewById<Switch>(R.id.freeze_pretend)
+        val fingerprintVerify = view.findViewById<Switch>(R.id.freeze_fingerprint_verify)
+        val pretend = view.findViewById<Switch>(R.id.freeze_pretend)
 
         switch.isChecked = config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_PRIVACY, false)
         switch.setOnClickListener {
@@ -281,6 +281,7 @@ class FragmentFreeze : Fragment() {
     private fun enableApp(appInfo: Appinfo) {
         enableApp(appInfo.packageName.toString())
     }
+
     private fun enableApp(packageName: String) {
         KeepShellPublic.doCmdSync("pm unhide " + packageName + "\n" + "pm enable " + packageName)
     }

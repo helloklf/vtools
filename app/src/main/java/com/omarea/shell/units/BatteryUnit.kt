@@ -2,9 +2,11 @@ package com.omarea.shell.units
 
 import android.content.Context
 import com.omarea.common.shared.FileWrite
-import com.omarea.common.shell.*
+import com.omarea.common.shell.KeepShellAsync
+import com.omarea.common.shell.KeepShellPublic
+import com.omarea.common.shell.KernelProrp
+import com.omarea.common.shell.RootFile
 import com.omarea.shared.model.BatteryStatus
-import com.omarea.shell.Props
 import java.io.File
 
 /**

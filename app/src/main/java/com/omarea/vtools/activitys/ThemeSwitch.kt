@@ -1,7 +1,9 @@
 package com.omarea.vtools.activitys
 
 import android.Manifest
-import android.app.*
+import android.app.Activity
+import android.app.UiModeManager
+import android.app.WallpaperManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Bitmap
@@ -16,7 +18,6 @@ import android.renderscript.ScriptIntrinsicBlur
 import android.support.v4.content.PermissionChecker
 import android.view.View
 import android.view.WindowManager
-import android.widget.Toast
 import com.omarea.common.ui.DialogHelper
 import com.omarea.shared.SpfConfig
 import com.omarea.vtools.R
@@ -146,7 +147,7 @@ object ThemeSwitch {
         var lightPoint = 0
 
         // 采样点数
-        val pointCount = if(h > 8 && w > 8) 8 else 1
+        val pointCount = if (h > 8 && w > 8) 8 else 1
 
         for (i in 0..pointCount) {
             val y = h / pointCount * i

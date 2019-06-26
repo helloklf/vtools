@@ -3,9 +3,12 @@ package com.omarea.krscript.executor;
 import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
+import android.widget.Toast;
+
 import com.omarea.common.shared.FileWrite;
 import com.omarea.common.shared.MagiskExtend;
 import com.omarea.common.shell.KeepShellPublic;
+import com.omarea.krscript.R;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -148,6 +151,11 @@ public class ScriptEnvironmen {
         String cachePath = "";
         if (script2.startsWith(ASSETS_FILE)) {
             cachePath = extractScript(context, script2);
+            if (cachePath == null) {
+                cachePath = script;
+                // String error = context.getString(R.string.script_losted) + script;
+                // Toast.makeText(context, error, Toast.LENGTH_LONG).show();
+            }
         } else {
             cachePath = createShellCache(context, script);
         }

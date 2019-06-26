@@ -9,13 +9,13 @@ import com.omarea.shared.SpfConfig
 import com.omarea.vtools.R
 
 class DialogFreezeSettings {
-    fun showOptions(context: Context, onClose:Runnable) {
+    fun showOptions(context: Context, onClose: Runnable) {
         val config = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
         val view = View.inflate(context, R.layout.dialog_freeze_settings, null)
         val switch = view.findViewById<Switch>(R.id.freeze_privacy)
-        val fingerprintVerify  = view.findViewById<Switch>(R.id.freeze_fingerprint_verify)
-        val pretend  = view.findViewById<Switch>(R.id.freeze_pretend)
+        val fingerprintVerify = view.findViewById<Switch>(R.id.freeze_fingerprint_verify)
+        val pretend = view.findViewById<Switch>(R.id.freeze_pretend)
 
         switch.isChecked = config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_PRIVACY, false)
         switch.setOnClickListener {

@@ -29,6 +29,8 @@ class ActionPage : AppCompatActivity() {
     private var handler = Handler()
     private var pageConfig: String = ""
     private var autoRun: String = ""
+    private var pageTitle = ""
+    private var running = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ThemeSwitch.switchTheme(this)
@@ -70,7 +72,8 @@ class ActionPage : AppCompatActivity() {
             val extras = intent.extras
             if (extras != null) {
                 if (extras.containsKey("title")) {
-                    setTitle(extras.getString("title"))
+                    pageTitle = extras.getString("title")!!
+                    setTitle(pageTitle)
                 }
                 if (extras.containsKey("config")) {
                     pageConfig = extras.getString("config")!!
@@ -89,6 +92,11 @@ class ActionPage : AppCompatActivity() {
         action_page_tabhost.addTab(action_page_tabhost.newTabSpec("a").setContent(R.id.main_list).setIndicator(""))
         action_page_tabhost.addTab(action_page_tabhost.newTabSpec("b").setContent(R.id.action_params).setIndicator(""))
         action_page_tabhost.addTab(action_page_tabhost.newTabSpec("c").setContent(R.id.action_log).setIndicator(""))
+        action_page_tabhost.setOnTabChangedListener {
+            if (action_page_tabhost.currentTab == 0) {
+                setTitle(pageTitle)
+            }
+        }
     }
 
     /**
@@ -159,33 +167,35 @@ class ActionPage : AppCompatActivity() {
     }
 
     private var actionShortClickHandler = object : ActionShortClickHandler {
-        override fun onParamsView(view: View, onCancel: Runnable, onComplete: Runnable) {
-            action_params_editor.removeAllViews()
-            action_params_editor.addView(view)
-            action_page_tabhost.currentTab = 1
-            action_cancel.setOnClickListener {
-                action_page_tabhost.currentTab = 0
-                onCancel.run()
-            }
-            btn_confirm.setOnClickListener {
+        override fun onParamsView(actionInfo: ActionInfo, view: View, onCancel: Runnable, onComplete: Runnable): Boolean {
+            if (actionInfo.params!!.size > 3) {
                 action_params_editor.removeAllViews()
-                onComplete.run()
+                action_params_editor.addView(view)
+                action_page_tabhost.currentTab = 1
+                action_cancel.setOnClickListener {
+                    action_page_tabhost.currentTab = 0
+                    onCancel.run()
+                }
+                btn_confirm.setOnClickListener {
+                    action_params_editor.removeAllViews()
+                    onComplete.run()
+                }
+                setTitle(actionInfo.title)
+                return true
             }
+            return false
         }
 
         override fun onExecute(configItem: ConfigItemBase, onExit: Runnable): ShellHandlerBase? {
-            var finished = false
-            val currentTitle = title
+            var forceStopRunnable: Runnable? = null
 
             btn_hide.setOnClickListener {
                 action_page_tabhost.currentTab = 0
-                setTitle(currentTitle)
             }
             btn_exit.setOnClickListener {
                 action_page_tabhost.currentTab = 0
-                setTitle(currentTitle)
-                if (!finished) {
-                    // TODO:强制停止
+                if (running && forceStopRunnable != null) {
+                    forceStopRunnable!!.run()
                 }
             }
             if (configItem.interruptible) {
@@ -199,20 +209,42 @@ class ActionPage : AppCompatActivity() {
             action_page_tabhost.currentTab = 2
             setTitle(configItem.title)
             action_progress.visibility = View.VISIBLE
-            return MyShellHandler(Runnable {
-                onExit.run()
-                finished = true
+            return MyShellHandler(object : IActionEventHandler {
+                override fun onExit() {
+                    running = false
 
-                btn_hide.visibility = View.GONE
-                btn_exit.visibility = View.VISIBLE
-                action_progress.visibility = View.GONE
-                finished = true
+                    onExit.run()
+                    btn_hide.visibility = View.GONE
+                    btn_exit.visibility = View.VISIBLE
+                    action_progress.visibility = View.GONE
+                }
+
+                override fun onStart(forceStop: Runnable?) {
+                    running = true
+
+                    if (configItem.interruptible && forceStop != null) {
+                        btn_exit.setVisibility(View.VISIBLE)
+                    } else {
+                        btn_exit.setVisibility(View.GONE)
+                    }
+                    forceStopRunnable = forceStop
+                }
+
             }, shell_output, action_progress);
         }
     }
 
-    private class MyShellHandler(private var onExit: Runnable, private var logView: TextView, private var shellProgress: ProgressBar) : ShellHandlerBase()
-    {
+    @FunctionalInterface
+    private interface IActionEventHandler {
+        fun onStart(forceStop: Runnable?)
+        fun onExit()
+    }
+
+    private class MyShellHandler(private var actionEventHandler: IActionEventHandler, private var logView: TextView, private var shellProgress: ProgressBar) : ShellHandlerBase() {
+        override fun onStart(forceStop: Runnable?) {
+            actionEventHandler.onStart(forceStop)
+        }
+
         override fun onProgress(current: Int, total: Int) {
             if (current == -1) {
                 this.shellProgress.setVisibility(View.VISIBLE)
@@ -232,11 +264,12 @@ class ActionPage : AppCompatActivity() {
 
         override fun onStart(msg: Any?) {
             this.logView.text = "";
+            updateLog(msg, Color.GRAY)
         }
 
         override fun onExit(msg: Any?) {
             updateLog("\n\n脚本运行结束\n\n", Color.BLUE)
-            onExit.run()
+            actionEventHandler.onExit()
         }
 
         override fun updateLog(msg: SpannableString?) {
@@ -252,7 +285,9 @@ class ActionPage : AppCompatActivity() {
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK && action_page_tabhost.currentTab != 0) {
             if (action_page_tabhost.currentTab == 1) {
-                action_page_tabhost.currentTab = 0;
+                action_page_tabhost.currentTab = 0
+            } else if (action_page_tabhost.currentTab == 2 && !running) {
+                action_page_tabhost.currentTab = 0
             }
             return true;
         }

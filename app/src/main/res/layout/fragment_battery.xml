@@ -16,6 +16,7 @@
             android:orientation="vertical">
 
             <LinearLayout style="@style/ListCardItem">
+
                 <TextView
                     android:id="@+id/battrystatus"
                     android:layout_width="match_parent"
@@ -23,23 +24,25 @@
                     android:text="电池信息："
                     android:textColor="?colorAccent"
                     android:textSize="11dp" />
+
                 <TextView
                     style="@style/textSmall"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:text="使用充电加速建议保持Scene后台运行！" />
 
                 <TextView
                     style="@style/textSmall"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:text="电池保护功能，必须让Scene保持后台运行！" />
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/settings_pd_support" style="@style/ListCardItem">
+                android:id="@+id/settings_pd_support"
+                style="@style/ListCardItem">
 
                 <Switch
                     android:id="@+id/settings_pd"
@@ -55,9 +58,9 @@
                     android:text="启用USB-PD快充协议(强烈建议，不要尝试手动开关此选项！！！)" />
 
                 <LinearLayout
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:orientation="horizontal">
 
                     <TextView
@@ -76,6 +79,7 @@
             </LinearLayout>
 
             <LinearLayout style="@style/ListCardItem">
+
                 <Switch
                     android:id="@+id/settings_qc"
                     style="@style/textTitle"
@@ -90,69 +94,72 @@
                     android:text="@string/accessbility_charger_desc" />
 
                 <LinearLayout
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:orientation="horizontal">
+
                     <SeekBar
-                        android:paddingEnd="0dp"
-                        android:paddingStart="0dp"
                         android:id="@+id/settings_qc_limit"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:gravity="center_vertical"
-                        android:max="60" />
+                        android:max="60"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="0dp" />
 
                     <TextView
                         android:id="@+id/settings_qc_limit_desc"
-                        android:layout_marginStart="@dimen/activity_horizontal_margin"
                         style="@style/textSmall"
-                        android:gravity="center_vertical"
                         android:layout_width="45dp"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/activity_horizontal_margin"
+                        android:gravity="center_vertical" />
                 </LinearLayout>
 
                 <TextView
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:id="@+id/settings_qc_limit_current"
                     style="@style/textSmall"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin" />
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/bp_cardview" style="@style/ListCardItem" android:visibility="gone">
+                android:id="@+id/bp_cardview"
+                style="@style/ListCardItem"
+                android:visibility="gone">
 
                 <Switch
                     android:id="@+id/settings_bp"
+                    style="@style/textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/textTitle"
                     android:text="@string/accessbility_bp"
                     tools:ignore="RtlHardcoded" />
 
                 <TextView
+                    style="@style/textSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/textSmall"
                     android:text="@string/accessbility_bp_desc" />
 
                 <SeekBar
-                    android:paddingEnd="0dp"
-                    android:paddingStart="0dp"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:id="@+id/settings_bp_level"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:max="100" />
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:max="100"
+                    android:paddingStart="0dp"
+                    android:paddingEnd="0dp" />
 
                 <TextView
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:id="@+id/accessbility_bp_level_desc"
+                    style="@style/textSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/textSmall"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:text="@string/accessbility_bp_level_desc" />
 
                 <LinearLayout
@@ -161,10 +168,10 @@
                     android:orientation="vertical">
 
                     <TextView
+                        style="@style/textTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/activity_vertical_margin"
-                        style="@style/textTitle"
                         android:text="手动控制" />
 
                     <LinearLayout
@@ -204,9 +211,9 @@
 
                 <TextView
                     android:id="@+id/battery_uevent"
+                    style="@style/textSmall"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    style="@style/textSmall" />
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
             <LinearLayout style="@style/ListCardItemLast">

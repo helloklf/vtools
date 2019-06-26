@@ -28,5 +28,9 @@ fi
 
 
 # 运行脚本
-chmod 755 "$script_path"
-sh "$script_path"
+if [[ -f "$script_path" ]]; then
+    chmod 755 "$script_path"
+    sh "$script_path"
+else
+    echo "${script_path} 已丢失"
+fi

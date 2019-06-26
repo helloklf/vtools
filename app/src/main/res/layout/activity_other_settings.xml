@@ -209,12 +209,12 @@
 
                 <Switch
                     android:id="@+id/settings_theme_wallpaper"
-                    android:onClick="onThemeClick"
-                    android:tag="10"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     style="@style/textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:onClick="onThemeClick"
+                    android:tag="10"
                     android:text="@string/settings_theme_wallpaper" />
 
                 <TextView
@@ -262,8 +262,8 @@
                     android:id="@+id/settings_log_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="10dp"
                     android:minHeight="200dp"
+                    android:textSize="10dp"
                     android:visibility="gone" />
             </LinearLayout>
         </LinearLayout>

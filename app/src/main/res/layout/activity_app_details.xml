@@ -80,27 +80,27 @@
                 </LinearLayout>
 
                 <Switch
-                    android:visibility="gone"
                     android:id="@+id/app_details_disbackground"
                     style="@style/textTitle"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="离开主界面立即休眠" />
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:text="离开主界面立即休眠"
+                    android:visibility="gone" />
 
                 <Switch
                     android:id="@+id/app_details_aloowlight"
+                    style="@style/textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/textTitle"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:text="独立亮度" />
 
                 <Switch
                     android:id="@+id/app_details_gps"
+                    style="@style/textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    style="@style/textTitle"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:text="自动打开GPS（离开后还原）" />
             </LinearLayout>
@@ -122,19 +122,19 @@
 
                     <Switch
                         android:id="@+id/app_details_hidenav"
+                        style="@style/textTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        style="@style/textTitle"
                         android:text="隐藏导航栏" />
 
                     <Switch
                         android:id="@+id/app_details_hidestatus"
+                        style="@style/textTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="50dp"
                         android:layout_weight="1"
-                        style="@style/textTitle"
                         android:text="隐藏状态栏" />
                 </LinearLayout>
 
@@ -145,19 +145,19 @@
 
                     <Switch
                         android:id="@+id/app_details_hidenotice"
+                        style="@style/textTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        style="@style/textTitle"
                         android:text="屏蔽通知" />
 
                     <Switch
                         android:id="@+id/app_details_hidebtn"
+                        style="@style/textTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="50dp"
                         android:layout_weight="1"
-                        style="@style/textTitle"
                         android:text="屏蔽按键" />
                 </LinearLayout>
 
@@ -206,6 +206,7 @@
                 android:visibility="gone" />
 
             <LinearLayout style="@style/ListCardItemLast">
+
                 <TextView
                     style="@style/textTitle"
                     android:layout_width="match_parent"
@@ -232,40 +233,40 @@
                 </LinearLayout>
 
                 <Switch
-                    style="@style/textTitle"
                     android:id="@+id/app_details_excludetask"
+                    style="@style/textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:text="从最近任务隐藏" />
 
                 <Switch
-                    style="@style/textTitle"
                     android:id="@+id/app_details_scrollopt"
+                    style="@style/textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:text="弹性缓慢滚动" />
 
                 <Switch
-                    style="@style/textTitle"
                     android:id="@+id/app_details_webview_debug"
+                    style="@style/textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:text="Webview调试模式（全局）" />
 
                 <Switch
-                    style="@style/textTitle"
                     android:id="@+id/app_details_hide_su"
+                    style="@style/textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:text="隐藏类原生状态栏SU图标（全局）" />
 
                 <Switch
-                    style="@style/textTitle"
                     android:id="@+id/app_details_service_running"
+                    style="@style/textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"

@@ -34,7 +34,7 @@
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:paddingBottom="25dp"
-            android:minHeight="300dp"
+            android:minHeight="150dp"
             android:id="@+id/shell_output"
             android:textSize="10dp"
             android:layout_width="match_parent"

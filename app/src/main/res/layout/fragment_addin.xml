@@ -14,6 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
@@ -53,10 +54,10 @@
             </FrameLayout>
 
             <TabWidget
-                android:background="@drawable/tab_widget_background"
                 android:id="@android:id/tabs"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:background="@drawable/tab_widget_background" />
         </LinearLayout>
     </TabHost>
 </RelativeLayout>

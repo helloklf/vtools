@@ -118,11 +118,11 @@ class ActionListView : OverScrollListView {
     private fun switchExecute(switchInfo: SwitchInfo, toValue: Boolean, onExit: Runnable) {
         val script = switchInfo.setState ?: return
 
-        SimpleShellExecutor(context).execute(switchInfo, script, onExit, object : java.util.HashMap<String, String>() {
+        actionExecute(switchInfo, script, onExit, object : java.util.HashMap<String, String>() {
             init {
                 put("state", if (toValue) "1" else "0")
             }
-        }, null)
+        })
     }
 
     /**
@@ -227,10 +227,10 @@ class ActionListView : OverScrollListView {
                                 editText.layoutParams = lp
                             }
                         }
-                        if (actionShortClickHandler != null) {
-                            actionShortClickHandler!!.onParamsView(view, Runnable { }, Runnable {
-                                actionExecute(action, script, onExit, readParamsValue(actionParamInfos, linearLayout))
-                            })
+                        if (actionShortClickHandler != null && actionShortClickHandler!!.onParamsView(action, view, Runnable { }, Runnable {
+                                    actionExecute(action, script, onExit, readParamsValue(actionParamInfos, linearLayout))
+                                })) {
+                            //
                         } else {
                             DialogHelper.animDialog(AlertDialog.Builder(context)
                                     .setTitle(action.title)
@@ -373,11 +373,11 @@ class ActionListView : OverScrollListView {
     }
 
     private fun actionExecute(configItem: ConfigItemBase, script: String, onExit: Runnable, params: HashMap<String, String>?) {
+        var shellHandler:ShellHandlerBase? = null
         if (actionShortClickHandler != null) {
-            val shellHandler = actionShortClickHandler!!.onExecute(configItem, onExit)
-            SimpleShellExecutor(context).execute(configItem, script, onExit, params, shellHandler)
-        } else {
-            SimpleShellExecutor(context).execute(configItem, script, onExit, params, null)
+            shellHandler = actionShortClickHandler!!.onExecute(configItem, onExit)
         }
+
+        SimpleShellExecutor(context).execute(configItem, script, onExit, params, shellHandler)
     }
 }

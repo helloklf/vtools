@@ -5,53 +5,58 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:padding="@dimen/activity_vertical_margin"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_vertical_margin">
+
         <Switch
-            style="@style/textTitle"
             android:id="@+id/freeze_privacy"
+            style="@style/textTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:enabled="false"
-            android:text="@string/freeze_privacy"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-        <TextView
-            android:text="@string/freeze_privacy_desc"
-            style="@style/textSmall"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:text="@string/freeze_privacy" />
+
         <TextView
             style="@style/textSmall"
-            android:textColor="@android:color/holo_red_light"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/freeze_privacy_desc" />
+
+        <TextView
+            style="@style/textSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/freeze_privacy_warn"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:textColor="@android:color/holo_red_light" />
 
         <Switch
             android:id="@+id/freeze_fingerprint_verify"
-            android:text="@string/freeze_fingerprint_verify"
-            android:enabled="false"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:enabled="false"
+            android:text="@string/freeze_fingerprint_verify" />
+
         <TextView
-            android:text="@string/freeze_fingerprint_verify_desc"
             style="@style/textSmall"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="@string/freeze_fingerprint_verify_desc" />
 
         <Switch
             android:id="@+id/freeze_pretend"
-            android:text="@string/freeze_pretend"
-            android:enabled="false"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:enabled="false"
+            android:text="@string/freeze_pretend" />
+
         <TextView
-            android:text="@string/freeze_pretend_desc"
             style="@style/textSmall"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="@string/freeze_pretend_desc" />
     </LinearLayout>
 </FrameLayout>

@@ -2,13 +2,13 @@
 <pages>
     <resource dir="file:///android_asset/custom/common" />
 
-    <page title="通用功能" desc="基本上所有安卓手机都能用" config="custom/pages/general.xml" />
-    <page title="性能调节" desc="与设备运行性能相关的选项" config="custom/pages/performance.xml" />
-    <page title="电池、充电" desc="与电池相关的选项" config="custom/pages/power.xml" />
-    <page title="MIUI专属" desc="适用于MIUI系统的选项" config="custom/pages/miui.xml" />
-    <page title="AOSP专属" desc="越接近原生的系统越适用" config="custom/pages/aosp.xml" />
-    <page title="Flyme专属" desc="适用于Flyme系统的选项" config="custom/pages/flyme.xml" />
-    <page title="应用程序" desc="第三方应用程序相关选项" config="custom/pages/applications.xml" />
-    <page title="开发者工具" desc="适用于开发者的功能" config="custom/pages/developer.xml" />
-    <page title="杂项" desc="其它杂七杂八的功能" config="custom/pages/other.xml" />
+    <page config="custom/pages/general.xml" desc="基本上所有安卓手机都能用" title="通用功能" />
+    <page config="custom/pages/performance.xml" desc="与设备运行性能相关的选项" title="性能调节" />
+    <page config="custom/pages/power.xml" desc="与电池相关的选项" title="电池、充电" />
+    <page config="custom/pages/miui.xml" desc="适用于MIUI系统的选项" title="MIUI专属" />
+    <page config="custom/pages/aosp.xml" desc="越接近原生的系统越适用" title="AOSP专属" />
+    <page config="custom/pages/flyme.xml" desc="适用于Flyme系统的选项" title="Flyme专属" />
+    <page config="custom/pages/applications.xml" desc="第三方应用程序相关选项" title="应用程序" />
+    <page config="custom/pages/developer.xml" desc="适用于开发者的功能" title="开发者工具" />
+    <page config="custom/pages/other.xml" desc="其它杂七杂八的功能" title="杂项" />
 </pages>

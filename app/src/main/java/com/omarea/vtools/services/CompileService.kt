@@ -54,14 +54,14 @@ class CompileService : IntentService("vtools-compile") {
                     .setSmallIcon(R.drawable.process)
                     .setContentTitle(title)
                     .setContentText(text)
-                    .setProgress(total,current,false)
+                    .setProgress(total, current, false)
                     .build())
         } else {
             nm.notify(990, NotificationCompat.Builder(this)
                     .setSmallIcon(R.drawable.process)
                     .setContentTitle(title)
                     .setContentText(text)
-                    .setProgress(total,current,false)
+                    .setProgress(total, current, false)
                     .build())
         }
     }
@@ -102,7 +102,7 @@ class CompileService : IntentService("vtools-compile") {
         } else {
             for (packageName in packageNames) {
                 if (true) {
-                    updateNotification(getString(R.string.dex2oat_compiling) + "["+ compile_method + "]", "[$current/$total]$packageName", total, current)
+                    updateNotification(getString(R.string.dex2oat_compiling) + "[" + compile_method + "]", "[$current/$total]$packageName", total, current)
                     keepShell!!.doCmdSync("cmd package compile -m ${compile_method} ${packageName}")
                     current++
                 } else {

@@ -49,6 +49,7 @@ public abstract class ShellHandlerBase extends Handler {
     protected abstract void onProgress(int current, int total);
 
     protected abstract void onStart(Object msg);
+    public abstract void onStart(Runnable forceStop);
     protected abstract void onExit(Object msg);
 
     protected abstract void cleanUp();

@@ -7,4 +7,5 @@
     <string name="btn_hide">隐藏</string>
     <string name="btn_execute">执行</string>
     <string name="onloading">正在加载数据…</string>
+    <string name="script_losted">脚本资源丢失\n</string>
 </resources>

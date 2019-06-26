@@ -139,11 +139,13 @@
         <item name="colorAccent">@color/lightPink</item>
         <item name="android:actionBarTheme">@style/AppTheme.AppBarOverlay.Dark</item>
     </style>
+
     <style name="AppThemeWallpaperLight" parent="AppThemeWhite">
         <item name="android:navigationBarColor">#00ffffff</item>
         <item name="colorPrimaryDark">@color/lightPink</item>
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
+
     <style name="AppThemeWallpaper" parent="AppTheme.AppBarOverlay.Dark">
         <item name="android:navigationBarColor">#00000000</item>
         <item name="android:statusBarColor">#d0000000</item>
@@ -217,8 +219,12 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:background">@drawable/krscript_item_ripple_inactive</item>
         <item name="android:orientation">vertical</item>
-        <item name="android:padding">16dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
     </style>
+
     <style name="ListCardItemLast" parent="ListCardItem">
         <item name="android:layout_marginBottom">@dimen/activity_vertical_margin</item>
     </style>

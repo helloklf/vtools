@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout style="@style/ListCardItem"
+    <LinearLayout
+        style="@style/ListCardItem"
         android:alpha="0.9"
         android:orientation="horizontal">
 
@@ -39,8 +40,8 @@
             android:layout_marginRight="10dp"
             android:padding="0dp"
             android:scaleType="centerInside"
-            android:tint="?android:colorAccent"
-            android:src="@drawable/freeze_settings" />
+            android:src="@drawable/freeze_settings"
+            android:tint="?android:colorAccent" />
 
         <ImageButton
             android:id="@+id/freeze_menu"
@@ -50,16 +51,17 @@
             android:layout_gravity="center"
             android:layout_marginRight="10dp"
             android:padding="0dp"
-            android:tint="?android:colorAccent"
             android:scaleType="centerInside"
-            android:src="@drawable/freeze_add" />
+            android:src="@drawable/freeze_add"
+            android:tint="?android:colorAccent" />
     </LinearLayout>
 
-    <LinearLayout style="@style/ListCardItemLast"
-        android:layout_weight="1"
+    <LinearLayout
+        style="@style/ListCardItemLast"
         android:layout_height="0dp"
-        android:orientation="vertical"
-        android:alpha="0.9">
+        android:layout_weight="1"
+        android:alpha="0.9"
+        android:orientation="vertical">
 
         <EditText
             android:id="@+id/freeze_apps_search"

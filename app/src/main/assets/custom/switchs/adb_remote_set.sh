@@ -18,12 +18,15 @@ then
     ip=`ifconfig eth0 | grep "inet addr" | awk '{ print $2}' | awk -F: '{print $2}'`
 fi
 
-echo "在和手机连接相同局域网的电脑上"
-echo "通过请通过手机adb connect 手机IP:5555连接设备"
+echo "在连接了和手机相同网络(局域网)的电脑上"
+echo '通过下面的命令'
+echo ''
 
 if [[ -n "$ip" ]]
 then
-    echo ''
-    echo "当前设备WIFI IP："
-    echo "$ip"
+    echo "adb connect $ip:5555"
+else
+    echo "adb connect 手机IP:5555"
 fi
+
+echo '来连接手机'

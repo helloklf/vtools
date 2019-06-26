@@ -2,10 +2,8 @@ package com.omarea.krscript.executor;
 
 import android.content.Context;
 import android.widget.Toast;
-
 import com.omarea.krscript.model.ConfigItemBase;
 import com.omarea.krscript.model.ShellHandlerBase;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -54,13 +52,15 @@ public class SimpleShellExecutor {
                     }
                 }
             }) : null;
-            final ShellHandlerBase shellHandlerBase = ((customHandler == null) ? (new SimpleShellHandler(context, configItem.getTitle(), forceStopRunnable, configItem.getAutoOff())) : customHandler);
+            final ShellHandlerBase shellHandlerBase = ((customHandler == null) ? (new SimpleShellHandler(context, configItem.getTitle(), configItem.getAutoOff())) : customHandler);
             setHandler(process, shellHandlerBase, onExit);
 
             final OutputStream outputStream = process.getOutputStream();
             DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
             try {
-                shellHandlerBase.sendMessage(shellHandlerBase.obtainMessage(ShellHandlerBase.EVENT_START, "shell@android:\n\n"));
+                shellHandlerBase.sendMessage(shellHandlerBase.obtainMessage(ShellHandlerBase.EVENT_START, "shell@android:\n"));
+                shellHandlerBase.sendMessage(shellHandlerBase.obtainMessage(ShellHandlerBase.EVENT_START, cmds + "\n\n"));
+                shellHandlerBase.onStart(forceStopRunnable);
                 dataOutputStream.writeBytes("sleep 0.2;\n");
 
                 ScriptEnvironmen.executeShell(context, dataOutputStream, cmds, params);

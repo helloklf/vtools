@@ -54,7 +54,7 @@ class FragmentBattery : Fragment() {
         settings_bp.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_BP, false)
         settings_bp_level.progress = spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85)
         val bpLevel = spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85)
-        accessbility_bp_level_desc.text =  "达到$bpLevel%停止充电，低于${bpLevel - 20}%恢复"
+        accessbility_bp_level_desc.text = "达到$bpLevel%停止充电，低于${bpLevel - 20}%恢复"
         settings_qc_limit.progress = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 3300) / 100
         settings_qc_limit_desc.text = "" + spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000) + "mA"
 

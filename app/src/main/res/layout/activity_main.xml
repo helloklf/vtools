@@ -28,16 +28,16 @@
         android:layout_height="match_parent" />
 
     <android.support.design.widget.NavigationView
-        android:fitsSystemWindows="false"
         android:id="@+id/nav_view"
-        android:padding="0dp"
-        android:scrollbars="none"
-        app:insetForeground="@android:color/transparent"
-        android:background="@drawable/menu_background"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="@drawable/menu_background"
+        android:fitsSystemWindows="false"
+        android:padding="0dp"
+        android:scrollbars="none"
         app:headerLayout="@null"
+        app:insetForeground="@android:color/transparent"
         app:itemIconTint="?android:textColorSecondary"
         app:menu="@menu/activity_main_drawer" />
 

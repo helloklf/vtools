@@ -8,11 +8,11 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:background="@drawable/krscript_item_ripple_inactive"
         android:id="@+id/popup_window"
-        android:layout_margin="6dp"
         android:layout_width="290dp"
         android:layout_height="200dp"
+        android:layout_margin="6dp"
+        android:background="@drawable/krscript_item_ripple_inactive"
         android:orientation="vertical">
 
         <LinearLayout

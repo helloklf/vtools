@@ -15,8 +15,8 @@ import java.io.File
 
 class SwapUnit(private var context: Context) {
     private var swapfilePath: String = "/data/swapfile"
-    private var swapControlScript = FileWrite.writePrivateShellFile( "addin/swap_control.sh", "addin/swap_control.sh", context)
-    private var zramControlScript = FileWrite.writePrivateShellFile( "addin/zram_control.sh", "addin/zram_control.sh", context)
+    private var swapControlScript = FileWrite.writePrivateShellFile("addin/swap_control.sh", "addin/swap_control.sh", context)
+    private var zramControlScript = FileWrite.writePrivateShellFile("addin/zram_control.sh", "addin/zram_control.sh", context)
 
     val swapExists: Boolean
         get() {
@@ -29,7 +29,7 @@ class SwapUnit(private var context: Context) {
             if (swapExists) {
                 val ret = KernelProrp.getProp("/proc/swaps")
                 val txt = ret.replace("\t\t", "\t").replace("\t", " ")
-                if(txt.contains("/data/swapfile") || txt.contains("/swapfile")) {
+                if (txt.contains("/data/swapfile") || txt.contains("/swapfile")) {
                     return "/data/swapfile"
                 } else {
                     val loopNumber = Props.getProp("vtools.swap.loop")
@@ -42,23 +42,23 @@ class SwapUnit(private var context: Context) {
         }
 
     val swapFileSize: Int
-            get() {
-                if (swapExists) {
+        get() {
+            if (swapExists) {
 
-                    var size = 0L
+                var size = 0L
+                try {
+                    size = KeepShellPublic.doCmdSync("ls -l /data/swapfile | awk '{ print \$5 }'").toLong()
+                } catch (ex: Exception) {
                     try {
-                        size = KeepShellPublic.doCmdSync("ls -l /data/swapfile | awk '{ print \$5 }'").toLong()
+                        size = File("/data/swapfile").length()
                     } catch (ex: Exception) {
-                        try {
-                            size = File("/data/swapfile").length()
-                        } catch (ex: Exception) {
 
-                        }
                     }
-                    return (size / 1024 / 1024).toInt()
                 }
-                return 0
-    }
+                return (size / 1024 / 1024).toInt()
+            }
+            return 0
+        }
 
     fun mkswap(size: Int) {
         val sb = StringBuilder()
@@ -196,7 +196,7 @@ class SwapUnit(private var context: Context) {
             }
             return ""
         }
-        set (value) {
+        set(value) {
             KernelProrp.setProp("/sys/block/zram0/comp_algorithm", value)
         }
 }

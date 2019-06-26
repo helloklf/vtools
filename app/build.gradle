@@ -18,7 +18,7 @@ android {
         applicationId "com.omarea.vtools"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 1060
+        versionCode 1061
         versionName "2.4.0"
     }
     buildTypes {

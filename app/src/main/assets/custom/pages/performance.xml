@@ -81,7 +81,8 @@
             <title>硬删温控 *不推荐</title>
             <desc>用于骁龙处理器设备，删除/system和/vendor目录中，名称包含thermal的文件，这是非常危险的操作</desc>
             <params>
-                <param desc="操作" name="action" options-sh="file:///android_asset/custom/actions/qualcomm_thermal/options.sh" />
+                <param name="action" desc="操作"
+                    options-sh="file:///android_asset/custom/actions/qualcomm_thermal/options.sh" />
             </params>
             <script>file:///android_asset/custom/actions/qualcomm_thermal/set.sh</script>
         </action>
@@ -135,7 +136,8 @@
                 <param name="dirty_background_ratio" desc="写入 - 最小缓冲容量"
                     options-sh="file:///android_asset/custom/actions/io/cache_ratio_options.sh"
                     value-sh="cat /proc/sys/vm/dirty_background_ratio" />
-                <param name="dirty_ratio" desc="写入 - 最大缓冲容量" options-sh="file:///android_asset/custom/actions/io/cache_ratio_options.sh"
+                <param name="dirty_ratio" desc="写入 - 最大缓冲容量"
+                    options-sh="file:///android_asset/custom/actions/io/cache_ratio_options.sh"
                     value-sh="cat /proc/sys/vm/dirty_ratio" />
                 <param name="dirty_writeback_centisecs" desc="写入 - 缓存刷写频率(小于失效时间)"
                     options-sh="file:///android_asset/custom/actions/io/write_time_options.sh"

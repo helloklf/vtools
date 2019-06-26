@@ -11,9 +11,9 @@ public class GpuUtils {
         if (GPU_FREQ_PATH == null) {
             String path1 = "/sys/kernel/gpu/gpu_clock";
             String path2 = "/sys/class/kgsl/kgsl-3d0/devfreq/cur_freq";
-            if(RootFile.INSTANCE.fileExists(path1)) {
+            if (RootFile.INSTANCE.fileExists(path1)) {
                 GPU_FREQ_PATH = path1;
-            } else if(RootFile.INSTANCE.fileExists(path2)) {
+            } else if (RootFile.INSTANCE.fileExists(path2)) {
                 GPU_FREQ_PATH = path2;
             } else {
                 GPU_FREQ_PATH = "";

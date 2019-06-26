@@ -124,7 +124,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
             val modeBackup = brightnessMode;
             if (modeBackup > -1) {
                 Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, modeBackup)
-                contentResolver.notifyChange(Settings.System.getUriFor( Settings.System.SCREEN_BRIGHTNESS_MODE), null)
+                contentResolver.notifyChange(Settings.System.getUriFor(Settings.System.SCREEN_BRIGHTNESS_MODE), null)
             }
             brightnessMode = -1
             if (screenBrightness > -1 && modeBackup == Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL) {

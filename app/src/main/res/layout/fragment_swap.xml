@@ -21,21 +21,21 @@
                     style="@style/textTitle"
                     android:text="@string/swap_swap" />
 
-                <TableRow
-                    android:layout_marginTop="@dimen/activity_vertical_margin">
+                <TableRow android:layout_marginTop="@dimen/activity_vertical_margin">
+
                     <SeekBar
-                        android:paddingEnd="0dp"
-                        android:paddingStart="0dp"
                         android:id="@+id/seekbar_swap_size"
                         android:layout_gravity="center_vertical"
-                        android:max="64" />
+                        android:max="64"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="0dp" />
 
                     <TextView
-                        android:layout_marginStart="@dimen/activity_horizontal_margin"
-                        style="@style/textSmall"
                         android:id="@+id/txt_swap_size_display"
+                        style="@style/textSmall"
                         android:layout_width="45dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/activity_horizontal_margin"
                         android:text="" />
                 </TableRow>
 
@@ -118,44 +118,42 @@
                     style="@style/textTitle"
                     android:text="@string/swap_zram" />
 
-                <TableRow
-                    android:layout_marginTop="@dimen/activity_vertical_margin">
+                <TableRow android:layout_marginTop="@dimen/activity_vertical_margin">
 
                     <SeekBar
-                        android:paddingEnd="0dp"
-                        android:paddingStart="0dp"
                         android:id="@+id/seekbar_zram_size"
                         android:layout_width="match_parent"
-                        android:max="1" />
+                        android:max="1"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="0dp" />
 
                     <TextView
-                        android:layout_marginStart="@dimen/activity_horizontal_margin"
-                        style="@style/textSmall"
                         android:id="@+id/txt_zram_size_display"
+                        style="@style/textSmall"
                         android:layout_width="45dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/activity_horizontal_margin"
                         android:text="" />
                 </TableRow>
 
-                <TableRow
-                    android:layout_marginTop="@dimen/activity_vertical_margin">
+                <TableRow android:layout_marginTop="@dimen/activity_vertical_margin">
 
                     <TextView
-                        android:text="@string/swap_zram_compact_algorithm"
                         style="@style/textTitle"
-                        android:paddingEnd="0dp"
-                        android:paddingStart="0dp"
                         android:layout_width="match_parent"
                         android:layout_gravity="center_vertical"
-                        android:max="2048" />
+                        android:max="2048"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="0dp"
+                        android:text="@string/swap_zram_compact_algorithm" />
 
                     <TextView
-                        android:layout_marginStart="@dimen/activity_horizontal_margin"
-                        style="@style/textTitle"
-                        android:textAlignment="center"
                         android:id="@+id/zram_compact_algorithm"
+                        style="@style/textTitle"
                         android:layout_width="55dp"
-                        android:layout_gravity="center_vertical" />
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/activity_horizontal_margin"
+                        android:textAlignment="center" />
                 </TableRow>
 
                 <TableRow
@@ -178,31 +176,35 @@
                 </TableRow>
 
                 <TextView
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     style="@style/textSmall"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:text="@string/swap_zram_desc" />
             </TableLayout>
 
             <LinearLayout
-                android:id="@+id/zram_stat" style="@style/ListCardItem">
+                android:id="@+id/zram_stat"
+                style="@style/ListCardItem">
+
                 <TextView
+                    style="@style/textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/swap_zram_stat"
-                    style="@style/textTitle" />
+                    android:text="@string/swap_zram_stat" />
+
                 <TextView
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:id="@+id/zram0_stat"
-                    android:text=""
                     style="@style/textSmall"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-                <TextView
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:text="@string/swap_zram_stat_desc"
+                    android:text="" />
+
+                <TextView
                     style="@style/textSmall"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:text="@string/swap_zram_stat_desc" />
             </LinearLayout>
 
             <TableLayout
@@ -214,21 +216,20 @@
                     style="@style/textTitle"
                     android:text="@string/swap_swappiness" />
 
-                <TableRow
-                    android:layout_marginTop="@dimen/activity_vertical_margin">
+                <TableRow android:layout_marginTop="@dimen/activity_vertical_margin">
 
                     <SeekBar
-                        android:paddingEnd="0dp"
-                        android:paddingStart="0dp"
                         android:id="@+id/seekbar_swap_swappiness"
-                        android:layout_width="match_parent" />
+                        android:layout_width="match_parent"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="0dp" />
 
                     <TextView
-                        android:layout_marginStart="@dimen/activity_horizontal_margin"
-                        style="@style/textSmall"
                         android:id="@+id/txt_zramstus_swappiness"
+                        style="@style/textSmall"
                         android:layout_width="45dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/activity_horizontal_margin"
                         android:textAlignment="center" />
                 </TableRow>
 
@@ -261,8 +262,7 @@
                     android:textSize="10dp" />
             </TableLayout>
 
-            <LinearLayout
-                style="@style/ListCardItem">
+            <LinearLayout style="@style/ListCardItem">
 
                 <TextView
                     style="@style/textTitle"
@@ -272,9 +272,9 @@
 
                 <Switch
                     android:id="@+id/swap_auto_lmk"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:text="@string/lmk_optimize" />
 
                 <TextView

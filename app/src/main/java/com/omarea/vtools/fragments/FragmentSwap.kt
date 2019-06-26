@@ -23,9 +23,7 @@ import com.omarea.shell.units.SwapUnit
 import com.omarea.ui.AdapterSwaplist
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.fragment_swap.*
-import java.io.File
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 import kotlin.collections.LinkedHashMap
 
 
@@ -398,13 +396,11 @@ class FragmentSwap : Fragment() {
                 DialogHelper.animDialog(AlertDialog.Builder(context!!)
                         .setTitle(R.string.swap_use_loop)
                         .setMessage(R.string.swap_use_loop_desc)
-                        .setPositiveButton(R.string.btn_confirm, {
-                            _, _ ->
+                        .setPositiveButton(R.string.btn_confirm, { _, _ ->
                             it.isChecked = true
                             swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, true).apply()
                         })
-                        .setNeutralButton(R.string.btn_cancel, {
-                            _, _ ->
+                        .setNeutralButton(R.string.btn_cancel, { _, _ ->
                             it.isChecked = false
                             swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false).apply()
                         })

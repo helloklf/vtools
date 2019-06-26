@@ -25,8 +25,9 @@ public class SimpleShellHandler extends ShellHandlerBase {
     private Button btnExit;
     private Button btnHide;
     public Dialog dialog;
+    private Runnable forceStop;
 
-    SimpleShellHandler(Context context, String title, final Runnable forceStop, boolean autoOff) {
+    SimpleShellHandler(Context context, String title, boolean autoOff) {
         this.context = context;
         this.autoOff = autoOff;
 
@@ -71,12 +72,6 @@ public class SimpleShellHandler extends ShellHandlerBase {
                 }
             }
         });
-
-        if (forceStop != null) {
-            btnExit.setVisibility(View.VISIBLE);
-        } else {
-            btnExit.setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -122,6 +117,16 @@ public class SimpleShellHandler extends ShellHandlerBase {
     @Override
     protected void onStart(Object msg) {
 
+    }
+
+    @Override
+    public void onStart(Runnable forceStop) {
+        this.forceStop = forceStop;
+        if (forceStop != null) {
+            btnExit.setVisibility(View.VISIBLE);
+        } else {
+            btnExit.setVisibility(View.GONE);
+        }
     }
 
     /**

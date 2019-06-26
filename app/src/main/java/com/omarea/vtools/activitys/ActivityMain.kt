@@ -6,15 +6,10 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.renderscript.Allocation
-import android.renderscript.Element
-import android.renderscript.RenderScript
-import android.renderscript.ScriptIntrinsicBlur
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
@@ -189,7 +184,8 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         } else {
             try {
                 setNotRootPage()
-            } catch (ex: java.lang.Exception) {}
+            } catch (ex: java.lang.Exception) {
+            }
             hideRootMenu(navigationView.menu)
         }
         // 每天都检查更新

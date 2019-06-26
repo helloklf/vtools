@@ -36,8 +36,8 @@ public class FreezeAppIconManager(private var context: Context) {
         return null
     }
 
-    private fun getCacheOutput(packageName:String):String {
-        return  FileWrite.getPrivateFilePath(context, "freeze_logo_cache/" + packageName + ".png")
+    private fun getCacheOutput(packageName: String): String {
+        return FileWrite.getPrivateFilePath(context, "freeze_logo_cache/" + packageName + ".png")
     }
 
     public fun saveIcon(drawable: Drawable, packageName: String) {
