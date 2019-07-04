@@ -1,7 +1,6 @@
 #!/system/bin/sh
 action=$1
 
-#powersave 1.6Ghz
 if [ "$action" = "powersave" ]; then
     #powersave
 

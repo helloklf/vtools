@@ -422,6 +422,12 @@
     <string name="swap_zram_compact_algorithm">压缩算法</string>
     <string name="wallpaper_rw_permission">需要“读写本地存储”的权限才能使用系统壁纸作为软件背景</string>
 
+    <string name="shortcut_create_fail">快捷方式创建失败</string>
+    <string name="shortcut_create_success">已发送创建快捷方式申请</string>
+    <string name="shortcut_create">添加快捷方式</string>
+    <string name="shortcut_create_desc">你希望将“%s”添加到桌面，方便快速使用吗？</string>
+    <string name="ushortcut_nsupported">该功能不支持添加快捷方式</string>
+
     <string-array name="device_templates">
         <item>Xiaomi MIX3</item>
         <item>vivo X20</item>

@@ -4,26 +4,25 @@
     android:layout_height="wrap_content"
     android:paddingLeft="15dp"
     android:paddingRight="15dp"
-    android:paddingBottom="0dp"
     android:orientation="horizontal"
     android:background="@drawable/krscript_item_ripple">
 
     <LinearLayout
         android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:paddingLeft="13dp"
-        android:paddingTop="6dp"
-        android:paddingRight="13dp"
+        android:paddingLeft="8dp"
+        android:paddingTop="10dp"
+        android:paddingRight="8dp"
         android:paddingBottom="10dp">
 
         <TextView
             android:id="@+id/Title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp"
             android:alpha="0.8"
             android:clickable="false"
@@ -48,7 +47,6 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
-        android:paddingEnd="5dp"
         android:contentDescription="@string/app_name"
         android:scaleType="fitCenter"
         android:src="@drawable/krscript_arrow" />

@@ -131,7 +131,9 @@ public class ActionListAdapter extends BaseAdapter {
         } else {
             viewHolder.contents.setVisibility(View.VISIBLE);
 
+            viewHolder.itemText.setVisibility(item.getDesc().isEmpty() ? View.GONE:View.VISIBLE);
             viewHolder.itemText.setText(item.getDesc());
+            viewHolder.itemTitle.setVisibility(item.getTitle().isEmpty() ? View.GONE:View.VISIBLE);
             viewHolder.itemTitle.setText(item.getTitle());
         }
 
@@ -159,7 +161,9 @@ public class ActionListAdapter extends BaseAdapter {
         } else {
             viewHolder.contents.setVisibility(View.VISIBLE);
 
+            viewHolder.itemText.setVisibility(item.getDesc().isEmpty() ? View.GONE:View.VISIBLE);
             viewHolder.itemText.setText(item.getDesc());
+            viewHolder.itemTitle.setVisibility(item.getTitle().isEmpty() ? View.GONE:View.VISIBLE);
             viewHolder.itemTitle.setText(item.getTitle());
             viewHolder.itemSwitch.setChecked(item.selected);
         }

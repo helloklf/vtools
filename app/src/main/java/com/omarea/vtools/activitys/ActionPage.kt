@@ -24,7 +24,7 @@ import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_action_page.*
 
 class ActionPage : AppCompatActivity() {
-    val progressBarDialog = ProgressBarDialog(this)
+    private val progressBarDialog = ProgressBarDialog(this)
     private var actionsLoaded = false
     private var handler = Handler()
     private var pageConfig: String = ""
@@ -103,66 +103,43 @@ class ActionPage : AppCompatActivity() {
      *  “添加收藏”功能实现
      */
     private var addToFavorites = object : ActionLongClickHandler {
-        override fun addToFavorites(switchInfo: SwitchInfo) {
-            if (switchInfo.id.isEmpty()) {
-                DialogHelper.animDialog(AlertDialog.Builder(this@ActionPage).setTitle("添加快捷方式失败")
-                        .setMessage("该功能不支持添加快捷方式")
+        fun addToFavorites(configItemBase: ConfigItemBase) {
+            val context = this@ActionPage
+
+            if (configItemBase.id.isEmpty()) {
+                DialogHelper.animDialog(AlertDialog.Builder(context).setTitle(R.string.shortcut_create_fail)
+                        .setMessage(R.string.ushortcut_nsupported)
                         .setNeutralButton(R.string.btn_cancel, { _, _ ->
                         })
                 )
             } else {
-                DialogHelper.animDialog(AlertDialog.Builder(this@ActionPage).setTitle("添加快捷方式")
-                        .setMessage("你希望将“" + switchInfo.title + "”添加到桌面，方便快速使用吗？")
+                DialogHelper.animDialog(AlertDialog.Builder(context)
+                        .setTitle(getString(R.string.shortcut_create))
+                        .setMessage(String.format(getString(R.string.shortcut_create_desc), configItemBase.title))
                         .setPositiveButton(R.string.btn_confirm, { _, _ ->
                             val intent = Intent()
-                            intent.component = ComponentName(this@ActionPage.applicationContext, this@ActionPage.javaClass.name)
+                            intent.component = ComponentName(context.applicationContext, context.javaClass.name)
                             intent.putExtra("config", pageConfig)
                             intent.putExtra("title", "" + title)
-                            intent.putExtra("autoRunItemId", switchInfo.id)
-                            val result = ActionShortcutManager(this@ActionPage).addShortcut(intent, getDrawable(R.drawable.linux)!!, switchInfo)
+                            intent.putExtra("autoRunItemId", configItemBase.id)
+                            val result = ActionShortcutManager(context)
+                                    .addShortcut(intent, getDrawable(R.drawable.linux)!!, configItemBase)
                             if (!result) {
-                                Toast.makeText(this@ActionPage, "快捷方式创建失败", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, R.string.shortcut_create_fail, Toast.LENGTH_SHORT).show()
                             } else {
-                                Toast.makeText(this@ActionPage, "已发送创建快捷方式申请", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, getString(R.string.shortcut_create_success), Toast.LENGTH_SHORT).show()
                             }
                         })
                         .setNegativeButton(R.string.btn_cancel, { _, _ ->
                         }))
             }
         }
+        override fun addToFavorites(switchInfo: SwitchInfo) {
+            addToFavorites(switchInfo as ConfigItemBase)
+        }
 
         override fun addToFavorites(actionInfo: ActionInfo) {
-            if (actionInfo.id.isEmpty()) {
-                DialogHelper.animDialog(AlertDialog.Builder(this@ActionPage).setTitle("添加快捷方式失败")
-                        .setMessage("该功能不支持添加快捷方式")
-                        .setNeutralButton(R.string.btn_cancel, { _, _ ->
-                        })
-                )
-            } else if (actionInfo.params != null && actionInfo.params!!.size > 0) {
-                DialogHelper.animDialog(AlertDialog.Builder(this@ActionPage).setTitle("添加快捷方式")
-                        .setMessage("不支持为带有参数的附加功能项添加快捷方式")
-                        .setNeutralButton(R.string.btn_cancel, { _, _ ->
-                        })
-                )
-            } else {
-                DialogHelper.animDialog(AlertDialog.Builder(this@ActionPage).setTitle("添加快捷方式")
-                        .setMessage("你希望将“" + actionInfo.title + "”添加到桌面，方便快速使用吗？")
-                        .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                            val intent = Intent()
-                            intent.component = ComponentName(this@ActionPage.applicationContext, this@ActionPage.javaClass.name)
-                            intent.putExtra("config", pageConfig)
-                            intent.putExtra("title", "" + title)
-                            intent.putExtra("autoRunItemId", actionInfo.id)
-                            val result = ActionShortcutManager(this@ActionPage).addShortcut(intent, getDrawable(R.drawable.linux)!!, actionInfo)
-                            if (!result) {
-                                Toast.makeText(this@ActionPage, "快捷方式创建失败", Toast.LENGTH_SHORT).show()
-                            } else {
-                                Toast.makeText(this@ActionPage, "已发送创建快捷方式申请", Toast.LENGTH_SHORT).show()
-                            }
-                        })
-                        .setNegativeButton(R.string.btn_cancel, { _, _ ->
-                        }))
-            }
+            addToFavorites(actionInfo as ConfigItemBase)
         }
     }
 
@@ -217,6 +194,10 @@ class ActionPage : AppCompatActivity() {
                     btn_hide.visibility = View.GONE
                     btn_exit.visibility = View.VISIBLE
                     action_progress.visibility = View.GONE
+
+                    if(configItem.autoOff) {
+                        action_page_tabhost.currentTab = 0
+                    }
                 }
 
                 override fun onStart(forceStop: Runnable?) {

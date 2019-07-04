@@ -221,10 +221,25 @@ class ActionListView : OverScrollListView {
                                     editText.setText(actionParamInfo.value)
                                 editText.filters = arrayOf(ActionParamInfo.ParamInfoFilter(actionParamInfo))
                                 editText.tag = actionParamInfo.name
-                                linearLayout.addView(editText)
-                                val lp = editText.layoutParams as LinearLayout.LayoutParams
-                                lp.setMargins(0, 10, 0, 20)
-                                editText.layoutParams = lp
+
+                                if (!actionParamInfo.desc.isNullOrEmpty()) {
+                                    val textView = TextView(context)
+                                    textView.text = actionParamInfo.desc
+                                    linearLayout.addView(textView)
+                                    val lp = textView.layoutParams as LinearLayout.LayoutParams
+                                    lp.setMargins(0, 10, 0, 0)
+                                    textView.layoutParams = lp
+
+                                    linearLayout.addView(editText)
+                                    val lp2 = editText.layoutParams as LinearLayout.LayoutParams
+                                    lp2.setMargins(0, 4, 0, 20)
+                                    editText.layoutParams = lp2
+                                } else {
+                                    linearLayout.addView(editText)
+                                    val lp = editText.layoutParams as LinearLayout.LayoutParams
+                                    lp.setMargins(0, 10, 0, 20)
+                                    editText.layoutParams = lp
+                                }
                             }
                         }
                         if (actionShortClickHandler != null && actionShortClickHandler!!.onParamsView(action, view, Runnable { }, Runnable {

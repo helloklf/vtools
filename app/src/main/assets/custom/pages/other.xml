@@ -19,6 +19,11 @@
         <desc>使用简单的命令检测磁盘连续读写速度，需要好几分钟</desc>
         <script>file:///android_asset/custom/actions/disk_test.sh</script>
     </action>
+    <action confirm="false">
+        <title>硬件参数</title>
+        <desc>查看系统提供的硬件参数信息</desc>
+        <script>file:///android_asset/custom/actions/hardware_properties.sh</script>
+    </action>
 
     <!--<group title="性能分析">
         <action>

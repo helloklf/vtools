@@ -242,6 +242,9 @@ class PageConfigReader(private var context: Context) {
             if (action.script == null)
                 action.script = ""
             action.params = actionParamInfos
+            if (action.id.isEmpty() && action.title.isNotEmpty()) {
+                action.id = action.title
+            }
 
             actionParamInfos = null
         }
@@ -295,6 +298,9 @@ class PageConfigReader(private var context: Context) {
             }
             if (switchInfo.setState == null) {
                 switchInfo.setState = ""
+            }
+            if (switchInfo.id.isEmpty() && switchInfo.title.isNotEmpty()) {
+                switchInfo.id = switchInfo.title
             }
         }
     }

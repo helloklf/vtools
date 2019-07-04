@@ -3,16 +3,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingLeft="15dp"
-    android:paddingRight="15dp"
     android:paddingBottom="0dp">
 
     <TextView
+        android:visibility="gone"
         android:id="@+id/Separator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        android:paddingLeft="23dp"
         android:layout_marginBottom="2dp"
+        android:paddingRight="23dp"
         android:alpha="0.5"
         android:clickable="false"
         android:focusable="false"
@@ -22,13 +23,15 @@
     <LinearLayout
         android:id="@+id/contents"
         android:background="@drawable/krscript_item_ripple"
-        android:paddingTop="6dp"
-        android:paddingBottom="10dp"
+        android:gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="60dp"
         android:orientation="horizontal"
-        android:paddingStart="13dp"
-        android:paddingEnd="11dp">
+        android:paddingLeft="23dp"
+        android:paddingTop="10dp"
+        android:paddingRight="23dp"
+        android:paddingBottom="10dp">
         <LinearLayout
             android:orientation="vertical"
             android:layout_gravity="center_vertical"
@@ -39,13 +42,11 @@
                 android:id="@+id/Title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
+                android:layout_marginBottom="4dp"
                 android:alpha="0.8"
                 android:clickable="false"
                 android:focusable="false"
                 android:textColor="?android:attr/textColorPrimary"
-                android:thumb="@drawable/kr_switch_thumb"
-                android:track="@drawable/kr_switch_track"
                 android:textSize="13dp"
                 android:textStyle="bold" />
 
@@ -54,7 +55,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="?android:attr/textColorSecondary"
-                android:textSize="10dp" />
+                android:textSize="10dp"
+                android:visibility="gone" />
         </LinearLayout>
         <Switch
             android:id="@+id/Switch"
