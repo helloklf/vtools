@@ -15,6 +15,7 @@ import android.view.KeyEvent
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityWindowInfo
 import android.widget.Toast
+import com.omarea.shared.AppConfigStore
 import com.omarea.shared.AutoClick
 import com.omarea.shared.CrashHandler
 import com.omarea.shared.ServiceHelper
@@ -84,7 +85,7 @@ override fun onCreate() {
     private fun updateConfig() {
         val spf = getSharedPreferences("adv", Context.MODE_PRIVATE)
         flagReportViewIds = spf.getBoolean("adv_find_viewid", flagReportViewIds)
-        flagRequestKeyEvent = true; // spf.getBoolean("adv_keyevent", AppConfigStore(this.applicationContext).needKeyCapture())
+        flagRequestKeyEvent = spf.getBoolean("adv_keyevent", AppConfigStore(this.applicationContext).needKeyCapture())
         flagRetriveWindow = spf.getBoolean("adv_retrieve_window", flagRetriveWindow)
 
         eventWindowStateChange = spf.getBoolean("adv_event_window_state", eventWindowStateChange)
