@@ -39,26 +39,36 @@ public class ActionListAdapter extends BaseAdapter {
     public void update(int index, ListView listview) {
         int visiblePosition = listview.getFirstVisiblePosition();
         View view = listview.getChildAt(index - visiblePosition);
-        Object tag = view.getTag();
+
         try {
-            ActionViewHolder actionViewHolder = (ActionViewHolder) tag;
             ActionInfo actionInfo = ((ActionInfo) getItem(index));
             if (actionInfo.getDescPollingShell() != null && !actionInfo.getDescPollingShell().isEmpty()) {
                 actionInfo.setDesc(ScriptEnvironmen.executeResultRoot(listview.getContext(), actionInfo.getDescPollingShell()));
             }
+
+            if (view == null) {
+                return;
+            }
+            Object tag = view.getTag();
+            ActionViewHolder actionViewHolder = (ActionViewHolder) tag;
             actionViewHolder.itemText.setText(actionInfo.getDesc());
         } catch (Exception ex) {
             try {
+                SwitchInfo actionInfo = ((SwitchInfo) getItem(index));
+                if (actionInfo.descPollingShell != null && !actionInfo.descPollingShell.isEmpty()) {
+                    actionInfo.setDesc(ScriptEnvironmen.executeResultRoot(listview.getContext(), actionInfo.descPollingShell));
+                }
+                if (actionInfo.getState != null && !actionInfo.getState.isEmpty()) {
+                    String shellResult = ScriptEnvironmen.executeResultRoot(listview.getContext(), actionInfo.getState);
+                    actionInfo.selected = shellResult.equals("1") || shellResult.toLowerCase().equals("true");
+                }
+
+                if (view == null) {
+                    return;
+                }
+                Object tag = view.getTag();
                 SwitchViewHolder holder = (SwitchViewHolder) tag;
                 if (holder != null) {
-                    SwitchInfo actionInfo = ((SwitchInfo) getItem(index));
-                    if (actionInfo.descPollingShell != null && !actionInfo.descPollingShell.isEmpty()) {
-                        actionInfo.setDesc(ScriptEnvironmen.executeResultRoot(listview.getContext(), actionInfo.descPollingShell));
-                    }
-                    if (actionInfo.getState != null && !actionInfo.getState.isEmpty()) {
-                        String shellResult = ScriptEnvironmen.executeResultRoot(listview.getContext(), actionInfo.getState);
-                        actionInfo.selected = shellResult.equals("1") || shellResult.toLowerCase().equals("true");
-                    }
                     holder.itemSwitch.setChecked(actionInfo.selected);
                     holder.itemText.setText(actionInfo.getDesc());
                 }

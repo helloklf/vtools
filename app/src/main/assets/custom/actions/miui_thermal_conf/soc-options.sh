@@ -5,6 +5,9 @@ platform=`getprop ro.board.platform`
 if [[ "$platform" = "sdm845" ]]
 then
     echo 'sdm845|骁龙845'
+elif [[ "$platform" = "sdm710" ]]
+then
+    echo 'sdm710|骁龙710AIE'
 elif [[ "$platform" = "msmnile" ]]
 then
     echo 'msmnile|骁龙855'

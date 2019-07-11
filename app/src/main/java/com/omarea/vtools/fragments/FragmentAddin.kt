@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.SimpleAdapter
 import android.widget.TabHost
+import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.config.PageListReader
@@ -67,7 +68,12 @@ class FragmentAddin : Fragment() {
             add(createItem(getString(R.string.addin_thermal_remove), getString(R.string.addin_thermal_remove_desc), Runnable { ThermalAddin(context!!).showOption() }, false))
             // }
 
-            if (!(com.omarea.common.shared.MagiskExtend.moduleInstalled() && (platform == "sdm845" || platform == "msm8998" || platform == "msmnile"))) {
+            if (!(MagiskExtend.moduleInstalled() && (
+                            platform == "sdm845" ||
+                                    platform == "msm8998" ||
+                                    platform == "sdm710" ||
+                                    platform == "msmnile"
+                            ))) {
                 add(createItem(getString(R.string.addin_thermal_remove2), getString(R.string.addin_thermal_remove2_desc), Runnable {
                     ThermalAddin(context!!).miuiSetThermalNo()
                 }, false))

@@ -2,10 +2,10 @@
 
 sdk=`getprop ro.build.version.sdk`;
 if [ "$sdk" -gt 23 ]; then
-    echo 'VT|Vulkan-自动';
-    echo 'VTF|Vulkan-强制';
+    echo 'VT|优先Vulkan';
+    echo 'VTF|强制Vulkan';
 fi;
 
-echo 'O3T|OpenGLES3-自动';
-echo 'O3TF|OpenGLES3-强制';
+echo 'O3T|优先OpenGLES3';
+echo 'O3TF|强制OpenGLES3';
 echo 'O2T|OpenGLES2';

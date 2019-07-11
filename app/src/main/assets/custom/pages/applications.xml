@@ -23,6 +23,10 @@
                     <option value="1">启用</option>
                     <option value="0">禁用</option>
                 </param>
+                <param name="sticker" desc="表情贴纸">
+                    <option value="1">启用</option>
+                    <option value="0">禁用</option>
+                </param>
             </params>
             <script>file:///android_asset/custom/actions/tencent/qq_style_set.sh</script>
         </action>

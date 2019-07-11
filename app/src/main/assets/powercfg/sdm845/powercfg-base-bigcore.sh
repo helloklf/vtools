@@ -44,14 +44,14 @@ echo 1 > /sys/devices/system/cpu/cpu7/online
 #echo 60 > /sys/devices/system/cpu/cpu4/core_ctl/busy_down_thres
 
 echo 1 > /proc/sys/vm/laptop_mode
-echo 10 > /proc/sys/vm/dirty_background_ratio
+echo 5 > /proc/sys/vm/dirty_background_ratio
 echo 30 > /proc/sys/vm/overcommit_ratio
 echo 100 > /proc/sys/vm/swap_ratio
 echo 100 > /proc/sys/vm/vfs_cache_pressure
-echo 50 > /proc/sys/vm/dirty_ratio
+echo 25 > /proc/sys/vm/dirty_ratio
 echo 3 > /proc/sys/vm/page-cluster
-echo 3000 > /proc/sys/vm/dirty_expire_centisecs
-echo 50000 > /proc/sys/vm/dirty_writeback_centisecs
+echo 4000 > /proc/sys/vm/dirty_expire_centisecs
+echo 6000 > /proc/sys/vm/dirty_writeback_centisecs
 
 echo 2048 > /sys/block/sda/queue/read_ahead_kb
 echo 0 > /sys/block/sda/queue/iostats

@@ -290,10 +290,7 @@ class ActionPage : AppCompatActivity() {
                                 addToFavorites
                         )
                         if (autoRun.isNotEmpty()) {
-                            val onCompleted = Runnable {
-                                // finish()
-                            }
-                            if (!main_list.triggerAction(autoRun, onCompleted)) {
+                            if (!main_list.triggerAction(autoRun, Runnable{})) {
                                 Toast.makeText(this, "指定项已丢失", Toast.LENGTH_SHORT).show()
                             }
                         }

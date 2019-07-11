@@ -26,7 +26,6 @@ am kill com.tencent.mobileqq 2> /dev/null
 
 rm -rf ${qqsdcard}/font_info
 rm -rf ${qqsdcard}/.font_info
-
 if [[ "$font" = "0" ]];
 then
     echo '个性字体：禁用'
@@ -46,12 +45,23 @@ else
 fi
 
 rm -rf ${qqdata}/pendant_info
+rm -rf ${qqdata}/.pendant
 if [[ "$pendant" = "0" ]];
 then
     echo '头像挂架：禁用'
+    echo "" > ${qqsdcard}/pendant_info
     echo "" > ${qqsdcard}/.pendant
 else
     echo '头像挂架：启用'
+fi
+
+rm -rf ${qqsdcard}/.sticker_recommended_pics
+if [[ "$sticker" = "0" ]]
+then
+    echo '表情贴纸：禁用'
+    echo '' > ${qqsdcard}/.sticker_recommended_pics
+else
+    echo '表情贴纸：启用'
 fi
 
 rm -rf ${qqsdcard}/.nomedia
