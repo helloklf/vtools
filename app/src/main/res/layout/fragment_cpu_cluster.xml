@@ -1,0 +1,85 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <GridLayout style="@style/ListCardItem">
+
+        <TextView
+            android:id="@+id/cluster_title"
+            android:layout_row="0"
+            android:layout_columnSpan="2"
+            android:layout_gravity="fill_horizontal"
+            android:layout_marginBottom="10dp"
+            android:textColor="?colorAccent"
+            android:textSize="16dp" />
+
+        <TextView
+            android:layout_row="1"
+            android:layout_column="0"
+            android:layout_gravity="fill"
+            android:gravity="center_vertical"
+            android:text="最小频率" />
+
+        <TextView
+            android:id="@+id/cluster_min_freq"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_row="1"
+            android:layout_column="1"
+            android:padding="5dp"
+            android:text="Min Freq"
+            android:textAlignment="textEnd" />
+
+        <TextView
+
+            android:layout_row="2"
+            android:layout_column="0"
+            android:layout_gravity="fill"
+            android:gravity="center_vertical"
+            android:text="最大频率" />
+
+        <TextView
+            android:id="@+id/cluster_max_freq"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_row="2"
+            android:layout_column="1"
+            android:padding="5dp"
+            android:text="Max Freq"
+            android:textAlignment="textEnd" />
+
+        <TextView
+
+            android:layout_row="3"
+            android:layout_column="0"
+            android:layout_gravity="fill"
+            android:gravity="center_vertical"
+            android:text="调度模式" />
+
+        <TextView
+            android:id="@+id/cluster_governor"
+            android:layout_width="150dp"
+            android:layout_row="3"
+            android:layout_column="1"
+            android:padding="5dp"
+            android:text="Governor"
+            android:textAlignment="textEnd" />
+
+        <TextView
+            android:layout_row="4"
+            android:layout_column="0"
+            android:layout_gravity="fill"
+            android:gravity="center_vertical"
+            android:text="微调参数" />
+
+        <TextView
+            android:id="@+id/cluster_governor_params"
+            android:layout_width="150dp"
+            android:layout_row="4"
+            android:layout_column="1"
+            android:padding="5dp"
+            android:text="点击查看"
+            android:textAlignment="textEnd" />
+
+    </GridLayout>
+</FrameLayout>

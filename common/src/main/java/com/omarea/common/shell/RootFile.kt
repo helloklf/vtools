@@ -109,13 +109,15 @@ object RootFile {
     fun list(path: String): ArrayList<RootFileInfo> {
         val absPath = if(path.endsWith("/")) path.subSequence(0, path.length - 1).toString() else path
         val files = ArrayList<RootFileInfo>()
-        val outputInfo = KeepShellPublic.doCmdSync("ls -laF \"$absPath\"")
-        if (outputInfo != "error") {
-            val rows = outputInfo.split("\n")
-            for (row in rows) {
-                val file  = shellFileInfoRow(row, absPath)
-                if (file != null) {
-                    files.add(file)
+        if (dirExists(absPath)) {
+            val outputInfo = KeepShellPublic.doCmdSync("ls -laF \"$absPath\"")
+            if (outputInfo != "error") {
+                val rows = outputInfo.split("\n")
+                for (row in rows) {
+                    val file = shellFileInfoRow(row, absPath)
+                    if (file != null) {
+                        files.add(file)
+                    }
                 }
             }
         }

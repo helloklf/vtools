@@ -9,15 +9,7 @@ import java.util.HashMap;
  */
 
 public class CpuStatus implements Serializable {
-    public String cluster_little_min_freq = "";
-    public String cluster_little_max_freq = "";
-    public String cluster_little_governor = "";
-    public HashMap<String, String> cluster_little_governor_params = null;
-
-    public String cluster_big_min_freq = "";
-    public String cluster_big_max_freq = "";
-    public String cluster_big_governor = "";
-    public HashMap<String, String> cluster_big_governor_params = null;
+    public ArrayList<CpuClusterStatus> cpuClusterStatuses = new ArrayList<>();
 
     public String coreControl = "";
     public String vdd = "";

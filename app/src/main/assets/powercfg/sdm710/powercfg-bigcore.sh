@@ -3,18 +3,21 @@
 action=$1
 stop perfd
 
+echo 1 > /sys/devices/system/cpu/cpu6/online
+echo 1 > /sys/devices/system/cpu/cpu7/online
+
 echo 0 > /sys/module/msm_thermal/core_control/enabled
 echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
 echo N > /sys/module/msm_thermal/parameters/enabled
 
 governor0=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
-governor4=`cat /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor`
+governor6=`cat /sys/devices/system/cpu/cpu6/cpufreq/scaling_governor`
 
 if [ ! "$governor0" = "schedutil" ]; then
 	echo 'schedutil' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 fi
-if [ ! "$governor4" = "schedutil" ]; then
-	echo 'schedutil' > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
+if [ ! "$governor6" = "schedutil" ]; then
+	echo 'schedutil' > /sys/devices/system/cpu/cpu6/cpufreq/scaling_governor
 fi
 
 function set_value()
@@ -78,7 +81,7 @@ function schedutil_cfg()
 }
 
 if [ "$action" = "powersave" ]; then
-	set_cpu_freq 5000 1612800 1324800 1747200
+	set_cpu_freq 5000 1612800 5000 1747200
 
 	echo "0" > /sys/module/cpu_boost/parameters/input_boost_freq
 	echo 0 > /sys/module/cpu_boost/parameters/input_boost_ms

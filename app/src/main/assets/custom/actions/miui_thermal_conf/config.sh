@@ -43,21 +43,18 @@ function remove_file() {
 
 function lock_dir() {
     local dir="$1"
-    if [[ -d "$dir" ]]
-    then
-        rm -rf "$dir" 2> /dev/null
-        echo '' > "$dir"
-        chattr +i "$dir" 2> /dev/null
-    fi
+    ulock_dir "$dir"
+    rm -rf "$dir" 2> /dev/null
+    mkdir -p"$dir" 2> /dev/null
+    mkdir -p"$dir/config" 2> /dev/null
+    chattr +i "$dir/config" 2> /dev/null
 }
 
 function ulock_dir() {
     local dir="$1"
-    if [[ -f "$dir" ]]
-    then
-        chattr -i "$dir" 2> /dev/null
-        rm -rf "$dir" 2> /dev/null
-    fi
+    chattr -i "$dir/config" 2> /dev/null
+    chattr -i "$dir" 2> /dev/null
+    rm -rf "$dir" 2> /dev/null
 }
 
 function replace_configs()
@@ -92,8 +89,8 @@ function replace_configs()
         replace_file "$config" "-engine"
     fi
 
-    replace_file "$config" "-class0"
-    replace_file "$config" "-map"
+    # replace_file "$config" "-class0"
+    # replace_file "$config" "-map"
     replace_file "$config" "-phone"
     replace_file "$config" "-pubgmhd"
     replace_file "$config" "-sgame"
@@ -147,7 +144,11 @@ case "$mode" in
         exit 0
      ;;
     "high")
-        echo '此模式下，降频温度阈值被提高，性能更稳定'
+        echo '此模式下，降频温度阈值稍微提高，提高持续性能'
+        echo ''
+    ;;
+    "high2")
+        echo '此模式下，降频温度阈值大幅提高，性能更稳定'
         echo ''
     ;;
     "nolimits")
@@ -155,7 +156,7 @@ case "$mode" in
         echo ''
     ;;
     "danger")
-        echo '此模式下，充电速度和SOC性能不会被温度限制' 1>&2
+        echo '此模式下，充电速度、SOC性能均不会被限制' 1>&2
         echo '留意发热，谨防爆炸！！！' 1>&2
     ;;
     *)

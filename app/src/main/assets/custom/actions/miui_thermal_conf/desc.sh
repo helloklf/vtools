@@ -11,16 +11,19 @@ fi
 modename=""
 case "$mode" in
     "default")
-        modename="系统默认"
+        modename="系统默认 (凉)"
      ;;
     "high")
-        modename="提高阈值"
+        modename="提高阈值 (温)"
+    ;;
+    "high2")
+        modename="稳定性能 (热)"
     ;;
     "nolimits")
-        modename="不限制性能"
+        modename="极致性能 (烫)"
     ;;
     "danger")
-        modename="卍解"
+        modename="疯狂模式 (炸)"
     ;;
     *)
         modename="未替换"

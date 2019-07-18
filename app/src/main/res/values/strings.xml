@@ -301,7 +301,7 @@
     <string name="ro_product_manufacturer">ro.product.manufacturer=</string>
     <string name="auto_start">自启动</string>
     <string name="boot_after_auto_modify">开机后自动修改</string>
-    <string name="core_control_helpinfo">这是一个功能简陋的CPU控制器，实际上CPU的调度非常复杂，单纯调整频率限制未必能省电或提高流畅度。\n\n部分的手机底层具有CPU参数动态调整机制，会导致自定义的参数很快失效（小米手机请先到“附加功能-性能调节”中禁用perfd和Performance Boost Config，否则CPU频率修改不会生效！）。\n\n此外，热插拔温控功能可能也会影响你对CPU参数的修改！\n\ninteractive调度适用于大多数手机，反应迅速（schedutil更好），ondemand调度则会更缓慢的切换频率，conservative、powersave、performance模式均不推荐使用！。\n\n优先Big核心会在获得绝佳的流畅体验的同时，耗电和发热显著增高。</string>
+    <string name="core_control_helpinfo">这是个简陋的CPU控制器，实际上CPU的调度非常复杂，单纯调整频率未必能省电或提高流畅度。\n\n部分的手机底层具有CPU参数动态调整机制，会导致自定义的参数很快失效（小米手机请先到“附加功能-性能调节”中禁用perfd和Performance Boost Config，否则CPU频率修改不会生效！）。\n\n此外，热插拔温控功能可能也会影响你对CPU参数的修改！\n\ninteractive调度适用于大多数手机，反应迅速（schedutil更好），ondemand调度则会更缓慢的切换频率，conservative、powersave、performance模式均不推荐使用！。\n\n优先Big核心会在获得绝佳的流畅体验的同时，耗电和发热显著增高。</string>
     <string name="shell_executor">脚本执行</string>
     <string-array name="powercfg_modes2">
         <item>省电模式（阅读）</item>

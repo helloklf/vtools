@@ -93,16 +93,16 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             super.run()
 
             if (MagiskExtend.magiskSupported() && KernelProrp.getProp("${MagiskExtend.MAGISK_PATH}system/vendor/etc/thermal-engine.current.ini") != "") {
-                if (RootFile.dirExists("/data/thermal")) {
+                if (RootFile.list("/data/thermal/config").size > 0) {
                     KeepShellPublic.doCmdSync(
                             "rm -rf /data/thermal 2> /dev/null\n" +
-                                    "echo '' > /data/thermal\n" +
-                                    "chattr +i /data/thermal 2> /dev/null")
-                } else if (RootFile.dirExists("/data/vendor/thermal")) {
+                                    "mkdir -p /data/thermal/config 2> /dev/null\n" +
+                                    "chattr +i /data/thermal/config 2> /dev/null")
+                } else if (RootFile.list("/data/vendor/thermal/config").size > 0) {
                     KeepShellPublic.doCmdSync(
                             "rm -rf /data/vendor/thermal 2> /dev/null\n" +
-                                    "echo '' > /data/vendor/thermal\n" +
-                                    "chattr +i /data/vendor/thermal 2> /dev/null")
+                                    "mkdir -p /data/vendor/thermal/config 2> /dev/null\n" +
+                                    "chattr +i /data/vendor/thermal/config 2> /dev/null")
                 } else {
                     return
                 }

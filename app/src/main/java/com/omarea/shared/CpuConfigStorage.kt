@@ -2,6 +2,7 @@ package com.omarea.shared
 
 import android.content.Context
 import android.widget.Toast
+import com.omarea.common.shared.FileWrite
 import com.omarea.shared.model.CpuStatus
 import java.io.*
 
@@ -11,7 +12,7 @@ import java.io.*
  */
 class CpuConfigStorage {
     fun loadBootConfig(context: Context): CpuStatus? {
-        val bootConfig = com.omarea.common.shared.FileWrite.getPrivateFilePath(context, "cpuconfig.bak")
+        val bootConfig = com.omarea.common.shared.FileWrite.getPrivateFilePath(context, "cpuconfig.dat")
         val file = File(bootConfig)
         if (file.exists()) {
             var fileInputStream: FileInputStream? = null;
@@ -37,7 +38,7 @@ class CpuConfigStorage {
     }
 
     fun saveBootConfig(context: Context, status: CpuStatus?): Boolean {
-        val bootConfig = com.omarea.common.shared.FileWrite.getPrivateFilePath(context, "cpuconfig.bak")
+        val bootConfig = FileWrite.getPrivateFilePath(context, "cpuconfig.dat")
         val file = File(bootConfig)
         if (status != null) {
             var fileOutputStream: FileOutputStream? = null

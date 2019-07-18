@@ -83,23 +83,17 @@ class BootService : IntentService("vtools-boot") {
             }
 
             // CPU
-            if (cpuState.cluster_little_governor.isNotEmpty()) {
-                CpuFrequencyUtils.setGovernor(cpuState.cluster_little_governor, 0, context);
-            }
-            if (cpuState.cluster_little_min_freq.isNotEmpty()) {
-                CpuFrequencyUtils.setMinFrequency(cpuState.cluster_little_min_freq, 0, context);
-            }
-            if (cpuState.cluster_little_max_freq.isNotEmpty()) {
-                CpuFrequencyUtils.setMaxFrequency(cpuState.cluster_little_max_freq, 0, context);
-            }
-            if (cpuState.cluster_big_governor.isNotEmpty()) {
-                CpuFrequencyUtils.setGovernor(cpuState.cluster_big_governor, 1, context);
-            }
-            if (cpuState.cluster_big_min_freq.isNotEmpty()) {
-                CpuFrequencyUtils.setMinFrequency(cpuState.cluster_big_min_freq, 1, context);
-            }
-            if (cpuState.cluster_big_max_freq.isNotEmpty()) {
-                CpuFrequencyUtils.setMaxFrequency(cpuState.cluster_big_max_freq, 1, context);
+            for (cluster in 0 until cpuState.cpuClusterStatuses.size) {
+                val config = cpuState.cpuClusterStatuses[cluster]
+                if (config.governor.isNotEmpty()) {
+                    CpuFrequencyUtils.setGovernor(config.governor, 0, context);
+                }
+                if (config.min_freq.isNotEmpty()) {
+                    CpuFrequencyUtils.setMinFrequency(config.min_freq, 0, context);
+                }
+                if (config.max_freq.isNotEmpty()) {
+                    CpuFrequencyUtils.setMaxFrequency(config.max_freq, 0, context);
+                }
             }
 
             // Boost
