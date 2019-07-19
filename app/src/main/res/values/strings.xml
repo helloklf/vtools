@@ -10,6 +10,7 @@
         <item>com.miui.systemAdSolution</item>
     </string-array>
     <string-array name="powercfg_igoned">
+        <item>com.omarea.gesture</item>
         <item>com.zbar.lib</item>
         <item>eu.chainfire.supersu</item>
         <item>dev.nick.app.screencast</item>

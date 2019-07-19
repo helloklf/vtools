@@ -28,6 +28,7 @@ class AccessibilityServiceScence : AccessibilityService() {
     private var flagRequestKeyEvent = true
     private var flagRetriveWindow = true
     private var flagRequestAccessbilityButton = false
+    private var layerDetection = true
 
     private var eventWindowStateChange = true
     private var eventWindowContentChange = false
@@ -94,7 +95,7 @@ override fun onCreate() {
 
         val info = serviceInfo // AccessibilityServiceInfo();
         // We are interested in all types of accessibility events.
-        info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+        info.eventTypes = AccessibilityEvent.TYPE_WINDOWS_CHANGED
         if (eventWindowStateChange) {
             info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
         }
@@ -206,26 +207,13 @@ override fun onCreate() {
                 return
             }
 
-            if (flagReportViewIds) {
+            if (flagReportViewIds && event.source != null) {
                 val windows_ = windows
                 if (windows_ == null || windows_.isEmpty()) {
                     return
                 } else if (windows_.size > 1) {
+                    // Log.d("onAccessibilityEvent", ">>>")
                     var lastWindow: AccessibilityWindowInfo? = null
-                    for (window in windows_.iterator()) {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && window.isInPictureInPictureMode) {
-                            continue
-                        }
-                        if (window.type == AccessibilityWindowInfo.TYPE_APPLICATION) {
-                            lastWindow = window
-                        } else {
-                            continue
-                        }
-                    }
-                    if (lastWindow == null) {
-                        return
-                    }
-                    val windowInfo = lastWindow
 
                     /**
                     Window          层级(zOrder - window.layer)
@@ -234,6 +222,30 @@ override fun onCreate() {
                     子Window	    1000~1999
                     系统Window	    2000~2999
                      */
+                    val effectiveWindows =  windows_.filter {
+                        (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && it.isInPictureInPictureMode)) && (it.type == AccessibilityWindowInfo.TYPE_APPLICATION)
+                    }
+
+                    if (effectiveWindows.size > 0) {
+                        if (layerDetection) {
+                            lastWindow = effectiveWindows.sortedBy { it.layer }.get(0)
+                        } else {
+                            for (window in effectiveWindows.iterator()) {
+                                if (window.isFocused) {
+                                    // Log.d("onAccessibilityEvent", "" + window.title + "   " + window.layer)
+                                    lastWindow = window
+                                } else {
+                                    // Log.d("onAccessibilityEvent", "inactive " + window.title + "   " + window.layer)
+                                }
+                            }
+                        }
+                    }
+
+                    if (lastWindow == null) {
+                        return
+                    }
+
+                    val windowInfo = lastWindow
                     try {
                         val source = event.source
                         if (source == null || source.windowId != windowInfo.id) {
