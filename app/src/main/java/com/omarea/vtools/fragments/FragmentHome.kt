@@ -126,19 +126,20 @@ class FragmentHome : Fragment() {
                 true
             }
             adview_hide.setOnClickListener {
+                val count = adConfig.getInt(SpfConfig.AD_CONFIG_CLOSE_A_COUNT, 0)
                 val dialog = AlertDialog.Builder(context)
                         .setTitle(">_<")
-                        .setMessage("如果可以的话，我还是希望您能【下载并注册】\n\n长按“隐藏推广”可直关闭广告\n")
+                        .setMessage("如果可以的话，我还是希望您能【下载并注册】\n\n长按“隐藏推广”可关闭广告\n")
                         .setPositiveButton("去下载", {
                             _, _ ->
                             downloadAdApp()
                         })
-                        .setNegativeButton("想都别想", { _, _ ->
-                            adConfig.edit().putInt(SpfConfig.AD_CONFIG_CLOSE_A_COUNT, adConfig.getInt(SpfConfig.AD_CONFIG_CLOSE_A_COUNT, 0) + 1).apply()
+                        .setNegativeButton("想都别想×" + (count + 1), { _, _ ->
+                            adConfig.edit().putInt(SpfConfig.AD_CONFIG_CLOSE_A_COUNT, count + 1).apply()
                         })
                         .setCancelable(true)
 
-                if (adConfig.getInt(SpfConfig.AD_CONFIG_CLOSE_A_COUNT, 0) > 3) {
+                if (count > 3) {
                     dialog.setNeutralButton("广告走开！", { _, _ ->
                         adview.visibility = View.GONE
                         adConfig.edit().putBoolean(SpfConfig.AD_CONFIG_HIDE_A, true).apply()
