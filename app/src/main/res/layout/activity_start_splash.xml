@@ -127,4 +127,51 @@
         </LinearLayout>
     </FrameLayout>
 
+    <FrameLayout
+        android:visibility="gone"
+        android:id="@+id/splash_adview"
+        android:background="#DADFE2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/splash_ad_image"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:scaleType="centerInside"
+            android:scaleX="1"
+            android:src="@drawable/splash" />
+        <Button
+            android:id="@+id/splash_ad_download"
+            android:layout_marginBottom="20dp"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            android:text="下载应用"
+            android:layout_gravity="bottom|center_horizontal"
+            android:background="@android:color/transparent"
+            android:textColor="#C01548"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:layout_marginBottom="0dp"
+            android:textSize="10dp"
+            android:text="这是Scene的推广，5秒后可跳过"
+            android:layout_gravity="bottom|center_horizontal"
+            android:background="@android:color/transparent"
+            android:textColor="#741030"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/btn_skip_ad"
+            android:visibility="gone"
+            android:layout_marginTop="40dp"
+            android:layout_marginRight="20dp"
+            android:textColor="#C01548"
+            android:textSize="14dp"
+            android:textStyle="bold"
+            android:layout_gravity="top|right"
+            android:background="@drawable/krscript_item_ripple"
+            android:text="@string/btn_skip"
+            android:layout_width="40dp"
+            android:layout_height="30dp" />
+    </FrameLayout>
 </FrameLayout>

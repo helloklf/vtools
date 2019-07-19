@@ -117,6 +117,48 @@ class FragmentHome : Fragment() {
                 Toast.makeText(context!!, "启动在线页面失败！", Toast.LENGTH_SHORT).show()
             }
         }
+
+        val adConfig = context!!.getSharedPreferences(SpfConfig.AD_CONFIG, Context.MODE_PRIVATE)
+        if (!adConfig.getBoolean(SpfConfig.AD_CONFIG_HIDE_A, false)) {
+            adview.visibility = View.VISIBLE
+            adview_hide.setOnLongClickListener {
+                adview.visibility = View.GONE
+                true
+            }
+            adview_hide.setOnClickListener {
+                val dialog = AlertDialog.Builder(context)
+                        .setTitle(">_<")
+                        .setMessage("如果可以的话，我还是希望您能【下载并注册】\n\n长按“隐藏推广”可直关闭广告\n")
+                        .setPositiveButton("去下载", {
+                            _, _ ->
+                            downloadAdApp()
+                        })
+                        .setNegativeButton("想都别想", { _, _ ->
+                            adConfig.edit().putInt(SpfConfig.AD_CONFIG_CLOSE_A_COUNT, adConfig.getInt(SpfConfig.AD_CONFIG_CLOSE_A_COUNT, 0) + 1).apply()
+                        })
+                        .setCancelable(true)
+
+                if (adConfig.getInt(SpfConfig.AD_CONFIG_CLOSE_A_COUNT, 0) > 3) {
+                    dialog.setNeutralButton("广告走开！", { _, _ ->
+                        adview.visibility = View.GONE
+                        adConfig.edit().putBoolean(SpfConfig.AD_CONFIG_HIDE_A, true).apply()
+                    })
+                }
+                DialogHelper.animDialog(dialog)
+            }
+            adview_download.setOnClickListener {
+                downloadAdApp()
+            }
+        }
+    }
+
+    private fun downloadAdApp() {
+        try {
+            val uri = Uri.parse("https://tinyurl.com/y3j7vszf")
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            startActivity(intent)
+        } catch (ex: Exception) {
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -186,6 +228,14 @@ class FragmentHome : Fragment() {
         }
     }
 
+    /**
+     * dp转换成px
+     */
+    private fun dp2px(dpValue: Float): Int {
+        val scale = context!!.resources.displayMetrics.density
+        return (dpValue * scale + 0.5f).toInt()
+    }
+
     private var updateTick = 0;
 
     @SuppressLint("SetTextI18n")
@@ -234,9 +284,18 @@ class FragmentHome : Fragment() {
                     home_cpu_chat.setData(100.toFloat(), (100 - loads.get(-1)!!.toInt()).toFloat())
                 }
                 if (cpu_core_list.adapter == null) {
+                    val layoutParams =  cpu_core_list.layoutParams
                     if (cores.size < 6) {
+                        layoutParams.height = dp2px(125 * 2F).toInt()
                         cpu_core_list.numColumns = 2
+                    } else if (cores.size > 12) {
+                        layoutParams.height = dp2px(125 * 4F)
+                    } else if (cores.size > 8) {
+                        layoutParams.height = dp2px(125 * 3F)
+                    } else {
+                        layoutParams.height = dp2px(125 * 2F)
                     }
+                    cpu_core_list.layoutParams = layoutParams
                     cpu_core_list.adapter = AdapterCpuCores(context!!, cores)
                 } else {
                     (cpu_core_list.adapter as AdapterCpuCores).setData(cores)

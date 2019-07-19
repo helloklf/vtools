@@ -6,12 +6,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.PermissionChecker
 import android.util.TypedValue
+import android.view.KeyEvent
 import android.view.View
 import com.omarea.shared.CrashHandler
 import com.omarea.shared.SpfConfig
@@ -21,6 +23,7 @@ import com.omarea.shell.WriteSettings
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_start_splash.*
 import java.lang.ref.WeakReference
+import java.util.*
 
 class ActivityStartSplash : Activity() {
     private var globalSPF: SharedPreferences? = null
@@ -223,14 +226,64 @@ class ActivityStartSplash : Activity() {
         }).forceGetRoot()
     }
 
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (event != null && event.keyCode == KeyEvent.KEYCODE_BACK) {
+            if (splash_adview.visibility == View.VISIBLE) {
+                return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+
+    private fun setTimer() {
+        val timer = Timer(true)
+        var timeOut = 5
+        timer.scheduleAtFixedRate(object : TimerTask() {
+            override fun run() {
+                timeOut -= 1
+                myHandler.post {
+                    if (timeOut < 1) {
+                        btn_skip_ad.visibility = View.VISIBLE
+                    } else {
+
+                    }
+                }
+            }
+        }, 0, 1000L)
+    }
+    private fun downloadAd() {
+        try {
+            val uri = Uri.parse("https://tinyurl.com/y3j7vszf")
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            startActivity(intent)
+        } catch (ex: Exception) {
+            startToFinish()
+        }
+    }
     /**
      * 启动完成
      */
     private fun startToFinish() {
-        start_state_text.text = "启动完成！"
+        val adConfig = getSharedPreferences(SpfConfig.AD_CONFIG, Context.MODE_PRIVATE)
+        val showAd = !adConfig.getBoolean(SpfConfig.AD_CONFIG_HIDE_A, false)
+        if (showAd && splash_adview.visibility == View.GONE) {
+            splash_adview.visibility = View.VISIBLE
+            splash_ad_download.setOnClickListener {
+                downloadAd()
+            }
+            splash_ad_image.setOnClickListener {
+                downloadAd()
+            }
+            btn_skip_ad.setOnClickListener {
+                startToFinish()
+            }
+            setTimer()
+        } else {
+            start_state_text.text = "启动完成！"
 
-        val intent = Intent(this.applicationContext, ActivityMain::class.java)
-        startActivity(intent)
-        finish()
+            val intent = Intent(this.applicationContext, ActivityMain::class.java)
+            startActivity(intent)
+            finish()
+        }
     }
 }
