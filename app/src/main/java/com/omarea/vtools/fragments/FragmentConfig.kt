@@ -411,18 +411,24 @@ class FragmentConfig : Fragment() {
     }
 
     @SuppressLint("ApplySharedPref")
-    private fun bindSPF(checkBox: Switch, spf: SharedPreferences, prop: String, defValue: Boolean = false) {
+    private fun bindSPF(checkBox: Switch, spf: SharedPreferences, prop: String, defValue: Boolean = false, restartService: Boolean = false) {
         checkBox.isChecked = spf.getBoolean(prop, defValue)
         checkBox.setOnCheckedChangeListener { _, isChecked ->
             spf.edit().putBoolean(prop, isChecked).commit()
         }
+        if (restartService) {
+            reStartService()
+        }
     }
 
     @SuppressLint("ApplySharedPref")
-    private fun bindSPF(checkBox: CheckBox, spf: SharedPreferences, prop: String, defValue: Boolean = false) {
+    private fun bindSPF(checkBox: CheckBox, spf: SharedPreferences, prop: String, defValue: Boolean = false, restartService: Boolean = false) {
         checkBox.isChecked = spf.getBoolean(prop, defValue)
         checkBox.setOnCheckedChangeListener { _, isChecked ->
             spf.edit().putBoolean(prop, isChecked).commit()
+        }
+        if (restartService) {
+            reStartService()
         }
     }
 

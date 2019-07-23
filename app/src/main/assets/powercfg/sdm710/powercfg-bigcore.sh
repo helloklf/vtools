@@ -3,9 +3,6 @@
 action=$1
 stop perfd
 
-echo 1 > /sys/devices/system/cpu/cpu6/online
-echo 1 > /sys/devices/system/cpu/cpu7/online
-
 echo 0 > /sys/module/msm_thermal/core_control/enabled
 echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
 echo N > /sys/module/msm_thermal/parameters/enabled
@@ -73,110 +70,67 @@ function set_cpu_freq()
 	echo $4 > /sys/devices/system/cpu/cpu6/cpufreq/scaling_max_freq
 }
 
-function schedutil_cfg()
-{
-    set_value $2 /sys/devices/system/cpu/cpu$1/cpufreq/schedutil/down_rate_limit_us
-    set_value $3 /sys/devices/system/cpu/cpu$1/cpufreq/schedutil/up_rate_limit_us
-    set_value $4 /sys/devices/system/cpu/cpu$1/cpufreq/schedutil/iowait_boost_enable
+function set_input_boost_freq() {
+    local c0="$1"
+    local c1="$2"
+    local ms="$3"
+    echo "0:$c0 1:$c0 2:$c0 3:$c0 4:$c0 5:$c0 6:$c1 7:$c1" > /sys/module/cpu_boost/parameters/input_boost_freq
+	echo $ms > /sys/module/cpu_boost/parameters/input_boost_ms
 }
 
 if [ "$action" = "powersave" ]; then
 	set_cpu_freq 5000 1612800 5000 1747200
-
-	echo "0" > /sys/module/cpu_boost/parameters/input_boost_freq
-	echo 0 > /sys/module/cpu_boost/parameters/input_boost_ms
+	set_input_boost_freq 0 0 0
 
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
 
-	echo "85 300000:85 576000:67 748800:75 1209600:78" > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/target_loads
-	echo 518400 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
-    echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/io_is_busy
-    schedutil_cfg 0 1000 10000 0
+	echo 1209600 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
+	echo 825600 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
 
-	echo "99" > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/target_loads
-	echo 652800 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
-    echo 0 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/io_is_busy
-    schedutil_cfg 6 1000 10000 0
-
-    echo 0-2 > /dev/cpuset/background/cpus
-    echo 0-3 > /dev/cpuset/system-background/cpus
+    echo 0 > /sys/devices/system/cpu/cpu6/online
+    echo 0 > /sys/devices/system/cpu/cpu7/online
 
 	exit 0
 fi
 
+echo 1 > /sys/devices/system/cpu/cpu6/online
+echo 1 > /sys/devices/system/cpu/cpu7/online
 if [ "$action" = "balance" ]; then
 	set_cpu_freq 5000 1708800 5000 2208000
-
-    echo "0:1209600 1:1209600 2:1209600 3:1209600 4:0 5:0 6:0 7:0" > /sys/module/cpu_boost/parameters/input_boost_freq
-    echo 40 > /sys/module/cpu_boost/parameters/input_boost_ms
+	set_input_boost_freq 1209600 0 40
 
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
 
-	echo "85 300000:85 576000:67 748800:75 1209600:78" > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/target_loads
-	echo 960000 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
-    echo 0 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/io_is_busy
-    schedutil_cfg 0 1000 5000 0
-
-    echo "83 300000:89 1132800:89 1363200:92" > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/target_loads
-	echo 1056000 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
-    echo 0 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/io_is_busy
-    schedutil_cfg 6 1000 5000 0
-
-    echo 0-2 > /dev/cpuset/background/cpus
-    echo 0-3 > /dev/cpuset/system-background/cpus
+	echo 1516800 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
+	echo 1363200 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
 
 	exit 0
 fi
 
-echo 1 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/io_is_busy
 if [ "$action" = "performance" ]; then
-	set_cpu_freq 5000 2500000 5000 2750000
-
-    echo "0:1209600 1:1209600 2:1209600 3:1209600 4:0 5:0 6:0 7:0" > /sys/module/cpu_boost/parameters/input_boost_freq
-    echo 40 > /sys/module/cpu_boost/parameters/input_boost_ms
+	set_cpu_freq 300000 2500000 300000 2750000
+	set_input_boost_freq 1324800 1536000 40
 
 	echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
 
-    echo "73 979200:72 1363200:78 1843200:87" > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/target_loads
     echo 1478400 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
-    echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/io_is_busy
-    schedutil_cfg 0 1000 1000 1
-
-    echo "78 1497600:80 2016000:87" > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/target_loads
     echo 1267200 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
-    echo 1 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/io_is_busy
-    schedutil_cfg 6 1000 1000 1
-
-    echo 0-1 > /dev/cpuset/background/cpus
-    echo 0-1 > /dev/cpuset/system-background/cpus
 
 	exit 0
 fi
 
 if [ "$action" = "fast" ]; then
-	set_cpu_freq 5000 2500000 1267200 2750000
+	set_cpu_freq 1708800 2500000 1267200 2750000
+	set_input_boost_freq 1708800 2208000 120
 
-    echo "0:1324800 1:1324800 2:1324800 3:1324800 4:1804800 5:1804800 6:1804800 7:1804800" > /sys/module/cpu_boost/parameters/input_boost_freq
-    echo 80 > /sys/module/cpu_boost/parameters/input_boost_ms
-
-    echo "72 979200:72 1536000:78 1843200:87" > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/target_loads
-	echo 1036800 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
-    echo 1 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/io_is_busy
-    schedutil_cfg 0 1000 1000 1
-
-    echo "73 1497600:78 2016000:87" > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/target_loads
-	echo 1497600 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
-    echo 1 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/io_is_busy
-    schedutil_cfg 6 1000 1000 1
+	echo 1708800 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
+	echo 2208000 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
 
 	echo `expr $gpu_min_pl - 2` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 1 > /proc/sys/kernel/sched_boost
-
-    echo 0 > /dev/cpuset/background/cpus
-    echo 0-1 > /dev/cpuset/system-background/cpus
 
 	exit 0
 fi

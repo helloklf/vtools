@@ -6,21 +6,28 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Point
+import android.graphics.Typeface
 import android.os.Build
 import android.os.Handler
 import android.provider.Settings
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.*
 import android.view.WindowManager.LayoutParams
+import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import com.omarea.shell.cpucontrol.CpuLoadUtils
 import com.omarea.shell.cpucontrol.GpuUtils
 import com.omarea.shell.units.BatteryUnit
-import com.omarea.ui.CpuChartView
 import com.omarea.ui.FloatMonitorBatteryView
 import com.omarea.ui.FloatMonitorChartView
 import com.omarea.vtools.R
+import java.lang.Exception
+import java.lang.StringBuilder
 import java.util.*
 
 class FloatMonitor(context: Context) {
@@ -120,7 +127,7 @@ class FloatMonitor(context: Context) {
                             }
                         }
                         MotionEvent.ACTION_UP -> {
-                            if (System.currentTimeMillis() - touchStartTime < 300) {
+                            if (System.currentTimeMillis() - touchStartTime < 180) {
                                 if (Math.abs(event.rawX - touchStartRawX) < 15 && Math.abs(event.rawY - touchStartRawY) < 15) {
                                     onClick()
                                 } else {
@@ -128,6 +135,9 @@ class FloatMonitor(context: Context) {
                                 }
                             }
                             isTouchDown = false
+                            if (Math.abs(event.rawX - touchStartRawX) > 15 || Math.abs(event.rawY - touchStartRawY) > 15) {
+                                return true
+                            }
                         }
                         MotionEvent.ACTION_OUTSIDE,
                         MotionEvent.ACTION_CANCEL -> {
@@ -163,7 +173,7 @@ class FloatMonitor(context: Context) {
     }
 
     private var view: View? = null
-    private var cpuChart: CpuChartView? = null
+    private var cpuChart: FloatMonitorChartView? = null
     private var cpuFreqText: TextView? = null
     private var gpuChart: FloatMonitorChartView? = null
     private var gpuPanel: View? = null
@@ -174,20 +184,48 @@ class FloatMonitor(context: Context) {
     private var temperatureChart: FloatMonitorBatteryView? = null
     private var temperatureText: TextView? = null
     private var batteryLevelText: TextView? = null
+    private var otherInfo: TextView? = null
 
     private var activityManager: ActivityManager? = null
     private var myHandler = Handler()
     private var batteryUnit = BatteryUnit()
-    val info = ActivityManager.MemoryInfo()
+    private val info = ActivityManager.MemoryInfo()
 
-    var sum = -1
-    var totalMem = 0
-    var availMem = 0
+    private var sum = -1
+    private var totalMem = 0
+    private var availMem = 0
+    private var coreCount = -1;
+    private var showOtherInfo = false
+    private var clusters = ArrayList<Array<String>>()
+    private var clustersFreq = ArrayList<String>()
 
     private fun updateInfo() {
-        val cpuFreq = CpuFrequencyUtils.getCurrentFrequency()
+        if (coreCount < 1) {
+            coreCount = CpuFrequencyUtils.getCoreCount()
+            clusters = CpuFrequencyUtils.getClusterInfo()
+        }
+        val loads = cpuLoadUtils.cpuLoad
+        clustersFreq.clear()
+        for (coreIndex in 0 until clusters.size) {
+            clustersFreq.add(CpuFrequencyUtils.getCurrentFrequency(coreIndex))
+        }
         val gpuFreq = GpuUtils.getGpuFreq() + "Mhz"
         val gpuLoad = GpuUtils.getGpuLoad()
+
+        var maxFreq = 0
+        for (item in clustersFreq) {
+            if (item.isNotEmpty()) {
+                try {
+                    val freq = item.toInt()
+                    if (freq > maxFreq) {
+                        maxFreq = freq
+                    }
+                } catch (ex: Exception) {
+                }
+            }
+        }
+
+        val cpuFreq = maxFreq.toString() // CpuFrequencyUtils.getCurrentFrequency()
 
         activityManager!!.getMemoryInfo(info)
 
@@ -199,8 +237,43 @@ class FloatMonitor(context: Context) {
         val batteryStatus = batteryUnit.getBatteryTemperature()
 
         myHandler.post {
-            /*
-            // 内存使用显示似乎不重要，去掉吧
+            if (showOtherInfo) {
+                otherInfo!!.setText("")
+                var clusterIndex = 0
+                for (cluster in clusters) {
+                    if (clusterIndex != 0) {
+                        otherInfo?.append("\n")
+                    }
+                    if(cluster.size > 0) {
+                        val title = "#" + cluster[0] + "~" + cluster[cluster.size - 1] + "  "+ subFreqStr(clustersFreq.get(clusterIndex)) + "Mhz";
+                        val titleSpannable = SpannableString(title);
+                        val styleSpan  = StyleSpan(Typeface.BOLD);
+                        titleSpannable.setSpan(ForegroundColorSpan(Color.WHITE), 0, title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        titleSpannable.setSpan(styleSpan, 0, title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        otherInfo?.append(titleSpannable)
+
+                        val otherInfos = StringBuilder("")
+                        for (core in cluster) {
+                            otherInfos.append("\n")
+                            otherInfos.append("CPU")
+                            otherInfos.append(core)
+                            otherInfos.append("  ")
+                            val load = loads.get(core.toInt())
+                            if (load != null) {
+                                if (load < 10) {
+                                    otherInfos.append("0")
+                                }
+                                otherInfos.append(load.toInt())
+                                otherInfos.append("%")
+                            } else {
+                                otherInfos.append("×")
+                            }
+                        }
+                        otherInfo?.append(otherInfos.toString())
+                    }
+                    clusterIndex++
+                }
+            }
             if (sum < 0) {
                 totalMem = (info.totalMem / 1024 / 1024f).toInt()
                 availMem = (info.availMem / 1024 / 1024f).toInt()
@@ -210,34 +283,24 @@ class FloatMonitor(context: Context) {
             } else {
                 sum--
             }
-            */
 
             cpuChart!!.setData(100f, (100 - cpuLoad).toFloat())
-            cpuFreqText!!.text = subFreqStr(cpuFreq.toString()) + "Mhz"
+            cpuFreqText!!.text = subFreqStr(cpuFreq) + "Mhz"
 
             gpuFreqText!!.text = gpuFreq
             if (gpuLoad > -1) {
                 gpuChart!!.setData(100f, (100f - gpuLoad))
             }
 
-            /*
-            var value = batteryStatus.temperature - 10
-            if (value > 45) {
-                value = 45.0f
-            } else if (value < 0) {
-                value = 0.0f
-            }
-            temperatureChart!!.setData(45f, 45f - value)
-            */
             temperatureChart!!.setData(100f, 100f - batteryStatus.level)
             temperatureText!!.setText(batteryStatus.temperature.toString() + "°C")
             batteryLevelText!!.setText(batteryStatus.level.toString() + "%")
 
-            if (batteryStatus.temperature >= 54) {
+            if (batteryStatus.temperature >= 48) {
                 temperatureText!!.setTextColor(Color.rgb(255, 15, 0))
-            } else if (batteryStatus.temperature >= 49) {
+            } else if (batteryStatus.temperature >= 45) {
                 temperatureText!!.setTextColor(mContext!!.resources.getColor(R.color.color_load_veryhight))
-            } else if (batteryStatus.temperature >= 44) {
+            } else if (batteryStatus.temperature >= 42) {
                 temperatureText!!.setTextColor(mContext!!.resources.getColor(R.color.color_load_hight))
             } else if (batteryStatus.temperature > 34) {
                 temperatureText!!.setTextColor(mContext!!.resources.getColor(R.color.color_load_mid))
@@ -248,22 +311,6 @@ class FloatMonitor(context: Context) {
             val layoutParams = view!!.layoutParams
             view!!.layoutParams = layoutParams
         }
-        /*
-        view!!.setOnClickListener {
-            view!!.visibility = View.GONE
-            myHandler.postDelayed({
-                if (mView != null) {
-                    view!!.visibility = View.VISIBLE
-                }
-            }, 2000)
-            true
-        }
-        // val opt = view!!.findViewById(R.id.fw_monitor_opt)
-        view!!.setOnLongClickListener {
-            hidePopupWindow()
-            true
-        }
-        */
     }
 
     private fun startTimer() {
@@ -273,7 +320,7 @@ class FloatMonitor(context: Context) {
             override fun run() {
                 updateInfo()
             }
-        }, 0, 1000)
+        }, 0, 1500)
         updateInfo()
     }
 
@@ -305,8 +352,18 @@ class FloatMonitor(context: Context) {
         ramUseText = view!!.findViewById(R.id.fw_ram_use)
         temperatureText = view!!.findViewById(R.id.fw_battery_temp)
         batteryLevelText = view!!.findViewById<TextView>(R.id.fw_battery_level)
+        otherInfo = view!!.findViewById<TextView>(R.id.fw_other_info)
 
         activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+
+        view!!.setOnClickListener {
+            otherInfo?.visibility = if (showOtherInfo) View.GONE else View.VISIBLE
+            it.findViewById<View>(R.id.fw_ram_info).visibility = if (showOtherInfo) View.GONE else View.VISIBLE
+            it.findViewById<LinearLayout>(R.id.fw_chart_list).orientation = if (showOtherInfo) LinearLayout.HORIZONTAL else LinearLayout.VERTICAL
+            (mView as LinearLayout).orientation = if (showOtherInfo) LinearLayout.VERTICAL else LinearLayout.HORIZONTAL
+            showOtherInfo = !showOtherInfo
+        }
+
         return view!!
     }
 

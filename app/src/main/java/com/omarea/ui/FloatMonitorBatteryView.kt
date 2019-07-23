@@ -102,9 +102,11 @@ class FloatMonitorBatteryView : View {
             val feeRatio = (fee * 100.0 / total).toInt()
             ratio = 100 - feeRatio
         }
-        cgangePer(ratio)
-        // ratioState = ratio
-        // invalidate()
+        // 动画更新
+        // cgangePer(ratio)
+        // 无动画更新
+        ratioState = ratio
+        invalidate()
     }
 
     /**

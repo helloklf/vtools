@@ -26,6 +26,7 @@ import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shared.model.CpuCoreInfo
 import com.omarea.shell.Props
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
+import com.omarea.shell.cpucontrol.CpuLoadUtils
 import com.omarea.shell.cpucontrol.GpuUtils
 import com.omarea.ui.AdapterCpuCores
 import com.omarea.vtools.R
@@ -52,6 +53,7 @@ class FragmentHome : Fragment() {
     private lateinit var spf: SharedPreferences
     private var modeList = ModeList()
     private var myHandler = Handler()
+    private var cpuLoadUtils = CpuLoadUtils()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -119,7 +121,9 @@ class FragmentHome : Fragment() {
         }
 
         val adConfig = context!!.getSharedPreferences(SpfConfig.AD_CONFIG, Context.MODE_PRIVATE)
-        if (!adConfig.getBoolean(SpfConfig.AD_CONFIG_HIDE_A, false)) {
+        val hideAd = adConfig.getBoolean(SpfConfig.AD_CONFIG_HIDE_A, false)
+        val adUrl = adConfig.getString(SpfConfig.AD_CONFIG_A_LINK, "")!!
+        if (!hideAd && adUrl.isNotEmpty()) {
             adview.visibility = View.VISIBLE
             adview_hide.setOnLongClickListener {
                 adview.visibility = View.GONE
@@ -130,8 +134,7 @@ class FragmentHome : Fragment() {
                 val dialog = AlertDialog.Builder(context)
                         .setTitle(">_<")
                         .setMessage("如果可以的话，我还是希望您能【下载并注册】\n\n长按“隐藏推广”可关闭广告\n")
-                        .setPositiveButton("去下载", {
-                            _, _ ->
+                        .setPositiveButton("去下载", { _, _ ->
                             downloadAdApp()
                         })
                         .setNegativeButton("想都别想×" + (count + 1), { _, _ ->
@@ -155,7 +158,11 @@ class FragmentHome : Fragment() {
 
     private fun downloadAdApp() {
         try {
-            val uri = Uri.parse("https://tinyurl.com/y3j7vszf")
+            val uri = Uri.parse(
+                    context!!.getSharedPreferences(
+                            SpfConfig.AD_CONFIG, Context.MODE_PRIVATE).getString(
+                            SpfConfig.AD_CONFIG_A_LINK,
+                            getString(R.string.promote_link)))
             val intent = Intent(Intent.ACTION_VIEW, uri)
             startActivity(intent)
         } catch (ex: Exception) {
@@ -251,7 +258,7 @@ class FragmentHome : Fragment() {
             }
         }
         val cores = ArrayList<CpuCoreInfo>()
-        val loads = CpuFrequencyUtils.getCpuLoad()
+        val loads = cpuLoadUtils.cpuLoad
         for (coreIndex in 0 until coreCount) {
             val core = CpuCoreInfo()
 
@@ -285,7 +292,7 @@ class FragmentHome : Fragment() {
                     home_cpu_chat.setData(100.toFloat(), (100 - loads.get(-1)!!.toInt()).toFloat())
                 }
                 if (cpu_core_list.adapter == null) {
-                    val layoutParams =  cpu_core_list.layoutParams
+                    val layoutParams = cpu_core_list.layoutParams
                     if (cores.size < 6) {
                         layoutParams.height = dp2px(125 * 2F).toInt()
                         cpu_core_list.numColumns = 2
@@ -351,7 +358,7 @@ class FragmentHome : Fragment() {
         val dynamic = AccessibleServiceHelper().serviceIsRunning(context!!) && spf.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)
         if (!dynamic && modeList.getCurrentPowerMode() == action) {
             modeList.setCurrent("", "")
-            globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, "").commit()
+            globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, "").apply()
             AlertDialog.Builder(context)
                     .setTitle("提示")
                     .setMessage("需要重启手机才能恢复默认调度，是否立即重启？")

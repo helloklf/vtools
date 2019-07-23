@@ -237,13 +237,14 @@ class ActivityStartSplash : Activity() {
 
     private fun setTimer() {
         val timer = Timer(true)
-        var timeOut = 5
+        var timeOut = 3
         timer.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
                 timeOut -= 1
                 myHandler.post {
                     if (timeOut < 1) {
                         btn_skip_ad.visibility = View.VISIBLE
+                        startToFinish()
                     } else {
 
                     }
@@ -251,22 +252,29 @@ class ActivityStartSplash : Activity() {
             }
         }, 0, 1000L)
     }
+
     private fun downloadAd() {
         try {
-            val uri = Uri.parse("https://tinyurl.com/y3j7vszf")
+            val uri = Uri.parse(
+                    getSharedPreferences(SpfConfig.AD_CONFIG, Context.MODE_PRIVATE).getString(
+                            SpfConfig.AD_CONFIG_A_LINK,
+                            getString(R.string.promote_link)))
             val intent = Intent(Intent.ACTION_VIEW, uri)
             startActivity(intent)
         } catch (ex: Exception) {
             startToFinish()
         }
     }
+
     /**
      * 启动完成
      */
     private fun startToFinish() {
         val adConfig = getSharedPreferences(SpfConfig.AD_CONFIG, Context.MODE_PRIVATE)
-        val showAd = !adConfig.getBoolean(SpfConfig.AD_CONFIG_HIDE_A, false)
-        if (showAd && splash_adview.visibility == View.GONE) {
+        val hideAd = adConfig.getBoolean(SpfConfig.AD_CONFIG_HIDE_A, false)
+        val adUrl = adConfig.getString(SpfConfig.AD_CONFIG_A_LINK, "")!!
+
+        if (!hideAd && adUrl.isNotEmpty() && splash_adview.visibility == View.GONE) {
             splash_adview.visibility = View.VISIBLE
             splash_ad_download.setOnClickListener {
                 downloadAd()

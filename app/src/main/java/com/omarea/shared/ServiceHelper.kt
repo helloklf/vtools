@@ -33,7 +33,6 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList() {
     private var dumpTopAppliction = DumpTopAppliction()
     private var ignoredList = ArrayList<String>()
     private var dyamicCore = false
-    private var lockMode = false
     private var firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
     private var accuSwitch = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
     private var batteryMonitro = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
@@ -59,7 +58,6 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList() {
         firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
         accuSwitch = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
         batteryMonitro = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
-        lockMode = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_LOCK_MODE, false)
 
         initConfig()
         notifyHelper.setNotify(spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))
@@ -135,7 +133,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList() {
     private fun onScreenOffCloseNetwork() {
         if (!screenOn) {
             if (dyamicCore && !screenOn) {
-                if (lockMode) {
+                if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_LOCK_MODE, false)) {
                     updateModeNofity()
                     toggleConfig(POWERSAVE)
                 }
@@ -159,10 +157,12 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList() {
         startTimer() // 屏幕开启后开始定时更新通知
         notifyHelper.notify()
 
-        if (dyamicCore && lockMode && this.lastModePackage.isNullOrEmpty()) {
+        // if (dyamicCore && spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_LOCK_MODE, false) && !this.lastModePackage.isNullOrEmpty()) {
+        if (dyamicCore && !this.lastModePackage.isNullOrEmpty()) {
             handler.postDelayed({
-                if (screenOn)
+                if (screenOn) {
                     forceToggleMode(this.lastModePackage)
+                }
             }, 2000)
         }
         systemScene.onScreenOn()

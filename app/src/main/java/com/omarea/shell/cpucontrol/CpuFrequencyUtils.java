@@ -16,6 +16,7 @@ import java.util.Objects;
 
 public class CpuFrequencyUtils {
     private static ArrayList<String[]> cpuClusterInfo;
+    private static final Object cpuClusterInfoLoading = true;
     private static String lastCpuState = "";
 
     public static String[] getAvailableFrequencies(Integer cluster) {
@@ -56,6 +57,10 @@ public class CpuFrequencyUtils {
         return KernelProrp.INSTANCE.getProp(Constants.scaling_cur_freq.replace("cpu0", cpu));
     }
 
+    /**
+     * 获取当前所有核心中最高的频率
+     * @return
+     */
     public static int getCurrentFrequency() {
         String freqs = KeepShellPublic.INSTANCE.doCmdSync("cat /sys/devices/system/cpu/cpu*/cpufreq/cpuinfo_cur_freq");
         int max = 0;
@@ -306,26 +311,26 @@ public class CpuFrequencyUtils {
         if (cpuClusterInfo != null) {
             return cpuClusterInfo;
         }
-
-        int cores = 0;
-        cpuClusterInfo = new ArrayList<>();
-        ArrayList<String> clusters = new ArrayList<>();
-        while (true) {
-            File file = new File("/sys/devices/system/cpu/cpu0/cpufreq/related_cpus".replace("cpu0", "cpu" + cores));
-            if (file.exists()) {
-                String relatedCpus = KernelProrp.INSTANCE.getProp("/sys/devices/system/cpu/cpu0/cpufreq/related_cpus".replace("cpu0", "cpu" + cores)).trim();
-                if (!clusters.contains(relatedCpus) && !relatedCpus.isEmpty()) {
-                    clusters.add(relatedCpus);
+        synchronized (cpuClusterInfoLoading) {
+            int cores = 0;
+            cpuClusterInfo = new ArrayList<>();
+            ArrayList<String> clusters = new ArrayList<>();
+            while (true) {
+                File file = new File("/sys/devices/system/cpu/cpu0/cpufreq/related_cpus".replace("cpu0", "cpu" + cores));
+                if (file.exists()) {
+                    String relatedCpus = KernelProrp.INSTANCE.getProp("/sys/devices/system/cpu/cpu0/cpufreq/related_cpus".replace("cpu0", "cpu" + cores)).trim();
+                    if (!clusters.contains(relatedCpus) && !relatedCpus.isEmpty()) {
+                        clusters.add(relatedCpus);
+                    }
+                } else {
+                    break;
                 }
-            } else {
-                break;
+                cores++;
             }
-            cores++;
+            for (int i = 0; i < clusters.size(); i++) {
+                cpuClusterInfo.add(clusters.get(i).split(" "));
+            }
         }
-        for (int i = 0; i < clusters.size(); i++) {
-            cpuClusterInfo.add(clusters.get(i).split(" "));
-        }
-
         return cpuClusterInfo;
     }
 
@@ -467,84 +472,5 @@ public class CpuFrequencyUtils {
         } catch (Exception ignored) {
         }
         return new String[]{};
-    }
-
-    private static int getCpuIndex(String[] cols) {
-        int cpuIndex = -1;
-        if (cols[0].equals("cpu")) {
-            cpuIndex = -1;
-        } else {
-            cpuIndex = Integer.parseInt(cols[0].substring(3));
-        }
-        return cpuIndex;
-    }
-
-    private static long cpuTotalTime(String[] cols) {
-        long totalTime = 0;
-        for (int i = 1; i < cols.length; i++) {
-            totalTime += Long.parseLong(cols[i]);
-        }
-        return totalTime;
-    }
-
-    private static long cpuIdelTime(String[] cols) {
-        return Long.parseLong(cols[4]);
-    }
-
-    public static HashMap<Integer, Double> getCpuLoad() {
-        @SuppressLint("UseSparseArrays") HashMap<Integer, Double> loads = new HashMap<>();
-        String times = KernelProrp.INSTANCE.getProp("/proc/stat", "^cpu");
-        if (!times.equals("error") && times.startsWith("cpu")) {
-            try {
-                if (lastCpuState.isEmpty()) {
-                    lastCpuState = times;
-                    Thread.sleep(100);
-                    return getCpuLoad();
-                } else {
-                    String[] cpus = times.split("\n");
-                    String[] cpus0 = lastCpuState.split("\n");
-
-                    for (String cpuCurrentTime : cpus) {
-                        String[] cols1 = cpuCurrentTime.replaceAll(" {2}", " ").split(" ");
-                        String[] cols0 = null;
-                        // 根据前缀匹配上一个时段的cpu时间数据
-                        for (String cpu : cpus0) {
-                            // startsWith条件必须加个空格，因为搜索cpu的时候 "cpu0 ..."、"cpu1 ..."等都会匹配
-                            if (cpu.startsWith(cols1[0] + " ")) {
-                                cols0 = cpu.replaceAll(" {2}", " ").split(" ");
-                                break;
-                            }
-                        }
-                        if (cols0 != null && cols0.length != 0) {
-                            long total1 = cpuTotalTime(cols1);
-                            long idel1 = cpuIdelTime(cols1);
-                            long total0 = cpuTotalTime(cols0);
-                            long idel0 = cpuIdelTime(cols0);
-                            long timePoor = total1 - total0;
-                            // 如果CPU时长是0，那就是离线咯
-                            if (timePoor == 0) {
-                                loads.put(getCpuIndex(cols1), 0d);
-                            } else {
-                                long idelTimePoor = idel1 - idel0;
-                                if (idelTimePoor < 1) {
-                                    loads.put(getCpuIndex(cols1), 100d);
-                                } else {
-                                    double load = (100 - (idelTimePoor * 100.0 / timePoor));
-                                    loads.put(getCpuIndex(cols1), load);
-                                }
-                            }
-                        } else {
-                            loads.put(getCpuIndex(cols1), 0d);
-                        }
-                    }
-                    lastCpuState = times;
-                    return loads;
-                }
-            } catch (Exception ex) {
-                return loads;
-            }
-        } else {
-            return loads;
-        }
     }
 }

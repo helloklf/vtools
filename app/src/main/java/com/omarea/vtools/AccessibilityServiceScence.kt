@@ -180,7 +180,7 @@ override fun onCreate() {
             if (event.packageName == null || event.className == null)
                 return
 
-            val packageName = event.packageName.toString()
+            var packageName = event.packageName.toString()
             if (packageName == "android" || packageName == "com.android.systemui") {
                 return
             }
@@ -212,7 +212,7 @@ override fun onCreate() {
                 if (windows_ == null || windows_.isEmpty()) {
                     return
                 } else if (windows_.size > 1) {
-                    // Log.d("onAccessibilityEvent", ">>>")
+                    // Log.d("onAccessibilityEvent", ">>>" + event.contentChangeTypes)
                     var lastWindow: AccessibilityWindowInfo? = null
 
                     /**
@@ -224,11 +224,40 @@ override fun onCreate() {
                      */
                     val effectiveWindows =  windows_.filter {
                         (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && it.isInPictureInPictureMode)) && (it.type == AccessibilityWindowInfo.TYPE_APPLICATION)
-                    }
+                    }.sortedBy { it.layer }
 
                     if (effectiveWindows.size > 0) {
                         if (layerDetection) {
-                            lastWindow = effectiveWindows.sortedBy { it.layer }.get(0)
+                            /*
+                            for (window in windows_.iterator()) {
+                                if (window.type == AccessibilityWindowInfo.TYPE_SPLIT_SCREEN_DIVIDER) {
+                                    Log.d("onAccessibilityEvent", "分屏组件")
+                                } else if (window.isFocused) {
+                                    if (window.root != null) {
+                                        Log.d("onAccessibilityEvent", "active " + window.root.packageName + "   " + window.id + "  " + window.layer)
+                                    } else {
+                                        Log.d("onAccessibilityEvent", "active " + window.title + "   " + window.id + "  " + window.layer)
+                                    }
+                                } else {
+                                    Log.d("onAccessibilityEvent", "inactive " + window.title + "   " + window.id + "  " + window.layer)
+                                }
+                            }
+                            */
+                            lastWindow = effectiveWindows.get(0)
+
+                            try {
+                                val source = event.source
+                                if (source == null || source.windowId != lastWindow.id) {
+                                    val windowRoot = lastWindow!!.root
+                                    if (windowRoot == null || windowRoot.packageName == null) {
+                                        return
+                                    }
+                                    packageName = windowRoot.packageName!!.toString()
+                                    Log.d("Scene Fix Top App", "" + windowRoot.packageName)
+                                }
+                            } catch (ex: Exception) {
+                                return
+                            }
                         } else {
                             for (window in effectiveWindows.iterator()) {
                                 if (window.isFocused) {
@@ -238,20 +267,20 @@ override fun onCreate() {
                                     // Log.d("onAccessibilityEvent", "inactive " + window.title + "   " + window.layer)
                                 }
                             }
-                        }
-                    }
 
-                    if (lastWindow == null) {
-                        return
-                    }
+                            if (lastWindow == null) {
+                                return
+                            }
 
-                    val windowInfo = lastWindow
-                    try {
-                        val source = event.source
-                        if (source == null || source.windowId != windowInfo.id) {
-                            return
+                            val windowInfo = lastWindow
+                            try {
+                                val source = event.source
+                                if (source == null || source.windowId != windowInfo.id) {
+                                    return
+                                }
+                            } catch (ex: Exception) {
+                            }
                         }
-                    } catch (ex: Exception) {
                     }
                 }
                 lastPackageName = packageName

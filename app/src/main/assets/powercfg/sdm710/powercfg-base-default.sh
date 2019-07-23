@@ -79,6 +79,9 @@ echo 0 > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
 #echo 0 > /sys/zte_power_debug/switch
 #echo N > /sys/kernel/debug/debug_enabled
 
+
+echo 1 > /dev/cpuset/background/cpus
+echo 1 > /dev/cpuset/system-background/cpus
 echo 6-7 > /dev/cpuset/foreground/boost/cpus
 echo 0-7 > /dev/cpuset/foreground/cpus
 echo 0-7 > /dev/cpuset/top-app/cpus

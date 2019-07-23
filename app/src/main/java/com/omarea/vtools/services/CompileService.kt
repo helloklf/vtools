@@ -32,6 +32,8 @@ class CompileService : IntentService("vtools-compile") {
             list.add(packageInfos[i].packageName)
         }
         list.remove(packageName)
+        // Google gms服务，每次编译都会重新编译，不知什么情况！
+        list.remove("com.google.android.gms")
         return list
     }
 

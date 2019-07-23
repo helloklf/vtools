@@ -9,12 +9,15 @@ import android.net.Uri
 import android.os.Environment
 import android.os.Handler
 import android.provider.MediaStore
+import android.support.v4.content.FileProvider
+import android.util.Log
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.vtools.R
 import org.json.JSONObject
 import java.io.BufferedReader
+import java.io.File
 import java.io.InputStreamReader
 import java.net.URL
 
@@ -58,6 +61,15 @@ class Update {
                     }
                 }
                 val jsonObject = JSONObject(stringBuilder.toString().trim { it <= ' ' })
+
+                // 广告地址
+                val adConfig = context.getSharedPreferences(SpfConfig.AD_CONFIG, Context.MODE_PRIVATE)
+                if (jsonObject.has("advertising")) {
+                    adConfig.edit().putString(SpfConfig.AD_CONFIG_A_LINK, jsonObject.getString("advertising")).apply()
+                } else {
+                    adConfig.edit().putString(SpfConfig.AD_CONFIG_A_LINK, context.getString(R.string.promote_link)).apply()
+                }
+
                 if (jsonObject.has("versionCode")) {
                     val currentVersion = currentVersionCode(context)
                     if (currentVersion < jsonObject.getInt("versionCode")) {
@@ -71,6 +83,10 @@ class Update {
                     }
                 }
             } catch (ex: Exception) {
+                // 广告地址
+                val adConfig = context.getSharedPreferences(SpfConfig.AD_CONFIG, Context.MODE_PRIVATE)
+                adConfig.edit().putString(SpfConfig.AD_CONFIG_A_LINK, context.getString(R.string.promote_link)).apply()
+
                 handler.post {
                     Toast.makeText(context, "检查更新失败！\n" + ex.message, Toast.LENGTH_SHORT).show()
                 }
@@ -87,7 +103,6 @@ class Update {
                     if (jsonObject.has("downloadUrl")) {
                         downloadUrl = jsonObject.getString("downloadUrl")
                     }
-                    /*
                     try {
                         val intent = Intent()
                         intent.data = Uri.parse(downloadUrl)
@@ -95,7 +110,7 @@ class Update {
                     } catch (ex: java.lang.Exception) {
                         Toast.makeText(context, "启动下载失败！", Toast.LENGTH_SHORT).show()
                     }
-                    */
+                    /*
                     //创建下载任务,downloadUrl就是下载链接
                     val request = DownloadManager.Request(Uri.parse(downloadUrl));
                     //指定下载路径和下载文件名
@@ -115,16 +130,11 @@ class Update {
                             val id = intent!!.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
                             if (id == taskId) {
                                 val path = getRealFilePath(context!!, downloadManager.getUriForDownloadedFile(taskId))
-                                if (path != null) {
-                                    Toast.makeText(context, "下载已完成，尝试自动安装", Toast.LENGTH_SHORT).show()
-                                    KeepShellPublic.doCmdSync("pm install -r '$path'") != "error"
-                                    installApk(context, path)
-                                } else {
-                                    Toast.makeText(context, "请到下载管理器或文件管理器中打开安装！", Toast.LENGTH_LONG).show()
-                                }
+                                Toast.makeText(context, "下载完成，请手动点击下载通知安装更新！", Toast.LENGTH_LONG).show()
                             }
                         }
                     }, intentFilter)
+                    */
                 }
                 .setNegativeButton(R.string.btn_cancel) { _, _ -> })
     }
@@ -157,10 +167,15 @@ class Update {
     private fun installApk(context: Context, filePath: String) {
         try {
             val i = Intent(Intent.ACTION_VIEW)
-            i.setDataAndType(Uri.parse("file://$filePath"), "application/vnd.android.package-archive")
+            // i.setDataAndType(Uri.fromFile(File(filePath)), "application/vnd.android.package-archive")
+
+            val fileUri = FileProvider.getUriForFile(context, context.applicationContext.packageName + ".provider", File(filePath))
+            i.setDataAndType(fileUri, "application/vnd.android.package-archive")
+
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(i)
         } catch (e: Exception) {
+            Log.e("installApk", "" + e.message)
             // Log.e(TAG, "安装失败")
             e.printStackTrace()
         }

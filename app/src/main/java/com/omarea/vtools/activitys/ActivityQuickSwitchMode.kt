@@ -11,7 +11,6 @@ import com.omarea.vtools.popup.FloatPowercfgSelector
 
 
 class ActivityQuickSwitchMode : Activity() {
-
     override fun onPause() {
         super.onPause()
         this.finish()

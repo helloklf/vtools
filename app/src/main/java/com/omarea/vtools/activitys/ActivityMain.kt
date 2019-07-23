@@ -28,6 +28,7 @@ import com.omarea.common.shell.RootFile
 import com.omarea.common.ui.DialogHelper
 import com.omarea.shared.ConfigInstaller
 import com.omarea.shared.SpfConfig
+import com.omarea.shared.Update
 import com.omarea.shell.CheckRootStatus
 import com.omarea.shell.units.BackupRestoreUnit
 import com.omarea.shell.units.BatteryUnit
@@ -188,11 +189,16 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             hideRootMenu(navigationView.menu)
         }
-        // 每天都检查更新
-        // if (globalSPF!!.getLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, 0) + (3600 * 24 * 1000) < System.currentTimeMillis()) {
-        //    Update().checkUpdate(this)
-        //    globalSPF!!.edit().putLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, System.currentTimeMillis()).apply()
-        // }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        // 如果距离上次检查更新超过6小时
+        if (globalSPF!!.getLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, 0) + (3600 * 6 * 1000) < System.currentTimeMillis()) {
+            Update().checkUpdate(this)
+            globalSPF!!.edit().putLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, System.currentTimeMillis()).apply()
+        }
     }
 
     private fun setHomePage() {
