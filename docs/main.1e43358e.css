@@ -21,6 +21,10 @@ input, button, select {
   font-size: inherit;
   height: 2.5em; }
 
+pre {
+  word-break: break-all;
+  white-space: pre-wrap; }
+
 @keyframes phone {
   0% {
     transform: translateX(-50vw) scale(1.06); }

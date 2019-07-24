@@ -10295,6 +10295,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 var _default = {
   data: function data() {
     return {
@@ -10365,7 +10373,7 @@ var _default = {
   created: function created() {
     var _this = this;
 
-    _axios.default.get('http://vtools.oss-cn-beijing.aliyuncs.com/vi/lastversion.json').then(function (r) {
+    _axios.default.get('http://vtools.oss-cn-beijing.aliyuncs.com/vi/lastversion.json?dt=' + new Date().getTime()).then(function (r) {
       _this.versionInfo = r.data;
     }).catch(function (e) {
       alert('获取版本信息失败~');
@@ -10491,6 +10499,16 @@ exports.default = _default;
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "app-desc" }, [
+      _c("div", {}, [_vm._v("版本特点")]),
+      _vm._v(" "),
+      _c("div", { staticClass: "function-desc" }, [
+        _c("pre", [_vm._v(_vm._s(_vm.versionInfo.message))])
+      ]),
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
+      _c("br"),
+      _vm._v(" "),
       _c("div", {}, [_vm._v("软件介绍")]),
       _vm._v(" "),
       _vm._m(2),
@@ -10740,7 +10758,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55722" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58251" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

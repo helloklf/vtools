@@ -275,30 +275,6 @@
         </LinearLayout>
     </com.omarea.common.ui.OverScrollView>
 
-    <FrameLayout
-        android:visibility="gone"
-        android:id="@+id/adview"
-        android:background="#CD0244"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:layout_width="match_parent"
-        android:layout_height="120dp">
-        <ImageView
-            android:id="@+id/adview_download"
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/adview" />
-        <TextView
-            android:id="@+id/adview_hide"
-            android:padding="5dp"
-            android:textSize="12dp"
-            android:layout_gravity="left|top"
-            android:textColor="@android:color/white"
-            android:text="@string/btn_hide_ad"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </FrameLayout>
-
     <LinearLayout
         android:id="@+id/powermode_toggles"
         android:layout_width="match_parent"

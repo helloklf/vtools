@@ -226,72 +226,14 @@ class ActivityStartSplash : Activity() {
         }).forceGetRoot()
     }
 
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (event != null && event.keyCode == KeyEvent.KEYCODE_BACK) {
-            if (splash_adview.visibility == View.VISIBLE) {
-                return true;
-            }
-        }
-        return super.onKeyDown(keyCode, event)
-    }
-
-    private fun setTimer() {
-        val timer = Timer(true)
-        var timeOut = 3
-        timer.scheduleAtFixedRate(object : TimerTask() {
-            override fun run() {
-                timeOut -= 1
-                myHandler.post {
-                    if (timeOut < 1) {
-                        btn_skip_ad.visibility = View.VISIBLE
-                        startToFinish()
-                        timer.cancel()
-                    } else {
-                    }
-                }
-            }
-        }, 0, 1000L)
-    }
-
-    private fun downloadAd() {
-        try {
-            val uri = Uri.parse(
-                    getSharedPreferences(SpfConfig.AD_CONFIG, Context.MODE_PRIVATE).getString(
-                            SpfConfig.AD_CONFIG_A_LINK,
-                            getString(R.string.promote_link)))
-            val intent = Intent(Intent.ACTION_VIEW, uri)
-            startActivity(intent)
-        } catch (ex: Exception) {
-            startToFinish()
-        }
-    }
-
     /**
      * 启动完成
      */
     private fun startToFinish() {
-        val adConfig = getSharedPreferences(SpfConfig.AD_CONFIG, Context.MODE_PRIVATE)
-        val hideAd = adConfig.getBoolean(SpfConfig.AD_CONFIG_HIDE_A, false)
-        val adUrl = adConfig.getString(SpfConfig.AD_CONFIG_A_LINK, "")!!
+        start_state_text.text = "启动完成！"
 
-        if (!hideAd && adUrl.isNotEmpty() && splash_adview.visibility == View.GONE) {
-            splash_adview.visibility = View.VISIBLE
-            splash_ad_download.setOnClickListener {
-                downloadAd()
-            }
-            splash_ad_image.setOnClickListener {
-                downloadAd()
-            }
-            btn_skip_ad.setOnClickListener {
-                startToFinish()
-            }
-            setTimer()
-        } else {
-            start_state_text.text = "启动完成！"
-
-            val intent = Intent(this.applicationContext, ActivityMain::class.java)
-            startActivity(intent)
-            finish()
-        }
+        val intent = Intent(this.applicationContext, ActivityMain::class.java)
+        startActivity(intent)
+        finish()
     }
 }

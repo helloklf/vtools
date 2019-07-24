@@ -78,7 +78,6 @@
         <item>com.futuremark.dmandroid.application</item>
         <item>com.futuremark.dmandroid.applicatioo</item>
     </string-array>
-    <string name="btn_hide_ad">隐藏推广</string>
 
     <string name="btn_cancel">取消</string>
     <string name="btn_delete">删除</string>

@@ -70,9 +70,4 @@ public class SpfConfig {
 
     public static String APP_HIDE_HISTORY_SPF = "app_hide_spf";
     public static String FREEZE_HIDELIST_SPF = "freeze_hidelist";
-
-    public static String AD_CONFIG = "ad_config";
-    public static String AD_CONFIG_HIDE_A = "ad_hide_a";
-    public static String AD_CONFIG_CLOSE_A_COUNT = "ad_close_a_count";
-    public static String AD_CONFIG_A_LINK = "ad_config_a_link";
 }

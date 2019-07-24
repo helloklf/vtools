@@ -62,14 +62,6 @@ class Update {
                 }
                 val jsonObject = JSONObject(stringBuilder.toString().trim { it <= ' ' })
 
-                // 广告地址
-                val adConfig = context.getSharedPreferences(SpfConfig.AD_CONFIG, Context.MODE_PRIVATE)
-                if (jsonObject.has("advertising")) {
-                    adConfig.edit().putString(SpfConfig.AD_CONFIG_A_LINK, jsonObject.getString("advertising")).apply()
-                } else {
-                    adConfig.edit().putString(SpfConfig.AD_CONFIG_A_LINK, context.getString(R.string.promote_link)).apply()
-                }
-
                 if (jsonObject.has("versionCode")) {
                     val currentVersion = currentVersionCode(context)
                     if (currentVersion < jsonObject.getInt("versionCode")) {
@@ -83,10 +75,6 @@ class Update {
                     }
                 }
             } catch (ex: Exception) {
-                // 广告地址
-                val adConfig = context.getSharedPreferences(SpfConfig.AD_CONFIG, Context.MODE_PRIVATE)
-                adConfig.edit().putString(SpfConfig.AD_CONFIG_A_LINK, context.getString(R.string.promote_link)).apply()
-
                 handler.post {
                     Toast.makeText(context, "检查更新失败！\n" + ex.message, Toast.LENGTH_SHORT).show()
                 }

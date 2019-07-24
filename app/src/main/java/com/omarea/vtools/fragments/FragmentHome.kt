@@ -119,54 +119,6 @@ class FragmentHome : Fragment() {
                 Toast.makeText(context!!, "启动在线页面失败！", Toast.LENGTH_SHORT).show()
             }
         }
-
-        val adConfig = context!!.getSharedPreferences(SpfConfig.AD_CONFIG, Context.MODE_PRIVATE)
-        val hideAd = adConfig.getBoolean(SpfConfig.AD_CONFIG_HIDE_A, false)
-        val adUrl = adConfig.getString(SpfConfig.AD_CONFIG_A_LINK, "")!!
-        if (!hideAd && adUrl.isNotEmpty()) {
-            adview.visibility = View.VISIBLE
-            adview_hide.setOnLongClickListener {
-                adview.visibility = View.GONE
-                true
-            }
-            adview_hide.setOnClickListener {
-                val count = adConfig.getInt(SpfConfig.AD_CONFIG_CLOSE_A_COUNT, 0)
-                val dialog = AlertDialog.Builder(context)
-                        .setTitle(">_<")
-                        .setMessage("如果可以的话，我还是希望您能【下载并注册】\n\n长按“隐藏推广”可关闭广告\n")
-                        .setPositiveButton("去下载", { _, _ ->
-                            downloadAdApp()
-                        })
-                        .setNegativeButton("想都别想×" + (count + 1), { _, _ ->
-                            adConfig.edit().putInt(SpfConfig.AD_CONFIG_CLOSE_A_COUNT, count + 1).apply()
-                        })
-                        .setCancelable(true)
-
-                if (count > 3) {
-                    dialog.setNeutralButton("广告走开！", { _, _ ->
-                        adview.visibility = View.GONE
-                        adConfig.edit().putBoolean(SpfConfig.AD_CONFIG_HIDE_A, true).apply()
-                    })
-                }
-                DialogHelper.animDialog(dialog)
-            }
-            adview_download.setOnClickListener {
-                downloadAdApp()
-            }
-        }
-    }
-
-    private fun downloadAdApp() {
-        try {
-            val uri = Uri.parse(
-                    context!!.getSharedPreferences(
-                            SpfConfig.AD_CONFIG, Context.MODE_PRIVATE).getString(
-                            SpfConfig.AD_CONFIG_A_LINK,
-                            getString(R.string.promote_link)))
-            val intent = Intent(Intent.ACTION_VIEW, uri)
-            startActivity(intent)
-        } catch (ex: Exception) {
-        }
     }
 
     @SuppressLint("SetTextI18n")
