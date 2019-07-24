@@ -245,8 +245,8 @@ class ActivityStartSplash : Activity() {
                     if (timeOut < 1) {
                         btn_skip_ad.visibility = View.VISIBLE
                         startToFinish()
+                        timer.cancel()
                     } else {
-
                     }
                 }
             }
