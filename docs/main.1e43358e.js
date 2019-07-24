@@ -10403,7 +10403,7 @@ var _default = {
       if (this.versionInfo.downloadUrl) {
         window.location.href = this.versionInfo.downloadUrl;
       } else if (this.versionInfo.versionCode) {
-        window.location.href = 'http://vtools.oss-cn-beijing.aliyuncs.com/app-release' + this.versionCode + '.apk';
+        window.location.href = 'http://vtools.oss-cn-beijing.aliyuncs.com/app-release' + this.versionInfo.versionCode + '.apk';
       } else {
         window.location.href = 'http://vtools.oss-cn-beijing.aliyuncs.com/app-release.apk';
       }
@@ -10758,7 +10758,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58251" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59456" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
