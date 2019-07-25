@@ -5,22 +5,15 @@ if [ "$action" = "powersave" ]; then
     #powersave
 
 	exit 0
-fi
-
-
-if [ "$action" = "balance" ]; then
+elif [ "$action" = "balance" ]; then
 	#balance
 
 	exit 0
-fi
-
-if [ "$action" = "performance" ]; then
+elif [ "$action" = "performance" ]; then
 	#performance
 
 	exit 0
-fi
-
-if [ "$action" = "fast" ]; then
+elif [ "$action" = "fast" ]; then
 	#fast
 	
 	exit 0

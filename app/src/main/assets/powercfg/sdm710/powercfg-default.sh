@@ -30,35 +30,51 @@ function set_value()
     fi;
 }
 
-function gpu_config()
-{
-    gpu_freqs=`cat /sys/class/kgsl/kgsl-3d0/devfreq/available_frequencies`
-    max_freq='710000000'
-    for freq in $gpu_freqs; do
-        if [[ $freq -gt $max_freq ]]; then
-            max_freq=$freq
-        fi;
-    done
-    gpu_min_pl=6
-    if [[ -f /sys/class/kgsl/kgsl-3d0/num_pwrlevels ]];then
-        gpu_min_pl=`cat /sys/class/kgsl/kgsl-3d0/num_pwrlevels`
-        gpu_min_pl=`expr $gpu_min_pl - 1`
+# GPU频率表
+gpu_freqs=`cat /sys/class/kgsl/kgsl-3d0/devfreq/available_frequencies`
+# GPU最大频率
+gpu_max_freq='504000000'
+# GPU最小频率
+gpu_min_freq='180000000'
+# GPU最小 power level
+gpu_min_pl=4
+# GPU最大 power level
+gpu_max_pl=0
+# GPU默认 power level
+gpu_default_pl=`cat /sys/class/kgsl/kgsl-3d0/default_pwrlevel`
+# GPU型号
+gpu_model=`cat /sys/class/kgsl/kgsl-3d0/gpu_model`
+# GPU调度器
+gpu_governor=`cat /sys/class/kgsl/kgsl-3d0/devfreq/governor`
+
+# MaxFrequency、MinFrequency
+for freq in $gpu_freqs; do
+    if [[ $freq -gt $gpu_max_freq ]]; then
+        gpu_max_freq=$freq
     fi;
-
-    if [[ "$gpu_min_pl" = "-1" ]];then
-        $gpu_min_pl=1
+    if [[ $freq -lt $gpu_min_freq ]]; then
+        gpu_min_freq=$freq
     fi;
+done
 
-    echo "msm-adreno-tz" > /sys/class/kgsl/kgsl-3d0/devfreq/governor
-    #echo 710000000 > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
-    echo $max_freq > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
-    #echo 257000000 > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
-    echo 100000000 > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
-    echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
-    echo 0 > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
-}
+# Power Levels
+if [[ -f /sys/class/kgsl/kgsl-3d0/num_pwrlevels ]];then
+    gpu_min_pl=`cat /sys/class/kgsl/kgsl-3d0/num_pwrlevels`
+    gpu_min_pl=`expr $gpu_min_pl - 1`
+fi;
+if [[ "$gpu_min_pl" -lt 0 ]];then
+    $gpu_min_pl=0
+fi;
 
-gpu_config
+if [ ! "$gpu_governor" = "msm-adreno-tz" ]; then
+	echo 'msm-adreno-tz' > /sys/class/kgsl/kgsl-3d0/devfreq/governor
+fi
+
+echo $gpu_max_freq > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq
+echo $gpu_min_freq > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
+echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
+echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
+
 
 function set_cpu_freq()
 {

@@ -163,16 +163,12 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                     }
                 })
                 .setNeutralButton("查看说明", { _, _ ->
-                    helpInfo()
-                }))
-    }
-
-    private fun helpInfo() {
-        DialogHelper.animDialog(AlertDialog.Builder(context)
-                .setTitle("说明")
-                .setMessage(R.string.addin_dex2oat_helpinfo)
-                .setNegativeButton("了解更多", { dialog, which ->
-                    context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(context.getString(R.string.addin_dex2oat_helplink))))
+                    DialogHelper.animDialog(AlertDialog.Builder(context)
+                            .setTitle("说明")
+                            .setMessage(R.string.addin_dex2oat_helpinfo)
+                            .setNegativeButton("了解更多", { dialog, which ->
+                                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(context.getString(R.string.addin_dex2oat_helplink))))
+                            }))
                 }))
     }
 
@@ -318,7 +314,12 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                     Toast.makeText(context, "配置已修改，但需要重启才能生效！", Toast.LENGTH_SHORT).show()
                 })
                 .setNeutralButton("查看说明", { _, _ ->
-                    helpInfo()
+                    DialogHelper.animDialog(AlertDialog.Builder(context)
+                            .setTitle("说明")
+                            .setMessage(R.string.addin_dexopt_helpinfo)
+                            .setNegativeButton("了解更多", { dialog, which ->
+                                context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(context.getString(R.string.addin_dex2oat_helplink))))
+                            }))
                 }))
     }
 }
