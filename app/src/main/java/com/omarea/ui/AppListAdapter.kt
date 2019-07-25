@@ -14,7 +14,7 @@ import android.widget.BaseAdapter
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
-import com.omarea.shared.model.Appinfo
+import com.omarea.model.Appinfo
 import com.omarea.vtools.R
 import java.io.File
 import java.util.ArrayList
