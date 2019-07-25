@@ -15,7 +15,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import com.omarea.common.ui.ProgressBarDialog
-import com.omarea.shared.ConfigInstaller
+import com.omarea.scene_mode.ModeConfigInstaller
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_addin_online.*
 import java.io.File
@@ -70,7 +70,7 @@ class ActivityAddinOnline : AppCompatActivity() {
                 conn.getInputStream()
                 val reader = conn.getInputStream().bufferedReader(Charset.forName("UTF-8"))
                 val powercfg = reader.readText()
-                if (powercfg.startsWith("#!/") && ConfigInstaller().installPowerConfigByText(this, powercfg)) {
+                if (powercfg.startsWith("#!/") && ModeConfigInstaller().installPowerConfigByText(this, powercfg)) {
                     vtools_online.post {
                         AlertDialog.Builder(this)
                                 .setTitle("配置文件已安装")
@@ -122,7 +122,7 @@ class ActivityAddinOnline : AppCompatActivity() {
                         } else if (zipEntry.name == "powercfg.sh") {
                             val byteArray = zipInputStream.readBytes()
                             val powercfg = byteArray.toString(Charset.defaultCharset())
-                            if (powercfg.startsWith("#!/") && ConfigInstaller().installPowerConfigByText(this, powercfg)) {
+                            if (powercfg.startsWith("#!/") && ModeConfigInstaller().installPowerConfigByText(this, powercfg)) {
                                 vtools_online.post {
                                     AlertDialog.Builder(this)
                                             .setTitle("配置文件已安装")

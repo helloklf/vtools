@@ -9,8 +9,8 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import com.omarea.dynamic.ModeList
-import com.omarea.shared.SpfConfig
+import com.omarea.scene_mode.ModeSwitcher
+import com.omarea.store.SpfConfig
 import com.omarea.model.BatteryAvgStatus
 import com.omarea.vtools.R
 import java.util.*
@@ -60,22 +60,22 @@ class AdapterBatteryStats(private val context: Context, private val list: ArrayL
         }
         val batteryStats = getItem(position)
         val modeView = convertView!!.findViewById<TextView>(R.id.itemModeName)
-        modeView.text = ModeList.getModName(batteryStats.mode)
+        modeView.text = ModeSwitcher.getModName(batteryStats.mode)
 
         when (batteryStats.mode) {
-            ModeList.POWERSAVE -> {
+            ModeSwitcher.POWERSAVE -> {
                 modeView.setTextColor(Color.parseColor("#0091D5"))
             }
-            ModeList.PERFORMANCE -> {
+            ModeSwitcher.PERFORMANCE -> {
                 modeView.setTextColor(Color.parseColor("#6ECB00"))
             }
-            ModeList.FAST -> {
+            ModeSwitcher.FAST -> {
                 modeView.setTextColor(Color.parseColor("#FF7E00"))
             }
-            ModeList.IGONED -> {
+            ModeSwitcher.IGONED -> {
                 modeView.setTextColor(Color.parseColor("#888888"))
             }
-            ModeList.BALANCE -> {
+            ModeSwitcher.BALANCE -> {
                 modeView.setTextColor(Color.parseColor("#00B78A"))
             }
             else -> {

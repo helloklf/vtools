@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.SimpleAdapter
 import android.widget.TabHost
+import com.omarea.shell_utils.PlatformUtils
 import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
@@ -20,7 +21,7 @@ import com.omarea.krscript.config.PageListReader
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.PageClickHandler
 import com.omarea.krscript.model.PageInfo
-import com.omarea.shell.SysUtils
+import com.omarea.shell_utils.SysUtils
 import com.omarea.ui.TabIconHelper
 import com.omarea.vtools.R
 import com.omarea.vtools.activitys.ActionPage
@@ -62,7 +63,7 @@ class FragmentAddin : Fragment() {
         val listItem = ArrayList<HashMap<String, Any>>().apply {
             add(createItem(getString(R.string.addin_fullscreen_on), getString(R.string.addin_fullscreen_on_desc), Runnable { FullScreenAddin(activity!!).fullScreen() }, false))
 
-            val platform = com.omarea.shell.Platform().getCPUName()
+            val platform = PlatformUtils().getCPUName()
 
             // if (!(platform == "sdm845" || platform == "msm8998" || platform == "msmnile")) {
             add(createItem(getString(R.string.addin_thermal_remove), getString(R.string.addin_thermal_remove_desc), Runnable { ThermalAddin(context!!).showOption() }, false))

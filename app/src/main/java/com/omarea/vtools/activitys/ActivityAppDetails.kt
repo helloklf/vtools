@@ -24,13 +24,16 @@ import android.widget.Toast
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
-import com.omarea.dynamic.ModeList
-import com.omarea.shared.*
-import com.omarea.shared.helper.AccessibleServiceHelper
-import com.omarea.shared.helper.ShortcutHelper
+import com.omarea.scene_mode.ModeSwitcher
+import com.omarea.utils.AccessibleServiceHelper
+import com.omarea.scene_mode.FreezeAppShortcutHelper
 import com.omarea.model.AppConfigInfo
 import com.omarea.permissions.NotificationListener
 import com.omarea.permissions.WriteSettings
+import com.omarea.scene_mode.ModeConfigInstaller
+import com.omarea.scene_mode.ImmersivePolicyControl
+import com.omarea.store.AppConfigStore
+import com.omarea.store.SpfConfig
 import com.omarea.ui.IntInputFilter
 import com.omarea.vaddin.IAppConfigAidlInterface
 import com.omarea.vtools.R
@@ -47,7 +50,7 @@ class ActivityAppDetails : AppCompatActivity() {
     private var _result = RESULT_CANCELED
     private var vAddinsInstalled = false
     private var aidlConn: IAppConfigAidlInterface? = null
-    private val configInstaller = ConfigInstaller()
+    private val configInstaller = ModeConfigInstaller()
 
     private var needKeyCapture = false
 
@@ -294,16 +297,16 @@ class ActivityAppDetails : AppCompatActivity() {
                 Snackbar.make(it, getString(R.string.dynamic_config_notinstalled), Snackbar.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            val modeList = ModeList()
+            val modeList = ModeSwitcher()
             val powercfg = getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
-            val currentMode = powercfg.getString(app, getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeList.BALANCE))
+            val currentMode = powercfg.getString(app, getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.BALANCE))
             var index = 0
             when (currentMode) {
-                ModeList.POWERSAVE -> index = 0
-                ModeList.BALANCE -> index = 1
-                ModeList.PERFORMANCE -> index = 2
-                ModeList.FAST -> index = 3
-                ModeList.IGONED -> index = 5
+                ModeSwitcher.POWERSAVE -> index = 0
+                ModeSwitcher.BALANCE -> index = 1
+                ModeSwitcher.PERFORMANCE -> index = 2
+                ModeSwitcher.FAST -> index = 3
+                ModeSwitcher.IGONED -> index = 5
                 else -> index = 4
             }
             var selectedIndex = index
@@ -314,13 +317,13 @@ class ActivityAppDetails : AppCompatActivity() {
                     })
                     .setPositiveButton(R.string.btn_confirm, { dialog, which ->
                         if (index != selectedIndex) {
-                            var modeName = ModeList.BALANCE
+                            var modeName = ModeSwitcher.BALANCE
                             when (selectedIndex) {
-                                0 -> modeName = ModeList.POWERSAVE
-                                1 -> modeName = ModeList.BALANCE
-                                2 -> modeName = ModeList.PERFORMANCE
-                                3 -> modeName = ModeList.FAST
-                                5 -> modeName = ModeList.IGONED
+                                0 -> modeName = ModeSwitcher.POWERSAVE
+                                1 -> modeName = ModeSwitcher.BALANCE
+                                2 -> modeName = ModeSwitcher.PERFORMANCE
+                                3 -> modeName = ModeSwitcher.FAST
+                                5 -> modeName = ModeSwitcher.IGONED
                                 4 -> modeName = ""
                             }
                             if (modeName.isEmpty()) {
@@ -328,7 +331,7 @@ class ActivityAppDetails : AppCompatActivity() {
                             } else {
                                 powercfg.edit().putString(app, modeName).commit()
                             }
-                            app_details_dynamic.text = ModeList.getModName(modeName)
+                            app_details_dynamic.text = ModeSwitcher.getModName(modeName)
                             _result = RESULT_OK
                             notifyService(app, modeName)
                         }
@@ -433,7 +436,7 @@ class ActivityAppDetails : AppCompatActivity() {
         app_details_freeze.setOnClickListener {
             val value = (it as Switch).isChecked
             if (value) {
-                if (ShortcutHelper().createShortcut(this.applicationContext, appConfigInfo.packageName)) {
+                if (FreezeAppShortcutHelper().createShortcut(this.applicationContext, appConfigInfo.packageName)) {
                     appConfigInfo.freeze = true
                     KeepShellPublic.doCmdSync("pm disable " + appConfigInfo.packageName)
                     Toast.makeText(this, "当前应用已禁用，但你可以通过刚刚添加的快捷方式启动^_^", Toast.LENGTH_LONG).show()
@@ -575,8 +578,8 @@ class ActivityAppDetails : AppCompatActivity() {
         app_details_packagename.text = packageInfo.packageName
         app_details_icon.setImageDrawable(applicationInfo.loadIcon(packageManager))
 
-        val firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeList.BALANCE))
-        app_details_dynamic.text = ModeList.getModName(powercfg.getString(app, firstMode))
+        val firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.BALANCE))
+        app_details_dynamic.text = ModeSwitcher.getModName(powercfg.getString(app, firstMode))
 
         if (immersivePolicyControl.isFullScreen(app)) {
             app_details_hidenav.isChecked = true

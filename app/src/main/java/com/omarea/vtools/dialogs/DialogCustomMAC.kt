@@ -9,7 +9,7 @@ import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
-import com.omarea.shared.SpfConfig
+import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
 
 /**

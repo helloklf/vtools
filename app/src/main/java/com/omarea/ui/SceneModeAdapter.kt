@@ -15,7 +15,7 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.omarea.common.ui.OverScrollListView
-import com.omarea.dynamic.ModeList
+import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.model.Appinfo
 import com.omarea.vtools.R
 import java.io.File
@@ -142,25 +142,25 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
         if (item.enabledState != null) {
             val config = item.enabledState
             var enabledState = ""
-            enabledState = ModeList.getModName(config.toString())
+            enabledState = ModeSwitcher.getModName(config.toString())
             when (config) {
-                ModeList.POWERSAVE -> {
+                ModeSwitcher.POWERSAVE -> {
                     viewHolder.enabledStateText!!.setTextColor(Color.parseColor("#0091D5"))
                 }
-                ModeList.PERFORMANCE -> {
-                    enabledState = ModeList.getModName(config.toString())
+                ModeSwitcher.PERFORMANCE -> {
+                    enabledState = ModeSwitcher.getModName(config.toString())
                     viewHolder.enabledStateText!!.setTextColor(Color.parseColor("#6ECB00"))
                 }
-                ModeList.FAST -> {
-                    enabledState = ModeList.getModName(config.toString())
+                ModeSwitcher.FAST -> {
+                    enabledState = ModeSwitcher.getModName(config.toString())
                     viewHolder.enabledStateText!!.setTextColor(Color.parseColor("#FF7E00"))
                 }
-                ModeList.IGONED -> {
-                    enabledState = ModeList.getModName(config.toString())
+                ModeSwitcher.IGONED -> {
+                    enabledState = ModeSwitcher.getModName(config.toString())
                     viewHolder.enabledStateText!!.setTextColor(Color.parseColor("#888888"))
                 }
-                ModeList.BALANCE -> {
-                    enabledState = ModeList.getModName(config.toString())
+                ModeSwitcher.BALANCE -> {
+                    enabledState = ModeSwitcher.getModName(config.toString())
                     viewHolder.enabledStateText!!.setTextColor(Color.parseColor("#00B78A"))
                 }
                 else -> {

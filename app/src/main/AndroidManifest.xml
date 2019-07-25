@@ -197,7 +197,7 @@
         </activity>
 
         <receiver
-            android:name=".receiver.ReceiverBoot"
+            android:name=".ReceiverBoot"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -208,7 +208,7 @@
             </intent-filter>
         </receiver>
         <receiver
-            android:name=".receiver.ReceiverShortcut"
+            android:name="com.omarea.scene_mode.ReceiverShortcut"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
@@ -256,7 +256,7 @@
                 android:resource="@xml/keyevent_accessibility" />
         </service>
         <service
-            android:name=".services.ServiceBattery"
+            android:name="com.omarea.charger_booster.ServiceBattery"
             android:enabled="true"
             android:permission="" />
         <service

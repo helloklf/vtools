@@ -13,9 +13,9 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.PermissionChecker
 import android.util.TypedValue
 import android.view.View
-import com.omarea.shared.CrashHandler
-import com.omarea.shared.SpfConfig
-import com.omarea.shell.Busybox
+import com.omarea.utils.CrashHandler
+import com.omarea.store.SpfConfig
+import com.omarea.permissions.Busybox
 import com.omarea.permissions.CheckRootStatus
 import com.omarea.permissions.WriteSettings
 import com.omarea.vtools.R

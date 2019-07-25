@@ -16,8 +16,8 @@ import android.widget.TextView
 import android.widget.Toast
 import com.omarea.common.shell.AsynSuShellUnit
 import com.omarea.common.ui.DialogHelper
-import com.omarea.shared.CommonCmds
-import com.omarea.shell.Props
+import com.omarea.utils.CommonCmds
+import com.omarea.shell_utils.PropsUtils
 import com.omarea.vtools.R
 import com.omarea.vtools.services.CompileService
 import java.util.*
@@ -181,7 +181,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                 "verify",
                 "speed",
                 "恢复默认")
-        val intallMode = Props.getProp("dalvik.vm.dex2oat-filter")
+        val intallMode = PropsUtils.getProp("dalvik.vm.dex2oat-filter")
         var index = 0
         when (intallMode) {
             "interpret-only" -> index = 0
@@ -235,7 +235,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                 "不编译（优化安装速度）",
                 "编译（优化运行速度）",
                 "恢复默认")
-        val intallMode = Props.getProp("pm.dexopt.install")
+        val intallMode = PropsUtils.getProp("pm.dexopt.install")
         var index = 0
         when (intallMode) {
             "extract",
@@ -245,7 +245,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
             "speed" -> index = 1
             "everything" -> index = 1
             else -> {
-                if (Props.getProp("pm.dexopt.core-app") == "verify-none") {
+                if (PropsUtils.getProp("pm.dexopt.core-app") == "verify-none") {
                     index = 3
                 } else
                     index = 0

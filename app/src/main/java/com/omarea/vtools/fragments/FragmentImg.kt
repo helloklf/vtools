@@ -14,8 +14,8 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.SimpleAdapter
 import android.widget.Toast
-import com.omarea.shared.CommonCmds
-import com.omarea.shell.units.BackupRestoreUnit
+import com.omarea.utils.CommonCmds
+import com.omarea.shell_utils.BackupRestoreUtils
 import com.omarea.vtools.R
 import com.omarea.vtools.activitys.ActivityFileSelector
 import kotlinx.android.synthetic.main.fragment_img.*
@@ -72,7 +72,7 @@ class FragmentImg : Fragment() {
                         builder.setNegativeButton(android.R.string.cancel, null)
                         builder.setPositiveButton(android.R.string.yes) { _, _ ->
                             //导出boot
-                            BackupRestoreUnit(activity!!).saveBoot()
+                            BackupRestoreUtils(activity!!).saveBoot()
                         }
                         builder.setMessage(context!!.getString(R.string.backup_boot_exists))
                         val dialog = builder.create()
@@ -80,7 +80,7 @@ class FragmentImg : Fragment() {
                         dialog.show()
                     } else {
                         //导出boot
-                        BackupRestoreUnit(activity!!).saveBoot()
+                        BackupRestoreUtils(activity!!).saveBoot()
                     }
                 }
                 1 -> {
@@ -99,7 +99,7 @@ class FragmentImg : Fragment() {
                         builder.setNegativeButton(android.R.string.cancel, null)
                         builder.setPositiveButton(android.R.string.yes) { _, _ ->
                             //导出rec
-                            BackupRestoreUnit(context!!).saveRecovery()
+                            BackupRestoreUtils(context!!).saveRecovery()
                         }
                         builder.setMessage(context!!.getString(R.string.backup_rec_exists))
                         val dialog = builder.create()
@@ -107,7 +107,7 @@ class FragmentImg : Fragment() {
                         dialog.show()
                     } else {
                         //导出rec
-                        BackupRestoreUnit(context!!).saveRecovery()
+                        BackupRestoreUtils(context!!).saveRecovery()
                     }
                 }
                 3 -> {
@@ -141,7 +141,7 @@ class FragmentImg : Fragment() {
                             .setTitle(getString(R.string.flash_confirm))
                             .setNegativeButton(android.R.string.cancel, null)
                             .setPositiveButton(android.R.string.yes) { _, _ ->
-                                BackupRestoreUnit(context!!).flashRecovery(path)
+                                BackupRestoreUtils(context!!).flashRecovery(path)
                             }
                             .setMessage("此操作将刷入${path}到系统Recovery分区，应用无法验证该文件是否有效，你需要自己确保该recovery镜像适合本设备使用！")
                             .create()
@@ -160,7 +160,7 @@ class FragmentImg : Fragment() {
                             .setTitle(getString(R.string.flash_confirm))
                             .setNegativeButton(android.R.string.cancel, null)
                             .setPositiveButton(android.R.string.yes) { _, _ ->
-                                BackupRestoreUnit(activity!!).flashBoot(path)
+                                BackupRestoreUtils(activity!!).flashBoot(path)
                             }
                             .setMessage("此操作将刷入${path}到系统Boot分区，我十分不推荐你这么做，刷入无效的Boot文件可能导致你的设备无法启动。如果你没有办法在设备无法启动时紧急恢复。")
                             .create()

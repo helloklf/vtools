@@ -16,10 +16,10 @@ import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
-import com.omarea.shared.SpfConfig
-import com.omarea.shell.units.BatteryUnit
+import com.omarea.store.SpfConfig
+import com.omarea.shell_utils.BatteryUtils
 import com.omarea.vtools.R
-import com.omarea.vtools.services.ServiceBattery
+import com.omarea.charger_booster.ServiceBattery
 import kotlinx.android.synthetic.main.fragment_battery.*
 import java.util.*
 
@@ -40,7 +40,7 @@ class FragmentBattery : Fragment() {
     private var level = 0
     private var powerChonnected = false
     private var voltage: Double = 0.toDouble()
-    private var batteryUnits = BatteryUnit()
+    private var batteryUnits = BatteryUtils()
     private lateinit var spf: SharedPreferences
 
     @SuppressLint("ApplySharedPref", "SetTextI18n")

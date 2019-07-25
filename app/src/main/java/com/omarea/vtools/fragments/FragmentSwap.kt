@@ -17,9 +17,9 @@ import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
-import com.omarea.shared.SpfConfig
-import com.omarea.shell.units.LMKUnit
-import com.omarea.shell.units.SwapUnit
+import com.omarea.store.SpfConfig
+import com.omarea.shell_utils.LMKUtils
+import com.omarea.shell_utils.SwapUtils
 import com.omarea.ui.AdapterSwaplist
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.fragment_swap.*
@@ -33,12 +33,12 @@ class FragmentSwap : Fragment() {
     private val myHandler = Handler()
     private lateinit var swapConfig: SharedPreferences
     private var totalMem = 2048
-    private lateinit var swapUnit: SwapUnit
+    private lateinit var swapUtils: SwapUtils
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         view = inflater.inflate(R.layout.fragment_swap, container, false)
-        swapUnit = SwapUnit(context!!)
+        swapUtils = SwapUtils(context!!)
 
         swapConfig = context!!.getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)
 
@@ -92,7 +92,7 @@ class FragmentSwap : Fragment() {
         list_swaps2.adapter = datas
 
         txt_mem.text = KernelProrp.getProp("/proc/meminfo")
-        val swapFileExists = swapUnit.swapExists
+        val swapFileExists = swapUtils.swapExists
         btn_swap_create.isEnabled = !swapFileExists
         if (swapFileExists) {
             seekbar_swap_size.isEnabled = false
@@ -106,7 +106,7 @@ class FragmentSwap : Fragment() {
             seekbar_swap_size.isSelected = true
         }
 
-        val currentSwap = swapUnit.currentSwapDevice
+        val currentSwap = swapUtils.currentSwapDevice
         if (currentSwap.isNotEmpty()) {
             btn_swap_start.isEnabled = false
             btn_swap_delete.isEnabled = false
@@ -127,7 +127,7 @@ class FragmentSwap : Fragment() {
         swap_lmk_current.text = lmk
 
         // 压缩算法
-        val comp_algorithm = swapUnit.compAlgorithm
+        val comp_algorithm = swapUtils.compAlgorithm
         // 最大压缩流
         // val max_comp_streams = KernelProrp.getProp("/sys/block/zram0/max_comp_streams")
         // 存储在此磁盘中的未压缩数据大小
@@ -204,8 +204,8 @@ class FragmentSwap : Fragment() {
         chk_swap_use_loop.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false)
 
         var swapSize = 0
-        if (swapUnit.swapExists) {
-            swapSize = swapUnit.swapFileSize
+        if (swapUtils.swapExists) {
+            swapSize = swapUtils.swapFileSize
         } else {
             swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 0)
         }
@@ -237,7 +237,7 @@ class FragmentSwap : Fragment() {
         btn_swap_close.setOnClickListener {
             processBarDialog.showDialog(getString(R.string.swap_on_close))
             val run = Runnable {
-                swapUnit.swapOff()
+                swapUtils.swapOff()
                 myHandler.post({
                     processBarDialog.hideDialog()
                     getSwaps()
@@ -248,7 +248,7 @@ class FragmentSwap : Fragment() {
         btn_swap_delete.setOnClickListener {
             processBarDialog.showDialog(getString(R.string.swap_on_close))
             val run = Runnable {
-                swapUnit.swapDelete()
+                swapUtils.swapDelete()
 
                 myHandler.post({
                     processBarDialog.hideDialog()
@@ -264,7 +264,7 @@ class FragmentSwap : Fragment() {
                 val activityManager = context!!.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
                 val info = ActivityManager.MemoryInfo()
                 activityManager.getMemoryInfo(info)
-                LMKUnit().autoSetLMK(info.totalMem)
+                LMKUtils().autoSetLMK(info.totalMem)
                 swap_lmk_current.text = KernelProrp.getProp("/sys/module/lowmemorykiller/parameters/minfree")
             } else {
                 Toast.makeText(context!!, "需要重启手机才会恢复默认的LMK参数！", Toast.LENGTH_SHORT).show()
@@ -272,8 +272,8 @@ class FragmentSwap : Fragment() {
         }
 
         zram_compact_algorithm.setOnClickListener {
-            val current = swapUnit.compAlgorithm
-            val options = swapUnit.compAlgorithmOptions
+            val current = swapUtils.compAlgorithm
+            val options = swapUtils.compAlgorithmOptions
             var selectedIndex = options.indexOf(current)
             DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle(R.string.swap_zram_comp_options)
@@ -285,17 +285,17 @@ class FragmentSwap : Fragment() {
                     })
                     .setPositiveButton(R.string.btn_confirm, { _, _ ->
                         val algorithm = options.get(selectedIndex)
-                        swapUnit.compAlgorithm = algorithm
+                        swapUtils.compAlgorithm = algorithm
                         swapConfig.edit().putString(SpfConfig.SWAP_SPF_ALGORITHM, algorithm).apply()
 
-                        if (swapUnit.zramEnabled) {
+                        if (swapUtils.zramEnabled) {
                             DialogHelper.helpInfo(
                                     context!!,
                                     R.string.swap_zram_comp_algorithm_wran,
                                     R.string.swap_zram_comp_algorithm_wran_desc)
                             (it as TextView).text = algorithm
                         } else {
-                            (it as TextView).text = swapUnit.compAlgorithm
+                            (it as TextView).text = swapUtils.compAlgorithm
                         }
                         //
                     }))
@@ -311,7 +311,7 @@ class FragmentSwap : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        if (!swapUnit.zramSupport) {
+        if (!swapUtils.zramSupport) {
             swap_config_zram.visibility = View.GONE
             zram_stat.visibility = View.GONE
         }
@@ -324,7 +324,7 @@ class FragmentSwap : Fragment() {
                 myHandler.post({
                     processBarDialog.showDialog(getString(R.string.file_creating))
                 })
-                swapUnit.mkswap(size)
+                swapUtils.mkswap(size)
                 myHandler.post(getSwaps)
                 val time = System.currentTimeMillis() - startTime
                 myHandler.post({
@@ -346,7 +346,7 @@ class FragmentSwap : Fragment() {
 
             processBarDialog.showDialog("稍等...")
             Thread(Runnable {
-                swapUnit.swapOn(hightPriority, swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false))
+                swapUtils.swapOn(hightPriority, swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false))
 
                 myHandler.post(getSwaps)
                 myHandler.post(showSwapOpened)
@@ -361,7 +361,7 @@ class FragmentSwap : Fragment() {
 
                 val run = Thread({
                     val algorithm = swapConfig.getString(SpfConfig.SWAP_SPF_ALGORITHM, "")
-                    swapUnit.resizeZram(sizeVal, algorithm!!)
+                    swapUtils.resizeZram(sizeVal, algorithm!!)
 
                     myHandler.post(getSwaps)
                     myHandler.post {

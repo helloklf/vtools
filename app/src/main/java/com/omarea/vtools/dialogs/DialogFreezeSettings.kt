@@ -5,7 +5,7 @@ import android.content.Context
 import android.view.View
 import android.widget.Switch
 import com.omarea.common.ui.DialogHelper
-import com.omarea.shared.SpfConfig
+import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
 
 class DialogFreezeSettings {

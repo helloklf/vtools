@@ -6,8 +6,8 @@ import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.RootFile
 import com.omarea.common.ui.DialogHelper
-import com.omarea.shared.CommonCmds
-import com.omarea.shell.Platform
+import com.omarea.utils.CommonCmds
+import com.omarea.shell_utils.PlatformUtils
 import com.omarea.vtools.R
 
 /**
@@ -45,7 +45,7 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
     }
 
     fun miuiSetThermalNo() {
-        val cpuName = Platform().getCPUName().replace("msm", "")
+        val cpuName = PlatformUtils().getCPUName().replace("msm", "")
         var nolimits = ""
         var baseName = ""
 

@@ -15,10 +15,10 @@ import android.view.KeyEvent
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityWindowInfo
 import android.widget.Toast
-import com.omarea.shared.AppConfigStore
-import com.omarea.shared.AutoClick
-import com.omarea.shared.CrashHandler
-import com.omarea.dynamic.ServiceHelper
+import com.omarea.store.AppConfigStore
+import com.omarea.utils.AutoClick
+import com.omarea.utils.CrashHandler
+import com.omarea.scene_mode.ServiceHelper
 
 /**
  * Created by helloklf on 2016/8/27.

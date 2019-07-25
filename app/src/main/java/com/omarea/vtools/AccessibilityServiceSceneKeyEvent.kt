@@ -9,7 +9,7 @@ import android.view.KeyEvent.ACTION_DOWN
 import android.view.KeyEvent.ACTION_UP
 import android.view.accessibility.AccessibilityEvent
 import android.widget.Toast
-import com.omarea.shared.SpfConfig
+import com.omarea.store.SpfConfig
 import com.omarea.vtools.popup.FloatVitualTouchBar
 
 

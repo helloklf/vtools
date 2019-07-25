@@ -11,7 +11,7 @@ import android.widget.Toast
 import com.omarea.common.shared.RootFileInfo
 import com.omarea.common.shell.RootFile
 import com.omarea.common.ui.ProgressBarDialog
-import com.omarea.shared.CommonCmds
+import com.omarea.utils.CommonCmds
 import com.omarea.ui.AdapterRootFileSelector
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.fragment_magisk.*

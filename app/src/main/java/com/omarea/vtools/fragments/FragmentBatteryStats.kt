@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.omarea.shared.BatteryHistoryStore
+import com.omarea.store.BatteryHistoryStore
 import com.omarea.ui.AdapterBatteryStats
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.fragment_battery_stats.*

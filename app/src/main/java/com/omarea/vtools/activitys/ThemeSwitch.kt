@@ -19,7 +19,7 @@ import android.support.v4.content.PermissionChecker
 import android.view.View
 import android.view.WindowManager
 import com.omarea.common.ui.DialogHelper
-import com.omarea.shared.SpfConfig
+import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
 
 object ThemeSwitch {

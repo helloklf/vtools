@@ -13,9 +13,9 @@ import android.view.View
 import android.widget.Switch
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
-import com.omarea.shared.CommonCmds
-import com.omarea.shared.SpfConfig
-import com.omarea.shell.AppErrorLogcat
+import com.omarea.utils.CommonCmds
+import com.omarea.store.SpfConfig
+import com.omarea.shell_utils.AppErrorLogcatUtils
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_other_settings.*
 
@@ -81,7 +81,7 @@ class ActivitySceneOtherSettings : AppCompatActivity() {
             }
         }
         settings_logcat.setOnClickListener {
-            val log = AppErrorLogcat().catLogInfo()
+            val log = AppErrorLogcatUtils().catLogInfo()
             settings_log_content.visibility = View.VISIBLE
             settings_log_content.setText(log)
             settings_log_content.setSelection(0, log.length)

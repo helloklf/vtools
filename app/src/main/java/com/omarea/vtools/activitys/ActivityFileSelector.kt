@@ -9,7 +9,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.Toast
 import com.omarea.common.ui.ProgressBarDialog
-import com.omarea.shared.CommonCmds
+import com.omarea.utils.CommonCmds
 import com.omarea.ui.AdapterFileSelector
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_file_selector.*

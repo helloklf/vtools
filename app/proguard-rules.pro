@@ -29,8 +29,8 @@
 
 -keep class com.omarea.xposed.XposedInterface{*;}
 -keep class com.omarea.xposed.XposedCheck{*;}
--keep class com.omarea.vtools.services.ServiceBattery{*;}
+-keep class com.omarea.charger_booster.ServiceBattery{*;}
 
 -keepclassmembers class com.omarea.xposed.XposedInterface{*;}
 -keepclassmembers class com.omarea.xposed.XposedCheck{*;}
--keepclassmembers class com.omarea.vtools.services.ServiceBattery{*;}
+-keepclassmembers class com.omarea.charger_booster.ServiceBattery{*;}

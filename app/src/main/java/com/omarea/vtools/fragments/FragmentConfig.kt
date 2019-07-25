@@ -24,11 +24,14 @@ import android.widget.Toast
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.OverScrollListView
 import com.omarea.common.ui.ProgressBarDialog
-import com.omarea.dynamic.ModeList
-import com.omarea.shared.*
-import com.omarea.shared.helper.AccessibleServiceHelper
-import com.omarea.shared.helper.AppListHelper
+import com.omarea.scene_mode.ModeSwitcher
+import com.omarea.utils.AccessibleServiceHelper
+import com.omarea.utils.AppListHelper
 import com.omarea.model.Appinfo
+import com.omarea.scene_mode.ModeConfigInstaller
+import com.omarea.store.AppConfigStore
+import com.omarea.store.BatteryHistoryStore
+import com.omarea.store.SpfConfig
 import com.omarea.ui.SceneModeAdapter
 import com.omarea.ui.SearchTextWatcher
 import com.omarea.ui.TabIconHelper
@@ -57,9 +60,9 @@ class FragmentConfig : Fragment() {
     private var displayList: ArrayList<Appinfo>? = null
     private var packageManager: PackageManager? = null
     private lateinit var appConfigStore: AppConfigStore
-    private var firstMode = ModeList.DEFAULT
+    private var firstMode = ModeSwitcher.DEFAULT
     private var aidlConn: IAppConfigAidlInterface? = null
-    private val configInstaller = ConfigInstaller()
+    private val configInstaller = ModeConfigInstaller()
 
     private var conn = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -99,7 +102,7 @@ class FragmentConfig : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_config, container, false)
-    private lateinit var modeList: ModeList
+    private lateinit var modeSwitcher: ModeSwitcher
 
     override fun onResume() {
         super.onResume()
@@ -140,13 +143,13 @@ class FragmentConfig : Fragment() {
             packageManager = context!!.packageManager
         }
 
-        modeList = ModeList()
+        modeSwitcher = ModeSwitcher()
         processBarDialog = ProgressBarDialog(context!!)
         applistHelper = AppListHelper(context!!)
         spfPowercfg = context!!.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         editor = spfPowercfg.edit()
-        firstMode = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeList.DEFAULT)!!
+        firstMode = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.DEFAULT)!!
         appConfigStore = AppConfigStore(this.context)
 
         if (spfPowercfg.all.isEmpty()) {
@@ -190,11 +193,11 @@ class FragmentConfig : Fragment() {
             val item = (parent.adapter.getItem(position) as Appinfo)
             var originIndex = 0
             when (spfPowercfg.getString(item.packageName.toString(), firstMode)) {
-                ModeList.POWERSAVE -> originIndex = 0
-                ModeList.BALANCE -> originIndex = 1
-                ModeList.PERFORMANCE -> originIndex = 2
-                ModeList.FAST -> originIndex = 3
-                ModeList.IGONED -> originIndex = 5
+                ModeSwitcher.POWERSAVE -> originIndex = 0
+                ModeSwitcher.BALANCE -> originIndex = 1
+                ModeSwitcher.PERFORMANCE -> originIndex = 2
+                ModeSwitcher.FAST -> originIndex = 3
+                ModeSwitcher.IGONED -> originIndex = 5
                 else -> originIndex = 4
             }
             var currentMode = originIndex
@@ -210,12 +213,12 @@ class FragmentConfig : Fragment() {
                         if (currentMode != originIndex) {
                             var modeName = ""
                             when (currentMode) {
-                                0 -> modeName = ModeList.POWERSAVE
-                                1 -> modeName = ModeList.BALANCE
-                                2 -> modeName = ModeList.PERFORMANCE
-                                3 -> modeName = ModeList.FAST
+                                0 -> modeName = ModeSwitcher.POWERSAVE
+                                1 -> modeName = ModeSwitcher.BALANCE
+                                2 -> modeName = ModeSwitcher.PERFORMANCE
+                                3 -> modeName = ModeSwitcher.FAST
                                 4 -> modeName = ""
-                                5 -> modeName = ModeList.IGONED
+                                5 -> modeName = ModeSwitcher.IGONED
                             }
 
                             if (modeName.isEmpty()) {
@@ -268,11 +271,11 @@ class FragmentConfig : Fragment() {
 
         val modeValue = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance")
         when (modeValue) {
-            ModeList.POWERSAVE -> first_mode.setSelection(0)
-            ModeList.BALANCE -> first_mode.setSelection(1)
-            ModeList.PERFORMANCE -> first_mode.setSelection(2)
-            ModeList.FAST -> first_mode.setSelection(3)
-            ModeList.IGONED -> first_mode.setSelection(4)
+            ModeSwitcher.POWERSAVE -> first_mode.setSelection(0)
+            ModeSwitcher.BALANCE -> first_mode.setSelection(1)
+            ModeSwitcher.PERFORMANCE -> first_mode.setSelection(2)
+            ModeSwitcher.FAST -> first_mode.setSelection(3)
+            ModeSwitcher.IGONED -> first_mode.setSelection(4)
         }
         first_mode.onItemSelectedListener = ModeOnItemSelectedListener(globalSPF, Runnable {
             reStartService()
@@ -434,13 +437,13 @@ class FragmentConfig : Fragment() {
 
         @SuppressLint("ApplySharedPref")
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            var mode = ModeList.DEFAULT
+            var mode = ModeSwitcher.DEFAULT
             when (position) {
-                0 -> mode = ModeList.POWERSAVE
-                1 -> mode = ModeList.BALANCE
-                2 -> mode = ModeList.PERFORMANCE
-                3 -> mode = ModeList.FAST
-                4 -> mode = ModeList.IGONED
+                0 -> mode = ModeSwitcher.POWERSAVE
+                1 -> mode = ModeSwitcher.BALANCE
+                2 -> mode = ModeSwitcher.PERFORMANCE
+                3 -> mode = ModeSwitcher.FAST
+                4 -> mode = ModeSwitcher.IGONED
             }
             if (globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "") != mode) {
                 globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, mode).commit()
@@ -451,13 +454,13 @@ class FragmentConfig : Fragment() {
 
     private fun initDefaultConfig() {
         for (item in resources.getStringArray(R.array.powercfg_igoned)) {
-            editor.putString(item, ModeList.IGONED)
+            editor.putString(item, ModeSwitcher.IGONED)
         }
         for (item in resources.getStringArray(R.array.powercfg_fast)) {
-            editor.putString(item, ModeList.FAST)
+            editor.putString(item, ModeSwitcher.FAST)
         }
         for (item in resources.getStringArray(R.array.powercfg_game)) {
-            editor.putString(item, ModeList.PERFORMANCE)
+            editor.putString(item, ModeSwitcher.PERFORMANCE)
         }
         editor.commit()
     }
@@ -528,12 +531,12 @@ class FragmentConfig : Fragment() {
             }
             when (configlist_modes.selectedItemPosition) {
                 0 -> filterMode = "*"
-                1 -> filterMode = ModeList.POWERSAVE
-                2 -> filterMode = ModeList.BALANCE
-                3 -> filterMode = ModeList.PERFORMANCE
-                4 -> filterMode = ModeList.FAST
+                1 -> filterMode = ModeSwitcher.POWERSAVE
+                2 -> filterMode = ModeSwitcher.BALANCE
+                3 -> filterMode = ModeSwitcher.PERFORMANCE
+                4 -> filterMode = ModeSwitcher.FAST
                 5 -> filterMode = ""
-                6 -> filterMode = ModeList.IGONED
+                6 -> filterMode = ModeSwitcher.IGONED
             }
             displayList = ArrayList()
             for (i in installedList!!.indices) {

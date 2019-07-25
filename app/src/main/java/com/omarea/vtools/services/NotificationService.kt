@@ -3,7 +3,7 @@ package com.omarea.vtools.services
 import android.app.Notification.FLAG_AUTO_CANCEL
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
-import com.omarea.dynamic.SceneMode
+import com.omarea.scene_mode.SceneMode
 
 class NotificationService : NotificationListenerService() {
     override fun onNotificationPosted(sbn: StatusBarNotification?) {

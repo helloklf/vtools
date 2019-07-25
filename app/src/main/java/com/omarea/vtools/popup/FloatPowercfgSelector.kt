@@ -11,11 +11,11 @@ import android.provider.Settings
 import android.view.*
 import android.view.WindowManager.LayoutParams
 import android.widget.*
-import com.omarea.shared.AppConfigStore
-import com.omarea.dynamic.ModeList
-import com.omarea.shared.SpfConfig
-import com.omarea.shared.helper.AccessibleServiceHelper
-import com.omarea.shared.helper.NotifyHelper
+import com.omarea.store.AppConfigStore
+import com.omarea.scene_mode.ModeSwitcher
+import com.omarea.store.SpfConfig
+import com.omarea.utils.AccessibleServiceHelper
+import com.omarea.scene_mode.AlwaysNotification
 import com.omarea.permissions.NotificationListener
 import com.omarea.vtools.R
 
@@ -27,7 +27,7 @@ import com.omarea.vtools.R
 class FloatPowercfgSelector {
     private var mView: View? = null
     private var mContext: Context? = null
-    private var modeList = ModeList()
+    private var modeList = ModeSwitcher()
 
     /**
      * 显示弹出框
@@ -151,10 +151,10 @@ class FloatPowercfgSelector {
             btn_gamemode.setTextColor(0x66ffffff)
             btn_fastmode.setTextColor(0x66ffffff)
             when (selectedMode) {
-                ModeList.BALANCE -> btn_defaultmode.setTextColor(Color.WHITE)
-                ModeList.PERFORMANCE -> btn_gamemode.setTextColor(Color.WHITE)
-                ModeList.POWERSAVE -> btn_powersave.setTextColor(Color.WHITE)
-                ModeList.FAST -> btn_fastmode.setTextColor(Color.WHITE)
+                ModeSwitcher.BALANCE -> btn_defaultmode.setTextColor(Color.WHITE)
+                ModeSwitcher.PERFORMANCE -> btn_gamemode.setTextColor(Color.WHITE)
+                ModeSwitcher.POWERSAVE -> btn_powersave.setTextColor(Color.WHITE)
+                ModeSwitcher.FAST -> btn_fastmode.setTextColor(Color.WHITE)
             }
         }
         val switchMode = Runnable {
@@ -169,23 +169,23 @@ class FloatPowercfgSelector {
                 reStartService(packageName, selectedMode)
             }
 
-            NotifyHelper(context, true).notify()
+            AlwaysNotification(context, true).notify()
         }
 
         btn_powersave.setOnClickListener {
-            selectedMode = ModeList.POWERSAVE
+            selectedMode = ModeSwitcher.POWERSAVE
             switchMode.run()
         }
         btn_defaultmode.setOnClickListener {
-            selectedMode = ModeList.BALANCE
+            selectedMode = ModeSwitcher.BALANCE
             switchMode.run()
         }
         btn_gamemode.setOnClickListener {
-            selectedMode = ModeList.PERFORMANCE
+            selectedMode = ModeSwitcher.PERFORMANCE
             switchMode.run()
         }
         btn_fastmode.setOnClickListener {
-            selectedMode = ModeList.FAST
+            selectedMode = ModeSwitcher.FAST
             switchMode.run()
         }
         val fw_app_light = view.findViewById<CheckBox>(R.id.fw_app_light)

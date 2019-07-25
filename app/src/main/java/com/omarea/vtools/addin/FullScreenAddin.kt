@@ -4,7 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.widget.Toast
 import com.omarea.common.ui.DialogHelper
-import com.omarea.shared.CommonCmds
+import com.omarea.utils.CommonCmds
 
 /**
  * Created by Hello on 2017/11/01.

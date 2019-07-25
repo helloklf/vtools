@@ -26,17 +26,17 @@ import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.shell.RootFile
 import com.omarea.common.ui.DialogHelper
-import com.omarea.shared.ConfigInstaller
-import com.omarea.shared.SpfConfig
-import com.omarea.shared.Update
+import com.omarea.scene_mode.ModeConfigInstaller
+import com.omarea.store.SpfConfig
+import com.omarea.utils.Update
 import com.omarea.permissions.CheckRootStatus
-import com.omarea.shell.units.BackupRestoreUnit
-import com.omarea.shell.units.BatteryUnit
+import com.omarea.shell_utils.BackupRestoreUtils
+import com.omarea.shell_utils.BatteryUtils
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogPower
 import com.omarea.vtools.fragments.*
 import com.omarea.vtools.popup.FloatMonitor
-import com.omarea.vtools.services.ServiceBattery
+import com.omarea.charger_booster.ServiceBattery
 import kotlinx.android.synthetic.main.activity_main.*
 import java.lang.ref.WeakReference
 
@@ -81,7 +81,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         private var context: WeakReference<Context>;
         override fun run() {
             super.run()
-            ConfigInstaller().configCodeVerify()
+            ModeConfigInstaller().configCodeVerify()
         }
 
         init {
@@ -165,7 +165,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val navigationView = findViewById<NavigationView>(R.id.nav_view)
         navigationView.setNavigationItemSelectedListener(this)
-        navigationView.menu.findItem(R.id.nav_battery).isEnabled = BatteryUnit().isSupport
+        navigationView.menu.findItem(R.id.nav_battery).isEnabled = BatteryUtils().isSupport
 
         if (CheckRootStatus.lastCheckResult) {
             try {
@@ -176,7 +176,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                             setHomePage()
                         }))
             }
-            if (!BackupRestoreUnit.isSupport()) {
+            if (!BackupRestoreUtils.isSupport()) {
                 navigationView.menu.findItem(R.id.nav_img).isEnabled = false
             }
             ConfigInstallerThread(this).start()

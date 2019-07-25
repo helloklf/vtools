@@ -11,7 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import com.omarea.shared.Alipay
+import com.omarea.utils.AlipayDonate
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.fragment_pay.*
 
@@ -29,7 +29,7 @@ class FragmentPay : Fragment() {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://www.paypal.me/duduski")))
         }
         pay_alipay.setOnClickListener {
-            Alipay(context!!).jumpAlipay()
+            AlipayDonate(context!!).jumpAlipay()
         }
         pay_wxpay.setOnClickListener {
             /*

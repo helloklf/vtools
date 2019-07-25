@@ -13,8 +13,8 @@ import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.RootFile
 import com.omarea.common.ui.DialogHelper
-import com.omarea.shared.CommonCmds
-import com.omarea.shell.Props
+import com.omarea.utils.CommonCmds
+import com.omarea.shell_utils.PropsUtils
 import com.omarea.vtools.R
 
 /**
@@ -31,7 +31,7 @@ class DialogAddinModifydevice(var context: Context) {
     val BACKUP_MANUFACTURER = "persist.vtools.manufacturer"
 
     private fun getBackupProp(prop: String, default: String): String {
-        val value = Props.getProp(prop)
+        val value = PropsUtils.getProp(prop)
         if (value == "null" || value == "") {
             return default
         }
@@ -194,12 +194,12 @@ class DialogAddinModifydevice(var context: Context) {
     @SuppressLint("ApplySharedPref")
     private fun backupDefault() {
         if (getBackupProp(BACKUP_SUCCESS, "false") != "true") {
-            Props.setPorp(BACKUP_BRAND, android.os.Build.BRAND)
-            Props.setPorp(BACKUP_MODEL, android.os.Build.MODEL)
-            Props.setPorp(BACKUP_PRODUCT, android.os.Build.PRODUCT)
-            Props.setPorp(BACKUP_DEVICE, android.os.Build.DEVICE)
-            Props.setPorp(BACKUP_MANUFACTURER, android.os.Build.MANUFACTURER)
-            Props.setPorp(BACKUP_SUCCESS, "true")
+            PropsUtils.setPorp(BACKUP_BRAND, android.os.Build.BRAND)
+            PropsUtils.setPorp(BACKUP_MODEL, android.os.Build.MODEL)
+            PropsUtils.setPorp(BACKUP_PRODUCT, android.os.Build.PRODUCT)
+            PropsUtils.setPorp(BACKUP_DEVICE, android.os.Build.DEVICE)
+            PropsUtils.setPorp(BACKUP_MANUFACTURER, android.os.Build.MANUFACTURER)
+            PropsUtils.setPorp(BACKUP_SUCCESS, "true")
         }
     }
 

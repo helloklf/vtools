@@ -17,9 +17,9 @@ import android.widget.AdapterView.OnItemClickListener
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.OverScrollListView
 import com.omarea.common.ui.ProgressBarDialog
-import com.omarea.shared.CommonCmds
-import com.omarea.shared.SpfConfig
-import com.omarea.shared.helper.AppListHelper
+import com.omarea.utils.CommonCmds
+import com.omarea.store.SpfConfig
+import com.omarea.utils.AppListHelper
 import com.omarea.model.Appinfo
 import com.omarea.ui.AppListAdapter
 import com.omarea.ui.SearchTextWatcher

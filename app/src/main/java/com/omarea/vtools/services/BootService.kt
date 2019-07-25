@@ -9,16 +9,21 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.support.v4.app.NotificationCompat
+import com.omarea.charger_booster.ServiceBattery
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KernelProrp
-import com.omarea.dynamic.ModeList
-import com.omarea.shared.*
-import com.omarea.shell.Props
-import com.omarea.shell.cpucontrol.CpuFrequencyUtils
-import com.omarea.shell.cpucontrol.ThermalControlUtils
-import com.omarea.shell.units.BatteryUnit
-import com.omarea.shell.units.LMKUnit
+import com.omarea.scene_mode.ModeConfigInstaller
+import com.omarea.scene_mode.ModeSwitcher
+import com.omarea.utils.*
+import com.omarea.shell_utils.PropsUtils
+import com.omarea.shell_utils.CpuFrequencyUtil
+import com.omarea.shell_utils.ThermalControlUtils
+import com.omarea.shell_utils.BatteryUtils
+import com.omarea.shell_utils.LMKUtils
+import com.omarea.store.AppConfigStore
+import com.omarea.store.CpuConfigStorage
+import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
 
 /**
@@ -42,7 +47,7 @@ class BootService : IntentService("vtools-boot") {
         } else {
             Thread.sleep(2000)
         }
-        val r = Props.getProp("vtools.boot")
+        val r = PropsUtils.getProp("vtools.boot")
         if (!r.isEmpty()) {
             isFirstBoot = false
             bootCancel = true
@@ -79,7 +84,7 @@ class BootService : IntentService("vtools-boot") {
             // core online
             if (cpuState.coreOnline != null && cpuState.coreOnline.size > 0) {
                 for (i in 0 until cpuState.coreOnline.size) {
-                    CpuFrequencyUtils.setCoreOnlineState(i, cpuState.coreOnline[i])
+                    CpuFrequencyUtil.setCoreOnlineState(i, cpuState.coreOnline[i])
                 }
             }
 
@@ -87,53 +92,53 @@ class BootService : IntentService("vtools-boot") {
             for (cluster in 0 until cpuState.cpuClusterStatuses.size) {
                 val config = cpuState.cpuClusterStatuses[cluster]
                 if (config.governor.isNotEmpty()) {
-                    CpuFrequencyUtils.setGovernor(config.governor, 0, context);
+                    CpuFrequencyUtil.setGovernor(config.governor, 0, context);
                 }
                 if (config.min_freq.isNotEmpty()) {
-                    CpuFrequencyUtils.setMinFrequency(config.min_freq, 0, context);
+                    CpuFrequencyUtil.setMinFrequency(config.min_freq, 0, context);
                 }
                 if (config.max_freq.isNotEmpty()) {
-                    CpuFrequencyUtils.setMaxFrequency(config.max_freq, 0, context);
+                    CpuFrequencyUtil.setMaxFrequency(config.max_freq, 0, context);
                 }
             }
 
             // Boost
             if (cpuState.boost.isNotEmpty()) {
-                CpuFrequencyUtils.setSechedBoostState(cpuState.boost == "1", context);
+                CpuFrequencyUtil.setSechedBoostState(cpuState.boost == "1", context);
             }
             if (cpuState.boostFreq.isNotEmpty()) {
-                CpuFrequencyUtils.setInputBoosterFreq(cpuState.boostFreq);
+                CpuFrequencyUtil.setInputBoosterFreq(cpuState.boostFreq);
             }
             if (cpuState.boostTime.isNotEmpty()) {
-                CpuFrequencyUtils.setInputBoosterTime(cpuState.boostTime);
+                CpuFrequencyUtil.setInputBoosterTime(cpuState.boostTime);
             }
 
             // GPU
             if (cpuState.adrenoGovernor.isNotEmpty()) {
-                CpuFrequencyUtils.setAdrenoGPUGovernor(cpuState.adrenoGovernor);
+                CpuFrequencyUtil.setAdrenoGPUGovernor(cpuState.adrenoGovernor);
             }
             if (cpuState.adrenoMinFreq.isNotEmpty()) {
-                CpuFrequencyUtils.setAdrenoGPUMinFreq(cpuState.adrenoMinFreq);
+                CpuFrequencyUtil.setAdrenoGPUMinFreq(cpuState.adrenoMinFreq);
             }
             if (cpuState.adrenoMaxFreq.isNotEmpty()) {
-                CpuFrequencyUtils.setAdrenoGPUMaxFreq(cpuState.adrenoMaxFreq);
+                CpuFrequencyUtil.setAdrenoGPUMaxFreq(cpuState.adrenoMaxFreq);
             }
             if (cpuState.adrenoMinPL.isNotEmpty()) {
-                CpuFrequencyUtils.setAdrenoGPUMinPowerLevel(cpuState.adrenoMinPL);
+                CpuFrequencyUtil.setAdrenoGPUMinPowerLevel(cpuState.adrenoMinPL);
             }
             if (cpuState.adrenoMaxPL.isNotEmpty()) {
-                CpuFrequencyUtils.setAdrenoGPUMaxPowerLevel(cpuState.adrenoMaxPL);
+                CpuFrequencyUtil.setAdrenoGPUMaxPowerLevel(cpuState.adrenoMaxPL);
             }
             if (cpuState.adrenoDefaultPL.isNotEmpty()) {
-                CpuFrequencyUtils.setAdrenoGPUDefaultPowerLevel(cpuState.adrenoDefaultPL);
+                CpuFrequencyUtil.setAdrenoGPUDefaultPowerLevel(cpuState.adrenoDefaultPL);
             }
 
             // exynos
-            if (CpuFrequencyUtils.exynosHMP()) {
-                CpuFrequencyUtils.setExynosHotplug(cpuState.exynosHotplug);
-                CpuFrequencyUtils.setExynosHmpDown(cpuState.exynosHmpDown);
-                CpuFrequencyUtils.setExynosHmpUP(cpuState.exynosHmpUP);
-                CpuFrequencyUtils.setExynosBooster(cpuState.exynosHmpBooster);
+            if (CpuFrequencyUtil.exynosHMP()) {
+                CpuFrequencyUtil.setExynosHotplug(cpuState.exynosHotplug);
+                CpuFrequencyUtil.setExynosHmpDown(cpuState.exynosHmpDown);
+                CpuFrequencyUtil.setExynosHmpUP(cpuState.exynosHmpUP);
+                CpuFrequencyUtil.setExynosBooster(cpuState.exynosHmpBooster);
             }
 
             if (!cpuState.cpusetBackground.isNullOrEmpty()) {
@@ -180,15 +185,15 @@ class BootService : IntentService("vtools-boot") {
                 startService(intent)
             } catch (ex: Exception) {
             }
-            BatteryUnit().setChargeInputLimit(chargeConfig.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 3300), this.applicationContext)
+            BatteryUtils().setChargeInputLimit(chargeConfig.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 3300), this.applicationContext)
         }
 
         val globalPowercfg = globalConfig.getString(SpfConfig.GLOBAL_SPF_POWERCFG, "")
         if (!globalPowercfg.isNullOrEmpty()) {
             updateNotification(getString(R.string.boot_use_powercfg))
 
-            val modeList = ModeList()
-            val configInstaller = ConfigInstaller()
+            val modeList = ModeSwitcher()
+            val configInstaller = ModeConfigInstaller()
             if (configInstaller.configInstalled()) {
                 modeList.executePowercfgMode(globalPowercfg, context!!.packageName)
             } else {
@@ -240,7 +245,7 @@ class BootService : IntentService("vtools-boot") {
             val activityManager = context!!.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
             val info = ActivityManager.MemoryInfo()
             activityManager.getMemoryInfo(info)
-            LMKUnit().autoSetLMK(info.totalMem, keepShell)
+            LMKUtils().autoSetLMK(info.totalMem, keepShell)
         }
 
         updateNotification(getString(R.string.boot_freeze))

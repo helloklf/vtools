@@ -21,12 +21,12 @@ import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
-import com.omarea.shared.AppConfigStore
-import com.omarea.shared.FreezeAppIconManager
-import com.omarea.dynamic.SceneMode
-import com.omarea.shared.SpfConfig
-import com.omarea.shared.helper.AppListHelper
-import com.omarea.shared.helper.ShortcutHelper
+import com.omarea.store.AppConfigStore
+import com.omarea.scene_mode.LogoCacheManager
+import com.omarea.scene_mode.SceneMode
+import com.omarea.store.SpfConfig
+import com.omarea.utils.AppListHelper
+import com.omarea.scene_mode.FreezeAppShortcutHelper
 import com.omarea.model.Appinfo
 import com.omarea.ui.FreezeAppAdapter
 import com.omarea.vtools.R
@@ -40,7 +40,7 @@ class FragmentFreeze : Fragment() {
     private var handler: Handler = Handler()
     private lateinit var config: SharedPreferences
     private lateinit var freezeHideList: SharedPreferences
-    private lateinit var iconManager: FreezeAppIconManager
+    private lateinit var iconManager: LogoCacheManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
@@ -50,7 +50,7 @@ class FragmentFreeze : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         config = this.context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         freezeHideList = this.context!!.getSharedPreferences(SpfConfig.FREEZE_HIDELIST_SPF, Context.MODE_PRIVATE)
-        iconManager = FreezeAppIconManager(this.context!!)
+        iconManager = LogoCacheManager(this.context!!)
         processBarDialog = ProgressBarDialog(context!!)
 
         processBarDialog.showDialog()
@@ -99,7 +99,7 @@ class FragmentFreeze : Fragment() {
                 // 数据库中记录的已添加的偏见应用
                 freezeApps = store.freezeAppList
                 // 已添加到桌面的快捷方式
-                val pinnedShortcuts = ShortcutHelper().getPinnedShortcuts(this.context);
+                val pinnedShortcuts = FreezeAppShortcutHelper().getPinnedShortcuts(this.context);
 
                 val lostedShortcuts = ArrayList<Appinfo>()
                 val lostedShortcutsName = StringBuilder()
@@ -270,7 +270,7 @@ class FragmentFreeze : Fragment() {
         store.close()
 
         SceneMode.removeFreezeAppHistory(packageName)
-        ShortcutHelper().removeShortcut(this.context!!, packageName)
+        FreezeAppShortcutHelper().removeShortcut(this.context!!, packageName)
     }
 
     private fun removeAndUninstall(appInfo: Appinfo) {
@@ -337,7 +337,7 @@ class FragmentFreeze : Fragment() {
         if (!appInfo.enabled) {
             enableApp(appInfo)
         }
-        if (ShortcutHelper().createShortcut(this.context!!, appInfo.packageName.toString())) {
+        if (FreezeAppShortcutHelper().createShortcut(this.context!!, appInfo.packageName.toString())) {
             Toast.makeText(this.context, getString(R.string.freeze_shortcut_add_success), Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(this.context, getString(R.string.freeze_shortcut_add_fail), Toast.LENGTH_SHORT).show()
@@ -351,7 +351,7 @@ class FragmentFreeze : Fragment() {
                     KeepShellPublic.doCmdSync("pm unhide " + appinfo.packageName + "\n" + "pm enable " + appinfo.packageName)
                 }
                 Thread.sleep(3000)
-                ShortcutHelper().createShortcut(this.context, appinfo.packageName.toString())
+                FreezeAppShortcutHelper().createShortcut(this.context, appinfo.packageName.toString())
             }
             onCompleted.run()
         }
@@ -417,7 +417,7 @@ class FragmentFreeze : Fragment() {
         val packageManager = context.packageManager
         override fun run() {
             val store = AppConfigStore(context)
-            val iconManager = FreezeAppIconManager(context)
+            val iconManager = LogoCacheManager(context)
 
             for (it in selectedItems) {
                 val config = store.getAppConfig(it)
@@ -513,7 +513,7 @@ class FragmentFreeze : Fragment() {
 
     private class CreateShortcutAllThread(private var context: Context, private var freezeApps: ArrayList<String>, private var onCompleted: Runnable) : Thread() {
         override fun run() {
-            val shortcutHelper = ShortcutHelper()
+            val shortcutHelper = FreezeAppShortcutHelper()
             for (it in freezeApps) {
                 KeepShellPublic.doCmdSync("pm unhide " + it + "\n" + "pm enable " + it)
                 sleep(3000)
@@ -527,7 +527,7 @@ class FragmentFreeze : Fragment() {
         override fun run() {
 
             val store = AppConfigStore(context)
-            val shortcutHelper = ShortcutHelper()
+            val shortcutHelper = FreezeAppShortcutHelper()
             for (it in freezeApps) {
                 KeepShellPublic.doCmdSync("pm unhide " + it + "\n" + "pm enable " + it)
                 val config = store.getAppConfig(it)

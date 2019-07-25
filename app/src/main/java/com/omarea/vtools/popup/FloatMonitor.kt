@@ -19,10 +19,10 @@ import android.view.WindowManager.LayoutParams
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import com.omarea.shell.cpucontrol.CpuFrequencyUtils
-import com.omarea.shell.cpucontrol.CpuLoadUtils
-import com.omarea.shell.cpucontrol.GpuUtils
-import com.omarea.shell.units.BatteryUnit
+import com.omarea.shell_utils.CpuFrequencyUtil
+import com.omarea.shell_utils.CpuLoadUtils
+import com.omarea.shell_utils.GpuUtils
+import com.omarea.shell_utils.BatteryUtils
 import com.omarea.ui.FloatMonitorBatteryView
 import com.omarea.ui.FloatMonitorChartView
 import com.omarea.vtools.R
@@ -188,7 +188,7 @@ class FloatMonitor(context: Context) {
 
     private var activityManager: ActivityManager? = null
     private var myHandler = Handler()
-    private var batteryUnit = BatteryUnit()
+    private var batteryUnit = BatteryUtils()
     private val info = ActivityManager.MemoryInfo()
 
     private var sum = -1
@@ -201,13 +201,13 @@ class FloatMonitor(context: Context) {
 
     private fun updateInfo() {
         if (coreCount < 1) {
-            coreCount = CpuFrequencyUtils.getCoreCount()
-            clusters = CpuFrequencyUtils.getClusterInfo()
+            coreCount = CpuFrequencyUtil.getCoreCount()
+            clusters = CpuFrequencyUtil.getClusterInfo()
         }
         val loads = cpuLoadUtils.cpuLoad
         clustersFreq.clear()
         for (coreIndex in 0 until clusters.size) {
-            clustersFreq.add(CpuFrequencyUtils.getCurrentFrequency(coreIndex))
+            clustersFreq.add(CpuFrequencyUtil.getCurrentFrequency(coreIndex))
         }
         val gpuFreq = GpuUtils.getGpuFreq() + "Mhz"
         val gpuLoad = GpuUtils.getGpuLoad()

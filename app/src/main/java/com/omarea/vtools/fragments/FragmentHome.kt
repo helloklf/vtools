@@ -19,15 +19,15 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
-import com.omarea.shared.ConfigInstaller
-import com.omarea.dynamic.ModeList
-import com.omarea.shared.SpfConfig
-import com.omarea.shared.helper.AccessibleServiceHelper
+import com.omarea.scene_mode.ModeConfigInstaller
+import com.omarea.scene_mode.ModeSwitcher
+import com.omarea.store.SpfConfig
+import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.model.CpuCoreInfo
-import com.omarea.shell.Props
-import com.omarea.shell.cpucontrol.CpuFrequencyUtils
-import com.omarea.shell.cpucontrol.CpuLoadUtils
-import com.omarea.shell.cpucontrol.GpuUtils
+import com.omarea.shell_utils.PropsUtils
+import com.omarea.shell_utils.CpuFrequencyUtil
+import com.omarea.shell_utils.CpuLoadUtils
+import com.omarea.shell_utils.GpuUtils
 import com.omarea.ui.AdapterCpuCores
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -45,13 +45,13 @@ class FragmentHome : Fragment() {
 
     private lateinit var globalSPF: SharedPreferences
     private var timer: Timer? = null
-    private val configInstaller = ConfigInstaller()
+    private val configInstaller = ModeConfigInstaller()
     private fun showMsg(msg: String) {
         this.view?.let { Snackbar.make(it, msg, Snackbar.LENGTH_LONG).show() }
     }
 
     private lateinit var spf: SharedPreferences
-    private var modeList = ModeList()
+    private var modeList = ModeSwitcher()
     private var myHandler = Handler()
     private var cpuLoadUtils = CpuLoadUtils()
 
@@ -67,16 +67,16 @@ class FragmentHome : Fragment() {
         }
 
         btn_powersave.setOnClickListener {
-            installConfig(ModeList.POWERSAVE, getString(R.string.power_change_powersave))
+            installConfig(ModeSwitcher.POWERSAVE, getString(R.string.power_change_powersave))
         }
         btn_defaultmode.setOnClickListener {
-            installConfig(ModeList.BALANCE, getString(R.string.power_change_default))
+            installConfig(ModeSwitcher.BALANCE, getString(R.string.power_change_default))
         }
         btn_gamemode.setOnClickListener {
-            installConfig(ModeList.PERFORMANCE, getString(R.string.power_change_game))
+            installConfig(ModeSwitcher.PERFORMANCE, getString(R.string.power_change_game))
         }
         btn_fastmode.setOnClickListener {
-            installConfig(ModeList.FAST, getString(R.string.power_chagne_fast))
+            installConfig(ModeSwitcher.FAST, getString(R.string.power_chagne_fast))
         }
 
         spf = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
@@ -201,7 +201,7 @@ class FragmentHome : Fragment() {
     @SuppressLint("SetTextI18n")
     private fun updateInfo() {
         if (coreCount < 1) {
-            coreCount = CpuFrequencyUtils.getCoreCount()
+            coreCount = CpuFrequencyUtil.getCoreCount()
             myHandler.post {
                 try {
                     cpu_core_count.text = "$coreCount 核心"
@@ -214,14 +214,14 @@ class FragmentHome : Fragment() {
         for (coreIndex in 0 until coreCount) {
             val core = CpuCoreInfo()
 
-            core.currentFreq = CpuFrequencyUtils.getCurrentFrequency("cpu$coreIndex")
+            core.currentFreq = CpuFrequencyUtil.getCurrentFrequency("cpu$coreIndex")
             if (!maxFreqs.containsKey(coreIndex) || (core.currentFreq != "" && maxFreqs.get(coreIndex).isNullOrEmpty())) {
-                maxFreqs.put(coreIndex, CpuFrequencyUtils.getCurrentMaxFrequency("cpu" + coreIndex))
+                maxFreqs.put(coreIndex, CpuFrequencyUtil.getCurrentMaxFrequency("cpu" + coreIndex))
             }
             core.maxFreq = maxFreqs.get(coreIndex)
 
             if (!minFreqs.containsKey(coreIndex) || (core.currentFreq != "" && minFreqs.get(coreIndex).isNullOrEmpty())) {
-                minFreqs.put(coreIndex, CpuFrequencyUtils.getCurrentMinFrequency("cpu" + coreIndex))
+                minFreqs.put(coreIndex, CpuFrequencyUtil.getCurrentMinFrequency("cpu" + coreIndex))
             }
             core.minFreq = minFreqs.get(coreIndex)
 
@@ -277,18 +277,18 @@ class FragmentHome : Fragment() {
         btn_defaultmode.setTextColor(0x66ffffff)
         btn_gamemode.setTextColor(0x66ffffff)
         btn_fastmode.setTextColor(0x66ffffff)
-        val cfg = Props.getProp("vtools.powercfg")
+        val cfg = PropsUtils.getProp("vtools.powercfg")
         when (cfg) {
-            ModeList.BALANCE -> {
+            ModeSwitcher.BALANCE -> {
                 btn_defaultmode.setTextColor(Color.WHITE)
             }
-            ModeList.PERFORMANCE -> {
+            ModeSwitcher.PERFORMANCE -> {
                 btn_gamemode.setTextColor(Color.WHITE)
             }
-            ModeList.POWERSAVE -> {
+            ModeSwitcher.POWERSAVE -> {
                 btn_powersave.setTextColor(Color.WHITE)
             }
-            ModeList.FAST -> {
+            ModeSwitcher.FAST -> {
                 btn_fastmode.setTextColor(Color.WHITE)
             }
         }
@@ -327,7 +327,7 @@ class FragmentHome : Fragment() {
         if (configInstaller.configInstalled()) {
             modeList.executePowercfgMode(action, context!!.packageName)
         } else {
-            ConfigInstaller().installPowerConfig(context!!);
+            ModeConfigInstaller().installPowerConfig(context!!);
             modeList.executePowercfgMode(action)
         }
         setModeState()
