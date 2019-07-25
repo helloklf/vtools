@@ -20,7 +20,7 @@ import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.shared.CommonCmds
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.helper.AppListHelper
-import com.omarea.shared.model.Appinfo
+import com.omarea.model.Appinfo
 import com.omarea.ui.AppListAdapter
 import com.omarea.ui.SearchTextWatcher
 import com.omarea.ui.TabIconHelper

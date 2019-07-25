@@ -1,4 +1,4 @@
-package com.omarea.shared.model;
+package com.omarea.model;
 
 import android.graphics.drawable.Drawable;
 

@@ -1,16 +1,14 @@
-package com.omarea.shell
+package com.omarea.permissions
 
 import android.content.Context
 import android.content.Intent
 import android.provider.Settings
 import android.support.v4.app.NotificationManagerCompat
 
-
 /**
- * Created by SYSTEM on 2018/07/22.
+ * 通知监听器 判断是否要拦截
  */
-
-class NoticeListing {
+class NotificationListener {
     fun getPermission(context: Context): Boolean {
         val packageNames = NotificationManagerCompat.getEnabledListenerPackages(context);
         if (packageNames.contains(context.getPackageName())) {

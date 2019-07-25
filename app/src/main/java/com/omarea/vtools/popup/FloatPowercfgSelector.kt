@@ -16,7 +16,7 @@ import com.omarea.dynamic.ModeList
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shared.helper.NotifyHelper
-import com.omarea.shell.NoticeListing
+import com.omarea.permissions.NotificationListener
 import com.omarea.vtools.R
 
 /**
@@ -216,8 +216,8 @@ class FloatPowercfgSelector {
         fw_app_dis_button.setOnClickListener {
             val isChecked = (it as CheckBox).isChecked
             if (isChecked) {
-                if (!NoticeListing().getPermission(context)) {
-                    NoticeListing().setPermission(context)
+                if (!NotificationListener().getPermission(context)) {
+                    NotificationListener().setPermission(context)
                     Toast.makeText(context, context.getString(R.string.scene_need_notic_listing), Toast.LENGTH_SHORT).show()
                     it.isChecked = false
                     return@setOnClickListener

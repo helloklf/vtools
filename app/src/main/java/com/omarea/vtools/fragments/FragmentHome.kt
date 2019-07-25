@@ -23,7 +23,7 @@ import com.omarea.shared.ConfigInstaller
 import com.omarea.dynamic.ModeList
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.helper.AccessibleServiceHelper
-import com.omarea.shared.model.CpuCoreInfo
+import com.omarea.model.CpuCoreInfo
 import com.omarea.shell.Props
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import com.omarea.shell.cpucontrol.CpuLoadUtils

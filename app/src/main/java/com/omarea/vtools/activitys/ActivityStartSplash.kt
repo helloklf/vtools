@@ -6,24 +6,21 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.PermissionChecker
 import android.util.TypedValue
-import android.view.KeyEvent
 import android.view.View
 import com.omarea.shared.CrashHandler
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.Busybox
-import com.omarea.shell.CheckRootStatus
-import com.omarea.shell.WriteSettings
+import com.omarea.permissions.CheckRootStatus
+import com.omarea.permissions.WriteSettings
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_start_splash.*
 import java.lang.ref.WeakReference
-import java.util.*
 
 class ActivityStartSplash : Activity() {
     private var globalSPF: SharedPreferences? = null

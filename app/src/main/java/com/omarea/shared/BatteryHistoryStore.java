@@ -6,8 +6,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.omarea.shared.model.BatteryAvgStatus;
-import com.omarea.shared.model.BatteryStatus;
+import com.omarea.model.BatteryAvgStatus;
+import com.omarea.model.BatteryStatus;
 
 import java.util.ArrayList;
 

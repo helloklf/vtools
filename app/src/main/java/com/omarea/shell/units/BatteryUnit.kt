@@ -6,7 +6,7 @@ import com.omarea.common.shell.KeepShellAsync
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.shell.RootFile
-import com.omarea.shared.model.BatteryStatus
+import com.omarea.model.BatteryStatus
 import java.io.File
 
 /**

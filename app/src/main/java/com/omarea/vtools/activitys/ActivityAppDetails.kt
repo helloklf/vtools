@@ -28,9 +28,9 @@ import com.omarea.dynamic.ModeList
 import com.omarea.shared.*
 import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shared.helper.ShortcutHelper
-import com.omarea.shared.model.AppConfigInfo
-import com.omarea.shell.NoticeListing
-import com.omarea.shell.WriteSettings
+import com.omarea.model.AppConfigInfo
+import com.omarea.permissions.NotificationListener
+import com.omarea.permissions.WriteSettings
 import com.omarea.ui.IntInputFilter
 import com.omarea.vaddin.IAppConfigAidlInterface
 import com.omarea.vtools.R
@@ -395,8 +395,8 @@ class ActivityAppDetails : AppCompatActivity() {
             app_details_hidenotice.isEnabled = false
         } else {
             app_details_hidenotice.setOnClickListener {
-                if (!NoticeListing().getPermission(this)) {
-                    NoticeListing().setPermission(this)
+                if (!NotificationListener().getPermission(this)) {
+                    NotificationListener().setPermission(this)
                     Toast.makeText(applicationContext, getString(R.string.scene_need_notic_listing), Toast.LENGTH_SHORT).show()
                     (it as Switch).isChecked = !it.isChecked
                     return@setOnClickListener

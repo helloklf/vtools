@@ -27,7 +27,7 @@ import com.omarea.dynamic.SceneMode
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.helper.AppListHelper
 import com.omarea.shared.helper.ShortcutHelper
-import com.omarea.shared.model.Appinfo
+import com.omarea.model.Appinfo
 import com.omarea.ui.FreezeAppAdapter
 import com.omarea.vtools.R
 import com.omarea.vtools.activitys.ActivityFreezeApps

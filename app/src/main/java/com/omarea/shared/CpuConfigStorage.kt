@@ -3,7 +3,7 @@ package com.omarea.shared
 import android.content.Context
 import android.widget.Toast
 import com.omarea.common.shared.FileWrite
-import com.omarea.shared.model.CpuStatus
+import com.omarea.model.CpuStatus
 import java.io.*
 
 /**

@@ -29,7 +29,7 @@ import com.omarea.common.ui.DialogHelper
 import com.omarea.shared.ConfigInstaller
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.Update
-import com.omarea.shell.CheckRootStatus
+import com.omarea.permissions.CheckRootStatus
 import com.omarea.shell.units.BackupRestoreUnit
 import com.omarea.shell.units.BatteryUnit
 import com.omarea.vtools.R

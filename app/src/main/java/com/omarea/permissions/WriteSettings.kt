@@ -1,4 +1,4 @@
-package com.omarea.shell
+package com.omarea.permissions
 
 import android.content.Context
 import android.content.Intent

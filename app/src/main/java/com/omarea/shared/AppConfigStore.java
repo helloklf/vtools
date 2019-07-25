@@ -5,7 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.omarea.shared.model.AppConfigInfo;
+import com.omarea.model.AppConfigInfo;
 
 import java.util.ArrayList;
 

@@ -17,8 +17,8 @@ import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.shared.CpuConfigStorage
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.helper.AccessibleServiceHelper
-import com.omarea.shared.model.CpuClusterStatus
-import com.omarea.shared.model.CpuStatus
+import com.omarea.model.CpuClusterStatus
+import com.omarea.model.CpuStatus
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils
 import com.omarea.shell.cpucontrol.ThermalControlUtils
 import com.omarea.vtools.R

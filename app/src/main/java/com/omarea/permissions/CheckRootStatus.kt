@@ -1,4 +1,4 @@
-package com.omarea.shell
+package com.omarea.permissions
 
 import android.Manifest
 import android.app.AlertDialog
@@ -11,6 +11,7 @@ import android.support.v4.content.PermissionChecker
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.shared.CommonCmds
+import com.omarea.shell.SysUtils
 import com.omarea.vtools.R
 
 /**
@@ -168,7 +169,7 @@ public class CheckRootStatus(var context: Context, private var next: Runnable? =
         // 最后的ROOT检测结果
         val lastCheckResult: Boolean
             get() {
-                return this.rootStatus
+                return rootStatus
             }
 
         public fun isMagisk(): Boolean {

@@ -12,7 +12,7 @@ import android.view.View
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.dynamic.SceneMode
 import com.omarea.shared.SpfConfig
-import com.omarea.shell.CheckRootStatus
+import com.omarea.permissions.CheckRootStatus
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_quick_start.*
 import java.lang.ref.WeakReference

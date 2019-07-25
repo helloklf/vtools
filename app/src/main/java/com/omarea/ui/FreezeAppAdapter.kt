@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.omarea.common.ui.OverScrollGridView
-import com.omarea.shared.model.Appinfo
+import com.omarea.model.Appinfo
 import com.omarea.vtools.R
 import java.util.*
 

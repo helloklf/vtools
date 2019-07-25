@@ -17,8 +17,8 @@ import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.shared.CommonCmds
 import com.omarea.shared.SpfConfig
-import com.omarea.shared.model.Appinfo
-import com.omarea.shell.CheckRootStatus
+import com.omarea.model.Appinfo
+import com.omarea.permissions.CheckRootStatus
 import com.omarea.vtools.R
 import java.io.File
 import java.util.*

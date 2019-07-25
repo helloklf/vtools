@@ -1,8 +1,7 @@
-package com.omarea.shared.model;
+package com.omarea.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by Hello on 2018/08/04.

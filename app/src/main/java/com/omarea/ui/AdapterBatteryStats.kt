@@ -11,7 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.omarea.dynamic.ModeList
 import com.omarea.shared.SpfConfig
-import com.omarea.shared.model.BatteryAvgStatus
+import com.omarea.model.BatteryAvgStatus
 import com.omarea.vtools.R
 import java.util.*
 

@@ -1,4 +1,4 @@
-package com.omarea.shared.model;
+package com.omarea.model;
 
 public class CpuCoreInfo {
     public String minFreq;
