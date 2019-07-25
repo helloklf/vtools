@@ -168,11 +168,6 @@ class FragmentConfig : Fragment() {
             tabIconHelper.updateHighlight()
         })
 
-        accu_switch.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
-        accu_switch.setOnClickListener {
-            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, (it as Switch).isChecked).commit()
-            reStartService()
-        }
         battery_monitor.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
         battery_monitor.setOnClickListener {
             globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, (it as Switch).isChecked).commit()

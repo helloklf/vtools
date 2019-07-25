@@ -484,20 +484,6 @@
                                 android:layout_height="match_parent"
                                 android:text="屏幕关闭5秒后，自动切换为省电模式，需要开启动态响应" />
 
-                            <Switch
-                                android:id="@+id/accu_switch"
-                                style="@style/textTitle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="20dp"
-                                android:text="精准切换" />
-
-                            <TextView
-                                style="@style/textSmall"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
-                                android:text="切换配置模式严格检查当前前台应用，避免悬浮窗抢占焦点导致意外的模式切换，但这会在频繁切换应用时增加耗电" />
                         </LinearLayout>
 
                         <LinearLayout style="@style/ListCardItem">

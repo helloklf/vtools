@@ -8,13 +8,10 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellAsync
 import com.omarea.shared.helper.*
-import com.omarea.shell.DumpTopAppliction
 import com.omarea.vtools.R
-import java.lang.ref.WeakReference
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -30,11 +27,9 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList() {
     private var lastMode = ""
     private var spfPowercfg = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
     private var spfGlobal = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-    private var dumpTopAppliction = DumpTopAppliction()
     private var ignoredList = ArrayList<String>()
     private var dyamicCore = false
     private var firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
-    private var accuSwitch = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
     private var batteryMonitro = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
     private var screenOn = false
     private var lastScreenOnOff: Long = 0
@@ -56,7 +51,6 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList() {
     private fun updateConfig() {
         lastMode = ""
         firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, BALANCE)
-        accuSwitch = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
         batteryMonitro = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
 
         initConfig()
@@ -249,38 +243,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList() {
         if (lastPackage == packageName || ignoredList.contains(packageName)) return
         if (lastPackage == null) lastPackage = "com.android.systemui"
 
-        if (accuSwitch)
-            DumpTopApplictionThread(dumpTopAppliction, packageName, this).start()
-        else
-            dumpSuccess(packageName)
-    }
-
-    /**
-     * 获取上层应用
-     */
-    private class DumpTopApplictionThread(
-            dumpTopAppliction: DumpTopAppliction,
-            packageName: String,
-            serviceHelper: ServiceHelper
-    ) : Thread() {
-        private var dumpTopAppliction: WeakReference<DumpTopAppliction>
-        private var packageName: WeakReference<String>
-        private var serviceHelper: WeakReference<ServiceHelper>
-        override fun run() {
-            val packageName = this.packageName.get()!!
-            if (dumpTopAppliction.get()!!.fromDumpsysWindow(packageName) == packageName) {
-                val serviceHelper = this.serviceHelper.get()
-                if (serviceHelper != null) {
-                    serviceHelper.dumpSuccess(packageName)
-                }
-            }
-        }
-
-        init {
-            this.dumpTopAppliction = WeakReference(dumpTopAppliction)
-            this.packageName = WeakReference(packageName)
-            this.serviceHelper = WeakReference(serviceHelper)
-        }
+        dumpSuccess(packageName)
     }
 
     fun onKeyDown(): Boolean {

@@ -40,7 +40,6 @@ public class SpfConfig {
     public static String GLOBAL_SPF_THEME = "app_theme";
     public static String GLOBAL_SPF_MAC = "wifi_mac";
     public static String GLOBAL_SPF_MAC_AUTOCHANGE = "wifi_mac_autochange";
-    public static String GLOBAL_SPF_ACCU_SWITCH = "power_config_accu_switch";
     public static String GLOBAL_SPF_BATTERY_MONITORY = "power_config_battery_monitor";
     public static String GLOBAL_SPF_POWERCFG_FIRST_MODE = "powercfg_first_mode";
     public static String GLOBAL_SPF_DYNAMIC_CONTROL = "dynamic_control";
