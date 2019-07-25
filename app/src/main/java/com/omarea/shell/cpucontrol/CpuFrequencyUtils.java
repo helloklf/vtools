@@ -1,14 +1,10 @@
 package com.omarea.shell.cpucontrol;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.widget.Toast;
-
 import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.common.shell.KernelProrp;
-import com.omarea.shell.SuDo;
 import com.omarea.shell.units.FileValueMap;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -140,7 +136,7 @@ public class CpuFrequencyUtils {
                 commands.add("echo " + minFrequency + " > " + Constants.scaling_min_freq.replace("cpu0", "cpu" + core));
             }
 
-            boolean success = SuDo.Companion.execCmdSync(commands);
+            boolean success = KeepShellPublic.INSTANCE.doCmdSync(commands);
             if (success) {
                 Toast.makeText(context, "OK!", Toast.LENGTH_SHORT).show();
             }
@@ -165,7 +161,7 @@ public class CpuFrequencyUtils {
                 commands.add("echo " + core + ":" + maxFrequency + "> /sys/module/msm_performance/parameters/cpu_max_freq");
             }
 
-            boolean success = SuDo.Companion.execCmdSync(commands);
+            boolean success = KeepShellPublic.INSTANCE.doCmdSync(commands);
             if (success) {
                 Toast.makeText(context, "OK!", Toast.LENGTH_SHORT).show();
             }
@@ -188,7 +184,7 @@ public class CpuFrequencyUtils {
                 commands.add("echo " + governor + " > " + Constants.scaling_governor.replace("cpu0", "cpu" + core));
             }
 
-            boolean success = SuDo.Companion.execCmdSync(commands);
+            boolean success = KeepShellPublic.INSTANCE.doCmdSync(commands);
             if (success) {
                 Toast.makeText(context, "OK!", Toast.LENGTH_SHORT).show();
             }
@@ -204,7 +200,7 @@ public class CpuFrequencyUtils {
         commands.add("chmod 0755 /sys/module/cpu_boost/parameters/input_boost_freq");
         commands.add("echo " + freqs + " > /sys/module/cpu_boost/parameters/input_boost_freq");
 
-        SuDo.Companion.execCmdSync(commands);
+        KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
     public static String getInputBoosterTime() {
@@ -216,7 +212,7 @@ public class CpuFrequencyUtils {
         commands.add("chmod 0755 /sys/module/cpu_boost/parameters/input_boost_ms");
         commands.add("echo " + time + " > /sys/module/cpu_boost/parameters/input_boost_ms");
 
-        SuDo.Companion.execCmdSync(commands);
+        KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
     public static boolean getCoreOnlineState(int coreIndex) {
@@ -230,7 +226,7 @@ public class CpuFrequencyUtils {
         }
         commands.add("chmod 0755 /sys/devices/system/cpu/cpu0/online".replace("cpu0", "cpu" + coreIndex));
         commands.add("echo " + (online ? "1" : "0") + " > /sys/devices/system/cpu/cpu0/online".replace("cpu0", "cpu" + coreIndex));
-        SuDo.Companion.execCmdSync(commands);
+        KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
     public static int getExynosHmpUP() {
@@ -249,7 +245,7 @@ public class CpuFrequencyUtils {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/kernel/hmp/up_threshold;");
         commands.add("echo " + up + " > /sys/kernel/hmp/up_threshold;");
-        SuDo.Companion.execCmdSync(commands);
+        KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
     public static int getExynosHmpDown() {
@@ -268,7 +264,7 @@ public class CpuFrequencyUtils {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/kernel/hmp/down_threshold;");
         commands.add("echo " + down + " > /sys/kernel/hmp/down_threshold;");
-        SuDo.Companion.execCmdSync(commands);
+        KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
     public static boolean getExynosBooster() {
@@ -280,7 +276,7 @@ public class CpuFrequencyUtils {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/kernel/hmp/boost");
         commands.add("echo " + (hotplug ? 1 : 0) + " > /sys/kernel/hmp/boost");
-        SuDo.Companion.execCmdSync(commands);
+        KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
     public static boolean getExynosHotplug() {
@@ -292,7 +288,7 @@ public class CpuFrequencyUtils {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/devices/system/cpu/cpuhotplug/enabled;");
         commands.add("echo " + (hotplug ? 1 : 0) + " > /sys/devices/system/cpu/cpuhotplug/enabled;");
-        SuDo.Companion.execCmdSync(commands);
+        KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
     public static int getCoreCount() {
@@ -344,7 +340,7 @@ public class CpuFrequencyUtils {
         commands.add("chmod 0664 " + Constants.sched_boost);
         commands.add("echo " + val + " > " + Constants.sched_boost);
 
-        boolean success = SuDo.Companion.execCmdSync(commands);
+        boolean success = KeepShellPublic.INSTANCE.doCmdSync(commands);
         if (success) {
             Toast.makeText(context, "OK!", Toast.LENGTH_SHORT).show();
         }
@@ -402,7 +398,7 @@ public class CpuFrequencyUtils {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/devfreq/min_freq;");
         commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq;");
-        SuDo.Companion.execCmdSync(commands);
+        KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
     public static String getAdrenoGPUMaxFreq() {
@@ -413,7 +409,7 @@ public class CpuFrequencyUtils {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/devfreq/max_freq;");
         commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq;");
-        SuDo.Companion.execCmdSync(commands);
+        KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
     public static String getAdrenoGPUGovernor() {
@@ -424,7 +420,7 @@ public class CpuFrequencyUtils {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/devfreq/governor;");
         commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/devfreq/governor;");
-        SuDo.Companion.execCmdSync(commands);
+        KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
     public static String getAdrenoGPUMinPowerLevel() {
@@ -435,7 +431,7 @@ public class CpuFrequencyUtils {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/min_pwrlevel;");
         commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/min_pwrlevel;");
-        SuDo.Companion.execCmdSync(commands);
+        KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
     public static String getAdrenoGPUMaxPowerLevel() {
@@ -446,7 +442,7 @@ public class CpuFrequencyUtils {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/max_pwrlevel;");
         commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/max_pwrlevel;");
-        SuDo.Companion.execCmdSync(commands);
+        KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
     public static String getAdrenoGPUDefaultPowerLevel() {
@@ -457,7 +453,7 @@ public class CpuFrequencyUtils {
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/default_pwrlevel;");
         commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/default_pwrlevel;");
-        SuDo.Companion.execCmdSync(commands);
+        KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
     public static String[] getAdrenoGPUPowerLevels() {

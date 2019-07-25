@@ -2,10 +2,9 @@ package com.omarea.shell.cpucontrol;
 
 import android.content.Context;
 import android.widget.Toast;
-
+import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.common.shell.KernelProrp;
 import com.omarea.common.shell.RootFile;
-import com.omarea.shell.SuDo;
 
 import java.util.ArrayList;
 
@@ -34,7 +33,7 @@ public class ThermalControlUtils {
         commands.add("chmod 0664 " + Constants.thermal_core_control);
         commands.add("echo " + val + " > " + Constants.thermal_core_control);
 
-        boolean success = SuDo.Companion.execCmdSync(commands);
+        boolean success = KeepShellPublic.INSTANCE.doCmdSync(commands);
         if (success) {
             Toast.makeText(context, "OK!", Toast.LENGTH_SHORT).show();
         }
@@ -46,7 +45,7 @@ public class ThermalControlUtils {
         commands.add("chmod 0664 " + Constants.thermal_vdd_restriction);
         commands.add("echo " + val + " > " + Constants.thermal_vdd_restriction);
 
-        boolean success = SuDo.Companion.execCmdSync(commands);
+        boolean success = KeepShellPublic.INSTANCE.doCmdSync(commands);
         if (success) {
             Toast.makeText(context, "OK!", Toast.LENGTH_SHORT).show();
         }
@@ -58,7 +57,7 @@ public class ThermalControlUtils {
         commands.add("chmod 0664 " + Constants.thermal_parameters);
         commands.add("echo " + val + " > " + Constants.thermal_parameters);
 
-        boolean success = SuDo.Companion.execCmdSync(commands);
+        boolean success = KeepShellPublic.INSTANCE.doCmdSync(commands);
         if (success) {
             Toast.makeText(context, "OK!", Toast.LENGTH_SHORT).show();
         }

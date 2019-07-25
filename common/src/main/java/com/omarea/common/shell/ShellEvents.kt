@@ -12,5 +12,4 @@ open class ShellEvents {
     public var PROCESS_EVENT_CONTENT = 1;
     public var PROCESS_EVENT_ERROR_CONTENT = 2;
     public var PROCESS_EVENT_EXIT = -1;
-
 }
