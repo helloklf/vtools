@@ -13,14 +13,12 @@ public class SpfConfig {
     public static String CHARGE_SPF_QC_LIMIT = "charge_limit_ma"; //int
     public static String CHARGE_SPF_BP = "bp"; //bool
     public static String CHARGE_SPF_BP_LEVEL = "bp_level"; //int
-    public static String CHARGE_SPF_BP_SPEEDLIMIT = "bp_use_limit"; //int
 
     public static String BOOSTER_SPF_CFG_SPF = "boostercfg2";
     public static String DATA = "data";
     public static String WIFI = "wifi";
     public static String NFC = "nfc";
     public static String GPS = "gps";
-    public static String HOTSPOT = "hotspot";
     public static String FORCEDOZE = "doze";
     public static String POWERSAVE = "powersave";
 

@@ -40,7 +40,7 @@ import java.io.File
 
 class ActivityAppDetails : AppCompatActivity() {
     var app = ""
-    lateinit var policyControl: PolicyControl
+    lateinit var immersivePolicyControl: ImmersivePolicyControl
     lateinit var appConfigInfo: AppConfigInfo
     private var dynamicCpu: Boolean = false
     private var _result = RESULT_CANCELED
@@ -284,7 +284,7 @@ class ActivityAppDetails : AppCompatActivity() {
             app_freez_config.visibility = View.GONE
         }
 
-        policyControl = PolicyControl(contentResolver)
+        immersivePolicyControl = ImmersivePolicyControl(contentResolver)
 
         dynamicCpu = configInstaller.dynamicSupport(this.applicationContext) || configInstaller.configInstalled()
 
@@ -346,11 +346,11 @@ class ActivityAppDetails : AppCompatActivity() {
             }
             val isSelected = (it as Switch).isChecked
             if (isSelected && app_details_hidestatus.isChecked) {
-                policyControl.hideAll(app)
+                immersivePolicyControl.hideAll(app)
             } else if (isSelected) {
-                policyControl.hideNavBar(app)
+                immersivePolicyControl.hideNavBar(app)
             } else {
-                policyControl.showNavBar(app)
+                immersivePolicyControl.showNavBar(app)
             }
         }
         app_details_hidestatus.setOnClickListener {
@@ -362,11 +362,11 @@ class ActivityAppDetails : AppCompatActivity() {
             }
             val isSelected = (it as Switch).isChecked
             if (isSelected && app_details_hidenav.isChecked) {
-                policyControl.hideAll(app)
+                immersivePolicyControl.hideAll(app)
             } else if (isSelected) {
-                policyControl.hideStatusBar(app)
+                immersivePolicyControl.hideStatusBar(app)
             } else {
-                policyControl.showStatusBar(app)
+                immersivePolicyControl.showStatusBar(app)
             }
         }
 
@@ -577,12 +577,12 @@ class ActivityAppDetails : AppCompatActivity() {
         val firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeList.BALANCE))
         app_details_dynamic.text = ModeList.getModName(powercfg.getString(app, firstMode))
 
-        if (policyControl.isFullScreen(app)) {
+        if (immersivePolicyControl.isFullScreen(app)) {
             app_details_hidenav.isChecked = true
             app_details_hidestatus.isChecked = true
         } else {
-            app_details_hidenav.isChecked = policyControl.isHideNavbarOnly(app)
-            app_details_hidestatus.isChecked = policyControl.isHideStatusOnly(app)
+            app_details_hidenav.isChecked = immersivePolicyControl.isHideNavbarOnly(app)
+            app_details_hidestatus.isChecked = immersivePolicyControl.isHideStatusOnly(app)
         }
 
         app_details_hidebtn.isChecked = appConfigInfo.disButton

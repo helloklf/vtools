@@ -11,7 +11,6 @@ import android.support.v4.app.NotificationManagerCompat
  */
 
 class NoticeListing {
-
     fun getPermission(context: Context): Boolean {
         val packageNames = NotificationManagerCompat.getEnabledListenerPackages(context);
         if (packageNames.contains(context.getPackageName())) {

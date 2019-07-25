@@ -16,7 +16,7 @@ import com.omarea.vtools.R
 import java.util.*
 
 class AdapterBatteryStats(private val context: Context, private val list: ArrayList<BatteryAvgStatus>?) : BaseAdapter() {
-    private var accuMode: Boolean = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_ACCU_SWITCH, false)
+    private var accuMode: Boolean = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
     private var timerRate: Int
     override fun getCount(): Int {
         return list?.size ?: 0

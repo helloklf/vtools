@@ -13,7 +13,7 @@ import java.nio.charset.Charset
 /**
  * Created by Hello on 2017/5/24.
  */
-class CrashHandler constructor() : Thread.UncaughtExceptionHandler {
+class CrashHandler : Thread.UncaughtExceptionHandler {
     private var mContext: Context? = null
     private var mDefaultHandler: Thread.UncaughtExceptionHandler? = null
 

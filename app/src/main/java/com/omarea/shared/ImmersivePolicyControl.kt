@@ -7,7 +7,7 @@ import android.provider.Settings
  * Created by SYSTEM on 2018/07/17.
  */
 
-class PolicyControl(private var contentResolver: ContentResolver) {
+class ImmersivePolicyControl(private var contentResolver: ContentResolver) {
     val NAV = "immersive.navigation"
     val STATUS = "immersive.status"
     val FULL = "immersive.full"

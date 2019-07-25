@@ -35,7 +35,14 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList() {
     private var lastScreenOnOff: Long = 0
     //屏幕关闭后切换网络延迟（ms）
     private val SCREEN_OFF_SWITCH_NETWORK_DELAY: Long = 25000
-    private var screenHandler = ScreenEventHandler({ onScreenOff() }, { onScreenOn() })
+    private var reciverLock = ReciverLock(context, object : ScreenEventHandler {
+        override fun onScreenOff() {
+            _onScreenOff()
+        }
+        override fun onScreenOn() {
+            _onScreenOn()
+        }
+    })
     private var handler = Handler(Looper.getMainLooper())
     private var notifyHelper = NotifyHelper(context, spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))
     private val sceneMode = SceneMode.getInstanceOrInit(context.contentResolver, AppConfigStore(context))!!
@@ -104,17 +111,17 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList() {
     /**
      * 屏幕关闭时执行
      */
-    private fun onScreenOff() {
+    private fun _onScreenOff() {
         if (screenOn == false)
             return
         screenOn = false
         lastScreenOnOff = System.currentTimeMillis()
 
-        screenHandler.postDelayed({
+        handler.postDelayed({
             onScreenOffCloseNetwork()
         }, SCREEN_OFF_SWITCH_NETWORK_DELAY + 1000)
-        // TODO: 关闭屏幕后清理后台
-        screenHandler.postDelayed({
+
+        handler.postDelayed({
             if (!screenOn)
                 stopTimer()
             notifyHelper.hideNotify()
@@ -143,7 +150,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList() {
     /**
      * 点亮屏幕且解锁后执行
      */
-    private fun onScreenOn() {
+    private fun _onScreenOn() {
         lastScreenOnOff = System.currentTimeMillis()
         if (screenOn == true) return
 
@@ -237,7 +244,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList() {
      */
     fun onFocusAppChanged(packageName: String) {
         if (!screenOn && screenState.isScreenOn()) {
-            onScreenOn() // 如果切换应用时发现屏幕出于开启状态 而记录的状态是关闭，通知开启
+            _onScreenOn() // 如果切换应用时发现屏幕出于开启状态 而记录的状态是关闭，通知开启
         }
 
         if (lastPackage == packageName || ignoredList.contains(packageName)) return
@@ -253,7 +260,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList() {
     fun onInterrupt() {
         sceneMode.clearState()
         notifyHelper.hideNotify()
-        ReciverLock.unRegister(context)
+        reciverLock.unRegister()
         destroyKeepShell()
         keepShellAsync2.tryExit()
         stopTimer()
@@ -273,7 +280,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList() {
         // 添加强制忽略列表
         ignoredList.addAll(context.resources.getStringArray(R.array.powercfg_force_igoned))
         // 添加输入法到忽略列表
-        ignoredList.addAll(InputHelper(context).getInputMethods())
+        ignoredList.addAll(InputMethodHelper(context).getInputMethods())
 
         if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)) {
             if (configInstaller.configInstalled()) {
@@ -300,7 +307,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeList() {
         notifyHelper.notify()
 
         // 监听锁屏状态变化
-        ReciverLock.autoRegister(context, screenHandler)
+        reciverLock.autoRegister()
         // 禁用SeLinux
         if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false)) {
             keepShellAsync2.doCmd(CommonCmds.DisableSELinux)

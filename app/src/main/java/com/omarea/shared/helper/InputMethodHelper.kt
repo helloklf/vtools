@@ -8,7 +8,10 @@ import android.view.inputmethod.InputMethodManager
  * Created by Hello on 2018/01/23.
  */
 
-internal class InputHelper(private var context: Context) {
+internal class InputMethodHelper(private var context: Context) {
+    /**
+     * 获取系统已安装的输入法
+     */
     fun getInputMethods(): ArrayList<String> {
         val ignoredList = arrayListOf<String>()
         val im = (context.getSystemService(Context.INPUT_METHOD_SERVICE)) as InputMethodManager?
