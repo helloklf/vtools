@@ -12,6 +12,7 @@ import android.support.v4.app.NotificationCompat
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KernelProrp
+import com.omarea.dynamic.ModeList
 import com.omarea.shared.*
 import com.omarea.shell.Props
 import com.omarea.shell.cpucontrol.CpuFrequencyUtils

@@ -1,4 +1,4 @@
-package com.omarea.shared
+package com.omarea.dynamic
 
 import com.omarea.common.shell.KeepShellAsync
 import com.omarea.common.shell.KeepShellPublic
@@ -96,7 +96,7 @@ open class ModeList {
     }
 
     internal fun executePowercfgMode(mode: String): ModeList {
-        keepShellExec("sh ${POWER_CFG_PATH} " + mode)
+        keepShellExec("sh $POWER_CFG_PATH " + mode)
         setCurrentPowercfg(mode)
         return this
     }

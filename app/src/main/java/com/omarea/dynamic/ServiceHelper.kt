@@ -1,4 +1,4 @@
-package com.omarea.shared
+package com.omarea.dynamic
 
 import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint
@@ -10,6 +10,10 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellAsync
+import com.omarea.shared.AppConfigStore
+import com.omarea.shared.CommonCmds
+import com.omarea.shared.ConfigInstaller
+import com.omarea.shared.SpfConfig
 import com.omarea.shared.helper.*
 import com.omarea.vtools.R
 import java.util.*

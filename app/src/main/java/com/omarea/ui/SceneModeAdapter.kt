@@ -15,7 +15,7 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.omarea.common.ui.OverScrollListView
-import com.omarea.shared.ModeList
+import com.omarea.dynamic.ModeList
 import com.omarea.shared.model.Appinfo
 import com.omarea.vtools.R
 import java.io.File

@@ -4,7 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.widget.Toast
 import com.omarea.shared.ConfigInstaller
-import com.omarea.shared.ModeList
+import com.omarea.dynamic.ModeList
 import com.omarea.vtools.R
 
 class ActivityShortcut : Activity() {

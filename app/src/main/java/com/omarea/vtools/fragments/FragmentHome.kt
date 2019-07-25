@@ -20,7 +20,7 @@ import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.shared.ConfigInstaller
-import com.omarea.shared.ModeList
+import com.omarea.dynamic.ModeList
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shared.model.CpuCoreInfo

@@ -24,6 +24,7 @@ import android.widget.Toast
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
+import com.omarea.dynamic.ModeList
 import com.omarea.shared.*
 import com.omarea.shared.helper.AccessibleServiceHelper
 import com.omarea.shared.helper.ShortcutHelper

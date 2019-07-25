@@ -23,7 +23,7 @@ import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.shared.AppConfigStore
 import com.omarea.shared.FreezeAppIconManager
-import com.omarea.shared.SceneMode
+import com.omarea.dynamic.SceneMode
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.helper.AppListHelper
 import com.omarea.shared.helper.ShortcutHelper

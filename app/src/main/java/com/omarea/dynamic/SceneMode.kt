@@ -1,10 +1,11 @@
-package com.omarea.shared
+package com.omarea.dynamic
 
 import android.content.ContentResolver
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import com.omarea.common.shell.KeepShellPublic
+import com.omarea.shared.AppConfigStore
 import com.omarea.shared.helper.LocationHelper
 import com.omarea.shared.model.AppConfigInfo
 

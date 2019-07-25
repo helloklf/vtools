@@ -4,9 +4,8 @@ import android.content.ContentResolver
 import android.provider.Settings
 
 /**
- * Created by SYSTEM on 2018/07/17.
+ * 沉浸式策略设置
  */
-
 class ImmersivePolicyControl(private var contentResolver: ContentResolver) {
     val NAV = "immersive.navigation"
     val STATUS = "immersive.status"

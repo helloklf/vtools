@@ -5,6 +5,7 @@ import android.util.Log
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.RootFile
+import com.omarea.dynamic.ModeList
 import com.omarea.shell.Platform
 import java.nio.charset.Charset
 

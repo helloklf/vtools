@@ -10,7 +10,7 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import com.omarea.common.shell.KeepShellPublic
-import com.omarea.shared.SceneMode
+import com.omarea.dynamic.SceneMode
 import com.omarea.shared.SpfConfig
 import com.omarea.shell.CheckRootStatus
 import com.omarea.vtools.R

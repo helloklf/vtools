@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import com.omarea.shared.ModeList
+import com.omarea.dynamic.ModeList
 import com.omarea.shared.SpfConfig
 import com.omarea.shared.model.BatteryAvgStatus
 import com.omarea.vtools.R

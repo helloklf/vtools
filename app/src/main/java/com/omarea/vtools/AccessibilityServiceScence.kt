@@ -18,7 +18,7 @@ import android.widget.Toast
 import com.omarea.shared.AppConfigStore
 import com.omarea.shared.AutoClick
 import com.omarea.shared.CrashHandler
-import com.omarea.shared.ServiceHelper
+import com.omarea.dynamic.ServiceHelper
 
 /**
  * Created by helloklf on 2016/8/27.

@@ -1,4 +1,4 @@
-package com.omarea.shared
+package com.omarea.dynamic
 
 import android.content.ComponentName
 import android.content.Context
@@ -9,6 +9,8 @@ import android.os.Build
 import android.util.Log
 import com.omarea.common.shell.KeepShellAsync
 import com.omarea.common.shell.KeepShellPublic
+import com.omarea.shared.AppConfigStore
+import com.omarea.shared.SpfConfig
 import com.omarea.shared.helper.LocationHelper
 
 
