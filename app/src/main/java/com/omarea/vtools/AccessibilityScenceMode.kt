@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Handler
 import android.util.Log
@@ -33,6 +34,7 @@ class AccessibilityScenceMode : AccessibilityService() {
     private var eventViewClick = false
     private var sceneConfigChanged: BroadcastReceiver? = null
     private var lastPackageName = ""
+    private var isLandscapf = false
 
     /*
     override fun onCreate() {
@@ -70,6 +72,25 @@ class AccessibilityScenceMode : AccessibilityService() {
     }
 
     internal var appSwitchHandler: AppSwitchHandler? = null
+
+
+    /**
+     * 屏幕配置改变（旋转、分辨率更改、DPI更改等）
+     */
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        if (newConfig != null) {
+            onScreenConfigurationChanged(newConfig)
+        }
+    }
+
+    private fun onScreenConfigurationChanged(newConfig: Configuration) {
+        if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            isLandscapf = false
+        } else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            isLandscapf = true
+        }
+    }
 
     private fun updateConfig() {
         val spf = getSharedPreferences("adv", Context.MODE_PRIVATE)
@@ -117,6 +138,9 @@ class AccessibilityScenceMode : AccessibilityService() {
     }
 
     public override fun onServiceConnected() {
+        // 获取屏幕方向
+        onScreenConfigurationChanged(this.resources.configuration)
+
         serviceIsConnected = true
         updateConfig()
         if (sceneConfigChanged == null) {
@@ -132,7 +156,6 @@ class AccessibilityScenceMode : AccessibilityService() {
         if (appSwitchHandler == null)
             appSwitchHandler = AppSwitchHandler(this)
     }
-
 
     fun topAppPackageName(): String {
         var packageName = "";
@@ -162,7 +185,6 @@ class AccessibilityScenceMode : AccessibilityService() {
         return packageName;
     }
 
-
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         try {
             if (event.packageName == null || event.className == null)
@@ -172,6 +194,12 @@ class AccessibilityScenceMode : AccessibilityService() {
             if (packageName == "android" || packageName == "com.android.systemui") {
                 return
             }
+
+            // 横屏时屏蔽 QQ、微信事件，因为游戏模式下通常会在横屏使用悬浮窗打开QQ 微信
+            if (isLandscapf && (packageName == "com.tencent.mobileqq" || packageName == "com.tencent.mm")) {
+                return
+            }
+
             if (packageName.contains("packageinstaller")) {
                 if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity")
                     return
