@@ -251,6 +251,11 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
         dumpSuccess(packageName)
     }
 
+    fun isIgnoredApp(packageName: String, isLandscapf: Boolean): Boolean {
+        // 排除列表 || 横屏时屏蔽 QQ、微信事件，因为游戏模式下通常会在横屏使用悬浮窗打开QQ 微信
+        return ignoredList.contains(packageName) || (isLandscapf && (packageName == "com.tencent.mobileqq" || packageName == "com.tencent.mm"))
+    }
+
     fun onKeyDown(): Boolean {
         return sceneMode.onKeyDown()
     }

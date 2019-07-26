@@ -3,6 +3,7 @@
     <string-array name="powercfg_force_igoned">
         <item>android</item>
         <item>com.android.systemui</item>
+        <item>com.miui.freeform</item>
         <item>com.omarea.vtools</item>
         <item>com.miui.touchassistant</item>
         <item>com.miui.contentextension</item>

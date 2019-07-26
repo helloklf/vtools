@@ -74,7 +74,11 @@ class AutoClick {
         }
     }
 
-    fun miuiUsbInstallAutoClick(event: AccessibilityEvent) {
+    fun miuiUsbInstallAutoClick(context: Context, event: AccessibilityEvent) {
+        if (!context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+                        .getBoolean(SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false) || event.source == null)
+            return
+
         val next2Nodes = event.source.findAccessibilityNodeInfosByText("继续安装")
         if (next2Nodes != null && !next2Nodes.isEmpty()) {
             var node: AccessibilityNodeInfo

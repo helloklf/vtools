@@ -219,6 +219,7 @@
 
         <service
             android:name=".AccessibilityScenceMode"
+
             android:label="Scene - 场景模式"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>

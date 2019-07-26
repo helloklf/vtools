@@ -16,10 +16,10 @@ import android.view.KeyEvent
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityWindowInfo
 import android.widget.Toast
+import com.omarea.scene_mode.AppSwitchHandler
 import com.omarea.store.AppConfigStore
 import com.omarea.utils.AutoClick
 import com.omarea.utils.CrashHandler
-import com.omarea.scene_mode.AppSwitchHandler
 
 /**
  * Created by helloklf on 2016/8/27.
@@ -90,6 +90,7 @@ class AccessibilityScenceMode : AccessibilityService() {
         } else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             isLandscapf = true
         }
+        Log.d("ConfigurationChanged", "$isLandscapf")
     }
 
     private fun updateConfig() {
@@ -191,31 +192,37 @@ class AccessibilityScenceMode : AccessibilityService() {
                 return
 
             var packageName = event.packageName.toString()
-            if (packageName == "android" || packageName == "com.android.systemui") {
+            // com.miui.freeform 是miui的应用多窗口（快速回复、游戏模式QQ微信小窗口）管理器
+            if (packageName == "android" || packageName == "com.android.systemui" || packageName == "com.miui.freeform") {
                 return
             }
-
             // 横屏时屏蔽 QQ、微信事件，因为游戏模式下通常会在横屏使用悬浮窗打开QQ 微信
             if (isLandscapf && (packageName == "com.tencent.mobileqq" || packageName == "com.tencent.mm")) {
                 return
             }
 
-            if (packageName.contains("packageinstaller")) {
-                if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity")
-                    return
+            /*
+             if (appSwitchHandler!!.isIgnoredApp(packageName, isLandscapf)) {
+                 return
+             }
+            */
 
-                if (flagRetriveWindow) {
+            if (flagRetriveWindow) {
+                if (packageName.contains("packageinstaller")) {
+                    if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity")
+                        return
+
                     try {
                         AutoClick().packageinstallerAutoClick(this.applicationContext, event)
                     } catch (ex: Exception) {
                     }
+                } else if (packageName == "com.miui.securitycenter") {
+                    try {
+                        AutoClick().miuiUsbInstallAutoClick(this.applicationContext, event)
+                    } catch (ex: Exception) {
+                    }
+                    return
                 }
-            } else if (packageName == "com.miui.securitycenter") {
-                try {
-                    AutoClick().miuiUsbInstallAutoClick(event)
-                } catch (ex: Exception) {
-                }
-                return
             }
 
             // 针对一加部分系统的修复
@@ -230,7 +237,7 @@ class AccessibilityScenceMode : AccessibilityService() {
                 } else if (windows_.size > 1) {
                     // Log.d("onAccessibilityEvent", ">>>" + event.contentChangeTypes)
                     var lastWindow: AccessibilityWindowInfo? = null
-                    val effectiveWindows =  windows_.filter {
+                    val effectiveWindows = windows_.filter {
                         (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && it.isInPictureInPictureMode)) && (it.type == AccessibilityWindowInfo.TYPE_APPLICATION)
                     }.sortedBy { it.layer }
 
