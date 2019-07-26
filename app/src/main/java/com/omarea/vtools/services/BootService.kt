@@ -15,6 +15,7 @@ import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KernelProrp
 import com.omarea.scene_mode.ModeConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
+import com.omarea.scene_mode.SceneMode
 import com.omarea.utils.*
 import com.omarea.shell_utils.PropsUtils
 import com.omarea.shell_utils.CpuFrequencyUtil
@@ -249,8 +250,11 @@ class BootService : IntentService("vtools-boot") {
         }
 
         updateNotification(getString(R.string.boot_freeze))
+        val launchedFreezeApp = SceneMode.getLaunchedFreezeApp()
         for (item in AppConfigStore(context).freezeAppList) {
-            keepShell.doCmdSync("pm disable " + item)
+            if (!launchedFreezeApp.contains(item)) {
+                keepShell.doCmdSync("pm disable " + item)
+            }
         }
 
         keepShell.tryExit()

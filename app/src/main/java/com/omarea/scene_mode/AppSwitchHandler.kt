@@ -199,26 +199,23 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
 
     //自动切换模式
     private fun autoToggleMode(packageName: String?) {
-        if (packageName == null || packageName == lastModePackage)
-            return
-        if (!dyamicCore) {
-            setCurrentPowercfgApp(packageName)
-            updateModeNofity()
-            return
-        }
+        if (packageName != null && packageName != lastModePackage) {
+            if (dyamicCore) {
+                val mode = spfPowercfg.getString(packageName, firstMode)
+                if (mode != IGONED) {
+                    if (lastMode != mode) {
+                        toggleConfig(mode)
+                    }
 
-        val mode = spfPowercfg.getString(packageName, firstMode)
-        when (mode) {
-            IGONED -> return
-            else -> {
-                if (lastMode != mode) {
-                    toggleConfig(mode)
+                    lastModePackage = packageName
+                    setCurrentPowercfgApp(packageName)
+                    updateModeNofity()
                 }
-                lastModePackage = packageName
+            } else {
+                setCurrentPowercfgApp(packageName)
+                updateModeNofity()
             }
         }
-        setCurrentPowercfgApp(packageName)
-        updateModeNofity()
     }
 
     private fun toggleConfig(mode: String) {
@@ -315,8 +312,6 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
 
         Thread(Runnable {
             initConfig()
-            // 启动完成后初始化模式状态
-            Thread.sleep(5 * 1000)
         }).start()
 
         sceneConfigChanged = object : BroadcastReceiver() {

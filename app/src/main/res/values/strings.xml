@@ -1,13 +1,13 @@
 <resources>
     <integer name="opacity">0</integer>
     <string-array name="powercfg_force_igoned">
-        <item>com.miui.securitycenter</item>
         <item>android</item>
         <item>com.android.systemui</item>
         <item>com.omarea.vtools</item>
         <item>com.miui.touchassistant</item>
         <item>com.miui.contentextension</item>
         <item>com.miui.systemAdSolution</item>
+        <item>com.miui.securitycenter</item>
     </string-array>
     <string-array name="powercfg_igoned">
         <item>com.omarea.gesture</item>
@@ -407,20 +407,21 @@
     <string name="freeze_enable_completed">√ 已解冻应用</string>
     <string name="freeze_shortcut_add_success">创建完成</string>
     <string name="freeze_shortcut_add_fail">创建失败</string>
-    <string name="freeze_add_app">添加应用</string>
-    <string name="freeze_shortcut_rebuild">重建快捷方式</string>
+    <string name="freeze_add_app">添加偏见</string>
+    <string name="freeze_batch_add_wran">批量添加快捷方式可能会失败，你可以长按应用图标，发送单个快捷方式到桌面！</string>
+    <string name="freeze_shortcut_rebuild">向桌面批量添加快捷方式</string>
     <string name="freeze_enable_all">全部解冻</string>
     <string name="freeze_disable_all">全部冻结</string>
     <string name="freeze_hidden_entrance">从桌面隐藏本界面入口</string>
     <string name="freeze_show_entrance">添加本界面入口到桌面</string>
-    <string name="freeze_clear_all">清空全部</string>
+    <string name="freeze_clear_all">清空偏见列表</string>
     <string name="freeze_entrance_changed">√ 图标显示状态已切换</string>
     <string name="freeze_shortcut_delete_desc">你可能需要手动删除已添加的快捷方式！</string>
     <string name="freeze_open">打开</string>
     <string name="freeze_diasble">冻结</string>
     <string name="freeze_enable">解冻</string>
-    <string name="freeze_remove">移除</string>
-    <string name="freeze_remove_uninstall">移除并卸载</string>
+    <string name="freeze_remove">取消偏见</string>
+    <string name="freeze_remove_uninstall">卸载应用</string>
     <string name="swap_zram_compact_algorithm">压缩算法</string>
     <string name="wallpaper_rw_permission">需要“读写本地存储”的权限才能使用系统壁纸作为软件背景</string>
 

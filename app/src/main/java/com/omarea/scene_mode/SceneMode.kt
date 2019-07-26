@@ -39,6 +39,10 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
             return instance!!
         }
 
+        fun getLaunchedFreezeApp(): List<String> {
+            return freezList.map { it.packageName }
+        }
+
         fun setFreezeAppLeaveTime(packageName: String) {
             val currentHistory = removeFreezeAppHistory(packageName)
 
