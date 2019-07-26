@@ -10,6 +10,7 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellAsync
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.store.AppConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.utils.*
@@ -17,12 +18,11 @@ import com.omarea.vtools.R
 import java.util.*
 import kotlin.collections.ArrayList
 
-
 /**
  *
  * Created by helloklf on 2016/10/1.
  */
-class ServiceHelper(private var context: AccessibilityService) : ModeSwitcher() {
+class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher() {
     private var systemScene = SystemScene(context)
     private var lastPackage: String? = null
     private var lastModePackage: String? = "com.system.ui"
@@ -172,8 +172,6 @@ class ServiceHelper(private var context: AccessibilityService) : ModeSwitcher() 
         systemScene.onScreenOn()
     }
 
-    private var keepShellAsync2: KeepShellAsync = KeepShellAsync(context)
-
     /**
      * 更新通知
      */
@@ -265,7 +263,6 @@ class ServiceHelper(private var context: AccessibilityService) : ModeSwitcher() 
         notifyHelper.hideNotify()
         reciverLock.unRegister()
         destroyKeepShell()
-        keepShellAsync2.tryExit()
         stopTimer()
         if (sceneConfigChanged != null) {
             context.unregisterReceiver(sceneConfigChanged)
@@ -289,7 +286,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeSwitcher() 
             if (configInstaller.configInstalled()) {
                 dyamicCore = true
                 ModeConfigInstaller().configCodeVerify()
-                keepShellAsync2.doCmd(CommonCmds.ExecuteConfig)
+                KeepShellPublic.doCmdSync(CommonCmds.ExecuteConfig)
             } else {
                 if (configInstaller.dynamicSupport(context)) {
                     ModeConfigInstaller().installPowerConfig(context, CommonCmds.ExecuteConfig, false)
@@ -313,7 +310,7 @@ class ServiceHelper(private var context: AccessibilityService) : ModeSwitcher() 
         reciverLock.autoRegister()
         // 禁用SeLinux
         if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false)) {
-            keepShellAsync2.doCmd(CommonCmds.DisableSELinux)
+            KeepShellPublic.doCmdSync(CommonCmds.DisableSELinux)
         }
 
         Thread(Runnable {

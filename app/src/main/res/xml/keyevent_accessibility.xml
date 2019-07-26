@@ -9,7 +9,7 @@
     android:description="@string/accessibility_keyevent_description"
     android:notificationTimeout="0"
     android:packageNames="com.android.systemui"
-    android:settingsActivity="com.omarea.vtools.activitys.ActivityAccessibilityKeyEventSettings" /><!--<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:settingsActivity="com.omarea.vtools.activitys.AccessibilityKeySettings" /><!--<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
     android:accessibilityEventTypes="typeViewClicked|typeViewLongClicked|typeWindowStateChanged|typeAllMask|typeTouchInteractionStart|typeTouchInteractionEnd"
     android:accessibilityFeedbackType="feedbackGeneric"
     android:accessibilityFlags="flagDefault|flagRequestFilterKeyEvents|flagRetrieveInteractiveWindows|flagRequestAccessibilityButton"

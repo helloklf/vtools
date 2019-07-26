@@ -43,6 +43,12 @@ class CrashHandler : Thread.UncaughtExceptionHandler {
         } catch (ex: Exception) {
 
         }
+        mContext?.run {
+            val serviceHelper = AccessibleServiceHelper()
+            if (serviceHelper.sceneModeRunning(mContext!!)) {
+                serviceHelper.stopSceneModeService(mContext!!)
+            }
+        }
         System.exit(0)
     }
 }

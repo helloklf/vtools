@@ -1,14 +1,14 @@
 package com.omarea.shell_utils
 
-import android.content.Context
 import com.omarea.common.shell.KeepShellPublic
+import java.lang.StringBuilder
 
 /**
  * Created by Hello on 2018/06/03.
  */
 
 class AccessibilityServiceUtils {
-    fun strartService(context: Context, serviceName: String): Boolean {
+    fun strartService(serviceName: String): Boolean {
         return KeepShellPublic.doCmdSync(
                 "services=`settings get secure enabled_accessibility_services`;\n" +
                         "service='$serviceName';\n" +
@@ -25,5 +25,23 @@ class AccessibilityServiceUtils {
                         "fi\n" +
                         "settings put secure accessibility_enabled 1;\n"
         ) != "error"
+    }
+
+    fun stopService(serviceName: String): Boolean {
+        val servicesStr = KeepShellPublic.doCmdSync("settings get secure enabled_accessibility_services")
+        if (servicesStr.contains(serviceName)) {
+            val serviceBuilder = StringBuilder()
+            val services = servicesStr.split(":")
+            for (service in services) {
+                if (service != serviceName) {
+                    if (serviceBuilder.length > 0) {
+                        serviceBuilder.append(":")
+                    }
+                    serviceBuilder.append(service)
+                }
+            }
+            KeepShellPublic.doCmdSync("settings put secure enabled_accessibility_services $serviceBuilder\nsettings put secure accessibility_enabled 1")
+        }
+        return true
     }
 }

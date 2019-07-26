@@ -16,7 +16,7 @@ import com.omarea.vtools.popup.FloatVitualTouchBar
 /**
  * Created by helloklf on 2016/8/27.
  */
-class AccessibilityServiceSceneKeyEvent : AccessibilityService() {
+class AccessibilityKey : AccessibilityService() {
     override fun onInterrupt() {
     }
 

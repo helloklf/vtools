@@ -337,7 +337,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_additional -> fragment = FragmentAddin.createPage()
             R.id.nav_keyevent -> {
                 try {
-                    val intent = Intent(this, ActivityAccessibilityKeyEventSettings::class.java)
+                    val intent = Intent(this, AccessibilityKeySettings::class.java)
                     startActivity(intent)
                 } catch (ex: Exception) {
                 }

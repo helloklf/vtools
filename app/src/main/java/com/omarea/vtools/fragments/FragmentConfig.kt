@@ -107,7 +107,7 @@ class FragmentConfig : Fragment() {
     override fun onResume() {
         super.onResume()
         bindService()
-        val serviceState = AccessibleServiceHelper().serviceIsRunning(context!!)
+        val serviceState = AccessibleServiceHelper().sceneModeRunning(context!!)
         btn_config_service_not_active.visibility = if (serviceState) View.GONE else View.VISIBLE
     }
 
@@ -115,7 +115,7 @@ class FragmentConfig : Fragment() {
         val dialog = ProgressBarDialog(context!!)
         dialog.showDialog("尝试使用ROOT权限开启服务...")
         Thread(Runnable {
-            if (!AccessibleServiceHelper().startServiceUseRoot(context!!)) {
+            if (!AccessibleServiceHelper().startSceneModeService(context!!)) {
                 try {
                     myHandler.post {
                         val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
@@ -131,7 +131,7 @@ class FragmentConfig : Fragment() {
             } else {
                 myHandler.post {
                     dialog.hideDialog()
-                    btn_config_service_not_active.visibility = if (AccessibleServiceHelper().serviceIsRunning(context!!)) View.GONE else View.VISIBLE
+                    btn_config_service_not_active.visibility = if (AccessibleServiceHelper().sceneModeRunning(context!!)) View.GONE else View.VISIBLE
                 }
             }
         }).start()
@@ -392,7 +392,7 @@ class FragmentConfig : Fragment() {
 
     // 通知辅助服务配置变化
     private fun notifyService(app: String, mode: String) {
-        if (AccessibleServiceHelper().serviceIsRunning(context!!)) {
+        if (AccessibleServiceHelper().sceneModeRunning(context!!)) {
             val intent = Intent(context!!.getString(R.string.scene_appchange_action))
             intent.putExtra("app", app)
             intent.putExtra("mode", mode)
@@ -404,7 +404,7 @@ class FragmentConfig : Fragment() {
      * 重启辅助服务
      */
     private fun reStartService() {
-        if (AccessibleServiceHelper().serviceIsRunning(context!!)) {
+        if (AccessibleServiceHelper().sceneModeRunning(context!!)) {
             context!!.sendBroadcast(Intent(context!!.getString(R.string.scene_change_action)))
         }
     }

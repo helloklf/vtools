@@ -18,70 +18,58 @@ import android.widget.Toast
 import com.omarea.store.AppConfigStore
 import com.omarea.utils.AutoClick
 import com.omarea.utils.CrashHandler
-import com.omarea.scene_mode.ServiceHelper
+import com.omarea.scene_mode.AppSwitchHandler
 
 /**
  * Created by helloklf on 2016/8/27.
  */
-class AccessibilityServiceScence : AccessibilityService() {
+class AccessibilityScenceMode : AccessibilityService() {
     private var flagReportViewIds = true
     private var flagRequestKeyEvent = true
     private var flagRetriveWindow = true
     private var flagRequestAccessbilityButton = false
-    private var layerDetection = true
-
     private var eventWindowStateChange = true
     private var eventWindowContentChange = false
     private var eventViewClick = false
     private var sceneConfigChanged: BroadcastReceiver? = null
-
     private var lastPackageName = ""
 
     /*
-override fun onCreate() {
-    super.onCreate()
+    override fun onCreate() {
+        super.onCreate()
 
-    Notification.Builder builder = new Notification.Builder(this);
-    //Intent mIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://blog.csdn.net/itachi85/"));
-    Intent mIntent = new Intent(getApplicationContext(),AccessibilitySettingsActivity.class);
-    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, mIntent, 0);
-    builder.setContentIntent(pendingIntent);
-    builder.setSmallIcon(R.drawable.linux);
-    builder.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.linux));
-    builder.setAutoCancel(true);
-    //RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.notxxx_layout);
-    //builder.setContent(remoteViews);
-    //builder.setContentTitle("Scene");
-    //builder.setContentInfo("增强服务正在运行，点此进入设置");
-    //Notification.Action action = new Notification.Action(R.drawable.p3,"性能",pendingIntent);
-    //Notification.Action action1 = new Notification.Action(R.drawable.p2,"均衡",pendingIntent);
-    //Notification.Action action2 = new Notification.Action(R.drawable.p1,"省电",pendingIntent);
-    //builder.addAction(action);
-    //builder.addAction(action1);
-    //builder.addAction(action2);
+        Notification.Builder builder = new Notification.Builder(this);
+        //Intent mIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://blog.csdn.net/itachi85/"));
+        Intent mIntent = new Intent(getApplicationContext(),AccessibilitySettingsActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, mIntent, 0);
+        builder.setContentIntent(pendingIntent);
+        builder.setSmallIcon(R.drawable.linux);
+        builder.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.linux));
+        builder.setAutoCancel(true);
+        //RemoteViews remoteViews = new RemoteViews(getPackageName(), R.layout.notxxx_layout);
+        //builder.setContent(remoteViews);
+        //builder.setContentTitle("Scene");
+        //builder.setContentInfo("增强服务正在运行，点此进入设置");
+        //Notification.Action action = new Notification.Action(R.drawable.p3,"性能",pendingIntent);
+        //Notification.Action action1 = new Notification.Action(R.drawable.p2,"均衡",pendingIntent);
+        //Notification.Action action2 = new Notification.Action(R.drawable.p1,"省电",pendingIntent);
+        //builder.addAction(action);
+        //builder.addAction(action1);
+        //builder.addAction(action2);
 
-    NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-    //notificationManager.notify(74545342, builder.build());
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        //notificationManager.notify(74545342, builder.build());
 
-    startForeground(74545342, builder.build());//该方法已创建通知管理器，设置为前台优先级后，点击通知不再自动取消
+        startForeground(74545342, builder.build());//该方法已创建通知管理器，设置为前台优先级后，点击通知不再自动取消
     }
     */
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         CrashHandler().init(this)
-        /*
-        try {
-            val service = Intent(this, BootService::class.java)
-            //service.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startService(service)
-        } catch (ex: Exception) {
-        }
-        */
-
         return super.onStartCommand(intent, flags, startId)
     }
 
-    internal var serviceHelper: ServiceHelper? = null
+    internal var appSwitchHandler: AppSwitchHandler? = null
 
     private fun updateConfig() {
         val spf = getSharedPreferences("adv", Context.MODE_PRIVATE)
@@ -141,8 +129,8 @@ override fun onCreate() {
             registerReceiver(sceneConfigChanged, IntentFilter(getString(R.string.scene_key_capture_change_action)))
         }
         super.onServiceConnected()
-        if (serviceHelper == null)
-            serviceHelper = ServiceHelper(this)
+        if (appSwitchHandler == null)
+            appSwitchHandler = AppSwitchHandler(this)
     }
 
 
@@ -214,87 +202,55 @@ override fun onCreate() {
                 } else if (windows_.size > 1) {
                     // Log.d("onAccessibilityEvent", ">>>" + event.contentChangeTypes)
                     var lastWindow: AccessibilityWindowInfo? = null
-
-                    /**
-                    Window          层级(zOrder - window.layer)
-                    --------------------------------------------
-                    应用Window	    1~99
-                    子Window	    1000~1999
-                    系统Window	    2000~2999
-                     */
                     val effectiveWindows =  windows_.filter {
                         (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && it.isInPictureInPictureMode)) && (it.type == AccessibilityWindowInfo.TYPE_APPLICATION)
                     }.sortedBy { it.layer }
 
                     if (effectiveWindows.size > 0) {
-                        if (layerDetection) {
-                            /*
-                            for (window in windows_.iterator()) {
-                                if (window.type == AccessibilityWindowInfo.TYPE_SPLIT_SCREEN_DIVIDER) {
-                                    Log.d("onAccessibilityEvent", "分屏组件")
-                                } else if (window.isFocused) {
-                                    if (window.root != null) {
-                                        Log.d("onAccessibilityEvent", "active " + window.root.packageName + "   " + window.id + "  " + window.layer)
-                                    } else {
-                                        Log.d("onAccessibilityEvent", "active " + window.title + "   " + window.id + "  " + window.layer)
-                                    }
+                        /*
+                        for (window in windows_.iterator()) {
+                            if (window.type == AccessibilityWindowInfo.TYPE_SPLIT_SCREEN_DIVIDER) {
+                                Log.d("onAccessibilityEvent", "分屏组件")
+                            } else if (window.isFocused) {
+                                if (window.root != null) {
+                                    Log.d("onAccessibilityEvent", "active " + window.root.packageName + "   " + window.id + "  " + window.layer)
                                 } else {
-                                    Log.d("onAccessibilityEvent", "inactive " + window.title + "   " + window.id + "  " + window.layer)
+                                    Log.d("onAccessibilityEvent", "active " + window.title + "   " + window.id + "  " + window.layer)
                                 }
+                            } else {
+                                Log.d("onAccessibilityEvent", "inactive " + window.title + "   " + window.id + "  " + window.layer)
                             }
-                            */
-                            lastWindow = effectiveWindows.get(0)
+                        }
+                        */
+                        lastWindow = effectiveWindows.get(0)
 
-                            try {
-                                val source = event.source
-                                if (source == null || source.windowId != lastWindow.id) {
-                                    val windowRoot = lastWindow!!.root
-                                    if (windowRoot == null || windowRoot.packageName == null) {
-                                        return
-                                    }
-                                    packageName = windowRoot.packageName!!.toString()
-                                    Log.d("Scene Fix Top App", "" + windowRoot.packageName)
-                                }
-                            } catch (ex: Exception) {
-                                return
-                            }
-                        } else {
-                            for (window in effectiveWindows.iterator()) {
-                                if (window.isFocused) {
-                                    // Log.d("onAccessibilityEvent", "" + window.title + "   " + window.layer)
-                                    lastWindow = window
-                                } else {
-                                    // Log.d("onAccessibilityEvent", "inactive " + window.title + "   " + window.layer)
-                                }
-                            }
-
-                            if (lastWindow == null) {
-                                return
-                            }
-
-                            val windowInfo = lastWindow
-                            try {
-                                val source = event.source
-                                if (source == null || source.windowId != windowInfo.id) {
+                        try {
+                            val source = event.source
+                            if (source == null || source.windowId != lastWindow.id) {
+                                val windowRoot = lastWindow!!.root
+                                if (windowRoot == null || windowRoot.packageName == null) {
                                     return
                                 }
-                            } catch (ex: Exception) {
+                                packageName = windowRoot.packageName!!.toString()
+                                Log.d("Scene Fix Top App", "" + windowRoot.packageName)
                             }
+                        } catch (ex: Exception) {
+                            return
                         }
                     }
                 }
                 lastPackageName = packageName
-                serviceHelper?.onFocusAppChanged(lastPackageName)
+                appSwitchHandler?.onFocusAppChanged(lastPackageName)
             } else {
                 lastPackageName = packageName
-                serviceHelper?.onFocusAppChanged(lastPackageName)
+                appSwitchHandler?.onFocusAppChanged(lastPackageName)
             }
 
             handler.postDelayed({
                 if (lastPackageName != packageName) {
                     val lastEvent = topAppPackageName()
                     if (lastEvent.isNotEmpty() && lastEvent != lastPackageName) {
-                        serviceHelper?.onFocusAppChanged(lastEvent)
+                        appSwitchHandler?.onFocusAppChanged(lastEvent)
                         lastPackageName = lastEvent
                     }
                 }
@@ -304,23 +260,15 @@ override fun onCreate() {
         }
     }
 
-    /*
-    Thread(Runnable {
-    val inst = Instrumentation()
-    inst.sendKeyDownUpSync(event.keyCode)
-    }).start()
-    */
-
     private fun deestory() {
         Toast.makeText(applicationContext, "Scene - 辅助服务已关闭！", Toast.LENGTH_SHORT).show()
-        if (serviceHelper != null) {
-            serviceHelper!!.onInterrupt()
-            serviceHelper = null
+        if (appSwitchHandler != null) {
+            appSwitchHandler!!.onInterrupt()
+            appSwitchHandler = null
             // disableSelf()
             stopSelf()
             System.exit(0)
         }
-        //android.os.Process.killProcess(android.os.Process.myPid());
     }
 
     private var handler = Handler()
@@ -332,7 +280,7 @@ override fun onCreate() {
         if (!serviceIsConnected) {
             return false
         }
-        if (serviceHelper == null)
+        if (appSwitchHandler == null)
             return false
 
         val keyCode = event.keyCode
@@ -343,7 +291,7 @@ override fun onCreate() {
         if (event.action == KeyEvent.ACTION_DOWN) {
             downTime = event.eventTime
             val currentDownTime = downTime
-            val stopEvent = serviceHelper!!.onKeyDown()
+            val stopEvent = appSwitchHandler!!.onKeyDown()
             if (stopEvent) {
                 handler.postDelayed({
                     if (downTime == currentDownTime) {
@@ -360,7 +308,7 @@ override fun onCreate() {
             return stopEvent
         } else if (event.action == KeyEvent.ACTION_UP) {
             downTime = -1
-            return serviceHelper!!.onKeyDown()
+            return appSwitchHandler!!.onKeyDown()
         } else {
             return super.onKeyEvent(event)
         }
@@ -378,8 +326,6 @@ override fun onCreate() {
     }
 
     override fun onInterrupt() {
-        //this.deestory()
-        Log.e("onInterrupt", "Service Interrupt")
     }
 
     override fun onDestroy() {

@@ -14,8 +14,10 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.util.Log
 import android.view.*
 import android.view.WindowManager.LayoutParams
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -178,12 +180,11 @@ class FloatMonitor(context: Context) {
     private var gpuChart: FloatMonitorChartView? = null
     private var gpuPanel: View? = null
     private var gpuFreqText: TextView? = null
-    private var ramChart: FloatMonitorChartView? = null
-    private var ramUseText: TextView? = null
     private var temperaturePanel: View? = null
     private var temperatureChart: FloatMonitorBatteryView? = null
     private var temperatureText: TextView? = null
     private var batteryLevelText: TextView? = null
+    private var chargerView:ImageView? = null
     private var otherInfo: TextView? = null
 
     private var activityManager: ActivityManager? = null
@@ -239,6 +240,18 @@ class FloatMonitor(context: Context) {
         myHandler.post {
             if (showOtherInfo) {
                 otherInfo!!.setText("")
+
+                totalMem = (info.totalMem / 1024 / 1024f).toInt()
+                availMem = (info.availMem / 1024 / 1024f).toInt()
+                val ramInfoText = "RAM:  " + ((totalMem - availMem) * 100 / totalMem).toString() + "%"
+
+                val ramSpannable = SpannableString(ramInfoText);
+                val styleSpan  = StyleSpan(Typeface.BOLD);
+                ramSpannable.setSpan(ForegroundColorSpan(Color.WHITE), 0, ramInfoText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                ramSpannable.setSpan(styleSpan, 0, ramInfoText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                otherInfo?.append(ramSpannable)
+                otherInfo?.append("\n")
+
                 var clusterIndex = 0
                 for (cluster in clusters) {
                     if (clusterIndex != 0) {
@@ -262,9 +275,12 @@ class FloatMonitor(context: Context) {
                             if (load != null) {
                                 if (load < 10) {
                                     otherInfos.append("0")
+                                    otherInfos.append(load.toInt())
+                                    otherInfos.append("%")
+                                } else {
+                                    otherInfos.append(load.toInt())
+                                    otherInfos.append("%")
                                 }
-                                otherInfos.append(load.toInt())
-                                otherInfos.append("%")
                             } else {
                                 otherInfos.append("×")
                             }
@@ -273,15 +289,6 @@ class FloatMonitor(context: Context) {
                     }
                     clusterIndex++
                 }
-            }
-            if (sum < 0) {
-                totalMem = (info.totalMem / 1024 / 1024f).toInt()
-                availMem = (info.availMem / 1024 / 1024f).toInt()
-                ramUseText!!.text = "${((totalMem - availMem) * 100 / totalMem)}% (${totalMem / 1024 + 1}GB)"
-                ramChart!!.setData(totalMem.toFloat(), availMem.toFloat())
-                sum = 5
-            } else {
-                sum--
             }
 
             cpuChart!!.setData(100f, (100 - cpuLoad).toFloat())
@@ -292,24 +299,14 @@ class FloatMonitor(context: Context) {
                 gpuChart!!.setData(100f, (100f - gpuLoad))
             }
 
-            temperatureChart!!.setData(100f, 100f - batteryStatus.level)
+            temperatureChart!!.setData(100f, 100f - batteryStatus.level, batteryStatus.temperature)
             temperatureText!!.setText(batteryStatus.temperature.toString() + "°C")
             batteryLevelText!!.setText(batteryStatus.level.toString() + "%")
-
-            if (batteryStatus.temperature >= 48) {
-                temperatureText!!.setTextColor(Color.rgb(255, 15, 0))
-            } else if (batteryStatus.temperature >= 45) {
-                temperatureText!!.setTextColor(mContext!!.resources.getColor(R.color.color_load_veryhight))
-            } else if (batteryStatus.temperature >= 42) {
-                temperatureText!!.setTextColor(mContext!!.resources.getColor(R.color.color_load_hight))
-            } else if (batteryStatus.temperature > 34) {
-                temperatureText!!.setTextColor(mContext!!.resources.getColor(R.color.color_load_mid))
+            if (batteryStatus.statusText == "2") {
+                chargerView!!.visibility = View.VISIBLE
             } else {
-                temperatureText!!.setTextColor(mContext!!.resources.getColor(R.color.color_load_low))
+                chargerView!!.visibility = View.GONE
             }
-
-            val layoutParams = view!!.layoutParams
-            view!!.layoutParams = layoutParams
         }
     }
 
@@ -344,21 +341,20 @@ class FloatMonitor(context: Context) {
 
         cpuChart = view!!.findViewById(R.id.fw_cpu_load)
         gpuChart = view!!.findViewById(R.id.fw_gpu_load)
-        ramChart = view!!.findViewById(R.id.fw_ram_load)
         temperatureChart = view!!.findViewById(R.id.fw_battery_chart)
 
         cpuFreqText = view!!.findViewById(R.id.fw_cpu_freq)
         gpuFreqText = view!!.findViewById(R.id.fw_gpu_freq)
-        ramUseText = view!!.findViewById(R.id.fw_ram_use)
         temperatureText = view!!.findViewById(R.id.fw_battery_temp)
         batteryLevelText = view!!.findViewById<TextView>(R.id.fw_battery_level)
+        chargerView = view!!.findViewById<ImageView>(R.id.fw_charger)
         otherInfo = view!!.findViewById<TextView>(R.id.fw_other_info)
 
         activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
 
         view!!.setOnClickListener {
             otherInfo?.visibility = if (showOtherInfo) View.GONE else View.VISIBLE
-            it.findViewById<View>(R.id.fw_ram_info).visibility = if (showOtherInfo) View.GONE else View.VISIBLE
+            // it.findViewById<View>(R.id.fw_ram_info).visibility = if (showOtherInfo) View.GONE else View.VISIBLE
             it.findViewById<LinearLayout>(R.id.fw_chart_list).orientation = if (showOtherInfo) LinearLayout.HORIZONTAL else LinearLayout.VERTICAL
             (mView as LinearLayout).orientation = if (showOtherInfo) LinearLayout.VERTICAL else LinearLayout.HORIZONTAL
             showOtherInfo = !showOtherInfo

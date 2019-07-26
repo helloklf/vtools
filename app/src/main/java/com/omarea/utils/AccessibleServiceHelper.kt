@@ -4,19 +4,33 @@ import android.accessibilityservice.AccessibilityServiceInfo
 import android.content.Context
 import android.view.accessibility.AccessibilityManager
 import com.omarea.shell_utils.AccessibilityServiceUtils
-import com.omarea.vtools.AccessibilityServiceScence
+import com.omarea.vtools.AccessibilityScenceMode
 
 /**
  * Created by Hello on 2018/06/03.
  */
 
 class AccessibleServiceHelper {
-    //判断服务是否激活
-    fun serviceIsRunning(context: Context): Boolean {
-        return serviceIsRunning(context, "AccessibilityServiceScence")
+    // 场景模式服务是否正在运行
+    fun sceneModeRunning(context: Context): Boolean {
+        return sceneModeRunning(context, "AccessibilityScenceMode")
     }
 
-    fun serviceIsRunning(context: Context, serviceName: String): Boolean {
+    // 启动场景模式服务
+    fun startSceneModeService(context: Context): Boolean {
+        return AccessibilityServiceUtils().strartService(
+                "${context.packageName}/${AccessibilityScenceMode::class.java.name}"
+        )
+    }
+
+    // 停止场景模式服务
+    fun stopSceneModeService(context: Context): Boolean {
+        return AccessibilityServiceUtils().stopService(
+                "${context.packageName}/${AccessibilityScenceMode::class.java.name}"
+        )
+    }
+
+    fun sceneModeRunning(context: Context, serviceName: String): Boolean {
         val m = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
         val serviceInfos = m.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
         for (serviceInfo in serviceInfos) {
@@ -25,12 +39,5 @@ class AccessibleServiceHelper {
             }
         }
         return false
-    }
-
-    fun startServiceUseRoot(context: Context): Boolean {
-        return AccessibilityServiceUtils().strartService(
-                context,
-                "${context.packageName}/${AccessibilityServiceScence::class.java.name}"
-        )
     }
 }

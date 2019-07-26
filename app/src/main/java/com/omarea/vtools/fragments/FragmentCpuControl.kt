@@ -844,7 +844,7 @@ class FragmentCpuControl : Fragment() {
         }).start()
 
         val globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-        val dynamic = AccessibleServiceHelper().serviceIsRunning(context!!) && globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)
+        val dynamic = AccessibleServiceHelper().sceneModeRunning(context!!) && globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)
         if (dynamic) {
             DialogHelper.animDialog(AlertDialog.Builder(context!!)
                     .setTitle("请注意")

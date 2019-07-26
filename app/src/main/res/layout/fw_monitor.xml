@@ -8,12 +8,10 @@
 
     <LinearLayout
         android:id="@+id/fw_chart_list"
+        android:layout_gravity="center_vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginRight="4dp"
-        android:fitsSystemWindows="true"
+        android:padding="4dp"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -113,7 +111,14 @@
                     android:id="@+id/fw_battery_chart"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
-
+                <ImageView
+                    android:id="@+id/fw_charger"
+                    android:alpha="0.7"
+                    android:visibility="gone"
+                    android:src="@drawable/charge"
+                    android:layout_gravity="center"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp" />
                 <TextView
                     android:id="@+id/fw_battery_level"
                     android:layout_width="match_parent"
@@ -137,47 +142,6 @@
                 android:textSize="6dp"
                 android:textStyle="bold" />
         </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/fw_ram_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:layout_marginBottom="4dp"
-            android:visibility="gone">
-
-            <FrameLayout
-                android:layout_width="35dp"
-                android:layout_height="35dp">
-
-                <com.omarea.ui.FloatMonitorChartView
-                    android:id="@+id/fw_ram_load"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="RAM"
-                    android:textAlignment="center"
-                    android:textColor="#ffffff"
-                    android:textSize="8dp"
-                    android:textStyle="bold" />
-            </FrameLayout>
-
-            <TextView
-                android:id="@+id/fw_ram_use"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginBottom="1dp"
-                android:text="0%(0G)"
-                android:textColor="#ffffff"
-                android:textSize="6dp"
-                android:textStyle="bold" />
-        </LinearLayout>
     </LinearLayout>
 
     <TextView
@@ -185,13 +149,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:paddingStart="4dp"
         android:paddingTop="4dp"
-        android:paddingBottom="6dp"
+        android:paddingBottom="4dp"
         android:minWidth="100dp"
         android:text="Loading……"
         android:textColor="#bbffffff"
-        android:textSize="11dp"
+        android:textSize="10dp"
         android:visibility="gone"
         android:typeface="monospace" />
 </LinearLayout>

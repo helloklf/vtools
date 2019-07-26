@@ -107,7 +107,7 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activitys.ActivityAccessibilityKeyEventSettings"
+            android:name=".activitys.AccessibilityKeySettings"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="true"
             android:label="Scene-按键辅助"
@@ -218,7 +218,7 @@
         </receiver>
 
         <service
-            android:name=".AccessibilityServiceScence"
+            android:name=".AccessibilityScenceMode"
             android:label="Scene - 场景模式"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
@@ -233,7 +233,7 @@
                 android:resource="@xml/phone_accessibility" />
         </service>
         <service
-            android:name=".services.NotificationService"
+            android:name="com.omarea.scene_mode.NotificationListenerService"
             android:label="通知过滤服务"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>
@@ -241,7 +241,7 @@
             </intent-filter>
         </service>
         <service
-            android:name=".AccessibilityServiceSceneKeyEvent"
+            android:name=".AccessibilityKey"
             android:label="Scene - 按键辅助"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>

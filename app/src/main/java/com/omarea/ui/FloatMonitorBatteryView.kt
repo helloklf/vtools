@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.util.AttributeSet
@@ -95,13 +96,15 @@ class FloatMonitorBatteryView : View {
         drawCycle(canvas)
     }
 
-    fun setData(total: Float, fee: Float) {
+    private var temperature = 35F
+    fun setData(total: Float, fee: Float, temperature: Float) {
         if (fee == total && total == 0F) {
             ratio = 0
         } else {
             val feeRatio = (fee * 100.0 / total).toInt()
             ratio = 100 - feeRatio
         }
+        this.temperature = temperature
         // 动画更新
         // cgangePer(ratio)
         // 无动画更新
@@ -150,7 +153,7 @@ class FloatMonitorBatteryView : View {
      * @param canvas
      */
     private fun drawCycle(canvas: Canvas) {
-        cyclePaint!!.color = 0x22888888
+        cyclePaint!!.color = 0x22FFFFFF
         // cyclePaint!!.alpha = 128
         canvas.drawArc(RectF(0f, 0f, mRadius, mRadius), 0f, 360f, false, cyclePaint)
         /*
@@ -159,14 +162,18 @@ class FloatMonitorBatteryView : View {
         }
         */
         // cyclePaint!!.alpha = 255
-        if (ratioState > 79) {
-            cyclePaint!!.color = resources.getColor(R.color.color_load_low)
-        } else if (ratioState > 40) {
-            cyclePaint!!.color = resources.getColor(R.color.color_load_mid)
-        } else if (ratioState > 25) {
-            cyclePaint!!.color = resources.getColor(R.color.color_load_hight)
-        } else {
+
+
+        if (temperature >= 48 || ratioState < 11) {
+            cyclePaint!!.color = Color.rgb(255, 15, 0)
+        } else if (temperature > 44) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_veryhight)
+        } else if (temperature > 41 || ratio < 25) {
+            cyclePaint!!.color = resources.getColor(R.color.color_load_hight)
+        } else if (temperature > 20) {
+            cyclePaint!!.color = resources.getColor(R.color.color_load_mid)
+        } else {
+            cyclePaint!!.color = resources.getColor(R.color.color_load_low)
         }
 
         /*

@@ -8,7 +8,6 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -21,10 +20,9 @@ import kotlinx.android.synthetic.main.activity_keyevent_settings.*
 import java.util.*
 
 
-class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
+class AccessibilityKeySettings : AppCompatActivity() {
     private lateinit var spf: SharedPreferences
     private lateinit var spfOther: SharedPreferences
-    private var myHandler = Handler()
 
     override fun onPostResume() {
         super.onPostResume()
@@ -34,7 +32,7 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        val serviceState = AccessibleServiceHelper().serviceIsRunning(this, "AccessibilityServiceSceneKeyEvent")
+        val serviceState = AccessibleServiceHelper().sceneModeRunning(this, "AccessibilityKey")
         key_event_state.text = if (serviceState) getString(R.string.accessibility_running) else getString(R.string.accessibility_stoped)
     }
 
@@ -203,7 +201,7 @@ class ActivityAccessibilityKeyEventSettings : AppCompatActivity() {
 
     // 通知辅助服务配置变化
     private fun notifyService() {
-        if (AccessibleServiceHelper().serviceIsRunning(this.applicationContext)) {
+        if (AccessibleServiceHelper().sceneModeRunning(this.applicationContext)) {
             val intent = Intent(getString(R.string.scene_keyeventchange_action))
             sendBroadcast(intent)
         }

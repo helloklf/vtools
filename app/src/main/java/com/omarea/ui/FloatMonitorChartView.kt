@@ -150,7 +150,7 @@ class FloatMonitorChartView : View {
      * @param canvas
      */
     private fun drawCycle(canvas: Canvas) {
-        cyclePaint!!.color = 0x22888888
+        cyclePaint!!.color = 0x22FFFFFF
         // cyclePaint!!.alpha = 128
         canvas.drawArc(RectF(0f, 0f, mRadius, mRadius), 0f, 360f, false, cyclePaint)
         /*
