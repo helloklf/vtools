@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.content.PermissionChecker
@@ -11,6 +12,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.Switch
+import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.utils.CommonCmds
@@ -89,9 +91,13 @@ class ActivitySceneOtherSettings : AppCompatActivity() {
         auto_start_compile.setOnClickListener {
             val value = (it as Switch).isChecked
             if (value) {
-                spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_STARTED_COMPILE, value).commit()
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                    Toast.makeText(this, R.string.auto_start_compile_unsupported, Toast.LENGTH_LONG).show()
+                    it.isChecked = false
+                } else {
+                    spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_STARTED_COMPILE, value).commit()
+                }
             } else {
-                KeepShellPublic.doCmdSync(CommonCmds.ResumeSELinux)
                 spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_STARTED_COMPILE, value).commit()
             }
         }

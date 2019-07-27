@@ -138,10 +138,10 @@
     <string name="accessbility_bp_level_desc">电量限制值（%）</string>
     <string name="accessbility_notify">常驻通知</string>
     <string name="accessbility_notify_desc">运行场景模式服务时显示常驻通知，以监视运行状态和电池状态</string>
-    <string name="accessbility_delay">慢点儿</string>
-    <string name="accessbility_delay_desc">Scene自启动完成25秒后再应用配置</string>
-    <string name="settings_disable_selinux">自动SeLinux宽容模式</string>
-    <string name="settings_disable_selinux_desc">自动开启SELinux宽容模式（部分软件中会称作“关闭Selinux”）。部分设备会卡死重启。如果不开有些功能会用不了，部分系统开启本功能会死机重启！</string>
+    <string name="accessbility_delay">延迟执行</string>
+    <string name="accessbility_delay_desc">自启动过程延迟25秒，避免开机时卡顿</string>
+    <string name="settings_disable_selinux">SeLinux宽容模式</string>
+    <string name="settings_disable_selinux_desc">自动开启SELinux宽容模式（部分软件中称作“关闭Selinux”）。某些设备激活此选项会死机重启！</string>
     <string name="settings_theme">主题</string>
     <string name="settings_theme_wallpaper">使用壁纸</string>
     <string name="settings_theme_wallpaper_desc">使用系统壁纸作为窗口背景，显示为半透明界面</string>
@@ -173,7 +173,8 @@
     <string name="battery_uevent_title">$ cat /sys/class/power_supply/bms/uevent</string>
     <string name="home_hide_in_recents">强迫症</string>
     <string name="home_hide_in_recents_desc">不要在多任务界面显示Scene（本功能已下线，用返回键关闭Scene界面时自动隐藏后台）</string>
-    <string name="auto_start_compile">自动编译</string>
+    <string name="auto_start_compile">自动编译(Android N+)</string>
+    <string name="auto_start_compile_unsupported">Android N以后的系统才用得上本功能~</string>
     <string name="auto_start_compile_desc">开机完成Scene自启动后，对新应用进行dex2oat编译</string>
     <string name="auto_start_fstrim">自动fstrim</string>
     <string name="auto_start_fstrim_desc">开机完成Scene自启动后，自动执行fstrim</string>
