@@ -81,8 +81,8 @@ echo 0 > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
 
 # killall -9 vendor.qti.hardware.perf@1.0-service
 
-echo 1 > /dev/cpuset/background/cpus
-echo 1 > /dev/cpuset/system-background/cpus
+echo 1-2 > /dev/cpuset/background/cpus
+echo 1-4 > /dev/cpuset/system-background/cpus
 echo 6-7 > /dev/cpuset/foreground/boost/cpus
 echo 0-7 > /dev/cpuset/foreground/cpus
 echo 0-7 > /dev/cpuset/top-app/cpus

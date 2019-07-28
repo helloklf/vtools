@@ -125,9 +125,10 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
         }, SCREEN_OFF_SWITCH_NETWORK_DELAY + 1000)
 
         handler.postDelayed({
-            if (!screenOn)
+            if (!screenOn) {
                 stopTimer()
-            notifyHelper.hideNotify()
+                notifyHelper.hideNotify()
+            }
         }, 10000)
     }
 

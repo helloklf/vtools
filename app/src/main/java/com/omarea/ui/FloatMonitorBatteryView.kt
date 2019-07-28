@@ -166,9 +166,9 @@ class FloatMonitorBatteryView : View {
 
         if (temperature >= 48 || ratioState < 11) {
             cyclePaint!!.color = Color.rgb(255, 15, 0)
-        } else if (temperature > 44) {
+        } else if (temperature > 44 || ratio < 16) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_veryhight)
-        } else if (temperature > 41 || ratio < 25) {
+        } else if (temperature > 41 || ratio < 31) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_hight)
         } else if (temperature > 20) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_mid)

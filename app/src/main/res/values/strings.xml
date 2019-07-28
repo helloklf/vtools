@@ -270,7 +270,7 @@
     <string name="size">大小</string>
     <string name="type">类型</string>
     <string name="path">路径</string>
-    <string name="battery_low">电池电量低，请及时充电！</string>
+    <string name="battery_low">电量过低，请及时充电！</string>
     <string name="sorry">抱歉</string>
     <string name="powersave">省电模式</string>
     <string name="balance">均衡模式</string>

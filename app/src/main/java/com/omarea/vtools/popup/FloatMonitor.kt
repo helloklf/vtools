@@ -243,7 +243,7 @@ class FloatMonitor(context: Context) {
 
                 totalMem = (info.totalMem / 1024 / 1024f).toInt()
                 availMem = (info.availMem / 1024 / 1024f).toInt()
-                val ramInfoText = "RAM:  " + ((totalMem - availMem) * 100 / totalMem).toString() + "%"
+                val ramInfoText = "DRAM  " + ((totalMem - availMem) * 100 / totalMem).toString() + "%"
 
                 val ramSpannable = SpannableString(ramInfoText);
                 val styleSpan  = StyleSpan(Typeface.BOLD);

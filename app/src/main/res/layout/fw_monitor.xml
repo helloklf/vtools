@@ -151,7 +151,7 @@
         android:layout_gravity="center_vertical"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:minWidth="100dp"
+        android:minWidth="90dp"
         android:text="Loading……"
         android:textColor="#bbffffff"
         android:textSize="10dp"
