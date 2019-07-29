@@ -174,6 +174,7 @@ class ActionListView : OverScrollListView {
 
                                 spinner.adapter = SimpleAdapter(context, options, R.layout.list_item_text, arrayOf("title"), intArrayOf(R.id.text))
                                 spinner.tag = actionParamInfo.name
+                                spinner.isEnabled = !actionParamInfo.readonly
 
                                 if (!actionParamInfo.desc.isNullOrEmpty()) {
                                     val textView = TextView(context)
@@ -201,6 +202,7 @@ class ActionListView : OverScrollListView {
                                 val checkBox = CheckBox(context)
                                 checkBox.hint = if (actionParamInfo.desc != null) actionParamInfo.desc else actionParamInfo.name
                                 checkBox.isChecked = getCheckState(actionParamInfo, false)
+                                checkBox.isEnabled = !actionParamInfo.readonly
                                 checkBox.tag = actionParamInfo.name
                                 linearLayout.addView(checkBox)
                                 val lp = checkBox.layoutParams as LinearLayout.LayoutParams
@@ -221,6 +223,7 @@ class ActionListView : OverScrollListView {
                                     editText.setText(actionParamInfo.value)
                                 editText.filters = arrayOf(ActionParamInfo.ParamInfoFilter(actionParamInfo))
                                 editText.tag = actionParamInfo.name
+                                editText.isEnabled = !actionParamInfo.readonly
 
                                 if (!actionParamInfo.desc.isNullOrEmpty()) {
                                     val textView = TextView(context)
