@@ -101,7 +101,7 @@ class FloatPowercfgSelector {
      * 重启辅助服务
      */
     private fun reStartService(app: String, mode: String) {
-        if (AccessibleServiceHelper().sceneModeRunning(mContext!!)) {
+        if (AccessibleServiceHelper().serviceRunning(mContext!!)) {
             val intent = Intent(mContext!!.getString(R.string.scene_appchange_action))
             intent.putExtra("app", app)
             intent.putExtra("mode", mode)

@@ -43,19 +43,6 @@
     </group>
 
     <group title="温控">
-        <action support="file:///android_asset/custom/actions/miui_thermal_conf/support.sh">
-            <resource dir="file:///android_asset/custom/actions/miui_thermal_conf" />
-            <title>更改温控配置</title>
-            <desc sh="file:///android_asset/custom/actions/miui_thermal_conf/desc.sh">
-                本功能适用于骁龙835、845、855处理器，MIUI官方系统！
-            </desc>
-            <param name="mode" desc="温控模式"
-                options-sh="file:///android_asset/custom/actions/miui_thermal_conf/options.sh"
-                value-sh="file:///android_asset/custom/actions/miui_thermal_conf/current.sh" />
-            <param name="platform" desc="处理器(SOC)"
-                options-sh="file:///android_asset/custom/actions/miui_thermal_conf/soc-options.sh" />
-            <script>file:///android_asset/custom/actions/miui_thermal_conf/config.sh</script>
-        </action>
         <action>
             <title>硬删温控 *不推荐</title>
             <desc>用于骁龙处理器设备，删除/system和/vendor目录中，名称包含thermal的文件，这是非常危险的操作</desc>
@@ -64,11 +51,6 @@
                     options-sh="file:///android_asset/custom/actions/qualcomm_thermal/options.sh" />
             </params>
             <script>file:///android_asset/custom/actions/qualcomm_thermal/set.sh</script>
-        </action>
-        <action confirm="true" support="file:///android_asset/custom/actions/miui_support.sh">
-            <title>开启MIUI9、MIUI10隐藏的温控选项</title>
-            <desc>看人品，也许是可以开出来，但不一定啦！据说稳定版是不行的。</desc>
-            <script>file:///android_asset/custom/actions/miui_thermal_set.sh</script>
         </action>
     </group>
 

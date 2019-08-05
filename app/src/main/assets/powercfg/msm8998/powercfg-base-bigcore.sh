@@ -1,5 +1,14 @@
 #!/system/bin/sh
 
+echo 1 > /sys/devices/system/cpu/cpu0/online
+echo 1 > /sys/devices/system/cpu/cpu1/online
+echo 1 > /sys/devices/system/cpu/cpu2/online
+echo 1 > /sys/devices/system/cpu/cpu3/online
+echo 1 > /sys/devices/system/cpu/cpu4/online
+echo 1 > /sys/devices/system/cpu/cpu5/online
+echo 1 > /sys/devices/system/cpu/cpu6/online
+echo 1 > /sys/devices/system/cpu/cpu7/online
+
 target=`getprop ro.board.platform`
 
 case "$target" in
@@ -71,17 +80,6 @@ case "$target" in
     echo "0:0 1:0 2:0 3:0 4:2208000 5:0 6:0 7:0" > /sys/module/cpu_boost/parameters/powerkey_input_boost_freq
     echo 400 > /sys/module/cpu_boost/parameters/powerkey_input_boost_ms
 
-    echo 0 > /dev/cpuset/background/cpus
-    echo 0-3 > /dev/cpuset/system-background/cpus
-    echo 4-7 > /dev/cpuset/foreground/boost/cpus
-    echo 0-2,4-7 > /dev/cpuset/foreground/cpus
-    echo 0 > /proc/sys/kernel/sched_boost
-
-    echo 1 > /sys/devices/system/cpu/cpu4/online
-    echo 1 > /sys/devices/system/cpu/cpu5/online
-    echo 1 > /sys/devices/system/cpu/cpu6/online
-    echo 1 > /sys/devices/system/cpu/cpu7/online
-
     echo 1 > /proc/sys/vm/laptop_mode
     echo 5 > /proc/sys/vm/dirty_background_ratio
     echo 30 > /proc/sys/vm/overcommit_ratio
@@ -92,7 +90,7 @@ case "$target" in
     echo 4000 > /proc/sys/vm/dirty_expire_centisecs
     echo 6000 > /proc/sys/vm/dirty_writeback_centisecs
 
-    echo 2048 > /sys/block/sda/queue/read_ahead_kb
+    echo 512 > /sys/block/sda/queue/read_ahead_kb
     echo 0 > /sys/block/sda/queue/iostats
 
     echo "0:1324800" > /sys/module/cpu_boost/parameters/input_boost_freq
@@ -122,18 +120,12 @@ echo 0 > /sys/module/msm_thermal/core_control/enabled
 echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
 echo N > /sys/module/msm_thermal/parameters/enabled
 echo 1 > /proc/sys/kernel/sched_prefer_sync_wakee_to_waker
-#stop thermanager
-#stop thermal-engine
+stop thermanager
+stop thermal-engine
 
+echo 3 > /dev/cpuset/background/cpus
+echo 1-4 > /dev/cpuset/system-background/cpus
 echo 4-7 > /dev/cpuset/foreground/boost/cpus
 echo 0-7 > /dev/cpuset/foreground/cpus
 echo 0-7 > /dev/cpuset/top-app/cpus
-
-echo 1 > /sys/devices/system/cpu/cpu0/online
-echo 1 > /sys/devices/system/cpu/cpu1/online
-echo 1 > /sys/devices/system/cpu/cpu2/online
-echo 1 > /sys/devices/system/cpu/cpu3/online
-echo 1 > /sys/devices/system/cpu/cpu4/online
-echo 1 > /sys/devices/system/cpu/cpu5/online
-echo 1 > /sys/devices/system/cpu/cpu6/online
-echo 1 > /sys/devices/system/cpu/cpu7/online
+echo 0 > /proc/sys/kernel/sched_boost

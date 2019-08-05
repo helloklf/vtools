@@ -506,7 +506,7 @@ class ActivityAppDetails : AppCompatActivity() {
 
     // 通知辅助服务配置变化
     private fun notifyService(app: String, mode: String) {
-        if (AccessibleServiceHelper().sceneModeRunning(this)) {
+        if (AccessibleServiceHelper().serviceRunning(this)) {
             val intent = Intent(this.getString(R.string.scene_appchange_action))
             intent.putExtra("app", app)
             intent.putExtra("mode", mode)

@@ -12,8 +12,8 @@ import com.omarea.vtools.AccessibilityScenceMode
 
 class AccessibleServiceHelper {
     // 场景模式服务是否正在运行
-    fun sceneModeRunning(context: Context): Boolean {
-        return sceneModeRunning(context, "AccessibilityScenceMode")
+    fun serviceRunning(context: Context): Boolean {
+        return serviceRunning(context, "AccessibilityScenceMode")
     }
 
     // 启动场景模式服务
@@ -30,7 +30,7 @@ class AccessibleServiceHelper {
         )
     }
 
-    fun sceneModeRunning(context: Context, serviceName: String): Boolean {
+    fun serviceRunning(context: Context, serviceName: String): Boolean {
         val m = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
         val serviceInfos = m.getEnabledAccessibilityServiceList(AccessibilityServiceInfo.FEEDBACK_ALL_MASK)
         for (serviceInfo in serviceInfos) {

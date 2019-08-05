@@ -32,7 +32,7 @@ class AccessibilityKeySettings : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        val serviceState = AccessibleServiceHelper().sceneModeRunning(this, "AccessibilityKey")
+        val serviceState = AccessibleServiceHelper().serviceRunning(this, "AccessibilityKey")
         key_event_state.text = if (serviceState) getString(R.string.accessibility_running) else getString(R.string.accessibility_stoped)
     }
 
@@ -201,7 +201,7 @@ class AccessibilityKeySettings : AppCompatActivity() {
 
     // 通知辅助服务配置变化
     private fun notifyService() {
-        if (AccessibleServiceHelper().sceneModeRunning(this.applicationContext)) {
+        if (AccessibleServiceHelper().serviceRunning(this.applicationContext)) {
             val intent = Intent(getString(R.string.scene_keyeventchange_action))
             sendBroadcast(intent)
         }

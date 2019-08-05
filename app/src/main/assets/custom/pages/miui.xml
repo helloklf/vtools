@@ -36,28 +36,7 @@
 
     <group title="温控">
         <action support="file:///android_asset/custom/actions/miui_thermal_conf/support.sh">
-            <resources>
-                <resource
-                    file="file:///android_asset/custom/actions/miui_thermal_conf/msmnile-high.conf" />
-                <resource
-                    file="file:///android_asset/custom/actions/miui_thermal_conf/msmnile-nolimits.conf" />
-                <resource
-                    file="file:///android_asset/custom/actions/miui_thermal_conf/msmnile-danger.conf" />
-
-                <resource
-                    file="file:///android_asset/custom/actions/miui_thermal_conf/sdm845-high.conf" />
-                <resource
-                    file="file:///android_asset/custom/actions/miui_thermal_conf/sdm845-nolimits.conf" />
-                <resource
-                    file="file:///android_asset/custom/actions/miui_thermal_conf/sdm845-danger.conf" />
-
-                <resource
-                    file="file:///android_asset/custom/actions/miui_thermal_conf/8998-high.conf" />
-                <resource
-                    file="file:///android_asset/custom/actions/miui_thermal_conf/8998-nolimits.conf" />
-                <resource
-                    file="file:///android_asset/custom/actions/miui_thermal_conf/8998-danger.conf" />
-            </resources>
+            <resource dir="file:///android_asset/custom/actions/miui_thermal_conf" />
             <title>更改温控配置</title>
             <desc sh="file:///android_asset/custom/actions/miui_thermal_conf/desc.sh">
                 本功能适用于骁龙835、845、855处理器，MIUI官方系统！

@@ -3,6 +3,8 @@ package com.omarea.vtools.addin
 import android.app.Activity
 import android.app.AlertDialog
 import android.widget.Toast
+import com.omarea.common.shared.FileWrite
+import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.ui.DialogHelper
 import com.omarea.utils.CommonCmds
 
@@ -12,19 +14,19 @@ import com.omarea.utils.CommonCmds
 
 class FullScreenAddin(private var context: Activity) : AddinBase(context) {
     fun hideNavgationBar() {
-        com.omarea.common.shared.FileWrite.writePrivateFile(context.assets, "framework-res", "framework-res", context)
-        if (com.omarea.common.shared.MagiskExtend.moduleInstalled()) {
+        FileWrite.writePrivateFile(context.assets, "framework-res", "framework-res", context)
+        if (MagiskExtend.moduleInstalled()) {
             DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle("注意")
                     .setMessage("此操作会写入/system/media/theme/default/framework-res，需要重启才能生效。如需还原，请到Magisk助手删除对应位置的文件")
                     .setPositiveButton("知道了", { _, _ ->
-                        com.omarea.common.shared.MagiskExtend.replaceSystemFile("/system/media/theme/default/framework-res", "${com.omarea.common.shared.FileWrite.getPrivateFileDir(context)}/framework-res")
+                        MagiskExtend.replaceSystemFile("/system/media/theme/default/framework-res", "${FileWrite.getPrivateFileDir(context)}/framework-res")
                         Toast.makeText(context, "已通过Magisk更改参数，请重启手机~", Toast.LENGTH_SHORT).show()
                     }))
         } else {
             command = StringBuilder()
                     .append(CommonCmds.MountSystemRW)
-                    .append("cp ${com.omarea.common.shared.FileWrite.getPrivateFileDir(context)}/framework-res /system/media/theme/default/framework-res\n")
+                    .append("cp ${FileWrite.getPrivateFileDir(context)}/framework-res /system/media/theme/default/framework-res\n")
                     .append("chmod 0755 /system/media/theme/default/framework-res\n")
                     .toString()
             DialogHelper.animDialog(AlertDialog.Builder(context)

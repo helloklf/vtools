@@ -10,7 +10,12 @@ then
     SDCARD_PATH="/data/media/$ANDROID_UID"
 fi
 
-qqsdcard="$SDCARD_PATH/tencent/MobileQQ"
+if [[ -d "$SDCARD_PATH/Tencent" ]]
+then
+    qqsdcard="$SDCARD_PATH/Tencent/MobileQQ"
+else
+    qqsdcard="$SDCARD_PATH/tencent/MobileQQ"
+fi
 qqdata="/data/user/$ANDROID_UID/com.tencent.mobileqq/files"
 
 echo "位于："
@@ -20,52 +25,67 @@ echo $qqdata
 
 echo ''
 
+
+function lock_dir() {
+    local dir="$1"
+    ulock_dir "$dir"
+    rm -rf "$dir" 2> /dev/null
+    echo "" > "$dir"
+    chattr +i "$dir" 2> /dev/null
+}
+
+function ulock_dir() {
+    local dir="$1"
+    chattr -i "$dir" 2> /dev/null
+    rm -rf "$dir" 2> /dev/null
+}
+
 am force-stop com.tencent.mobileqq 2> /dev/null
 am kill-all com.tencent.mobileqq 2> /dev/null
 am kill com.tencent.mobileqq 2> /dev/null
 
-rm -rf ${qqsdcard}/font_info
-rm -rf ${qqsdcard}/.font_info
+ulock_dir ${qqsdcard}/font_info
+ulock_dir ${qqsdcard}/.font_info
 if [[ "$font" = "0" ]];
 then
     echo '个性字体：禁用'
-    echo "" > ${qqsdcard}/.font_info
-    echo "" > ${qqsdcard}/font_info
+    lock_dir ${qqsdcard}/.font_info
+    lock_dir ${qqsdcard}/font_info
 else
     echo '个性字体：启用'
 fi
 
-rm -rf ${qqdata}/bubble_info
+ulock_dir ${qqdata}/bubble_info
 if [[ "$bubble" = "0" ]];
 then
     echo '个性气泡：禁用'
-    echo "" > ${qqdata}/bubble_info
+    lock_dir ${qqdata}/bubble_info
 else
     echo '头像挂架：启用'
 fi
 
-rm -rf ${qqdata}/pendant_info
-rm -rf ${qqdata}/.pendant
+ulock_dir ${qqdata}/pendant_info
+ulock_dir ${qqsdcard}/.pendant
 if [[ "$pendant" = "0" ]];
 then
     echo '头像挂架：禁用'
-    echo "" > ${qqsdcard}/pendant_info
-    echo "" > ${qqsdcard}/.pendant
+    lock_dir ${qqsdcard}/pendant_info
+    lock_dir ${qqsdcard}/.pendant
 else
     echo '头像挂架：启用'
 fi
 
-rm -rf ${qqsdcard}/.sticker_recommended_pics
+ulock_dir ${qqsdcard}/.sticker_recommended_pics
 if [[ "$sticker" = "0" ]]
 then
     echo '表情贴纸：禁用'
-    echo '' > ${qqsdcard}/.sticker_recommended_pics
+    lock_dir ${qqsdcard}/.sticker_recommended_pics
 else
     echo '表情贴纸：启用'
 fi
 
-rm -rf ${qqsdcard}/.nomedia
-echo "" > ${qqsdcard}/.nomedia
+ulock_dir ${qqsdcard}/.nomedia
+lock_dir ${qqsdcard}/.nomedia
 
 echo ''
 echo '操作完成，请重启QQ'

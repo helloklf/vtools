@@ -107,7 +107,7 @@ class FragmentConfig : Fragment() {
     override fun onResume() {
         super.onResume()
         bindService()
-        val serviceState = AccessibleServiceHelper().sceneModeRunning(context!!)
+        val serviceState = AccessibleServiceHelper().serviceRunning(context!!)
         btn_config_service_not_active.visibility = if (serviceState) View.GONE else View.VISIBLE
     }
 
@@ -131,7 +131,7 @@ class FragmentConfig : Fragment() {
             } else {
                 myHandler.post {
                     dialog.hideDialog()
-                    btn_config_service_not_active.visibility = if (AccessibleServiceHelper().sceneModeRunning(context!!)) View.GONE else View.VISIBLE
+                    btn_config_service_not_active.visibility = if (AccessibleServiceHelper().serviceRunning(context!!)) View.GONE else View.VISIBLE
                 }
             }
         }).start()
@@ -392,7 +392,7 @@ class FragmentConfig : Fragment() {
 
     // 通知辅助服务配置变化
     private fun notifyService(app: String, mode: String) {
-        if (AccessibleServiceHelper().sceneModeRunning(context!!)) {
+        if (AccessibleServiceHelper().serviceRunning(context!!)) {
             val intent = Intent(context!!.getString(R.string.scene_appchange_action))
             intent.putExtra("app", app)
             intent.putExtra("mode", mode)
@@ -404,7 +404,7 @@ class FragmentConfig : Fragment() {
      * 重启辅助服务
      */
     private fun reStartService() {
-        if (AccessibleServiceHelper().sceneModeRunning(context!!)) {
+        if (AccessibleServiceHelper().serviceRunning(context!!)) {
             context!!.sendBroadcast(Intent(context!!.getString(R.string.scene_change_action)))
         }
     }
