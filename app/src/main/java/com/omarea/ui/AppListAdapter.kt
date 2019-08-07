@@ -79,33 +79,25 @@ class AppListAdapter(apps: ArrayList<Appinfo>, private var keywords: String = ""
         val text = keywords.toLowerCase()
         if (text.isEmpty())
             return appList
-        return java.util.ArrayList(appList.filter { item ->
+        return ArrayList(appList.filter { item ->
             keywordSearch(item, text)
         })
     }
 
     private fun sortAppList(list: ArrayList<Appinfo>): ArrayList<Appinfo> {
         list.sortWith(Comparator { l, r ->
-            val wl = l.wranState.toString()
-            val wr = r.wranState.toString()
+            val les = l.enabledState.toString()
+            val res = r.enabledState.toString()
             when {
-                wl.isNotEmpty() && wr.isEmpty() -> 1
-                wr.isNotEmpty() && wl.isEmpty() -> -1
+                les < res -> -1
+                les > res -> 1
                 else -> {
-                    val les = l.enabledState.toString()
-                    val res = r.enabledState.toString()
+                    val lp = l.packageName.toString()
+                    val rp = r.packageName.toString()
                     when {
-                        les < res -> -1
-                        les > res -> 1
-                        else -> {
-                            val lp = l.packageName.toString()
-                            val rp = r.packageName.toString()
-                            when {
-                                lp < rp -> -1
-                                lp > rp -> 1
-                                else -> 0
-                            }
-                        }
+                        lp < rp -> -1
+                        lp > rp -> 1
+                        else -> 0
                     }
                 }
             }
@@ -175,7 +167,6 @@ class AppListAdapter(apps: ArrayList<Appinfo>, private var keywords: String = ""
             viewHolder!!.itemText = convertView.findViewById(R.id.ItemText)
             viewHolder!!.imgView = convertView.findViewById(R.id.ItemIcon)
             viewHolder!!.itemChecke = convertView.findViewById(R.id.select_state)
-            viewHolder!!.wranStateText = convertView.findViewById(R.id.ItemWranText)
             viewHolder!!.itemPath = convertView.findViewById(R.id.ItemPath)
             viewHolder!!.imgView!!.setTag(getItem(position).packageName)
             convertView.tag = viewHolder
@@ -203,10 +194,6 @@ class AppListAdapter(apps: ArrayList<Appinfo>, private var keywords: String = ""
         //从hashmap里面取出我们的状态值,然后赋值给listview对应位置的checkbox
         viewHolder!!.itemChecke!!.setChecked(states[position] == true)
 
-        if (item.wranState != null)
-            viewHolder!!.wranStateText!!.text = item.wranState
-        else
-            viewHolder!!.wranStateText!!.text = ""
         viewHolder!!.itemPath!!.text = item.path
 
         return convertView
@@ -218,7 +205,6 @@ class AppListAdapter(apps: ArrayList<Appinfo>, private var keywords: String = ""
         internal var imgView: ImageView? = null
         internal var itemText: TextView? = null
         internal var enabledStateText: TextView? = null
-        internal var wranStateText: TextView? = null
         internal var itemPath: TextView? = null
     }
 }

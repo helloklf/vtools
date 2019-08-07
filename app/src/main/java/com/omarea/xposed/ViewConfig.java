@@ -141,41 +141,6 @@ public class ViewConfig {
         });
     }
 
-    private static void hookScrollbarNoFading(final Class<?> clazz) {
-        XposedBridge.hookAllConstructors(View.class, new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                if (!(param.thisObject instanceof ScrollView) &&
-                        !(param.thisObject instanceof ListView)) {
-                    // If we set scrollbar for non-scrollable views, we will bootloop
-                    return;
-                }
-
-                if (!isEnabled()) return;
-                if (!Common.DEFAULT_SCROLLING_NO_FADING) return;
-
-                final View that = (View) param.thisObject;
-
-                final Object scroll_cache = XposedHelpers
-                        .findField(that.getClass(), "mScrollCache").get(that);
-                if (scroll_cache == null) return;
-                // If null, the ScrollView/ListView is not scrollable
-                // in the first place (poorly written apps)
-
-                final Object scroll_bar_drawable = XposedHelpers.findField(scroll_cache.getClass(),
-                        "scrollBar").get(scroll_cache);
-                if (scroll_bar_drawable == null) return;
-                // If null, the ScrollView/ListView is not currently scrollable
-                // (when screen is big enough to show all contents)
-                // Don't continue, else the app will have NullPointerException.
-                // Apparently, Google didn't catch this in the first place
-
-                that.setScrollbarFadingEnabled(false);
-            }
-        });
-
-    }
-
     private static boolean isEnabled() {
         return Common.DEFAULT_SCROLLING_ENABLE;
     }
@@ -234,8 +199,6 @@ public class ViewConfig {
     public class Common {
         //是否启用
         static final boolean DEFAULT_SCROLLING_ENABLE = true;
-        //
-        static final boolean DEFAULT_SCROLLING_NO_FADING = false;
         //滚动溢出最大距离
         static final int DEFAULT_SCROLLING_OVERSCROLL = 150;
         //滚动回弹距离

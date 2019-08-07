@@ -7,6 +7,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import com.omarea.model.Appinfo
 import java.io.File
+import java.lang.StringBuilder
 import java.util.*
 
 
@@ -23,33 +24,35 @@ class AppListHelper(context: Context) {
         return false
     }
 
-    /**
-     * 验证已备份版本
-     */
-    fun checkBackup(packageInfo: ApplicationInfo): String {
+    fun getTags(applicationInfo: ApplicationInfo): String {
+        val stateTags = StringBuilder()
         try {
-            val packageName = packageInfo.packageName
+            if (!applicationInfo.enabled) {
+                stateTags.append("❄")
+            }
+            if (isSystemApp(applicationInfo) && applicationInfo.sourceDir.startsWith("/data")) {
+                stateTags.append("⚙")
+            }
+            val packageName = applicationInfo.packageName
             val absPath = CommonCmds.AbsBackUpDir + packageName + ".apk"
             if (File(absPath).exists()) {
                 val backupInfo = packageManager.getPackageArchiveInfo(absPath, PackageManager.GET_ACTIVITIES)
-                val installInfo = packageManager.getPackageInfo(packageInfo.packageName, 0)
+                val installInfo = packageManager.getPackageInfo(applicationInfo.packageName, 0)
                 if (installInfo == null)
                     return ""
                 if (backupInfo.versionCode == installInfo.versionCode) {
-                    return "✔"
+                    stateTags.append("✔")
                 } else if (backupInfo.versionCode > installInfo.versionCode) {
-                    return "✘"
+                    stateTags.append("✘")
                 } else {
-                    return "★"
+                    stateTags.append("★")
                 }
             } else if (File(CommonCmds.BackUpDir + packageName + ".tar.gz").exists()) {
-                return "☆"
-            } else {
-                return ""
+                stateTags.append("☆")
             }
         } catch (ex: Exception) {
-            return ""
         }
+        return  stateTags.toString()
     }
 
     /**
@@ -82,14 +85,21 @@ class AppListHelper(context: Context) {
         val list = ArrayList<Appinfo>()/*在数组中存放数据*/
         for (i in packageInfos.indices) {
             val applicationInfo = packageInfos[i]
+            val appPath = applicationInfo.sourceDir
+            if (appPath == null) {
+                continue
+            }
             if (removeIgnore && exclude(applicationInfo.packageName)) {
                 continue
             }
 
-            // if ((systemApp == false && applicationInfo.sourceDir.startsWith("/system")) || (systemApp == true && !applicationInfo.sourceDir.startsWith("/system")))
-            //    continue
-            if ((systemApp == false && isSystemApp(applicationInfo)) || (systemApp == true && !isSystemApp(applicationInfo)))
+            if (
+                    appPath.startsWith("/vendor") ||
+                    (systemApp == false && !appPath.startsWith("/data")) ||
+                    (systemApp == true && !appPath.startsWith("/system"))
+            ) {
                 continue
+            }
             // ApplicationInfo.FLAG_SYSTEM
 
             val file = File(applicationInfo.publicSourceDir)
@@ -103,9 +113,9 @@ class AppListHelper(context: Context) {
             //item.icon = d
             item.dir = file.parent
             item.enabled = applicationInfo.enabled
-            item.enabledState = checkBackup(applicationInfo)
-            item.wranState = if (applicationInfo.enabled) "" else "已冻结"
-            item.path = applicationInfo.sourceDir
+            item.enabledState = getTags(applicationInfo)
+            item.path = appPath
+            item.updated = isSystemApp(applicationInfo) && appPath.startsWith("/data")
             // item.appType = if (applicationInfo.sourceDir.startsWith("/system")) Appinfo.AppType.SYSTEM else Appinfo.AppType.USER
             item.appType = if ((applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0) Appinfo.AppType.USER else Appinfo.AppType.SYSTEM
             try {
@@ -161,9 +171,9 @@ class AppListHelper(context: Context) {
             //item.icon = d
             item.dir = file.parent
             item.enabled = applicationInfo.enabled
-            item.enabledState = checkBackup(applicationInfo)
-            item.wranState = if (applicationInfo.enabled) "" else "已冻结"
+            item.enabledState = getTags(applicationInfo)
             item.path = applicationInfo.sourceDir
+            item.updated = isSystemApp(applicationInfo) && file.parent.startsWith("/data")
             // item.appType = if (applicationInfo.sourceDir.startsWith("/system")) Appinfo.AppType.SYSTEM else Appinfo.AppType.USER
             item.appType = if ((applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0) Appinfo.AppType.USER else Appinfo.AppType.SYSTEM
             try {

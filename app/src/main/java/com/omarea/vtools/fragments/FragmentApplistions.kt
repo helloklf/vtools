@@ -64,9 +64,9 @@ class FragmentApplistions : Fragment() {
         tabHost.setup()
         val tabIconHelper = TabIconHelper(tabHost, this.activity!!)
 
-        tabIconHelper.newTabSpec("用户", context!!.getDrawable(R.drawable.tab_app)!!, R.id.tab_apps_user)
-        tabIconHelper.newTabSpec("系统", context!!.getDrawable(R.drawable.tab_security)!!, R.id.tab_apps_system)
-        tabIconHelper.newTabSpec("已备份", context!!.getDrawable(R.drawable.tab_package)!!, R.id.tab_apps_backuped)
+        tabIconHelper.newTabSpec("data", context!!.getDrawable(R.drawable.tab_app)!!, R.id.tab_apps_user)
+        tabIconHelper.newTabSpec("system", context!!.getDrawable(R.drawable.tab_security)!!, R.id.tab_apps_system)
+        tabIconHelper.newTabSpec("backups", context!!.getDrawable(R.drawable.tab_package)!!, R.id.tab_apps_backuped)
         tabIconHelper.newTabSpec("帮助", context!!.getDrawable(R.drawable.tab_help)!!, R.id.tab_apps_helper)
         tabHost.setOnTabChangedListener({ tabId ->
             tabIconHelper.updateHighlight()
