@@ -432,6 +432,9 @@
     <string name="shortcut_create">添加快捷方式</string>
     <string name="shortcut_create_desc">你希望将“%s”添加到桌面，方便快速使用吗？</string>
     <string name="ushortcut_nsupported">该功能不支持添加快捷方式</string>
+    <string name="btn_copy_output">复制输出</string>
+    <string name="copy_success">复制成功</string>
+    <string name="copy_fail">复制失败</string>
     <string name="promote_link">https://tinyurl.com/y3j7vszf</string>
 
     <string-array name="device_templates">

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@drawable/krscript_item_ripple"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingLeft="23dp"
+    android:paddingRight="23dp"
+    android:paddingBottom="10dp"
+    android:paddingTop="10dp">
+    <TextView
+        android:id="@+id/kr_param_title"
+        style="@style/textTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <FrameLayout
+        android:id="@+id/kr_param_input"
+        android:minHeight="43dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginBottom="1dp"
+        android:gravity="center_vertical"
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/kr_shape_corner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </FrameLayout>
+    <TextView
+        android:id="@+id/kr_param_desc"
+        style="@style/textSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

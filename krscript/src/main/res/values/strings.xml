@@ -8,4 +8,8 @@
     <string name="btn_execute">执行</string>
     <string name="onloading">正在加载数据…</string>
     <string name="script_losted">脚本资源丢失\n</string>
+    <string name="btn_copy_output">复制输出</string>
+    <string name="copy_success">复制成功</string>
+    <string name="copy_fail">复制失败</string>
+    <string name="do_not_empty">不可为空</string>
 </resources>

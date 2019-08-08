@@ -118,30 +118,44 @@
                     </com.omarea.common.ui.OverScrollView>
 
                     <LinearLayout
-                        style="@style/ListCardItemLast"
+                        android:background="@drawable/krscript_item_ripple_inactive"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="end"
+                        android:layout_gravity="center_vertical"
                         android:orientation="horizontal"
                         android:paddingTop="0dp"
                         android:paddingRight="0dp"
                         android:paddingBottom="0dp">
-
                         <Button
-                            android:id="@+id/btn_hide"
+                            android:id="@+id/btn_copy"
                             style="@style/Widget.AppCompat.ActionButton"
-                            android:layout_width="70dp"
+                            android:layout_width="100dp"
                             android:layout_height="wrap_content"
-                            android:text="@string/btn_hide" />
+                            android:text="@string/btn_copy_output" />
 
-                        <Button
-                            android:id="@+id/btn_exit"
-                            style="@style/Widget.AppCompat.ActionButton"
-                            android:layout_width="70dp"
-                            android:layout_height="wrap_content"
-                            android:text="@string/btn_exit"
-                            android:textColor="@android:color/holo_red_light"
-                            android:visibility="gone" />
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:layout_weight="1"
+                            android:layout_width="0dp"
+                            android:layout_gravity="end"
+                            android:gravity="end"
+                            android:layout_height="match_parent">
+                            <Button
+                                android:id="@+id/btn_hide"
+                                style="@style/Widget.AppCompat.ActionButton"
+                                android:layout_width="70dp"
+                                android:layout_height="wrap_content"
+                                android:text="@string/btn_hide" />
+
+                            <Button
+                                android:id="@+id/btn_exit"
+                                style="@style/Widget.AppCompat.ActionButton"
+                                android:layout_width="70dp"
+                                android:layout_height="wrap_content"
+                                android:text="@string/btn_exit"
+                                android:textColor="@android:color/holo_red_light"
+                                android:visibility="gone" />
+                        </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
             </FrameLayout>

@@ -177,11 +177,15 @@ class PageConfigReader(private var context: Context) {
                 val attrName = parser.getAttributeName(i)
                 when {
                     attrName == "name" -> actionParamInfo.name = parser.getAttributeValue(i)
+                    attrName == "title" -> actionParamInfo.title = parser.getAttributeValue(i)
                     attrName == "desc" -> actionParamInfo.desc = parser.getAttributeValue(i)
                     attrName == "value" -> actionParamInfo.value = parser.getAttributeValue(i)
                     attrName == "type" -> actionParamInfo.type = parser.getAttributeValue(i).toLowerCase().trim { it <= ' ' }
                     attrName == "readonly" -> actionParamInfo.readonly = parser.getAttributeValue(i).toLowerCase().trim { it <= ' ' } == "readonly"
                     attrName == "maxlength" -> actionParamInfo.maxLength = Integer.parseInt(parser.getAttributeValue(i))
+                    attrName == "min" -> actionParamInfo.min = Integer.parseInt(parser.getAttributeValue(i))
+                    attrName == "max" -> actionParamInfo.max = Integer.parseInt(parser.getAttributeValue(i))
+                    attrName == "required" -> actionParamInfo.required = parser.getAttributeValue(i) == "true" || parser.getAttributeValue(i) == "1" || parser.getAttributeValue(i) == "required"
                     attrName == "value-sh" || attrName == "value-su" -> {
                         val script = parser.getAttributeValue(i)
                         actionParamInfo.valueShell = script

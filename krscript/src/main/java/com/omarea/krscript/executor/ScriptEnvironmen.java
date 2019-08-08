@@ -3,12 +3,11 @@ package com.omarea.krscript.executor;
 import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
-import android.widget.Toast;
+import android.util.Log;
 
 import com.omarea.common.shared.FileWrite;
 import com.omarea.common.shared.MagiskExtend;
 import com.omarea.common.shell.KeepShellPublic;
-import com.omarea.krscript.R;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -232,11 +231,10 @@ public class ScriptEnvironmen {
 
     /**
      *
-     * @param context
      * @param params
      * @return
      */
-    private static ArrayList<String> getVariables(Context context, HashMap<String, String> params) {
+    private static ArrayList<String> getVariables(HashMap<String, String> params) {
         ArrayList<String> envp = new ArrayList<>();
 
         if (params != null) {
@@ -245,7 +243,7 @@ public class ScriptEnvironmen {
                 if (value == null) {
                     value = "";
                 }
-                envp.add(key + "=" + value);
+                envp.add(key + "='" + value.replaceAll("'", "'\\\\''") + "'");
             }
         }
 
@@ -264,7 +262,7 @@ public class ScriptEnvironmen {
             DataOutputStream dataOutputStream,
             String cmds,
             HashMap<String, String> params) {
-        ArrayList<String> envp = getVariables(context, params);
+        ArrayList<String> envp = getVariables(params);
         StringBuilder envpCmds = new StringBuilder();
         if (envp.size() > 0) {
             for (String param : envp) {
@@ -273,6 +271,7 @@ public class ScriptEnvironmen {
         }
         try {
             dataOutputStream.write(envpCmds.toString().getBytes("UTF-8"));
+            Log.d("envpCmds", envpCmds.toString());
 
             dataOutputStream.write(String.format("cd \"%s\"\n\n", getStartPath(context)).getBytes("UTF-8"));
 

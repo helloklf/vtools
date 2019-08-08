@@ -2,6 +2,8 @@ package com.omarea.krscript.executor;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.text.SpannableString;
 import android.view.LayoutInflater;
@@ -10,6 +12,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.omarea.krscript.R;
 import com.omarea.krscript.model.ShellHandlerBase;
@@ -27,7 +30,7 @@ public class SimpleShellHandler extends ShellHandlerBase {
     public Dialog dialog;
     private Runnable forceStop;
 
-    SimpleShellHandler(Context context, String title, boolean autoOff) {
+    SimpleShellHandler(final Context context, String title, boolean autoOff) {
         this.context = context;
         this.autoOff = autoOff;
 
@@ -69,6 +72,19 @@ public class SimpleShellHandler extends ShellHandlerBase {
                 cleanUp();
                 if (forceStop != null && !finished) {
                     forceStop.run();
+                }
+            }
+        });
+        view.findViewById(R.id.btn_copy).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    ClipboardManager myClipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData myClip = ClipData.newPlainText("text", textView.getText().toString());
+                    myClipboard.setPrimaryClip(myClip);
+                    Toast.makeText(context, context.getString(R.string.copy_success), Toast.LENGTH_SHORT).show();
+                } catch (Exception ex) {
+                    Toast.makeText(context, context.getString(R.string.copy_fail), Toast.LENGTH_SHORT).show();
                 }
             }
         });

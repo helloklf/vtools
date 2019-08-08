@@ -1,8 +1,7 @@
 package com.omarea.vtools.activitys
 
 import android.app.AlertDialog
-import android.content.ComponentName
-import android.content.Intent
+import android.content.*
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -175,6 +174,18 @@ class ActionPage : AppCompatActivity() {
                     forceStopRunnable!!.run()
                 }
             }
+            btn_copy.setOnClickListener {
+                try {
+                    val myClipboard: ClipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val myClip: ClipData
+                    myClip = ClipData.newPlainText("text", shell_output.text.toString())
+                    myClipboard.setPrimaryClip(myClip)
+                    Toast.makeText(this@ActionPage, getString(R.string.copy_success), Toast.LENGTH_SHORT).show()
+                } catch (ex: Exception) {
+                    Toast.makeText(this@ActionPage, getString(R.string.copy_fail), Toast.LENGTH_SHORT).show()
+                }
+            }
+
             if (configItem.interruptible) {
                 btn_hide.visibility = View.VISIBLE
                 btn_exit.visibility = View.VISIBLE
