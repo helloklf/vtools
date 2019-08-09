@@ -4,10 +4,10 @@
         <title>低电量级别</title>
         <desc>设置低电量级别，以及触发低电量模式的级别</desc>
         <params>
-            <param name="level" desc="低电量模式触发级别"
+            <param name="level" title="低电量模式触发级别"
                 options-sh="file:///android_asset/custom/actions/power_level_options.sh"
                 value-sh="settings get global low_power_trigger_level" />
-            <param name="levelmax" desc="低电量提示级别"
+            <param name="levelmax" title="低电量提示级别"
                 options-sh="file:///android_asset/custom/actions/power_level_options.sh"
                 value-sh="settings get global low_power_trigger_level_max" />
         </params>

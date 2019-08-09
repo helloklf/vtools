@@ -177,6 +177,7 @@ class PageConfigReader(private var context: Context) {
                 val attrName = parser.getAttributeName(i)
                 when {
                     attrName == "name" -> actionParamInfo.name = parser.getAttributeValue(i)
+                    attrName == "label" -> actionParamInfo.label = parser.getAttributeValue(i)
                     attrName == "title" -> actionParamInfo.title = parser.getAttributeValue(i)
                     attrName == "desc" -> actionParamInfo.desc = parser.getAttributeValue(i)
                     attrName == "value" -> actionParamInfo.value = parser.getAttributeValue(i)

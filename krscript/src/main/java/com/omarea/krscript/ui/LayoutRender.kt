@@ -30,7 +30,7 @@ class LayoutRender {
 
     fun renderList(actionParamInfos: ArrayList<ActionParamInfo>) {
         for (actionParamInfo in actionParamInfos) {
-            val options = getParamOptions(actionParamInfo) // 获取参数的可用选项
+            val options = actionParamInfo.optionsFromShell
             // 下拉框渲染
             if (options != null) {
                 val spinner = Spinner(context)
@@ -46,11 +46,10 @@ class LayoutRender {
             }
             // 选择框渲染
             else if (actionParamInfo.type == "bool") {
-                val checkBox = CheckBox(context)
-                checkBox.hint = if (actionParamInfo.title != null) actionParamInfo.title else actionParamInfo.name
-                checkBox.isChecked = getCheckState(actionParamInfo, false)
-                checkBox.isEnabled = !actionParamInfo.readonly
-                addToLayout(checkBox, actionParamInfo)
+                val switch = Switch(context)
+                switch.isChecked = getCheckState(actionParamInfo, false)
+                switch.isEnabled = !actionParamInfo.readonly
+                addToLayout(switch, actionParamInfo)
             }
             // 滑块
             else if (actionParamInfo.type == "seekbar") {
@@ -83,10 +82,16 @@ class LayoutRender {
         inputView.tag = actionParamInfo.name
 
         val layout = LayoutInflater.from(context).inflate(R.layout.layout_param_row, null)
-        if (!actionParamInfo.title.isNullOrEmpty() && actionParamInfo.type != "bool") {
+        if (!actionParamInfo.title.isNullOrEmpty()) {
             layout.findViewById<TextView>(R.id.kr_param_title).text = actionParamInfo.title
         } else {
             layout.findViewById<TextView>(R.id.kr_param_title).visibility = View.GONE
+        }
+
+        if (!actionParamInfo.label.isNullOrEmpty()) {
+            layout.findViewById<TextView>(R.id.kr_param_label).text = actionParamInfo.label
+        } else {
+            layout.findViewById<TextView>(R.id.kr_param_label).visibility = View.GONE
         }
 
         if (!actionParamInfo.desc.isNullOrEmpty()) {
@@ -97,7 +102,7 @@ class LayoutRender {
 
         layout.findViewById<FrameLayout>(R.id.kr_param_input).addView(inputView)
         linearLayout.addView(layout)
-        (layout.layoutParams as LinearLayout.LayoutParams).topMargin = dp2px(context, 1f)
+        // (layout.layoutParams as LinearLayout.LayoutParams).topMargin = dp2px(context, 1f)
 
         (inputView.layoutParams as FrameLayout.LayoutParams).gravity = Gravity.CENTER_VERTICAL
     }
@@ -129,6 +134,8 @@ class LayoutRender {
                 actionParamInfo.value = text
             } else if (view is CheckBox) {
                 actionParamInfo.value = if (view.isChecked) "1" else "0"
+            } else if (view is Switch) {
+                actionParamInfo.value = if (view.isChecked) "1" else "0"
             } else if (view is SeekBar) {
                 val text = (view.progress + actionParamInfo.min).toString()
                 actionParamInfo.value = text
@@ -152,6 +159,22 @@ class LayoutRender {
             }
         }
         return params
+    }
+
+    /**
+     * TODO:刷新界面上的参数输入框显示
+     */
+    fun updateParamsView(actionParamInfos: ArrayList<ActionParamInfo>) {
+        for (actionParamInfo in actionParamInfos) {
+            if (actionParamInfo.name == null) {
+                continue
+            }
+
+            val view = linearLayout.findViewWithTag<View>(actionParamInfo.name)
+            if (view != null) {
+                // TODO:刷新界面显示
+            }
+        }
     }
 
     /**
@@ -183,59 +206,6 @@ class LayoutRender {
             }
         }
         return selectedIndex
-    }
-
-    /**
-     * 获取Param的Options
-     */
-    private fun getParamOptions(actionParamInfo: ActionParamInfo): ArrayList<HashMap<String, Any>>? {
-        val options = ArrayList<HashMap<String, Any>>()
-        var shellResult = ""
-        if (!actionParamInfo.optionsSh.isEmpty()) {
-            shellResult = executeScriptGetResult(context, actionParamInfo.optionsSh)
-        }
-
-        if (!(shellResult == "error" || shellResult == "null" || shellResult.isEmpty())) {
-            for (item in shellResult.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
-                if (item.contains("|")) {
-                    val itemSplit = item.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-                    options.add(object : HashMap<String, Any>() {
-                        init {
-                            put("title", itemSplit[1])
-                            put("item", object : ActionParamInfo.ActionParamOption() {
-                                init {
-                                    value = itemSplit[0]
-                                    desc = itemSplit[1]
-                                }
-                            })
-                        }
-                    })
-                } else {
-                    options.add(object : HashMap<String, Any>() {
-                        init {
-                            put("title", item)
-                            put("item", object : ActionParamInfo.ActionParamOption() {
-                                init {
-                                    value = item
-                                    desc = item
-                                }
-                            })
-                        }
-                    })
-                }
-            }
-        } else if (actionParamInfo.options != null) {
-            for (option in actionParamInfo.options!!) {
-                val opt = HashMap<String, Any>()
-                opt.set("title", if (option.desc == null) "" else option.desc!!)
-                opt["item"] = option
-                options.add(opt)
-            }
-        } else {
-            return null
-        }
-
-        return options
     }
 
     /**

@@ -41,10 +41,10 @@
             <desc sh="file:///android_asset/custom/actions/miui_thermal_conf/desc.sh">
                 本功能适用于骁龙835、845、855处理器，MIUI官方系统！
             </desc>
-            <param name="mode" desc="温控模式"
+            <param name="mode" title="温控模式"
                 options-sh="file:///android_asset/custom/actions/miui_thermal_conf/options.sh"
                 value-sh="file:///android_asset/custom/actions/miui_thermal_conf/current.sh" />
-            <param name="platform" desc="处理器(SOC)"
+            <param name="platform" title="处理器(SOC)"
                 options-sh="file:///android_asset/custom/actions/miui_thermal_conf/soc-options.sh" />
             <script>file:///android_asset/custom/actions/miui_thermal_conf/config.sh</script>
         </action>

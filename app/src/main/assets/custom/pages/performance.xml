@@ -21,16 +21,16 @@
             <desc>增加核心线程数（不超过CPU核心数量）可以提高应用安装效率，但会造成应用安装过程中卡顿！</desc>
             <script>file:///android_asset/custom/actions/dex2oat_threads_set.sh</script>
             <params>
-                <param name="boot" desc="启动时(boot-dex2oat-threads)"
+                <param name="boot" title="启动时(boot-dex2oat-threads)"
                     options-sh="file:///android_asset/custom/actions/thread_count_options.sh"
                     value-sh="getprop dalvik.vm.boot-dex2oat-threads" />
-                <param name="dex2oat" desc="启动后(dex2oat-threads)"
+                <param name="dex2oat" title="启动后(dex2oat-threads)"
                     options-sh="file:///android_asset/custom/actions/thread_count_options.sh"
                     value-sh="getprop dalvik.vm.dex2oat-threads" />
-                <param name="image" desc="编译启动映像(image-dex2oat-threads)"
+                <param name="image" title="编译启动映像(image-dex2oat-threads)"
                     options-sh="file:///android_asset/custom/actions/thread_count_options.sh"
                     value-sh="getprop dalvik.vm.image-dex2oat-threads" />
-                <param name="other" desc="dex2oat_thread_count" readonly="readonly">
+                <param name="other" title="dex2oat_thread_count" readonly="readonly">
                     <option value="">默认</option>
                 </param>
             </params>
@@ -47,7 +47,7 @@
             <title>硬删温控 *不推荐</title>
             <desc>用于骁龙处理器设备，删除/system和/vendor目录中，名称包含thermal的文件，这是非常危险的操作</desc>
             <params>
-                <param name="action" desc="操作"
+                <param name="action" title="操作"
                     options-sh="file:///android_asset/custom/actions/qualcomm_thermal/options.sh" />
             </params>
             <script>file:///android_asset/custom/actions/qualcomm_thermal/set.sh</script>
@@ -94,20 +94,20 @@
             <title>写入缓冲</title>
             <desc>调整写入缓冲区容量</desc>
             <params>
-                <param name="dirty_background_ratio" desc="写入 - 最小缓冲容量"
+                <param name="dirty_background_ratio" title="写入 - 最小缓冲容量"
                     options-sh="file:///android_asset/custom/actions/io/cache_ratio_options.sh"
                     value-sh="cat /proc/sys/vm/dirty_background_ratio" />
-                <param name="dirty_ratio" desc="写入 - 最大缓冲容量"
+                <param name="dirty_ratio" title="写入 - 最大缓冲容量"
                     options-sh="file:///android_asset/custom/actions/io/cache_ratio_options.sh"
                     value-sh="cat /proc/sys/vm/dirty_ratio" />
-                <param name="dirty_writeback_centisecs" desc="写入 - 缓存刷写频率(小于失效时间)"
+                <param name="dirty_writeback_centisecs" title="写入 - 缓存刷写频率(小于失效时间)"
                     options-sh="file:///android_asset/custom/actions/io/write_time_options.sh"
                     value-sh="cat /proc/sys/vm/dirty_writeback_centisecs" />
-                <param name="dirty_expire_centisecs" desc="写入 - 缓存失效时间"
+                <param name="dirty_expire_centisecs" title="写入 - 缓存失效时间"
                     options-sh="file:///android_asset/custom/actions/io/write_time_options.sh"
                     value-sh="cat /proc/sys/vm/dirty_expire_centisecs" />
 
-                <param name="read_ahead_kb" desc="读取 - 缓冲大小"
+                <param name="read_ahead_kb" title="读取 - 缓冲大小"
                     options-sh="file:///android_asset/custom/actions/io/read_cache_options.sh"
                     value-sh="cat /sys/block/sda/queue/read_ahead_kb" />
             </params>

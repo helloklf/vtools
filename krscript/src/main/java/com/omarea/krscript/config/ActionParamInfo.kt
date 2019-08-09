@@ -1,12 +1,16 @@
 package com.omarea.krscript.config
 
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class ActionParamInfo {
     // 参数名：必需保持唯一
     var name: String? = null
 
     var title: String? = null
+
+    var label: String? = null
 
     // 描述
     var desc: String? = null
@@ -22,6 +26,7 @@ class ActionParamInfo {
     var required: Boolean = false // 是否是必需的
     var readonly: Boolean = false
     var options: ArrayList<ActionParamOption>? = null
+    var optionsFromShell: ArrayList<HashMap<String, Any>>? = null
     var optionsSh = ""
     // 是否支持
     var supported: Boolean = true

@@ -33,7 +33,6 @@
         android:layout_height="30dp" />
     <TextView
         android:id="@+id/kr_param_seekbar_value"
-        style="@style/textSmall"
         android:textAlignment="center"
         android:layout_width="60dp"
         android:layout_height="wrap_content" />

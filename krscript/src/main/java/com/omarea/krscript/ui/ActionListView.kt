@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Handler
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
 import com.omarea.common.ui.DialogHelper
@@ -16,8 +15,6 @@ import com.omarea.krscript.config.ActionParamInfo
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.executor.SimpleShellExecutor
 import com.omarea.krscript.model.*
-import java.util.*
-import kotlin.collections.HashMap
 
 class ActionListView : OverScrollListView {
     constructor(context: Context) : super(context) {}
@@ -159,14 +156,24 @@ class ActionListView : OverScrollListView {
                 progressBarDialog.showDialog(context.getString(R.string.onloading))
                 Thread(Runnable {
                     for (actionParamInfo in actionParamInfos) {
+                        handler.post {
+                            progressBarDialog.showDialog(context.getString(R.string.kr_param_load) + if (!actionParamInfo.title.isNullOrEmpty()) actionParamInfo.title else actionParamInfo.name)
+                        }
                         if (actionParamInfo.valueShell != null) {
                             actionParamInfo.valueFromShell = executeScriptGetResult(context, actionParamInfo.valueShell!!)
                         }
+                        handler.post {
+                            progressBarDialog.showDialog(context.getString(R.string.kr_param_options_load) + if (!actionParamInfo.title.isNullOrEmpty()) actionParamInfo.title else actionParamInfo.name)
+                        }
+                        actionParamInfo.optionsFromShell = getParamOptions(actionParamInfo) // 获取参数的可用选项
                     }
                     handler.post {
-                        progressBarDialog.hideDialog()
+                        progressBarDialog.showDialog(context.getString(R.string.kr_params_render))
+                    }
+                    handler.post {
                         val render = LayoutRender(linearLayout)
                         render.renderList(actionParamInfos)
+                        progressBarDialog.hideDialog()
                         if (actionShortClickHandler != null && actionShortClickHandler!!.onParamsView(action,
                                         linearLayout,
                                         Runnable { },
@@ -207,55 +214,56 @@ class ActionListView : OverScrollListView {
     }
 
     /**
-     * 读取界面上填入的参数值
+     * 获取Param的Options
      */
-    private fun readParamsValue(actionParamInfos: ArrayList<ActionParamInfo>, viewList: View): HashMap<String, String> {
-        val params = HashMap<String, String>()
-        for (actionParamInfo in actionParamInfos) {
-            if (actionParamInfo.name == null) {
-                continue
-            }
-
-            val view = viewList.findViewWithTag<View>(actionParamInfo.name)
-            if (view is EditText) {
-                val text = view.text.toString()
-                if ((actionParamInfo.type == "int" || actionParamInfo.type == "number") && text.isNotEmpty()) {
-                    try {
-                        val value = text.toInt()
-                        if (value < actionParamInfo.min) {
-                            throw Exception("[${actionParamInfo.desc}] ${value} < ${actionParamInfo.min} !!!")
-                        } else if (value > actionParamInfo.max) {
-                            throw Exception("[${actionParamInfo.desc}] ${value} > ${actionParamInfo.max} !!!")
-                        }
-                    } catch (ex: java.lang.NumberFormatException) {
-                    }
-                }
-                actionParamInfo.value = text
-            } else if (view is CheckBox) {
-                actionParamInfo.value = if (view.isChecked) "1" else "0"
-            } else if (view is SeekBar) {
-                val text = (view.progress + actionParamInfo.min).toString()
-                actionParamInfo.value = text
-            } else if (view is Spinner) {
-                val item = view.selectedItem
-                if (item is HashMap<*, *>) {
-                    val opt = item["item"] as ActionParamInfo.ActionParamOption
-                    actionParamInfo.value = opt.value
-                } else
-                    actionParamInfo.value = item.toString()
-            }
-
-            if (actionParamInfo.value.isNullOrEmpty()) {
-                if (actionParamInfo.required) {
-                    throw Exception("${actionParamInfo.desc} ${actionParamInfo.name}" + context.getString(R.string.do_not_empty))
-                } else {
-                    params.set(actionParamInfo.name!!, "")
-                }
-            } else {
-                params.set(actionParamInfo.name!!, actionParamInfo.value!!)
-            }
+    private fun getParamOptions(actionParamInfo: ActionParamInfo): ArrayList<HashMap<String, Any>>? {
+        val options = ArrayList<HashMap<String, Any>>()
+        var shellResult = ""
+        if (!actionParamInfo.optionsSh.isEmpty()) {
+            shellResult = executeScriptGetResult(context, actionParamInfo.optionsSh)
         }
-        return params
+
+        if (!(shellResult == "error" || shellResult == "null" || shellResult.isEmpty())) {
+            for (item in shellResult.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()) {
+                if (item.contains("|")) {
+                    val itemSplit = item.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                    options.add(object : HashMap<String, Any>() {
+                        init {
+                            put("title", itemSplit[1])
+                            put("item", object : ActionParamInfo.ActionParamOption() {
+                                init {
+                                    value = itemSplit[0]
+                                    desc = itemSplit[1]
+                                }
+                            })
+                        }
+                    })
+                } else {
+                    options.add(object : HashMap<String, Any>() {
+                        init {
+                            put("title", item)
+                            put("item", object : ActionParamInfo.ActionParamOption() {
+                                init {
+                                    value = item
+                                    desc = item
+                                }
+                            })
+                        }
+                    })
+                }
+            }
+        } else if (actionParamInfo.options != null) {
+            for (option in actionParamInfo.options!!) {
+                val opt = HashMap<String, Any>()
+                opt.set("title", if (option.desc == null) "" else option.desc!!)
+                opt["item"] = option
+                options.add(opt)
+            }
+        } else {
+            return null
+        }
+
+        return options
     }
 
     private fun executeScriptGetResult(context: Context, shellScript: String): String {

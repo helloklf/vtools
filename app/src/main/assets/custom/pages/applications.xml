@@ -11,19 +11,19 @@
             <title>QQ个性化</title>
             <desc>禁用此选项将去除QQ的个性化字体、气泡、头像挂件</desc>
             <params>
-                <param name="font" desc="个性字体">
+                <param name="font" title="个性字体">
                     <option value="1">启用</option>
                     <option value="0">禁用</option>
                 </param>
-                <param name="bubble" desc="个性气泡">
+                <param name="bubble" title="个性气泡">
                     <option value="1">启用</option>
                     <option value="0">禁用</option>
                 </param>
-                <param name="pendant" desc="头像挂件">
+                <param name="pendant" title="头像挂件">
                     <option value="1">启用</option>
                     <option value="0">禁用</option>
                 </param>
-                <param name="sticker" desc="表情贴纸">
+                <param name="sticker" title="表情贴纸">
                     <option value="1">启用</option>
                     <option value="0">禁用</option>
                 </param>

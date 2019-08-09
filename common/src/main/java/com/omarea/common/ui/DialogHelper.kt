@@ -20,7 +20,7 @@ class DialogHelper {
             return dialog
         }
 
-        fun helpInfo(context: Context, title:String, message: String): AlertDialog? {
+        fun helpInfo(context: Context, title: String, message: String): AlertDialog? {
             val dialog = AlertDialog.Builder(context)
                     .setTitle(title)
                     .setMessage(message)
@@ -29,7 +29,7 @@ class DialogHelper {
             return animDialog(dialog)
         }
 
-        fun helpInfo(context: Context, title:Int, message: Int): AlertDialog? {
+        fun helpInfo(context: Context, title: Int, message: Int): AlertDialog? {
             return animDialog(
                     AlertDialog.Builder(context)
                             .setTitle(title)

@@ -12,4 +12,7 @@
     <string name="copy_success">复制成功</string>
     <string name="copy_fail">复制失败</string>
     <string name="do_not_empty">不可为空</string>
+    <string name="kr_param_load">获取状态 </string>
+    <string name="kr_param_options_load">加载候选列表 </string>
+    <string name="kr_params_render">渲染界面……</string>
 </resources>

@@ -1,31 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:background="@drawable/krscript_item_ripple"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingLeft="23dp"
     android:paddingRight="23dp"
-    android:paddingBottom="10dp"
-    android:paddingTop="10dp">
+    android:paddingBottom="2dp">
     <TextView
         android:id="@+id/kr_param_title"
+        android:layout_marginTop="10dp"
         style="@style/textTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-    <FrameLayout
-        android:id="@+id/kr_param_input"
+    <LinearLayout
         android:minHeight="43dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginBottom="1dp"
-        android:gravity="center_vertical"
-        android:layout_gravity="center_vertical"
         android:background="@drawable/kr_shape_corner"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    </FrameLayout>
+        <TextView
+            android:id="@+id/kr_param_label"
+            style="@style/textTitle"
+            android:textStyle="normal"
+            android:layout_gravity="center_vertical"
+            android:paddingLeft="8dp"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content" />
+        <FrameLayout
+            android:id="@+id/kr_param_input"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="1dp"
+            android:layout_gravity="center_vertical"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+        </FrameLayout>
+    </LinearLayout>
     <TextView
         android:id="@+id/kr_param_desc"
+        android:layout_marginBottom="10dp"
         style="@style/textSmall"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

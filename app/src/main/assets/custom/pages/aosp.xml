@@ -17,12 +17,12 @@
             <title>夜间模式</title>
             <desc>切换夜间模式开关设置</desc>
             <params>
-                <param name="state" desc="夜间模式" value-sh="settings get secure ui_night_mode">
+                <param name="state" title="夜间模式" value-sh="settings get secure ui_night_mode">
                     <option value="0">自动</option>
                     <option value="1">关闭</option>
                     <option value="2">开启</option>
                 </param>
-                <param name="hotreboot" desc="附加操作">
+                <param name="hotreboot" title="附加操作">
                     <option value="0">不需要</option>
                     <option value="1">切换后热重启</option>
                 </param>
@@ -84,10 +84,10 @@
             <title>低电量级别</title>
             <desc>设置低电量级别，以及触发低电量模式的级别</desc>
             <params>
-                <param name="level" desc="低电量模式触发级别"
+                <param name="level" title="低电量模式触发级别"
                     options-sh="file:///android_asset/custom/actions/power_level_options.sh"
                     value-sh="settings get global low_power_trigger_level" />
-                <param name="levelmax" desc="低电量提示级别"
+                <param name="levelmax" title="低电量提示级别"
                     options-sh="file:///android_asset/custom/actions/power_level_options.sh"
                     value-sh="settings get global low_power_trigger_level_max" />
             </params>
@@ -100,7 +100,7 @@
             <title>去除！和×</title>
             <desc>通过修改网络检测服务器为国内地址，修复状态栏的WIFI、LTE图标一直显示！或×</desc>
             <params>
-                <param name="state" desc="操作类型">
+                <param name="state" title="操作类型">
                     <option value="1">去除！和×</option>
                     <option value="0">还原</option>
                 </param>
