@@ -39,7 +39,7 @@ class SeekBarRender(private var actionParamInfo: ActionParamInfo, private var co
             }
         })
         minus.setOnClickListener {
-            if (seekbar.progress > 1) {
+            if (seekbar.progress > 0) {
                 seekbar.progress -= 1
             }
         }
