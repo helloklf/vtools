@@ -157,13 +157,13 @@ class ActionListView : OverScrollListView {
                 Thread(Runnable {
                     for (actionParamInfo in actionParamInfos) {
                         handler.post {
-                            progressBarDialog.showDialog(context.getString(R.string.kr_param_load) + if (!actionParamInfo.title.isNullOrEmpty()) actionParamInfo.title else actionParamInfo.name)
+                            progressBarDialog.showDialog(context.getString(R.string.kr_param_load) + if (!actionParamInfo.label.isNullOrEmpty()) actionParamInfo.label else actionParamInfo.name)
                         }
                         if (actionParamInfo.valueShell != null) {
                             actionParamInfo.valueFromShell = executeScriptGetResult(context, actionParamInfo.valueShell!!)
                         }
                         handler.post {
-                            progressBarDialog.showDialog(context.getString(R.string.kr_param_options_load) + if (!actionParamInfo.title.isNullOrEmpty()) actionParamInfo.title else actionParamInfo.name)
+                            progressBarDialog.showDialog(context.getString(R.string.kr_param_options_load) + if (!actionParamInfo.label.isNullOrEmpty()) actionParamInfo.label else actionParamInfo.name)
                         }
                         actionParamInfo.optionsFromShell = getParamOptions(actionParamInfo) // 获取参数的可用选项
                     }

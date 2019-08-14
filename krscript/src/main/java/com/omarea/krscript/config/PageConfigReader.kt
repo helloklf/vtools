@@ -175,30 +175,34 @@ class PageConfigReader(private var context: Context) {
             val actionParamInfo = actionParamInfo!!
             for (i in 0 until parser.attributeCount) {
                 val attrName = parser.getAttributeName(i)
+                val attrValue = parser.getAttributeValue(i)
                 when {
-                    attrName == "name" -> actionParamInfo.name = parser.getAttributeValue(i)
-                    attrName == "label" -> actionParamInfo.label = parser.getAttributeValue(i)
-                    attrName == "title" -> actionParamInfo.title = parser.getAttributeValue(i)
-                    attrName == "desc" -> actionParamInfo.desc = parser.getAttributeValue(i)
-                    attrName == "value" -> actionParamInfo.value = parser.getAttributeValue(i)
-                    attrName == "type" -> actionParamInfo.type = parser.getAttributeValue(i).toLowerCase().trim { it <= ' ' }
-                    attrName == "readonly" -> actionParamInfo.readonly = parser.getAttributeValue(i).toLowerCase().trim { it <= ' ' } == "readonly"
-                    attrName == "maxlength" -> actionParamInfo.maxLength = Integer.parseInt(parser.getAttributeValue(i))
-                    attrName == "min" -> actionParamInfo.min = Integer.parseInt(parser.getAttributeValue(i))
-                    attrName == "max" -> actionParamInfo.max = Integer.parseInt(parser.getAttributeValue(i))
-                    attrName == "required" -> actionParamInfo.required = parser.getAttributeValue(i) == "true" || parser.getAttributeValue(i) == "1" || parser.getAttributeValue(i) == "required"
+                    attrName == "name" -> actionParamInfo.name = attrValue
+                    attrName == "label" -> actionParamInfo.label = attrValue
+                    attrName == "title" -> actionParamInfo.title = attrValue
+                    attrName == "desc" -> actionParamInfo.desc = attrValue
+                    attrName == "value" -> actionParamInfo.value = attrValue
+                    attrName == "type" -> actionParamInfo.type = attrValue.toLowerCase().trim { it <= ' ' }
+                    attrName == "readonly" -> {
+                        val value = attrValue.toLowerCase().trim { it <= ' ' }
+                        actionParamInfo.readonly =  value == "readonly" || value == "true" || value == "1"
+                    }
+                    attrName == "maxlength" -> actionParamInfo.maxLength = Integer.parseInt(attrValue)
+                    attrName == "min" -> actionParamInfo.min = Integer.parseInt(attrValue)
+                    attrName == "max" -> actionParamInfo.max = Integer.parseInt(attrValue)
+                    attrName == "required" -> actionParamInfo.required = attrValue == "true" || attrValue == "1" || attrValue == "required"
                     attrName == "value-sh" || attrName == "value-su" -> {
-                        val script = parser.getAttributeValue(i)
+                        val script = attrValue
                         actionParamInfo.valueShell = script
                     }
                     attrName == "options-sh" || attrName == "options-su" -> {
                         if (actionParamInfo.options == null)
                             actionParamInfo.options = ArrayList<ActionParamInfo.ActionParamOption>()
-                        val script = parser.getAttributeValue(i)
+                        val script = attrValue
                         actionParamInfo.optionsSh = script
                     }
                     attrName == "support" -> {
-                        if (executeResultRoot(context, parser.getAttributeValue(i)) != "1") {
+                        if (executeResultRoot(context, attrValue) != "1") {
                             actionParamInfo.supported = false
                         }
                     }

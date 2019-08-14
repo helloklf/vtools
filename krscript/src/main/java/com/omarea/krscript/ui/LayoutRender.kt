@@ -11,6 +11,7 @@ import com.omarea.krscript.R
 import com.omarea.krscript.config.ActionParamInfo
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.ParamInfoFilter
+import java.lang.StringBuilder
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.collections.dropLastWhile
@@ -45,10 +46,24 @@ class LayoutRender {
                 }
             }
             // 选择框渲染
-            else if (actionParamInfo.type == "bool") {
+            else if (actionParamInfo.type == "bool" || actionParamInfo.type == "checkbox") {
+                val checkBox = CheckBox(context)
+                checkBox.isChecked = getCheckState(actionParamInfo, false)
+                checkBox.isEnabled = !actionParamInfo.readonly
+                if (!actionParamInfo.label.isNullOrEmpty()) {
+                    checkBox.text = actionParamInfo.label
+                }
+                addToLayout(checkBox, actionParamInfo)
+            }
+            // 开关渲染
+            else if (actionParamInfo.type == "switch") {
                 val switch = Switch(context)
                 switch.isChecked = getCheckState(actionParamInfo, false)
                 switch.isEnabled = !actionParamInfo.readonly
+                if (!actionParamInfo.label.isNullOrEmpty()) {
+                    switch.text = actionParamInfo.label
+                }
+                switch.setPadding(dp2px(context, 8f), 0, 0, 0)
                 addToLayout(switch, actionParamInfo)
             }
             // 滑块
@@ -88,7 +103,7 @@ class LayoutRender {
             layout.findViewById<TextView>(R.id.kr_param_title).visibility = View.GONE
         }
 
-        if (!actionParamInfo.label.isNullOrEmpty()) {
+        if (!actionParamInfo.label.isNullOrEmpty() && (actionParamInfo.type != "bool" && actionParamInfo.type != "checkbox" && actionParamInfo.type != "switch")) {
             layout.findViewById<TextView>(R.id.kr_param_label).text = actionParamInfo.label
         } else {
             layout.findViewById<TextView>(R.id.kr_param_label).visibility = View.GONE
@@ -105,6 +120,22 @@ class LayoutRender {
         // (layout.layoutParams as LinearLayout.LayoutParams).topMargin = dp2px(context, 1f)
 
         (inputView.layoutParams as FrameLayout.LayoutParams).gravity = Gravity.CENTER_VERTICAL
+    }
+
+    private fun getFieldTips(actionParamInfo: ActionParamInfo): String {
+        val tips = StringBuilder()
+        if (!actionParamInfo.title.isNullOrEmpty()) {
+            tips.append(actionParamInfo.title)
+            tips.append(" ")
+        }
+        if (!actionParamInfo.label.isNullOrEmpty()) {
+            tips.append(actionParamInfo.label)
+            tips.append(" ")
+        }
+        tips.append("(")
+        tips.append(actionParamInfo.name)
+        tips.append(") ")
+        return tips.toString()
     }
 
     /**
@@ -124,9 +155,9 @@ class LayoutRender {
                     try {
                         val value = text.toInt()
                         if (value < actionParamInfo.min) {
-                            throw Exception("[${actionParamInfo.desc}] ${value} < ${actionParamInfo.min} !!!")
+                            throw Exception("${getFieldTips(actionParamInfo)} ${value} < ${actionParamInfo.min} !!!")
                         } else if (value > actionParamInfo.max) {
-                            throw Exception("[${actionParamInfo.desc}] ${value} > ${actionParamInfo.max} !!!")
+                            throw Exception("${getFieldTips(actionParamInfo)} ${value} > ${actionParamInfo.max} !!!")
                         }
                     } catch (ex: java.lang.NumberFormatException) {
                     }
@@ -150,7 +181,7 @@ class LayoutRender {
 
             if (actionParamInfo.value.isNullOrEmpty()) {
                 if (actionParamInfo.required) {
-                    throw Exception("${actionParamInfo.desc} ${actionParamInfo.name}" + context.getString(R.string.do_not_empty))
+                    throw Exception(getFieldTips(actionParamInfo) + context.getString(R.string.do_not_empty))
                 } else {
                     params.set(actionParamInfo.name!!, "")
                 }
