@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingLeft="4dp">
+
+    <ImageButton
+        android:id="@+id/kr_param_seekbar_minus"
+        android:src="@drawable/kr_minus"
+        android:background="@android:color/transparent"
+        android:padding="4dp"
+        android:scaleType="centerInside"
+        android:gravity="center"
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
+    <SeekBar
+        android:id="@+id/kr_param_seekbar"
+        android:paddingStart="6dp"
+        android:paddingEnd="6dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+    <ImageButton
+        android:id="@+id/kr_param_seekbar_plus"
+        android:src="@drawable/kr_plus"
+        android:background="@android:color/transparent"
+        android:padding="4dp"
+        android:scaleType="centerInside"
+        android:gravity="center"
+        android:layout_width="30dp"
+        android:layout_height="30dp" />
+    <TextView
+        android:id="@+id/kr_param_seekbar_value"
+        android:textAlignment="center"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content" />
+</LinearLayout>

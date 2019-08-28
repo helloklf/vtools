@@ -39,7 +39,7 @@ public class SimpleShellHandler extends ShellHandlerBase {
         }
 
         LayoutInflater layoutInflater = LayoutInflater.from(context);
-        View view = layoutInflater.inflate(R.layout.dialog_shell_executor, null);
+        View view = layoutInflater.inflate(R.layout.kr_shell_executor_dialog, null);
         this.shellTitle = view.findViewById(R.id.shell_title);
         this.shellProgress = view.findViewById(R.id.shell_progress);
         this.textView = view.findViewById(R.id.shell_output);

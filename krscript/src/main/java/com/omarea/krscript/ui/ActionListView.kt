@@ -22,6 +22,7 @@ class ActionListView : OverScrollListView {
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
 
     private val progressBarDialog: ProgressBarDialog
+    private var fileChooser: FileChooserRender.FileChooserInterface? = null
     private var actionShortClickHandler: ActionShortClickHandler? = null
 
     init {
@@ -30,9 +31,11 @@ class ActionListView : OverScrollListView {
 
     fun setListData(
             actionInfos: ArrayList<ConfigItemBase>?,
+            fileChooser: FileChooserRender.FileChooserInterface,
             actionShortClickHandler: ActionShortClickHandler? = null,
             actionLongClickHandler: ActionLongClickHandler? = null) {
         if (actionInfos != null) {
+            this.fileChooser = fileChooser
             this.actionShortClickHandler = actionShortClickHandler
             this.overScrollMode = ListView.OVER_SCROLL_ALWAYS
             this.adapter = ActionListAdapter(actionInfos)
@@ -172,7 +175,7 @@ class ActionListView : OverScrollListView {
                     }
                     handler.post {
                         val render = LayoutRender(linearLayout)
-                        render.renderList(actionParamInfos)
+                        render.renderList(actionParamInfos, fileChooser)
                         progressBarDialog.hideDialog()
                         if (actionShortClickHandler != null && actionShortClickHandler!!.onParamsView(action,
                                         linearLayout,
@@ -186,7 +189,7 @@ class ActionListView : OverScrollListView {
                                             }
                                         })) {
                         } else {
-                            val dialogView = layoutInflater.inflate(R.layout.dialog_params, null)
+                            val dialogView = layoutInflater.inflate(R.layout.kr_params_dialog, null)
                             dialogView.findViewById<ScrollView>(R.id.kr_param_dialog).addView(linearLayout)
                             dialogView.findViewById<TextView>(R.id.kr_param_dialog_title).setText(action.title)
                             val dialog = DialogHelper.animDialog(AlertDialog.Builder(context).setView(dialogView))
@@ -276,6 +279,6 @@ class ActionListView : OverScrollListView {
             shellHandler = actionShortClickHandler!!.onExecute(configItem, onExit)
         }
 
-        SimpleShellExecutor(context).execute(configItem, script, onExit, params, shellHandler)
+        SimpleShellExecutor().execute(context, configItem, script, onExit, params, shellHandler)
     }
 }

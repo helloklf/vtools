@@ -49,6 +49,9 @@ class PageListReader(private val context: Context) {
                                 } else if (attrName == "config") {
                                     val value = parser.getAttributeValue(attrIndex)
                                     page!!.pageConfigPath = value
+                                } else if (attrName == "html") {
+                                    val value = parser.getAttributeValue(attrIndex)
+                                    page!!.onlineHtmlPage = value
                                 } else if (attrName == "title") {
                                     val value = parser.getAttributeValue(attrIndex)
                                     page!!.title = value

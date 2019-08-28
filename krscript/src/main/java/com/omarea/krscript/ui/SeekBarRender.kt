@@ -11,7 +11,7 @@ import com.omarea.krscript.R
 
 class SeekBarRender(private var actionParamInfo: ActionParamInfo, private var context: Context) {
     fun render(): View {
-        val layout = LayoutInflater.from(context).inflate(R.layout.layout_param_seekbar, null)
+        val layout = LayoutInflater.from(context).inflate(R.layout.kr_param_seekbar, null)
         val seekbar = layout.findViewById<SeekBar>(R.id.kr_param_seekbar)
 
         seekbar.max = actionParamInfo.max

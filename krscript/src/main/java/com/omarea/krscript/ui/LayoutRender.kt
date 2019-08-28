@@ -11,14 +11,8 @@ import com.omarea.krscript.R
 import com.omarea.krscript.config.ActionParamInfo
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.ParamInfoFilter
-import java.lang.StringBuilder
 import java.util.*
 import kotlin.collections.HashMap
-import kotlin.collections.dropLastWhile
-import kotlin.collections.get
-import kotlin.collections.indices
-import kotlin.collections.set
-import kotlin.collections.toTypedArray
 
 class LayoutRender {
     private var linearLayout: LinearLayout
@@ -29,7 +23,7 @@ class LayoutRender {
         this.context = linearLayout.context
     }
 
-    fun renderList(actionParamInfos: ArrayList<ActionParamInfo>) {
+    fun renderList(actionParamInfos: ArrayList<ActionParamInfo>, fileChooser: FileChooserRender.FileChooserInterface?) {
         for (actionParamInfo in actionParamInfos) {
             val options = actionParamInfo.optionsFromShell
             // 下拉框渲染
@@ -37,7 +31,7 @@ class LayoutRender {
                 val spinner = Spinner(context)
                 val selectedIndex = getParamOptionsCurrentIndex(actionParamInfo, options) // 获取当前选中项索引
 
-                spinner.adapter = SimpleAdapter(context, options, R.layout.list_item_text, arrayOf("title"), intArrayOf(R.id.text))
+                spinner.adapter = SimpleAdapter(context, options, R.layout.kr_text_list_item, arrayOf("title"), intArrayOf(R.id.text))
                 spinner.isEnabled = !actionParamInfo.readonly
 
                 addToLayout(spinner, actionParamInfo)
@@ -68,10 +62,17 @@ class LayoutRender {
             }
             // 滑块
             else if (actionParamInfo.type == "seekbar") {
-                val seekbar = SeekBarRender(actionParamInfo, context).render()
+                val layout = SeekBarRender(actionParamInfo, context).render()
 
-                addToLayout(seekbar, actionParamInfo)
-                seekbar.tag = null
+                addToLayout(layout, actionParamInfo)
+                layout.tag = null
+            }
+            // 文件选择
+            else if (actionParamInfo.type == "file") {
+                val layout = FileChooserRender(actionParamInfo, context, fileChooser).render()
+
+                addToLayout(layout, actionParamInfo)
+                layout.tag = null
             }
             // 文本框渲染
             else {
@@ -84,7 +85,11 @@ class LayoutRender {
                 editText.filters = arrayOf(ParamInfoFilter(actionParamInfo))
                 editText.isEnabled = !actionParamInfo.readonly
                 editText.setPadding(dp2px(context, 8f), 0, dp2px(context, 8f), 0)
-                if (actionParamInfo.type == "int" || actionParamInfo.type == "number" && (actionParamInfo.min != Int.MIN_VALUE || actionParamInfo.min != Int.MAX_VALUE)) {
+                if (
+                        (actionParamInfo.type == "int" || actionParamInfo.type == "number")
+                        &&
+                        (actionParamInfo.min != Int.MIN_VALUE || actionParamInfo.max != Int.MAX_VALUE)
+                ) {
                     editText.hint = "${actionParamInfo.min} ~ ${actionParamInfo.max}"
                 }
 
@@ -96,7 +101,7 @@ class LayoutRender {
     private fun addToLayout(inputView: View, actionParamInfo: ActionParamInfo) {
         inputView.tag = actionParamInfo.name
 
-        val layout = LayoutInflater.from(context).inflate(R.layout.layout_param_row, null)
+        val layout = LayoutInflater.from(context).inflate(R.layout.kr_param_row, null)
         if (!actionParamInfo.title.isNullOrEmpty()) {
             layout.findViewById<TextView>(R.id.kr_param_title).text = actionParamInfo.title
         } else {
@@ -170,6 +175,8 @@ class LayoutRender {
             } else if (view is SeekBar) {
                 val text = (view.progress + actionParamInfo.min).toString()
                 actionParamInfo.value = text
+            } else if (view is TextView) {
+                actionParamInfo.value = view.text.toString()
             } else if (view is Spinner) {
                 val item = view.selectedItem
                 if (item is HashMap<*, *>) {

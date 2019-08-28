@@ -123,6 +123,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:orientation="horizontal"
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
                         android:paddingTop="0dp"
                         android:paddingRight="0dp"
                         android:paddingBottom="0dp">

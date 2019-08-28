@@ -49,7 +49,7 @@ public class PageListAdapter extends BaseAdapter {
 
     private View renderPageItem(PageInfo item) {
         PageViewHolder viewHolder = new PageViewHolder();
-        View convertView = View.inflate(context, R.layout.list_item_kr_page, null);
+        View convertView = View.inflate(context, R.layout.kr_page_list_item, null);
         viewHolder.itemTitle = convertView.findViewById(R.id.Title);
         viewHolder.itemText = convertView.findViewById(R.id.Desc);
 

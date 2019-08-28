@@ -130,10 +130,6 @@ class FragmentAddin : Fragment() {
             myHandler.post {
                 page2ConfigLoaded = true
                 list_page2.setListData(items, object : PageClickHandler {
-                    override fun openPage(title: String, config: String) {
-                        _openPage(title, config)
-                    }
-
                     override fun openPage(pageInfo: PageInfo) {
                         _openPage(pageInfo.title, pageInfo.pageConfigPath)
                     }

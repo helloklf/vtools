@@ -16,18 +16,16 @@ import java.util.HashMap;
  * Created by Hello on 2018/04/01.
  */
 public class SimpleShellExecutor {
-    private Context context;
     private boolean started = false;
     private static final String ASSETS_FILE = "file:///android_asset/";
 
-    public SimpleShellExecutor(Context context) {
-        this.context = context;
+    public SimpleShellExecutor() {
     }
 
     /**
      * 执行脚本
      */
-    public boolean execute(ConfigItemBase configItem, String cmds, Runnable onExit, HashMap<String, String> params, ShellHandlerBase customHandler) {
+    public boolean execute(Context context, ConfigItemBase configItem, String cmds, Runnable onExit, HashMap<String, String> params, ShellHandlerBase customHandler) {
         if (started) {
             return false;
         }
@@ -53,7 +51,7 @@ public class SimpleShellExecutor {
                 }
             }) : null;
             final ShellHandlerBase shellHandlerBase = ((customHandler == null) ? (new SimpleShellHandler(context, configItem.getTitle(), configItem.getAutoOff())) : customHandler);
-            setHandler(process, shellHandlerBase, onExit);
+            new SimpleShellWatcher().setHandler(process, shellHandlerBase, onExit);
 
             final OutputStream outputStream = process.getOutputStream();
             DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
@@ -72,67 +70,4 @@ public class SimpleShellExecutor {
         return started;
     }
 
-    /**
-     * 设置日志处理Handler
-     *
-     * @param process      Runtime进程
-     * @param shellHandlerBase ShellHandlerBase
-     */
-    private void setHandler(Process process, final ShellHandlerBase shellHandlerBase, final Runnable onExit) {
-        final InputStream inputStream = process.getInputStream();
-        final InputStream errorStream = process.getErrorStream();
-        final Thread reader = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String line;
-                try {
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"));
-                    while ((line = bufferedReader.readLine()) != null) {
-                        shellHandlerBase.sendMessage(shellHandlerBase.obtainMessage(ShellHandlerBase.EVENT_REDE, line + "\n"));
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        final Thread readerError = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String line;
-                try {
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(errorStream, "UTF-8"));
-                    while ((line = bufferedReader.readLine()) != null) {
-                        shellHandlerBase.sendMessage(shellHandlerBase.obtainMessage(ShellHandlerBase.EVENT_READ_ERROR, line + "\n"));
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        final Process processFinal = process;
-        Thread waitExit = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                int status = -1;
-                try {
-                    status = processFinal.waitFor();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } finally {
-                    shellHandlerBase.sendMessage(shellHandlerBase.obtainMessage(ShellHandlerBase.EVENT_EXIT, status));
-                    if (reader.isAlive()) {
-                        reader.interrupt();
-                    }
-                    if (readerError.isAlive()) {
-                        readerError.interrupt();
-                    }
-                    onExit.run();
-                }
-            }
-        });
-
-        reader.start();
-        readerError.start();
-        waitExit.start();
-    }
 }

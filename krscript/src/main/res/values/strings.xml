@@ -15,4 +15,5 @@
     <string name="kr_param_load">获取状态 </string>
     <string name="kr_param_options_load">加载候选列表 </string>
     <string name="kr_params_render">渲染界面……</string>
+    <string name="kr_please_choose_file">请选择文件</string>
 </resources>

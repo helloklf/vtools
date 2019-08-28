@@ -130,7 +130,7 @@ public class ActionListAdapter extends BaseAdapter {
 
     private View renderActionItem(ActionInfo item) {
         ActionViewHolder viewHolder = new ActionViewHolder();
-        View convertView = View.inflate(context, R.layout.list_item_kr_action, null);
+        View convertView = View.inflate(context, R.layout.kr_action_list_item, null);
         viewHolder.itemTitle = convertView.findViewById(R.id.Title);
         viewHolder.itemText = convertView.findViewById(R.id.Desc);
         viewHolder.itemSeparator = convertView.findViewById(R.id.Separator);
@@ -159,7 +159,7 @@ public class ActionListAdapter extends BaseAdapter {
 
     private View renderSwitchItem(SwitchInfo item) {
         SwitchViewHolder viewHolder = new SwitchViewHolder();
-        View convertView = View.inflate(context, R.layout.list_item_kr_switch, null);
+        View convertView = View.inflate(context, R.layout.kr_switch_list_item, null);
         viewHolder.itemSwitch = convertView.findViewById(R.id.Switch);
         viewHolder.itemTitle = convertView.findViewById(R.id.Title);
         viewHolder.itemText = convertView.findViewById(R.id.Desc);

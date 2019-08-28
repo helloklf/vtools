@@ -437,6 +437,8 @@
     <string name="copy_fail">复制失败</string>
     <string name="promote_link">https://tinyurl.com/y3j7vszf</string>
 
+    <string name="kr_write_external_storage">需要读写外部存储权限</string>
+
     <string-array name="device_templates">
         <item>Xiaomi MIX3</item>
         <item>vivo X20</item>

@@ -1,8 +1,13 @@
 package com.omarea.vtools.activitys
 
+import android.Manifest
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.*
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
@@ -14,11 +19,13 @@ import android.widget.ProgressBar
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.model.*
 import com.omarea.krscript.shortcut.ActionShortcutManager
+import com.omarea.krscript.ui.FileChooserRender
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_action_page.*
 
@@ -42,11 +49,11 @@ class ActionPage : AppCompatActivity() {
         // setTitle(R.string.app_name)
 
         // 显示返回按钮
-        getSupportActionBar()!!.setHomeButtonEnabled(true);
-        getSupportActionBar()!!.setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener({ _ ->
+        supportActionBar!!.setHomeButtonEnabled(true)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationOnClickListener {
             finish()
-        });
+        }
 
         /*
         // 设置个漂亮的白色顶栏
@@ -72,7 +79,7 @@ class ActionPage : AppCompatActivity() {
             if (extras != null) {
                 if (extras.containsKey("title")) {
                     pageTitle = extras.getString("title")!!
-                    setTitle(pageTitle)
+                    title = pageTitle
                 }
                 if (extras.containsKey("config")) {
                     pageConfig = extras.getString("config")!!
@@ -93,7 +100,7 @@ class ActionPage : AppCompatActivity() {
         action_page_tabhost.addTab(action_page_tabhost.newTabSpec("c").setContent(R.id.action_log).setIndicator(""))
         action_page_tabhost.setOnTabChangedListener {
             if (action_page_tabhost.currentTab == 0) {
-                setTitle(pageTitle)
+                title = pageTitle
             }
         }
     }
@@ -115,7 +122,7 @@ class ActionPage : AppCompatActivity() {
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle(getString(R.string.shortcut_create))
                         .setMessage(String.format(getString(R.string.shortcut_create_desc), configItemBase.title))
-                        .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             val intent = Intent()
                             intent.component = ComponentName(context.applicationContext, context.javaClass.name)
                             intent.putExtra("config", pageConfig)
@@ -128,9 +135,9 @@ class ActionPage : AppCompatActivity() {
                             } else {
                                 Toast.makeText(context, getString(R.string.shortcut_create_success), Toast.LENGTH_SHORT).show()
                             }
+                        }
+                        .setNegativeButton(R.string.btn_cancel) { _, _ ->
                         })
-                        .setNegativeButton(R.string.btn_cancel, { _, _ ->
-                        }))
             }
         }
         override fun addToFavorites(switchInfo: SwitchInfo) {
@@ -156,7 +163,7 @@ class ActionPage : AppCompatActivity() {
                     action_params_editor.removeAllViews()
                     onComplete.run()
                 }
-                setTitle(actionInfo.title)
+                title = actionInfo.title
                 return true
             }
             return false
@@ -177,9 +184,8 @@ class ActionPage : AppCompatActivity() {
             btn_copy.setOnClickListener {
                 try {
                     val myClipboard: ClipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    val myClip: ClipData
-                    myClip = ClipData.newPlainText("text", shell_output.text.toString())
-                    myClipboard.setPrimaryClip(myClip)
+                    val myClip: ClipData = ClipData.newPlainText("text", shell_output.text.toString())
+                    myClipboard.primaryClip = myClip
                     Toast.makeText(this@ActionPage, getString(R.string.copy_success), Toast.LENGTH_SHORT).show()
                 } catch (ex: Exception) {
                     Toast.makeText(this@ActionPage, getString(R.string.copy_fail), Toast.LENGTH_SHORT).show()
@@ -195,7 +201,7 @@ class ActionPage : AppCompatActivity() {
             }
 
             action_page_tabhost.currentTab = 2
-            setTitle(configItem.title)
+            title = configItem.title
             action_progress.visibility = View.VISIBLE
             return MyShellHandler(object : IActionEventHandler {
                 override fun onExit() {
@@ -215,14 +221,14 @@ class ActionPage : AppCompatActivity() {
                     running = true
 
                     if (configItem.interruptible && forceStop != null) {
-                        btn_exit.setVisibility(View.VISIBLE)
+                        btn_exit.visibility = View.VISIBLE
                     } else {
-                        btn_exit.setVisibility(View.GONE)
+                        btn_exit.visibility = View.GONE
                     }
                     forceStopRunnable = forceStop
                 }
 
-            }, shell_output, action_progress);
+            }, shell_output, action_progress)
         }
     }
 
@@ -239,15 +245,15 @@ class ActionPage : AppCompatActivity() {
 
         override fun onProgress(current: Int, total: Int) {
             if (current == -1) {
-                this.shellProgress.setVisibility(View.VISIBLE)
-                this.shellProgress.setIndeterminate(true)
+                this.shellProgress.visibility = View.VISIBLE
+                this.shellProgress.isIndeterminate = true
             } else if (current == total) {
-                this.shellProgress.setVisibility(View.GONE)
+                this.shellProgress.visibility = View.GONE
             } else {
-                this.shellProgress.setVisibility(View.VISIBLE)
-                this.shellProgress.setIndeterminate(false)
-                this.shellProgress.setMax(total)
-                this.shellProgress.setProgress(current)
+                this.shellProgress.visibility = View.VISIBLE
+                this.shellProgress.isIndeterminate = false
+                this.shellProgress.max = total
+                this.shellProgress.progress = current
             }
         }
 
@@ -255,7 +261,7 @@ class ActionPage : AppCompatActivity() {
         }
 
         override fun onStart(msg: Any?) {
-            this.logView.text = "";
+            this.logView.text = ""
             updateLog(msg, Color.GRAY)
         }
 
@@ -266,10 +272,10 @@ class ActionPage : AppCompatActivity() {
 
         override fun updateLog(msg: SpannableString?) {
             if (msg != null) {
-                this.logView.post({
+                this.logView.post {
                     logView.append(msg)
-                    (logView.getParent() as ScrollView).fullScroll(ScrollView.FOCUS_DOWN)
-                })
+                    (logView.parent as ScrollView).fullScroll(ScrollView.FOCUS_DOWN)
+                }
             }
         }
     }
@@ -281,7 +287,7 @@ class ActionPage : AppCompatActivity() {
             } else if (action_page_tabhost.currentTab == 2 && !running) {
                 action_page_tabhost.currentTab = 0
             }
-            return true;
+            return true
         }
         return super.onKeyDown(keyCode, event)
     }
@@ -297,6 +303,11 @@ class ActionPage : AppCompatActivity() {
                     if (items != null && items.size != 0) {
                         main_list.setListData(
                                 items,
+                                object : FileChooserRender.FileChooserInterface {
+                                    override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
+                                        return chooseFilePath(fileSelectedInterface)
+                                    }
+                                },
                                 actionShortClickHandler,
                                 addToFavorites
                         )
@@ -310,6 +321,52 @@ class ActionPage : AppCompatActivity() {
                 }
                 actionsLoaded = true
             }).start()
+        }
+    }
+
+
+    private var fileSelectedInterface:FileChooserRender.FileSelectedInterface? = null
+    private val ACTION_FILE_PATH_CHOOSER = 65400
+    private fun chooseFilePath(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 2)
+            Toast.makeText(this, getString(R.string.kr_write_external_storage), Toast.LENGTH_LONG).show()
+            return false
+        } else {
+            try {
+                val intent = Intent(Intent.ACTION_GET_CONTENT)
+                intent.type = "*/*"
+                intent.addCategory(Intent.CATEGORY_OPENABLE)
+                startActivityForResult(intent, ACTION_FILE_PATH_CHOOSER)
+                this.fileSelectedInterface = fileSelectedInterface
+                return true
+            } catch (ex: java.lang.Exception) {
+                return false
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == ACTION_FILE_PATH_CHOOSER) {
+            val result = if (data == null || resultCode != Activity.RESULT_OK) null else data.data
+            if (fileSelectedInterface != null) {
+                if (result != null) {
+                    val absPath = getPath(result)
+                    fileSelectedInterface?.onFileSelected(absPath)
+                } else {
+                    fileSelectedInterface?.onFileSelected(null)
+                }
+            }
+            this.fileSelectedInterface = null
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun getPath(uri: Uri): String? {
+        try {
+            return FilePathResolver().getPath(this, uri)
+        } catch (ex: java.lang.Exception) {
+            return null
         }
     }
 }
