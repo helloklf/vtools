@@ -246,7 +246,7 @@ class FragmentHome : Fragment() {
 
         myHandler.post {
             try {
-                home_battery_now.setText((batteryCurrentNow / globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT)).toString() + "mAh")
+                home_battery_now.setText((batteryCurrentNow / globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT)).toString() + "mA")
                 home_battery_capacity.setText(batteryCapacity.toString() + "%")
 
                 home_gpu_freq.text = gpuFreq

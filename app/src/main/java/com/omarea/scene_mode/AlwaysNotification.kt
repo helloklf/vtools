@@ -11,11 +11,11 @@ import android.support.v4.app.NotificationCompat
 import android.util.Log
 import android.widget.RemoteViews
 import com.omarea.common.shell.KeepShellPublic
-import com.omarea.store.BatteryHistoryStore
 import com.omarea.model.BatteryStatus
+import com.omarea.store.BatteryHistoryStore
+import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
 import com.omarea.vtools.activitys.ActivityQuickSwitchMode
-import kotlin.math.abs
 
 /**
  * 常驻通知
@@ -25,7 +25,8 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
     private var notification: Notification? = null
     private var notificationManager: NotificationManager? = null
     private var batteryHistoryStore: BatteryHistoryStore? = null
-    private var batteryUnit = com.omarea.shell_utils.BatteryUtils()
+    private var globalSPF = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+    private var batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
 
     private fun getAppName(packageName: String): CharSequence? {
         try {
@@ -36,16 +37,6 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
     }
 
     private var batteryTemp = "?°C"
-    private var batteryCapacity = ""
-    private var batteryStatus = "0"
-
-    private fun getCapacity(): Int {
-        if (batteryCapacity.isEmpty() || batteryCapacity == "%?") {
-            return Int.MIN_VALUE
-        } else {
-            return batteryCapacity.toInt()
-        }
-    }
 
     private fun getBatteryIcon(capacity: Int): Int {
         if (capacity < 20)
@@ -61,33 +52,14 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
         val batteryInfo = KeepShellPublic.doCmdSync("dumpsys battery")
         val batteryInfos = batteryInfo.split("\n")
 
-        // 由于部分手机相同名称的参数重复出现，并且值不同，为了避免这种情况，加个额外处理，同名参数只读一次
-        var levelReaded = false
-        var tempReaded = false
-        var statusReaded = false
-
         for (item in batteryInfos) {
             val info = item.trim()
             val index = info.indexOf(":")
             if (index > Int.MIN_VALUE && index < info.length - 1) {
                 val value = info.substring(info.indexOf(":") + 1).trim()
-                if (info.startsWith("status")) {
-                    if (!statusReaded) {
-                        batteryStatus = value
-                        statusReaded = true
-                    } else {
-                        continue
-                    }
-                } else if (info.startsWith("level")) {
-                    if (!levelReaded) {
-                        batteryCapacity = value
-                        levelReaded = true
-                    } else continue
-                } else if (info.startsWith("temperature")) {
-                    if (!tempReaded) {
-                        tempReaded = true
-                        batteryTemp = value
-                    } else continue
+                if (info.startsWith("temperature")) {
+                    batteryTemp = value
+                    break
                 }
             }
         }
@@ -141,14 +113,20 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
         var batteryIO: String? = ""
         var batteryTemp = ""
         var modeImage = BitmapFactory.decodeResource(context.resources, getModImage(mode))
+
+        // 电池电流
+        val batteryCurrentNow = batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
+        // 电量
+        val batteryCapacity = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+        // 状态
+        val batteryStatus = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_STATUS)
+
         try {
             updateBatteryInfo()
-            val io = batteryUnit.getBatteryIOMa()
-            if (io.isNotEmpty()) {
-                batteryIO = io + "mA"
-            } else {
-                batteryIO = "?mAh"
-            }
+
+            val mA = (batteryCurrentNow / globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT))
+
+            batteryIO = mA.toString() + "mA"
             batteryTemp = getBatteryTemp()
             if (batteryTemp.isEmpty()) {
                 batteryTemp = "?°C"
@@ -156,18 +134,13 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
                 status.temperature = batteryTemp.toFloat()
                 batteryTemp += "°C"
             }
-            status.level = getCapacity()
-            if (batteryStatus.isNotEmpty())
-                status.status = batteryStatus.toInt()
-            if (status.level > Int.MIN_VALUE) {
-                if (status.status == BatteryManager.BATTERY_STATUS_CHARGING) {
-                    batteryImage = BitmapFactory.decodeResource(context.resources, R.drawable.b_4)
-                } else {
-                    if (io.isNotEmpty()) {
-                        status.io = abs(io.toInt())
-                    }
-                    batteryImage = BitmapFactory.decodeResource(context.resources, getBatteryIcon(status.level))
-                }
+
+            status.status = batteryStatus
+            if (status.status == BatteryManager.BATTERY_STATUS_DISCHARGING) {
+                status.io = mA.toInt()
+                batteryImage = BitmapFactory.decodeResource(context.resources, getBatteryIcon(batteryCapacity))
+            } else {
+                batteryImage = BitmapFactory.decodeResource(context.resources, R.drawable.b_4)
             }
             modeImage = BitmapFactory.decodeResource(context.resources, getModImage(mode))
         } catch (ex: Exception) {
@@ -178,7 +151,7 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
             batteryHistoryStore = BatteryHistoryStore(context)
         }
 
-        if (status.status != BatteryManager.BATTERY_STATUS_CHARGING) {
+        if (status.status == BatteryManager.BATTERY_STATUS_DISCHARGING) {
             if (status.status > Int.MIN_VALUE && status.io > Int.MIN_VALUE) {
                 batteryHistoryStore!!.insertHistory(status)
             }
@@ -187,7 +160,7 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
         val remoteViews = RemoteViews(context.packageName, R.layout.layout_notification)
         remoteViews.setTextViewText(R.id.notify_title, getAppName(packageName))
         remoteViews.setTextViewText(R.id.notify_text, getModName(mode))
-        remoteViews.setTextViewText(R.id.notify_battery_text, "$batteryIO ${status.level}% $batteryTemp")
+        remoteViews.setTextViewText(R.id.notify_battery_text, "$batteryIO ${batteryCapacity}% $batteryTemp")
         if (modeImage != null) {
             remoteViews.setImageViewBitmap(R.id.notify_mode, modeImage)
         }

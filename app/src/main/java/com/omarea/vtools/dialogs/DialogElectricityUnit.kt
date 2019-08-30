@@ -29,7 +29,7 @@ class DialogElectricityUnit {
                 unit *= 10
             }
             electricity_adj_unit.setText(unit.toString())
-            electricity_adj_sample.setText((sampleValue / unit).toString() + "mAh")
+            electricity_adj_sample.setText((sampleValue / unit).toString() + "mA")
         }
         dialog.findViewById<ImageButton>(R.id.electricity_adj_plus).setOnClickListener {
             if (unit == -1) {
@@ -40,14 +40,14 @@ class DialogElectricityUnit {
                 unit *= 10
             }
             electricity_adj_unit.setText(unit.toString())
-            electricity_adj_sample.setText((sampleValue / unit).toString() + "mAh")
+            electricity_adj_sample.setText((sampleValue / unit).toString() + "mA")
         }
         dialog.findViewById<Button>(R.id.electricity_adj_applay).setOnClickListener {
             globalSPF.edit().putInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, unit).apply()
             alertDialog?.dismiss()
         }
         electricity_adj_unit.setText(unit.toString())
-        electricity_adj_sample.setText((sampleValue / unit).toString() + "mAh")
+        electricity_adj_sample.setText((sampleValue / unit).toString() + "mA")
         alertDialog = DialogHelper.animDialog(AlertDialog.Builder(fragment.context).setView(dialog))
     }
 }
