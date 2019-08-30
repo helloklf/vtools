@@ -272,6 +272,76 @@
                 android:numColumns="4"
                 android:padding="0dp"
                 android:scrollbars="none" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp"
+                android:padding="4dp">
+
+                <LinearLayout
+                    android:padding="10dp"
+                    android:layout_marginEnd="8dp"
+                    android:background="@drawable/krscript_item_ripple"
+                    android:orientation="horizontal"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp">
+                    <TextView
+                        style="@style/textTitle"
+                        android:text="电流"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/home_battery_now"
+                        android:textAlignment="center"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+                    <ImageButton
+                        android:id="@+id/home_battery_edit"
+                        android:background="@android:color/transparent"
+                        android:tint="?colorAccent"
+                        android:layout_marginLeft="4dp"
+                        android:scaleType="centerInside"
+                        android:padding="5dp"
+                        android:src="@drawable/edit"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:padding="10dp"
+                    android:background="@drawable/krscript_item_ripple"
+                    android:orientation="horizontal"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="50dp">
+                    <TextView
+                        style="@style/textTitle"
+                        android:text="电量"
+                        android:layout_width="40dp"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/home_battery_capacity"
+                        android:textAlignment="center"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+                    <ImageButton
+                        android:id="@+id/home_battery_settings"
+                        android:background="@android:color/transparent"
+                        android:tint="?colorAccent"
+                        android:layout_marginLeft="4dp"
+                        android:scaleType="centerInside"
+                        android:padding="5dp"
+                        android:src="@drawable/ic_settings"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
     </com.omarea.common.ui.OverScrollView>
 

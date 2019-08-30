@@ -14,7 +14,7 @@
         android:layout_height="wrap_content" />
     <LinearLayout
         android:minHeight="43dp"
-        android:background="@drawable/krscript_item_ripple"
+        android:background="@drawable/kr_shape_corner"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

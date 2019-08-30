@@ -1,8 +1,15 @@
 package com.omarea.krscript;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.util.Log;
+import android.webkit.DownloadListener;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
 import android.webkit.WebSettings;
@@ -10,9 +17,10 @@ import android.webkit.WebView;
 import android.widget.Toast;
 
 import com.omarea.common.shell.KeepShellPublic;
+import com.omarea.common.ui.DialogHelper;
+import com.omarea.krscript.downloader.Downloader;
 import com.omarea.krscript.executor.ExtractAssets;
 import com.omarea.krscript.executor.ScriptEnvironmen;
-import com.omarea.krscript.executor.SimpleShellWatcher;
 import com.omarea.krscript.model.ShellHandlerBase;
 import com.omarea.krscript.ui.FileChooserRender;
 
@@ -27,6 +35,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.UUID;
 
 public class WebViewInjector {
     private WebView webView;
@@ -41,7 +50,7 @@ public class WebViewInjector {
     }
 
     @SuppressLint({"JavascriptInterface", "SetJavaScriptEnabled"})
-    public void inject() {
+    public void inject(final Activity activity) {
         if (webView != null) {
 
             WebSettings webSettings = webView.getSettings();
@@ -54,6 +63,33 @@ public class WebViewInjector {
                     new KrScriptEngine(context),
                     "KrScriptCore" // 由于类名会被混淆，写死吧... KrScriptEngine.class.getSimpleName()
             );
+            webView.setDownloadListener(new DownloadListener() {
+                @Override
+                public void onDownloadStart(final String url, String userAgent, final String contentDisposition, final String mimetype, long contentLength) {
+                    if (
+                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                                    context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        activity.requestPermissions(new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE }, 2);
+                        Toast.makeText(context, R.string.kr_write_external_storage, Toast.LENGTH_LONG).show();
+                    } else {
+                        DialogHelper.Companion.animDialog(new AlertDialog.Builder(context)
+                                .setTitle(R.string.kr_download_confirm)
+                                .setMessage("" + url + "\n\n" + mimetype + "\n" + contentLength + "Bytes")
+                                .setPositiveButton(R.string.btn_confirm, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        new Downloader(context, null).downloadBySystem(url, contentDisposition, mimetype, UUID.randomUUID().toString());
+                                    }
+                                })
+                                .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                    }
+                                })
+                                .setCancelable(false));
+                    }
+                }
+            });
         }
     }
 
@@ -66,6 +102,7 @@ public class WebViewInjector {
 
         /**
          * 检查是否具有ROOT权限
+         *
          * @return
          */
         @JavascriptInterface
@@ -75,6 +112,7 @@ public class WebViewInjector {
 
         /**
          * 同步执行shell脚本 并返回结果（不包含错误信息）
+         *
          * @param script 脚本内容
          * @return 执行过程中的输出内容
          */
@@ -87,7 +125,7 @@ public class WebViewInjector {
         }
 
         /**
-         *  @param script
+         * @param script
          * @param callbackFunction
          */
         @JavascriptInterface
@@ -111,7 +149,7 @@ public class WebViewInjector {
                 final OutputStream outputStream = process.getOutputStream();
                 final DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
 
-                setHandler(process, callbackFunction, new Runnable(){
+                setHandler(process, callbackFunction, new Runnable() {
                     @Override
                     public void run() {
 
@@ -127,7 +165,8 @@ public class WebViewInjector {
 
         /**
          * 提取assets中的文件
-         *  @param assets 要提取的文件
+         *
+         * @param assets 要提取的文件
          * @return 提取成功后所在的目录
          */
         @JavascriptInterface
@@ -161,7 +200,8 @@ public class WebViewInjector {
                                     });
                                 }
                             });
-                        } catch (Exception ex) {}
+                        } catch (Exception ex) {
+                        }
                     }
                 });
             }
@@ -194,7 +234,8 @@ public class WebViewInjector {
                                         });
                                     }
                                 });
-                            } catch (Exception ex) {}
+                            } catch (Exception ex) {
+                            }
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -223,7 +264,8 @@ public class WebViewInjector {
                                         });
                                     }
                                 });
-                            } catch (Exception ex) {}
+                            } catch (Exception ex) {
+                            }
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -255,7 +297,8 @@ public class WebViewInjector {
                                     });
                                 }
                             });
-                        } catch (Exception ex) {}
+                        } catch (Exception ex) {
+                        }
 
                         if (reader.isAlive()) {
                             reader.interrupt();

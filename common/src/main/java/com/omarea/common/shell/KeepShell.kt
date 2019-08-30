@@ -53,10 +53,16 @@ public class KeepShell(private var rootMode: Boolean = true) {
     fun checkRoot(): Boolean {
         val r = doCmdSync(checkRootState)
         if (r == "error" || r.contains("permission denied") || r.contains("not allowed") || r.equals("not found")) {
+            if (rootMode) {
+                tryExit()
+            }
             return false
         } else if (r == "root") {
             return true
         } else {
+            if (rootMode) {
+                tryExit()
+            }
             return false
         }
     }

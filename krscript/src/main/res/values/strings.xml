@@ -16,4 +16,10 @@
     <string name="kr_param_options_load">加载候选列表 </string>
     <string name="kr_params_render">渲染界面……</string>
     <string name="kr_please_choose_file">请选择文件</string>
+    <string name="kr_write_external_storage">需要读写外置存储权限！</string>
+    <string name="kr_download_create_fail">创建下载任务失败</string>
+    <string name="kr_download_create_success">开始下载文件</string>
+    <string name="kr_download_confirm">是否下载文件</string>
+    <string name="kr_download_completed">文件下载成功</string>
+    <string name="kr_download_downloading">文件下载中</string>
 </resources>

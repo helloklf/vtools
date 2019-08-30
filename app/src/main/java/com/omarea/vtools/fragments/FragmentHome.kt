@@ -9,6 +9,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.net.Uri
+import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Handler
 import android.support.design.widget.Snackbar
@@ -19,17 +20,18 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
+import com.omarea.model.CpuCoreInfo
 import com.omarea.scene_mode.ModeConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
-import com.omarea.store.SpfConfig
-import com.omarea.utils.AccessibleServiceHelper
-import com.omarea.model.CpuCoreInfo
-import com.omarea.shell_utils.PropsUtils
 import com.omarea.shell_utils.CpuFrequencyUtil
 import com.omarea.shell_utils.CpuLoadUtils
 import com.omarea.shell_utils.GpuUtils
+import com.omarea.shell_utils.PropsUtils
+import com.omarea.store.SpfConfig
 import com.omarea.ui.AdapterCpuCores
+import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vtools.R
+import com.omarea.vtools.dialogs.DialogElectricityUnit
 import kotlinx.android.synthetic.main.fragment_home.*
 import java.math.BigDecimal
 import java.math.RoundingMode
@@ -57,6 +59,8 @@ class FragmentHome : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        activityManager = context!!.getSystemService(ACTIVITY_SERVICE) as ActivityManager
+        batteryManager = context!!.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
 
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
@@ -82,7 +86,7 @@ class FragmentHome : Fragment() {
         spf = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
         home_clear_ram.setOnClickListener {
-            home_raminfo_text.text = "稍等一下"
+            home_raminfo_text.text = getString(R.string.please_wait)
             Thread(Runnable {
                 KeepShellPublic.doCmdSync("sync\n" +
                         "echo 3 > /proc/sys/vm/drop_caches\n" +
@@ -97,7 +101,7 @@ class FragmentHome : Fragment() {
             }).start()
         }
         home_clear_swap.setOnClickListener {
-            home_zramsize_text.text = "稍等一下"
+            home_zramsize_text.text = getText(R.string.please_wait)
             Thread(Runnable {
                 KeepShellPublic.doCmdSync("sync\n" +
                         "echo 1 > /proc/sys/vm/compact_memory")
@@ -118,6 +122,10 @@ class FragmentHome : Fragment() {
             } catch (ex: Exception) {
                 Toast.makeText(context!!, "启动在线页面失败！", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        home_battery_edit.setOnClickListener {
+            DialogElectricityUnit().showDialog(this, batteryCurrentNow)
         }
     }
 
@@ -141,12 +149,12 @@ class FragmentHome : Fragment() {
     }
 
     private var coreCount = -1;
-    private var activityManager: ActivityManager? = null
+    private lateinit var batteryManager: BatteryManager
+    private lateinit var activityManager: ActivityManager
 
     private var minFreqs = HashMap<Int, String>()
     private var maxFreqs = HashMap<Int, String>()
     fun format1(value: Double): String {
-
         var bd = BigDecimal(value)
         bd = bd.setScale(1, RoundingMode.HALF_UP)
         return bd.toString()
@@ -156,10 +164,7 @@ class FragmentHome : Fragment() {
     private fun updateRamInfo() {
         try {
             val info = ActivityManager.MemoryInfo()
-            if (activityManager == null) {
-                activityManager = context!!.getSystemService(ACTIVITY_SERVICE) as ActivityManager
-            }
-            activityManager!!.getMemoryInfo(info)
+            activityManager.getMemoryInfo(info)
             val totalMem = (info.totalMem / 1024 / 1024f).toInt()
             val availMem = (info.availMem / 1024 / 1024f).toInt()
             home_raminfo_text.text = "${((totalMem - availMem) * 100 / totalMem)}% (${totalMem / 1024 + 1}GB)"
@@ -198,6 +203,7 @@ class FragmentHome : Fragment() {
 
     private var updateTick = 0;
 
+    private var batteryCurrentNow = 0L
     @SuppressLint("SetTextI18n")
     private fun updateInfo() {
         if (coreCount < 1) {
@@ -232,8 +238,17 @@ class FragmentHome : Fragment() {
         }
         val gpuFreq = GpuUtils.getGpuFreq() + "Mhz"
         val gpuLoad = GpuUtils.getGpuLoad()
+
+        // 电池电流
+        batteryCurrentNow = batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
+        // 电量
+        val batteryCapacity = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+
         myHandler.post {
             try {
+                home_battery_now.setText((batteryCurrentNow / globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT)).toString() + "mAh")
+                home_battery_capacity.setText(batteryCapacity.toString() + "%")
+
                 home_gpu_freq.text = gpuFreq
                 home_gpu_load.text = "负载：" + gpuLoad + "%"
                 if (gpuLoad > -1) {
@@ -246,14 +261,14 @@ class FragmentHome : Fragment() {
                 if (cpu_core_list.adapter == null) {
                     val layoutParams = cpu_core_list.layoutParams
                     if (cores.size < 6) {
-                        layoutParams.height = dp2px(125 * 2F).toInt()
+                        layoutParams.height = dp2px(105 * 2F)
                         cpu_core_list.numColumns = 2
                     } else if (cores.size > 12) {
-                        layoutParams.height = dp2px(125 * 4F)
+                        layoutParams.height = dp2px(105 * 4F)
                     } else if (cores.size > 8) {
-                        layoutParams.height = dp2px(125 * 3F)
+                        layoutParams.height = dp2px(105 * 3F)
                     } else {
-                        layoutParams.height = dp2px(125 * 2F)
+                        layoutParams.height = dp2px(105 * 2F)
                     }
                     cpu_core_list.layoutParams = layoutParams
                     cpu_core_list.adapter = AdapterCpuCores(context!!, cores)

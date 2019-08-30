@@ -213,6 +213,7 @@ public class ScriptEnvironmen {
         } else {
             params.put("MAGISK_PATH", "");
         }
+        params.put("PACKAGE_NAME", context.getPackageName());
         params.put("START_DIR", getStartPath(context));
         // params.put("EXECUTOR_PATH", environmentPath);
         params.put("TEMP_DIR", context.getCacheDir().getAbsolutePath());
