@@ -394,18 +394,18 @@
                                 android:text="每2秒刷新电池信息（默认10秒），获得更精准的耗电速度信息，会增加亮屏时后台耗电（待机自动暂停）" />
 
                             <Switch
-                                android:id="@+id/accessbility_notify"
+                                android:id="@+id/scene_notify"
                                 style="@style/textTitle"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="20dp"
-                                android:text="@string/accessbility_notify" />
+                                android:text="@string/scene_notify" />
 
                             <TextView
                                 style="@style/textSmall"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:text="@string/accessbility_notify_desc" />
+                                android:text="@string/scene_notify_desc" />
 
                             <Switch
                                 android:id="@+id/settings_autoinstall"
@@ -420,7 +420,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
                                 android:paddingBottom="8dp"
-                                android:text="@string/accessbility_autoclick_desc" />
+                                android:text="@string/scene_autoclick_desc" />
 
                         </LinearLayout>
 

@@ -21,23 +21,22 @@
                     android:id="@+id/battrystatus"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="电池信息："
-                    android:textColor="?colorAccent"
-                    android:textSize="11dp" />
+                    android:text="@string/battery_title"
+                    style="@style/textTitle" />
 
                 <TextView
                     style="@style/textSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:text="使用充电加速建议保持Scene后台运行！" />
+                    android:text="@string/battery_title_desc1" />
 
                 <TextView
                     style="@style/textSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:text="电池保护功能，必须让Scene保持后台运行！" />
+                    android:text="@string/battery_title_desc2" />
             </LinearLayout>
 
             <LinearLayout
@@ -49,13 +48,13 @@
                     style="@style/textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="USB-PD快充" />
+                    android:text="@string/battery_pd_allowed" />
 
                 <TextView
                     style="@style/textSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="启用USB-PD快充协议(强烈建议，不要尝试手动开关此选项！！！)" />
+                    android:text="@string/battery_pd_allowed_desc" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -67,31 +66,30 @@
                         style="@style/textSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="当前状态：" />
+                        android:text="@string/battery_pd_active_state" />
 
                     <TextView
                         android:id="@+id/settings_pd_state"
                         style="@style/textSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="未知" />
+                        android:text="@string/battery_pd_active_unknown" />
                 </LinearLayout>
             </LinearLayout>
 
             <LinearLayout style="@style/ListCardItem">
-
                 <Switch
                     android:id="@+id/settings_qc"
                     style="@style/textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/accessbility_charger" />
+                    android:text="@string/battery_qc_charger" />
 
                 <TextView
                     style="@style/textSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/accessbility_charger_desc" />
+                    android:text="@string/battery_qc_charger_desc" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -106,8 +104,8 @@
                         android:layout_weight="1"
                         android:gravity="center_vertical"
                         android:max="60"
-                        android:paddingStart="0dp"
-                        android:paddingEnd="0dp" />
+                        android:paddingStart="6dp"
+                        android:paddingEnd="6dp" />
 
                     <TextView
                         android:id="@+id/settings_qc_limit_desc"
@@ -122,28 +120,87 @@
                     android:id="@+id/settings_qc_limit_current"
                     style="@style/textSmall"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:id="@+id/battery_night_mode_configs"
+                    android:visibility="gone"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin" />
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:orientation="vertical">
+
+                    <Switch
+                        android:id="@+id/battery_night_mode"
+                        style="@style/textTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/battery_night_mode" />
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/battery_night_mode_desc" />
+
+                    <LinearLayout
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
+                        android:gravity="center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <TextView
+                            style="@style/textTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/battery_time_get_up"
+                            android:layout_marginEnd="12dp" />
+                        <TextView
+                            android:id="@+id/battery_get_up"
+                            android:textColor="?colorAccent"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textAlignment="center"
+                            android:timePickerMode="spinner" />
+
+                        <TextView
+                            style="@style/textTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/battery_time_sleep"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginEnd="12dp" />
+                        <TextView
+                            android:id="@+id/battery_sleep"
+                            android:textColor="?colorAccent"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:textAlignment="center"
+                            android:timePickerMode="spinner" />
+                    </LinearLayout>
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/bp_cardview"
-                style="@style/ListCardItem"
-                android:visibility="gone">
+                android:visibility="gone"
+                style="@style/ListCardItem">
 
                 <Switch
                     android:id="@+id/settings_bp"
                     style="@style/textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/accessbility_bp"
+                    android:text="@string/battery_bp"
                     tools:ignore="RtlHardcoded" />
 
                 <TextView
                     style="@style/textSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/accessbility_bp_desc" />
+                    android:text="@string/battery_bp_desc" />
 
                 <SeekBar
                     android:id="@+id/settings_bp_level"
@@ -151,63 +208,56 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:max="100"
-                    android:paddingStart="0dp"
-                    android:paddingEnd="0dp" />
+                    android:paddingStart="6dp"
+                    android:paddingEnd="6dp" />
 
                 <TextView
-                    android:id="@+id/accessbility_bp_level_desc"
+                    android:id="@+id/battery_bp_level_desc"
                     style="@style/textSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:text="@string/accessbility_bp_level_desc" />
+                    android:text="@string/battery_bp_level_desc" />
 
                 <LinearLayout
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
+                    android:orientation="horizontal">
                     <TextView
                         style="@style/textTitle"
-                        android:layout_width="match_parent"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/activity_vertical_margin"
-                        android:text="手动控制" />
+                        android:text="@string/battery_manual_control" />
 
-                    <LinearLayout
+                    <Button
+                        android:id="@+id/bp_disable_charge"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:orientation="horizontal">
+                        android:layout_height="36dp"
+                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                        android:background="@drawable/btn_bg"
+                        android:elevation="2dp"
+                        android:text="@string/battery_charge_disable" />
 
-                        <Button
-                            android:id="@+id/bp_disable_charge"
-                            android:layout_width="wrap_content"
-                            android:layout_height="36dp"
-                            android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                            android:background="@drawable/btn_bg"
-                            android:elevation="2dp"
-                            android:text="禁止充电" />
-
-                        <Button
-                            android:id="@+id/bp_enable_charge"
-                            android:layout_width="wrap_content"
-                            android:layout_height="36dp"
-                            android:background="@drawable/btn_bg"
-                            android:elevation="2dp"
-                            android:text="恢复充电" />
-                    </LinearLayout>
+                    <Button
+                        android:id="@+id/bp_enable_charge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:background="@drawable/btn_bg"
+                        android:elevation="2dp"
+                        android:text="@string/battery_charge_resume" />
                 </LinearLayout>
             </LinearLayout>
 
             <LinearLayout style="@style/ListCardItem">
 
                 <TextView
-                    style="@style/textSmall"
+                    style="@style/textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/battery_uevent_title"
-                    android:textColor="?colorAccent" />
+                    android:layout_marginBottom="@dimen/activity_vertical_margin"
+                    android:text="@string/battery_uevent_title" />
 
                 <TextView
                     android:id="@+id/battery_uevent"
@@ -223,7 +273,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/activity_vertical_margin"
-                    android:text="电池使用记录" />
+                    android:text="@string/battery_usage_history" />
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -239,7 +289,7 @@
                         android:layout_marginEnd="@dimen/activity_horizontal_margin"
                         android:background="@drawable/btn_bg"
                         android:elevation="2dp"
-                        android:text="查看记录" />
+                        android:text="@string/battery_view_history" />
 
                     <Button
                         android:id="@+id/btn_battery_history_del"
@@ -248,7 +298,7 @@
                         android:layout_height="36dp"
                         android:background="@drawable/btn_bg"
                         android:elevation="2dp"
-                        android:text="删除记录" />
+                        android:text="@string/battery_delete_history" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

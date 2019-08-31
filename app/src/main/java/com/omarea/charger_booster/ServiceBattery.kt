@@ -31,7 +31,7 @@ class ServiceBattery : Service() {
             //电量不足
             registerReceiver(batteryChangedReciver, IntentFilter(Intent.ACTION_BATTERY_LOW))
             batteryChangedReciver!!.resumeCharge()
-            batteryChangedReciver!!.entryFastChanger()
+            batteryChangedReciver!!.entryFastCharge()
         }
     }
 

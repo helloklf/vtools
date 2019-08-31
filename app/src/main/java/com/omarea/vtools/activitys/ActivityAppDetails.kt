@@ -294,7 +294,7 @@ class ActivityAppDetails : AppCompatActivity() {
 
         app_details_dynamic.setOnClickListener {
             if (!dynamicCpu) {
-                Snackbar.make(it, getString(R.string.dynamic_config_notinstalled), Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(it, getString(R.string.scene_config_notinstalled), Snackbar.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             val modeList = ModeSwitcher()

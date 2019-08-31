@@ -2,6 +2,7 @@ package com.omarea.vtools.fragments
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.app.TimePickerDialog
 import android.content.*
 import android.os.BatteryManager
 import android.os.Bundle
@@ -22,6 +23,7 @@ import com.omarea.vtools.R
 import com.omarea.charger_booster.ServiceBattery
 import kotlinx.android.synthetic.main.fragment_battery.*
 import java.util.*
+import kotlin.math.min
 
 
 class FragmentBattery : Fragment() {
@@ -54,7 +56,7 @@ class FragmentBattery : Fragment() {
         settings_bp.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_BP, false)
         settings_bp_level.progress = spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85)
         val bpLevel = spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85)
-        accessbility_bp_level_desc.text = "达到$bpLevel%停止充电，低于${bpLevel - 20}%恢复"
+        battery_bp_level_desc.text = "达到$bpLevel%停止充电，低于${bpLevel - 20}%恢复"
         settings_qc_limit.progress = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 3300) / 100
         settings_qc_limit_desc.text = "" + spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000) + "mA"
 
@@ -106,9 +108,9 @@ class FragmentBattery : Fragment() {
 
                 myHandler.post {
                     if (qcSettingSuupport) {
-                        settings_qc_limit_current.text = "实际上限电流：" + limit
+                        settings_qc_limit_current.text = getString(R.string.battery_reality_limit) + limit
                     }
-                    battrystatus.text = "电池信息：" +
+                    battrystatus.text = getString(R.string.battery_title) +
                             batteryMAH +
                             temp + "°C   " +
                             level + "%    " +
@@ -119,12 +121,11 @@ class FragmentBattery : Fragment() {
 
                     if (pdSettingSupport) {
                         settings_pd.isChecked = pdAllowed
-                        settings_pd_state.text = if (pdActive) "已进入PD快充模式" else "未进入PD快充模式"
+                        settings_pd_state.text = if (pdActive) getString(R.string.battery_pd_active_1) else getString(R.string.battery_pd_active_0)
                     }
                 }
             }
         }, 0, 3000)
-
     }
 
     internal var serviceRunning = false
@@ -159,41 +160,48 @@ class FragmentBattery : Fragment() {
     private var broadcast: BroadcastReceiver? = null
     private var qcSettingSuupport = false
     private var pdSettingSupport = false
-    private var ResumeChanger = ""
+    private var ResumeCharge = ""
 
-    @SuppressLint("ApplySharedPref")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        ResumeChanger = "sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("addin/resume_charge.sh", "addin/resume_charge.sh", this.context!!)
+        ResumeCharge = "sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("addin/resume_charge.sh", "addin/resume_charge.sh", this.context!!)
         spf = context!!.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
         qcSettingSuupport = batteryUnits.qcSettingSuupport()
         pdSettingSupport = batteryUnits.pdSupported()
 
         settings_qc.setOnClickListener {
-            spf.edit().putBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, settings_qc.isChecked).commit()
-            if (!settings_qc.isChecked) {
-                Snackbar.make(this.view, "充电加速服务已禁用，可能需要重启手机才能恢复默认设置！", Snackbar.LENGTH_SHORT).show()
-            } else {
+            val checked = (it as Switch).isChecked
+            spf.edit().putBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, checked).apply()
+            if (checked) {
                 //启用电池服务
                 startBatteryService()
-                Snackbar.make(this.view, "OK！如果你要手机重启后自动开启本功能，请允许Scene开机自启！", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(this.view, R.string.battery_auto_boot_desc, Snackbar.LENGTH_LONG).show()
+            } else {
+                Snackbar.make(this.view, R.string.battery_qc_rehoot_desc, Snackbar.LENGTH_LONG).show()
+            }
+        }
+        settings_qc.setOnCheckedChangeListener { buttonView, isChecked ->
+            battery_night_mode_configs.visibility = if(isChecked) View.VISIBLE else View.GONE
+            if (!isChecked) {
+                battery_night_mode.isChecked = false
+                spf.edit().putBoolean(SpfConfig.CHARGE_SPF_NIGHT_MODE, false).apply()
             }
         }
         settings_bp.setOnClickListener {
-            spf.edit().putBoolean(SpfConfig.CHARGE_SPF_BP, settings_bp.isChecked).commit()
+            spf.edit().putBoolean(SpfConfig.CHARGE_SPF_BP, settings_bp.isChecked).apply()
             //禁用电池保护：恢复充电功能
             if (!settings_bp.isChecked) {
-                KeepShellPublic.doCmdSync(ResumeChanger)
+                KeepShellPublic.doCmdSync(ResumeCharge)
             } else {
                 //启用电池服务
                 startBatteryService()
-                Snackbar.make(this.view, "OK！如果你要手机重启后自动开启本功能，请允许Scene开机自启！", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(this.view, R.string.battery_auto_boot_desc, Snackbar.LENGTH_LONG).show()
             }
         }
 
         settings_bp_level.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
             startBatteryService()
-        }, spf, accessbility_bp_level_desc))
+        }, spf, battery_bp_level_desc))
         settings_qc_limit.setOnSeekBarChangeListener(OnSeekBarChangeListener2(Runnable {
             val level = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000)
             startBatteryService()
@@ -204,14 +212,14 @@ class FragmentBattery : Fragment() {
 
         if (!qcSettingSuupport) {
             settings_qc.isEnabled = false
-            spf.edit().putBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false).commit()
+            spf.edit().putBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false).putBoolean(SpfConfig.CHARGE_SPF_NIGHT_MODE, false).apply()
             settings_qc_limit.isEnabled = false
             settings_qc_limit_current.visibility = View.GONE
         }
 
         if (!batteryUnits.bpSettingSuupport()) {
             settings_bp.isEnabled = false
-            spf.edit().putBoolean(SpfConfig.CHARGE_SPF_BP, false).commit()
+            spf.edit().putBoolean(SpfConfig.CHARGE_SPF_BP, false).apply()
 
             bp_cardview.visibility = View.GONE
         } else {
@@ -224,12 +232,8 @@ class FragmentBattery : Fragment() {
                 val isChecked = (it as Switch).isChecked
                 batteryUnits.setAllowed(isChecked)
             }
-            var pdAllowed = false
-            var pdActive = false
-            pdAllowed = batteryUnits.pdAllowed()
-            pdActive = batteryUnits.pdActive()
-            settings_pd.isChecked = pdAllowed
-            settings_pd_state.text = if (pdActive) "已进入PD快充模式" else "未进入PD快充模式"
+            settings_pd.isChecked = batteryUnits.pdAllowed()
+            settings_pd_state.text = if (batteryUnits.pdActive())getString(R.string.battery_pd_active_1) else getString(R.string.battery_pd_active_0)
         } else {
             settings_pd_support.visibility = View.GONE
         }
@@ -268,15 +272,41 @@ class FragmentBattery : Fragment() {
 
         bp_disable_charge.setOnClickListener {
             KeepShellPublic.doCmdSync("sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("addin/disable_charge.sh", "addin/disable_charge.sh", this.context!!))
-            Toast.makeText(context!!, "充电功能已禁止！", Toast.LENGTH_SHORT).show()
+            Snackbar.make(this.view, R.string.battery_charge_disabled, Toast.LENGTH_LONG).show()
         }
         bp_enable_charge.setOnClickListener {
-            KeepShellPublic.doCmdSync(ResumeChanger)
-            Toast.makeText(context!!, "充电功能已恢复！", Toast.LENGTH_SHORT).show()
+            KeepShellPublic.doCmdSync(ResumeCharge)
+            Snackbar.make(this.view, R.string.battery_charge_resumed, Toast.LENGTH_LONG).show()
+        }
+
+        val nightModeGetUp = spf.getInt(SpfConfig.CHARGE_SPF_TIME_GET_UP, SpfConfig.CHARGE_SPF_TIME_GET_UP_DEFAULT)
+        battery_get_up.setText(String.format(getString(R.string.battery_night_mode_time), nightModeGetUp / 60, nightModeGetUp % 60))
+        battery_get_up.setOnClickListener {
+            TimePickerDialog(this.context, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+                battery_get_up.setText(String.format(getString(R.string.battery_night_mode_time), hourOfDay, minute))
+            }, nightModeGetUp / 60, nightModeGetUp % 60, true).show()
+        }
+        val nightModeSleep = spf.getInt(SpfConfig.CHARGE_SPF_TIME_SLEEP, SpfConfig.CHARGE_SPF_TIME_SLEEP_DEFAULT)
+        battery_sleep.setText(String.format(getString(R.string.battery_night_mode_time), nightModeSleep / 60, nightModeSleep % 60))
+        battery_sleep.setOnClickListener {
+            TimePickerDialog(this.context, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+                spf.edit().putInt(SpfConfig.CHARGE_SPF_TIME_SLEEP, hourOfDay * 60 + minute).apply()
+                battery_sleep.setText(String.format(getString(R.string.battery_night_mode_time), hourOfDay, minute))
+            }, nightModeSleep / 60, nightModeSleep % 60, true).show()
+        }
+        battery_night_mode.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_NIGHT_MODE, false)
+        battery_night_mode.setOnClickListener {
+            val checked = (it as Switch).isChecked
+            if (checked && !spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
+                Toast.makeText(this.context, "需要开启 " + getString(R.string.battery_qc_charger), Toast.LENGTH_LONG).show()
+                it.isChecked = false
+            } else {
+                spf.edit().putBoolean(SpfConfig.CHARGE_SPF_NIGHT_MODE, checked).apply()
+            }
         }
     }
 
-    class OnSeekBarChangeListener(private var next: Runnable, private var spf: SharedPreferences, private var accessbility_bp_level_desc: TextView) : SeekBar.OnSeekBarChangeListener {
+    class OnSeekBarChangeListener(private var next: Runnable, private var spf: SharedPreferences, private var battery_bp_level_desc: TextView) : SeekBar.OnSeekBarChangeListener {
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
             val progress = seekBar!!.progress
             if (spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, Int.MIN_VALUE) == progress) {
@@ -287,11 +317,10 @@ class FragmentBattery : Fragment() {
         }
 
         override fun onStartTrackingTouch(seekBar: SeekBar?) {
-
         }
 
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-            accessbility_bp_level_desc.text = "达到$progress%停止充电，低于${progress - 20}%恢复"
+            battery_bp_level_desc.text = String.format(battery_bp_level_desc.context.getString(R.string.battery_bp_status), progress, progress - 20)
         }
     }
 

@@ -13,6 +13,16 @@ public class SpfConfig {
     public static String CHARGE_SPF_QC_LIMIT = "charge_limit_ma"; //int
     public static String CHARGE_SPF_BP = "bp"; //bool
     public static String CHARGE_SPF_BP_LEVEL = "bp_level"; //int
+    // 是否开启睡眠时间充电速度调整
+    public static String CHARGE_SPF_NIGHT_MODE = "sleep_time"; //bool
+    // 起床时间
+    public static String CHARGE_SPF_TIME_GET_UP = "time_get_up"; //int（hours*60 + minutes）
+    // 起床时间（默认为7:00）
+    public static int CHARGE_SPF_TIME_GET_UP_DEFAULT = 7 * 60; //
+    // 睡觉时间
+    public static String CHARGE_SPF_TIME_SLEEP = "time_slepp"; //int（hours*60 + minutes）
+    // 睡觉时间（默认为22:30点）
+    public static int CHARGE_SPF_TIME_SLEEP_DEFAULT = 22 * 60 + 30;
 
     public static String BOOSTER_SPF_CFG_SPF = "boostercfg2";
     public static String DATA = "data";
@@ -32,7 +42,7 @@ public class SpfConfig {
     public static String GLOBAL_SPF_AUTO_STARTED_FSTRIM = "auto_started_fstrim";
     public static String GLOBAL_SPF_START_DELAY = "start_delay";
     public static String GLOBAL_SPF_DELAY = "is_delay_start";
-    public static String GLOBAL_SPF_NOTIFY = "accessbility_notify";
+    public static String GLOBAL_SPF_NOTIFY = "scene_notify";
     public static String GLOBAL_SPF_AUTO_REMOVE_RECENT = "remove_recent";
     public static String GLOBAL_SPF_NIGHT_MODE = "app_night_mode";
     public static String GLOBAL_SPF_THEME = "app_theme";

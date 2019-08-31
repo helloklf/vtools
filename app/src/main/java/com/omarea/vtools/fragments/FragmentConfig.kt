@@ -315,8 +315,8 @@ class FragmentConfig : Fragment() {
             } catch (ex: Exception) {
             }
         }
-        accessbility_notify.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true)
-        accessbility_notify.setOnClickListener({
+        scene_notify.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true)
+        scene_notify.setOnClickListener({
             val checked = (it as Switch).isChecked
             globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, checked).commit()
             reStartService()

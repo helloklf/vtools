@@ -129,17 +129,8 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="accessbility_autoclick">安装点击</string>
-    <string name="accessbility_autoclick_desc">安装第三方应用时，自动帮你点“下一步”</string>
-    <string name="accessbility_charger">充电加速 *实验性</string>
-    <string name="accessbility_charger_desc">尝试提高充电最大电流限制，但不代表实际充电速度\n此设置只在充电器已连接，且电量低于80%才生效</string>
-    <string name="accessbility_bp">充电保护</string>
-    <string name="accessbility_bp_desc">充电到指定百分比时自动禁止充电功能，浅充浅放有助于保护电池。但可能导致电量显示不精准。</string>
-    <string name="accessbility_bp_level_desc">电量限制值（%）</string>
-    <string name="accessbility_notify">常驻通知</string>
-    <string name="accessbility_notify_desc">运行场景模式服务时显示常驻通知，以监视运行状态和电池状态</string>
-    <string name="accessbility_delay">延迟执行</string>
-    <string name="accessbility_delay_desc">自启动过程延迟25秒，避免开机时卡顿</string>
+    <string name="settings_delay">延迟执行</string>
+    <string name="settings_delay_desc">自启动过程延迟25秒，避免开机时卡顿</string>
     <string name="settings_disable_selinux">SeLinux宽容模式</string>
     <string name="settings_disable_selinux_desc">自动开启SELinux宽容模式（部分软件中称作“关闭Selinux”）。某些设备激活此选项会死机重启！</string>
     <string name="settings_theme">主题</string>
@@ -170,7 +161,39 @@
     <string name="accessibility_running">辅助服务已激活</string>
     <string name="accessibility_stoped">点击此处去激活辅助服务</string>
 
+    <string name="battery_title">电池：</string>
+    <string name="battery_title_desc1">使用充电加速建议保持Scene后台运行！</string>
+    <string name="battery_title_desc2">电池保护功能，必须让Scene保持后台运行！</string>
+    <string name="battery_reality_limit">实际上限电流：</string>
+    <string name="battery_pd_allowed">USB-PD快充</string>
+    <string name="battery_pd_allowed_desc">启用USB-PD快充协议(强烈建议，不要尝试手动开关此选项！！！)</string>
+    <string name="battery_pd_active_state">当前状态：</string>
+    <string name="battery_pd_active_1">已进入PD快充模式</string>
+    <string name="battery_pd_active_0">未进入PD快充模式</string>
+    <string name="battery_auto_boot_desc">OK，如果你要手机重启后自动开启本功能，请允许Scene开机自启！</string>
+    <string name="battery_qc_rehoot_desc">充电加速服务已禁用，可能需要重启手机才能恢复默认设置！</string>
+    <string name="battery_pd_active_unknown">未知</string>
     <string name="battery_uevent_title">$ cat /sys/class/power_supply/bms/uevent</string>
+    <string name="battery_night_mode_time">%02d:%02d</string>
+    <string name="battery_night_mode">动态充电速度</string>
+    <string name="battery_night_mode_desc">你睡觉期间降低充电速度，在睡醒时接近充满</string>
+    <string name="battery_time_get_up">起床时间</string>
+    <string name="battery_time_sleep">入睡时间</string>
+    <string name="battery_manual_control">手动控制</string>
+    <string name="battery_charge_disable">禁止充电</string>
+    <string name="battery_charge_resume">恢复充电</string>
+    <string name="battery_usage_history">电池使用记录</string>
+    <string name="battery_view_history">查看记录</string>
+    <string name="battery_delete_history">删除记录</string>
+    <string name="battery_bp">充电保护</string>
+    <string name="battery_bp_desc">充电到指定百分比时自动禁止充电功能，浅充浅放有助于保护电池。但可能导致电量显示不精准。</string>
+    <string name="battery_bp_level_desc">电量限制值（%）</string>
+    <string name="battery_qc_charger">充电调速</string>
+    <string name="battery_bp_status">达到%d%%停止充电，低于%d%%恢复</string>
+    <string name="battery_qc_charger_desc">尝试调整充电速度限制，但不代表实际充电速度\n此设置只在充电器已连接，且电量低于80%才生效</string>
+    <string name="battery_charge_disabled">充电功能已禁止！</string>
+    <string name="battery_charge_resumed">充电功能已恢复！</string>
+
     <string name="home_hide_in_recents">强迫症</string>
     <string name="home_hide_in_recents_desc">不要在多任务界面显示Scene（本功能已下线，用返回键关闭Scene界面时自动隐藏后台）</string>
     <string name="auto_start_compile">自动编译(Android N+)</string>
@@ -257,6 +280,7 @@
     <string name="swap_zram_stat">ZRAM 统计</string>
     <string name="swap_zram_stat_desc">ZRAM的压缩率在20~45%之间都是正常的</string>
     <string name="swap_zram_stat_format">数据压缩算法：%s\n原始数据大小：%s\n压缩后的大小：%s\n物理内存占用：%s\n最高内存占用：%s\n内存占用限制：%s\n压缩率：%s</string>
+    <string name="swap_zram_compact_algorithm">压缩算法</string>
 
     <string name="on_execute_please_wait">正在执行操作，请稍等…</string>
     <string name="please_wait">请稍等…</string>
@@ -351,6 +375,7 @@
     <string name="boot_freeze">冻结偏见应用…</string>
 
     <string name="flash_confirm">确认刷入？</string>
+
     <string name="scene_addin_installing">稍等，正在安装“Scene - 高级设定”插件…</string>
     <string name="scene_addin_miss">插件未集成到应用包，请单独下载！</string>
     <string name="scene_inner_addin_invalid">Scene中集成的“高级设置”插件版本过低，请联系系开发者报告错误！</string>
@@ -358,7 +383,10 @@
     <string name="scene_addin_install_fail">“Scene - 高级设定”插件安装失败！</string>
     <string name="scene_addin_sync_fail">从“Scene-高级设定”插件同步Xposed设定失败！</string>
     <string name="scene_addin_version_toolow">“Scene-高级设定”插件版本过低！</string>
-    <string name="dynamic_config_notinstalled">未安装模式配置脚本，无法使用动态响应！</string>
+    <string name="scene_config_notinstalled">未安装模式配置脚本，无法使用动态响应！</string><string name="accessbility_autoclick">安装点击</string>
+    <string name="scene_autoclick_desc">安装第三方应用时，自动帮你点“下一步”</string>
+    <string name="scene_notify">常驻通知</string>
+    <string name="scene_notify_desc">运行场景模式服务时显示常驻通知，以监视运行状态和电池状态</string>
     <string name="perf_opt">性能调节</string>
     <string name="permission_modify_fail">修改权限失败！</string>
     <string name="scene_need_write_sys_settings">请先授权允许Scene“修改系统设置”！</string>
@@ -424,7 +452,6 @@
     <string name="freeze_enable">解冻</string>
     <string name="freeze_remove">取消偏见</string>
     <string name="freeze_remove_uninstall">卸载应用</string>
-    <string name="swap_zram_compact_algorithm">压缩算法</string>
     <string name="wallpaper_rw_permission">需要“读写本地存储”的权限才能使用系统壁纸作为软件背景</string>
 
     <string name="shortcut_create_fail">快捷方式创建失败</string>

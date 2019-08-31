@@ -11,16 +11,17 @@ import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellAsync
-import com.omarea.store.SpfConfig
 import com.omarea.shell_utils.BatteryUtils
+import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
+import java.util.*
 
 
 class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() {
     private var chargeDisabled: Boolean = false
     private var keepShellAsync: KeepShellAsync? = null
 
-    private var sharedPreferences: SharedPreferences
+    private var chargeConfig: SharedPreferences
     private var globalSharedPreferences: SharedPreferences
     private var listener: SharedPreferences.OnSharedPreferenceChangeListener
     private val myHandler = Handler(Looper.getMainLooper())
@@ -38,13 +39,13 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
     }
 
     private var batteryUnits = BatteryUtils()
-    var ResumeChanger = "sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("addin/resume_charge.sh", "addin/resume_charge.sh", service)
-    var DisableChanger = "sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("addin/disable_charge.sh", "addin/disable_charge.sh", service)
+    var ResumeCharge = "sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("addin/resume_charge.sh", "addin/resume_charge.sh", service)
+    var DisableCharge = "sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("addin/disable_charge.sh", "addin/disable_charge.sh", service)
 
     //快速充电
     private fun fastCharger() {
         try {
-            if (!sharedPreferences.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false))
+            if (!chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false))
                 return
             batteryUnits.setChargeInputLimit(qcLimit, service)
         } catch (ex: Exception) {
@@ -60,18 +61,18 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
     private fun onReceiveAsync(intent: Intent, pendingResult: PendingResult) {
         try {
             val action = intent.action
-            val onChanger = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1) == BatteryManager.BATTERY_STATUS_CHARGING
+            val onCharge = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1) == BatteryManager.BATTERY_STATUS_CHARGING
             val currentLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
-            var bpLeve = sharedPreferences.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85)
+            var bpLeve = chargeConfig.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85)
             if (bpLeve <= 30) {
                 showMsg("Scene：当前电池保护电量值设为小于30%，会引起一些异常，已自动替换为默认值85%！", true)
                 bpLeve = 85
             }
-            val bp = sharedPreferences.getBoolean(SpfConfig.CHARGE_SPF_BP, false)
+            val bp = chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_BP, false)
 
             //BatteryProtection 如果开启充电保护
             if (bp) {
-                if (onChanger) {
+                if (onCharge) {
                     if (currentLevel >= bpLeve) {
                         disableCharge()
                     } else if (currentLevel < bpLeve - 20) {
@@ -95,9 +96,11 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
                 resumeCharge()
             }
 
-            // 未进入电池保护状态 并且电量低于85
-            if (currentLevel < 85 && (!bp || currentLevel < (bpLeve - 20))) {
-                entryFastChanger()
+            if (!sleepChargeMode(bpLeve, 3500)) {
+                // 未进入电池保护状态 并且电量低于85
+                if (currentLevel < 85 && (!bp || currentLevel < (bpLeve - 20))) {
+                    entryFastCharge()
+                }
             }
         } catch (ex: Exception) {
             showMsg("充电加速服务：\n" + ex.message, true);
@@ -106,40 +109,97 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
         }
     }
 
+    /**
+     * 计算并使用合理的夜间充电速度
+     * @param currentCapacityRatio 当前电量百分比（0~100）
+     * @param totalCapacity 总容量（mAh）
+     * @param bpRation 充电保护电量百分比
+     */
+    private fun sleepChargeMode(currentCapacityRatio: Int, totalCapacity: Int, bpRation: Int = 90): Boolean {
+        // 如果开启了夜间充电降速
+        if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_NIGHT_MODE, false)) {
+            val now = Calendar.getInstance()
+            val nowTimeValue = now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)
+            val getUp = chargeConfig.getInt(SpfConfig.CHARGE_SPF_TIME_GET_UP, SpfConfig.CHARGE_SPF_TIME_GET_UP_DEFAULT)
+            val sleep = chargeConfig.getInt(SpfConfig.CHARGE_SPF_TIME_SLEEP, SpfConfig.CHARGE_SPF_TIME_SLEEP_DEFAULT)
+
+            // 判断是否在夜间慢速充电时间
+            val inSleepTime =
+                    // 如果【起床时间】比【睡觉时间】要大，如 2:00 睡到 9:00 起床
+                    (getUp > sleep && (nowTimeValue >= sleep && nowTimeValue <= getUp)) ||
+                    // 正常时间睡觉【睡觉时间】大于【起床时间】，如 23:00 睡到 7:00 起床
+                    (nowTimeValue >= sleep || nowTimeValue <= getUp)
+
+            // 如果正在夜间慢速充电时间
+            if (inSleepTime) {
+                if (currentCapacityRatio > bpRation) {
+                    // 计算预期还需要充入多少电量（mAh）
+                    val target = (bpRation - currentCapacityRatio) / 100F  * totalCapacity
+                    // 距离起床的剩余时间（小时）
+                    var timeRemaining = 0F
+                    // 和计算闹钟距离下一次还有多久响的逻辑有点像
+                    // 如果已经过了今天的起床时间，计算到明天的起床时间还有多久
+                    if (nowTimeValue > getUp) {
+                        // (24 * 60) => 144
+                        // (今天剩余时间 + 明天的起床时间) / 60分钟 计算小时数
+                        timeRemaining = ((144 - nowTimeValue) + getUp) / 60F
+                    }
+                    // 如果还没过今天的起床时间
+                    else {
+                        timeRemaining = (getUp - nowTimeValue) / 60F
+                    }
+
+                    // 合理的充电速度 = 还需充入的电量(mAh) / timeRemaining
+                    val limitValue = (target / timeRemaining).toInt()
+
+                    batteryUnits.setChargeInputLimit(limitValue, service)
+                } else {
+                    // 如果已经超出了电池保护的电量，限制为100mA
+                    batteryUnits.setChargeInputLimit(100, service)
+                }
+                return true
+            }
+        } else {
+            // TODO: 恢复正常充电速度（神仙才知道要应该恢复到多少充电速度...）
+            entryFastCharge()
+        }
+        return false
+    }
+
     init {
         if (keepShellAsync == null) {
             keepShellAsync = KeepShellAsync(service)
         }
-        sharedPreferences = service.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
+        chargeConfig = service.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
         listener = SharedPreferences.OnSharedPreferenceChangeListener { spf, key ->
             if (key == SpfConfig.CHARGE_SPF_QC_LIMIT) {
                 qcLimit = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, qcLimit)
             }
         }
-        sharedPreferences.registerOnSharedPreferenceChangeListener(listener)
-        qcLimit = sharedPreferences.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, qcLimit)
+        chargeConfig.registerOnSharedPreferenceChangeListener(listener)
+        qcLimit = chargeConfig.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, qcLimit)
         globalSharedPreferences = service.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
     }
 
     internal fun onDestroy() {
-        sharedPreferences.unregisterOnSharedPreferenceChangeListener(this.listener)
+        chargeConfig.unregisterOnSharedPreferenceChangeListener(this.listener)
         this.resumeCharge()
         keepShellAsync!!.tryExit()
         keepShellAsync = null
     }
 
     internal fun disableCharge() {
-        keepShellAsync!!.doCmd(DisableChanger)
+        keepShellAsync!!.doCmd(DisableCharge)
         chargeDisabled = true
     }
 
     internal fun resumeCharge() {
-        keepShellAsync!!.doCmd(ResumeChanger)
+        keepShellAsync!!.doCmd(ResumeCharge)
         chargeDisabled = false
     }
 
-    internal fun entryFastChanger() {
-        if (sharedPreferences.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
+    internal fun entryFastCharge() {
+        if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
             fastCharger()
         }
     }

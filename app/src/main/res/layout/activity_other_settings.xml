@@ -70,13 +70,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:text="@string/accessbility_delay" />
+                    android:text="@string/settings_delay" />
 
                 <TextView
                     style="@style/textSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/accessbility_delay_desc" />
+                    android:text="@string/settings_delay_desc" />
 
 
                 <Switch

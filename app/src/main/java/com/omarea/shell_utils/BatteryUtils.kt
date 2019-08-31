@@ -17,7 +17,7 @@ class BatteryUtils {
     companion object {
         var isHuawei = false
         var ioInfoSupported = true
-        private var fastChangerScript = ""
+        private var fastChargeScript = ""
     }
 
     //是否兼容此设备
@@ -236,7 +236,7 @@ class BatteryUtils {
             } else {
                 changeLimitRunning = true
 
-                if (fastChangerScript.isEmpty()) {
+                if (fastChargeScript.isEmpty()) {
                     val output = FileWrite.writePrivateShellFile("addin/fast_charge.sh", "addin/fast_charge.sh", context)
                     val output2 = FileWrite.writePrivateShellFile("addin/fast_charge_run_once.sh", "addin/fast_charge_run_once.sh", context)
                     if (output != null && output2 != null) {
@@ -245,19 +245,19 @@ class BatteryUtils {
                             isFristRun = false
                         }
 
-                        fastChangerScript = "sh " + output + " "
+                        fastChargeScript = "sh " + output + " "
                     }
                 }
 
-                if (fastChangerScript.isNotEmpty()) {
+                if (fastChargeScript.isNotEmpty()) {
                     if (limit > 3000) {
                         var current = 3000
                         while (current < limit && current < 9999) {
-                            KeepShellAsync.getInstance("setChargeInputLimit").doCmd(fastChangerScript + current)
+                            KeepShellAsync.getInstance("setChargeInputLimit").doCmd(fastChargeScript + current)
                             current += 300
                         }
                     }
-                    KeepShellAsync.getInstance("setChargeInputLimit").doCmd(fastChangerScript + limit)
+                    KeepShellAsync.getInstance("setChargeInputLimit").doCmd(fastChargeScript + limit)
                     changeLimitRunning = false
                     return true
                 } else {

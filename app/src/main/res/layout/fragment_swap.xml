@@ -27,8 +27,8 @@
                         android:id="@+id/seekbar_swap_size"
                         android:layout_gravity="center_vertical"
                         android:max="64"
-                        android:paddingStart="0dp"
-                        android:paddingEnd="0dp" />
+                        android:paddingStart="6dp"
+                        android:paddingEnd="6dp" />
 
                     <TextView
                         android:id="@+id/txt_swap_size_display"
@@ -124,8 +124,8 @@
                         android:id="@+id/seekbar_zram_size"
                         android:layout_width="match_parent"
                         android:max="1"
-                        android:paddingStart="0dp"
-                        android:paddingEnd="0dp" />
+                        android:paddingStart="6dp"
+                        android:paddingEnd="6dp" />
 
                     <TextView
                         android:id="@+id/txt_zram_size_display"
@@ -221,8 +221,8 @@
                     <SeekBar
                         android:id="@+id/seekbar_swap_swappiness"
                         android:layout_width="match_parent"
-                        android:paddingStart="0dp"
-                        android:paddingEnd="0dp" />
+                        android:paddingStart="6dp"
+                        android:paddingEnd="6dp" />
 
                     <TextView
                         android:id="@+id/txt_zramstus_swappiness"
