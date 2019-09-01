@@ -21,6 +21,7 @@ import com.omarea.store.SpfConfig
 import com.omarea.shell_utils.BatteryUtils
 import com.omarea.vtools.R
 import com.omarea.charger_booster.ServiceBattery
+import com.omarea.common.ui.DialogHelper
 import kotlinx.android.synthetic.main.fragment_battery.*
 import java.util.*
 import kotlin.math.min
@@ -258,16 +259,13 @@ class FragmentBattery : Fragment() {
             }
         }
         btn_battery_history_del.setOnClickListener {
-            val dialog = AlertDialog.Builder(context!!)
+            DialogHelper.animDialog(AlertDialog.Builder(context!!)
                     .setTitle("需要重启")
                     .setMessage("删除电池使用记录需要立即重启手机，是否继续？")
                     .setPositiveButton(R.string.btn_confirm, DialogInterface.OnClickListener { dialog, which ->
                         KeepShellPublic.doCmdSync("rm -f /data/system/batterystats-checkin.bin;rm -f /data/system/batterystats-daily.xml;rm -f /data/system/batterystats.bin;sync;sleep 2; reboot;")
                     })
-                    .setNegativeButton(R.string.btn_cancel, DialogInterface.OnClickListener { dialog, which -> })
-                    .create()
-            dialog.window!!.setWindowAnimations(R.style.windowAnim)
-            dialog.show()
+                    .setNegativeButton(R.string.btn_cancel, DialogInterface.OnClickListener { dialog, which -> }))
         }
 
         bp_disable_charge.setOnClickListener {
@@ -283,6 +281,7 @@ class FragmentBattery : Fragment() {
         battery_get_up.setText(String.format(getString(R.string.battery_night_mode_time), nightModeGetUp / 60, nightModeGetUp % 60))
         battery_get_up.setOnClickListener {
             TimePickerDialog(this.context, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+                spf.edit().putInt(SpfConfig.CHARGE_SPF_TIME_GET_UP, hourOfDay * 60 + minute).apply()
                 battery_get_up.setText(String.format(getString(R.string.battery_night_mode_time), hourOfDay, minute))
             }, nightModeGetUp / 60, nightModeGetUp % 60, true).show()
         }

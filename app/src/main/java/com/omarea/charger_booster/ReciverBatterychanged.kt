@@ -96,7 +96,7 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
                 resumeCharge()
             }
 
-            if (!sleepChargeMode(bpLeve, 3500)) {
+            if (!sleepChargeMode(currentLevel, 3500, bpLeve)) {
                 // 未进入电池保护状态 并且电量低于85
                 if (currentLevel < 85 && (!bp || currentLevel < (bpLeve - 20))) {
                     entryFastCharge()
@@ -133,6 +133,9 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
             // 如果正在夜间慢速充电时间
             if (inSleepTime) {
                 if (currentCapacityRatio > bpRation) {
+                    // 如果已经超出了电池保护的电量，限制为100mA
+                    batteryUnits.setChargeInputLimit(100, service)
+                } else {
                     // 计算预期还需要充入多少电量（mAh）
                     val target = (bpRation - currentCapacityRatio) / 100F  * totalCapacity
                     // 距离起床的剩余时间（小时）
@@ -140,9 +143,9 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
                     // 和计算闹钟距离下一次还有多久响的逻辑有点像
                     // 如果已经过了今天的起床时间，计算到明天的起床时间还有多久
                     if (nowTimeValue > getUp) {
-                        // (24 * 60) => 144
+                        // (24 * 60) => 1440
                         // (今天剩余时间 + 明天的起床时间) / 60分钟 计算小时数
-                        timeRemaining = ((144 - nowTimeValue) + getUp) / 60F
+                        timeRemaining = ((1440 - nowTimeValue) + getUp) / 60F
                     }
                     // 如果还没过今天的起床时间
                     else {
@@ -153,9 +156,6 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
                     val limitValue = (target / timeRemaining).toInt()
 
                     batteryUnits.setChargeInputLimit(limitValue, service)
-                } else {
-                    // 如果已经超出了电池保护的电量，限制为100mA
-                    batteryUnits.setChargeInputLimit(100, service)
                 }
                 return true
             }
