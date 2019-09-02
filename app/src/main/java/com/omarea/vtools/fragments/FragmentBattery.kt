@@ -16,6 +16,7 @@ import android.widget.SeekBar
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
+import com.omarea.charger_booster.BatteryInfo
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.store.SpfConfig
 import com.omarea.shell_utils.BatteryUtils
@@ -55,8 +56,8 @@ class FragmentBattery : Fragment() {
 
         settings_qc.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)
         settings_bp.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_BP, false)
-        settings_bp_level.progress = spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85)
-        val bpLevel = spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85)
+        settings_bp_level.progress = spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, SpfConfig.CHARGE_SPF_BP_LEVEL_DEFAULT)
+        val bpLevel = spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, SpfConfig.CHARGE_SPF_BP_LEVEL_DEFAULT)
         battery_bp_level_desc.text = "达到$bpLevel%停止充电，低于${bpLevel - 20}%恢复"
         settings_qc_limit.progress = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 3300) / 100
         settings_qc_limit_desc.text = "" + spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000) + "mA"
@@ -83,7 +84,7 @@ class FragmentBattery : Fragment() {
         }
 
         val battrystatus = view.findViewById(R.id.battrystatus) as TextView
-        batteryMAH = batteryUnits.batteryMAH + "   "
+        batteryMAH = BatteryInfo().getBatteryCapacity(this.context!!).toString() + "mAh" + "   "
         val context = context!!.applicationContext
         serviceRunning = ServiceBattery.serviceIsRunning(context)
 
@@ -137,14 +138,11 @@ class FragmentBattery : Fragment() {
             timer!!.cancel()
             timer = null
         }
-
         try {
             if (broadcast != null)
                 context!!.unregisterReceiver(broadcast)
         } catch (ex: Exception) {
-
         }
-
     }
 
     override fun onDestroy() {
@@ -152,9 +150,7 @@ class FragmentBattery : Fragment() {
             if (broadcast != null)
                 context!!.unregisterReceiver(broadcast)
         } catch (ex: Exception) {
-
         }
-
         super.onDestroy()
     }
 

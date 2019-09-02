@@ -13,6 +13,7 @@ public class SpfConfig {
     public static String CHARGE_SPF_QC_LIMIT = "charge_limit_ma"; //int
     public static String CHARGE_SPF_BP = "bp"; //bool
     public static String CHARGE_SPF_BP_LEVEL = "bp_level"; //int
+    public static int CHARGE_SPF_BP_LEVEL_DEFAULT = 90; //int
     // 是否开启睡眠时间充电速度调整
     public static String CHARGE_SPF_NIGHT_MODE = "sleep_time"; //bool
     // 起床时间

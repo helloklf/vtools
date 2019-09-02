@@ -16,16 +16,16 @@ import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
 import java.util.*
 
-
 class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() {
     private var chargeDisabled: Boolean = false
     private var keepShellAsync: KeepShellAsync? = null
 
     private var chargeConfig: SharedPreferences
-    private var globalSharedPreferences: SharedPreferences
     private var listener: SharedPreferences.OnSharedPreferenceChangeListener
     private val myHandler = Handler(Looper.getMainLooper())
     private var qcLimit = 50000
+    // 电池总容量（mAh）
+    private val batteryCapacity = BatteryInfo().getBatteryCapacity(service)
 
     //显示文本消息
     private fun showMsg(msg: String, longMsg: Boolean) {
@@ -63,10 +63,10 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
             val action = intent.action
             val onCharge = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1) == BatteryManager.BATTERY_STATUS_CHARGING
             val currentLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
-            var bpLeve = chargeConfig.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, 85)
+            var bpLeve = chargeConfig.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, SpfConfig.CHARGE_SPF_BP_LEVEL_DEFAULT)
             if (bpLeve <= 30) {
-                showMsg("Scene：当前电池保护电量值设为小于30%，会引起一些异常，已自动替换为默认值85%！", true)
-                bpLeve = 85
+                showMsg("Scene：当前电池保护电量值设为小于30%，会引起一些异常，已自动替换为默认值"+  SpfConfig.CHARGE_SPF_BP_LEVEL_DEFAULT +"%！", true)
+                bpLeve = SpfConfig.CHARGE_SPF_BP_LEVEL_DEFAULT
             }
             val bp = chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_BP, false)
 
@@ -96,7 +96,7 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
                 resumeCharge()
             }
 
-            if (!sleepChargeMode(currentLevel, 3500, bpLeve)) {
+            if (!sleepChargeMode(currentLevel, bpLeve)) {
                 // 未进入电池保护状态 并且电量低于85
                 if (currentLevel < 85 && (!bp || currentLevel < (bpLeve - 20))) {
                     entryFastCharge()
@@ -113,9 +113,9 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
      * 计算并使用合理的夜间充电速度
      * @param currentCapacityRatio 当前电量百分比（0~100）
      * @param totalCapacity 总容量（mAh）
-     * @param bpRation 充电保护电量百分比
+     * @param targetRatio 目标充电百分比
      */
-    private fun sleepChargeMode(currentCapacityRatio: Int, totalCapacity: Int, bpRation: Int = 90): Boolean {
+    private fun sleepChargeMode(currentCapacityRatio: Int, targetRatio: Int): Boolean {
         // 如果开启了夜间充电降速
         if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_NIGHT_MODE, false)) {
             val now = Calendar.getInstance()
@@ -127,17 +127,17 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
             val inSleepTime =
                     // 如果【起床时间】比【睡觉时间】要大，如 2:00 睡到 9:00 起床
                     (getUp > sleep && (nowTimeValue >= sleep && nowTimeValue <= getUp)) ||
-                    // 正常时间睡觉【睡觉时间】大于【起床时间】，如 23:00 睡到 7:00 起床
-                    (nowTimeValue >= sleep || nowTimeValue <= getUp)
+                            // 正常时间睡觉【睡觉时间】大于【起床时间】，如 23:00 睡到 7:00 起床
+                    (getUp < sleep && (nowTimeValue >= sleep || nowTimeValue <= getUp))
 
             // 如果正在夜间慢速充电时间
             if (inSleepTime) {
-                if (currentCapacityRatio > bpRation) {
-                    // 如果已经超出了电池保护的电量，限制为100mA
-                    batteryUnits.setChargeInputLimit(100, service)
+                if (currentCapacityRatio >= targetRatio) {
+                    // 如果已经超出了电池保护的电量，限制为50mA
+                    batteryUnits.setChargeInputLimit(50, service)
                 } else {
                     // 计算预期还需要充入多少电量（mAh）
-                    val target = (bpRation - currentCapacityRatio) / 100F  * totalCapacity
+                    val target = (targetRatio - currentCapacityRatio) / 100F * batteryCapacity
                     // 距离起床的剩余时间（小时）
                     var timeRemaining = 0F
                     // 和计算闹钟距离下一次还有多久响的逻辑有点像
@@ -155,7 +155,7 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
                     // 合理的充电速度 = 还需充入的电量(mAh) / timeRemaining
                     val limitValue = (target / timeRemaining).toInt()
 
-                    batteryUnits.setChargeInputLimit(limitValue, service)
+                    batteryUnits.setChargeInputLimit(if (limitValue < 50) 50 else limitValue, service)
                 }
                 return true
             }
@@ -178,7 +178,6 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
         }
         chargeConfig.registerOnSharedPreferenceChangeListener(listener)
         qcLimit = chargeConfig.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, qcLimit)
-        globalSharedPreferences = service.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
     }
 
     internal fun onDestroy() {
