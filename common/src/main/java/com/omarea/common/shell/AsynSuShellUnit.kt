@@ -13,7 +13,7 @@ class AsynSuShellUnit(var handler: Handler) {
     private fun start(): AsynSuShellUnit {
         try {
             if (process == null)
-                process = Runtime.getRuntime().exec("su")
+                process = ShellExecutor.getSuperUserRuntime()
 
             Thread(Runnable {
                 try {

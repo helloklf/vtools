@@ -59,6 +59,7 @@ public class SpfConfig {
     public static String GLOBAL_SPF_LAST_UPDATE = "global_last_update";
     public static String GLOBAL_SPF_CURRENT_NOW_UNIT = "global_current_now_unit";
     public static int GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT = -1000;
+    public static String GLOBAL_SPF_BUSYBOX_INSTALLED = "busybox_installed";
 
     public static String SWAP_SPF = "swap"; //spf
     public static String SWAP_SPF_SWAP = "swap";

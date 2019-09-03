@@ -73,7 +73,7 @@ public class KeepShell(private var rootMode: Boolean = true) {
             try {
                 mLock.lockInterruptibly()
                 enterLockTime = System.currentTimeMillis()
-                p = Runtime.getRuntime().exec(if (rootMode) "su" else "sh")
+                p = if (rootMode) ShellExecutor.getSuperUserRuntime() else ShellExecutor.getRuntime()
                 out = p!!.outputStream
                 reader = p!!.inputStream.bufferedReader()
                 out!!.write(checkRootState.toByteArray(Charset.defaultCharset()))

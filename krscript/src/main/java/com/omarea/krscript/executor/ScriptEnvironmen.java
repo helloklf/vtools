@@ -1,6 +1,8 @@
 package com.omarea.krscript.executor;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
@@ -25,9 +27,11 @@ public class ScriptEnvironmen {
     private static String environmentPath = "";
 
     private static final String ASSETS_FILE = "file:///android_asset/";
+    // 此目录将添加到PATH尾部，作为应用程序提供的拓展程序库目录，如有需要则需要在初始化executor.sh之前为该变量赋值
+    private static String TOOKIT_DIR = "";
 
     private static boolean init(Context context){
-        return init(context, "kr-script/executor.sh");
+        return init(context, "kr-script/executor.sh", "kr-script/toolkit");
     }
 
     /**
@@ -36,11 +40,16 @@ public class ScriptEnvironmen {
      * @param executor 执行器在Assets中的位置
      * @return 是否初始化成功
      */
-    public static boolean init(Context context, String executor) {
+    public static boolean init(Context context, String executor, String toolkitDir) {
         if (inited) {
             return true;
         }
+
         try {
+            if (toolkitDir != null && !toolkitDir.isEmpty()) {
+                TOOKIT_DIR = new ExtractAssets(context).extractResources(toolkitDir);
+            }
+
             String fileName = executor;
             if (fileName.startsWith(ASSETS_FILE)) {
                 fileName = fileName.substring(ASSETS_FILE.length());
@@ -207,13 +216,13 @@ public class ScriptEnvironmen {
         final String dirUri = dir.getAbsolutePath();
         HashMap<String, String> params = new HashMap<>();
 
+        params.put("TOOLKIT", TOOKIT_DIR);
         if (MagiskExtend.moduleInstalled()) {
             String magiskPath = MagiskExtend.MAGISK_PATH.endsWith("/") ? (MagiskExtend.MAGISK_PATH.substring(0, MagiskExtend.MAGISK_PATH.length() - 1)) : MagiskExtend.MAGISK_PATH;
             params.put("MAGISK_PATH", magiskPath);
         } else {
             params.put("MAGISK_PATH", "");
         }
-        params.put("PACKAGE_NAME", context.getPackageName());
         params.put("START_DIR", getStartPath(context));
         // params.put("EXECUTOR_PATH", environmentPath);
         params.put("TEMP_DIR", context.getCacheDir().getAbsolutePath());
@@ -226,6 +235,16 @@ public class ScriptEnvironmen {
         } else {
             params.put("BUSYBOX", "busybox");
         }
+        try {
+            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            params.put("PACKAGE_NAME", context.getPackageName());
+            params.put("PACKAGE_VERSION_NAME", packageInfo.versionName);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                params.put("PACKAGE_VERSION_CODE", "" + packageInfo.getLongVersionCode());
+            } else {
+                params.put("PACKAGE_VERSION_CODE", "" + packageInfo.versionCode);
+            }
+        } catch (Exception ex) {}
 
         return params;
     }

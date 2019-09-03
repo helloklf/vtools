@@ -2,6 +2,8 @@ package com.omarea.shell_utils;
 
 import android.util.Log;
 
+import com.omarea.common.shell.ShellExecutor;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -14,7 +16,7 @@ public class SysUtils {
         InputStream is;
         try {
             Process process;
-            process = root ? Runtime.getRuntime().exec("su") : Runtime.getRuntime().exec("sh");
+            process = root ? ShellExecutor.getSuperUserRuntime() : ShellExecutor.getRuntime();
             if (process == null) return "";
             dos = new DataOutputStream(process.getOutputStream());
             dos.write(command.getBytes("UTF-8"));

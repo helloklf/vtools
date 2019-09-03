@@ -414,6 +414,7 @@
     <string name="key_map_dege_desc">开启后，在屏幕左右两侧及底部，从边缘向屏幕中心滑动，或滑动后悬停进行手势操作。  需要为Scene开启悬浮窗（在应用上层显示）权限！</string>
     <string name="busybox_install_classical">经典</string>
     <string name="busybox_install_module">模块</string>
+    <string name="busybox_install_private">私有(试验)</string>
     <string name="busybox_install_mode">请选择安装方式</string>
     <string name="busybox_install_desc">经典：直接写入System分区，立即生效，更新系统后需要重新安装\n\n模块(推荐)：\n创建Magisk模块来安装Busybox，重启生效，更新系统后不用重新安装\n\n如果其中一种方式无法正常安装，可以换一种方式试试！</string>
     <string name="busybox_installed_magisk">已通过Magisk安装了Busybox，现在需要重启手机才能生效，立即重启吗？</string>
@@ -468,6 +469,7 @@
     <string name="electricity_unit_adj">电流单位校准</string>
     <string name="electricity_unit_adj_desc">将系统数值除以：</string>
     <string name="electricity_unit_as">显示为：</string>
+    <string name="toolkit_install_path">scene_tools</string>
 
     <string-array name="device_templates">
         <item>Xiaomi MIX3</item>

@@ -48,6 +48,7 @@
         android:persistent="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:name="com.omarea.Scene"
         tools:ignore="GoogleAppIndexingWarning">
         <meta-data
             android:name="xposedmodule"
