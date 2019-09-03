@@ -6,12 +6,14 @@
         <getstate>file:///android_asset/custom/switchs/force_resize_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/force_resize_set.sh</setstate>
     </switch>
+
     <switch>
         <title>虚拟键设备</title>
         <desc>标识当前设备没有实体按键，MIUI系统可以通过本功能启用全面屏手势，其它系统可以启用虚拟键。重启生效！</desc>
         <getstate>file:///android_asset/custom/switchs/mainkey_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/mainkey_set.sh</setstate>
     </switch>
+
     <action>
         <title>过渡动画时长</title>
         <desc>调整各种动画时长</desc>
@@ -33,16 +35,11 @@
             echo 'OK!'
         </script>
     </action>
+
     <switch>
         <title>隐藏错误弹窗</title>
         <desc>不要显示应用崩溃和未响应的弹窗</desc>
         <getstate>file:///android_asset/custom/switchs/hide_errordialog_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/hide_errordialog_set.sh</setstate>
-    </switch>
-    <switch>
-        <title>Camera2 HAL、EIS</title>
-        <desc>启用HAL和EIS，从而支持谷歌相机HDR+功能或避免闪退（谷歌相机需要自行下载适合自己机型的版本）。可能导致相机无法开启或切换缓慢</desc>
-        <getstate>file:///android_asset/custom/switchs/gcm_get.sh</getstate>
-        <setstate>file:///android_asset/custom/switchs/gcm_set.sh</setstate>
     </switch>
 </actions>

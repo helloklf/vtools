@@ -7,11 +7,12 @@ import com.omarea.vtools.R
 import java.io.File
 
 class BusyboxInstaller2(private var context: Context) {
-    fun busyboxInstalled (): Boolean {
+    fun busyboxInstalled(): Boolean {
         val installPath = context.getString(R.string.toolkit_install_path)
         val absInstallPath = FileWrite.getPrivateFilePath(context, installPath)
         return File(absInstallPath + "/md5sum").exists()
     }
+
     fun installPrivateBusybox(): Boolean {
         if (!busyboxInstalled()) {
             val installPath = context.getString(R.string.toolkit_install_path)
@@ -25,7 +26,10 @@ class BusyboxInstaller2(private var context: Context) {
                 return false
             }
 
-            val absInstallerPath = FileWrite.writePrivateShellFile("addin/install_busybox.sh", installPath + "/" + "install_busybox.sh", context)
+            val absInstallerPath = FileWrite.writePrivateShellFile(
+                    "addin/install_busybox.sh",
+                    installPath + "/" + "install_busybox.sh",
+                    context)
             if (absInstallerPath != null) {
                 KeepShellPublic.doCmdSync("sh $absInstallerPath $absInstallPath")
             }

@@ -77,4 +77,34 @@
         </switch>
     </group>
 
+    <group title="其它">
+        <action>
+            <title>应用安装位置</title>
+            <desc>更改应用的默认安装位置</desc>
+            <params>
+                <param name="location" value-sh="pm get-install-location | cut -f1 -d '['">
+                    <option value="0">自动（系统决定最佳安装位置）</option>
+                    <option value="1">安装在内部设备存储器上</option>
+                    <option value="2">安装在外部介质上</option>
+                </param>
+            </params>
+            <script>
+                pm set-install-location $location
+                echo '注意：如果应用程序清单制定了安装路径，安装位置可能不受此设置控制'
+            </script>
+        </action>
+        <action confirm="true">
+            <title>卸载所有更新</title>
+            <desc>删除对所有系统应用程序的更新，并回退到系统自带的版本</desc>
+            <script>
+                pm  uninstall-system-updates
+            </script>
+        </action>
+        <action support="file:///android_asset/custom/common/support_android_p.sh">
+            <title>更换桌面</title>
+            <desc>将系统默认桌面，换成你安装的第三方桌面程序</desc>
+            <param name="activity" options-sh="file:///android_asset/custom/actions/launcher_chooser/get_launchers.sh"></param>
+            <script>file:///android_asset/custom/actions/launcher_chooser/set_launchers.sh</script>
+        </action>
+    </group>
 </switchs>

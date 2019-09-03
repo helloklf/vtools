@@ -2,7 +2,6 @@ package com.omarea.vtools.activitys
 
 import android.Manifest
 import android.app.Activity
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -14,10 +13,8 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.PermissionChecker
 import android.util.TypedValue
 import android.view.View
-import com.omarea.common.ui.DialogHelper
 import com.omarea.utils.CrashHandler
 import com.omarea.store.SpfConfig
-import com.omarea.permissions.Busybox
 import com.omarea.permissions.BusyboxInstaller2
 import com.omarea.permissions.CheckRootStatus
 import com.omarea.permissions.WriteSettings
@@ -74,10 +71,6 @@ class ActivityStartSplash : Activity() {
         }
         // 协议不同意
         contract_exit.setOnClickListener {
-            // val intent = Intent()
-            // intent.setAction(Intent.ACTION_MAIN)
-            // intent.addCategory(Intent.CATEGORY_HOME)
-            // startActivity(intent)
             finish()
         }
     }
@@ -116,7 +109,7 @@ class ActivityStartSplash : Activity() {
     private fun checkPermissions() {
         start_contract.visibility = View.GONE
         start_logo.visibility = View.VISIBLE
-        checkRoot(CheckRootSuccess(this), CheckRootFail(this))
+        checkRoot(CheckFileWirte(this), CheckRootFail(this))
     }
 
     /**
@@ -133,13 +126,13 @@ class ActivityStartSplash : Activity() {
         }
     }
 
-    private class CheckRootSuccess(context: ActivityStartSplash) : Runnable {
+    private class CheckFileWirte(context: ActivityStartSplash) : Runnable {
         private var context: WeakReference<ActivityStartSplash>;
         override fun run() {
-            context.get()!!.start_state_text.text = "检查并获取必需权限..."
+            context.get()!!.start_state_text.text = "检查并获取必需权限……"
             context.get()!!.hasRoot = true
 
-            context.get()!!.checkFileWrite(CheckFileWriteSuccess(context.get()!!))
+            context.get()!!.checkFileWrite(InstallBusybox(context.get()!!))
         }
 
         init {
@@ -147,23 +140,15 @@ class ActivityStartSplash : Activity() {
         }
     }
 
-    private class CheckFileWriteSuccess(context: ActivityStartSplash) : Runnable {
+    private class InstallBusybox(context: ActivityStartSplash) : Runnable {
         private var context: WeakReference<ActivityStartSplash>;
         override fun run() {
             val installer2 = BusyboxInstaller2(context.get()!!)
             if (!installer2.busyboxInstalled()) {
-                DialogHelper.animDialog(
-                        AlertDialog.Builder(context.get()!!)
-                                .setTitle("需要安装Busybox")
-                                .setMessage("Scene需要busybox才能完全正常工作，点击确定后，软件将花一点点时间自动完成处理")
-                                .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                                    installer2.installPrivateBusybox()
-                                    BusyboxInstalled(context.get()!!).run()
-                                })
-                                .setCancelable(false))
-            } else {
-                BusyboxInstalled(context.get()!!).run()
+                context.get()!!.start_state_text.text = "初始化Busybox……"
+                installer2.installPrivateBusybox()
             }
+            BusyboxInstalled(context.get()!!).run()
         }
 
         init {
