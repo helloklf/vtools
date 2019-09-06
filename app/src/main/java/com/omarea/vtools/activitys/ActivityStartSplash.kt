@@ -141,19 +141,28 @@ class ActivityStartSplash : Activity() {
     }
 
     private class InstallBusybox(context: ActivityStartSplash) : Runnable {
-        private var context: WeakReference<ActivityStartSplash>;
+        private var context: WeakReference<ActivityStartSplash> = WeakReference(context)
         override fun run() {
             val installer2 = BusyboxInstaller2(context.get()!!)
+            context.get()!!.start_state_text.text = "初始化Busybox……"
             if (!installer2.busyboxInstalled()) {
-                context.get()!!.start_state_text.text = "初始化Busybox……"
-                installer2.installPrivateBusybox()
+                val handler = Handler()
+                Thread(Runnable {
+                    if (installer2.installPrivateBusybox()) {
+                        handler.post {
+                            BusyboxInstalled(context.get()!!).run()
+                        }
+                    } else {
+                        handler.post {
+                            context.get()!!.start_state_text.text = "请通过其它方式安装Busybox……"
+                        }
+                    }
+                }).start()
+            } else {
+                BusyboxInstalled(context.get()!!).run()
             }
-            BusyboxInstalled(context.get()!!).run()
         }
 
-        init {
-            this.context = WeakReference(context)
-        }
     }
 
     private class BusyboxInstalled(context: ActivityStartSplash) : Runnable {

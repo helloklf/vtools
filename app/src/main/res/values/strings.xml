@@ -469,7 +469,7 @@
     <string name="electricity_unit_adj">电流单位校准</string>
     <string name="electricity_unit_adj_desc">将系统数值除以：</string>
     <string name="electricity_unit_as">显示为：</string>
-    <string name="toolkit_install_path">scene_tools</string>
+    <string name="toolkit_install_path">toolkit</string>
 
     <string-array name="device_templates">
         <item>Xiaomi MIX3</item>

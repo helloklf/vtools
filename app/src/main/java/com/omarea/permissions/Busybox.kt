@@ -7,7 +7,9 @@ import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.shell_utils.BusyboxInstallerUtils
+import com.omarea.shell_utils.PropsUtils
 import com.omarea.vtools.R
+import com.omarea.vtools.R.string.btn_cancel
 import java.io.File
 
 /** 检查并安装Busybox
@@ -45,11 +47,11 @@ class Busybox(private var context: Context) {
         KeepShellPublic.doCmdSync(cmd)
         DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setMessage(R.string.busybox_installed_magisk)
-                .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                .setPositiveButton(R.string.btn_confirm) { _, _ ->
                     KeepShellPublic.doCmdSync("sync\nsleep 2\nreboot\n")
+                }
+                .setNegativeButton(btn_cancel) { _, _ ->
                 })
-                .setNegativeButton(R.string.btn_cancel, { _, _ ->
-                }))
     }
 
     private fun installUseRoot(privateBusybox: String, onSuccess: Runnable?) {
@@ -76,9 +78,9 @@ class Busybox(private var context: Context) {
         if (!busyboxInstalled()) {
             DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setMessage(R.string.busybox_install_fail)
-                    .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
                         onSuccess?.run()
-                    }))
+                    })
         } else {
             onSuccess?.run()
         }
@@ -89,20 +91,20 @@ class Busybox(private var context: Context) {
         DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setTitle(R.string.busybox_install_mode)
                 .setMessage(R.string.busybox_install_desc)
-                .setNegativeButton(R.string.btn_cancel, { _, _ ->
+                .setNegativeButton(btn_cancel) { _, _ ->
                     android.os.Process.killProcess(android.os.Process.myPid())
-                })
-                .setNeutralButton(R.string.busybox_install_classical, { _, _ ->
+                }
+                .setNeutralButton(R.string.busybox_install_classical) { _, _ ->
                     installUseRoot(privateBusybox, onSuccess)
-                })
-                .setPositiveButton(R.string.busybox_install_module, { _, _ ->
+                }
+                .setPositiveButton(R.string.busybox_install_module) { _, _ ->
                     useMagiskModuleInstall(context)
-                }))
+                })
     }
 
     fun forceInstall(next: Runnable? = null) {
         val privateBusybox = FileWrite.getPrivateFilePath(context, "busybox")
-        if (!(File(privateBusybox).exists() || FileWrite.writePrivateFile(context.assets, "busybox", "busybox", context) == privateBusybox)) {
+        if (!(File(privateBusybox).exists() || FileWrite.writePrivateFile(context.assets, "toolkit/busybox", "busybox", context) == privateBusybox)) {
             return
         }
         if (!busyboxInstalled()) {
@@ -110,21 +112,19 @@ class Busybox(private var context: Context) {
                     .setTitle(R.string.question_install_busybox)
                     .setMessage(R.string.question_install_busybox_desc)
                     .setNegativeButton(
-                            R.string.btn_cancel,
-                            { _, _ ->
-                                android.os.Process.killProcess(android.os.Process.myPid())
-                            }
-                    )
+                            btn_cancel
+                    ) { _, _ ->
+                        android.os.Process.killProcess(android.os.Process.myPid())
+                    }
                     .setPositiveButton(
-                            R.string.btn_confirm,
-                            { _, _ ->
-                                if (MagiskExtend.magiskSupported()) {
-                                    installModeChooser(privateBusybox, next)
-                                } else {
-                                    installUseRoot(privateBusybox, next)
-                                }
-                            }
-                    )
+                            R.string.btn_confirm
+                    ) { _, _ ->
+                        if (MagiskExtend.magiskSupported()) {
+                            installModeChooser(privateBusybox, next)
+                        } else {
+                            installUseRoot(privateBusybox, next)
+                        }
+                    }
                     .setCancelable(false))
         } else {
             BusyboxInstallerUtils().installShellTools()

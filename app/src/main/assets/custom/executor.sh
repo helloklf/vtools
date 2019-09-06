@@ -22,6 +22,19 @@ export PACKAGE_NAME=$({PACKAGE_NAME})
 export PACKAGE_VERSION_NAME=$({PACKAGE_VERSION_NAME})
 export PACKAGE_VERSION_CODE=$({PACKAGE_VERSION_CODE})
 
+# toolkit工具目录
+export TOOLKIT=$({TOOLKIT})
+# 添加toolkit添加为应用程序目录
+if [[ ! "$TOOLKIT" = "" ]]; then
+    # export PATH="$PATH:$TOOLKIT"
+    PATH="$PATH:$TOOLKIT"
+fi
+
+# 安装busybox完整功能
+if [[ -f "$TOOLKIT/kr_install_busybox.sh" ]]; then
+    sh "$TOOLKIT/kr_install_busybox.sh"
+fi
+
 
 # 判断是否有指定执行目录
 if [[ "$execute_path" != "" ]] && [[ -d "$execute_path" ]]

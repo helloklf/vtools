@@ -125,7 +125,7 @@ class FragmentAddin : Fragment() {
         val progressBarDialog = ProgressBarDialog(context!!)
         progressBarDialog.showDialog("读取配置，稍等...")
         Thread(Runnable {
-            ScriptEnvironmen.init(this.context!!, "custom/executor.sh", "toolkit");
+            ScriptEnvironmen.init(this.context!!, "custom/executor.sh", "toolkit")
             val items = PageListReader(this.activity!!).readPageList("custom/pages/page_list.xml")
             myHandler.post {
                 page2ConfigLoaded = true
