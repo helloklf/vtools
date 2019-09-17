@@ -24,8 +24,8 @@ class DialogHelper {
             val dialog = AlertDialog.Builder(context)
                     .setTitle(title)
                     .setMessage(message)
-                    .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                    })
+                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                    }
             return animDialog(dialog)
         }
 
@@ -34,8 +34,8 @@ class DialogHelper {
                     AlertDialog.Builder(context)
                             .setTitle(title)
                             .setMessage(message)
-                            .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                            }))
+                            .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                            })
         }
     }
 }
