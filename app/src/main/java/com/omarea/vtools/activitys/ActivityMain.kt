@@ -21,22 +21,22 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import com.omarea.charger_booster.ServiceBattery
 import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.shell.RootFile
 import com.omarea.common.ui.DialogHelper
-import com.omarea.scene_mode.ModeConfigInstaller
-import com.omarea.store.SpfConfig
-import com.omarea.utils.Update
 import com.omarea.permissions.CheckRootStatus
+import com.omarea.scene_mode.ModeConfigInstaller
 import com.omarea.shell_utils.BackupRestoreUtils
 import com.omarea.shell_utils.BatteryUtils
+import com.omarea.store.SpfConfig
+import com.omarea.utils.Update
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogPower
 import com.omarea.vtools.fragments.*
 import com.omarea.vtools.popup.FloatMonitor
-import com.omarea.charger_booster.ServiceBattery
 import kotlinx.android.synthetic.main.activity_main.*
 import java.lang.ref.WeakReference
 
@@ -280,11 +280,11 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     private fun showFloatMonitor() {
         DialogHelper.animDialog(AlertDialog.Builder(this)
                 .setMessage(getString(R.string.float_monitor_tips))
-                .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                .setPositiveButton(R.string.btn_confirm) { _, _ ->
                     FloatMonitor(this).showPopupWindow()
+                }
+                .setNegativeButton(R.string.btn_cancel) { _, _ ->
                 })
-                .setNegativeButton(R.string.btn_cancel, { _, _ ->
-                }))
     }
 
     //导航菜单选中

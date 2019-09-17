@@ -7,7 +7,6 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import com.omarea.model.Appinfo
 import java.io.File
-import java.lang.StringBuilder
 import java.util.*
 
 

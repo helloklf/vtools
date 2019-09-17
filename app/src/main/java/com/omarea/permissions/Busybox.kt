@@ -7,7 +7,6 @@ import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.shell_utils.BusyboxInstallerUtils
-import com.omarea.shell_utils.PropsUtils
 import com.omarea.vtools.R
 import com.omarea.vtools.R.string.btn_cancel
 import java.io.File

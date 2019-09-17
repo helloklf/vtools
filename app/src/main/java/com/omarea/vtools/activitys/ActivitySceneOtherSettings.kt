@@ -15,9 +15,9 @@ import android.widget.Switch
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
-import com.omarea.utils.CommonCmds
-import com.omarea.store.SpfConfig
 import com.omarea.shell_utils.AppErrorLogcatUtils
+import com.omarea.store.SpfConfig
+import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_other_settings.*
 

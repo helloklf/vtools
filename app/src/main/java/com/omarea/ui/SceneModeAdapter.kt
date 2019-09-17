@@ -15,8 +15,8 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.omarea.common.ui.OverScrollListView
-import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.model.Appinfo
+import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.vtools.R
 import java.io.File
 import java.util.*

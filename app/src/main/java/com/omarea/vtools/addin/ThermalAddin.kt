@@ -6,8 +6,8 @@ import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.RootFile
 import com.omarea.common.ui.DialogHelper
-import com.omarea.utils.CommonCmds
 import com.omarea.shell_utils.PlatformUtils
+import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
 
 /**

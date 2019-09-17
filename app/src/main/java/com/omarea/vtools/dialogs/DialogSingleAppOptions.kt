@@ -1,17 +1,20 @@
 package com.omarea.vtools.dialogs
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Handler
+import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.ui.DialogHelper
-import com.omarea.utils.CommonCmds
 import com.omarea.model.Appinfo
 import com.omarea.permissions.CheckRootStatus
+import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
 import java.io.File
 
@@ -21,10 +24,10 @@ import java.io.File
 
 class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handler) : DialogAppOptions(context, arrayListOf<Appinfo>(app), handler) {
 
-    fun showSingleAppOptions() {
+    fun showSingleAppOptions(activity: Activity) {
         when (app.appType) {
-            Appinfo.AppType.USER -> showUserAppOptions()
-            Appinfo.AppType.SYSTEM -> showSystemAppOptions()
+            Appinfo.AppType.USER -> showUserAppOptions(activity)
+            Appinfo.AppType.SYSTEM -> showSystemAppOptions(activity)
             Appinfo.AppType.BACKUPFILE -> showBackupAppOptions()
             else -> {
                 Toast.makeText(context, "UNSupport！", Toast.LENGTH_SHORT).show()
@@ -35,43 +38,85 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
     /**
      * 显示用户应用选项
      */
-    private fun showUserAppOptions() {
-        DialogHelper.animDialog(AlertDialog.Builder(context).setTitle(app.appName)
+    private fun showUserAppOptions(activity: Activity) {
+        val dialogView = activity.layoutInflater.inflate(R.layout.dialog_app_options_user, null)
+
+        val dialog = DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setCancelable(true)
-                .setItems(
-                        arrayOf("打开（如果可以）",
-                                "备份（apk、data）",
-                                "备份（apk）",
-                                "卸载",
-                                "仅从当前用户卸载",
-                                "卸载（保留数据）",
-                                "清空数据",
-                                "清除缓存",
-                                (if (app.enabled) "冻结" else "解冻"),
-                                "应用详情",
-                                "复制PackageName",
-                                "在应用商店查看",
-                                "禁用 + 隐藏",
-                                "转为系统应用",
-                                "dex2oat编译"), { _, which ->
-                    when (which) {
-                        0 -> startApp()
-                        1 -> backupAll(true, true)
-                        2 -> backupAll(true, false)
-                        3 -> uninstallAll()
-                        4 -> uninstallAllOnlyUser()
-                        5 -> uninstallKeepDataAll()
-                        6 -> clearAll()
-                        7 -> trimCachesAll()
-                        8 -> toggleEnable()
-                        9 -> openDetails()
-                        10 -> copyPackageName()
-                        11 -> showInMarket()
-                        12 -> hideAll()
-                        13 -> moveToSystem()
-                        14 -> dex2oatBuild()
-                    }
-                }))
+                .setView(dialogView))
+        dialogView.findViewById<View>(R.id.app_options_single_only).visibility = View.VISIBLE
+        dialogView.findViewById<View>(R.id.app_options_open).setOnClickListener {
+            dialog?.dismiss()
+            startApp()
+        }
+        dialogView.findViewById<View>(R.id.app_options_copay_package).setOnClickListener {
+            dialog?.dismiss()
+            copyPackageName()
+        }
+        dialogView.findViewById<View>(R.id.app_options_open_detail).setOnClickListener {
+            dialog?.dismiss()
+            openDetails()
+        }
+        dialogView.findViewById<View>(R.id.app_options_app_store).setOnClickListener {
+            dialog?.dismiss()
+            showInMarket()
+        }
+        dialogView.findViewById<View>(R.id.app_options_app_hide).setOnClickListener {
+            dialog?.dismiss()
+            hideAll()
+        }
+        dialogView.findViewById<View>(R.id.app_options_trim).setOnClickListener {
+            dialog?.dismiss()
+            trimCachesAll()
+        }
+        dialogView.findViewById<View>(R.id.app_options_clear).setOnClickListener {
+            dialog?.dismiss()
+            clearAll()
+        }
+        dialogView.findViewById<View>(R.id.app_options_backup_apk).setOnClickListener {
+            dialog?.dismiss()
+            backupAll(true, false)
+        }
+        dialogView.findViewById<View>(R.id.app_options_backup_all).setOnClickListener {
+            dialog?.dismiss()
+            backupAll(true, true)
+        }
+        dialogView.findViewById<View>(R.id.app_options_uninstall).setOnClickListener {
+            dialog?.dismiss()
+            uninstallAll()
+        }
+        dialogView.findViewById<View>(R.id.app_options_uninstall_user).setOnClickListener {
+            dialog?.dismiss()
+            uninstallAllOnlyUser()
+        }
+        dialogView.findViewById<View>(R.id.app_options_as_system).setOnClickListener {
+            dialog?.dismiss()
+            moveToSystem()
+        }
+        dialogView.findViewById<View>(R.id.app_options_dex2oat).setOnClickListener {
+            dialog?.dismiss()
+            dex2oatBuild()
+        }
+        dialogView.findViewById<View>(R.id.app_options_uninstall_keep).setOnClickListener {
+            dialog?.dismiss()
+            uninstallKeepDataAll()
+        }
+        dialogView.findViewById<TextView>(R.id.app_options_title).setText(app.appName)
+
+
+        if (app.enabled) {
+            dialogView.findViewById<View>(R.id.app_options_app_unfreeze).visibility = View.GONE
+            dialogView.findViewById<View>(R.id.app_options_app_freeze).setOnClickListener {
+                dialog?.dismiss()
+                toggleEnable()
+            }
+        } else {
+            dialogView.findViewById<View>(R.id.app_options_app_freeze).visibility = View.GONE
+            dialogView.findViewById<View>(R.id.app_options_app_unfreeze).setOnClickListener {
+                dialog?.dismiss()
+                toggleEnable()
+            }
+        }
     }
 
     private fun startApp() {
@@ -81,37 +126,98 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         val intent = this.context.getPackageManager().getLaunchIntentForPackage(app.packageName.toString())
         if (intent != null) {
             this.context.startActivity(intent)
+        } else {
+            Toast.makeText(context, "这个应用程序可能没有界面入口", Toast.LENGTH_SHORT).show()
         }
     }
 
     /**
      * 显示系统应用选项
      */
-    private fun showSystemAppOptions() {
-        DialogHelper.animDialog(AlertDialog.Builder(context).setTitle(app.appName)
+    private fun showSystemAppOptions(activity: Activity) {
+        val dialogView = activity.layoutInflater.inflate(R.layout.dialog_app_options_system, null)
+
+        val dialog = DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setCancelable(true)
-                .setItems(
-                        arrayOf("删除",
-                                "仅从当前用户卸载",
-                                "禁用 + 隐藏",
-                                "清空数据",
-                                "清除缓存",
-                                (if (app.enabled) "冻结" else "解冻"),
-                                "应用详情",
-                                "复制PackageName",
-                                "在应用商店查看"), { _, which ->
-                    when (which) {
-                        0 -> deleteAll()
-                        1 -> uninstallAllOnlyUser()
-                        2 -> hideAll()
-                        3 -> clearAll()
-                        4 -> trimCachesAll()
-                        5 -> toggleEnable()
-                        6 -> openDetails()
-                        7 -> copyPackageName()
-                        8 -> showInMarket()
-                    }
-                }))
+                .setView(dialogView))
+        dialogView.findViewById<View>(R.id.app_options_single_only).visibility = View.VISIBLE
+        dialogView.findViewById<View>(R.id.app_options_open).setOnClickListener {
+            dialog?.dismiss()
+            startApp()
+        }
+        dialogView.findViewById<View>(R.id.app_options_copay_package).setOnClickListener {
+            dialog?.dismiss()
+            copyPackageName()
+        }
+        dialogView.findViewById<View>(R.id.app_options_open_detail).setOnClickListener {
+            dialog?.dismiss()
+            openDetails()
+        }
+        dialogView.findViewById<View>(R.id.app_options_app_store).setOnClickListener {
+            dialog?.dismiss()
+            showInMarket()
+        }
+        dialogView.findViewById<View>(R.id.app_options_app_hide).setOnClickListener {
+            dialog?.dismiss()
+            hideAll()
+        }
+        dialogView.findViewById<View>(R.id.app_options_trim).setOnClickListener {
+            dialog?.dismiss()
+            trimCachesAll()
+        }
+        dialogView.findViewById<View>(R.id.app_options_clear).setOnClickListener {
+            dialog?.dismiss()
+            clearAll()
+        }
+        /*
+        dialogView.findViewById<View>(R.id.app_options_backup_apk).setOnClickListener {
+            dialog?.dismiss()
+            backupAll(true, false)
+        }
+        dialogView.findViewById<View>(R.id.app_options_backup_all).setOnClickListener {
+            dialog?.dismiss()
+            backupAll(true, true)
+        }
+        */
+        dialogView.findViewById<View>(R.id.app_options_uninstall_user).setOnClickListener {
+            dialog?.dismiss()
+            uninstallAllOnlyUser()
+        }
+        dialogView.findViewById<View>(R.id.app_options_dex2oat).setOnClickListener {
+            dialog?.dismiss()
+            dex2oatBuild()
+        }
+
+        if (app.updated) {
+            dialogView.findViewById<View>(R.id.app_options_delete).visibility = View.GONE
+            dialogView.findViewById<View>(R.id.app_options_uninstall).setOnClickListener {
+                dialog?.dismiss()
+                uninstallAll()
+            }
+        } else {
+            dialogView.findViewById<View>(R.id.app_options_delete).setOnClickListener {
+                dialog?.dismiss()
+                deleteAll()
+            }
+            dialogView.findViewById<View>(R.id.app_options_uninstall).visibility = View.GONE
+        }
+
+        dialogView.findViewById<TextView>(R.id.app_options_title).setText(app.appName)
+
+
+        if (app.enabled) {
+            dialogView.findViewById<View>(R.id.app_options_app_unfreeze).visibility = View.GONE
+            dialogView.findViewById<View>(R.id.app_options_app_freeze).setOnClickListener {
+                dialog?.dismiss()
+                toggleEnable()
+            }
+        } else {
+            dialogView.findViewById<View>(R.id.app_options_app_freeze).visibility = View.GONE
+            dialogView.findViewById<View>(R.id.app_options_app_unfreeze).setOnClickListener {
+                dialog?.dismiss()
+                toggleEnable()
+            }
+        }
     }
 
     /**

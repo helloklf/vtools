@@ -1,13 +1,17 @@
 package com.omarea.vtools.fragments
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,13 +21,14 @@ import android.widget.AdapterView.OnItemClickListener
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.OverScrollListView
 import com.omarea.common.ui.ProgressBarDialog
-import com.omarea.utils.CommonCmds
-import com.omarea.store.SpfConfig
-import com.omarea.utils.AppListHelper
 import com.omarea.model.Appinfo
+import com.omarea.store.SpfConfig
 import com.omarea.ui.AppListAdapter
 import com.omarea.ui.SearchTextWatcher
 import com.omarea.ui.TabIconHelper
+import com.omarea.utils.AppListHelper
+import com.omarea.utils.AppListHelper2
+import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogAppOptions
 import com.omarea.vtools.dialogs.DialogSingleAppOptions
@@ -82,7 +87,7 @@ class FragmentApplistions : Fragment() {
                 return@OnItemLongClickListener true
             val adapter = (parent.adapter as HeaderViewListAdapter).wrappedAdapter
             val app = adapter.getItem(position - 1) as Appinfo
-            DialogSingleAppOptions(context!!, app, myHandler!!).showSingleAppOptions()
+            DialogSingleAppOptions(context!!, app, myHandler!!).showSingleAppOptions(this.activity!!)
             true
         }
 
@@ -90,24 +95,24 @@ class FragmentApplistions : Fragment() {
         apps_systemlist.onItemLongClickListener = onItemLongClick
         apps_backupedlist.onItemLongClickListener = onItemLongClick
 
-        fab_apps_user.setOnClickListener({
-            getSelectedAppShowOptions(Appinfo.AppType.USER)
-        })
-        fab_apps_system.setOnClickListener({
-            getSelectedAppShowOptions(Appinfo.AppType.SYSTEM)
-        })
-        fab_apps_backuped.setOnClickListener({
-            getSelectedAppShowOptions(Appinfo.AppType.BACKUPFILE)
-        })
+        fab_apps_user.setOnClickListener {
+            getSelectedAppShowOptions(Appinfo.AppType.USER, this.activity!!)
+        }
+        fab_apps_system.setOnClickListener {
+            getSelectedAppShowOptions(Appinfo.AppType.SYSTEM, this.activity!!)
+        }
+        fab_apps_backuped.setOnClickListener {
+            getSelectedAppShowOptions(Appinfo.AppType.BACKUPFILE, this.activity!!)
+        }
 
         appListHelper = AppListHelper(context!!)
         setList()
-        apps_search_box.setOnEditorActionListener({ _, actionId, _ ->
+        apps_search_box.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
                 setList()
             }
             false
-        })
+        }
         apps_search_box.addTextChangedListener(SearchTextWatcher(Runnable {
             searchApp()
         }))
@@ -119,7 +124,18 @@ class FragmentApplistions : Fragment() {
 
     @SuppressLint("ApplySharedPref")
     private fun showHideAppDialog() {
+        // pm list -u
         val spf = context!!.getSharedPreferences(SpfConfig.APP_HIDE_HISTORY_SPF, Context.MODE_PRIVATE)
+
+        val uninstalledApp = AppListHelper2().getUninstalledApp(this.context!!)
+        /*
+        val pm = context!!.packageManager
+        uninstalledApp.forEach {
+            if (!spf.contains(it.packageName)) {
+                spf.edit().putString(it.packageName, it.loadLabel(pm).toString())
+            }
+        }
+        */
         val all = spf.all
         val apps = ArrayList<String>()
         val selected = ArrayList<Boolean>()
@@ -127,10 +143,11 @@ class FragmentApplistions : Fragment() {
             apps.add(item as String)
             selected.add(false)
         }
+
         val dialog = AlertDialog.Builder(context).setTitle("应用隐藏记录")
-                .setMultiChoiceItems(apps.toTypedArray(), selected.toBooleanArray(), { dialog, which, isChecked ->
+                .setMultiChoiceItems(apps.toTypedArray(), selected.toBooleanArray()) { _, which, isChecked ->
                     selected[which] = isChecked
-                })
+                }
                 .setPositiveButton(R.string.btn_confirm) { dialog, which ->
                     val keys = all.keys.toList()
                     val cmds = StringBuffer()
@@ -146,7 +163,7 @@ class FragmentApplistions : Fragment() {
                             edit.remove(keys.get(i))
                         }
                     }
-                    if (cmds.length > 0) {
+                    if (cmds.isNotEmpty()) {
                         processBarDialog.showDialog("正在恢复应用，稍等...")
                         Thread(Runnable {
                             KeepShellPublic.doCmdSync(cmds.toString())
@@ -166,7 +183,7 @@ class FragmentApplistions : Fragment() {
         dialog.show()
     }
 
-    private fun getSelectedAppShowOptions(apptype: Appinfo.AppType) {
+    private fun getSelectedAppShowOptions(apptype: Appinfo.AppType, activity: Activity) {
         var adapter: Adapter? = null
         when (apptype) {
             Appinfo.AppType.USER -> adapter = apps_userlist.adapter
@@ -186,9 +203,9 @@ class FragmentApplistions : Fragment() {
 
         when (apptype) {
             Appinfo.AppType.SYSTEM ->
-                DialogAppOptions(context!!, selectedItems, myHandler!!).selectSystemAppOptions()
+                DialogAppOptions(context!!, selectedItems, myHandler!!).selectSystemAppOptions(activity)
             Appinfo.AppType.USER ->
-                DialogAppOptions(context!!, selectedItems, myHandler!!).selectUserAppOptions()
+                DialogAppOptions(context!!, selectedItems, myHandler!!).selectUserAppOptions(activity)
             Appinfo.AppType.BACKUPFILE ->
                 DialogAppOptions(context!!, selectedItems, myHandler!!).selectBackupOptions()
             else -> {

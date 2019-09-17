@@ -4,10 +4,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import com.omarea.charger_booster.ServiceBattery
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.services.BootService
 import com.omarea.vtools.services.CompileService
-import com.omarea.charger_booster.ServiceBattery
 
 
 class ReceiverBoot : BroadcastReceiver() {

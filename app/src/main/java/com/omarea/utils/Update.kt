@@ -2,7 +2,9 @@ package com.omarea.utils
 
 
 import android.app.AlertDialog
-import android.content.*
+import android.content.ContentResolver
+import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Handler

@@ -9,9 +9,9 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import com.omarea.model.BatteryAvgStatus
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.SpfConfig
-import com.omarea.model.BatteryAvgStatus
 import com.omarea.vtools.R
 import java.util.*
 

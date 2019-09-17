@@ -16,15 +16,11 @@ import com.omarea.common.shell.KernelProrp
 import com.omarea.scene_mode.ModeConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.scene_mode.SceneMode
-import com.omarea.utils.*
-import com.omarea.shell_utils.PropsUtils
-import com.omarea.shell_utils.CpuFrequencyUtil
-import com.omarea.shell_utils.ThermalControlUtils
-import com.omarea.shell_utils.BatteryUtils
-import com.omarea.shell_utils.LMKUtils
+import com.omarea.shell_utils.*
 import com.omarea.store.AppConfigStore
 import com.omarea.store.CpuConfigStorage
 import com.omarea.store.SpfConfig
+import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
 
 /**

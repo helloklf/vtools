@@ -16,8 +16,8 @@ import android.widget.TextView
 import android.widget.Toast
 import com.omarea.common.shell.AsynSuShellUnit
 import com.omarea.common.ui.DialogHelper
-import com.omarea.utils.CommonCmds
 import com.omarea.shell_utils.PropsUtils
+import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
 import com.omarea.vtools.services.CompileService
 import java.util.*

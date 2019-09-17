@@ -17,15 +17,14 @@ import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import com.omarea.charger_booster.BatteryInfo
-import com.omarea.common.shell.KeepShellPublic
-import com.omarea.store.SpfConfig
-import com.omarea.shell_utils.BatteryUtils
-import com.omarea.vtools.R
 import com.omarea.charger_booster.ServiceBattery
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
+import com.omarea.shell_utils.BatteryUtils
+import com.omarea.store.SpfConfig
+import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.fragment_battery.*
 import java.util.*
-import kotlin.math.min
 
 
 class FragmentBattery : Fragment() {

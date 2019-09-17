@@ -1,6 +1,7 @@
 package com.omarea.vtools.dialogs
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Build
@@ -15,10 +16,10 @@ import android.widget.Toast
 import com.omarea.common.shell.AsynSuShellUnit
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
-import com.omarea.utils.CommonCmds
-import com.omarea.store.SpfConfig
 import com.omarea.model.Appinfo
 import com.omarea.permissions.CheckRootStatus
+import com.omarea.store.SpfConfig
+import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
 import java.io.File
 import java.util.*
@@ -38,60 +39,116 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         userdataPath = userdataPath.substring(0, userdataPath.indexOf(context.packageName) - 1)
     }
 
-    fun selectUserAppOptions() {
-        DialogHelper.animDialog(AlertDialog.Builder(context).setTitle("请选择操作")
+    fun selectUserAppOptions(activity: Activity) {
+        val dialogView = activity.layoutInflater.inflate(R.layout.dialog_app_options_user, null)
+
+        val dialog = DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setCancelable(true)
-                .setItems(
-                        arrayOf("备份（apk、data）",
-                                "备份（apk）",
-                                "卸载",
-                                "仅从当前用户卸载",
-                                "卸载（保留数据）",
-                                "清空数据",
-                                "清除缓存",
-                                "冻结",
-                                "解冻",
-                                "禁用+隐藏",
-                                "dex2oat编译"), { _, which ->
-                    when (which) {
-                        0 -> backupAll(true, true)
-                        1 -> backupAll(true, false)
-                        2 -> uninstallAll()
-                        3 -> uninstallAllOnlyUser()
-                        4 -> uninstallKeepDataAll()
-                        5 -> clearAll()
-                        6 -> trimCachesAll()
-                        7 -> disableAll()
-                        8 -> enableAll()
-                        9 -> hideAll()
-                        10 -> buildAll()
-                    }
-                }))
+                .setView(dialogView))
+        dialogView.findViewById<View>(R.id.app_options_single_only).visibility = View.GONE
+        dialogView.findViewById<View>(R.id.app_options_app_hide).setOnClickListener {
+            dialog?.dismiss()
+            hideAll()
+        }
+        dialogView.findViewById<View>(R.id.app_options_trim).setOnClickListener {
+            dialog?.dismiss()
+            trimCachesAll()
+        }
+        dialogView.findViewById<View>(R.id.app_options_clear).setOnClickListener {
+            dialog?.dismiss()
+            clearAll()
+        }
+        dialogView.findViewById<View>(R.id.app_options_backup_apk).setOnClickListener {
+            dialog?.dismiss()
+            backupAll(true, false)
+        }
+        dialogView.findViewById<View>(R.id.app_options_backup_all).setOnClickListener {
+            dialog?.dismiss()
+            backupAll(true, true)
+        }
+        dialogView.findViewById<View>(R.id.app_options_uninstall).setOnClickListener {
+            dialog?.dismiss()
+            uninstallAll()
+        }
+        dialogView.findViewById<View>(R.id.app_options_uninstall_user).setOnClickListener {
+            dialog?.dismiss()
+            uninstallAllOnlyUser()
+        }
+        /*
+        dialogView.findViewById<View>(R.id.app_options_as_system).setOnClickListener {
+            dialog?.dismiss()
+            moveToSystem()
+        }
+        */
+        dialogView.findViewById<View>(R.id.app_options_dex2oat).setOnClickListener {
+            dialog?.dismiss()
+            buildAll()
+        }
+        dialogView.findViewById<View>(R.id.app_options_uninstall_keep).setOnClickListener {
+            dialog?.dismiss()
+            uninstallKeepDataAll()
+        }
+        dialogView.findViewById<TextView>(R.id.app_options_title).text = "请选择操作"
+
+        if (apps.any { it.enabled }) {
+            dialogView.findViewById<View>(R.id.app_options_app_unfreeze).visibility = View.GONE
+            dialogView.findViewById<View>(R.id.app_options_app_freeze).setOnClickListener {
+                dialog?.dismiss()
+                disableAll()
+            }
+        } else {
+            dialogView.findViewById<View>(R.id.app_options_app_freeze).visibility = View.GONE
+            dialogView.findViewById<View>(R.id.app_options_app_unfreeze).setOnClickListener {
+                dialog?.dismiss()
+                enableAll()
+            }
+        }
     }
 
-    fun selectSystemAppOptions() {
-        DialogHelper.animDialog(AlertDialog.Builder(context).setTitle("请选择操作")
+    fun selectSystemAppOptions(activity: Activity) {
+        val dialogView = activity.layoutInflater.inflate(R.layout.dialog_app_options_system, null)
+
+        val dialog = DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setCancelable(true)
-                .setItems(
-                        arrayOf("删除",
-                                "仅从当前用户卸载",
-                                "清空数据",
-                                "清除缓存",
-                                "冻结",
-                                "解冻",
-                                "禁用+隐藏",
-                                "dex2oat编译"), { _, which ->
-                    when (which) {
-                        0 -> deleteAll()
-                        1 -> uninstallAllOnlyUser()
-                        2 -> clearAll()
-                        3 -> trimCachesAll()
-                        4 -> disableAll()
-                        5 -> enableAll()
-                        6 -> hideAll()
-                        7 -> buildAll()
-                    }
-                }))
+                .setView(dialogView))
+        dialogView.findViewById<View>(R.id.app_options_single_only).visibility = View.GONE
+        dialogView.findViewById<View>(R.id.app_options_app_hide).setOnClickListener {
+            dialog?.dismiss()
+            hideAll()
+        }
+        dialogView.findViewById<View>(R.id.app_options_trim).setOnClickListener {
+            dialog?.dismiss()
+            trimCachesAll()
+        }
+        dialogView.findViewById<View>(R.id.app_options_clear).setOnClickListener {
+            dialog?.dismiss()
+            clearAll()
+        }
+        dialogView.findViewById<View>(R.id.app_options_uninstall_user).setOnClickListener {
+            dialog?.dismiss()
+            uninstallAllOnlyUser()
+        }
+        dialogView.findViewById<View>(R.id.app_options_dex2oat).setOnClickListener {
+            dialog?.dismiss()
+            buildAll()
+        }
+
+        dialogView.findViewById<View>(R.id.app_options_delete).setOnClickListener {
+            dialog?.dismiss()
+            deleteAll()
+        }
+        dialogView.findViewById<View>(R.id.app_options_uninstall).visibility = View.GONE
+
+        dialogView.findViewById<TextView>(R.id.app_options_title).setText("请选择操作")
+
+        dialogView.findViewById<View>(R.id.app_options_app_unfreeze).setOnClickListener {
+            dialog?.dismiss()
+            enableAll()
+        }
+        dialogView.findViewById<View>(R.id.app_options_app_freeze).setOnClickListener {
+            dialog?.dismiss()
+            disableAll()
+        }
     }
 
     fun selectBackupOptions() {
@@ -353,7 +410,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
      * 隐藏所选的应用
      */
     protected fun hideAll() {
-        confirm("隐藏应用", "你将禁用并隐藏${apps.size}个应用，该操作无法撤销，继续这个操作？", Runnable {
+        confirm("隐藏应用", "你将禁用并隐藏${apps.size}个应用。\n\n卸载Scene前务必先恢复这些应用，否则你将需要恢复出厂设置才能还原这些应用。\n\n继续隐藏吗操作？", Runnable {
             _hideAll()
         })
     }

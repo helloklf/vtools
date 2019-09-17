@@ -14,22 +14,19 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.util.Log
 import android.view.*
 import android.view.WindowManager.LayoutParams
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import com.omarea.shell_utils.BatteryUtils
 import com.omarea.shell_utils.CpuFrequencyUtil
 import com.omarea.shell_utils.CpuLoadUtils
 import com.omarea.shell_utils.GpuUtils
-import com.omarea.shell_utils.BatteryUtils
 import com.omarea.ui.FloatMonitorBatteryView
 import com.omarea.ui.FloatMonitorChartView
 import com.omarea.vtools.R
-import java.lang.Exception
-import java.lang.StringBuilder
 import java.util.*
 
 class FloatMonitor(context: Context) {

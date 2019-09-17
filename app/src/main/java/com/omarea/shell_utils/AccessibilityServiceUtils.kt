@@ -1,7 +1,6 @@
 package com.omarea.shell_utils
 
 import com.omarea.common.shell.KeepShellPublic
-import java.lang.StringBuilder
 
 /**
  * Created by Hello on 2018/06/03.

@@ -9,11 +9,10 @@ import android.content.IntentFilter
 import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
-import com.omarea.common.shell.KeepShellAsync
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.store.AppConfigStore
 import com.omarea.store.SpfConfig
-import com.omarea.utils.*
+import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
 import java.util.*
 import kotlin.collections.ArrayList

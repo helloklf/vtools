@@ -17,9 +17,9 @@ import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
-import com.omarea.store.SpfConfig
 import com.omarea.shell_utils.LMKUtils
 import com.omarea.shell_utils.SwapUtils
+import com.omarea.store.SpfConfig
 import com.omarea.ui.AdapterSwaplist
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.fragment_swap.*

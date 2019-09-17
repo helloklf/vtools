@@ -14,13 +14,13 @@ import android.widget.*
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
-import com.omarea.store.CpuConfigStorage
-import com.omarea.store.SpfConfig
-import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.model.CpuClusterStatus
 import com.omarea.model.CpuStatus
 import com.omarea.shell_utils.CpuFrequencyUtil
 import com.omarea.shell_utils.ThermalControlUtils
+import com.omarea.store.CpuConfigStorage
+import com.omarea.store.SpfConfig
+import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.fragment_cpu_control.*
 import java.util.*

@@ -10,8 +10,8 @@ import android.provider.Settings
 import android.support.v4.content.PermissionChecker
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
-import com.omarea.utils.CommonCmds
 import com.omarea.shell_utils.SysUtils
+import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
 
 /**

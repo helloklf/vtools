@@ -2,7 +2,7 @@ package com.omarea.shell_utils
 
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
-import java.util.HashMap
+import java.util.*
 
 class SensorUtils {
     fun sensorList(): HashMap<String, String> {

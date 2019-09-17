@@ -13,11 +13,11 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.PermissionChecker
 import android.util.TypedValue
 import android.view.View
-import com.omarea.utils.CrashHandler
-import com.omarea.store.SpfConfig
 import com.omarea.permissions.BusyboxInstaller2
 import com.omarea.permissions.CheckRootStatus
 import com.omarea.permissions.WriteSettings
+import com.omarea.store.SpfConfig
+import com.omarea.utils.CrashHandler
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_start_splash.*
 import java.lang.ref.WeakReference

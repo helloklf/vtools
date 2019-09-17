@@ -11,12 +11,12 @@ import android.provider.Settings
 import android.view.*
 import android.view.WindowManager.LayoutParams
 import android.widget.*
-import com.omarea.store.AppConfigStore
+import com.omarea.permissions.NotificationListener
+import com.omarea.scene_mode.AlwaysNotification
 import com.omarea.scene_mode.ModeSwitcher
+import com.omarea.store.AppConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.utils.AccessibleServiceHelper
-import com.omarea.scene_mode.AlwaysNotification
-import com.omarea.permissions.NotificationListener
 import com.omarea.vtools.R
 
 /**
