@@ -8,6 +8,7 @@ import com.omarea.krscript.executor.ExtractAssets
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.ActionInfo
 import com.omarea.krscript.model.ConfigItemBase
+import com.omarea.krscript.model.GroupInfo
 import com.omarea.krscript.model.SwitchInfo
 import org.xmlpull.v1.XmlPullParser
 import java.io.InputStream
@@ -51,7 +52,7 @@ class PageConfigReader(private var context: Context) {
                             for (i in 0 until parser.attributeCount) {
                                 val attrName = parser.getAttributeName(i)
                                 if (attrName == "title") {
-                                    val separator = ActionInfo()
+                                    val separator = GroupInfo()
                                     separator.separator = parser.getAttributeValue(i)
                                     actions.add(separator)
                                     break

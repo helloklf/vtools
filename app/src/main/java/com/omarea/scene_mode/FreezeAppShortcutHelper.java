@@ -19,7 +19,7 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 
 import com.omarea.vtools.R;
-import com.omarea.vtools.activitys.ActivityQuickStart;
+import com.omarea.vtools.activities.ActivityQuickStart;
 
 import java.util.ArrayList;
 import java.util.List;

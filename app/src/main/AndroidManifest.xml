@@ -29,18 +29,11 @@
     <uses-permission
         android:name="android.permission.CHANGE_CONFIGURATION"
         tools:ignore="ProtectedPermissions" />
-
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
 
-    <!--
-    <uses-permission android:name="android.permission.BATTERY_STATS" />
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
-    <uses-permission android:name="android.permission.BIND_ACCESSIBILITY_SERVICE" />
-    <uses-permission android:name="android.permission.REMOVE_TASKS" />
-    <uses-permission android:name="android.permission.INJECT_EVENTS" />
-    -->
     <application
+        android:name="com.omarea.Scene"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"
         android:icon="@drawable/linux"
@@ -48,8 +41,19 @@
         android:persistent="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name="com.omarea.Scene"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity
+            android:name=".activities.Main2Activity"
+            android:label="@string/title_activity_main2"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
         <meta-data
             android:name="xposedmodule"
             android:value="true" />
@@ -64,11 +68,11 @@
             android:value="2.8" />
 
         <activity
-            android:name=".activitys.ActivityStartSplash"
+            android:name=".activities.ActivityStartSplash"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -76,12 +80,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
         <activity
-            android:name=".activitys.ActivityMain"
+            android:name=".activities.ActivityMain"
             android:autoRemoveFromRecents="false"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="false"
@@ -91,38 +96,39 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".activitys.ActivitySceneOtherSettings"
+            android:name=".activities.ActivitySceneOtherSettings"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="true"
             android:label="Scene 杂项设置"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activitys.ActivityAdvSettings"
+            android:name=".activities.ActivityAdvSettings"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="true"
             android:label="辅助功能逻辑"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activitys.AccessibilityKeySettings"
+            android:name=".activities.AccessibilityKeySettings"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="true"
             android:label="Scene-按键辅助"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activitys.ActivityShortcut"
+            android:name=".activities.ActivityShortcut"
             android:excludeFromRecents="true"
             android:finishOnTaskLaunch="false"
             android:label="@string/title_activity_shortcut"
             android:launchMode="standard" />
         <activity
-            android:name=".activitys.ActivityQuickSwitchMode"
+            android:name=".activities.ActivityQuickSwitchMode"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="true"
             android:finishOnTaskLaunch="true"
@@ -137,7 +143,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activitys.ActivityAddinOnline"
+            android:name=".activities.ActivityAddinOnline"
             android:excludeFromRecents="true"
             android:finishOnTaskLaunch="false"
             android:label="@string/title_activity_online"
@@ -145,16 +151,17 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppThemeLight" />
         <activity
-            android:name=".activitys.ActivityAppDetails"
+            android:name=".activities.ActivityAppDetails"
             android:excludeFromRecents="true"
             android:label="应用场景">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".activitys.ActivityFileSelector"
+            android:name=".activities.ActivityFileSelector"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_file_selector"
             android:launchMode="standard">
@@ -165,18 +172,19 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activitys.ActivityQuickStart"
+            android:name=".activities.ActivityQuickStart"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_shortcut"
             android:theme="@style/AppThemeTransparent">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".activitys.ActivityFreezeApps"
+            android:name=".activities.ActivityFreezeApps"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:enabled="false"
             android:excludeFromRecents="false"
@@ -191,9 +199,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activitys.ActionPage" android:screenOrientation="portrait">
+        <activity
+            android:name=".activities.ActionPage"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.ActionPage2"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -215,13 +235,13 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="@string/" />
+
                 <category android:name="android.intent.category.HOME" />
             </intent-filter>
         </receiver>
 
         <service
             android:name=".AccessibilityScenceMode"
-
             android:label="Scene - 场景模式"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>

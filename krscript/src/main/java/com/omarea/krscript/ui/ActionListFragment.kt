@@ -2,95 +2,154 @@ package com.omarea.krscript.ui
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.os.Handler
-import android.util.AttributeSet
+import android.preference.*
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.*
-import android.widget.AdapterView.OnItemClickListener
 import com.omarea.common.ui.DialogHelper
-import com.omarea.common.ui.OverScrollListView
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.R
 import com.omarea.krscript.config.ActionParamInfo
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.executor.SimpleShellExecutor
 import com.omarea.krscript.model.*
+import java.lang.Exception
 
-class ActionListView : OverScrollListView {
-    constructor(context: Context) : super(context) {}
-    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
-    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
-
-    private val progressBarDialog: ProgressBarDialog
-    private var fileChooser: FileChooserRender.FileChooserInterface? = null
-    private var actionShortClickHandler: ActionShortClickHandler? = null
-
-    init {
-        this.progressBarDialog = ProgressBarDialog(context)
-    }
-
-    fun setListData(
-            actionInfos: ArrayList<ConfigItemBase>?,
-            fileChooser: FileChooserRender.FileChooserInterface,
-            actionShortClickHandler: ActionShortClickHandler? = null,
-            actionLongClickHandler: ActionLongClickHandler? = null) {
-        if (actionInfos != null) {
-            this.fileChooser = fileChooser
-            this.actionShortClickHandler = actionShortClickHandler
-            this.overScrollMode = ListView.OVER_SCROLL_ALWAYS
-            this.adapter = ActionListAdapter(actionInfos)
-            this.onItemClickListener = OnItemClickListener { parent, _, position, _ ->
-                val item = parent.adapter.getItem(position)
+class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickListener {
+    private lateinit var mContext: Context
+    private lateinit var actionInfos: ArrayList<ConfigItemBase>
+    override fun onPreferenceClick(preference: Preference?): Boolean {
+        if (preference != null) {
+            val key = preference!!.key
+            Log.d("key", "onPreferenceClick" + key)
+            try {
+                val index = key.toInt()
+                val item = actionInfos[index]
                 if (item is ActionInfo) {
                     onActionClick(item, Runnable {
-                        post { (adapter as ActionListAdapter).update(position, this) }
+                        if (item.descPollingShell != null && !item.descPollingShell!!.isEmpty()) {
+                            item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
+                        }
+                        preference.summary = item.desc
                     })
                 } else if (item is SwitchInfo) {
                     onSwitchClick(item, Runnable {
-                        post { (adapter as ActionListAdapter).update(position, this) }
+                        if (item.descPollingShell != null && !item.descPollingShell.isEmpty()) {
+                            item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
+                        }
+                        if (item.getState != null && !item.getState.isEmpty()) {
+                            val shellResult = ScriptEnvironmen.executeResultRoot(mContext, item.getState)
+                            item.selected = shellResult == "1" || shellResult.toLowerCase() == "true"
+                        }
+                        preference.summary = item.desc
+                        (preference as SwitchPreference).isChecked = item.selected
                     })
                 }
+            } catch (ex: Exception) {
             }
-            this.setOnItemLongClickListener { parent, view, position, id ->
-                if (actionLongClickHandler != null) {
-                    val item = parent.adapter.getItem(position)
-                    if (item is ActionInfo) {
-                        actionLongClickHandler.addToFavorites(item)
-                    } else if (item is SwitchInfo) {
-                        actionLongClickHandler.addToFavorites(item)
-                    }
-                    true
+        }
+        return false
+    }
+
+    private lateinit var progressBarDialog: ProgressBarDialog
+    private var fileChooser: FileChooserRender.FileChooserInterface? = null
+    private var actionShortClickHandler: ActionShortClickHandler? = null
+
+    fun setListData(
+            context: Context,
+            actionInfos: ArrayList<ConfigItemBase>?,
+            fileChooser: FileChooserRender.FileChooserInterface,
+            actionShortClickHandler: ActionShortClickHandler? = null) {
+        this.mContext = context
+        this.progressBarDialog = ProgressBarDialog(mContext)
+        if (actionInfos != null) {
+            this.actionInfos = actionInfos
+            this.fileChooser = fileChooser
+            this.actionShortClickHandler = actionShortClickHandler
+        }
+    }
+
+
+    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val rootView = getView()
+        val list = rootView!!.findViewById<View>(android.R.id.list) as ListView
+        list.divider = null
+
+        val preferenceScreen = this.preferenceManager.createPreferenceScreen(mContext)
+        this.preferenceScreen = preferenceScreen
+        // createPreferenceGroup(preferenceScreen)
+        var preferenceCategory: PreferenceCategory? = null
+        for (index in 0 until actionInfos.size) {
+            val it = actionInfos[index]
+            if (preferenceCategory == null) {
+
+            }
+            var preference: Preference? = null
+            if (it is SwitchInfo) {
+                preference = createSwitchPreference(it, index)
+            } else if (it is ActionInfo) {
+                preference = createActionPreference(it, index)
+            } else if (it is GroupInfo) {
+                preferenceCategory = createPreferenceGroup(it)
+                preferenceScreen.addPreference(preferenceCategory)
+            }
+
+            if (preference != null) {
+                if (preferenceCategory == null) {
+                    preferenceScreen.addPreference(preference)
                 } else {
-                    false
+                    preferenceCategory.addPreference(preference)
                 }
             }
         }
     }
 
+    private fun createSwitchPreference(switchInfo: SwitchInfo, index: Int): Preference {
+        val item = SwitchPreference(mContext)
+        item.key = index.toString()
+        item.title = "" + switchInfo.title
+        item.summary = "" + switchInfo.desc
+        item.onPreferenceClickListener = this
+        item.isChecked = switchInfo.selected
+        item.layoutResource = R.layout.kr_switch_list_item2
+
+        return item
+    }
+
+    private fun createActionPreference(actionInfo: ActionInfo, index: Int): Preference {
+        val item = this.preferenceManager.createPreferenceScreen(mContext)
+        // val item = EditTextPreference(mContext)
+        item.key = index.toString()
+        item.title = "" + actionInfo.title
+        item.summary = "" + actionInfo.desc
+        item.onPreferenceClickListener = this
+        item.layoutResource = R.layout.kr_action_list_item2
+        // item.widgetLayoutResource = R.layout.kr_action_list_item2
+
+        return item
+    }
+
+    private fun createPreferenceGroup(groupInfo: GroupInfo): PreferenceCategory {
+        val preferenceCategory = PreferenceCategory(mContext)
+        preferenceCategory.title = groupInfo.separator
+        preferenceCategory.layoutResource = R.layout.kr_group_list_item
+
+        return preferenceCategory
+    }
+
+    override fun onPreferenceTreeClick(preferenceScreen: PreferenceScreen?, preference: Preference?): Boolean {
+        Log.d("onPreferenceTreeClick", "" + preference?.key)
+        return super.onPreferenceTreeClick(preferenceScreen, preference)
+    }
+
     fun triggerAction(id: String, onCompleted: Runnable): Boolean {
-        val actionListAdapter = (adapter as ActionListAdapter)
-        val position = actionListAdapter.getPositionById(id)
-        if (position < 0) {
-            return false
-        } else {
-            val item = actionListAdapter.getItem(position)
-            if (item is ActionInfo) {
-                onActionClick(item, Runnable {
-                    post {
-                        (adapter as ActionListAdapter).update(position, this)
-                        onCompleted.run()
-                    }
-                })
-            } else if (item is SwitchInfo) {
-                onSwitchClick(item, Runnable {
-                    post {
-                        (adapter as ActionListAdapter).update(position, this)
-                        onCompleted.run()
-                    }
-                })
-            }
-            return true
-        }
+        return false
     }
 
     /**
@@ -99,14 +158,14 @@ class ActionListView : OverScrollListView {
     private fun onSwitchClick(switchInfo: SwitchInfo, onExit: Runnable) {
         val toValue = !switchInfo.selected
         if (switchInfo.confirm) {
-            DialogHelper.animDialog(AlertDialog.Builder(context)
+            DialogHelper.animDialog(AlertDialog.Builder(mContext)
                     .setTitle(switchInfo.title)
                     .setMessage(switchInfo.desc)
-                    .setPositiveButton(context.getString(R.string.btn_execute), { _, _ ->
+                    .setPositiveButton(mContext.getString(R.string.btn_execute)) { _, _ ->
                         switchExecute(switchInfo, toValue, onExit)
+                    }
+                    .setNegativeButton(mContext.getString(R.string.btn_cancel)) { _, _ ->
                     })
-                    .setNegativeButton(context.getString(R.string.btn_cancel), { _, _ ->
-                    }))
         } else {
             switchExecute(switchInfo, toValue, onExit)
         }
@@ -130,13 +189,13 @@ class ActionListView : OverScrollListView {
      */
     private fun onActionClick(action: ActionInfo, onExit: Runnable) {
         if (action.confirm) {
-            DialogHelper.animDialog(AlertDialog.Builder(context)
+            DialogHelper.animDialog(AlertDialog.Builder(mContext)
                     .setTitle(action.title)
                     .setMessage(action.desc)
-                    .setPositiveButton(context.getString(R.string.btn_execute)) { _, _ ->
+                    .setPositiveButton(mContext.getString(R.string.btn_execute)) { _, _ ->
                         actionExecute(action, onExit)
                     }
-                    .setNegativeButton(context.getString(R.string.btn_cancel)) { _, _ -> })
+                    .setNegativeButton(mContext.getString(R.string.btn_cancel)) { _, _ -> })
         } else {
             actionExecute(action, onExit)
         }
@@ -152,26 +211,26 @@ class ActionListView : OverScrollListView {
         if (action.params != null) {
             val actionParamInfos = action.params!!
             if (actionParamInfos.size > 0) {
-                val layoutInflater = LayoutInflater.from(context)
+                val layoutInflater = LayoutInflater.from(mContext)
                 val linearLayout = layoutInflater.inflate(R.layout.kr_params_list, null) as LinearLayout
 
                 val handler = Handler()
-                progressBarDialog.showDialog(context.getString(R.string.onloading))
+                progressBarDialog.showDialog(mContext.getString(R.string.onloading))
                 Thread(Runnable {
                     for (actionParamInfo in actionParamInfos) {
                         handler.post {
-                            progressBarDialog.showDialog(context.getString(R.string.kr_param_load) + if (!actionParamInfo.label.isNullOrEmpty()) actionParamInfo.label else actionParamInfo.name)
+                            progressBarDialog.showDialog(mContext.getString(R.string.kr_param_load) + if (!actionParamInfo.label.isNullOrEmpty()) actionParamInfo.label else actionParamInfo.name)
                         }
                         if (actionParamInfo.valueShell != null) {
-                            actionParamInfo.valueFromShell = executeScriptGetResult(context, actionParamInfo.valueShell!!)
+                            actionParamInfo.valueFromShell = executeScriptGetResult(mContext, actionParamInfo.valueShell!!)
                         }
                         handler.post {
-                            progressBarDialog.showDialog(context.getString(R.string.kr_param_options_load) + if (!actionParamInfo.label.isNullOrEmpty()) actionParamInfo.label else actionParamInfo.name)
+                            progressBarDialog.showDialog(mContext.getString(R.string.kr_param_options_load) + if (!actionParamInfo.label.isNullOrEmpty()) actionParamInfo.label else actionParamInfo.name)
                         }
                         actionParamInfo.optionsFromShell = getParamOptions(actionParamInfo) // 获取参数的可用选项
                     }
                     handler.post {
-                        progressBarDialog.showDialog(context.getString(R.string.kr_params_render))
+                        progressBarDialog.showDialog(mContext.getString(R.string.kr_params_render))
                     }
                     handler.post {
                         val render = LayoutRender(linearLayout)
@@ -185,14 +244,14 @@ class ActionListView : OverScrollListView {
                                                 val params = render.readParamsValue(actionParamInfos)
                                                 actionExecute(action, script, onExit, params)
                                             } catch (ex: java.lang.Exception) {
-                                                Toast.makeText(context, "" + ex.message, Toast.LENGTH_LONG).show()
+                                                Toast.makeText(mContext, "" + ex.message, Toast.LENGTH_LONG).show()
                                             }
                                         })) {
                         } else {
                             val dialogView = layoutInflater.inflate(R.layout.kr_params_dialog, null)
                             dialogView.findViewById<ScrollView>(R.id.kr_param_dialog).addView(linearLayout)
                             dialogView.findViewById<TextView>(R.id.kr_param_dialog_title).setText(action.title)
-                            val dialog = DialogHelper.animDialog(AlertDialog.Builder(context).setView(dialogView))
+                            val dialog = DialogHelper.animDialog(AlertDialog.Builder(mContext).setView(dialogView))
 
                             dialogView.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
                                 dialog!!.dismiss()
@@ -203,7 +262,7 @@ class ActionListView : OverScrollListView {
                                     dialog!!.dismiss()
                                     actionExecute(action, script, onExit, params)
                                 } catch (ex: java.lang.Exception) {
-                                    Toast.makeText(context, "" + ex.message, Toast.LENGTH_LONG).show()
+                                    Toast.makeText(mContext, "" + ex.message, Toast.LENGTH_LONG).show()
                                 }
                             }
                         }
@@ -223,7 +282,7 @@ class ActionListView : OverScrollListView {
         val options = ArrayList<HashMap<String, Any>>()
         var shellResult = ""
         if (!actionParamInfo.optionsSh.isEmpty()) {
-            shellResult = executeScriptGetResult(context, actionParamInfo.optionsSh)
+            shellResult = executeScriptGetResult(mContext, actionParamInfo.optionsSh)
         }
 
         if (!(shellResult == "error" || shellResult == "null" || shellResult.isEmpty())) {
@@ -270,7 +329,7 @@ class ActionListView : OverScrollListView {
     }
 
     private fun executeScriptGetResult(context: Context, shellScript: String): String {
-        return ScriptEnvironmen.executeResultRoot(context, shellScript);
+        return ScriptEnvironmen.executeResultRoot(mContext, shellScript);
     }
 
     private fun actionExecute(configItem: ConfigItemBase, script: String, onExit: Runnable, params: HashMap<String, String>?) {
@@ -279,6 +338,6 @@ class ActionListView : OverScrollListView {
             shellHandler = actionShortClickHandler!!.onExecute(configItem, onExit)
         }
 
-        SimpleShellExecutor().execute(context, configItem, script, onExit, params, shellHandler)
+        SimpleShellExecutor().execute(mContext, configItem, script, onExit, params, shellHandler)
     }
 }

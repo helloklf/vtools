@@ -29,7 +29,7 @@ import com.omarea.store.SpfConfig
 import com.omarea.ui.FreezeAppAdapter
 import com.omarea.utils.AppListHelper
 import com.omarea.vtools.R
-import com.omarea.vtools.activitys.ActivityFreezeApps
+import com.omarea.vtools.activities.ActivityFreezeApps
 import kotlinx.android.synthetic.main.fragment_freeze.*
 
 

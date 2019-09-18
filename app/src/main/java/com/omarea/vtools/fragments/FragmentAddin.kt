@@ -24,7 +24,7 @@ import com.omarea.shell_utils.PlatformUtils
 import com.omarea.shell_utils.SysUtils
 import com.omarea.ui.TabIconHelper
 import com.omarea.vtools.R
-import com.omarea.vtools.activitys.ActionPage
+import com.omarea.vtools.activities.ActionPage2
 import com.omarea.vtools.addin.DexCompileAddin
 import com.omarea.vtools.addin.FullScreenAddin
 import com.omarea.vtools.addin.PerfBoostConfigAddin
@@ -146,7 +146,7 @@ class FragmentAddin : Fragment() {
 
     fun _openPage(title: String, config: String) {
         try {
-            val intent = Intent(context, ActionPage::class.java)
+            val intent = Intent(context, ActionPage2::class.java)
             intent.putExtra("title", title)
             intent.putExtra("config", config)
             startActivity(intent)
@@ -163,12 +163,12 @@ class FragmentAddin : Fragment() {
         tabIconHelper.newTabSpec("收藏", context!!.getDrawable(R.drawable.addin_favorites)!!, R.id.tab0)
         val configTab = tabIconHelper.newTabSpec("全部", context!!.getDrawable(R.drawable.addin_pages)!!, R.id.tab2)
 
-        tabHost.setOnTabChangedListener({ tabId ->
+        tabHost.setOnTabChangedListener { tabId ->
             if (tabId == configTab) {
                 loadSwitchsConfig()
             }
             tabIconHelper.updateHighlight()
-        })
+        }
 
         tabHost.currentTab = 0
         initAddin(view)

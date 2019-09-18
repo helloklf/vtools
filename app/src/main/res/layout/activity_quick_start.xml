@@ -7,7 +7,7 @@
     android:backgroundTintMode="screen"
     android:clipToPadding="true"
     android:fitsSystemWindows="false"
-    tools:context=".activitys.ActivityQuickStart">
+    tools:context=".activities.ActivityQuickStart">
 
     <LinearLayout
         android:id="@+id/start_logo"

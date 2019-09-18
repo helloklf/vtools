@@ -383,7 +383,8 @@
     <string name="scene_addin_install_fail">“Scene - 高级设定”插件安装失败！</string>
     <string name="scene_addin_sync_fail">从“Scene-高级设定”插件同步Xposed设定失败！</string>
     <string name="scene_addin_version_toolow">“Scene-高级设定”插件版本过低！</string>
-    <string name="scene_config_notinstalled">未安装模式配置脚本，无法使用动态响应！</string><string name="accessbility_autoclick">安装点击</string>
+    <string name="scene_config_notinstalled">未安装模式配置脚本，无法使用动态响应！</string>
+    <string name="accessbility_autoclick">安装点击</string>
     <string name="scene_autoclick_desc">安装第三方应用时，自动帮你点“下一步”</string>
     <string name="scene_notify">常驻通知</string>
     <string name="scene_notify_desc">运行场景模式服务时显示常驻通知，以监视运行状态和电池状态</string>
@@ -505,4 +506,5 @@
         <item>VOG-TL00@HUAWEI@HUAWEI@VOG-TL00@VOG-TL00</item>
         <item>GM1910@ONEPLUS@ONEPLUS@GM1910@GM1910</item>
     </string-array>
+    <string name="title_activity_main2">Main2Activity</string>
 </resources>

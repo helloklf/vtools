@@ -1,4 +1,4 @@
-package com.omarea.vtools.activitys
+package com.omarea.vtools.activities
 
 import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint

@@ -37,10 +37,10 @@ import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.utils.AppListHelper
 import com.omarea.vaddin.IAppConfigAidlInterface
 import com.omarea.vtools.R
-import com.omarea.vtools.activitys.ActivityAddinOnline
-import com.omarea.vtools.activitys.ActivityAdvSettings
-import com.omarea.vtools.activitys.ActivityAppDetails
-import com.omarea.vtools.activitys.ActivityFileSelector
+import com.omarea.vtools.activities.ActivityAddinOnline
+import com.omarea.vtools.activities.ActivityAdvSettings
+import com.omarea.vtools.activities.ActivityAppDetails
+import com.omarea.vtools.activities.ActivityFileSelector
 import kotlinx.android.synthetic.main.fragment_config.*
 import org.json.JSONObject
 import java.io.File

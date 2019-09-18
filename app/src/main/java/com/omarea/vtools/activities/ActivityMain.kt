@@ -1,4 +1,4 @@
-package com.omarea.vtools.activitys
+package com.omarea.vtools.activities
 
 import android.annotation.SuppressLint
 import android.app.ActivityManager
@@ -107,12 +107,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 } else {
                     return
                 }
-                DialogHelper.animDialog(
-                        AlertDialog.Builder(context)
-                                .setMessage("检测到系统自动创建了温控副本，这会导致在附加功能中切换的温控失效。\n\nScene已自动将副本删除，但可能需要重启手机才能解决问题")
-                                .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                                })
-                                .setCancelable(false))
+                DialogHelper.helpInfo(context,"", "检测到系统自动创建了温控副本，这会导致在附加功能中切换的温控失效。\n\nScene已自动将副本删除，但可能需要重启手机才能解决问题")
             }
         }
     }
@@ -172,9 +167,9 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 setHomePage()
             } catch (ex: Exception) {
                 DialogHelper.animDialog(AlertDialog.Builder(this).setTitle(getString(R.string.sorry))
-                        .setMessage("启动应用失败\n" + ex.message).setNegativeButton(getString(R.string.btn_retry), { _, _ ->
+                        .setMessage("启动应用失败\n" + ex.message).setNegativeButton(getString(R.string.btn_retry)) { _, _ ->
                             setHomePage()
-                        }))
+                        })
             }
             if (!BackupRestoreUtils.isSupport()) {
                 navigationView.menu.findItem(R.id.nav_img).isEnabled = false
@@ -189,6 +184,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             hideRootMenu(navigationView.menu)
         }
+
     }
 
     override fun onResume() {

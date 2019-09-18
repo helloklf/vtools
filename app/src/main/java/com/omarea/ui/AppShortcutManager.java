@@ -9,7 +9,7 @@ import android.graphics.drawable.Icon;
 import android.net.Uri;
 
 import com.omarea.vtools.R;
-import com.omarea.vtools.activitys.ActivityShortcut;
+import com.omarea.vtools.activities.ActivityShortcut;
 
 import java.util.ArrayList;
 

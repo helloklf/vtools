@@ -15,7 +15,7 @@ import com.omarea.model.BatteryStatus
 import com.omarea.store.BatteryHistoryStore
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
-import com.omarea.vtools.activitys.ActivityQuickSwitchMode
+import com.omarea.vtools.activities.ActivityQuickSwitchMode
 
 /**
  * 常驻通知

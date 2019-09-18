@@ -8,7 +8,7 @@
     android:backgroundTintMode="screen"
     android:clipToPadding="true"
     android:fitsSystemWindows="false"
-    tools:context=".activitys.ActivityStartSplash">
+    tools:context=".activities.ActivityStartSplash">
 
     <ScrollView
         android:id="@+id/start_contract"

@@ -21,7 +21,7 @@
         android:shortcutShortLabel="@string/shortcut_p0_long">
         <intent
             android:action="powersave"
-            android:targetClass="com.omarea.vtools.activitys.ActivityShortcut"
+            android:targetClass="com.omarea.vtools.activities.ActivityShortcut"
             android:targetPackage="com.omarea.vtools" />
     </shortcut>
     <shortcut
@@ -33,7 +33,7 @@
         android:shortcutShortLabel="@string/shortcut_p1_long">
         <intent
             android:action="balance"
-            android:targetClass="com.omarea.vtools.activitys.ActivityShortcut"
+            android:targetClass="com.omarea.vtools.activities.ActivityShortcut"
             android:targetPackage="com.omarea.vtools" />
     </shortcut>
     <shortcut
@@ -45,7 +45,7 @@
         android:shortcutShortLabel="@string/shortcut_p2_long">
         <intent
             android:action="performance"
-            android:targetClass="com.omarea.vtools.activitys.ActivityShortcut"
+            android:targetClass="com.omarea.vtools.activities.ActivityShortcut"
             android:targetPackage="com.omarea.vtools" />
     </shortcut>
     <shortcut
@@ -57,7 +57,7 @@
         android:shortcutShortLabel="@string/shortcut_p3_long">
         <intent
             android:action="fast"
-            android:targetClass="com.omarea.vtools.activitys.ActivityShortcut"
+            android:targetClass="com.omarea.vtools.activities.ActivityShortcut"
             android:targetPackage="com.omarea.vtools" />
     </shortcut>
 </shortcuts>

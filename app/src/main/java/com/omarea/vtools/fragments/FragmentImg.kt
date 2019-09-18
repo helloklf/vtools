@@ -17,7 +17,7 @@ import android.widget.Toast
 import com.omarea.shell_utils.BackupRestoreUtils
 import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
-import com.omarea.vtools.activitys.ActivityFileSelector
+import com.omarea.vtools.activities.ActivityFileSelector
 import kotlinx.android.synthetic.main.fragment_img.*
 import java.io.File
 import java.util.*

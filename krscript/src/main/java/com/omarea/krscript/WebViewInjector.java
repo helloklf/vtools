@@ -24,10 +24,8 @@ import com.omarea.krscript.executor.ExtractAssets;
 import com.omarea.krscript.executor.ScriptEnvironmen;
 import com.omarea.krscript.model.ShellHandlerBase;
 import com.omarea.krscript.ui.FileChooserRender;
-
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;

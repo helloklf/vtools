@@ -7,7 +7,7 @@
     android:backgroundTintMode="screen"
     android:clipToPadding="true"
     android:fitsSystemWindows="false"
-    tools:context=".activitys.ActivityFreezeApps">
+    tools:context=".activities.ActivityFreezeApps">
 
     <FrameLayout
         android:id="@+id/fragment_container"
