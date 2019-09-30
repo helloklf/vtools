@@ -19,15 +19,33 @@ import android.support.v4.content.PermissionChecker
 import android.view.View
 import android.view.WindowManager
 import com.omarea.common.ui.DialogHelper
+import com.omarea.common.ui.ThemeMode
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
 
 object ThemeSwitch {
+    private val themeMap = arrayListOf(
+            // 彩色 + 白
+            R.style.AppThemeBlue,
+            R.style.AppThemeCyan,
+            R.style.AppThemeGreen,
+            R.style.AppThemeOrange,
+            R.style.AppThemeRed,
+            R.style.AppThemePink,
+            R.style.AppThemePretty,
+            R.style.AppThemeViolet,
+            // 深色 + 灰
+            R.style.AppThemeNoActionBarNight,
+            // 白色 + 粉紫
+            R.style.AppThemeWhite
+    )
+
     private var globalSPF: SharedPreferences? = null
 
     private fun checkPermission(context: Context, permission: String): Boolean = PermissionChecker.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED
 
-    internal fun switchTheme(activity: Activity) {
+    internal fun switchTheme(activity: Activity): ThemeMode {
+        val themeMode = ThemeMode()
         if (globalSPF == null) {
             globalSPF = activity.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         }
@@ -44,97 +62,60 @@ object ThemeSwitch {
             theme = globalSPF!!.getInt(SpfConfig.GLOBAL_SPF_THEME, 1)
         }
 
-        when (theme) {
-            0 -> {
-                activity.setTheme(R.style.AppThemeBlue)
-            }
-            1 -> {
-                activity.setTheme(R.style.AppThemeCyan)
-            }
-            2 -> {
-                activity.setTheme(R.style.AppThemeGreen)
-            }
-            3 -> {
-                activity.setTheme(R.style.AppThemeOrange)
-            }
-            4 -> {
-                activity.setTheme(R.style.AppThemeRed)
-            }
-            5 -> {
-                activity.setTheme(R.style.AppThemePink)
-            }
-            6 -> {
-                activity.setTheme(R.style.AppThemePretty)
-            }
-            7 -> {
-                activity.setTheme(R.style.AppThemeViolet)
-            }
-            8 -> {
-                activity.setTheme(R.style.AppThemeNoActionBarNight)
-            }
-            9 -> {
-                activity.setTheme(R.style.AppThemeWhite)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-                    } else {
-                        activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                    }
-                }
-            }
-            10 -> {
-                if (checkPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                    setWallpaperTheme(activity)
-                } else {
-                    DialogHelper.helpInfo(activity, "", activity.getString(R.string.wallpaper_rw_permission))
-                }
-            }
-        }
-    }
+        if (theme < themeMap.size) {
+            val themeId = themeMap[theme]
+            activity.setTheme(themeId)
 
-    private fun setWallpaperTheme(activity: Activity) {
-        /* // 根据夜间模式设置主题
-        val uiModeManager = activity.applicationContext.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
-        if (uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES) {
-            activity.setTheme(R.style.AppThemeWallpaper)
-        } else {
-            activity.setTheme(R.style.AppThemeWallpaperLight)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            themeMode.isDarkMode = (themeId == R.style.AppThemeNoActionBarNight)
+            themeMode.isLightStatusBar = (theme == 9)
+
+            if (themeMode.isLightStatusBar) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+                } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                }
+            }
+        } else if (theme == 10) {
+            // 设置壁纸作为背景需要读取外置存储权限
+            if (checkPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                val wallpaper = WallpaperManager.getInstance(activity)
+                val wallpaperInfo = wallpaper.wallpaperInfo
+                // 动态壁纸
+                if (wallpaperInfo != null && wallpaperInfo.packageName != null) {
+                    activity.setTheme(R.style.AppThemeWallpaper)
+                    // activity.window.setBackgroundDrawable(activity.getDrawable(R.drawable.window_transparent));
+                    activity.window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER)
+
+                    themeMode.isDarkMode = true
                 } else {
-                    activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                }
-            }
-        }
-        */
+                    val wallpaperDrawable = wallpaper.drawable
 
-        val wallpape = WallpaperManager.getInstance(activity);
-        val wallpaperInfo = wallpape.getWallpaperInfo()
-        if (wallpaperInfo != null && wallpaperInfo.packageName != null) {
-            activity.setTheme(R.style.AppThemeWallpaper)
-            // activity.window.setBackgroundDrawable(activity.getDrawable(R.drawable.window_transparent));
-            activity.window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER);
-        } else {
-            val wallpapeDrawable = wallpape.getDrawable();
+                    // 深色的静态壁纸
+                    if (isDarkColor(wallpaperDrawable)) {
+                        activity.setTheme(R.style.AppThemeWallpaper)
 
-            if (isDarkColor(wallpapeDrawable)) {
-                activity.setTheme(R.style.AppThemeWallpaper)
-            } else {
-                activity.setTheme(R.style.AppThemeWallpaperLight)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                        themeMode.isDarkMode = true
                     } else {
-                        activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                    }
-                }
-            }
+                        // 浅色的静态壁纸
+                        activity.setTheme(R.style.AppThemeWallpaperLight)
 
-            activity.window.setBackgroundDrawable(wallpapeDrawable);
-            // 使用壁纸高斯模糊作为窗口背景
-            // activity.window.setBackgroundDrawable(BitmapDrawable(activity.resources, rsBlur((wallPaper as BitmapDrawable).bitmap, 25, activity)))
+                        themeMode.isDarkMode = false
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                            themeMode.isLightStatusBar = true
+                        }
+                    }
+
+                    activity.window.setBackgroundDrawable(wallpaperDrawable)
+                    // 使用壁纸高斯模糊作为窗口背景
+                    // activity.window.setBackgroundDrawable(BitmapDrawable(activity.resources, rsBlur((wallPaper as BitmapDrawable).bitmap, 25, activity)))
+                }
+            } else {
+                DialogHelper.helpInfo(activity, "", activity.getString(R.string.wallpaper_rw_permission))
+            }
         }
+        return themeMode
     }
 
     private fun isDarkColor(wallPaper: Drawable): Boolean {
@@ -194,17 +175,5 @@ object ThemeSwitch {
         renderScript.destroy();
 
         return inputBmp;
-    }
-
-    internal enum class Themes {
-        BLUE, // 蓝色
-        CYAN, // 水鸭青
-        GREEN, // 绿色
-        ORANAGE, // 成色
-        RED, // 红色
-        PINK, // 粉色
-        PRETTY, // 骚？
-        VIOLET, // 紫色
-        BLACK // 黑色
     }
 }

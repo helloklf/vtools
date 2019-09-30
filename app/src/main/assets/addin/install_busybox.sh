@@ -10,7 +10,7 @@ function busybox_install() {
         ./busybox ln -sf busybox "$applet"
         chmod 755 "$applet"
     done
-    echo '' > busybox_1_30_1
+    ./busybox ln -sf busybox busybox_1_30_1
 }
 
 if [[ ! "$install_path" = "" ]] && [[ -d "$install_path" ]]; then

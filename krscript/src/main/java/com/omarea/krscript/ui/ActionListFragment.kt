@@ -10,12 +10,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.OverScrollView
 import com.omarea.common.ui.ProgressBarDialog
+import com.omarea.common.ui.ThemeMode
 import com.omarea.krscript.R
 import com.omarea.krscript.config.ActionParamInfo
 import com.omarea.krscript.executor.ScriptEnvironmen
@@ -28,9 +28,10 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
         fun create(
                 actionInfos: ArrayList<ConfigItemBase>?,
                 krScriptActionHandler: KrScriptActionHandler? = null,
-                autoRunTask: AutoRunTask? = null): ActionListFragment {
+                autoRunTask: AutoRunTask? = null,
+                themeMode: ThemeMode? = null): ActionListFragment {
             val fragment = ActionListFragment()
-            fragment.setListData(actionInfos, krScriptActionHandler, autoRunTask)
+            fragment.setListData(actionInfos, krScriptActionHandler, autoRunTask, themeMode)
             return fragment
         }
     }
@@ -40,15 +41,18 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     private lateinit var progressBarDialog: ProgressBarDialog
     private var krScriptActionHandler: KrScriptActionHandler? = null
     private var autoRunTask: AutoRunTask? = null
+    private var themeMode: ThemeMode? = null
 
     private fun setListData(
             actionInfos: ArrayList<ConfigItemBase>?,
             krScriptActionHandler: KrScriptActionHandler? = null,
-            autoRunTask: AutoRunTask? = null) {
+            autoRunTask: AutoRunTask? = null,
+            themeMode: ThemeMode? = null) {
         if (actionInfos != null) {
             this.actionInfos = actionInfos
             this.krScriptActionHandler = krScriptActionHandler
             this.autoRunTask = autoRunTask
+            this.themeMode = themeMode
         }
     }
 
@@ -64,6 +68,7 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
         this.progressBarDialog = ProgressBarDialog(this.context!!)
 
         layoutBuilder = ListItemView(this.context!!, R.layout.kr_group_list_root)
+
         PageLayoutRender(this.context!!, actionInfos, this, layoutBuilder)
         val layout = layoutBuilder.getView()
 
@@ -82,19 +87,19 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     /**
      * 当switch项被点击
      */
-    override fun onSwitchClick(switchInfo: SwitchInfo, onExit: Runnable) {
-        val toValue = !switchInfo.checked
-        if (switchInfo.confirm) {
+    override fun onSwitchClick(item: SwitchInfo, onCompleted: Runnable) {
+        val toValue = !item.checked
+        if (item.confirm) {
             DialogHelper.animDialog(AlertDialog.Builder(this.context!!)
-                    .setTitle(switchInfo.title)
-                    .setMessage(switchInfo.desc)
+                    .setTitle(item.title)
+                    .setMessage(item.desc)
                     .setPositiveButton(this.context!!.getString(R.string.btn_execute)) { _, _ ->
-                        switchExecute(switchInfo, toValue, onExit)
+                        switchExecute(item, toValue, onCompleted)
                     }
                     .setNegativeButton(this.context!!.getString(R.string.btn_cancel)) { _, _ ->
                     })
         } else {
-            switchExecute(switchInfo, toValue, onExit)
+            switchExecute(item, toValue, onCompleted)
         }
     }
 
@@ -112,27 +117,27 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     }
 
 
-    override fun onPageClick(pageInfo: PageInfo, onExit: Runnable) {
-        krScriptActionHandler?.onSubPageClick(pageInfo)
+    override fun onPageClick(item: PageInfo, onCompleted: Runnable) {
+        krScriptActionHandler?.onSubPageClick(item)
     }
 
     // 长按 添加收藏
-    override fun onItemLongClick(configItemBase: ConfigItemBase) {
-        if (configItemBase.key.isEmpty()) {
+    override fun onItemLongClick(item: ConfigItemBase) {
+        if (item.key.isEmpty()) {
             DialogHelper.animDialog(AlertDialog.Builder(context).setTitle(R.string.kr_shortcut_create_fail)
                     .setMessage(R.string.kr_ushortcut_nsupported)
                     .setNeutralButton(R.string.btn_cancel) { _, _ ->
                     }
             )
         } else {
-            krScriptActionHandler?.addToFavorites(configItemBase, object : KrScriptActionHandler.AddToFavoritesHandler {
-                override fun onAddToFavorites(configItemBase: ConfigItemBase, intent: Intent?) {
+            krScriptActionHandler?.addToFavorites(item, object : KrScriptActionHandler.AddToFavoritesHandler {
+                override fun onAddToFavorites(configItem: ConfigItemBase, intent: Intent?) {
                     if (intent != null) {
                         DialogHelper.animDialog(AlertDialog.Builder(context)
                                 .setTitle(getString(R.string.kr_shortcut_create))
-                                .setMessage(String.format(getString(R.string.kr_shortcut_create_desc), configItemBase.title))
+                                .setMessage(String.format(getString(R.string.kr_shortcut_create_desc), configItem.title))
                                 .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                                    val result = ActionShortcutManager(context!!).addShortcut(intent, context!!.getDrawable(R.drawable.kr_shortcut_logo)!!, configItemBase)
+                                    val result = ActionShortcutManager(context!!).addShortcut(intent, context!!.getDrawable(R.drawable.kr_shortcut_logo)!!, configItem)
                                     if (!result) {
                                         Toast.makeText(context, R.string.kr_shortcut_create_fail, Toast.LENGTH_SHORT).show()
                                     } else {
@@ -150,21 +155,21 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     /**
      * 单选列表点击
      */
-    override fun onPickerClick(pickerInfo: PickerInfo, onExit: Runnable) {
+    override fun onPickerClick(item: PickerInfo, onCompleted: Runnable) {
         val paramInfo = ActionParamInfo()
-        paramInfo.options = pickerInfo.options
-        paramInfo.optionsSh = pickerInfo.optionsSh
+        paramInfo.options = item.options
+        paramInfo.optionsSh = item.optionsSh
 
         // 获取当前值
-        if (pickerInfo.getState != null) {
-            paramInfo.valueFromShell = executeScriptGetResult(this.context!!, pickerInfo.getState!!)
+        if (item.getState != null) {
+            paramInfo.valueFromShell = executeScriptGetResult(this.context!!, item.getState!!)
         }
 
         // 获取可选项（合并options-sh和静态options的结果）
         val coalescentOptions = getParamOptions(paramInfo)
 
-        val options = if (coalescentOptions != null) coalescentOptions!!.map { (it["item"] as ActionParamInfo.ActionParamOption).desc }.toTypedArray() else arrayOf()
-        val values = if (coalescentOptions != null) coalescentOptions!!.map { (it["item"] as ActionParamInfo.ActionParamOption).value }.toTypedArray() else arrayOf()
+        val options = if (coalescentOptions != null) coalescentOptions.map { (it["item"] as ActionParamInfo.ActionParamOption).desc }.toTypedArray() else arrayOf()
+        val values = if (coalescentOptions != null) coalescentOptions.map { (it["item"] as ActionParamInfo.ActionParamOption).value }.toTypedArray() else arrayOf()
 
         var index = -1
         if (coalescentOptions != null) {
@@ -173,12 +178,12 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
 
         DialogHelper.animDialog(
                 AlertDialog.Builder(this.context!!)
-                        .setTitle(pickerInfo.title)
+                        .setTitle(item.title)
                         .setSingleChoiceItems(options, index) { _, which ->
                             index = which
                         }
                         .setPositiveButton(this.context!!.getString(R.string.btn_execute)) { _, _ ->
-                            pickerExecute(pickerInfo, "" + (if (index > -1) values[index] else ""), onExit)
+                            pickerExecute(item, "" + (if (index > -1) values[index] else ""), onCompleted)
                         }
                         .setNegativeButton(this.context!!.getString(R.string.btn_cancel)) { _, _ ->
                         })
@@ -200,17 +205,17 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     /**
      * 列表项点击时（如果需要确认界面，则显示确认界面，否则直接准备执行）
      */
-    override fun onActionClick(action: ActionInfo, onExit: Runnable) {
-        if (action.confirm) {
+    override fun onActionClick(item: ActionInfo, onCompleted: Runnable) {
+        if (item.confirm) {
             DialogHelper.animDialog(AlertDialog.Builder(this.context!!)
-                    .setTitle(action.title)
-                    .setMessage(action.desc)
+                    .setTitle(item.title)
+                    .setMessage(item.desc)
                     .setPositiveButton(this.context!!.getString(R.string.btn_execute)) { _, _ ->
-                        actionExecute(action, onExit)
+                        actionExecute(item, onCompleted)
                     }
                     .setNegativeButton(this.context!!.getString(R.string.btn_cancel)) { _, _ -> })
         } else {
-            actionExecute(action, onExit)
+            actionExecute(item, onCompleted)
         }
     }
 
@@ -278,7 +283,9 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
                             center.removeAllViews()
                             center.addView(linearLayout)
 
-                            val builder = if (isLongList) AlertDialog.Builder(this.context, R.style.kr_full_screen_dialog) else AlertDialog.Builder(this.context)
+                            val darkMode = themeMode != null && themeMode!!.isDarkMode
+
+                            val builder = if (isLongList) AlertDialog.Builder(this.context, if (darkMode) R.style.kr_full_screen_dialog_dark else R.style.kr_full_screen_dialog_light) else AlertDialog.Builder(this.context)
                             val dialog = builder.setView(dialogView).create()
                             if (!isLongList) {
                                 DialogHelper.animDialog(dialog)
@@ -373,9 +380,15 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
             shellHandler = krScriptActionHandler!!.openExecutor(configItem, onExit)
         }
         if (shellHandler == null) {
-            val dialog = DialogLogFragment.create(configItem, onExit, script, params)
+            val darkMode = themeMode != null && themeMode!!.isDarkMode
+
+            val dialog = DialogLogFragment.create(configItem, onExit, script, params, darkMode)
             dialog.show(fragmentManager, "")
             dialog.isCancelable = false
+
+            // val outValue = TypedValue()
+            // context!!.theme.resolveAttribute(R.attr.alertDialogTheme, outValue, true)
+            // Log.d("alertDialogTheme", "" + outValue.data)
         } else {
             SimpleShellExecutor().execute(this.context!!, configItem, script, onExit, params, shellHandler)
         }

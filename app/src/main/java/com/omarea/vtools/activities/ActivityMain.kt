@@ -27,6 +27,7 @@ import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.shell.RootFile
 import com.omarea.common.ui.DialogHelper
+import com.omarea.common.ui.ThemeMode
 import com.omarea.permissions.CheckRootStatus
 import com.omarea.scene_mode.ModeConfigInstaller
 import com.omarea.shell_utils.BackupRestoreUtils
@@ -42,13 +43,14 @@ import java.lang.ref.WeakReference
 
 class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private var globalSPF: SharedPreferences? = null
+    private lateinit var themeMode: ThemeMode
 
     private fun setExcludeFromRecents(exclude: Boolean? = null) {
         try {
             val service = this.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
             for (task in service.appTasks) {
                 if (task.taskInfo.id == this.taskId) {
-                    val b = if (exclude == null) globalSPF!!.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, false) else exclude
+                    val b = exclude ?: globalSPF!!.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, false)
                     task.setExcludeFromRecents(b)
                 }
             }
@@ -58,7 +60,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private class ServiceCreateThread(context: Context) : Runnable {
-        private var context: WeakReference<Context>;
+        private var context: WeakReference<Context> = WeakReference(context)
         override fun run() {
             //判断是否开启了充电加速和充电保护，如果开启了，自动启动后台服务
             val chargeConfig = context.get()!!.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
@@ -72,21 +74,14 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         }
 
-        init {
-            this.context = WeakReference(context)
-        }
     }
 
-    private class ConfigInstallerThread(context: Context) : Thread() {
-        private var context: WeakReference<Context>;
+    private class ConfigInstallerThread : Thread() {
         override fun run() {
             super.run()
             ModeConfigInstaller().configCodeVerify()
         }
 
-        init {
-            this.context = WeakReference(context)
-        }
     }
 
     private class ThermalCheckThread(private var context: Context) : Thread() {
@@ -134,7 +129,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         }
 
-        ThemeSwitch.switchTheme(this)
+        themeMode = ThemeSwitch.switchTheme(this)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -174,7 +169,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             if (!BackupRestoreUtils.isSupport()) {
                 navigationView.menu.findItem(R.id.nav_img).isEnabled = false
             }
-            ConfigInstallerThread(this).start()
+            ConfigInstallerThread().start()
             ServiceCreateThread(this).run()
             ThermalCheckThread(this).run()
         } else {
@@ -309,12 +304,12 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 val intent = Intent()
                 intent.data = Uri.parse("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26k%3D" + key)
                 // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面    //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                try {
+                return try {
                     startActivity(intent)
-                    return true
+                    true
                 } catch (e: Exception) {
                     // 未安装手Q或安装的版本不支持
-                    return false
+                    false
                 }
             }
             R.id.nav_share -> {
@@ -330,7 +325,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_app_magisk -> {
                 fragment = FragmentMagisk.createPage()
             }
-            R.id.nav_additional -> fragment = FragmentAddin.createPage()
+            R.id.nav_additional -> fragment = FragmentAddin.createPage(themeMode)
             R.id.nav_keyevent -> {
                 try {
                     val intent = Intent(this, AccessibilityKeySettings::class.java)

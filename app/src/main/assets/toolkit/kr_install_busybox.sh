@@ -4,7 +4,7 @@ function busybox_install() {
     for applet in `./busybox --list`; do
         ./busybox ln -sf busybox "$applet";
     done
-    echo '' > busybox_1_30_1
+    ./busybox ln -sf busybox busybox_1_30_1
 }
 
 if [[ ! "$TOOLKIT" = "" ]]; then

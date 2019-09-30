@@ -36,10 +36,11 @@ class DialogLogFragment : DialogFragment() {
     private lateinit var onExit: Runnable
     private lateinit var script: String
     private var params: HashMap<String, String>? = null
+    private var themeResId: Int = 0
     private lateinit var currentView: View
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = AlertDialog.Builder(activity!!, R.style.kr_full_screen_dialog)
+        val dialog = AlertDialog.Builder(activity!!, if (themeResId != 0) themeResId else R.style.kr_full_screen_dialog_light)
         val inflater = activity!!.layoutInflater
         val view = inflater.inflate(R.layout.kr_dialog_log, null)
         dialog.setView(view)
@@ -208,12 +209,13 @@ class DialogLogFragment : DialogFragment() {
     }
 
     companion object {
-        fun create(configItem: ConfigItemBase, onExit: Runnable, script: String, params: HashMap<String, String>?): DialogLogFragment {
+        fun create(configItem: ConfigItemBase, onExit: Runnable, script: String, params: HashMap<String, String>?, darkMode: Boolean = false): DialogLogFragment {
             val fragment = DialogLogFragment()
             fragment.configItem = configItem
             fragment.onExit = onExit
             fragment.script = script
             fragment.params = params
+            fragment.themeResId = if (darkMode) R.style.kr_full_screen_dialog_dark else R.style.kr_full_screen_dialog_light
 
             return fragment
         }

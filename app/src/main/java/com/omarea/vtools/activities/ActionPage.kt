@@ -16,6 +16,7 @@ import android.view.View
 import android.widget.Toast
 import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.ui.ProgressBarDialog
+import com.omarea.common.ui.ThemeMode
 import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.model.AutoRunTask
 import com.omarea.krscript.model.ConfigItemBase
@@ -32,9 +33,10 @@ class ActionPage : AppCompatActivity() {
     private var pageConfig: String = ""
     private var autoRun: String = ""
     private var pageTitle = ""
+    private lateinit var themeMode: ThemeMode
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        ThemeSwitch.switchTheme(this)
+        this.themeMode = ThemeSwitch.switchTheme(this)
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_action_page)
@@ -64,12 +66,6 @@ class ActionPage : AppCompatActivity() {
             getWindow().decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
         */
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-        } else {
-            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-        }
 
         // 读取intent里的参数
         val intent = this.intent
@@ -176,7 +172,7 @@ class ActionPage : AppCompatActivity() {
                                     Toast.makeText(this@ActionPage, "指定项已丢失", Toast.LENGTH_SHORT).show()
                                 }
                             }
-                        })
+                        }, themeMode)
                         supportFragmentManager.beginTransaction().add(R.id.main_list, fragment).commit()
                     }
                     progressBarDialog.hideDialog()

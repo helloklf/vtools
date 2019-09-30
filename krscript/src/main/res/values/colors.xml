@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="kr_params_view_bg">#F2F2F2</color>
+    <color name="kr_params_view_bg">#11000000</color>
 </resources>

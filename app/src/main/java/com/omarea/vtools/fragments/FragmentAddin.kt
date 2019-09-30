@@ -23,6 +23,7 @@ import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
+import com.omarea.common.ui.ThemeMode
 import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.ConfigItemBase
@@ -141,7 +142,7 @@ class FragmentAddin : Fragment() {
             myHandler.post {
                 page2ConfigLoaded = true
 
-                val favoritesFragment = ActionListFragment.create(items, getKrScriptActionHandler(config))
+                val favoritesFragment = ActionListFragment.create(items, getKrScriptActionHandler(config), null, themeMode)
                 activity!!.supportFragmentManager.beginTransaction().add(R.id.list_page2, favoritesFragment).commit()
                 progressBarDialog.hideDialog()
             }
@@ -247,9 +248,12 @@ class FragmentAddin : Fragment() {
         initAddin(view)
     }
 
+    private lateinit var themeMode: ThemeMode
     companion object {
-        fun createPage(): Fragment {
+        fun createPage(themeMode: ThemeMode): Fragment {
             val fragment = FragmentAddin()
+            fragment.themeMode = themeMode
+
             return fragment
         }
     }

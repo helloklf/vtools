@@ -96,7 +96,7 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
                 resumeCharge()
             }
 
-            if (!sleepChargeMode(currentLevel, bpLeve)) {
+            if (!sleepChargeMode(currentLevel, bpLeve, qcLimit)) {
                 // 未进入电池保护状态 并且电量低于85
                 if (currentLevel < 85 && (!bp || currentLevel < (bpLeve - 20))) {
                     entryFastCharge()
@@ -115,7 +115,7 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
      * @param totalCapacity 总容量（mAh）
      * @param targetRatio 目标充电百分比
      */
-    private fun sleepChargeMode(currentCapacityRatio: Int, targetRatio: Int): Boolean {
+    private fun sleepChargeMode(currentCapacityRatio: Int, targetRatio: Int, qcLimit: Int): Boolean {
         // 如果开启了夜间充电降速
         if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_NIGHT_MODE, false)) {
             val now = Calendar.getInstance()
@@ -153,9 +153,14 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
                     }
 
                     // 合理的充电速度 = 还需充入的电量(mAh) / timeRemaining
-                    val limitValue = (target / timeRemaining).toInt()
+                    var limitValue = (target / timeRemaining).toInt()
+                    if (limitValue < 50) {
+                        limitValue = 50
+                    } else if (limitValue > qcLimit) {
+                        limitValue = qcLimit
+                    }
 
-                    batteryUnits.setChargeInputLimit(if (limitValue < 50) 50 else limitValue, service)
+                    batteryUnits.setChargeInputLimit(limitValue, service)
                 }
                 return true
             }

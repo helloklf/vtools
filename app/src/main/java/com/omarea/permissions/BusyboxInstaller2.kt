@@ -17,7 +17,7 @@ class BusyboxInstaller2(private var context: Context) {
     fun installPrivateBusybox(): Boolean {
         if (!busyboxInstalled()) {
             // ro.product.cpu.abi
-            var abi = PropsUtils.getProp("ro.product.cpu.abi").toLowerCase()
+            val abi = PropsUtils.getProp("ro.product.cpu.abi").toLowerCase()
             if (!abi.startsWith("arm")) {
                 return false
             }
