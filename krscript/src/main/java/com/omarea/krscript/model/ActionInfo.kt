@@ -1,11 +1,10 @@
 package com.omarea.krscript.model
 
 import com.omarea.krscript.config.ActionParamInfo
-import java.util.ArrayList
+import java.util.*
 
 class ActionInfo : ConfigItemBase() {
-    var descPollingShell: String? = null
-    var script: String? = null
-    var start: String? = null
+    var getState: String? = null
+    var setState: String? = null
     var params: ArrayList<ActionParamInfo>? = null
 }

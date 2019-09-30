@@ -6,8 +6,8 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.TextView
-import com.omarea.krscript.config.ActionParamInfo
 import com.omarea.krscript.R
+import com.omarea.krscript.config.ActionParamInfo
 
 class SeekBarRender(private var actionParamInfo: ActionParamInfo, private var context: Context) {
     fun render(): View {
@@ -31,9 +31,9 @@ class SeekBarRender(private var actionParamInfo: ActionParamInfo, private var co
         val plus = layout.findViewById<ImageButton>(R.id.kr_param_seekbar_plus)
         val textView = layout.findViewById<TextView>(R.id.kr_param_seekbar_value)
         textView.text = (seekbar.progress + actionParamInfo.min).toString()
-        seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
-            override fun onStopTrackingTouch(seekBar: SeekBar?) { }
-            override fun onStartTrackingTouch(seekBar: SeekBar?) { }
+        seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 textView.text = (progress + actionParamInfo.min).toString()
             }

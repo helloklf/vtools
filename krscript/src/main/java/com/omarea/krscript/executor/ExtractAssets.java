@@ -1,6 +1,7 @@
 package com.omarea.krscript.executor;
 
 import android.content.Context;
+
 import com.omarea.common.shared.FileWrite;
 
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class ExtractAssets {
             fileName = fileName.substring("file:///android_asset/".length());
         }
 
-        String filePath =  FileWrite.INSTANCE.writePrivateShellFile(fileName, fileName, context);
+        String filePath = FileWrite.INSTANCE.writePrivateShellFile(fileName, fileName, context);
 
         if (filePath != null) {
             extractHisotry.put(fileName, filePath);

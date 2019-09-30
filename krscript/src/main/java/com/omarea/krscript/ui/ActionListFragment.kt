@@ -5,166 +5,93 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.preference.*
-import android.util.Log
+import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.*
+import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.ScrollView
+import android.widget.TextView
+import android.widget.Toast
 import com.omarea.common.ui.DialogHelper
+import com.omarea.common.ui.OverScrollView
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.R
 import com.omarea.krscript.config.ActionParamInfo
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.executor.SimpleShellExecutor
 import com.omarea.krscript.model.*
-import java.lang.Exception
+import com.omarea.krscript.shortcut.ActionShortcutManager
 
-class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickListener {
-    private lateinit var mContext: Context
-    private lateinit var actionInfos: ArrayList<ConfigItemBase>
-    override fun onPreferenceClick(preference: Preference?): Boolean {
-        if (preference != null) {
-            val key = preference!!.key
-            Log.d("key", "onPreferenceClick" + key)
-            try {
-                val index = key.toInt()
-                val item = actionInfos[index]
-                if (item is ActionInfo) {
-                    onActionClick(item, Runnable {
-                        if (item.descPollingShell != null && !item.descPollingShell!!.isEmpty()) {
-                            item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
-                        }
-                        preference.summary = item.desc
-                    })
-                } else if (item is SwitchInfo) {
-                    onSwitchClick(item, Runnable {
-                        if (item.descPollingShell != null && !item.descPollingShell.isEmpty()) {
-                            item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
-                        }
-                        if (item.getState != null && !item.getState.isEmpty()) {
-                            val shellResult = ScriptEnvironmen.executeResultRoot(mContext, item.getState)
-                            item.selected = shellResult == "1" || shellResult.toLowerCase() == "true"
-                        }
-                        preference.summary = item.desc
-                        (preference as SwitchPreference).isChecked = item.selected
-                    })
-                }
-            } catch (ex: Exception) {
-            }
+class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
+    companion object {
+        fun create(
+                actionInfos: ArrayList<ConfigItemBase>?,
+                krScriptActionHandler: KrScriptActionHandler? = null,
+                autoRunTask: AutoRunTask? = null): ActionListFragment {
+            val fragment = ActionListFragment()
+            fragment.setListData(actionInfos, krScriptActionHandler, autoRunTask)
+            return fragment
         }
-        return false
     }
+
+    private lateinit var actionInfos: ArrayList<ConfigItemBase>
 
     private lateinit var progressBarDialog: ProgressBarDialog
-    private var fileChooser: FileChooserRender.FileChooserInterface? = null
-    private var actionShortClickHandler: ActionShortClickHandler? = null
+    private var krScriptActionHandler: KrScriptActionHandler? = null
+    private var autoRunTask: AutoRunTask? = null
 
-    fun setListData(
-            context: Context,
+    private fun setListData(
             actionInfos: ArrayList<ConfigItemBase>?,
-            fileChooser: FileChooserRender.FileChooserInterface,
-            actionShortClickHandler: ActionShortClickHandler? = null) {
-        this.mContext = context
-        this.progressBarDialog = ProgressBarDialog(mContext)
+            krScriptActionHandler: KrScriptActionHandler? = null,
+            autoRunTask: AutoRunTask? = null) {
         if (actionInfos != null) {
             this.actionInfos = actionInfos
-            this.fileChooser = fileChooser
-            this.actionShortClickHandler = actionShortClickHandler
+            this.krScriptActionHandler = krScriptActionHandler
+            this.autoRunTask = autoRunTask
         }
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.kr_action_list_fragment, container, false)
+    }
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+
+    private lateinit var layoutBuilder: ListItemView
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        this.progressBarDialog = ProgressBarDialog(this.context!!)
 
-        val rootView = getView()
-        val list = rootView!!.findViewById<View>(android.R.id.list) as ListView
-        list.divider = null
+        layoutBuilder = ListItemView(this.context!!, R.layout.kr_group_list_root)
+        PageLayoutRender(this.context!!, actionInfos, this, layoutBuilder)
+        val layout = layoutBuilder.getView()
 
-        val preferenceScreen = this.preferenceManager.createPreferenceScreen(mContext)
-        this.preferenceScreen = preferenceScreen
-        // createPreferenceGroup(preferenceScreen)
-        var preferenceCategory: PreferenceCategory? = null
-        for (index in 0 until actionInfos.size) {
-            val it = actionInfos[index]
-            if (preferenceCategory == null) {
+        (this.view?.findViewById<OverScrollView?>(R.id.kr_content))?.addView(layout)
+        triggerAction(autoRunTask)
+    }
 
-            }
-            var preference: Preference? = null
-            if (it is SwitchInfo) {
-                preference = createSwitchPreference(it, index)
-            } else if (it is ActionInfo) {
-                preference = createActionPreference(it, index)
-            } else if (it is GroupInfo) {
-                preferenceCategory = createPreferenceGroup(it)
-                preferenceScreen.addPreference(preferenceCategory)
-            }
-
-            if (preference != null) {
-                if (preferenceCategory == null) {
-                    preferenceScreen.addPreference(preference)
-                } else {
-                    preferenceCategory.addPreference(preference)
-                }
+    private fun triggerAction(autoRunTask: AutoRunTask?) {
+        autoRunTask?.run {
+            if (!key.isNullOrEmpty()) {
+                onCompleted(layoutBuilder.triggerActionByKey(key!!))
             }
         }
-    }
-
-    private fun createSwitchPreference(switchInfo: SwitchInfo, index: Int): Preference {
-        val item = SwitchPreference(mContext)
-        item.key = index.toString()
-        item.title = "" + switchInfo.title
-        item.summary = "" + switchInfo.desc
-        item.onPreferenceClickListener = this
-        item.isChecked = switchInfo.selected
-        item.layoutResource = R.layout.kr_switch_list_item2
-
-        return item
-    }
-
-    private fun createActionPreference(actionInfo: ActionInfo, index: Int): Preference {
-        val item = this.preferenceManager.createPreferenceScreen(mContext)
-        // val item = EditTextPreference(mContext)
-        item.key = index.toString()
-        item.title = "" + actionInfo.title
-        item.summary = "" + actionInfo.desc
-        item.onPreferenceClickListener = this
-        item.layoutResource = R.layout.kr_action_list_item2
-        // item.widgetLayoutResource = R.layout.kr_action_list_item2
-
-        return item
-    }
-
-    private fun createPreferenceGroup(groupInfo: GroupInfo): PreferenceCategory {
-        val preferenceCategory = PreferenceCategory(mContext)
-        preferenceCategory.title = groupInfo.separator
-        preferenceCategory.layoutResource = R.layout.kr_group_list_item
-
-        return preferenceCategory
-    }
-
-    override fun onPreferenceTreeClick(preferenceScreen: PreferenceScreen?, preference: Preference?): Boolean {
-        Log.d("onPreferenceTreeClick", "" + preference?.key)
-        return super.onPreferenceTreeClick(preferenceScreen, preference)
-    }
-
-    fun triggerAction(id: String, onCompleted: Runnable): Boolean {
-        return false
     }
 
     /**
      * 当switch项被点击
      */
-    private fun onSwitchClick(switchInfo: SwitchInfo, onExit: Runnable) {
-        val toValue = !switchInfo.selected
+    override fun onSwitchClick(switchInfo: SwitchInfo, onExit: Runnable) {
+        val toValue = !switchInfo.checked
         if (switchInfo.confirm) {
-            DialogHelper.animDialog(AlertDialog.Builder(mContext)
+            DialogHelper.animDialog(AlertDialog.Builder(this.context!!)
                     .setTitle(switchInfo.title)
                     .setMessage(switchInfo.desc)
-                    .setPositiveButton(mContext.getString(R.string.btn_execute)) { _, _ ->
+                    .setPositiveButton(this.context!!.getString(R.string.btn_execute)) { _, _ ->
                         switchExecute(switchInfo, toValue, onExit)
                     }
-                    .setNegativeButton(mContext.getString(R.string.btn_cancel)) { _, _ ->
+                    .setNegativeButton(this.context!!.getString(R.string.btn_cancel)) { _, _ ->
                     })
         } else {
             switchExecute(switchInfo, toValue, onExit)
@@ -184,18 +111,104 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
         })
     }
 
+
+    override fun onPageClick(pageInfo: PageInfo, onExit: Runnable) {
+        krScriptActionHandler?.onSubPageClick(pageInfo)
+    }
+
+    // 长按 添加收藏
+    override fun onItemLongClick(configItemBase: ConfigItemBase) {
+        if (configItemBase.key.isEmpty()) {
+            DialogHelper.animDialog(AlertDialog.Builder(context).setTitle(R.string.kr_shortcut_create_fail)
+                    .setMessage(R.string.kr_ushortcut_nsupported)
+                    .setNeutralButton(R.string.btn_cancel) { _, _ ->
+                    }
+            )
+        } else {
+            krScriptActionHandler?.addToFavorites(configItemBase, object : KrScriptActionHandler.AddToFavoritesHandler {
+                override fun onAddToFavorites(configItemBase: ConfigItemBase, intent: Intent?) {
+                    if (intent != null) {
+                        DialogHelper.animDialog(AlertDialog.Builder(context)
+                                .setTitle(getString(R.string.kr_shortcut_create))
+                                .setMessage(String.format(getString(R.string.kr_shortcut_create_desc), configItemBase.title))
+                                .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                                    val result = ActionShortcutManager(context!!).addShortcut(intent, context!!.getDrawable(R.drawable.kr_shortcut_logo)!!, configItemBase)
+                                    if (!result) {
+                                        Toast.makeText(context, R.string.kr_shortcut_create_fail, Toast.LENGTH_SHORT).show()
+                                    } else {
+                                        Toast.makeText(context, getString(R.string.kr_shortcut_create_success), Toast.LENGTH_SHORT).show()
+                                    }
+                                }
+                                .setNegativeButton(R.string.btn_cancel) { _, _ ->
+                                })
+                    }
+                }
+            })
+        }
+    }
+
+    /**
+     * 单选列表点击
+     */
+    override fun onPickerClick(pickerInfo: PickerInfo, onExit: Runnable) {
+        val paramInfo = ActionParamInfo()
+        paramInfo.options = pickerInfo.options
+        paramInfo.optionsSh = pickerInfo.optionsSh
+
+        // 获取当前值
+        if (pickerInfo.getState != null) {
+            paramInfo.valueFromShell = executeScriptGetResult(this.context!!, pickerInfo.getState!!)
+        }
+
+        // 获取可选项（合并options-sh和静态options的结果）
+        val coalescentOptions = getParamOptions(paramInfo)
+
+        val options = if (coalescentOptions != null) coalescentOptions!!.map { (it["item"] as ActionParamInfo.ActionParamOption).desc }.toTypedArray() else arrayOf()
+        val values = if (coalescentOptions != null) coalescentOptions!!.map { (it["item"] as ActionParamInfo.ActionParamOption).value }.toTypedArray() else arrayOf()
+
+        var index = -1
+        if (coalescentOptions != null) {
+            index = ActionParamsLayoutRender.getParamOptionsCurrentIndex(paramInfo, coalescentOptions)
+        }
+
+        DialogHelper.animDialog(
+                AlertDialog.Builder(this.context!!)
+                        .setTitle(pickerInfo.title)
+                        .setSingleChoiceItems(options, index) { _, which ->
+                            index = which
+                        }
+                        .setPositiveButton(this.context!!.getString(R.string.btn_execute)) { _, _ ->
+                            pickerExecute(pickerInfo, "" + (if (index > -1) values[index] else ""), onExit)
+                        }
+                        .setNegativeButton(this.context!!.getString(R.string.btn_cancel)) { _, _ ->
+                        })
+    }
+
+    /**
+     * 执行picker的操作
+     */
+    private fun pickerExecute(pickerInfo: PickerInfo, toValue: String, onExit: Runnable) {
+        val script = pickerInfo.setState ?: return
+
+        actionExecute(pickerInfo, script, onExit, object : java.util.HashMap<String, String>() {
+            init {
+                put("state", toValue)
+            }
+        })
+    }
+
     /**
      * 列表项点击时（如果需要确认界面，则显示确认界面，否则直接准备执行）
      */
-    private fun onActionClick(action: ActionInfo, onExit: Runnable) {
+    override fun onActionClick(action: ActionInfo, onExit: Runnable) {
         if (action.confirm) {
-            DialogHelper.animDialog(AlertDialog.Builder(mContext)
+            DialogHelper.animDialog(AlertDialog.Builder(this.context!!)
                     .setTitle(action.title)
                     .setMessage(action.desc)
-                    .setPositiveButton(mContext.getString(R.string.btn_execute)) { _, _ ->
+                    .setPositiveButton(this.context!!.getString(R.string.btn_execute)) { _, _ ->
                         actionExecute(action, onExit)
                     }
-                    .setNegativeButton(mContext.getString(R.string.btn_cancel)) { _, _ -> })
+                    .setNegativeButton(this.context!!.getString(R.string.btn_cancel)) { _, _ -> })
         } else {
             actionExecute(action, onExit)
         }
@@ -206,63 +219,85 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
      * action执行参数界面
      */
     private fun actionExecute(action: ActionInfo, onExit: Runnable) {
-        val script = action.script ?: return
+        val script = action.setState ?: return
 
         if (action.params != null) {
             val actionParamInfos = action.params!!
             if (actionParamInfos.size > 0) {
-                val layoutInflater = LayoutInflater.from(mContext)
+                val layoutInflater = LayoutInflater.from(this.context!!)
                 val linearLayout = layoutInflater.inflate(R.layout.kr_params_list, null) as LinearLayout
 
                 val handler = Handler()
-                progressBarDialog.showDialog(mContext.getString(R.string.onloading))
+                progressBarDialog.showDialog(this.context!!.getString(R.string.onloading))
                 Thread(Runnable {
                     for (actionParamInfo in actionParamInfos) {
                         handler.post {
-                            progressBarDialog.showDialog(mContext.getString(R.string.kr_param_load) + if (!actionParamInfo.label.isNullOrEmpty()) actionParamInfo.label else actionParamInfo.name)
+                            progressBarDialog.showDialog(this.context!!.getString(R.string.kr_param_load) + if (!actionParamInfo.label.isNullOrEmpty()) actionParamInfo.label else actionParamInfo.name)
                         }
                         if (actionParamInfo.valueShell != null) {
-                            actionParamInfo.valueFromShell = executeScriptGetResult(mContext, actionParamInfo.valueShell!!)
+                            actionParamInfo.valueFromShell = executeScriptGetResult(this.context!!, actionParamInfo.valueShell!!)
                         }
                         handler.post {
-                            progressBarDialog.showDialog(mContext.getString(R.string.kr_param_options_load) + if (!actionParamInfo.label.isNullOrEmpty()) actionParamInfo.label else actionParamInfo.name)
+                            progressBarDialog.showDialog(this.context!!.getString(R.string.kr_param_options_load) + if (!actionParamInfo.label.isNullOrEmpty()) actionParamInfo.label else actionParamInfo.name)
                         }
                         actionParamInfo.optionsFromShell = getParamOptions(actionParamInfo) // 获取参数的可用选项
                     }
                     handler.post {
-                        progressBarDialog.showDialog(mContext.getString(R.string.kr_params_render))
+                        progressBarDialog.showDialog(this.context!!.getString(R.string.kr_params_render))
                     }
                     handler.post {
-                        val render = LayoutRender(linearLayout)
-                        render.renderList(actionParamInfos, fileChooser)
+                        val render = ActionParamsLayoutRender(linearLayout)
+                        render.renderList(actionParamInfos, object : FileChooserRender.FileChooserInterface {
+                            override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
+                                return if (krScriptActionHandler == null) {
+                                    false
+                                } else {
+                                    krScriptActionHandler!!.openFileChooser(fileSelectedInterface)
+                                }
+                            }
+                        })
                         progressBarDialog.hideDialog()
-                        if (actionShortClickHandler != null && actionShortClickHandler!!.onParamsView(action,
-                                        linearLayout,
-                                        Runnable { },
-                                        Runnable {
-                                            try {
-                                                val params = render.readParamsValue(actionParamInfos)
-                                                actionExecute(action, script, onExit, params)
-                                            } catch (ex: java.lang.Exception) {
-                                                Toast.makeText(mContext, "" + ex.message, Toast.LENGTH_LONG).show()
-                                            }
-                                        })) {
-                        } else {
-                            val dialogView = layoutInflater.inflate(R.layout.kr_params_dialog, null)
-                            dialogView.findViewById<ScrollView>(R.id.kr_param_dialog).addView(linearLayout)
-                            dialogView.findViewById<TextView>(R.id.kr_param_dialog_title).setText(action.title)
-                            val dialog = DialogHelper.animDialog(AlertDialog.Builder(mContext).setView(dialogView))
 
-                            dialogView.findViewById<Button>(R.id.btn_cancel).setOnClickListener {
+                        // 自定义参数输入界面
+                        val customRunner = krScriptActionHandler?.openParamsPage(action,
+                                linearLayout,
+                                Runnable {
+                                    try {
+                                        val params = render.readParamsValue(actionParamInfos)
+                                        actionExecute(action, script, onExit, params)
+                                    } catch (ex: Exception) {
+                                        Toast.makeText(this.context!!, "" + ex.message, Toast.LENGTH_LONG).show()
+                                    }
+                                })
+
+                        // 内置的参数输入界面
+                        if (customRunner != true) {
+                            val isLongList = (action.params != null && action.params!!.size > 4)
+                            val dialogView = LayoutInflater.from(context).inflate(if(isLongList) R.layout.kr_dialog_params else R.layout.kr_dialog_params_small, null)
+                            val center = dialogView.findViewById<ViewGroup>(R.id.kr_params_center)
+                            center.removeAllViews()
+                            center.addView(linearLayout)
+
+                            val builder = if (isLongList) AlertDialog.Builder(this.context, R.style.kr_full_screen_dialog) else AlertDialog.Builder(this.context)
+                            val dialog = builder.setView(dialogView).create()
+                            if (!isLongList) {
+                                DialogHelper.animDialog(dialog)
+                            } else {
+                                dialog.show()
+                            }
+
+                            dialogView.findViewById<TextView>(R.id.title).text = action.title
+
+                            dialogView.findViewById<View>(R.id.btn_cancel).setOnClickListener {
                                 dialog!!.dismiss()
                             }
-                            dialogView.findViewById<Button>(R.id.btn_confirm).setOnClickListener {
+                            dialogView.findViewById<View>(R.id.btn_confirm).setOnClickListener {
                                 try {
                                     val params = render.readParamsValue(actionParamInfos)
                                     dialog!!.dismiss()
                                     actionExecute(action, script, onExit, params)
-                                } catch (ex: java.lang.Exception) {
-                                    Toast.makeText(mContext, "" + ex.message, Toast.LENGTH_LONG).show()
+                                } catch (ex: Exception) {
+                                    Toast.makeText(this.context!!, "" + ex.message, Toast.LENGTH_LONG).show()
                                 }
                             }
                         }
@@ -282,7 +317,7 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
         val options = ArrayList<HashMap<String, Any>>()
         var shellResult = ""
         if (!actionParamInfo.optionsSh.isEmpty()) {
-            shellResult = executeScriptGetResult(mContext, actionParamInfo.optionsSh)
+            shellResult = executeScriptGetResult(this.context!!, actionParamInfo.optionsSh)
         }
 
         if (!(shellResult == "error" || shellResult == "null" || shellResult.isEmpty())) {
@@ -329,15 +364,20 @@ class ActionListFragment : PreferenceFragment(), Preference.OnPreferenceClickLis
     }
 
     private fun executeScriptGetResult(context: Context, shellScript: String): String {
-        return ScriptEnvironmen.executeResultRoot(mContext, shellScript);
+        return ScriptEnvironmen.executeResultRoot(this.context!!, shellScript);
     }
 
     private fun actionExecute(configItem: ConfigItemBase, script: String, onExit: Runnable, params: HashMap<String, String>?) {
         var shellHandler: ShellHandlerBase? = null
-        if (actionShortClickHandler != null) {
-            shellHandler = actionShortClickHandler!!.onExecute(configItem, onExit)
+        if (krScriptActionHandler != null) {
+            shellHandler = krScriptActionHandler!!.openExecutor(configItem, onExit)
         }
-
-        SimpleShellExecutor().execute(mContext, configItem, script, onExit, params, shellHandler)
+        if (shellHandler == null) {
+            val dialog = DialogLogFragment.create(configItem, onExit, script, params)
+            dialog.show(fragmentManager, "")
+            dialog.isCancelable = false
+        } else {
+            SimpleShellExecutor().execute(this.context!!, configItem, script, onExit, params, shellHandler)
+        }
     }
 }

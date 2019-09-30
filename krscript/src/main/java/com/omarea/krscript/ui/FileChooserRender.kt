@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
 import com.omarea.krscript.R
 import com.omarea.krscript.config.ActionParamInfo
 

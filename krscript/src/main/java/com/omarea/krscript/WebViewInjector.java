@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.util.Log;
 import android.webkit.DownloadListener;
 import android.webkit.JavascriptInterface;
 import android.webkit.ValueCallback;
@@ -24,8 +23,10 @@ import com.omarea.krscript.executor.ExtractAssets;
 import com.omarea.krscript.executor.ScriptEnvironmen;
 import com.omarea.krscript.model.ShellHandlerBase;
 import com.omarea.krscript.ui.FileChooserRender;
+
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -68,7 +69,7 @@ public class WebViewInjector {
                     if (
                             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
                                     context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                        activity.requestPermissions(new String[]{ Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE }, 2);
+                        activity.requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
                         Toast.makeText(context, R.string.kr_write_external_storage, Toast.LENGTH_LONG).show();
                     } else {
                         DialogHelper.Companion.animDialog(new AlertDialog.Builder(context)
@@ -169,9 +170,7 @@ public class WebViewInjector {
          */
         @JavascriptInterface
         public String extractAssets(String assets) {
-            Log.d("extractAssets", assets);
             String output = new ExtractAssets(context).extractResource(assets);
-            Log.d("extractAssets", "" + output);
             return output;
         }
 
@@ -220,7 +219,6 @@ public class WebViewInjector {
                                 final JSONObject message = new JSONObject();
                                 message.put("type", ShellHandlerBase.EVENT_REDE);
                                 message.put("message", line + "\n");
-                                Log.d("output", callbackFunction + "(" + message.toString() + ")");
                                 webView.post(new Runnable() {
                                     @Override
                                     public void run() {

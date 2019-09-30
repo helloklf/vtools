@@ -1,11 +1,9 @@
 package com.omarea.krscript.executor;
 
 import android.content.Context;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.os.Build;
 import android.os.Environment;
-import android.util.Log;
 
 import com.omarea.common.shared.FileWrite;
 import com.omarea.common.shared.MagiskExtend;
@@ -23,20 +21,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ScriptEnvironmen {
+    private static final String ASSETS_FILE = "file:///android_asset/";
     private static boolean inited = false;
     private static String environmentPath = "";
-
-    private static final String ASSETS_FILE = "file:///android_asset/";
     // 此目录将添加到PATH尾部，作为应用程序提供的拓展程序库目录，如有需要则需要在初始化executor.sh之前为该变量赋值
     private static String TOOKIT_DIR = "";
 
-    private static boolean init(Context context){
-        return init(context, "kr-script/executor.sh", "kr-script/toolkit");
+    private static boolean init(Context context) {
+        return init(context, "kr-setState/executor.sh", "kr-setState/toolkit");
     }
 
     /**
      * 初始化执行器
-     * @param context Context
+     *
+     * @param context  Context
      * @param executor 执行器在Assets中的位置
      * @return 是否初始化成功
      */
@@ -110,13 +108,14 @@ public class ScriptEnvironmen {
 
     /**
      * 写入缓存（脚本代码存入脚本文件）
+     *
      * @param context
      * @param script
      * @return
      */
     private static String createShellCache(Context context, String script) {
         String md5 = md5(script);
-        String outputPath = "/kr-script/cache/" + md5 + ".sh";
+        String outputPath = "/kr-setState/cache/" + md5 + ".sh";
         if (new File(outputPath).exists()) {
             return outputPath;
         }
@@ -134,6 +133,7 @@ public class ScriptEnvironmen {
 
     /**
      * 执行脚本
+     *
      * @param context
      * @param fileName
      * @return
@@ -161,7 +161,7 @@ public class ScriptEnvironmen {
             cachePath = extractScript(context, script2);
             if (cachePath == null) {
                 cachePath = script;
-                // String error = context.getString(R.string.script_losted) + script;
+                // String error = context.getString(R.string.script_losted) + setState;
                 // Toast.makeText(context, error, Toast.LENGTH_LONG).show();
             }
         } else {
@@ -208,6 +208,7 @@ public class ScriptEnvironmen {
 
     /**
      * 获取框架的环境变量
+     *
      * @param context
      * @return
      */
@@ -244,13 +245,13 @@ public class ScriptEnvironmen {
             } else {
                 params.put("PACKAGE_VERSION_CODE", "" + packageInfo.versionCode);
             }
-        } catch (Exception ex) {}
+        } catch (Exception ex) {
+        }
 
         return params;
     }
 
     /**
-     *
      * @param params
      * @return
      */
@@ -272,10 +273,11 @@ public class ScriptEnvironmen {
 
     /**
      * 使用执行器运行脚本
-     * @param context Context
+     *
+     * @param context          Context
      * @param dataOutputStream Runtime进程的输出流
-     * @param cmds 要执行的脚本
-     * @param params 参数类别
+     * @param cmds             要执行的脚本
+     * @param params           参数类别
      */
     public static void executeShell(
             Context context,
@@ -291,7 +293,6 @@ public class ScriptEnvironmen {
         }
         try {
             dataOutputStream.write(envpCmds.toString().getBytes("UTF-8"));
-            Log.d("envpCmds", envpCmds.toString());
 
             dataOutputStream.write(String.format("cd \"%s\"\n\n", getStartPath(context)).getBytes("UTF-8"));
 

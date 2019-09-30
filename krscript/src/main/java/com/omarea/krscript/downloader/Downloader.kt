@@ -82,7 +82,7 @@ class Downloader(private var context: Context, private var activity: Activity? =
     }
 
     // 保存任务状态、进度
-    fun saveTaskStatus(taskAliasId: String, ratio:Int) {
+    fun saveTaskStatus(taskAliasId: String, ratio: Int) {
         FileWrite.writePrivateFile(ratio.toString().toByteArray(Charset.defaultCharset()), "downloader/status/" + taskAliasId, context)
     }
 
@@ -90,7 +90,7 @@ class Downloader(private var context: Context, private var activity: Activity? =
     fun saveTaskCompleted(downloadId: Long, absPath: String) {
         val historyList = context.getSharedPreferences(HISTORY_CONFIG, Context.MODE_PRIVATE);
         val historyStr = historyList.getString(downloadId.toString(), null)
-        var taskAliasId:String? = ""
+        var taskAliasId: String? = ""
         if (historyStr != null) {
             val hisotry = JSONObject(historyStr)
             hisotry.put("absPath", absPath)
@@ -106,7 +106,7 @@ class Downloader(private var context: Context, private var activity: Activity? =
                     FileWrite.writePrivateFile(absPath.toByteArray(Charset.defaultCharset()), "downloader/result/" + taskAliasId, context)
                 }
             }
-        } catch (ex:java.lang.Exception) {
+        } catch (ex: java.lang.Exception) {
 
         }
     }

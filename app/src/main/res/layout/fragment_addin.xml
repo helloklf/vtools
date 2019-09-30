@@ -33,7 +33,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:divider="@color/color_list_divider"
-                        android:dividerHeight="1sp"
+                        android:dividerHeight="0sp"
                         android:listSelector="@android:color/transparent" />
                 </FrameLayout>
 
@@ -42,14 +42,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <com.omarea.krscript.ui.PageListView
+                    <FrameLayout
                         android:id="@+id/list_page2"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:divider="@color/color_list_divider"
-                        android:dividerHeight="1sp"
-                        android:listSelector="@android:color/transparent"
-                        android:padding="@dimen/activity_horizontal_margin" />
+                        android:layout_height="match_parent" />
                 </FrameLayout>
             </FrameLayout>
 

@@ -1,6 +1,5 @@
 package com.omarea.krscript.downloader;
 
-import android.app.AlertDialog;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,6 +8,7 @@ import android.content.IntentFilter;
 import android.net.Uri;
 import android.text.TextUtils;
 import android.widget.Toast;
+
 import com.omarea.common.shared.FilePathResolver;
 import com.omarea.common.ui.DialogHelper;
 import com.omarea.krscript.R;
@@ -24,6 +24,7 @@ public class DownloadCompleteReceiver extends BroadcastReceiver {
             context.registerReceiver(downloadCompleteReceiver, intentFilter);
         }
     }
+
     public static void autoUnRegister(Context context) {
         if (downloadCompleteReceiver != null) {
             context.unregisterReceiver(downloadCompleteReceiver);

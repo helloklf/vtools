@@ -1,6 +1,5 @@
 package com.omarea.krscript.config
 
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 

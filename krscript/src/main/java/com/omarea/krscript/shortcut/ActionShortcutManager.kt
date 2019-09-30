@@ -27,7 +27,7 @@ class ActionShortcutManager(private var context: Context) {
     public fun addShortcutNougat(intent: Intent, drawable: Drawable, config: ConfigItemBase): Boolean {
         try {
             val shortcut = Intent("com.android.launcher.action.INSTALL_SHORTCUT")
-            val id = "addin_" + config.id
+            val id = "addin_" + config.index
 
             //快捷方式的名称
             shortcut.putExtra(Intent.EXTRA_SHORTCUT_NAME, config.title)//快捷方式的名字
@@ -56,7 +56,7 @@ class ActionShortcutManager(private var context: Context) {
             val shortcutManager = context.getSystemService(Context.SHORTCUT_SERVICE) as ShortcutManager
 
             if (shortcutManager.isRequestPinShortcutSupported) {
-                val id = "addin_" + config.id
+                val id = "addin_" + config.index
                 val shortcutIntent = Intent(Intent.ACTION_MAIN)
                 shortcutIntent.setClassName(context.getApplicationContext(), intent.component!!.className)
                 shortcutIntent.putExtras(intent)

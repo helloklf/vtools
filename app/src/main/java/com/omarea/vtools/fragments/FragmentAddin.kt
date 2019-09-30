@@ -1,7 +1,12 @@
 package com.omarea.vtools.fragments
 
+import android.Manifest
+import android.app.Activity
 import android.app.AlertDialog
+import android.content.ComponentName
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -13,18 +18,23 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.SimpleAdapter
 import android.widget.TabHost
+import android.widget.Toast
+import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
-import com.omarea.krscript.config.PageListReader
+import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.executor.ScriptEnvironmen
-import com.omarea.krscript.model.PageClickHandler
+import com.omarea.krscript.model.ConfigItemBase
+import com.omarea.krscript.model.KrScriptActionHandler
 import com.omarea.krscript.model.PageInfo
+import com.omarea.krscript.ui.ActionListFragment
+import com.omarea.krscript.ui.FileChooserRender
 import com.omarea.shell_utils.PlatformUtils
 import com.omarea.shell_utils.SysUtils
 import com.omarea.ui.TabIconHelper
 import com.omarea.vtools.R
-import com.omarea.vtools.activities.ActionPage2
+import com.omarea.vtools.activities.ActionPage
 import com.omarea.vtools.addin.DexCompileAddin
 import com.omarea.vtools.addin.FullScreenAddin
 import com.omarea.vtools.addin.PerfBoostConfigAddin
@@ -126,33 +136,96 @@ class FragmentAddin : Fragment() {
         progressBarDialog.showDialog("读取配置，稍等...")
         Thread(Runnable {
             ScriptEnvironmen.init(this.context!!, "custom/executor.sh", "toolkit")
-            val items = PageListReader(this.activity!!).readPageList("custom/pages/page_list.xml")
+            val config = "custom/pages/page_list.xml"
+            val items = PageConfigReader(this.activity!!).readConfigXml(config)
             myHandler.post {
                 page2ConfigLoaded = true
-                list_page2.setListData(items, object : PageClickHandler {
-                    override fun openPage(pageInfo: PageInfo) {
-                        _openPage(pageInfo.title, pageInfo.pageConfigPath)
-                    }
-                })
+
+                val favoritesFragment = ActionListFragment.create(items, getKrScriptActionHandler(config))
+                activity!!.supportFragmentManager.beginTransaction().add(R.id.list_page2, favoritesFragment).commit()
                 progressBarDialog.hideDialog()
             }
         }).start()
     }
 
 
-    fun _openPage(pageInfo: PageInfo) {
-        _openPage(pageInfo.title, pageInfo.pageConfigPath)
+    private fun getKrScriptActionHandler(pageConfig: String): KrScriptActionHandler {
+        return object : KrScriptActionHandler {
+            override fun addToFavorites(configItemBase: ConfigItemBase, addToFavoritesHandler: KrScriptActionHandler.AddToFavoritesHandler) {
+                val intent = Intent()
+
+                intent.component = ComponentName(activity!!.applicationContext, ActionPage::class.java)
+                intent.putExtra("config", pageConfig)
+                intent.putExtra("title", "" + activity!!.title)
+                intent.putExtra("autoRunItemId", configItemBase.key)
+
+                addToFavoritesHandler.onAddToFavorites(configItemBase, intent)
+            }
+
+            override fun onSubPageClick(pageInfo: PageInfo) {
+                _openPage(pageInfo)
+            }
+
+            override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface) : Boolean {
+                return chooseFilePath(fileSelectedInterface)
+            }
+        }
     }
 
-    fun _openPage(title: String, config: String) {
+    fun _openPage(pageInfo: PageInfo) {
         try {
-            val intent = Intent(context, ActionPage2::class.java)
-            intent.putExtra("title", title)
-            intent.putExtra("config", config)
+            val intent = Intent(activity, ActionPage::class.java)
+            intent.putExtra("title", pageInfo.title)
+            intent.putExtra("config", pageInfo.pageConfigPath)
             startActivity(intent)
         } catch (ex: java.lang.Exception) {
             Log.e("_openPage", "" + "" + ex.message)
         }
+    }
+
+    private var fileSelectedInterface: FileChooserRender.FileSelectedInterface? = null
+    private val ACTION_FILE_PATH_CHOOSER = 65400
+    private fun chooseFilePath(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && activity!!.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(activity!!, getString(R.string.kr_write_external_storage), Toast.LENGTH_LONG).show()
+            requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 2);
+            return false
+        } else {
+            try {
+                val intent = Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("*/*")
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivityForResult(intent, ACTION_FILE_PATH_CHOOSER);
+                this.fileSelectedInterface = fileSelectedInterface
+                return true;
+            } catch (ex: Exception) {
+                return false
+            }
+        }
+    }
+
+    private fun getPath(uri: Uri): String? {
+        try {
+            return FilePathResolver().getPath(this.context, uri)
+        } catch (ex: Exception) {
+            return null
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == ACTION_FILE_PATH_CHOOSER) {
+            val result = if (data == null || resultCode != Activity.RESULT_OK) null else data.data
+            if (fileSelectedInterface != null) {
+                if (result != null) {
+                    val absPath = getPath(result)
+                    fileSelectedInterface?.onFileSelected(absPath)
+                } else {
+                    fileSelectedInterface?.onFileSelected(null)
+                }
+            }
+            this.fileSelectedInterface = null
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

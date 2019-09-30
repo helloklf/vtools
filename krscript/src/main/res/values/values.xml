@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="kr_desc" type="id" />
+    <item name="kr_title" type="id" />
+    <item name="kr_switch" type="id" />
+    <item name="kr_rows" type="id" />
+    <item name="kr_widget" type="id" />
+    <item name="kr_content" type="id" />
+</resources>

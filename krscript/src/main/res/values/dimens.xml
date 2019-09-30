@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="kr_title_size">14dp</dimen>
+    <dimen name="kr_desc_size">12dp</dimen>
+</resources>

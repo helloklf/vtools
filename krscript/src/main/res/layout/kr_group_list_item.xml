@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="16dp">
 
     <TextView
-        android:id="@android:id/title"
+        android:id="@id/kr_title"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="20dp"
-        android:paddingLeft="23dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
-        android:paddingRight="23dp"
         android:alpha="0.5"
-        android:clickable="false"
-        android:focusable="false"
+        android:paddingLeft="23dp"
+        android:paddingRight="23dp"
         android:textColor="?android:attr/textColorPrimary"
-        android:textSize="13dp" />
+        android:textSize="@dimen/kr_title_size" />
 
+    <LinearLayout
+        android:id="@android:id/content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
 </LinearLayout>

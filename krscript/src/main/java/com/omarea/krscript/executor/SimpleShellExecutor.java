@@ -2,13 +2,11 @@ package com.omarea.krscript.executor;
 
 import android.content.Context;
 import android.widget.Toast;
+
 import com.omarea.krscript.model.ConfigItemBase;
 import com.omarea.krscript.model.ShellHandlerBase;
-import java.io.BufferedReader;
+
 import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.HashMap;
 
@@ -16,8 +14,8 @@ import java.util.HashMap;
  * Created by Hello on 2018/04/01.
  */
 public class SimpleShellExecutor {
-    private boolean started = false;
     private static final String ASSETS_FILE = "file:///android_asset/";
+    private boolean started = false;
 
     public SimpleShellExecutor() {
     }
@@ -25,7 +23,7 @@ public class SimpleShellExecutor {
     /**
      * 执行脚本
      */
-    public boolean execute(Context context, ConfigItemBase configItem, String cmds, Runnable onExit, HashMap<String, String> params, ShellHandlerBase customHandler) {
+    public boolean execute(Context context, ConfigItemBase configItem, String cmds, Runnable onExit, HashMap<String, String> params, ShellHandlerBase shellHandlerBase) {
         if (started) {
             return false;
         }
@@ -50,7 +48,6 @@ public class SimpleShellExecutor {
                     }
                 }
             }) : null;
-            final ShellHandlerBase shellHandlerBase = ((customHandler == null) ? (new SimpleShellHandler(context, configItem.getTitle(), configItem.getAutoOff())) : customHandler);
             new SimpleShellWatcher().setHandler(process, shellHandlerBase, onExit);
 
             final OutputStream outputStream = process.getOutputStream();

@@ -1,4 +1,9 @@
 <resources>
+    <string name="kr_shell_log_error">#dd0000</string>
+    <string name="kr_shell_log_basic">#445566</string>
+    <string name="kr_shell_log_script">#808080</string>
+    <string name="kr_shell_log_end">#0064B4</string>
+
     <string name="app_name">krscript</string>
     <string name="btn_confirm">确定</string>
     <string name="shell_executor">脚本执行器</string>
@@ -7,19 +12,30 @@
     <string name="btn_hide">隐藏</string>
     <string name="btn_execute">执行</string>
     <string name="onloading">正在加载数据…</string>
+    <string name="kr_shell_completed">脚本运行结束</string>
     <string name="script_losted">脚本资源丢失\n</string>
     <string name="btn_copy_output">复制输出</string>
-    <string name="copy_success">复制成功</string>
+    <string name="copy_success">输出日志已复制到剪贴板</string>
     <string name="copy_fail">复制失败</string>
     <string name="do_not_empty">不可为空</string>
     <string name="kr_param_load">获取状态 </string>
     <string name="kr_param_options_load">加载候选列表 </string>
     <string name="kr_params_render">渲染界面……</string>
     <string name="kr_please_choose_file">请选择文件</string>
+    <string name="kr_please_input_color">请输入颜色</string>
     <string name="kr_write_external_storage">需要读写外置存储权限！</string>
     <string name="kr_download_create_fail">创建下载任务失败</string>
     <string name="kr_download_create_success">开始下载文件</string>
     <string name="kr_download_confirm">是否下载文件</string>
     <string name="kr_download_completed">文件下载成功</string>
     <string name="kr_download_downloading">文件下载中</string>
+    <string name="kr_color_picker">请选择颜色</string>
+    <string name="kr_invalid_color">输入的色值无效，仅支持类似 #ff88aa00 的格式</string>
+
+
+    <string name="kr_shortcut_create_fail">快捷方式创建失败</string>
+    <string name="kr_shortcut_create_success">已发送创建快捷方式申请</string>
+    <string name="kr_shortcut_create">添加快捷方式</string>
+    <string name="kr_shortcut_create_desc">你希望将“%s”添加到桌面，方便快速使用吗？</string>
+    <string name="kr_ushortcut_nsupported">该功能不支持添加快捷方式</string>
 </resources>

@@ -1,7 +1,6 @@
 package com.omarea.krscript.config
 
 import android.content.Context
-import android.util.Log
 import android.util.Xml
 import android.widget.Toast
 import com.omarea.krscript.executor.ExtractAssets
@@ -112,7 +111,6 @@ class PageListReader(private val context: Context) {
             }
         } catch (ex: Exception) {
             Toast.makeText(context, ex.message, Toast.LENGTH_LONG).show()
-            Log.d("VTools ReadConfig Fail！", "" + ex.message)
         }
         return pages;
     }

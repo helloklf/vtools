@@ -1,19 +1,16 @@
 package com.omarea.krscript.downloader;
 
 import android.os.Environment;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.security.MessageDigest;
 
 public class FileMD5 {
-    private void getFile(){
+    private void getFile() {
         String path = Environment.getExternalStorageDirectory().getAbsolutePath();
-        Log.d("ATG", path);
-        File file = new File(path+"/e8706cf83a2cda33dae5c40025922d75.apk");
+        File file = new File(path + "/e8706cf83a2cda33dae5c40025922d75.apk");
         String md5 = getFileMD5(file);
-        Log.d("ATG", md5);
     }
 
     public String getFileMD5(File file) {

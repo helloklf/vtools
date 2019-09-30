@@ -1,16 +1,11 @@
 package com.omarea.krscript.model;
 
-import android.app.Dialog;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.ScrollView;
-import android.widget.TextView;
 
 import java.util.regex.Pattern;
 
@@ -44,15 +39,14 @@ public abstract class ShellHandlerBase extends Handler {
      */
     public static final int EVENT_EXIT = -2;
 
-    public boolean finished;
-
     protected abstract void onProgress(int current, int total);
 
     protected abstract void onStart(Object msg);
+
     public abstract void onStart(Runnable forceStop);
+
     protected abstract void onExit(Object msg);
 
-    protected abstract void cleanUp();
     /**
      * 输出格式化内容
      *
@@ -72,7 +66,7 @@ public abstract class ShellHandlerBase extends Handler {
                 break;
             }
             case ShellHandlerBase.EVENT_REDE:
-                onReader(msg.obj);
+                onReaderMsg(msg.obj);
                 break;
             case ShellHandlerBase.EVENT_READ_ERROR:
                 onError(msg.obj);
@@ -84,7 +78,7 @@ public abstract class ShellHandlerBase extends Handler {
         }
     }
 
-    private void onReader(Object msg) {
+    protected void onReaderMsg(Object msg) {
         if (msg != null) {
             String log = msg.toString().trim();
             if (Pattern.matches("^progress:\\[[\\-0-9\\\\]{1,}/[0-9\\\\]{1,}]$", log)) {
@@ -93,16 +87,18 @@ public abstract class ShellHandlerBase extends Handler {
                 int total = Integer.parseInt(values[1]);
                 onProgress(start, total);
             } else {
-                updateLog(msg, "#00cc55");
+                onReader(msg);
             }
         }
     }
 
-    private void onWrite(Object msg) {
+    protected void onReader(Object msg) { updateLog(msg, "#00cc55"); }
+
+    protected void onWrite(Object msg) {
         updateLog(msg, "#808080");
     }
 
-    private void onError(Object msg) {
+    protected void onError(Object msg) {
         updateLog(msg, "#ff0000");
     }
 

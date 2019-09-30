@@ -8,32 +8,35 @@
 
     <ImageButton
         android:id="@+id/kr_param_seekbar_minus"
-        android:src="@drawable/kr_minus"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:background="@android:color/transparent"
+        android:gravity="center"
         android:padding="4dp"
         android:scaleType="centerInside"
-        android:gravity="center"
-        android:layout_width="30dp"
-        android:layout_height="30dp" />
+        android:src="@drawable/kr_minus" />
+
     <SeekBar
         android:id="@+id/kr_param_seekbar"
-        android:paddingStart="6dp"
-        android:paddingEnd="6dp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:paddingStart="6dp"
+        android:paddingEnd="6dp" />
+
     <ImageButton
         android:id="@+id/kr_param_seekbar_plus"
-        android:src="@drawable/kr_plus"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:background="@android:color/transparent"
+        android:gravity="center"
         android:padding="4dp"
         android:scaleType="centerInside"
-        android:gravity="center"
-        android:layout_width="30dp"
-        android:layout_height="30dp" />
+        android:src="@drawable/kr_plus" />
+
     <TextView
         android:id="@+id/kr_param_seekbar_value"
-        android:textAlignment="center"
         android:layout_width="60dp"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textAlignment="center" />
 </LinearLayout>

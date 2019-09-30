@@ -12,7 +12,7 @@ public class SimpleShellWatcher {
     /**
      * 设置日志处理Handler
      *
-     * @param process      Runtime进程
+     * @param process          Runtime进程
      * @param shellHandlerBase ShellHandlerBase
      */
     public void setHandler(Process process, final ShellHandlerBase shellHandlerBase, final Runnable onExit) {

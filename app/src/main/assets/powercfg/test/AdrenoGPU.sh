@@ -33,7 +33,7 @@ if [[ -f /sys/class/kgsl/kgsl-3d0/num_pwrlevels ]];then
     gpu_min_pl=`expr $gpu_min_pl - 1`
 fi;
 if [[ "$gpu_min_pl" -lt 0 ]];then
-    $gpu_min_pl=0
+    gpu_min_pl=0
 fi;
 
 # 输出GPU信息

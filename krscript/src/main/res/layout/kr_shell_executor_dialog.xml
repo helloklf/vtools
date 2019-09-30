@@ -1,46 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <TextView
-        android:paddingTop="15dp"
-        android:paddingBottom="6dp"
-        android:paddingStart="20dp"
-        android:paddingEnd="20dp"
         android:id="@+id/shell_title"
         style="@style/textTitle"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent" />
+        android:paddingStart="20dp"
+        android:paddingTop="15dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="6dp" />
 
     <ProgressBar
         android:id="@+id/shell_progress"
         style="?android:attr/progressBarStyleHorizontal"
-        android:max="100"
-        android:progress="0"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:indeterminate="true" />
+        android:indeterminate="true"
+        android:max="100"
+        android:progress="0" />
 
     <com.omarea.common.ui.OverScrollView
-        android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:scrollbarAlwaysDrawVerticalTrack="true"
-        android:keepScreenOn="false">
+        android:layout_weight="1"
+        android:keepScreenOn="false"
+        android:scrollbarAlwaysDrawVerticalTrack="true">
 
         <TextView
+            android:id="@+id/shell_output"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="150dp"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:paddingBottom="25dp"
-            android:minHeight="150dp"
-            android:id="@+id/shell_output"
             android:textSize="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:typeface="monospace" />
     </com.omarea.common.ui.OverScrollView>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -49,6 +50,7 @@
         android:paddingTop="0dp"
         android:paddingRight="0dp"
         android:paddingBottom="0dp">
+
         <Button
             android:id="@+id/btn_copy"
             style="@style/Widget.AppCompat.ActionButton"
@@ -57,12 +59,13 @@
             android:text="@string/btn_copy_output" />
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_weight="1"
             android:layout_width="0dp"
+            android:layout_height="match_parent"
             android:layout_gravity="end"
+            android:layout_weight="1"
             android:gravity="end"
-            android:layout_height="match_parent">
+            android:orientation="horizontal">
+
             <Button
                 android:id="@+id/btn_hide"
                 style="@style/Widget.AppCompat.ActionButton"

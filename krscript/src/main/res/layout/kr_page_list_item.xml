@@ -2,52 +2,44 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="15dp"
-    android:paddingRight="15dp"
+    android:background="@drawable/krscript_item_ripple"
+    android:gravity="center_vertical"
+    android:minHeight="?android:attr/listPreferredItemHeight"
     android:orientation="horizontal"
-    android:background="@drawable/krscript_item_ripple">
+    android:paddingLeft="23dp"
+    android:paddingTop="10dp"
+    android:paddingRight="20dp"
+    android:paddingBottom="10dp">
 
     <LinearLayout
-        android:layout_gravity="center_vertical"
-        android:gravity="center_vertical"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:orientation="vertical"
-        android:paddingLeft="8dp"
-        android:paddingTop="10dp"
-        android:paddingRight="8dp"
-        android:paddingBottom="10dp">
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/Title"
+            android:id="@id/kr_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
             android:alpha="0.8"
-            android:clickable="false"
-            android:focusable="false"
             android:textColor="?android:attr/textColorPrimary"
-            android:textSize="13dp"
+            android:textSize="@dimen/kr_title_size"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/Desc"
+            android:id="@id/kr_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:textColor="?android:attr/textColorSecondary"
-            android:textSize="10dp"
-            android:visibility="gone" />
+            android:textSize="@dimen/kr_desc_size" />
     </LinearLayout>
 
     <ImageView
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_gravity="top"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:contentDescription="@string/app_name"
-        android:scaleType="fitCenter"
-        android:src="@drawable/krscript_arrow" />
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:alpha="0.8"
+        android:padding="5dp"
+        android:src="@drawable/kr_arrow"
+        android:tint="?colorAccent" />
 </LinearLayout>
