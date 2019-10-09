@@ -14,12 +14,12 @@ open class ModeSwitcher {
         const val POWER_CFG_PATH = "/data/powercfg.sh"
         const val POWER_CFG_BASE = "/data/powercfg-base.sh"
 
-        internal var DEFAULT = "balance";
-        internal var POWERSAVE = "powersave";
-        internal var PERFORMANCE = "performance";
-        internal var FAST = "fast";
-        internal var BALANCE = "balance";
-        internal var IGONED = "igoned";
+        internal var DEFAULT = "balance"
+        internal var POWERSAVE = "powersave"
+        internal var PERFORMANCE = "performance"
+        internal var FAST = "fast"
+        internal var BALANCE = "balance"
+        internal var IGONED = "igoned"
 
         internal fun getModName(mode: String): String {
             when (mode) {
@@ -37,7 +37,7 @@ open class ModeSwitcher {
         private var currentPowercfgApp: String = ""
     }
 
-    internal var keepShellAsync: KeepShellAsync? = null
+    private var keepShellAsync: KeepShellAsync? = null
 
     internal fun getModIcon(mode: String): Int {
         when (mode) {
@@ -50,16 +50,16 @@ open class ModeSwitcher {
     }
 
     internal fun getModImage(mode: String): Int {
-        when (mode) {
-            POWERSAVE -> return R.drawable.shortcut_p0
-            BALANCE -> return R.drawable.shortcut_p1
-            PERFORMANCE -> return R.drawable.shortcut_p2
-            FAST -> return R.drawable.shortcut_p3
-            else -> return R.drawable.shortcut_p2
+        return when (mode) {
+            POWERSAVE -> R.drawable.shortcut_p0
+            BALANCE -> R.drawable.shortcut_p1
+            PERFORMANCE -> R.drawable.shortcut_p2
+            FAST -> R.drawable.shortcut_p3
+            else -> R.drawable.shortcut_p2
         }
     }
 
-    internal fun getCurrentPowerMode(): String {
+    fun getCurrentPowerMode(): String {
         if (!currentPowercfg.isEmpty()) {
             return currentPowercfg
         }
@@ -91,12 +91,12 @@ open class ModeSwitcher {
         return this
     }
 
-    internal fun keepShellExec(cmd: String) {
+    private fun keepShellExec(cmd: String) {
         KeepShellPublic.doCmdSync(cmd)
     }
 
     internal fun executePowercfgMode(mode: String): ModeSwitcher {
-        keepShellExec("sh $POWER_CFG_PATH " + mode)
+        keepShellExec("sh $POWER_CFG_PATH $mode")
         setCurrentPowercfg(mode)
         return this
     }

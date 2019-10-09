@@ -36,7 +36,7 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
         }
     }
 
-    private lateinit var actionInfos: ArrayList<ConfigItemBase>
+    private var actionInfos: ArrayList<ConfigItemBase>? = null
 
     private lateinit var progressBarDialog: ProgressBarDialog
     private var krScriptActionHandler: KrScriptActionHandler? = null
@@ -69,11 +69,15 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
 
         layoutBuilder = ListItemView(this.context!!, R.layout.kr_group_list_root)
 
-        PageLayoutRender(this.context!!, actionInfos, this, layoutBuilder)
-        val layout = layoutBuilder.getView()
+        if (actionInfos != null) {
+            PageLayoutRender(this.context!!, actionInfos!!, this, layoutBuilder)
+            val layout = layoutBuilder.getView()
 
-        (this.view?.findViewById<OverScrollView?>(R.id.kr_content))?.addView(layout)
-        triggerAction(autoRunTask)
+            val rootView = (this.view?.findViewById<OverScrollView?>(R.id.kr_content))
+            rootView?.removeAllViews()
+            rootView?.addView(layout)
+            triggerAction(autoRunTask)
+        }
     }
 
     private fun triggerAction(autoRunTask: AutoRunTask?) {
@@ -278,7 +282,7 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
                         // 内置的参数输入界面
                         if (customRunner != true) {
                             val isLongList = (action.params != null && action.params!!.size > 4)
-                            val dialogView = LayoutInflater.from(context).inflate(if(isLongList) R.layout.kr_dialog_params else R.layout.kr_dialog_params_small, null)
+                            val dialogView = LayoutInflater.from(context).inflate(if (isLongList) R.layout.kr_dialog_params else R.layout.kr_dialog_params_small, null)
                             val center = dialogView.findViewById<ViewGroup>(R.id.kr_params_center)
                             center.removeAllViews()
                             center.addView(linearLayout)

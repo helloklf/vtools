@@ -222,17 +222,17 @@ class FragmentHome : Fragment() {
 
             core.currentFreq = CpuFrequencyUtil.getCurrentFrequency("cpu$coreIndex")
             if (!maxFreqs.containsKey(coreIndex) || (core.currentFreq != "" && maxFreqs.get(coreIndex).isNullOrEmpty())) {
-                maxFreqs.put(coreIndex, CpuFrequencyUtil.getCurrentMaxFrequency("cpu" + coreIndex))
+                maxFreqs[coreIndex] = CpuFrequencyUtil.getCurrentMaxFrequency("cpu$coreIndex")
             }
-            core.maxFreq = maxFreqs.get(coreIndex)
+            core.maxFreq = maxFreqs[coreIndex]
 
             if (!minFreqs.containsKey(coreIndex) || (core.currentFreq != "" && minFreqs.get(coreIndex).isNullOrEmpty())) {
-                minFreqs.put(coreIndex, CpuFrequencyUtil.getCurrentMinFrequency("cpu" + coreIndex))
+                minFreqs.put(coreIndex, CpuFrequencyUtil.getCurrentMinFrequency("cpu$coreIndex"))
             }
-            core.minFreq = minFreqs.get(coreIndex)
+            core.minFreq = minFreqs[coreIndex]
 
             if (loads.containsKey(coreIndex)) {
-                core.loadRatio = loads.get(coreIndex)!!
+                core.loadRatio = loads[coreIndex]!!
             }
             cores.add(core)
         }
@@ -246,11 +246,11 @@ class FragmentHome : Fragment() {
 
         myHandler.post {
             try {
-                home_battery_now.setText((batteryCurrentNow / globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT)).toString() + "mA")
-                home_battery_capacity.setText(batteryCapacity.toString() + "%")
+                home_battery_now.text = (batteryCurrentNow / globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT)).toString() + "mA"
+                home_battery_capacity.text = "$batteryCapacity%"
 
                 home_gpu_freq.text = gpuFreq
-                home_gpu_load.text = "负载：" + gpuLoad + "%"
+                home_gpu_load.text = "负载：$gpuLoad%"
                 if (gpuLoad > -1) {
                     home_gpu_chat.setData(100.toFloat(), (100 - gpuLoad).toFloat())
                 }
@@ -292,8 +292,7 @@ class FragmentHome : Fragment() {
         btn_defaultmode.setTextColor(0x66ffffff)
         btn_gamemode.setTextColor(0x66ffffff)
         btn_fastmode.setTextColor(0x66ffffff)
-        val cfg = PropsUtils.getProp("vtools.powercfg")
-        when (cfg) {
+        when (ModeSwitcher().getCurrentPowerMode()) {
             ModeSwitcher.BALANCE -> {
                 btn_defaultmode.setTextColor(Color.WHITE)
             }
@@ -329,11 +328,11 @@ class FragmentHome : Fragment() {
             AlertDialog.Builder(context)
                     .setTitle("提示")
                     .setMessage("需要重启手机才能恢复默认调度，是否立即重启？")
-                    .setNegativeButton(R.string.btn_cancel, { _, _ ->
-                    })
-                    .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                    .setNegativeButton(R.string.btn_cancel) { _, _ ->
+                    }
+                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
                         KeepShellPublic.doCmdSync("sync\nsleep 1\nreboot")
-                    })
+                    }
                     .create()
                     .show()
             setModeState()
@@ -357,8 +356,8 @@ class FragmentHome : Fragment() {
                             .Builder(context)
                             .setTitle("提示")
                             .setMessage("“场景模式-动态响应”已被激活，你手动选择的模式随时可能被覆盖。\n\n如果你需要长期使用手动控制，请前往“场景模式”的设置界面关闭“动态响应”！")
-                            .setNegativeButton(R.string.btn_confirm, { _, _ ->
-                            })
+                            .setNegativeButton(R.string.btn_confirm) { _, _ ->
+                            }
                             .setCancelable(false))
         } else {
             globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, action).apply()
@@ -368,11 +367,11 @@ class FragmentHome : Fragment() {
                                 .Builder(context)
                                 .setTitle("提示")
                                 .setMessage("如果你允许Scene自启动，下次开机后，Scene还会自动启用你刚刚选择的模式。\n\n如果你需要关闭调度，请再次点击相同的模式取消选中状态，然后重启手机！")
-                                .setNegativeButton(R.string.btn_confirm, { _, _ ->
-                                })
-                                .setPositiveButton(R.string.btn_dontshow, { _, _ ->
+                                .setNegativeButton(R.string.btn_confirm) { _, _ ->
+                                }
+                                .setPositiveButton(R.string.btn_dontshow) { _, _ ->
                                     globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_POWERCFG_FRIST_NOTIFY, true).apply()
-                                })
+                                }
                                 .setCancelable(false))
             }
         }
