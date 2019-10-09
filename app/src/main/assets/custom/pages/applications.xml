@@ -90,7 +90,7 @@
             </params>
             <script>
                 pm set-install-location $location
-                echo '注意：如果应用程序清单制定了安装路径，安装位置可能不受此设置控制'
+                echo '注意：部分应用在清单文件里指定了安装路径，安装位置可能不受此设置控制'
             </script>
         </action>
         <action confirm="true">
@@ -100,11 +100,11 @@
                 pm  uninstall-system-updates
             </script>
         </action>
-        <action support="file:///android_asset/custom/common/support_android_p.sh">
+        <picker auto-off="true" support="file:///android_asset/custom/common/support_android_p.sh"
+            options-sh="file:///android_asset/custom/actions/launcher_chooser/get_launchers.sh">
             <title>更换桌面</title>
             <desc>将系统默认桌面，换成你安装的第三方桌面程序</desc>
-            <param name="activity" options-sh="file:///android_asset/custom/actions/launcher_chooser/get_launchers.sh"></param>
-            <script>file:///android_asset/custom/actions/launcher_chooser/set_launchers.sh</script>
-        </action>
+            <set>file:///android_asset/custom/actions/launcher_chooser/set_launchers.sh</set>
+        </picker>
     </group>
 </switchs>

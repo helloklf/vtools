@@ -1,15 +1,15 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <actions>
     <group title="智能调度">
-        <switch support="file:///android_asset/custom/switchs/qualcomm/msm_booster_support.sh">
+        <switch confirm="true" support="file:///android_asset/custom/switchs/qualcomm/msm_booster_support.sh">
             <title>Performance Boost Config</title>
-            <desc>系统根据你启动应用或切换界面的操作，短时间内将CPU频率提高到最佳值（并且不受频率自定义频率限制），提高流畅度增加耗电</desc>
+            <desc>系统根据用户操作短时间内提高CPU频率，极大的提高流畅度，关闭后可能会出现卡顿</desc>
             <getstate>file:///android_asset/custom/switchs/qualcomm/msm_booster_get.sh</getstate>
             <setstate>file:///android_asset/custom/switchs/qualcomm/msm_booster_set.sh</setstate>
         </switch>
-        <switch support="file:///android_asset/custom/switchs/qualcomm/msm_perfd_support.sh">
+        <switch confirm="true" support="file:///android_asset/custom/switchs/qualcomm/msm_perfd_support.sh">
             <title>Perfd</title>
-            <desc>系统根据你启动应用或切换界面的操作，短时间内将CPU频率提高到最佳值（并且不受频率自定义频率限制），提高流畅度增加耗电</desc>
+            <desc>系统根据用户操作短时间内提高CPU频率，极大的提高流畅度，关闭后可能会出现卡顿</desc>
             <getstate>file:///android_asset/custom/switchs/qualcomm/msm_perfd_get.sh</getstate>
             <setstate>file:///android_asset/custom/switchs/qualcomm/msm_perfd_set.sh</setstate>
         </switch>

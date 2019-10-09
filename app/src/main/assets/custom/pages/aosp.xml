@@ -23,48 +23,44 @@
                     <option value="2">开启</option>
                 </param>
                 <param name="hotreboot" title="附加操作">
-                    <option value="0">不需要</option>
-                    <option value="1">切换后热重启</option>
+                    <option value="0">不需要（AOSP）</option>
+                    <option value="1">切换后重启（MIUI等）</option>
                 </param>
             </params>
-            <script>
+            <set>
                 settings put secure ui_night_mode $state
                 echo '这得看人品，不一定能切换成功'
-                if [[ $hotreboot = "1" ]]
-                then
-                echo '5秒后自动 热重启'
-                echo '这会黑屏一会儿'
-                sleep 5
-                busybox killall system_server
+                if [[ $hotreboot = "1" ]]; then
+                    echo '3秒后自动重启'
+                    sync
+                    sleep 3
+                    # busybox killall system_server
+                    reboot
                 else
-                echo '部分系统可能需要重启手机才会生效'
+                    echo '部分系统可能需要重启手机才会生效'
                 fi
-            </script>
+            </set>
         </action>
-        <action>
+        <picker>
             <title>旋转屏幕</title>
-            <desc>强制旋转屏幕方向</desc>
-            <params>
-                <param name="state" value-sh="settings get secure ui_night_mode">
-                    <option value="0">正常</option>
-                    <option value="1">横屏</option>
-                    <option value="2">反转竖屏</option>
-                    <option value="3">反转横屏</option>
-                </param>
-            </params>
-            <script>
+            <desc>强制旋转屏幕方向（不能使竖屏应用强制横屏，但可以把手机倒过来用？）</desc>
+            <options>
+                <option value="0">正常</option>
+                <option value="1">横屏</option>
+                <option value="2">反转竖屏</option>
+                <option value="3">反转横屏</option>
+            </options>
+            <get>settings get system user_rotation</get>
+            <set>
                 echo '关闭自动旋转'
-                content insert --uri content://settings/system --bind name:s:accelerometer_rotation
-                --bind value:i:0
+                # content insert --uri content://settings/system --bind name:s:accelerometer_rotation --bind value:i:0
+                settings put system accelerometer_rotation 0
 
                 echo '设置屏幕方向'
-                content insert --uri content://settings/system --bind name:s:user_rotation --bind
-                value:i:$state
-
-                echo '注意：这个功能并不能使竖屏应用强制横屏！'
-                echo '但是，你可以把MIX2倒过来用？'
-            </script>
-        </action>
+                # content insert --uri content://settings/system --bind name:s:user_rotation --bind value:i:$state
+                settings put system user_rotation $state
+            </set>
+        </picker>
     </group>
 
     <group title="性能">
@@ -91,7 +87,7 @@
                     options-sh="file:///android_asset/custom/actions/power_level_options.sh"
                     value-sh="settings get global low_power_trigger_level_max" />
             </params>
-            <script>file:///android_asset/custom/actions/low_power_level_set.sh</script>
+            <set>file:///android_asset/custom/actions/low_power_level_set.sh</set>
         </action>
     </group>
 
@@ -105,7 +101,7 @@
                     <option value="0">还原</option>
                 </param>
             </params>
-            <script>file:///android_asset/custom/actions/network_checker_set.sh</script>
+            <set>file:///android_asset/custom/actions/network_checker_set.sh</set>
         </action>
     </group>
 </actions>

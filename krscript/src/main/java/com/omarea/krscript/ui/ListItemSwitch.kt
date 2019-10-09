@@ -21,7 +21,6 @@ class ListItemSwitch(private val context: Context,
     init {
         checked = config.checked
         this.layout.setOnClickListener {
-            this.checked = !config.checked
             this.mOnClickListener?.onClick(this)
         }
     }

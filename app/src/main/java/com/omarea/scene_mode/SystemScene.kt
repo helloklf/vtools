@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.net.wifi.WifiManager
 import android.os.Build
+import android.provider.Settings
 import android.util.Log
 import com.omarea.common.shell.KeepShellAsync
 import com.omarea.common.shell.KeepShellPublic
@@ -21,6 +22,11 @@ class SystemScene(private var context: Context) {
     private var spfAutoConfig: SharedPreferences = context.getSharedPreferences(SpfConfig.BOOSTER_SPF_CFG_SPF, Context.MODE_PRIVATE)
     private var keepShell = KeepShellAsync(context)
 
+    // 是否开启飞行模式
+    private fun isAirModeOn(): Boolean {
+        return Settings.System.getInt(context.contentResolver, Settings.System.AIRPLANE_MODE_ON, 0) == 1
+    }
+
     private fun isWifiApOpen(context: Context): Boolean {
         try {
             val manager = context.getApplicationContext().getSystemService(Context.WIFI_SERVICE) as WifiManager
@@ -33,11 +39,7 @@ class SystemScene(private var context: Context) {
             //获取属性值
             val value = field.get(manager) as Int
             //判断是否开启
-            return if (state == value) {
-                true
-            } else {
-                false
-            }
+            return state == value
         } catch (e: Exception) {
             Log.e("isWifiApOpen", "" + "" + e.localizedMessage)
         }
@@ -55,6 +57,9 @@ class SystemScene(private var context: Context) {
     }
 
     private fun onScreenOnEnableNetwork() {
+        if (isAirModeOn()) {
+            return
+        }
         if (spfAutoConfig.getBoolean(SpfConfig.WIFI + SpfConfig.ON, false)) {
             KeepShellPublic.doCmdSync("svc wifi enable")
         }

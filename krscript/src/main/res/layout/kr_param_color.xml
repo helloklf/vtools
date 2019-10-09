@@ -31,7 +31,7 @@
         android:layout_width="22dp"
         android:layout_height="22dp"
         android:layout_gravity="center_vertical"
-        android:padding="2dp"></View>
+        android:padding="2dp" />
 
     <ImageButton
         android:id="@+id/kr_param_color_picker"

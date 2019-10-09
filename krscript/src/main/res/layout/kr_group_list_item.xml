@@ -18,6 +18,7 @@
 
     <LinearLayout
         android:id="@android:id/content"
+        android:background="@drawable/krscript_item_ripple"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" />

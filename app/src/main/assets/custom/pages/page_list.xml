@@ -2,13 +2,57 @@
 <pages>
     <resource dir="file:///android_asset/custom/common" />
 
-    <page config="custom/pages/general.xml" desc="基本上所有安卓手机都能用" title="通用功能" />
-    <page config="custom/pages/performance.xml" desc="与设备运行性能相关的选项" title="性能调节" />
-    <page config="custom/pages/power.xml" desc="与电池相关的选项" title="电池、充电" />
-    <page config="custom/pages/miui.xml" desc="适用于MIUI系统的选项" title="MIUI专属" />
-    <page config="custom/pages/aosp.xml" desc="越接近原生的系统越适用" title="AOSP专属" />
-    <page config="custom/pages/flyme.xml" desc="适用于Flyme系统的选项" title="Flyme专属" />
-    <page config="custom/pages/applications.xml" desc="第三方应用程序相关选项" title="应用程序" />
-    <page config="custom/pages/developer.xml" desc="适用于开发者的功能" title="开发者工具" />
-    <page config="custom/pages/other.xml" desc="其它杂七杂八的功能" title="杂项" />
+    <group>
+        <switch support="file:///android_asset/custom/switchs/android_n.sh">
+            <title>强制分屏</title>
+            <desc>适用于Android 7.0+，同开发者设置中的“强制将Activity设为可调整大小”选项。开启此项，从而对声明支持分屏的应用进行分屏操作！</desc>
+            <getstate>file:///android_asset/custom/switchs/force_resize_get.sh</getstate>
+            <setstate>file:///android_asset/custom/switchs/force_resize_set.sh</setstate>
+        </switch>
+
+        <switch>
+            <title>虚拟键设备</title>
+            <desc>标识当前设备没有实体按键，MIUI系统可以通过本功能启用全面屏手势，其它系统可以启用虚拟键。重启生效！</desc>
+            <getstate>file:///android_asset/custom/switchs/mainkey_get.sh</getstate>
+            <setstate>file:///android_asset/custom/switchs/mainkey_set.sh</setstate>
+        </switch>
+
+        <action>
+            <title>过渡动画时长</title>
+            <desc>调整各种动画时长</desc>
+            <params>
+                <param name="window_animation_scale" title="弹窗动画时长"
+                    options-sh="file:///android_asset/custom/actions/anima_level_options.sh" value="1"
+                    value-sh="settings get global window_animation_scale" />
+                <param name="transition_animation_scale" title="界面切换动画时长"
+                    options-sh="file:///android_asset/custom/actions/anima_level_options.sh" value="1"
+                    value-sh="settings get global transition_animation_scale" />
+                <param name="animator_duration_scale" title="动画程序时长"
+                    options-sh="file:///android_asset/custom/actions/anima_level_options.sh" value="1"
+                    value-sh="settings get global animator_duration_scale" />
+            </params>
+            <script>
+                settings put global window_animation_scale $window_animation_scale
+                settings put global transition_animation_scale $transition_animation_scale
+                settings put global animator_duration_scale $animator_duration_scale
+                echo 'OK!'
+            </script>
+        </action>
+    </group>
+
+    <group>
+        <page config="custom/pages/miui.xml" desc="适用于MIUI系统的选项" title="MIUI专属"
+            support="file:///android_asset/custom/switchs/miui/miui_support.sh" />
+        <page config="custom/pages/aosp.xml" desc="越接近原生的系统越适用" title="AOSP专属" />
+        <page config="custom/pages/flyme.xml" desc="适用于Flyme系统的选项" title="Flyme专属"
+            support="file:///android_asset/custom/switchs/flyme/flyme_support.sh" />
+    </group>
+
+    <group>
+        <page config="custom/pages/performance.xml" desc="设备性能调节和性能优化" title="运行性能" />
+        <page config="custom/pages/power.xml" desc="耗电记录、低电量" title="电池、充电" />
+        <page config="custom/pages/applications.xml" desc="第三方应用程序相关选项" title="应用程序" />
+        <page config="custom/pages/developer.xml" desc="适用于开发者的功能" title="开发者工具" />
+        <page config="custom/pages/other.xml" desc="其它杂七杂八的功能" title="杂项" />
+    </group>
 </pages>
