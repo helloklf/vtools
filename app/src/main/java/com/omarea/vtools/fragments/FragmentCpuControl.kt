@@ -83,7 +83,7 @@ class FragmentCpuControl : Fragment() {
 
                 for (i in 0 until coreCount) {
                     val checkBox = CheckBox(context)
-                    checkBox.text = "CPU" + i
+                    checkBox.text = "CPU$i"
                     cores.add(checkBox)
                     val params = GridLayout.LayoutParams()
                     params.height = GridLayout.LayoutParams.WRAP_CONTENT
@@ -247,10 +247,10 @@ class FragmentCpuControl : Fragment() {
                 var index = currentIndex
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("选择Adreno GPU最小频率")
-                        .setSingleChoiceItems(parseGPUFreqList(adrenoFreqs), currentIndex, { dialog, which ->
+                        .setSingleChoiceItems(parseGPUFreqList(adrenoFreqs), currentIndex) { dialog, which ->
                             index = which
-                        })
-                        .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                        }
+                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             if (index != currentIndex) {
                                 val g = adrenoFreqs[index]
                                 if (CpuFrequencyUtil.getAdrenoGPUMinFreq() == g) {
@@ -260,7 +260,7 @@ class FragmentCpuControl : Fragment() {
                                 status.adrenoMinFreq = g
                                 setText(it as TextView?, subGPUFreqStr(g))
                             }
-                        }))
+                        })
             }
             adreno_gpu_max_freq.setOnClickListener {
                 var currentIndex = adrenoFreqs.indexOf(status.adrenoMaxFreq)
@@ -270,10 +270,10 @@ class FragmentCpuControl : Fragment() {
                 var index = currentIndex
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("选择Adreno GPU最大频率")
-                        .setSingleChoiceItems(parseGPUFreqList(adrenoFreqs), currentIndex, { dialog, which ->
+                        .setSingleChoiceItems(parseGPUFreqList(adrenoFreqs), currentIndex) { dialog, which ->
                             index = which
-                        })
-                        .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                        }
+                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             if (index != currentIndex) {
                                 val g = adrenoFreqs[index]
                                 if (CpuFrequencyUtil.getAdrenoGPUMaxFreq() == g) {
@@ -283,7 +283,7 @@ class FragmentCpuControl : Fragment() {
                                 status.adrenoMaxFreq = g
                                 setText(it as TextView?, subGPUFreqStr(g))
                             }
-                        }))
+                        })
             }
             adreno_gpu_governor.setOnClickListener {
                 var currentIndex = adrenoGovernors.indexOf(status.adrenoGovernor)
@@ -293,10 +293,10 @@ class FragmentCpuControl : Fragment() {
                 var governor = currentIndex
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("选择Adreno GPU调度")
-                        .setSingleChoiceItems((adrenoGovernors), currentIndex, { dialog, which ->
+                        .setSingleChoiceItems((adrenoGovernors), currentIndex) { dialog, which ->
                             governor = which
-                        })
-                        .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                        }
+                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             if (governor != currentIndex) {
                                 val g = adrenoGovernors[governor]
                                 if (CpuFrequencyUtil.getAdrenoGPUGovernor() == g) {
@@ -306,7 +306,7 @@ class FragmentCpuControl : Fragment() {
                                 status.adrenoGovernor = g
                                 setText(it as TextView?, g)
                             }
-                        }))
+                        })
             }
             adreno_gpu_min_pl.setOnClickListener {
                 var currentIndex = adrenoPLevels.indexOf(status.adrenoMinPL)
@@ -316,10 +316,10 @@ class FragmentCpuControl : Fragment() {
                 var index = currentIndex
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("选择GPU最小功耗级别")
-                        .setSingleChoiceItems((adrenoPLevels), currentIndex, { dialog, which ->
+                        .setSingleChoiceItems((adrenoPLevels), currentIndex) { dialog, which ->
                             index = which
-                        })
-                        .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                        }
+                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             if (index != currentIndex) {
                                 val g = adrenoPLevels[index]
                                 if (CpuFrequencyUtil.getAdrenoGPUMinPowerLevel() == g) {
@@ -329,7 +329,7 @@ class FragmentCpuControl : Fragment() {
                                 status.adrenoMinPL = g
                                 setText(it as TextView?, g)
                             }
-                        }))
+                        })
             }
             adreno_gpu_max_pl.setOnClickListener {
                 var currentIndex = adrenoPLevels.indexOf(status.adrenoMaxPL)
@@ -339,10 +339,10 @@ class FragmentCpuControl : Fragment() {
                 var index = currentIndex
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("选择GPU最大功耗级别")
-                        .setSingleChoiceItems((adrenoPLevels), currentIndex, { dialog, which ->
+                        .setSingleChoiceItems((adrenoPLevels), currentIndex) { dialog, which ->
                             index = which
-                        })
-                        .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                        }
+                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             if (index != currentIndex) {
                                 val g = adrenoPLevels[index]
                                 if (CpuFrequencyUtil.getAdrenoGPUMaxPowerLevel() == g) {
@@ -352,7 +352,7 @@ class FragmentCpuControl : Fragment() {
                                 status.adrenoMaxPL = g
                                 setText(it as TextView?, g)
                             }
-                        }))
+                        })
             }
             adreno_gpu_default_pl.setOnClickListener {
                 var currentIndex = adrenoPLevels.indexOf(status.adrenoDefaultPL)
@@ -362,10 +362,10 @@ class FragmentCpuControl : Fragment() {
                 var index = currentIndex
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("选择GPU默认功耗级别")
-                        .setSingleChoiceItems((adrenoPLevels), currentIndex, { dialog, which ->
+                        .setSingleChoiceItems((adrenoPLevels), currentIndex) { dialog, which ->
                             index = which
-                        })
-                        .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                        }
+                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             if (index != currentIndex) {
                                 val g = adrenoPLevels[index]
                                 if (CpuFrequencyUtil.getAdrenoGPUDefaultPowerLevel() == g) {
@@ -375,7 +375,7 @@ class FragmentCpuControl : Fragment() {
                                 status.adrenoDefaultPL = g
                                 updateUI()
                             }
-                        }))
+                        })
             }
         }
     }
@@ -397,16 +397,16 @@ class FragmentCpuControl : Fragment() {
                 val coreState = parsetCpuset(status.cpusetBackground)
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("选择要使用的核心")
-                        .setMultiChoiceItems(getCoreList(), coreState, { dialog, which, isChecked ->
+                        .setMultiChoiceItems(getCoreList(), coreState) { dialog, which, isChecked ->
                             coreState[which] = isChecked
-                        })
-                        .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                        }
+                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             status.cpusetBackground = parsetCpuset(coreState)
                             KernelProrp.setProp("/dev/cpuset/background/cpus", status.cpusetBackground)
                             updateUI()
+                        }
+                        .setNegativeButton(R.string.btn_cancel) { _, _ ->
                         })
-                        .setNegativeButton(R.string.btn_cancel, { _, _ ->
-                        }))
             }
         }
         cpuset_system_bg.setOnClickListener {
@@ -414,16 +414,16 @@ class FragmentCpuControl : Fragment() {
                 val coreState = parsetCpuset(status.cpusetSysBackground)
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("选择要使用的核心")
-                        .setMultiChoiceItems(getCoreList(), coreState, { dialog, which, isChecked ->
+                        .setMultiChoiceItems(getCoreList(), coreState) { dialog, which, isChecked ->
                             coreState[which] = isChecked
-                        })
-                        .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                        }
+                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             status.cpusetSysBackground = parsetCpuset(coreState)
                             KernelProrp.setProp("/dev/cpuset/system-background/cpus", status.cpusetSysBackground)
                             updateUI()
+                        }
+                        .setNegativeButton(R.string.btn_cancel) { _, _ ->
                         })
-                        .setNegativeButton(R.string.btn_cancel, { _, _ ->
-                        }))
             }
         }
         cpuset_foreground.setOnClickListener {
@@ -431,16 +431,16 @@ class FragmentCpuControl : Fragment() {
                 val coreState = parsetCpuset(status.cpusetForeground)
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("选择要使用的核心")
-                        .setMultiChoiceItems(getCoreList(), coreState, { dialog, which, isChecked ->
+                        .setMultiChoiceItems(getCoreList(), coreState) { dialog, which, isChecked ->
                             coreState[which] = isChecked
-                        })
-                        .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                        }
+                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             status.cpusetForeground = parsetCpuset(coreState)
                             KernelProrp.setProp("/dev/cpuset/foreground/cpus", status.cpusetForeground)
                             updateUI()
+                        }
+                        .setNegativeButton(R.string.btn_cancel) { _, _ ->
                         })
-                        .setNegativeButton(R.string.btn_cancel, { _, _ ->
-                        }))
             }
         }
         cpuset_top_app.setOnClickListener {
@@ -448,16 +448,16 @@ class FragmentCpuControl : Fragment() {
                 val coreState = parsetCpuset(status.cpusetTopApp)
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("选择要使用的核心")
-                        .setMultiChoiceItems(getCoreList(), coreState, { dialog, which, isChecked ->
+                        .setMultiChoiceItems(getCoreList(), coreState) { dialog, which, isChecked ->
                             coreState[which] = isChecked
-                        })
-                        .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                        }
+                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             status.cpusetTopApp = parsetCpuset(coreState)
                             KernelProrp.setProp("/dev/cpuset/top-app/cpus", status.cpusetTopApp)
                             updateUI()
+                        }
+                        .setNegativeButton(R.string.btn_cancel) { _, _ ->
                         })
-                        .setNegativeButton(R.string.btn_cancel, { _, _ ->
-                        }))
             }
         }
         cpuset_boost.setOnClickListener {
@@ -465,16 +465,16 @@ class FragmentCpuControl : Fragment() {
                 val coreState = parsetCpuset(status.cpusetForegroundBoost)
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("选择要使用的核心")
-                        .setMultiChoiceItems(getCoreList(), coreState, { dialog, which, isChecked ->
+                        .setMultiChoiceItems(getCoreList(), coreState) { dialog, which, isChecked ->
                             coreState[which] = isChecked
-                        })
-                        .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                        }
+                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             status.cpusetForegroundBoost = parsetCpuset(coreState)
                             KernelProrp.setProp("/dev/cpuset/foreground/boost/cpus", status.cpusetForegroundBoost)
                             updateUI()
+                        }
+                        .setNegativeButton(R.string.btn_cancel) { _, _ ->
                         })
-                        .setNegativeButton(R.string.btn_cancel, { _, _ ->
-                        }))
             }
         }
     }
@@ -482,8 +482,8 @@ class FragmentCpuControl : Fragment() {
     private fun bindClusterConfig(cluster:Int) {
         val view = View.inflate(this.context!!, R.layout.fragment_cpu_cluster, null)
         cpu_cluster_list.addView(view)
-        view.findViewById<TextView>(R.id.cluster_title).setText("Cluster " + cluster)
-        view.setTag("cluster_" + cluster)
+        view.findViewById<TextView>(R.id.cluster_title).text = "Cluster $cluster"
+        view.setTag("cluster_$cluster")
 
         val cluster_min_freq = view.findViewById<TextView>(R.id.cluster_min_freq)
         val cluster_max_freq = view.findViewById<TextView>(R.id.cluster_max_freq)
@@ -499,10 +499,10 @@ class FragmentCpuControl : Fragment() {
 
             DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle("选择最小频率")
-                    .setSingleChoiceItems(parseFreqList(cluterFreqs[cluster]!!), currentIndex, { dialog, which ->
+                    .setSingleChoiceItems(parseFreqList(cluterFreqs[cluster]!!), currentIndex) { dialog, which ->
                         index = which
-                    })
-                    .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                    }
+                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
                         if (index != currentIndex) {
                             val g = cluterFreqs[cluster]!![index]
                             if (CpuFrequencyUtil.getCurrentMinFrequency(cluster) == g) {
@@ -512,7 +512,7 @@ class FragmentCpuControl : Fragment() {
                             status.cpuClusterStatuses[cluster].min_freq = g
                             setText(it as TextView?, subFreqStr(g))
                         }
-                    }))
+                    })
         }
         cluster_max_freq.setOnClickListener {
             var currentIndex = cluterFreqs[cluster]!!.indexOf(getApproximation(cluterFreqs[cluster]!!, status.cpuClusterStatuses[cluster].max_freq))
@@ -522,10 +522,10 @@ class FragmentCpuControl : Fragment() {
             var index = currentIndex
             DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle("选择最大频率")
-                    .setSingleChoiceItems(parseFreqList(cluterFreqs[cluster]!!), currentIndex, { dialog, which ->
+                    .setSingleChoiceItems(parseFreqList(cluterFreqs[cluster]!!), currentIndex) { dialog, which ->
                         index = which
-                    })
-                    .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                    }
+                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
                         if (index != currentIndex) {
                             val g = cluterFreqs[cluster]!![index]
                             if (CpuFrequencyUtil.getCurrentMinFrequency(cluster) == g) {
@@ -535,7 +535,7 @@ class FragmentCpuControl : Fragment() {
                             status.cpuClusterStatuses[cluster].max_freq = g
                             setText(it as TextView?, subFreqStr(g))
                         }
-                    }))
+                    })
         }
         // cluster_little_governor.onItemSelectedListener = ItemSelected(R.id.cluster_little_governor, next)
         cluster_governor.setOnClickListener {
@@ -546,10 +546,10 @@ class FragmentCpuControl : Fragment() {
             var index = currentIndex
             DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle("选择调度模式")
-                    .setSingleChoiceItems((cluterGovernors[cluster]!!), currentIndex, { dialog, which ->
+                    .setSingleChoiceItems((cluterGovernors[cluster]!!), currentIndex) { dialog, which ->
                         index = which
-                    })
-                    .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                    }
+                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
                         if (index != currentIndex) {
                             val v = cluterGovernors[cluster]!![index]
                             if (CpuFrequencyUtil.getCurrentScalingGovernor(cluster) == v) {
@@ -559,7 +559,7 @@ class FragmentCpuControl : Fragment() {
                             status.cpuClusterStatuses[cluster].governor = v
                             setText(it as TextView?, v)
                         }
-                    }))
+                    })
             return@setOnClickListener
         }
         cluster_governor_params.setOnClickListener {
@@ -575,17 +575,17 @@ class FragmentCpuControl : Fragment() {
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("调度器参数")
                         .setMessage(msg.toString())
-                        .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                        }))
+                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                        })
             }
         }
     }
 
     private fun parsetCpuset(booleanArray: BooleanArray): String {
         val stringBuilder = StringBuilder()
-        for (index in 0..booleanArray.size - 1) {
+        for (index in booleanArray.indices) {
             if (booleanArray.get(index)) {
-                if (stringBuilder.length > 0) {
+                if (stringBuilder.isNotEmpty()) {
                     stringBuilder.append(",")
                 }
                 stringBuilder.append(index)
@@ -596,7 +596,7 @@ class FragmentCpuControl : Fragment() {
 
     private fun parsetCpuset(value: String): BooleanArray {
         val cores = ArrayList<Boolean>();
-        for (coreIndex in 0..coreCount - 1) {
+        for (coreIndex in 0 until coreCount) {
             cores.add(false)
         }
         if (value.isEmpty() || value == "error") {
@@ -631,8 +631,8 @@ class FragmentCpuControl : Fragment() {
 
     private fun getCoreList(): Array<String> {
         val cores = ArrayList<String>();
-        for (coreIndex in 0..coreCount - 1) {
-            cores.add("Cpu" + coreIndex)
+        for (coreIndex in 0 until coreCount) {
+            cores.add("Cpu$coreIndex")
         }
         return cores.toTypedArray()
     }
@@ -849,8 +849,8 @@ class FragmentCpuControl : Fragment() {
             DialogHelper.animDialog(AlertDialog.Builder(context!!)
                     .setTitle("请注意")
                     .setMessage("检测到你已开启“动态响应”，你手动对CPU、GPU的修改随时可能被覆盖。\n\n同时，手动调整参数还可能对“动态响应”的工作造成不利影响！")
-                    .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                    })
+                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                    }
                     .setCancelable(false))
         }
     }

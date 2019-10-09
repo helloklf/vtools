@@ -108,15 +108,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-
-    private fun replaceFragment(fragment: Fragment) { // 动态加载fragment
-        val fragmentManager = supportFragmentManager
-        val transaction = fragmentManager.beginTransaction()
-        transaction.replace(R.id.main_content, fragment)
-        transaction.addToBackStack(null)
-        transaction.commit()
-    }
-
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         /*
@@ -147,10 +138,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val mDrawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
         mDrawerLayout.setScrimColor(Color.TRANSPARENT) // 菜单滑动时content不被阴影覆盖
 
-        val cardView = findViewById<FrameLayout>(R.id.card_view)
-
-        replaceFragment(FragmentHome())
-
         // 监听抽屉的滑动事件
         mDrawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
@@ -170,6 +157,10 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
         })
 
+        //将侧边栏顶部延伸至status bar
+        // mDrawerLayout.fitsSystemWindows = true
+        //将主页面顶部延伸至status bar;虽默认为false,但经测试,DrawerLayout需显示设置
+        // mDrawerLayout.clipToPadding = false
 
         // AppShortcutManager(this.applicationContext).removeMenu()
         // checkUseState()
@@ -229,7 +220,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onResume() {
         super.onResume()
 
-// 如果距离上次检查更新超过 24 小时
+        // 如果距离上次检查更新超过 24 小时
         if (globalSPF!!.getLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, 0) + (3600 * 24 * 1000) < System.currentTimeMillis()) {
             Update().checkUpdate(this)
             globalSPF!!.edit().putLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, System.currentTimeMillis()).apply()
@@ -241,7 +232,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         fragmentManager.fragments.clear()
         val transaction = fragmentManager.beginTransaction()
         transaction.replace(R.id.main_content, FragmentHome())
-// transaction.addToBackStack(getString(R.string.app_name))
+        // transaction.addToBackStack(getString(R.string.app_name))
         transaction.commit()
     }
 

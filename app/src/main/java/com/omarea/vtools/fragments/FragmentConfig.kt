@@ -168,9 +168,9 @@ class FragmentConfig : Fragment() {
         tabIconHelper.newTabSpec("系统场景", context!!.getDrawable(R.drawable.tab_security)!!, R.id.blacklist_tab3)
         tabIconHelper.newTabSpec("设置", context!!.getDrawable(R.drawable.tab_settings)!!, R.id.configlist_tab5)
         configlist_tabhost.currentTab = 0
-        configlist_tabhost.setOnTabChangedListener({ tabId ->
+        configlist_tabhost.setOnTabChangedListener { tabId ->
             tabIconHelper.updateHighlight()
-        })
+        }
 
         battery_monitor.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
         battery_monitor.setOnClickListener {
@@ -205,11 +205,11 @@ class FragmentConfig : Fragment() {
                     .setTitle(item.appName.toString())
                     .setSingleChoiceItems(
                             R.array.powercfg_modes2,
-                            originIndex,
-                            { dialog, which ->
-                                currentMode = which
-                            })
-                    .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                            originIndex
+                    ) { dialog, which ->
+                        currentMode = which
+                    }
+                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
                         if (currentMode != originIndex) {
                             var modeName = ""
                             when (currentMode) {
@@ -231,7 +231,7 @@ class FragmentConfig : Fragment() {
                             (config_defaultlist.adapter as SceneModeAdapter).updateRow(position, view)
                             notifyService(item.packageName.toString(), modeName)
                         }
-                    })
+                    }
                     .setNeutralButton(R.string.btn_cancel, null))
             true
         }
@@ -316,11 +316,11 @@ class FragmentConfig : Fragment() {
             }
         }
         scene_notify.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true)
-        scene_notify.setOnClickListener({
+        scene_notify.setOnClickListener {
             val checked = (it as Switch).isChecked
             globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, checked).commit()
             reStartService()
-        })
+        }
     }
 
     private val REQUEST_POWERCFG_FILE = 1

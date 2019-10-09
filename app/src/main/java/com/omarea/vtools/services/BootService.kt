@@ -69,13 +69,13 @@ class BootService : IntentService("vtools-boot") {
 
             // thermal
             if (cpuState.coreControl.isNotEmpty()) {
-                ThermalControlUtils.setCoreControlState(cpuState.coreControl == "1", context);
+                ThermalControlUtils.setCoreControlState(cpuState.coreControl == "1", context)
             }
             if (cpuState.msmThermal.isNotEmpty()) {
-                ThermalControlUtils.setTheramlState(cpuState.msmThermal == "Y", context);
+                ThermalControlUtils.setTheramlState(cpuState.msmThermal == "Y", context)
             }
             if (cpuState.vdd.isNotEmpty()) {
-                ThermalControlUtils.setVDDRestrictionState(cpuState.vdd == "1", context);
+                ThermalControlUtils.setVDDRestrictionState(cpuState.vdd == "1", context)
             }
 
             // core online
@@ -89,53 +89,53 @@ class BootService : IntentService("vtools-boot") {
             for (cluster in 0 until cpuState.cpuClusterStatuses.size) {
                 val config = cpuState.cpuClusterStatuses[cluster]
                 if (config.governor.isNotEmpty()) {
-                    CpuFrequencyUtil.setGovernor(config.governor, 0, context);
+                    CpuFrequencyUtil.setGovernor(config.governor, cluster, context)
                 }
                 if (config.min_freq.isNotEmpty()) {
-                    CpuFrequencyUtil.setMinFrequency(config.min_freq, 0, context);
+                    CpuFrequencyUtil.setMinFrequency(config.min_freq, cluster, context)
                 }
                 if (config.max_freq.isNotEmpty()) {
-                    CpuFrequencyUtil.setMaxFrequency(config.max_freq, 0, context);
+                    CpuFrequencyUtil.setMaxFrequency(config.max_freq, cluster, context)
                 }
             }
 
             // Boost
             if (cpuState.boost.isNotEmpty()) {
-                CpuFrequencyUtil.setSechedBoostState(cpuState.boost == "1", context);
+                CpuFrequencyUtil.setSechedBoostState(cpuState.boost == "1", context)
             }
             if (cpuState.boostFreq.isNotEmpty()) {
-                CpuFrequencyUtil.setInputBoosterFreq(cpuState.boostFreq);
+                CpuFrequencyUtil.setInputBoosterFreq(cpuState.boostFreq)
             }
             if (cpuState.boostTime.isNotEmpty()) {
-                CpuFrequencyUtil.setInputBoosterTime(cpuState.boostTime);
+                CpuFrequencyUtil.setInputBoosterTime(cpuState.boostTime)
             }
 
             // GPU
             if (cpuState.adrenoGovernor.isNotEmpty()) {
-                CpuFrequencyUtil.setAdrenoGPUGovernor(cpuState.adrenoGovernor);
+                CpuFrequencyUtil.setAdrenoGPUGovernor(cpuState.adrenoGovernor)
             }
             if (cpuState.adrenoMinFreq.isNotEmpty()) {
-                CpuFrequencyUtil.setAdrenoGPUMinFreq(cpuState.adrenoMinFreq);
+                CpuFrequencyUtil.setAdrenoGPUMinFreq(cpuState.adrenoMinFreq)
             }
             if (cpuState.adrenoMaxFreq.isNotEmpty()) {
-                CpuFrequencyUtil.setAdrenoGPUMaxFreq(cpuState.adrenoMaxFreq);
+                CpuFrequencyUtil.setAdrenoGPUMaxFreq(cpuState.adrenoMaxFreq)
             }
             if (cpuState.adrenoMinPL.isNotEmpty()) {
-                CpuFrequencyUtil.setAdrenoGPUMinPowerLevel(cpuState.adrenoMinPL);
+                CpuFrequencyUtil.setAdrenoGPUMinPowerLevel(cpuState.adrenoMinPL)
             }
             if (cpuState.adrenoMaxPL.isNotEmpty()) {
-                CpuFrequencyUtil.setAdrenoGPUMaxPowerLevel(cpuState.adrenoMaxPL);
+                CpuFrequencyUtil.setAdrenoGPUMaxPowerLevel(cpuState.adrenoMaxPL)
             }
             if (cpuState.adrenoDefaultPL.isNotEmpty()) {
-                CpuFrequencyUtil.setAdrenoGPUDefaultPowerLevel(cpuState.adrenoDefaultPL);
+                CpuFrequencyUtil.setAdrenoGPUDefaultPowerLevel(cpuState.adrenoDefaultPL)
             }
 
             // exynos
             if (CpuFrequencyUtil.exynosHMP()) {
-                CpuFrequencyUtil.setExynosHotplug(cpuState.exynosHotplug);
-                CpuFrequencyUtil.setExynosHmpDown(cpuState.exynosHmpDown);
-                CpuFrequencyUtil.setExynosHmpUP(cpuState.exynosHmpUP);
-                CpuFrequencyUtil.setExynosBooster(cpuState.exynosHmpBooster);
+                CpuFrequencyUtil.setExynosHotplug(cpuState.exynosHotplug)
+                CpuFrequencyUtil.setExynosHmpDown(cpuState.exynosHmpDown)
+                CpuFrequencyUtil.setExynosHmpUP(cpuState.exynosHmpUP)
+                CpuFrequencyUtil.setExynosBooster(cpuState.exynosHmpBooster)
             }
 
             if (!cpuState.cpusetBackground.isNullOrEmpty()) {
@@ -195,7 +195,7 @@ class BootService : IntentService("vtools-boot") {
                 modeList.executePowercfgMode(globalPowercfg, context!!.packageName)
             } else {
                 if (configInstaller.dynamicSupport(context!!)) {
-                    configInstaller.installPowerConfig(context);
+                    configInstaller.installPowerConfig(context)
                     modeList.executePowercfgMode(globalPowercfg)
                 }
             }
@@ -249,7 +249,7 @@ class BootService : IntentService("vtools-boot") {
         val launchedFreezeApp = SceneMode.getLaunchedFreezeApp()
         for (item in AppConfigStore(context).freezeAppList) {
             if (!launchedFreezeApp.contains(item)) {
-                keepShell.doCmdSync("pm disable " + item)
+                keepShell.doCmdSync("pm disable $item")
             }
         }
 
