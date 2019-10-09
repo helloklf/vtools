@@ -107,7 +107,6 @@ class PageLayoutRender(private val mContext: Context,
     }
 
     private fun mapConfigList(parent: ListItemView, actionInfos: ArrayList<ConfigItemBase>) {
-        var subGroup: ListItemGroup? = null
         for (index in 0 until actionInfos.size) {
             val it = actionInfos[index]
             try {
@@ -127,7 +126,7 @@ class PageLayoutRender(private val mContext: Context,
                         createTextItem(it)
                     }
                 } else if (it is GroupInfo) {
-                    subGroup = createItemGroup(it)
+                    val subGroup = createItemGroup(it)
                     parent.addView(subGroup)
                     if (it.children.size > 0) {
                         mapConfigList(subGroup, it.children)
@@ -137,11 +136,7 @@ class PageLayoutRender(private val mContext: Context,
                 if (uiRender != null) {
                     uiRender.setOnClickListener(this.onItemClickListener)
                     uiRender.setOnLongClickListener(this.onItemLongClickListener)
-                    if (subGroup == null) {
-                        parent.addView(uiRender)
-                    } else {
-                        subGroup.addView(uiRender)
-                    }
+                    parent.addView(uiRender)
                 }
             } catch (ex: Exception) {
                 Toast.makeText(mContext, it.title + "界面渲染异常" + ex.message, Toast.LENGTH_SHORT).show()
