@@ -39,8 +39,8 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
     }
 
     private var batteryUnits = BatteryUtils()
-    var ResumeCharge = "sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("addin/resume_charge.sh", "addin/resume_charge.sh", service)
-    var DisableCharge = "sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("addin/disable_charge.sh", "addin/disable_charge.sh", service)
+    private var ResumeCharge = "sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("addin/resume_charge.sh", "addin/resume_charge.sh", service)
+    private var DisableCharge = "sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("addin/disable_charge.sh", "addin/disable_charge.sh", service)
 
     //快速充电
     private fun fastCharger() {
@@ -63,24 +63,24 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
             val action = intent.action
             val onCharge = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1) == BatteryManager.BATTERY_STATUS_CHARGING
             val currentLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
-            var bpLeve = chargeConfig.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, SpfConfig.CHARGE_SPF_BP_LEVEL_DEFAULT)
-            if (bpLeve <= 30) {
+            var bpLevel = chargeConfig.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, SpfConfig.CHARGE_SPF_BP_LEVEL_DEFAULT)
+            if (bpLevel <= 30) {
                 showMsg("Scene：当前电池保护电量值设为小于30%，会引起一些异常，已自动替换为默认值"+  SpfConfig.CHARGE_SPF_BP_LEVEL_DEFAULT +"%！", true)
-                bpLeve = SpfConfig.CHARGE_SPF_BP_LEVEL_DEFAULT
+                bpLevel = SpfConfig.CHARGE_SPF_BP_LEVEL_DEFAULT
             }
             val bp = chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_BP, false)
 
             //BatteryProtection 如果开启充电保护
             if (bp) {
                 if (onCharge) {
-                    if (currentLevel >= bpLeve) {
+                    if (currentLevel >= bpLevel) {
                         disableCharge()
-                    } else if (currentLevel < bpLeve - 20) {
+                    } else if (currentLevel < bpLevel - 20) {
                         resumeCharge()
                     }
                 }
                 //电量不足，恢复充电功能
-                else if (chargeDisabled && currentLevel != -1 && currentLevel < bpLeve - 20) {
+                else if (chargeDisabled && currentLevel != -1 && currentLevel < bpLevel - 20) {
                     //电量低于保护级别20
                     resumeCharge()
                 }
@@ -96,9 +96,9 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
                 resumeCharge()
             }
 
-            if (!sleepChargeMode(currentLevel, bpLeve, qcLimit)) {
+            if (!sleepChargeMode(currentLevel, bpLevel, qcLimit)) {
                 // 未进入电池保护状态 并且电量低于85
-                if (currentLevel < 85 && (!bp || currentLevel < (bpLeve - 20))) {
+                if (currentLevel < 85 && (!bp || currentLevel < (bpLevel - 20))) {
                     entryFastCharge()
                 }
             }
@@ -112,8 +112,8 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
     /**
      * 计算并使用合理的夜间充电速度
      * @param currentCapacityRatio 当前电量百分比（0~100）
-     * @param totalCapacity 总容量（mAh）
      * @param targetRatio 目标充电百分比
+     * @param qcLimit 充电速度限制
      */
     private fun sleepChargeMode(currentCapacityRatio: Int, targetRatio: Int, qcLimit: Int): Boolean {
         // 如果开启了夜间充电降速

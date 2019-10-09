@@ -228,7 +228,7 @@ class BatteryUtils {
     }
 
     private var changeLimitRunning = false
-    private var isFristRun = true
+    private var isFirstRun = true
     fun setChargeInputLimit(limit: Int, context: Context): Boolean {
         synchronized(changeLimitRunning) {
             if (changeLimitRunning) {
@@ -240,16 +240,16 @@ class BatteryUtils {
                     val output = FileWrite.writePrivateShellFile("addin/fast_charge.sh", "addin/fast_charge.sh", context)
                     val output2 = FileWrite.writePrivateShellFile("addin/fast_charge_run_once.sh", "addin/fast_charge_run_once.sh", context)
                     if (output != null && output2 != null) {
-                        if (isFristRun) {
+                        if (isFirstRun) {
                             KeepShellAsync.getInstance("setChargeInputLimit").doCmd("sh " + output2)
-                            isFristRun = false
+                            isFirstRun = false
                         }
 
-                        fastChargeScript = "sh " + output + " "
+                        fastChargeScript = "sh $output "
                     }
                 }
 
-                if (fastChargeScript.isNotEmpty()) {
+                return if (fastChargeScript.isNotEmpty()) {
                     if (limit > 3000) {
                         var current = 3000
                         while (current < limit && current < 9999) {
@@ -259,10 +259,10 @@ class BatteryUtils {
                     }
                     KeepShellAsync.getInstance("setChargeInputLimit").doCmd(fastChargeScript + limit)
                     changeLimitRunning = false
-                    return true
+                    true
                 } else {
                     changeLimitRunning = false
-                    return false
+                    false
                 }
             }
         }

@@ -15,30 +15,36 @@ import java.util.concurrent.locks.ReentrantLock
  */
 public class KeepShellAsync(private var context: Context?, private var rootMode: Boolean = true) : ShellEvents() {
     companion object {
-        val keepShells = HashMap<String, KeepShellAsync>()
+        private val keepShells = HashMap<String, KeepShellAsync>()
         fun getInstance(key: String): KeepShellAsync {
-            if (!keepShells.containsKey(key)) {
-                keepShells.put(key, KeepShellAsync(null))
+            synchronized(keepShells) {
+                if (!keepShells.containsKey(key)) {
+                    keepShells.put(key, KeepShellAsync(null))
+                }
+                return keepShells.get(key)!!
             }
-            return keepShells.get(key)!!
         }
 
         fun destoryInstance(key: String) {
-            if (!keepShells.containsKey(key)) {
-                return
-            } else {
-                val keepShell = keepShells.get(key)!!
-                keepShells.remove(key)
-                keepShell.tryExit()
+            synchronized(keepShells) {
+                if (!keepShells.containsKey(key)) {
+                    return
+                } else {
+                    val keepShell = keepShells.get(key)!!
+                    keepShells.remove(key)
+                    keepShell.tryExit()
+                }
             }
         }
 
         fun destoryAll() {
-            while (keepShells.isNotEmpty()) {
-                val key = keepShells.keys.first()
-                val keepShell = keepShells.get(key)!!
-                keepShells.remove(key)
-                keepShell.tryExit()
+            synchronized(keepShells) {
+                while (keepShells.isNotEmpty()) {
+                    val key = keepShells.keys.first()
+                    val keepShell = keepShells.get(key)!!
+                    keepShells.remove(key)
+                    keepShell.tryExit()
+                }
             }
         }
     }
