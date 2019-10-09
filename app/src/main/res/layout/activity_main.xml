@@ -9,24 +9,34 @@
     android:keepScreenOn="false"
     tools:openDrawer="start">
 
-    <LinearLayout
-        android:id="@+id/home_bg"
+    <FrameLayout
+        android:id="@+id/card_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <FrameLayout
-            android:id="@+id/main_content"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/home_bg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginTop="56dp" />
-    </LinearLayout>
+            android:orientation="vertical">
 
-    <include
-        layout="@layout/layout_app_bar"
+            <FrameLayout
+                android:id="@+id/main_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="56dp" />
+        </LinearLayout>
+
+        <include
+            layout="@layout/layout_app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+    <!--<fragment
+        android:id="@+id/nav_view"
+        android:name="com.omarea.vtools.fragments.MenuFragment"
+        android:layout_gravity="start"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
+        android:layout_height="match_parent" />-->
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
@@ -34,8 +44,8 @@
         android:layout_gravity="start"
         android:background="@drawable/menu_background"
         android:fitsSystemWindows="false"
-        android:padding="0dp"
-        android:scrollbars="none"
+        android:padding="20dp"
+        app:elevation="0dp"
         app:headerLayout="@null"
         app:insetForeground="@android:color/transparent"
         app:itemIconTint="?android:textColorSecondary"

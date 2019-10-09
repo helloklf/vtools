@@ -11,15 +11,19 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.support.design.internal.NavigationMenuView
 import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.CardView
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.widget.FrameLayout
 import android.widget.Toast
 import com.omarea.charger_booster.ServiceBattery
 import com.omarea.common.shared.MagiskExtend
@@ -50,7 +54,8 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             val service = this.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
             for (task in service.appTasks) {
                 if (task.taskInfo.id == this.taskId) {
-                    val b = exclude ?: globalSPF!!.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, false)
+                    val b = exclude
+                            ?: globalSPF!!.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, false)
                     task.setExcludeFromRecents(b)
                 }
             }
@@ -87,22 +92,29 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             super.run()
 
             if (MagiskExtend.magiskSupported() && KernelProrp.getProp("${MagiskExtend.MAGISK_PATH}system/vendor/etc/thermal-engine.current.ini") != "") {
-                if (RootFile.list("/data/thermal/config").size > 0) {
-                    KeepShellPublic.doCmdSync(
+                when {
+                    RootFile.list("/data/thermal/config").size > 0 -> KeepShellPublic.doCmdSync(
                             "rm -rf /data/thermal 2> /dev/null\n" +
                                     "mkdir -p /data/thermal/config 2> /dev/null\n" +
                                     "chattr +i /data/thermal/config 2> /dev/null")
-                } else if (RootFile.list("/data/vendor/thermal/config").size > 0) {
-                    KeepShellPublic.doCmdSync(
+                    RootFile.list("/data/vendor/thermal/config").size > 0 -> KeepShellPublic.doCmdSync(
                             "rm -rf /data/vendor/thermal 2> /dev/null\n" +
                                     "mkdir -p /data/vendor/thermal/config 2> /dev/null\n" +
                                     "chattr +i /data/vendor/thermal/config 2> /dev/null")
-                } else {
-                    return
+                    else -> return
                 }
-                DialogHelper.helpInfo(context,"", "检测到系统自动创建了温控副本，这会导致在附加功能中切换的温控失效。\n\nScene已自动将副本删除，但可能需要重启手机才能解决问题")
+                DialogHelper.helpInfo(context, "", "检测到系统自动创建了温控副本，这会导致在附加功能中切换的温控失效。\n\nScene已自动将副本删除，但可能需要重启手机才能解决问题")
             }
         }
+    }
+
+
+    private fun replaceFragment(fragment: Fragment) { // 动态加载fragment
+        val fragmentManager = supportFragmentManager
+        val transaction = fragmentManager.beginTransaction()
+        transaction.replace(R.id.main_content, fragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     @SuppressLint("ResourceAsColor")
@@ -133,7 +145,31 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
 
         val mDrawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
-        mDrawerLayout.setScrimColor(Color.TRANSPARENT); // 菜单滑动时content不被阴影覆盖
+        mDrawerLayout.setScrimColor(Color.TRANSPARENT) // 菜单滑动时content不被阴影覆盖
+
+        val cardView = findViewById<FrameLayout>(R.id.card_view)
+
+        replaceFragment(FragmentHome())
+
+        // 监听抽屉的滑动事件
+        mDrawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+                val mContent = mDrawerLayout.getChildAt(0)
+                mContent.pivotX = 0f
+                mContent.pivotY = mContent.height * 1 / 2f
+                mContent.translationX = drawerView.width * slideOffset
+            }
+
+            override fun onDrawerOpened(drawerView: View) {
+            }
+
+            override fun onDrawerClosed(drawerView: View) {
+            }
+
+            override fun onDrawerStateChanged(newState: Int) {
+            }
+        })
+
 
         // AppShortcutManager(this.applicationContext).removeMenu()
         // checkUseState()
@@ -154,9 +190,16 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
 
-        val navigationView = findViewById<NavigationView>(R.id.nav_view)
-        navigationView.setNavigationItemSelectedListener(this)
-        navigationView.menu.findItem(R.id.nav_battery).isEnabled = BatteryUtils().isSupport
+        val navigationView = findViewById(R.id.nav_view) as NavigationView
+        navigationView.run {
+            setNavigationItemSelectedListener(this@ActivityMain)
+            if (!BatteryUtils().isSupport) {
+                menu.findItem(R.id.nav_battery).isEnabled = false
+            }
+        }
+        val navigationMenuView = navigationView.getChildAt(0) as NavigationMenuView
+        navigationMenuView.isVerticalScrollBarEnabled = false
+        navigationMenuView.background = null
 
         if (CheckRootStatus.lastCheckResult) {
             try {
@@ -168,7 +211,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         })
             }
             if (!BackupRestoreUtils.isSupport()) {
-                navigationView.menu.findItem(R.id.nav_img).isEnabled = false
+                navigationView.menu?.findItem(R.id.nav_img)?.isEnabled = false
             }
             ConfigInstallerThread().start()
             ServiceCreateThread(this).run()
@@ -186,7 +229,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onResume() {
         super.onResume()
 
-        // 如果距离上次检查更新超过 24 小时
+// 如果距离上次检查更新超过 24 小时
         if (globalSPF!!.getLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, 0) + (3600 * 24 * 1000) < System.currentTimeMillis()) {
             Update().checkUpdate(this)
             globalSPF!!.edit().putLong(SpfConfig.GLOBAL_SPF_LAST_UPDATE, System.currentTimeMillis()).apply()
@@ -198,7 +241,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         fragmentManager.fragments.clear()
         val transaction = fragmentManager.beginTransaction()
         transaction.replace(R.id.main_content, FragmentHome())
-        // transaction.addToBackStack(getString(R.string.app_name))
+// transaction.addToBackStack(getString(R.string.app_name))
         transaction.commit()
     }
 
@@ -259,7 +302,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                         intent.action = "android.settings.APPLICATION_DETAILS_SETTINGS"
                         intent.data = Uri.fromParts("package", this.packageName, null)
-                        Toast.makeText(applicationContext, getString(R.string.permission_float), Toast.LENGTH_LONG).show();
+                        Toast.makeText(applicationContext, getString(R.string.permission_float), Toast.LENGTH_LONG).show()
                     }
                 } else {
                     showFloatMonitor()
@@ -286,7 +329,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         transaction.setCustomAnimations(R.animator.fragment_enter, R.animator.fragment_exit)
         var fragment: Fragment? = null
 
-        //以下代码用于去除阴影
+//以下代码用于去除阴影
         if (Build.VERSION.SDK_INT >= 21)
             supportActionBar!!.elevation = 0f
 
@@ -303,7 +346,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_qq -> {
                 val key = "6ffXO4eTZVN0eeKmp-2XClxizwIc7UIu" //""e-XL2In7CgIpeK_sG75s-vAiu7n5DnlS"
                 val intent = Intent()
-                intent.data = Uri.parse("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26k%3D" + key)
+                intent.data = Uri.parse("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26k%3D$key")
                 // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面    //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 return try {
                     startActivity(intent)
@@ -349,18 +392,20 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return false
     }
 
-    private fun hideRootMenu(menu: Menu) {
-        try {
-            menu.findItem(R.id.nav_applictions).isEnabled = false
-            menu.findItem(R.id.nav_swap).isEnabled = false
-            menu.findItem(R.id.nav_core_control).isEnabled = false
-            menu.findItem(R.id.nav_battery).isEnabled = false
-            menu.findItem(R.id.nav_img).isEnabled = false
-            menu.findItem(R.id.nav_profile).isEnabled = false
-            menu.findItem(R.id.nav_additional).isEnabled = false
-            menu.findItem(R.id.nav_app_magisk).isEnabled = false
-            menu.findItem(R.id.nav_freeze).isEnabled = false
-        } catch (ex: Exception) {
+    private fun hideRootMenu(menu: Menu?) {
+        menu?.run {
+            try {
+                menu.findItem(R.id.nav_applictions).isEnabled = false
+                menu.findItem(R.id.nav_swap).isEnabled = false
+                menu.findItem(R.id.nav_core_control).isEnabled = false
+                menu.findItem(R.id.nav_battery).isEnabled = false
+                menu.findItem(R.id.nav_img).isEnabled = false
+                menu.findItem(R.id.nav_profile).isEnabled = false
+                menu.findItem(R.id.nav_additional).isEnabled = false
+                menu.findItem(R.id.nav_app_magisk).isEnabled = false
+                menu.findItem(R.id.nav_freeze).isEnabled = false
+            } catch (ex: Exception) {
+            }
         }
     }
 
