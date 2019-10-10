@@ -17,7 +17,6 @@ import com.omarea.permissions.BusyboxInstaller2
 import com.omarea.permissions.CheckRootStatus
 import com.omarea.permissions.WriteSettings
 import com.omarea.store.SpfConfig
-import com.omarea.utils.CrashHandler
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_start_splash.*
 import java.lang.ref.WeakReference
@@ -39,7 +38,7 @@ class ActivityStartSplash : Activity() {
             return
         }
 
-        CrashHandler().init(this.applicationContext)
+        // CrashHandler().init(this.applicationContext)
 
         if (globalSPF == null) {
             globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)

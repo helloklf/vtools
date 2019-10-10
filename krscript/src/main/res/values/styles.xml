@@ -22,8 +22,8 @@
     </style>
 
 
-    <style name="kr_full_screen_dialog">
-        <item name="android:windowNoTitle">true</item>
+    <style name="kr_full_screen_dialog" parent="Theme.AppCompat.Dialog">
+        <!--<item name="android:windowNoTitle">true</item>-->
         <item name="android:windowFullscreen">false</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowAnimationStyle">@android:style/Animation.Translucent</item>

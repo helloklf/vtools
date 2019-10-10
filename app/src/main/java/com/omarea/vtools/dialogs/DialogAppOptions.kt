@@ -30,9 +30,9 @@ import java.util.*
  */
 
 open class DialogAppOptions(protected final var context: Context, protected var apps: ArrayList<Appinfo>, protected var handler: Handler) {
-    protected var allowPigz = false
-    protected var backupPath = CommonCmds.AbsBackUpDir
-    protected var userdataPath = ""
+    private var allowPigz = false
+    private var backupPath = CommonCmds.AbsBackUpDir
+    private var userdataPath = ""
 
     init {
         userdataPath = context.filesDir.absolutePath
@@ -156,19 +156,19 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                 .Builder(context)
                 .setTitle("请选择操作")
                 .setCancelable(true)
-                .setItems(arrayOf("删除备份", "还原", "还原(应用)", "还原(数据)"), { _, which ->
+                .setItems(arrayOf("删除备份", "还原", "还原(应用)", "还原(数据)")) { _, which ->
                     when (which) {
                         0 -> deleteBackupAll()
-                        1 -> restoreAll(true, true)
-                        2 -> restoreAll(true, false)
-                        3 -> restoreAll(false, true)
+                        1 -> restoreAll(apk = true, data = true)
+                        2 -> restoreAll(apk = true, data = false)
+                        3 -> restoreAll(apk = false, data = true)
                     }
-                })
+                }
                 .show()
     }
 
-    protected fun checkRestoreData(): Boolean {
-        val r = KeepShellPublic.doCmdSync("cd $userdataPath/${context.packageName};echo `toybox ls -ld|cut -f3 -d ' '`; echo `ls -ld|cut -f3 -d ' '`;")
+    private fun checkRestoreData(): Boolean {
+        val r = KeepShellPublic.doCmdSync("cd $userdataPath/${context.packageName}\necho `toybox ls -ld|cut -f3 -d ' '`\n echo `ls -ld|cut -f3 -d ' '`\n")
         return r != "error" && r.trim().isNotEmpty()
     }
 
@@ -183,14 +183,18 @@ open class DialogAppOptions(protected final var context: Context, protected var 
     }
 
     open class ProgressHandler(dialog: View, protected var alert: AlertDialog, protected var handler: Handler) : Handler() {
-        protected var textView: TextView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
+        private var textView: TextView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
         var progressBar: ProgressBar = (dialog.findViewById(R.id.dialog_app_details_progress) as ProgressBar)
+        private var error = java.lang.StringBuilder()
 
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
             if (msg.obj != null) {
                 if (msg.what == 0) {
                     textView.text = "正在执行操作..."
+                } else if (msg.what == 5) {
+                    error.append(msg.obj)
+                    error.append("\n")
                 } else {
                     val obj = msg.obj.toString()
                     if (obj.contains("[operation completed]")) {
@@ -199,6 +203,9 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                         handler.postDelayed({
                             alert.dismiss()
                             alert.hide()
+                            if (error.isNotEmpty()) {
+                                AlertDialog.Builder(alert.context).setTitle("出现了一些错误").setMessage(error.toString()).create().show()
+                            }
                         }, 2000)
                         handler.handleMessage(handler.obtainMessage(2))
                     } else if (Regex("^\\[.*]\$").matches(obj)) {
@@ -234,11 +241,11 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setTitle(title)
                 .setMessage(msg)
-                .setNegativeButton("确定", { _, _ ->
+                .setNegativeButton("确定") { _, _ ->
                     next?.run()
+                }
+                .setNeutralButton("取消") { _, _ ->
                 })
-                .setNeutralButton("取消", { _, _ ->
-                }))
     }
 
     /**
@@ -273,10 +280,10 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         val date = Date().time.toString()
 
         val sb = StringBuilder()
-        sb.append("backup_date=\"$date\";");
+        sb.append("backup_date=\"$date\"\n")
         sb.append("\n")
-        sb.append("backup_path=\"${CommonCmds.AbsBackUpDir}\";")
-        sb.append("mkdir -p \${backup_path};")
+        sb.append("backup_path=\"${CommonCmds.AbsBackUpDir}\"\n")
+        sb.append("mkdir -p \${backup_path}\n")
         sb.append("\n")
         sb.append("\n")
 
@@ -285,27 +292,27 @@ open class DialogAppOptions(protected final var context: Context, protected var 
             val path = item.path.toString()
 
             if (apk) {
-                sb.append("rm -f \${backup_path}$packageName.apk;")
+                sb.append("rm -f \${backup_path}$packageName.apk\n")
                 sb.append("\n")
-                sb.append("echo '[copy $packageName.apk]';")
-                sb.append("cp -F $path \${backup_path}$packageName.apk;")
+                sb.append("echo '[copy $packageName.apk]'\n")
+                sb.append("cp -F $path \${backup_path}$packageName.apk\n")
                 sb.append("\n")
             }
             if (data) {
-                sb.append("killall -9 $packageName;pkill -9 $packageName;pgrep $packageName |xargs kill -9;")
-                sb.append("cd $userdataPath/$packageName;")
-                sb.append("echo '[backup ${item.appName}]';")
+                sb.append("killall -9 $packageName\npkill -9 $packageName\npgrep $packageName |xargs kill -9\n")
+                sb.append("cd $userdataPath/$packageName\n")
+                sb.append("echo '[backup ${item.appName}]'\n")
                 if (allowPigz)
-                    sb.append("busybox tar cpf - * --exclude ./cache --exclude ./lib | pigz > \${backup_path}$packageName.tar.gz;")
+                    sb.append("busybox tar cpf - * --exclude ./cache --exclude ./lib | pigz > \${backup_path}$packageName.tar.gz\n")
                 else
-                    sb.append("busybox tar -czpf \${backup_path}$packageName.tar.gz * --exclude ./cache --exclude ./lib;")
+                    sb.append("busybox tar -czpf \${backup_path}$packageName.tar.gz * --exclude ./cache --exclude ./lib\n")
                 sb.append("\n")
             }
         }
-        sb.append("cd \${backup_path};")
-        sb.append("chown sdcard_rw:sdcard_rw *;")
-        sb.append("chmod 777 *;")
-        sb.append("echo '[operation completed]';")
+        sb.append("cd \${backup_path}\n")
+        sb.append("chown sdcard_rw:sdcard_rw *\n")
+        sb.append("chmod 777 *\n")
+        sb.append("echo '[operation completed]'\n")
         execShell(sb)
     }
 
@@ -332,39 +339,39 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         checkPigz()
 
         val sb = StringBuilder()
-        sb.append("chown sdcard_rw *;")
-        sb.append("chmod 7777 *;")
+        sb.append("chown sdcard_rw *\n")
+        sb.append("chmod 7777 *\n")
         for (item in apps) {
             val packageName = item.packageName.toString()
             val apkPath = item.path.toString()
             if (apk && File("$backupPath$packageName.apk").exists()) {
-                sb.append("echo '[install ${item.appName}]';")
+                sb.append("echo '[install ${item.appName}]'\n")
 
-                sb.append("pm install -r $backupPath$packageName.apk;")
+                sb.append("pm install -r $backupPath$packageName.apk\n")
             } else if (apk && File(apkPath).exists()) {
-                sb.append("echo '[install ${item.appName}]';")
+                sb.append("echo '[install ${item.appName}]'\n")
 
-                sb.append("pm install -r $apkPath;")
+                sb.append("pm install -r $apkPath\n")
             }
             if (data && File("$backupPath$packageName.tar.gz").exists()) {
-                sb.append("if [ -d $userdataPath/$packageName ];")
+                sb.append("if [ -d $userdataPath/$packageName ]\n")
                 sb.append(" then ")
-                sb.append("echo '[restore ${item.appName}]';")
-                //sb.append("pm clear $packageName;")
-                sb.append("sync;")
-                sb.append("cd $userdataPath/$packageName;")
-                sb.append("busybox tar -xzpf $backupPath$packageName.tar.gz;")
-                sb.append("chown -R -L `toybox ls -ld|cut -f3 -d ' '`:`toybox ls -ld|cut -f4 -d ' '` $userdataPath/$packageName/*;")
-                //sb.append("chown -R --reference=$userdataPath/$packageName *;")
+                sb.append("echo '[restore ${item.appName}]'\n")
+                //sb.append("pm clear $packageName\n")
+                sb.append("sync\n")
+                sb.append("cd $userdataPath/$packageName\n")
+                sb.append("busybox tar -xzpf $backupPath$packageName.tar.gz\n")
+                sb.append("chown -R -L `toybox ls -ld|cut -f3 -d ' '`:`toybox ls -ld|cut -f4 -d ' '` $userdataPath/$packageName/*\n")
+                //sb.append("chown -R --reference=$userdataPath/$packageName *\n")
                 sb.append(" else ")
-                sb.append("echo '[skip ${item.appName}]';")
-                sb.append("sleep 1;")
-                sb.append("fi;")
+                sb.append("echo '[skip ${item.appName}]'\n")
+                sb.append("sleep 1\n")
+                sb.append("fi\n")
             }
         }
-        sb.append("sync;")
-        sb.append("sleep 2;")
-        sb.append("echo '[operation completed]';")
+        sb.append("sync\n")
+        sb.append("sleep 2\n")
+        sb.append("echo '[operation completed]'\n")
         execShell(sb)
     }
 
@@ -381,12 +388,12 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         val sb = StringBuilder()
         for (item in apps) {
             val packageName = item.packageName.toString()
-            sb.append("echo '[disable ${item.appName}]';")
+            sb.append("echo '[disable ${item.appName}]'\n")
 
-            sb.append("pm disable ${packageName};")
+            sb.append("pm disable ${packageName}\n")
         }
 
-        sb.append("echo '[operation completed]';")
+        sb.append("echo '[operation completed]'\n")
         execShell(sb)
     }
 
@@ -397,12 +404,12 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         val sb = StringBuilder()
         for (item in apps) {
             val packageName = item.packageName.toString()
-            sb.append("echo '[enable ${item.appName}]';")
+            sb.append("echo '[enable ${item.appName}]'\n")
 
-            sb.append("pm enable $packageName;")
+            sb.append("pm enable $packageName\n")
         }
 
-        sb.append("echo '[operation completed]';")
+        sb.append("echo '[operation completed]'\n")
         execShell(sb)
     }
 
@@ -421,14 +428,14 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         val sb = StringBuilder()
         for (item in apps) {
             val packageName = item.packageName.toString()
-            sb.append("echo '[hide ${item.appName}]';")
+            sb.append("echo '[hide ${item.appName}]'\n")
 
-            sb.append("pm hide $packageName;")
+            sb.append("pm hide $packageName\n")
 
             spf.putString(packageName, if (item.appName != null) item.appName as String? else packageName)
         }
 
-        sb.append("echo '[operation completed]';")
+        sb.append("echo '[operation completed]'\n")
         execShell(sb)
         spf.commit()
     }
@@ -460,12 +467,12 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         for (item in apps) {
             val packageName = item.packageName.toString()
             // 先禁用再删除，避免老弹停止运行
-            sb.append("echo '[disable ${item.appName}]';")
-            sb.append("pm disable $packageName;")
+            sb.append("echo '[disable ${item.appName}]'\n")
+            sb.append("pm disable $packageName\n")
 
             sb.append("echo '[delete ${item.appName}]'\n")
             if (com.omarea.common.shared.MagiskExtend.moduleInstalled()) {
-                com.omarea.common.shared.MagiskExtend.deleteSystemPath(item.path.toString());
+                com.omarea.common.shared.MagiskExtend.deleteSystemPath(item.path.toString())
                 useMagisk = true
             } else {
                 val dir = item.dir.toString()
@@ -476,7 +483,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
             }
         }
 
-        sb.append("echo '[operation completed]';")
+        sb.append("echo '[operation completed]'\n")
         execShell(sb)
         if (useMagisk) {
             Toast.makeText(context, "已通过Magisk更改参数，请重启手机~", Toast.LENGTH_SHORT).show()
@@ -496,20 +503,20 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         val sb = StringBuilder()
         for (item in apps) {
             val packageName = item.packageName.toString()
-            sb.append("echo '[delete ${item.appName}]';")
+            sb.append("echo '[delete ${item.appName}]'\n")
 
             if (item.path != null) {
-                sb.append("rm -rf ${item.path};")
+                sb.append("rm -rf ${item.path}\n")
                 if (item.path == "$backupPath$packageName.apk") {
-                    sb.append("rm -rf $backupPath$packageName.tar.gz;")
+                    sb.append("rm -rf $backupPath$packageName.tar.gz\n")
                 }
             } else {
-                sb.append("rm -rf $backupPath$packageName.apk;")
-                sb.append("rm -rf $backupPath$packageName.tar.gz;")
+                sb.append("rm -rf $backupPath$packageName.apk\n")
+                sb.append("rm -rf $backupPath$packageName.tar.gz\n")
             }
         }
 
-        sb.append("echo '[operation completed]';")
+        sb.append("echo '[operation completed]'\n")
         execShell(sb)
     }
 
@@ -526,12 +533,12 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         val sb = StringBuilder()
         for (item in apps) {
             val packageName = item.packageName.toString()
-            sb.append("echo '[clear ${item.appName}]';")
+            sb.append("echo '[clear ${item.appName}]'\n")
 
-            sb.append("pm clear $packageName;")
+            sb.append("pm clear $packageName\n")
         }
 
-        sb.append("echo '[operation completed]';")
+        sb.append("echo '[operation completed]'\n")
         execShell(sb)
     }
 
@@ -542,12 +549,12 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         val sb = StringBuilder()
         for (item in apps) {
             val packageName = item.packageName.toString()
-            sb.append("echo '[trim caches ${item.appName}]';")
+            sb.append("echo '[trim caches ${item.appName}]'\n")
 
-            sb.append("pm trim-caches $packageName;")
+            sb.append("pm trim-caches $packageName\n")
         }
 
-        sb.append("echo '[operation completed]';")
+        sb.append("echo '[operation completed]'\n")
         execShell(sb)
     }
 
@@ -612,12 +619,12 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         val sb = StringBuilder()
         for (item in apps) {
             val packageName = item.packageName.toString()
-            sb.append("echo '[uninstall ${item.appName}]';")
+            sb.append("echo '[uninstall ${item.appName}]'\n")
 
-            sb.append("pm uninstall -k $packageName;")
+            sb.append("pm uninstall -k $packageName\n")
         }
 
-        sb.append("echo '[operation completed]';")
+        sb.append("echo '[operation completed]'\n")
         execShell(sb)
     }
 

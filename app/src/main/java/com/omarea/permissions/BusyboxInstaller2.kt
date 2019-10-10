@@ -8,14 +8,28 @@ import com.omarea.vtools.R
 import java.io.File
 
 class BusyboxInstaller2(private var context: Context) {
+    //是否已经安装busybox
+    private fun systemBusyboxInstalled(): Boolean {
+        return try {
+            Runtime.getRuntime().exec("busybox").destroy()
+            true
+        } catch (ex: Exception) {
+            false
+        }
+    }
+
     fun busyboxInstalled(): Boolean {
-        val installPath = context.getString(R.string.toolkit_install_path)
-        val absInstallPath = FileWrite.getPrivateFilePath(context, installPath)
-        return File(absInstallPath + "/md5sum").exists() &&  File(absInstallPath + "/busybox_1_30_1").exists()
+        if (systemBusyboxInstalled()) {
+            return true
+        } else {
+            val installPath = context.getString(R.string.toolkit_install_path)
+            val absInstallPath = FileWrite.getPrivateFilePath(context, installPath)
+            return File(absInstallPath + "/md5sum").exists() && File(absInstallPath + "/busybox_1_30_1").exists()
+        }
     }
 
     fun installPrivateBusybox(): Boolean {
-        if (!busyboxInstalled()) {
+        if (!(busyboxInstalled() || systemBusyboxInstalled())) {
             // ro.product.cpu.abi
             val abi = PropsUtils.getProp("ro.product.cpu.abi").toLowerCase()
             if (!abi.startsWith("arm")) {

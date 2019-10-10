@@ -232,16 +232,16 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                                 "还原 应用和数据",
                                 "还原 数据",
                                 "复制PackageName",
-                                "在应用商店查看"), { _, which ->
+                                "在应用商店查看")) { _, which ->
                     when (which) {
                         0 -> deleteBackupAll()
-                        1 -> restoreAll(true, false)
-                        2 -> restoreAll(true, true)
-                        3 -> restoreAll(false, true)
+                        1 -> restoreAll(apk = true, data = false)
+                        2 -> restoreAll(apk = true, data = true)
+                        3 -> restoreAll(apk = false, data = true)
                         4 -> copyPackageName()
                         5 -> showInMarket()
                     }
-                }))
+                })
     }
 
     private fun toggleEnable() {
@@ -262,7 +262,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
 
     private fun copyPackageName() {
         val cm = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        cm.setText(app.packageName)
+        cm.text = app.packageName
         Toast.makeText(context, "已复制：${app.packageName}", Toast.LENGTH_LONG).show()
     }
 
@@ -284,7 +284,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
             sb.append("chmod 0755 '$outPutPath'\n")
             sb.append("chown -R system:system '$outPutPath'\n")
             sb.append("busybox chown -R system:system '$outPutPath'\n")
-            sb.append("if [[ ! -e '$outPutPath' ]]; then exit 1; else rm -f '${app.path}'; fi;\n")
+            sb.append("if [[ ! -e '$outPutPath' ]]\n then exit 1\n else rm -f '${app.path}'\n fi\n\n")
         } else {
             val parent = File(appDir)
             val outPutPath = "/system/app/${parent.name}"
@@ -293,26 +293,23 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
             sb.append("chmod -R 0755 '$outPutPath'\n")
             sb.append("chown -R system:system '$outPutPath'\n")
             sb.append("busybox chown -R system:system '$outPutPath'\n")
-            sb.append("if [[ ! -e '$outPutPath' ]]; then exit 1; exit 1; else exit 0; fi;\n")
+            sb.append("if [[ ! -e '$outPutPath' ]]\n then exit 1\n exit 1\n else exit 0\n fi\n\n")
         }
-        sb.append("sync;")
-        sb.append("sleep 1;")
-        sb.append("echo '[operation completed]';")
+        sb.append("sync\n")
+        sb.append("sleep 1\n")
+        sb.append("echo '[operation completed]'\n")
         execShell(sb)
     }
 
     private fun moveToSystemMagisk() {
         val appDir = File(app.path.toString()).parent
-        var result = false
-        if (appDir == "/data/app") { // /data/app/xxx.apk
-            val parent = File(app.path.toString())
+        val result = if (appDir == "/data/app") { // /data/app/xxx.apk
             val outPutPath = "/system/app/"
-            result = MagiskExtend.createFileReplaceModule(outPutPath, app.path.toString(), app.packageName.toString(), app.appName.toString()); // MagiskExtend.replaceSystemDir(outPutPath, app.path.toString()) || MagiskExtend.createFileReplaceModule(outPutPath, app.path.toString(), app.packageName.toString());
+            MagiskExtend.createFileReplaceModule(outPutPath, app.path.toString(), app.packageName.toString(), app.appName.toString()) // MagiskExtend.replaceSystemDir(outPutPath, app.path.toString()) || MagiskExtend.createFileReplaceModule(outPutPath, app.path.toString(), app.packageName.toString())
         } else { // /data/app/xxx.xxx.xxx/xxx.apk
-            val parent = File(appDir)
             val outPutPath = "/system/app/" + app.packageName
-            result = MagiskExtend.createFileReplaceModule(outPutPath, appDir, app.packageName.toString(), app.appName.toString());
-            // MagiskExtend.replaceSystemDir(outPutPath, appDir) || MagiskExtend.createFileReplaceModule(outPutPath, appDir, app.packageName.toString());
+            MagiskExtend.createFileReplaceModule(outPutPath, appDir, app.packageName.toString(), app.appName.toString())
+            // MagiskExtend.replaceSystemDir(outPutPath, appDir) || MagiskExtend.createFileReplaceModule(outPutPath, appDir, app.packageName.toString())
         }
         if (result) {
             Toast.makeText(context, "已通过Magisk完成操作，请重启手机~", Toast.LENGTH_LONG).show()
@@ -326,25 +323,25 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
             DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle("Magisk 副作用警告")
                     .setMessage("检测到你正在使用Magisk，并使用了一些会添加系统应用的模块，这导致/system/app被Magisk劫持并且无法写入！！")
-                    .setPositiveButton(R.string.btn_confirm, { _, _ ->
-                    }))
+                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                    })
             return
         }
         DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setTitle(app.appName)
                 .setMessage("转为系统应用后，将无法随意更新或卸载，并且可能会一直后台运行占用内存，继续转换吗？\n\n并非所有应用都可以转换为系统应用，有些转为系统应用后不能正常运行。\n\n确保你已解锁System分区或安装Magisk，转换完成后，请重启手机！")
-                .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                .setPositiveButton(R.string.btn_confirm) { _, _ ->
                     if (MagiskExtend.magiskSupported()) {
                         moveToSystemMagisk()
                     } else {
                         moveToSystemExec()
                     }
-                })
+                }
                 .setNegativeButton(R.string.btn_cancel, null)
                 .setCancelable(true))
     }
 
     private fun dex2oatBuild() {
-        super.buildAll();
+        super.buildAll()
     }
 }

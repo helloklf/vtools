@@ -34,6 +34,25 @@ class AsynSuShellUnit(var handler: Handler) {
                     print(ex.message)
                 }
             }).start()
+            Thread(Runnable {
+                try {
+                    var line: String
+                    val reader = process!!.errorStream.bufferedReader()
+                    while (true) {
+                        line = reader.readLine()
+                        if (line != null) {
+                            line = line.trim()
+                            if (line.isNotEmpty())
+                                handler.sendMessage(handler.obtainMessage(5, line))
+                        } else {
+                            destroy()
+                            break
+                        }
+                    }
+                } catch (ex: Exception) {
+                    print(ex.message)
+                }
+            }).start()
             handler.sendMessage(handler.obtainMessage(0, true))
         } catch (ex: Exception) {
             handler.sendMessage(handler.obtainMessage(0, false))

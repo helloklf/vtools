@@ -25,9 +25,11 @@ import kotlinx.android.synthetic.main.kr_dialog_log.*
 
 
 class DialogLogFragment : DialogFragment() {
+    private lateinit var dialogInstance:Dialog
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // val view = inflater.inflate(R.layout.kr_dialog_log, container, false)
 
+        currentView = inflater.inflate(R.layout.kr_dialog_log, container)
         return currentView
     }
 
@@ -40,13 +42,7 @@ class DialogLogFragment : DialogFragment() {
     private lateinit var currentView: View
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = AlertDialog.Builder(activity!!, if (themeResId != 0) themeResId else R.style.kr_full_screen_dialog_light)
-        val inflater = activity!!.layoutInflater
-        val view = inflater.inflate(R.layout.kr_dialog_log, null)
-        dialog.setView(view)
-        currentView = view
-
-        return dialog.create()
+        return  Dialog(activity!!, if (themeResId != 0) themeResId else R.style.kr_full_screen_dialog_light)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
