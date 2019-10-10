@@ -58,7 +58,7 @@ class DialogAddinModifydevice(var context: Context) {
         }
         DialogHelper.animDialog(AlertDialog.Builder(context)
                 //.setTitle("机型信息修改")
-                .setView(dialog).setNegativeButton("保存重启", { _, _ ->
+                .setView(dialog).setNegativeButton("保存重启") { _, _ ->
                     val model = editModel.text.trim()
                     val brand = editBrand.text.trim()
                     val product = editProductName.text.trim()
@@ -120,25 +120,25 @@ class DialogAddinModifydevice(var context: Context) {
                     } else {
                         Toast.makeText(context, "什么也没有修改！", Toast.LENGTH_SHORT).show()
                     }
-                }).setPositiveButton("使用帮助", { _, _ ->
+                }.setPositiveButton("使用帮助") { _, _ ->
                     DialogHelper.animDialog(AlertDialog.Builder(context).setMessage(R.string.dialog_addin_device_desc).setNegativeButton(R.string.btn_confirm, { _, _ -> }))
-                }))
+                })
         loadCurrent()
 
         try {
             val cm = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-            val data = cm.getPrimaryClip()
-            val item = data.getItemAt(0)
-            val content = item.getText()
+            val data = cm.primaryClip
+            val item = data.run { getItemAt(0) }
+            val content = item.text
             if (content.isNotEmpty()) {
                 val copyData = String(Base64.decode(content.toString().trim(), Base64.DEFAULT))
                 if (Regex("^.*@.*@.*@.*@.*\$").matches(copyData)) {
                     DialogHelper.animDialog(AlertDialog.Builder(context)
                             .setTitle("可用的模板")
-                            .setMessage("检测到已复制的机型信息：\n\n" + copyData + "\n\n是否立即使用？")
-                            .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                            .setMessage("检测到已复制的机型信息：\n\n$copyData\n\n是否立即使用？")
+                            .setPositiveButton(R.string.btn_confirm) { _, _ ->
                                 splitCodeStr(copyData)
-                            })
+                            }
                             .setNegativeButton(R.string.btn_cancel, null))
                 }
             }
@@ -208,12 +208,12 @@ class DialogAddinModifydevice(var context: Context) {
         var index = -1;
         DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setTitle("选取内置模板")
-                .setSingleChoiceItems(R.array.device_templates, index, { dialog, which ->
+                .setSingleChoiceItems(R.array.device_templates, index) { dialog, which ->
                     index = which
-                })
-                .setPositiveButton(R.string.btn_confirm, { dialog, which ->
+                }
+                .setPositiveButton(R.string.btn_confirm) { dialog, which ->
                     val codeStr = context.resources.getStringArray(R.array.device_templates_data)[index]
                     splitCodeStr(codeStr)
-                }))
+                })
     }
 }

@@ -11,7 +11,14 @@ import com.omarea.vtools.services.CompileService
 
 
 class ReceiverBoot : BroadcastReceiver() {
+    companion object {
+        var running: Boolean = false
+    }
     override fun onReceive(context: Context, intent: Intent) {
+        if (running) {
+            return
+        }
+
         try {
             val chargeConfig: SharedPreferences = context.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
             //判断是否开启了充电加速和充电保护，如果开启了，自动启动后台服务
@@ -33,6 +40,7 @@ class ReceiverBoot : BroadcastReceiver() {
                 compileService.action = context.getString(R.string.scene_speed_compile)
                 context.startService(compileService)
             }
+            running = true
         } catch (ex: Exception) {
         }
     }

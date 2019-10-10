@@ -108,10 +108,10 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
         var index = 0
         DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setTitle("请选择执行方式")
-                .setSingleChoiceItems(arr, index, { _, which ->
+                .setSingleChoiceItems(arr, index) { _, which ->
                     index = which
-                })
-                .setNegativeButton("确定", { _, _ ->
+                }
+                .setNegativeButton("确定") { _, _ ->
                     val lastIndex = arr.size - 1
                     val apps = getAllPackageNames()
                     if (index == 1 || index == 3) {
@@ -161,15 +161,15 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                         commands.append("\n\n")
                         AsynSuShellUnit(ProgressHandler(context, apps.size)).exec(commands.toString()).waitFor()
                     }
-                })
-                .setNeutralButton("查看说明", { _, _ ->
+                }
+                .setNeutralButton("查看说明") { _, _ ->
                     DialogHelper.animDialog(AlertDialog.Builder(context)
                             .setTitle("说明")
                             .setMessage(R.string.addin_dex2oat_helpinfo)
-                            .setNegativeButton("了解更多", { dialog, which ->
+                            .setNegativeButton("了解更多") { dialog, which ->
                                 context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(context.getString(R.string.addin_dex2oat_helplink))))
-                            }))
-                }))
+                            })
+                })
     }
 
     override fun run() {
@@ -189,10 +189,10 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
         }
         DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setTitle("请选择Dex2oat配置")
-                .setSingleChoiceItems(arr, index, { _, which ->
+                .setSingleChoiceItems(arr, index) { _, which ->
                     index = which
-                })
-                .setNegativeButton("确定", { _, _ ->
+                }
+                .setNegativeButton("确定") { _, _ ->
                     val stringBuilder = StringBuilder()
 
                     //移除已添加的配置
@@ -218,10 +218,10 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
 
                     execShell(stringBuilder)
                     Toast.makeText(context, "配置已修改，但需要重启才能生效！", Toast.LENGTH_SHORT).show()
-                })
-                .setNeutralButton("查看说明", { _, _ ->
+                }
+                .setNeutralButton("查看说明") { _, _ ->
                     AlertDialog.Builder(context).setTitle("说明").setMessage("interpret-only模式安装应用更快。speed模式安装应用将会很慢，但是运行速度更快。").create().show()
-                }))
+                })
     }
 
     fun modifyConfig() {
@@ -253,10 +253,10 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
         }
         DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setTitle("请选择pm.dexopt策略")
-                .setSingleChoiceItems(arr, index, { _, which ->
+                .setSingleChoiceItems(arr, index) { _, which ->
                     index = which
-                })
-                .setNegativeButton("确定", { _, _ ->
+                }
+                .setNegativeButton("确定") { _, _ ->
                     val stringBuilder = StringBuilder()
 
                     //移除已添加的配置
@@ -312,14 +312,14 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
 
                     execShell(stringBuilder)
                     Toast.makeText(context, "配置已修改，但需要重启才能生效！", Toast.LENGTH_SHORT).show()
-                })
-                .setNeutralButton("查看说明", { _, _ ->
+                }
+                .setNeutralButton("查看说明") { _, _ ->
                     DialogHelper.animDialog(AlertDialog.Builder(context)
                             .setTitle("说明")
                             .setMessage(R.string.addin_dexopt_helpinfo)
-                            .setNegativeButton("了解更多", { dialog, which ->
+                            .setNegativeButton("了解更多") { dialog, which ->
                                 context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(context.getString(R.string.addin_dex2oat_helplink))))
-                            }))
-                }))
+                            })
+                })
     }
 }

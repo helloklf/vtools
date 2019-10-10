@@ -31,13 +31,13 @@ class FragmentMagisk : Fragment() {
             if (!com.omarea.common.shared.MagiskExtend.moduleInstalled()) {
                 AlertDialog.Builder(context!!).setTitle("安装Magisk拓展？")
                         .setMessage("安装Scene提供的Magisk拓展模块，从而在不修改系统文件的情况下，更改一些参数~")
-                        .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             com.omarea.common.shared.MagiskExtend.magiskModuleInstall(this.context)
                             Toast.makeText(context, "操作已执行~", Toast.LENGTH_LONG).show()
                             this@FragmentMagisk.activity!!.recreate()
-                        })
-                        .setNegativeButton(R.string.btn_cancel, { _, _ ->
-                        })
+                        }
+                        .setNegativeButton(R.string.btn_cancel) { _, _ ->
+                        }
                         .create()
                         .show()
             }
@@ -48,10 +48,10 @@ class FragmentMagisk : Fragment() {
 
         magisk_tabhost.setup()
 
-        magisk_tabhost.addTab(magisk_tabhost.newTabSpec("system.prop").setContent(R.id.magisk_tab1).setIndicator("system.prop"))
-        magisk_tabhost.addTab(magisk_tabhost.newTabSpec("system.file").setContent(R.id.magisk_tab2).setIndicator("system"))
-        magisk_tabhost.addTab(magisk_tabhost.newTabSpec("before_start").setContent(R.id.magisk_tab3).setIndicator("post-fs-data"))
-        // magisk_tabhost.addTab(magisk_tabhost.newTabSpec("after_start").setContent(R.id.magisk_tab4).setIndicator("service"))
+        magisk_tabhost.addTab(magisk_tabhost.newTabSpec("system.prop").setContent(R.id.magisk_tab1).setIndicator("属性"))
+        magisk_tabhost.addTab(magisk_tabhost.newTabSpec("system.file").setContent(R.id.magisk_tab2).setIndicator("系统文件"))
+        magisk_tabhost.addTab(magisk_tabhost.newTabSpec("before_start").setContent(R.id.magisk_tab3).setIndicator("启动前"))
+        magisk_tabhost.addTab(magisk_tabhost.newTabSpec("after_start").setContent(R.id.magisk_tab4).setIndicator("启动后"))
         magisk_tabhost.currentTab = 0
 
         magisk_props.setText(com.omarea.common.shared.MagiskExtend.getProps());

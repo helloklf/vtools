@@ -1,10 +1,8 @@
 package com.omarea.common.shared;
 
 import android.content.Context;
-
 import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.common.shell.RootFile;
-
 import java.io.File;
 
 public class MagiskExtend {
@@ -15,7 +13,7 @@ public class MagiskExtend {
     private static String MAGISK_ROOT_PATH1 = "/sbin/.core/img";
     private static String MAGISK_ROOT_PATH2 = "/sbin/.magisk/img";
 
-    private static String MAGISK_MODULE_NAME = "scene_systemless";;
+    private static String MAGISK_MODULE_NAME = "scene_systemless";
     //magisk 19 /data/adb/modules
     private static int supported = -1;
     private static int MagiskVersion = 0;
@@ -141,7 +139,10 @@ public class MagiskExtend {
                 "# 这将使您的脚本兼容，即使Magisk以后改变挂载点\n" +
                 "MODDIR=${0%/*}\n" +
                 "\n" +
-                "# 该脚本将在设备开机后作为延迟服务启动\n";
+                "# 该脚本将在设备开机后作为延迟服务启动\n" +
+                "\n" +
+                "# 下面，你也可以添加一些自己的代码" +
+                "\n";
         String fsPostData = "#!/system/bin/sh\n" +
                 "# 请不要硬编码/magisk/modname/...;相反，请使用$MODDIR/...\n" +
                 "# 这将使您的脚本兼容，即使Magisk以后改变挂载点\n" +
