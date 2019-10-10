@@ -14,8 +14,6 @@ import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.*
 import org.xmlpull.v1.XmlPullParser
 import java.io.InputStream
-import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Created by Hello on 2018/04/01.

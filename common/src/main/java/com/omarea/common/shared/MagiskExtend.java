@@ -1,5 +1,7 @@
 package com.omarea.common.shared;
+
 import android.content.Context;
+
 import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.common.shell.RootFile;
 

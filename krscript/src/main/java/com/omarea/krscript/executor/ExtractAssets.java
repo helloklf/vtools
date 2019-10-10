@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.omarea.common.shared.FileWrite;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 /**

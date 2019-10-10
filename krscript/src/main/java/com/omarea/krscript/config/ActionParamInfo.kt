@@ -1,8 +1,5 @@
 package com.omarea.krscript.config
 
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
-
 class ActionParamInfo {
     // 参数名：必需保持唯一
     var name: String? = null

@@ -1,2 +1,1 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.omarea.common" />
+<manifest package="com.omarea.common" />

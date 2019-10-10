@@ -26,7 +26,6 @@ import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.shell_utils.CpuFrequencyUtil
 import com.omarea.shell_utils.CpuLoadUtils
 import com.omarea.shell_utils.GpuUtils
-import com.omarea.shell_utils.PropsUtils
 import com.omarea.store.SpfConfig
 import com.omarea.ui.AdapterCpuCores
 import com.omarea.utils.AccessibleServiceHelper

@@ -8,8 +8,8 @@ import android.os.Message
 import android.view.LayoutInflater
 import android.widget.TextView
 import android.widget.Toast
-import com.omarea.common.shell.AsynSuShellUnit
 import com.omarea.common.R
+import com.omarea.common.shell.AsynSuShellUnit
 
 /**
  * Loading弹窗
