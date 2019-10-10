@@ -15,7 +15,7 @@
         </switch>
     </group>
 
-    <group title="dex2oat编译">
+    <group title="dex2oat编译" support="file:///android_asset/custom/switchs/android_n.sh">
         <action>
             <title>修改dex2oat线程数</title>
             <desc>增加核心线程数（不超过CPU核心数量）可以提高应用安装效率，但会造成应用安装过程中卡顿！</desc>
@@ -35,7 +35,7 @@
                 </param>
             </params>
         </action>
-        <action confirm="true">
+        <action confirm="true" support="file:///android_asset/custom/switchs/android_n.sh">
             <title>优化系统应用</title>
             <desc>适用于Android N+，使用Speed模式对系统应用进行dex2oat编译。建议官改系统刷完开机后进行此操作，从而恢复流畅度！</desc>
             <script>file:///android_asset/custom/actions/sys_compile.sh</script>
