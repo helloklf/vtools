@@ -144,7 +144,9 @@ class ActivityStartSplash : Activity() {
         override fun run() {
             val installer2 = BusyboxInstaller2(context.get()!!)
             context.get()!!.start_state_text.text = "初始化Busybox……"
-            if (!installer2.busyboxInstalled()) {
+            if (installer2.busyboxInstalled()) {
+                BusyboxInstalled(context.get()!!).run()
+            } else {
                 val handler = Handler()
                 Thread(Runnable {
                     if (installer2.installPrivateBusybox()) {
@@ -157,8 +159,6 @@ class ActivityStartSplash : Activity() {
                         }
                     }
                 }).start()
-            } else {
-                BusyboxInstalled(context.get()!!).run()
             }
         }
 

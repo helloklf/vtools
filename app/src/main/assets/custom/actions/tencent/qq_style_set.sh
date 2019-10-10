@@ -64,7 +64,7 @@ else
     echo '头像挂架：启用'
 fi
 
-ulock_dir ${qqdata}/pendant_info
+ulock_dir ${qqsdcard}/pendant_info
 ulock_dir ${qqsdcard}/.pendant
 if [[ "$pendant" = "0" ]];
 then
