@@ -8116,7 +8116,7 @@ if (inBrowser) {
 
 var _default = Vue;
 exports.default = _default;
-},{}],"../../../../c/Users/helloklf/AppData/Roaming/npm/node_modules/parcel/src/builtins/bundle-url.js":[function(require,module,exports) {
+},{}],"C:/Users/helloklf/AppData/Roaming/npm/node_modules/parcel/src/builtins/bundle-url.js":[function(require,module,exports) {
 var bundleURL = null;
 
 function getBundleURLCached() {
@@ -8148,7 +8148,7 @@ function getBaseURL(url) {
 
 exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
-},{}],"../../../../c/Users/helloklf/AppData/Roaming/npm/node_modules/parcel/src/builtins/css-loader.js":[function(require,module,exports) {
+},{}],"C:/Users/helloklf/AppData/Roaming/npm/node_modules/parcel/src/builtins/css-loader.js":[function(require,module,exports) {
 var bundle = require('./bundle-url');
 
 function updateLink(link) {
@@ -8183,12 +8183,12 @@ function reloadCSS() {
 }
 
 module.exports = reloadCSS;
-},{"./bundle-url":"../../../../c/Users/helloklf/AppData/Roaming/npm/node_modules/parcel/src/builtins/bundle-url.js"}],"src/App.scss":[function(require,module,exports) {
+},{"./bundle-url":"C:/Users/helloklf/AppData/Roaming/npm/node_modules/parcel/src/builtins/bundle-url.js"}],"src/App.scss":[function(require,module,exports) {
 var reloadCSS = require('_css_loader');
 
 module.hot.dispose(reloadCSS);
 module.hot.accept(reloadCSS);
-},{"_css_loader":"../../../../c/Users/helloklf/AppData/Roaming/npm/node_modules/parcel/src/builtins/css-loader.js"}],"../node_modules/vue-hot-reload-api/dist/index.js":[function(require,module,exports) {
+},{"_css_loader":"C:/Users/helloklf/AppData/Roaming/npm/node_modules/parcel/src/builtins/css-loader.js"}],"../node_modules/vue-hot-reload-api/dist/index.js":[function(require,module,exports) {
 var Vue // late bind
 var version
 var map = (window.__VUE_HOT_MAP__ = Object.create(null))
@@ -8445,14 +8445,14 @@ var _default = {
   props: {}
 };
 exports.default = _default;
-        var $71fd27 = exports.default || module.exports;
+        var $9d2b87 = exports.default || module.exports;
       
-      if (typeof $71fd27 === 'function') {
-        $71fd27 = $71fd27.options;
+      if (typeof $9d2b87 === 'function') {
+        $9d2b87 = $9d2b87.options;
       }
     
         /* template */
-        Object.assign($71fd27, (function () {
+        Object.assign($9d2b87, (function () {
           var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -8479,9 +8479,9 @@ render._withStripped = true
         if (api.compatible) {
           module.hot.accept();
           if (!module.hot.data) {
-            api.createRecord('$71fd27', $71fd27);
+            api.createRecord('$9d2b87', $9d2b87);
           } else {
-            api.reload('$71fd27', $71fd27);
+            api.reload('$9d2b87', $9d2b87);
           }
         }
 
@@ -9464,7 +9464,7 @@ module.exports = function xhrAdapter(config) {
   });
 };
 
-},{"./../utils":"../node_modules/axios/lib/utils.js","./../core/settle":"../node_modules/axios/lib/core/settle.js","./../helpers/buildURL":"../node_modules/axios/lib/helpers/buildURL.js","./../helpers/parseHeaders":"../node_modules/axios/lib/helpers/parseHeaders.js","./../helpers/isURLSameOrigin":"../node_modules/axios/lib/helpers/isURLSameOrigin.js","../core/createError":"../node_modules/axios/lib/core/createError.js","./../helpers/cookies":"../node_modules/axios/lib/helpers/cookies.js"}],"../../../../c/Users/helloklf/AppData/Roaming/npm/node_modules/parcel/node_modules/process/browser.js":[function(require,module,exports) {
+},{"./../utils":"../node_modules/axios/lib/utils.js","./../core/settle":"../node_modules/axios/lib/core/settle.js","./../helpers/buildURL":"../node_modules/axios/lib/helpers/buildURL.js","./../helpers/parseHeaders":"../node_modules/axios/lib/helpers/parseHeaders.js","./../helpers/isURLSameOrigin":"../node_modules/axios/lib/helpers/isURLSameOrigin.js","../core/createError":"../node_modules/axios/lib/core/createError.js","./../helpers/cookies":"../node_modules/axios/lib/helpers/cookies.js"}],"C:/Users/helloklf/AppData/Roaming/npm/node_modules/parcel/node_modules/process/browser.js":[function(require,module,exports) {
 
 // shim for using process in browser
 var process = module.exports = {}; // cached from whatever global is present so that test runners that stub it
@@ -9774,7 +9774,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = defaults;
 
-},{"./utils":"../node_modules/axios/lib/utils.js","./helpers/normalizeHeaderName":"../node_modules/axios/lib/helpers/normalizeHeaderName.js","./adapters/http":"../node_modules/axios/lib/adapters/xhr.js","./adapters/xhr":"../node_modules/axios/lib/adapters/xhr.js","process":"../../../../c/Users/helloklf/AppData/Roaming/npm/node_modules/parcel/node_modules/process/browser.js"}],"../node_modules/axios/lib/helpers/isAbsoluteURL.js":[function(require,module,exports) {
+},{"./utils":"../node_modules/axios/lib/utils.js","./helpers/normalizeHeaderName":"../node_modules/axios/lib/helpers/normalizeHeaderName.js","./adapters/http":"../node_modules/axios/lib/adapters/xhr.js","./adapters/xhr":"../node_modules/axios/lib/adapters/xhr.js","process":"C:/Users/helloklf/AppData/Roaming/npm/node_modules/parcel/node_modules/process/browser.js"}],"../node_modules/axios/lib/helpers/isAbsoluteURL.js":[function(require,module,exports) {
 'use strict';
 
 /**
@@ -10303,6 +10303,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 //
 //
 //
+//
 var _default = {
   data: function data() {
     return {
@@ -10392,6 +10393,9 @@ var _default = {
 
       window.location.href = "alipayqr://platformapi/startapp?saId=10000007&clientVersion=3.7.0.0718&qrcode=".concat(encodeURIComponent('HTTPS://QR.ALIPAY.COM/FKX05665KXCDCLC2YAEL0E'), "%3F_s%3Dweb-other&_t=").concat(new Date().getTime());
     },
+    getHisotry: function getHisotry() {
+      window.location.href = 'https://github.com/helloklf/vtools/releases';
+    },
     download: function download() {
       var ua = navigator.userAgent.toLowerCase();
 
@@ -10449,14 +10453,14 @@ var _default = {
   computed: {}
 };
 exports.default = _default;
-        var $b2f053 = exports.default || module.exports;
+        var $9259d3 = exports.default || module.exports;
       
-      if (typeof $b2f053 === 'function') {
-        $b2f053 = $b2f053.options;
+      if (typeof $9259d3 === 'function') {
+        $9259d3 = $9259d3.options;
       }
     
         /* template */
-        Object.assign($b2f053, (function () {
+        Object.assign($9259d3, (function () {
           var render = function() {
   var _vm = this
   var _h = _vm.$createElement
@@ -10495,6 +10499,10 @@ exports.default = _default;
       _vm._v(" "),
       _c("div", { staticClass: "version" }, [
         _vm._v("Scene永久免费，请勿下载盗版，以免造成损失！！！")
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "get-history", on: { click: _vm.getHisotry } }, [
+        _vm._v("⏱ 查看历史版本")
       ])
     ]),
     _vm._v(" "),
@@ -10700,9 +10708,9 @@ render._withStripped = true
         if (api.compatible) {
           module.hot.accept();
           if (!module.hot.data) {
-            api.createRecord('$b2f053', $b2f053);
+            api.createRecord('$9259d3', $9259d3);
           } else {
-            api.reload('$b2f053', $b2f053);
+            api.reload('$9259d3', $9259d3);
           }
         }
 
@@ -10713,7 +10721,7 @@ render._withStripped = true
       
       }
     })();
-},{"./CC.vue":"src/CC.vue","axios":"../node_modules/axios/index.js","./../assets/img/wechat.png":[["wechat.3de1e613.png","assets/img/wechat.png"],"assets/img/wechat.png"],"./../assets/img/alipay.png":[["alipay.d0901878.png","assets/img/alipay.png"],"assets/img/alipay.png"],"./../assets/img/1.png":[["1.ab44913e.png","assets/img/1.png"],"assets/img/1.png"],"_css_loader":"../../../../c/Users/helloklf/AppData/Roaming/npm/node_modules/parcel/src/builtins/css-loader.js","vue-hot-reload-api":"../node_modules/vue-hot-reload-api/dist/index.js","vue":"../node_modules/vue/dist/vue.runtime.esm.js"}],"src/main.js":[function(require,module,exports) {
+},{"./CC.vue":"src/CC.vue","axios":"../node_modules/axios/index.js","./..\\assets\\img\\wechat.png":[["wechat.3de1e613.png","assets/img/wechat.png"],"assets/img/wechat.png"],"./..\\assets\\img\\alipay.png":[["alipay.d0901878.png","assets/img/alipay.png"],"assets/img/alipay.png"],"./..\\assets\\img\\1.png":[["1.ab44913e.png","assets/img/1.png"],"assets/img/1.png"],"_css_loader":"C:/Users/helloklf/AppData/Roaming/npm/node_modules/parcel/src/builtins/css-loader.js","vue-hot-reload-api":"../node_modules/vue-hot-reload-api/dist/index.js","vue":"../node_modules/vue/dist/vue.runtime.esm.js"}],"src/main.js":[function(require,module,exports) {
 "use strict";
 
 var _vue = _interopRequireDefault(require("vue"));
@@ -10730,7 +10738,7 @@ new _vue.default({
     return h(_App2.default);
   }
 });
-},{"vue":"../node_modules/vue/dist/vue.runtime.esm.js","./App.scss":"src/App.scss","./App.vue":"src/App.vue"}],"../../../../c/Users/helloklf/AppData/Roaming/npm/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"vue":"../node_modules/vue/dist/vue.runtime.esm.js","./App.scss":"src/App.scss","./App.vue":"src/App.vue"}],"C:/Users/helloklf/AppData/Roaming/npm/node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -10758,7 +10766,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "59456" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58692" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -10933,5 +10941,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../../c/Users/helloklf/AppData/Roaming/npm/node_modules/parcel/src/builtins/hmr-runtime.js","src/main.js"], null)
+},{}]},{},["C:/Users/helloklf/AppData/Roaming/npm/node_modules/parcel/src/builtins/hmr-runtime.js","src/main.js"], null)
 //# sourceMappingURL=/main.1e43358e.js.map

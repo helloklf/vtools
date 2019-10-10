@@ -175,6 +175,11 @@ pre {
     text-align: center;
     font-size: 12px;
     margin-bottom: 5px; }
+  .home-page .get-history {
+    text-align: center;
+    margin-bottom: 1em;
+    font-size: 12px;
+    opacity: 0.6; }
 
 .app-desc {
   padding: 20vw 10vw 10vw 10vw; }
