@@ -195,6 +195,16 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                 } else if (msg.what == 5) {
                     error.append(msg.obj)
                     error.append("\n")
+                } else if (msg.what == 10) {
+                        if (msg.obj == true) {
+                            textView.text = "操作完成！"
+                        } else {
+                            textView.text = "出现异常！"
+                        }
+                        handler.postDelayed({
+                            alert.dismiss()
+                            alert.hide()
+                        }, 2000)
                 } else {
                     val obj = msg.obj.toString()
                     if (obj.contains("[operation completed]")) {
@@ -206,7 +216,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                             if (error.isNotEmpty()) {
                                 AlertDialog.Builder(alert.context).setTitle("出现了一些错误").setMessage(error.toString()).create().show()
                             }
-                        }, 2000)
+                        }, 1200)
                         handler.handleMessage(handler.obtainMessage(2))
                     } else if (Regex("^\\[.*]\$").matches(obj)) {
                         progressBar.progress = msg.what
