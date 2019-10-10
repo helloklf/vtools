@@ -87,7 +87,7 @@ class PageConfigReader(private var context: Context) {
                         }
                     XmlPullParser.END_TAG ->
                         if ("group" == parser.name) {
-                            if (group != null) {
+                            if (group != null && group.supported) {
                                 mainList.add(group)
                             }
                             group = null
