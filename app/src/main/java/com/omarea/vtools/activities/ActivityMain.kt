@@ -231,7 +231,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val transaction = fragmentManager.beginTransaction()
         transaction.replace(R.id.main_content, FragmentHome())
         // transaction.addToBackStack(getString(R.string.app_name))
-        transaction.commit()
+        transaction.commitAllowingStateLoss()
     }
 
     private fun setNotRootPage() {
@@ -239,7 +239,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         fragmentManager.fragments.clear()
         val transaction = fragmentManager.beginTransaction()
         transaction.replace(R.id.main_content, FragmentNotRoot())
-        transaction.commit()
+        transaction.commitAllowingStateLoss()
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -372,7 +372,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             transaction.disallowAddToBackStack()
             transaction.replace(R.id.main_content, fragment)
             //transaction.addToBackStack(item.title.toString());
-            transaction.commit()
+            transaction.commitAllowingStateLoss()
             title = item.title
             //item.isChecked = true
         }

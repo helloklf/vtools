@@ -80,12 +80,14 @@ class ColorPicker(private val actionParamInfo: ActionParamInfo, private val cont
         val greenBar = view.findViewById<SeekBar>(R.id.color_green)
         val blueBar = view.findViewById<SeekBar>(R.id.color_blue)
         val colorPreview = view.findViewById<Button>(R.id.color_preview)
+        val colorPreviewText = view.findViewById<TextView>(R.id.color_preview_text)
 
         alphaBar.progress = Color.alpha(defValue)
         redBar.progress = Color.red(defValue)
         greenBar.progress = Color.green(defValue)
         blueBar.progress = Color.blue(defValue)
         colorPreview.setBackgroundColor(defValue)
+        colorPreviewText.text = parseHexStr(alphaBar.progress, redBar.progress, greenBar.progress, blueBar.progress)
 
         val listener = object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
@@ -109,7 +111,7 @@ class ColorPicker(private val actionParamInfo: ActionParamInfo, private val cont
                     val color = Color.argb(alphaBar.progress, redBar.progress, greenBar.progress, blueBar.progress)
                     colorPreview.setBackgroundColor(color)
                     try {
-                        textView.text = String.format("#%02x%02x%02x%02x", alphaBar.progress, redBar.progress, greenBar.progress, blueBar.progress)
+                        textView.text = parseHexStr(alphaBar.progress, redBar.progress, greenBar.progress, blueBar.progress)
                         invalidView.visibility = View.GONE
                         preview.background = ColorDrawable(color)
                     } catch (ex: Exception) {
@@ -117,5 +119,9 @@ class ColorPicker(private val actionParamInfo: ActionParamInfo, private val cont
                     // Integer.toHexString(color) // "argb(${alphaBar.progress}, ${redBar.progress}, ${greenBar.progress}, ${blueBar.progress}, )"
                 }
                 .setNegativeButton(context.getString(R.string.btn_cancel)) { _, _ -> })
+    }
+
+    private fun parseHexStr(a: Int, r: Int, g: Int, b: Int): String {
+        return String.format("#%02x%02x%02x%02x", a, r, g, b)
     }
 }

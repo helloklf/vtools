@@ -33,7 +33,7 @@ class ActivityFreezeApps : FragmentActivity() {
 
         supportFragmentManager.beginTransaction()
                 .add(R.id.fragment_container, FragmentFreeze.createPage())
-                .commit()
+                .commitAllowingStateLoss()
 
         // 使用壁纸高斯模糊作为窗口背景
         // val wallPaper = WallpaperManager.getInstance(this).getDrawable();
