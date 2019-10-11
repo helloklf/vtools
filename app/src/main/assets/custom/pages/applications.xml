@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<switchs>
+<items>
     <group title="流氓杀手">
         <switch>
             <title>网易云首屏广告</title>
@@ -107,4 +107,4 @@
             <set>file:///android_asset/custom/actions/launcher_chooser/set_launchers.sh</set>
         </picker>
     </group>
-</switchs>
+</items>

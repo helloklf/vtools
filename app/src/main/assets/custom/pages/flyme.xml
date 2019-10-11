@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<actions>
+<items>
     <group title="界面">
         <switch support="file:///android_asset/custom/switchs/flyme/flyme_support.sh">
             <title>[Flyme6]下拉动态模糊</title>
@@ -8,4 +8,4 @@
             <setstate>file:///android_asset/custom/switchs/flyme/flyme_blur_set.sh</setstate>
         </switch>
     </group>
-</actions>
+</items>

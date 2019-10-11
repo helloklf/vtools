@@ -148,10 +148,14 @@ class FragmentFreeze : Fragment() {
      * 显示快捷方式丢失，提示添加
      */
     private fun shortcutsLostDialog(lostedShortcutsName: String, lostedShortcuts: ArrayList<Appinfo>) {
+        val global = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+        if (!global.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_ICON_NOTIFY, true)) {
+            return
+        }
         DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setTitle(getString(R.string.freeze_shortcut_lost))
                 .setMessage(getString(R.string.freeze_shortcut_lost_desc) + "\n\n$lostedShortcutsName")
-                .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                .setPositiveButton(R.string.btn_confirm) { _, _ ->
                     processBarDialog.showDialog(getString(R.string.please_wait))
                     CreateShortcutThread(lostedShortcuts, this.context!!, Runnable {
                         handler.post {
@@ -159,9 +163,12 @@ class FragmentFreeze : Fragment() {
                             processBarDialog.hideDialog()
                         }
                     }).start()
+                }
+                .setNegativeButton(R.string.btn_cancel) { _, _ ->
+                }
+                .setNeutralButton(R.string.btn_dontshow) { _, _ ->
+                    global.edit().putBoolean(SpfConfig.GLOBAL_SPF_FREEZE_ICON_NOTIFY, false).apply()
                 })
-                .setNegativeButton(R.string.btn_cancel, { _, _ ->
-                }))
     }
 
     private fun showOptions(appInfo: Appinfo, position: Int, view: View) {
@@ -172,7 +179,7 @@ class FragmentFreeze : Fragment() {
                                 getString(R.string.freeze_open),
                                 getString(R.string.freeze_shortcut_rebuild),
                                 getString(R.string.freeze_remove),
-                                getString(R.string.freeze_remove_uninstall)), { _, which ->
+                                getString(R.string.freeze_remove_uninstall))) { _, which ->
 
                     when (which) {
                         0 -> startApp(appInfo)
@@ -186,7 +193,7 @@ class FragmentFreeze : Fragment() {
                             loadData()
                         }
                     }
-                })
+                }
                 .setCancelable(true))
     }
 
@@ -216,7 +223,7 @@ class FragmentFreeze : Fragment() {
     }
 
     private fun enableApp(packageName: String) {
-        KeepShellPublic.doCmdSync("pm unhide " + packageName + "\n" + "pm enable " + packageName)
+        KeepShellPublic.doCmdSync("pm unhide $packageName\npm enable $packageName")
     }
 
     private fun disableApp(appInfo: Appinfo) {
@@ -224,7 +231,7 @@ class FragmentFreeze : Fragment() {
     }
 
     private fun disableApp(packageName: String) {
-        KeepShellPublic.doCmdSync("pm unhide " + packageName + "\n" + "pm disable " + packageName)
+        KeepShellPublic.doCmdSync("pm unhide $packageName\npm disable $packageName")
     }
 
     private fun toggleEnable(appInfo: Appinfo) {
@@ -243,7 +250,7 @@ class FragmentFreeze : Fragment() {
             enableApp(appInfo)
         }
         try {
-            val intent = this.context!!.getPackageManager().getLaunchIntentForPackage(appInfo.packageName.toString())
+            val intent = this.context!!.packageManager.getLaunchIntentForPackage(appInfo.packageName.toString())
             if (intent != null) {
                 this.context!!.startActivity(intent)
                 SceneMode.setFreezeAppStartTime(appInfo.packageName.toString())
@@ -285,18 +292,18 @@ class FragmentFreeze : Fragment() {
 
         DialogHelper.animDialog(AlertDialog.Builder(this.context)
                 .setTitle(getString(R.string.freeze_add))
-                .setMultiChoiceItems(items, states, { dialog, which, isChecked ->
+                .setMultiChoiceItems(items, states) { dialog, which, isChecked ->
                     states[which] = isChecked
-                })
-                .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                }
+                .setPositiveButton(R.string.btn_confirm) { _, _ ->
                     val selectedItems = ArrayList<String>()
-                    for (index in 0..states.size - 1) {
+                    for (index in states.indices) {
                         if (states[index]) {
                             selectedItems.add(apps[index].packageName.toString())
                         }
                     }
                     addFreezeApps(selectedItems)
-                })
+                }
                 .setNegativeButton(R.string.btn_cancel, { _, _ -> })
                 .setCancelable(true))
     }
@@ -316,7 +323,7 @@ class FragmentFreeze : Fragment() {
     }
 
     private class AddFreezeAppsThread(private var context: Context, private var selectedItems: ArrayList<String>, private var onCompleted: Runnable) : Thread() {
-        val packageManager = context.packageManager
+        val packageManager: PackageManager = context.packageManager
         override fun run() {
             val store = AppConfigStore(context)
             val iconManager = LogoCacheManager(context)
@@ -355,7 +362,7 @@ class FragmentFreeze : Fragment() {
                                 getString(R.string.freeze_enable_all),
                                 getString(R.string.freeze_disable_all),
                                 if (enabled) getString(R.string.freeze_hidden_entrance) else getString(R.string.freeze_show_entrance),
-                                getString(R.string.freeze_clear_all)), { _, which ->
+                                getString(R.string.freeze_clear_all))) { _, which ->
 
                     when (which) {
                         0 -> addFreezeAppDialog()
@@ -398,12 +405,12 @@ class FragmentFreeze : Fragment() {
                             }).start()
                         }
                     }
-                }))
+                })
     }
 
     private fun createShortcutAll() {
         DialogHelper.animDialog(AlertDialog.Builder(context)
-                .setMessage(R.string.freeze_batch_add_wran).setPositiveButton(R.string.btn_confirm, { _, _ ->
+                .setMessage(R.string.freeze_batch_add_wran).setPositiveButton(R.string.btn_confirm) { _, _ ->
                     processBarDialog.showDialog(getString(R.string.please_wait))
                     CreateShortcutAllThread(this.context!!, freezeApps, Runnable {
                         handler.post {
@@ -411,16 +418,16 @@ class FragmentFreeze : Fragment() {
                             loadData()
                         }
                     }).start()
+                }
+                .setNeutralButton(R.string.btn_cancel) { _, _ ->
                 })
-                .setNeutralButton(R.string.btn_cancel, { _, _ ->
-                }))
     }
 
     private class CreateShortcutAllThread(private var context: Context, private var freezeApps: ArrayList<String>, private var onCompleted: Runnable) : Thread() {
         override fun run() {
             val shortcutHelper = FreezeAppShortcutHelper()
             for (it in freezeApps) {
-                KeepShellPublic.doCmdSync("pm unhide " + it + "\n" + "pm enable " + it)
+                KeepShellPublic.doCmdSync("pm unhide $it\npm enable $it")
                 sleep(3000)
                 shortcutHelper.createShortcut(context, it)
             }

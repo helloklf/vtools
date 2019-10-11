@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<switchs>
+<group>
     <switch id="developer_remote_adb">
         <title>远程ADB调试</title>
         <desc>开启设备的网络调试端口，方便开发人员免数据线连接电脑，千万不要在公共WIFI网络环境下开启本选项！</desc>
@@ -12,4 +12,4 @@
         <getstate>file:///android_asset/custom/switchs/hide_errordialog_get.sh</getstate>
         <setstate>file:///android_asset/custom/switchs/hide_errordialog_set.sh</setstate>
     </switch>
-</switchs>
+</group>

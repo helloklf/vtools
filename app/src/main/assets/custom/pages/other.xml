@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<switchs>
+<group>
 
     <action auto-off="true" id="addin_restart_systemui">
         <title>重启SystemUI</title>
@@ -54,4 +54,4 @@
         </script>
     </action>-->
 
-</switchs>
+</group>
