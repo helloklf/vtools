@@ -111,8 +111,15 @@
                 <option>ntp.ntsc.ac.cn</option>
                 <option>ntp1.aliyun.com</option>
                 <option>cn.pool.ntp.org</option>
+                <option>time.cloudflare.com</option>
             </options>
             <get>settings get global ntp_server</get>
+            <set>file:///android_asset/custom/actions/aosp/ntp_set.sh</set>
+        </picker>
+        <picker>
+            <title>自定义NTP服务器</title>
+            <desc>如果你的系统能正常同步时间，就没必要更换NTP服务器</desc>
+            <param name="state" desc="请输入你所知道的NTP服务器地址" value-sh="settings get global ntp_server" />
             <set>file:///android_asset/custom/actions/aosp/ntp_set.sh</set>
         </picker>
     </group>
