@@ -30,11 +30,11 @@ class ActivityFileSelector : AppCompatActivity() {
         // setTitle(R.string.app_name)
 
         // 显示返回按钮
-        getSupportActionBar()!!.setHomeButtonEnabled(true);
-        getSupportActionBar()!!.setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener({ _ ->
+        supportActionBar!!.setHomeButtonEnabled(true)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationOnClickListener { _ ->
             finish()
-        })
+        }
 
         if (intent.extras.containsKey("extension")) {
             extension = intent.extras.getString("extension")

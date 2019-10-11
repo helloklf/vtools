@@ -234,8 +234,8 @@ class FragmentAddin : Fragment() {
         tabHost.setup()
 
         val tabIconHelper = TabIconHelper(tabHost, this.activity!!)
-        tabIconHelper.newTabSpec("收藏", context!!.getDrawable(R.drawable.addin_favorites)!!, R.id.tab0)
-        val configTab = tabIconHelper.newTabSpec("全部", context!!.getDrawable(R.drawable.addin_pages)!!, R.id.tab2)
+        tabIconHelper.newTabSpec("收藏", context!!.getDrawable(R.drawable.addin_favorites)!!, R.id.addin_system_listview)
+        val configTab = tabIconHelper.newTabSpec("全部", context!!.getDrawable(R.drawable.addin_pages)!!, R.id.list_page2)
 
         tabHost.setOnTabChangedListener { tabId ->
             if (tabId == configTab) {

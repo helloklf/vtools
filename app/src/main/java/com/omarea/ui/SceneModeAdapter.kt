@@ -90,7 +90,7 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
         if (keywords.isEmpty()) {
             return spannableString;
         }
-        index = str.toLowerCase().indexOf(keywords.toLowerCase());
+        index = str.toLowerCase().indexOf(keywords.toLowerCase())
         if (index < 0)
             return spannableString
 

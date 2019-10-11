@@ -10,10 +10,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
 import com.omarea.common.ui.DialogHelper
-import com.omarea.common.ui.OverScrollView
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.common.ui.ThemeMode
 import com.omarea.krscript.R
@@ -73,7 +73,7 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
             PageLayoutRender(this.context!!, actionInfos!!, this, layoutBuilder)
             val layout = layoutBuilder.getView()
 
-            val rootView = (this.view?.findViewById<OverScrollView?>(R.id.kr_content))
+            val rootView = (this.view?.findViewById<ScrollView?>(R.id.kr_content))
             rootView?.removeAllViews()
             rootView?.addView(layout)
             triggerAction(autoRunTask)

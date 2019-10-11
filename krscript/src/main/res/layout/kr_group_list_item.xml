@@ -18,7 +18,9 @@
 
     <LinearLayout
         android:id="@android:id/content"
-        android:background="@drawable/krscript_item_ripple"
+        android:background="@drawable/krscript_item_ripple_inactive"
+        android:focusable="false"
+        android:clickable="false"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" />
