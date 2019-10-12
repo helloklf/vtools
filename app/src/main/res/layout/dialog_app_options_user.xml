@@ -39,7 +39,7 @@
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_marginEnd="6dp"
+                    android:layout_marginRight="6dp"
                     android:src="@drawable/app_options_backup"
                     android:tint="?colorAccent" />
 
@@ -52,7 +52,7 @@
             <!--备份全部-->
             <LinearLayout
                 android:id="@+id/app_options_backup_all"
-                android:layout_marginStart="6dp"
+                android:layout_marginLeft="6dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -64,7 +64,7 @@
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_marginEnd="6dp"
+                    android:layout_marginRight="6dp"
                     android:src="@drawable/app_options_backup"
                     android:tint="?colorAccent" />
 
@@ -97,7 +97,7 @@
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_marginEnd="6dp"
+                    android:layout_marginRight="6dp"
                     android:src="@drawable/app_options_clear"
                     android:tint="?colorAccent" />
 
@@ -110,7 +110,7 @@
             <!--清空数据-->
             <LinearLayout
                 android:id="@+id/app_options_clear"
-                android:layout_marginStart="6dp"
+                android:layout_marginLeft="6dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -122,7 +122,7 @@
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_marginEnd="6dp"
+                    android:layout_marginRight="6dp"
                     android:src="@drawable/app_options_clear2"
                     android:tint="@android:color/holo_red_dark" />
 
@@ -135,7 +135,7 @@
             <!--卸载应用-->
             <LinearLayout
                 android:id="@+id/app_options_uninstall"
-                android:layout_marginStart="6dp"
+                android:layout_marginLeft="6dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -147,7 +147,7 @@
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_marginEnd="6dp"
+                    android:layout_marginRight="6dp"
                     android:src="@drawable/app_options_uninstall"
                     android:tint="@android:color/holo_red_dark" />
 
@@ -179,7 +179,7 @@
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_marginEnd="6dp"
+                    android:layout_marginRight="6dp"
                     android:src="@drawable/app_options_uninstall"
                     android:tint="@android:color/holo_red_dark" />
 
@@ -193,7 +193,7 @@
             <!--从当前用户卸载应用-->
             <LinearLayout
                 android:id="@+id/app_options_uninstall_user"
-                android:layout_marginStart="6dp"
+                android:layout_marginLeft="6dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -205,7 +205,7 @@
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_marginEnd="6dp"
+                    android:layout_marginRight="6dp"
                     android:src="@drawable/app_options_uninstall"
                     android:tint="@android:color/holo_red_dark" />
 
@@ -227,7 +227,7 @@
             <!--冻结应用-->
             <LinearLayout
                 android:id="@+id/app_options_app_freeze"
-                android:layout_marginEnd="6dp"
+                android:layout_marginRight="6dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -239,7 +239,7 @@
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_marginEnd="6dp"
+                    android:layout_marginRight="6dp"
                     android:src="@drawable/app_options_freeze"
                     android:tint="?colorAccent" />
 
@@ -252,7 +252,7 @@
             <!--解冻-->
             <LinearLayout
                 android:id="@+id/app_options_app_unfreeze"
-                android:layout_marginEnd="6dp"
+                android:layout_marginRight="6dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -264,7 +264,7 @@
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_marginEnd="6dp"
+                    android:layout_marginRight="6dp"
                     android:src="@drawable/app_options_freeze"
                     android:tint="?colorAccent" />
 
@@ -288,7 +288,7 @@
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_marginEnd="6dp"
+                    android:layout_marginRight="6dp"
                     android:src="@drawable/app_options_hide"
                     android:tint="?colorAccent" />
 
@@ -327,7 +327,7 @@
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_marginEnd="6dp"
+                    android:layout_marginRight="6dp"
                     android:src="@drawable/app_options_copy"
                     android:tint="?colorAccent" />
 
@@ -340,7 +340,7 @@
             <!--启动应用-->
             <LinearLayout
                 android:id="@+id/app_options_open"
-                android:layout_marginStart="6dp"
+                android:layout_marginLeft="6dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -352,7 +352,7 @@
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_marginEnd="6dp"
+                    android:layout_marginRight="6dp"
                     android:src="@drawable/app_options_start"
                     android:tint="?colorAccent" />
 
@@ -385,7 +385,7 @@
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_marginEnd="6dp"
+                    android:layout_marginRight="6dp"
                     android:src="@drawable/app_options_details"
                     android:tint="?colorAccent" />
 
@@ -401,7 +401,7 @@
                 android:id="@+id/app_options_app_store"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
+                android:layout_marginLeft="6dp"
                 android:layout_weight="1"
                 android:background="@drawable/krscript_item_ripple"
                 android:gravity="center_vertical"
@@ -411,7 +411,7 @@
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_marginEnd="6dp"
+                    android:layout_marginRight="6dp"
                     android:src="@drawable/app_options_appstore"
                     android:tint="?colorAccent" />
 
@@ -444,7 +444,7 @@
                 <ImageView
                     android:layout_width="25dp"
                     android:layout_height="25dp"
-                    android:layout_marginEnd="6dp"
+                    android:layout_marginRight="6dp"
                     android:src="@drawable/app_options_as_system"
                     android:tint="?colorAccent" />
 
@@ -454,33 +454,32 @@
                     android:layout_weight="1"
                     android:text="转为系统应用" />
             </LinearLayout>
-
-            <!--dex2oat-->
-            <LinearLayout
-                android:id="@+id/app_options_dex2oat"
-                android:layout_marginStart="6dp"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/krscript_item_ripple"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="6dp">
-
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginEnd="6dp"
-                    android:src="@drawable/app_options_dex2oat"
-                    android:tint="?colorAccent" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="dex2oat编译" />
-            </LinearLayout>
         </LinearLayout>
+    </LinearLayout>
+
+    <!--dex2oat-->
+    <LinearLayout
+        android:id="@+id/app_options_dex2oat"
+        android:layout_marginTop="6dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/krscript_item_ripple"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="6dp">
+
+        <ImageView
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginRight="6dp"
+            android:src="@drawable/app_options_dex2oat"
+            android:tint="?colorAccent" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="dex2oat编译" />
     </LinearLayout>
 
 </LinearLayout>
