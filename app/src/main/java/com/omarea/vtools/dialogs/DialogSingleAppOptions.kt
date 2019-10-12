@@ -289,7 +289,7 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
             val parent = File(appDir)
             val outPutPath = "/system/app/${parent.name}"
             sb.append("busybox cp -pdrf '$appDir' '/system/app/'\n")
-            // sb.append("cp -a '$appDir' '$outPutPath'\n")
+            // sb.append("busybox cp -a '$appDir' '$outPutPath'\n")
             sb.append("chmod -R 0755 '$outPutPath'\n")
             sb.append("chown -R system:system '$outPutPath'\n")
             sb.append("busybox chown -R system:system '$outPutPath'\n")

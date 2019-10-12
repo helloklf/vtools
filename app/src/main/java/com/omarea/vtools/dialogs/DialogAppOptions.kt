@@ -8,11 +8,13 @@ import android.os.Build
 import android.os.Handler
 import android.os.Message
 import android.os.UserManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.AsynSuShellUnit
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
@@ -305,11 +307,14 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                 sb.append("rm -f \${backup_path}$packageName.apk\n")
                 sb.append("\n")
                 sb.append("echo '[copy $packageName.apk]'\n")
-                sb.append("cp -F $path \${backup_path}$packageName.apk\n")
+                sb.append("busybox cp -f $path \${backup_path}$packageName.apk\n")
                 sb.append("\n")
             }
             if (data) {
-                sb.append("killall -9 $packageName\npkill -9 $packageName\npgrep $packageName |xargs kill -9\n")
+                sb.append(
+                        "killall -9 $packageName 2> /dev/null\n" +
+                        "am kill-all $packageName 2> /dev/null\n" +
+                        "am force-stop $packageName 2> /dev/null\n")
                 sb.append("cd $userdataPath/$packageName\n")
                 sb.append("echo '[backup ${item.appName}]'\n")
                 if (allowPigz)
@@ -346,42 +351,55 @@ open class DialogAppOptions(protected final var context: Context, protected var 
     }
 
     private fun _restoreAll(apk: Boolean = true, data: Boolean = true) {
+        val installApkTemp = FileWrite.getPrivateFilePath(context, "app_install_cache.apk")
         checkPigz()
 
         val sb = StringBuilder()
-        sb.append("chown sdcard_rw *\n")
-        sb.append("chmod 7777 *\n")
+        sb.append("chown -R sdcard_rw:sdcard_rw \"$backupPath\" 2>/dev/null\n")
+        sb.append("chmod -R 777 \"$backupPath\" 2>/dev/null\n")
         for (item in apps) {
             val packageName = item.packageName.toString()
             val apkPath = item.path.toString()
             if (apk && File("$backupPath$packageName.apk").exists()) {
                 sb.append("echo '[install ${item.appName}]'\n")
+                // sb.append("pm install -r $backupPath$packageName.apk\n")
 
-                sb.append("pm install -r $backupPath$packageName.apk\n")
+                sb.append("rm -f $installApkTemp\n")
+                sb.append("cp \"$backupPath$packageName.apk\" $installApkTemp\n")
+                sb.append("pm install -r $installApkTemp 1> /dev/null\n")
+                sb.append("rm -f $installApkTemp\n")
             } else if (apk && File(apkPath).exists()) {
                 sb.append("echo '[install ${item.appName}]'\n")
+                // sb.append("pm install -r \"$apkPath\" 1> /dev/null\n")
 
-                sb.append("pm install -r $apkPath\n")
+                sb.append("rm -f $installApkTemp\n")
+                sb.append("cp \"$apkPath\" $installApkTemp\n")
+                sb.append("pm install -r $installApkTemp 1> /dev/null\n")
+                sb.append("rm -f $installApkTemp\n")
             }
             if (data && File("$backupPath$packageName.tar.gz").exists()) {
                 sb.append("if [ -d $userdataPath/$packageName ]\n")
-                sb.append(" then ")
-                sb.append("echo '[restore ${item.appName}]'\n")
-                //sb.append("pm clear $packageName\n")
-                sb.append("sync\n")
-                sb.append("cd $userdataPath/$packageName\n")
-                sb.append("busybox tar -xzpf $backupPath$packageName.tar.gz\n")
-                sb.append("chown -R -L `toybox ls -ld|cut -f3 -d ' '`:`toybox ls -ld|cut -f4 -d ' '` $userdataPath/$packageName/*\n")
-                //sb.append("chown -R --reference=$userdataPath/$packageName *\n")
+                    sb.append(" then ")
+                    sb.append("echo '[restore ${item.appName}]'\n")
+                    //sb.append("pm clear $packageName\n")
+                    sb.append("sync\n")
+                    sb.append("cd $userdataPath/$packageName\n")
+                    sb.append("busybox tar -xzpf $backupPath$packageName.tar.gz\n")
+                    sb.append("install_group=`toybox ls -ld|cut -f3 -d ' '`\n")
+                    sb.append("install_own=`toybox ls -ld|cut -f4 -d ' '`\n")
+                    sb.append("chown -R -L \$install_group:\$install_own ./*\n")
+                    //sb.append("chown -R --reference=$userdataPath/$packageName *\n")
+                Log.d("userdataPath", "cd $userdataPath/$packageName\n")
                 sb.append(" else ")
-                sb.append("echo '[skip ${item.appName}]'\n")
-                sb.append("sleep 1\n")
+                    sb.append("echo '[skip ${item.appName}]'\n")
+                    sb.append("sleep 1\n")
                 sb.append("fi\n")
             }
         }
         sb.append("sync\n")
         sb.append("sleep 2\n")
         sb.append("echo '[operation completed]'\n")
+        Log.d("userdataPath", sb.toString())
         execShell(sb)
     }
 
