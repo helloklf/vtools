@@ -6,7 +6,7 @@ import java.io.OutputStream;
 
 public class ShellExecutor {
     private static String extraEnvPath = "";
-    private static String defaultEnvPath = "/sbin:/system/sbin:/system/bin:/system/xbin:/odm/bin:/vendor/bin:/vendor/xbin";
+    private static String defaultEnvPath = ""; // /sbin:/system/sbin:/system/bin:/system/xbin:/odm/bin:/vendor/bin:/vendor/xbin
 
     public static void setExtraEnvPath(String extraEnvPath) {
         ShellExecutor.extraEnvPath = extraEnvPath;

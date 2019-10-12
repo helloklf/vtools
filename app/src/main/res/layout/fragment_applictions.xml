@@ -125,7 +125,16 @@
                             android:background="@drawable/btn_bg"
                             android:paddingLeft="10dp"
                             android:paddingRight="10dp"
-                            android:text="恢复被隐藏的应用" />
+                            android:text="应用隐藏记录" />
+                        <Button
+                            android:id="@+id/app_btn_hide2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:layout_marginTop="30dp"
+                            android:background="@drawable/btn_bg"
+                            android:paddingLeft="10dp"
+                            android:paddingRight="10dp"
+                            android:text="已[隐藏/卸载]的应用" />
                     </LinearLayout>
                 </FrameLayout>
             </FrameLayout>

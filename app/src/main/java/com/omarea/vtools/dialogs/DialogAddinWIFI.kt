@@ -71,10 +71,7 @@ class DialogAddinWIFI(private var context: Context) {
                         if (!wifi.item(j).hasChildNodes()) {
                             continue
                         }
-                        val node = wifi.item(j).attributes.getNamedItem("name")
-                        if (node == null) {
-                            continue
-                        }
+                        val node = wifi.item(j).attributes.getNamedItem("name") ?: continue
                         if (node.nodeValue == "SSID") {
                             stringBuild.append("网络：")
                             stringBuild.append(wifi.item(j).textContent)
@@ -91,7 +88,7 @@ class DialogAddinWIFI(private var context: Context) {
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("已保存的WIFI记录")
                         .setMessage(stringBuild.toString().trim())
-                        .setNeutralButton("确定", { _, _ -> }))
+                        .setNeutralButton("确定") { _, _ -> })
             } else {
                 showOld()
             }

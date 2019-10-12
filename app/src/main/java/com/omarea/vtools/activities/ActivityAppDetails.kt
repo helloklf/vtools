@@ -255,12 +255,12 @@ class ActivityAppDetails : AppCompatActivity() {
         // setTitle(R.string.app_name)
 
         // 显示返回按钮
-        getSupportActionBar()!!.setHomeButtonEnabled(true);
-        getSupportActionBar()!!.setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener({ _ ->
+        supportActionBar!!.setHomeButtonEnabled(true)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationOnClickListener { _ ->
             // finish()
             saveConfigAndFinish()
-        });
+        }
 
         val intent = this.intent
         if (intent == null) {
@@ -532,11 +532,7 @@ class ActivityAppDetails : AppCompatActivity() {
         val pm = packageManager;
         val permission = (PackageManager.PERMISSION_GRANTED ==
                 pm.checkPermission(permissionName, app));
-        if (permission) {
-            return true
-        } else {
-            return false
-        }
+        return permission
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

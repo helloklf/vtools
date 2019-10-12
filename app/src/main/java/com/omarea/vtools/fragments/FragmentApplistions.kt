@@ -4,11 +4,13 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +29,7 @@ import com.omarea.utils.AppListHelper
 import com.omarea.utils.AppListHelper2
 import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
+import com.omarea.vtools.activities.ActivityHiddenApps
 import com.omarea.vtools.dialogs.DialogAppOptions
 import com.omarea.vtools.dialogs.DialogSingleAppOptions
 import kotlinx.android.synthetic.main.fragment_applictions.*
@@ -70,9 +73,9 @@ class FragmentApplistions : Fragment() {
         tabIconHelper.newTabSpec("system", context!!.getDrawable(R.drawable.tab_security)!!, R.id.tab_apps_system)
         tabIconHelper.newTabSpec("backups", context!!.getDrawable(R.drawable.tab_package)!!, R.id.tab_apps_backuped)
         tabIconHelper.newTabSpec("帮助", context!!.getDrawable(R.drawable.tab_help)!!, R.id.tab_apps_helper)
-        tabHost.setOnTabChangedListener({ tabId ->
+        tabHost.setOnTabChangedListener { tabId ->
             tabIconHelper.updateHighlight()
-        })
+        }
         tabHost.currentTab = 3
 
         apps_userlist.addHeaderView(this.layoutInflater.inflate(R.layout.list_header_app, null))
@@ -117,6 +120,10 @@ class FragmentApplistions : Fragment() {
         app_btn_hide.setOnClickListener {
             showHideAppDialog()
         }
+        app_btn_hide2.setOnClickListener {
+            val intent = Intent(this.context, ActivityHiddenApps::class.java)
+            startActivity(intent)
+        }
     }
 
     @SuppressLint("ApplySharedPref")
@@ -124,15 +131,6 @@ class FragmentApplistions : Fragment() {
         // pm list -u
         val spf = context!!.getSharedPreferences(SpfConfig.APP_HIDE_HISTORY_SPF, Context.MODE_PRIVATE)
 
-        val uninstalledApp = AppListHelper2().getUninstalledApp(this.context!!)
-        /*
-        val pm = context!!.packageManager
-        uninstalledApp.forEach {
-            if (!spf.contains(it.packageName)) {
-                spf.edit().putString(it.packageName, it.loadLabel(pm).toString())
-            }
-        }
-        */
         val all = spf.all
         val apps = ArrayList<String>()
         val selected = ArrayList<Boolean>()
@@ -145,7 +143,36 @@ class FragmentApplistions : Fragment() {
                 .setMultiChoiceItems(apps.toTypedArray(), selected.toBooleanArray()) { _, which, isChecked ->
                     selected[which] = isChecked
                 }
-                .setPositiveButton(R.string.btn_confirm) { dialog, which ->
+                .setNeutralButton(R.string.btn_again_hide) { _, _ ->
+                    val keys = all.keys.toList()
+                    val cmds = StringBuffer()
+                    val edit = spf.edit()
+                    for (i in selected.indices) {
+                        if (selected[i]) {
+                            cmds.append("pm disable ")
+                            cmds.append(keys.get(i))
+                            cmds.append("\n")
+                            cmds.append("pm hide ")
+                            cmds.append(keys[i])
+                            cmds.append("\n")
+                            edit.remove(keys.get(i))
+                        }
+                    }
+                    if (cmds.isNotEmpty()) {
+                        processBarDialog.showDialog("正在隐藏应用，稍等...")
+                        Thread(Runnable {
+                            KeepShellPublic.doCmdSync(cmds.toString())
+                            if (myHandler != null) {
+                                myHandler!!.post {
+                                    processBarDialog.hideDialog()
+                                    setList()
+                                    edit.commit()
+                                }
+                            }
+                        }).start()
+                    }
+                }
+                .setPositiveButton(R.string.btn_confirm) { _, _ ->
                     val keys = all.keys.toList()
                     val cmds = StringBuffer()
                     val edit = spf.edit()
