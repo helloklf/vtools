@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!--
-/* Copyright (c) 2017 Qualcomm Technologies, Inc.
- * All Rights Reserved.
- * Confidential and Proprietary - Qualcomm Technologies, Inc.
--->
+<!--modify by duduski-->
 
-<!--Ids are used in identifying the boosts, increment ids linearly,
-    do not modify Ids, or add in between--><!--follow the number format rules while specifying number, can be given
-    in any format-->
 <BoostConfigs>
     <PerfBoost>
         <!-- Type="1", main launch boost of 3sec -->

@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!--
-/* Copyright (c) 2017 Qualcomm Technologies, Inc.
- * All Rights Reserved.
- * Confidential and Proprietary - Qualcomm Technologies, Inc.
--->
+<!--modify by duduski-->
+
 <BoostConfigs>
     <PerfBoost>
         <!--app lauch boost-->

@@ -3,6 +3,8 @@ package com.omarea.vtools.addin
 import android.content.Context
 import android.os.Build
 import android.widget.Toast
+import com.omarea.common.shared.FileWrite
+import com.omarea.common.shared.MagiskExtend
 import com.omarea.shell_utils.PlatformUtils
 import com.omarea.utils.CommonCmds
 
@@ -19,6 +21,8 @@ class PerfBoostConfigAddin(private var context: Context) : AddinBase(context) {
             } else {
                 msm8898()
             }
+        } else if (soc == "msmnile") {
+            msmnile()
         } else if (soc == "sdm845") {
             sdm845()
         } else if (soc == "sdm630") {
@@ -34,36 +38,41 @@ class PerfBoostConfigAddin(private var context: Context) : AddinBase(context) {
                 sdm660()
             }
         } else {
-            Toast.makeText(context, "暂未适配这个处理器，暂时只支持 骁龙835、845、660AIE、630！", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "暂未适配这个处理器，暂时只支持 骁龙835、845、855、660AIE、630！", Toast.LENGTH_SHORT).show()
         }
     }
 
+    private fun msmnile() {
+        val path = FileWrite.writePrivateFile(context.assets, "addin/perfboostsconfig_msmnile.xml", "perfboostsconfig_msmnile.xml", context)
+        copyFile(path)
+    }
+
     private fun sdm845() {
-        val path = com.omarea.common.shared.FileWrite.writePrivateFile(context.assets, "addin/perfboostsconfig_sdm845.xml", "perfboostsconfig_sdm845.xml", context)
+        val path = FileWrite.writePrivateFile(context.assets, "addin/perfboostsconfig_sdm845.xml", "perfboostsconfig_sdm845.xml", context)
         copyFile(path)
     }
 
     private fun msm8898() {
-        val path = com.omarea.common.shared.FileWrite.writePrivateFile(context.assets, "addin/perfboostsconfig_msm8998.xml", "perfboostsconfig_msm8998.xml", context)
+        val path = FileWrite.writePrivateFile(context.assets, "addin/perfboostsconfig_msm8998.xml", "perfboostsconfig_msm8998.xml", context)
         copyFile(path)
     }
 
     // 配置文件和660AIE的写在一起了
     private fun sdm630() {
-        val path = com.omarea.common.shared.FileWrite.writePrivateFile(context.assets, "addin/perfboostsconfig_sdm660.xml", "perfboostsconfig_sdm660.xml", context)
+        val path = FileWrite.writePrivateFile(context.assets, "addin/perfboostsconfig_sdm660.xml", "perfboostsconfig_sdm660.xml", context)
         copyFile(path)
     }
 
     private fun sdm660() {
-        val path = com.omarea.common.shared.FileWrite.writePrivateFile(context.assets, "addin/perfboostsconfig_sdm660.xml", "perfboostsconfig_sdm660.xml", context)
+        val path = FileWrite.writePrivateFile(context.assets, "addin/perfboostsconfig_sdm660.xml", "perfboostsconfig_sdm660.xml", context)
         copyFile(path)
     }
 
     private fun copyFile(path: String?) {
         if (path != null) {
             val installPath = "/system/vendor/etc/perf/perfboostsconfig.xml"
-            if (com.omarea.common.shared.MagiskExtend.moduleInstalled()) {
-                com.omarea.common.shared.MagiskExtend.replaceSystemFile(installPath, path)
+            if (MagiskExtend.moduleInstalled()) {
+                MagiskExtend.replaceSystemFile(installPath, path)
 
                 Toast.makeText(context, "已通过Magisk更改参数，请重启手机~", Toast.LENGTH_SHORT).show()
             } else {

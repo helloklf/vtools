@@ -387,7 +387,13 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                     sb.append("busybox tar -xzpf $backupPath$packageName.tar.gz\n")
                     sb.append("install_group=`toybox ls -ld|cut -f3 -d ' '`\n")
                     sb.append("install_own=`toybox ls -ld|cut -f4 -d ' '`\n")
-                    sb.append("chown -R -L \$install_group:\$install_own ./*\n")
+                    sb.append("for item in *\ndo\n")
+                    sb.append(
+                        "if [[ ! \"\$item\" = \"lib\" ]] && [[ ! \"\$item\" = \"lib64\" ]]\n" +
+                        "then\n" +
+                            "chown -R \$install_group:\$install_own ./\$item\n" +
+                        "fi\n" +
+                    "done\n")
                     //sb.append("chown -R --reference=$userdataPath/$packageName *\n")
                 Log.d("userdataPath", "cd $userdataPath/$packageName\n")
                 sb.append(" else ")
@@ -399,7 +405,6 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         sb.append("sync\n")
         sb.append("sleep 2\n")
         sb.append("echo '[operation completed]'\n")
-        Log.d("userdataPath", sb.toString())
         execShell(sb)
     }
 
