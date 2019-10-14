@@ -135,27 +135,21 @@ class FragmentImg : Fragment() {
             //刷入recovery
             if (File(path).exists()) {
                 var partition = ""
-                if (requestCode == RECOVERY_IMG) {
-                    partition = "Recovery"
-                } else if (requestCode == BOOT_IMG) {
-                    partition = "Boot"
-                } else if (requestCode == DTBO_IMG) {
-                    partition = "DTBO"
-                } else if (requestCode == PERSIST_IMG) {
-                    partition = "Persist"
+                when (requestCode) {
+                    BOOT_IMG -> partition = "Boot"
+                    RECOVERY_IMG -> partition = "Recovery"
+                    DTBO_IMG -> partition = "DTBO"
+                    PERSIST_IMG -> partition = "Persist"
                 }
                 DialogHelper.animDialog(AlertDialog.Builder(context!!)
                         .setTitle(getString(R.string.flash_confirm))
                         .setNegativeButton(android.R.string.cancel, null)
                         .setPositiveButton(android.R.string.yes) { _, _ ->
-                            if (requestCode == RECOVERY_IMG) {
-                                BackupRestoreUtils(activity!!).flashRecovery(path)
-                            } else if (requestCode == BOOT_IMG) {
-                                BackupRestoreUtils(activity!!).flashBoot(path)
-                            } else if (requestCode == DTBO_IMG) {
-                                BackupRestoreUtils(activity!!).flashDTBO(path)
-                            } else if (requestCode == PERSIST_IMG) {
-                                BackupRestoreUtils(activity!!).flashPersist(path)
+                            when (requestCode) {
+                                BOOT_IMG -> BackupRestoreUtils(activity!!).flashBoot(path)
+                                RECOVERY_IMG -> BackupRestoreUtils(activity!!).flashRecovery(path)
+                                DTBO_IMG -> BackupRestoreUtils(activity!!).flashDTBO(path)
+                                PERSIST_IMG -> BackupRestoreUtils(activity!!).flashPersist(path)
                             }
                         }
                         .setMessage("此操作将刷入${path}到系统${partition}分区，如果你选择了错误的文件，刷入后可能导致手机无法开机！"))
