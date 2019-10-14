@@ -1,6 +1,5 @@
 package com.omarea.shell_utils
 
-import android.app.AlertDialog
 import android.content.Context
 import android.os.Handler
 import android.widget.Toast
@@ -14,12 +13,15 @@ import com.omarea.utils.CommonCmds
  */
 
 class BackupRestoreUtils(var context: Context) {
-    val dialog: ProgressBarDialog
+    val dialog: ProgressBarDialog = ProgressBarDialog(context)
     internal var myHandler: Handler = Handler()
 
     companion object {
         private var bootPartPath = "/dev/block/bootdevice/by-name/boot"
         private var recPartPath = "/dev/block/bootdevice/by-name/recovery"
+        private var dtboPartPath = "/dev/block/bootdevice/by-name/dtbo"
+        private var persistPartPath = "/dev/block/bootdevice/by-name/persist"
+
         fun isSupport(): Boolean {
             if (RootFile.itemExists(bootPartPath) || RootFile.itemExists(recPartPath)) {
                 return true
@@ -27,21 +29,27 @@ class BackupRestoreUtils(var context: Context) {
 
             var r = false
             val boots = KeepShellPublic.doCmdSync("ls /dev/block/platform/*/by-name/BOOT").split("\n")
-            if (boots.size > 0 && boots.first().startsWith("/dev/block/platform") && boots.first().endsWith("/by-name/BOOT")) {
+            if (boots.isNotEmpty() && boots.first().startsWith("/dev/block/platform") && boots.first().endsWith("/by-name/BOOT")) {
                 bootPartPath = boots.first()
                 r = true
             }
             val recs = KeepShellPublic.doCmdSync("ls /dev/block/platform/*/by-name/RECOVERY").split("\n")
-            if (recs.size > 0 && recs.first().startsWith("/dev/block/platform") && recs.first().endsWith("/by-name/RECOVERY")) {
+            if (recs.isNotEmpty() && recs.first().startsWith("/dev/block/platform") && recs.first().endsWith("/by-name/RECOVERY")) {
                 recPartPath = recs.first()
+                r = true
+            }
+            val dtbos = KeepShellPublic.doCmdSync("ls /dev/block/platform/*/by-name/DTBO").split("\n")
+            if (dtbos.isNotEmpty() && dtbos.first().startsWith("/dev/block/platform") && dtbos.first().endsWith("/by-name/DTBO")) {
+                dtboPartPath = dtbos.first()
+                r = true
+            }
+            val persists = KeepShellPublic.doCmdSync("ls /dev/block/platform/*/by-name/PERSIST").split("\n")
+            if (persists.isNotEmpty() && persists.first().startsWith("/dev/block/platform") && persists.first().endsWith("/by-name/PERSIST")) {
+                persistPartPath = persists.first()
                 r = true
             }
             return r
         }
-    }
-
-    init {
-        dialog = ProgressBarDialog(context)
     }
 
     //显示进度条
@@ -67,56 +75,30 @@ class BackupRestoreUtils(var context: Context) {
 
     //刷入Boot
     fun flashBoot(path: String) {
-        FlashBootThread(path).start()
+        FlashImgThread(path, bootPartPath).start()
     }
 
-    //显示弹窗提示
-    fun showDialogMsg(title: String, msg: String) {
-        myHandler.post {
-            val builder = AlertDialog.Builder(context)
-            builder.setTitle(title)
-            builder.setPositiveButton(android.R.string.yes, { _, _ ->
-            })
-            builder.setMessage(msg + "\n")
-            builder.create().show()
-        }
-    }
-
-    internal fun noRoot() {
-        showDialogMsg("请检查ROOT权限", "请检查是否已ROOT手机，并允许本应用访问ROOT权限！")
-    }
-
-    internal inner class FlashBootThread(var path: String) : Thread() {
-        override fun run() {
-            if (!isSupport() || !RootFile.itemExists(bootPartPath)) {
-                showMsg("暂不支持您的设备！", true)
-                return
-            }
-            showMsg("即将刷入\n$path\n请勿操作手机！", true)
-            showProgressBar()
-            if (KeepShellPublic.doCmdSync("dd if=\"$path\" of=$bootPartPath") != "error") {
-                showMsg("操作成功！", true)
-            } else {
-                showMsg("镜像刷入失败！", true)
-            }
-            hideProgressBar()
-        }
-    }
-
-    //刷入Recovery
     fun flashRecovery(path: String) {
-        FlashRecoveryThread(path).start()
+        FlashImgThread(path, recPartPath).start()
     }
 
-    internal inner class FlashRecoveryThread(var path: String) : Thread() {
+    fun flashDTBO(path: String) {
+        FlashImgThread(path, dtboPartPath).start()
+    }
+
+    fun flashPersist(path: String) {
+        FlashImgThread(path, persistPartPath).start()
+    }
+
+    internal inner class FlashImgThread(var inputPath: String, var outputPath: String) : Thread() {
         override fun run() {
-            if (!isSupport() || !RootFile.itemExists(recPartPath)) {
+            if (!isSupport() || !RootFile.itemExists(outputPath)) {
                 showMsg("暂不支持您的设备！", true)
                 return
             }
-            showMsg("即将刷入\n$path\n请勿操作手机！", true)
+            showMsg("即将刷入\n$inputPath\n请勿操作手机！", true)
             showProgressBar()
-            if (KeepShellPublic.doCmdSync("dd if=\"$path\" of=$recPartPath") != "error") {
+            if (KeepShellPublic.doCmdSync("dd if=\"$inputPath\" of=$outputPath") != "error") {
                 showMsg("操作成功！", true)
             } else {
                 showMsg("镜像刷入失败", true)
@@ -127,44 +109,36 @@ class BackupRestoreUtils(var context: Context) {
 
 
     fun saveBoot() {
-        SaveBootThread().start()
+        SaveImgThread(bootPartPath, "boot").start()
     }
-
-    internal inner class SaveBootThread : Thread() {
-        override fun run() {
-            if (!isSupport() || !RootFile.itemExists(bootPartPath)) {
-                showMsg("暂不支持您的设备！", true)
-                return
-            }
-            showProgressBar()
-            if (KeepShellPublic.doCmdSync("dd if=$bootPartPath of=${CommonCmds.SDCardDir}/boot.img;\n") != "error") {
-                showMsg("Boot导出成功，保存在${CommonCmds.SDCardDir}/boot.img ！", true)
-            } else {
-                showMsg("Boot导出失败！", true)
-            }
-            hideProgressBar()
-        }
-    }
-
 
     fun saveRecovery() {
-        SaveRecoveryThread().start()
+        SaveImgThread(recPartPath, "recovery").start()
     }
 
-    internal inner class SaveRecoveryThread : Thread() {
+    fun saveDTBO() {
+        SaveImgThread(dtboPartPath, "dtbo").start()
+    }
+
+    fun savePersist() {
+        SaveImgThread(persistPartPath, "persist").start()
+    }
+
+    internal inner class SaveImgThread(var inputPath: String, var outputName: String) : Thread() {
         override fun run() {
-            if (!isSupport() || !RootFile.itemExists(recPartPath)) {
+            val outPath = "${CommonCmds.SDCardDir}/$outputName.img"
+
+            if (!isSupport() || !RootFile.itemExists(inputPath)) {
                 showMsg("暂不支持您的设备！", true)
                 return
             }
             showProgressBar()
-            if (KeepShellPublic.doCmdSync("dd if=$recPartPath of=${CommonCmds.SDCardDir}/recovery.img\n") != "error") {
-                showMsg("Recovery导出成功，已保存为${CommonCmds.SDCardDir}/recovery.img ！", true)
+            if (KeepShellPublic.doCmdSync("dd if=$inputPath of=$outPath\n") != "error") {
+                showMsg("分区镜像导出成功，已保存为$outPath ！", true)
             } else {
-                showMsg("Recovery导出失败！", true)
+                showMsg("分区镜像导出失败！", true)
             }
             hideProgressBar()
         }
     }
-
 }
