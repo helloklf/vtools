@@ -13,6 +13,7 @@ import com.omarea.common.ui.DialogHelper
 import com.omarea.shell_utils.SysUtils
 import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
+import kotlin.system.exitProcess
 
 /**
  * 检查获取root权限
@@ -32,7 +33,7 @@ public class CheckRootStatus(var context: Context, private var next: Runnable? =
             var completed = false
             therad = Thread {
                 rootStatus = KeepShellPublic.checkRoot()
-                if (completed == true) {
+                if (completed) {
                     return@Thread
                 }
 
@@ -51,50 +52,50 @@ public class CheckRootStatus(var context: Context, private var next: Runnable? =
                         val builder = AlertDialog.Builder(context)
                                 .setCancelable(false)
                                 .setTitle(R.string.error_root)
-                                .setPositiveButton(R.string.btn_retry, { _, _ ->
+                                .setPositiveButton(R.string.btn_retry) { _, _ ->
                                     KeepShellPublic.tryExit()
                                     if (therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
                                         therad!!.interrupt()
                                         therad = null
                                     }
                                     forceGetRoot()
-                                })
-                                .setNeutralButton(R.string.btn_exit, { _, _ ->
-                                    System.exit(0)
+                                }
+                                .setNeutralButton(R.string.btn_exit) { _, _ ->
+                                    exitProcess(0)
                                     //android.os.Process.killProcess(android.os.Process.myPid())
-                                })
+                                }
                         if (skip != null) {
-                            builder.setNegativeButton(R.string.btn_skip, { _, _ ->
+                            builder.setNegativeButton(R.string.btn_skip) { _, _ ->
                                 myHandler.post(skip)
-                            })
+                            }
                         }
                         DialogHelper.animDialog(builder)
                     }
                 }
-            };
+            }
             therad!!.start()
             Thread(Runnable {
                 Thread.sleep(1000 * 15)
 
                 if (!completed) {
                     KeepShellPublic.tryExit()
-                    myHandler.post({
+                    myHandler.post {
                         DialogHelper.animDialog(AlertDialog.Builder(context)
                                 .setCancelable(false)
                                 .setTitle(R.string.error_root)
                                 .setMessage(R.string.error_su_timeout)
-                                .setNegativeButton(R.string.btn_retry, { _, _ ->
+                                .setNegativeButton(R.string.btn_retry) { _, _ ->
                                     if (therad != null && therad!!.isAlive && !therad!!.isInterrupted) {
                                         therad!!.interrupt()
                                         therad = null
                                     }
                                     forceGetRoot()
-                                })
-                                .setNeutralButton(R.string.btn_exit, { _, _ ->
-                                    System.exit(0)
+                                }
+                                .setNeutralButton(R.string.btn_exit) { _, _ ->
+                                    exitProcess(0)
                                     //android.os.Process.killProcess(android.os.Process.myPid())
-                                }))
-                    })
+                                })
+                    }
                 }
             })
         }

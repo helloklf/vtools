@@ -43,27 +43,35 @@ public class KeepShell(private var rootMode: Boolean = true) {
     private var enterLockTime = 0L
 
     private var checkRootState =
-            "if [[ \$(id -u 2>&1) == '0' ]] || [[ \$(\$UID) == '0' ]] || [[ \$(whoami 2>&1) == 'root' ]] || [[ \$(set | grep 'USER_ID=0') == 'USER_ID=0' ]]; then\n" +
+            "if [[ \$(id -u 2>&1) == '0' ]] || [[ \$(\$UID) == '0' ]] || [[ \$(whoami 2>&1) == 'root' ]] || [[ \$(\$USER_ID) == '0' ]]; then\n" +
             "  echo 'root'\n" +
             "else\n" +
-            "  exit 1\n" +
-            "  exit 1\n" +
+                "if [[ -d /cache ]]; then\n" +
+                "  echo 1 > /cache/vtools_root\n" +
+                "  if [[ -f /cache/vtools_root ]] && [[ \$(cat /cache/vtools_root) == '1' ]]; then\n" +
+                "    echo root\n" +
+                "    rm -rf /cache/vtools_root\n" +
+                "    return\n" +
+                "  fi\n" +
+                "fi\n" +
+                "exit 1\n" +
+                "exit 1\n" +
             "fi\n"
 
     fun checkRoot(): Boolean {
         val r = doCmdSync(checkRootState)
-        if (r == "error" || r.contains("permission denied") || r.contains("not allowed") || r.equals("not found")) {
+        return if (r == "error" || r.contains("permission denied") || r.contains("not allowed") || r.equals("not found")) {
             if (rootMode) {
                 tryExit()
             }
-            return false
+            false
         } else if (r == "root") {
-            return true
+            true
         } else {
             if (rootMode) {
                 tryExit()
             }
-            return false
+            false
         }
     }
 
