@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:gravity="center_vertical"
     android:orientation="vertical"
     android:paddingLeft="23dp"
@@ -25,4 +25,11 @@
         android:layout_marginTop="4dp"
         android:textColor="?android:attr/textColorSecondary"
         android:textSize="@dimen/kr_desc_size" />
+
+    <TextView
+        android:id="@id/kr_rows"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="?android:attr/textColorSecondary"
+        android:textSize="10dp" />
 </LinearLayout>
