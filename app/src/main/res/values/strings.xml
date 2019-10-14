@@ -119,10 +119,19 @@
     <string name="restore_action_title_rec">刷入Recovery</string>
     <string name="restore_action_desc_rec">选择刷入recovery.img</string>
 
+    <string name="backup_action_title_dtbo">导出DTBO分区</string>
+    <string name="backup_action_desc_dtbo">导出DTBO分区为img镜像，复制到/sdcard/dtbo.img</string>
+    <string name="restore_action_title_dtbo">刷入DTBO镜像</string>
+    <string name="restore_action_desc_dtbo">选择刷入dtbo.img</string>
+
+    <string name="backup_action_title_persist">导出Persist分区</string>
+    <string name="backup_action_desc_persist">导出Persist分区为img镜像，复制到/sdcard/persist.img</string>
+    <string name="restore_action_title_persist">刷入Persist镜像</string>
+    <string name="restore_action_desc_persist">选择刷入persist.img</string>
+
     <string name="backup_file_exists">覆盖文件？</string>
-    <string name="backup_boot_exists">/sdcard/boot.img已经存在，是否覆盖已有文件？\n</string>
-    <string name="backup_rec_exists">/sdcard/recovery.img已经存在，是否覆盖已有文件？\n</string>
-    <string name="backup_space_small">存储空间不足，请至少预留100M可用空间！</string>
+    <string name="backup_img_exists">/sdcard/%s.img已经存在，是否覆盖已有文件？\n</string>
+    <string name="backup_space_small">存储空间不足，请至少预留200M可用空间！</string>
 
 
     <string name="autobooster_tab_details">黑名单设置</string>

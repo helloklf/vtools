@@ -96,9 +96,7 @@
         <action confirm="true">
             <title>卸载所有更新</title>
             <desc>删除对所有系统应用程序的更新，并回退到系统自带的版本</desc>
-            <script>
-                pm  uninstall-system-updates
-            </script>
+            <script>pm  uninstall-system-updates</script>
         </action>
         <picker auto-off="true" support="file:///android_asset/custom/common/support_android_p.sh"
             options-sh="file:///android_asset/custom/actions/launcher_chooser/get_launchers.sh">
@@ -106,5 +104,10 @@
             <desc>将系统默认桌面，换成你安装的第三方桌面程序</desc>
             <set>file:///android_asset/custom/actions/launcher_chooser/set_launchers.sh</set>
         </picker>
+        <action auto-off="true">
+            <title>动态壁纸选择器</title>
+            <desc>打开动态壁纸选择器（如果有的话），方便一些隐藏了动态壁纸选择入口的定制系统</desc>
+            <set>am start -n com.android.wallpaper.livepicker/com.android.wallpaper.livepicker.LiveWallpaperActivity</set>
+        </action>
     </group>
 </items>
