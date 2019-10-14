@@ -2,6 +2,7 @@ package com.omarea.vtools.activities
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Build
@@ -15,6 +16,7 @@ import android.widget.Switch
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
+import com.omarea.permissions.Busybox
 import com.omarea.shell_utils.AppErrorLogcatUtils
 import com.omarea.store.SpfConfig
 import com.omarea.utils.CommonCmds
@@ -51,26 +53,19 @@ class ActivitySceneOtherSettings : AppCompatActivity() {
         // setTitle(R.string.app_name)
 
         // 显示返回按钮
-        getSupportActionBar()!!.setHomeButtonEnabled(true);
-        getSupportActionBar()!!.setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener({ _ ->
+        supportActionBar!!.setHomeButtonEnabled(true)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        toolbar.setNavigationOnClickListener {
             finish()
-        })
+        }
 
-        // 显示返回按钮
-        getSupportActionBar()!!.setHomeButtonEnabled(true);
-        getSupportActionBar()!!.setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener({ _ ->
-            finish()
-        });
-
-        home_hide_in_recents.setOnCheckedChangeListener({ _, checked ->
+        home_hide_in_recents.setOnCheckedChangeListener { _, checked ->
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, checked).commit()
-        })
+        }
 
-        settings_delaystart.setOnCheckedChangeListener({ _, checked ->
+        settings_delaystart.setOnCheckedChangeListener { _, checked ->
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DELAY, checked).commit()
-        })
+        }
         settings_disable_selinux.setOnClickListener {
             if (settings_disable_selinux.isChecked) {
                 KeepShellPublic.doCmdSync(CommonCmds.DisableSELinux)
@@ -109,6 +104,23 @@ class ActivitySceneOtherSettings : AppCompatActivity() {
                 KeepShellPublic.doCmdSync(CommonCmds.ResumeSELinux)
                 spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_STARTED_FSTRIM, value).commit()
             }
+        }
+        val systemBusyboxInstalled = Busybox.systemBusyboxInstalled()
+        settings_private_busybox.isChecked = (!systemBusyboxInstalled) && spf.getBoolean(SpfConfig.GLOBAL_USE_PRIVATE_BUSYBOX, false)
+        settings_private_busybox.isEnabled = (!systemBusyboxInstalled)
+        settings_private_busybox.setOnClickListener {
+            val value = (it as Switch).isChecked
+            if (value) {
+                spf.edit().putBoolean(SpfConfig.GLOBAL_USE_PRIVATE_BUSYBOX, value).commit()
+            } else {
+                spf.edit().putBoolean(SpfConfig.GLOBAL_USE_PRIVATE_BUSYBOX, value).commit()
+            }
+            DialogHelper.animDialog(AlertDialog.Builder(this)
+                            .setTitle(R.string.require_restart_app)
+                            .setPositiveButton(R.string.btn_confirm) {
+                                _, _ ->
+                                // KeepShellPublic.doCmdSync("am force-stop ${this.packageName}\nkillall -9 ${this.packageName}")
+                            }.setCancelable(false))
         }
     }
 

@@ -13,46 +13,56 @@ public class ShellExecutor {
     }
 
     private static String[] getEnv() {
-        if (defaultEnvPath.isEmpty()) {
-            try {
-                Process process = Runtime.getRuntime().exec("sh");
-                OutputStream outputStream = process.getOutputStream();
-                outputStream.write("echo $PATH".getBytes());
-                outputStream.flush();
-                outputStream.close();
-
-                InputStream inputStream = process.getInputStream();
-                byte[] cache = new byte[2048];
-                int length = inputStream.read(cache);
-                inputStream.close();
-                process.destroy();
-
-                String path = new String(cache, 0, length).trim();
-                if (path.length() > 0) {
-                    defaultEnvPath = path;
-                } else {
-                    throw new RuntimeException("未能获取到$PATH参数");
-                }
-            } catch (Exception ex) {
-                defaultEnvPath = "/sbin:/system/sbin:/system/bin:/system/xbin:/odm/bin:/vendor/bin:/vendor/xbin";
-            }
-        }
-
-        String path = defaultEnvPath;
         if (extraEnvPath != null && !extraEnvPath.isEmpty()) {
-            path = path + ":" + extraEnvPath;
+            if (defaultEnvPath.isEmpty()) {
+                try {
+                    Process process = Runtime.getRuntime().exec("sh");
+                    OutputStream outputStream = process.getOutputStream();
+                    outputStream.write("echo $PATH".getBytes());
+                    outputStream.flush();
+                    outputStream.close();
+
+                    InputStream inputStream = process.getInputStream();
+                    byte[] cache = new byte[2048];
+                    int length = inputStream.read(cache);
+                    inputStream.close();
+                    process.destroy();
+
+                    String path = new String(cache, 0, length).trim();
+                    if (path.length() > 0) {
+                        defaultEnvPath = path;
+                    } else {
+                        throw new RuntimeException("未能获取到$PATH参数");
+                    }
+                } catch (Exception ex) {
+                    defaultEnvPath = "/sbin:/system/sbin:/system/bin:/system/xbin:/odm/bin:/vendor/bin:/vendor/xbin";
+                }
+            }
+
+            String path = defaultEnvPath;
+
+            return new String[]{
+                "PATH=" + path + ":" + extraEnvPath
+            };
         }
 
-        return new String[]{
-                "PATH=" + path
-        };
+        return null;
+    }
+
+    private static Process getProcess(String run) throws IOException {
+        String[] env = getEnv();
+        Runtime runtime = Runtime.getRuntime();
+        if (env != null) {
+            return runtime.exec(run, getEnv());
+        }
+        return runtime.exec(run);
     }
 
     public static Process getSuperUserRuntime() throws IOException {
-        return Runtime.getRuntime().exec("su", getEnv());
+        return getProcess("su");
     }
 
     public static Process getRuntime() throws IOException {
-        return Runtime.getRuntime().exec("sh", getEnv());
+        return getProcess("sh");
     }
 }

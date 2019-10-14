@@ -10,7 +10,7 @@
     android:keepScreenOn="false"
     tools:openDrawer="start">
 
-    <ScrollView
+    <com.omarea.common.ui.OverScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="?android:actionBarSize">
@@ -95,7 +95,21 @@
             </LinearLayout>
 
             <LinearLayout style="@style/ListCardItem">
+                <Switch
+                    android:id="@+id/settings_private_busybox"
+                    style="@style/textTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_private_busybox" />
 
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_private_busybox_desc" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/ListCardItem">
                 <TextView
                     style="@style/textTitle"
                     android:layout_width="match_parent"
@@ -267,7 +281,7 @@
                     android:visibility="gone" />
             </LinearLayout>
         </LinearLayout>
-    </ScrollView>
+    </com.omarea.common.ui.OverScrollView>
 
     <include
         layout="@layout/layout_app_bar"

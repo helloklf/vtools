@@ -7,10 +7,10 @@
     android:clipToPadding="true"
     android:fitsSystemWindows="true">
 
-    <ScrollView
+    <com.omarea.common.ui.OverScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="56dp">
+        android:paddingTop="?actionBarSize">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -189,11 +189,10 @@
                     android:textColor="?colorAccent" />
             </LinearLayout>
         </LinearLayout>
-    </ScrollView>
+    </com.omarea.common.ui.OverScrollView>
 
     <include
         layout="@layout/layout_app_bar"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-
 </FrameLayout>

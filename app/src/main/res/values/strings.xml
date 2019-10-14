@@ -1,4 +1,6 @@
 <resources>
+    <string name="require_restart_app">需要重启应用才能生效</string>
+
     <integer name="opacity">0</integer>
     <string-array name="powercfg_force_igoned">
         <item>android</item>
@@ -149,6 +151,8 @@
     <string name="settings_theme">主题</string>
     <string name="settings_theme_wallpaper">使用壁纸</string>
     <string name="settings_theme_wallpaper_desc">使用系统壁纸作为窗口背景，显示为半透明界面</string>
+    <string name="settings_private_busybox">私有Busybox</string>
+    <string name="settings_private_busybox_desc">在Scene的私有目录下安装Busybox，兼容性较差可能导致Scene功能异常，但可以避免修改系统分区</string>
     <string name="settings_logcat_title">错误日志</string>
     <string name="settings_logcat_desc">当Scene发生错误闪退时，点击下面的按钮通过logcat抓取日志，发送给开发者以便解决问题</string>
 
@@ -427,12 +431,13 @@
     <string name="key_map_dege">边缘手势</string>
     <string name="key_map_dege_desc">开启后，在屏幕左右两侧及底部，从边缘向屏幕中心滑动，或滑动后悬停进行手势操作。  需要为Scene开启悬浮窗（在应用上层显示）权限！</string>
     <string name="busybox_install_classical">经典</string>
-    <string name="busybox_install_module">模块</string>
+    <string name="busybox_install_module">Magisk模块</string>
     <string name="busybox_install_private">私有(试验)</string>
     <string name="busybox_install_mode">请选择安装方式</string>
-    <string name="busybox_install_desc">经典：直接写入System分区，立即生效，更新系统后需要重新安装\n\n模块(推荐)：\n创建Magisk模块来安装Busybox，重启生效，更新系统后不用重新安装\n\n如果其中一种方式无法正常安装，可以换一种方式试试！</string>
+    <string name="busybox_install_desc">经典：直接写入System分区，立即生效，更新系统后需要重新安装\n\n模块(推荐)：\n创建Magisk模块来安装Busybox，重启生效，更新系统后不用重新安装\n\n私有：在Scene内部安装，兼容性较差可能导致Scene功能异常\n\n如果其中一种方式无法正常安装，可以换一种方式试试！</string>
     <string name="busybox_installed_magisk">已通过Magisk安装了Busybox，现在需要重启手机才能生效，立即重启吗？</string>
     <string name="busybox_install_fail">自动安装Busybox失败。也许System分区没被解锁。因此，部分功能可能无法使用！</string>
+    <string name="busybox_nonsupport">Scene集成的Busybox不支持你当前系统，请自己下载并安装Busybox</string>
     <string name="dex2oat_completed">dex2oat编译完成</string>
     <string name="dex2oat_compiling">dex2oat编译中</string>
     <string name="dex2oat_reset_running">dex2oat重置中</string>

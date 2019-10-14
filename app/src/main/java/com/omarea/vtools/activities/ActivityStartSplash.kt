@@ -13,7 +13,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.PermissionChecker
 import android.util.TypedValue
 import android.view.View
-import com.omarea.permissions.BusyboxInstaller2
+import com.omarea.permissions.Busybox
 import com.omarea.permissions.CheckRootStatus
 import com.omarea.permissions.WriteSettings
 import com.omarea.store.SpfConfig
@@ -115,18 +115,15 @@ class ActivityStartSplash : Activity() {
      * 获取root权限失败
      */
     private class CheckRootFail(context: ActivityStartSplash) : Runnable {
-        private var context: WeakReference<ActivityStartSplash>;
+        private var context: WeakReference<ActivityStartSplash> = WeakReference(context)
         override fun run() {
             context.get()!!.startToFinish()
         }
 
-        init {
-            this.context = WeakReference(context)
-        }
     }
 
     private class CheckFileWirte(context: ActivityStartSplash) : Runnable {
-        private var context: WeakReference<ActivityStartSplash>;
+        private var context: WeakReference<ActivityStartSplash> = WeakReference(context)
         override fun run() {
             context.get()!!.start_state_text.text = "检查并获取必需权限……"
             context.get()!!.hasRoot = true
@@ -134,17 +131,17 @@ class ActivityStartSplash : Activity() {
             context.get()!!.checkFileWrite(InstallBusybox(context.get()!!))
         }
 
-        init {
-            this.context = WeakReference(context)
-        }
     }
 
     private class InstallBusybox(context: ActivityStartSplash) : Runnable {
         private var context: WeakReference<ActivityStartSplash> = WeakReference(context)
         override fun run() {
-            val installer2 = BusyboxInstaller2(context.get()!!)
+            context.get()!!.start_state_text.text = "检查Busybox是否安装..."
+            Busybox(context.get()!!).forceInstall(BusyboxInstalled(context.get()!!))
+            /*
+            val installer2 = Busybox(context.get()!!)
             context.get()!!.start_state_text.text = "初始化Busybox……"
-            if (installer2.busyboxInstalled()) {
+            if (installer2.privateBusyboxInstalled()) {
                 BusyboxInstalled(context.get()!!).run()
             } else {
                 val handler = Handler()
@@ -160,19 +157,17 @@ class ActivityStartSplash : Activity() {
                     }
                 }).start()
             }
+            */
         }
 
     }
 
     private class BusyboxInstalled(context: ActivityStartSplash) : Runnable {
-        private var context: WeakReference<ActivityStartSplash>;
+        private var context: WeakReference<ActivityStartSplash> = WeakReference(context)
         override fun run() {
             context.get()!!.startToFinish()
         }
 
-        init {
-            this.context = WeakReference(context)
-        }
     }
 
     private fun checkPermission(permission: String): Boolean = PermissionChecker.checkSelfPermission(this.applicationContext, permission) == PermissionChecker.PERMISSION_GRANTED

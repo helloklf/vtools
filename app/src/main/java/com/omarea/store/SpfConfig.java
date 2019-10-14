@@ -61,6 +61,7 @@ public class SpfConfig {
     public static int GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT = -1000;
     public static String GLOBAL_SPF_FREEZE_ICON_NOTIFY = "freeze_icon_notify";
     public static String GLOBAL_SPF_BUSYBOX_INSTALLED = "busybox_installed";
+    public static String GLOBAL_USE_PRIVATE_BUSYBOX = "use_private_busybox";
 
     public static String SWAP_SPF = "swap"; //spf
     public static String SWAP_SPF_SWAP = "swap";
