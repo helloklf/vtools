@@ -187,7 +187,7 @@ class Busybox(private var context: Context) {
             next?.run()
         } else {
             val config = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-            if (config.getBoolean(SpfConfig.GLOBAL_USE_PRIVATE_BUSYBOX, false) && installPrivateBusybox()) {
+            if (config.getBoolean(SpfConfig.GLOBAL_USE_PRIVATE_BUSYBOX, false) && (installPrivateBusybox())) {
                 next?.run()
             } else {
                 installModeChooser(privateBusybox, next)
