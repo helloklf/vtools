@@ -13,7 +13,7 @@ import com.omarea.common.ui.DialogHelper
 import com.omarea.krscript.R
 import com.omarea.krscript.config.ActionParamInfo
 
-class ColorPicker(private val actionParamInfo: ActionParamInfo, private val context: Context) {
+class ParamsColorPicker(private val actionParamInfo: ActionParamInfo, private val context: Context) {
     fun render(): View {
         val layout = LayoutInflater.from(context).inflate(R.layout.kr_param_color, null)
         val textView = layout.findViewById<EditText>(R.id.kr_param_color_text)

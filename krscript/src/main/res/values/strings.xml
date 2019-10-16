@@ -23,6 +23,7 @@
     <string name="kr_params_render">渲染界面……</string>
     <string name="kr_please_choose_file">请选择文件</string>
     <string name="kr_please_input_color">请输入颜色</string>
+    <string name="kr_please_select">请选择</string>
     <string name="kr_write_external_storage">需要读写外置存储权限！</string>
     <string name="kr_download_create_fail">创建下载任务失败</string>
     <string name="kr_download_create_success">开始下载文件</string>

@@ -169,7 +169,7 @@ class PageConfigReader(private var context: Context) {
         return null
     }
 
-    var actionParamInfos: ArrayList<ActionParamInfo>? = null
+    private var actionParamInfos: ArrayList<ActionParamInfo>? = null
     var actionParamInfo: ActionParamInfo? = null
     private fun tagStartInAction(action: ActionInfo, parser: XmlPullParser) {
         if ("title" == parser.name) {
@@ -217,6 +217,9 @@ class PageConfigReader(private var context: Context) {
                             actionParamInfo.supported = false
                         }
                     }
+                    attrName == "multiple" -> {
+                        actionParamInfo.multiple = attrValue == "multiple" || attrValue == "true" || attrValue == "1"
+                    }
                 }
             }
             if (actionParamInfo.supported && actionParamInfo.name != null && actionParamInfo.name!!.isNotEmpty()) {
@@ -263,6 +266,7 @@ class PageConfigReader(private var context: Context) {
             "resource" == parser.name -> resourceNode(parser)
             "html" == parser.name -> info.onlineHtmlPage = parser.nextText()
             "config" == parser.name -> info.pageConfigPath = parser.nextText()
+            ("status" == parser.name || "status-bar" == parser.name) -> info.statusBar = parser.nextText()
         }
     }
 
@@ -338,6 +342,9 @@ class PageConfigReader(private var context: Context) {
                     if (pickerInfo.options == null)
                         pickerInfo.options = ArrayList()
                     pickerInfo.optionsSh = attrValue
+                }
+                "multiple" -> {
+                    pickerInfo.multiple = attrValue == "multiple" || attrValue == "true" || attrValue == "1"
                 }
             }
         }

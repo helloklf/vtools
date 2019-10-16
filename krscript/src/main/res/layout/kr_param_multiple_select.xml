@@ -8,31 +8,32 @@
     android:paddingRight="4dp">
 
     <TextView
-        android:id="@+id/kr_param_file_text"
+        android:id="@+id/kr_param_label_text"
+        android:maxLines="3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
+        android:background="@android:color/transparent"
         android:gravity="center_vertical"
-        android:hint="@string/kr_please_choose_file"
         android:textSize="15dp"
+        android:hint="@string/kr_please_select"
         android:marqueeRepeatLimit="marquee_forever" />
+    <TextView
+        android:id="@+id/kr_param_value_text"
+        android:visibility="gone"
+        android:layout_width="0dp"
+        android:layout_height="0dp" />
 
     <TextView
-        android:id="@+id/kr_param_file_path"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="gone" />
-
-    <ImageButton
-        android:id="@+id/kr_param_file_btn"
+        android:id="@+id/kr_param_count_text"
+        android:textStyle="bold"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_gravity="center_vertical"
-        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
         android:background="@android:color/transparent"
         android:padding="5dp"
-        android:scaleType="centerInside"
-        android:src="@drawable/kr_folder"
-        android:tint="@android:color/darker_gray" />
+        android:textColor="?colorAccent"
+        android:scaleType="centerInside" />
 </LinearLayout>

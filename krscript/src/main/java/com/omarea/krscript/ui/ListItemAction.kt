@@ -6,9 +6,9 @@ import android.widget.ImageView
 import com.omarea.krscript.R
 import com.omarea.krscript.model.ActionInfo
 
-class ListItemAction(private val context: Context,
-                     private val layoutId: Int,
-                     private val config: ActionInfo = ActionInfo()) : ListItemView(context, layoutId, config) {
+class ListItemAction(context: Context,
+                     layoutId: Int,
+                     config: ActionInfo = ActionInfo()) : ListItemView(context, layoutId, config) {
     private val widgetView = layout.findViewById<ImageView?>(R.id.kr_widget)
 
     init {

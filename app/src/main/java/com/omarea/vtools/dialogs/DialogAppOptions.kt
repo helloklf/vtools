@@ -412,7 +412,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
      * 禁用所选的应用
      */
     protected fun disableAll() {
-        confirm("冻结应用", "已选中了${apps.size}个应用，这些应用将会被冻结，可能导致手机功能不正常，继续冻结？", Runnable {
+        confirm("冻结应用", "确定冻结选中的${apps.size}个应用？", Runnable {
             _disableAll()
         })
     }
@@ -450,7 +450,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
      * 隐藏所选的应用
      */
     protected fun hideAll() {
-        confirm("隐藏应用", "你将禁用并隐藏${apps.size}个应用。\n\n卸载Scene前务必先恢复这些应用，否则你将需要恢复出厂设置才能还原这些应用。\n\n继续隐藏吗操作？", Runnable {
+        confirm("隐藏应用", "确定隐藏选中的${apps.size}个应用？", Runnable {
             _hideAll()
         })
     }
@@ -479,14 +479,12 @@ open class DialogAppOptions(protected final var context: Context, protected var 
     protected fun deleteAll() {
         confirm("删除应用", "已选择${apps.size}个应用，删除系统应用可能导致功能不正常，甚至无法开机，确定要继续删除？", Runnable {
             if (CheckRootStatus.isMagisk() && !com.omarea.common.shared.MagiskExtend.moduleInstalled() && (CheckRootStatus.isTmpfs("/system/app") || CheckRootStatus.isTmpfs("/system/priv-app"))) {
-                android.support.v7.app.AlertDialog.Builder(context)
+                DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("Magisk 副作用警告")
                         .setMessage("检测到你正在使用Magisk作为ROOT权限管理器，并且/system/app和/system/priv-app目录已被某些模块修改，这可能导致这些目录被Magisk劫持并且无法写入！！")
-                        .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             _deleteAll()
                         })
-                        .create()
-                        .show()
             } else {
                 _deleteAll()
             }
@@ -557,7 +555,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
      * 清除数据
      */
     protected fun clearAll() {
-        confirm("清空应用数据", "已选中${apps.size}个应用，这些应用的数据将会被清除，确定吗？", Runnable {
+        confirm("清空应用数据", "确定将选中的${apps.size}个应用数据清空？", Runnable {
             _clearAll()
         })
     }
@@ -595,7 +593,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
      * 卸载选中
      */
     protected fun uninstallAll() {
-        confirm("彻底卸载", "已选中${apps.size}个应用，正在卸载${apps.size}个应用，继续吗？", Runnable {
+        confirm("彻底卸载", "确定卸载选中的${apps.size}个应用？", Runnable {
             _uninstallAll()
         })
     }
@@ -618,7 +616,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         val userHandle = android.os.Process.myUserHandle()
         if (um != null) {
             val uid = um.getSerialNumberForUser(userHandle)
-            confirm("从当前用户(" + uid + ")卸载", "已选中${apps.size}个应用，正在卸载${apps.size}个应用，继续吗？", Runnable {
+            confirm("从当前用户($uid)卸载", "确定从当前用户卸载选中的${apps.size}个应用？", Runnable {
                 _uninstallAllOnlyUser(uid)
             })
         } else {
@@ -643,7 +641,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
      * 卸载且保留数据
      */
     protected fun uninstallKeepDataAll() {
-        confirm("卸载（保留数据）", "已选中${apps.size}个应用，卸载后，这些应用的数据会被保留，这可能会导致下次安装不同签名的同名应用时无法安装，继续吗？", Runnable {
+        confirm("卸载（保留数据）", "已选中${apps.size}个应用，卸载后，这些应用的数据会被保留，这会导致下次安装不同签名的同名应用时无法安装，继续吗？", Runnable {
             _uninstallKeepDataAll()
         })
     }

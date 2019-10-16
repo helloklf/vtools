@@ -12,10 +12,6 @@ interface KrScriptActionHandler {
         return false
     }
 
-    fun openExecutor(configItem: ConfigItemBase, onExit: Runnable): ShellHandlerBase? {
-        return null
-    }
-
     interface AddToFavoritesHandler {
         fun onAddToFavorites(configItem: ConfigItemBase, intent: Intent?)
     }

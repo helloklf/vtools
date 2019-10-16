@@ -24,6 +24,8 @@ class ActionParamInfo {
     var options: ArrayList<ActionParamOption>? = null
     var optionsFromShell: ArrayList<HashMap<String, Any>>? = null
     var optionsSh = ""
+    // 是否允许多选(options only)
+    var multiple: Boolean = false
     // 是否支持
     var supported: Boolean = true
 

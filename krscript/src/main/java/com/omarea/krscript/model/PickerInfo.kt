@@ -13,4 +13,6 @@ class PickerInfo : ConfigItemBase() {
 
     // 参数名
     var name: String = ""
+    // 是否允许多选
+    var multiple: Boolean = false
 }

@@ -13,12 +13,8 @@ import java.util.HashMap;
 /**
  * Created by Hello on 2018/04/01.
  */
-public class SimpleShellExecutor {
-    private static final String ASSETS_FILE = "file:///android_asset/";
+public class ShellExecutor {
     private boolean started = false;
-
-    public SimpleShellExecutor() {
-    }
 
     /**
      * 执行脚本
@@ -44,7 +40,7 @@ public class SimpleShellExecutor {
                 public void run() {
                     try {
                         finalProcess.destroy();
-                    } catch (Exception ex) {
+                    } catch (Exception ignored) {
                     }
                 }
             }) : null;

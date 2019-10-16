@@ -11,13 +11,13 @@ import com.omarea.krscript.R
 import com.omarea.krscript.config.ActionParamInfo
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.ParamInfoFilter
-import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class ActionParamsLayoutRender {
     companion object {
         /**
-         * 获取当前选中项索引
+         * 获取当前选中项索引（单选）
          * @param ActionParamInfo actionParamInfo 参数信息
          * @param ArrayList<HashMap<String, Any>> options 使用getParamOptions获得的数据（不为空时）
          */
@@ -46,6 +46,24 @@ class ActionParamsLayoutRender {
             }
             return selectedIndex
         }
+
+        /**
+         * 获取当前选中项索引（多选）
+         * @param ActionParamInfo actionParamInfo 参数信息
+         * @param ArrayList<HashMap<String, Any>> options 使用getParamOptions获得的数据（不为空时）
+         */
+        fun getParamOptionsSelectedStatus(actionParamInfo: ActionParamInfo, options: ArrayList<HashMap<String, Any>>): BooleanArray {
+            val status = BooleanArray(options.size)
+            val value = if (actionParamInfo.valueFromShell != null) actionParamInfo.valueFromShell else actionParamInfo.value
+            val values = value?.split("\n")
+
+            for (index in 0 until options.size) {
+                val item = options[index]["item"]
+                val option = item as ActionParamInfo.ActionParamOption
+                status[index] = (values != null && values.contains(option.value))
+            }
+            return status
+        }
     }
 
     private var linearLayout: LinearLayout
@@ -61,15 +79,20 @@ class ActionParamsLayoutRender {
             val options = actionParamInfo.optionsFromShell
             // 下拉框渲染
             if (options != null) {
-                val spinner = Spinner(context)
-                val selectedIndex = getParamOptionsCurrentIndex(actionParamInfo, options) // 获取当前选中项索引
+                if (actionParamInfo.multiple) {
+                    val view = ParamsMultipleSelect(actionParamInfo,context).render()
+                    addToLayout(view, actionParamInfo, false)
+                } else {
+                    val spinner = Spinner(context)
+                    val selectedIndex = getParamOptionsCurrentIndex(actionParamInfo, options) // 获取当前选中项索引
 
-                spinner.adapter = SimpleAdapter(context, options, R.layout.kr_simple_text_list_item, arrayOf("title"), intArrayOf(R.id.text))
-                spinner.isEnabled = !actionParamInfo.readonly
+                    spinner.adapter = SimpleAdapter(context, options, R.layout.kr_simple_text_list_item, arrayOf("title"), intArrayOf(R.id.text))
+                    spinner.isEnabled = !actionParamInfo.readonly
 
-                addToLayout(spinner, actionParamInfo)
-                if (selectedIndex > -1 && selectedIndex < options.size) {
-                    spinner.setSelection(selectedIndex)
+                    addToLayout(spinner, actionParamInfo)
+                    if (selectedIndex > -1 && selectedIndex < options.size) {
+                        spinner.setSelection(selectedIndex)
+                    }
                 }
             }
             // 选择框渲染
@@ -97,22 +120,19 @@ class ActionParamsLayoutRender {
             else if (actionParamInfo.type == "seekbar") {
                 val layout = SeekBarRender(actionParamInfo, context).render()
 
-                addToLayout(layout, actionParamInfo)
-                layout.tag = null
+                addToLayout(layout, actionParamInfo, false)
             }
             // 文件选择
             else if (actionParamInfo.type == "file") {
                 val layout = FileChooserRender(actionParamInfo, context, fileChooser).render()
 
-                addToLayout(layout, actionParamInfo)
-                layout.tag = null
+                addToLayout(layout, actionParamInfo, false)
             }
             // 颜色输入
             else if (actionParamInfo.type == "color") {
-                val layout = ColorPicker(actionParamInfo, context).render()
+                val layout = ParamsColorPicker(actionParamInfo, context).render()
 
-                addToLayout(layout, actionParamInfo)
-                layout.tag = null
+                addToLayout(layout, actionParamInfo, false)
             }
             // 文本框渲染
             else {
@@ -138,8 +158,10 @@ class ActionParamsLayoutRender {
         }
     }
 
-    private fun addToLayout(inputView: View, actionParamInfo: ActionParamInfo) {
-        inputView.tag = actionParamInfo.name
+    private fun addToLayout(inputView: View, actionParamInfo: ActionParamInfo, setTag: Boolean = true) {
+        if (setTag) {
+            inputView.tag = actionParamInfo.name
+        }
 
         val layout = LayoutInflater.from(context).inflate(R.layout.kr_param_row, null)
         if (!actionParamInfo.title.isNullOrEmpty()) {

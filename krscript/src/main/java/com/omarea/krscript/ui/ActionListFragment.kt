@@ -19,7 +19,6 @@ import com.omarea.common.ui.ThemeMode
 import com.omarea.krscript.R
 import com.omarea.krscript.config.ActionParamInfo
 import com.omarea.krscript.executor.ScriptEnvironmen
-import com.omarea.krscript.executor.SimpleShellExecutor
 import com.omarea.krscript.model.*
 import com.omarea.krscript.shortcut.ActionShortcutManager
 
@@ -175,22 +174,38 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
         val options = if (coalescentOptions != null) coalescentOptions.map { (it["item"] as ActionParamInfo.ActionParamOption).desc }.toTypedArray() else arrayOf()
         val values = if (coalescentOptions != null) coalescentOptions.map { (it["item"] as ActionParamInfo.ActionParamOption).value }.toTypedArray() else arrayOf()
 
-        var index = -1
-        if (coalescentOptions != null) {
-            index = ActionParamsLayoutRender.getParamOptionsCurrentIndex(paramInfo, coalescentOptions)
-        }
+        val builder = AlertDialog.Builder(this.context!!)
+                .setTitle(item.title)
+                .setNegativeButton(this.context!!.getString(R.string.btn_cancel)) { _, _ ->}
 
-        DialogHelper.animDialog(
-                AlertDialog.Builder(this.context!!)
-                        .setTitle(item.title)
-                        .setSingleChoiceItems(options, index) { _, which ->
-                            index = which
+        // 多选
+        if (item.multiple) {
+            val status = if(coalescentOptions == null) booleanArrayOf() else ActionParamsLayoutRender.getParamOptionsSelectedStatus(paramInfo, coalescentOptions)
+            builder.setMultiChoiceItems(options, status) { _, index, isChecked ->
+                status[index] = isChecked
+            }
+            builder.setPositiveButton(R.string.btn_confirm) {
+                _, _ ->
+                val result = ArrayList<String?>()
+                for (index in status.indices) {
+                    if (status[index]) {
+                        values[index]?.run {
+                            result.add(this)
                         }
-                        .setPositiveButton(this.context!!.getString(R.string.btn_execute)) { _, _ ->
-                            pickerExecute(item, "" + (if (index > -1) values[index] else ""), onCompleted)
-                        }
-                        .setNegativeButton(this.context!!.getString(R.string.btn_cancel)) { _, _ ->
-                        })
+                    }
+                }
+                pickerExecute(item, "" + result.joinToString("\n"), onCompleted)
+            }
+        } else {
+            // 单选
+            var index = if(coalescentOptions == null) -1 else ActionParamsLayoutRender.getParamOptionsCurrentIndex(paramInfo, coalescentOptions)
+            builder.setSingleChoiceItems(options, index) { _, which ->
+                index = which
+            }.setPositiveButton(this.context!!.getString(R.string.btn_execute)) { _, _ ->
+                pickerExecute(item, "" + (if (index > -1) values[index] else ""), onCompleted)
+            }
+        }
+        DialogHelper.animDialog(builder)
     }
 
     /**
@@ -379,22 +394,10 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     }
 
     private fun actionExecute(configItem: ConfigItemBase, script: String, onExit: Runnable, params: HashMap<String, String>?) {
-        var shellHandler: ShellHandlerBase? = null
-        if (krScriptActionHandler != null) {
-            shellHandler = krScriptActionHandler!!.openExecutor(configItem, onExit)
-        }
-        if (shellHandler == null) {
-            val darkMode = themeMode != null && themeMode!!.isDarkMode
+        val darkMode = themeMode != null && themeMode!!.isDarkMode
 
-            val dialog = DialogLogFragment.create(configItem, onExit, script, params, darkMode)
-            dialog.show(fragmentManager, "")
-            dialog.isCancelable = false
-
-            // val outValue = TypedValue()
-            // context!!.theme.resolveAttribute(R.attr.alertDialogTheme, outValue, true)
-            // Log.d("alertDialogTheme", "" + outValue.data)
-        } else {
-            SimpleShellExecutor().execute(this.context!!, configItem, script, onExit, params, shellHandler)
-        }
+        val dialog = DialogLogFragment.create(configItem, onExit, script, params, darkMode)
+        dialog.show(fragmentManager, "")
+        dialog.isCancelable = false
     }
 }
