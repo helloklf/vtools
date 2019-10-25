@@ -307,12 +307,11 @@ class PageConfigReader(private var context: Context) {
                         return null
                     }
                 }
-                /* "options-sh", "options-su" -> {
-                        if (configItemBase.options == null)
-                            configItemBase.options = ArrayList()
-                        configItemBase.optionsSh = attrValue
+                "reload" -> {
+                    if (attrValue == "page") {
+                        configItemBase.reloadPage = true
                     }
-                */
+                }
             }
         }
         return configItemBase

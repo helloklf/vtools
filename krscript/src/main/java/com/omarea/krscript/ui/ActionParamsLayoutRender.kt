@@ -249,11 +249,14 @@ class ActionParamsLayoutRender {
                 actionParamInfo.value = view.text.toString()
             } else if (view is Spinner) {
                 val item = view.selectedItem
-                if (item is HashMap<*, *>) {
-                    val opt = item["item"] as ActionParamInfo.ActionParamOption
-                    actionParamInfo.value = opt.value
-                } else
-                    actionParamInfo.value = item.toString()
+                when {
+                    item is HashMap<*, *> -> {
+                        val opt = item["item"] as ActionParamInfo.ActionParamOption
+                        actionParamInfo.value = opt.value
+                    }
+                    item != null -> actionParamInfo.value = item.toString()
+                    else -> actionParamInfo.value = ""
+                }
             }
 
             if (actionParamInfo.value.isNullOrEmpty()) {

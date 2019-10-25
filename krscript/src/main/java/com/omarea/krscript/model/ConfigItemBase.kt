@@ -23,4 +23,6 @@ open class ConfigItemBase {
     var autoOff: Boolean = false
     // 是否可中断执行
     var interruptible: Boolean = true
+    // 是否在执行完以后重载整个界面
+    var reloadPage: Boolean = false
 }

@@ -37,39 +37,16 @@ class PageLayoutRender(private val mContext: Context,
         return null
     }
 
-
-    private fun onItemClick(item: ConfigItemBase, listItemView: ListItemView) {
+    private fun getCommonOnExitRunnable(item: ConfigItemBase, listItemView: ListItemView): Runnable {
         val handler = Handler(Looper.getMainLooper())
-        when (item) {
-            is PageInfo -> clickListener.onPageClick(item, Runnable {
-                handler.post {
-                    if (item.descPollingShell.isNotEmpty()) {
-                        item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
-                    }
-                    listItemView.summary = item.desc
+        return Runnable {
+            handler.post {
+                if (item.descPollingShell.isNotEmpty()) {
+                    item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
                 }
-            })
-            is ActionInfo -> clickListener.onActionClick(item, Runnable {
-                handler.post {
-                    if (item.descPollingShell.isNotEmpty()) {
-                        item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
-                    }
-                    listItemView.summary = item.desc
-                }
-            })
-            is PickerInfo -> clickListener.onPickerClick(item, Runnable {
-                handler.post {
-                    if (item.descPollingShell.isNotEmpty()) {
-                        item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
-                    }
-                    listItemView.summary = item.desc
-                }
-            })
-            is SwitchInfo -> clickListener.onSwitchClick(item, Runnable {
-                handler.post {
-                    if (item.descPollingShell.isNotEmpty()) {
-                        item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
-                    }
+                listItemView.summary = item.desc
+
+                if (item is SwitchInfo) {
                     if (item.getState != null && !item.getState.isEmpty()) {
                         val shellResult = ScriptEnvironmen.executeResultRoot(mContext, item.getState)
                         item.checked = shellResult == "1" || shellResult.toLowerCase() == "true"
@@ -77,7 +54,16 @@ class PageLayoutRender(private val mContext: Context,
                     listItemView.summary = item.desc
                     (listItemView as ListItemSwitch).checked = item.checked
                 }
-            })
+            }
+        }
+    }
+
+    private fun onItemClick(item: ConfigItemBase, listItemView: ListItemView) {
+        when (item) {
+            is PageInfo -> clickListener.onPageClick(item, getCommonOnExitRunnable(item, listItemView))
+            is ActionInfo -> clickListener.onActionClick(item, getCommonOnExitRunnable(item, listItemView))
+            is PickerInfo -> clickListener.onPickerClick(item, getCommonOnExitRunnable(item, listItemView))
+            is SwitchInfo -> clickListener.onSwitchClick(item, getCommonOnExitRunnable(item, listItemView))
         }
     }
 
