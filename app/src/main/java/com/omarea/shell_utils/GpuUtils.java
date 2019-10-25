@@ -36,12 +36,15 @@ public class GpuUtils {
             String path1 = "/sys/kernel/gpu/gpu_busy";
             String path2 = "/sys/class/kgsl/kgsl-3d0/devfreq/gpu_load";
             String path3 = "/sys/class/kgsl/kgsl-3d0/gpu_busy_percentage";
+            String path4 = "/sys/class/kgsl/kgsl-3d0/gpuload";
             if (RootFile.INSTANCE.fileExists(path1)) {
                 GPU_LOAD_PATH = path1;
             } else if (RootFile.INSTANCE.fileExists(path2)) {
                 GPU_LOAD_PATH = path2;
             } else if (RootFile.INSTANCE.fileExists(path3)) {
                 GPU_LOAD_PATH = path3;
+            } else if (RootFile.INSTANCE.fileExists(path4)) {
+                GPU_LOAD_PATH = path4;
             } else {
                 GPU_LOAD_PATH = "";
             }
