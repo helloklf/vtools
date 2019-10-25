@@ -91,6 +91,7 @@
     <string name="btn_iknow">知道了</string>
     <string name="btn_exit">退出</string>
     <string name="btn_hide">隐藏</string>
+    <string name="btn_resume">恢复</string>
     <string name="btn_skip">跳过</string>
     <string name="btn_retry">重试</string>
     <string name="btn_reboot">重启</string>

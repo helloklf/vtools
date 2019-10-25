@@ -188,7 +188,7 @@ class DialogLogFragment : DialogFragment() {
 
         override fun onStart(msg: Any?) {
             this.logView.text = ""
-            updateLog(msg, scriptColor)
+            // updateLog(msg, scriptColor)
         }
 
         override fun onExit(msg: Any?) {

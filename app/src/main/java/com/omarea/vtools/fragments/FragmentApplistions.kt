@@ -18,6 +18,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
 import com.omarea.common.shell.KeepShellPublic
+import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.OverScrollListView
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.model.Appinfo
@@ -139,7 +140,7 @@ class FragmentApplistions : Fragment() {
             selected.add(false)
         }
 
-        val dialog = AlertDialog.Builder(context).setTitle("应用隐藏记录")
+        DialogHelper.animDialog(AlertDialog.Builder(context).setTitle("应用隐藏记录")
                 .setMultiChoiceItems(apps.toTypedArray(), selected.toBooleanArray()) { _, which, isChecked ->
                     selected[which] = isChecked
                 }
@@ -172,7 +173,7 @@ class FragmentApplistions : Fragment() {
                         }).start()
                     }
                 }
-                .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                .setPositiveButton(R.string.btn_resume) { _, _ ->
                     val keys = all.keys.toList()
                     val cmds = StringBuffer()
                     val edit = spf.edit()
@@ -200,11 +201,7 @@ class FragmentApplistions : Fragment() {
                             }
                         }).start()
                     }
-                }
-                .create()
-
-        dialog.window!!.setWindowAnimations(R.style.windowAnim)
-        dialog.show()
+                })
     }
 
     private fun getSelectedAppShowOptions(apptype: Appinfo.AppType, activity: Activity) {
