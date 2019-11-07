@@ -10,10 +10,10 @@ import com.omarea.krscript.R
 import com.omarea.krscript.config.ActionParamInfo
 
 class ParamsMultipleSelect(private val actionParamInfo: ActionParamInfo, private val context: Context) {
-    private var options:ArrayList<HashMap<String, Any>>? = null
+    private var options: ArrayList<HashMap<String, Any>>? = null
     private var status = booleanArrayOf()
-    private var labels:Array<String?> = arrayOf()
-    private var values:Array<String?> = arrayOf()
+    private var labels: Array<String?> = arrayOf()
+    private var values: Array<String?> = arrayOf()
 
     fun render(): View {
         options = actionParamInfo.optionsFromShell
@@ -66,12 +66,11 @@ class ParamsMultipleSelect(private val actionParamInfo: ActionParamInfo, private
         options?.run {
             DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle(context.getString(R.string.kr_please_select))
-                    .setMultiChoiceItems(labels, status) { _,  index, isChecked ->
+                    .setMultiChoiceItems(labels, status) { _, index, isChecked ->
                         status[index] = isChecked
                     }
-                    .setNeutralButton(R.string.btn_cancel){_,_ -> }
-                    .setPositiveButton(R.string.btn_confirm){
-                        _, _ ->
+                    .setNeutralButton(R.string.btn_cancel) { _, _ -> }
+                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
                         setView(textView, valueView, countView)
                     })
         }

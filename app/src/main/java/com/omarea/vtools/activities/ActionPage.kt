@@ -106,7 +106,7 @@ class ActionPage : AppCompatActivity() {
             _openPage(pageInfo)
         }
 
-        override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface) : Boolean {
+        override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
             return chooseFilePath(fileSelectedInterface)
         }
     }

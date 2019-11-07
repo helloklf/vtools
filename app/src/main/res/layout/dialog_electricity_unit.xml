@@ -2,24 +2,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/activity_horizontal_margin"
-    android:orientation="vertical">
-    <TextView
-        android:text="@string/electricity_unit_adj"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
-        style="@style/textTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    android:orientation="vertical"
+    android:padding="@dimen/activity_horizontal_margin">
 
     <TextView
-        android:text="@string/electricity_unit_adj_desc"
+        style="@style/textTitle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-    <LinearLayout
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_width="match_parent"
-        android:gravity="center_horizontal"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:text="@string/electricity_unit_adj" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/electricity_unit_adj_desc" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:gravity="center_horizontal"
         android:orientation="horizontal">
 
         <ImageButton
@@ -31,46 +33,52 @@
             android:scaleType="centerInside"
             android:src="@drawable/kr_minus"
             android:tint="?colorAccent" />
+
         <TextView
             android:id="@+id/electricity_adj_unit"
-            android:layout_gravity="center_vertical"
             style="@style/textTitle"
-            android:textAlignment="center"
             android:layout_width="100dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textAlignment="center" />
+
         <ImageButton
             android:id="@+id/electricity_adj_plus"
-            android:src="@drawable/kr_plus"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@android:color/transparent"
             android:padding="10dp"
             android:scaleType="centerInside"
-            android:background="@android:color/transparent"
-            android:tint="?colorAccent"
-            android:layout_width="40dp"
-            android:layout_height="40dp" />
+            android:src="@drawable/kr_plus"
+            android:tint="?colorAccent" />
     </LinearLayout>
+
     <LinearLayout
-        android:gravity="center_horizontal"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
         <TextView
-            android:text="@string/electricity_unit_as"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="@string/electricity_unit_as" />
+
         <TextView
-            android:text="0mA"
-            android:textAlignment="center"
             android:id="@+id/electricity_adj_sample"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="0mA"
+            android:textAlignment="center" />
     </LinearLayout>
+
     <Button
-        android:layout_gravity="end"
         android:id="@+id/electricity_adj_applay"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
         style="?android:buttonBarButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
+        android:layout_gravity="end"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_weight="1"
         android:text="@string/btn_confirm" />
 </LinearLayout>

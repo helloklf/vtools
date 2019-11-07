@@ -11,8 +11,6 @@ import com.omarea.krscript.R
 import com.omarea.krscript.config.ActionParamInfo
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.ParamInfoFilter
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class ActionParamsLayoutRender {
     companion object {
@@ -80,7 +78,7 @@ class ActionParamsLayoutRender {
             // 下拉框渲染
             if (options != null) {
                 if (actionParamInfo.multiple) {
-                    val view = ParamsMultipleSelect(actionParamInfo,context).render()
+                    val view = ParamsMultipleSelect(actionParamInfo, context).render()
                     addToLayout(view, actionParamInfo, false)
                 } else {
                     val spinner = Spinner(context)

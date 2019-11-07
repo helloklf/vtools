@@ -181,7 +181,7 @@ class FloatMonitor(context: Context) {
     private var temperatureChart: FloatMonitorBatteryView? = null
     private var temperatureText: TextView? = null
     private var batteryLevelText: TextView? = null
-    private var chargerView:ImageView? = null
+    private var chargerView: ImageView? = null
     private var otherInfo: TextView? = null
 
     private var activityManager: ActivityManager? = null
@@ -243,7 +243,7 @@ class FloatMonitor(context: Context) {
                 val ramInfoText = "DRAM  " + ((totalMem - availMem) * 100 / totalMem).toString() + "%"
 
                 val ramSpannable = SpannableString(ramInfoText);
-                val styleSpan  = StyleSpan(Typeface.BOLD);
+                val styleSpan = StyleSpan(Typeface.BOLD);
                 ramSpannable.setSpan(ForegroundColorSpan(Color.WHITE), 0, ramInfoText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 ramSpannable.setSpan(styleSpan, 0, ramInfoText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 otherInfo?.append(ramSpannable)
@@ -254,10 +254,10 @@ class FloatMonitor(context: Context) {
                     if (clusterIndex != 0) {
                         otherInfo?.append("\n")
                     }
-                    if(cluster.size > 0) {
-                        val title = "#" + cluster[0] + "~" + cluster[cluster.size - 1] + "  "+ subFreqStr(clustersFreq.get(clusterIndex)) + "Mhz";
+                    if (cluster.size > 0) {
+                        val title = "#" + cluster[0] + "~" + cluster[cluster.size - 1] + "  " + subFreqStr(clustersFreq.get(clusterIndex)) + "Mhz";
                         val titleSpannable = SpannableString(title);
-                        val styleSpan  = StyleSpan(Typeface.BOLD);
+                        val styleSpan = StyleSpan(Typeface.BOLD);
                         titleSpannable.setSpan(ForegroundColorSpan(Color.WHITE), 0, title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                         titleSpannable.setSpan(styleSpan, 0, title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                         otherInfo?.append(titleSpannable)

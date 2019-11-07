@@ -92,7 +92,9 @@ public abstract class ShellHandlerBase extends Handler {
         }
     }
 
-    protected void onReader(Object msg) { updateLog(msg, "#00cc55"); }
+    protected void onReader(Object msg) {
+        updateLog(msg, "#00cc55");
+    }
 
     protected void onWrite(Object msg) {
         updateLog(msg, "#808080");

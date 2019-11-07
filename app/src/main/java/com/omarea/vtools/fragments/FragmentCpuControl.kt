@@ -479,7 +479,7 @@ class FragmentCpuControl : Fragment() {
         }
     }
 
-    private fun bindClusterConfig(cluster:Int) {
+    private fun bindClusterConfig(cluster: Int) {
         val view = View.inflate(this.context!!, R.layout.fragment_cpu_cluster, null)
         cpu_cluster_list.addView(view)
         view.findViewById<TextView>(R.id.cluster_title).text = "Cluster $cluster"

@@ -3,20 +3,19 @@
     android:shareInterpolator="false"
     android:zAdjustment="top">
     <translate
-        android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+        android:duration="@android:integer/config_mediumAnimTime"
         android:fromYDelta="0%p"
-        android:toYDelta="-10%p"
-        android:duration="@android:integer/config_mediumAnimTime">
-    </translate>
+        android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+        android:toYDelta="-10%p"></translate>
     <scale
-        android:pivotY="50%"
-        android:pivotX="50%"
-        android:interpolator="@android:anim/anticipate_overshoot_interpolator"
         android:duration="@android:integer/config_longAnimTime"
         android:fromXScale="1"
         android:fromYScale="1"
-        android:toYScale="0.5"
-        android:toXScale="0.5" />
+        android:interpolator="@android:anim/anticipate_overshoot_interpolator"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:toXScale="0.5"
+        android:toYScale="0.5" />
     <alpha
         android:duration="@android:integer/config_longAnimTime"
         android:fromAlpha="1"

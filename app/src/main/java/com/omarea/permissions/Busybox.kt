@@ -6,7 +6,6 @@ import com.omarea.common.shared.FileWrite
 import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
-import com.omarea.shell_utils.BusyboxInstallerUtils
 import com.omarea.shell_utils.PropsUtils
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
@@ -83,6 +82,7 @@ class Busybox(private var context: Context) {
         config.edit().putBoolean(SpfConfig.GLOBAL_USE_PRIVATE_BUSYBOX, true).apply()
         return true
     }
+
     private fun uninstallPrivateBusybox() {
         val installPath = context.getString(R.string.toolkit_install_path)
         val absInstallPath = FileWrite.getPrivateFilePath(context, installPath)

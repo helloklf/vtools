@@ -15,8 +15,8 @@
         android:layout_weight="1"
         android:gravity="center_vertical"
         android:hint="@string/kr_please_choose_file"
-        android:textSize="15dp"
-        android:marqueeRepeatLimit="marquee_forever" />
+        android:marqueeRepeatLimit="marquee_forever"
+        android:textSize="15dp" />
 
     <TextView
         android:id="@+id/kr_param_file_path"

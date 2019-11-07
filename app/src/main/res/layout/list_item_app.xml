@@ -28,45 +28,46 @@
     <LinearLayout
         android:id="@+id/center"
         android:layout_width="0dp"
-        android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_gravity="fill_horizontal"
+        android:layout_weight="1"
         android:orientation="vertical"
         android:paddingStart="7dp">
 
         <TextView
             android:id="@+id/ItemTitle"
+            style="@style/textTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:lines="1"
-            style="@style/textTitle" />
+            android:lines="1" />
 
         <TextView
             android:id="@+id/ItemText"
+            style="@style/textSmall"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:lines="1"
-            style="@style/textSmall" />
+            android:lines="1" />
+
         <TextView
             android:id="@+id/ItemPath"
+            style="@style/textSmall"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/textSmall" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 
-
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
         <TextView
             android:id="@+id/ItemEnabledStateText"
-            android:maxWidth="40dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxWidth="40dp"
             android:textAlignment="textEnd"
             android:textColor="?colorAccent"
-            android:textSize="14dp"
-            android:layout_width="wrap_content" />
+            android:textSize="14dp" />
     </LinearLayout>
 </LinearLayout>

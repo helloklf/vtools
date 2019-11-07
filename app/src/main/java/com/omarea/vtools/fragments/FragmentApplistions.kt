@@ -10,7 +10,6 @@ import android.os.Handler
 import android.os.Message
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,7 +26,6 @@ import com.omarea.ui.AppListAdapter
 import com.omarea.ui.SearchTextWatcher
 import com.omarea.ui.TabIconHelper
 import com.omarea.utils.AppListHelper
-import com.omarea.utils.AppListHelper2
 import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
 import com.omarea.vtools.activities.ActivityHiddenApps

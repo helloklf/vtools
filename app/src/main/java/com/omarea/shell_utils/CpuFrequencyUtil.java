@@ -23,9 +23,8 @@ public class CpuFrequencyUtil {
     private final static String scaling_available_governors = cpufreq_sys_dir + "scaling_available_governors";
 
     private final static String sched_boost = "/proc/sys/kernel/sched_boost";
-
-    private static ArrayList<String[]> cpuClusterInfo;
     private static final Object cpuClusterInfoLoading = true;
+    private static ArrayList<String[]> cpuClusterInfo;
     private static String lastCpuState = "";
 
     public static String[] getAvailableFrequencies(Integer cluster) {
@@ -68,6 +67,7 @@ public class CpuFrequencyUtil {
 
     /**
      * 获取当前所有核心中最高的频率
+     *
      * @return
      */
     public static int getCurrentFrequency() {

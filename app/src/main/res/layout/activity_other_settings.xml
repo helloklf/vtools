@@ -95,6 +95,7 @@
             </LinearLayout>
 
             <LinearLayout style="@style/ListCardItem">
+
                 <Switch
                     android:id="@+id/settings_private_busybox"
                     style="@style/textTitle"
@@ -110,6 +111,7 @@
             </LinearLayout>
 
             <LinearLayout style="@style/ListCardItem">
+
                 <TextView
                     style="@style/textTitle"
                     android:layout_width="match_parent"

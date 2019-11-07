@@ -42,7 +42,7 @@ public class ShellExecutor {
             String path = defaultEnvPath;
 
             return new String[]{
-                "PATH=" + path + ":" + extraEnvPath
+                    "PATH=" + path + ":" + extraEnvPath
             };
         }
 

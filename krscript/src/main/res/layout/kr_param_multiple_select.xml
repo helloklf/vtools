@@ -9,31 +9,32 @@
 
     <TextView
         android:id="@+id/kr_param_label_text"
-        android:maxLines="3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:background="@android:color/transparent"
         android:gravity="center_vertical"
-        android:textSize="15dp"
         android:hint="@string/kr_please_select"
-        android:marqueeRepeatLimit="marquee_forever" />
+        android:marqueeRepeatLimit="marquee_forever"
+        android:maxLines="3"
+        android:textSize="15dp" />
+
     <TextView
         android:id="@+id/kr_param_value_text"
-        android:visibility="gone"
         android:layout_width="0dp"
-        android:layout_height="0dp" />
+        android:layout_height="0dp"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/kr_param_count_text"
-        android:textStyle="bold"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="4dp"
         android:background="@android:color/transparent"
         android:padding="5dp"
+        android:scaleType="centerInside"
         android:textColor="?colorAccent"
-        android:scaleType="centerInside" />
+        android:textStyle="bold" />
 </LinearLayout>

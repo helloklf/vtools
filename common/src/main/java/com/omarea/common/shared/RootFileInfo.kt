@@ -24,15 +24,15 @@ class RootFileInfo {
     var filePath: String = ""
     var isDirectory: Boolean = false
     var inodeCount = 0
-    var fileSize:Long = 0
-    var owner:String = ""
-    var ownerGroup:String = ""
-    var lastModifyDateTime:String = ""
+    var fileSize: Long = 0
+    var owner: String = ""
+    var ownerGroup: String = ""
+    var lastModifyDateTime: String = ""
     var executable: Boolean = false
     var softLink = ""
 
     val fileName: String
-        get () {
+        get() {
             if (filePath.endsWith("/")) {
                 return filePath.substring(0, filePath.length - 1)
             }
@@ -41,7 +41,6 @@ class RootFileInfo {
 
     val absolutePath: String
         get() = parentDir + "/" + fileName
-
 
 
     public fun exists(): Boolean {

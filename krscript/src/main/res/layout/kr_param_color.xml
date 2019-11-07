@@ -13,12 +13,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
-        android:maxLength="9"
-        android:textSize="15dp"
         android:background="@android:color/transparent"
         android:gravity="center_vertical"
         android:hint="@string/kr_please_input_color"
-        android:marqueeRepeatLimit="marquee_forever" />
+        android:marqueeRepeatLimit="marquee_forever"
+        android:maxLength="9"
+        android:textSize="15dp" />
 
     <ImageView
         android:id="@+id/kr_param_color_invalid"

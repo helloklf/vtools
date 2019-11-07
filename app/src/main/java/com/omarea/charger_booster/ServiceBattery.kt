@@ -11,7 +11,6 @@ import android.os.IBinder
 class ServiceBattery : Service() {
     internal var batteryChangedReciver: ReciverBatterychanged? = null
 
-
     override fun onBind(intent: Intent): IBinder? {
         return null
     }

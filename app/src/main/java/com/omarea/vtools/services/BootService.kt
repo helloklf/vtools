@@ -21,6 +21,7 @@ import com.omarea.store.AppConfigStore
 import com.omarea.store.CpuConfigStorage
 import com.omarea.store.SpfConfig
 import com.omarea.utils.CommonCmds
+import com.omarea.utils.RawText
 import com.omarea.vtools.R
 
 /**
@@ -160,15 +161,7 @@ class BootService : IntentService("vtools-boot") {
             if (mac != "") {
                 updateNotification(getString(R.string.boot_modify_mac))
 
-                keepShell.doCmdSync("chmod 0755 /sys/class/net/wlan0/address\n" +
-                        "svc wifi disable\n" +
-                        "ifconfig wlan0 down\n" +
-                        "echo '$mac' > /sys/class/net/wlan0/address\n" +
-                        "ifconfig wlan0 hw ether '$mac'\n" +
-                        "chmod 0755 /sys/devices/soc/a000000.qcom,wcnss-wlan/wcnss_mac_addr\n" +
-                        "echo '$mac' > /sys/devices/soc/a000000.qcom,wcnss-wlan/wcnss_mac_addr\n" +
-                        "ifconfig wlan0 up\n" +
-                        "svc wifi enable\n\n")
+                keepShell.doCmdSync("mac=\"$mac\"" + RawText.getRawText(context, R.raw.change_mac))
             }
         }
 

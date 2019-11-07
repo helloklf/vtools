@@ -99,7 +99,6 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
                     .setPositiveButton(R.string.btn_confirm, { _, _ ->
                         command = StringBuilder()
                                 .append(CommonCmds.MountSystemRW)
-                                .append(CommonCmds.MountVendorRW)
                                 .append("function cp664()\n{\n cp $1 $2\n chmod 664 $2\n}\n\n")
                                 .append("\ncp664 $nolimits ${baseName}.conf")
                                 .append("\ncp664 $nolimits ${baseName}-normal.conf")
@@ -143,7 +142,6 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
             }
             command = StringBuilder()
                     .append(CommonCmds.MountSystemRW)
-                    .append(CommonCmds.MountVendorRW)
                     .append("cp /system/vendor/bin/thermal-engine /system/vendor/bin/thermal-engine.bak\n" +
                             "rm -f /system/vendor/bin/thermal-engine\n" +
 
@@ -174,7 +172,6 @@ class ThermalAddin(private var context: Context) : AddinBase(context) {
         }
         command = StringBuilder()
                 .append(CommonCmds.MountSystemRW)
-                .append(CommonCmds.MountVendorRW)
                 .append("cp /system/vendor/bin/thermal-engine.bak /system/vendor/bin/thermal-engine\n" +
                         "chmod 755 /system/vendor/bin/thermal-engine\n" +
                         "rm -f /system/vendor/bin/thermal-engine.bak\n" +

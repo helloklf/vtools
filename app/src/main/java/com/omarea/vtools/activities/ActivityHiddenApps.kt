@@ -235,7 +235,7 @@ class ActivityHiddenApps : AppCompatActivity() {
                             val pkg = pkgs.item(pkgIndex) as Element
                             if (pkg.hasAttribute("name") && pkg.hasAttribute("inst") && pkg.getAttribute("inst") == "false") {
                                 val packageName = pkg.getAttribute("name")
-                                val result = apps.filter { it.packageName ==  packageName }
+                                val result = apps.filter { it.packageName == packageName }
                                 if (result.isNotEmpty()) {
                                     pkg.setAttribute("inst", "true")
                                     hasChange = true

@@ -8,11 +8,11 @@
 
     <LinearLayout
         android:id="@+id/fw_chart_list"
-        android:layout_gravity="center_vertical"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="4dp"
-        android:orientation="horizontal">
+        android:layout_gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="4dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -111,14 +111,16 @@
                     android:id="@+id/fw_battery_chart"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
+
                 <ImageView
                     android:id="@+id/fw_charger"
-                    android:alpha="0.7"
-                    android:visibility="gone"
-                    android:src="@drawable/charge"
-                    android:layout_gravity="center"
                     android:layout_width="22dp"
-                    android:layout_height="22dp" />
+                    android:layout_height="22dp"
+                    android:layout_gravity="center"
+                    android:alpha="0.7"
+                    android:src="@drawable/charge"
+                    android:visibility="gone" />
+
                 <TextView
                     android:id="@+id/fw_battery_level"
                     android:layout_width="match_parent"
@@ -149,12 +151,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:minWidth="90dp"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:minWidth="90dp"
         android:text="Loading……"
         android:textColor="#bbffffff"
         android:textSize="10dp"
-        android:visibility="gone"
-        android:typeface="monospace" />
+        android:typeface="monospace"
+        android:visibility="gone" />
 </LinearLayout>

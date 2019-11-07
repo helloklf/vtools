@@ -78,7 +78,6 @@ class PerfBoostConfigAddin(private var context: Context) : AddinBase(context) {
             } else {
                 command = StringBuilder()
                         .append(CommonCmds.MountSystemRW)
-                        .append(CommonCmds.MountVendorRW)
                         .append("if [[ ! -e $installPath.bak ]]; then cp $installPath $installPath.bak; fi;\n")
                         .append("rm -f $installPath\n")
                         .append("cp $path $installPath\n")

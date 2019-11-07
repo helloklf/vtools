@@ -35,7 +35,7 @@ object RootFile {
 
         val file = RootFileInfo()
 
-        val  buffer = StringBuffer()
+        val buffer = StringBuffer()
         var spaceCount = 0
         for (i in 0 until row.length) {
             if (spaceCount < 7 && row[i] == ' ') {
@@ -70,7 +70,7 @@ object RootFile {
                 buffer.append(row[i])
             }
         }
-        val  fileName = buffer.toString()
+        val fileName = buffer.toString()
 
         if (fileName == "./" || fileName == "../") {
             return null
@@ -86,10 +86,10 @@ object RootFile {
             val index = fileName.indexOf(" -> ")
             file.filePath = fileName.substring(0, index)
             file.softLink = fileName.substring(index + 4)
-            if(file.softLink.endsWith("@")) {
+            if (file.softLink.endsWith("@")) {
                 file.softLink = file.softLink.substring(0, file.softLink.length - 1)
             }
-            if(RootFile.dirExists(file.softLink)) {
+            if (RootFile.dirExists(file.softLink)) {
                 file.isDirectory = true
             } else if (RootFile.fileExists(file.softLink)) {
                 file.isDirectory = false
@@ -107,7 +107,7 @@ object RootFile {
     }
 
     fun list(path: String): ArrayList<RootFileInfo> {
-        val absPath = if(path.endsWith("/")) path.subSequence(0, path.length - 1).toString() else path
+        val absPath = if (path.endsWith("/")) path.subSequence(0, path.length - 1).toString() else path
         val files = ArrayList<RootFileInfo>()
         if (dirExists(absPath)) {
             val outputInfo = KeepShellPublic.doCmdSync("ls -laF \"$absPath\"")
@@ -126,12 +126,12 @@ object RootFile {
     }
 
     fun fileInfo(path: String): RootFileInfo? {
-        val absPath = if(path.endsWith("/")) path.subSequence(0, path.length - 1).toString() else path
+        val absPath = if (path.endsWith("/")) path.subSequence(0, path.length - 1).toString() else path
         val outputInfo = KeepShellPublic.doCmdSync("ls -ldF \"$absPath\"")
         if (outputInfo != "error") {
             val rows = outputInfo.split("\n")
             for (row in rows) {
-                val file  = shellFileInfoRow(row, absPath)
+                val file = shellFileInfoRow(row, absPath)
                 if (file != null) {
                     file.filePath = absPath.substring(absPath.lastIndexOf("/") + 1)
                     file.parentDir = absPath.substring(0, absPath.lastIndexOf("/"))

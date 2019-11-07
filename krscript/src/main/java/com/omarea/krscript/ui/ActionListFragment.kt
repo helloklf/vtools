@@ -176,16 +176,15 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
 
         val builder = AlertDialog.Builder(this.context!!)
                 .setTitle(item.title)
-                .setNegativeButton(this.context!!.getString(R.string.btn_cancel)) { _, _ ->}
+                .setNegativeButton(this.context!!.getString(R.string.btn_cancel)) { _, _ -> }
 
         // 多选
         if (item.multiple) {
-            val status = if(coalescentOptions == null) booleanArrayOf() else ActionParamsLayoutRender.getParamOptionsSelectedStatus(paramInfo, coalescentOptions)
+            val status = if (coalescentOptions == null) booleanArrayOf() else ActionParamsLayoutRender.getParamOptionsSelectedStatus(paramInfo, coalescentOptions)
             builder.setMultiChoiceItems(options, status) { _, index, isChecked ->
                 status[index] = isChecked
             }
-            builder.setPositiveButton(R.string.btn_confirm) {
-                _, _ ->
+            builder.setPositiveButton(R.string.btn_confirm) { _, _ ->
                 val result = ArrayList<String?>()
                 for (index in status.indices) {
                     if (status[index]) {
@@ -198,7 +197,7 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
             }
         } else {
             // 单选
-            var index = if(coalescentOptions == null) -1 else ActionParamsLayoutRender.getParamOptionsCurrentIndex(paramInfo, coalescentOptions)
+            var index = if (coalescentOptions == null) -1 else ActionParamsLayoutRender.getParamOptionsCurrentIndex(paramInfo, coalescentOptions)
             builder.setSingleChoiceItems(options, index) { _, which ->
                 index = which
             }.setPositiveButton(this.context!!.getString(R.string.btn_execute)) { _, _ ->

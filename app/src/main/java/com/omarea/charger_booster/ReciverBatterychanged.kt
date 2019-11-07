@@ -65,7 +65,7 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
             val currentLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
             var bpLevel = chargeConfig.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, SpfConfig.CHARGE_SPF_BP_LEVEL_DEFAULT)
             if (bpLevel <= 30) {
-                showMsg("Scene：当前电池保护电量值设为小于30%，会引起一些异常，已自动替换为默认值"+  SpfConfig.CHARGE_SPF_BP_LEVEL_DEFAULT +"%！", true)
+                showMsg("Scene：当前电池保护电量值设为小于30%，会引起一些异常，已自动替换为默认值" + SpfConfig.CHARGE_SPF_BP_LEVEL_DEFAULT + "%！", true)
                 bpLevel = SpfConfig.CHARGE_SPF_BP_LEVEL_DEFAULT
             }
             val bp = chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_BP, false)
@@ -128,7 +128,7 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
                     // 如果【起床时间】比【睡觉时间】要大，如 2:00 睡到 9:00 起床
                     (getUp > sleep && (nowTimeValue >= sleep && nowTimeValue <= getUp)) ||
                             // 正常时间睡觉【睡觉时间】大于【起床时间】，如 23:00 睡到 7:00 起床
-                    (getUp < sleep && (nowTimeValue >= sleep || nowTimeValue <= getUp))
+                            (getUp < sleep && (nowTimeValue >= sleep || nowTimeValue <= getUp))
 
             // 如果正在夜间慢速充电时间
             if (inSleepTime) {

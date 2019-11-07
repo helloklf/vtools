@@ -167,7 +167,7 @@ class FragmentAddin : Fragment() {
                 _openPage(pageInfo)
             }
 
-            override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface) : Boolean {
+            override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
                 return chooseFilePath(fileSelectedInterface)
             }
         }
@@ -249,6 +249,7 @@ class FragmentAddin : Fragment() {
     }
 
     private lateinit var themeMode: ThemeMode
+
     companion object {
         fun createPage(themeMode: ThemeMode): Fragment {
             val fragment = FragmentAddin()

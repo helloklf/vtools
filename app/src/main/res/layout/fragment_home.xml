@@ -11,6 +11,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:scrollbars="none">
+
         <LinearLayout
             android:id="@+id/home_mainview"
             android:layout_width="match_parent"
@@ -276,70 +277,77 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_marginTop="4dp"
+                android:orientation="horizontal"
                 android:padding="4dp">
 
                 <LinearLayout
-                    android:padding="10dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="@drawable/krscript_item_ripple"
-                    android:orientation="horizontal"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
                     android:layout_width="0dp"
-                    android:layout_height="50dp">
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/krscript_item_ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
                     <TextView
                         style="@style/textTitle"
-                        android:text="电流"
                         android:layout_width="40dp"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="电流" />
+
                     <TextView
                         android:id="@+id/home_battery_now"
-                        android:textAlignment="center"
-                        android:layout_weight="1"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAlignment="center" />
+
                     <ImageButton
                         android:id="@+id/home_battery_edit"
-                        android:background="@android:color/transparent"
-                        android:tint="?colorAccent"
-                        android:layout_marginLeft="4dp"
-                        android:scaleType="centerInside"
-                        android:padding="5dp"
-                        android:src="@drawable/edit"
                         android:layout_width="30dp"
-                        android:layout_height="30dp" />
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="4dp"
+                        android:background="@android:color/transparent"
+                        android:padding="5dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/edit"
+                        android:tint="?colorAccent" />
                 </LinearLayout>
+
                 <LinearLayout
-                    android:padding="10dp"
-                    android:background="@drawable/krscript_item_ripple"
-                    android:orientation="horizontal"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
                     android:layout_width="0dp"
-                    android:layout_height="50dp">
+                    android:layout_height="50dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/krscript_item_ripple"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
                     <TextView
                         style="@style/textTitle"
-                        android:text="电量"
                         android:layout_width="40dp"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="电量" />
+
                     <TextView
                         android:id="@+id/home_battery_capacity"
-                        android:textAlignment="center"
-                        android:layout_weight="1"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAlignment="center" />
+
                     <ImageButton
                         android:id="@+id/home_battery_settings"
-                        android:background="@android:color/transparent"
-                        android:tint="?colorAccent"
-                        android:layout_marginLeft="4dp"
-                        android:scaleType="centerInside"
-                        android:padding="5dp"
-                        android:src="@drawable/ic_settings"
                         android:layout_width="30dp"
-                        android:layout_height="30dp" />
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="4dp"
+                        android:background="@android:color/transparent"
+                        android:padding="5dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_settings"
+                        android:tint="?colorAccent" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

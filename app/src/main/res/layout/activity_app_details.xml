@@ -11,9 +11,9 @@
     tools:openDrawer="start">
 
     <com.omarea.common.ui.OverScrollView
-        android:paddingTop="?actionBarSize"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingTop="?actionBarSize">
 
         <LinearLayout
             android:layout_width="match_parent"

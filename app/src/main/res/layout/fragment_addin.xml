@@ -24,10 +24,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:divider="@color/color_list_divider"
-                    android:paddingTop="@dimen/activity_vertical_margin"
-                    android:paddingBottom="@dimen/activity_vertical_margin"
                     android:dividerHeight="0sp"
-                    android:listSelector="@android:color/transparent" />
+                    android:listSelector="@android:color/transparent"
+                    android:paddingTop="@dimen/activity_vertical_margin"
+                    android:paddingBottom="@dimen/activity_vertical_margin" />
 
                 <FrameLayout
                     android:id="@+id/list_page2"

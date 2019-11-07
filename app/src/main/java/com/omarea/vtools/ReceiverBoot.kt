@@ -14,6 +14,7 @@ class ReceiverBoot : BroadcastReceiver() {
     companion object {
         var running: Boolean = false
     }
+
     override fun onReceive(context: Context, intent: Intent) {
         if (running) {
             return

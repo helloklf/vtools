@@ -98,7 +98,7 @@ public class FilePathResolver {
      * @return The value of the _data column, which is typically a file path.
      */
     private String getDataColumn(Context context, Uri uri,
-                                        String selection, String[] selectionArgs) {
+                                 String selection, String[] selectionArgs) {
 
         Cursor cursor = null;
         final String column = "_data";

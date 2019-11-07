@@ -7,28 +7,28 @@
 
     <RelativeLayout
         android:id="@+id/top_bar"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
         android:layout_width="match_parent"
-        android:layout_height="?actionBarSize">
+        android:layout_height="?actionBarSize"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
 
         <TextView
             android:id="@+id/title"
             style="@style/textTitle"
-            android:maxLines="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
             android:layout_toStartOf="@id/btn_cancel"
-            android:layout_alignParentStart="true"
+            android:maxLines="1"
             android:textSize="18dp" />
 
         <ImageButton
             android:id="@+id/btn_cancel"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
             android:background="@android:color/transparent"
             android:rotation="180"

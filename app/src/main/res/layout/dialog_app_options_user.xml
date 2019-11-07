@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="#11888888"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#11888888"
     android:orientation="vertical"
     android:padding="12dp">
 
@@ -14,10 +14,10 @@
         android:text="请选择操作" />
 
     <LinearLayout
-        android:layout_marginTop="6dp"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -52,9 +52,9 @@
             <!--备份全部-->
             <LinearLayout
                 android:id="@+id/app_options_backup_all"
-                android:layout_marginLeft="6dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
                 android:layout_weight="1"
                 android:background="@drawable/krscript_item_ripple"
                 android:gravity="center_vertical"
@@ -77,9 +77,9 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginTop="6dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -110,9 +110,9 @@
             <!--清空数据-->
             <LinearLayout
                 android:id="@+id/app_options_clear"
-                android:layout_marginLeft="6dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
                 android:layout_weight="1"
                 android:background="@drawable/krscript_item_ripple"
                 android:gravity="center_vertical"
@@ -135,9 +135,9 @@
             <!--卸载应用-->
             <LinearLayout
                 android:id="@+id/app_options_uninstall"
-                android:layout_marginLeft="6dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
                 android:layout_weight="1"
                 android:background="@drawable/krscript_item_ripple"
                 android:gravity="center_vertical"
@@ -160,9 +160,9 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginTop="6dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
             <!--卸载保留数据-->
@@ -193,9 +193,9 @@
             <!--从当前用户卸载应用-->
             <LinearLayout
                 android:id="@+id/app_options_uninstall_user"
-                android:layout_marginLeft="6dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
                 android:layout_weight="1"
                 android:background="@drawable/krscript_item_ripple"
                 android:gravity="center_vertical"
@@ -218,18 +218,18 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginTop="6dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <!--冻结应用-->
             <LinearLayout
                 android:id="@+id/app_options_app_freeze"
-                android:layout_marginRight="6dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="6dp"
                 android:layout_weight="1"
                 android:background="@drawable/krscript_item_ripple"
                 android:gravity="center_vertical"
@@ -252,9 +252,9 @@
             <!--解冻-->
             <LinearLayout
                 android:id="@+id/app_options_app_unfreeze"
-                android:layout_marginRight="6dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="6dp"
                 android:layout_weight="1"
                 android:background="@drawable/krscript_item_ripple"
                 android:gravity="center_vertical"
@@ -303,10 +303,11 @@
 
     <LinearLayout
         android:id="@+id/app_options_single_only"
-        android:layout_marginTop="6dp"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -340,9 +341,9 @@
             <!--启动应用-->
             <LinearLayout
                 android:id="@+id/app_options_open"
-                android:layout_marginLeft="6dp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="6dp"
                 android:layout_weight="1"
                 android:background="@drawable/krscript_item_ripple"
                 android:gravity="center_vertical"
@@ -365,9 +366,9 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginTop="6dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -424,9 +425,9 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_marginTop="6dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -460,9 +461,9 @@
     <!--dex2oat-->
     <LinearLayout
         android:id="@+id/app_options_dex2oat"
-        android:layout_marginTop="6dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
         android:background="@drawable/krscript_item_ripple"
         android:gravity="center_vertical"
         android:orientation="horizontal"

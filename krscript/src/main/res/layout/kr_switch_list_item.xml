@@ -42,8 +42,8 @@
         android:alpha="0.8"
         android:clickable="false"
         android:elevation="5dp"
-        android:focusable="false"
         android:enabled="false"
+        android:focusable="false"
         android:thumb="@drawable/kr_switch_thumb"
         android:track="@drawable/kr_switch_track" />
 </LinearLayout>

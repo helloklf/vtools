@@ -198,15 +198,15 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                     error.append(msg.obj)
                     error.append("\n")
                 } else if (msg.what == 10) {
-                        if (msg.obj == true) {
-                            textView.text = "操作完成！"
-                        } else {
-                            textView.text = "出现异常！"
-                        }
-                        handler.postDelayed({
-                            alert.dismiss()
-                            alert.hide()
-                        }, 2000)
+                    if (msg.obj == true) {
+                        textView.text = "操作完成！"
+                    } else {
+                        textView.text = "出现异常！"
+                    }
+                    handler.postDelayed({
+                        alert.dismiss()
+                        alert.hide()
+                    }, 2000)
                 } else {
                     val obj = msg.obj.toString()
                     if (obj.contains("[operation completed]")) {
@@ -313,8 +313,8 @@ open class DialogAppOptions(protected final var context: Context, protected var 
             if (data) {
                 sb.append(
                         "killall -9 $packageName 2> /dev/null\n" +
-                        "am kill-all $packageName 2> /dev/null\n" +
-                        "am force-stop $packageName 2> /dev/null\n")
+                                "am kill-all $packageName 2> /dev/null\n" +
+                                "am force-stop $packageName 2> /dev/null\n")
                 sb.append("cd $userdataPath/$packageName\n")
                 sb.append("echo '[backup ${item.appName}]'\n")
                 if (allowPigz)
@@ -379,26 +379,26 @@ open class DialogAppOptions(protected final var context: Context, protected var 
             }
             if (data && File("$backupPath$packageName.tar.gz").exists()) {
                 sb.append("if [ -d $userdataPath/$packageName ]\n")
-                    sb.append(" then ")
-                    sb.append("echo '[restore ${item.appName}]'\n")
-                    //sb.append("pm clear $packageName\n")
-                    sb.append("sync\n")
-                    sb.append("cd $userdataPath/$packageName\n")
-                    sb.append("busybox tar -xzpf $backupPath$packageName.tar.gz\n")
-                    sb.append("install_group=`toybox ls -ld|cut -f3 -d ' '`\n")
-                    sb.append("install_own=`toybox ls -ld|cut -f4 -d ' '`\n")
-                    sb.append("for item in *\ndo\n")
-                    sb.append(
+                sb.append(" then ")
+                sb.append("echo '[restore ${item.appName}]'\n")
+                //sb.append("pm clear $packageName\n")
+                sb.append("sync\n")
+                sb.append("cd $userdataPath/$packageName\n")
+                sb.append("busybox tar -xzpf $backupPath$packageName.tar.gz\n")
+                sb.append("install_group=`toybox ls -ld|cut -f3 -d ' '`\n")
+                sb.append("install_own=`toybox ls -ld|cut -f4 -d ' '`\n")
+                sb.append("for item in *\ndo\n")
+                sb.append(
                         "if [[ ! \"\$item\" = \"lib\" ]] && [[ ! \"\$item\" = \"lib64\" ]]\n" +
-                        "then\n" +
-                            "chown -R \$install_group:\$install_own ./\$item\n" +
-                        "fi\n" +
-                    "done\n")
-                    //sb.append("chown -R --reference=$userdataPath/$packageName *\n")
+                                "then\n" +
+                                "chown -R \$install_group:\$install_own ./\$item\n" +
+                                "fi\n" +
+                                "done\n")
+                //sb.append("chown -R --reference=$userdataPath/$packageName *\n")
                 Log.d("userdataPath", "cd $userdataPath/$packageName\n")
                 sb.append(" else ")
-                    sb.append("echo '[skip ${item.appName}]'\n")
-                    sb.append("sleep 1\n")
+                sb.append("echo '[skip ${item.appName}]'\n")
+                sb.append("sleep 1\n")
                 sb.append("fi\n")
             }
         }

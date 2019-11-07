@@ -107,22 +107,24 @@
         </LinearLayout>
 
         <LinearLayout
-            android:gravity="center"
-            android:layout_marginTop="20dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center">
+
             <Button
                 android:id="@+id/color_preview"
-                android:layout_gravity="center_vertical"
                 android:layout_width="70dp"
-                android:layout_height="40dp" />
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical" />
+
             <TextView
-                android:layout_marginStart="20dp"
                 android:id="@+id/color_preview_text"
-                android:layout_gravity="center_vertical"
-                android:textSize="14dp"
                 android:layout_width="100dp"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="20dp"
+                android:textSize="14dp" />
         </LinearLayout>
     </LinearLayout>
 

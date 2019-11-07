@@ -230,10 +230,10 @@ class BatteryUtils {
     private var changeLimitRunning = false
     private var isFirstRun = true
     fun setChargeInputLimit(limit: Int, context: Context): Boolean {
-        synchronized(changeLimitRunning) {
-            if (changeLimitRunning) {
-                return false
-            } else {
+        if (changeLimitRunning) {
+            return false
+        } else {
+            synchronized(changeLimitRunning) {
                 changeLimitRunning = true
 
                 if (fastChargeScript.isEmpty()) {
@@ -252,7 +252,7 @@ class BatteryUtils {
                 return if (fastChargeScript.isNotEmpty()) {
                     if (limit > 3000) {
                         var current = 3000
-                        while (current < limit && current < 9999) {
+                        while (current < limit - 300 && current < 9700) {
                             KeepShellAsync.getInstance("setChargeInputLimit").doCmd(fastChargeScript + current)
                             current += 300
                         }
@@ -269,7 +269,7 @@ class BatteryUtils {
     }
 
     fun pdSupported(): Boolean {
-        return RootFile.fileExists("/sys/class/power_supply/usb/pd_allowed")
+        return RootFile.fileExists("/sys/class/power_supply/usb/pd_allowed") || RootFile.fileExists("/sys/class/power_supply/usb/pd_active")
     }
 
     fun pdAllowed(): Boolean {
@@ -363,7 +363,7 @@ class BatteryUtils {
                     "\tfi;\n" +
                     "done;")
             if (batterySensor != "error") {
-                batterySensor = batterySensor!!.trim()
+                batterySensor = batterySensor.trim()
             } else {
                 batterySensor = null
             }

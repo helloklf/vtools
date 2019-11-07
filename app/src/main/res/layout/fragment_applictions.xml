@@ -126,6 +126,7 @@
                             android:paddingLeft="10dp"
                             android:paddingRight="10dp"
                             android:text="应用隐藏记录" />
+
                         <Button
                             android:id="@+id/app_btn_hide2"
                             android:layout_width="wrap_content"

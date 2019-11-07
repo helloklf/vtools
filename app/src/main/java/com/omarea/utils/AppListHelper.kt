@@ -51,7 +51,7 @@ class AppListHelper(context: Context) {
             }
         } catch (ex: Exception) {
         }
-        return  stateTags.toString()
+        return stateTags.toString()
     }
 
     /**

@@ -177,7 +177,7 @@ class FragmentBattery : Fragment() {
             }
         }
         settings_qc.setOnCheckedChangeListener { buttonView, isChecked ->
-            battery_night_mode_configs.visibility = if(isChecked) View.VISIBLE else View.GONE
+            battery_night_mode_configs.visibility = if (isChecked) View.VISIBLE else View.GONE
             if (!isChecked) {
                 battery_night_mode.isChecked = false
                 spf.edit().putBoolean(SpfConfig.CHARGE_SPF_NIGHT_MODE, false).apply()
@@ -229,7 +229,7 @@ class FragmentBattery : Fragment() {
                 batteryUnits.setAllowed(isChecked)
             }
             settings_pd.isChecked = batteryUnits.pdAllowed()
-            settings_pd_state.text = if (batteryUnits.pdActive())getString(R.string.battery_pd_active_1) else getString(R.string.battery_pd_active_0)
+            settings_pd_state.text = if (batteryUnits.pdActive()) getString(R.string.battery_pd_active_1) else getString(R.string.battery_pd_active_0)
         } else {
             settings_pd_support.visibility = View.GONE
         }

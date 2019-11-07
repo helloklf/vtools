@@ -116,11 +116,10 @@ class ActivitySceneOtherSettings : AppCompatActivity() {
                 spf.edit().putBoolean(SpfConfig.GLOBAL_USE_PRIVATE_BUSYBOX, value).commit()
             }
             DialogHelper.animDialog(AlertDialog.Builder(this)
-                            .setTitle(R.string.require_restart_app)
-                            .setPositiveButton(R.string.btn_confirm) {
-                                _, _ ->
-                                // KeepShellPublic.doCmdSync("am force-stop ${this.packageName}\nkillall -9 ${this.packageName}")
-                            }.setCancelable(false))
+                    .setTitle(R.string.require_restart_app)
+                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                        // KeepShellPublic.doCmdSync("am force-stop ${this.packageName}\nkillall -9 ${this.packageName}")
+                    }.setCancelable(false))
         }
     }
 
