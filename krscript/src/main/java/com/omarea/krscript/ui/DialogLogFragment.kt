@@ -4,6 +4,7 @@ import android.app.Dialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Message
@@ -216,9 +217,17 @@ class DialogLogFragment : DialogFragment() {
         }
     }
 
+    private var onDismissRunnable:Runnable? = null
+    override fun onDismiss(dialog: DialogInterface?) {
+        super.onDismiss(dialog)
+        onDismissRunnable?.run()
+        onDismissRunnable = null
+    }
+
     companion object {
         fun create(configItem: ConfigItemBase,
                    onExit: Runnable,
+                   onDismiss: Runnable,
                    script: String,
                    params: HashMap<String, String>?,
                    darkMode: Boolean = false): DialogLogFragment {
@@ -228,6 +237,7 @@ class DialogLogFragment : DialogFragment() {
             fragment.script = script
             fragment.params = params
             fragment.themeResId = if (darkMode) R.style.kr_full_screen_dialog_dark else R.style.kr_full_screen_dialog_light
+            fragment.onDismissRunnable = onDismiss
 
             return fragment
         }

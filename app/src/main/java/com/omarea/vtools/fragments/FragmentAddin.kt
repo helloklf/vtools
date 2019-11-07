@@ -129,29 +129,32 @@ class FragmentAddin : Fragment() {
     }
 
     private var page2ConfigLoaded = false
+    private val pageConfig = "custom/pages/page_list.xml"
 
-    private fun loadSwitchsConfig() {
+    private fun loadPageConfig() {
         if (page2ConfigLoaded)
             return
         val progressBarDialog = ProgressBarDialog(context!!)
         progressBarDialog.showDialog("读取配置，稍等...")
         Thread(Runnable {
             ScriptEnvironmen.init(this.context!!, "custom/executor.sh", "toolkit")
-            val config = "custom/pages/page_list.xml"
-            val items = PageConfigReader(this.activity!!).readConfigXml(config)
+            val items = PageConfigReader(this.activity!!).readConfigXml(pageConfig)
             myHandler.post {
                 page2ConfigLoaded = true
 
-                val favoritesFragment = ActionListFragment.create(items, getKrScriptActionHandler(config), null, themeMode)
-                activity!!.supportFragmentManager.beginTransaction().add(R.id.list_page2, favoritesFragment).commit()
+                val favoritesFragment = ActionListFragment.create(items, getKrScriptActionHandler(), null, themeMode)
+                activity!!.supportFragmentManager.beginTransaction().replace(R.id.list_page2, favoritesFragment).commit()
                 progressBarDialog.hideDialog()
             }
         }).start()
     }
 
-
-    private fun getKrScriptActionHandler(pageConfig: String): KrScriptActionHandler {
+    private fun getKrScriptActionHandler(): KrScriptActionHandler {
         return object : KrScriptActionHandler {
+            override fun onActionCompleted(configItemBase: ConfigItemBase) {
+                loadPageConfig()
+            }
+
             override fun addToFavorites(configItemBase: ConfigItemBase, addToFavoritesHandler: KrScriptActionHandler.AddToFavoritesHandler) {
                 val intent = Intent()
 
@@ -239,7 +242,7 @@ class FragmentAddin : Fragment() {
 
         tabHost.setOnTabChangedListener { tabId ->
             if (tabId == configTab) {
-                loadSwitchsConfig()
+                loadPageConfig()
             }
             tabIconHelper.updateHighlight()
         }

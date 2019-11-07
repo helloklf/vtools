@@ -9,10 +9,15 @@ import android.text.Layout
 import android.util.Log
 import android.util.Xml
 import android.widget.Toast
+import com.omarea.common.shared.FileWrite
+import com.omarea.common.shell.KeepShellPublic
+import com.omarea.common.shell.RootFile
 import com.omarea.krscript.executor.ExtractAssets
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.*
 import org.xmlpull.v1.XmlPullParser
+import java.io.File
+import java.io.FileInputStream
 import java.io.InputStream
 
 /**
@@ -20,7 +25,31 @@ import java.io.InputStream
  */
 class PageConfigReader(private var context: Context) {
     private val ASSETS_FILE = "file:///android_asset/"
-    private fun getConfig(context: Context, filePath: String): InputStream? {
+
+    private fun tryOpenDiskFile(context: Context, filePath: String): FileInputStream? {
+        try {
+            val file = File(filePath)
+            if (file.exists() && file.canRead()) {
+                return file.inputStream()
+            } else if (RootFile.fileExists(filePath)) {
+                val cachePath = FileWrite.getPrivateFilePath(context, "kr-script/outside_page.xml")
+                KeepShellPublic.doCmdSync("cp -f \"$filePath\" \"$cachePath\"")
+                val cacheFile = File(cachePath)
+                if (cacheFile.exists() && cacheFile.canRead()) {
+                    return cacheFile.inputStream()
+                }
+            }
+        } catch (ex: java.lang.Exception) {
+        }
+        return null
+    }
+
+    fun getConfig(context: Context, filePath: String): InputStream? {
+        val fileInputStream = tryOpenDiskFile(context, filePath)
+        if (fileInputStream != null) {
+            return fileInputStream
+        }
+
         try {
             if (filePath.startsWith(ASSETS_FILE)) {
                 return context.assets.open(filePath.substring(ASSETS_FILE.length))
@@ -35,6 +64,19 @@ class PageConfigReader(private var context: Context) {
     fun readConfigXml(filePath: String): ArrayList<ConfigItemBase>? {
         try {
             val fileInputStream = getConfig(context, filePath) ?: return ArrayList()
+            return readConfigXml(fileInputStream)
+        } catch (ex: Exception) {
+            Handler(Looper.getMainLooper()).post {
+                Toast.makeText(context, "解析配置文件失败\n" + ex.message, Toast.LENGTH_LONG).show()
+            }
+            Log.e("KrConfig Fail！", "" + ex.message)
+        }
+
+        return null
+    }
+
+    fun readConfigXml(fileInputStream: InputStream): ArrayList<ConfigItemBase>? {
+        try {
             val parser = Xml.newPullParser()// 获取xml解析器
             parser.setInput(fileInputStream, "utf-8")// 参数分别为输入流和字符编码
             var type = parser.eventType
@@ -49,7 +91,7 @@ class PageConfigReader(private var context: Context) {
                 when (type) {
                     XmlPullParser.START_TAG ->
                         if ("group" == parser.name) {
-                            group = groupNode(GroupInfo(), parser)
+                            group = groupNode(parser)
                         } else if (group != null && !group.supported) {
                             // 如果 group.supported !- true 跳过group内所有项
                         } else {
@@ -280,7 +322,7 @@ class PageConfigReader(private var context: Context) {
         }
     }
 
-    private fun groupNode(groupInfo: GroupInfo, parser: XmlPullParser): GroupInfo {
+    private fun groupNode(parser: XmlPullParser): GroupInfo {
         val groupInfo = GroupInfo()
         for (i in 0 until parser.attributeCount) {
             val attrName = parser.getAttributeName(i)
@@ -307,8 +349,8 @@ class PageConfigReader(private var context: Context) {
                         return null
                     }
                 }
-                "reload" -> {
-                    if (attrValue == "page") {
+                "reload", "reload-page"  -> {
+                    if (attrValue == "reload-page" || attrValue == "reload" || attrValue == "page" || attrValue == "true" || attrValue == "1") {
                         configItemBase.reloadPage = true
                     }
                 }
@@ -316,7 +358,6 @@ class PageConfigReader(private var context: Context) {
         }
         return configItemBase
     }
-
 
     private fun pageNode(page: PageInfo, parser: XmlPullParser): PageInfo {
         for (attrIndex in 0 until parser.attributeCount) {
@@ -327,6 +368,11 @@ class PageConfigReader(private var context: Context) {
                 "html" -> page.onlineHtmlPage = attrValue
                 "title" -> page.title = attrValue
                 "desc" -> page.desc = attrValue
+                "before-load", "before-read" -> page.beforeRead = attrValue
+                "after-load", "after-read" -> page.afterRead = attrValue
+                "load-ok", "load-success" -> page.loadSuccess = attrValue
+                "load-fail", "load-error" -> page.loadFail = attrValue
+                "config-sh" -> page.pageConfigSh = attrValue
             }
         }
         return page

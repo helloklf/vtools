@@ -394,8 +394,11 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
 
     private fun actionExecute(configItem: ConfigItemBase, script: String, onExit: Runnable, params: HashMap<String, String>?) {
         val darkMode = themeMode != null && themeMode!!.isDarkMode
+        val onDismiss = Runnable{
+            krScriptActionHandler?.onActionCompleted(configItem)
+        }
 
-        val dialog = DialogLogFragment.create(configItem, onExit, script, params, darkMode)
+        val dialog = DialogLogFragment.create(configItem, onExit, onDismiss, script, params, darkMode)
         dialog.show(fragmentManager, "")
         dialog.isCancelable = false
     }

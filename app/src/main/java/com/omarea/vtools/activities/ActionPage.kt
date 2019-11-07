@@ -91,6 +91,12 @@ class ActionPage : AppCompatActivity() {
     }
 
     private var actionShortClickHandler = object : KrScriptActionHandler {
+        override fun onActionCompleted(configItemBase: ConfigItemBase) {
+            if (configItemBase.reloadPage) {
+                loadPageConfig()
+            }
+        }
+
         override fun addToFavorites(configItemBase: ConfigItemBase, addToFavoritesHandler: KrScriptActionHandler.AddToFavoritesHandler) {
             val intent = Intent()
 
@@ -160,26 +166,30 @@ class ActionPage : AppCompatActivity() {
         super.onResume()
 
         if (!actionsLoaded) {
-            progressBarDialog.showDialog(getString(R.string.please_wait))
-            Thread(Runnable {
-                val items = PageConfigReader(this.applicationContext).readConfigXml(pageConfig)
-                handler.post {
-                    if (items != null && items.size != 0) {
-                        val fragment = ActionListFragment.create(items, actionShortClickHandler, object : AutoRunTask {
-                            override val key = autoRun
-                            override fun onCompleted(result: Boolean?) {
-                                if (result != true) {
-                                    Toast.makeText(this@ActionPage, "指定项已丢失", Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                        }, themeMode)
-                        supportFragmentManager.beginTransaction().add(R.id.main_list, fragment).commit()
-                    }
-                    progressBarDialog.hideDialog()
-                }
-                actionsLoaded = true
-            }).start()
+            loadPageConfig()
         }
+    }
+
+    private fun loadPageConfig() {
+        progressBarDialog.showDialog(getString(R.string.please_wait))
+        Thread(Runnable {
+            val items = PageConfigReader(this.applicationContext).readConfigXml(pageConfig)
+            handler.post {
+                if (items != null && items.size != 0) {
+                    val fragment = ActionListFragment.create(items, actionShortClickHandler, object : AutoRunTask {
+                        override val key = autoRun
+                        override fun onCompleted(result: Boolean?) {
+                            if (result != true) {
+                                Toast.makeText(this@ActionPage, "指定项已丢失", Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    }, themeMode)
+                    supportFragmentManager.beginTransaction().replace(R.id.main_list, fragment).commit()
+                }
+                progressBarDialog.hideDialog()
+            }
+            actionsLoaded = true
+        }).start()
     }
 
     fun _openPage(pageInfo: PageInfo) {
