@@ -90,13 +90,10 @@
             <title>执行FSTRIM</title>
             <desc>一般系统会定时执行</desc>
             <script>
-                echo 'fstrim /data'
-                fstrim /data
-                echo 'fstrim /cache'
-                fstrim /cache
-                echo 'fstrim /system'
-                fstrim /system
-                echo '命令已执行'
+                echo 'fstrim /data'; fstrim /data;
+                echo 'fstrim /cache'; fstrim /cache;
+                echo 'fstrim /system'; fstrim /system;
+                echo '命令已执行';
             </script>
         </action>
         <action>
