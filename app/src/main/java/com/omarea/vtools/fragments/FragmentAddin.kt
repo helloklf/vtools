@@ -129,7 +129,7 @@ class FragmentAddin : Fragment() {
     }
 
     private var page2ConfigLoaded = false
-    private val pageConfig = "custom/pages/page_list.xml"
+    private val pageConfig = "kr-script/pages/page_list.xml"
 
     private fun loadPageConfig() {
         if (page2ConfigLoaded)
@@ -137,7 +137,7 @@ class FragmentAddin : Fragment() {
         val progressBarDialog = ProgressBarDialog(context!!)
         progressBarDialog.showDialog("读取配置，稍等...")
         Thread(Runnable {
-            ScriptEnvironmen.init(this.context!!, "custom/executor.sh", "toolkit")
+            ScriptEnvironmen.init(this.context!!, "kr-script/executor.sh", "toolkit")
             val items = PageConfigReader(this.activity!!).readConfigXml(pageConfig)
             myHandler.post {
                 page2ConfigLoaded = true

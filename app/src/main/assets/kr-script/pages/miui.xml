@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<actions>
+    <group title="界面">
+        <switch support="file:///android_asset/kr-script/switchs/miui/miui_support.sh">
+            <title>【MIUI10】状态栏缺口</title>
+            <desc>在MIUI10中开启MI8、8SE刘海屏状态栏中间的缺口，减少图标数量，在MiX2和Mi6上测试可用。重启生效！</desc>
+            <getstate>file:///android_asset/kr-script/switchs/miui/mi8status_get.sh</getstate>
+            <setstate>file:///android_asset/kr-script/switchs/miui/mi8status_set.sh</setstate>
+        </switch>
+        <switch support="file:///android_asset/kr-script/switchs/miui/miui_support.sh">
+            <resources>
+                <resource
+                    file="file:///android_asset/kr-script/switchs/resources/com.android.systemui" />
+            </resources>
+            <title>【MIUI9】通知中心搜索框</title>
+            <desc>关闭此项将通过替换主题资源的方式，隐藏下拉通知中心的搜索框</desc>
+            <getstate>file:///android_asset/kr-script/switchs/miui/miui_notice_search_get.sh</getstate>
+            <setstate>file:///android_asset/kr-script/switchs/miui/miui_notice_search_set.sh</setstate>
+        </switch>
+        <switch support="file:///android_asset/kr-script/switchs/miui/miui_support.sh">
+            <resources>
+                <resource file="file:///android_asset/kr-script/switchs/resources/framework-res" />
+            </resources>
+            <title>【MIUI10】隐藏导航栏</title>
+            <desc>通过主题资源修改导航栏高度的方式隐藏掉导航栏，方便使用第三方手势</desc>
+            <getstate>file:///android_asset/kr-script/switchs/miui/miui_hide_nav_get.sh</getstate>
+            <setstate>file:///android_asset/kr-script/switchs/miui/miui_hide_nav_set.sh</setstate>
+        </switch>
+        <switch support="file:///android_asset/kr-script/switchs/miui/miui_support.sh">
+            <title>【MIUI10】屏幕圆角</title>
+            <desc>开关全局圆角效果，在MiX2和Mi6上测试可用。重启生效！</desc>
+            <getstate>file:///android_asset/kr-script/switchs/miui/miui_round_get.sh</getstate>
+            <setstate>file:///android_asset/kr-script/switchs/miui/miui_round_set.sh</setstate>
+        </switch>
+    </group>
+
+    <group title="温控">
+        <action support="file:///android_asset/kr-script/actions/miui_thermal_conf/support.sh">
+            <resource dir="file:///android_asset/kr-script/actions/miui_thermal_conf" />
+            <title>更改温控配置</title>
+            <desc sh="file:///android_asset/kr-script/actions/miui_thermal_conf/desc.sh">
+                本功能适用于骁龙835、845、855处理器，MIUI官方系统！
+            </desc>
+            <param name="mode" title="温控模式"
+                options-sh="file:///android_asset/kr-script/actions/miui_thermal_conf/options.sh"
+                value-sh="file:///android_asset/kr-script/actions/miui_thermal_conf/current.sh" />
+            <param name="platform" title="处理器(SOC)"
+                options-sh="file:///android_asset/kr-script/actions/miui_thermal_conf/soc-options.sh" />
+            <script>file:///android_asset/kr-script/actions/miui_thermal_conf/config.sh</script>
+        </action>
+        <action confirm="true" support="file:///android_asset/kr-script/actions/miui_support.sh">
+            <title>开启MIUI9、MIUI10隐藏的温控选项</title>
+            <desc>看人品，也许是可以开出来，但不一定啦！据说稳定版是不行的。</desc>
+            <script>file:///android_asset/kr-script/actions/miui_thermal_set.sh</script>
+        </action>
+    </group>
+
+    <group title="功能">
+        <switch id="miui_update">
+            <title>【MIUI10】在线更新检查</title>
+            <desc>关闭此开关可以屏蔽在线更新检查</desc>
+            <getstate>file:///android_asset/kr-script/switchs/miui/miui_update_get.sh</getstate>
+            <setstate>file:///android_asset/kr-script/switchs/miui/miui_update_set.sh</setstate>
+        </switch>
+        <switch support="file:///android_asset/kr-script/switchs/miui/miui_support.sh">
+            <title>【MIUI10】安全键盘</title>
+            <desc>在输入密码时使用MIUI的安全键盘，避免密码被输入法作为自定义词语记录。重启生效！</desc>
+            <getstate>file:///android_asset/kr-script/switchs/miui/miui_security_keyboard_get.sh
+            </getstate>
+            <setstate>file:///android_asset/kr-script/switchs/miui/miui_security_keyboard_set.sh
+            </setstate>
+        </switch>
+    </group>
+
+</actions>

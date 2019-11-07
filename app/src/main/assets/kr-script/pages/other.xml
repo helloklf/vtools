@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<group>
+
+    <action auto-off="true" id="addin_restart_systemui">
+        <title>重启SystemUI</title>
+        <desc>结束SystemUI进程，使其重新加载</desc>
+        <script>
+            am kill com.android.systemui 2> /dev/null
+            killall -9 com.android.systemui 2> /dev/null
+        </script>
+    </action>
+    <action>
+        <title>查看已挂载分区</title>
+        <desc>通过简单的命令，查看当前已挂载的分区</desc>
+        <script>df -h</script>
+    </action>
+    <action confirm="true">
+        <title>磁盘测速</title>
+        <desc>使用简单的命令检测磁盘连续读写速度，需要好几分钟</desc>
+        <script>file:///android_asset/kr-script/actions/disk_test.sh</script>
+    </action>
+    <action confirm="false">
+        <title>硬件参数</title>
+        <desc>查看系统提供的硬件参数信息</desc>
+        <script>file:///android_asset/kr-script/actions/hardware_properties.sh</script>
+    </action>
+    <action confirm="false">
+        <title>温度传感器</title>
+        <desc>查看温度传感器当前数值</desc>
+        <script>file:///android_asset/kr-script/actions/sensor_list.sh</script>
+    </action>
+
+    <!--<group title="性能分析">
+        <action>
+            <title>CPU负载进程</title>
+            <desc>显示当前CPU占用最高的10个应用</desc>
+            <script>
+                top -m 5 -n 20
+            </script>
+        </action>
+    </group>-->
+    <!--<action>
+        <title>进度条测试 *</title>
+        <script>
+            echo "progress:[-1/0]"
+            sleep 5
+            i=0
+            while [ $i -le  100 ]; do
+                echo "progress:[$i/100]"
+                sleep 0.1
+                i=`expr 2 + $i`
+            done
+            echo '完成'
+        </script>
+    </action>-->
+
+</group>
