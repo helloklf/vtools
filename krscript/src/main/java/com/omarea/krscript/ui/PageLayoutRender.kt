@@ -41,17 +41,21 @@ class PageLayoutRender(private val mContext: Context,
         val handler = Handler(Looper.getMainLooper())
         return Runnable {
             handler.post {
-                if (item.descPollingShell.isNotEmpty()) {
-                    item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descPollingShell)
+                if (item.descSh.isNotEmpty()) {
+                    item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descSh)
+                    listItemView.desc = item.desc
                 }
-                listItemView.summary = item.desc
+
+                if (item.summarySh.isNotEmpty()) {
+                    item.summary = ScriptEnvironmen.executeResultRoot(mContext, item.summarySh)
+                    listItemView.summary = item.summary
+                }
 
                 if (item is SwitchInfo) {
                     if (item.getState != null && !item.getState.isEmpty()) {
                         val shellResult = ScriptEnvironmen.executeResultRoot(mContext, item.getState)
                         item.checked = shellResult == "1" || shellResult.toLowerCase() == "true"
                     }
-                    listItemView.summary = item.desc
                     (listItemView as ListItemSwitch).checked = item.checked
                 }
             }

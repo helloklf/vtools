@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:minHeight="40dp"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <ImageView
+        android:id="@+id/kr_task_icon"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="5dp"
+        android:src="@drawable/kr_run" />
+
+    <ImageView
+        android:id="@+id/kr_task_stop"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/kr_stop"
+        android:tint="?android:colorAccent" />
+
+    <TextView
+        android:id="@+id/kr_task_title"
+        style="@style/TextAppearance.Compat.Notification.Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="8dp"
+        android:layout_toStartOf="@id/kr_task_stop"
+        android:layout_toEndOf="@+id/kr_task_icon"
+        android:paddingStart="5dp"
+        android:paddingEnd="5dp" />
+
+    <TextView
+        android:id="@+id/kr_task_log"
+        style="@style/TextAppearance.Compat.Notification.Info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/kr_task_title"
+        android:overScrollMode="always" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/kr_task_log">
+
+        <ProgressBar
+            android:id="@+id/kr_task_progress"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:layout_marginTop="10dp"
+            android:progressDrawable="@drawable/kr_progress_shape" />
+    </FrameLayout>
+</RelativeLayout>

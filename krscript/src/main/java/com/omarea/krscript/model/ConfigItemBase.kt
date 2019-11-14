@@ -15,14 +15,22 @@ open class ConfigItemBase {
     var title: String = ""
     // 描述
     var desc: String = ""
-    // 描述轮询脚本
-    var descPollingShell: String = ""
+    // 描述（脚本）
+    var descSh: String = ""
+    // 摘要信息
+    var summary: String = ""
+    // 摘要信息(脚本)
+    var summarySh: String = ""
+
     // 是否在开始前显示操作确认提示
     var confirm: Boolean = false
     // 执行完成后是否自动关闭界面
     var autoOff: Boolean = false
     // 是否可中断执行
-    var interruptible: Boolean = true
+    var interruptable: Boolean = true
     // 是否在执行完以后重载整个界面
     var reloadPage: Boolean = false
+
+    // 是否是后台运行的任务
+    var backgroundTask: Boolean = false
 }

@@ -1,7 +1,7 @@
 package com.omarea.krscript.ui
 
 import android.app.AlertDialog
-import android.content.Context
+import android.content.BroadcastReceiver
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -17,6 +17,7 @@ import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.common.ui.ThemeMode
 import com.omarea.krscript.R
+import com.omarea.krscript.ScriptTaskThread
 import com.omarea.krscript.config.ActionParamInfo
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.*
@@ -163,48 +164,56 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
         paramInfo.options = item.options
         paramInfo.optionsSh = item.optionsSh
 
-        // 获取当前值
-        if (item.getState != null) {
-            paramInfo.valueFromShell = executeScriptGetResult(this.context!!, item.getState!!)
-        }
+        val handler = Handler()
 
-        // 获取可选项（合并options-sh和静态options的结果）
-        val coalescentOptions = getParamOptions(paramInfo)
-
-        val options = if (coalescentOptions != null) coalescentOptions.map { (it["item"] as ActionParamInfo.ActionParamOption).desc }.toTypedArray() else arrayOf()
-        val values = if (coalescentOptions != null) coalescentOptions.map { (it["item"] as ActionParamInfo.ActionParamOption).value }.toTypedArray() else arrayOf()
-
-        val builder = AlertDialog.Builder(this.context!!)
-                .setTitle(item.title)
-                .setNegativeButton(this.context!!.getString(R.string.btn_cancel)) { _, _ -> }
-
-        // 多选
-        if (item.multiple) {
-            val status = if (coalescentOptions == null) booleanArrayOf() else ActionParamsLayoutRender.getParamOptionsSelectedStatus(paramInfo, coalescentOptions)
-            builder.setMultiChoiceItems(options, status) { _, index, isChecked ->
-                status[index] = isChecked
+        progressBarDialog.showDialog(getString(R.string.kr_param_options_load))
+        Thread(Runnable {
+            // 获取当前值
+            if (item.getState != null) {
+                paramInfo.valueFromShell = executeScriptGetResult(item.getState!!)
             }
-            builder.setPositiveButton(R.string.btn_confirm) { _, _ ->
-                val result = ArrayList<String?>()
-                for (index in status.indices) {
-                    if (status[index]) {
-                        values[index]?.run {
-                            result.add(this)
+
+            // 获取可选项（合并options-sh和静态options的结果）
+            val options = getParamOptions(paramInfo)
+
+            val labels = if (options != null) options.map { (it["item"] as ActionParamInfo.ActionParamOption).desc }.toTypedArray() else arrayOf()
+            val values = if (options != null) options.map { (it["item"] as ActionParamInfo.ActionParamOption).value }.toTypedArray() else arrayOf()
+
+            handler.post {
+                progressBarDialog.hideDialog()
+                val builder = AlertDialog.Builder(this.context!!)
+                        .setTitle(item.title)
+                        .setNegativeButton(this.context!!.getString(R.string.btn_cancel)) { _, _ -> }
+
+                // 多选
+                if (item.multiple) {
+                    val status = if (options == null) booleanArrayOf() else ActionParamsLayoutRender.getParamOptionsSelectedStatus(paramInfo, options)
+                    builder.setMultiChoiceItems(labels, status) { _, index, isChecked ->
+                        status[index] = isChecked
+                    }.setPositiveButton(R.string.btn_confirm) { _, _ ->
+                        val result = ArrayList<String?>()
+                        for (index in status.indices) {
+                            if (status[index]) {
+                                values[index]?.run {
+                                    result.add(this)
+                                }
+                            }
                         }
+                        pickerExecute(item, "" + result.joinToString("\n"), onCompleted)
+                    }
+                } else {
+                    // 单选
+                    var index = if (options == null) -1 else ActionParamsLayoutRender.getParamOptionsCurrentIndex(paramInfo, options)
+                    builder.setSingleChoiceItems(labels, index) { _, which ->
+                        index = which
+                    }.setPositiveButton(this.context!!.getString(R.string.btn_execute)) { _, _ ->
+                        pickerExecute(item, "" + (if (index > -1) values[index] else ""), onCompleted)
                     }
                 }
-                pickerExecute(item, "" + result.joinToString("\n"), onCompleted)
+
+                DialogHelper.animDialog(builder)
             }
-        } else {
-            // 单选
-            var index = if (coalescentOptions == null) -1 else ActionParamsLayoutRender.getParamOptionsCurrentIndex(paramInfo, coalescentOptions)
-            builder.setSingleChoiceItems(options, index) { _, which ->
-                index = which
-            }.setPositiveButton(this.context!!.getString(R.string.btn_execute)) { _, _ ->
-                pickerExecute(item, "" + (if (index > -1) values[index] else ""), onCompleted)
-            }
-        }
-        DialogHelper.animDialog(builder)
+        }).start()
     }
 
     /**
@@ -258,7 +267,7 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
                             progressBarDialog.showDialog(this.context!!.getString(R.string.kr_param_load) + if (!actionParamInfo.label.isNullOrEmpty()) actionParamInfo.label else actionParamInfo.name)
                         }
                         if (actionParamInfo.valueShell != null) {
-                            actionParamInfo.valueFromShell = executeScriptGetResult(this.context!!, actionParamInfo.valueShell!!)
+                            actionParamInfo.valueFromShell = executeScriptGetResult(actionParamInfo.valueShell!!)
                         }
                         handler.post {
                             progressBarDialog.showDialog(this.context!!.getString(R.string.kr_param_options_load) + if (!actionParamInfo.label.isNullOrEmpty()) actionParamInfo.label else actionParamInfo.name)
@@ -342,7 +351,7 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
         val options = ArrayList<HashMap<String, Any>>()
         var shellResult = ""
         if (!actionParamInfo.optionsSh.isEmpty()) {
-            shellResult = executeScriptGetResult(this.context!!, actionParamInfo.optionsSh)
+            shellResult = executeScriptGetResult(actionParamInfo.optionsSh)
         }
 
         if (!(shellResult == "error" || shellResult == "null" || shellResult.isEmpty())) {
@@ -388,18 +397,37 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
         return options
     }
 
-    private fun executeScriptGetResult(context: Context, shellScript: String): String {
+    private fun executeScriptGetResult(shellScript: String): String {
         return ScriptEnvironmen.executeResultRoot(this.context!!, shellScript);
     }
 
-    private fun actionExecute(configItem: ConfigItemBase, script: String, onExit: Runnable, params: HashMap<String, String>?) {
-        val darkMode = themeMode != null && themeMode!!.isDarkMode
-        val onDismiss = Runnable{
-            krScriptActionHandler?.onActionCompleted(configItem)
-        }
+    private val taskResultReceiver = ArrayList<BroadcastReceiver>()
 
-        val dialog = DialogLogFragment.create(configItem, onExit, onDismiss, script, params, darkMode)
-        dialog.show(fragmentManager, "")
-        dialog.isCancelable = false
+    private fun actionExecute(configItem: ConfigItemBase, script: String, onExit: Runnable, params: HashMap<String, String>?) {
+        val context = context!!
+        val applicationContext = context.applicationContext
+
+        if (configItem.backgroundTask) {
+            var receiver: BroadcastReceiver? = null
+            val onDismiss = Runnable {
+                krScriptActionHandler?.onActionCompleted(configItem)
+                try {
+                    taskResultReceiver.remove(receiver)
+                    applicationContext.unregisterReceiver(receiver)
+                } catch (ex: java.lang.Exception) {
+                }
+            }
+            receiver = ScriptTaskThread.startTask(context, script, params, configItem, onExit, onDismiss)
+            taskResultReceiver.add(receiver)
+        } else {
+            val onDismiss = Runnable {
+                krScriptActionHandler?.onActionCompleted(configItem)
+            }
+            val darkMode = themeMode != null && themeMode!!.isDarkMode
+
+            val dialog = DialogLogFragment.create(configItem, onExit, onDismiss, script, params, darkMode)
+            dialog.show(fragmentManager, "")
+            dialog.isCancelable = false
+        }
     }
 }

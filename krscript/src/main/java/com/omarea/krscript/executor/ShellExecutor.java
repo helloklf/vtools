@@ -3,7 +3,6 @@ package com.omarea.krscript.executor;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.omarea.krscript.model.ConfigItemBase;
 import com.omarea.krscript.model.ShellHandlerBase;
 
 import java.io.DataOutputStream;
@@ -18,10 +17,12 @@ public class ShellExecutor {
 
     /**
      * 执行脚本
+     *
+     * @return
      */
-    public boolean execute(Context context, ConfigItemBase configItem, String cmds, Runnable onExit, HashMap<String, String> params, ShellHandlerBase shellHandlerBase) {
+    public Process execute(Context context, Boolean interruptible, String cmds, Runnable onExit, HashMap<String, String> params, ShellHandlerBase shellHandlerBase) {
         if (started) {
-            return false;
+            return null;
         }
 
         Process process = null;
@@ -35,7 +36,7 @@ public class ShellExecutor {
 
         if (process != null) {
             final Process finalProcess = process;
-            final Runnable forceStopRunnable = configItem.getInterruptible() ? (new Runnable() {
+            final Runnable forceStopRunnable = interruptible ? (new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -60,7 +61,7 @@ public class ShellExecutor {
             }
             started = true;
         }
-        return started;
+        return process;
     }
 
 }

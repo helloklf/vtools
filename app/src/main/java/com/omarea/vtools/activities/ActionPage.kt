@@ -173,7 +173,7 @@ class ActionPage : AppCompatActivity() {
     private fun loadPageConfig() {
         progressBarDialog.showDialog(getString(R.string.please_wait))
         Thread(Runnable {
-            val items = PageConfigReader(this.applicationContext).readConfigXml(pageConfig)
+            val items = PageConfigReader(this.applicationContext, pageConfig).readConfigXml()
             handler.post {
                 if (items != null && items.size != 0) {
                     val fragment = ActionListFragment.create(items, actionShortClickHandler, object : AutoRunTask {

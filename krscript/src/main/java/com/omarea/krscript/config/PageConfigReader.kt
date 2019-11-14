@@ -23,20 +23,89 @@ import java.io.InputStream
 /**
  * Created by Hello on 2018/04/01.
  */
-class PageConfigReader(private var context: Context) {
+class PageConfigReader {
+    private var context: Context
+    private var pageConfig: String = ""
+    // 读取pageConfig时自动获得
+    private var pageConfigAbsPath: String = ""
+    private var pageConfigStream: InputStream? = null
+    private var parentDir: String = ""
+
+    constructor(context: Context, pageConfig: String) {
+        this.context = context;
+        this.pageConfig = pageConfig;
+    }
+
+    constructor(context: Context, pageConfig: String, parentDir: String) {
+        this.context = context;
+        this.pageConfig = pageConfig;
+        this.parentDir = parentDir;
+    }
+
+    constructor(context: Context, pageConfigStream: InputStream) {
+        this.context = context;
+        this.pageConfigStream = pageConfigStream;
+    }
+
     private val ASSETS_FILE = "file:///android_asset/"
 
-    private fun tryOpenDiskFile(context: Context, filePath: String): FileInputStream? {
+    private fun tryOpenDiskFile(filePath: String): FileInputStream? {
         try {
-            val file = File(filePath)
-            if (file.exists() && file.canRead()) {
-                return file.inputStream()
-            } else if (RootFile.fileExists(filePath)) {
+            File(filePath).run {
+                if (exists() && canRead()) {
+                    pageConfigAbsPath = absolutePath
+                    return inputStream()
+                }
+            }
+
+            if (!filePath.startsWith("/")) {
+                if (parentDir.isNotEmpty()) {
+                    val relativePath = when {
+                        !parentDir.endsWith("/") -> parentDir + "/"
+                        else -> parentDir
+                    } + filePath
+
+                    File(relativePath).run {
+                        if (exists() && canRead()) {
+                            pageConfigAbsPath = absolutePath
+                            return inputStream()
+                        }
+                    }
+                }
+
+                val privatePath = FileWrite.getPrivateFileDir(context) + filePath
+                File(privatePath).run {
+                    if (exists() && canRead()) {
+                        pageConfigAbsPath = absolutePath
+                        return inputStream()
+                    }
+                }
+            }
+
+            val parent = when {
+                !parentDir.endsWith("/") -> parentDir + "/"
+                else -> parentDir
+            }
+
+            var relativePath: String? = null
+            if (parentDir.isNotEmpty() && !filePath.startsWith("/")) {
+                relativePath = when {
+                    !parentDir.endsWith("/") -> parentDir + "/"
+                    else -> parentDir
+                } + filePath
+            }
+
+            when {
+                RootFile.fileExists(filePath) -> filePath
+                relativePath != null && RootFile.fileExists(relativePath) -> relativePath
+                else -> null
+            }.run {
                 val cachePath = FileWrite.getPrivateFilePath(context, "kr-script/outside_page.xml")
-                KeepShellPublic.doCmdSync("cp -f \"$filePath\" \"$cachePath\"")
-                val cacheFile = File(cachePath)
-                if (cacheFile.exists() && cacheFile.canRead()) {
-                    return cacheFile.inputStream()
+                KeepShellPublic.doCmdSync("cp -f \"$this\" \"$cachePath\"")
+                File(cachePath).run {
+                    if (exists() && canRead()) {
+                        return inputStream()
+                    }
                 }
             }
         } catch (ex: java.lang.Exception) {
@@ -44,38 +113,42 @@ class PageConfigReader(private var context: Context) {
         return null
     }
 
-    fun getConfig(context: Context, filePath: String): InputStream? {
-        val fileInputStream = tryOpenDiskFile(context, filePath)
-        if (fileInputStream != null) {
-            return fileInputStream
-        }
-
+    fun getConfig(filePath: String): InputStream? {
         try {
             if (filePath.startsWith(ASSETS_FILE)) {
                 return context.assets.open(filePath.substring(ASSETS_FILE.length))
             } else {
-                return context.assets.open(filePath)
+                val fileInputStream = tryOpenDiskFile(filePath)
+                if (fileInputStream != null) {
+                    return fileInputStream
+                } else {
+                    return context.assets.open(filePath)
+                }
             }
         } catch (ex: Exception) {
             return null
         }
     }
 
-    fun readConfigXml(filePath: String): ArrayList<ConfigItemBase>? {
-        try {
-            val fileInputStream = getConfig(context, filePath) ?: return ArrayList()
-            return readConfigXml(fileInputStream)
-        } catch (ex: Exception) {
-            Handler(Looper.getMainLooper()).post {
-                Toast.makeText(context, "解析配置文件失败\n" + ex.message, Toast.LENGTH_LONG).show()
+    fun readConfigXml(): ArrayList<ConfigItemBase>? {
+        if (pageConfigStream != null) {
+            return readConfigXml(pageConfigStream!!)
+        } else {
+            try {
+                val fileInputStream = getConfig(pageConfig) ?: return ArrayList()
+                return readConfigXml(fileInputStream)
+            } catch (ex: Exception) {
+                Handler(Looper.getMainLooper()).post {
+                    Toast.makeText(context, "解析配置文件失败\n" + ex.message, Toast.LENGTH_LONG).show()
+                }
+                Log.e("KrConfig Fail！", "" + ex.message)
             }
-            Log.e("KrConfig Fail！", "" + ex.message)
-        }
 
+        }
         return null
     }
 
-    fun readConfigXml(fileInputStream: InputStream): ArrayList<ConfigItemBase>? {
+    private fun readConfigXml(fileInputStream: InputStream): ArrayList<ConfigItemBase>? {
         try {
             val parser = Xml.newPullParser()// 获取xml解析器
             parser.setInput(fileInputStream, "utf-8")// 参数分别为输入流和字符编码
@@ -87,18 +160,21 @@ class PageConfigReader(private var context: Context) {
             var group: GroupInfo? = null
             var page: PageInfo? = null
             var text: TextInfo? = null
-            while (type != XmlPullParser.END_DOCUMENT) {// 如果事件不等于文档结束事件就继续循环
+            var isRootNode = true
+            while (type != XmlPullParser.END_DOCUMENT) { // 如果事件不等于文档结束事件就继续循环
                 when (type) {
-                    XmlPullParser.START_TAG ->
+                    XmlPullParser.START_TAG -> {
                         if ("group" == parser.name) {
                             group = groupNode(parser)
                         } else if (group != null && !group.supported) {
                             // 如果 group.supported !- true 跳过group内所有项
                         } else {
                             if ("page" == parser.name) {
-                                page = mainNode(PageInfo(), parser) as PageInfo?
-                                if (page != null) {
-                                    page = pageNode(page, parser)
+                                if (!isRootNode) {
+                                    page = mainNode(PageInfo(pageConfigAbsPath), parser) as PageInfo?
+                                    if (page != null) {
+                                        page = pageNode(page, parser)
+                                    }
                                 }
                             } else if ("action" == parser.name) {
                                 action = mainNode(ActionInfo(), parser) as ActionInfo?
@@ -125,6 +201,8 @@ class PageConfigReader(private var context: Context) {
                                 resourceNode(parser)
                             }
                         }
+                        isRootNode = false
+                    }
                     XmlPullParser.END_TAG ->
                         if ("group" == parser.name) {
                             if (group != null && group.supported) {
@@ -218,6 +296,8 @@ class PageConfigReader(private var context: Context) {
             action.title = parser.nextText()
         } else if ("desc" == parser.name) {
             descNode(action, parser)
+        } else if ("summary" == parser.name) {
+            summaryNode(action, parser)
         } else if ("script" == parser.name || "set" == parser.name || "setstate" == parser.name) {
             action.setState = parser.nextText().trim()
         } else if ("param" == parser.name) {
@@ -254,7 +334,7 @@ class PageConfigReader(private var context: Context) {
                         val script = attrValue
                         actionParamInfo.optionsSh = script
                     }
-                    attrName == "support" -> {
+                    attrName == "support" || attrName == "visible" -> {
                         if (executeResultRoot(context, attrValue) != "1") {
                             actionParamInfo.supported = false
                         }
@@ -305,6 +385,7 @@ class PageConfigReader(private var context: Context) {
         when {
             "title" == parser.name -> info.title = parser.nextText()
             "desc" == parser.name -> descNode(info, parser)
+            "summary" == parser.name -> summaryNode(info, parser)
             "resource" == parser.name -> resourceNode(parser)
             "html" == parser.name -> info.onlineHtmlPage = parser.nextText()
             "config" == parser.name -> info.pageConfigPath = parser.nextText()
@@ -316,6 +397,7 @@ class PageConfigReader(private var context: Context) {
         when {
             "title" == parser.name -> switchInfo.title = parser.nextText()
             "desc" == parser.name -> descNode(switchInfo, parser)
+            "summary" == parser.name -> summaryNode(switchInfo, parser)
             "get" == parser.name || "getstate" == parser.name -> switchInfo.getState = parser.nextText()
             "set" == parser.name || "setstate" == parser.name -> switchInfo.setState = parser.nextText()
             "resource" == parser.name -> resourceNode(parser)
@@ -329,7 +411,7 @@ class PageConfigReader(private var context: Context) {
             val attrValue = parser.getAttributeValue(i)
             if (attrName == "title") {
                 groupInfo.separator = attrValue
-            } else if (attrName == "support") {
+            } else if (attrName == "support" || attrName == "visible") {
                 groupInfo.supported = executeResultRoot(context, attrValue) == "1"
             }
         }
@@ -341,17 +423,35 @@ class PageConfigReader(private var context: Context) {
             val attrValue = parser.getAttributeValue(i)
             when (parser.getAttributeName(i)) {
                 "key", "index", "id" -> configItemBase.key = attrValue
-                "confirm" -> configItemBase.confirm = (attrValue == "true" || attrValue == "1")
-                "auto-off" -> configItemBase.autoOff = (attrValue == "true" || attrValue == "1")
-                "interruptible" -> configItemBase.interruptible = (attrValue.isEmpty() || attrValue == "true" || attrValue == "1")
-                "support" -> {
+                "title" -> configItemBase.title = attrValue
+                "desc" -> configItemBase.desc = attrValue
+                "confirm" -> configItemBase.confirm = (attrValue == "confirm" || attrValue == "true" || attrValue == "1")
+                "auto-off" -> configItemBase.autoOff = (attrValue == "auto-off" || attrValue == "true" || attrValue == "1")
+                "interruptible", "interruptable" -> configItemBase.interruptable = (attrValue.isEmpty() || attrValue == "interruptable" || attrValue == "interruptable" || attrValue == "true" || attrValue == "1")
+                "support", "visible" -> {
                     if (executeResultRoot(context, attrValue) != "1") {
                         return null
                     }
                 }
-                "reload", "reload-page"  -> {
+                "desc-sh" -> {
+                    configItemBase.descSh = parser.getAttributeValue(i)
+                    configItemBase.desc = executeResultRoot(context, configItemBase.descSh)
+                }
+                "summary" -> {
+                    configItemBase.summary = parser.getAttributeValue(i)
+                }
+                "summary-sh" -> {
+                    configItemBase.summarySh = parser.getAttributeValue(i)
+                    configItemBase.summary = executeResultRoot(context, configItemBase.summarySh)
+                }
+                "reload", "reload-page" -> {
                     if (attrValue == "reload-page" || attrValue == "reload" || attrValue == "page" || attrValue == "true" || attrValue == "1") {
                         configItemBase.reloadPage = true
+                    }
+                }
+                "bg-task", "background-task", "async-task" -> {
+                    if (attrValue == "async-task" || attrValue == "async" || attrValue == "bg-task" || attrValue == "background" || attrValue == "background-task" || attrValue == "true" || attrValue == "1") {
+                        configItemBase.backgroundTask = true
                     }
                 }
             }
@@ -359,6 +459,8 @@ class PageConfigReader(private var context: Context) {
         return configItemBase
     }
 
+    // TODO: 整理Title和Desc
+    // TODO: 整理ReloadPage
     private fun pageNode(page: PageInfo, parser: XmlPullParser): PageInfo {
         for (attrIndex in 0 until parser.attributeCount) {
             val attrName = parser.getAttributeName(attrIndex)
@@ -366,8 +468,6 @@ class PageConfigReader(private var context: Context) {
             when (attrName) {
                 "config" -> page.pageConfigPath = attrValue
                 "html" -> page.onlineHtmlPage = attrValue
-                "title" -> page.title = attrValue
-                "desc" -> page.desc = attrValue
                 "before-load", "before-read" -> page.beforeRead = attrValue
                 "after-load", "after-read" -> page.afterRead = attrValue
                 "load-ok", "load-success" -> page.loadSuccess = attrValue
@@ -398,13 +498,25 @@ class PageConfigReader(private var context: Context) {
     private fun descNode(configItemBase: ConfigItemBase, parser: XmlPullParser) {
         for (i in 0 until parser.attributeCount) {
             val attrName = parser.getAttributeName(i)
-            if (attrName == "su" || attrName == "sh") {
-                configItemBase.descPollingShell = parser.getAttributeValue(i)
-                configItemBase.desc = executeResultRoot(context, configItemBase.descPollingShell)
+            if (attrName == "su" || attrName == "sh" || attrName == "desc-sh") {
+                configItemBase.descSh = parser.getAttributeValue(i)
+                configItemBase.desc = executeResultRoot(context, configItemBase.descSh)
             }
         }
         if (configItemBase.desc.isEmpty())
             configItemBase.desc = parser.nextText()
+    }
+
+    private fun summaryNode(configItemBase: ConfigItemBase, parser: XmlPullParser) {
+        for (i in 0 until parser.attributeCount) {
+            val attrName = parser.getAttributeName(i)
+            if (attrName == "su" || attrName == "sh" || attrName == "summary-sh") {
+                configItemBase.summarySh = parser.getAttributeValue(i)
+                configItemBase.summary = executeResultRoot(context, configItemBase.summarySh)
+            }
+        }
+        if (configItemBase.summary.isEmpty())
+            configItemBase.summary = parser.nextText()
     }
 
     private fun resourceNode(parser: XmlPullParser) {
@@ -442,6 +554,8 @@ class PageConfigReader(private var context: Context) {
             textInfo.title = parser.nextText()
         } else if ("desc" == parser.name) {
             descNode(textInfo, parser)
+        } else if ("summary" == parser.name) {
+            summaryNode(textInfo, parser)
         } else if ("slice" == parser.name) {
             rowNode(textInfo, parser)
         } else if ("resource" == parser.name) {
@@ -490,6 +604,8 @@ class PageConfigReader(private var context: Context) {
             pickerInfo.title = parser.nextText()
         } else if ("desc" == parser.name) {
             descNode(pickerInfo, parser)
+        } else if ("summary" == parser.name) {
+            summaryNode(pickerInfo, parser)
         } else if ("option" == parser.name) {
             if (pickerInfo.options == null) {
                 pickerInfo.options = ArrayList()

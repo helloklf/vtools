@@ -3,7 +3,6 @@ package com.omarea.krscript.executor;
 import com.omarea.krscript.model.ShellHandlerBase;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -27,8 +26,7 @@ public class SimpleShellWatcher {
                     while ((line = bufferedReader.readLine()) != null) {
                         shellHandlerBase.sendMessage(shellHandlerBase.obtainMessage(ShellHandlerBase.EVENT_REDE, line + "\n"));
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (Exception ignored) {
                 }
             }
         });
@@ -41,8 +39,7 @@ public class SimpleShellWatcher {
                     while ((line = bufferedReader.readLine()) != null) {
                         shellHandlerBase.sendMessage(shellHandlerBase.obtainMessage(ShellHandlerBase.EVENT_READ_ERROR, line + "\n"));
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
+                } catch (Exception ignored) {
                 }
             }
         });

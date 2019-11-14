@@ -138,7 +138,7 @@ class FragmentAddin : Fragment() {
         progressBarDialog.showDialog("读取配置，稍等...")
         Thread(Runnable {
             ScriptEnvironmen.init(this.context!!, "kr-script/executor.sh", "toolkit")
-            val items = PageConfigReader(this.activity!!).readConfigXml(pageConfig)
+            val items = PageConfigReader(this.activity!!, pageConfig).readConfigXml()
             myHandler.post {
                 page2ConfigLoaded = true
 

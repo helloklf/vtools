@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <item name="kr_summary" type="id" />
     <item name="kr_desc" type="id" />
     <item name="kr_title" type="id" />
     <item name="kr_switch" type="id" />

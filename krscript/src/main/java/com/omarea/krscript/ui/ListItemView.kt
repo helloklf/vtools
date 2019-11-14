@@ -16,7 +16,8 @@ open class ListItemView(private val context: Context,
     protected var mOnClickListener: OnClickListener? = null
     protected var mOnLongClickListener: OnLongClickListener? = null
 
-    protected var summaryView = layout.findViewById<TextView?>(R.id.kr_desc)
+    protected var descView = layout.findViewById<TextView?>(R.id.kr_desc)
+    protected var summaryView = layout.findViewById<TextView?>(R.id.kr_summary)
     protected var titleView = layout.findViewById<TextView?>(R.id.kr_title)
     protected var children = ArrayList<ListItemView>()
 
@@ -31,6 +32,19 @@ open class ListItemView(private val context: Context,
             } else {
                 titleView?.text = value
                 titleView?.visibility = View.VISIBLE
+            }
+        }
+
+    var desc: String
+        get() {
+            return descView?.text.toString()
+        }
+        set(value) {
+            if (value.isEmpty()) {
+                descView?.visibility = View.GONE
+            } else {
+                descView?.text = value
+                descView?.visibility = View.VISIBLE
             }
         }
 
@@ -137,19 +151,23 @@ open class ListItemView(private val context: Context,
     }
 
     init {
+        // FIXME:这是、、、
         if (summaryView == null && config is ActionInfo) {
             summaryView = layout.rootView.findViewById<TextView?>(R.id.kr_desc)
         }
 
         title = config.title
-        summary = config.desc
+        desc = config.desc
+        summary = config.summary
 
         this.layout.setOnClickListener {
             this.mOnClickListener?.onClick(this)
         }
-        this.layout.setOnLongClickListener {
-            this.mOnLongClickListener?.onLongClick(this)
-            true
+        if (!this.key.isEmpty()) {
+            this.layout.setOnLongClickListener {
+                this.mOnLongClickListener?.onLongClick(this)
+                true
+            }
         }
     }
 

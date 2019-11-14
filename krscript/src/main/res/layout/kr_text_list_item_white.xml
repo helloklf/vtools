@@ -27,6 +27,14 @@
         android:textSize="@dimen/kr_desc_size" />
 
     <TextView
+        android:id="@id/kr_summary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="?android:colorAccent"
+        android:textSize="@dimen/kr_desc_size" />
+
+    <TextView
         android:id="@id/kr_rows"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

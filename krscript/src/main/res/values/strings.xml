@@ -4,7 +4,6 @@
     <string name="kr_shell_log_script">#808080</string>
     <string name="kr_shell_log_end">#0064B4</string>
 
-    <string name="app_name">krscript</string>
     <string name="btn_confirm">确定</string>
     <string name="shell_executor">脚本执行器</string>
     <string name="btn_cancel">取消</string>
@@ -13,12 +12,13 @@
     <string name="btn_execute">执行</string>
     <string name="onloading">正在加载数据…</string>
     <string name="kr_shell_completed">脚本运行结束</string>
+    <string name="kr_shell_finish_error">运行结束，但出现错误</string>
     <string name="script_losted">脚本资源丢失\n</string>
     <string name="btn_copy_output">复制输出</string>
     <string name="copy_success">输出日志已复制到剪贴板</string>
     <string name="copy_fail">复制失败</string>
     <string name="do_not_empty">不可为空</string>
-    <string name="kr_param_load">获取状态 </string>
+    <string name="kr_param_load">获取状态</string>
     <string name="kr_param_options_load">加载候选列表 </string>
     <string name="kr_params_render">渲染界面……</string>
     <string name="kr_please_choose_file">请选择文件</string>
@@ -39,4 +39,10 @@
     <string name="kr_shortcut_create">添加快捷方式</string>
     <string name="kr_shortcut_create_desc">你希望将“%s”添加到桌面，方便快速使用吗？</string>
     <string name="kr_ushortcut_nsupported">该功能不支持添加快捷方式</string>
+    <string name="kr_script_task_notification">后台任务通知</string>
+    <string name="kr_bg_task_start">后台任务开始运行</string>
+    <string name="kr_script_task_running">开始运行</string>
+    <string name="kr_script_task_has_error">出现错误</string>
+    <string name="kr_script_task_finished">任务结束</string>
+    <string name="kr_bg_task_start_desc">你可以通过系统的通知中心，查看任务运行进度和日志</string>
 </resources>

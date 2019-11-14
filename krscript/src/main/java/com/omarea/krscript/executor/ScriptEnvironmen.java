@@ -28,7 +28,7 @@ public class ScriptEnvironmen {
     private static String TOOKIT_DIR = "";
 
     private static boolean init(Context context) {
-        return init(context, "kr-setState/executor.sh", "kr-setState/toolkit");
+        return init(context, "kr-script/executor.sh", "kr-script/toolkit");
     }
 
     /**
@@ -115,7 +115,7 @@ public class ScriptEnvironmen {
      */
     private static String createShellCache(Context context, String script) {
         String md5 = md5(script);
-        String outputPath = "/kr-setState/cache/" + md5 + ".sh";
+        String outputPath = "kr-script/cache/" + md5 + ".sh";
         if (new File(outputPath).exists()) {
             return outputPath;
         }
