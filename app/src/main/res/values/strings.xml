@@ -45,7 +45,6 @@
         <item>com.tencent.tmgp.pubgm</item>
         <item>com.tencent.tmgp.pubgmhd</item>
         <item>com.rarlab.rar</item>
-        <item>com.rarlab.rar</item>
         <item>com.stupeflix.replay</item>
         <item>com.niksoftware.snapseed</item>
         <item>com.goseet.vidtrim</item>
@@ -56,7 +55,6 @@
         <item>com.pinguo.edit.sdk</item>
         <item>com.ak.mi</item>
         <item>com.tencent.cldts</item>
-        <item>com.pinguo.edit.sdk</item>
         <item>com.miHoYo.bh3.wdj</item>
         <item>com.netease.dwrg</item>
         <item>com.netease.mrzh</item>
@@ -77,9 +75,7 @@
         <item>com.miui.backup</item>
         <item>com.ludashi.vrbench</item>
         <item>com.android.camera</item>
-        <item>com.huahua.test</item>
         <item>com.futuremark.dmandroid.application</item>
-        <item>com.futuremark.dmandroid.applicatioo</item>
     </string-array>
 
     <string name="btn_cancel">取消</string>

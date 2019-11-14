@@ -97,7 +97,7 @@ public class CheckRootStatus(var context: Context, private var next: Runnable? =
                                 })
                     }
                 }
-            })
+            }).start()
         }
     }
 

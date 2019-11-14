@@ -7,8 +7,15 @@ install_path="$1"
 function busybox_install() {
     chmod 755 ./busybox
     for applet in `./busybox --list`; do
-        ./busybox ln -sf busybox "$applet"
-        chmod 755 "$applet"
+        case "$applet" in
+        "sh"|"busybox")
+            echo 'Skip' > /dev/null
+        ;;
+        *)
+            ./busybox ln -sf busybox "$applet"
+            chmod 755 "$applet"
+        ;;
+        esac
     done
     ./busybox ln -sf busybox busybox_1_30_1
 }

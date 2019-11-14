@@ -2,7 +2,14 @@
 
 function busybox_install() {
     for applet in `./busybox --list`; do
-        ./busybox ln -sf busybox "$applet";
+        case "$applet" in
+        "sh"|"busybox")
+            echo 'Skip' > /dev/null
+        ;;
+        *)
+            ./busybox ln -sf busybox "$applet";
+        ;;
+        esac
     done
     ./busybox ln -sf busybox busybox_1_30_1
 }
