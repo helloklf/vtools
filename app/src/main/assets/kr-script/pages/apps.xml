@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <items>
+    <resource dir="file:///android_asset/kr-script/apps" />
+
     <group title="流氓杀手">
         <switch>
             <title>网易云首屏广告</title>
             <desc>如果禁用，则会通过修改Ad缓存文件夹写入权限，达到禁用广告的目的</desc>
-            <getstate>file:///android_asset/kr-script/switchs/cloudmusic_ad_get.sh</getstate>
-            <setstate>file:///android_asset/kr-script/switchs/cloudmusic_ad_set.sh</setstate>
+            <getstate>. ./kr-script/apps/cloudmusic_ad_get.sh</getstate>
+            <setstate>. ./kr-script/apps/cloudmusic_ad_set.sh</setstate>
         </switch>
         <action>
             <title>QQ个性化</title>
@@ -28,23 +30,23 @@
                     <option value="0">禁用</option>
                 </param>
             </params>
-            <script>file:///android_asset/kr-script/actions/tencent/qq_style_set.sh</script>
+            <script>. ./kr-script/apps/qq_style_set.sh</script>
         </action>
         <action confirm="true">
             <title>修复淘宝闪退</title>
             <desc>清理优酷和淘宝下载的热更新文件，出现淘宝或优酷闪退的，可以试试</desc>
-            <script>file:///android_asset/kr-script/actions/app_simple.sh</script>
+            <script>. ./kr-script/apps/taobao_fix.sh</script>
         </action>
     </group>
 
     <group title="性能优化">
-        <action id="tgmp_config" support="file:///android_asset/kr-script/actions/tmgp_support.sh">
+        <action id="tgmp_config" visible=". ./kr-script/apps/tmgp/tmgp_support.sh">
             <title>王者荣耀配置修改</title>
-            <desc su="file:///android_asset/kr-script/actions/tmgp_get.sh" />
-            <script>file:///android_asset/kr-script/actions/tmgp_set.sh</script>
+            <desc su=". ./kr-script/apps/tmgp/tmgp_get.sh" />
+            <script>. ./kr-script/apps/tmgp/tmgp_set.sh</script>
             <params>
                 <param name="render"
-                    options-sh="file:///android_asset/kr-script/actions/tmgp_options.sh" />
+                    options-sh=". ./kr-script/apps/tmgp/tmgp_options.sh" />
                 <param name="thread" value="0">
                     <option val="1">多线程优化</option>
                     <option val="3">默认</option>
@@ -55,7 +57,7 @@
 
     <group title="Google相关">
         <action auto-off="true" id="google_settings"
-            support="file:///android_asset/kr-script/actions/gapps_support.sh">
+            visible=". ./kr-script/common/gapps_support.sh">
             <title>打开Google设置</title>
             <desc>本功能为了方便隐藏了“Google设置”的定制系统，打开“Google设置”</desc>
             <script>
@@ -63,17 +65,17 @@
             </script>
         </action>
         <switch auto-off="true" id="google_service"
-            support="file:///android_asset/kr-script/switchs/gapps_support.sh">
+            visible=". ./kr-script/common/gapps_support.sh">
             <title>启用Google服务</title>
             <desc>关闭此选项以临时禁用谷歌框架节省电量</desc>
-            <getstate>file:///android_asset/kr-script/switchs/gapps_get.sh</getstate>
-            <setstate>file:///android_asset/kr-script/switchs/gapps_set.sh</setstate>
+            <getstate>. ./kr-script/apps/gapps_get.sh</getstate>
+            <setstate>. ./kr-script/apps/gapps_set.sh</setstate>
         </switch>
         <switch auto-off="true" id="google_hal_eis">
             <title>Camera2 HAL、EIS</title>
             <desc>启用HAL和EIS，从而支持谷歌相机HDR+功能或避免闪退（谷歌相机需要自行下载适合自己机型的版本）。可能导致相机无法开启或切换缓慢</desc>
-            <getstate>file:///android_asset/kr-script/switchs/gcm_get.sh</getstate>
-            <setstate>file:///android_asset/kr-script/switchs/gcm_set.sh</setstate>
+            <getstate>. ./kr-script/apps/gcm_get.sh</getstate>
+            <setstate>. ./kr-script/apps/gcm_set.sh</setstate>
         </switch>
     </group>
 
@@ -98,11 +100,12 @@
             <desc>删除对所有系统应用程序的更新，并回退到系统自带的版本</desc>
             <script>pm  uninstall-system-updates</script>
         </action>
-        <picker auto-off="true" support="file:///android_asset/kr-script/common/support_android_p.sh"
-            options-sh="file:///android_asset/kr-script/actions/launcher_chooser/get_launchers.sh">
+        <picker auto-off="true"
+            visible=". ./kr-script/common/support_android_p.sh"
+            options-sh=". ./kr-script/apps/launcher/options.sh">
             <title>更换桌面</title>
             <desc>将系统默认桌面，换成你安装的第三方桌面程序</desc>
-            <set>file:///android_asset/kr-script/actions/launcher_chooser/set_launchers.sh</set>
+            <set>. ./kr-script/apps/launcher/set.sh</set>
         </picker>
         <action auto-off="true">
             <title>动态壁纸选择器</title>

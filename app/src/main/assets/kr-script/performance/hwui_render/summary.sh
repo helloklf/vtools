@@ -15,4 +15,4 @@ else
     mode="未知"
 fi
 
-echo "切换HWUI渲染引擎（Skia Vulkan 仅支持Android P及更高版本！），当前：$mode"
+echo "当前：$mode"

@@ -17,7 +17,7 @@ fi
 dir="${MAGISK_PATH}/system/vendor/etc"
 
 current_save="$dir/thermal-engine.current.ini"
-config="./kr-script/actions/miui_thermal_conf/${platform}-${mode}.conf"
+config="./kr-script/miui/thermal_conf/${platform}-${mode}.conf"
 
 function replace_file() {
     if [[ "$platform" = "msmnile" ]]

@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-resource=./kr-script/switchs/resources/com.android.systemui
+resource=./kr-script/miui/resources/com.android.systemui
 output=/system/media/theme/default/com.android.systemui
 
 source ./kr-script/common/magisk_replace.sh

@@ -111,7 +111,7 @@ function _restore_file() {
 }
 
 # 混合模式替换文件(如果有magisk就用magisk，否则就用root直接替换系统文件)
-# mixture_hook_file "./kr-script/switchs/resources/com.android.systemui" "/system/media/theme/default/com.android.systemui" "$mode"
+# mixture_hook_file "./kr-script/miui/resources/com.android.systemui" "/system/media/theme/default/com.android.systemui" "$mode"
 # $mode 可是 1 或者 0，1表示替换，0表示取消替换
 function mixture_hook_file()
 {
@@ -128,7 +128,7 @@ function mixture_hook_file()
 }
 
 # 是否已用混合模式替换了文件(如果有magisk就用magisk，否则就用root直接替换系统文件)
-# file_mixture_hooked "./kr-script/switchs/resources/com.android.systemui" "/system/media/theme/default/com.android.systemui"
+# file_mixture_hooked "./kr-script/miui/resources/com.android.systemui" "/system/media/theme/default/com.android.systemui"
 # @return 【1】或【0】
 function file_mixture_hooked()
 {

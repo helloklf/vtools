@@ -2,7 +2,7 @@
 
 source ./kr-script/common/magisk_replace.sh
 
-file_mixture_hooked "./kr-script/switchs/resources/com.android.systemui" "/system/media/theme/default/com.android.systemui"
+file_mixture_hooked "./kr-script/miui/resources/com.android.systemui" "/system/media/theme/default/com.android.systemui"
 result="$?"
 
 if [[ "$result" = "1" ]]

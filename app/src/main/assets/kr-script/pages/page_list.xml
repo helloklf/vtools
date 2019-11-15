@@ -1,57 +1,53 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <pages>
     <resource dir="file:///android_asset/kr-script/common" />
+            <resource dir="file:///android_asset/kr-script/general" />
 
     <group>
-        <switch support="file:///android_asset/kr-script/switchs/android_n.sh">
+        <switch visible=". ./kr-script/common/android_n.sh">
             <title>强制分屏</title>
             <desc>适用于Android 7.0+，同开发者设置中的“强制将Activity设为可调整大小”选项。开启此项，从而对声明支持分屏的应用进行分屏操作！</desc>
-            <getstate>file:///android_asset/kr-script/switchs/force_resize_get.sh</getstate>
-            <setstate>file:///android_asset/kr-script/switchs/force_resize_set.sh</setstate>
+            <getstate>. ./kr-script/general/force_resize_get.sh</getstate>
+            <setstate>. ./kr-script/general/force_resize_set.sh</setstate>
         </switch>
 
         <switch>
             <title>虚拟键设备</title>
             <desc>标识当前设备没有实体按键，MIUI系统可以通过本功能启用全面屏手势，其它系统可以启用虚拟键。重启生效！</desc>
-            <getstate>file:///android_asset/kr-script/switchs/mainkey_get.sh</getstate>
-            <setstate>file:///android_asset/kr-script/switchs/mainkey_set.sh</setstate>
+            <getstate>. ./kr-script/general/mainkey_get.sh</getstate>
+            <setstate>. ./kr-script/general/mainkey_set.sh</setstate>
         </switch>
 
-        <action>
+        <action auto-off="true">
             <title>过渡动画时长</title>
             <desc>调整各种动画时长</desc>
             <params>
-                <param name="window_animation_scale" title="弹窗动画时长"
-                    options-sh="file:///android_asset/kr-script/actions/anima_level_options.sh" value="1"
+                <param name="w" title="弹窗动画时长"
+                    options-sh=". ./kr-script/general/animation/options.sh" value="1"
                     value-sh="settings get global window_animation_scale" />
-                <param name="transition_animation_scale" title="界面切换动画时长"
-                    options-sh="file:///android_asset/kr-script/actions/anima_level_options.sh" value="1"
+                <param name="transition" title="界面切换动画时长"
+                    options-sh=". ./kr-script/general/animation/options.sh" value="1"
                     value-sh="settings get global transition_animation_scale" />
-                <param name="animator_duration_scale" title="动画程序时长"
-                    options-sh="file:///android_asset/kr-script/actions/anima_level_options.sh" value="1"
+                <param name="animator" title="动画程序时长"
+                    options-sh=". ./kr-script/actions/animation/options.sh" value="1"
                     value-sh="settings get global animator_duration_scale" />
             </params>
-            <script>
-                settings put global window_animation_scale $window_animation_scale
-                settings put global transition_animation_scale $transition_animation_scale
-                settings put global animator_duration_scale $animator_duration_scale
-                echo 'OK!'
-            </script>
+            <script>. ./kr-script/actions/animation/set.sh</script>
         </action>
     </group>
 
     <group>
         <page config="kr-script/pages/miui.xml" desc="适用于MIUI系统的选项" title="MIUI专属"
-            support="file:///android_asset/kr-script/switchs/miui/miui_support.sh" />
+            visible=". ./kr-script/common/miui_support.sh" />
         <page config="kr-script/pages/aosp.xml" desc="越接近原生的系统越适用" title="AOSP专属" />
         <page config="kr-script/pages/flyme.xml" desc="适用于Flyme系统的选项" title="Flyme专属"
-            support="file:///android_asset/kr-script/switchs/flyme/flyme_support.sh" />
+            visible=". ./kr-script/common/flyme_support.sh" />
     </group>
 
     <group>
         <page config="kr-script/pages/performance.xml" desc="设备性能调节和性能优化" title="运行性能" />
         <page config="kr-script/pages/power.xml" desc="耗电记录、低电量" title="电池、充电" />
-        <page config="kr-script/pages/applications.xml" desc="第三方应用程序相关选项" title="应用程序" />
+        <page config="kr-script/pages/apps.xml" desc="第三方应用程序相关选项" title="应用程序" />
         <page config="kr-script/pages/developer.xml" desc="适用于开发者的功能" title="开发者工具" />
         <page config="kr-script/pages/other.xml" desc="其它杂七杂八的功能" title="杂项" />
     </group>

@@ -10,7 +10,7 @@ function module_installed() {
 }
 
 # 替换文件，用法如：
-# magisk_replace_file "./kr-script/switchs/resources/com.android.systemui" "/system/media/theme/default/com.android.systemui"
+# magisk_replace_file "./kr-script/miui/resources/com.android.systemui" "/system/media/theme/default/com.android.systemui"
 function magisk_replace_file() {
     local input="$1"
     local target="$2"
@@ -54,7 +54,7 @@ function magisk_file_exist()
 }
 
 # 判断文件是否与模块中某个文件相同，用法
-# magisk_file_equals "./kr-script/switchs/resources/com.android.systemui" "/system/media/theme/default/com.android.systemui"
+# magisk_file_equals "./kr-script/miui/resources/com.android.systemui" "/system/media/theme/default/com.android.systemui"
 function magisk_file_equals()
 {
     local input="$1"
