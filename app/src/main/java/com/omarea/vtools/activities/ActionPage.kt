@@ -11,13 +11,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.common.ui.ThemeMode
 import com.omarea.krscript.config.PageConfigReader
+import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.AutoRunTask
 import com.omarea.krscript.model.ConfigItemBase
 import com.omarea.krscript.model.KrScriptActionHandler
@@ -25,14 +25,28 @@ import com.omarea.krscript.model.PageInfo
 import com.omarea.krscript.ui.ActionListFragment
 import com.omarea.krscript.ui.FileChooserRender
 import com.omarea.vtools.R
+import com.omarea.vtools.kr_script.PageConfigSh
+import com.projectkr.shell.OpenPageHelper
 
 class ActionPage : AppCompatActivity() {
     private val progressBarDialog = ProgressBarDialog(this)
     private var actionsLoaded = false
     private var handler = Handler()
     private var pageConfig: String = ""
+    private var parentDir: String = ""
     private var autoRun: String = ""
     private var pageTitle = ""
+
+    // 读取页面配置前
+    private var beforeRead = ""
+    // 读取页面配置后
+    private var afterRead = ""
+
+    private var loadSuccess = ""
+    private var loadFail = ""
+
+    // 页面配置脚本
+    private var pageConfigSh = ""
     private lateinit var themeMode: ThemeMode
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -79,10 +93,31 @@ class ActionPage : AppCompatActivity() {
                 if (extras.containsKey("config")) {
                     pageConfig = extras.getString("config")!!
                 }
+                if (extras.containsKey("parentDir")) {
+                    parentDir = extras.getString("parentDir")!!
+                }
+                if (extras.containsKey("pageConfigSh")) {
+                    pageConfigSh = extras.getString("pageConfigSh")!!
+                }
+
+                if (extras.containsKey("beforeRead")) {
+                    beforeRead = extras.getString("beforeRead")!!
+                }
+                if (extras.containsKey("afterRead")) {
+                    afterRead = extras.getString("afterRead")!!
+                }
+                if (extras.containsKey("loadSuccess")) {
+                    loadSuccess = extras.getString("loadSuccess")!!
+                }
+                if (extras.containsKey("loadFail")) {
+                    loadFail = extras.getString("loadFail")!!
+                }
+
                 if (extras.containsKey("autoRunItemId")) {
                     autoRun = extras.getString("autoRunItemId")!!
                 }
-                if (pageConfig.isEmpty()) {
+
+                if (pageConfig.isEmpty() && pageConfigSh.isEmpty()) {
                     setResult(2)
                     finish()
                 }
@@ -101,8 +136,14 @@ class ActionPage : AppCompatActivity() {
             val intent = Intent()
 
             intent.component = ComponentName(this@ActionPage.applicationContext, this@ActionPage.javaClass.name)
-            intent.putExtra("config", pageConfig)
             intent.putExtra("title", "" + title)
+            intent.putExtra("beforeRead", beforeRead)
+            intent.putExtra("config", pageConfig)
+            intent.putExtra("parentDir", parentDir)
+            intent.putExtra("pageConfigSh", pageConfigSh)
+            intent.putExtra("afterRead", afterRead)
+            intent.putExtra("loadSuccess", loadSuccess)
+            intent.putExtra("loadFail", loadFail)
             intent.putExtra("autoRunItemId", configItemBase.key)
 
             addToFavoritesHandler.onAddToFavorites(configItemBase, intent)
@@ -170,44 +211,78 @@ class ActionPage : AppCompatActivity() {
         }
     }
 
+    private fun showDialog(msg: String) {
+        handler.post {
+            progressBarDialog.showDialog(msg)
+        }
+    }
+    private fun hideDialog() {
+        handler.post {
+            progressBarDialog.hideDialog()
+        }
+    }
+
     private fun loadPageConfig() {
-        progressBarDialog.showDialog(getString(R.string.please_wait))
+        val activity = this
+
         Thread(Runnable {
-            val items = PageConfigReader(this.applicationContext, pageConfig).readConfigXml()
-            handler.post {
-                if (items != null && items.size != 0) {
+            if (beforeRead.isNotEmpty()) {
+                showDialog(getString(R.string.kr_page_before_load))
+                ScriptEnvironmen.executeResultRoot(activity, beforeRead)
+            }
+
+            showDialog(getString(R.string.kr_page_loading))
+            var items: ArrayList<ConfigItemBase>? = null
+
+            if (pageConfigSh.isNotEmpty()) {
+                items = PageConfigSh(this, pageConfigSh).execute()
+            }
+
+            if (items == null && pageConfig.isNotEmpty()) {
+                items = PageConfigReader(this.applicationContext, pageConfig, parentDir).readConfigXml()
+            }
+
+            if (afterRead.isNotEmpty()) {
+                showDialog(getString(R.string.kr_page_after_load))
+                ScriptEnvironmen.executeResultRoot(activity, afterRead)
+            }
+
+            if (items != null && items.size != 0) {
+                if (loadSuccess.isNotEmpty()) {
+                    showDialog(getString(R.string.kr_page_load_success))
+                    ScriptEnvironmen.executeResultRoot(activity, loadSuccess)
+                }
+
+                handler.post {
                     val fragment = ActionListFragment.create(items, actionShortClickHandler, object : AutoRunTask {
                         override val key = autoRun
                         override fun onCompleted(result: Boolean?) {
                             if (result != true) {
-                                Toast.makeText(this@ActionPage, "指定项已丢失", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this@ActionPage, getString(R.string.kr_auto_run_item_losted), Toast.LENGTH_SHORT).show()
                             }
                         }
                     }, themeMode)
-                    supportFragmentManager.beginTransaction().replace(R.id.main_list, fragment).commit()
+                    supportFragmentManager.beginTransaction().replace(R.id.main_list, fragment).commitAllowingStateLoss()
+                    hideDialog()
                 }
-                progressBarDialog.hideDialog()
+                actionsLoaded = true
+            } else {
+                if (loadFail.isNotEmpty()) {
+                    showDialog(getString(R.string.kr_page_load_fail))
+                    ScriptEnvironmen.executeResultRoot(activity, loadFail)
+                    hideDialog()
+                }
+
+                handler.post {
+                    Toast.makeText(this@ActionPage, getString(R.string.kr_page_load_fail), Toast.LENGTH_SHORT).show()
+                }
+                hideDialog()
+                finish()
             }
-            actionsLoaded = true
         }).start()
     }
 
     fun _openPage(pageInfo: PageInfo) {
-        try {
-            if (!pageInfo.pageConfigPath.isEmpty()) {
-                val intent = Intent(this, ActionPage::class.java)
-                intent.putExtra("config", pageInfo.pageConfigPath)
-                intent.putExtra("title", pageInfo.title)
-                startActivity(intent)
-            } else if (!pageInfo.onlineHtmlPage.isEmpty()) {
-                // TODO:OnlinePage
-                // val intent = Intent(this, ActionPageOnline::class.java)
-                // intent.putExtra("config", pageInfo.onlineHtmlPage)
-                // intent.putExtra("title", pageInfo.title)
-                // startActivity(intent)
-            }
-        } catch (ex: java.lang.Exception) {
-            Log.e("_openPage", "" + ex.message)
-        }
+        OpenPageHelper(this).openPage(pageInfo)
     }
 }

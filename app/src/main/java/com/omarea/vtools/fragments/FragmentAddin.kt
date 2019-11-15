@@ -44,6 +44,7 @@ import com.omarea.vtools.dialogs.DialogAddinModifyDPI
 import com.omarea.vtools.dialogs.DialogAddinModifydevice
 import com.omarea.vtools.dialogs.DialogAddinWIFI
 import com.omarea.vtools.dialogs.DialogCustomMAC
+import com.projectkr.shell.OpenPageHelper
 import kotlinx.android.synthetic.main.fragment_addin.*
 import java.util.*
 
@@ -159,8 +160,8 @@ class FragmentAddin : Fragment() {
                 val intent = Intent()
 
                 intent.component = ComponentName(activity!!.applicationContext, ActionPage::class.java)
+                intent.putExtra("title", "" + configItemBase.title)
                 intent.putExtra("config", pageConfig)
-                intent.putExtra("title", "" + activity!!.title)
                 intent.putExtra("autoRunItemId", configItemBase.key)
 
                 addToFavoritesHandler.onAddToFavorites(configItemBase, intent)
@@ -177,14 +178,7 @@ class FragmentAddin : Fragment() {
     }
 
     fun _openPage(pageInfo: PageInfo) {
-        try {
-            val intent = Intent(activity, ActionPage::class.java)
-            intent.putExtra("title", pageInfo.title)
-            intent.putExtra("config", pageInfo.pageConfigPath)
-            startActivity(intent)
-        } catch (ex: java.lang.Exception) {
-            Log.e("_openPage", "" + "" + ex.message)
-        }
+        OpenPageHelper(this.activity!!).openPage(pageInfo)
     }
 
     private var fileSelectedInterface: FileChooserRender.FileSelectedInterface? = null
