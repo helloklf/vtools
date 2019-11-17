@@ -13,14 +13,14 @@ object CommonCmds {
     val AbsBackUpDir = "$SDCardDir/backups/apps/"
 
     const val MountSystemRW =
-            "busybox mount -o rw,remount /\n" +
-                    "mount -o rw,remount /system\n" +
-                    "busybox mount -o rw,remount /\n" +
-                    "mount -o rw,remount /system\n" +
-                    "busybox mount -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
-                    "mount -o remount,rw /dev/block/bootdevice/by-name/system /system\n" +
-                    "busybox mount -o rw,remount /vendor\n" +
-                    "mount -o rw,remount /vendor\n"
+            "busybox mount -o rw,remount 2>/dev/null/\n" +
+                    "mount -o rw,remount /system 2>/dev/null\n" +
+                    "busybox mount -o rw,remount / 2>/dev/null\n" +
+                    "mount -o rw,remount /system 2>/dev/null\n" +
+                    "busybox mount -o remount,rw /dev/block/bootdevice/by-name/system /system 2>/dev/null\n" +
+                    "mount -o remount,rw /dev/block/bootdevice/by-name/system /system 2>/dev/null\n" +
+                    "busybox mount -o rw,remount /vendor 2>/dev/null\n" +
+                    "mount -o rw,remount /vendor 2>/dev/null\n"
 
     const val POWER_CFG_BASE = "/data/powercfg-base.sh"
 

@@ -5,42 +5,38 @@
         <switch visible=". ./kr-script/common/miui_support.sh">
             <title>【MIUI10】状态栏缺口</title>
             <desc>在MIUI10中开启MI8、8SE刘海屏状态栏中间的缺口，减少图标数量，在MiX2和Mi6上测试可用。重启生效！</desc>
-            <getstate>. ./kr-script/miui/mi8status_get.sh</getstate>
-            <setstate>. ./kr-script/miui/mi8status_set.sh</setstate>
+            <get>. ./kr-script/miui/mi8status_get.sh</get>
+            <set>. ./kr-script/miui/mi8status_set.sh</set>
         </switch>
         <switch visible=". ./kr-script/common/miui_support.sh">
             <title>【MIUI9】通知中心搜索框</title>
             <desc>关闭此项将通过替换主题资源的方式，隐藏下拉通知中心的搜索框</desc>
-            <getstate>. ./kr-script/miui/miui_notice_search_get.sh</getstate>
-            <setstate>. ./kr-script/miui/miui_notice_search_set.sh</setstate>
+            <get>. ./kr-script/miui/miui_notice_search_get.sh</get>
+            <set>. ./kr-script/miui/miui_notice_search_set.sh</set>
         </switch>
         <switch visible=". ./kr-script/common/miui_support.sh">
             <title>【MIUI10】隐藏导航栏</title>
             <desc>通过主题资源修改导航栏高度的方式隐藏掉导航栏，方便使用第三方手势</desc>
-            <getstate>. ./kr-script/miui/miui_hide_nav_get.sh</getstate>
-            <setstate>. ./kr-script/miui/miui_hide_nav_set.sh</setstate>
+            <get>. ./kr-script/miui/miui_hide_nav_get.sh</get>
+            <set>. ./kr-script/miui/miui_hide_nav_set.sh</set>
         </switch>
         <switch visible=". ./kr-script/common/miui_support.sh">
             <title>【MIUI10】屏幕圆角</title>
             <desc>开关全局圆角效果，在MiX2和Mi6上测试可用。重启生效！</desc>
-            <getstate>. ./kr-script/miui/miui_round_get.sh</getstate>
-            <setstate>. ./kr-script/miui/miui_round_set.sh</setstate>
+            <get>. ./kr-script/miui/miui_round_get.sh</get>
+            <set>. ./kr-script/miui/miui_round_set.sh</set>
         </switch>
     </group>
 
     <group title="温控">
-        <action visible=". ./kr-script/miui/thermal_conf/support.sh">
-            <resource dir=". ./kr-script/miui/thermal_conf" />
-            <title>更改温控配置</title>
-            <desc sh=". ./kr-script/miui/thermal_conf/desc.sh">
-                本功能适用于骁龙835、845、855处理器，MIUI官方系统！
-            </desc>
+        <action visible=". ./kr-script/miui/thermal_conf/support.sh" title="更改温控配置" desc="本功能适用于骁龙835、845、855处理器，MIUI官方系统！">
+            <summary sh=". ./kr-script/miui/thermal_conf/summary.sh" />
             <param name="mode" title="温控模式"
                 options-sh=". ./kr-script/miui/thermal_conf/options.sh"
                 value-sh=". ./kr-script/miui/thermal_conf/current.sh" />
             <param name="platform" title="处理器(SOC)"
                 options-sh=". ./kr-script/miui/thermal_conf/soc-options.sh" />
-            <script>. ./kr-script/miui/thermal_conf/config.sh</script>
+            <set>. ./kr-script/miui/thermal_conf/config.sh</set>
         </action>
         <action confirm="true" visible=". ./kr-script/common/miui_support.sh">
             <title>开启MIUI9、MIUI10隐藏的温控选项</title>
@@ -53,17 +49,14 @@
         <switch id="miui_update">
             <title>【MIUI10】在线更新检查</title>
             <desc>关闭此开关可以屏蔽在线更新检查</desc>
-            <getstate>. ./kr-script/miui/miui_update_get.sh</getstate>
-            <setstate>. ./kr-script/miui/miui_update_set.sh</setstate>
+            <get>. ./kr-script/miui/miui_update_get.sh</get>
+            <set>. ./kr-script/miui/miui_update_set.sh</set>
         </switch>
         <switch visible=". ./kr-script/common/miui_support.sh">
             <title>【MIUI10】安全键盘</title>
             <desc>在输入密码时使用MIUI的安全键盘，避免密码被输入法作为自定义词语记录。重启生效！</desc>
-            <getstate>. ./kr-script/miui/miui_security_keyboard_get.sh
-            </getstate>
-            <setstate>. ./kr-script/miui/miui_security_keyboard_set.sh
-            </setstate>
+            <get>. ./kr-script/miui/miui_security_keyboard_get.sh</get>
+            <set>. ./kr-script/miui/miui_security_keyboard_set.sh</set>
         </switch>
     </group>
-
 </actions>

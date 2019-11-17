@@ -40,18 +40,18 @@
     </group>
 
     <group title="性能优化">
-        <action id="tgmp_config" visible=". ./kr-script/apps/tmgp/tmgp_support.sh">
-            <title>王者荣耀配置修改</title>
-            <desc su=". ./kr-script/apps/tmgp/tmgp_get.sh" />
-            <script>. ./kr-script/apps/tmgp/tmgp_set.sh</script>
-            <params>
-                <param name="render"
-                    options-sh=". ./kr-script/apps/tmgp/tmgp_options.sh" />
-                <param name="thread" value="0">
-                    <option val="1">多线程优化</option>
-                    <option val="3">默认</option>
-                </param>
-            </params>
+        <action id="tgmp_config"
+            title="王者荣耀配置修改"
+            desc="开启OpenGLES3、Vulkan特性（可能会花屏或闪退）"
+            visible=". ./kr-script/apps/tmgp/support.sh">
+            <summary sh=". ./kr-script/apps/tmgp/summary.sh" />
+            <set>. ./kr-script/apps/tmgp/set.sh</set>
+            <param name="render"
+                options-sh=". ./kr-script/apps/tmgp/options.sh" />
+            <param name="thread" value="0">
+                <option val="1">多线程优化</option>
+                <option val="3">默认</option>
+            </param>
         </action>
     </group>
 
@@ -77,6 +77,12 @@
             <getstate>. ./kr-script/apps/gcm_get.sh</getstate>
             <setstate>. ./kr-script/apps/gcm_set.sh</setstate>
         </switch>
+        <text>
+            <title>常用链接</title>
+            <slices>
+                <slice size="15" link="https://play.google.com/store/account/subscriptions">Play商店 订阅管理</slice>
+            </slices>
+        </text>
     </group>
 
     <group title="其它">

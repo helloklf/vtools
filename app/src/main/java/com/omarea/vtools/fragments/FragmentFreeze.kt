@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.os.UserManager
 import android.support.v4.app.Fragment
 import android.text.Editable
 import android.text.TextWatcher
@@ -213,9 +214,22 @@ class FragmentFreeze : Fragment() {
         FreezeAppShortcutHelper().removeShortcut(this.context!!, packageName)
     }
 
+    fun getUserId(context: Context): Int {
+        val um = context.getSystemService(Context.USER_SERVICE) as UserManager
+        val userHandle = android.os.Process.myUserHandle()
+
+        var value = 0
+        try {
+            value = um.getSerialNumberForUser(userHandle).toInt()
+        } catch (ignored: Exception) {
+        }
+
+        return value
+    }
+
     private fun removeAndUninstall(appInfo: Appinfo) {
         removeConfig(appInfo)
-        KeepShellPublic.doCmdSync("pm uninstall --user " + context!!.filesDir.getParentFile().getParentFile().getName() + " " + appInfo.packageName)
+        KeepShellPublic.doCmdSync("pm uninstall --user " + getUserId(context!!) + " " + appInfo.packageName)
     }
 
     private fun enableApp(appInfo: Appinfo) {

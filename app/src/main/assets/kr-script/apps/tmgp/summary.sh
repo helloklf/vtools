@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-text='开启OpenGLES3、Vulkan特性（可能会花屏或闪退），当前状态：'
+text='当前：'
 
 USER_ID='0'
 if [[ -n "${ANDROID_UID}" ]]; then

@@ -517,7 +517,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         sb.append("echo '[operation completed]'\n")
         execShell(sb)
         if (useMagisk) {
-            Toast.makeText(context, "已通过Magisk更改参数，请重启手机~", Toast.LENGTH_SHORT).show()
+            DialogHelper.helpInfo(context, "已通过Magisk完成操作，请重启手机~", "")
         }
     }
 

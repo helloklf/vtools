@@ -38,7 +38,9 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
     private val SCREEN_OFF_SWITCH_NETWORK_DELAY: Long = 25000
     private var reciverLock = LockScreenReciver(context, object : IScreenEventHandler {
         override fun onScreenOff() {
-            _onScreenOff()
+            if (ScreenState(context).isScreenLocked()) {
+                _onScreenOff()
+            }
         }
 
         override fun onScreenOn() {
