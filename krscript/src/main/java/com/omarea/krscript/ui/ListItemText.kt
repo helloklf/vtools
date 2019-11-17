@@ -12,7 +12,9 @@ import android.text.style.*
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import com.omarea.common.ui.DialogHelper
 import com.omarea.krscript.R
+import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.TextInfo
 
 
@@ -72,7 +74,7 @@ class ListItemText(private val context: Context,
                                     val intent = Intent(Intent.ACTION_VIEW, uri)
                                     context.startActivity(intent)
                                 } catch (ex: Exception) {
-                                    Toast.makeText(context, "无法打开活动~", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, context.getString(R.string.kr_slice_activity_fail), Toast.LENGTH_SHORT).show()
                                 }
                             }
                         }
@@ -82,14 +84,26 @@ class ListItemText(private val context: Context,
                 if (row.activity.isNotEmpty()) {
                     spannableString.setSpan(object : ClickableSpan() {
                         override fun onClick(widget: View) {
-                            if (row.activity.isNotEmpty()) {
-                                try {
-                                    val intent = Intent(row.activity)
-                                    context.startActivity(intent)
-                                } catch (ex: Exception) {
-                                    Toast.makeText(context, "无法打开活动~", Toast.LENGTH_SHORT).show()
-                                }
+                            try {
+                                val intent = if (row.activity.contains("/")) (Intent(Intent.ACTION_VIEW).apply {
+                                    val info = row.activity.split("/")
+                                    val packageName = info.first()
+                                    val className = info.last()
+                                    setClassName(packageName, if (className.startsWith(".")) (packageName + className) else className)
+                                }) else Intent(row.activity)
+                                context.startActivity(intent)
+                            } catch (ex: Exception) {
+                                Toast.makeText(context, context.getString(R.string.kr_slice_activity_fail), Toast.LENGTH_SHORT).show()
                             }
+                        }
+                    }, 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
+
+                if (row.onClickScript.isNotEmpty()) {
+                    spannableString.setSpan(object : ClickableSpan() {
+                        override fun onClick(widget: View) {
+                            val result = ScriptEnvironmen.executeResultRoot(context, row.onClickScript)
+                            DialogHelper.helpInfo(context, context.getString(R.string.kr_slice_script_result), result)
                         }
                     }, 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
                 }

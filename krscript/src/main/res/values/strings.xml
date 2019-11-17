@@ -45,4 +45,6 @@
     <string name="kr_script_task_has_error">出现错误</string>
     <string name="kr_script_task_finished">任务结束</string>
     <string name="kr_bg_task_start_desc">你可以通过系统的通知中心，查看任务运行进度和日志</string>
+    <string name="kr_slice_script_result">脚本输出内容</string>
+    <string name="kr_slice_activity_fail">无法打开活动~</string>
 </resources>
