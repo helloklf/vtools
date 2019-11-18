@@ -52,10 +52,6 @@ open class DialogAppOptions(protected final var context: Context, protected var 
             dialog?.dismiss()
             hideAll()
         }
-        dialogView.findViewById<View>(R.id.app_options_trim).setOnClickListener {
-            dialog?.dismiss()
-            trimCachesAll()
-        }
         dialogView.findViewById<View>(R.id.app_options_clear).setOnClickListener {
             dialog?.dismiss()
             clearAll()
@@ -117,10 +113,6 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         dialogView.findViewById<View>(R.id.app_options_app_hide).setOnClickListener {
             dialog?.dismiss()
             hideAll()
-        }
-        dialogView.findViewById<View>(R.id.app_options_trim).setOnClickListener {
-            dialog?.dismiss()
-            trimCachesAll()
         }
         dialogView.findViewById<View>(R.id.app_options_clear).setOnClickListener {
             dialog?.dismiss()
@@ -567,22 +559,6 @@ open class DialogAppOptions(protected final var context: Context, protected var 
             sb.append("echo '[clear ${item.appName}]'\n")
 
             sb.append("pm clear $packageName\n")
-        }
-
-        sb.append("echo '[operation completed]'\n")
-        execShell(sb)
-    }
-
-    /**
-     * 清除缓存
-     */
-    protected fun trimCachesAll() {
-        val sb = StringBuilder()
-        for (item in apps) {
-            val packageName = item.packageName.toString()
-            sb.append("echo '[trim caches ${item.appName}]'\n")
-
-            sb.append("pm trim-caches $packageName\n")
         }
 
         sb.append("echo '[operation completed]'\n")

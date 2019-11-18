@@ -26,36 +26,11 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <!--清空缓存-->
-            <LinearLayout
-                android:id="@+id/app_options_trim"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/krscript_item_ripple"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="6dp">
-
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_marginRight="6dp"
-                    android:src="@drawable/app_options_clear"
-                    android:tint="?colorAccent" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="清空缓存" />
-            </LinearLayout>
             <!--清空数据-->
             <LinearLayout
                 android:id="@+id/app_options_clear"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="6dp"
                 android:layout_weight="1"
                 android:background="@drawable/krscript_item_ripple"
                 android:gravity="center_vertical"
@@ -75,20 +50,12 @@
                     android:layout_weight="1"
                     android:text="清除数据" />
             </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
             <!--卸载应用更新-->
             <LinearLayout
                 android:id="@+id/app_options_uninstall"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="6dp"
+                android:layout_marginLeft="6dp"
                 android:layout_weight="1"
                 android:background="@drawable/krscript_item_ripple"
                 android:gravity="center_vertical"
@@ -108,6 +75,14 @@
                     android:layout_weight="1"
                     android:text="卸载更新" />
             </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <!--删除应用程序文件-->
             <LinearLayout

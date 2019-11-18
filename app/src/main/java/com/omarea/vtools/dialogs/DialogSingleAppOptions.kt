@@ -65,10 +65,6 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
             dialog?.dismiss()
             hideAll()
         }
-        dialogView.findViewById<View>(R.id.app_options_trim).setOnClickListener {
-            dialog?.dismiss()
-            trimCachesAll()
-        }
         dialogView.findViewById<View>(R.id.app_options_clear).setOnClickListener {
             dialog?.dismiss()
             clearAll()
@@ -160,10 +156,6 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         dialogView.findViewById<View>(R.id.app_options_app_hide).setOnClickListener {
             dialog?.dismiss()
             hideAll()
-        }
-        dialogView.findViewById<View>(R.id.app_options_trim).setOnClickListener {
-            dialog?.dismiss()
-            trimCachesAll()
         }
         dialogView.findViewById<View>(R.id.app_options_clear).setOnClickListener {
             dialog?.dismiss()
