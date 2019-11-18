@@ -3,6 +3,7 @@ package com.omarea.vtools.dialogs
 import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import android.view.LayoutInflater
 import android.widget.CheckBox
 import android.widget.EditText
@@ -42,7 +43,9 @@ class DialogCustomMAC(private var context: Context) {
                 return@setNegativeButton
             }
 
-            val r = KeepShellPublic.doCmdSync("mac=\"$mac\"" + RawText.getRawText(context, R.raw.change_mac))
+            val shell = "mac=\"$mac\"\n" + RawText.getRawText(context, R.raw.change_mac)
+            val r = KeepShellPublic.doCmdSync(shell)
+            Log.e("getRawText", shell)
             if (r == "error") {
                 Toast.makeText(context, "修改失败！", Toast.LENGTH_SHORT).show()
             } else {
