@@ -13,7 +13,7 @@ object CommonCmds {
     val AbsBackUpDir = "$SDCardDir/backups/apps/"
 
     const val MountSystemRW =
-            "busybox mount -o rw,remount 2>/dev/null/\n" +
+            "busybox mount -o rw,remount / 2>/dev/null\n" +
                     "mount -o rw,remount /system 2>/dev/null\n" +
                     "busybox mount -o rw,remount / 2>/dev/null\n" +
                     "mount -o rw,remount /system 2>/dev/null\n" +

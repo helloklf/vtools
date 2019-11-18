@@ -161,7 +161,7 @@ class BootService : IntentService("vtools-boot") {
             if (mac != "") {
                 updateNotification(getString(R.string.boot_modify_mac))
 
-                keepShell.doCmdSync("mac=\"$mac\"" + RawText.getRawText(context, R.raw.change_mac))
+                keepShell.doCmdSync("mac=\"$mac\"\n" + RawText.getRawText(context, R.raw.change_mac))
             }
         }
 
