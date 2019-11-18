@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.omarea.common.ui.DialogHelper;
 import com.omarea.common.ui.ProgressBarDialog;
 import com.omarea.vtools.R;
 
@@ -201,7 +202,7 @@ public class AdapterFileSelector extends BaseAdapter {
                     view.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            new AlertDialog.Builder(view.getContext()).setTitle("选定文件？")
+                            DialogHelper.Companion.animDialog(new AlertDialog.Builder(view.getContext()).setTitle("选定文件？")
                                     .setMessage(file.getAbsolutePath())
                                     .setPositiveButton(R.string.btn_confirm, new DialogInterface.OnClickListener() {
                                         @Override
@@ -219,7 +220,7 @@ public class AdapterFileSelector extends BaseAdapter {
                                         public void onClick(DialogInterface dialog, int which) {
 
                                         }
-                                    }).create().show();
+                                    }));
                         }
                     });
                 }
@@ -228,7 +229,7 @@ public class AdapterFileSelector extends BaseAdapter {
                 view.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
-                        new AlertDialog.Builder(view.getContext()).setTitle("删除所选文件？")
+                        DialogHelper.Companion.animDialog(new AlertDialog.Builder(view.getContext()).setTitle("删除所选文件？")
                                 .setMessage(file.getAbsolutePath())
                                 .setPositiveButton(R.string.btn_confirm, new DialogInterface.OnClickListener() {
                                     @Override
@@ -246,7 +247,7 @@ public class AdapterFileSelector extends BaseAdapter {
                                     public void onClick(DialogInterface dialog, int which) {
 
                                     }
-                                }).create().show();
+                                }));
                         return true;
                     }
                 });

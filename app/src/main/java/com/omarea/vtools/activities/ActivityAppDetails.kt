@@ -310,7 +310,7 @@ class ActivityAppDetails : AppCompatActivity() {
                 else -> index = 4
             }
             var selectedIndex = index
-            val dialog = AlertDialog.Builder(this)
+            DialogHelper.animDialog(AlertDialog.Builder(this)
                     .setTitle(getString(R.string.perf_opt))
                     .setSingleChoiceItems(R.array.powercfg_modes2, index, { dialog, which ->
                         selectedIndex = which
@@ -336,9 +336,7 @@ class ActivityAppDetails : AppCompatActivity() {
                             notifyService(app, modeName)
                         }
                     })
-                    .setNegativeButton(R.string.btn_cancel, DialogInterface.OnClickListener { dialog, which -> })
-                    .create()
-            DialogHelper.animDialog(dialog)
+                    .setNegativeButton(R.string.btn_cancel, DialogInterface.OnClickListener { dialog, which -> }))
         }
 
         app_details_hidenav.setOnClickListener {
@@ -497,8 +495,7 @@ class ActivityAppDetails : AppCompatActivity() {
                         .setTitle("请输入DPI")
                         .setView(view)
                         .create()
-                dialog.window!!.setWindowAnimations(R.style.windowAnim)
-                dialog.show()
+                DialogHelper.animDialog(dialog)
             }
         }
     }

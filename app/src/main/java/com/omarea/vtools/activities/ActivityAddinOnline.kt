@@ -2,10 +2,10 @@ package com.omarea.vtools.activities
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.KeyEvent
 import android.view.View
@@ -14,6 +14,7 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.scene_mode.ModeConfigInstaller
 import com.omarea.vtools.R
@@ -72,15 +73,13 @@ class ActivityAddinOnline : AppCompatActivity() {
                 val powercfg = reader.readText()
                 if (powercfg.startsWith("#!/") && ModeConfigInstaller().installPowerConfigByText(this, powercfg)) {
                     vtools_online.post {
-                        AlertDialog.Builder(this)
+                        DialogHelper.animDialog(AlertDialog.Builder(this)
                                 .setTitle("配置文件已安装")
                                 .setPositiveButton(R.string.btn_confirm, { _, _ ->
                                     setResult(Activity.RESULT_OK)
                                     finish()
                                 })
-                                .setCancelable(false)
-                                .create()
-                                .show()
+                                .setCancelable(false))
                     }
                 } else {
                     vtools_online.post {
@@ -124,15 +123,13 @@ class ActivityAddinOnline : AppCompatActivity() {
                             val powercfg = byteArray.toString(Charset.defaultCharset())
                             if (powercfg.startsWith("#!/") && ModeConfigInstaller().installPowerConfigByText(this, powercfg)) {
                                 vtools_online.post {
-                                    AlertDialog.Builder(this)
+                                    DialogHelper.animDialog(AlertDialog.Builder(this)
                                             .setTitle("配置文件已安装")
                                             .setPositiveButton(R.string.btn_confirm, { _, _ ->
                                                 setResult(Activity.RESULT_OK)
                                                 finish()
                                             })
-                                            .setCancelable(false)
-                                            .create()
-                                            .show()
+                                            .setCancelable(false))
                                 }
                             } else {
                                 vtools_online.post {
@@ -183,7 +180,7 @@ class ActivityAddinOnline : AppCompatActivity() {
                     // https://raw.githubusercontent.com/yc9559/cpufreq-interactive-opt/master/vtools-powercfg/20180603/sd_845/powercfg.apk 然后重定向到具体文件
                     if (url.startsWith("https://github.com/yc9559/cpufreq-interactive-opt/") && url.contains("vtools-powercfg") && url.endsWith("powercfg.apk")) {
                         val configPath = url.substring(url.indexOf("vtools-powercfg"))
-                        AlertDialog.Builder(vtools_online.context)
+                        DialogHelper.animDialog(AlertDialog.Builder(vtools_online.context)
                                 .setTitle("可用的配置脚本")
                                 .setMessage("在当前页面上检测到可用于动态响应的配置脚本，是否立即将其安装到本地？\n\n配置：$configPath\n\n作者：yc9559\n\n")
                                 .setPositiveButton(R.string.btn_confirm, { _, _ ->
@@ -193,14 +190,12 @@ class ActivityAddinOnline : AppCompatActivity() {
                                 .setCancelable(false)
                                 .setNeutralButton(R.string.btn_cancel, { _, _ ->
                                     view.loadUrl(url)
-                                })
-                                .create()
-                                .show()
+                                }))
                     } else if (url.startsWith("https://github.com/yc9559/wipe-v2/releases/download/") && url.endsWith(".zip")) {
                         // v2
                         // https://github.com/yc9559/wipe-v2/releases/download/0.1.190503-dev/sdm625.zip
                         val configPath = url.substring(url.lastIndexOf("/") + 1).replace(".zip", "")
-                        AlertDialog.Builder(vtools_online.context)
+                        DialogHelper.animDialog(AlertDialog.Builder(vtools_online.context)
                                 .setTitle("配置安装提示")
                                 .setMessage("你刚刚点击的内容，似乎是一个可用于动态响应的配置脚本，是否立即将其安装到本地？\n\n配置：$configPath\n\n作者：yc9559\n\n")
                                 .setPositiveButton(R.string.btn_confirm, { _, _ ->
@@ -210,9 +205,7 @@ class ActivityAddinOnline : AppCompatActivity() {
                                 .setCancelable(false)
                                 .setNeutralButton(R.string.btn_cancel, { _, _ ->
                                     view.loadUrl(url)
-                                })
-                                .create()
-                                .show()
+                                }))
                     } else {
                         view.loadUrl(url)
                     }

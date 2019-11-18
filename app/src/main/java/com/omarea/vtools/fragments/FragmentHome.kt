@@ -324,16 +324,14 @@ class FragmentHome : Fragment() {
         if (!dynamic && modeList.getCurrentPowerMode() == action) {
             modeList.setCurrent("", "")
             globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, "").apply()
-            AlertDialog.Builder(context)
+            DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle("提示")
                     .setMessage("需要重启手机才能恢复默认调度，是否立即重启？")
                     .setNegativeButton(R.string.btn_cancel) { _, _ ->
                     }
                     .setPositiveButton(R.string.btn_confirm) { _, _ ->
                         KeepShellPublic.doCmdSync("sync\nsleep 1\nreboot")
-                    }
-                    .create()
-                    .show()
+                    })
             setModeState()
             return
         }

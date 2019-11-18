@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.omarea.common.shared.RootFileInfo
 import com.omarea.common.shell.RootFile
+import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.ui.AdapterRootFileSelector
 import com.omarea.utils.CommonCmds
@@ -29,7 +30,7 @@ class FragmentMagisk : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (com.omarea.common.shared.MagiskExtend.magiskSupported()) {
             if (!com.omarea.common.shared.MagiskExtend.moduleInstalled()) {
-                AlertDialog.Builder(context!!).setTitle("安装Magisk拓展？")
+                DialogHelper.animDialog(AlertDialog.Builder(context!!).setTitle("安装Magisk拓展？")
                         .setMessage("安装Scene提供的Magisk拓展模块，从而在不修改系统文件的情况下，更改一些参数~")
                         .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             com.omarea.common.shared.MagiskExtend.magiskModuleInstall(this.context)
@@ -37,9 +38,7 @@ class FragmentMagisk : Fragment() {
                             this@FragmentMagisk.activity!!.recreate()
                         }
                         .setNegativeButton(R.string.btn_cancel) { _, _ ->
-                        }
-                        .create()
-                        .show()
+                        })
             }
         } else {
             Toast.makeText(context, "您的设备未安装Magisk框架，不能使用本功能~", Toast.LENGTH_LONG).show()

@@ -77,11 +77,10 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
             val layoutInflater = LayoutInflater.from(context)
             this.total = total
             dialog = layoutInflater.inflate(R.layout.dialog_loading, null)
-            alert = android.app.AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
+            alert = AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
             textView = (dialog.findViewById(R.id.dialog_app_details_pkgname) as TextView)
             progressBar = (dialog.findViewById(R.id.dialog_app_details_progress) as ProgressBar)
-            alert.window!!.setWindowAnimations(R.style.windowAnim)
-            alert.show()
+            DialogHelper.animDialog(alert)
             textView.text = "正在获取权限"
         }
     }
@@ -220,7 +219,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                     Toast.makeText(context, "配置已修改，但需要重启才能生效！", Toast.LENGTH_SHORT).show()
                 }
                 .setNeutralButton("查看说明") { _, _ ->
-                    AlertDialog.Builder(context).setTitle("说明").setMessage("interpret-only模式安装应用更快。speed模式安装应用将会很慢，但是运行速度更快。").create().show()
+                    DialogHelper.animDialog(AlertDialog.Builder(context).setTitle("说明").setMessage("interpret-only模式安装应用更快。speed模式安装应用将会很慢，但是运行速度更快。"))
                 })
     }
 

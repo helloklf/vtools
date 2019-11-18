@@ -181,7 +181,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         textView.text = "正在获取权限"
         val alert = AlertDialog.Builder(context).setView(dialog).setCancelable(false).create()
         AsynSuShellUnit(ProgressHandler(dialog, alert, handler)).exec(sb.toString()).waitFor()
-        alert.show()
+        DialogHelper.animDialog(alert)
     }
 
     open class ProgressHandler(dialog: View, protected var alert: AlertDialog, protected var handler: Handler) : Handler() {
@@ -216,7 +216,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                             alert.dismiss()
                             alert.hide()
                             if (error.isNotEmpty()) {
-                                AlertDialog.Builder(alert.context).setTitle("出现了一些错误").setMessage(error.toString()).create().show()
+                                DialogHelper.animDialog(AlertDialog.Builder(alert.context).setTitle("出现了一些错误").setMessage(error.toString()))
                             }
                         }, 1200)
                         handler.handleMessage(handler.obtainMessage(2))

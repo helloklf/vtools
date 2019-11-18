@@ -7,4 +7,4 @@
         <getstate>. ./kr-script/flyme/flyme_blur_get.sh</getstate>
         <setstate>. ./kr-script/flyme/flyme_blur_set.sh</setstate>
     </switch>
-</items>
+</group>

@@ -1,13 +1,14 @@
 package com.omarea.vtools.dialogs
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
-import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
+import com.omarea.common.ui.DialogHelper
 import com.omarea.store.SpfConfig
 import com.omarea.utils.RawText
 import com.omarea.vtools.R
@@ -34,8 +35,8 @@ class DialogCustomMAC(private var context: Context) {
             spf!!.edit().putBoolean(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE, isChecked).apply()
         }
 
-        val instance = AlertDialog.Builder(context).setTitle("自定义WIFI MAC").setView(dialog).setNegativeButton("确定") { _, _ ->
-            val mac = macInput.text.replace(Regex("-"), ":").toString().toLowerCase()
+        DialogHelper.animDialog(AlertDialog.Builder(context).setTitle("自定义WIFI MAC").setView(dialog).setNegativeButton("确定") { _, _ ->
+            val mac = macInput.text.replace(Regex("-"), ":").toLowerCase()
             if (!Regex("[\\w\\d]{2}:[\\w\\d]{2}:[\\w\\d]{2}:[\\w\\d]{2}:[\\w\\d]{2}:[\\w\\d]{2}$", RegexOption.IGNORE_CASE).matches(mac)) {
                 Toast.makeText(context, "输入的MAC地址无效，格式应如 ec:d0:9f:af:95:01", Toast.LENGTH_LONG).show()
                 return@setNegativeButton
@@ -48,8 +49,6 @@ class DialogCustomMAC(private var context: Context) {
                 Toast.makeText(context, "MAC已修改", Toast.LENGTH_SHORT).show()
                 spf!!.edit().putString(SpfConfig.GLOBAL_SPF_MAC, mac).apply()
             }
-        }.create()
-        instance.window!!.setWindowAnimations(R.style.windowAnim)
-        instance.show()
+        })
     }
 }
