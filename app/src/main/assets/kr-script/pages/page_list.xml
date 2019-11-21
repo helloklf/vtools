@@ -29,10 +29,10 @@
                     options-sh=". ./kr-script/general/animation/options.sh" value="1"
                     value-sh="settings get global transition_animation_scale" />
                 <param name="animator" title="动画程序时长"
-                    options-sh=". ./kr-script/actions/animation/options.sh" value="1"
+                    options-sh=". ./kr-script/general/animation/options.sh" value="1"
                     value-sh="settings get global animator_duration_scale" />
             </params>
-            <script>. ./kr-script/actions/animation/set.sh</script>
+            <script>. ./kr-script/general/animation/set.sh</script>
         </action>
     </group>
 

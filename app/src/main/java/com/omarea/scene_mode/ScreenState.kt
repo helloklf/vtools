@@ -10,15 +10,19 @@ class ScreenState(private var context: Context) {
     fun isScreenLocked(): Boolean {
         val windowManager = context.getSystemService(Context.WINDOW_SERVICE) as WindowManager
         val display = windowManager.defaultDisplay
-        if (display.state != Display.STATE_ON) {
+        if (display.state == Display.STATE_OFF) {
             return true
         }
 
         val mKeyguardManager = context.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-            mKeyguardManager.inKeyguardRestrictedInputMode() || mKeyguardManager.isDeviceLocked || mKeyguardManager.isKeyguardLocked
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            mKeyguardManager.isDeviceLocked || mKeyguardManager.isKeyguardLocked
         } else {
-            mKeyguardManager.inKeyguardRestrictedInputMode() || mKeyguardManager.isKeyguardLocked
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                mKeyguardManager.inKeyguardRestrictedInputMode() || mKeyguardManager.isDeviceLocked || mKeyguardManager.isKeyguardLocked
+            } else {
+                mKeyguardManager.inKeyguardRestrictedInputMode() || mKeyguardManager.isKeyguardLocked
+            }
         }
     }
 

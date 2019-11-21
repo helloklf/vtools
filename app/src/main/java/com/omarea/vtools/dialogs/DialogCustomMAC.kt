@@ -25,25 +25,37 @@ class DialogCustomMAC(private var context: Context) {
         spf = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
     }
 
-    fun modifyMAC() {
+    fun modifyMAC(mode: Int) {
         val layoutInflater = LayoutInflater.from(context)
         val dialog = layoutInflater.inflate(R.layout.dialog_addin_mac, null)
         val macInput = dialog.findViewById(R.id.dialog_addin_mac_input) as EditText
         val autoChange = dialog.findViewById(R.id.dialog_addin_mac_autochange) as CheckBox
         macInput.setText(spf!!.getString(SpfConfig.GLOBAL_SPF_MAC, "ec:d0:9f:af:95:01"))
-        autoChange.isChecked = spf!!.getBoolean(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE, false)
+
+        autoChange.isChecked = spf!!.getInt(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE_MODE, 0).equals(mode)
         autoChange.setOnCheckedChangeListener { buttonView, isChecked ->
-            spf!!.edit().putBoolean(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE, isChecked).apply()
+            if (isChecked) {
+                spf!!.edit().putInt(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE_MODE, mode).apply()
+            } else {
+                spf!!.edit().remove(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE_MODE).apply()
+            }
         }
 
         DialogHelper.animDialog(AlertDialog.Builder(context).setTitle("自定义WIFI MAC").setView(dialog).setNegativeButton("确定") { _, _ ->
-            val mac = macInput.text.replace(Regex("-"), ":").toLowerCase()
+            val mac = macInput.text.trim().replace(Regex("-"), ":").toLowerCase()
             if (!Regex("[\\w\\d]{2}:[\\w\\d]{2}:[\\w\\d]{2}:[\\w\\d]{2}:[\\w\\d]{2}:[\\w\\d]{2}$", RegexOption.IGNORE_CASE).matches(mac)) {
                 Toast.makeText(context, "输入的MAC地址无效，格式应如 ec:d0:9f:af:95:01", Toast.LENGTH_LONG).show()
                 return@setNegativeButton
             }
 
-            val shell = "mac=\"$mac\"\n" + RawText.getRawText(context, R.raw.change_mac)
+            val raw = if (mode == SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE_MODE_1) {
+                RawText.getRawText(context, R.raw.change_mac_1)
+            } else if (mode == SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE_MODE_2) {
+                RawText.getRawText(context, R.raw.change_mac_2)
+            } else {
+                RawText.getRawText(context, R.raw.change_mac_1)
+            }
+            val shell = "mac=\"$mac\"\n" + raw
             val r = KeepShellPublic.doCmdSync(shell)
             Log.e("getRawText", shell)
             if (r == "error") {

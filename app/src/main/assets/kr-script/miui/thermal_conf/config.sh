@@ -45,8 +45,8 @@ function lock_dir() {
     local dir="$1"
     ulock_dir "$dir"
     rm -rf "$dir" 2> /dev/null
-    mkdir -p"$dir" 2> /dev/null
-    mkdir -p"$dir/config" 2> /dev/null
+    mkdir -p "$dir" 2> /dev/null
+    mkdir -p "$dir/config" 2> /dev/null
     chattr +i "$dir/config" 2> /dev/null
 }
 

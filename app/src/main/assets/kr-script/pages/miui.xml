@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<actions>
+<items>
     <resource dir="file:///android_asset/kr-script/miui" />
     <group title="界面">
         <switch visible=". ./kr-script/common/miui_support.sh">
@@ -29,7 +29,7 @@
     </group>
 
     <group title="温控">
-        <action visible=". ./kr-script/miui/thermal_conf/support.sh" title="更改温控配置" desc="本功能适用于骁龙835、845、855处理器，MIUI官方系统！">
+        <action visible=". ./kr-script/miui/thermal_conf/support.sh" title="更改温控配置" desc="目前已适配 骁龙710、835、845、855，仅限MIUI官方系统！">
             <summary sh=". ./kr-script/miui/thermal_conf/summary.sh" />
             <param name="mode" title="温控模式"
                 options-sh=". ./kr-script/miui/thermal_conf/options.sh"
@@ -38,6 +38,14 @@
                 options-sh=". ./kr-script/miui/thermal_conf/soc-options.sh" />
             <set>. ./kr-script/miui/thermal_conf/config.sh</set>
         </action>
+        <text>
+            <slices>
+                <slice size="13">如果你自认为是高手，可以试试自己修改温控配置文件（</slice>
+                <slice size="13" color="#dd2200">在手动修改前，先把上面的修改还原成“系统默认”模式，并重启手机</slice>
+                <slcie size="13">）</slcie>
+                <slice size="16" break="true" link="https://atools.oss-cn-shenzhen.aliyuncs.com/app1/MIUI%E6%B8%A9%E6%8E%A7%E7%BC%96%E8%BE%91%E5%99%A8%201.0.1.apk">前往下载</slice>
+            </slices>
+        </text>
         <action confirm="true" visible=". ./kr-script/common/miui_support.sh">
             <title>开启MIUI9、MIUI10隐藏的温控选项</title>
             <desc>看人品，也许是可以开出来，但不一定啦！据说稳定版是不行的。</desc>
@@ -59,4 +67,4 @@
             <set>. ./kr-script/miui/miui_security_keyboard_set.sh</set>
         </switch>
     </group>
-</actions>
+</items>

@@ -143,7 +143,7 @@ class Busybox(private var context: Context) {
             DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setMessage(R.string.busybox_install_fail)
                     .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                        onSuccess?.run()
+                        forceInstall(onSuccess)
                     })
         } else {
             onSuccess?.run()

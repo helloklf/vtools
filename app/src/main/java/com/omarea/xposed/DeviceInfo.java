@@ -27,22 +27,27 @@ public class DeviceInfo {
                         super.afterHookedMethod(param);
                         String prop = (String) param.args[0];
                         switch (prop) {
+                            case "ro.product.system.model":
                             case "ro.product.model": {
                                 param.setResult("OPPO R11 Plus");
                                 break;
                             }
+                            case "ro.product.system.brand":
                             case "ro.product.brand": {
                                 param.setResult("OPPO");
                                 break;
                             }
+                            case "ro.product.system.manufacturer":
                             case "ro.product.manufacturer": {
                                 param.setResult("OPPO");
                                 break;
                             }
+                            case "ro.product.system.device":
                             case "ro.product.device": {
                                 param.setResult("R11 Plus");
                                 break;
                             }
+                            case "ro.product.system.name":
                             case "ro.product.name": {
                                 param.setResult("R11 Plus");
                                 break;

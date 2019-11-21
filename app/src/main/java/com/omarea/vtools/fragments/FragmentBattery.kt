@@ -108,21 +108,24 @@ class FragmentBattery : Fragment() {
                 batteryInfo = batteryUnits.batteryInfo
 
                 myHandler.post {
-                    if (qcSettingSuupport) {
-                        settings_qc_limit_current.text = getString(R.string.battery_reality_limit) + limit
-                    }
-                    battrystatus.text = getString(R.string.battery_title) +
-                            batteryMAH +
-                            temp + "°C   " +
-                            level + "%    " +
-                            voltage + "v"
+                    try {
+                        if (qcSettingSuupport) {
+                            settings_qc_limit_current.text = getString(R.string.battery_reality_limit) + limit
+                        }
+                        battrystatus.text = getString(R.string.battery_title) +
+                                batteryMAH +
+                                temp + "°C   " +
+                                level + "%    " +
+                                voltage + "v"
 
-                    settings_qc.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) && serviceRunning
-                    battery_uevent.text = batteryInfo
+                        settings_qc.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) && serviceRunning
+                        battery_uevent.text = batteryInfo
 
-                    if (pdSettingSupport) {
-                        settings_pd.isChecked = pdAllowed
-                        settings_pd_state.text = if (pdActive) getString(R.string.battery_pd_active_1) else getString(R.string.battery_pd_active_0)
+                        if (pdSettingSupport) {
+                            settings_pd.isChecked = pdAllowed
+                            settings_pd_state.text = if (pdActive) getString(R.string.battery_pd_active_1) else getString(R.string.battery_pd_active_0)
+                        }
+                    } catch (ex: java.lang.Exception) {
                     }
                 }
             }
@@ -258,7 +261,16 @@ class FragmentBattery : Fragment() {
                     .setTitle("需要重启")
                     .setMessage("删除电池使用记录需要立即重启手机，是否继续？")
                     .setPositiveButton(R.string.btn_confirm, DialogInterface.OnClickListener { dialog, which ->
-                        KeepShellPublic.doCmdSync("rm -f /data/system/batterystats-checkin.bin;rm -f /data/system/batterystats-daily.xml;rm -f /data/system/batterystats.bin;sync;sleep 2; reboot;")
+                        KeepShellPublic.doCmdSync(
+                                "rm -f /data/system/batterystats-checkin.bin;" +
+                                "rm -f /data/system/batterystats-daily.xml;" +
+                                "rm -f /data/system/batterystats.bin;" +
+                                "rm -rf /data/system/battery-history;" +
+                                "rm -rf /data/charge_logger;" +
+                                "rm -rf /data/vendor/charge_logger;" +
+                                "sync;" +
+                                "sleep 2;" +
+                                "reboot;")
                     })
                     .setNegativeButton(R.string.btn_cancel, DialogInterface.OnClickListener { dialog, which -> }))
         }

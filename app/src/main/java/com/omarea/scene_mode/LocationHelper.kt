@@ -11,7 +11,9 @@ class LocationHelper {
      * 启用GPS
      */
     fun enableGPS() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P)
+            KeepShellPublic.doCmdSync("settings put secure location_mode 2")
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             KeepShellPublic.doCmdSync("settings put secure location_providers_allowed +gps")
         else
             KeepShellPublic.doCmdSync("settings put secure location_providers_allowed gps,network")
@@ -21,7 +23,9 @@ class LocationHelper {
      * 禁用GPS
      */
     fun disableGPS() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P)
+            KeepShellPublic.doCmdSync("settings put secure location_mode 0")
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             KeepShellPublic.doCmdSync("settings put secure location_providers_allowed -gps")
         } else {
             KeepShellPublic.doCmdSync("settings put secure location_providers_allowed network")
@@ -32,7 +36,9 @@ class LocationHelper {
      * 禁用定位
      */
     fun disableLocation() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P)
+            KeepShellPublic.doCmdSync("settings put secure location_mode 0")
+        else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             KeepShellPublic.doCmdSync("settings put secure location_providers_allowed -gps,-network")
         } else {
             KeepShellPublic.doCmdSync("settings delete secure location_providers_allowed")

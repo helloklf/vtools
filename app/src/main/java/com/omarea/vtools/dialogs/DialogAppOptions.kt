@@ -15,6 +15,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import com.omarea.common.shared.FileWrite
+import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.shell.AsynSuShellUnit
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
@@ -494,8 +495,8 @@ open class DialogAppOptions(protected final var context: Context, protected var 
             sb.append("pm disable $packageName\n")
 
             sb.append("echo '[delete ${item.appName}]'\n")
-            if (com.omarea.common.shared.MagiskExtend.moduleInstalled()) {
-                com.omarea.common.shared.MagiskExtend.deleteSystemPath(item.path.toString())
+            if (MagiskExtend.moduleInstalled()) {
+                MagiskExtend.deleteSystemPath(item.path.toString())
                 useMagisk = true
             } else {
                 val dir = item.dir.toString()

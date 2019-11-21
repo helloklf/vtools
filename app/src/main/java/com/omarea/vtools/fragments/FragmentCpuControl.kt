@@ -687,8 +687,8 @@ class FragmentCpuControl : Fragment() {
     }
 
     private fun updateUI() {
-        progressBarDialog.hideDialog()
         try {
+            progressBarDialog.hideDialog()
             for (cluster in 0 until clusterCount) {
                 if (status.cpuClusterStatuses.size > cluster) {
                     val cluster_view = view!!.findViewWithTag<View>("cluster_" + cluster)

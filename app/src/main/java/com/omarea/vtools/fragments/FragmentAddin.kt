@@ -11,7 +11,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,6 +32,7 @@ import com.omarea.krscript.ui.ActionListFragment
 import com.omarea.krscript.ui.FileChooserRender
 import com.omarea.shell_utils.PlatformUtils
 import com.omarea.shell_utils.SysUtils
+import com.omarea.store.SpfConfig
 import com.omarea.ui.TabIconHelper
 import com.omarea.vtools.R
 import com.omarea.vtools.activities.ActionPage
@@ -95,12 +95,32 @@ class FragmentAddin : Fragment() {
             add(createItem(getString(R.string.addin_wifi), getString(R.string.addin_wifi_desc), Runnable { DialogAddinWIFI(context!!).show() }, false))
 
             add(createItem(getString(R.string.addin_dpi), getString(R.string.addin_dpi_desc), Runnable { DialogAddinModifyDPI(context!!).modifyDPI(activity!!.windowManager.defaultDisplay, context!!) }, false))
-            add(createItem(getString(R.string.addin_deviceinfo), getString(R.string.addin_deviceinfo_desc), Runnable { DialogAddinModifydevice(context!!).modifyDeviceInfo() }, false))
-            add(createItem(getString(R.string.addin_mac), getString(R.string.addin_mac_desc), Runnable { DialogCustomMAC(context!!).modifyMAC() }, false))
+
+            add(createItem(getString(R.string.addin_deviceinfo), getString(
+                    R.string.addin_deviceinfo_desc),
+                    Runnable {
+                        DialogAddinModifydevice(context!!).modifyDeviceInfo()
+                    },
+                    false))
+            add(createItem(getString(R.string.addin_mac),
+                    getString(R.string.addin_mac_desc),
+                    Runnable {
+                        DialogCustomMAC(context!!).modifyMAC(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE_MODE_1)
+                    },
+                    false))
+            add(createItem(getString(R.string.addin_mac_2),
+                    getString(R.string.addin_mac_desc_2),
+                    Runnable {
+                        DialogCustomMAC(context!!).modifyMAC(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE_MODE_2)
+                    },
+                    false))
+
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.M) {
                 add(createItem(getString(R.string.addin_force_dex_compile), getString(R.string.addin_force_dex_compile_desc), Runnable { DexCompileAddin(context!!).run() }, false))
             }
-            add(createItem(getString(R.string.addin_pm_dexopt), getString(R.string.addin_pm_dexopt_desc), Runnable { DexCompileAddin(context!!).modifyConfig() }, false))
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+                add(createItem(getString(R.string.addin_pm_dexopt), getString(R.string.addin_pm_dexopt_desc), Runnable { DexCompileAddin(context!!).modifyConfig() }, false))
+            }
             add(createItem(getString(R.string.addin_bpc), getString(R.string.addin_bpc_desc), Runnable { PerfBoostConfigAddin(context!!).install() }))
         }
 

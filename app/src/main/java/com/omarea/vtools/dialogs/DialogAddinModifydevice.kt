@@ -5,11 +5,13 @@ import android.app.AlertDialog
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
+import android.os.Build
 import android.util.Base64
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.RootFile
 import com.omarea.common.ui.DialogHelper
@@ -38,6 +40,13 @@ class DialogAddinModifydevice(var context: Context) {
 
         return value
     }
+
+    val oldProp = (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P)
+    val brand_prop = if (oldProp) "ro.product.brand" else "ro.product.system.brand"
+    val name_prop = if (oldProp) "ro.product.name" else "ro.product.system.name"
+    val model_prop = if (oldProp) "ro.product.model" else "ro.product.system.model"
+    val manufacturer_prop = if (oldProp) "ro.product.manufacturer" else "ro.product.system.manufacturer"
+    val device_prop = if (oldProp) "ro.product.device" else "ro.product.system.device"
 
     fun modifyDeviceInfo() {
         //SM-N9500@samsung@samsung@dream2qltezc@dream2qltechn
@@ -68,19 +77,19 @@ class DialogAddinModifydevice(var context: Context) {
                         backupDefault()
                         if (com.omarea.common.shared.MagiskExtend.moduleInstalled()) {
                             if (brand.isNotEmpty())
-                                com.omarea.common.shared.MagiskExtend.setSystemProp("ro.product.brand", brand.toString())
+                                MagiskExtend.setSystemProp(brand_prop, brand.toString())
                             if (product.isNotEmpty())
-                                com.omarea.common.shared.MagiskExtend.setSystemProp("ro.product.name", product.toString())
+                                MagiskExtend.setSystemProp(name_prop, product.toString())
                             if (model.isNotEmpty())
-                                com.omarea.common.shared.MagiskExtend.setSystemProp("ro.product.model", model.toString())
+                                MagiskExtend.setSystemProp(model_prop, model.toString())
                             if (manufacturer.isNotEmpty())
-                                com.omarea.common.shared.MagiskExtend.setSystemProp("ro.product.manufacturer", manufacturer.toString())
+                                MagiskExtend.setSystemProp(manufacturer_prop, manufacturer.toString())
                             if (device.isNotEmpty())
-                                com.omarea.common.shared.MagiskExtend.setSystemProp("ro.product.device", device.toString())
+                                MagiskExtend.setSystemProp(device_prop, device.toString())
                             // 小米 - 改model参数以后device_features要处理下
                             if (RootFile.fileExists("/system/etc/device_features/${android.os.Build.PRODUCT}.xml")) {
                                 if (model != android.os.Build.PRODUCT) {
-                                    com.omarea.common.shared.MagiskExtend.replaceSystemFile("/system/etc/device_features/${product}.xml", "/system/etc/device_features/${android.os.Build.PRODUCT}.xml")
+                                    MagiskExtend.replaceSystemFile("/system/etc/device_features/${product}.xml", "/system/etc/device_features/${android.os.Build.PRODUCT}.xml")
                                 }
                             }
                             Toast.makeText(context, "已通过Magisk更改参数，请重启手机~", Toast.LENGTH_SHORT).show()
@@ -90,15 +99,15 @@ class DialogAddinModifydevice(var context: Context) {
                             sb.append("cp /system/build.prop /data/build.prop;chmod 0755 /data/build.prop;")
 
                             if (brand.isNotEmpty())
-                                sb.append("busybox sed -i 's/^ro.product.brand=.*/ro.product.brand=$brand/' /data/build.prop;")
+                                sb.append("busybox sed -i 's/^$brand_prop=.*/$brand_prop=$brand/' /data/build.prop;")
                             if (product.isNotEmpty())
-                                sb.append("busybox sed -i 's/^ro.product.name=.*/ro.product.name=$product/' /data/build.prop;")
+                                sb.append("busybox sed -i 's/^$name_prop=.*/$name_prop=$product/' /data/build.prop;")
                             if (model.isNotEmpty())
-                                sb.append("busybox sed -i 's/^ro.product.model=.*/ro.product.model=$model/' /data/build.prop;")
+                                sb.append("busybox sed -i 's/^$model_prop=.*/$model_prop=$model/' /data/build.prop;")
                             if (manufacturer.isNotEmpty())
-                                sb.append("busybox sed -i 's/^ro.product.manufacturer=.*/ro.product.manufacturer=$manufacturer/' /data/build.prop;")
+                                sb.append("busybox sed -i 's/^$manufacturer_prop=.*/$manufacturer_prop=$manufacturer/' /data/build.prop;")
                             if (device.isNotEmpty())
-                                sb.append("busybox sed -i 's/^ro.product.device=.*/ro.product.device=$device/' /data/build.prop;")
+                                sb.append("busybox sed -i 's/^$device_prop=.*/$device_prop=$device/' /data/build.prop;")
 
                             sb.append("cp /system/build.prop /system/build.bak.prop\n")
                             sb.append("cp /data/build.prop /system/build.prop\n")

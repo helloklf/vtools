@@ -23,12 +23,12 @@
     <action confirm="false">
         <title>硬件参数</title>
         <desc>查看系统提供的硬件参数信息</desc>
-        <script>. ./kr-script/other/hardware_properties.sh</script>
+        <script>. ./kr-script/other/hw_properties.sh</script>
     </action>
     <action confirm="false">
         <title>温度传感器</title>
         <desc>查看温度传感器当前数值</desc>
-        <script>. ./kr-script/other/sensor_list.sh</script>
+        <script>. ./kr-script/other/sensor_values.sh</script>
     </action>
 
 </group>

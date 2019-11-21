@@ -1,9 +1,13 @@
 package com.omarea.krscript.executor;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Environment;
+import android.os.Process;
+import android.os.UserManager;
 
 import com.omarea.common.shared.FileWrite;
 import com.omarea.common.shared.MagiskExtend;
@@ -206,6 +210,30 @@ public class ScriptEnvironmen {
         return dir;
     }
 
+    /*
+    public static int getUserId() {
+        int value = 0;
+        try {
+            Class<?> c = Class.forName("android.os.UserHandle");
+            Method get = c.getMethod("getUserId", int.class);
+            value = (int)(get.invoke(c, android.os.Process.myUid()));
+        } catch (Exception ignored) {
+        }
+        return value;
+    }*/
+
+    public static int getUserId2(Context context) {
+        UserManager um = (UserManager) context.getSystemService(Context.USER_SERVICE);
+        android.os.UserHandle userHandle = android.os.Process.myUserHandle();
+
+        int value = 0;
+        try {
+            value = (int) um.getSerialNumberForUser(userHandle);
+        } catch (Exception ignored) {
+        }
+        return value;
+    }
+
     /**
      * 获取框架的环境变量
      *
@@ -213,8 +241,6 @@ public class ScriptEnvironmen {
      * @return
      */
     private static HashMap<String, String> getEnvironment(Context context) {
-        final File dir = context.getFilesDir();
-        final String dirUri = dir.getAbsolutePath();
         HashMap<String, String> params = new HashMap<>();
 
         params.put("TOOLKIT", TOOKIT_DIR);
@@ -227,7 +253,19 @@ public class ScriptEnvironmen {
         params.put("START_DIR", getStartPath(context));
         // params.put("EXECUTOR_PATH", environmentPath);
         params.put("TEMP_DIR", context.getCacheDir().getAbsolutePath());
-        params.put("ANDROID_UID", dir.getParentFile().getParentFile().getName());
+
+        int androidUid = getUserId2(context);
+        params.put("ANDROID_UID", "" + androidUid);
+
+        try {
+            // @ https://blog.csdn.net/Gaugamela/article/details/78689580
+            params.put("APP_USER_ID", "u" + androidUid + "_a" + ((android.os.Process.myUid() % 100000) - Process.FIRST_APPLICATION_UID)); // 100000 => UserHandle.PER_USER_RANGE
+            // params.put("APP_UID", "" + android.os.Process.myPid());
+            // params.put("APP_PID", "" + android.os.Process.myPid());
+            // params.put("APP_TID", "" + android.os.Process.myTid());
+        } catch (Exception ex) {
+        }
+
         params.put("ANDROID_SDK", "" + Build.VERSION.SDK_INT);
         params.put("SDCARD_PATH", Environment.getExternalStorageDirectory().getAbsolutePath());
         String busyboxPath = FileWrite.INSTANCE.getPrivateFilePath(context, "busybox");

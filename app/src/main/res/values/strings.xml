@@ -248,8 +248,10 @@
     <string name="addin_dpi_desc">自定义手机DPI或分辨率，可能导致设备无法正常启动，或UI错误</string>
     <string name="addin_deviceinfo">机型修改</string>
     <string name="addin_deviceinfo_desc">通过更改build.prop伪装机型，部分手机可能会无法开机或出现Bug</string>
-    <string name="addin_mac">修改MAC地址</string>
+    <string name="addin_mac">修改MAC地址（方案1）</string>
     <string name="addin_mac_desc">自定义手机WIFI网卡MAC地址，仅支持部分设备</string>
+    <string name="addin_mac_2">修改MAC地址（方案2）</string>
+    <string name="addin_mac_desc_2">自定义手机WIFI网卡MAC地址，仅支持部分设备</string>
     <string name="addin_force_dex_compile">强制dex2oat编译</string>
     <string name="addin_force_dex_compile_desc">对应用进行dex2oat编译，降低运行时的CPU和RAM占用。编译过程可能需要半个小时，系统更新后需要重新编译！</string>
     <string name="addin_dex2oat_helpinfo">在Android N以后，为了减少应用空间占用和提高安装效率，在安装应用时不再对dex进行完整编译，导致运行速度下降。本功能会通过cmd package compile命令，手动触发应用dex2oat编译。\n\n以Oreo系统下斗鱼TV客户端为例，全新安装时base.odex仅为6.8MB，编译后增大到103MB。\n\n但国内许多应用采用热更新技术，运行时经常需要从服务器下载最新代码并解析渲染，这是这些应用启动慢或启动后卡顿的主要原因。因此dex2oat编译并不能为这类应用带来明显的性能提升！</string>

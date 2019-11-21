@@ -156,12 +156,18 @@ class BootService : IntentService("vtools-boot") {
             }
         }
 
-        if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE, false)) {
-            val mac = globalConfig.getString(SpfConfig.GLOBAL_SPF_MAC, "")
-            if (mac != "") {
-                updateNotification(getString(R.string.boot_modify_mac))
-
-                keepShell.doCmdSync("mac=\"$mac\"\n" + RawText.getRawText(context, R.raw.change_mac))
+        val macChangeMode = globalConfig.getInt(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE_MODE, 0)
+        val mac = globalConfig.getString(SpfConfig.GLOBAL_SPF_MAC, "")
+        if (!mac.isNullOrEmpty()) {
+            when (macChangeMode) {
+                SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE_MODE_1 -> {
+                    updateNotification(getString(R.string.boot_modify_mac))
+                    keepShell.doCmdSync("mac=\"$mac\"\n" + RawText.getRawText(context, R.raw.change_mac_1))
+                }
+                SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE_MODE_2 -> {
+                    updateNotification(getString(R.string.boot_modify_mac))
+                    keepShell.doCmdSync("mac=\"$mac\"\n" + RawText.getRawText(context, R.raw.change_mac_2))
+                }
             }
         }
 

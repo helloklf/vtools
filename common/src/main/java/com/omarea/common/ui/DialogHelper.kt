@@ -22,20 +22,25 @@ class DialogHelper {
 
         fun helpInfo(context: Context, title: String, message: String): AlertDialog? {
             val dialog = AlertDialog.Builder(context)
-                    .setTitle(title)
-                    .setMessage(message)
                     .setPositiveButton(R.string.btn_confirm) { _, _ ->
                     }
+            if (title.isNotEmpty()) {
+                dialog.setTitle(message)
+            }
+            if (message.isNotEmpty()) {
+                dialog.setMessage(message)
+            }
             return animDialog(dialog)
         }
 
         fun helpInfo(context: Context, title: Int, message: Int): AlertDialog? {
-            return animDialog(
+            val dialog =
                     AlertDialog.Builder(context)
                             .setTitle(title)
                             .setMessage(message)
                             .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                            })
+                            }
+            return animDialog(dialog)
         }
     }
 }

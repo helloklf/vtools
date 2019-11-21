@@ -1,0 +1,6 @@
+
+ifconfig wlan0 down
+stop wifi
+ifconfig wlan0 hw ether "$mac"
+ifconfig wlan0 up
+start wifi
