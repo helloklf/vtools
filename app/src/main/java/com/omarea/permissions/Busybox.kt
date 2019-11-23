@@ -115,7 +115,8 @@ class Busybox(private var context: Context) {
                     KeepShellPublic.doCmdSync("sync\nsleep 2\nreboot\n")
                 }
                 .setNegativeButton(btn_cancel) { _, _ ->
-                })
+                }
+                .setCancelable(false))
     }
 
     private fun installUseRoot(privateBusybox: String, onSuccess: Runnable?) {
@@ -140,11 +141,13 @@ class Busybox(private var context: Context) {
 
         KeepShellPublic.doCmdSync(cmd.toString())
         if (!systemBusyboxInstalled()) {
-            DialogHelper.animDialog(AlertDialog.Builder(context)
+            DialogHelper.animDialog(
+                    AlertDialog.Builder(context)
                     .setMessage(R.string.busybox_install_fail)
                     .setPositiveButton(R.string.btn_confirm) { _, _ ->
                         forceInstall(onSuccess)
-                    })
+                    }
+                    .setCancelable(false))
         } else {
             onSuccess?.run()
         }
@@ -159,9 +162,10 @@ class Busybox(private var context: Context) {
                     if (installPrivateBusybox()) {
                         onSuccess?.run()
                     } else {
-                        DialogHelper.animDialog(
-                                AlertDialog.Builder(context)
-                                        .setMessage(R.string.busybox_nonsupport).setCancelable(false).setPositiveButton(R.string.btn_exit) { _, _ ->
+                        DialogHelper.animDialog(AlertDialog.Builder(context)
+                                        .setMessage(R.string.busybox_nonsupport)
+                                        .setCancelable(false)
+                                        .setPositiveButton(R.string.btn_exit) { _, _ ->
                                             android.os.Process.killProcess(android.os.Process.myPid())
                                         })
                     }
@@ -169,6 +173,7 @@ class Busybox(private var context: Context) {
                 .setNeutralButton(R.string.busybox_install_classical) { _, _ ->
                     installUseRoot(privateBusybox, onSuccess)
                 }
+                .setCancelable(false)
         if (MagiskExtend.magiskSupported()) {
             builder.setPositiveButton(R.string.busybox_install_module) { _, _ ->
                 useMagiskModuleInstall(context)
