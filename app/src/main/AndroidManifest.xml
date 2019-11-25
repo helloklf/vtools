@@ -277,6 +277,16 @@
             android:name=".services.CompileService"
             android:enabled="true"
             android:permission="" />
+
+        <receiver android:name=".providers.MemClearWidgetProvider">
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_mem_clear" />
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.omarea.vtools.widget.CLICK" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

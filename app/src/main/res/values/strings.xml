@@ -535,4 +535,5 @@
     <string name="title_activity_main2">Main2Activity</string>
     <string name="magisk_install_desc">Scene对系统的大部分修改操作，现在都可以通过Magisk模块的形式进行了。但是，你先要同意Scene在你的手机上自动安装附加模块，并重启手机（建议）！</string>
     <string name="magisk_install_title">Scene附加模块</string>
+    <string name="cache_recycle">回收缓存</string>
 </resources>

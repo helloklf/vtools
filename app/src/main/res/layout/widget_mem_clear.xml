@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageButton
+        android:paddingTop="3dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="3dp"
+        android:layout_margin="0dp"
+        android:scaleType="centerInside"
+        android:id="@+id/widget_mem"
+        android:background="@null"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/app_width" />
+
+    <TextView
+        android:text="@string/cache_recycle"
+        android:textAlignment="center"
+        android:textSize="12sp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>
