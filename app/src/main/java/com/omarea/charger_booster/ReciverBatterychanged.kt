@@ -23,7 +23,7 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
     private var chargeConfig: SharedPreferences
     private var listener: SharedPreferences.OnSharedPreferenceChangeListener
     private val myHandler = Handler(Looper.getMainLooper())
-    private var qcLimit = 50000
+    private var qcLimit = SpfConfig.CHARGE_SPF_QC_LIMIT_DEFAULT
     // 电池总容量（mAh）
     private val batteryCapacity = BatteryInfo().getBatteryCapacity(service)
 

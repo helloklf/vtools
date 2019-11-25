@@ -11,6 +11,7 @@ public class SpfConfig {
     public static String CHARGE_SPF = "charge"; //spf
     public static String CHARGE_SPF_QC_BOOSTER = "qc_booster"; //bool
     public static String CHARGE_SPF_QC_LIMIT = "charge_limit_ma"; //int
+    public static int CHARGE_SPF_QC_LIMIT_DEFAULT = 3000; //int
     public static String CHARGE_SPF_BP = "bp"; //bool
     public static String CHARGE_SPF_BP_LEVEL = "bp_level"; //int
     public static int CHARGE_SPF_BP_LEVEL_DEFAULT = 90; //int

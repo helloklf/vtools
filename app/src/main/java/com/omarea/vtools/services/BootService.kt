@@ -181,7 +181,7 @@ class BootService : IntentService("vtools-boot") {
                 startService(intent)
             } catch (ex: Exception) {
             }
-            BatteryUtils().setChargeInputLimit(chargeConfig.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 3300), this.applicationContext)
+            BatteryUtils().setChargeInputLimit(chargeConfig.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, SpfConfig.CHARGE_SPF_QC_LIMIT_DEFAULT), this.applicationContext)
         }
 
         val globalPowercfg = globalConfig.getString(SpfConfig.GLOBAL_SPF_POWERCFG, "")

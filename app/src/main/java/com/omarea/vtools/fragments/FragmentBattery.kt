@@ -58,8 +58,8 @@ class FragmentBattery : Fragment() {
         settings_bp_level.progress = spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, SpfConfig.CHARGE_SPF_BP_LEVEL_DEFAULT)
         val bpLevel = spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, SpfConfig.CHARGE_SPF_BP_LEVEL_DEFAULT)
         battery_bp_level_desc.text = "达到$bpLevel%停止充电，低于${bpLevel - 20}%恢复"
-        settings_qc_limit.progress = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 3300) / 100
-        settings_qc_limit_desc.text = "" + spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000) + "mA"
+        settings_qc_limit.progress = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, SpfConfig.CHARGE_SPF_QC_LIMIT_DEFAULT) / 100
+        settings_qc_limit_desc.text = "" + spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, SpfConfig.CHARGE_SPF_QC_LIMIT_DEFAULT) + "mA"
 
         if (broadcast == null) {
             broadcast = object : BroadcastReceiver() {
@@ -202,7 +202,7 @@ class FragmentBattery : Fragment() {
             startBatteryService()
         }, spf, battery_bp_level_desc))
         settings_qc_limit.setOnSeekBarChangeListener(OnSeekBarChangeListener2(Runnable {
-            val level = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, 5000)
+            val level = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, SpfConfig.CHARGE_SPF_QC_LIMIT_DEFAULT)
             startBatteryService()
             if (spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
                 batteryUnits.setChargeInputLimit(level, context!!)
@@ -333,7 +333,7 @@ class FragmentBattery : Fragment() {
     class OnSeekBarChangeListener2(private var next: Runnable, private var spf: SharedPreferences, private var settings_qc_limit_desc: TextView) : SeekBar.OnSeekBarChangeListener {
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
             val progress = seekBar!!.progress * 100
-            if (spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, Int.MIN_VALUE) == progress) {
+            if (spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, SpfConfig.CHARGE_SPF_QC_LIMIT_DEFAULT) == progress) {
                 return
             }
             spf.edit().putInt(SpfConfig.CHARGE_SPF_QC_LIMIT, progress).apply()
