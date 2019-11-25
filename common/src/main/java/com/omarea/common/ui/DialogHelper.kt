@@ -25,7 +25,7 @@ class DialogHelper {
                     .setPositiveButton(R.string.btn_confirm) { _, _ ->
                     }
             if (title.isNotEmpty()) {
-                dialog.setTitle(message)
+                dialog.setTitle(title)
             }
             if (message.isNotEmpty()) {
                 dialog.setMessage(message)
