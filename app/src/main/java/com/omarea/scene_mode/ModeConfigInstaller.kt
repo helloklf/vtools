@@ -14,26 +14,34 @@ class ModeConfigInstaller {
         return rootDir + "/" + PlatformUtils().getCPUName()
     }
 
-    fun installPowerConfig(context: Context, afterCmds: String = "", biCore: Boolean = false) {
+    fun installPowerConfig(context: Context, afterCmds: String = "", biCore: Boolean = false): Boolean {
+        if (!dynamicSupport(context)) {
+            return false
+        }
         try {
             val powercfg = FileWrite.writePrivateShellFile(getPowerCfgDir() + (if (biCore) "/powercfg-bigcore.sh" else "/powercfg-default.sh"), "powercfg.sh", context)
             val powercfgBase = FileWrite.writePrivateShellFile(getPowerCfgDir() + (if (biCore) "/powercfg-base-bigcore.sh" else "/powercfg-base-default.sh"), "powercfg-base.sh", context)
 
-            val cmd = StringBuilder()
-                    .append("cp ${powercfg} ${ModeSwitcher.POWER_CFG_PATH};")
-                    .append("cp ${powercfgBase} ${ModeSwitcher.POWER_CFG_BASE};")
-                    .append("chmod 0777 ${ModeSwitcher.POWER_CFG_PATH};")
-                    .append("chmod 0777 ${ModeSwitcher.POWER_CFG_BASE};")
-            //KeepShellPublic.doCmdSync(CommonCmds.InstallPowerToggleConfigToCache + "\n\n" + CommonCmds.ExecuteConfig + "\n" + after)
-            KeepShellPublic.doCmdSync(cmd.toString())
-            configCodeVerify()
-            ModeSwitcher().setCurrentPowercfg("")
-            if (!afterCmds.isEmpty()) {
-                KeepShellPublic.doCmdSync(afterCmds)
+            if (powercfg == null) {
+                return false
+            } else {
+                val cmd = StringBuilder("cp ${powercfg} ${ModeSwitcher.POWER_CFG_PATH};").append("chmod 0777 ${ModeSwitcher.POWER_CFG_PATH};")
+                if (powercfgBase != null) {
+                    cmd.append("cp ${powercfgBase} ${ModeSwitcher.POWER_CFG_BASE};").append("chmod 0777 ${ModeSwitcher.POWER_CFG_BASE};")
+                }
+                //KeepShellPublic.doCmdSync(CommonCmds.InstallPowerToggleConfigToCache + "\n\n" + CommonCmds.ExecuteConfig + "\n" + after)
+                KeepShellPublic.doCmdSync(cmd.toString())
+                configCodeVerify()
+                ModeSwitcher().setCurrentPowercfg("")
+                if (!afterCmds.isEmpty()) {
+                    KeepShellPublic.doCmdSync(afterCmds)
+                }
+                return true
             }
         } catch (ex: Exception) {
             Log.e("script-parse", "" + ex.message)
         }
+        return false
     }
 
     fun installPowerConfigByText(context: Context, powercfg: String, powercfgBase: String = "#!/system/bin/sh"): Boolean {

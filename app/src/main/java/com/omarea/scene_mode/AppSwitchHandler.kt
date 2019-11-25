@@ -221,15 +221,19 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
     }
 
     private fun toggleConfig(mode: String) {
-        if (!configInstaller.configInstalled()) {
+        if (configInstaller.configInstalled() || ModeConfigInstaller().installPowerConfig(context, "")) {
             ModeConfigInstaller().installPowerConfig(context, "")
-        }
-        if (screenOn) {
-            executePowercfgMode(mode)
+            if (screenOn) {
+                executePowercfgMode(mode)
+            } else {
+                executePowercfgMode(POWERSAVE)
+            }
+            lastMode = mode
         } else {
-            executePowercfgMode(POWERSAVE)
+            dyamicCore = false
+            spfGlobal.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, false).apply()
+            Toast.makeText(context, context.getString(R.string.dynamic_auto_disabled), Toast.LENGTH_LONG).show()
         }
-        lastMode = mode
     }
     //#endregion
 
