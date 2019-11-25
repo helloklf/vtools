@@ -26,14 +26,8 @@ else
     echo 'MIUI自带的ROOT无法使用本功能'
 
     echo '1.挂载/system为读写'
-
-    $BUSYBOX mount -o rw,remount /system
-    mount -o rw,remount /system
-    $BUSYBOX mount -o remount,rw /dev/block/bootdevice/by-name/system /system
-    mount -o remount,rw /dev/block/bootdevice/by-name/system /system 2> /dev/null
-
-    busybox mount -o rw,remount /vendor 2> /dev/null
-    mount -o rw,remount /vendor 2> /dev/null
+    source ./kr-script/common/mount.sh
+    mount_all
 
     path="/system/build.prop"
     if [[ -f /vendor/build.prop ]] && [[ -n `cat /vendor/build.prop | grep debug\.hwui\.renderer=` ]]

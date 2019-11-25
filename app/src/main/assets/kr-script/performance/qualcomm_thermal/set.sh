@@ -1,6 +1,8 @@
 #!/system/bin/sh
 
 source ./kr-script/common/mount.sh
+mount_all
+
 source ./kr-script/common/magisk.sh
 
 if [[ $action = "view" ]]; then

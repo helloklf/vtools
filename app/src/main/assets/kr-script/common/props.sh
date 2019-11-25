@@ -1,4 +1,5 @@
 #!/system/bin/sh
+source ./kr-script/common/mount.sh
 
 # 从build.prop文件读取prop的值是否为1
 function cat_prop_is_1()
@@ -95,14 +96,7 @@ function set_system_prop() {
     echo '系统自带的ROOT可能无法使用本功能'
 
     echo 'Step1.挂载/system为读写'
-
-    $BUSYBOX mount -o rw,remount /system 2> /dev/null
-    mount -o rw,remount /system 2> /dev/null
-    $BUSYBOX mount -o remount,rw /dev/block/bootdevice/by-name/system /system 2> /dev/null
-    mount -o remount,rw /dev/block/bootdevice/by-name/system /system 2> /dev/null
-
-    busybox mount -o rw,remount /vendor 2> /dev/null
-    mount -o rw,remount /vendor 2> /dev/null
+    mount_all
 
     $BUSYBOX sed "/$prop=/"d $path > /cache/build.prop
     $BUSYBOX sed -i "\$a$prop=$state" /cache/build.prop

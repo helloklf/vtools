@@ -1,11 +1,9 @@
 #!/system/bin/sh
 
-echo '屏蔽MIUI在线更新下载地址(需要解锁System分区)...'
+source ./kr-script/common/mount.sh
+mount_all
 
-$BUSYBOX mount -o rw,remount /system
-mount -o rw,remount /system
-$BUSYBOX mount -o remount,rw /dev/block/bootdevice/by-name/system /system
-mount -o remount,rw /dev/block/bootdevice/by-name/system /system 2> /dev/null
+echo '屏蔽MIUI在线更新下载地址(需要解锁System分区)...'
 
 path="/system/etc/hosts"
 $BUSYBOX sed '/127.0.0.1\ \ \ \ \ \ \ update.miui.com/'d $path > /cache/hosts

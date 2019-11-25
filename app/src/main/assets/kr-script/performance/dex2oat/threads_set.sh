@@ -16,10 +16,8 @@ else
 
     echo 'Step1.挂载System为读写...'
 
-    $BUSYBOX mount -o rw,remount /system
-    mount -o rw,remount /system
-    $BUSYBOX mount -o remount,rw /dev/block/bootdevice/by-name/system /system
-    mount -o remount,rw /dev/block/bootdevice/by-name/system /system 2> /dev/null
+    source ./kr-script/common/mount.sh
+    mount_all
 
     if [[ ! -e "/system/build.prop.bak" ]]; then
         cp /system/build.prop /system/build.prop.bak

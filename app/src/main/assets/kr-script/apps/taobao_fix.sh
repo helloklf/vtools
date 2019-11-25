@@ -53,21 +53,5 @@ else
     echo '优酷未安装...'
 fi
 
-#echo '屏蔽阿里云在线更新下载地址(需要解锁System分区)...'
-
-#$BUSYBOX mount -o rw,remount /system
-#mount -o rw,remount /system
-#$BUSYBOX mount -o remount,rw /dev/block/bootdevice/by-name/system /system
-#mount -o remount,rw /dev/block/bootdevice/by-name/system /system 2> /dev/null
-
-#path="/system/etc/hosts"
-#$BUSYBOX sed '/127.0.0.1\ \ \ \ \ \ \ appdownload.alicdn.com/'d $path > /cache/hosts
-#$BUSYBOX sed -i '$a127.0.0.1\ \ \ \ \ \ \ appdownload.alicdn.com' /cache/hosts
-#cp /cache/hosts $path
-#chmod 0755 $path
-#rm /cache/hosts
-#sync
-#echo '建议重启手机！'
-
 echo '操作已完成，如果出现问题，可通过卸载应用并重新安装来解决！'
 

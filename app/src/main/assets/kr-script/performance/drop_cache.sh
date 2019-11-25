@@ -7,26 +7,28 @@ function display_mb() {
 
 # free -m
 before=`cat /proc/meminfo  | grep MemAvailable | cut -F2`
-echo '可用内存  '
+echo '▶ '
 display_mb $before
+echo ''
+
+echo '🔄 '
 
 sync;
 echo 3 > /proc/sys/vm/drop_caches;
 echo 1 > /proc/sys/vm/compact_memory;
 
 after=`cat /proc/meminfo  | grep MemAvailable | cut -F2`
-
-echo -n ' > '
 display_mb $after
 
 echo ''
 echo ''
+echo ''
 echo '#################'
 echo ''
-echo '回收了    '
+echo '⏺ '
 echo ''
 
-display_mb $(expr $before - $after)
+display_mb $(expr $after - $before)
 echo ''
 
 sleep 2;

@@ -27,8 +27,8 @@
             <set>. ./kr-script/miui/miui_round_set.sh</set>
         </switch>
         <switch>
-            <title>【MIUI11】USB弹窗</title>
-            <desc>开关插入数据线连接电脑时的弹窗提示</desc>
+            <title>【MIUI11】禁用USB弹窗</title>
+            <desc>连接数据线时，不要弹出选择传输模式的窗口</desc>
             <get>. ./kr-script/miui/miui_usb_dialog_get.sh</get>
             <set>. ./kr-script/miui/miui_usb_dialog_set.sh</set>
         </switch>
