@@ -10,11 +10,7 @@ then
     return
 fi
 
-if [[ -n "$stared" ]]
-then
-    echo 1
-elif [[ -n "$stared" ]]
-then
+if [[ -n "$stared" ]] || [[ -n "$stared2" ]]; then
     echo 1
 else
     echo 0

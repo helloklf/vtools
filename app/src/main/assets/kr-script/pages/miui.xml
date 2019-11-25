@@ -2,34 +2,41 @@
 <items>
     <resource dir="file:///android_asset/kr-script/miui" />
     <group title="界面">
-        <switch visible=". ./kr-script/common/miui_support.sh">
+        <switch>
             <title>【MIUI10】状态栏缺口</title>
             <desc>在MIUI10中开启MI8、8SE刘海屏状态栏中间的缺口，减少图标数量，在MiX2和Mi6上测试可用。重启生效！</desc>
             <get>. ./kr-script/miui/mi8status_get.sh</get>
             <set>. ./kr-script/miui/mi8status_set.sh</set>
         </switch>
-        <switch visible=". ./kr-script/common/miui_support.sh">
+        <switch>
             <title>【MIUI9】通知中心搜索框</title>
             <desc>关闭此项将通过替换主题资源的方式，隐藏下拉通知中心的搜索框</desc>
             <get>. ./kr-script/miui/miui_notice_search_get.sh</get>
             <set>. ./kr-script/miui/miui_notice_search_set.sh</set>
         </switch>
-        <switch visible=". ./kr-script/common/miui_support.sh">
+        <switch>
             <title>【MIUI10】隐藏导航栏</title>
             <desc>通过主题资源修改导航栏高度的方式隐藏掉导航栏，方便使用第三方手势</desc>
             <get>. ./kr-script/miui/miui_hide_nav_get.sh</get>
             <set>. ./kr-script/miui/miui_hide_nav_set.sh</set>
         </switch>
-        <switch visible=". ./kr-script/common/miui_support.sh">
+        <switch>
             <title>【MIUI10】屏幕圆角</title>
             <desc>开关全局圆角效果，在MiX2和Mi6上测试可用。重启生效！</desc>
             <get>. ./kr-script/miui/miui_round_get.sh</get>
             <set>. ./kr-script/miui/miui_round_set.sh</set>
         </switch>
+        <switch>
+            <title>【MIUI11】USB弹窗</title>
+            <desc>开关插入数据线连接电脑时的弹窗提示</desc>
+            <get>. ./kr-script/miui/miui_usb_dialog_get.sh</get>
+            <set>. ./kr-script/miui/miui_usb_dialog_set.sh</set>
+        </switch>
     </group>
 
     <group title="温控">
-        <action visible=". ./kr-script/miui/thermal_conf/support.sh" title="更改温控配置" desc="目前已适配 骁龙710、835、845、855，仅限MIUI官方系统！">
+        <action
+            visible=". ./kr-script/miui/thermal_conf/support.sh" title="更改温控配置" desc="目前已适配 骁龙710、835、845、855，仅限MIUI官方系统！">
             <summary sh=". ./kr-script/miui/thermal_conf/summary.sh" />
             <param name="mode" title="温控模式"
                 options-sh=". ./kr-script/miui/thermal_conf/options.sh"
@@ -46,7 +53,7 @@
                 <slice size="16" break="true" link="https://atools.oss-cn-shenzhen.aliyuncs.com/app1/MIUI%E6%B8%A9%E6%8E%A7%E7%BC%96%E8%BE%91%E5%99%A8%201.0.1.apk">前往下载</slice>
             </slices>
         </text>
-        <action confirm="true" visible=". ./kr-script/common/miui_support.sh">
+        <action confirm="true">
             <title>开启MIUI9、MIUI10隐藏的温控选项</title>
             <desc>看人品，也许是可以开出来，但不一定啦！据说稳定版是不行的。</desc>
             <script>. ./kr-script/miui/miui_thermal_set.sh</script>
@@ -60,7 +67,7 @@
             <get>. ./kr-script/miui/miui_update_get.sh</get>
             <set>. ./kr-script/miui/miui_update_set.sh</set>
         </switch>
-        <switch visible=". ./kr-script/common/miui_support.sh">
+        <switch>
             <title>【MIUI10】安全键盘</title>
             <desc>在输入密码时使用MIUI的安全键盘，避免密码被输入法作为自定义词语记录。重启生效！</desc>
             <get>. ./kr-script/miui/miui_security_keyboard_get.sh</get>

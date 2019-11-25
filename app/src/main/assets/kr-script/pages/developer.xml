@@ -6,6 +6,7 @@
         <switch id="developer_remote_adb">
             <title>远程ADB调试</title>
             <desc>开启设备的网络调试端口，方便开发人员免数据线连接电脑，千万不要在公共WIFI网络环境下开启本选项！</desc>
+            <summary sh=". ./kr-script/developer/adb_remote_summary.sh"></summary>
             <getstate>. ./kr-script/developer/adb_remote_get.sh</getstate>
             <setstate>. ./kr-script/developer/adb_remote_set.sh</setstate>
         </switch>

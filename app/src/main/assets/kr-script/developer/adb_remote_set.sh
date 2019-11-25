@@ -2,20 +2,24 @@
 
 if [[ ! "$state" = "1" ]]
 then
+    setprop service.adb.tcp.port ""
     stop adbd
+    killall -9 adbd 2>/dev/null
+    start adbd
     echo '远程调试服务已停止'
     return 0
 fi
 
 setprop service.adb.tcp.port 5555;
 stop adbd;
+killall -9 adbd 2>/dev/null
 sleep 1;
 start adbd;
 
-ip=`ifconfig wlan0 | grep "inet addr" | awk '{ print $2}' | awk -F: '{print $2}'`
+ip=`ifconfig wlan0 | grep "inet addr" | awk '{ print $2}' | awk -F: '{print $2}'` 2>/dev/null
 if [[ ! -n "$ip" ]]
 then
-    ip=`ifconfig eth0 | grep "inet addr" | awk '{ print $2}' | awk -F: '{print $2}'`
+    ip=`ifconfig eth0 | grep "inet addr" | awk '{ print $2}' | awk -F: '{print $2}'` 2>/dev/null
 fi
 
 echo "在连接了和手机相同网络(局域网)的电脑上"

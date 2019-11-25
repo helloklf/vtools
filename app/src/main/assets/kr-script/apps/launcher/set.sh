@@ -12,6 +12,22 @@ for launcher in $launchers ; do
     killall -9 $packageName 2>/dev/null
 done
 
+# 安全中心之类的东西
+security_apps="
+com.miui.securitycenter
+com.miui.guardprovider
+com.lbe.security.miui
+"
+for app in $security_apps
+do
+  if [[ "$app" != "" ]]
+  then
+    am force-stop "$app" 2>/dev/null
+    killall -9 "$app" 2>/dev/null
+  fi
+done
+
+
 # 切换桌面
 activity="$state"
 if [[ "$activity" != "" ]]; then

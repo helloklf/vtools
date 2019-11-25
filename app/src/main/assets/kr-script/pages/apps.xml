@@ -33,6 +33,12 @@
             <script>. ./kr-script/apps/qq_style_set.sh</script>
         </action>
         <action confirm="true">
+            <title>QQ个性化 问题修复</title>
+            <desc>修复使用了禁用QQ个性化，手机双清后QQ登录不上的问题</desc>
+            <summary>注意：此操作将删除QQ所有数据！</summary>
+            <script>. ./kr-script/apps/qq_style_fix.sh</script>
+        </action>
+        <action confirm="true">
             <title>修复淘宝闪退</title>
             <desc>清理优酷和淘宝下载的热更新文件，出现淘宝或优酷闪退的，可以试试</desc>
             <script>. ./kr-script/apps/taobao_fix.sh</script>
