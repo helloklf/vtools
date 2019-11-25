@@ -32,6 +32,8 @@ open class ConfigItemBase {
     var reloadPage: Boolean = false
     // 是否在执行完之后关闭页面
     var autoFinish = false
+    // 功能图标路径
+    var iconPath = ""
 
     // 是否是后台运行的任务
     var backgroundTask: Boolean = false

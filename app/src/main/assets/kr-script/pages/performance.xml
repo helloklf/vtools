@@ -132,9 +132,13 @@
     </group>
 
     <group title="其它">
-        <action id="performance_mem_clear" auto-off="true" auto-finish="true">
-            <title>清理RAM缓存</title>
-            <desc>清理RAM中的缓存内容</desc>
+        <action
+            id="performance_mem_clear"
+            icon="file:///android_asset/kr-script/icons/shortcut_mem_clear.png"
+            auto-off="true"
+            auto-finish="true">
+            <title>清理RAM</title>
+            <desc>清理RAM中缓存的内容，如：缓存的进程、销毁的进程、读写预读</desc>
             <script>. ./kr-script/performance/drop_cache.sh</script>
         </action>
     </group>

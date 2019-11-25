@@ -20,7 +20,11 @@ object FileWrite {
         val baseUrl = "${SDCardDir}/Android/data/${context.packageName}/"
 
         try {
-            val inputStream = context.assets.open(file)
+            val inputStream = if (file.startsWith("file:///android_asset/")) {
+                context.assets.open(file.substring("file:///android_asset/".length))
+            } else {
+                context.assets.open(file)
+            }
 
             val dir = File(baseUrl)
             if (!dir.exists())
@@ -64,10 +68,17 @@ object FileWrite {
     fun getPrivateFilePath(context: Context, outName: String): String {
         return getPrivateFileDir(context) + (if (outName.startsWith("/")) outName.substring(1, outName.length) else outName)
     }
+    fun writePrivateFile(file: String, outName: String, context: Context): String? {
+        return writePrivateFile(context.assets, file, outName, context);
+    }
 
     fun writePrivateFile(assetManager: AssetManager, file: String, outName: String, context: Context): String? {
         try {
-            val inputStream = assetManager.open(file)
+            val inputStream = if (file.startsWith("file:///android_asset/")) {
+                assetManager.open(file.substring("file:///android_asset/".length))
+            } else {
+                assetManager.open(file)
+            }
 
             val dir = File(getPrivateFileDir(context))
             if (!dir.exists())

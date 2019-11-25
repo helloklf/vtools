@@ -2,7 +2,10 @@ package com.omarea.krscript.ui
 
 import android.app.AlertDialog
 import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
@@ -13,6 +16,7 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
+import com.omarea.common.shared.FileWrite
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.common.ui.ThemeMode
@@ -125,6 +129,18 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
         krScriptActionHandler?.onSubPageClick(item)
     }
 
+    // 获取快捷方式的图标
+    private fun getShortcutIcon(context: Context, configItem: ConfigItemBase): Drawable {
+        if (!configItem.iconPath.isEmpty()) {
+            val privatePath = FileWrite.writePrivateFile(configItem.iconPath, "ShortcutIconCache", context)
+            val drawable = privatePath?.run { BitmapDrawable.createFromPath(this); }
+            if (drawable != null) {
+                return drawable
+            }
+        }
+        return context.getDrawable(R.drawable.kr_shortcut_logo)!!
+    }
+
     // 长按 添加收藏
     override fun onItemLongClick(item: ConfigItemBase) {
         if (item.key.isEmpty()) {
@@ -141,7 +157,8 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
                                 .setTitle(getString(R.string.kr_shortcut_create))
                                 .setMessage(String.format(getString(R.string.kr_shortcut_create_desc), configItem.title))
                                 .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                                    val result = ActionShortcutManager(context!!).addShortcut(intent, context!!.getDrawable(R.drawable.kr_shortcut_logo)!!, configItem)
+                                    val result = ActionShortcutManager(context!!)
+                                            .addShortcut(intent, getShortcutIcon(context!!, configItem), configItem)
                                     if (!result) {
                                         Toast.makeText(context, R.string.kr_shortcut_create_fail, Toast.LENGTH_SHORT).show()
                                     } else {
