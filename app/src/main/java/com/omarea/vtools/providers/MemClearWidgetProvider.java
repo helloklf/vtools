@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
@@ -96,18 +97,23 @@ public class MemClearWidgetProvider extends AppWidgetProvider {
      * 接收窗口小部件点击时发送的广播
      */
     @Override
-    public void onReceive(Context context, Intent intent) {
+    public void onReceive(final Context context, final Intent intent) {
         super.onReceive(context, intent);
         if (CLICK_ACTION.equals(intent.getAction())) {
-
-            // PendingResult pendingResult = goAsync();
+            final PendingResult pendingResult = goAsync();
             Toast.makeText(context, "稍等~", Toast.LENGTH_SHORT).show();
-            KeepShellPublic.INSTANCE.doCmdSync("sync && echo 3 > /proc/sys/vm/drop_caches && echo 1 > /proc/sys/vm/compact_memory");
-            Toast.makeText(context, "缓存已回收~", Toast.LENGTH_SHORT).show();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    KeepShellPublic.INSTANCE.doCmdSync("sync && echo 3 > /proc/sys/vm/drop_caches && echo 1 > /proc/sys/vm/compact_memory");
+                    Toast.makeText(context, "缓存已回收~", Toast.LENGTH_SHORT).show();
 
-            if (intent.hasExtra("ids")) {
-                triggerUpdate(context, intent.getExtras().getIntArray("ids"));
-            }
+                    if (intent.hasExtra("ids")) {
+                        triggerUpdate(context, intent.getExtras().getIntArray("ids"));
+                    }
+                    pendingResult.finish();
+                }
+            }, 100);
         }
     }
 
