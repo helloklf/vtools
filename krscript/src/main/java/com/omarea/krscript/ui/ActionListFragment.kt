@@ -26,6 +26,7 @@ import com.omarea.krscript.config.ActionParamInfo
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.*
 import com.omarea.krscript.shortcut.ActionShortcutManager
+import java.io.File
 
 class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     companion object {
@@ -133,9 +134,16 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     private fun getShortcutIcon(context: Context, configItem: ConfigItemBase): Drawable {
         if (!configItem.iconPath.isEmpty()) {
             val privatePath = FileWrite.writePrivateFile(configItem.iconPath, "ShortcutIconCache", context)
-            val drawable = privatePath?.run { BitmapDrawable.createFromPath(this); }
-            if (drawable != null) {
-                return drawable
+            if (privatePath != null) {
+                val drawable = BitmapDrawable.createFromPath(privatePath);
+                if (drawable != null) {
+                    return drawable
+                }
+            } else if (File(configItem.iconPath).exists()) {
+                val diskFile = BitmapDrawable.createFromPath(configItem.iconPath);
+                if (diskFile != null) {
+                    return diskFile;
+                }
             }
         }
         return context.getDrawable(R.drawable.kr_shortcut_logo)!!
