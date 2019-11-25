@@ -429,7 +429,8 @@ class PageConfigReader {
                 "title" -> configItemBase.title = attrValue
                 "desc" -> configItemBase.desc = attrValue
                 "confirm" -> configItemBase.confirm = (attrValue == "confirm" || attrValue == "true" || attrValue == "1")
-                "auto-off" -> configItemBase.autoOff = (attrValue == "auto-off" || attrValue == "true" || attrValue == "1")
+                "auto-off", "auto-close" -> configItemBase.autoOff = (attrValue == "auto-close" ||attrValue == "auto-off" || attrValue == "true" || attrValue == "1")
+                "auto-finish" -> configItemBase.autoFinish = (attrValue == "auto-finish" || attrValue == "true" || attrValue == "1")
                 "interruptible", "interruptable" -> configItemBase.interruptable = (attrValue.isEmpty() || attrValue == "interruptable" || attrValue == "interruptable" || attrValue == "true" || attrValue == "1")
                 "support", "visible" -> {
                     if (executeResultRoot(context, attrValue) != "1") {

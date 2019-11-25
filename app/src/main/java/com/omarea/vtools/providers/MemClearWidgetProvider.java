@@ -14,10 +14,8 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
-
 import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.vtools.R;
 
@@ -117,7 +115,7 @@ public class MemClearWidgetProvider extends AppWidgetProvider {
         }
     }
 
-    private void triggerUpdate(Context context, int[] ids) {
+    public static void triggerUpdate(Context context, int[] ids) {
         Intent intent = new Intent(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         intent.setClass(context.getApplicationContext(), MemClearWidgetProvider.class);
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);

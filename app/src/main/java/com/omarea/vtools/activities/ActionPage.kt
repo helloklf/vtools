@@ -127,7 +127,9 @@ class ActionPage : AppCompatActivity() {
 
     private var actionShortClickHandler = object : KrScriptActionHandler {
         override fun onActionCompleted(configItemBase: ConfigItemBase) {
-            if (configItemBase.reloadPage) {
+            if (configItemBase.autoFinish) {
+                finish()
+            } else if (configItemBase.reloadPage) {
                 loadPageConfig()
             }
         }

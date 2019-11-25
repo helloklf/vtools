@@ -130,4 +130,12 @@
             <script>. ./kr-script/performance/io/write_cache.sh</script>
         </action>
     </group>
+
+    <group title="其它">
+        <action id="performance_mem_clear" auto-off="true" auto-finish="true">
+            <title>清理RAM缓存</title>
+            <desc>清理RAM中的缓存内容</desc>
+            <script>. ./kr-script/performance/drop_cache.sh</script>
+        </action>
+    </group>
 </items>
