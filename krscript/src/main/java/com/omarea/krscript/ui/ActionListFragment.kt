@@ -385,11 +385,15 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
                     val itemSplit = item.split("\\|".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
                     options.add(object : HashMap<String, Any>() {
                         init {
-                            put("title", itemSplit[1])
+                            var descText = itemSplit[0]
+                            if (itemSplit.size > 0) {
+                                descText = itemSplit[1]
+                            }
+                            put("title", descText)
                             put("item", object : ActionParamInfo.ActionParamOption() {
                                 init {
                                     value = itemSplit[0]
-                                    desc = itemSplit[1]
+                                    desc = descText
                                 }
                             })
                         }

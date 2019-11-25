@@ -4,10 +4,11 @@ source ./kr-script/common/props.sh
 
 if [[ $state = 1 ]]
 then
-    value=0
+    value='true'
 else
-    value=1
+    value='false'
 fi
+
 prop="ro.hwui.use_vulkan"
 
 magisk_set_system_prop $prop $value
