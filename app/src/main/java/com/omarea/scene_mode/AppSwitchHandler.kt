@@ -222,7 +222,6 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
 
     private fun toggleConfig(mode: String) {
         if (configInstaller.configInstalled() || ModeConfigInstaller().installPowerConfig(context, "")) {
-            ModeConfigInstaller().installPowerConfig(context, "")
             if (screenOn) {
                 executePowercfgMode(mode)
             } else {
