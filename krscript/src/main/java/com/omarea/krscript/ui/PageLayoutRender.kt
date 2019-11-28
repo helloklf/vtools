@@ -10,24 +10,24 @@ import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.*
 
 class PageLayoutRender(private val mContext: Context,
-                       private val itemConfigList: ArrayList<ConfigItemBase>,
+                       private val itemConfigList: ArrayList<NodeInfoBase>,
                        private val clickListener: OnItemClickListener,
-                       private val parent: ListItemView) {
+                       private val parent: ListItemGroup) {
 
     interface OnItemClickListener {
-        fun onPageClick(item: PageInfo, onCompleted: Runnable)
-        fun onActionClick(item: ActionInfo, onCompleted: Runnable)
-        fun onSwitchClick(item: SwitchInfo, onCompleted: Runnable)
-        fun onPickerClick(item: PickerInfo, onCompleted: Runnable)
-        fun onItemLongClick(item: ConfigItemBase)
+        fun onPageClick(item: PageNode, onCompleted: Runnable)
+        fun onActionClick(item: ActionNode, onCompleted: Runnable)
+        fun onSwitchClick(item: SwitchNode, onCompleted: Runnable)
+        fun onPickerClick(item: PickerNode, onCompleted: Runnable)
+        fun onItemLongClick(clickableNode: ClickableNode)
     }
 
 
-    private fun findItemByDynamicIndex(key: String, actionInfos: ArrayList<ConfigItemBase>): ConfigItemBase? {
+    private fun findItemByDynamicIndex(key: String, actionInfos: ArrayList<NodeInfoBase>): NodeInfoBase? {
         for (item in actionInfos) {
             if (item.index == key) {
                 return item
-            } else if (item is GroupInfo && item.children.size > 0) {
+            } else if (item is GroupNode && item.children.size > 0) {
                 val result = findItemByDynamicIndex(key, item.children)
                 if (result != null) {
                     return result
@@ -37,42 +37,42 @@ class PageLayoutRender(private val mContext: Context,
         return null
     }
 
-    private fun getCommonOnExitRunnable(item: ConfigItemBase, listItemView: ListItemView): Runnable {
+    private fun getCommonOnExitRunnable(item: NodeInfoBase, node: ListItemClickable): Runnable {
         val handler = Handler(Looper.getMainLooper())
         return Runnable {
             handler.post {
                 if (item.descSh.isNotEmpty()) {
                     item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descSh)
-                    listItemView.desc = item.desc
+                    node.desc = item.desc
                 }
 
                 if (item.summarySh.isNotEmpty()) {
                     item.summary = ScriptEnvironmen.executeResultRoot(mContext, item.summarySh)
-                    listItemView.summary = item.summary
+                    node.summary = item.summary
                 }
 
-                if (item is SwitchInfo) {
+                if (item is SwitchNode) {
                     if (item.getState != null && !item.getState.isEmpty()) {
                         val shellResult = ScriptEnvironmen.executeResultRoot(mContext, item.getState)
                         item.checked = shellResult == "1" || shellResult.toLowerCase() == "true"
                     }
-                    (listItemView as ListItemSwitch).checked = item.checked
+                    (node as ListItemSwitch).checked = item.checked
                 }
             }
         }
     }
 
-    private fun onItemClick(item: ConfigItemBase, listItemView: ListItemView) {
+    private fun onItemClick(item: NodeInfoBase, listItemView: ListItemClickable) {
         when (item) {
-            is PageInfo -> clickListener.onPageClick(item, getCommonOnExitRunnable(item, listItemView))
-            is ActionInfo -> clickListener.onActionClick(item, getCommonOnExitRunnable(item, listItemView))
-            is PickerInfo -> clickListener.onPickerClick(item, getCommonOnExitRunnable(item, listItemView))
-            is SwitchInfo -> clickListener.onSwitchClick(item, getCommonOnExitRunnable(item, listItemView))
+            is PageNode -> clickListener.onPageClick(item, getCommonOnExitRunnable(item, listItemView))
+            is ActionNode -> clickListener.onActionClick(item, getCommonOnExitRunnable(item, listItemView))
+            is PickerNode -> clickListener.onPickerClick(item, getCommonOnExitRunnable(item, listItemView))
+            is SwitchNode -> clickListener.onSwitchClick(item, getCommonOnExitRunnable(item, listItemView))
         }
     }
 
-    private val onItemClickListener: ListItemView.OnClickListener = object : ListItemView.OnClickListener {
-        override fun onClick(listItemView: ListItemView) {
+    private val onItemClickListener: ListItemClickable.OnClickListener = object : ListItemClickable.OnClickListener {
+        override fun onClick(listItemView: ListItemClickable) {
             val key = listItemView.index
             try {
                 val item = findItemByDynamicIndex(key, itemConfigList)
@@ -87,35 +87,31 @@ class PageLayoutRender(private val mContext: Context,
         }
     }
 
-    private val onItemLongClickListener = object : ListItemView.OnLongClickListener {
-        override fun onLongClick(listItemView: ListItemView) {
+    private val onItemLongClickListener = object : ListItemClickable.OnLongClickListener {
+        override fun onLongClick(listItemView: ListItemClickable) {
             val item = findItemByDynamicIndex(listItemView.index, itemConfigList)
-            item?.run {
+            if (item is ClickableNode) {
                 clickListener.onItemLongClick(item)
             }
         }
     }
 
-    private fun mapConfigList(parent: ListItemView, actionInfos: ArrayList<ConfigItemBase>) {
+    private fun mapConfigList(parent: ListItemGroup, actionInfos: ArrayList<NodeInfoBase>) {
         for (index in 0 until actionInfos.size) {
             val it = actionInfos[index]
             try {
                 var uiRender: ListItemView? = null
-                if (it is PageInfo) {
+                if (it is PageNode) {
                     uiRender = createPageItem(it)
-                } else if (it is SwitchInfo) {
+                } else if (it is SwitchNode) {
                     uiRender = createSwitchItem(it)
-                } else if (it is ActionInfo) {
+                } else if (it is ActionNode) {
                     uiRender = createActionItem(it)
-                } else if (it is PickerInfo) {
+                } else if (it is PickerNode) {
                     uiRender = createListItem(it)
-                } else if (it is TextInfo) {
-                    uiRender = if (parent is ListItemGroup) {
-                        createTextItemWhite(it)
-                    } else {
-                        createTextItem(it)
-                    }
-                } else if (it is GroupInfo) {
+                } else if (it is TextNode) {
+                    uiRender = if (parent.isRootGroup) createTextItem(it) else createTextItemWhite(it)
+                } else if (it is GroupNode) {
                     val subGroup = createItemGroup(it)
                     parent.addView(subGroup)
                     if (it.children.size > 0) {
@@ -124,8 +120,10 @@ class PageLayoutRender(private val mContext: Context,
                 }
 
                 if (uiRender != null) {
-                    uiRender.setOnClickListener(this.onItemClickListener)
-                    uiRender.setOnLongClickListener(this.onItemLongClickListener)
+                    if (uiRender is ListItemClickable) {
+                        uiRender.setOnClickListener(this.onItemClickListener)
+                        uiRender.setOnLongClickListener(this.onItemLongClickListener)
+                    }
                     parent.addView(uiRender)
                 }
             } catch (ex: Exception) {
@@ -134,32 +132,32 @@ class PageLayoutRender(private val mContext: Context,
         }
     }
 
-    private fun createTextItem(info: TextInfo): ListItemView {
-        return ListItemText(mContext, R.layout.kr_text_list_item, info)
+    private fun createTextItem(node: TextNode): ListItemView {
+        return ListItemText(mContext, R.layout.kr_text_list_item, node)
     }
 
-    private fun createTextItemWhite(info: TextInfo): ListItemView {
-        return ListItemText(mContext, R.layout.kr_text_list_item_white, info)
+    private fun createTextItemWhite(node: TextNode): ListItemView {
+        return ListItemText(mContext, R.layout.kr_text_list_item_white, node)
     }
 
-    private fun createListItem(info: PickerInfo): ListItemView {
-        return ListItemPicker(mContext, R.layout.kr_action_list_item, info)
+    private fun createListItem(node: PickerNode): ListItemView {
+        return ListItemPicker(mContext, node)
     }
 
-    private fun createPageItem(info: PageInfo): ListItemView {
-        return ListItemView(mContext, R.layout.kr_page_list_item, info)
+    private fun createPageItem(node: PageNode): ListItemView {
+        return ListItemPage(mContext, node)
     }
 
-    private fun createSwitchItem(info: SwitchInfo): ListItemView {
-        return ListItemSwitch(mContext, R.layout.kr_switch_list_item, info)
+    private fun createSwitchItem(node: SwitchNode): ListItemView {
+        return ListItemSwitch(mContext, node)
     }
 
-    private fun createActionItem(info: ActionInfo): ListItemView {
-        return ListItemAction(mContext, R.layout.kr_action_list_item, info)
+    private fun createActionItem(node: ActionNode): ListItemView {
+        return ListItemAction(mContext, node)
     }
 
-    private fun createItemGroup(info: GroupInfo): ListItemGroup {
-        return ListItemGroup(mContext, R.layout.kr_group_list_item, info)
+    private fun createItemGroup(node: GroupNode): ListItemGroup {
+        return ListItemGroup(mContext, false, node)
     }
 
     init {

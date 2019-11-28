@@ -5,7 +5,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.DialogInterface
-import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.os.Message
 import android.support.v4.app.DialogFragment
@@ -19,7 +19,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.omarea.krscript.R
 import com.omarea.krscript.executor.ShellExecutor
-import com.omarea.krscript.model.ConfigItemBase
+import com.omarea.krscript.model.RunnableNode
 import com.omarea.krscript.model.ShellHandlerBase
 import kotlinx.android.synthetic.main.kr_dialog_log.*
 
@@ -34,7 +34,7 @@ class DialogLogFragment : DialogFragment() {
     }
 
     private var running = false
-    private lateinit var configItem: ConfigItemBase
+    private lateinit var nodeInfo: RunnableNode
     private lateinit var onExit: Runnable
     private lateinit var script: String
     private var params: HashMap<String, String>? = null
@@ -49,14 +49,14 @@ class DialogLogFragment : DialogFragment() {
         super.onActivityCreated(savedInstanceState)
 
         // 如果执行完以后需要刷新界面，那么就不允许隐藏日志窗口到后台执行
-        if (configItem.reloadPage) {
+        if (nodeInfo.reloadPage) {
             btn_hide.visibility = View.GONE
         }
 
         val shellHandler = openExecutor()
 
         if (shellHandler != null) {
-            ShellExecutor().execute(this.activity, configItem.interruptable, script, onExit, params, shellHandler)
+            ShellExecutor().execute(this.activity, nodeInfo.interruptable, script, onExit, params, shellHandler)
         }
     }
 
@@ -83,7 +83,7 @@ class DialogLogFragment : DialogFragment() {
                 Toast.makeText(context, getString(R.string.copy_fail), Toast.LENGTH_SHORT).show()
             }
         }
-        if (configItem.interruptable) {
+        if (nodeInfo.interruptable) {
             btn_hide?.visibility = View.VISIBLE
             btn_exit?.visibility = View.VISIBLE
         } else {
@@ -91,7 +91,7 @@ class DialogLogFragment : DialogFragment() {
             btn_exit?.visibility = View.GONE
         }
 
-        title.text = configItem.title
+        title.text = nodeInfo.title
         action_progress.isIndeterminate = true
         return MyShellHandler(object : IActionEventHandler {
             override fun onCompleted() {
@@ -108,7 +108,7 @@ class DialogLogFragment : DialogFragment() {
             }
 
             override fun onSuccess() {
-                if (configItem.autoOff) {
+                if (nodeInfo.autoOff) {
                     closeView()
                 }
             }
@@ -116,7 +116,7 @@ class DialogLogFragment : DialogFragment() {
             override fun onStart(forceStop: Runnable?) {
                 running = true
 
-                if (configItem.interruptable && forceStop != null) {
+                if (nodeInfo.interruptable && forceStop != null) {
                     btn_exit.visibility = View.VISIBLE
                 } else {
                     btn_exit.visibility = View.GONE
@@ -138,11 +138,20 @@ class DialogLogFragment : DialogFragment() {
             private var actionEventHandler: IActionEventHandler,
             private var logView: TextView,
             private var shellProgress: ProgressBar) : ShellHandlerBase() {
+
+        private fun getColor(resId: Int): Int {
+            return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                context!!.getColor(resId)
+            } else {
+                context!!.resources.getColor(resId)
+            }
+        }
+
         private val context = logView.context
-        private val errorColor = Color.parseColor(context.getString(R.string.kr_shell_log_error))
-        private val basicColor = Color.parseColor(context.getString(R.string.kr_shell_log_basic))
-        private val scriptColor = Color.parseColor(context.getString(R.string.kr_shell_log_script))
-        private val endColor = Color.parseColor(context.getString(R.string.kr_shell_log_end))
+        private val errorColor = getColor(R.color.kr_shell_log_error)
+        private val basicColor = getColor(R.color.kr_shell_log_basic)
+        private val scriptColor = getColor(R.color.kr_shell_log_script)
+        private val endColor = getColor(R.color.kr_shell_log_end)
 
         private var hasError = false // 执行过程是否出现错误
 
@@ -231,14 +240,14 @@ class DialogLogFragment : DialogFragment() {
     }
 
     companion object {
-        fun create(configItem: ConfigItemBase,
+        fun create(nodeInfo: RunnableNode,
                    onExit: Runnable,
                    onDismiss: Runnable,
                    script: String,
                    params: HashMap<String, String>?,
                    darkMode: Boolean = false): DialogLogFragment {
             val fragment = DialogLogFragment()
-            fragment.configItem = configItem
+            fragment.nodeInfo = nodeInfo
             fragment.onExit = onExit
             fragment.script = script
             fragment.params = params

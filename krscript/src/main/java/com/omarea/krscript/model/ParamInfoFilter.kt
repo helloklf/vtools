@@ -2,7 +2,6 @@ package com.omarea.krscript.model
 
 import android.text.InputFilter
 import android.text.Spanned
-import com.omarea.krscript.config.ActionParamInfo
 import java.util.regex.Pattern
 
 class ParamInfoFilter(private val paramInfo: ActionParamInfo) : InputFilter {

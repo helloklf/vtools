@@ -2,10 +2,7 @@ package com.omarea.krscript.ui
 
 import android.app.AlertDialog
 import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
@@ -16,22 +13,21 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
 import android.widget.Toast
-import com.omarea.common.shared.FileWrite
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.common.ui.ThemeMode
 import com.omarea.krscript.R
 import com.omarea.krscript.ScriptTaskThread
-import com.omarea.krscript.config.ActionParamInfo
+import com.omarea.krscript.config.IconPathAnalysis
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.*
 import com.omarea.krscript.shortcut.ActionShortcutManager
-import java.io.File
 
 class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
+
     companion object {
         fun create(
-                actionInfos: ArrayList<ConfigItemBase>?,
+                actionInfos: ArrayList<NodeInfoBase>?,
                 krScriptActionHandler: KrScriptActionHandler? = null,
                 autoRunTask: AutoRunTask? = null,
                 themeMode: ThemeMode? = null): ActionListFragment {
@@ -41,7 +37,7 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
         }
     }
 
-    private var actionInfos: ArrayList<ConfigItemBase>? = null
+    private var actionInfos: ArrayList<NodeInfoBase>? = null
 
     private lateinit var progressBarDialog: ProgressBarDialog
     private var krScriptActionHandler: KrScriptActionHandler? = null
@@ -49,7 +45,7 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     private var themeMode: ThemeMode? = null
 
     private fun setListData(
-            actionInfos: ArrayList<ConfigItemBase>?,
+            actionInfos: ArrayList<NodeInfoBase>?,
             krScriptActionHandler: KrScriptActionHandler? = null,
             autoRunTask: AutoRunTask? = null,
             themeMode: ThemeMode? = null) {
@@ -67,16 +63,16 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     }
 
 
-    private lateinit var layoutBuilder: ListItemView
+    private lateinit var rootGroup: ListItemGroup
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         this.progressBarDialog = ProgressBarDialog(this.context!!)
 
-        layoutBuilder = ListItemView(this.context!!, R.layout.kr_group_list_root)
+        rootGroup = ListItemGroup(this.context!!, true)
 
         if (actionInfos != null) {
-            PageLayoutRender(this.context!!, actionInfos!!, this, layoutBuilder)
-            val layout = layoutBuilder.getView()
+            PageLayoutRender(this.context!!, actionInfos!!, this, rootGroup)
+            val layout = rootGroup.getView()
 
             val rootView = (this.view?.findViewById<ScrollView?>(R.id.kr_content))
             rootView?.removeAllViews()
@@ -88,7 +84,7 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     private fun triggerAction(autoRunTask: AutoRunTask?) {
         autoRunTask?.run {
             if (!key.isNullOrEmpty()) {
-                onCompleted(layoutBuilder.triggerActionByKey(key!!))
+                onCompleted(rootGroup.triggerActionByKey(key!!))
             }
         }
     }
@@ -96,7 +92,7 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     /**
      * 当switch项被点击
      */
-    override fun onSwitchClick(item: SwitchInfo, onCompleted: Runnable) {
+    override fun onSwitchClick(item: SwitchNode, onCompleted: Runnable) {
         val toValue = !item.checked
         if (item.confirm) {
             DialogHelper.animDialog(AlertDialog.Builder(this.context!!)
@@ -115,10 +111,10 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     /**
      * 执行switch的操作
      */
-    private fun switchExecute(switchInfo: SwitchInfo, toValue: Boolean, onExit: Runnable) {
-        val script = switchInfo.setState ?: return
+    private fun switchExecute(switchNode: SwitchNode, toValue: Boolean, onExit: Runnable) {
+        val script = switchNode.setState ?: return
 
-        actionExecute(switchInfo, script, onExit, object : java.util.HashMap<String, String>() {
+        actionExecute(switchNode, script, onExit, object : java.util.HashMap<String, String>() {
             init {
                 put("state", if (toValue) "1" else "0")
             }
@@ -126,47 +122,28 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     }
 
 
-    override fun onPageClick(item: PageInfo, onCompleted: Runnable) {
+    override fun onPageClick(item: PageNode, onCompleted: Runnable) {
         krScriptActionHandler?.onSubPageClick(item)
     }
 
-    // 获取快捷方式的图标
-    private fun getShortcutIcon(context: Context, configItem: ConfigItemBase): Drawable {
-        if (!configItem.iconPath.isEmpty()) {
-            val privatePath = FileWrite.writePrivateFile(configItem.iconPath, "ShortcutIconCache", context)
-            if (privatePath != null) {
-                val drawable = BitmapDrawable.createFromPath(privatePath);
-                if (drawable != null) {
-                    return drawable
-                }
-            } else if (File(configItem.iconPath).exists()) {
-                val diskFile = BitmapDrawable.createFromPath(configItem.iconPath);
-                if (diskFile != null) {
-                    return diskFile;
-                }
-            }
-        }
-        return context.getDrawable(R.drawable.kr_shortcut_logo)!!
-    }
-
     // 长按 添加收藏
-    override fun onItemLongClick(item: ConfigItemBase) {
-        if (item.key.isEmpty()) {
+    override fun onItemLongClick(clickableNode: ClickableNode) {
+        if (clickableNode.key.isEmpty()) {
             DialogHelper.animDialog(AlertDialog.Builder(context).setTitle(R.string.kr_shortcut_create_fail)
                     .setMessage(R.string.kr_ushortcut_nsupported)
                     .setNeutralButton(R.string.btn_cancel) { _, _ ->
                     }
             )
         } else {
-            krScriptActionHandler?.addToFavorites(item, object : KrScriptActionHandler.AddToFavoritesHandler {
-                override fun onAddToFavorites(configItem: ConfigItemBase, intent: Intent?) {
+            krScriptActionHandler?.addToFavorites(clickableNode, object : KrScriptActionHandler.AddToFavoritesHandler {
+                override fun onAddToFavorites(clickableNode: ClickableNode, intent: Intent?) {
                     if (intent != null) {
                         DialogHelper.animDialog(AlertDialog.Builder(context)
                                 .setTitle(getString(R.string.kr_shortcut_create))
-                                .setMessage(String.format(getString(R.string.kr_shortcut_create_desc), configItem.title))
+                                .setMessage(String.format(getString(R.string.kr_shortcut_create_desc), clickableNode.title))
                                 .setPositiveButton(R.string.btn_confirm) { _, _ ->
                                     val result = ActionShortcutManager(context!!)
-                                            .addShortcut(intent, getShortcutIcon(context!!, configItem), configItem)
+                                            .addShortcut(intent, IconPathAnalysis().loadIcon(context!!, clickableNode), clickableNode)
                                     if (!result) {
                                         Toast.makeText(context, R.string.kr_shortcut_create_fail, Toast.LENGTH_SHORT).show()
                                     } else {
@@ -184,7 +161,7 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     /**
      * 单选列表点击
      */
-    override fun onPickerClick(item: PickerInfo, onCompleted: Runnable) {
+    override fun onPickerClick(item: PickerNode, onCompleted: Runnable) {
         val paramInfo = ActionParamInfo()
         paramInfo.options = item.options
         paramInfo.optionsSh = item.optionsSh
@@ -244,10 +221,10 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     /**
      * 执行picker的操作
      */
-    private fun pickerExecute(pickerInfo: PickerInfo, toValue: String, onExit: Runnable) {
-        val script = pickerInfo.setState ?: return
+    private fun pickerExecute(pickerNode: PickerNode, toValue: String, onExit: Runnable) {
+        val script = pickerNode.setState ?: return
 
-        actionExecute(pickerInfo, script, onExit, object : java.util.HashMap<String, String>() {
+        actionExecute(pickerNode, script, onExit, object : java.util.HashMap<String, String>() {
             init {
                 put("state", toValue)
             }
@@ -257,7 +234,7 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     /**
      * 列表项点击时（如果需要确认界面，则显示确认界面，否则直接准备执行）
      */
-    override fun onActionClick(item: ActionInfo, onCompleted: Runnable) {
+    override fun onActionClick(item: ActionNode, onCompleted: Runnable) {
         if (item.confirm) {
             DialogHelper.animDialog(AlertDialog.Builder(this.context!!)
                     .setTitle(item.title)
@@ -275,7 +252,7 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
     /**
      * action执行参数界面
      */
-    private fun actionExecute(action: ActionInfo, onExit: Runnable) {
+    private fun actionExecute(action: ActionNode, onExit: Runnable) {
         val script = action.setState ?: return
 
         if (action.params != null) {
@@ -432,29 +409,29 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
 
     private val taskResultReceiver = ArrayList<BroadcastReceiver>()
 
-    private fun actionExecute(configItem: ConfigItemBase, script: String, onExit: Runnable, params: HashMap<String, String>?) {
+    private fun actionExecute(nodeInfo: RunnableNode, script: String, onExit: Runnable, params: HashMap<String, String>?) {
         val context = context!!
         val applicationContext = context.applicationContext
 
-        if (configItem.backgroundTask) {
+        if (nodeInfo.backgroundTask) {
             var receiver: BroadcastReceiver? = null
             val onDismiss = Runnable {
-                krScriptActionHandler?.onActionCompleted(configItem)
+                krScriptActionHandler?.onActionCompleted(nodeInfo)
                 try {
                     taskResultReceiver.remove(receiver)
                     applicationContext.unregisterReceiver(receiver)
                 } catch (ex: java.lang.Exception) {
                 }
             }
-            receiver = ScriptTaskThread.startTask(context, script, params, configItem, onExit, onDismiss)
+            receiver = ScriptTaskThread.startTask(context, script, params, nodeInfo, onExit, onDismiss)
             taskResultReceiver.add(receiver)
         } else {
             val onDismiss = Runnable {
-                krScriptActionHandler?.onActionCompleted(configItem)
+                krScriptActionHandler?.onActionCompleted(nodeInfo)
             }
             val darkMode = themeMode != null && themeMode!!.isDarkMode
 
-            val dialog = DialogLogFragment.create(configItem, onExit, onDismiss, script, params, darkMode)
+            val dialog = DialogLogFragment.create(nodeInfo, onExit, onDismiss, script, params, darkMode)
             dialog.show(fragmentManager, "")
             dialog.isCancelable = false
         }

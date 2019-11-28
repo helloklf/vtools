@@ -1,9 +1,4 @@
 <resources>
-    <string name="kr_shell_log_error">#dd0000</string>
-    <string name="kr_shell_log_basic">#445566</string>
-    <string name="kr_shell_log_script">#808080</string>
-    <string name="kr_shell_log_end">#0064B4</string>
-
     <string name="btn_confirm">确定</string>
     <string name="shell_executor">脚本执行器</string>
     <string name="btn_cancel">取消</string>

@@ -13,22 +13,22 @@ import com.omarea.common.shared.FilePathResolver;
 import com.omarea.common.ui.DialogHelper;
 import com.omarea.krscript.R;
 
-public class DownloadCompleteReceiver extends BroadcastReceiver {
-    private static DownloadCompleteReceiver downloadCompleteReceiver;
+public class DownloaderReceiver extends BroadcastReceiver {
+    private static DownloaderReceiver downloaderReceiver;
 
     public static void autoRegister(Context context) {
-        if (downloadCompleteReceiver == null) {
-            downloadCompleteReceiver = new DownloadCompleteReceiver();
+        if (downloaderReceiver == null) {
+            downloaderReceiver = new DownloaderReceiver();
             IntentFilter intentFilter = new IntentFilter();
             intentFilter.addAction(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-            context.registerReceiver(downloadCompleteReceiver, intentFilter);
+            context.registerReceiver(downloaderReceiver, intentFilter);
         }
     }
 
     public static void autoUnRegister(Context context) {
-        if (downloadCompleteReceiver != null) {
-            context.unregisterReceiver(downloadCompleteReceiver);
-            downloadCompleteReceiver = null;
+        if (downloaderReceiver != null) {
+            context.unregisterReceiver(downloaderReceiver);
+            downloaderReceiver = null;
         }
     }
 

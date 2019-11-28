@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.TextView
 import com.omarea.common.ui.DialogHelper
 import com.omarea.krscript.R
-import com.omarea.krscript.config.ActionParamInfo
+import com.omarea.krscript.model.ActionParamInfo
 
 class ParamsMultipleSelect(private val actionParamInfo: ActionParamInfo, private val context: Context) {
     private var options: ArrayList<HashMap<String, Any>>? = null

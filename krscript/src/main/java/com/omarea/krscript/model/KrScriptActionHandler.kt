@@ -6,14 +6,14 @@ import com.omarea.krscript.ui.FileChooserRender
 
 interface KrScriptActionHandler {
     fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean
-    fun onSubPageClick(pageInfo: PageInfo)
-    fun onActionCompleted(configItemBase: ConfigItemBase)
-    fun addToFavorites(configItemBase: ConfigItemBase, addToFavoritesHandler: AddToFavoritesHandler)
-    fun openParamsPage(actionInfo: ActionInfo, view: View, onCompleted: Runnable): Boolean {
+    fun onSubPageClick(pageNode: PageNode)
+    fun onActionCompleted(runnableNode: RunnableNode)
+    fun addToFavorites(clickableNode: ClickableNode, addToFavoritesHandler: AddToFavoritesHandler)
+    fun openParamsPage(actionNode: ActionNode, view: View, onCompleted: Runnable): Boolean {
         return false
     }
 
     interface AddToFavoritesHandler {
-        fun onAddToFavorites(configItem: ConfigItemBase, intent: Intent?)
+        fun onAddToFavorites(clickableNode: ClickableNode, intent: Intent?)
     }
 }

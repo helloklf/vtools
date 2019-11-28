@@ -1,4 +1,4 @@
-package com.omarea.krscript.config
+package com.omarea.krscript.model
 
 class ActionParamInfo {
     // 参数名：必需保持唯一

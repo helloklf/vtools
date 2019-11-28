@@ -15,7 +15,7 @@ import android.view.View
 import android.widget.RemoteViews
 import com.omarea.common.ui.DialogHelper
 import com.omarea.krscript.executor.ShellExecutor
-import com.omarea.krscript.model.ConfigItemBase
+import com.omarea.krscript.model.RunnableNode
 import com.omarea.krscript.model.ShellHandlerBase
 
 class ScriptTaskThread(private var process: Process) : Thread() {
@@ -26,9 +26,9 @@ class ScriptTaskThread(private var process: Process) : Thread() {
         }
     }
 
-    class ServiceShellHandlerBase(private val context: Context, private val configItemBase: ConfigItemBase, private val notificationID: Int, private val finishedIntent: Intent) : ShellHandlerBase() {
+    class ServiceShellHandlerBase(private val context: Context, private val runnableNode: RunnableNode, private val notificationID: Int, private val finishedIntent: Intent) : ShellHandlerBase() {
         private var notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        private val notificationTitle = configItemBase.title
+        private val notificationTitle = runnableNode.title
         private var notificationMessageRows = ArrayList<String>()
         private var notificationMShortMsg = ""
         private var progressCurrent = 0
@@ -51,8 +51,8 @@ class ScriptTaskThread(private var process: Process) : Thread() {
             expandView.setTextViewText(R.id.kr_task_log, notificationMessageRows.joinToString("", if (someIgnored) "……\n" else "").trim())
             expandView.setProgressBar(R.id.kr_task_progress, progressTotal, progressCurrent, progressTotal < 0)
             expandView.setViewVisibility(R.id.kr_task_progress, if (progressTotal == progressCurrent) View.GONE else View.VISIBLE)
-            expandView.setViewVisibility(R.id.kr_task_stop, if ((forceStop == null && !configItemBase.interruptable) || isFinished) View.GONE else View.VISIBLE)
-            if (configItemBase.interruptable && forceStop != null && !isFinished) {
+            expandView.setViewVisibility(R.id.kr_task_stop, if ((forceStop == null && !runnableNode.interruptable) || isFinished) View.GONE else View.VISIBLE)
+            if (runnableNode.interruptable && forceStop != null && !isFinished) {
                 expandView.setOnClickPendingIntent(R.id.kr_task_stop, stopIntent)
             }
 
@@ -150,7 +150,7 @@ class ScriptTaskThread(private var process: Process) : Thread() {
         private val ACTION_NAME = ".KrScriptTaskFinished"
         private var notificationCounter = 34050
 
-        fun startTask(context: Context, script: String, params: HashMap<String, String>?, configItemBase: ConfigItemBase, onExit: Runnable, onDismiss: Runnable): BroadcastReceiver {
+        fun startTask(context: Context, script: String, params: HashMap<String, String>?, nodeInfo: RunnableNode, onExit: Runnable, onDismiss: Runnable): BroadcastReceiver {
             val applicationContext = context.applicationContext
             notificationCounter += 1
             val notificationID = notificationCounter
@@ -159,10 +159,10 @@ class ScriptTaskThread(private var process: Process) : Thread() {
                 putExtra("id", notificationID)
             }
 
-            val handler = ServiceShellHandlerBase(applicationContext, configItemBase, notificationCounter, finishedIntent)
+            val handler = ServiceShellHandlerBase(applicationContext, nodeInfo, notificationCounter, finishedIntent)
             val process = ShellExecutor().execute(
                     context,
-                    configItemBase.interruptable,
+                    nodeInfo.interruptable,
                     script,
                     {
                         context.sendBroadcast(finishedIntent)

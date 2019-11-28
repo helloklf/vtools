@@ -7,7 +7,7 @@ import android.widget.ImageButton
 import android.widget.SeekBar
 import android.widget.TextView
 import com.omarea.krscript.R
-import com.omarea.krscript.config.ActionParamInfo
+import com.omarea.krscript.model.ActionParamInfo
 
 class SeekBarRender(private var actionParamInfo: ActionParamInfo, private var context: Context) {
     fun render(): View {

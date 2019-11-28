@@ -11,7 +11,7 @@ import android.view.View
 import android.widget.*
 import com.omarea.common.ui.DialogHelper
 import com.omarea.krscript.R
-import com.omarea.krscript.config.ActionParamInfo
+import com.omarea.krscript.model.ActionParamInfo
 
 class ParamsColorPicker(private val actionParamInfo: ActionParamInfo, private val context: Context) {
     fun render(): View {

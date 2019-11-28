@@ -7,6 +7,7 @@ import android.net.Uri
 import android.text.Layout
 import android.text.SpannableString
 import android.text.Spanned
+import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.*
 import android.view.View
@@ -15,12 +16,12 @@ import android.widget.Toast
 import com.omarea.common.ui.DialogHelper
 import com.omarea.krscript.R
 import com.omarea.krscript.executor.ScriptEnvironmen
-import com.omarea.krscript.model.TextInfo
+import com.omarea.krscript.model.TextNode
 
 
 class ListItemText(private val context: Context,
                    layoutId: Int,
-                   config: TextInfo = TextInfo()) : ListItemView(context, layoutId, config) {
+                   config: TextNode = TextNode()) : ListItemView(context, layoutId, config) {
 
     private val rowsView = layout.findViewById<TextView?>(R.id.kr_rows)
 
@@ -37,6 +38,72 @@ class ListItemText(private val context: Context,
                 val text = row.text
                 val length = text.length
                 val spannableString = SpannableString(text)
+
+
+                if (row.underline) {
+                    spannableString.setSpan(UnderlineSpan(), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
+
+                if (row.link.isNotEmpty()) {
+                    spannableString.setSpan(object : ClickableSpan() {
+                        override fun onClick(widget: View) {
+                            if (row.link.isNotEmpty()) {
+                                try {
+                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(row.link))
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    context.startActivity(intent)
+                                } catch (ex: Exception) {
+                                    Toast.makeText(context, context.getString(R.string.kr_slice_activity_fail), Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        }
+
+                        override fun updateDrawState(ds: TextPaint) {
+                            ds.color = if (row.color != 1) ds.linkColor else row.color
+                            ds.isUnderlineText = row.underline
+                        }
+                    }, 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
+
+                if (row.activity.isNotEmpty()) {
+                    spannableString.setSpan(object : ClickableSpan() {
+                        override fun onClick(widget: View) {
+                            try {
+                                val intent = if (row.activity.contains("/")) (Intent(Intent.ACTION_VIEW).apply {
+                                    val info = row.activity.split("/")
+                                    val packageName = info.first()
+                                    val className = info.last()
+                                    setClassName(packageName, if (className.startsWith(".")) (packageName + className) else className)
+                                }) else Intent(row.activity)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                context.startActivity(intent)
+                            } catch (ex: Exception) {
+                                Toast.makeText(context, context.getString(R.string.kr_slice_activity_fail), Toast.LENGTH_SHORT).show()
+                            }
+                        }
+
+                        override fun updateDrawState(ds: TextPaint) {
+                            ds.color = if (row.color != 1) ds.linkColor else row.color
+                            ds.isUnderlineText = row.underline
+                        }
+                    }, 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
+
+                if (row.onClickScript.isNotEmpty()) {
+                    spannableString.setSpan(object : ClickableSpan() {
+                        override fun onClick(widget: View) {
+                            val result = ScriptEnvironmen.executeResultRoot(context, row.onClickScript)
+                            if (result.trim().isNotEmpty()) {
+                                DialogHelper.helpInfo(context, context.getString(R.string.kr_slice_script_result), result)
+                            }
+                        }
+
+                        override fun updateDrawState(ds: TextPaint) {
+                            ds.color = if (row.color != 1) ds.linkColor else row.color
+                            ds.isUnderlineText = row.underline
+                        }
+                    }, 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                }
 
                 if (row.color != -1) {
                     spannableString.setSpan(ForegroundColorSpan(row.color), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -59,54 +126,6 @@ class ListItemText(private val context: Context,
                 }
 
                 spannableString.setSpan(AlignmentSpan.Standard(row.align), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-
-                if (row.underline) {
-                    spannableString.setSpan(UnderlineSpan(), 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                }
-
-                if (row.link.isNotEmpty()) {
-                    spannableString.setSpan(object : ClickableSpan() {
-                        override fun onClick(widget: View) {
-                            if (row.link.isNotEmpty()) {
-                                try {
-                                    val uri = Uri.parse(row.link)
-                                    val intent = Intent(Intent.ACTION_VIEW, uri)
-                                    context.startActivity(intent)
-                                } catch (ex: Exception) {
-                                    Toast.makeText(context, context.getString(R.string.kr_slice_activity_fail), Toast.LENGTH_SHORT).show()
-                                }
-                            }
-                        }
-                    }, 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                }
-
-                if (row.activity.isNotEmpty()) {
-                    spannableString.setSpan(object : ClickableSpan() {
-                        override fun onClick(widget: View) {
-                            try {
-                                val intent = if (row.activity.contains("/")) (Intent(Intent.ACTION_VIEW).apply {
-                                    val info = row.activity.split("/")
-                                    val packageName = info.first()
-                                    val className = info.last()
-                                    setClassName(packageName, if (className.startsWith(".")) (packageName + className) else className)
-                                }) else Intent(row.activity)
-                                context.startActivity(intent)
-                            } catch (ex: Exception) {
-                                Toast.makeText(context, context.getString(R.string.kr_slice_activity_fail), Toast.LENGTH_SHORT).show()
-                            }
-                        }
-                    }, 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                }
-
-                if (row.onClickScript.isNotEmpty()) {
-                    spannableString.setSpan(object : ClickableSpan() {
-                        override fun onClick(widget: View) {
-                            val result = ScriptEnvironmen.executeResultRoot(context, row.onClickScript)
-                            DialogHelper.helpInfo(context, context.getString(R.string.kr_slice_script_result), result)
-                        }
-                    }, 0, length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-                }
 
                 rowsView.append(spannableString)
             }

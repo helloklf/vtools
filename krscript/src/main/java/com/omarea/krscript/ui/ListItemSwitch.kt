@@ -3,11 +3,10 @@ package com.omarea.krscript.ui
 import android.content.Context
 import android.widget.Switch
 import com.omarea.krscript.R
-import com.omarea.krscript.model.SwitchInfo
+import com.omarea.krscript.model.SwitchNode
 
-class ListItemSwitch(private val context: Context,
-                     private val layoutId: Int,
-                     private val config: SwitchInfo = SwitchInfo()) : ListItemView(context, layoutId, config) {
+class ListItemSwitch(context: Context,
+                     config: SwitchNode = SwitchNode()) : ListItemClickable(context, R.layout.kr_switch_list_item, config) {
     protected var switchView = layout.findViewById<Switch?>(R.id.kr_switch)
 
     var checked: Boolean
@@ -20,8 +19,5 @@ class ListItemSwitch(private val context: Context,
 
     init {
         checked = config.checked
-        this.layout.setOnClickListener {
-            this.mOnClickListener?.onClick(this)
-        }
     }
 }

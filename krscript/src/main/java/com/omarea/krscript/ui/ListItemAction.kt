@@ -4,11 +4,9 @@ import android.content.Context
 import android.view.View
 import android.widget.ImageView
 import com.omarea.krscript.R
-import com.omarea.krscript.model.ActionInfo
+import com.omarea.krscript.model.ActionNode
 
-class ListItemAction(context: Context,
-                     layoutId: Int,
-                     config: ActionInfo = ActionInfo()) : ListItemView(context, layoutId, config) {
+class ListItemAction(context: Context, config: ActionNode = ActionNode()) : ListItemClickable(context, R.layout.kr_action_list_item, config) {
     private val widgetView = layout.findViewById<ImageView?>(R.id.kr_widget)
 
     init {

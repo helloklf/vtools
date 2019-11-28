@@ -61,7 +61,7 @@ class Downloader(private var context: Context, private var activity: Activity? =
             addTaskHisotry(downloadId, taskAliasId, url);
             Toast.makeText(context, context.getString(R.string.kr_download_create_success), Toast.LENGTH_SHORT).show()
             // 注册下载完成事件监听
-            DownloadCompleteReceiver.autoRegister(context.applicationContext)
+            DownloaderReceiver.autoRegister(context.applicationContext)
             return downloadId
         } catch (ex: Exception) {
             DialogHelper.helpInfo(context, context.getString(R.string.kr_download_create_fail), "" + ex.message)

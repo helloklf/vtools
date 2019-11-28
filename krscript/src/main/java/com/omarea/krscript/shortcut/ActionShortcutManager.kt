@@ -11,12 +11,12 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
 import android.os.Build
 import android.util.Log
-import com.omarea.krscript.model.ConfigItemBase
+import com.omarea.krscript.model.NodeInfoBase
 import java.util.*
 
 class ActionShortcutManager(private var context: Context) {
     @TargetApi(Build.VERSION_CODES.O)
-    public fun addShortcut(intent: Intent, drawable: Drawable, config: ConfigItemBase): Boolean {
+    public fun addShortcut(intent: Intent, drawable: Drawable, config: NodeInfoBase): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             return createShortcutOreo(intent, drawable, config)
         } else {
@@ -24,7 +24,7 @@ class ActionShortcutManager(private var context: Context) {
         }
     }
 
-    public fun addShortcutNougat(intent: Intent, drawable: Drawable, config: ConfigItemBase): Boolean {
+    public fun addShortcutNougat(intent: Intent, drawable: Drawable, config: NodeInfoBase): Boolean {
         try {
             val shortcut = Intent("com.android.launcher.action.INSTALL_SHORTCUT")
             val id = "addin_" + config.index
@@ -51,7 +51,7 @@ class ActionShortcutManager(private var context: Context) {
     }
 
     @TargetApi(Build.VERSION_CODES.O)
-    public fun createShortcutOreo(intent: Intent, drawable: Drawable, config: ConfigItemBase): Boolean {
+    public fun createShortcutOreo(intent: Intent, drawable: Drawable, config: NodeInfoBase): Boolean {
         try {
             val shortcutManager = context.getSystemService(Context.SHORTCUT_SERVICE) as ShortcutManager
 
