@@ -6,7 +6,7 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
 import com.omarea.common.ui.ProgressBarDialog
-import com.omarea.krscript.model.PageInfo
+import com.omarea.krscript.model.PageNode
 import com.omarea.vtools.activities.ActionPage
 import com.omarea.vtools.activities.ActivityAddinOnline
 
@@ -34,7 +34,7 @@ class OpenPageHelper(private var activity: Activity) {
         }
     }
 
-    fun openPage(pageInfo: PageInfo) {
+    fun openPage(pageInfo: PageNode) {
         try {
             var intent: Intent? = null
             if (!pageInfo.onlineHtmlPage.isEmpty()) {

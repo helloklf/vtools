@@ -25,9 +25,10 @@ import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.common.ui.ThemeMode
 import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.executor.ScriptEnvironmen
-import com.omarea.krscript.model.ConfigItemBase
+import com.omarea.krscript.model.ClickableNode
 import com.omarea.krscript.model.KrScriptActionHandler
-import com.omarea.krscript.model.PageInfo
+import com.omarea.krscript.model.PageNode
+import com.omarea.krscript.model.RunnableNode
 import com.omarea.krscript.ui.ActionListFragment
 import com.omarea.krscript.ui.FileChooserRender
 import com.omarea.shell_utils.PlatformUtils
@@ -172,23 +173,25 @@ class FragmentAddin : Fragment() {
 
     private fun getKrScriptActionHandler(): KrScriptActionHandler {
         return object : KrScriptActionHandler {
-            override fun onActionCompleted(configItemBase: ConfigItemBase) {
-                loadPageConfig()
+            override fun onActionCompleted(runnableNode: RunnableNode) {
+                if (runnableNode.reloadPage) {
+                    loadPageConfig()
+                }
             }
 
-            override fun addToFavorites(configItemBase: ConfigItemBase, addToFavoritesHandler: KrScriptActionHandler.AddToFavoritesHandler) {
+            override fun addToFavorites(clickableNode: ClickableNode, addToFavoritesHandler: KrScriptActionHandler.AddToFavoritesHandler) {
                 val intent = Intent()
 
                 intent.component = ComponentName(activity!!.applicationContext, ActionPage::class.java)
-                intent.putExtra("title", "" + configItemBase.title)
+                intent.putExtra("title", "" + clickableNode.title)
                 intent.putExtra("config", pageConfig)
-                intent.putExtra("autoRunItemId", configItemBase.key)
+                intent.putExtra("autoRunItemId", clickableNode.key)
 
-                addToFavoritesHandler.onAddToFavorites(configItemBase, intent)
+                addToFavoritesHandler.onAddToFavorites(clickableNode, intent)
             }
 
-            override fun onSubPageClick(pageInfo: PageInfo) {
-                _openPage(pageInfo)
+            override fun onSubPageClick(pageNode: PageNode) {
+                _openPage(pageNode)
             }
 
             override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
@@ -197,7 +200,7 @@ class FragmentAddin : Fragment() {
         }
     }
 
-    fun _openPage(pageInfo: PageInfo) {
+    fun _openPage(pageInfo: PageNode) {
         OpenPageHelper(this.activity!!).openPage(pageInfo)
     }
 

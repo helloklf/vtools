@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.store.AppConfigStore
@@ -75,28 +76,20 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
 
     private fun startTimer() {
         if (timer == null && screenOn) {
-            var ticks = 0
-            timer = Timer(true)
-            if (batteryMonitro) {
-                timer!!.scheduleAtFixedRate(object : TimerTask() {
+            timer = Timer(true).apply {
+                val interval = if (batteryMonitro) 2 else 10
+                scheduleAtFixedRate(object : TimerTask() {
+                    private var ticks = 0
                     override fun run() {
-                        notifyHelper.notify()
-                        ticks %= 30
+                        updateModeNofity() // 耗电统计 定时更新通知显示
+
+                        ticks += interval
+                        ticks %= 60
                         if (ticks == 0) {
                             SceneMode.clearFreezeAppTimeLimit()
                         }
                     }
-                }, 0, 2000L)
-            } else {
-                timer!!.scheduleAtFixedRate(object : TimerTask() {
-                    override fun run() {
-                        notifyHelper.notify()
-                        ticks %= 6
-                        if (ticks == 0) {
-                            SceneMode.clearFreezeAppTimeLimit()
-                        }
-                    }
-                }, 0, 10000L)
+                }, 0, interval * 1000L)
             }
         }
     }
@@ -140,7 +133,7 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
         if (!screenOn) {
             if (dyamicCore && !screenOn) {
                 if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_LOCK_MODE, false)) {
-                    updateModeNofity()
+                    updateModeNofity() //
                     toggleConfig(POWERSAVE)
                 }
             }
@@ -161,7 +154,7 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
 
         screenOn = true
         startTimer() // 屏幕开启后开始定时更新通知
-        notifyHelper.notify()
+        updateModeNofity() // 屏幕点亮后更新通知
 
         // if (dyamicCore && spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_LOCK_MODE, false) && !this.lastModePackage.isNullOrEmpty()) {
         if (dyamicCore && !this.lastModePackage.isNullOrEmpty()) {
@@ -194,7 +187,7 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
             else -> {
                 toggleConfig(mode)
                 lastModePackage = packageName
-                updateModeNofity()
+                updateModeNofity() // 模式切换后更新通知
             }
         }
     }
@@ -311,7 +304,7 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
     init {
         screenState = ScreenState(context)
 
-        notifyHelper.notify()
+        updateModeNofity() // 服务启动后 更新通知
 
         // 监听锁屏状态变化
         reciverLock.autoRegister()
