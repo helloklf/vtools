@@ -330,10 +330,10 @@ class PageConfigReader {
         for (i in 0 until parser.attributeCount) {
             val attrName = parser.getAttributeName(i)
             val attrValue = parser.getAttributeValue(i)
-            if (attrName == "title") {
-                groupInfo.separator = attrValue
-            } else if (attrName == "support" || attrName == "visible") {
-                groupInfo.supported = executeResultRoot(context, attrValue) == "1"
+            when (attrName) {
+                "key", "index", "id" -> groupInfo.key = attrValue.trim()
+                "title" -> groupInfo.separator = attrValue
+                "support", "visible" -> groupInfo.supported = executeResultRoot(context, attrValue) == "1"
             }
         }
         return groupInfo
@@ -346,9 +346,14 @@ class PageConfigReader {
             for (i in 0 until parser.attributeCount) {
                 val attrValue = parser.getAttributeValue(i)
                 when (parser.getAttributeName(i)) {
-                    "key", "index", "id" -> clickableNode.key = attrValue
                     "icon", "icon-path" -> runnableNode.iconPath = attrValue.trim()
+                    "allow-shortcut" -> runnableNode.allowShortcut = attrValue.equals("allow") || attrValue.equals("allow-shortcut") || attrValue.equals("true") || attrValue.equals("1")
                 }
+            }
+        }
+        if (runnableNode != null) {
+            if (runnableNode.key.isNotEmpty() && runnableNode.key.startsWith("@") && runnableNode.allowShortcut == null) {
+                runnableNode.allowShortcut = false
             }
         }
         return runnableNode
@@ -366,9 +371,16 @@ class PageConfigReader {
                     "auto-finish" -> clickableNode.autoFinish = (attrValue == "auto-finish" || attrValue == "true" || attrValue == "1")
                     "interruptible", "interruptable" -> clickableNode.interruptable = (
                             attrValue.isEmpty() || attrValue == "interruptable" || attrValue == "interruptable" || attrValue == "true" || attrValue == "1")
-                    "reload", "reload-page" -> {
+                    "reload-page" -> {
                         if (attrValue == "reload-page" || attrValue == "reload" || attrValue == "page" || attrValue == "true" || attrValue == "1") {
                             clickableNode.reloadPage = true
+                        }
+                    }
+                    "reload" -> {
+                        if (attrValue == "reload-page" || attrValue == "reload" || attrValue == "page" || attrValue == "true" || attrValue == "1") {
+                            clickableNode.reloadPage = true
+                        } else if (attrValue.isNotEmpty()) {
+                            clickableNode.updateBlocks = attrValue.split(",").map { it.trim() }.dropLastWhile { it.isEmpty() }.toTypedArray()
                         }
                     }
                     "bg-task", "background-task", "async-task" -> {
@@ -387,6 +399,7 @@ class PageConfigReader {
         for (i in 0 until parser.attributeCount) {
             val attrValue = parser.getAttributeValue(i)
             when (parser.getAttributeName(i)) {
+                "key", "index", "id" -> nodeInfoBase.key = attrValue.trim()
                 "title" -> nodeInfoBase.title = attrValue
                 "desc" -> nodeInfoBase.desc = attrValue
                 "support", "visible" -> {

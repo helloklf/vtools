@@ -13,11 +13,6 @@ open class ListItemClickable(context: Context,
 
     protected var shortcutIconView = layout.findViewById<View?>(R.id.kr_shortcut_icon)
 
-    val key: String
-        get() {
-            return config.key
-        }
-
     fun setOnClickListener(onClickListener: OnClickListener): ListItemClickable {
         this.mOnClickListener = onClickListener
 
@@ -42,17 +37,14 @@ open class ListItemClickable(context: Context,
         this.layout.setOnClickListener {
             this.mOnClickListener?.onClick(this)
         }
-        if (!this.key.isEmpty()) {
+        if (this.key.isNotEmpty() && config.allowShortcut != false) {
             this.layout.setOnLongClickListener {
                 this.mOnLongClickListener?.onLongClick(this)
                 true
             }
-        }
-
-        if (this.key.isEmpty()) {
-            shortcutIconView?.visibility = View.GONE
-        } else {
             shortcutIconView?.visibility = View.VISIBLE
+        } else {
+            shortcutIconView?.visibility = View.GONE
         }
     }
 

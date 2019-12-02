@@ -10,6 +10,7 @@ import android.os.UserManager;
 import com.omarea.common.shared.FileWrite;
 import com.omarea.common.shared.MagiskExtend;
 import com.omarea.common.shell.KeepShellPublic;
+import com.omarea.krscript.FileOwner;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -220,18 +221,6 @@ public class ScriptEnvironmen {
         return value;
     }*/
 
-    public static int getUserId2(Context context) {
-        UserManager um = (UserManager) context.getSystemService(Context.USER_SERVICE);
-        android.os.UserHandle userHandle = android.os.Process.myUserHandle();
-
-        int value = 0;
-        try {
-            value = (int) um.getSerialNumberForUser(userHandle);
-        } catch (Exception ignored) {
-        }
-        return value;
-    }
-
     /**
      * 获取框架的环境变量
      *
@@ -252,12 +241,13 @@ public class ScriptEnvironmen {
         // params.put("EXECUTOR_PATH", environmentPath);
         params.put("TEMP_DIR", context.getCacheDir().getAbsolutePath());
 
-        int androidUid = getUserId2(context);
+        FileOwner fileOwner = new FileOwner(context);
+        int androidUid = fileOwner.getUserId();
         params.put("ANDROID_UID", "" + androidUid);
 
         try {
             // @ https://blog.csdn.net/Gaugamela/article/details/78689580
-            params.put("APP_USER_ID", "u" + androidUid + "_a" + ((android.os.Process.myUid() % 100000) - Process.FIRST_APPLICATION_UID)); // 100000 => UserHandle.PER_USER_RANGE
+            params.put("APP_USER_ID", fileOwner.getFileOwner());
             // params.put("APP_UID", "" + android.os.Process.myPid());
             // params.put("APP_PID", "" + android.os.Process.myPid());
             // params.put("APP_TID", "" + android.os.Process.myTid());

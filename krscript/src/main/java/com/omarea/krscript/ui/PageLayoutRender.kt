@@ -12,7 +12,7 @@ import com.omarea.krscript.model.*
 class PageLayoutRender(private val mContext: Context,
                        private val itemConfigList: ArrayList<NodeInfoBase>,
                        private val clickListener: OnItemClickListener,
-                       private val parent: ListItemGroup) {
+                       private val rootGroup: ListItemGroup) {
 
     interface OnItemClickListener {
         fun onPageClick(item: PageNode, onCompleted: Runnable)
@@ -41,22 +41,10 @@ class PageLayoutRender(private val mContext: Context,
         val handler = Handler(Looper.getMainLooper())
         return Runnable {
             handler.post {
-                if (item.descSh.isNotEmpty()) {
-                    item.desc = ScriptEnvironmen.executeResultRoot(mContext, item.descSh)
-                    node.desc = item.desc
-                }
+                node.updateViewByShell()
 
-                if (item.summarySh.isNotEmpty()) {
-                    item.summary = ScriptEnvironmen.executeResultRoot(mContext, item.summarySh)
-                    node.summary = item.summary
-                }
-
-                if (item is SwitchNode) {
-                    if (item.getState != null && !item.getState.isEmpty()) {
-                        val shellResult = ScriptEnvironmen.executeResultRoot(mContext, item.getState)
-                        item.checked = shellResult == "1" || shellResult.toLowerCase() == "true"
-                    }
-                    (node as ListItemSwitch).checked = item.checked
+                if (item is RunnableNode && item.updateBlocks != null) {
+                    rootGroup.triggerUpdateByKey(item.updateBlocks!!)
                 }
             }
         }
@@ -161,6 +149,6 @@ class PageLayoutRender(private val mContext: Context,
     }
 
     init {
-        mapConfigList(parent, itemConfigList)
+        mapConfigList(rootGroup, itemConfigList)
     }
 }

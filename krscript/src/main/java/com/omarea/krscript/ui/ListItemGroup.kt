@@ -45,6 +45,32 @@ class ListItemGroup(context: Context,
         return false
     }
 
+    fun triggerUpdateByKey(keys: Array<String>) {
+        for (key in keys) {
+            if (key.equals(this.key)) {
+                triggerUpdate()
+            } else {
+                for (child in this.children) {
+                    if (child is ListItemGroup) {
+                        child.triggerUpdateByKey(keys)
+                    } else if (child.key.equals(key)) {
+                        child.updateViewByShell()
+                    }
+                }
+            }
+        }
+    }
+
+    fun triggerUpdate() {
+        for (child in this.children) {
+            if (child is ListItemGroup) {
+                child.triggerUpdate()
+            } else {
+                child.updateViewByShell()
+            }
+        }
+    }
+
     init {
         title = config.separator
     }

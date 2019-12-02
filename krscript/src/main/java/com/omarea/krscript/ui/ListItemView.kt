@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import com.omarea.krscript.R
+import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.NodeInfoBase
 
 open class ListItemView(private val context: Context,
@@ -15,6 +16,12 @@ open class ListItemView(private val context: Context,
     protected var descView = layout.findViewById<TextView?>(R.id.kr_desc)
     protected var summaryView = layout.findViewById<TextView?>(R.id.kr_summary)
     protected var titleView = layout.findViewById<TextView?>(R.id.kr_title)
+
+
+    val key: String
+        get() {
+            return config.key
+        }
 
     var title: String
         get() {
@@ -59,6 +66,18 @@ open class ListItemView(private val context: Context,
         get() {
             return config.index
         }
+
+    open fun updateViewByShell() {
+        if (config.descSh.isNotEmpty()) {
+            config.desc = ScriptEnvironmen.executeResultRoot(context, config.descSh)
+            desc = config.desc
+        }
+
+        if (config.summarySh.isNotEmpty()) {
+            config.summary = ScriptEnvironmen.executeResultRoot(context, config.summarySh)
+            summary = config.summary
+        }
+    }
 
     fun getView(): View {
         return layout

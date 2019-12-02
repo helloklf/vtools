@@ -4,6 +4,7 @@ import android.content.Context
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.RootFile
+import com.omarea.krscript.FileOwner
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
@@ -86,8 +87,14 @@ class PathAnalysis(private var context: Context, private var parentDir: String =
                 relativePath != null && RootFile.fileExists(relativePath) -> relativePath
                 else -> null
             }.run {
-                val cachePath = FileWrite.getPrivateFilePath(context, "kr-script/outside_page.xml")
-                KeepShellPublic.doCmdSync("cp -f \"$this\" \"$cachePath\"")
+                val dir = FileWrite.getPrivateFilePath(context, "kr-script")
+                val cachePath = FileWrite.getPrivateFilePath(context, "kr-script/outside_file.cache")
+                val fileOwner = FileOwner(context).fileOwner
+                KeepShellPublic.doCmdSync(
+                        "mkdir -p \"$dir\"\n" +
+                        "cp -f \"$this\" \"$cachePath\"\n" +
+                        "chmod 777 \"$cachePath\"\n" +
+                        "chown $fileOwner:$fileOwner \"$cachePath\"\n")
                 File(cachePath).run {
                     if (exists() && canRead()) {
                         return inputStream()
