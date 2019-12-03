@@ -66,7 +66,7 @@
             android:layout_marginStart="16dp"
             android:orientation="horizontal">
 
-            <ImageButton
+            <ImageView
                 android:layout_width="28dp"
                 android:layout_height="28dp"
                 android:background="@android:color/transparent"
@@ -94,7 +94,7 @@
             android:layout_marginEnd="16dp"
             android:orientation="horizontal">
 
-            <ImageButton
+            <ImageView
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:background="@android:color/transparent"

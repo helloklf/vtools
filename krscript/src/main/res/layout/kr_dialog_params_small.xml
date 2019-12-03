@@ -28,14 +28,16 @@
     <LinearLayout
         android:id="@+id/kr_params_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:background="@drawable/krscript_params_view"
         android:orientation="vertical">
 
         <FrameLayout
             android:id="@+id/kr_params_center"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:layout_gravity="center_vertical"
             android:minHeight="100dp"
             android:padding="16dp" />
@@ -58,7 +60,7 @@
                 android:layout_marginStart="12dp"
                 android:orientation="horizontal">
 
-                <ImageButton
+                <ImageView
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:background="@android:color/transparent"
@@ -86,7 +88,7 @@
                 android:layout_marginEnd="10dp"
                 android:orientation="horizontal">
 
-                <ImageButton
+                <ImageView
                     android:layout_width="32dp"
                     android:layout_height="32dp"
                     android:background="@android:color/transparent"
