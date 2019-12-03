@@ -1,9 +1,15 @@
 #!/system/bin/sh
 
-path="${MAGISK_PATH}/system/vendor/etc/thermal-engine.current.ini"
-if [[ -f "${MAGISK_PATH}/system/vendor/etc/thermal-engine.current.ini" ]]
-then
-    cat $path
+dir="${MAGISK_PATH}/system/vendor/etc"
+
+if [[ -f "$dir/thermal-engine.current.ini" ]]; then
+    # 旧版
+    mode=`cat "$dir/thermal-engine.current.ini"`
+elif [[ -f "$dir/thermal.current.ini" ]]; then
+    # 新版
+    mode=`cat "$dir/thermal.current.ini"`
 else
-    echo ''
+    mode=''
 fi
+
+echo $mode

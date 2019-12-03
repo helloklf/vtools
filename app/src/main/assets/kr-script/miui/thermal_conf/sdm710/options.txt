@@ -1,0 +1,3 @@
+default|系统默认(default)
+extreme|极致性能(extreme)
+danger|丧心病狂(danger)

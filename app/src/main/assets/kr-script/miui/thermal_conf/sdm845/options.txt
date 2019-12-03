@@ -1,0 +1,4 @@
+default|系统默认(default)
+performance|提高阈值(performance)
+extreme|极致性能(extreme)
+danger|丧心病狂(danger)

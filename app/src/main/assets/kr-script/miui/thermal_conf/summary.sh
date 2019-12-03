@@ -1,9 +1,13 @@
 #!/system/bin/sh
 
-path="${MAGISK_PATH}/system/vendor/etc/thermal-engine.current.ini"
-if [[ -f "${MAGISK_PATH}/system/vendor/etc/thermal-engine.current.ini" ]]
-then
-    mode=`cat $path`
+dir="${MAGISK_PATH}/system/vendor/etc"
+
+if [[ -f "$dir/thermal-engine.current.ini" ]]; then
+    # 旧版
+    mode=`cat "$dir/thermal-engine.current.ini"`
+elif [[ -f "$dir/thermal.current.ini" ]]; then
+    # 新版
+    mode=`cat "$dir/thermal.current.ini"`
 else
     mode=''
 fi
@@ -11,19 +15,25 @@ fi
 modename=""
 case "$mode" in
     "default")
-        modename="系统默认 (凉)"
+        modename="系统默认 (default)"
      ;;
     "high")
-        modename="提高阈值 (温)"
+        modename="提高阈值 (旧版配置)"
     ;;
     "high2")
-        modename="稳定性能 (热)"
+        modename="稳定性能 (旧版配置)"
     ;;
     "nolimits")
-        modename="极致性能 (烫)"
+        modename="极致性能 (旧版配置)"
+    ;;
+    "performance")
+        modename="提高阈值 (performance)"
+    ;;
+    "extreme")
+        modename="极致性能 (extreme)"
     ;;
     "danger")
-        modename="疯狂模式 (炸)"
+        modename="丧心病狂 (danger)"
     ;;
     *)
         modename="未替换"

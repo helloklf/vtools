@@ -1,163 +1,105 @@
 #!/system/bin/sh
 
-if [[ -n "$platform" ]]
-then
+if [[ -n "$platform" ]]; then
     echo "处理器平台：$platform"
 else
     echo '暂不支持该处理器' 1>&2
     exit 3
 fi
 
-if [[ ! -n "$MAGISK_PATH" ]]
-then
+if [[ ! -n "$MAGISK_PATH" ]]; then
     echo 'Scene 附加模块未启用，请先前往Magisk助手初始化模块' 1>&2
     exit 4
 fi
 
-dir="${MAGISK_PATH}/system/vendor/etc"
+install_dir="${MAGISK_PATH}/system/vendor/etc"
+mode_state_save="$install_dir/thermal.current.ini"
+resource_dir="./kr-script/miui/thermal_conf/$platform/$mode"
 
-current_save="$dir/thermal-engine.current.ini"
-config="./kr-script/miui/thermal_conf/${platform}-${mode}.conf"
+thermal_files=(
+)
 
-function replace_file() {
-    if [[ "$platform" = "msmnile" ]]
-    then
-        cp "$1" "$dir/thermal$2.conf"
-        chmod 755 "$dir/thermal$2.conf"
-    else
-        cp "$1" "$dir/thermal-engine-${platform}$2.conf"
-        chmod 755 "$dir/thermal-engine-${platform}$2.conf"
-    fi
-}
-function remove_file() {
-    if [[ "$platform" = "msmnile" ]]
-    then
-        if [[ -f "$dir/thermal$1.conf" ]]
-        then
-            rm -f "$dir/thermal$1.conf"
-        fi
-    else
-        rm -f "$dir/thermal-engine-${platform}$1.conf"
-    fi
-}
+# 覆盖 thermal_files
+source ./kr-script/miui/thermal_conf/$platform/thermal_files.sh
 
-function lock_dir() {
-    local dir="$1"
-    ulock_dir "$dir"
-    rm -rf "$dir" 2> /dev/null
-    mkdir -p "$dir" 2> /dev/null
-    mkdir -p "$dir/config" 2> /dev/null
-    chattr +i "$dir/config" 2> /dev/null
-}
 
 function ulock_dir() {
     local dir="$1"
-    chattr -i "$dir/config" 2> /dev/null
-    chattr -i "$dir" 2> /dev/null
+    chattr -R -i "$dir" 2> /dev/null
     rm -rf "$dir" 2> /dev/null
 }
 
-function replace_configs()
-{
-    if [[ -f "$config" ]]
-    then
-        echo '## 开始执行'
-    echo ""
-    else
-        echo '所需的资源文件已丢失！！！' 1>&2
-        exit 2
-    fi
-
-    mkdir -p "$MAGISK_PATH/system/vendor/etc"
-
-    echo '注意：如果你曾使用其它方式删除过修改了温控，此功能可能不会有效！！！'
+function uninstall_thermal() {
+    echo '从' $install_dir 目录
+    echo '卸载已安装的自定义配置……'
     echo ''
-
-    replace_file "$config" ""
-    replace_file "$config" "-normal"
-    replace_file "$config" "-camera"
-
-    if [[ "$platform" = "msmnile" ]]
-    then
-        if [[ "$mode" = "danger" ]]
-        then
-            echo "# empty\n" > "$dir/thermal-chg-only.conf"
-        else
-            remove_file "-chg-only"
-        fi
-        replace_file "$config" "-devices"
-        replace_file "$config" "-engine"
-    fi
-
-    # replace_file "$config" "-class0"
-    # replace_file "$config" "-map"
-    replace_file "$config" "-phone"
-    replace_file "$config" "-pubgmhd"
-    replace_file "$config" "-sgame"
-    replace_file "$config" "-tgame"
-    replace_file "$config" "-high"
-    replace_file "$config" "-extreme"
-    replace_file "$config" "-nolimits"
-
-    lock_dir /data/thermal
-    lock_dir /data/vendor/thermal
-
-    echo '## 重启手机后生效'
-}
-
-function remove_configs()
-{
-    echo '本操作只能还原通过“本功能”对温控的修改！'
-
-    remove_file ""
-    remove_file "-normal"
-    remove_file "-camera"
-
-    if [[ "$platform" = "msmnile" ]]
-    then
-        remove_file "-chg-only"
-        remove_file "-devices"
-        remove_file "-engine"
-    fi
-
-    remove_file "-class0"
-    remove_file "-high"
-    remove_file "-map"
-    remove_file "-phone"
-    remove_file "-pubgmhd"
-    remove_file "-sgame"
-    remove_file "-tgame"
-    remove_file "-extreme"
-    remove_file "-nolimits"
 
     ulock_dir /data/thermal
     ulock_dir /data/vendor/thermal
 
-    rm -rf "$current_save"
+    for thermal in ${thermal_files[@]}; do
+        if [[ -f $install_dir/$thermal ]]; then
+            echo '移除' $thermal
+            rm -f $install_dir/$thermal
+        fi
+    done
+    rm -f "$mode_state_save" 2> /dev/null
 
-    echo '## 重启手机后生效'
+    # 以前的版本用于存储当前配置模式状态的文件
+    rm -f "$install_dir/thermal-engine.current.ini" 2> /dev/null
+
+    echo ''
 }
+
+function install_thermal() {
+    uninstall_thermal
+
+    echo '检测模块间是否存在冲突……'
+    echo ''
+
+    # 检查其它模块是否更改温控
+    local magisk_dir=`echo $MAGISK_PATH | awk -F '/[^/]*$' '{print $1}'`
+    local modules=`ls $magisk_dir`
+    for module in ${modules[@]}; do
+        if [[ ! "$magisk_dir/$module" = "$MAGISK_PATH" ]] && [[ -d "$magisk_dir/$module" ]] && [[ ! -f "$magisk_dir/$module/disable" ]]; then
+            local result=`find "$magisk_dir/$module" -name "*thermal*" -type f`
+            if [[ -n "$result" ]]; then
+                echo '发现其它修改温控的模块：' 1>&2
+                echo "$result" 1>&2
+                echo '请删除以上位置的文件，或禁用相关模块！' 1>&2
+                echo '否则，Scene无法正常替换系统温控！' 1>&2
+                exit 5
+            fi
+        fi
+    done
+
+    echo ''
+    echo '#################################'
+    cat $resource_dir/info.txt
+    echo ''
+    echo '#################################'
+    echo ''
+    echo ''
+
+    for thermal in ${thermal_files[@]}; do
+        if [[ -f "$resource_dir/$thermal" ]]; then
+            echo '复制' $thermal
+            cp "$resource_dir/$thermal" "$install_dir/$thermal"
+        elif [[ -f "$resource_dir/general.conf" ]]; then
+            echo '复制' $thermal
+            cp "$resource_dir/general.conf" "$install_dir/$thermal"
+        fi
+    done
+    echo "$mode" > "$mode_state_save"
+}
+
 
 case "$mode" in
     "default")
-        remove_configs
-        exit 0
+        uninstall_thermal
      ;;
-    "high")
-        echo '此模式下，降频温度阈值稍微提高，提高持续性能'
-        echo ''
-    ;;
-    "high2")
-        echo '此模式下，降频温度阈值大幅提高，性能更稳定'
-        echo ''
-    ;;
-    "nolimits")
-        echo '在此模式下，性能被最大化释放，保留了充电温度控制'
-        echo ''
-    ;;
-    "danger")
-        echo '此模式下，充电速度、SOC性能均不会被限制' 1>&2
-        echo '留意发热，谨防爆炸！！！' 1>&2
+    "performance" | "extreme" | "danger")
+        install_thermal
     ;;
     *)
         echo '错误，选择的模式无效' 1>&2
@@ -165,5 +107,6 @@ case "$mode" in
     ;;
 esac
 
-replace_configs "$mode"
-echo "$mode" > "$current_save"
+echo ''
+echo '请重启手机，使配置生效！' 1>&2
+echo ''

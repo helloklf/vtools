@@ -13,5 +13,5 @@ then
     echo 'msmnile|骁龙855'
 elif [[ "$platform" = "msm8998" ]]
 then
-    echo '8998|骁龙835'
+    echo 'msm8998|骁龙835'
 fi
