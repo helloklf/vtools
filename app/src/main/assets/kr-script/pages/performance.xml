@@ -134,7 +134,7 @@
     <group title="其它">
         <action
             id="performance_mem_clear"
-            icon="file:///android_asset/kr-script/icons/shortcut_mem_clear.png"
+            logo="file:///android_asset/kr-script/icons/shortcut_mem_clear.png"
             auto-off="true"
             auto-finish="true">
             <title>清理RAM</title>

@@ -347,6 +347,7 @@ class PageConfigReader {
                 val attrValue = parser.getAttributeValue(i)
                 when (parser.getAttributeName(i)) {
                     "icon", "icon-path" -> runnableNode.iconPath = attrValue.trim()
+                    "logo", "logo-path" -> runnableNode.logoPath = attrValue.trim()
                     "allow-shortcut" -> runnableNode.allowShortcut = attrValue.equals("allow") || attrValue.equals("allow-shortcut") || attrValue.equals("true") || attrValue.equals("1")
                 }
             }
@@ -437,6 +438,8 @@ class PageConfigReader {
                 "load-ok", "load-success" -> page.loadSuccess = attrValue
                 "load-fail", "load-error" -> page.loadFail = attrValue
                 "config-sh" -> page.pageConfigSh = attrValue
+                "link", "href" -> page.link = attrValue
+                "activity", "a", "intent" -> page.activity = attrValue
             }
         }
         return page

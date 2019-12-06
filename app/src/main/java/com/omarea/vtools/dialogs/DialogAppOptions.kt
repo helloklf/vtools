@@ -333,9 +333,11 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                 Toast.makeText(context, "抱歉，数据备份还原功能暂不支持你的设备！", Toast.LENGTH_LONG).show()
                 return
             }
-            confirm("还原应用和数据", "还原所选的${apps.size}个应用和数据？（很不推荐使用数据还原功能，因为经常会有兼容性问题，可能导致还原的软件出现FC并出现异常耗电）", Runnable {
-                _restoreAll(apk, data)
-            })
+            confirm("还原应用和数据",
+                    "还原所选的${apps.size}个应用和数据？（很不推荐使用数据还原功能，因为经常会有兼容性问题，可能导致还原的软件出现FC并出现异常耗电）",
+                    Runnable {
+                        _restoreAll(apk, data)
+                    })
         } else {
             confirm("还原应用", "还原所选的${apps.size}个应用和数据？", Runnable {
                 _restoreAll(apk, data)

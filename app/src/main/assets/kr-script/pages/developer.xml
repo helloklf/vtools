@@ -16,15 +16,23 @@
             <getstate>. ./kr-script/developer/hide_errordialog_get.sh</getstate>
             <setstate>. ./kr-script/developer/hide_errordialog_set.sh</setstate>
         </switch>
+        <switch id="developer_anr">
+            <title>一律显示崩溃对话框</title>
+            <desc>在每次应用崩溃时显示对话框</desc>
+            <get>settings get secure show_first_crash_dialog_dev_option</get>
+            <set>settings put secure show_first_crash_dialog_dev_option $state</set>
+        </switch>
+        <switch id="developer_anr">
+            <title>显示后台应用未响应</title>
+            <desc>为后台应用程序显示“应用程序未响应（ANR）”对话框</desc>
+            <getstate>. ./kr-script/developer/anr_get.sh</getstate>
+            <setstate>. ./kr-script/developer/anr_set.sh</setstate>
+        </switch>
     </group>
 
-    <text>
-        <slices>
-            <slice activity="com.android.settings.APPLICATION_DEVELOPMENT_SETTINGS" size="15">开发者选项</slice>
-            <slice>  </slice>
-            <slice activity="com.android.settings/.RunningServices" size="15">运行中的服务</slice>
-            <slice>  </slice>
-            <slice activity="com.android.settings/.Settings$MemorySettingsActivity" size="15">内存使用情况</slice>
-        </slices>
-    </text>
+    <group title="其它入口">
+        <page activity="com.android.settings.APPLICATION_DEVELOPMENT_SETTINGS" title="开发者选项" />
+        <page activity="com.android.settings/.RunningServices" title="运行中的服务" />
+        <page activity="com.android.settings/.Settings$MemorySettingsActivity" title="内存使用情况" />
+    </group>
 </root>

@@ -3,6 +3,7 @@ package com.omarea.krscript.ui
 import android.app.AlertDialog
 import android.content.BroadcastReceiver
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
@@ -18,6 +19,7 @@ import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.common.ui.ThemeMode
 import com.omarea.krscript.R
 import com.omarea.krscript.ScriptTaskThread
+import com.omarea.krscript.TryOpenActivity
 import com.omarea.krscript.config.IconPathAnalysis
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.*
@@ -123,7 +125,19 @@ class ActionListFragment : Fragment(), PageLayoutRender.OnItemClickListener {
 
 
     override fun onPageClick(item: PageNode, onCompleted: Runnable) {
-        krScriptActionHandler?.onSubPageClick(item)
+        if (context != null && item.link.isNotEmpty()) {
+            try {
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(item.link))
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                context?.startActivity(intent)
+            } catch (ex: Exception) {
+                Toast.makeText(context, context?.getString(R.string.kr_slice_activity_fail), Toast.LENGTH_SHORT).show()
+            }
+        } else if (context != null && item.activity.isNotEmpty()) {
+            TryOpenActivity(context!!, item.activity).tryOpen()
+        } else {
+            krScriptActionHandler?.onSubPageClick(item)
+        }
     }
 
     // 长按 添加收藏

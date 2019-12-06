@@ -15,6 +15,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.omarea.common.ui.DialogHelper
 import com.omarea.krscript.R
+import com.omarea.krscript.TryOpenActivity
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.TextNode
 
@@ -68,18 +69,7 @@ class ListItemText(private val context: Context,
                 if (row.activity.isNotEmpty()) {
                     spannableString.setSpan(object : ClickableSpan() {
                         override fun onClick(widget: View) {
-                            try {
-                                val intent = if (row.activity.contains("/")) (Intent(Intent.ACTION_VIEW).apply {
-                                    val info = row.activity.split("/")
-                                    val packageName = info.first()
-                                    val className = info.last()
-                                    setClassName(packageName, if (className.startsWith(".")) (packageName + className) else className)
-                                }) else Intent(row.activity)
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                context.startActivity(intent)
-                            } catch (ex: Exception) {
-                                Toast.makeText(context, context.getString(R.string.kr_slice_activity_fail), Toast.LENGTH_SHORT).show()
-                            }
+                            TryOpenActivity(context, row.activity).tryOpen()
                         }
 
                         override fun updateDrawState(ds: TextPaint) {

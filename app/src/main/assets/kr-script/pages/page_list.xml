@@ -37,19 +37,43 @@
     </group>
 
     <group>
-        <page config="kr-script/pages/miui.xml" desc="适用于MIUI系统的选项" title="MIUI专属"
+        <page
+            id="page-xiaomi"
+            config="kr-script/pages/miui.xml"
+            desc="适用于MIUI系统的选项" title="MIUI专属"
             visible=". ./kr-script/common/miui_support.sh" />
-        <page config="kr-script/pages/aosp.xml" desc="越接近原生的系统越适用" title="AOSP专属" />
-        <page config="kr-script/pages/flyme.xml" desc="适用于Flyme系统的选项" title="Flyme专属"
+        <page
+            id="page-google"
+            config="kr-script/pages/aosp.xml"
+            desc="越接近原生的系统越适用" title="AOSP专属" />
+        <page
+            id="page-meizu"
+            config="kr-script/pages/flyme.xml"
+            desc="适用于Flyme系统的选项" title="Flyme专属"
             visible=". ./kr-script/common/flyme_support.sh" />
     </group>
 
     <group>
-        <page config="kr-script/pages/performance.xml" desc="设备性能调节和性能优化" title="运行性能" />
-        <page config="kr-script/pages/power.xml" desc="耗电记录、低电量" title="电池、充电" />
-        <page config="kr-script/pages/apps.xml" desc="第三方应用程序相关选项" title="应用程序" />
-        <page config="kr-script/pages/developer.xml" desc="适用于开发者的功能" title="开发者工具" />
-        <page config="kr-script/pages/other.xml" desc="其它杂七杂八的功能" title="杂项" />
+        <page
+            id="page-performance"
+            config="kr-script/pages/performance.xml"
+            desc="设备性能调节和性能优化" title="运行性能" />
+        <page
+            id="page-battery"
+            config="kr-script/pages/power.xml"
+            desc="耗电记录、低电量" title="电池、充电" />
+        <page
+            id="page-apps"
+            config="kr-script/pages/apps.xml"
+            desc="第三方应用程序相关选项" title="应用程序" />
+        <page
+            id="page-developer"
+            config="kr-script/pages/developer.xml"
+            desc="适用于开发者的功能" title="开发者工具" />
+        <page
+            id="page-other"
+            config="kr-script/pages/other.xml"
+            desc="其它杂七杂八的功能" title="杂项" />
     </group>
 
     <text>

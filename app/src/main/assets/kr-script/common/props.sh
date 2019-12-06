@@ -75,7 +75,7 @@ function magisk_set_system_prop() {
     then
         echo "你已安装Magisk，本次修改将通过操作进行"
         $BUSYBOX sed -i "/$1=/"d "$MAGISK_PATH/system.prop"
-        $BUSYBOX sed -i "\$a$1=$2" "$MAGISK_PATH/system.prop"
+        $BUSYBOX echo "$1=$2" >> "$MAGISK_PATH/system.prop"
         setprop $1 $2 2> /dev/null
         return 1
     fi;
@@ -99,7 +99,7 @@ function set_system_prop() {
     mount_all
 
     $BUSYBOX sed "/$prop=/"d $path > /cache/build.prop
-    $BUSYBOX sed -i "\$a$prop=$state" /cache/build.prop
+    $BUSYBOX echo "$prop=$state" >> /cache/build.prop
     echo "Step2.修改$prop=$state"
 
     echo 'Step3.写入文件'

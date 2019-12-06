@@ -81,6 +81,10 @@ function install_thermal() {
     echo ''
     echo ''
 
+    if [[ ! -d "$install_dir" ]]; then
+        mkdir -p "$install_dir"
+    fi
+
     for thermal in ${thermal_files[@]}; do
         if [[ -f "$resource_dir/$thermal" ]]; then
             echo '复制' $thermal
