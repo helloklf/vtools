@@ -1,0 +1,4 @@
+# This file will be read by resetprop
+# 示例: 更改 dpi
+# ro.sf.lcd_density=410
+# vendor.display.lcd_density=410

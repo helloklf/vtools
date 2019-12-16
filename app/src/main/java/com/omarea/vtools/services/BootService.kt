@@ -21,7 +21,7 @@ import com.omarea.store.AppConfigStore
 import com.omarea.store.CpuConfigStorage
 import com.omarea.store.SpfConfig
 import com.omarea.utils.CommonCmds
-import com.omarea.utils.RawText
+import com.omarea.common.shared.RawText
 import com.omarea.vtools.R
 
 /**

@@ -75,6 +75,10 @@ echo $gpu_min_freq > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
 echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
 echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 
+echo 140 > /proc/sys/kernel/sched_upmigrate
+echo 100 > /proc/sys/kernel/sched_downmigrate
+echo 200 > /proc/sys/kernel/sched_group_upmigrate
+echo 150 > /proc/sys/kernel/sched_group_downmigrate
 
 function set_cpu_freq()
 {
@@ -133,6 +137,10 @@ elif [ "$action" = "performance" ]; then
 	echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
 
+    sync
+    sync
+	echo 3 >/proc/sys/vm/drop_caches
+
 elif [ "$action" = "fast" ]; then
     echo 1 > /sys/devices/system/cpu/cpu6/online
     echo 1 > /sys/devices/system/cpu/cpu7/online
@@ -145,4 +153,9 @@ elif [ "$action" = "fast" ]; then
 
 	echo `expr $gpu_min_pl - 2` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 1 > /proc/sys/kernel/sched_boost
+
+    sync
+    sync
+	echo 3 >/proc/sys/vm/drop_caches
+
 fi

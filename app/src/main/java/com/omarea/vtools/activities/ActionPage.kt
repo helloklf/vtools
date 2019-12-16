@@ -46,6 +46,8 @@ class ActionPage : AppCompatActivity() {
     private var pageConfigSh = ""
     private lateinit var themeMode: ThemeMode
 
+    private var autoRunCompleted = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         this.themeMode = ThemeSwitch.switchTheme(this)
 
@@ -253,18 +255,20 @@ class ActionPage : AppCompatActivity() {
                 }
 
                 handler.post {
-                    val fragment = ActionListFragment.create(items, actionShortClickHandler, object : AutoRunTask {
+                    val autoRunTask = if (actionsLoaded) null else object : AutoRunTask {
                         override val key = autoRun
                         override fun onCompleted(result: Boolean?) {
                             if (result != true) {
                                 Toast.makeText(this@ActionPage, getString(R.string.kr_auto_run_item_losted), Toast.LENGTH_SHORT).show()
                             }
                         }
-                    }, themeMode)
+                    };
+
+                    val fragment = ActionListFragment.create(items, actionShortClickHandler, autoRunTask, themeMode)
                     supportFragmentManager.beginTransaction().replace(R.id.main_list, fragment).commitAllowingStateLoss()
                     hideDialog()
+                    actionsLoaded = true
                 }
-                actionsLoaded = true
             } else {
                 if (loadFail.isNotEmpty()) {
                     showDialog(getString(R.string.kr_page_load_fail))

@@ -8,7 +8,7 @@ function busybox_install() {
     chmod 755 ./busybox
     for applet in `./busybox --list`; do
         case "$applet" in
-        "sh"|"busybox")
+        "sh"|"busybox"|"shell")
             echo 'Skip' > /dev/null
         ;;
         *)

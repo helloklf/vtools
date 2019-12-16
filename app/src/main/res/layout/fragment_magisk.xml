@@ -26,48 +26,44 @@
                 android:layout_height="0dp"
                 android:layout_weight="1">
 
-                <FrameLayout
+                <LinearLayout
                     android:id="@+id/magisk_tab1"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <EditText
+                        android:id="@+id/magisk_props"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_gravity="top"
+                        android:layout_weight="1"
+                        android:gravity="top"
+                        android:paddingStart="15dp"
+                        android:background="@null"
+                        android:textSize="12sp" />
 
                     <LinearLayout
+                        android:background="#33dddddd"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
+                        android:layout_height="wrap_content"
+                        android:gravity="end">
 
-                        <EditText
-                            android:id="@+id/magisk_props"
-                            android:layout_width="match_parent"
+                        <Button
+                            android:id="@+id/magisk_props_reset"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="top"
-                            android:layout_weight="1"
-                            android:gravity="top"
-                            android:paddingLeft="15dp"
-                            android:text="# This file will be read by resetprop\n# Example: Change dpi\n# ro.sf.lcd_density=410"
-                            android:textSize="13dp" />
+                            android:background="@android:color/transparent"
+                            android:text="撤销更改" />
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <Button
+                            android:id="@+id/magisk_props_save"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="end">
-
-                            <Button
-                                android:id="@+id/magisk_props_reset"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@android:color/transparent"
-                                android:text="撤销更改" />
-
-                            <Button
-                                android:id="@+id/magisk_props_save"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@android:color/transparent"
-                                android:text="保存" />
-                        </LinearLayout>
+                            android:background="@android:color/transparent"
+                            android:text="保存" />
                     </LinearLayout>
-                </FrameLayout>
+                </LinearLayout>
 
                 <FrameLayout
                     android:id="@+id/magisk_tab2"
@@ -80,91 +76,82 @@
                         android:layout_height="wrap_content" />
                 </FrameLayout>
 
-                <FrameLayout
+                <LinearLayout
                     android:id="@+id/magisk_tab3"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <EditText
+                        android:id="@+id/magisk_beforestart"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_gravity="top"
+                        android:layout_weight="1"
+                        android:gravity="top"
+                        android:background="@null"
+                        android:paddingStart="15dp"
+                        android:textSize="12sp" />
 
                     <LinearLayout
+                        android:background="#33dddddd"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
+                        android:layout_height="wrap_content"
+                        android:gravity="end">
 
-                        <EditText
-                            android:id="@+id/magisk_beforestart"
-                            android:layout_width="match_parent"
+                        <Button
+                            android:id="@+id/magisk_beforestart_reset"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="top"
-                            android:layout_weight="1"
-                            android:gravity="top"
-                            android:paddingLeft="15dp"
-                            android:text="# This file will be read by resetprop\n# Example: Change dpi\n# ro.sf.lcd_density=410"
-                            android:textSize="13dp" />
+                            android:background="@android:color/transparent"
+                            android:text="撤销更改" />
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <Button
+                            android:id="@+id/magisk_beforestart_save"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="end">
-
-                            <Button
-                                android:id="@+id/magisk_beforestart_reset"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@android:color/transparent"
-                                android:text="撤销更改" />
-
-                            <Button
-                                android:id="@+id/magisk_beforestart_save"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@android:color/transparent"
-                                android:text="保存" />
-                        </LinearLayout>
+                            android:background="@android:color/transparent"
+                            android:text="保存" />
                     </LinearLayout>
-                </FrameLayout>
+                </LinearLayout>
 
-                <FrameLayout
+                <LinearLayout
                     android:id="@+id/magisk_tab4"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <EditText
+                        android:id="@+id/magisk_afterstart"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_gravity="top"
+                        android:layout_weight="1"
+                        android:gravity="top"
+                        android:paddingStart="15dp"
+                        android:background="@null"
+                        android:textSize="12sp" />
 
                     <LinearLayout
+                        android:background="#33dddddd"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical">
+                        android:layout_height="wrap_content"
+                        android:gravity="end">
 
-                        <EditText
-                            android:id="@+id/magisk_afterstart"
-                            android:layout_width="match_parent"
+                        <Button
+                            android:id="@+id/magisk_afterstart_reset"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="top"
-                            android:layout_weight="1"
-                            android:gravity="top"
-                            android:paddingLeft="15dp"
-                            android:text="# "
-                            android:textSize="13dp" />
+                            android:background="@android:color/transparent"
+                            android:text="撤销更改" />
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
+                        <Button
+                            android:id="@+id/magisk_afterstart_save"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:gravity="end">
-
-                            <Button
-                                android:id="@+id/magisk_afterstart_reset"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@android:color/transparent"
-                                android:text="撤销更改" />
-
-                            <Button
-                                android:id="@+id/magisk_afterstart_save"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@android:color/transparent"
-                                android:text="保存" />
-                        </LinearLayout>
+                            android:background="@android:color/transparent"
+                            android:text="保存" />
                     </LinearLayout>
-                </FrameLayout>
+                </LinearLayout>
             </FrameLayout>
         </LinearLayout>
     </TabHost>

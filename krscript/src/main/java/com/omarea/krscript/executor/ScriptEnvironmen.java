@@ -148,32 +148,6 @@ public class ScriptEnvironmen {
         return FileWrite.INSTANCE.writePrivateShellFile(fileName, fileName, context);
     }
 
-    public static String getExecuteScript(Context context, String script) {
-        if (!inited) {
-            init(context);
-        }
-
-        if (script == null || script.isEmpty()) {
-            return "";
-        }
-
-        String script2 = script.trim();
-        String startPath = getStartPath(context);
-        String cachePath = "";
-        if (script2.startsWith(ASSETS_FILE)) {
-            cachePath = extractScript(context, script2);
-            if (cachePath == null) {
-                cachePath = script;
-                // String error = context.getString(R.string.script_losted) + setState;
-                // Toast.makeText(context, error, Toast.LENGTH_LONG).show();
-            }
-        } else {
-            cachePath = createShellCache(context, script);
-        }
-
-        return environmentPath + " \"" + cachePath + "\"" + " \"" + startPath + "\"";
-    }
-
     public static String executeResultRoot(Context context, String script) {
         if (!inited) {
             init(context);
@@ -198,6 +172,7 @@ public class ScriptEnvironmen {
             init(context);
         }
 
+        // FIXME:KeepShellPublic.INSTANCE 是有自己的环境变量的，和KrScript的定义重复！！！
         return KeepShellPublic.INSTANCE.doCmdSync(environmentPath + " \"" + scriptPath + "\"" + " \"" + getStartPath(context) + "\"");
     }
 
@@ -295,6 +270,35 @@ public class ScriptEnvironmen {
         }
 
         return envp;
+    }
+
+    private static String getExecuteScript(Context context, String script) {
+        if (!inited) {
+            init(context);
+        }
+
+        if (script == null || script.isEmpty()) {
+            return "";
+        }
+
+        String script2 = script.trim();
+        String startPath = getStartPath(context);
+        String cachePath = "";
+        if (script2.startsWith(ASSETS_FILE)) {
+            cachePath = extractScript(context, script2);
+            if (cachePath == null) {
+                cachePath = script;
+                // String error = context.getString(R.string.script_losted) + setState;
+                // Toast.makeText(context, error, Toast.LENGTH_LONG).show();
+            }
+        } else {
+            cachePath = createShellCache(context, script);
+        }
+
+
+        // FIXME:主进程退出后，可能会有未回收的子进程（孤儿进程）
+        // pstree
+        return environmentPath + " \"" + cachePath + "\"" + " \"" + startPath + "\"";
     }
 
     /**

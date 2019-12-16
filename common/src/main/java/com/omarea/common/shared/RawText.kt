@@ -1,4 +1,4 @@
-package com.omarea.utils
+package com.omarea.common.shared
 
 import android.content.Context
 import java.nio.charset.Charset

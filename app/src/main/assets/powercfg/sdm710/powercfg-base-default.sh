@@ -27,8 +27,10 @@ chmod 0755 /sys/devices/system/cpu/cpu7/online
 # Enable input boost configuration
 echo "0:1324800" > /sys/module/cpu_boost/parameters/input_boost_freq
 echo 40 > /sys/module/cpu_boost/parameters/input_boost_ms
-echo "0:0 1:0 2:0 3:0 4:2208000 5:0 6:0 7:0" > /sys/module/cpu_boost/parameters/powerkey_input_boost_freq
+echo "0:0 1:0 2:0 3:0 4:0 5:0 6:2208000 7:0" > /sys/module/cpu_boost/parameters/powerkey_input_boost_freq
 echo 400 > /sys/module/cpu_boost/parameters/powerkey_input_boost_ms
+echo 'Y' > /sys/module/cpu_boost/parameters/sched_boost_on_powerkey_input
+#echo 'Y' > /sys/module/cpu_boost/parameters/sched_boost_on_input
 
 echo N > /sys/module/lpm_levels/parameters/sleep_disabled
 
@@ -56,17 +58,18 @@ echo 3 > /proc/sys/vm/page-cluster
 echo 4000 > /proc/sys/vm/dirty_expire_centisecs
 echo 6000 > /proc/sys/vm/dirty_writeback_centisecs
 
-echo 512 > /sys/block/sda/queue/read_ahead_kb
+echo 256 > /sys/block/sda/queue/read_ahead_kb
 echo 0 > /sys/block/sda/queue/iostats
 
-echo "0:1324800" > /sys/module/cpu_boost/parameters/input_boost_freq
-echo 40 > /sys/module/cpu_boost/parameters/input_boost_ms
-echo "0:0 1:0 2:0 3:0 4:2208000 5:0 6:0 7:0" > /sys/module/cpu_boost/parameters/powerkey_input_boost_freq
-echo "40" > /sys/module/cpu_boost/parameters/powerkey_input_boost_ms
-echo 'Y' > /sys/module/cpu_boost/parameters/sched_boost_on_powerkey_input
-#echo 'Y' > /sys/module/cpu_boost/parameters/sched_boost_on_input
-
 echo 0 > /sys/module/lowmemorykiller/parameters/enable_adaptive_lmk
+echo 5 > /proc/sys/vm/dirty_background_ratio
+echo 50 > /proc/sys/vm/overcommit_ratio
+echo 100 > /proc/sys/vm/swap_ratio
+echo 100 > /proc/sys/vm/vfs_cache_pressure
+echo 10 > /proc/sys/vm/dirty_ratio
+echo 3 > /proc/sys/vm/page-cluster
+echo 1000 > /proc/sys/vm/dirty_expire_centisecs
+echo 2000 > /proc/sys/vm/dirty_writeback_centisecs
 
 #stop woodpeckerd
 #stop debuggerd

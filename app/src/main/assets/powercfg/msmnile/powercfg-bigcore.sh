@@ -115,6 +115,10 @@ function set_cpu_freq()
 }
 
 if [[ "$action" = "powersave" ]]; then
+    echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/enable
+    echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
+    echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
+
 	set_cpu_freq 300000 1420800 710400 1420800 825600 1996800
     set_input_boost_freq 1209600 0 0 40
 
@@ -132,6 +136,10 @@ if [[ "$action" = "powersave" ]]; then
 fi
 
 if [[ "$action" = "balance" ]]; then
+    echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/enable
+    echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
+    echo 2 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
+
 	set_cpu_freq 300000 1708800 710400 1920000 825600 2227200
     set_input_boost_freq 1478400 0 0 40
 
@@ -149,6 +157,10 @@ if [[ "$action" = "balance" ]]; then
 fi
 
 if [[ "$action" = "performance" ]]; then
+    echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
+    echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
+    echo 0 > /sys/devices/system/cpu/cpu7/core_ctl/enable
+
 	set_cpu_freq 300000 1785600 710400 2419200 825600 2841600
     set_input_boost_freq 1478400 1286400 1286400 40
 
@@ -166,6 +178,10 @@ if [[ "$action" = "performance" ]]; then
 fi
 
 if [[ "$action" = "fast" ]]; then
+    echo 4 > /sys/devices/system/cpu/cpu4/core_ctl/min_cpus
+    echo 0 > /sys/devices/system/cpu/cpu4/core_ctl/enable
+    echo 0 > /sys/devices/system/cpu/cpu7/core_ctl/enable
+
 	set_cpu_freq 1036800 1785600 1286400 2600000 1286400 3200000
     set_input_boost_freq 1708800 1612800 1804800 80
 

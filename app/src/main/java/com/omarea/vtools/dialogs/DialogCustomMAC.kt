@@ -11,7 +11,7 @@ import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.store.SpfConfig
-import com.omarea.utils.RawText
+import com.omarea.common.shared.RawText
 import com.omarea.vtools.R
 
 /**
