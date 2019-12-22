@@ -1,57 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-    android:minHeight="?android:attr/listPreferredItemHeight"
-    android:orientation="horizontal"
-    android:paddingStart="23dp"
-    android:paddingTop="10dp"
-    android:paddingEnd="23dp"
-    android:paddingBottom="10dp">
+    android:minHeight="?android:attr/listPreferredItemHeight">
+
+    <ImageView
+        android:id="@id/kr_shortcut_icon"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/kr_shortcut_icon"
+        android:tint="@color/kr_shortcut_color"
+        android:visibility="gone" />
 
     <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_marginStart="13dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:gravity="center_vertical"
+        android:layout_toStartOf="@id/kr_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:padding="0dp"
+            android:id="@id/kr_icon"
+            android:layout_marginStart="10dp"
+            android:layout_gravity="center_vertical"
+            android:layout_width="35dp"
+            android:layout_height="35dp" />
 
-        <TextView
-            android:id="@id/kr_title"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:alpha="0.8"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textSize="@dimen/kr_title_size"
-            android:textStyle="bold" />
+            android:layout_marginStart="10dp"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@id/kr_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="?android:attr/textColorSecondary"
-            android:textSize="@dimen/kr_desc_size" />
+            <TextView
+                android:id="@id/kr_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:alpha="0.8"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textSize="@dimen/kr_title_size"
+                android:textStyle="bold" />
 
-        <TextView
-            android:id="@id/kr_summary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="?android:colorAccent"
-            android:textSize="@dimen/kr_desc_size" />
+            <TextView
+                android:id="@id/kr_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="?android:attr/textColorSecondary"
+                android:textSize="@dimen/kr_desc_size"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@id/kr_summary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="?android:colorAccent"
+                android:textSize="@dimen/kr_desc_size"
+                android:visibility="gone" />
+        </LinearLayout>
     </LinearLayout>
 
     <Switch
         android:id="@id/kr_switch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_width="36dp"
+        android:layout_height="30dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="10dp"
         android:alpha="0.8"
+        android:padding="5dp"
+        android:layout_gravity="center_vertical"
         android:clickable="false"
         android:elevation="5dp"
         android:enabled="false"
         android:focusable="false"
         android:thumb="@drawable/kr_switch_thumb"
         android:track="@drawable/kr_switch_track" />
-</LinearLayout>
+</RelativeLayout>

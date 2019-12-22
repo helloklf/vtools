@@ -240,7 +240,6 @@ public class MagiskExtend {
 
         KeepShellPublic.INSTANCE.doCmdSync(
                 "sed -i '/" + prop + "=/'d " + MAGISK_PATH + "system.prop\n" +
-                        "echo '' >> " + MAGISK_PATH + "system.prop\n" +
                 "echo " + prop + "=\"" + value + "\" >> " + MAGISK_PATH + "system.prop\n");
         return true;
     }

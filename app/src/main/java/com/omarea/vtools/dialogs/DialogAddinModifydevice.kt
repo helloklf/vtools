@@ -41,12 +41,11 @@ class DialogAddinModifydevice(var context: Context) {
         return value
     }
 
-    val oldProp = (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P)
-    val brand_prop = if (oldProp) "ro.product.brand" else "ro.product.system.brand"
-    val name_prop = if (oldProp) "ro.product.name" else "ro.product.system.name"
-    val model_prop = if (oldProp) "ro.product.model" else "ro.product.system.model"
-    val manufacturer_prop = if (oldProp) "ro.product.manufacturer" else "ro.product.system.manufacturer"
-    val device_prop = if (oldProp) "ro.product.device" else "ro.product.system.device"
+    val brand_prop = "ro.product.brand"
+    val name_prop = "ro.product.name"
+    val model_prop = "ro.product.model"
+    val manufacturer_prop = "ro.product.manufacturer"
+    val device_prop = "ro.product.device"
 
     fun modifyDeviceInfo() {
         //SM-N9500@samsung@samsung@dream2qltezc@dream2qltechn

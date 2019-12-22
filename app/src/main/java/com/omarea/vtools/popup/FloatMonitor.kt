@@ -255,34 +255,36 @@ class FloatMonitor(context: Context) {
                         otherInfo?.append("\n")
                     }
                     if (cluster.size > 0) {
-                        val title = "#" + cluster[0] + "~" + cluster[cluster.size - 1] + "  " + subFreqStr(clustersFreq.get(clusterIndex)) + "Mhz";
-                        val titleSpannable = SpannableString(title);
-                        val styleSpan = StyleSpan(Typeface.BOLD);
-                        titleSpannable.setSpan(ForegroundColorSpan(Color.WHITE), 0, title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        titleSpannable.setSpan(styleSpan, 0, title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                        otherInfo?.append(titleSpannable)
+                        try {
+                            val title = "#" + cluster[0] + "~" + cluster[cluster.size - 1] + "  " + subFreqStr(clustersFreq.get(clusterIndex)) + "Mhz";
+                            val titleSpannable = SpannableString(title);
+                            val styleSpan = StyleSpan(Typeface.BOLD);
+                            titleSpannable.setSpan(ForegroundColorSpan(Color.WHITE), 0, title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                            titleSpannable.setSpan(styleSpan, 0, title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                            otherInfo?.append(titleSpannable)
 
-                        val otherInfos = StringBuilder("")
-                        for (core in cluster) {
-                            otherInfos.append("\n")
-                            otherInfos.append("CPU")
-                            otherInfos.append(core)
-                            otherInfos.append("  ")
-                            val load = loads.get(core.toInt())
-                            if (load != null) {
-                                if (load < 10) {
-                                    otherInfos.append("0")
-                                    otherInfos.append(load.toInt())
-                                    otherInfos.append("%")
+                            val otherInfos = StringBuilder("")
+                            for (core in cluster) {
+                                otherInfos.append("\n")
+                                otherInfos.append("CPU")
+                                otherInfos.append(core)
+                                otherInfos.append("  ")
+                                val load = loads.get(core.toInt())
+                                if (load != null) {
+                                    if (load < 10) {
+                                        otherInfos.append("0")
+                                        otherInfos.append(load.toInt())
+                                        otherInfos.append("%")
+                                    } else {
+                                        otherInfos.append(load.toInt())
+                                        otherInfos.append("%")
+                                    }
                                 } else {
-                                    otherInfos.append(load.toInt())
-                                    otherInfos.append("%")
+                                    otherInfos.append("×")
                                 }
-                            } else {
-                                otherInfos.append("×")
                             }
-                        }
-                        otherInfo?.append(otherInfos.toString())
+                            otherInfo?.append(otherInfos.toString())
+                        } catch (ex: Exception){}
                     }
                     clusterIndex++
                 }

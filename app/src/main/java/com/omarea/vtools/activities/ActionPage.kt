@@ -146,6 +146,8 @@ class ActionPage : AppCompatActivity() {
             intent.putExtra("loadSuccess", loadSuccess)
             intent.putExtra("loadFail", loadFail)
             intent.putExtra("autoRunItemId", clickableNode.key)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+            intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 
             addToFavoritesHandler.onAddToFavorites(clickableNode, intent)
         }

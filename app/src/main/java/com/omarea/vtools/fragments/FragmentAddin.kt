@@ -186,6 +186,8 @@ class FragmentAddin : Fragment() {
                 intent.putExtra("title", "" + clickableNode.title)
                 intent.putExtra("config", pageConfig)
                 intent.putExtra("autoRunItemId", clickableNode.key)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+                intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 
                 addToFavoritesHandler.onAddToFavorites(clickableNode, intent)
             }

@@ -28,7 +28,7 @@ export TOOLKIT=$({TOOLKIT})
 # 添加toolkit添加为应用程序目录
 if [[ ! "$TOOLKIT" = "" ]]; then
     # export PATH="$PATH:$TOOLKIT"
-    PATH="$TOOLKIT:$PATH"
+    PATH="$PATH:$TOOLKIT"
 fi
 
 # 安装busybox完整功能
