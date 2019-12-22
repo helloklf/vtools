@@ -37,7 +37,11 @@ am force-stop com.tencent.mobileqq 2> /dev/null
 am kill-all com.tencent.mobileqq 2> /dev/null
 am kill com.tencent.mobileqq 2> /dev/null
 
+echo '删除数据...'
 ulock_dir $qqsdcard
 ulock_dir $qqdata
 
-echo '操作完成，请重新启动QQ~'
+echo '卸载QQ...'
+pm uninstall com.tencent.mobileqq
+
+echo '操作完成，请重新安装QQ~'
