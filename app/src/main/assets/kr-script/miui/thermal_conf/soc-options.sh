@@ -11,6 +11,9 @@ then
 elif [[ "$platform" = "msmnile" ]]
 then
     echo 'msmnile|骁龙855'
+elif [[ "$platform" = "sm6150" ]]
+then
+    echo 'sm6150|骁龙730'
 elif [[ "$platform" = "msm8998" ]]
 then
     echo 'msm8998|骁龙835'

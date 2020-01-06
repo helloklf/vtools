@@ -172,7 +172,6 @@ public class ScriptEnvironmen {
             init(context);
         }
 
-        // FIXME:KeepShellPublic.INSTANCE 是有自己的环境变量的，和KrScript的定义重复！！！
         return KeepShellPublic.INSTANCE.doCmdSync(environmentPath + " \"" + scriptPath + "\"" + " \"" + getStartPath(context) + "\"");
     }
 

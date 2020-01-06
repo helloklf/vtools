@@ -33,11 +33,11 @@ function set_value()
 # GPU频率表
 gpu_freqs=`cat /sys/class/kgsl/kgsl-3d0/devfreq/available_frequencies`
 # GPU最大频率
-gpu_max_freq='504000000'
+gpu_max_freq='700000000'
 # GPU最小频率
 gpu_min_freq='180000000'
 # GPU最小 power level
-gpu_min_pl=4
+gpu_min_pl=6
 # GPU最大 power level
 gpu_max_pl=0
 # GPU默认 power level
@@ -102,7 +102,7 @@ if [ "$action" = "powersave" ]; then
     echo 0 > /sys/devices/system/cpu/cpu6/online
     echo 0 > /sys/devices/system/cpu/cpu7/online
 
-	set_cpu_freq 5000 1612800 5000 1747200
+	set_cpu_freq 5000 1612800 5000 1708800
 	set_input_boost_freq 0 0 0
 
 	echo 1209600 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
@@ -115,8 +115,8 @@ elif [ "$action" = "balance" ]; then
     echo 1 > /sys/devices/system/cpu/cpu6/online
     echo 1 > /sys/devices/system/cpu/cpu7/online
 
-	set_cpu_freq 5000 1708800 5000 2208000
-	set_input_boost_freq 1209600 0 40
+	set_cpu_freq 5000 1804800 5000 2208000
+	set_input_boost_freq 1324800 0 40
 
 	echo 1516800 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
 	echo 1363200 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
@@ -129,7 +129,7 @@ elif [ "$action" = "performance" ]; then
     echo 1 > /sys/devices/system/cpu/cpu7/online
 
 	set_cpu_freq 300000 2500000 300000 2750000
-	set_input_boost_freq 1324800 1536000 40
+	set_input_boost_freq 1324800 1555200 40
 
     echo 1478400 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
     echo 1267200 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
@@ -145,11 +145,11 @@ elif [ "$action" = "fast" ]; then
     echo 1 > /sys/devices/system/cpu/cpu6/online
     echo 1 > /sys/devices/system/cpu/cpu7/online
 
-	set_cpu_freq 1708800 2500000 1267200 2750000
-	set_input_boost_freq 1708800 2208000 120
+	set_cpu_freq 1708800 2500000 1209600 2750000
+	set_input_boost_freq 1804800 1939200 120
 
 	echo 1708800 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
-	echo 2208000 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
+	echo 2169600 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
 
 	echo `expr $gpu_min_pl - 2` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 1 > /proc/sys/kernel/sched_boost

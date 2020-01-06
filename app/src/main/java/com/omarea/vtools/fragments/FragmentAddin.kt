@@ -185,7 +185,12 @@ class FragmentAddin : Fragment() {
                 intent.component = ComponentName(activity!!.applicationContext, ActionPage::class.java)
                 intent.putExtra("title", "" + clickableNode.title)
                 intent.putExtra("config", pageConfig)
-                intent.putExtra("autoRunItemId", clickableNode.key)
+
+                if (clickableNode is RunnableNode) {
+                    intent.putExtra("autoRunItemId", clickableNode.key)
+                } else if (clickableNode is PageNode) {
+                }
+
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                 intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 

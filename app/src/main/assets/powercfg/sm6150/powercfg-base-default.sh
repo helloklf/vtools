@@ -1,10 +1,10 @@
 #!/system/bin/sh
 
 # cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
-# 300000 576000 748800 998400 1209600 1324800 1516800 1612800 1708800
+# 300000 576000 768000 1017600 1248000 1324800 1497600 1612800 1708800 1804800
 
 # cat /sys/devices/system/cpu/cpu6/cpufreq/scaling_available_frequencies
-# 300000 652800 825600 979200 1132800 1363200 1536000 1747200 1843200 1996800 2054400 2169600 2208000
+# 300000 652800 806400 979200 1094400 1209600 1324800 1555200 1708800 1843200 1939200 2169600 2208000
 
 target=`getprop ro.board.platform`
 
@@ -17,12 +17,29 @@ chmod 0755 /sys/devices/system/cpu/cpu5/online
 chmod 0755 /sys/devices/system/cpu/cpu6/online
 chmod 0755 /sys/devices/system/cpu/cpu7/online
 
-#echo 2 > /sys/devices/system/cpu/cpu6/core_ctl/min_cpus
-#echo 60 > /sys/devices/system/cpu/cpu6/core_ctl/busy_up_thres
-#echo 30 > /sys/devices/system/cpu/cpu6/core_ctl/busy_down_thres
-#echo 100 > /sys/devices/system/cpu/cpu6/core_ctl/offline_delay_ms
-#echo 1 > /sys/devices/system/cpu/cpu6/core_ctl/is_big_cluster
-#echo 4 > /sys/devices/system/cpu/cpu6/core_ctl/task_thres
+# Core control parameters on silver
+echo 0 0 0 0 1 1 > /sys/devices/system/cpu/cpu0/core_ctl/not_preferred
+echo 4 > /sys/devices/system/cpu/cpu0/core_ctl/min_cpus
+echo 60 > /sys/devices/system/cpu/cpu0/core_ctl/busy_up_thres
+echo 40 > /sys/devices/system/cpu/cpu0/core_ctl/busy_down_thres
+echo 100 > /sys/devices/system/cpu/cpu0/core_ctl/offline_delay_ms
+echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/is_big_cluster
+echo 8 > /sys/devices/system/cpu/cpu0/core_ctl/task_thres
+echo 0 > /sys/devices/system/cpu/cpu6/core_ctl/enable
+
+# Setting b.L scheduler parameters
+# default sched up and down migrate values are 90 and 85
+echo 65 > /proc/sys/kernel/sched_downmigrate
+echo 71 > /proc/sys/kernel/sched_upmigrate
+# default sched up and down migrate values are 100 and 95
+echo 85 > /proc/sys/kernel/sched_group_downmigrate
+echo 100 > /proc/sys/kernel/sched_group_upmigrate
+echo 1 > /proc/sys/kernel/sched_walt_rotate_big_tasks
+
+# sched_load_boost as -6 is equivalent to target load as 85. It is per cpu tunable.
+echo -6 >  /sys/devices/system/cpu/cpu6/sched_load_boost
+echo -6 >  /sys/devices/system/cpu/cpu7/sched_load_boost
+echo 85 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_load
 
 # Enable input boost configuration
 echo "0:1324800" > /sys/module/cpu_boost/parameters/input_boost_freq
@@ -32,7 +49,7 @@ echo 400 > /sys/module/cpu_boost/parameters/powerkey_input_boost_ms
 echo 'Y' > /sys/module/cpu_boost/parameters/sched_boost_on_powerkey_input
 #echo 'Y' > /sys/module/cpu_boost/parameters/sched_boost_on_input
 
-echo N > /sys/module/lpm_levels/parameters/sleep_disabled
+echo 0 > /sys/module/lpm_levels/parameters/sleep_disabled
 
 echo 1 > /sys/devices/system/cpu/cpu0/online
 echo 1 > /sys/devices/system/cpu/cpu1/online
@@ -42,11 +59,6 @@ echo 1 > /sys/devices/system/cpu/cpu4/online
 echo 1 > /sys/devices/system/cpu/cpu5/online
 echo 1 > /sys/devices/system/cpu/cpu6/online
 echo 1 > /sys/devices/system/cpu/cpu7/online
-
-#echo 0 > /sys/devices/system/cpu/cpu6/core_ctl/min_cpus
-#echo 4 > /sys/devices/system/cpu/cpu6/core_ctl/max_cpus
-#echo 95 > /sys/devices/system/cpu/cpu6/core_ctl/busy_up_thres
-#echo 60 > /sys/devices/system/cpu/cpu6/core_ctl/busy_down_thres
 
 echo 1 > /proc/sys/vm/laptop_mode
 echo 5 > /proc/sys/vm/dirty_background_ratio

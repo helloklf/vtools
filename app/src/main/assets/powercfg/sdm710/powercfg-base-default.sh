@@ -47,6 +47,7 @@ echo 1 > /sys/devices/system/cpu/cpu7/online
 #echo 4 > /sys/devices/system/cpu/cpu6/core_ctl/max_cpus
 #echo 95 > /sys/devices/system/cpu/cpu6/core_ctl/busy_up_thres
 #echo 60 > /sys/devices/system/cpu/cpu6/core_ctl/busy_down_thres
+# echo 0 > /sys/devices/system/cpu/cpu6/core_ctl/enable
 
 echo 1 > /proc/sys/vm/laptop_mode
 echo 5 > /proc/sys/vm/dirty_background_ratio

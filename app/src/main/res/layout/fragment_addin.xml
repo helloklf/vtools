@@ -26,8 +26,8 @@
                     android:divider="@color/color_list_divider"
                     android:dividerHeight="0sp"
                     android:listSelector="@android:color/transparent"
-                    android:paddingTop="@dimen/activity_vertical_margin"
-                    android:paddingBottom="@dimen/activity_vertical_margin" />
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_marginBottom="@dimen/activity_vertical_margin" />
 
                 <FrameLayout
                     android:id="@+id/list_page2"

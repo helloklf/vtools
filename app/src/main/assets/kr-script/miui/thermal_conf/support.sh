@@ -2,7 +2,7 @@
 
 platform=`getprop ro.board.platform`
 
-if [[ "$platform" = "sdm845" ]] || [[ "$platform" = "msm8998" ]] || [[ "$platform" = "msmnile" ]] || [[ "$platform" = "sdm710" ]]
+if [[ "$platform" = "sdm845" ]] || [[ "$platform" = "msm8998" ]] || [[ "$platform" = "msmnile" ]] || [[ "$platform" = "sdm710" ]] || [[ "$platform" = "sm6150" ]]
 then
     if [[ -n `getprop ro.miui.ui.version.name` ]]
     then
