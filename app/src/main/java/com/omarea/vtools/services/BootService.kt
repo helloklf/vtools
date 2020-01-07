@@ -176,11 +176,8 @@ class BootService : IntentService("vtools-boot") {
         if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) || chargeConfig!!.getBoolean(SpfConfig.CHARGE_SPF_BP, false)) {
             updateNotification(getString(R.string.boot_charge_booster))
 
-            try {
-                val intent = Intent(context, ServiceBattery::class.java)
-                startService(intent)
-            } catch (ex: Exception) {
-            }
+            ServiceBattery.startBatteryService(context)
+
             BatteryUtils().setChargeInputLimit(chargeConfig.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, SpfConfig.CHARGE_SPF_QC_LIMIT_DEFAULT), this.applicationContext)
         }
 

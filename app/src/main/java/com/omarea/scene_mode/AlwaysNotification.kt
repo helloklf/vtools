@@ -10,10 +10,10 @@ import android.os.Build
 import android.support.v4.app.NotificationCompat
 import android.util.Log
 import android.widget.RemoteViews
-import com.omarea.common.shell.KeepShellPublic
 import com.omarea.model.BatteryStatus
 import com.omarea.store.BatteryHistoryStore
 import com.omarea.store.SpfConfig
+import com.omarea.utils.GlobalStatus
 import com.omarea.vtools.R
 import com.omarea.vtools.activities.ActivityQuickSwitchMode
 
@@ -36,8 +36,6 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
         }
     }
 
-    private var batteryTemp = "?°C"
-
     private fun getBatteryIcon(capacity: Int): Int {
         if (capacity < 20)
             return R.drawable.b_0
@@ -46,34 +44,6 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
         if (capacity < 70)
             return R.drawable.b_2
         return R.drawable.b_3
-    }
-
-    private fun updateBatteryInfo() {
-        val batteryInfo = KeepShellPublic.doCmdSync("dumpsys battery")
-        val batteryInfos = batteryInfo.split("\n")
-
-        for (item in batteryInfos) {
-            val info = item.trim()
-            val index = info.indexOf(":")
-            if (index > Int.MIN_VALUE && index < info.length - 1) {
-                val value = info.substring(info.indexOf(":") + 1).trim()
-                if (info.startsWith("temperature")) {
-                    batteryTemp = value
-                    break
-                }
-            }
-        }
-    }
-
-    private fun getBatteryTemp(): String {
-        if (batteryTemp == "?°C" || batteryTemp.isEmpty()) {
-            return ""
-        }
-        try {
-            return (batteryTemp.toInt() / 10.0).toString()
-        } catch (ex: Exception) {
-            return ""
-        }
     }
 
     //显示通知
@@ -99,6 +69,25 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
         }
     }
 
+    private fun updateBatteryStatus() {
+        // 电池电流
+        val batteryCurrentNow = batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
+
+        val batteryCurrentNowMA = (batteryCurrentNow / globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT))
+
+        // 电量
+        val batteryCapacity = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
+
+        GlobalStatus.batteryCurrentNow = batteryCurrentNowMA;
+        GlobalStatus.batteryCapacity = batteryCapacity;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // 状态
+            val batteryStatus = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_STATUS)
+            GlobalStatus.batteryStatus = batteryStatus;
+        }
+    }
+
     private fun notifyPowerModeChange(packageName: String, mode: String) {
         if (!showNofity) {
             return
@@ -114,31 +103,17 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
         var batteryTemp = ""
         var modeImage = BitmapFactory.decodeResource(context.resources, getModImage(mode))
 
-        // 电池电流
-        val batteryCurrentNow = batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
-        // 电量
-        val batteryCapacity = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
-        // 状态
-        val batteryStatus = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_STATUS)
-
         try {
-            updateBatteryInfo()
+            updateBatteryStatus();
 
-            val mA = (batteryCurrentNow / globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT))
+            batteryIO = "${GlobalStatus.batteryCurrentNow}mA"
+            status.temperature = GlobalStatus.batteryTemperature.toFloat()
+            batteryTemp = "${GlobalStatus.batteryTemperature}°C"
 
-            batteryIO = mA.toString() + "mA"
-            batteryTemp = getBatteryTemp()
-            if (batteryTemp.isEmpty()) {
-                batteryTemp = "?°C"
-            } else {
-                status.temperature = batteryTemp.toFloat()
-                batteryTemp += "°C"
-            }
-
-            status.status = batteryStatus
+            status.status = GlobalStatus.batteryStatus
             if (status.status == BatteryManager.BATTERY_STATUS_DISCHARGING) {
-                status.io = mA.toInt()
-                batteryImage = BitmapFactory.decodeResource(context.resources, getBatteryIcon(batteryCapacity))
+                status.io = GlobalStatus.batteryCurrentNow.toInt()
+                batteryImage = BitmapFactory.decodeResource(context.resources, getBatteryIcon(GlobalStatus.batteryCapacity))
             } else {
                 batteryImage = BitmapFactory.decodeResource(context.resources, R.drawable.b_4)
             }
@@ -160,7 +135,7 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
         val remoteViews = RemoteViews(context.packageName, R.layout.layout_notification)
         remoteViews.setTextViewText(R.id.notify_title, getAppName(packageName))
         remoteViews.setTextViewText(R.id.notify_text, getModName(mode))
-        remoteViews.setTextViewText(R.id.notify_battery_text, "$batteryIO ${batteryCapacity}% $batteryTemp")
+        remoteViews.setTextViewText(R.id.notify_battery_text, "$batteryIO ${GlobalStatus.batteryCapacity}% $batteryTemp")
         if (modeImage != null) {
             remoteViews.setImageViewBitmap(R.id.notify_mode, modeImage)
         }

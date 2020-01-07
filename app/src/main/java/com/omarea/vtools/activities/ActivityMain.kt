@@ -67,11 +67,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             //判断是否开启了充电加速和充电保护，如果开启了，自动启动后台服务
             val chargeConfig = context.get()!!.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
             if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) || chargeConfig!!.getBoolean(SpfConfig.CHARGE_SPF_BP, false)) {
-                try {
-                    val intent = Intent(context.get()!!, ServiceBattery::class.java)
-                    context.get()!!.startService(intent)
-                } catch (ex: Exception) {
-                }
+                ServiceBattery.startBatteryService(context.get()!!)
             }
         }
 
@@ -210,7 +206,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             try {
                 setHomePage()
                 if (MagiskExtend.magiskSupported() &&
-                    !(MagiskExtend.moduleInstalled() || globalSPF!!.getBoolean("magisk_dot_show", false))
+                        !(MagiskExtend.moduleInstalled() || globalSPF!!.getBoolean("magisk_dot_show", false))
                 ) {
                     DialogHelper.animDialog(
                             AlertDialog.Builder(this)

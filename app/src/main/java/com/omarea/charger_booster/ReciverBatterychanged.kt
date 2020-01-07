@@ -13,6 +13,7 @@ import android.widget.Toast
 import com.omarea.common.shell.KeepShellAsync
 import com.omarea.shell_utils.BatteryUtils
 import com.omarea.store.SpfConfig
+import com.omarea.utils.GlobalStatus
 import com.omarea.vtools.R
 import java.util.*
 
@@ -61,8 +62,12 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
     private fun onReceiveAsync(intent: Intent, pendingResult: PendingResult) {
         try {
             val action = intent.action
-            val onCharge = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1) == BatteryManager.BATTERY_STATUS_CHARGING
-            val currentLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+            GlobalStatus.batteryCapacity = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
+            GlobalStatus.batteryStatus = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+            GlobalStatus.batteryTemperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1);
+
+            val onCharge = GlobalStatus.batteryCapacity == BatteryManager.BATTERY_STATUS_CHARGING
+
             var bpLevel = chargeConfig.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, SpfConfig.CHARGE_SPF_BP_LEVEL_DEFAULT)
             if (bpLevel <= 30) {
                 showMsg("Scene：当前电池保护电量值设为小于30%，会引起一些异常，已自动替换为默认值" + SpfConfig.CHARGE_SPF_BP_LEVEL_DEFAULT + "%！", true)
@@ -73,14 +78,14 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
             //BatteryProtection 如果开启充电保护
             if (bp) {
                 if (onCharge) {
-                    if (currentLevel >= bpLevel) {
+                    if (GlobalStatus.batteryCapacity >= bpLevel) {
                         disableCharge()
-                    } else if (currentLevel < bpLevel - 20) {
+                    } else if (GlobalStatus.batteryCapacity < bpLevel - 20) {
                         resumeCharge()
                     }
                 }
                 //电量不足，恢复充电功能
-                else if (chargeDisabled && currentLevel != -1 && currentLevel < bpLevel - 20) {
+                else if (chargeDisabled && GlobalStatus.batteryCapacity != -1 && GlobalStatus.batteryCapacity < bpLevel - 20) {
                     //电量低于保护级别20
                     resumeCharge()
                 }
@@ -96,9 +101,9 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
                 resumeCharge()
             }
 
-            if (!sleepChargeMode(currentLevel, bpLevel, qcLimit)) {
+            if (!sleepChargeMode(GlobalStatus.batteryCapacity, bpLevel, qcLimit)) {
                 // 未进入电池保护状态 并且电量低于85
-                if (currentLevel < 85 && (!bp || currentLevel < (bpLevel - 20))) {
+                if (GlobalStatus.batteryCapacity < 85 && (!bp || GlobalStatus.batteryCapacity < (bpLevel - 20))) {
                     entryFastCharge()
                 }
             }

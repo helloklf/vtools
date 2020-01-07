@@ -351,12 +351,7 @@ class FragmentBattery : Fragment() {
 
     //启动电池服务
     private fun startBatteryService() {
-        try {
-            val intent = Intent(context, ServiceBattery::class.java)
-            context!!.startService(intent)
-            serviceRunning = ServiceBattery.serviceIsRunning(context!!)
-        } catch (ex: Exception) {
-        }
+        serviceRunning = ServiceBattery.startBatteryService(context!!)
     }
 
     companion object {

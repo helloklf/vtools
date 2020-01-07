@@ -8,7 +8,7 @@ import android.content.IntentFilter
 import android.os.IBinder
 
 @Suppress("DEPRECATION")
-class ServiceBattery : Service() {
+public class ServiceBattery : Service() {
     internal var batteryChangedReciver: ReciverBatterychanged? = null
 
     override fun onBind(intent: Intent): IBinder? {
@@ -62,6 +62,17 @@ class ServiceBattery : Service() {
                 }
             }
             return false
+        }
+
+        //启动电池服务
+        fun startBatteryService(context: Context): Boolean {
+            try {
+                val intent = Intent(context, ServiceBattery::class.java)
+                context.startService(intent)
+                return true
+            } catch (ex: Exception) {
+                return serviceIsRunning(context)
+            }
         }
     }
 }
