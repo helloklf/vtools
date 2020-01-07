@@ -500,6 +500,7 @@
 
     <string-array name="device_templates">
         <item>Xiaomi MIX3</item>
+        <item>Xiaomi CC9 Pro</item>
         <item>Redmi K20Pro</item>
         <item>vivo X20</item>
         <item>vivo IQOO</item>
@@ -514,6 +515,7 @@
     </string-array>
     <string-array name="device_templates_data">
         <item>MIX 3@Xiaomi@Xiaomi@perseus@perseus</item>
+        <item>MI CC9 Pro@Xiaomi@Xiaomi@tucana@tucana</item>
         <item>Redmi K20 Pro@Xiaomi@Xiaomi@raphael@raphael</item>
         <item>vivo X20@vivo@vivo@X20@X20</item>
         <item>v1824a@vivo@vivo@v1824a@v1824a</item>
