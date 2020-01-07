@@ -1,7 +1,5 @@
 #!/system/bin/sh
 
-# sh /data/user/0/com.omarea.vtools/files/private/scene_tools/install_busybox.sh /data/user/0/com.omarea.vtools/files/private/scene_tools
-
 install_path="$1"
 
 function busybox_install() {

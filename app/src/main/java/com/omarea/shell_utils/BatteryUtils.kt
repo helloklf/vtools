@@ -253,11 +253,11 @@ class BatteryUtils {
                     if (limit > 3000) {
                         var current = 3000
                         while (current < limit - 300 && current < 9700) {
-                            KeepShellAsync.getInstance("setChargeInputLimit").doCmd(fastChargeScript + current)
+                            KeepShellAsync.getInstance("setChargeInputLimit").doCmd(fastChargeScript + current + " 1")
                             current += 300
                         }
                     }
-                    KeepShellAsync.getInstance("setChargeInputLimit").doCmd(fastChargeScript + limit)
+                    KeepShellAsync.getInstance("setChargeInputLimit").doCmd(fastChargeScript + limit + " 0")
                     changeLimitRunning = false
                     true
                 } else {
