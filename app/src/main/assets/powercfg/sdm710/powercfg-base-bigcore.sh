@@ -83,8 +83,8 @@ echo 2000 > /proc/sys/vm/dirty_writeback_centisecs
 
 # killall -9 vendor.qti.hardware.perf@1.0-service
 
-echo 4-5 > /dev/cpuset/background/cpus
-echo 3-6 > /dev/cpuset/system-background/cpus
+echo 1-2 > /dev/cpuset/background/cpus
+echo 1-4 > /dev/cpuset/system-background/cpus
 echo 6-7 > /dev/cpuset/foreground/boost/cpus
 echo 0-7 > /dev/cpuset/foreground/cpus
 echo 0-7 > /dev/cpuset/top-app/cpus

@@ -113,8 +113,8 @@ elif [ "$action" = "balance" ]; then
 	set_cpu_freq 5000 1708800 5000 2208000
 	set_input_boost_freq 1209600 0 40
 
-	echo 1516800 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
-	echo 1363200 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
+	echo 1324800 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
+	echo 1132800 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
 
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
