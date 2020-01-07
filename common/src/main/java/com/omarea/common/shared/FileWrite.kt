@@ -62,7 +62,7 @@ object FileWrite {
     }
 
     fun getPrivateFileDir(context: Context): String {
-        return context.filesDir.absolutePath + "/private/"
+        return context.filesDir.absolutePath + "/"
     }
 
     fun getPrivateFilePath(context: Context, outName: String): String {
