@@ -66,7 +66,7 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
             GlobalStatus.batteryStatus = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
             GlobalStatus.batteryTemperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1) / 10.0f;
 
-            val onCharge = GlobalStatus.batteryCapacity == BatteryManager.BATTERY_STATUS_CHARGING
+            val onCharge = GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_CHARGING
 
             var bpLevel = chargeConfig.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, SpfConfig.CHARGE_SPF_BP_LEVEL_DEFAULT)
             if (bpLevel <= 30) {
