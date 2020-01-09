@@ -77,16 +77,16 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
     private fun startTimer() {
         if (timer == null && screenOn) {
             timer = Timer(true).apply {
-                val interval = if (batteryMonitro) 2 else 10
+                val interval = if (batteryMonitro) 2 else 6
                 scheduleAtFixedRate(object : TimerTask() {
                     private var ticks = 0
                     override fun run() {
-                        updateModeNofity() // 耗电统计 定时更新通知显示
+                        updateModeNofity(true) // 耗电统计 定时更新通知显示
 
                         ticks += interval
                         ticks %= 60
                         if (ticks == 0) {
-                            SceneMode.clearFreezeAppTimeLimit()
+                            SceneMode.clearFreezeAppTimeLimit(spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, false))
                         }
                     }
                 }, 0, interval * 1000L)
@@ -170,9 +170,9 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
     /**
      * 更新通知
      */
-    private fun updateModeNofity() {
+    private fun updateModeNofity(saveLog:Boolean = false) {
         if (screenOn) {
-            notifyHelper.notify()
+            notifyHelper.notify(saveLog)
         }
     }
 

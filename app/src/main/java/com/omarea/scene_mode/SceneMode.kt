@@ -9,6 +9,8 @@ import com.omarea.model.AppConfigInfo
 import com.omarea.store.AppConfigStore
 
 class SceneMode private constructor(private var contentResolver: ContentResolver, private var store: AppConfigStore) {
+    private var freezeSuspend = false
+
     class FreezeAppHistory {
         var startTime: Long = 0
         var leaveTime: Long = 0
@@ -84,7 +86,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
                 val firstItem = freezList.first()
                 // val currentAppConfig = store.getAppConfig(firstItem.packageName)
                 // if (currentAppConfig.freeze) {
-                KeepShellPublic.doCmdSync("pm disable " + firstItem.packageName)
+                KeepShellPublic.doCmdSync("pm enable ${firstItem.packageName}\npm suspend ${firstItem.packageName}\nam force-stop ${firstItem.packageName}")
                 // }
                 freezList.remove(firstItem)
             }
@@ -93,13 +95,19 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
         /**
          * 冻结已经后台超时的偏见应用
          */
-        fun clearFreezeAppTimeLimit() {
+        fun clearFreezeAppTimeLimit(freezeSuspend: Boolean) {
             val currentTime = System.currentTimeMillis()
-            val clearList = freezList.filter { it.leaveTime > -1 && currentTime - it.leaveTime > freezAppTimeLimit && it.packageName != lastAppPackageName }
+            val clearList = freezList.filter {
+                it.leaveTime > -1 && currentTime - it.leaveTime > freezAppTimeLimit && it.packageName != lastAppPackageName
+            }
             clearList.forEach {
                 // val currentAppConfig = store.getAppConfig(it.packageName)
                 // if (currentAppConfig.freeze) {
-                KeepShellPublic.doCmdSync("pm disable " + it.packageName)
+                if (freezeSuspend) {
+                    KeepShellPublic.doCmdSync("pm enable ${it.packageName}\npm suspend ${it.packageName}\nam force-stop ${it.packageName}")
+                } else {
+                    KeepShellPublic.doCmdSync("pm unsuspend ${it.packageName}\npm disable ${it.packageName}")
+                }
                 // }
                 freezList.remove(it)
             }

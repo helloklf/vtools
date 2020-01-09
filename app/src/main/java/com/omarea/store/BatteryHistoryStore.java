@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class BatteryHistoryStore extends SQLiteOpenHelper {
     public BatteryHistoryStore(Context context) {
-        super(context, "battery-history", null, 1);
+        super(context, "battery-history", null, 2);
     }
 
     @Override
@@ -35,7 +35,9 @@ public class BatteryHistoryStore extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        if (oldVersion == 1) {
+            db.delete("battery_io", " 1 = 1", new String[]{});
+        }
     }
 
     public boolean insertHistory(BatteryStatus batteryStatus) {
@@ -85,7 +87,7 @@ public class BatteryHistoryStore extends SQLiteOpenHelper {
     public boolean clearData() {
         try {
             SQLiteDatabase database = getWritableDatabase();
-            database.delete("battery_io", " 1 =1", new String[]{});
+            database.delete("battery_io", " 1 = 1", new String[]{});
             return true;
         } catch (Exception ex) {
             return false;

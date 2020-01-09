@@ -18,6 +18,8 @@ class BatteryUtils {
         var isHuawei = false
         var ioInfoSupported = true
         private var fastChargeScript = ""
+        private var changeLimitRunning = false
+        private var isFirstRun = true
     }
 
     //是否兼容此设备
@@ -88,6 +90,18 @@ class BatteryUtils {
                         } else if (info.startsWith("POWER_SUPPLY_VOLTAGE_MAX_DESIGN=")) {
                             val keyrowd = "POWER_SUPPLY_VOLTAGE_MAX_DESIGN="
                             stringBuilder.append("设计电压 = ")
+                            val v = Integer.parseInt(info.substring(keyrowd.length, keyrowd.length + 2))
+                            stringBuilder.append(v / 10.0f)
+                            stringBuilder.append("v")
+                        } else if (info.startsWith("POWER_SUPPLY_VOLTAGE_MIN=")) {
+                            val keyrowd = "POWER_SUPPLY_VOLTAGE_MIN="
+                            stringBuilder.append("最小电压 = ")
+                            val v = Integer.parseInt(info.substring(keyrowd.length, keyrowd.length + 2))
+                            stringBuilder.append(v / 10.0f)
+                            stringBuilder.append("v")
+                        } else if (info.startsWith("POWER_SUPPLY_VOLTAGE_MAX=")) {
+                            val keyrowd = "POWER_SUPPLY_VOLTAGE_MAX="
+                            stringBuilder.append("最大电压 = ")
                             val v = Integer.parseInt(info.substring(keyrowd.length, keyrowd.length + 2))
                             stringBuilder.append(v / 10.0f)
                             stringBuilder.append("v")
@@ -227,8 +241,6 @@ class BatteryUtils {
         return RootFile.itemExists("/sys/class/power_supply/battery/battery_charging_enabled") || RootFile.itemExists("/sys/class/power_supply/battery/input_suspend")
     }
 
-    private var changeLimitRunning = false
-    private var isFirstRun = true
     fun setChargeInputLimit(limit: Int, context: Context): Boolean {
         if (changeLimitRunning) {
             return false

@@ -92,6 +92,6 @@ class AdapterBatteryStats(private val context: Context, private val list: ArrayL
     }
 
     init {
-        timerRate = if (accuMode) 2 else 10
+        timerRate = if (accuMode) 2 else 6
     }
 }

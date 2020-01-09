@@ -92,6 +92,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/settings_disable_selinux_desc" />
+
+
+                <Switch
+                    android:id="@+id/settings_freeze_suspend"
+                    style="@style/textTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:text="@string/settings_freeze_suspend" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/settings_freeze_suspend_desc" />
             </LinearLayout>
 
             <LinearLayout style="@style/ListCardItem">

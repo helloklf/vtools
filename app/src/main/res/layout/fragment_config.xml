@@ -391,7 +391,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
-                                android:text="每2秒刷新电池信息（默认10秒），获得更精准的耗电速度信息，会增加亮屏时后台耗电（待机自动暂停）" />
+                                android:text="每2秒刷新电池信息（默认6秒），获得更精准的耗电速度信息，会增加亮屏时后台耗电（待机自动暂停）" />
 
                             <Switch
                                 android:id="@+id/scene_notify"

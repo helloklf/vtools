@@ -14,8 +14,9 @@ max='/sys/class/power_supply/battery/constant_charge_current_max'
 bce='/sys/class/power_supply/battery/battery_charging_enabled'
 suspend='/sys/class/power_supply/battery/input_suspend'
 
-if [[ -f $max ]]
+if [[ -f $max ]] && [[ `cat $max` = "0" ]]
 then
+    echo '>>'
     set_value $max 3000000
 fi;
 

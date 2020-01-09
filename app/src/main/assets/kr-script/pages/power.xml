@@ -1,15 +1,36 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
-<group>
+<root>
     <resource dir="file:///android_asset/kr-script/battery" />
-    <action confirm="true">
-        <title>清理电池优化白名单</title>
-        <desc>适用于Android M+，清理Doze模式白名单应用（某些系统喜欢把一些应用自动添加到白名单，导致这些应用无法被休眠！）</desc>
-        <script>. ./kr-script/battery/doze_clear.sh</script>
-    </action>
+    <group>
+        <action confirm="true">
+            <title>清理电池优化白名单</title>
+            <desc>适用于Android M+，清理Doze模式白名单应用（某些系统喜欢把一些应用自动添加到白名单，导致这些应用无法被休眠！）</desc>
+            <script>. ./kr-script/battery/doze_clear.sh</script>
+        </action>
 
-    <action confirm="true">
-        <title>清空耗电记录</title>
-        <desc>清空应用耗电记录和电池曲线数据，并不是还原电池寿命！</desc>
-        <script>. ./kr-script/battery/history_clear.sh</script>
-    </action>
-</group>
+        <page
+            id="HighPowerApplicationsActivity"
+            activity="com.android.settings/.Settings$HighPowerApplicationsActivity"
+            logo-path="kr-script/battery/power_icon.png">
+            <title>电池优化</title>
+            <desc>进入系统的电池优化设置界面</desc>
+        </page>
+    </group>
+
+    <group>
+        <action confirm="true">
+            <title>清空耗电记录</title>
+            <desc>清空应用耗电记录和电池曲线数据，并不是还原电池寿命！</desc>
+            <script>. ./kr-script/battery/history_clear.sh</script>
+        </action>
+    </group>
+
+    <group title="实验性待机模式" visable=". ./kr-script/common/android_p.sh">
+        <switch auto-off="true" auto-finish="true" id="extreme_power" logo-path="kr-script/battery/extreme_power.png">
+            <title>待机模式</title>
+            <desc>杀死并冻结所有第三方应用，并进入锁屏状态</desc>
+            <get>getprop persist.vtools.suspend</get>
+            <set>. ./kr-script/battery/extreme_power.sh</set>
+        </switch>
+    </group>
+</root>

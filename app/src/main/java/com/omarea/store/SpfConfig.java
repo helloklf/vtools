@@ -63,6 +63,7 @@ public class SpfConfig {
     public static String GLOBAL_SPF_CURRENT_NOW_UNIT = "global_current_now_unit";
     public static int GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT = -1000;
     public static String GLOBAL_SPF_FREEZE_ICON_NOTIFY = "freeze_icon_notify";
+    public static String GLOBAL_SPF_FREEZE_SUSPEND = "freeze_suspend";
     public static String GLOBAL_SPF_BUSYBOX_INSTALLED = "busybox_installed";
     public static String GLOBAL_USE_PRIVATE_BUSYBOX = "use_private_busybox";
 

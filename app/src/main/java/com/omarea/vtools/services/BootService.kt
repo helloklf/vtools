@@ -243,9 +243,14 @@ class BootService : IntentService("vtools-boot") {
 
         updateNotification(getString(R.string.boot_freeze))
         val launchedFreezeApp = SceneMode.getLaunchedFreezeApp()
+        val freezeSuspend = globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, false)
         for (item in AppConfigStore(context).freezeAppList) {
             if (!launchedFreezeApp.contains(item)) {
-                keepShell.doCmdSync("pm disable $item")
+                if (freezeSuspend) {
+                    keepShell.doCmdSync("pm enable $item\npm suspend $item\nam force-stop $item")
+                } else {
+                    keepShell.doCmdSync("pm unsuspend $item\npm disable $item")
+                }
             }
         }
 

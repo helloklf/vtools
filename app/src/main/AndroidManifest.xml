@@ -91,7 +91,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.ActivitySceneOtherSettings"
+            android:name=".activities.ActivityOtherSettings"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="true"
             android:label="Scene 杂项设置"

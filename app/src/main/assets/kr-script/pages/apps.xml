@@ -71,6 +71,7 @@
             </script>
         </action>
         <switch auto-off="true" id="google_service"
+            logo-path="kr-script/apps/google.png"
             visible=". ./kr-script/common/gapps_support.sh">
             <title>启用Google服务</title>
             <desc>关闭此选项以临时禁用谷歌框架节省电量</desc>

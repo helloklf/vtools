@@ -299,7 +299,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     //右上角菜单
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_settings -> startActivity(Intent(this.applicationContext, ActivitySceneOtherSettings::class.java))
+            R.id.action_settings -> startActivity(Intent(this.applicationContext, ActivityOtherSettings::class.java))
             R.id.action_power -> DialogPower(this).showPowerMenu()
             R.id.action_graph -> {
                 if (FloatMonitor.isShown == true) {

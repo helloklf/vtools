@@ -64,7 +64,7 @@ class ReciverBatterychanged(private var service: Service) : BroadcastReceiver() 
             val action = intent.action
             GlobalStatus.batteryCapacity = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
             GlobalStatus.batteryStatus = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
-            GlobalStatus.batteryTemperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1);
+            GlobalStatus.batteryTemperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1) / 10.0f;
 
             val onCharge = GlobalStatus.batteryCapacity == BatteryManager.BATTERY_STATUS_CHARGING
 

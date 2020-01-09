@@ -8,6 +8,7 @@ import android.content.pm.ApplicationInfo
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.permissions.CheckRootStatus
@@ -48,7 +49,9 @@ class ActivityQuickStart : Activity() {
                 appInfo = pm.getApplicationInfo(appPackageName, 0)
             } catch (ex: Exception) {
             }
-            if (appInfo != null && appInfo.enabled) {
+            // SysApi 普通应用无法访问
+            // val isPackageSuspended = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && pm.isPackageSuspended(appPackageName)
+            if (appInfo != null && appInfo.enabled && !getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, false)) {
                 startApp()
             } else {
                 checkRoot(CheckRootSuccess(this, appPackageName))
@@ -63,7 +66,7 @@ class ActivityQuickStart : Activity() {
             context.get()!!.hasRoot = true
 
             // TODO:启动应用
-            KeepShellPublic.doCmdSync("pm unhide ${appPackageName}\npm enable ${appPackageName}\n")
+            KeepShellPublic.doCmdSync("pm unsuspend ${appPackageName}\npm unhide ${appPackageName}\npm enable ${appPackageName}\n")
             context.get()!!.startApp()
         }
 
@@ -77,13 +80,13 @@ class ActivityQuickStart : Activity() {
         try {
             val appIntent = pm.getLaunchIntentForPackage(appPackageName)
             if (appIntent != null) {
-                Thread({
+                Thread {
                     // LauncherApps().startMainActivity()
                     appIntent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION or Intent.FLAG_ACTIVITY_NEW_TASK
                     startActivity(appIntent)
                     // overridePendingTransition(0, 0)
                     SceneMode.setFreezeAppStartTime(appPackageName)
-                }).start()
+                }.start()
                 return
             }
         } catch (ex: Exception) {

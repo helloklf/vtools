@@ -23,7 +23,7 @@ import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_other_settings.*
 
-class ActivitySceneOtherSettings : AppCompatActivity() {
+class ActivityOtherSettings : AppCompatActivity() {
     private lateinit var spf: SharedPreferences
     private var myHandler = Handler()
 
@@ -105,6 +105,14 @@ class ActivitySceneOtherSettings : AppCompatActivity() {
                 spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_STARTED_FSTRIM, value).commit()
             }
         }
+
+        settings_freeze_suspend.setOnClickListener {
+            val value = (it as Switch).isChecked
+            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, value).commit()
+        }
+        settings_freeze_suspend.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, false)
+        settings_freeze_suspend.isEnabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+
         val systemBusyboxInstalled = Busybox.systemBusyboxInstalled()
         settings_private_busybox.isChecked = (!systemBusyboxInstalled) && spf.getBoolean(SpfConfig.GLOBAL_USE_PRIVATE_BUSYBOX, false)
         settings_private_busybox.isEnabled = (!systemBusyboxInstalled)

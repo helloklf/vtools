@@ -458,7 +458,7 @@
     <string name="freeze_shortcut_add_fail">创建失败</string>
     <string name="freeze_add_app">添加偏见</string>
     <string name="freeze_batch_add_wran">批量添加快捷方式可能会失败，你可以长按应用图标，发送单个快捷方式到桌面！</string>
-    <string name="freeze_shortcut_rebuild">向桌面批量添加快捷方式</string>
+    <string name="freeze_shortcut_rebuild">向桌面添加快捷方式</string>
     <string name="freeze_enable_all">全部解冻</string>
     <string name="freeze_disable_all">全部冻结</string>
     <string name="freeze_hidden_entrance">从桌面隐藏本界面入口</string>
@@ -532,4 +532,6 @@
     <string name="magisk_install_title">Scene附加模块</string>
     <string name="cache_recycle">回收缓存</string>
     <string name="dynamic_auto_disabled">未检测到配置文件，已自动禁用动态响应！</string>
+    <string name="settings_freeze_suspend">冻结偏见应用</string>
+    <string name="settings_freeze_suspend_desc">偏见应用清理后台时不隐藏原始图标，而仅仅将其冻结。需要Android P+</string>
 </resources>

@@ -47,11 +47,7 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
     }
 
     //显示通知
-    internal fun notify() {
-        updateNotic()
-    }
-
-    private fun updateNotic() {
+    internal fun notify(saveLog:Boolean = false) {
         try {
             var currentMode = getCurrentPowerMode()
             if (currentMode.length == 0) {
@@ -63,7 +59,7 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
                 currentApp = context.packageName
             }
 
-            notifyPowerModeChange(currentApp, currentMode)
+            notifyPowerModeChange(currentApp, currentMode, saveLog)
         } catch (ex: Exception) {
             Log.e("NotifyHelper", "" + ex.localizedMessage)
         }
@@ -88,15 +84,10 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
         }
     }
 
-    private fun notifyPowerModeChange(packageName: String, mode: String) {
+    private fun notifyPowerModeChange(packageName: String, mode: String, saveLog: Boolean = false) {
         if (!showNofity) {
             return
         }
-
-        val status = BatteryStatus()
-        status.packageName = packageName
-        status.mode = mode
-        status.time = System.currentTimeMillis()
 
         var batteryImage: Bitmap? = null
         var batteryIO: String? = ""
@@ -107,12 +98,9 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
             updateBatteryStatus();
 
             batteryIO = "${GlobalStatus.batteryCurrentNow}mA"
-            status.temperature = GlobalStatus.batteryTemperature.toFloat()
             batteryTemp = "${GlobalStatus.batteryTemperature}°C"
 
-            status.status = GlobalStatus.batteryStatus
-            if (status.status == BatteryManager.BATTERY_STATUS_DISCHARGING) {
-                status.io = GlobalStatus.batteryCurrentNow.toInt()
+            if (GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_DISCHARGING) {
                 batteryImage = BitmapFactory.decodeResource(context.resources, getBatteryIcon(GlobalStatus.batteryCapacity))
             } else {
                 batteryImage = BitmapFactory.decodeResource(context.resources, R.drawable.b_4)
@@ -126,10 +114,16 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
             batteryHistoryStore = BatteryHistoryStore(context)
         }
 
-        if (status.status == BatteryManager.BATTERY_STATUS_DISCHARGING) {
-            if (status.status > Int.MIN_VALUE && status.io > Int.MIN_VALUE) {
-                batteryHistoryStore!!.insertHistory(status)
-            }
+        if (saveLog && GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_DISCHARGING) {
+            val status = BatteryStatus()
+            status.packageName = packageName
+            status.mode = mode
+            status.time = System.currentTimeMillis()
+            status.temperature = GlobalStatus.batteryTemperature
+            status.status = GlobalStatus.batteryStatus
+            status.io = GlobalStatus.batteryCurrentNow.toInt()
+
+            batteryHistoryStore!!.insertHistory(status)
         }
 
         val remoteViews = RemoteViews(context.packageName, R.layout.layout_notification)
