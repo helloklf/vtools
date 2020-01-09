@@ -3,7 +3,6 @@ package com.omarea.vtools.kr_script
 import android.app.Activity
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.widget.Toast
 import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.executor.ScriptEnvironmen

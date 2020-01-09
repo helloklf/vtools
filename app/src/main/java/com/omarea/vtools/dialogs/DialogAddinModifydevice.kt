@@ -5,7 +5,6 @@ import android.app.AlertDialog
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Context.CLIPBOARD_SERVICE
-import android.os.Build
 import android.util.Base64
 import android.view.LayoutInflater
 import android.widget.Button

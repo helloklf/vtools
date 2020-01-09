@@ -7,11 +7,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.support.v4.view.KeyEventDispatcher;
-import android.widget.Toast;
 
 import java.lang.reflect.Method;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;

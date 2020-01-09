@@ -11,17 +11,17 @@ import android.os.Build
 import android.support.v4.app.NotificationCompat
 import com.omarea.charger_booster.ServiceBattery
 import com.omarea.common.shared.FileWrite
+import com.omarea.common.shared.RawText
 import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KernelProrp
 import com.omarea.scene_mode.ModeConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.scene_mode.SceneMode
 import com.omarea.shell_utils.*
-import com.omarea.store.SceneConfigStore
 import com.omarea.store.CpuConfigStorage
+import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.utils.CommonCmds
-import com.omarea.common.shared.RawText
 import com.omarea.vtools.R
 
 /**

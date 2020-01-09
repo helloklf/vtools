@@ -8,7 +8,6 @@ import android.content.pm.ApplicationInfo
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.permissions.CheckRootStatus

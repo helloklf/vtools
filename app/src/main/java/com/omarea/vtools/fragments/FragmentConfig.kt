@@ -27,8 +27,8 @@ import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.model.Appinfo
 import com.omarea.scene_mode.ModeConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
-import com.omarea.store.SceneConfigStore
 import com.omarea.store.BatteryHistoryStore
+import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.ui.SceneModeAdapter
 import com.omarea.ui.SearchTextWatcher

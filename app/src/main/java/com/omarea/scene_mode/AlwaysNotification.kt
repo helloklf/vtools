@@ -15,7 +15,6 @@ import com.omarea.store.BatteryHistoryStore
 import com.omarea.store.SpfConfig
 import com.omarea.utils.GlobalStatus
 import com.omarea.vtools.R
-import com.omarea.vtools.activities.ActivityQuickSwitchMode
 
 /**
  * 常驻通知
@@ -43,11 +42,12 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
             return R.drawable.b_1
         if (capacity < 70)
             return R.drawable.b_2
+
         return R.drawable.b_3
     }
 
     //显示通知
-    internal fun notify(saveLog:Boolean = false) {
+    internal fun notify(saveLog: Boolean = false) {
         try {
             var currentMode = getCurrentPowerMode()
             if (currentMode.length == 0) {
@@ -137,12 +137,11 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
             remoteViews.setImageViewBitmap(R.id.notify_battery_icon, batteryImage)
         }
 
-        val intent = PendingIntent.getActivity(
+        val intent = PendingIntent.getBroadcast(
                 context,
                 0,
-                Intent(context, ActivityQuickSwitchMode::class.java).putExtra("packageName", packageName),
-                PendingIntent.FLAG_UPDATE_CURRENT
-        )
+                Intent(context, ReceiverSceneMode::class.java).putExtra("packageName", packageName),
+                PendingIntent.FLAG_UPDATE_CURRENT)
 
         val icon = getModIcon(mode)
         notificationManager = context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
