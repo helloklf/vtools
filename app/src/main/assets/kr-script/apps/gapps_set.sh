@@ -1,17 +1,20 @@
 #!/system/bin/sh
 
+apps="
+com.google.android.gsf
+com.google.android.gsf.login
+com.google.android.gms
+com.android.vending
+com.google.android.play.games
+com.google.android.syncadapters.contacts
+"
 if [ $state = '1' ]; then
-    pm enable com.google.android.gsf 2> /dev/null
-    pm enable com.google.android.gsf.login 2> /dev/null
-    pm enable com.google.android.gms 2> /dev/null
-    pm enable com.android.vending 2> /dev/null
-    pm enable com.google.android.play.games 2> /dev/null
-    pm enable com.google.android.syncadapters.contacts 2> /dev/null
+    for app in $apps; do
+        pm enable $app 2> /dev/null
+        pm unsuspend $app 2> /dev/null
+    done
 else
-    pm disable com.google.android.gsf 2> /dev/null
-    pm disable com.google.android.gsf.login 2> /dev/null
-    pm disable com.google.android.gms 2> /dev/null
-    pm disable com.android.vending 2> /dev/null
-    pm disable com.google.android.play.games 2> /dev/null
-    pm disable com.google.android.syncadapters.contacts 2> /dev/null
+    for app in $apps; do
+        pm suspend $app 2> /dev/null || pm disable $app 2> /dev/null
+    done
 fi;

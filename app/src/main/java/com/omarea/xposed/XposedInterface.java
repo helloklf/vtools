@@ -263,6 +263,14 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
                     new DeviceInfo().simulationR11(loadPackageParam);
                 }
                 break;
+            // nova
+            case "com.teslacoilsw.launcher":
+            // poco
+            case "com.mi.android.globallauncher":
+            // miui
+            case "com.miui.home": {
+                new MiuiHome().appFreezeInject(loadPackageParam);
+            }
         }
 
         // WebView 调试（全局）
