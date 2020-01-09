@@ -58,7 +58,13 @@
                 android:id="@+id/app_details_auto"
                 style="@style/ListCardItem">
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="基本设置" />
+
                 <LinearLayout
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
@@ -78,15 +84,6 @@
                         android:text="@string/powersave"
                         android:textAlignment="textEnd" />
                 </LinearLayout>
-
-                <Switch
-                    android:id="@+id/app_details_disbackground"
-                    style="@style/textTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:text="离开主界面立即休眠"
-                    android:visibility="gone" />
 
                 <Switch
                     android:id="@+id/app_details_aloowlight"
@@ -110,7 +107,6 @@
                 style="@style/ListCardItem">
 
                 <TextView
-                    style="@style/textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="专注模式" />
@@ -176,7 +172,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/app_freez_config"
                 style="@style/ListCardItem">
 
                 <Switch
@@ -191,7 +186,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:text="锁屏之后，将此应用冻结(禁用)，适于后台高能耗的非通讯类APP" />
+                    android:text="锁屏之后，将此应用冻结(禁用)，适用于后台非常耗电但又偶尔需要打开的应用" />
             </LinearLayout>
 
             <TextView
@@ -208,7 +203,6 @@
             <LinearLayout style="@style/ListCardItemLast">
 
                 <TextView
-                    style="@style/textTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="高级设定（Xposed）" />
@@ -273,11 +267,13 @@
                     android:text="阻止“正在后台运行”通知（全局）" />
 
                 <TextView
+                    android:id="@+id/addin_auto_run_help"
                     style="@style/textSmall"
+                    android:textColor="?colorAccent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:text="高级设定功能需要额外的插件（Scene-高级设定）支持。\n如果你使用了黑域、绿色运行、阻止运行等软件，请从手动设置，允许它自启动！否则Scene无法连接到插件。" />
+                    android:text="高级设定功能由一个名为“Scene-高级设定”的无界面应用提供，你需要在自启动管理中找到它，并单独设置允许自启动。否则Scene无法与之通讯！" />
             </LinearLayout>
         </LinearLayout>
     </com.omarea.common.ui.OverScrollView>

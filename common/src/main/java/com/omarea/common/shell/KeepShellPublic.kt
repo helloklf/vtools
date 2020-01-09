@@ -6,6 +6,13 @@ package com.omarea.common.shell
 object KeepShellPublic {
     private var keepShell: KeepShell? = null
 
+    fun getDefaultInstance(): KeepShell {
+        if (keepShell == null) {
+            keepShell = KeepShell()
+        }
+        return keepShell!!
+    }
+
     fun doCmdSync(commands: List<String>): Boolean {
         val stringBuilder = StringBuilder()
 
@@ -19,18 +26,12 @@ object KeepShellPublic {
 
     //执行脚本
     fun doCmdSync(cmd: String): String {
-        if (keepShell == null) {
-            keepShell = KeepShell()
-        }
-        return keepShell!!.doCmdSync(cmd)
+        return getDefaultInstance().doCmdSync(cmd)
     }
 
     //执行脚本
     fun checkRoot(): Boolean {
-        if (keepShell == null) {
-            keepShell = KeepShell()
-        }
-        return keepShell!!.checkRoot()
+        return getDefaultInstance().checkRoot()
     }
 
     fun tryExit() {

@@ -3,7 +3,6 @@ package com.omarea.vtools.activities
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.*
-import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -24,14 +23,13 @@ import android.widget.Toast
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
-import com.omarea.model.AppConfigInfo
+import com.omarea.model.SceneConfigInfo
 import com.omarea.permissions.NotificationListener
 import com.omarea.permissions.WriteSettings
-import com.omarea.scene_mode.FreezeAppShortcutHelper
 import com.omarea.scene_mode.ImmersivePolicyControl
 import com.omarea.scene_mode.ModeConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
-import com.omarea.store.AppConfigStore
+import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.ui.IntInputFilter
 import com.omarea.utils.AccessibleServiceHelper
@@ -45,7 +43,7 @@ import java.io.File
 class ActivityAppDetails : AppCompatActivity() {
     var app = ""
     lateinit var immersivePolicyControl: ImmersivePolicyControl
-    lateinit var appConfigInfo: AppConfigInfo
+    lateinit var sceneConfigInfo: SceneConfigInfo
     private var dynamicCpu: Boolean = false
     private var _result = RESULT_CANCELED
     private var vAddinsInstalled = false
@@ -99,20 +97,20 @@ class ActivityAppDetails : AppCompatActivity() {
                     for (key in config.keys()) {
                         when (key) {
                             "dpi" -> {
-                                appConfigInfo.dpi = config.getInt(key)
+                                sceneConfigInfo.dpi = config.getInt(key)
                             }
                             "excludeRecent" -> {
-                                appConfigInfo.excludeRecent = config.getBoolean(key)
+                                sceneConfigInfo.excludeRecent = config.getBoolean(key)
                             }
                             "smoothScroll" -> {
-                                appConfigInfo.smoothScroll = config.getBoolean(key)
+                                sceneConfigInfo.smoothScroll = config.getBoolean(key)
                             }
                         }
                     }
-                    app_details_scrollopt.isChecked = appConfigInfo.smoothScroll
-                    app_details_excludetask.isChecked = appConfigInfo.excludeRecent
-                    if (appConfigInfo.dpi >= 96) {
-                        app_details_dpi.text = appConfigInfo.dpi.toString()
+                    app_details_scrollopt.isChecked = sceneConfigInfo.smoothScroll
+                    app_details_excludetask.isChecked = sceneConfigInfo.excludeRecent
+                    if (sceneConfigInfo.dpi >= 96) {
+                        app_details_dpi.text = sceneConfigInfo.dpi.toString()
                     } else {
                         app_details_dpi.text = "默认"
                     }
@@ -276,16 +274,12 @@ class ActivityAppDetails : AppCompatActivity() {
         }
 
         app = extras.getString("app")!!
-        needKeyCapture = AppConfigStore(this.applicationContext).needKeyCapture()
+        needKeyCapture = SceneConfigStore(this.applicationContext).needKeyCapture()
 
         if (app == "android" || app == "com.android.systemui" || app == "com.android.webview" || app == "mokee.platform" || app == "com.miui.rom") {
             app_details_auto.visibility = View.GONE
             app_details_assist.visibility = View.GONE
             app_details_freeze.isEnabled = false
-        }
-
-        if ((packageManager.getPackageInfo(app, 0).applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0 || packageManager.getLaunchIntentForPackage(app) == null) {
-            app_freez_config.visibility = View.GONE
         }
 
         immersivePolicyControl = ImmersivePolicyControl(contentResolver)
@@ -382,11 +376,11 @@ class ActivityAppDetails : AppCompatActivity() {
             }
         }
 
-        appConfigInfo = AppConfigStore(this).getAppConfig(app)
+        sceneConfigInfo = SceneConfigStore(this).getAppConfig(app)
 
         app_details_hidebtn.setOnClickListener {
             val isChecked = (it as Switch).isChecked
-            appConfigInfo.disButton = isChecked
+            sceneConfigInfo.disButton = isChecked
             if (isChecked && !needKeyCapture) {
                 saveConfig()
                 sendBroadcast(Intent(getString(R.string.scene_key_capture_change_action)))
@@ -402,11 +396,8 @@ class ActivityAppDetails : AppCompatActivity() {
                     (it as Switch).isChecked = !it.isChecked
                     return@setOnClickListener
                 }
-                appConfigInfo.disNotice = (it as Switch).isChecked
+                sceneConfigInfo.disNotice = (it as Switch).isChecked
             }
-        }
-        app_details_disbackground.setOnClickListener {
-            appConfigInfo.disBackgroundRun = (it as Switch).isChecked
         }
         app_details_aloowlight.setOnClickListener {
             if (!WriteSettings().getPermission(this)) {
@@ -415,41 +406,29 @@ class ActivityAppDetails : AppCompatActivity() {
                 (it as Switch).isChecked = false
                 return@setOnClickListener
             }
-            appConfigInfo.aloneLight = (it as Switch).isChecked
+            sceneConfigInfo.aloneLight = (it as Switch).isChecked
         }
         // TODO: 输入DPI
-        if (appConfigInfo.dpi >= 96) {
-            app_details_dpi.text = appConfigInfo.dpi.toString()
+        if (sceneConfigInfo.dpi >= 96) {
+            app_details_dpi.text = sceneConfigInfo.dpi.toString()
         }
         app_details_excludetask.setOnClickListener {
-            appConfigInfo.excludeRecent = (it as Switch).isChecked
+            sceneConfigInfo.excludeRecent = (it as Switch).isChecked
         }
         app_details_scrollopt.setOnClickListener {
-            appConfigInfo.smoothScroll = (it as Switch).isChecked
+            sceneConfigInfo.smoothScroll = (it as Switch).isChecked
         }
         app_details_gps.setOnClickListener {
-            appConfigInfo.gpsOn = (it as Switch).isChecked
+            sceneConfigInfo.gpsOn = (it as Switch).isChecked
         }
 
         app_details_freeze.setOnClickListener {
-            val value = (it as Switch).isChecked
-            if (value) {
-                if (FreezeAppShortcutHelper().createShortcut(this.applicationContext, appConfigInfo.packageName)) {
-                    appConfigInfo.freeze = true
-                    KeepShellPublic.doCmdSync("pm disable " + appConfigInfo.packageName)
-                    Toast.makeText(this, "当前应用已禁用，但你可以通过刚刚添加的快捷方式启动^_^", Toast.LENGTH_LONG).show()
-                } else {
-                    Toast.makeText(this, "创建启动快捷方式失败，没有它你没法启动被冻结的应用，所以你不能打开这个功能...", Toast.LENGTH_LONG).show()
-                    it.isChecked = false
-                }
-            } else {
-                appConfigInfo.freeze = value
-            }
+            sceneConfigInfo.freeze = (it as Switch).isChecked
         }
 
         if (XposedCheck.xposedIsRunning()) {
-            if (appConfigInfo.dpi >= 96) {
-                app_details_dpi.text = appConfigInfo.dpi.toString()
+            if (sceneConfigInfo.dpi >= 96) {
+                app_details_dpi.text = sceneConfigInfo.dpi.toString()
             } else {
                 app_details_dpi.text = "默认"
             }
@@ -458,13 +437,13 @@ class ActivityAppDetails : AppCompatActivity() {
                 val view = layoutInflater.inflate(R.layout.dialog_dpi_input, null)
                 val inputDpi = view.findViewById<EditText>(R.id.input_dpi)
                 inputDpi.setFilters(arrayOf(IntInputFilter()));
-                if (appConfigInfo.dpi >= 96) {
-                    inputDpi.setText(appConfigInfo.dpi.toString())
+                if (sceneConfigInfo.dpi >= 96) {
+                    inputDpi.setText(sceneConfigInfo.dpi.toString())
                 }
                 view.findViewById<Button>(R.id.btn_confirm).setOnClickListener {
                     val dpiText = inputDpi.text.toString()
                     if (dpiText.isEmpty()) {
-                        appConfigInfo.dpi = 0
+                        sceneConfigInfo.dpi = 0
                         return@setOnClickListener
                     } else {
                         try {
@@ -473,7 +452,7 @@ class ActivityAppDetails : AppCompatActivity() {
                                 Toast.makeText(applicationContext, "DPI的值必须大于96", Toast.LENGTH_SHORT).show()
                                 return@setOnClickListener
                             }
-                            appConfigInfo.dpi = dpi
+                            sceneConfigInfo.dpi = dpi
                             if (dpi == 0) {
                                 app_details_dpi.text = "默认"
                             } else
@@ -582,12 +561,11 @@ class ActivityAppDetails : AppCompatActivity() {
             app_details_hidestatus.isChecked = immersivePolicyControl.isHideStatusOnly(app)
         }
 
-        app_details_hidebtn.isChecked = appConfigInfo.disButton
-        app_details_hidenotice.isChecked = appConfigInfo.disNotice
-        app_details_disbackground.isChecked = appConfigInfo.disBackgroundRun
-        app_details_aloowlight.isChecked = appConfigInfo.aloneLight
-        app_details_gps.isChecked = appConfigInfo.gpsOn
-        app_details_freeze.isChecked = appConfigInfo.freeze
+        app_details_hidebtn.isChecked = sceneConfigInfo.disButton
+        app_details_hidenotice.isChecked = sceneConfigInfo.disNotice
+        app_details_aloowlight.isChecked = sceneConfigInfo.aloneLight
+        app_details_gps.isChecked = sceneConfigInfo.gpsOn
+        app_details_freeze.isChecked = sceneConfigInfo.freeze
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -603,30 +581,29 @@ class ActivityAppDetails : AppCompatActivity() {
     }
 
     private fun saveConfig() {
-        val originConfig = AppConfigStore(this).getAppConfig(appConfigInfo.packageName)
+        val originConfig = SceneConfigStore(this).getAppConfig(sceneConfigInfo.packageName)
         if (
-                appConfigInfo.aloneLight != originConfig.aloneLight ||
-                appConfigInfo.disNotice != originConfig.disNotice ||
-                appConfigInfo.disButton != originConfig.disButton ||
-                appConfigInfo.disBackgroundRun != originConfig.disBackgroundRun ||
-                appConfigInfo.gpsOn != originConfig.gpsOn ||
-                appConfigInfo.dpi != originConfig.dpi ||
-                appConfigInfo.excludeRecent != originConfig.excludeRecent ||
-                appConfigInfo.smoothScroll != originConfig.smoothScroll ||
-                appConfigInfo.freeze != originConfig.freeze
+                sceneConfigInfo.aloneLight != originConfig.aloneLight ||
+                sceneConfigInfo.disNotice != originConfig.disNotice ||
+                sceneConfigInfo.disButton != originConfig.disButton ||
+                sceneConfigInfo.gpsOn != originConfig.gpsOn ||
+                sceneConfigInfo.dpi != originConfig.dpi ||
+                sceneConfigInfo.excludeRecent != originConfig.excludeRecent ||
+                sceneConfigInfo.smoothScroll != originConfig.smoothScroll ||
+                sceneConfigInfo.freeze != originConfig.freeze
         ) {
             setResult(RESULT_OK, this.intent)
         } else {
             setResult(_result, this.intent)
         }
         if (aidlConn != null) {
-            aidlConn!!.updateAppConfig(app, appConfigInfo.dpi, appConfigInfo.excludeRecent, appConfigInfo.smoothScroll)
+            aidlConn!!.updateAppConfig(app, sceneConfigInfo.dpi, sceneConfigInfo.excludeRecent, sceneConfigInfo.smoothScroll)
             aidlConn!!.setBooleanValue("com.android.systemui_hide_su", app_details_hide_su.isChecked)
             aidlConn!!.setBooleanValue("android_webdebug", app_details_webview_debug.isChecked)
             aidlConn!!.setBooleanValue("android_dis_service_foreground", app_details_service_running.isChecked)
         } else {
         }
-        if (!AppConfigStore(this).setAppConfig(appConfigInfo)) {
+        if (!SceneConfigStore(this).setAppConfig(sceneConfigInfo)) {
             Toast.makeText(applicationContext, getString(R.string.config_save_fail), Toast.LENGTH_LONG).show()
         }
     }

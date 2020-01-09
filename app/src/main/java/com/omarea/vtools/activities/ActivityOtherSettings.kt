@@ -106,13 +106,6 @@ class ActivityOtherSettings : AppCompatActivity() {
             }
         }
 
-        settings_freeze_suspend.setOnClickListener {
-            val value = (it as Switch).isChecked
-            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, value).commit()
-        }
-        settings_freeze_suspend.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, false)
-        settings_freeze_suspend.isEnabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
-
         val systemBusyboxInstalled = Busybox.systemBusyboxInstalled()
         settings_private_busybox.isChecked = (!systemBusyboxInstalled) && spf.getBoolean(SpfConfig.GLOBAL_USE_PRIVATE_BUSYBOX, false)
         settings_private_busybox.isEnabled = (!systemBusyboxInstalled)

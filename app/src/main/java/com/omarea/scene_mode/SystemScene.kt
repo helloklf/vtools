@@ -10,7 +10,6 @@ import android.provider.Settings
 import android.util.Log
 import com.omarea.common.shell.KeepShellAsync
 import com.omarea.common.shell.KeepShellPublic
-import com.omarea.store.AppConfigStore
 import com.omarea.store.SpfConfig
 
 
@@ -107,16 +106,8 @@ class SystemScene(private var context: Context) {
         if (lowPowerMode || spfAutoConfig.getBoolean(SpfConfig.POWERSAVE + SpfConfig.ON, false)) {
             backToHome()
             // 强制Doze: dumpsys deviceidle force-idle
-            val applist = AppConfigStore(context).getDozeAppList()
             KeepShellPublic.doCmdSync("dumpsys deviceidle enable\ndumpsys deviceidle enable all\n")
             KeepShellPublic.doCmdSync("dumpsys deviceidle force-idle\n")
-            for (item in applist) {
-                keepShell.doCmd(
-                        "dumpsys deviceidle whitelist -$item\n" +
-                                "am set-inactive com.tencent.tim $item\n" +
-                                "am set-idle $item true 2>&1 > /dev/null\n" +
-                                "am make-uid-idle --user current $item 2>&1 > /dev/null\n")
-            }
             keepShell.doCmd("dumpsys deviceidle step\ndumpsys deviceidle step\ndumpsys deviceidle step\ndumpsys deviceidle step\necho 3 > /proc/sys/vm/drop_caches\n")
         }
         if (lowPowerMode) {

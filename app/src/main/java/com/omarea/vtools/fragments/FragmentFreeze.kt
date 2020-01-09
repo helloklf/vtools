@@ -25,7 +25,7 @@ import com.omarea.model.Appinfo
 import com.omarea.scene_mode.FreezeAppShortcutHelper
 import com.omarea.scene_mode.LogoCacheManager
 import com.omarea.scene_mode.SceneMode
-import com.omarea.store.AppConfigStore
+import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.ui.FreezeAppAdapter
 import com.omarea.utils.AppListHelper
@@ -86,7 +86,7 @@ class FragmentFreeze : Fragment() {
         Thread(Runnable {
             try {
                 // 数据库
-                val store = AppConfigStore(this.context)
+                val store = SceneConfigStore(this.context)
                 // 数据库中记录的已添加的偏见应用
                 freezeApps = store.freezeAppList
                 // 已添加到桌面的快捷方式
@@ -204,13 +204,13 @@ class FragmentFreeze : Fragment() {
         }
 
         val packageName = appInfo.packageName.toString()
-        val store = AppConfigStore(context)
+        val store = SceneConfigStore(context)
         val config = store.getAppConfig(packageName)
         config.freeze = false
         store.setAppConfig(config)
         store.close()
 
-        SceneMode.removeFreezeAppHistory(packageName)
+        SceneMode.getCurrentInstance()?.removeFreezeAppHistory(packageName)
         FreezeAppShortcutHelper().removeShortcut(this.context!!, packageName)
     }
 
@@ -271,7 +271,7 @@ class FragmentFreeze : Fragment() {
             val intent = this.context!!.packageManager.getLaunchIntentForPackage(appInfo.packageName.toString())
             if (intent != null) {
                 this.context!!.startActivity(intent)
-                SceneMode.setFreezeAppStartTime(appInfo.packageName.toString())
+                SceneMode.getCurrentInstance()?.setFreezeAppStartTime(appInfo.packageName.toString())
             }
         } catch (ex: java.lang.Exception) {
         }
@@ -343,7 +343,7 @@ class FragmentFreeze : Fragment() {
     private class AddFreezeAppsThread(private var context: Context, private var selectedItems: ArrayList<String>, private var onCompleted: Runnable) : Thread() {
         val packageManager: PackageManager = context.packageManager
         override fun run() {
-            val store = AppConfigStore(context)
+            val store = SceneConfigStore(context)
             val iconManager = LogoCacheManager(context)
 
             for (it in selectedItems) {
@@ -456,7 +456,7 @@ class FragmentFreeze : Fragment() {
     private class RemoveAllThread(private var context: Context, private var freezeApps: ArrayList<String>, private var onCompleted: Runnable) : Thread() {
         override fun run() {
 
-            val store = AppConfigStore(context)
+            val store = SceneConfigStore(context)
             val shortcutHelper = FreezeAppShortcutHelper()
             for (it in freezeApps) {
                 KeepShellPublic.doCmdSync("pm unhide " + it + "\n" + "pm enable " + it)
@@ -464,7 +464,7 @@ class FragmentFreeze : Fragment() {
                 config.freeze = false
                 store.setAppConfig(config)
                 shortcutHelper.removeShortcut(context, it)
-                SceneMode.removeFreezeAppHistory(it)
+                SceneMode.getCurrentInstance()?.removeFreezeAppHistory(it)
             }
             store.close()
 

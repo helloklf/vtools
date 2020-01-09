@@ -20,7 +20,7 @@ public class Appinfo {
     public String versionName = "";
     public int versionCode = 0;
     public AppType appType = AppType.UNKNOW;
-    public AppConfigInfo appConfigInfo;
+    public SceneConfigInfo sceneConfigInfo;
     public CharSequence desc;
 
     public static Appinfo getItem() {

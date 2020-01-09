@@ -27,7 +27,7 @@ import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.model.Appinfo
 import com.omarea.scene_mode.ModeConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
-import com.omarea.store.AppConfigStore
+import com.omarea.store.SceneConfigStore
 import com.omarea.store.BatteryHistoryStore
 import com.omarea.store.SpfConfig
 import com.omarea.ui.SceneModeAdapter
@@ -59,7 +59,7 @@ class FragmentConfig : Fragment() {
     private var installedList: ArrayList<Appinfo>? = null
     private var displayList: ArrayList<Appinfo>? = null
     private var packageManager: PackageManager? = null
-    private lateinit var appConfigStore: AppConfigStore
+    private lateinit var sceneConfigStore: SceneConfigStore
     private var firstMode = ModeSwitcher.DEFAULT
     private var aidlConn: IAppConfigAidlInterface? = null
     private val configInstaller = ModeConfigInstaller()
@@ -150,7 +150,7 @@ class FragmentConfig : Fragment() {
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         editor = spfPowercfg.edit()
         firstMode = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.DEFAULT)!!
-        appConfigStore = AppConfigStore(this.context)
+        sceneConfigStore = SceneConfigStore(this.context)
 
         if (spfPowercfg.all.isEmpty()) {
             initDefaultConfig()
@@ -566,8 +566,8 @@ class FragmentConfig : Fragment() {
         item.selectState = false
         val packageName = item.packageName.toString()
         item.enabledState = spfPowercfg.getString(packageName, "")
-        val configInfo = appConfigStore.getAppConfig(packageName)
-        item.appConfigInfo = configInfo
+        val configInfo = sceneConfigStore.getAppConfig(packageName)
+        item.sceneConfigInfo = configInfo
         val desc = StringBuilder()
         if (configInfo.aloneLight) {
             desc.append("独立亮度 ")
@@ -577,9 +577,6 @@ class FragmentConfig : Fragment() {
         }
         if (configInfo.disButton) {
             desc.append("屏蔽按键  ")
-        }
-        if (configInfo.disBackgroundRun) {
-            desc.append("阻止后台 ")
         }
         if (aidlConn != null) {
             try {

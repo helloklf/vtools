@@ -1,15 +1,45 @@
 package com.omarea.scene_mode
 
 import android.content.ContentResolver
+import android.content.Context
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
+import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KeepShellPublic
-import com.omarea.model.AppConfigInfo
-import com.omarea.store.AppConfigStore
+import com.omarea.model.SceneConfigInfo
+import com.omarea.store.SceneConfigStore
+import com.omarea.utils.GApps
 
-class SceneMode private constructor(private var contentResolver: ContentResolver, private var store: AppConfigStore) {
-    private var freezeSuspend = false
+class SceneMode private constructor(context: Context, private var store: SceneConfigStore) {
+    private var lastAppPackageName = "com.android.systemui"
+    private var contentResolver: ContentResolver = context.contentResolver
+    private val freezeUseSuspend = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+    private var freezList = ArrayList<FreezeAppHistory>()
+    // 偏见应用解冻数量限制
+    private val freezAppLimit = 5 // 5个
+    // 偏见应用后台超时时间
+    private val freezAppTimeLimit = 300000 // 5 分钟
+
+    companion object {
+        @Volatile
+        private var instance: SceneMode? = null
+
+        // 获取当前实例
+        fun getCurrentInstance(): SceneMode? {
+            return instance
+        }
+
+        // 获取当前实例或初始化
+        fun getInstanceOrInit(context: Context, store: SceneConfigStore): SceneMode? {
+            if (instance == null) {
+                synchronized(SceneMode::class) {
+                    instance = SceneMode(context, store)
+                }
+            }
+            return instance!!
+        }
+    }
 
     class FreezeAppHistory {
         var startTime: Long = 0
@@ -17,107 +47,83 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
         var packageName: String = ""
     }
 
-    companion object {
-        private var freezList = ArrayList<FreezeAppHistory>()
-        // 偏见应用解冻数量限制
-        private val freezAppLimit = 5 // 5个
-        // 偏见应用后台超时时间
-        private val freezAppTimeLimit = 300000 // 5分钟
 
-        var lastAppPackageName = "com.android.systemui"
+    fun getLaunchedFreezeApp(): List<String> {
+        return freezList.map { it.packageName }
+    }
 
-        @Volatile
-        var instance: SceneMode? = null
+    fun setFreezeAppLeaveTime(packageName: String) {
+        val currentHistory = removeFreezeAppHistory(packageName)
 
-        fun getInstanceOrInit(contentResolver: ContentResolver? = null, store: AppConfigStore? = null): SceneMode? {
-            if (instance == null) {
-                if (contentResolver == null || store == null) {
-                    return null
-                }
-                synchronized(SceneMode::class) {
-                    instance = SceneMode(contentResolver, store)
-                }
-            }
-            return instance!!
-        }
+        val history = if (currentHistory != null) currentHistory else FreezeAppHistory()
+        history.leaveTime = System.currentTimeMillis()
+        history.packageName = packageName
 
-        fun getLaunchedFreezeApp(): List<String> {
-            return freezList.map { it.packageName }
-        }
+        freezList.add(history)
+        clearFreezeAppCountLimit()
+    }
 
-        fun setFreezeAppLeaveTime(packageName: String) {
-            val currentHistory = removeFreezeAppHistory(packageName)
+    fun setFreezeAppStartTime(packageName: String) {
+        removeFreezeAppHistory(packageName)
 
-            val history = if (currentHistory != null) currentHistory else FreezeAppHistory()
-            history.leaveTime = System.currentTimeMillis()
-            history.packageName = packageName
+        val history = FreezeAppHistory()
+        history.startTime = System.currentTimeMillis()
+        history.leaveTime = -1
+        history.packageName = packageName
 
-            freezList.add(history)
-            clearFreezeAppCountLimit()
-        }
+        freezList.add(history)
+        clearFreezeAppCountLimit()
+    }
 
-        fun setFreezeAppStartTime(packageName: String) {
-            removeFreezeAppHistory(packageName)
-
-            val history = FreezeAppHistory()
-            history.startTime = System.currentTimeMillis()
-            history.leaveTime = -1
-            history.packageName = packageName
-
-            freezList.add(history)
-            clearFreezeAppCountLimit()
-        }
-
-        fun removeFreezeAppHistory(packageName: String): FreezeAppHistory? {
-            for (it in freezList) {
-                if (it.packageName == packageName) {
-                    freezList.remove(it)
-                    return it
-                }
-            }
-            return null
-        }
-
-        /**
-         * 当解冻的偏见应用数量超过限制，冻结最先解冻的应用
-         */
-        fun clearFreezeAppCountLimit() {
-            while (freezList.size > freezAppLimit) {
-                val firstItem = freezList.first()
-                // val currentAppConfig = store.getAppConfig(firstItem.packageName)
-                // if (currentAppConfig.freeze) {
-                KeepShellPublic.doCmdSync("pm enable ${firstItem.packageName}\npm suspend ${firstItem.packageName}\nam force-stop ${firstItem.packageName}")
-                // }
-                freezList.remove(firstItem)
-            }
-        }
-
-        /**
-         * 冻结已经后台超时的偏见应用
-         */
-        fun clearFreezeAppTimeLimit(freezeSuspend: Boolean) {
-            val currentTime = System.currentTimeMillis()
-            val clearList = freezList.filter {
-                it.leaveTime > -1 && currentTime - it.leaveTime > freezAppTimeLimit && it.packageName != lastAppPackageName
-            }
-            clearList.forEach {
-                // val currentAppConfig = store.getAppConfig(it.packageName)
-                // if (currentAppConfig.freeze) {
-                if (freezeSuspend) {
-                    KeepShellPublic.doCmdSync("pm enable ${it.packageName}\npm suspend ${it.packageName}\nam force-stop ${it.packageName}")
-                } else {
-                    KeepShellPublic.doCmdSync("pm unsuspend ${it.packageName}\npm disable ${it.packageName}")
-                }
-                // }
+    fun removeFreezeAppHistory(packageName: String): FreezeAppHistory? {
+        for (it in freezList) {
+            if (it.packageName == packageName) {
                 freezList.remove(it)
+                return it
+            }
+        }
+        return null
+    }
+
+    // 当解冻的偏见应用数量超过限制，冻结最先解冻的应用
+    fun clearFreezeAppCountLimit() {
+        while (freezList.size > freezAppLimit) {
+            freezeApp(freezList.first(), KeepShellPublic.getDefaultInstance())
+        }
+    }
+
+    // 冻结已经后台超时的偏见应用
+    fun clearFreezeAppTimeLimit(freezeSuspend: Boolean) {
+        val currentTime = System.currentTimeMillis()
+        freezList.filter {
+            it.leaveTime > -1 && currentTime - it.leaveTime > freezAppTimeLimit && it.packageName != lastAppPackageName
+        }.forEach { freezeApp(it, KeepShellPublic.getDefaultInstance()) }
+    }
+
+    // 冻结指定应用
+    fun freezeApp(app: FreezeAppHistory, keepShell: KeepShell) {
+        val currentAppConfig = store.getAppConfig(app.packageName)
+        if (currentAppConfig.freeze) {
+            freezeApp(app.packageName)
+        }
+        freezList.remove(app)
+    }
+
+    fun freezeApp(app: String) {
+        if (app.equals("com.android.vending")) {
+            GApps().disable(KeepShellPublic.getDefaultInstance());
+        } else {
+            if (freezeUseSuspend) {
+                KeepShellPublic.doCmdSync("pm suspend ${app}\nam force-stop ${app}")
+            } else {
+                KeepShellPublic.doCmdSync("pm disable ${app}")
             }
         }
     }
 
     var brightnessMode = -1;
     var screenBrightness = -1;
-    var currentAppConfig: AppConfigInfo? = null
-    var lowPowerLevel = 2
+    var currentSceneConfig: SceneConfigInfo? = null
 
     private fun backupState(): Int {
         if (brightnessMode == -1) {
@@ -175,8 +181,8 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
      * @return 是否拦截
      */
     fun onNotificationPosted(): Boolean {
-        if (currentAppConfig != null) {
-            return currentAppConfig!!.disNotice
+        if (currentSceneConfig != null) {
+            return currentSceneConfig!!.disNotice
         }
         return false
     }
@@ -186,48 +192,10 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
      * @return 是否阻拦按键事件
      */
     fun onKeyDown(): Boolean {
-        if (currentAppConfig != null) {
-            return currentAppConfig!!.disButton
+        if (currentSceneConfig != null) {
+            return currentSceneConfig!!.disButton
         }
         return false
-    }
-
-    /**
-     * 休眠指定包名的应用
-     */
-    private fun dozeApp(packageName: String) {
-        KeepShellPublic.doCmdSync(
-                "dumpsys deviceidle whitelist -$packageName;\n" +
-                        "dumpsys deviceidle enable\n" +
-                        "dumpsys deviceidle enable all\n" +
-                        "am set-inactive $packageName true 2>&1 > /dev/null\n" +
-                        "am set-idle $packageName true 2>&1 > /dev/null" +
-                        "am make-uid-idle --user current $packageName 2>&1 > /dev/null")
-        // if (debugMode) showMsg("休眠 " + packageName)
-    }
-
-    /**
-     * 杀死指定包名的应用
-     */
-    private fun killApp(packageName: String) {
-        KeepShellPublic.doCmdSync("am kill-all $packageName;am force-stop $packageName;")
-    }
-
-    /**
-     * 自动清理前一个应用后台
-     */
-    private fun autoBoosterApp(packageName: String) {
-        if (currentAppConfig == null) {
-            return
-        }
-        val level = getBatteryCapacity()
-        if (currentAppConfig!!.disBackgroundRun || (level > -1 && level < lowPowerLevel)) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                dozeApp(packageName)
-            } else {
-                killApp(packageName)
-            }
-        }
     }
 
     private var locationMode = "none"
@@ -247,38 +215,6 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
                 }
             }
             locationMode = "none"
-        }
-    }
-
-
-    private fun getBatteryCapacity(): Int {
-        try {
-            val batteryInfo = KeepShellPublic.doCmdSync("dumpsys battery")
-            val batteryInfos = batteryInfo.split("\n")
-
-            // 由于部分手机相同名称的参数重复出现，并且值不同，为了避免这种情况，加个额外处理，同名参数只读一次
-            var levelReaded = false
-            var batteryCapacity = -1
-
-            for (item in batteryInfos) {
-                val info = item.trim()
-                val index = info.indexOf(":")
-                if (index > Int.MIN_VALUE && index < info.length) {
-                    val value = info.substring(info.indexOf(":") + 1).trim()
-                    if (info.startsWith("level")) {
-                        if (!levelReaded) {
-                            try {
-                                batteryCapacity = value.trim().toInt()
-                            } catch (ex: java.lang.Exception) {
-                            }
-                            levelReaded = true
-                        } else continue
-                    }
-                }
-            }
-            return batteryCapacity
-        } catch (ex: java.lang.Exception) {
-            return -1
         }
     }
 
@@ -307,18 +243,18 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
     /**
      * 从应用离开时
      */
-    fun onAppLeave(appConfigInfo: AppConfigInfo) {
+    fun onAppLeave(sceneConfigInfo: SceneConfigInfo) {
         // 离开偏见应用时，记录偏见应用最后活动时间
-        if (appConfigInfo.freeze) {
-            setFreezeAppLeaveTime(appConfigInfo.packageName)
+        if (sceneConfigInfo.freeze) {
+            setFreezeAppLeaveTime(sceneConfigInfo.packageName)
         }
-        if (appConfigInfo.aloneLight) {
+        if (sceneConfigInfo.aloneLight) {
             // 独立亮度 记录最后的亮度值
             try {
                 val light = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS)
-                if (light != appConfigInfo.aloneLightValue) {
-                    appConfigInfo.aloneLightValue = light
-                    store.setAppConfig(appConfigInfo)
+                if (light != sceneConfigInfo.aloneLightValue) {
+                    sceneConfigInfo.aloneLightValue = light
+                    store.setAppConfig(sceneConfigInfo)
                 }
             } catch (ex: java.lang.Exception) {
             }
@@ -333,27 +269,25 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
             if (lastAppPackageName == packageName && !foceUpdateConfig) {
                 return
             }
-            if (lastAppPackageName != packageName)
-                autoBoosterApp(lastAppPackageName)
 
-            if (currentAppConfig != null) {
-                onAppLeave(currentAppConfig!!)
+            if (currentSceneConfig != null) {
+                onAppLeave(currentSceneConfig!!)
             }
 
-            currentAppConfig = store.getAppConfig(packageName)
-            if (currentAppConfig == null) {
+            currentSceneConfig = store.getAppConfig(packageName)
+            if (currentSceneConfig == null) {
                 restoreLocationModeState()
                 resumeState()
                 restoreHeaddUp()
             } else {
-                if (currentAppConfig!!.aloneLight) {
+                if (currentSceneConfig!!.aloneLight) {
                     backupState()
-                    autoLightOff(currentAppConfig!!.aloneLightValue)
+                    autoLightOff(currentSceneConfig!!.aloneLightValue)
                 } else {
                     resumeState()
                 }
 
-                if (currentAppConfig!!.gpsOn) {
+                if (currentSceneConfig!!.gpsOn) {
                     backupLocationModeState()
                     val mode = Settings.Secure.getString(contentResolver, Settings.Secure.LOCATION_PROVIDERS_ALLOWED)
                     if (!mode.contains("gps")) {
@@ -363,7 +297,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
                     restoreLocationModeState()
                 }
 
-                if (currentAppConfig!!.disNotice) {
+                if (currentSceneConfig!!.disNotice) {
                     try {
                         val mode = Settings.Global.getInt(contentResolver, "heads_up_notifications_enabled")
                         backupHeadUp()
@@ -377,7 +311,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
                     restoreHeaddUp()
                 }
 
-                if (currentAppConfig!!.freeze) {
+                if (currentSceneConfig!!.freeze) {
                     setFreezeAppStartTime(packageName)
                 }
             }
@@ -398,7 +332,7 @@ class SceneMode private constructor(private var contentResolver: ContentResolver
         lastAppPackageName = "com.android.systemui"
         restoreLocationModeState()
         resumeState()
-        currentAppConfig = null
+        currentSceneConfig = null
     }
 
     fun onScreenOff() {

@@ -17,7 +17,7 @@ import com.omarea.scene_mode.ModeConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.scene_mode.SceneMode
 import com.omarea.shell_utils.*
-import com.omarea.store.AppConfigStore
+import com.omarea.store.SceneConfigStore
 import com.omarea.store.CpuConfigStorage
 import com.omarea.store.SpfConfig
 import com.omarea.utils.CommonCmds
@@ -242,14 +242,12 @@ class BootService : IntentService("vtools-boot") {
         }
 
         updateNotification(getString(R.string.boot_freeze))
-        val launchedFreezeApp = SceneMode.getLaunchedFreezeApp()
-        val freezeSuspend = globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, false)
-        for (item in AppConfigStore(context).freezeAppList) {
-            if (!launchedFreezeApp.contains(item)) {
-                if (freezeSuspend) {
-                    keepShell.doCmdSync("pm enable $item\npm suspend $item\nam force-stop $item")
-                } else {
-                    keepShell.doCmdSync("pm unsuspend $item\npm disable $item")
+        SceneMode.getCurrentInstance()?.run {
+            val launchedFreezeApp = getLaunchedFreezeApp()
+            val freezeSuspend = globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, false)
+            for (item in SceneConfigStore(context).freezeAppList) {
+                if (!launchedFreezeApp.contains(item)) {
+                    freezeApp(item)
                 }
             }
         }

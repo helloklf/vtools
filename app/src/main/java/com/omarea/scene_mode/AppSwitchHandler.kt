@@ -8,10 +8,9 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
-import com.omarea.store.AppConfigStore
+import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
@@ -50,7 +49,7 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
     })
     private var handler = Handler(Looper.getMainLooper())
     private var notifyHelper = AlwaysNotification(context, spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))
-    private val sceneMode = SceneMode.getInstanceOrInit(context.contentResolver, AppConfigStore(context))!!
+    private val sceneMode = SceneMode.getInstanceOrInit(context, SceneConfigStore(context))!!
     private var timer: Timer? = null
     private var sceneConfigChanged: BroadcastReceiver? = null
     private var sceneAppChanged: BroadcastReceiver? = null
@@ -86,7 +85,7 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
                         ticks += interval
                         ticks %= 60
                         if (ticks == 0) {
-                            SceneMode.clearFreezeAppTimeLimit(spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, false))
+                            sceneMode.clearFreezeAppTimeLimit(spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, false))
                         }
                     }
                 }, 0, interval * 1000L)

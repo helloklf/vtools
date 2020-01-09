@@ -14,6 +14,7 @@ import com.omarea.common.shell.KeepShellPublic
 import com.omarea.permissions.CheckRootStatus
 import com.omarea.scene_mode.SceneMode
 import com.omarea.store.SpfConfig
+import com.omarea.utils.GApps
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_quick_start.*
 import java.lang.ref.WeakReference
@@ -49,9 +50,9 @@ class ActivityQuickStart : Activity() {
                 appInfo = pm.getApplicationInfo(appPackageName, 0)
             } catch (ex: Exception) {
             }
-            // SysApi 普通应用无法访问
+            // SysApi Target Api28(Android P) 但普通应用无法访问
             // val isPackageSuspended = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && pm.isPackageSuspended(appPackageName)
-            if (appInfo != null && appInfo.enabled && !getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, false)) {
+            if (appInfo != null && appInfo.enabled && Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
                 startApp()
             } else {
                 checkRoot(CheckRootSuccess(this, appPackageName))
@@ -65,8 +66,11 @@ class ActivityQuickStart : Activity() {
             context.get()!!.start_state_text.text = "正在启动应用..."
             context.get()!!.hasRoot = true
 
-            // TODO:启动应用
-            KeepShellPublic.doCmdSync("pm unsuspend ${appPackageName}\npm unhide ${appPackageName}\npm enable ${appPackageName}\n")
+            if (appPackageName.equals("com.android.vending")) {
+                GApps().enable(KeepShellPublic.getDefaultInstance());
+            } else {
+                KeepShellPublic.doCmdSync("pm unsuspend ${appPackageName}\npm unhide ${appPackageName}\npm enable ${appPackageName}\n")
+            }
             context.get()!!.startApp()
         }
 
@@ -85,7 +89,7 @@ class ActivityQuickStart : Activity() {
                     appIntent.flags = Intent.FLAG_ACTIVITY_NO_ANIMATION or Intent.FLAG_ACTIVITY_NEW_TASK
                     startActivity(appIntent)
                     // overridePendingTransition(0, 0)
-                    SceneMode.setFreezeAppStartTime(appPackageName)
+                    SceneMode.getCurrentInstance()?.setFreezeAppStartTime(appPackageName)
                 }.start()
                 return
             }

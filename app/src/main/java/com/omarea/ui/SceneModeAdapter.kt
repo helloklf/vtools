@@ -132,7 +132,7 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
         viewHolder.imgView = convertView.findViewById(R.id.ItemIcon)
         viewHolder.imgView!!.setTag(getItem(position).packageName)
         // convertView.tag = viewHolder
-        viewHolder.itemTitle!!.text = keywordHightLight(if (item.appConfigInfo.freeze) ("*" + item.appName) else item.appName.toString())
+        viewHolder.itemTitle!!.text = keywordHightLight(if (item.sceneConfigInfo.freeze) ("*" + item.appName) else item.appName.toString())
         viewHolder.itemText!!.text = keywordHightLight(item.packageName.toString())
         if (item.icon == null) {
             loadIcon(viewHolder, item)

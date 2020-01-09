@@ -18,7 +18,7 @@ import android.view.accessibility.AccessibilityWindowInfo
 import android.widget.Toast
 import com.omarea.charger_booster.ServiceBattery
 import com.omarea.scene_mode.AppSwitchHandler
-import com.omarea.store.AppConfigStore
+import com.omarea.store.SceneConfigStore
 import com.omarea.utils.AutoClick
 import com.omarea.utils.CrashHandler
 
@@ -97,7 +97,7 @@ class AccessibilityScenceMode : AccessibilityService() {
     private fun updateConfig() {
         val spf = getSharedPreferences("adv", Context.MODE_PRIVATE)
         flagReportViewIds = spf.getBoolean("adv_find_viewid", flagReportViewIds)
-        flagRequestKeyEvent = spf.getBoolean("adv_keyevent", AppConfigStore(this.applicationContext).needKeyCapture())
+        flagRequestKeyEvent = spf.getBoolean("adv_keyevent", SceneConfigStore(this.applicationContext).needKeyCapture())
         flagRetriveWindow = spf.getBoolean("adv_retrieve_window", flagRetriveWindow)
 
         eventWindowStateChange = spf.getBoolean("adv_event_window_state", eventWindowStateChange)
