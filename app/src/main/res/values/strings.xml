@@ -170,9 +170,9 @@
     <string name="menu_gesture">手势导航</string>
     <string name="menu_filter">屏幕滤镜</string>
     <string name="menu_img">备份还原</string>
-    <string name="menu_qq">Scene实验室</string>
+    <string name="menu_qq">Scene讨论</string>
     <string name="menu_menu_title">反馈交流</string>
-    <string name="menu_share">分享</string>
+    <string name="menu_share">分享应用</string>
 
     <string name="system">系统</string>
 

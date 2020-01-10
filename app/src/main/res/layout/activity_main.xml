@@ -14,18 +14,42 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/home_bg"
+        <TabHost
+            android:id="@+id/configlist_tabhost"
+            android:layout_marginTop="?actionBarSize"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:focusable="false">
 
-            <FrameLayout
-                android:id="@+id/main_content"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="56dp" />
-        </LinearLayout>
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:id="@android:id/tabcontent"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <FrameLayout
+                        android:id="@+id/tab_home"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <FrameLayout
+                        android:id="@+id/main_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </FrameLayout>
+
+                <TabWidget
+                    android:id="@android:id/tabs"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/tab_widget_background" />
+            </LinearLayout>
+        </TabHost>
 
         <include
             layout="@layout/layout_app_bar"
@@ -39,6 +63,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />-->
     <android.support.design.widget.NavigationView
+        android:visibility="gone"
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

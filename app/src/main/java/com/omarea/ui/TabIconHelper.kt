@@ -9,7 +9,7 @@ import android.widget.TabHost
 import android.widget.TextView
 import com.omarea.vtools.R
 
-class TabIconHelper(private var tabHost: TabHost, private var activity: Activity) {
+class TabIconHelper(private var tabHost: TabHost, private var activity: Activity, private var layout: Int = R.layout.list_item_tab) {
     private var views = ArrayList<View>()
 
     fun newTabSpec(drawable: Drawable, content: Int): String {
@@ -17,7 +17,7 @@ class TabIconHelper(private var tabHost: TabHost, private var activity: Activity
     }
 
     fun newTabSpec(text: String, drawable: Drawable, content: Int): String {
-        val layout = View.inflate(activity.baseContext, R.layout.list_item_tab, null)
+        val layout = View.inflate(activity.baseContext, layout, null)
         val imageView = layout.findViewById<ImageView>(R.id.ItemIcon)
         val textView = layout.findViewById<TextView>(R.id.ItemTitle)
         val tabId = "tab_" + views.size

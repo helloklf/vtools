@@ -35,12 +35,14 @@ import com.omarea.scene_mode.ModeConfigInstaller
 import com.omarea.shell_utils.BackupRestoreUtils
 import com.omarea.shell_utils.BatteryUtils
 import com.omarea.store.SpfConfig
+import com.omarea.ui.TabIconHelper
 import com.omarea.utils.Update
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogPower
 import com.omarea.vtools.fragments.*
 import com.omarea.vtools.popup.FloatMonitor
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_main.configlist_tabhost
 import java.lang.ref.WeakReference
 
 class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -187,9 +189,9 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        drawer_layout.addDrawerListener(toggle)
-        toggle.syncState()
+        // val toggle = ActionBarDrawerToggle(this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        // drawer_layout.addDrawerListener(toggle)
+        // toggle.syncState()
 
         val navigationView = findViewById(R.id.nav_view) as NavigationView
         navigationView.run {
@@ -202,9 +204,32 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navigationMenuView.isVerticalScrollBarEnabled = false
         navigationMenuView.background = null
 
+        // 显示返回按钮
+        toolbar.setNavigationOnClickListener { _ ->
+            // finish()
+            this.onBackPressed()
+        }
+
         if (CheckRootStatus.lastCheckResult) {
             try {
+                val tabIconHelper = TabIconHelper(configlist_tabhost, this, R.layout.list_item_tab2)
+                configlist_tabhost.setup()
+
+                tabIconHelper.newTabSpec("概览", getDrawable(R.drawable.app_home)!!, R.id.tab_home)
+                tabIconHelper.newTabSpec("功能", getDrawable(R.drawable.app_more)!!, R.id.main_content)
+                configlist_tabhost.currentTab = 0
+                configlist_tabhost.setOnTabChangedListener { tabId ->
+                    tabIconHelper.updateHighlight()
+
+                    val isHome = (configlist_tabhost.currentTab == 0)
+                    supportActionBar!!.setHomeButtonEnabled(!isHome)
+                    supportActionBar!!.setDisplayHomeAsUpEnabled(!isHome)
+
+                    configlist_tabhost.tabWidget.visibility = if (isHome) View.VISIBLE else View.GONE
+                }
+
                 setHomePage()
+
                 if (MagiskExtend.magiskSupported() &&
                         !(MagiskExtend.moduleInstalled() || globalSPF!!.getBoolean("magisk_dot_show", false))
                 ) {
@@ -255,9 +280,15 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val fragmentManager = supportFragmentManager
         fragmentManager.fragments.clear()
         val transaction = fragmentManager.beginTransaction()
-        transaction.replace(R.id.main_content, FragmentHome())
+        transaction.replace(R.id.tab_home, FragmentHome())
         // transaction.addToBackStack(getString(R.string.app_name))
         transaction.commitAllowingStateLoss()
+
+        fragmentManager.fragments.clear()
+        val transaction2 = fragmentManager.beginTransaction()
+        transaction2.replace(R.id.main_content, FragmentNav())
+        // transaction.addToBackStack(getString(R.string.app_name))
+        transaction2.commitAllowingStateLoss()
     }
 
     private fun setNotRootPage() {
@@ -279,6 +310,9 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 drawer.isDrawerOpen(GravityCompat.START) -> drawer.closeDrawer(GravityCompat.START)
                 supportFragmentManager.backStackEntryCount > 0 -> {
                     supportFragmentManager.popBackStack()
+                }
+                configlist_tabhost.currentTab != 0 -> {
+                    configlist_tabhost.currentTab = 0
                 }
                 else -> {
                     setExcludeFromRecents(true)
@@ -349,7 +383,6 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             supportActionBar!!.elevation = 0f
 
         when (id) {
-            R.id.nav_home -> fragment = FragmentHome()
             R.id.nav_freeze -> fragment = FragmentFreeze.createPage()
             R.id.nav_applictions -> fragment = FragmentApplistions.createPage()
             R.id.nav_swap -> fragment = FragmentSwap.createPage()
@@ -398,6 +431,8 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
 
         if (fragment != null) {
+            configlist_tabhost.currentTab = 1
+
             transaction.disallowAddToBackStack()
             transaction.replace(R.id.main_content, fragment)
             //transaction.addToBackStack(item.title.toString());

@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.omarea.common.ui.OverScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/nav"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_horizontal_margin">
+
+        <TextView
+            android:text="@string/menu_scene_mode"
+            style="@style/textSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <GridLayout
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:columnCount="2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                style="@style/nav_item_wrap"
+                android:id="@+id/nav_app_scene"
+                android:drawableStart="@drawable/ic_menu_profile"
+                android:text="@string/menu_app_scene" />
+            <TextView
+                style="@style/nav_item_wrap_right"
+                android:id="@+id/nav_system_scene"
+                android:drawableStart="@drawable/ic_menu_system"
+                android:text="@string/menu_system_scene" />
+            <TextView
+                style="@style/nav_item_wrap"
+                android:id="@+id/nav_freeze"
+                android:drawableStart="@drawable/ic_menu_freeze"
+                android:text="@string/menu_freeze" />
+            <TextView
+                style="@style/nav_item_wrap_right"
+                android:id="@+id/nav_battery_stats"
+                android:drawableStart="@drawable/battery"
+                android:text="@string/menu_battery_stats" />
+        </GridLayout>
+
+        <TextView
+            android:text="辅助功能"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            style="@style/textSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <GridLayout
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:columnCount="2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                style="@style/nav_item_wrap"
+                android:id="@+id/nav_keyevent"
+                android:drawableStart="@drawable/ic_menu_task"
+                android:text="@string/menu_keymap" />
+            <TextView
+                style="@style/nav_item_wrap_right"
+                android:id="@+id/nav_gesture"
+                android:drawableStart="@drawable/ic_menu_addon"
+                android:text="@string/menu_gesture" />
+            <TextView
+                style="@style/nav_item_wrap"
+                android:id="@+id/nav_filter"
+                android:drawableStart="@drawable/ic_menu_addon"
+                android:text="@string/menu_filter" />
+        </GridLayout>
+
+        <TextView
+            android:text="常用功能"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            style="@style/textSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <GridLayout
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:columnCount="2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                style="@style/nav_item_wrap"
+                android:id="@+id/nav_img"
+                android:drawableStart="@drawable/ic_menu_img"
+                android:text="@string/menu_img" />
+            <TextView
+                style="@style/nav_item_wrap_right"
+                android:id="@+id/nav_additional"
+                android:drawableStart="@drawable/ic_menu_vboot"
+                android:text="@string/menu_additional" />
+            <TextView
+                style="@style/nav_item_wrap"
+                android:id="@+id/nav_applictions"
+                android:drawableStart="@drawable/ic_menu_modules"
+                android:text="@string/menu_applictions" />
+        </GridLayout>
+
+        <TextView
+            android:text="系统管理"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            style="@style/textSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <GridLayout
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:columnCount="2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                style="@style/nav_item_wrap"
+                android:id="@+id/nav_core_control"
+                android:drawableStart="@drawable/cpu"
+                android:text="@string/menu_core_control" />
+            <TextView
+                style="@style/nav_item_wrap_right"
+                android:id="@+id/nav_swap"
+                android:drawableStart="@drawable/ic_menu_digital"
+                android:text="@string/menu_swap" />
+            <TextView
+                style="@style/nav_item_wrap"
+                android:id="@+id/nav_battery"
+                android:drawableStart="@drawable/battery"
+                android:text="@string/menu_battery" />
+            <TextView
+                style="@style/nav_item_wrap_right"
+                android:id="@+id/nav_app_magisk"
+                android:drawableStart="@drawable/mask"
+                android:text="@string/menu_app_magisk" />
+        </GridLayout>
+
+        <TextView
+            android:text="交流反馈"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            style="@style/textSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <GridLayout
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:columnCount="2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                style="@style/nav_item_wrap"
+                android:id="@+id/nav_qq"
+                android:drawableStart="@drawable/ic_menu_config"
+                android:text="@string/menu_qq" />
+            <TextView
+                style="@style/nav_item_wrap_right"
+                android:id="@+id/nav_share"
+                android:drawableStart="@drawable/ic_menu_share"
+                android:text="@string/menu_share" />
+        </GridLayout>
+    </LinearLayout>
+</com.omarea.common.ui.OverScrollView>

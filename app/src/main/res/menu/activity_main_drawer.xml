@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/nav_home"
-        android:checked="false"
-        android:icon="@drawable/ic_menu_home"
-        android:title="@string/menu_home" />
-    <item
         android:id="@+id/nav_paypal"
         android:checked="false"
         android:icon="@drawable/ic_menu_reward"
@@ -41,7 +36,7 @@
                 android:id="@+id/nav_gesture"
                 android:enabled="false"
                 android:icon="@drawable/ic_menu_addon"
-                android:title="@string/menu_keymap" />
+                android:title="@string/menu_gesture" />
             <item
                 android:id="@+id/nav_filter"
                 android:enabled="false"

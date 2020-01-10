@@ -238,4 +238,25 @@
     <style name="ListCardItemClickableLast" parent="ListCardItemClickable">
         <item name="android:layout_marginBottom">@dimen/activity_vertical_margin</item>
     </style>
+
+    <style name="nav_item_wrap">
+        <item name="android:background">@drawable/krscript_item_ripple</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:paddingStart">@dimen/activity_horizontal_margin</item>
+        <item name="android:paddingEnd">@dimen/activity_horizontal_margin</item>
+        <item name="android:layout_columnWeight">1</item>
+        <item name="android:layout_column">0</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/activity_vertical_margin</item>
+        <item name="android:drawablePadding">10dp</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:drawableTint">?android:colorAccent</item>
+    </style>
+    <style name="nav_item_wrap_right" parent="nav_item_wrap">
+        <item name="android:layout_marginLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:layout_column">1</item>
+    </style>
 </resources>
