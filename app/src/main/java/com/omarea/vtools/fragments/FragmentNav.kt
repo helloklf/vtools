@@ -13,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import com.omarea.common.ui.ThemeMode
 import com.omarea.permissions.CheckRootStatus
+import com.omarea.shell_utils.BackupRestoreUtils
 import com.omarea.ui.NavItem
 import com.omarea.vtools.R
 import com.omarea.vtools.activities.AccessibilityKeySettings
@@ -74,7 +75,13 @@ class FragmentNav : Fragment(), View.OnClickListener {
                 R.id.nav_applictions -> fragment = FragmentApplistions.createPage()
                 R.id.nav_swap -> fragment = FragmentSwap.createPage()
                 R.id.nav_battery -> fragment = FragmentBattery.createPage()
-                R.id.nav_img -> fragment = FragmentImg.createPage()
+                R.id.nav_img -> {
+                    if (!BackupRestoreUtils.isSupport()) {
+                        Toast.makeText(context, "此功能不支持你的手机", Toast.LENGTH_SHORT).show()
+                        return
+                    }
+                    fragment = FragmentImg.createPage()
+                }
                 R.id.nav_battery_stats -> fragment = FragmentBatteryStats.createPage()
                 R.id.nav_core_control -> fragment = FragmentCpuControl.newInstance()
                 R.id.nav_paypal -> fragment = FragmentPay.createPage()

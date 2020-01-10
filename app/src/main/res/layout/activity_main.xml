@@ -1,79 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="false"
-    android:keepScreenOn="false"
-    tools:openDrawer="start">
+    android:keepScreenOn="false">
 
-    <FrameLayout
-        android:id="@+id/card_view"
+    <TabHost
+        android:id="@+id/configlist_tabhost"
+        android:layout_marginTop="?actionBarSize"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:focusable="false">
 
-        <TabHost
-            android:id="@+id/configlist_tabhost"
-            android:layout_marginTop="?actionBarSize"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:focusable="false">
+            android:orientation="vertical">
 
-            <LinearLayout
+            <FrameLayout
+                android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="0dp"
+                android:layout_weight="1">
 
                 <FrameLayout
-                    android:id="@android:id/tabcontent"
+                    android:id="@+id/tab_home"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1">
+                    android:layout_height="match_parent" />
 
-                    <FrameLayout
-                        android:id="@+id/tab_home"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-
-                    <FrameLayout
-                        android:id="@+id/main_content"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
-                </FrameLayout>
-
-                <TabWidget
-                    android:id="@android:id/tabs"
+                <FrameLayout
+                    android:id="@+id/main_content"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/tab_widget_background" />
-            </LinearLayout>
-        </TabHost>
+                    android:layout_height="match_parent" />
+            </FrameLayout>
 
-        <include
-            layout="@layout/layout_app_bar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </FrameLayout>
-    <!--<fragment
-        android:id="@+id/nav_view"
-        android:name="com.omarea.vtools.fragments.MenuFragment"
-        android:layout_gravity="start"
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/tab_widget_background" />
+        </LinearLayout>
+    </TabHost>
+
+    <include
+        layout="@layout/layout_app_bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />-->
-    <android.support.design.widget.NavigationView
-        android:visibility="gone"
-        android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="@drawable/menu_background"
-        android:fitsSystemWindows="true"
-        app:elevation="0dp"
-        app:headerLayout="@null"
-        app:insetForeground="@android:color/transparent"
-        app:itemIconTint="?android:textColorSecondary"
-        app:menu="@menu/activity_main_drawer" />
+        android:layout_height="match_parent" />
 
-</android.support.v4.widget.DrawerLayout>
+</FrameLayout>
