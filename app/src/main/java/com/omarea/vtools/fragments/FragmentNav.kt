@@ -4,22 +4,28 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentTransaction
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.GridLayout
 import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
-import com.omarea.store.BatteryHistoryStore
-import com.omarea.ui.AdapterBatteryStats
+import com.omarea.common.ui.ThemeMode
+import com.omarea.ui.NavItem
 import com.omarea.vtools.R
 import com.omarea.vtools.activities.AccessibilityKeySettings
-import kotlinx.android.synthetic.main.fragment_battery_stats.*
-import kotlinx.android.synthetic.main.list_item_text.view.*
-
 
 class FragmentNav : Fragment(), View.OnClickListener {
+    private lateinit var themeMode: ThemeMode
+
+    companion object {
+        fun createPage(themeMode: ThemeMode): Fragment {
+            val fragment = FragmentNav()
+            fragment.themeMode = themeMode;
+            return fragment
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_nav, container, false)
@@ -49,7 +55,8 @@ class FragmentNav : Fragment(), View.OnClickListener {
     override fun onClick(v: View?) {
         v?.run {
             val transaction = activity!!.supportFragmentManager.beginTransaction()
-            transaction.setCustomAnimations(R.animator.fragment_enter, R.animator.fragment_exit)
+            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            // transaction.setCustomAnimations(R.animator.fragment_enter, R.animator.fragment_exit)
             var fragment: Fragment? = null
 
             when (id) {
@@ -87,7 +94,7 @@ class FragmentNav : Fragment(), View.OnClickListener {
                 R.id.nav_app_magisk -> {
                     fragment = FragmentMagisk.createPage()
                 }
-                // TODO:R.id.nav_additional -> fragment = FragmentAddin.createPage(themeMode)
+                R.id.nav_additional -> fragment = FragmentAddin.createPage(themeMode)
                 R.id.nav_keyevent -> {
                     try {
                         val intent = Intent(activity, AccessibilityKeySettings::class.java)
@@ -100,11 +107,13 @@ class FragmentNav : Fragment(), View.OnClickListener {
             if (fragment != null) {
                 // configlist_tabhost.currentTab = 1
 
-                transaction.disallowAddToBackStack()
+                val pageTitle = (v as NavItem).text.toString()
+                // transaction.disallowAddToBackStack()
                 transaction.replace(R.id.main_content, fragment)
-                //transaction.addToBackStack(item.title.toString());
+                transaction.addToBackStack(pageTitle);
                 transaction.commitAllowingStateLoss()
-                activity!!.title = (v as TextView).text.toString()
+                activity!!.title = pageTitle
+
                 //item.isChecked = true
             }
         }

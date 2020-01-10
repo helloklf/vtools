@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.omarea.common.ui.OverScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <LinearLayout
@@ -9,7 +10,6 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="@dimen/activity_horizontal_margin">
-
         <TextView
             android:text="@string/menu_scene_mode"
             style="@style/textSmall"
@@ -21,26 +21,26 @@
             android:columnCount="2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <TextView
+            <com.omarea.ui.NavItem
                 style="@style/nav_item_wrap"
                 android:id="@+id/nav_app_scene"
-                android:drawableStart="@drawable/ic_menu_profile"
-                android:text="@string/menu_app_scene" />
-            <TextView
+                app:drawable="@drawable/ic_menu_profile"
+                app:text="@string/menu_app_scene" />
+            <com.omarea.ui.NavItem
                 style="@style/nav_item_wrap_right"
                 android:id="@+id/nav_system_scene"
-                android:drawableStart="@drawable/ic_menu_system"
-                android:text="@string/menu_system_scene" />
-            <TextView
+                app:drawable="@drawable/ic_menu_system"
+                app:text="@string/menu_system_scene" />
+            <com.omarea.ui.NavItem
                 style="@style/nav_item_wrap"
                 android:id="@+id/nav_freeze"
-                android:drawableStart="@drawable/ic_menu_freeze"
-                android:text="@string/menu_freeze" />
-            <TextView
+                app:drawable="@drawable/ic_menu_freeze"
+                app:text="@string/menu_freeze" />
+            <com.omarea.ui.NavItem
                 style="@style/nav_item_wrap_right"
                 android:id="@+id/nav_battery_stats"
-                android:drawableStart="@drawable/battery"
-                android:text="@string/menu_battery_stats" />
+                app:drawable="@drawable/battery"
+                app:text="@string/menu_battery_stats" />
         </GridLayout>
 
         <TextView
@@ -55,21 +55,21 @@
             android:columnCount="2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <TextView
+            <com.omarea.ui.NavItem
                 style="@style/nav_item_wrap"
                 android:id="@+id/nav_keyevent"
-                android:drawableStart="@drawable/ic_menu_task"
-                android:text="@string/menu_keymap" />
-            <TextView
+                app:drawable="@drawable/ic_menu_task"
+                app:text="@string/menu_keymap" />
+            <com.omarea.ui.NavItem
                 style="@style/nav_item_wrap_right"
                 android:id="@+id/nav_gesture"
-                android:drawableStart="@drawable/ic_menu_addon"
-                android:text="@string/menu_gesture" />
-            <TextView
+                app:drawable="@drawable/ic_menu_addon"
+                app:text="@string/menu_gesture" />
+            <com.omarea.ui.NavItem
                 style="@style/nav_item_wrap"
                 android:id="@+id/nav_filter"
-                android:drawableStart="@drawable/ic_menu_addon"
-                android:text="@string/menu_filter" />
+                app:drawable="@drawable/ic_menu_addon"
+                app:text="@string/menu_filter" />
         </GridLayout>
 
         <TextView
@@ -84,21 +84,21 @@
             android:columnCount="2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <TextView
+            <com.omarea.ui.NavItem
                 style="@style/nav_item_wrap"
                 android:id="@+id/nav_img"
-                android:drawableStart="@drawable/ic_menu_img"
-                android:text="@string/menu_img" />
-            <TextView
+                app:drawable="@drawable/ic_menu_img"
+                app:text="@string/menu_img" />
+            <com.omarea.ui.NavItem
                 style="@style/nav_item_wrap_right"
                 android:id="@+id/nav_additional"
-                android:drawableStart="@drawable/ic_menu_vboot"
-                android:text="@string/menu_additional" />
-            <TextView
+                app:drawable="@drawable/ic_menu_vboot"
+                app:text="@string/menu_additional" />
+            <com.omarea.ui.NavItem
                 style="@style/nav_item_wrap"
                 android:id="@+id/nav_applictions"
-                android:drawableStart="@drawable/ic_menu_modules"
-                android:text="@string/menu_applictions" />
+                app:drawable="@drawable/ic_menu_modules"
+                app:text="@string/menu_applictions" />
         </GridLayout>
 
         <TextView
@@ -113,26 +113,26 @@
             android:columnCount="2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <TextView
+            <com.omarea.ui.NavItem
                 style="@style/nav_item_wrap"
                 android:id="@+id/nav_core_control"
-                android:drawableStart="@drawable/cpu"
-                android:text="@string/menu_core_control" />
-            <TextView
+                app:drawable="@drawable/cpu"
+                app:text="@string/menu_core_control" />
+            <com.omarea.ui.NavItem
                 style="@style/nav_item_wrap_right"
                 android:id="@+id/nav_swap"
-                android:drawableStart="@drawable/ic_menu_digital"
-                android:text="@string/menu_swap" />
-            <TextView
+                app:drawable="@drawable/ic_menu_digital"
+                app:text="@string/menu_swap" />
+            <com.omarea.ui.NavItem
                 style="@style/nav_item_wrap"
                 android:id="@+id/nav_battery"
-                android:drawableStart="@drawable/battery"
-                android:text="@string/menu_battery" />
-            <TextView
+                app:drawable="@drawable/battery"
+                app:text="@string/menu_battery" />
+            <com.omarea.ui.NavItem
                 style="@style/nav_item_wrap_right"
                 android:id="@+id/nav_app_magisk"
-                android:drawableStart="@drawable/mask"
-                android:text="@string/menu_app_magisk" />
+                app:drawable="@drawable/mask"
+                app:text="@string/menu_app_magisk" />
         </GridLayout>
 
         <TextView
@@ -147,16 +147,16 @@
             android:columnCount="2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <TextView
+            <com.omarea.ui.NavItem
                 style="@style/nav_item_wrap"
                 android:id="@+id/nav_qq"
-                android:drawableStart="@drawable/ic_menu_config"
-                android:text="@string/menu_qq" />
-            <TextView
+                app:drawable="@drawable/ic_menu_config"
+                app:text="@string/menu_qq" />
+            <com.omarea.ui.NavItem
                 style="@style/nav_item_wrap_right"
                 android:id="@+id/nav_share"
-                android:drawableStart="@drawable/ic_menu_share"
-                android:text="@string/menu_share" />
+                app:drawable="@drawable/ic_menu_share"
+                app:text="@string/menu_share" />
         </GridLayout>
     </LinearLayout>
 </com.omarea.common.ui.OverScrollView>

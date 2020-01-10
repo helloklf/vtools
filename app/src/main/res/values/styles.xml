@@ -253,7 +253,7 @@
         <item name="android:layout_marginTop">@dimen/activity_vertical_margin</item>
         <item name="android:drawablePadding">10dp</item>
         <item name="android:textSize">15sp</item>
-        <item name="android:drawableTint">?android:colorAccent</item>
+        <item name="android:drawableTint">#666666</item>
     </style>
     <style name="nav_item_wrap_right" parent="nav_item_wrap">
         <item name="android:layout_marginLeft">@dimen/activity_horizontal_margin</item>

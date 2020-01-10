@@ -150,7 +150,11 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val mDrawerLayout = findViewById<DrawerLayout>(R.id.drawer_layout)
         mDrawerLayout.setScrimColor(Color.TRANSPARENT) // 菜单滑动时content不被阴影覆盖
 
+        // 禁用抽屉
+        mDrawerLayout.isEnabled = false
+
         // 监听抽屉的滑动事件
+        /*
         mDrawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
                 val mContent = mDrawerLayout.getChildAt(0)
@@ -168,6 +172,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             override fun onDrawerStateChanged(newState: Int) {
             }
         })
+        */
 
         //将侧边栏顶部延伸至status bar
         // mDrawerLayout.fitsSystemWindows = true
@@ -292,7 +297,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         fragmentManager.fragments.clear()
         val transaction2 = fragmentManager.beginTransaction()
-        transaction2.replace(R.id.main_content, FragmentNav())
+        transaction2.replace(R.id.main_content, FragmentNav.createPage(themeMode))
         // transaction.addToBackStack(getString(R.string.app_name))
         transaction2.commitAllowingStateLoss()
     }
@@ -320,6 +325,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 configlist_tabhost.currentTab != 0 -> {
                     configlist_tabhost.currentTab = 0
                     setNavPage()
+                    title = getString(R.string.app_name)
                 }
                 else -> {
                     setExcludeFromRecents(true)
