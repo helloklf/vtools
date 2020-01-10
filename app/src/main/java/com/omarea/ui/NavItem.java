@@ -51,4 +51,8 @@ public class NavItem extends LinearLayout {
     public CharSequence getText() {
         return ((TextView)(this.findViewById(android.R.id.title))).getText();
     }
+
+    public void setEnabled(boolean enabled) {
+        setAlpha(enabled ? 1 : 0.5f);
+    }
 }

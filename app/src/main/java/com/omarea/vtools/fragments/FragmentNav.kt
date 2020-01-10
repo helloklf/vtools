@@ -10,7 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.GridLayout
 import android.widget.LinearLayout
+import android.widget.Toast
 import com.omarea.common.ui.ThemeMode
+import com.omarea.permissions.CheckRootStatus
 import com.omarea.ui.NavItem
 import com.omarea.vtools.R
 import com.omarea.vtools.activities.AccessibilityKeySettings
@@ -43,6 +45,9 @@ class FragmentNav : Fragment(), View.OnClickListener {
 
     private fun bindClickEvent(view: View) {
         view.setOnClickListener(this)
+        if (!CheckRootStatus.lastCheckResult && "root".equals(view.getTag())) {
+            view.isEnabled = false
+        }
     }
 
     override fun onResume() {
@@ -54,6 +59,11 @@ class FragmentNav : Fragment(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         v?.run {
+
+            if (!CheckRootStatus.lastCheckResult && "root".equals(getTag())) {
+                Toast.makeText(context, "没有获得ROOT权限，不能使用本功能", Toast.LENGTH_SHORT).show()
+                return
+            }
             val transaction = activity!!.supportFragmentManager.beginTransaction()
             transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             // transaction.setCustomAnimations(R.animator.fragment_enter, R.animator.fragment_exit)
@@ -94,6 +104,14 @@ class FragmentNav : Fragment(), View.OnClickListener {
                 R.id.nav_app_magisk -> {
                     fragment = FragmentMagisk.createPage()
                 }
+                R.id.nav_gesture -> {
+                    openUrl("https://www.coolapk.com/apk/com.omarea.gesture")
+                    return
+                }
+                R.id.nav_filter -> {
+                    openUrl("https://www.coolapk.com/apk/com.omarea.filter")
+                    return
+                }
                 R.id.nav_additional -> fragment = FragmentAddin.createPage(themeMode)
                 R.id.nav_keyevent -> {
                     try {
@@ -116,6 +134,15 @@ class FragmentNav : Fragment(), View.OnClickListener {
 
                 //item.isChecked = true
             }
+        }
+    }
+
+    private fun openUrl(link: String) {
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        } catch (ex: Exception) {
         }
     }
 }
