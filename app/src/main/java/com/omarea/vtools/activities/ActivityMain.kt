@@ -12,6 +12,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -154,18 +155,17 @@ class ActivityMain : AppCompatActivity() {
                 val tabIconHelper = TabIconHelper(configlist_tabhost, this, R.layout.list_item_tab2)
                 configlist_tabhost.setup()
 
-                tabIconHelper.newTabSpec(getString(R.string.app_home), getDrawable(R.drawable.app_home)!!, R.id.tab_home)
                 tabIconHelper.newTabSpec(getString(R.string.app_nav), getDrawable(R.drawable.app_more)!!, R.id.app_more)
+                tabIconHelper.newTabSpec(getString(R.string.app_home), getDrawable(R.drawable.app_home)!!, R.id.tab_home)
                 tabIconHelper.newTabSpec(getString(R.string.app_donate), getDrawable(R.drawable.app_donate)!!, R.id.app_donate)
-                configlist_tabhost.currentTab = 1
                 configlist_tabhost.setOnTabChangedListener { tabId ->
                     tabIconHelper.updateHighlight()
 
-                    val isHome = (configlist_tabhost.currentTab == 1)
-                    supportActionBar!!.setHomeButtonEnabled(!isHome)
-                    supportActionBar!!.setDisplayHomeAsUpEnabled(!isHome)
-
-                    configlist_tabhost.tabWidget.visibility = if (isHome) View.VISIBLE else View.GONE
+                    updateBackArrow()
+                }
+                configlist_tabhost.currentTab = 1
+                supportFragmentManager.addOnBackStackChangedListener {
+                    updateBackArrow()
                 }
 
                 setHomePage()
@@ -202,6 +202,14 @@ class ActivityMain : AppCompatActivity() {
             }
         }
 
+    }
+
+    private fun updateBackArrow() {
+        val isDetailPage = (configlist_tabhost.currentTab == 0) && supportFragmentManager.backStackEntryCount > 0
+        supportActionBar!!.setHomeButtonEnabled(isDetailPage)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(isDetailPage)
+
+        configlist_tabhost.tabWidget.visibility = if (isDetailPage) View.GONE else View.VISIBLE
     }
 
     override fun onResume() {

@@ -36,6 +36,8 @@ function on() {
       pm suspend $app 1 > /dev/null
     done
 
+    setprop $prop 1
+
     echo ""
     echo '清理后台进程...'
     echo ""
@@ -72,7 +74,6 @@ function on() {
 
     sync
     echo 3 > /proc/sys/vm/drop_caches
-    setprop $prop 1
 }
 
 function off() {
