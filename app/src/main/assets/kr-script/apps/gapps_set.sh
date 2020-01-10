@@ -15,7 +15,6 @@ function disable() {
 }
 
 if [ $state = '1' ]; then
-
     enable com.google.android.gsf
     enable com.google.android.gsf.login
     enable com.google.android.gms
