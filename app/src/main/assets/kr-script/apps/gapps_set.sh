@@ -1,8 +1,8 @@
 #!/system/bin/sh
 
 function enable() {
-    pm unsuspend $1 2> /dev/null
     pm enable $1 2> /dev/null
+    pm unsuspend $1 2> /dev/null
 }
 
 app_cmd="disable"
@@ -22,11 +22,10 @@ if [ $state = '1' ]; then
     enable com.google.android.play.games
     enable com.google.android.syncadapters.contacts
 else
-
-    pm disable  com.google.android.gsf
-    pm disable  com.google.android.gsf.login
-    pm disable  com.google.android.gms
-    disable com.android.vending 2> /dev/null
-    disable com.google.android.play.games 2> /dev/null
-    pm disable  com.google.android.syncadapters.contacts
+    pm disable  com.google.android.gsf 2> /dev/null
+    pm disable  com.google.android.gsf.login 2> /dev/null
+    pm disable  com.google.android.gms 2> /dev/null
+    disable com.android.vending
+    disable com.google.android.play.games
+    pm disable  com.google.android.syncadapters.contacts 2> /dev/null
 fi;
