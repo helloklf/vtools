@@ -24,12 +24,17 @@
                 android:layout_weight="1">
 
                 <FrameLayout
+                    android:id="@+id/app_more"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <FrameLayout
                     android:id="@+id/tab_home"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
                 <FrameLayout
-                    android:id="@+id/main_content"
+                    android:id="@+id/app_donate"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
             </FrameLayout>

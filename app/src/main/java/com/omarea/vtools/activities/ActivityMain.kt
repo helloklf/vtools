@@ -33,6 +33,7 @@ import com.omarea.vtools.dialogs.DialogPower
 import com.omarea.vtools.fragments.FragmentHome
 import com.omarea.vtools.fragments.FragmentNav
 import com.omarea.vtools.fragments.FragmentNotRoot
+import com.omarea.vtools.fragments.FragmentDonate
 import com.omarea.vtools.popup.FloatMonitor
 import kotlinx.android.synthetic.main.activity_main.*
 import java.lang.ref.WeakReference
@@ -153,13 +154,14 @@ class ActivityMain : AppCompatActivity() {
                 val tabIconHelper = TabIconHelper(configlist_tabhost, this, R.layout.list_item_tab2)
                 configlist_tabhost.setup()
 
-                tabIconHelper.newTabSpec("概览", getDrawable(R.drawable.app_home)!!, R.id.tab_home)
-                tabIconHelper.newTabSpec("功能", getDrawable(R.drawable.app_more)!!, R.id.main_content)
-                configlist_tabhost.currentTab = 0
+                tabIconHelper.newTabSpec(getString(R.string.app_home), getDrawable(R.drawable.app_home)!!, R.id.tab_home)
+                tabIconHelper.newTabSpec(getString(R.string.app_nav), getDrawable(R.drawable.app_more)!!, R.id.app_more)
+                tabIconHelper.newTabSpec(getString(R.string.app_donate), getDrawable(R.drawable.app_donate)!!, R.id.app_donate)
+                configlist_tabhost.currentTab = 1
                 configlist_tabhost.setOnTabChangedListener { tabId ->
                     tabIconHelper.updateHighlight()
 
-                    val isHome = (configlist_tabhost.currentTab == 0)
+                    val isHome = (configlist_tabhost.currentTab == 1)
                     supportActionBar!!.setHomeButtonEnabled(!isHome)
                     supportActionBar!!.setDisplayHomeAsUpEnabled(!isHome)
 
@@ -167,6 +169,7 @@ class ActivityMain : AppCompatActivity() {
                 }
 
                 setHomePage()
+                setDonatePage()
                 setNavPage()
 
                 if (MagiskExtend.magiskSupported() &&
@@ -176,18 +179,17 @@ class ActivityMain : AppCompatActivity() {
                             AlertDialog.Builder(this)
                                     .setTitle(getString(R.string.magisk_install_title))
                                     .setMessage(getString(R.string.magisk_install_desc))
-                                    .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
                                         MagiskExtend.magiskModuleInstall(this)
-                                    }).setNegativeButton(R.string.btn_cancel, { _, _ ->
-                                    }).setNeutralButton(R.string.btn_dontshow, { _, _ ->
+                                    }.setNegativeButton(R.string.btn_cancel) { _, _ ->
+                                    }.setNeutralButton(R.string.btn_dontshow) { _, _ ->
                                         globalSPF!!.edit().putBoolean("magisk_dot_show", true).apply()
-                                    }))
+                                    })
                 }
             } catch (ex: Exception) {
                 DialogHelper.animDialog(AlertDialog.Builder(this).setTitle(getString(R.string.sorry))
                         .setMessage("启动应用失败\n" + ex.message).setNegativeButton(getString(R.string.btn_retry)) { _, _ ->
-                            setHomePage()
-                            setNavPage()
+                            recreate()
                         })
             }
             ConfigInstallerThread().start()
@@ -226,7 +228,17 @@ class ActivityMain : AppCompatActivity() {
 
         fragmentManager.fragments.clear()
         val transaction2 = fragmentManager.beginTransaction()
-        transaction2.replace(R.id.main_content, FragmentNav.createPage(themeMode))
+        transaction2.replace(R.id.app_more, FragmentNav.createPage(themeMode))
+        // transaction.addToBackStack(getString(R.string.app_name))
+        transaction2.commitAllowingStateLoss()
+    }
+
+    private fun setDonatePage() {
+        val fragmentManager = supportFragmentManager
+
+        fragmentManager.fragments.clear()
+        val transaction2 = fragmentManager.beginTransaction()
+        transaction2.replace(R.id.app_donate, FragmentDonate.createPage())
         // transaction.addToBackStack(getString(R.string.app_name))
         transaction2.commitAllowingStateLoss()
     }
@@ -235,7 +247,7 @@ class ActivityMain : AppCompatActivity() {
         val fragmentManager = supportFragmentManager
         fragmentManager.fragments.clear()
         val transaction = fragmentManager.beginTransaction()
-        transaction.replace(R.id.main_content, FragmentNotRoot())
+        transaction.replace(R.id.app_more, FragmentNotRoot())
         transaction.commitAllowingStateLoss()
     }
 
@@ -249,8 +261,8 @@ class ActivityMain : AppCompatActivity() {
                 supportFragmentManager.backStackEntryCount > 0 -> {
                     supportFragmentManager.popBackStack()
                 }
-                configlist_tabhost.currentTab != 0 -> {
-                    configlist_tabhost.currentTab = 0
+                configlist_tabhost.currentTab != 1 -> {
+                    configlist_tabhost.currentTab = 1
                     setNavPage()
                     title = getString(R.string.app_name)
                 }

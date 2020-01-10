@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <pages>
     <resource dir="file:///android_asset/kr-script/common" />
-            <resource dir="file:///android_asset/kr-script/general" />
+    <resource dir="file:///android_asset/kr-script/general" />
 
     <group>
         <switch visible=". ./kr-script/common/android_n.sh">

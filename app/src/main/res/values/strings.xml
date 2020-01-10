@@ -536,4 +536,7 @@
     <string name="magisk_install_title">Scene附加模块</string>
     <string name="cache_recycle">回收缓存</string>
     <string name="dynamic_auto_disabled">未检测到配置文件，已自动禁用动态响应！</string>
+    <string name="app_donate">打赏</string>
+    <string name="app_nav">功能</string>
+    <string name="app_home">概览</string>
 </resources>

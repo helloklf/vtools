@@ -84,7 +84,7 @@ class FragmentNav : Fragment(), View.OnClickListener {
                 }
                 R.id.nav_battery_stats -> fragment = FragmentBatteryStats.createPage()
                 R.id.nav_core_control -> fragment = FragmentCpuControl.newInstance()
-                R.id.nav_paypal -> fragment = FragmentPay.createPage()
+                R.id.nav_paypal -> fragment = FragmentDonate.createPage()
                 R.id.nav_qq -> {
                     val key = "6ffXO4eTZVN0eeKmp-2XClxizwIc7UIu" //""e-XL2In7CgIpeK_sG75s-vAiu7n5DnlS"
                     val intent = Intent()
@@ -134,7 +134,7 @@ class FragmentNav : Fragment(), View.OnClickListener {
 
                 val pageTitle = (v as NavItem).text.toString()
                 // transaction.disallowAddToBackStack()
-                transaction.replace(R.id.main_content, fragment)
+                transaction.replace(R.id.app_more, fragment)
                 transaction.addToBackStack(pageTitle);
                 transaction.commitAllowingStateLoss()
                 activity!!.title = pageTitle

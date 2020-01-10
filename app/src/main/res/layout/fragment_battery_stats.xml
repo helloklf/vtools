@@ -43,7 +43,9 @@
 
     <com.omarea.common.ui.OverScrollListView
         android:id="@+id/battery_stats"
+        android:divider="@null"
         style="@style/ListCardItemLast"
         android:layout_height="0dp"
+        android:padding="0dp"
         android:layout_weight="1" />
 </LinearLayout>

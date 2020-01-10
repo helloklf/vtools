@@ -13,14 +13,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.omarea.utils.AlipayDonate
 import com.omarea.vtools.R
-import kotlinx.android.synthetic.main.fragment_pay.*
+import kotlinx.android.synthetic.main.fragment_donate.*
 
 
-class FragmentPay : Fragment() {
+class FragmentDonate : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_pay, container, false)
+            inflater.inflate(R.layout.fragment_donate, container, false)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -76,7 +76,7 @@ class FragmentPay : Fragment() {
 
     companion object {
         fun createPage(): Fragment {
-            val fragment = FragmentPay()
+            val fragment = FragmentDonate()
             return fragment
         }
     }

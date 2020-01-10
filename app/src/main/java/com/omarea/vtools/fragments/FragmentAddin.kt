@@ -23,12 +23,10 @@ import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.common.ui.ThemeMode
+import com.omarea.kr.KrScriptConfig
+import com.omarea.kr.PageConfigSh
 import com.omarea.krscript.config.PageConfigReader
-import com.omarea.krscript.executor.ScriptEnvironmen
-import com.omarea.krscript.model.ClickableNode
-import com.omarea.krscript.model.KrScriptActionHandler
-import com.omarea.krscript.model.PageNode
-import com.omarea.krscript.model.RunnableNode
+import com.omarea.krscript.model.*
 import com.omarea.krscript.ui.ActionListFragment
 import com.omarea.krscript.ui.FileChooserRender
 import com.omarea.shell_utils.PlatformUtils
@@ -51,6 +49,8 @@ import java.util.*
 
 
 class FragmentAddin : Fragment() {
+    private lateinit var krScriptConfig: KrScriptConfig
+
     private var myHandler = Handler()
     private fun createItem(title: String, desc: String, runnable: Runnable?, wran: Boolean = true): HashMap<String, Any> {
         val item = HashMap<String, Any>()
@@ -151,7 +151,20 @@ class FragmentAddin : Fragment() {
     }
 
     private var page2ConfigLoaded = false
-    private val pageConfig = "kr-script/pages/page_list.xml"
+
+    private fun getItems(pageNode: PageNode): ArrayList<NodeInfoBase>? {
+        var items: ArrayList<NodeInfoBase>? = null
+
+        if (pageNode.pageConfigSh.isNotEmpty()) {
+            items = PageConfigSh(this.activity!!, pageNode.pageConfigSh).execute()
+        }
+        if (items == null && pageNode.pageConfigPath.isNotEmpty()) {
+            items = PageConfigReader(this.context!!, pageNode.pageConfigPath).readConfigXml()
+        }
+
+        return items
+    }
+
 
     private fun loadPageConfig() {
         if (page2ConfigLoaded)
@@ -159,8 +172,7 @@ class FragmentAddin : Fragment() {
         val progressBarDialog = ProgressBarDialog(context!!)
         progressBarDialog.showDialog("读取配置，稍等...")
         Thread(Runnable {
-            ScriptEnvironmen.init(this.context!!, "kr-script/executor.sh", "toolkit")
-            val items = PageConfigReader(this.activity!!, pageConfig).readConfigXml()
+            val items = getItems(krScriptConfig.pageListConfig)
             myHandler.post {
                 page2ConfigLoaded = true
 
@@ -183,16 +195,22 @@ class FragmentAddin : Fragment() {
                 val intent = Intent()
 
                 intent.component = ComponentName(activity!!.applicationContext, ActionPage::class.java)
-                intent.putExtra("title", "" + clickableNode.title)
-                intent.putExtra("config", pageConfig)
+                val pageNode = krScriptConfig.pageListConfig
+
+                intent.putExtra("title", "" + pageNode.title)
+                intent.putExtra("beforeRead", "")
+                intent.putExtra("config", pageNode.pageConfigPath)
+                intent.putExtra("pageConfigSh", pageNode.pageConfigSh)
+                intent.putExtra("afterRead", "")
+                intent.putExtra("loadSuccess", "")
+                intent.putExtra("loadFail", "")
+                intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
 
                 if (clickableNode is RunnableNode) {
                     intent.putExtra("autoRunItemId", clickableNode.key)
                 } else if (clickableNode is PageNode) {
                 }
-
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 
                 addToFavoritesHandler.onAddToFavorites(clickableNode, intent)
             }
@@ -272,6 +290,7 @@ class FragmentAddin : Fragment() {
         }
 
         tabHost.currentTab = 0
+        krScriptConfig = KrScriptConfig().init(context!!)
         initAddin(view)
     }
 
