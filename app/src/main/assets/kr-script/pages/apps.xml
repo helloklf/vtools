@@ -114,7 +114,7 @@
             <script>pm  uninstall-system-updates</script>
         </action>
         <picker auto-off="true"
-            visible=". ./kr-script/common/support_android_p.sh"
+            visible=". ./kr-script/common/android_p.sh"
             options-sh=". ./kr-script/apps/launcher/options.sh">
             <title>更换桌面</title>
             <desc>将系统默认桌面，换成你安装的第三方桌面程序</desc>

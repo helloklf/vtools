@@ -1,4 +1,4 @@
-package com.omarea.utils;
+package com.omarea.shell_utils;
 
 import com.omarea.common.shell.KeepShell;
 
@@ -22,6 +22,7 @@ public class GApps {
         keepShell.doCmdSync("apps=\"" + apps + "\"\n" +
                 "for app in $apps; do\n" +
                 "    pm suspend $app 2> /dev/null || pm disable $app 2> /dev/null\n" +
-                "done");
+                "done\n" +
+                "pm disable  com.google.android.gsf");
     }
 }

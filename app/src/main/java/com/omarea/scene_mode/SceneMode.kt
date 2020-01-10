@@ -9,7 +9,7 @@ import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.model.SceneConfigInfo
 import com.omarea.store.SceneConfigStore
-import com.omarea.utils.GApps
+import com.omarea.shell_utils.GApps
 
 class SceneMode private constructor(context: Context, private var store: SceneConfigStore) {
     private var lastAppPackageName = "com.android.systemui"

@@ -1,20 +1,33 @@
 #!/system/bin/sh
 
-apps="
-com.google.android.gsf
-com.google.android.gsf.login
-com.google.android.gms
-com.android.vending
-com.google.android.play.games
-com.google.android.syncadapters.contacts
-"
+function enable() {
+    pm unsuspend $1 2> /dev/null
+    pm enable $1 2> /dev/null
+}
+
+app_cmd="disable"
+if [[ $ANDROID_SDK -gt 27 ]]; then
+    app_cmd="suspend"
+fi
+
+function disable() {
+    pm $app_cmd $1 2> /dev/null
+}
+
 if [ $state = '1' ]; then
-    for app in $apps; do
-        pm enable $app 2> /dev/null
-        pm unsuspend $app 2> /dev/null
-    done
+
+    enable com.google.android.gsf
+    enable com.google.android.gsf.login
+    enable com.google.android.gms
+    enable com.android.vending
+    enable com.google.android.play.games
+    enable com.google.android.syncadapters.contacts
 else
-    for app in $apps; do
-        pm suspend $app 2> /dev/null || pm disable $app 2> /dev/null
-    done
+
+    pm disable  com.google.android.gsf
+    pm disable  com.google.android.gsf.login
+    pm disable  com.google.android.gms
+    disable com.android.vending 2> /dev/null
+    disable com.google.android.play.games 2> /dev/null
+    pm disable  com.google.android.syncadapters.contacts
 fi;
