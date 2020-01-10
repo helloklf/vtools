@@ -87,11 +87,14 @@ class PathAnalysis(private var context: Context, private var parentDir: String =
                 relativePath != null && RootFile.fileExists(relativePath) -> relativePath
                 else -> null
             }.run {
-                val dir = FileWrite.getPrivateFilePath(context, "kr-script")
+                val dir = File(FileWrite.getPrivateFilePath(context, "kr-script"))
+                if (!dir.exists()) {
+                    dir.mkdirs()
+                }
+
                 val cachePath = FileWrite.getPrivateFilePath(context, "kr-script/outside_file.cache")
                 val fileOwner = FileOwner(context).fileOwner
                 KeepShellPublic.doCmdSync(
-                        "mkdir -p \"$dir\"\n" +
                         "cp -f \"$this\" \"$cachePath\"\n" +
                         "chmod 777 \"$cachePath\"\n" +
                         "chown $fileOwner:$fileOwner \"$cachePath\"\n")
