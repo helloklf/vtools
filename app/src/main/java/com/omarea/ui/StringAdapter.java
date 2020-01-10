@@ -43,7 +43,7 @@ public class StringAdapter extends BaseAdapter {
             convertView = View.inflate(context, R.layout.list_item_text, null);
         }
         String text = getItem(position).toString();
-        ((TextView) convertView).setText(text);
+        // ((TextView) convertView).setText(text);
         return convertView;
     }
 }

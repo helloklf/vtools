@@ -75,7 +75,6 @@ class FragmentApplistions : Fragment() {
         tabHost.setOnTabChangedListener { tabId ->
             tabIconHelper.updateHighlight()
         }
-        tabHost.currentTab = 3
 
         apps_userlist.addHeaderView(this.layoutInflater.inflate(R.layout.list_header_app, null))
         apps_systemlist.addHeaderView(this.layoutInflater.inflate(R.layout.list_header_app, null))

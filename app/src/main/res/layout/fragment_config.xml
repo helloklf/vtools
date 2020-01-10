@@ -23,10 +23,18 @@
                 android:layout_height="0dp"
                 android:layout_weight="1">
 
-                <FrameLayout
+                <LinearLayout
                     android:id="@+id/configlist_tab0"
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
+
+                    <Button
+                        android:id="@+id/btn_config_service_not_active"
+                        android:layout_width="match_parent"
+                        android:layout_height="55dp"
+                        android:background="@drawable/krscript_item_ripple"
+                        android:text="未激活辅助服务 - 点击去激活" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -63,193 +71,12 @@
                     </LinearLayout>
 
                     <com.omarea.common.ui.OverScrollListView
+                        android:background="@drawable/krscript_item_ripple_inactive"
+                        android:scrollbars="none"
                         android:id="@+id/config_defaultlist"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="50dp" />
-                </FrameLayout>
-
-                <FrameLayout
-                    android:id="@+id/blacklist_tab3"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="12dp">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="亮屏时（解锁后）" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:orientation="horizontal">
-
-                            <CheckBox
-                                android:id="@+id/auto_switch_network_on_wifi"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="5dp"
-                                android:text="打开WIFI" />
-
-                            <CheckBox
-                                android:id="@+id/auto_switch_network_on_data"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="5dp"
-                                android:text="打开3/4G" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:orientation="horizontal">
-
-                            <CheckBox
-                                android:id="@+id/auto_switch_network_on_nfc"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="5dp"
-                                android:text="打开NFC" />
-
-                            <CheckBox
-                                android:id="@+id/auto_switch_network_on_gps"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="5dp"
-                                android:text="打开GPS" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginBottom="30dp"
-                            android:orientation="horizontal">
-
-                            <CheckBox
-                                android:id="@+id/auto_switch_forcedoze_off"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="5dp"
-                                android:text="关闭强制Doze" />
-
-                            <CheckBox
-                                android:id="@+id/auto_switch_powersave_off"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="5dp"
-                                android:text="关闭极致省电" />
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="息屏后（延迟30秒）" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:orientation="horizontal">
-
-                            <CheckBox
-                                android:id="@+id/auto_switch_network_off_wifi"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="5dp"
-                                android:text="关闭WIFI" />
-
-                            <CheckBox
-                                android:id="@+id/auto_switch_network_off_data"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="5dp"
-                                android:text="关闭3/4G" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:orientation="horizontal">
-
-                            <CheckBox
-                                android:id="@+id/auto_switch_network_off_nfc"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="5dp"
-                                android:text="关闭NFC" />
-
-                            <CheckBox
-                                android:id="@+id/auto_switch_network_off_gps"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="5dp"
-                                android:text="关闭GPS" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginBottom="30dp"
-                            android:orientation="horizontal">
-
-                            <CheckBox
-                                android:id="@+id/auto_switch_forcedoze_on"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="5dp"
-                                android:text="打开强制Doze" />
-
-                            <CheckBox
-                                android:id="@+id/auto_switch_powersave_on"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="5dp"
-                                android:text="开启极致省电" />
-                        </LinearLayout>
-
-                        <Switch
-                            android:id="@+id/auto_clear_ignore_chager"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
-                            android:padding="8dp"
-                            android:text="@string/auto_clear_ignore_chager"
-                            android:visibility="gone" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginBottom="8dp"
-                            android:paddingLeft="8dp"
-                            android:text="@string/auto_clear_ignore_chager_desc"
-                            android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:visibility="gone" />
-                    </LinearLayout>
-                </FrameLayout>
+                        android:layout_height="match_parent" />
+                </LinearLayout>
 
                 <com.omarea.common.ui.OverScrollView
                     android:id="@+id/configlist_tab5"
@@ -493,7 +320,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginBottom="10dp"
-                                android:text="改动说明："
+                                android:text="功能提示："
                                 android:textColor="?colorAccent" />
 
                             <TextView
@@ -507,7 +334,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="10dp"
-                                android:text="长按应用可快速选择配置模式哦！"
+                                android:text="长按应用可快速设置性能模式哦！"
                                 android:textColor="?colorAccent" />
 
                         </LinearLayout>
@@ -541,13 +368,6 @@
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/btn_config_service_not_active"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:layout_gravity="bottom"
-            android:background="#eee"
-            android:text="未激活辅助服务 - 点击去激活" />
     </TabHost>
 
 </LinearLayout>

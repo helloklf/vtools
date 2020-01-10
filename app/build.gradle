@@ -18,8 +18,8 @@ android {
         applicationId "com.omarea.vtools"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 1108
-        versionName "2.7.5"
+        versionCode 1110
+        versionName "2.7.7"
     }
     buildTypes {
         release {
@@ -41,12 +41,14 @@ android {
     }
     productFlavors {
     }
+    /*
     android.applicationVariants.all { variant ->
         variant.outputs.all {
             variant.getPackageApplication().outputDirectory = new File(project.rootDir.absolutePath + "/build/outputs/apk/release")
             outputFileName = "${project.name}_${defaultConfig.versionName}_${variant.buildType.name}.apk"
         }
     }
+    */
 }
 
 dependencies {

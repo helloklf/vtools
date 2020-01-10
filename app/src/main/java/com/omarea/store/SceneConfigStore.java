@@ -10,7 +10,7 @@ import com.omarea.model.SceneConfigInfo;
 import java.util.ArrayList;
 
 public class SceneConfigStore extends SQLiteOpenHelper {
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
 
     public SceneConfigStore(Context context) {
         super(context, "app-settings", null, DB_VERSION);
@@ -34,9 +34,19 @@ public class SceneConfigStore extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion == 1 && newVersion == 2) {
-            String sql = "Alter table scene_config add column freeze int default(0)";
-            db.execSQL(sql);
+        if (oldVersion < 3) {
+            try {
+                db.execSQL("create table scene_config(" +
+                        "id text primary key, " +
+                        "alone_light int default(0), " +
+                        "light int default(-1), " +
+                        "dis_notice int default(0)," +
+                        "dis_button int default(0)," +
+                        "gps_on int default(0)," +
+                        "freeze int default(0)" +
+                        ")");
+            } catch (Exception ignored) {
+            }
         }
     }
 
@@ -74,7 +84,6 @@ public class SceneConfigStore extends SQLiteOpenHelper {
                     sceneConfigInfo.disNotice ? 1 : 0,
                     sceneConfigInfo.disButton ? 1 : 0,
                     sceneConfigInfo.gpsOn ? 1 : 0,
-                    0,
                     sceneConfigInfo.freeze ? 1 : 0
             });
             database.setTransactionSuccessful();

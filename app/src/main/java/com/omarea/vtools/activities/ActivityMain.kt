@@ -378,8 +378,11 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 sendIntent.type = "text/plain"
                 startActivity(sendIntent)
             }
-            R.id.nav_profile -> {
+            R.id.nav_app_scene -> {
                 fragment = FragmentConfig.createPage()
+            }
+            R.id.nav_system_scene -> {
+                fragment = FragmentSystemScene.createPage()
             }
             R.id.nav_app_magisk -> {
                 fragment = FragmentMagisk.createPage()
@@ -415,7 +418,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 menu.findItem(R.id.nav_core_control).isEnabled = false
                 menu.findItem(R.id.nav_battery).isEnabled = false
                 menu.findItem(R.id.nav_img).isEnabled = false
-                menu.findItem(R.id.nav_profile).isEnabled = false
+                menu.findItem(R.id.nav_app_scene).isEnabled = false
                 menu.findItem(R.id.nav_additional).isEnabled = false
                 menu.findItem(R.id.nav_app_magisk).isEnabled = false
                 menu.findItem(R.id.nav_freeze).isEnabled = false

@@ -46,6 +46,8 @@
 
                     <com.omarea.common.ui.OverScrollListView
                         android:id="@+id/apps_userlist"
+                        android:scrollbars="none"
+                        android:background="@drawable/krscript_item_ripple_inactive"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
                 </FrameLayout>
@@ -66,6 +68,8 @@
 
                     <com.omarea.common.ui.OverScrollListView
                         android:id="@+id/apps_systemlist"
+                        android:scrollbars="none"
+                        android:background="@drawable/krscript_item_ripple_inactive"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
 
@@ -87,6 +91,8 @@
 
                     <com.omarea.common.ui.OverScrollListView
                         android:id="@+id/apps_backupedlist"
+                        android:scrollbars="none"
+                        android:background="@drawable/krscript_item_ripple_inactive"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
 
@@ -96,10 +102,12 @@
                     android:id="@+id/tab_apps_helper"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:padding="20dp">
+                    android:orientation="vertical">
 
                     <LinearLayout
+                        android:background="@drawable/krscript_item_ripple_inactive"
+                        android:layout_margin="@dimen/activity_vertical_margin"
+                        android:padding="@dimen/activity_horizontal_margin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
