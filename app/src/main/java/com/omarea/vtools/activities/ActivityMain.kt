@@ -229,6 +229,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
 
                 setHomePage()
+                setNavPage()
 
                 if (MagiskExtend.magiskSupported() &&
                         !(MagiskExtend.moduleInstalled() || globalSPF!!.getBoolean("magisk_dot_show", false))
@@ -248,6 +249,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 DialogHelper.animDialog(AlertDialog.Builder(this).setTitle(getString(R.string.sorry))
                         .setMessage("启动应用失败\n" + ex.message).setNegativeButton(getString(R.string.btn_retry)) { _, _ ->
                             setHomePage()
+                            setNavPage()
                         })
             }
             if (!BackupRestoreUtils.isSupport()) {
@@ -283,6 +285,10 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         transaction.replace(R.id.tab_home, FragmentHome())
         // transaction.addToBackStack(getString(R.string.app_name))
         transaction.commitAllowingStateLoss()
+    }
+
+    private fun setNavPage() {
+        val fragmentManager = supportFragmentManager
 
         fragmentManager.fragments.clear()
         val transaction2 = fragmentManager.beginTransaction()
@@ -313,6 +319,7 @@ class ActivityMain : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 }
                 configlist_tabhost.currentTab != 0 -> {
                     configlist_tabhost.currentTab = 0
+                    setNavPage()
                 }
                 else -> {
                     setExcludeFromRecents(true)
