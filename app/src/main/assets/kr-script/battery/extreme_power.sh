@@ -1,7 +1,7 @@
 prop="persist.vtools.suspend"
 status=`getprop $prop`
 
-apps=`pm list package -3 | grep -v com.omarea | grep -v launcher | grep -v xposed | cut -f2 -d ':'`
+apps=`pm list package -3 | grep -v com.omarea | grep -v launcher | grep -v xposed | grep -v magisk | cut -f2 -d ':'`
 system_apps="
 com.xiaomi.market
 com.miui.player
@@ -19,9 +19,6 @@ com.google.android.syncadapters.contacts
 "
 
 function on() {
-    # 电源键 息屏
-    input keyevent 26
-
     echo '进入待机模式'
     echo ''
     echo '此过程可能需要 10~60 秒'
@@ -30,24 +27,15 @@ function on() {
     echo ''
 
     for app in $apps; do
+      am force-stop $app 1 > /dev/null
       pm suspend $app 1 > /dev/null
     done
     for app in $system_apps; do
+      am force-stop $app 1 > /dev/null
       pm suspend $app 1 > /dev/null
     done
 
     setprop $prop 1
-
-    echo ""
-    echo '清理后台进程...'
-    echo ""
-
-    for app in $apps; do
-      am force-stop $app 1 > /dev/null
-    done
-    for app in $system_apps; do
-      am force-stop $app 1 > /dev/null
-    done
 
     svc wifi disable
     svc data disable
@@ -73,7 +61,11 @@ function on() {
     dumpsys deviceidle step
 
     sync
+
     echo 3 > /proc/sys/vm/drop_caches
+
+    # 电源键 息屏
+    input keyevent 26
 }
 
 function off() {

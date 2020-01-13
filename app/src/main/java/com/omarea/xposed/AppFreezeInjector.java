@@ -15,7 +15,7 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
-public class MiuiHome {
+public class AppFreezeInjector {
     public void appFreezeInject(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             XposedBridge.log("Scene Hook MIUI Home");
@@ -50,6 +50,7 @@ public class MiuiHome {
                                         // 方式1： 由Scene通过ROOT启动
                                         intent.setClassName("com.omarea.vtools", "com.omarea.vtools.activities.ActivityQuickStart");
                                         intent.putExtra("packageName", packageName);
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_TASK_ON_HOME | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
                                         // 方式2：由桌面自己解冻再启动（通常没有权限）
                                         // // packageManager.setPackagesSuspended(packageNames, true, null, null, dialogMessage);

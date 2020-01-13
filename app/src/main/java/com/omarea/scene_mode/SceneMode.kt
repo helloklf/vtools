@@ -93,7 +93,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
     }
 
     // 冻结已经后台超时的偏见应用
-    fun clearFreezeAppTimeLimit(freezeSuspend: Boolean) {
+    fun clearFreezeAppTimeLimit() {
         val currentTime = System.currentTimeMillis()
         freezList.filter {
             it.leaveTime > -1 && currentTime - it.leaveTime > freezAppTimeLimit && it.packageName != lastAppPackageName

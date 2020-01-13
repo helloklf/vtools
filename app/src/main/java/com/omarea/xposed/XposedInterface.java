@@ -230,6 +230,7 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
             case "com.android.systemui":
                 if (prefs.getBoolean("com.android.systemui_hide_su", false)) {
                     new SystemUI().hideSUIcon(loadPackageParam);
+                    new AppFreezeInjector().appFreezeInject(loadPackageParam);
                 }
                 /*
                 // 修改状态栏时间
@@ -263,13 +264,15 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
                     new DeviceInfo().simulationR11(loadPackageParam);
                 }
                 break;
+            case "com.android.quicksearchbox":
+            case "com.android.settings":
             // nova
             case "com.teslacoilsw.launcher":
             // poco
             case "com.mi.android.globallauncher":
             // miui
             case "com.miui.home": {
-                new MiuiHome().appFreezeInject(loadPackageParam);
+                new AppFreezeInjector().appFreezeInject(loadPackageParam);
             }
         }
 

@@ -85,7 +85,7 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
                         ticks += interval
                         ticks %= 60
                         if (ticks == 0) {
-                            sceneMode.clearFreezeAppTimeLimit(spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, false))
+                            sceneMode.clearFreezeAppTimeLimit()
                         }
                     }
                 }, 0, interval * 1000L)
