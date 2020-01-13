@@ -259,4 +259,17 @@
         <item name="android:layout_marginLeft">@dimen/activity_horizontal_margin</item>
         <item name="android:layout_column">1</item>
     </style>
+
+    <style name="scene_config_item">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">14dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:layout_gravity">center_vertical</item>
+    </style>
+    <style name="scene_config_title" parent="textSmall">
+        <item name="android:textColor">?android:attr/colorAccent</item>
+        <item name="android:layout_marginBottom">4dp</item>
+    </style>
 </resources>

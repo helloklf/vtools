@@ -16,10 +16,7 @@ import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Switch
-import android.widget.Toast
+import android.widget.*
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
@@ -49,6 +46,7 @@ class ActivityAppDetails : AppCompatActivity() {
     private var vAddinsInstalled = false
     private var aidlConn: IAppConfigAidlInterface? = null
     private val configInstaller = ModeConfigInstaller()
+    private lateinit var sceneBlackList:SharedPreferences
 
     private var needKeyCapture = false
 
@@ -280,6 +278,20 @@ class ActivityAppDetails : AppCompatActivity() {
             app_details_auto.visibility = View.GONE
             app_details_assist.visibility = View.GONE
             app_details_freeze.isEnabled = false
+            scene_mode_config.visibility = View.GONE
+            scene_mode_allow.visibility = View.GONE
+        }
+
+        // 场景模式白名单开关
+        sceneBlackList = getSharedPreferences(SpfConfig.SCENE_BLACK_LIST, Context.MODE_PRIVATE);
+        scene_mode_allow.setOnClickListener {
+            val checked = (it as Checkable).isChecked
+            scene_mode_config.visibility = if (checked) View.VISIBLE else View.GONE
+            if (checked) {
+                sceneBlackList.edit().remove(app).apply()
+            } else {
+                sceneBlackList.edit().putBoolean(app, true).apply()
+            }
         }
 
         immersivePolicyControl = ImmersivePolicyControl(contentResolver)
@@ -309,7 +321,7 @@ class ActivityAppDetails : AppCompatActivity() {
                     .setSingleChoiceItems(R.array.powercfg_modes2, index, { dialog, which ->
                         selectedIndex = which
                     })
-                    .setPositiveButton(R.string.btn_confirm, { dialog, which ->
+                    .setPositiveButton(R.string.btn_confirm) { dialog, which ->
                         if (index != selectedIndex) {
                             var modeName = ModeSwitcher.BALANCE
                             when (selectedIndex) {
@@ -329,7 +341,7 @@ class ActivityAppDetails : AppCompatActivity() {
                             _result = RESULT_OK
                             notifyService(app, modeName)
                         }
-                    })
+                    }
                     .setNegativeButton(R.string.btn_cancel, DialogInterface.OnClickListener { dialog, which -> }))
         }
 
@@ -566,6 +578,9 @@ class ActivityAppDetails : AppCompatActivity() {
         app_details_aloowlight.isChecked = sceneConfigInfo.aloneLight
         app_details_gps.isChecked = sceneConfigInfo.gpsOn
         app_details_freeze.isChecked = sceneConfigInfo.freeze
+
+        scene_mode_allow.isChecked = !sceneBlackList.contains(app)
+        scene_mode_config.visibility = if (scene_mode_config.visibility == View.VISIBLE && scene_mode_allow.isChecked) View.VISIBLE else View.GONE
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {

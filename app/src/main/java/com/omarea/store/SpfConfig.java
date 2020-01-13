@@ -83,4 +83,5 @@ public class SpfConfig {
     public static String CONFIG_SPF_TOUCH_BAR = "touch_bar";
 
     public static String APP_HIDE_HISTORY_SPF = "app_hide_spf";
+    public static String SCENE_BLACK_LIST = "scene_black_list_spf";
 }

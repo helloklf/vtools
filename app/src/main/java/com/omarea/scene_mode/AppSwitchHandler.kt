@@ -27,6 +27,7 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
     private var lastModePackage: String? = "com.system.ui"
     private var lastMode = ""
     private var spfPowercfg = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
+    private var sceneBlackList = context.getSharedPreferences(SpfConfig.SCENE_BLACK_LIST, Context.MODE_PRIVATE)
     private var spfGlobal = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
     private var ignoredList = ArrayList<String>()
     private var dyamicCore = false
@@ -242,7 +243,7 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
             _onScreenOn() // 如果切换应用时发现屏幕出于开启状态 而记录的状态是关闭，通知开启
         }
 
-        if (lastPackage == packageName || ignoredList.contains(packageName)) return
+        if (lastPackage == packageName || ignoredList.contains(packageName) || sceneBlackList.contains(packageName)) return
         if (lastPackage == null) lastPackage = "com.android.systemui"
 
         dumpSuccess(packageName)
