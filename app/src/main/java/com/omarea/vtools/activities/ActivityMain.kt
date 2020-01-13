@@ -150,27 +150,30 @@ class ActivityMain : AppCompatActivity() {
             this.onBackPressed()
         }
 
+        val tabIconHelper = TabIconHelper(configlist_tabhost, this, R.layout.list_item_tab2)
+        configlist_tabhost.setup()
+
+        tabIconHelper.newTabSpec(getString(R.string.app_nav), getDrawable(R.drawable.app_more)!!, R.id.app_more)
+        tabIconHelper.newTabSpec(getString(R.string.app_home), getDrawable(R.drawable.app_home)!!, R.id.tab_home)
+        tabIconHelper.newTabSpec(getString(R.string.app_donate), getDrawable(R.drawable.app_donate)!!, R.id.app_donate)
+        configlist_tabhost.setOnTabChangedListener { tabId ->
+            tabIconHelper.updateHighlight()
+
+            updateBackArrow()
+        }
+        configlist_tabhost.currentTab = 1
+        supportFragmentManager.addOnBackStackChangedListener {
+            updateBackArrow()
+        }
+
+        if (CheckRootStatus.lastCheckResult) {
+            setHomePage()
+        }
+        setDonatePage()
+        setNavPage()
+
         if (CheckRootStatus.lastCheckResult) {
             try {
-                val tabIconHelper = TabIconHelper(configlist_tabhost, this, R.layout.list_item_tab2)
-                configlist_tabhost.setup()
-
-                tabIconHelper.newTabSpec(getString(R.string.app_nav), getDrawable(R.drawable.app_more)!!, R.id.app_more)
-                tabIconHelper.newTabSpec(getString(R.string.app_home), getDrawable(R.drawable.app_home)!!, R.id.tab_home)
-                tabIconHelper.newTabSpec(getString(R.string.app_donate), getDrawable(R.drawable.app_donate)!!, R.id.app_donate)
-                configlist_tabhost.setOnTabChangedListener { tabId ->
-                    tabIconHelper.updateHighlight()
-
-                    updateBackArrow()
-                }
-                configlist_tabhost.currentTab = 1
-                supportFragmentManager.addOnBackStackChangedListener {
-                    updateBackArrow()
-                }
-
-                setHomePage()
-                setDonatePage()
-                setNavPage()
 
                 if (MagiskExtend.magiskSupported() &&
                         !(MagiskExtend.moduleInstalled() || globalSPF!!.getBoolean("magisk_dot_show", false))
@@ -255,7 +258,7 @@ class ActivityMain : AppCompatActivity() {
         val fragmentManager = supportFragmentManager
         fragmentManager.fragments.clear()
         val transaction = fragmentManager.beginTransaction()
-        transaction.replace(R.id.app_more, FragmentNotRoot())
+        transaction.replace(R.id.tab_home, FragmentNotRoot())
         transaction.commitAllowingStateLoss()
     }
 
@@ -296,6 +299,10 @@ class ActivityMain : AppCompatActivity() {
             R.id.action_settings -> startActivity(Intent(this.applicationContext, ActivityOtherSettings::class.java))
             R.id.action_power -> DialogPower(this).showPowerMenu()
             R.id.action_graph -> {
+                if (!CheckRootStatus.lastCheckResult) {
+                    Toast.makeText(this, "没有获得ROOT权限，不能使用本功能", Toast.LENGTH_SHORT).show()
+                    return false
+                }
                 if (FloatMonitor.isShown == true) {
                     FloatMonitor(this).hidePopupWindow()
                     return false

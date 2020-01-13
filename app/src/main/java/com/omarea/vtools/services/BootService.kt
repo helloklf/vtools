@@ -252,6 +252,7 @@ class BootService : IntentService("vtools-boot") {
         }
 
         keepShell.tryExit()
+        hideNotification()
         Thread.sleep(2000)
         stopSelf()
     }
@@ -338,8 +339,7 @@ class BootService : IntentService("vtools-boot") {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    private fun hideNotification () {
         if (bootCancel) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 nm.cancel(900)
@@ -350,5 +350,10 @@ class BootService : IntentService("vtools-boot") {
             updateNotification(getString(R.string.boot_success))
         }
         // System.exit(0)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        hideNotification()
     }
 }
