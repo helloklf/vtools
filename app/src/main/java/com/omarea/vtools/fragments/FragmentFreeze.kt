@@ -237,7 +237,7 @@ class FragmentFreeze : Fragment() {
     }
 
     private fun enableApp(packageName: String) {
-        KeepShellPublic.doCmdSync("pm unsuspend $packageName\npm unhide $packageName\npm enable $packageName")
+        SceneMode.unfreezeApp(packageName)
     }
 
     private fun disableApp(appInfo: Appinfo) {
@@ -245,11 +245,7 @@ class FragmentFreeze : Fragment() {
     }
 
     private fun disableApp(packageName: String) {
-        if (config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, false)) {
-            KeepShellPublic.doCmdSync("pm unhide $packageName\npm suspend $packageName\npm enable $packageName")
-        } else {
-            KeepShellPublic.doCmdSync("pm unhide $packageName\npm unsuspend $packageName\npm disable $packageName")
-        }
+        SceneMode.freezeApp(packageName)
     }
 
     private fun toggleEnable(appInfo: Appinfo) {
@@ -293,7 +289,7 @@ class FragmentFreeze : Fragment() {
         override fun run() {
             for (appinfo in apps) {
                 if (!appinfo.enabled) {
-                    KeepShellPublic.doCmdSync("pm unhide ${appinfo.packageName}\npm enable ${appinfo.packageName}")
+                    KeepShellPublic.doCmdSync("pm enable ${appinfo.packageName}")
                 }
                 sleep(3000)
                 FreezeAppShortcutHelper().createShortcut(this.context, appinfo.packageName.toString())

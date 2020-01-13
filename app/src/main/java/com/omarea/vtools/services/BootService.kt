@@ -242,12 +242,10 @@ class BootService : IntentService("vtools-boot") {
         }
 
         updateNotification(getString(R.string.boot_freeze))
-        SceneMode.getCurrentInstance()?.run {
-            val launchedFreezeApp = getLaunchedFreezeApp()
-            for (item in SceneConfigStore(context).freezeAppList) {
-                if (!launchedFreezeApp.contains(item)) {
-                    freezeApp(item)
-                }
+        val launchedFreezeApp = SceneMode.getCurrentInstance()?.getLaunchedFreezeApp()
+        for (item in SceneConfigStore(context).freezeAppList) {
+            if (launchedFreezeApp == null || !launchedFreezeApp.contains(item)) {
+                SceneMode.freezeApp(item)
             }
         }
 

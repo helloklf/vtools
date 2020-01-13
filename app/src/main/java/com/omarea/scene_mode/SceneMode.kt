@@ -14,7 +14,6 @@ import com.omarea.shell_utils.GApps
 class SceneMode private constructor(context: Context, private var store: SceneConfigStore) {
     private var lastAppPackageName = "com.android.systemui"
     private var contentResolver: ContentResolver = context.contentResolver
-    private val freezeUseSuspend = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
     private var freezList = ArrayList<FreezeAppHistory>()
     // 偏见应用解冻数量限制
     private val freezAppLimit = 5 // 5个
@@ -22,6 +21,8 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
     private val freezAppTimeLimit = 300000 // 5 分钟
 
     companion object {
+        private val freezeUseSuspend = false; // Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+
         @Volatile
         private var instance: SceneMode? = null
 
@@ -38,6 +39,30 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
                 }
             }
             return instance!!
+        }
+
+        fun freezeApp(app: String) {
+            if (app.equals("com.android.vending")) {
+                GApps().disable(KeepShellPublic.getDefaultInstance());
+            } else {
+                if (freezeUseSuspend) {
+                    KeepShellPublic.doCmdSync("pm suspend ${app}\nam force-stop ${app}")
+                } else {
+                    KeepShellPublic.doCmdSync("pm disable ${app}")
+                }
+            }
+        }
+
+        fun unfreezeApp(app: String) {
+            if (app.equals("com.android.vending")) {
+                GApps().disable(KeepShellPublic.getDefaultInstance());
+            } else {
+                if (freezeUseSuspend) {
+                    KeepShellPublic.doCmdSync("pm suspend ${app}\nam force-stop ${app}")
+                } else {
+                    KeepShellPublic.doCmdSync("pm disable ${app}")
+                }
+            }
         }
     }
 
@@ -107,18 +132,6 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
             freezeApp(app.packageName)
         }
         freezList.remove(app)
-    }
-
-    fun freezeApp(app: String) {
-        if (app.equals("com.android.vending")) {
-            GApps().disable(KeepShellPublic.getDefaultInstance());
-        } else {
-            if (freezeUseSuspend) {
-                KeepShellPublic.doCmdSync("pm suspend ${app}\nam force-stop ${app}")
-            } else {
-                KeepShellPublic.doCmdSync("pm disable ${app}")
-            }
-        }
     }
 
     var brightnessMode = -1;

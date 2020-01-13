@@ -46,6 +46,10 @@
 
     <LinearLayout
         style="@style/ListCardItemLast"
+        android:paddingLeft="0dp"
+        android:paddingRight="0dp"
+        android:paddingTop="0dp"
+        android:paddingBottom="10dp"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:alpha="0.9"
@@ -59,7 +63,7 @@
             android:hint="搜索应用名"
             android:inputType="textFilter"
             android:maxLength="10"
-            android:padding="8dp"
+            android:padding="@dimen/activity_horizontal_margin"
             android:singleLine="true"
             android:textSize="16dp" />
 

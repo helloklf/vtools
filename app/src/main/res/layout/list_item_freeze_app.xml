@@ -17,13 +17,13 @@
 
     <TextView
         android:id="@+id/ItemTitle"
+        android:textColor="#888888"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:lines="1"
         android:overScrollMode="always"
         android:text=""
         android:textAlignment="center"
-        android:textColor="?android:attr/textColorPrimary"
         android:textSize="10dp"
         android:textStyle="bold" />
 </LinearLayout>
