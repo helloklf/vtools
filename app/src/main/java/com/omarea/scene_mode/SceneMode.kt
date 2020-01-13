@@ -58,9 +58,9 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
                 GApps().disable(KeepShellPublic.getDefaultInstance());
             } else {
                 if (freezeUseSuspend) {
-                    KeepShellPublic.doCmdSync("pm suspend ${app}\nam force-stop ${app}")
+                    KeepShellPublic.doCmdSync("pm unsuspend ${app}")
                 } else {
-                    KeepShellPublic.doCmdSync("pm disable ${app}")
+                    KeepShellPublic.doCmdSync("pm enable ${app}")
                 }
             }
         }
