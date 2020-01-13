@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -16,6 +17,16 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 public class AppFreezeInjector {
+
+    private String getHomeLauncher(Context context)
+    {
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        ResolveInfo resolveInfo = context.getPackageManager().resolveActivity(intent, 0);
+        String currentHomePackage = resolveInfo.activityInfo.packageName;
+        return currentHomePackage;
+    }
+
     public void appFreezeInject(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             XposedBridge.log("Scene Hook MIUI Home");
