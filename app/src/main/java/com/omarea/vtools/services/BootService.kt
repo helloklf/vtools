@@ -9,7 +9,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.support.v4.app.NotificationCompat
-import com.omarea.charger_booster.BatteryService
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shared.RawText
 import com.omarea.common.shell.KeepShell

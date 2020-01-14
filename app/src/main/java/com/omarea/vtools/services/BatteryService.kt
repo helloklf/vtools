@@ -1,4 +1,4 @@
-package com.omarea.charger_booster
+package com.omarea.vtools.services
 
 import android.app.ActivityManager
 import android.app.Service
@@ -6,12 +6,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.IBinder
+import com.omarea.charger_booster.BatteryReceiver
 import com.omarea.data_collection.EventBus
-import com.omarea.data_collection.publisher.Batterychanged
+import com.omarea.data_collection.publisher.BatteryState
 
 @Suppress("DEPRECATION")
 public class BatteryService : Service() {
-    internal var batteryChangedReciver: Batterychanged? = null
+    internal var batteryChangedReciver: BatteryState? = null
 
     override fun onBind(intent: Intent): IBinder? {
         return null
@@ -20,7 +21,7 @@ public class BatteryService : Service() {
     override fun onCreate() {
         if (batteryChangedReciver == null) {
             //监听电池改变
-            batteryChangedReciver = Batterychanged()
+            batteryChangedReciver = BatteryState()
             //启动完成
             registerReceiver(batteryChangedReciver, IntentFilter(Intent.ACTION_BOOT_COMPLETED))
             //电源连接

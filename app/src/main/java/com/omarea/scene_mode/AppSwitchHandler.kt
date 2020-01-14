@@ -10,6 +10,10 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
+import com.omarea.data_collection.EventBus
+import com.omarea.data_collection.EventReceiver
+import com.omarea.data_collection.EventTypes
+import com.omarea.data_collection.GlobalStatus
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.utils.CommonCmds
@@ -21,7 +25,7 @@ import kotlin.collections.ArrayList
  *
  * Created by helloklf on 2016/10/1.
  */
-class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher() {
+class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher(), EventReceiver {
     private var systemScene = SystemScene(context)
     private var lastPackage: String? = null
     private var lastModePackage: String? = "com.system.ui"
@@ -37,17 +41,6 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
     private var lastScreenOnOff: Long = 0
     //屏幕关闭后切换网络延迟（ms）
     private val SCREEN_OFF_SWITCH_NETWORK_DELAY: Long = 25000
-    private var reciverLock = LockScreenReciver(context, object : IScreenEventHandler {
-        override fun onScreenOff() {
-            if (ScreenState(context).isScreenLocked()) {
-                _onScreenOff()
-            }
-        }
-
-        override fun onScreenOn() {
-            _onScreenOn()
-        }
-    })
     private var handler = Handler(Looper.getMainLooper())
     private var notifyHelper = AlwaysNotification(context, spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))
     private val sceneMode = SceneMode.getInstanceOrInit(context, SceneConfigStore(context))!!
@@ -230,6 +223,31 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
     }
     //#endregion
 
+    override fun onReceive(eventType: EventTypes) {
+        when (eventType) {
+            EventTypes.APP_SWITCH ->
+                onFocusAppChanged(GlobalStatus.lastPackageName)
+            EventTypes.SCREEN_ON -> {
+                // if (!screenOn && screenState.isScreenOn()) {
+                    _onScreenOn()
+                // }
+            }
+            EventTypes.SCREEN_OFF -> {
+                if (ScreenState(context).isScreenLocked()) {
+                    _onScreenOff()
+                }
+            }
+            else -> return
+        }
+    }
+
+    override fun eventFilter(eventType: EventTypes): Boolean {
+        return when (eventType) {
+            EventTypes.APP_SWITCH -> true
+            else -> false
+        }
+    }
+
     /**
      * 焦点应用改变
      */
@@ -258,7 +276,6 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
     fun onInterrupt() {
         sceneMode.clearState()
         notifyHelper.hideNotify()
-        reciverLock.unRegister()
         destroyKeepShell()
         stopTimer()
         if (sceneConfigChanged != null) {
@@ -269,6 +286,7 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
             context.unregisterReceiver(sceneAppChanged)
             sceneAppChanged = null
         }
+        EventBus.unsubscibe(this)
     }
 
     @SuppressLint("ApplySharedPref")
@@ -303,8 +321,6 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
 
         updateModeNofity() // 服务启动后 更新通知
 
-        // 监听锁屏状态变化
-        reciverLock.autoRegister()
         // 禁用SeLinux
         if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false)) {
             KeepShellPublic.doCmdSync(CommonCmds.DisableSELinux)

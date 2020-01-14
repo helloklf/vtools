@@ -16,7 +16,10 @@ import android.view.KeyEvent
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityWindowInfo
 import android.widget.Toast
-import com.omarea.charger_booster.BatteryService
+import com.omarea.vtools.services.BatteryService
+import com.omarea.data_collection.EventBus
+import com.omarea.data_collection.EventTypes
+import com.omarea.data_collection.GlobalStatus
 import com.omarea.scene_mode.AppSwitchHandler
 import com.omarea.store.SceneConfigStore
 import com.omarea.utils.AutoClick
@@ -34,7 +37,6 @@ class AccessibilityScenceMode : AccessibilityService() {
     private var eventWindowContentChange = false
     private var eventViewClick = false
     private var sceneConfigChanged: BroadcastReceiver? = null
-    private var lastPackageName = ""
     private var isLandscapf = false
 
     /*
@@ -155,11 +157,11 @@ class AccessibilityScenceMode : AccessibilityService() {
             registerReceiver(sceneConfigChanged, IntentFilter(getString(R.string.scene_key_capture_change_action)))
         }
         super.onServiceConnected()
-        if (appSwitchHandler == null)
+
+        if (appSwitchHandler == null) {
             appSwitchHandler = AppSwitchHandler(this)
-
-
-        BatteryService.startBatteryService(this.applicationContext)
+            EventBus.subscibe(AppSwitchHandler(this))
+        }
     }
 
     fun topAppPackageName(): String {
@@ -278,19 +280,19 @@ class AccessibilityScenceMode : AccessibilityService() {
                         }
                     }
                 }
-                lastPackageName = packageName
-                appSwitchHandler?.onFocusAppChanged(lastPackageName)
+                GlobalStatus.lastPackageName = packageName
+                EventBus.publish(EventTypes.APP_SWITCH);
             } else {
-                lastPackageName = packageName
-                appSwitchHandler?.onFocusAppChanged(lastPackageName)
+                GlobalStatus.lastPackageName = packageName
+                EventBus.publish(EventTypes.APP_SWITCH);
             }
 
             handler.postDelayed({
-                if (lastPackageName != packageName) {
+                if (GlobalStatus.lastPackageName != packageName) {
                     val lastEvent = topAppPackageName()
-                    if (lastEvent.isNotEmpty() && lastEvent != lastPackageName) {
-                        appSwitchHandler?.onFocusAppChanged(lastEvent)
-                        lastPackageName = lastEvent
+                    if (lastEvent.isNotEmpty() && lastEvent != GlobalStatus.lastPackageName) {
+                        GlobalStatus.lastPackageName = lastEvent
+                        EventBus.publish(EventTypes.APP_SWITCH);
                     }
                 }
             }, 2000)
@@ -302,7 +304,7 @@ class AccessibilityScenceMode : AccessibilityService() {
     private fun deestory() {
         Toast.makeText(applicationContext, "Scene - 辅助服务已关闭！", Toast.LENGTH_SHORT).show()
         if (appSwitchHandler != null) {
-            appSwitchHandler!!.onInterrupt()
+            appSwitchHandler?.onInterrupt()
             appSwitchHandler = null
             // disableSelf()
             stopSelf()

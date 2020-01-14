@@ -1,8 +1,6 @@
 package com.omarea.data_collection;
 
-import android.content.Intent;
 import android.util.Log;
-
 import java.util.ArrayList;
 
 public class EventBus {
@@ -11,14 +9,13 @@ public class EventBus {
     /**
      * 发布事件
      * @param eventType 事件类型
-     * @param intent    事件内容
      */
-    public static void publish(EventTypes eventType, Intent intent) {
+    public static void publish(EventTypes eventType) {
         if (eventReceivers != null && eventReceivers.size() > 0) {
             for (EventReceiver eventReceiver : eventReceivers) {
                 try {
-                    if (eventReceiver.eventFilter(eventType, intent)) {
-                        eventReceiver.onReceive(eventType, intent);
+                    if (eventReceiver.eventFilter(eventType)) {
+                        eventReceiver.onReceive(eventType);
                     }
                 } catch (Exception ex) {
                     Log.e("SceneEventBus", "" + ex.getMessage());
@@ -33,11 +30,21 @@ public class EventBus {
      */
     public static void subscibe(EventReceiver eventReceiver) {
         if (eventReceivers == null) {
-            eventReceivers = new ArrayList<EventReceiver>();
+            eventReceivers = new ArrayList<>();
         }
 
-        if (!eventReceivers.contains(eventReceiver)) {
+        if (eventReceivers.indexOf(eventReceiver) < 0) {
             eventReceivers.add(eventReceiver);
+        }
+    }
+
+    /**
+     * 取消订阅事件
+     * @param eventReceiver 事件接收器
+     */
+    public static void unsubscibe(EventReceiver eventReceiver) {
+        if (eventReceivers != null && eventReceivers.indexOf(eventReceiver) > -1) {
+            eventReceivers.remove(eventReceiver);
         }
     }
 }

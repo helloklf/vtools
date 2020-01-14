@@ -16,7 +16,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import com.omarea.charger_booster.BatteryService
+import com.omarea.vtools.services.BatteryService
 import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp

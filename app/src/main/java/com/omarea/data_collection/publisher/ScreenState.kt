@@ -1,4 +1,4 @@
-package com.omarea.scene_mode
+package com.omarea.data_collection.publisher
 
 import android.app.KeyguardManager
 import android.content.BroadcastReceiver
@@ -7,12 +7,14 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Handler
+import com.omarea.data_collection.EventBus
+import com.omarea.data_collection.EventTypes
 
 /**
  * 监听屏幕开关事件
  * Created by Hello on 2018/01/23.
  */
-class LockScreenReciver(private var context: Context, private var callbacks: IScreenEventHandler) : BroadcastReceiver() {
+class ScreenState(private var context: Context) : BroadcastReceiver() {
     private var handler = Handler()
     private var lastChange = 0L
     override fun onReceive(p0: Context?, p1: Intent?) {
@@ -22,11 +24,11 @@ class LockScreenReciver(private var context: Context, private var callbacks: ISc
         when (p1.action) {
             Intent.ACTION_SCREEN_OFF -> {
                 lastChange = System.currentTimeMillis()
-                callbacks.onScreenOff()
+                EventBus.publish(EventTypes.SCREEN_OFF)
             }
             Intent.ACTION_USER_PRESENT -> {
                 lastChange = System.currentTimeMillis()
-                callbacks.onScreenOn()
+                EventBus.publish(EventTypes.SCREEN_ON)
             }
             Intent.ACTION_USER_UNLOCKED,
             Intent.ACTION_SCREEN_ON -> {
@@ -38,27 +40,27 @@ class LockScreenReciver(private var context: Context, private var callbacks: ISc
                             try {
                                 val mKeyguardManager = p0!!.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
                                 if (!(mKeyguardManager.isKeyguardLocked || mKeyguardManager.inKeyguardRestrictedInputMode())) {
-                                    callbacks.onScreenOn()
+                                    EventBus.publish(EventTypes.SCREEN_ON)
                                 }
                             } catch (ex: Exception) {
-                                System.out.print(">>>>>" + ex.message)
                             }
                         }
                     }, 5500)
                 } catch (ex: Exception) {
-                    System.out.print(">>>>>" + ex.message)
                 }
             }
         }
     }
 
-    fun autoRegister() {
+    fun autoRegister(): ScreenState {
         context.applicationContext.registerReceiver(this, IntentFilter(Intent.ACTION_SCREEN_OFF))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             context.applicationContext.registerReceiver(this, IntentFilter(Intent.ACTION_USER_UNLOCKED))
         }
         context.applicationContext.registerReceiver(this, IntentFilter(Intent.ACTION_SCREEN_ON))
         context.applicationContext.registerReceiver(this, IntentFilter(Intent.ACTION_USER_PRESENT))
+
+        return this;
     }
 
     fun unRegister() {

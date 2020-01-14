@@ -17,7 +17,7 @@ import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import com.omarea.charger_booster.BatteryInfo
-import com.omarea.charger_booster.BatteryService
+import com.omarea.vtools.services.BatteryService
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.data_collection.EventBus
@@ -354,7 +354,7 @@ class FragmentBattery : Fragment() {
     //启动电池服务
     private fun startBatteryService() {
         serviceRunning = BatteryService.startBatteryService(context!!)
-        EventBus.publish(EventTypes.BATTERY_CHANGED, null)
+        EventBus.publish(EventTypes.BATTERY_CHANGED)
     }
 
     companion object {

@@ -15,7 +15,7 @@ import com.omarea.store.SpfConfig
 import java.util.*
 
 class BatteryReceiver(private var service: Context) : EventReceiver {
-    override fun eventFilter(eventType: EventTypes, intent: Intent?): Boolean {
+    override fun eventFilter(eventType: EventTypes): Boolean {
         return when (eventType) {
             EventTypes.BATTERY_CHANGED, EventTypes.BATTERY_LOW, EventTypes.POWER_CONNECTED, EventTypes.POWER_DISCONNECTED -> true
             else -> false
@@ -46,7 +46,7 @@ class BatteryReceiver(private var service: Context) : EventReceiver {
             return bpAllowed && (GlobalStatus.batteryCapacity >= bpLevel || (chargeDisabled && GlobalStatus.batteryCapacity > bpLevel - 20))
         }
 
-    override fun onReceive(eventType: EventTypes, intent: Intent?) {
+    override fun onReceive(eventType: EventTypes) {
         if (GlobalStatus.batteryCapacity < 0) {
             return
         }

@@ -8,7 +8,7 @@ import com.omarea.data_collection.EventBus
 import com.omarea.data_collection.EventTypes
 import com.omarea.data_collection.GlobalStatus
 
-class Batterychanged : BroadcastReceiver() {
+class BatteryState : BroadcastReceiver() {
     // 保存状态
     private fun saveState(intent: Intent) {
         GlobalStatus.batteryCapacity = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
@@ -27,13 +27,13 @@ class Batterychanged : BroadcastReceiver() {
             GlobalStatus.batteryTemperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1) / 10.0f;
 
             if (action == Intent.ACTION_BATTERY_LOW) {
-                EventBus.publish(EventTypes.BATTERY_LOW, intent);
+                EventBus.publish(EventTypes.BATTERY_LOW);
             } else if (action == Intent.ACTION_BATTERY_CHANGED) {
-                EventBus.publish(EventTypes.BATTERY_CHANGED, intent);
+                EventBus.publish(EventTypes.BATTERY_CHANGED);
             } else if (action == Intent.ACTION_POWER_DISCONNECTED) {
-                EventBus.publish(EventTypes.CHARGER_DISCONNECTED, intent);
+                EventBus.publish(EventTypes.CHARGER_DISCONNECTED);
             } else if (action == Intent.ACTION_POWER_CONNECTED) {
-                EventBus.publish(EventTypes.POWER_CONNECTED, intent);
+                EventBus.publish(EventTypes.POWER_CONNECTED);
             }
         } catch (ex: Exception) {
         } finally {
