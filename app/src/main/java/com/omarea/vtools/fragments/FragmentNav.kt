@@ -58,6 +58,7 @@ class FragmentNav : Fragment(), View.OnClickListener {
         if (isDetached) {
             return
         }
+        activity!!.title = getString(R.string.app_name)
     }
 
     override fun onClick(v: View?) {

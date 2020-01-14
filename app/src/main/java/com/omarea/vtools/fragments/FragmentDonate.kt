@@ -24,7 +24,8 @@ class FragmentDonate : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        activity!!.title = getString(R.string.menu_paypal)
+        // activity!!.title = getString(R.string.menu_paypal)
+        activity!!.title = getString(R.string.app_name)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
