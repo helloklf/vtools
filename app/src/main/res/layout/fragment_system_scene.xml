@@ -30,196 +30,272 @@
                 android:layout_height="0dp"
                 android:layout_weight="1">
 
-                <LinearLayout
+                <FrameLayout
                     android:id="@+id/blacklist_tab3"
                     android:padding="@dimen/activity_horizontal_margin"
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-
                     <LinearLayout
-                        android:background="@drawable/krscript_item_ripple_inactive"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:padding="12dp">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="亮屏时（解锁后）" />
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
 
                         <LinearLayout
+                            android:background="@drawable/krscript_item_ripple_inactive"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:orientation="horizontal">
+                            android:orientation="vertical"
+                            android:padding="12dp">
 
-                            <CheckBox
-                                android:id="@+id/auto_switch_network_on_wifi"
-                                android:layout_width="wrap_content"
+                            <TextView
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="5dp"
-                                android:text="打开WIFI" />
+                                android:text="亮屏时（解锁后）" />
 
-                            <CheckBox
-                                android:id="@+id/auto_switch_network_on_data"
-                                android:layout_width="wrap_content"
+                            <LinearLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="5dp"
-                                android:text="打开3/4G" />
+                                android:layout_marginTop="5dp"
+                                android:orientation="horizontal">
+
+                                <CheckBox
+                                    android:id="@+id/auto_switch_network_on_wifi"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="5dp"
+                                    android:text="打开WIFI" />
+
+                                <CheckBox
+                                    android:id="@+id/auto_switch_network_on_data"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="5dp"
+                                    android:text="打开3/4G" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:orientation="horizontal">
+
+                                <CheckBox
+                                    android:id="@+id/auto_switch_network_on_nfc"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="5dp"
+                                    android:text="打开NFC" />
+
+                                <CheckBox
+                                    android:id="@+id/auto_switch_network_on_gps"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="5dp"
+                                    android:text="打开GPS" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:visibility="gone"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:orientation="horizontal">
+
+                                <CheckBox
+                                    android:id="@+id/auto_switch_forcedoze_off"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="5dp"
+                                    android:text="关闭强制Doze" />
+
+                                <CheckBox
+                                    android:id="@+id/auto_switch_powersave_off"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="5dp"
+                                    android:text="关闭极致省电" />
+                            </LinearLayout>
                         </LinearLayout>
 
                         <LinearLayout
+                            android:layout_marginTop="@dimen/activity_vertical_margin"
+                            android:background="@drawable/krscript_item_ripple_inactive"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:orientation="horizontal">
-
-                            <CheckBox
-                                android:id="@+id/auto_switch_network_on_nfc"
-                                android:layout_width="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="12dp">
+                            <TextView
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="5dp"
-                                android:text="打开NFC" />
+                                android:text="息屏后（延迟30秒）" />
 
-                            <CheckBox
-                                android:id="@+id/auto_switch_network_on_gps"
-                                android:layout_width="wrap_content"
+                            <LinearLayout
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="5dp"
-                                android:text="打开GPS" />
+                                android:layout_marginTop="5dp"
+                                android:orientation="horizontal">
+
+                                <CheckBox
+                                    android:id="@+id/auto_switch_network_off_wifi"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="5dp"
+                                    android:text="关闭WIFI" />
+
+                                <CheckBox
+                                    android:id="@+id/auto_switch_network_off_data"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="5dp"
+                                    android:text="关闭3/4G" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:orientation="horizontal">
+
+                                <CheckBox
+                                    android:id="@+id/auto_switch_network_off_nfc"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="5dp"
+                                    android:text="关闭NFC" />
+
+                                <CheckBox
+                                    android:id="@+id/auto_switch_network_off_gps"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="5dp"
+                                    android:text="关闭GPS" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:visibility="gone"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:orientation="horizontal">
+
+                                <CheckBox
+                                    android:id="@+id/auto_switch_forcedoze_on"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="5dp"
+                                    android:text="打开强制Doze" />
+
+                                <CheckBox
+                                    android:id="@+id/auto_switch_powersave_on"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="5dp"
+                                    android:text="开启极致省电" />
+                            </LinearLayout>
+
+                            <Switch
+                                android:id="@+id/auto_clear_ignore_chager"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="12dp"
+                                android:padding="8dp"
+                                android:text="@string/auto_clear_ignore_chager"
+                                android:visibility="gone" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginBottom="8dp"
+                                android:paddingLeft="8dp"
+                                android:text="@string/auto_clear_ignore_chager_desc"
+                                android:textAppearance="?android:attr/textAppearanceSmall"
+                                android:visibility="gone" />
                         </LinearLayout>
 
                         <LinearLayout
+                            android:id="@+id/system_scene_bp"
+                            android:visibility="gone"
+                            android:orientation="vertical"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:orientation="horizontal">
-
-                            <CheckBox
-                                android:id="@+id/auto_switch_forcedoze_off"
-                                android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+                            <LinearLayout
+                                android:layout_marginTop="@dimen/activity_vertical_margin"
+                                android:background="@drawable/krscript_item_ripple_inactive"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="5dp"
-                                android:text="关闭强制Doze" />
+                                android:padding="12dp"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="电量高于" />
 
-                            <CheckBox
-                                android:id="@+id/auto_switch_powersave_off"
-                                android:layout_width="wrap_content"
+                                <TextView
+                                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                                    android:id="@+id/system_scene_bp_gt"
+                                    android:text="--"
+                                    android:layout_weight="1"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content" />
+                                <TextView
+                                    android:textColor="?android:colorAccent"
+                                    android:textAlignment="center"
+                                    android:text="停止充电"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_marginTop="@dimen/activity_vertical_margin"
+                                android:background="@drawable/krscript_item_ripple_inactive"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="5dp"
-                                android:text="关闭极致省电" />
+                                android:padding="12dp"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="电量低于" />
+
+                                <TextView
+                                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                                    android:id="@+id/system_scene_bp_lt"
+                                    android:text="--"
+                                    android:layout_weight="1"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content" />
+                                <TextView
+                                    android:textColor="?android:colorAccent"
+                                    android:textAlignment="center"
+                                    android:text="恢复充电"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content" />
+                            </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>
 
-                    <LinearLayout
-                        android:layout_marginTop="@dimen/activity_vertical_margin"
-                        android:background="@drawable/krscript_item_ripple_inactive"
-                        android:layout_width="match_parent"
+                    <android.support.design.widget.FloatingActionButton
+                        android:id="@+id/system_scene_add"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:padding="12dp">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="息屏后（延迟30秒）" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:orientation="horizontal">
-
-                            <CheckBox
-                                android:id="@+id/auto_switch_network_off_wifi"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="5dp"
-                                android:text="关闭WIFI" />
-
-                            <CheckBox
-                                android:id="@+id/auto_switch_network_off_data"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="5dp"
-                                android:text="关闭3/4G" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:orientation="horizontal">
-
-                            <CheckBox
-                                android:id="@+id/auto_switch_network_off_nfc"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="5dp"
-                                android:text="关闭NFC" />
-
-                            <CheckBox
-                                android:id="@+id/auto_switch_network_off_gps"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="5dp"
-                                android:text="关闭GPS" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:orientation="horizontal">
-
-                            <CheckBox
-                                android:id="@+id/auto_switch_forcedoze_on"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="5dp"
-                                android:text="打开强制Doze" />
-
-                            <CheckBox
-                                android:id="@+id/auto_switch_powersave_on"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="5dp"
-                                android:text="开启极致省电" />
-                        </LinearLayout>
-
-                        <Switch
-                            android:id="@+id/auto_clear_ignore_chager"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="12dp"
-                            android:padding="8dp"
-                            android:text="@string/auto_clear_ignore_chager"
-                            android:visibility="gone" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:layout_marginBottom="8dp"
-                            android:paddingLeft="8dp"
-                            android:text="@string/auto_clear_ignore_chager_desc"
-                            android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:visibility="gone" />
-                    </LinearLayout>
-                </LinearLayout>
+                        android:layout_gravity="center_horizontal|bottom"
+                        android:src="@drawable/add" />
+                </FrameLayout>
 
                 <com.omarea.common.ui.OverScrollView
                     android:id="@+id/configlist_tab5"

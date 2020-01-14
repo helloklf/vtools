@@ -30,57 +30,19 @@ class FragmentSystemScene : Fragment() {
     private lateinit var processBarDialog: ProgressBarDialog
     private lateinit var spfPowercfg: SharedPreferences
     private lateinit var globalSPF: SharedPreferences
+    private lateinit var chargeConfig: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
     private lateinit var applistHelper: AppListHelper
     internal val myHandler: Handler = Handler()
     private var packageManager: PackageManager? = null
     private lateinit var sceneConfigStore: SceneConfigStore
     private var firstMode = ModeSwitcher.DEFAULT
-    private var aidlConn: IAppConfigAidlInterface? = null
-
-    private var conn = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            aidlConn = IAppConfigAidlInterface.Stub.asInterface(service)
-        }
-
-        override fun onServiceDisconnected(name: ComponentName?) {
-            aidlConn = null
-        }
-    }
-
-    private fun bindService() {
-        try {
-            if (packageManager!!.getPackageInfo("com.omarea.vaddin", 0) == null) {
-                return
-            }
-        } catch (ex: Exception) {
-            return
-        }
-        if (aidlConn != null) {
-            return
-        }
-        try {
-            val intent = Intent();
-            //绑定服务端的service
-            intent.setAction("com.omarea.vaddin.ConfigUpdateService");
-            //新版本（5.0后）必须显式intent启动 绑定服务
-            intent.setComponent(ComponentName("com.omarea.vaddin", "com.omarea.vaddin.ConfigUpdateService"));
-            //绑定的时候服务端自动创建
-            if (context!!.bindService(intent, conn, Context.BIND_AUTO_CREATE)) {
-            } else {
-                throw Exception("")
-            }
-        } catch (ex: Exception) {
-            Toast.makeText(this.context, "连接到“Scene-高级设定”插件失败，请不要阻止插件自启动！", Toast.LENGTH_LONG).show()
-        }
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_system_scene, container, false)
     private lateinit var modeSwitcher: ModeSwitcher
 
     override fun onResume() {
         super.onResume()
-        bindService()
         val serviceState = AccessibleServiceHelper().serviceRunning(context!!)
         btn_config_service_not_active.visibility = if (serviceState) View.GONE else View.VISIBLE
     }
@@ -122,6 +84,7 @@ class FragmentSystemScene : Fragment() {
         applistHelper = AppListHelper(context!!)
         spfPowercfg = context!!.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+        chargeConfig = context!!.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
         editor = spfPowercfg.edit()
         firstMode = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.DEFAULT)!!
         sceneConfigStore = SceneConfigStore(this.context)
@@ -162,6 +125,17 @@ class FragmentSystemScene : Fragment() {
         bindSPF(auto_switch_network_off_gps, spfAutoConfig, SpfConfig.GPS + SpfConfig.OFF, false)
         bindSPF(auto_switch_forcedoze_on, spfAutoConfig, SpfConfig.FORCEDOZE + SpfConfig.ON, false)
         bindSPF(auto_switch_powersave_on, spfAutoConfig, SpfConfig.POWERSAVE + SpfConfig.ON, false)
+
+        if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_BP, false)) {
+            system_scene_bp.visibility = View.VISIBLE
+            val limit = chargeConfig.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, SpfConfig.CHARGE_SPF_BP_LEVEL_DEFAULT)
+            system_scene_bp_lt.text = (limit - 20).toString() + "%"
+            system_scene_bp_gt.text = limit.toString() + "%"
+        }
+
+        system_scene_add.setOnClickListener {
+            Toast.makeText(context, "别急，这个功能还在开发...", Toast.LENGTH_SHORT).show()
+        }
     }
 
     /**
@@ -209,10 +183,6 @@ class FragmentSystemScene : Fragment() {
     }
 
     override fun onDestroy() {
-        if (aidlConn != null) {
-            context!!.unbindService(conn)
-            aidlConn = null
-        }
         processBarDialog.hideDialog()
         super.onDestroy()
     }

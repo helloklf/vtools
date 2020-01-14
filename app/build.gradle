@@ -62,7 +62,6 @@ dependencies {
     implementation 'com.android.support:design:28.0.0'
     // implementation 'com.android.support:cardview-v7:28.0.0'
     implementation project(':common')
-    implementation project(':gesture')
     implementation project(':krscript')
     // 添加依赖模块
     // implementation 'com.github.ahmadaghazadeh:CodeEditor:1.0.17'

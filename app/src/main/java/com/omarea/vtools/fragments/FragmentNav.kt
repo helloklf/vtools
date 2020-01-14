@@ -1,7 +1,9 @@
 package com.omarea.vtools.fragments
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
@@ -112,12 +114,7 @@ class FragmentNav : Fragment(), View.OnClickListener {
                     fragment = FragmentMagisk.createPage()
                 }
                 R.id.nav_gesture -> {
-                    try {
-                        val intent = Intent(activity, com.omarea.gesture.SettingsActivity::class.java)
-                        startActivity(intent)
-                    } catch (ex: Exception) {
-                    }
-                    // openUrl("https://www.coolapk.com/apk/com.omarea.gesture")
+                    openUrl("https://www.coolapk.com/apk/com.omarea.gesture")
                     return
                 }
                 R.id.nav_filter -> {
