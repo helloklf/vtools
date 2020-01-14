@@ -27,7 +27,7 @@ open class ModeSwitcher {
                 PERFORMANCE -> return "性能模式"
                 FAST -> return "极速模式"
                 BALANCE -> return "均衡模式"
-                IGONED -> return "忽略切换"
+                IGONED -> return "保持状态"
                 "" -> return "跟随默认"
                 else -> return "未知模式"
             }

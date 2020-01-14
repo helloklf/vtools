@@ -54,18 +54,19 @@ function on() {
     echo "开启安卓原生的省电模式"
     settings put global low_power 1
 
-    echo "进入闲置状态"
-    dumpsys deviceidle step
-    dumpsys deviceidle step
-    dumpsys deviceidle step
-    dumpsys deviceidle step
-
     sync
 
     echo 3 > /proc/sys/vm/drop_caches
 
     # 电源键 息屏
     input keyevent 26
+    sleep 5
+
+    echo "进入闲置状态"
+    dumpsys deviceidle step
+    dumpsys deviceidle step
+    dumpsys deviceidle step
+    dumpsys deviceidle step
 }
 
 function off() {

@@ -3,6 +3,7 @@ package com.omarea.vtools.fragments
 import android.app.AlertDialog
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
@@ -265,6 +266,7 @@ class FragmentFreeze : Fragment() {
         }
         try {
             val intent = this.context!!.packageManager.getLaunchIntentForPackage(appInfo.packageName.toString())
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_HISTORY)
             if (intent != null) {
                 this.context!!.startActivity(intent)
                 SceneMode.getCurrentInstance()?.setFreezeAppStartTime(appInfo.packageName.toString())

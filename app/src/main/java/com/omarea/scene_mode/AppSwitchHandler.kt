@@ -219,6 +219,7 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
                 executePowercfgMode(mode)
             } else {
                 executePowercfgMode(POWERSAVE)
+                updateModeNofity() //
             }
             lastMode = mode
         } else {
@@ -228,12 +229,6 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
         }
     }
     //#endregion
-
-    private fun dumpSuccess(packageName: String) {
-        autoToggleMode(packageName)
-        sceneMode.onAppEnter(packageName)
-        lastPackage = packageName
-    }
 
     /**
      * 焦点应用改变
@@ -246,7 +241,9 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
         if (lastPackage == packageName || ignoredList.contains(packageName) || sceneBlackList.contains(packageName)) return
         if (lastPackage == null) lastPackage = "com.android.systemui"
 
-        dumpSuccess(packageName)
+        autoToggleMode(packageName)
+        sceneMode.onAppEnter(packageName)
+        lastPackage = packageName
     }
 
     fun isIgnoredApp(packageName: String, isLandscapf: Boolean): Boolean {
