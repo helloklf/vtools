@@ -107,6 +107,9 @@ class FragmentNav : Fragment(), View.OnClickListener {
                 R.id.nav_app_scene -> {
                     fragment = FragmentConfig.createPage()
                 }
+                R.id.nav_cpu_modes -> {
+                    fragment = FragmentCpuModes.createPage()
+                }
                 R.id.nav_system_scene -> {
                     fragment = FragmentSystemScene.createPage()
                 }

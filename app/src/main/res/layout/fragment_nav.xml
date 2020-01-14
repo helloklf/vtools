@@ -30,9 +30,9 @@
             <com.omarea.ui.NavItem
                 android:tag="root"
                 style="@style/nav_item_wrap_right"
-                android:id="@+id/nav_system_scene"
-                app:drawable="@drawable/ic_menu_system"
-                app:text="@string/menu_system_scene" />
+                android:id="@+id/nav_cpu_modes"
+                app:drawable="@drawable/cpu"
+                app:text="@string/menu_cpu_modes" />
             <com.omarea.ui.NavItem
                 android:tag="root"
                 style="@style/nav_item_wrap"
@@ -40,10 +40,17 @@
                 app:drawable="@drawable/ic_menu_freeze"
                 app:text="@string/menu_freeze" />
             <com.omarea.ui.NavItem
+                android:tag="root"
                 style="@style/nav_item_wrap_right"
                 android:id="@+id/nav_battery_stats"
                 app:drawable="@drawable/battery"
                 app:text="@string/menu_battery_stats" />
+            <com.omarea.ui.NavItem
+                android:tag="root"
+                style="@style/nav_item_wrap"
+                android:id="@+id/nav_system_scene"
+                app:drawable="@drawable/ic_menu_system"
+                app:text="@string/menu_system_scene" />
         </GridLayout>
 
         <TextView

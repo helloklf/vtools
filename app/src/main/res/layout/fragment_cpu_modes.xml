@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        style="@style/ListCardItem"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="6dp">
+
+            <TextView
+                style="@style/textSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="场景模式 - 性能配置 管理"
+                android:textColor="?colorAccent" />
+
+            <TextView
+                style="@style/textSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="在这里 [查看/修改] 性能配置的四个模式(省电、均衡、性能、极速)具体参数。\n目前，自定义配置参数功能，仅开放给使用schedutil调度器的设备！" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/battery_stats_delete"
+            style="?android:buttonBarButtonStyle"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:padding="0dp"
+            android:src="@drawable/delete" />
+    </LinearLayout>
+
+    <com.omarea.common.ui.OverScrollListView
+        android:id="@+id/battery_stats"
+        android:divider="@null"
+        style="@style/ListCardItemLast"
+        android:layout_height="0dp"
+        android:padding="0dp"
+        android:layout_weight="1" />
+</LinearLayout>
