@@ -7,9 +7,7 @@ import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
 import android.net.Uri;
-
 import com.omarea.vtools.R;
-import com.omarea.vtools.activities.ActivityShortcut;
 
 import java.util.ArrayList;
 
@@ -72,13 +70,6 @@ public class AppShortcutManager {
                     .setDisabledMessage("Disabled")
                     .setIcon(Icon.createWithResource(context, R.drawable.shortcut_p3))
                     .setIntent(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.trinea.cn/")))
-                    .build());
-            shortcutInfos.add(new ShortcutInfo.Builder(context, "xposed")
-                    .setShortLabel("Xposed配置")
-                    .setLongLabel("Xposed插件")
-                    .setDisabledMessage("Disabled")
-                    .setIcon(Icon.createWithResource(context, R.drawable.shortcut_settings))
-                    .setIntent(new Intent(context, ActivityShortcut.class))
                     .build());
             assert shortcutManager != null;
             shortcutManager.setDynamicShortcuts(shortcutInfos);

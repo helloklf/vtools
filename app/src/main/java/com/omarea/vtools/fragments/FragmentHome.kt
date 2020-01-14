@@ -21,7 +21,7 @@ import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.model.CpuCoreInfo
-import com.omarea.scene_mode.ModeConfigInstaller
+import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.shell_utils.CpuFrequencyUtil
 import com.omarea.shell_utils.CpuLoadUtils
@@ -46,7 +46,7 @@ class FragmentHome : Fragment() {
 
     private lateinit var globalSPF: SharedPreferences
     private var timer: Timer? = null
-    private val configInstaller = ModeConfigInstaller()
+    private val configInstaller = CpuConfigInstaller()
     private fun showMsg(msg: String) {
         this.view?.let { Snackbar.make(it, msg, Snackbar.LENGTH_LONG).show() }
     }
@@ -338,7 +338,7 @@ class FragmentHome : Fragment() {
         if (configInstaller.configInstalled()) {
             modeList.executePowercfgMode(action, context!!.packageName)
         } else {
-            ModeConfigInstaller().installPowerConfig(context!!);
+            CpuConfigInstaller().installOfficialConfig(context!!);
             modeList.executePowercfgMode(action)
         }
         setModeState()
@@ -352,7 +352,7 @@ class FragmentHome : Fragment() {
                     AlertDialog
                             .Builder(context)
                             .setTitle("提示")
-                            .setMessage("“场景模式-动态响应”已被激活，你手动选择的模式随时可能被覆盖。\n\n如果你需要长期使用手动控制，请前往“场景模式”的设置界面关闭“动态响应”！")
+                            .setMessage("“场景模式-性能调节”已被激活，你手动选择的模式随时可能被覆盖。\n\n如果你需要长期使用手动控制，请前往“场景模式”的设置界面关闭“性能调节”！")
                             .setNegativeButton(R.string.btn_confirm) { _, _ ->
                             }
                             .setCancelable(false))

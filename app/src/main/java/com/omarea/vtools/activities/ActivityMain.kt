@@ -24,7 +24,7 @@ import com.omarea.common.shell.RootFile
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ThemeMode
 import com.omarea.permissions.CheckRootStatus
-import com.omarea.scene_mode.ModeConfigInstaller
+import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.store.SpfConfig
 import com.omarea.ui.TabIconHelper
 import com.omarea.utils.Update
@@ -71,9 +71,8 @@ class ActivityMain : AppCompatActivity() {
     private class ConfigInstallerThread : Thread() {
         override fun run() {
             super.run()
-            ModeConfigInstaller().configCodeVerify()
+            CpuConfigInstaller().configCodeVerify()
         }
-
     }
 
     private class ThermalCheckThread(private var context: Context) : Thread() {
@@ -335,23 +334,6 @@ class ActivityMain : AppCompatActivity() {
                 }
                 .setNegativeButton(R.string.btn_cancel) { _, _ ->
                 })
-    }
-
-    private fun hideRootMenu(menu: Menu?) {
-        menu?.run {
-            try {
-                menu.findItem(R.id.nav_applictions).isEnabled = false
-                menu.findItem(R.id.nav_swap).isEnabled = false
-                menu.findItem(R.id.nav_core_control).isEnabled = false
-                menu.findItem(R.id.nav_battery).isEnabled = false
-                menu.findItem(R.id.nav_img).isEnabled = false
-                menu.findItem(R.id.nav_app_scene).isEnabled = false
-                menu.findItem(R.id.nav_additional).isEnabled = false
-                menu.findItem(R.id.nav_app_magisk).isEnabled = false
-                menu.findItem(R.id.nav_freeze).isEnabled = false
-            } catch (ex: Exception) {
-            }
-        }
     }
 
     public override fun onPause() {

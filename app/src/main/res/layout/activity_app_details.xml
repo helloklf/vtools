@@ -87,7 +87,7 @@
                             style="@style/scene_config_item"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="动态响应" />
+                            android:text="性能调节" />
 
                         <TextView
                             android:id="@+id/app_details_dynamic"
@@ -96,7 +96,6 @@
                             android:layout_weight="1"
                             android:paddingTop="8dp"
                             android:paddingBottom="8dp"
-                            android:text="@string/powersave"
                             android:textAlignment="textEnd" />
                     </LinearLayout>
 

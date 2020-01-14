@@ -1,7 +1,6 @@
 package com.omarea.vtools.fragments
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.*
@@ -25,7 +24,7 @@ import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.OverScrollListView
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.model.Appinfo
-import com.omarea.scene_mode.ModeConfigInstaller
+import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.BatteryHistoryStore
 import com.omarea.store.SceneConfigStore
@@ -62,7 +61,7 @@ class FragmentConfig : Fragment() {
     private lateinit var sceneConfigStore: SceneConfigStore
     private var firstMode = ModeSwitcher.DEFAULT
     private var aidlConn: IAppConfigAidlInterface? = null
-    private val configInstaller = ModeConfigInstaller()
+    private val configInstaller = CpuConfigInstaller()
 
     private var conn = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -218,6 +217,7 @@ class FragmentConfig : Fragment() {
                                 3 -> modeName = ModeSwitcher.FAST
                                 4 -> modeName = ""
                                 5 -> modeName = ModeSwitcher.IGONED
+                                6 -> modeName = ModeSwitcher.CUSTOM
                             }
 
                             if (modeName.isEmpty()) {
@@ -281,9 +281,6 @@ class FragmentConfig : Fragment() {
             loadList()
         })
 
-
-        val spfAutoConfig = context!!.getSharedPreferences(SpfConfig.BOOSTER_SPF_CFG_SPF, Context.MODE_PRIVATE)
-
         bindSPF(dynamic_lock_mode, globalSPF, SpfConfig.GLOBAL_SPF_LOCK_MODE, false)
         bindSPF(settings_autoinstall, globalSPF, SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false)
         config_customer_powercfg.setOnClickListener {
@@ -319,7 +316,7 @@ class FragmentConfig : Fragment() {
             return
         }
         if (requestCode == REQUEST_POWERCFG_FILE) {
-            if (resultCode == Activity.RESULT_OK && data != null) {
+            if (resultCode == RESULT_OK && data != null) {
                 if (data.extras == null || !data.extras.containsKey("file")) {
                     return
                 }
@@ -333,7 +330,7 @@ class FragmentConfig : Fragment() {
                     val lines = file.readText(Charset.defaultCharset()).replace("\r", "")
                     val configStar = lines.split("\n").firstOrNull()
                     if (configStar != null && configStar.startsWith("#!/") && configStar.endsWith("sh")) {
-                        if (configInstaller.installPowerConfigByText(context!!, lines)) {
+                        if (configInstaller.installCustomConfig(context!!, lines)) {
                             configInstalled()
                         } else {
                             Toast.makeText(context, "由于某些原因，安装配置脚本失败，请重试！", Toast.LENGTH_LONG).show()
@@ -347,7 +344,7 @@ class FragmentConfig : Fragment() {
             }
             return
         } else if (requestCode == REQUEST_POWERCFG_ONLINE) {
-            if (resultCode == Activity.RESULT_OK) {
+            if (resultCode == RESULT_OK) {
                 configInstalled()
             }
         } else if (requestCode == REQUEST_APP_CONFIG && data != null && displayList != null) {
@@ -633,12 +630,12 @@ class FragmentConfig : Fragment() {
                                         getString(R.string.get_online_config),
                                         getString(R.string.choose_local_config),
                                         getString(R.string.skipnow)
-                                ), 0, { _, which ->
+                                ), 0) { _, which ->
                             i = which
-                        })
-                        .setNegativeButton(R.string.btn_confirm, { _, _ ->
+                        }
+                        .setNegativeButton(R.string.btn_confirm) { _, _ ->
                             if (i == 4) {
-                                // 跳过配置安装时，关闭动态响应
+                                // 跳过配置安装时，关闭性能调节
                                 globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, false).apply()
                             } else if (i == 3) {
                                 chooseLocalConfig()
@@ -649,23 +646,23 @@ class FragmentConfig : Fragment() {
                             } else if (i == 0) {
                                 installConfig(false)
                             }
-                        }))
+                        })
             }
             else -> {
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle(getString(R.string.not_support_config))
                         .setMessage(R.string.not_support_config_desc)
-                        .setPositiveButton(getString(R.string.get_online_config), { _, _ ->
+                        .setPositiveButton(getString(R.string.get_online_config)) { _, _ ->
                             getOnlineConfig()
-                        })
-                        .setNegativeButton(getString(R.string.more), { _, _ ->
+                        }
+                        .setNegativeButton(getString(R.string.more)) { _, _ ->
                             val intent = Intent()
                             //Intent intent = new Intent(Intent.ACTION_VIEW,uri);
                             intent.action = "android.intent.action.VIEW"
                             val content_url = Uri.parse("https://github.com/helloklf/vtools")
                             intent.data = content_url
                             startActivity(intent)
-                        }))
+                        })
             }
         }
     }
@@ -689,16 +686,16 @@ class FragmentConfig : Fragment() {
                         arrayOf(
                                 getString(R.string.online_config_v1),
                                 getString(R.string.online_config_v2)
-                        ), 0, { _, which ->
+                        ), 0) { _, which ->
                     i = which
-                })
-                .setNegativeButton(R.string.btn_confirm, { _, _ ->
+                }
+                .setNegativeButton(R.string.btn_confirm) { _, _ ->
                     if (i == 0) {
                         getOnlineConfigV1()
                     } else if (i == 1) {
                         getOnlineConfigV2()
                     }
-                }))
+                })
     }
 
     private fun getOnlineConfigV1() {
@@ -710,7 +707,6 @@ class FragmentConfig : Fragment() {
             Toast.makeText(context!!, "启动在线页面失败！", Toast.LENGTH_SHORT).show()
         }
     }
-
 
     private fun getOnlineConfigV2() {
         try {
@@ -731,7 +727,7 @@ class FragmentConfig : Fragment() {
             return
         }
 
-        configInstaller.installPowerConfig(context!!, "", useBigCore)
+        configInstaller.installOfficialConfig(context!!, "", useBigCore)
         configInstalled()
     }
 
@@ -741,14 +737,14 @@ class FragmentConfig : Fragment() {
             reStartService()
         } else {
             DialogHelper.animDialog(AlertDialog.Builder(context)
-                    .setMessage("配置脚本已安装，是否开启动态响应？")
-                    .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                    .setMessage("配置脚本已安装，是否开启性能调节？")
+                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
                         globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true).apply()
                         dynamic_control.isChecked = true
                         reStartService()
+                    }
+                    .setNegativeButton(R.string.btn_cancel) { _, _ ->
                     })
-                    .setNegativeButton(R.string.btn_cancel, { _, _ ->
-                    }))
         }
     }
 

@@ -288,14 +288,14 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="20dp"
-                                android:text="动态响应" />
+                                android:text="性能调节" />
 
                             <TextView
                                 style="@style/textSmall"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:paddingBottom="8dp"
-                                android:text="你需要开启此选项，才能使动态响应设置生效。并且，场景模式运作需要Scene保持服务后台运行！" />
+                                android:text="你需要开启此选项，才能使性能调节设置生效。并且，场景模式运作需要Scene保持服务后台运行！" />
 
 
                             <Switch
@@ -309,7 +309,7 @@
                                 style="@style/textSmall"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:text="屏幕关闭5秒后，自动切换为省电模式，需要开启动态响应" />
+                                android:text="屏幕关闭5秒后，自动切换为省电模式，需要开启性能调节" />
 
                         </LinearLayout>
 
@@ -327,7 +327,7 @@
                                 style="@style/textSmall"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:text="动态响应配置脚本位置为/data/powercfg.sh、/data/powercfg-base.sh（非必需，仅启动场景模式时执行一次），直接在Scene里选择脚本“保守/激进( 由本应用作者提供)”即可完成安装或更新。\n\n另外，非常感谢yc支持Scene，提供了更多机型的配置脚本文件，你也可以在本界面点击“在线”去安装。\n\n切换或更新配置脚本后，建议重启手机，以免出现配置冲突！" />
+                                android:text="性能调节配置脚本位于 /data/powercfg.sh、/data/powercfg-base.sh（非必需，仅启动场景模式时执行一次），直接在Scene里选择脚本“保守/激进( 由本应用作者提供)”即可完成安装或更新。\n\n另外，非常感谢yc支持Scene，提供了大量机型的配置脚本文件，你也可以在本界面点击“在线”去安装。\n\n切换或更新配置脚本后，建议重启手机，以免出现配置冲突！" />
 
                             <TextView
                                 style="@style/textSmall"

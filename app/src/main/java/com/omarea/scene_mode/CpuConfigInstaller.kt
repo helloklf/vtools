@@ -8,13 +8,15 @@ import com.omarea.common.shell.RootFile
 import com.omarea.shell_utils.PlatformUtils
 import java.nio.charset.Charset
 
-class ModeConfigInstaller {
+class CpuConfigInstaller {
     val rootDir = "powercfg"
-    fun getPowerCfgDir(): String {
+
+    private fun getPowerCfgDir(): String {
         return rootDir + "/" + PlatformUtils().getCPUName()
     }
 
-    fun installPowerConfig(context: Context, afterCmds: String = "", biCore: Boolean = false): Boolean {
+    // 安装应用内自带的配置
+    fun installOfficialConfig(context: Context, afterCmds: String = "", biCore: Boolean = false): Boolean {
         if (!dynamicSupport(context)) {
             return false
         }
@@ -29,7 +31,6 @@ class ModeConfigInstaller {
                 if (powercfgBase != null) {
                     cmd.append("cp ${powercfgBase} ${ModeSwitcher.POWER_CFG_BASE};").append("chmod 0777 ${ModeSwitcher.POWER_CFG_BASE};")
                 }
-                //KeepShellPublic.doCmdSync(CommonCmds.InstallPowerToggleConfigToCache + "\n\n" + CommonCmds.ExecuteConfig + "\n" + after)
                 KeepShellPublic.doCmdSync(cmd.toString())
                 configCodeVerify()
                 ModeSwitcher().setCurrentPowercfg("")
@@ -44,7 +45,8 @@ class ModeConfigInstaller {
         return false
     }
 
-    fun installPowerConfigByText(context: Context, powercfg: String, powercfgBase: String = "#!/system/bin/sh"): Boolean {
+    // 安装自定义配置
+    fun installCustomConfig(context: Context, powercfg: String, powercfgBase: String = "#!/system/bin/sh"): Boolean {
         try {
             FileWrite.writePrivateFile(powercfg.replace("\r", "")
                     .toByteArray(Charset.forName("UTF-8")), "powercfg.sh", context)
@@ -65,6 +67,7 @@ class ModeConfigInstaller {
         }
     }
 
+    // 校验编码
     fun configCodeVerify() {
         try {
             val cmd = StringBuilder()
@@ -82,6 +85,7 @@ class ModeConfigInstaller {
         }
     }
 
+    // 检查是否支持动态响应
     fun dynamicSupport(context: Context): Boolean {
         val cpuName = PlatformUtils().getCPUName()
         val names = context.assets.list(rootDir)
@@ -95,6 +99,7 @@ class ModeConfigInstaller {
         return false;
     }
 
+    // 检查是否已经安装好配置
     fun configInstalled(): Boolean {
         return RootFile.fileNotEmpty(ModeSwitcher.POWER_CFG_PATH)
     }

@@ -78,9 +78,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
-            <meta-data
+            <!--<meta-data
                 android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts" />
+                android:resource="@xml/shortcuts" />-->
         </activity>
         <activity
             android:name=".activities.ActivityMain"
@@ -126,12 +126,6 @@
             android:label="Scene-按键辅助"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".activities.ActivityShortcut"
-            android:excludeFromRecents="true"
-            android:finishOnTaskLaunch="false"
-            android:label="@string/title_activity_shortcut"
-            android:launchMode="standard" />
         <activity
             android:name=".activities.ActivityAddinOnline"
             android:excludeFromRecents="true"

@@ -48,7 +48,7 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
     private var sceneConfigChanged: BroadcastReceiver? = null
     private var sceneAppChanged: BroadcastReceiver? = null
     private var screenState = ScreenState(context)
-    private var configInstaller = ModeConfigInstaller()
+    private var configInstaller = CpuConfigInstaller()
 
     /**
      * 更新设置
@@ -207,7 +207,7 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
     }
 
     private fun toggleConfig(mode: String) {
-        if (configInstaller.configInstalled() || ModeConfigInstaller().installPowerConfig(context, "")) {
+        if (configInstaller.configInstalled() || CpuConfigInstaller().installOfficialConfig(context, "")) {
             if (screenOn) {
                 executePowercfgMode(mode)
             } else {
@@ -300,15 +300,10 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
         if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)) {
             if (configInstaller.configInstalled()) {
                 dyamicCore = true
-                ModeConfigInstaller().configCodeVerify()
+                CpuConfigInstaller().configCodeVerify()
                 KeepShellPublic.doCmdSync(CommonCmds.ExecuteConfig)
             } else {
-                if (configInstaller.dynamicSupport(context)) {
-                    ModeConfigInstaller().installPowerConfig(context, CommonCmds.ExecuteConfig, false)
-                    dyamicCore = true
-                } else {
-                    dyamicCore = false
-                }
+                dyamicCore = false
             }
             spfGlobal.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, "").commit()
         } else {
@@ -333,7 +328,7 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
         sceneConfigChanged = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 updateConfig()
-                Toast.makeText(context, "动态响应配置参数已更新，将在下次切换应用时生效！", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "性能调节配置参数已更新，将在下次切换应用时生效！", Toast.LENGTH_SHORT).show()
             }
         }
 

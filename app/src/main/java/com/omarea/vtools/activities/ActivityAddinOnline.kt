@@ -16,7 +16,7 @@ import android.webkit.WebViewClient
 import android.widget.Toast
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
-import com.omarea.scene_mode.ModeConfigInstaller
+import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_addin_online.*
 import java.io.File
@@ -30,7 +30,6 @@ class ActivityAddinOnline : AppCompatActivity() {
     override fun onPostResume() {
         super.onPostResume()
         delegate.onPostResume()
-
     }
 
     @SuppressLint("ApplySharedPref")
@@ -71,14 +70,14 @@ class ActivityAddinOnline : AppCompatActivity() {
                 conn.getInputStream()
                 val reader = conn.getInputStream().bufferedReader(Charset.forName("UTF-8"))
                 val powercfg = reader.readText()
-                if (powercfg.startsWith("#!/") && ModeConfigInstaller().installPowerConfigByText(this, powercfg)) {
+                if (powercfg.startsWith("#!/") && CpuConfigInstaller().installCustomConfig(this, powercfg)) {
                     vtools_online.post {
                         DialogHelper.animDialog(AlertDialog.Builder(this)
                                 .setTitle("配置文件已安装")
-                                .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                                .setPositiveButton(R.string.btn_confirm) { _, _ ->
                                     setResult(Activity.RESULT_OK)
                                     finish()
-                                })
+                                }
                                 .setCancelable(false))
                     }
                 } else {
@@ -121,14 +120,14 @@ class ActivityAddinOnline : AppCompatActivity() {
                         } else if (zipEntry.name == "powercfg.sh") {
                             val byteArray = zipInputStream.readBytes()
                             val powercfg = byteArray.toString(Charset.defaultCharset())
-                            if (powercfg.startsWith("#!/") && ModeConfigInstaller().installPowerConfigByText(this, powercfg)) {
+                            if (powercfg.startsWith("#!/") && CpuConfigInstaller().installCustomConfig(this, powercfg)) {
                                 vtools_online.post {
                                     DialogHelper.animDialog(AlertDialog.Builder(this)
                                             .setTitle("配置文件已安装")
-                                            .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                                            .setPositiveButton(R.string.btn_confirm) { _, _ ->
                                                 setResult(Activity.RESULT_OK)
                                                 finish()
-                                            })
+                                            }
                                             .setCancelable(false))
                                 }
                             } else {
@@ -182,7 +181,7 @@ class ActivityAddinOnline : AppCompatActivity() {
                         val configPath = url.substring(url.indexOf("vtools-powercfg"))
                         DialogHelper.animDialog(AlertDialog.Builder(vtools_online.context)
                                 .setTitle("可用的配置脚本")
-                                .setMessage("在当前页面上检测到可用于动态响应的配置脚本，是否立即将其安装到本地？\n\n配置：$configPath\n\n作者：yc9559\n\n")
+                                .setMessage("在当前页面上检测到可用于性能调节的配置脚本，是否立即将其安装到本地？\n\n配置：$configPath\n\n作者：yc9559\n\n")
                                 .setPositiveButton(R.string.btn_confirm, { _, _ ->
                                     val configAbsPath = "https://github.com/yc9559/cpufreq-interactive-opt/raw/master/$configPath"
                                     downloadPowercfg(configAbsPath)
@@ -197,7 +196,7 @@ class ActivityAddinOnline : AppCompatActivity() {
                         val configPath = url.substring(url.lastIndexOf("/") + 1).replace(".zip", "")
                         DialogHelper.animDialog(AlertDialog.Builder(vtools_online.context)
                                 .setTitle("配置安装提示")
-                                .setMessage("你刚刚点击的内容，似乎是一个可用于动态响应的配置脚本，是否立即将其安装到本地？\n\n配置：$configPath\n\n作者：yc9559\n\n")
+                                .setMessage("你刚刚点击的内容，似乎是一个可用于性能调节的配置脚本，是否立即将其安装到本地？\n\n配置：$configPath\n\n作者：yc9559\n\n")
                                 .setPositiveButton(R.string.btn_confirm, { _, _ ->
                                     val configAbsPath = url
                                     downloadPowercfgV2(configAbsPath)

@@ -11,8 +11,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout style="@style/ListCardItem">
-
+            <LinearLayout style="@style/ListCardItem"
+                android:id="@+id/cpu_help_text">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -28,17 +28,17 @@
                     android:text="@string/core_control_helpinfo" />
             </LinearLayout>
 
-            <LinearLayout style="@style/ListCardItem">
-
+            <LinearLayout style="@style/ListCardItem" android:id="@+id/cpu_apply_boot">
                 <Switch
                     android:id="@+id/cpu_apply_onboot"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="开机后应用  " />
+                    android:text="开机后应用" />
 
                 <TextView
+                    android:id="@+id/cpu_apply_onboot_desc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"

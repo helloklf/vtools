@@ -24,7 +24,7 @@ import com.omarea.model.SceneConfigInfo
 import com.omarea.permissions.NotificationListener
 import com.omarea.permissions.WriteSettings
 import com.omarea.scene_mode.ImmersivePolicyControl
-import com.omarea.scene_mode.ModeConfigInstaller
+import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
@@ -45,7 +45,7 @@ class ActivityAppDetails : AppCompatActivity() {
     private var _result = RESULT_CANCELED
     private var vAddinsInstalled = false
     private var aidlConn: IAppConfigAidlInterface? = null
-    private val configInstaller = ModeConfigInstaller()
+    private val configInstaller = CpuConfigInstaller()
     private lateinit var sceneBlackList:SharedPreferences
 
     private var needKeyCapture = false
@@ -238,8 +238,6 @@ class ActivityAppDetails : AppCompatActivity() {
         app_details_service_running.isEnabled = allowXposedConfig
     }
 
-
-    @SuppressLint("ApplySharedPref")
     override fun onCreate(savedInstanceState: Bundle?) {
         ThemeSwitch.switchTheme(this)
 
@@ -313,14 +311,15 @@ class ActivityAppDetails : AppCompatActivity() {
                 ModeSwitcher.PERFORMANCE -> index = 2
                 ModeSwitcher.FAST -> index = 3
                 ModeSwitcher.IGONED -> index = 5
+                ModeSwitcher.CUSTOM -> index = 6
                 else -> index = 4
             }
             var selectedIndex = index
             DialogHelper.animDialog(AlertDialog.Builder(this)
                     .setTitle(getString(R.string.perf_opt))
-                    .setSingleChoiceItems(R.array.powercfg_modes2, index, { dialog, which ->
+                    .setSingleChoiceItems(R.array.powercfg_modes2, index) { dialog, which ->
                         selectedIndex = which
-                    })
+                    }
                     .setPositiveButton(R.string.btn_confirm) { dialog, which ->
                         if (index != selectedIndex) {
                             var modeName = ModeSwitcher.BALANCE
@@ -329,13 +328,14 @@ class ActivityAppDetails : AppCompatActivity() {
                                 1 -> modeName = ModeSwitcher.BALANCE
                                 2 -> modeName = ModeSwitcher.PERFORMANCE
                                 3 -> modeName = ModeSwitcher.FAST
-                                5 -> modeName = ModeSwitcher.IGONED
                                 4 -> modeName = ""
+                                5 -> modeName = ModeSwitcher.IGONED
+                                6 -> modeName = ModeSwitcher.CUSTOM
                             }
                             if (modeName.isEmpty()) {
-                                powercfg.edit().remove(app).commit()
+                                powercfg.edit().remove(app).apply()
                             } else {
-                                powercfg.edit().putString(app, modeName).commit()
+                                powercfg.edit().putString(app, modeName).apply()
                             }
                             app_details_dynamic.text = ModeSwitcher.getModName(modeName)
                             _result = RESULT_OK

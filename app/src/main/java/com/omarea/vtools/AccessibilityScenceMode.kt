@@ -151,7 +151,7 @@ class AccessibilityScenceMode : AccessibilityService() {
             sceneConfigChanged = object : BroadcastReceiver() {
                 override fun onReceive(context: Context, intent: Intent) {
                     updateConfig()
-                    Toast.makeText(context, "动态响应配置参数已更新，将在下次切换应用时生效！", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "性能调节配置参数已更新，将在下次切换应用时生效！", Toast.LENGTH_SHORT).show()
                 }
             }
             registerReceiver(sceneConfigChanged, IntentFilter(getString(R.string.scene_key_capture_change_action)))

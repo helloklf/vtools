@@ -13,7 +13,7 @@ import com.omarea.common.shared.FileWrite
 import com.omarea.common.shared.RawText
 import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KernelProrp
-import com.omarea.scene_mode.ModeConfigInstaller
+import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.scene_mode.SceneMode
 import com.omarea.shell_utils.*
@@ -63,96 +63,11 @@ class BootService : IntentService("vtools-boot") {
         }
 
         val context = this.applicationContext
-        val cpuState = CpuConfigStorage().loadBootConfig(context)
+        val cpuConfigStorage = CpuConfigStorage()
+        val cpuState = CpuConfigStorage().loadCpuConfig(context)
         if (cpuState != null) {
-            updateNotification(getString(R.string.boot_cpuset))
-
-            // thermal
-            if (cpuState.coreControl.isNotEmpty()) {
-                ThermalControlUtils.setCoreControlState(cpuState.coreControl == "1", context)
-            }
-            if (cpuState.msmThermal.isNotEmpty()) {
-                ThermalControlUtils.setTheramlState(cpuState.msmThermal == "Y", context)
-            }
-            if (cpuState.vdd.isNotEmpty()) {
-                ThermalControlUtils.setVDDRestrictionState(cpuState.vdd == "1", context)
-            }
-
-            // core online
-            if (cpuState.coreOnline != null && cpuState.coreOnline.size > 0) {
-                for (i in 0 until cpuState.coreOnline.size) {
-                    CpuFrequencyUtil.setCoreOnlineState(i, cpuState.coreOnline[i])
-                }
-            }
-
-            // CPU
-            for (cluster in 0 until cpuState.cpuClusterStatuses.size) {
-                val config = cpuState.cpuClusterStatuses[cluster]
-                if (config.governor.isNotEmpty()) {
-                    CpuFrequencyUtil.setGovernor(config.governor, cluster, context)
-                }
-                if (config.min_freq.isNotEmpty()) {
-                    CpuFrequencyUtil.setMinFrequency(config.min_freq, cluster, context)
-                }
-                if (config.max_freq.isNotEmpty()) {
-                    CpuFrequencyUtil.setMaxFrequency(config.max_freq, cluster, context)
-                }
-            }
-
-            // Boost
-            if (cpuState.boost.isNotEmpty()) {
-                CpuFrequencyUtil.setSechedBoostState(cpuState.boost == "1", context)
-            }
-            if (cpuState.boostFreq.isNotEmpty()) {
-                CpuFrequencyUtil.setInputBoosterFreq(cpuState.boostFreq)
-            }
-            if (cpuState.boostTime.isNotEmpty()) {
-                CpuFrequencyUtil.setInputBoosterTime(cpuState.boostTime)
-            }
-
-            // GPU
-            if (cpuState.adrenoGovernor.isNotEmpty()) {
-                CpuFrequencyUtil.setAdrenoGPUGovernor(cpuState.adrenoGovernor)
-            }
-            if (cpuState.adrenoMinFreq.isNotEmpty()) {
-                CpuFrequencyUtil.setAdrenoGPUMinFreq(cpuState.adrenoMinFreq)
-            }
-            if (cpuState.adrenoMaxFreq.isNotEmpty()) {
-                CpuFrequencyUtil.setAdrenoGPUMaxFreq(cpuState.adrenoMaxFreq)
-            }
-            if (cpuState.adrenoMinPL.isNotEmpty()) {
-                CpuFrequencyUtil.setAdrenoGPUMinPowerLevel(cpuState.adrenoMinPL)
-            }
-            if (cpuState.adrenoMaxPL.isNotEmpty()) {
-                CpuFrequencyUtil.setAdrenoGPUMaxPowerLevel(cpuState.adrenoMaxPL)
-            }
-            if (cpuState.adrenoDefaultPL.isNotEmpty()) {
-                CpuFrequencyUtil.setAdrenoGPUDefaultPowerLevel(cpuState.adrenoDefaultPL)
-            }
-
-            // exynos
-            if (CpuFrequencyUtil.exynosHMP()) {
-                CpuFrequencyUtil.setExynosHotplug(cpuState.exynosHotplug)
-                CpuFrequencyUtil.setExynosHmpDown(cpuState.exynosHmpDown)
-                CpuFrequencyUtil.setExynosHmpUP(cpuState.exynosHmpUP)
-                CpuFrequencyUtil.setExynosBooster(cpuState.exynosHmpBooster)
-            }
-
-            if (!cpuState.cpusetBackground.isNullOrEmpty()) {
-                KernelProrp.setProp("/dev/cpuset/background/cpus", cpuState.cpusetBackground)
-            }
-            if (!cpuState.cpusetSysBackground.isNullOrEmpty()) {
-                KernelProrp.setProp("/dev/cpuset/system-background/cpus", cpuState.cpusetSysBackground)
-            }
-            if (!cpuState.cpusetForeground.isNullOrEmpty()) {
-                KernelProrp.setProp("/dev/cpuset/foreground/cpus", cpuState.cpusetForeground)
-            }
-            if (!cpuState.cpusetForegroundBoost.isNullOrEmpty()) {
-                KernelProrp.setProp("/dev/cpuset/foreground/boost/cpus", cpuState.cpusetForegroundBoost)
-            }
-            if (!cpuState.cpusetTopApp.isNullOrEmpty()) {
-                KernelProrp.setProp("/dev/cpuset/top-app/cpus", cpuState.cpusetTopApp)
-            }
+            updateNotification(context.getString(R.string.boot_cpuset))
+            cpuConfigStorage.applyCpuConfig(context, cpuState)
         }
 
         val macChangeMode = globalConfig.getInt(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE_MODE, 0)
@@ -185,14 +100,9 @@ class BootService : IntentService("vtools-boot") {
             updateNotification(getString(R.string.boot_use_powercfg))
 
             val modeList = ModeSwitcher()
-            val configInstaller = ModeConfigInstaller()
+            val configInstaller = CpuConfigInstaller()
             if (configInstaller.configInstalled()) {
                 modeList.executePowercfgMode(globalPowercfg, context!!.packageName)
-            } else {
-                if (configInstaller.dynamicSupport(context!!)) {
-                    configInstaller.installPowerConfig(context)
-                    modeList.executePowercfgMode(globalPowercfg)
-                }
             }
         }
 

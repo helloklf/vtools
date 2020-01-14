@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import android.widget.*
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.ui.DialogHelper
-import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.model.CpuClusterStatus
 import com.omarea.model.CpuStatus
 import com.omarea.shell_utils.CpuFrequencyUtil
@@ -28,8 +27,9 @@ import java.util.concurrent.locks.ReentrantLock
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-
 class FragmentCpuControl : Fragment() {
+    // 指定生效的应用
+    private var packageNameOnly: String? = null
 
     private var clusterCount = 0
     private var handler = Handler()
@@ -688,7 +688,6 @@ class FragmentCpuControl : Fragment() {
 
     private fun updateUI() {
         try {
-            progressBarDialog.hideDialog()
             for (cluster in 0 until clusterCount) {
                 if (status.cpuClusterStatuses.size > cluster) {
                     val cluster_view = view!!.findViewWithTag<View>("cluster_" + cluster)
@@ -763,10 +762,8 @@ class FragmentCpuControl : Fragment() {
         }
     }
 
-    private lateinit var progressBarDialog: ProgressBarDialog
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        progressBarDialog = ProgressBarDialog(this.context!!)
         Thread(Runnable {
             initData()
         }).start()
@@ -776,7 +773,7 @@ class FragmentCpuControl : Fragment() {
         if (dynamic) {
             DialogHelper.animDialog(AlertDialog.Builder(context!!)
                     .setTitle("请注意")
-                    .setMessage("检测到你已开启“动态响应”，你手动对CPU、GPU的修改随时可能被覆盖。\n\n同时，手动调整参数还可能对“动态响应”的工作造成不利影响！")
+                    .setMessage("检测到你已开启“性能调节”，你手动对CPU、GPU的修改随时可能被覆盖。\n\n同时，手动调整参数还可能对“性能调节”的工作造成不利影响！")
                     .setPositiveButton(R.string.btn_confirm) { _, _ ->
                     }
                     .setCancelable(false))
@@ -784,12 +781,17 @@ class FragmentCpuControl : Fragment() {
     }
 
     private fun loadBootConfig() {
-        statusOnBoot = CpuConfigStorage().loadBootConfig(context!!)
+        statusOnBoot = CpuConfigStorage().loadCpuConfig(context!!, packageNameOnly)
         cpu_apply_onboot.isChecked = statusOnBoot != null
+
+        if (packageNameOnly != null) {
+            cpu_apply_onboot.setText(packageNameOnly)
+            cpu_apply_onboot_desc.setText("自定义此应用的性能参数")
+        }
     }
 
     private fun saveBootConfig() {
-        if (!CpuConfigStorage().saveBootConfig(context!!, if (cpu_apply_onboot.isChecked) status else null)) {
+        if (!CpuConfigStorage().saveCpuConfig(context!!, if (cpu_apply_onboot.isChecked) status else null, packageNameOnly)) {
             Toast.makeText(context!!, "更新配置为启动设置失败！", Toast.LENGTH_SHORT).show()
             cpu_apply_onboot.isChecked = false
         }
@@ -801,7 +803,6 @@ class FragmentCpuControl : Fragment() {
         if (isDetached) {
             return
         }
-        progressBarDialog.showDialog("正在读取信息...")
         loadBootConfig()
         if (timer == null) {
             timer = Timer()
@@ -849,6 +850,12 @@ class FragmentCpuControl : Fragment() {
     companion object {
         fun newInstance(): FragmentCpuControl {
             val fragment = FragmentCpuControl()
+            return fragment
+        }
+
+        fun newInstance(app: String): FragmentCpuControl {
+            val fragment = FragmentCpuControl()
+            fragment.packageNameOnly = app
             return fragment
         }
     }

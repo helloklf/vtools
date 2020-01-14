@@ -161,7 +161,7 @@
                     android:layout_weight="1"
                     android:enabled="false"
                     android:lines="1"
-                    android:text="动态响应"
+                    android:text="性能调节"
                     android:textColor="#888"
                     android:textSize="12dp" />
             </LinearLayout>
