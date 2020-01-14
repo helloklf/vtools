@@ -1,8 +1,11 @@
 package com.omarea.scene_mode
 
+import android.content.Context
 import com.omarea.common.shell.KeepShellAsync
 import com.omarea.common.shell.KeepShellPublic
+import com.omarea.model.CpuStatus
 import com.omarea.shell_utils.PropsUtils
+import com.omarea.store.CpuConfigStorage
 import com.omarea.vtools.R
 
 /**
@@ -40,6 +43,7 @@ open class ModeSwitcher {
     }
 
     private var keepShellAsync: KeepShellAsync? = null
+    private val cpuConfigStorage = CpuConfigStorage()
 
     internal fun getModIcon(mode: String): Int {
         when (mode) {
@@ -97,16 +101,25 @@ open class ModeSwitcher {
         KeepShellPublic.doCmdSync(cmd)
     }
 
-    internal fun executePowercfgMode(mode: String): ModeSwitcher {
-        keepShellExec("sh $POWER_CFG_PATH $mode")
+    internal fun executePowercfgMode(context: Context, mode: String): ModeSwitcher {
+        val replaced = cpuConfigStorage.loadCpuConfig(context, mode)
+        if (replaced != null) {
+            cpuConfigStorage.applyCpuConfig(context, replaced)
+        } else {
+            keepShellExec("sh $POWER_CFG_PATH $mode")
+        }
         setCurrentPowercfg(mode)
         return this
     }
 
-    internal fun executePowercfgMode(mode: String, app: String): ModeSwitcher {
-        executePowercfgMode(mode)
+    internal fun executePowercfgMode(context: Context, mode: String, app: String): ModeSwitcher {
+        executePowercfgMode(context, mode)
         setCurrentPowercfgApp(app)
         return this
+    }
+
+    public fun modeReplaced(context: Context, mode: String): CpuStatus? {
+        return CpuConfigStorage().loadCpuConfig(context, mode)
     }
 
     internal fun destroyKeepShell(): ModeSwitcher {

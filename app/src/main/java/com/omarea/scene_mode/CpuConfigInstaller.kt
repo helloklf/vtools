@@ -6,6 +6,8 @@ import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.RootFile
 import com.omarea.shell_utils.PlatformUtils
+import com.omarea.store.SpfConfig
+import com.omarea.vtools.R
 import java.nio.charset.Charset
 
 class CpuConfigInstaller {
@@ -37,6 +39,7 @@ class CpuConfigInstaller {
                 if (!afterCmds.isEmpty()) {
                     KeepShellPublic.doCmdSync(afterCmds)
                 }
+                context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).edit().putString(SpfConfig.GLOBAL_SPF_CPU_CONFIG_AUTHOR, context.getString(R.string.app_name)).apply()
                 return true
             }
         } catch (ex: Exception) {
@@ -46,12 +49,11 @@ class CpuConfigInstaller {
     }
 
     // 安装自定义配置
-    fun installCustomConfig(context: Context, powercfg: String, powercfgBase: String = "#!/system/bin/sh"): Boolean {
+    fun installCustomConfig(context: Context, powercfg: String, author: String): Boolean {
         try {
             FileWrite.writePrivateFile(powercfg.replace("\r", "")
                     .toByteArray(Charset.forName("UTF-8")), "powercfg.sh", context)
-            FileWrite.writePrivateFile(powercfgBase.replace("\r", "")
-                    .toByteArray(Charset.forName("UTF-8")), "powercfg-base.sh", context)
+            FileWrite.writePrivateFile("#!/system/bin/sh".toByteArray(Charset.forName("UTF-8")), "powercfg-base.sh", context)
             val cmd = StringBuilder()
                     .append("cp ${FileWrite.getPrivateFilePath(context, "powercfg.sh")} ${ModeSwitcher.POWER_CFG_PATH};")
                     .append("cp ${FileWrite.getPrivateFilePath(context, "powercfg-base.sh")} ${ModeSwitcher.POWER_CFG_BASE};")
@@ -60,6 +62,7 @@ class CpuConfigInstaller {
             //KeepShellPublic.doCmdSync(CommonCmds.InstallPowerToggleConfigToCache + "\n\n" + CommonCmds.ExecuteConfig + "\n" + after)
             KeepShellPublic.doCmdSync(cmd.toString())
             ModeSwitcher().setCurrentPowercfg("")
+            context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).edit().putString(SpfConfig.GLOBAL_SPF_CPU_CONFIG_AUTHOR, author).apply()
             return true
         } catch (ex: Exception) {
             Log.e("script-parse", "" + ex.message)

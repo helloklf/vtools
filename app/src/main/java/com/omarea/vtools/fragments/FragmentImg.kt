@@ -42,6 +42,11 @@ class FragmentImg : Fragment() {
                               savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_img, container, false)
 
+    override fun onResume() {
+        super.onResume()
+        activity!!.title = getString(R.string.menu_img)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val listItem = ArrayList<HashMap<String, Any>>()/*在数组中存放数据*/
 

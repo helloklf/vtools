@@ -60,6 +60,12 @@ class FragmentApplistions : Fragment() {
                               savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_applictions, container, false)
 
+    override fun onResume() {
+        super.onResume()
+
+        activity!!.title = getString(R.string.menu_applictions)
+    }
+
     @SuppressLint("InflateParams")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         processBarDialog = ProgressBarDialog(this.context!!)

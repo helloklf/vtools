@@ -102,7 +102,7 @@ class BootService : IntentService("vtools-boot") {
             val modeList = ModeSwitcher()
             val configInstaller = CpuConfigInstaller()
             if (configInstaller.configInstalled()) {
-                modeList.executePowercfgMode(globalPowercfg, context!!.packageName)
+                modeList.executePowercfgMode(context!!, globalPowercfg, context!!.packageName)
             }
         }
 

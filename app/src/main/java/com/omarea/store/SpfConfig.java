@@ -55,6 +55,7 @@ public class SpfConfig {
     public static String GLOBAL_SPF_BATTERY_MONITORY = "power_config_battery_monitor";
     public static String GLOBAL_SPF_POWERCFG_FIRST_MODE = "powercfg_first_mode";
     public static String GLOBAL_SPF_DYNAMIC_CONTROL = "dynamic_control";
+    public static String GLOBAL_SPF_CPU_CONFIG_AUTHOR = "cpu_config_author";
     public static String GLOBAL_SPF_LOCK_MODE = "lock_mode";
     public static String GLOBAL_SPF_POWERCFG = "global_powercfg";
     public static String GLOBAL_SPF_CONTRACT = "global_contract";

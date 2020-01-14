@@ -31,6 +31,8 @@ class FragmentBatteryStats : Fragment() {
         if (isDetached) {
             return
         }
+
+        activity!!.title = getString(R.string.menu_battery_stats)
         loadData()
     }
 

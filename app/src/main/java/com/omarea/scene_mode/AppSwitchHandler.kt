@@ -209,9 +209,9 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
     private fun toggleConfig(mode: String) {
         if (configInstaller.configInstalled() || CpuConfigInstaller().installOfficialConfig(context, "")) {
             if (screenOn) {
-                executePowercfgMode(mode)
+                executePowercfgMode(context, mode)
             } else {
-                executePowercfgMode(POWERSAVE)
+                executePowercfgMode(context, POWERSAVE)
                 updateModeNofity() //
             }
             lastMode = mode

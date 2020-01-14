@@ -274,6 +274,12 @@ class FragmentAddin : Fragment() {
         super.onActivityResult(requestCode, resultCode, data)
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        activity!!.title = getString(R.string.menu_additional)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val tabHost = view.findViewById(R.id.addin_tabhost) as TabHost
         tabHost.setup()

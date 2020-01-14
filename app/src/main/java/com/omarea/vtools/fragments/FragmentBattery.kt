@@ -51,9 +51,12 @@ class FragmentBattery : Fragment() {
     @SuppressLint("ApplySharedPref", "SetTextI18n")
     override fun onResume() {
         super.onResume()
+
         if (isDetached) {
             return
         }
+
+        activity!!.title = getString(R.string.menu_battery)
 
         settings_qc.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)
         settings_bp.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_BP, false)

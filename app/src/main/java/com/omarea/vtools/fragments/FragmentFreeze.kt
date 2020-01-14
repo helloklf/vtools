@@ -45,6 +45,11 @@ class FragmentFreeze : Fragment() {
                               savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_freeze, container, false)
 
+    override fun onResume() {
+        super.onResume()
+        activity!!.title = getString(R.string.menu_freeze)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         config = this.context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)

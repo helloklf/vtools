@@ -137,12 +137,10 @@ class FragmentNav : Fragment(), View.OnClickListener {
             if (fragment != null) {
                 // configlist_tabhost.currentTab = 1
 
-                val pageTitle = (v as NavItem).text.toString()
                 // transaction.disallowAddToBackStack()
                 transaction.replace(R.id.app_more, fragment)
-                transaction.addToBackStack(pageTitle);
+                transaction.addToBackStack(null);
                 transaction.commitAllowingStateLoss()
-                activity!!.title = pageTitle
 
                 //item.isChecked = true
             }

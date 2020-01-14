@@ -43,6 +43,7 @@ class FragmentSystemScene : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        activity!!.title = getString(R.string.menu_system_scene)
         val serviceState = AccessibleServiceHelper().serviceRunning(context!!)
         btn_config_service_not_active.visibility = if (serviceState) View.GONE else View.VISIBLE
     }

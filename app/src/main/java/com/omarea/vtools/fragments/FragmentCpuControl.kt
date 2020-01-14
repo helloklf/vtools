@@ -15,6 +15,7 @@ import com.omarea.common.shell.KernelProrp
 import com.omarea.common.ui.DialogHelper
 import com.omarea.model.CpuClusterStatus
 import com.omarea.model.CpuStatus
+import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.shell_utils.CpuFrequencyUtil
 import com.omarea.shell_utils.ThermalControlUtils
 import com.omarea.store.CpuConfigStorage
@@ -28,8 +29,8 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class FragmentCpuControl : Fragment() {
-    // 指定生效的应用
-    private var packageNameOnly: String? = null
+    // 应用到指定的配置模式
+    private var cpuModeName: String? = null
 
     private var clusterCount = 0
     private var handler = Handler()
@@ -781,17 +782,21 @@ class FragmentCpuControl : Fragment() {
     }
 
     private fun loadBootConfig() {
-        statusOnBoot = CpuConfigStorage().loadCpuConfig(context!!, packageNameOnly)
+        val storage = CpuConfigStorage()
+        statusOnBoot = storage.loadCpuConfig(context!!, cpuModeName)
         cpu_apply_onboot.isChecked = statusOnBoot != null
 
-        if (packageNameOnly != null) {
-            cpu_apply_onboot.setText(packageNameOnly)
-            cpu_apply_onboot_desc.setText("自定义此应用的性能参数")
+        if (cpuModeName != null) {
+            ModeSwitcher().executePowercfgMode(context!!, cpuModeName!!)
+
+            val modeName = ModeSwitcher.getModName(cpuModeName!!)
+            cpu_apply_onboot.setText(modeName)
+            cpu_apply_onboot_desc.setText("自定义[" + modeName + "]的性能参数")
         }
     }
 
     private fun saveBootConfig() {
-        if (!CpuConfigStorage().saveCpuConfig(context!!, if (cpu_apply_onboot.isChecked) status else null, packageNameOnly)) {
+        if (!CpuConfigStorage().saveCpuConfig(context!!, if (cpu_apply_onboot.isChecked) status else null, cpuModeName)) {
             Toast.makeText(context!!, "更新配置为启动设置失败！", Toast.LENGTH_SHORT).show()
             cpu_apply_onboot.isChecked = false
         }
@@ -853,9 +858,9 @@ class FragmentCpuControl : Fragment() {
             return fragment
         }
 
-        fun newInstance(app: String): FragmentCpuControl {
+        fun newInstance(mode: String): FragmentCpuControl {
             val fragment = FragmentCpuControl()
-            fragment.packageNameOnly = app
+            fragment.cpuModeName = mode
             return fragment
         }
     }

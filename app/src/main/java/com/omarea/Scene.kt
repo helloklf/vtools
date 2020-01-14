@@ -21,7 +21,7 @@ class Scene : Application() {
             )
         }
 
-        // 锁屏状态监听
+        // TODO:锁屏状态监听
         // screenState = ScreenState(this)
         // screenState.autoRegister()
 

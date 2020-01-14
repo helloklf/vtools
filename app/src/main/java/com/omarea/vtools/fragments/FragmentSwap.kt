@@ -190,6 +190,7 @@ class FragmentSwap : Fragment() {
         if (isDetached) {
             return
         }
+        activity!!.title = getString(R.string.menu_swap)
         getSwaps()
     }
 

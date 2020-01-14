@@ -28,6 +28,11 @@ class FragmentMagisk : Fragment() {
                               savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_magisk, container, false)
 
+    override fun onResume() {
+        super.onResume()
+        activity!!.title = getString(R.string.menu_app_magisk)
+    }
+
     @SuppressLint("InflateParams")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (MagiskExtend.magiskSupported()) {

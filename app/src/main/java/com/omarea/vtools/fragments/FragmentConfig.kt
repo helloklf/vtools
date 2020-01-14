@@ -105,6 +105,8 @@ class FragmentConfig : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        activity!!.title = getString(R.string.menu_scene_mode)
+
         bindService()
         val serviceState = AccessibleServiceHelper().serviceRunning(context!!)
         btn_config_service_not_active.visibility = if (serviceState) View.GONE else View.VISIBLE
@@ -330,7 +332,7 @@ class FragmentConfig : Fragment() {
                     val lines = file.readText(Charset.defaultCharset()).replace("\r", "")
                     val configStar = lines.split("\n").firstOrNull()
                     if (configStar != null && configStar.startsWith("#!/") && configStar.endsWith("sh")) {
-                        if (configInstaller.installCustomConfig(context!!, lines)) {
+                        if (configInstaller.installCustomConfig(context!!, lines, "local file")) {
                             configInstalled()
                         } else {
                             Toast.makeText(context, "由于某些原因，安装配置脚本失败，请重试！", Toast.LENGTH_LONG).show()

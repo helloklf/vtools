@@ -70,7 +70,7 @@ class ActivityAddinOnline : AppCompatActivity() {
                 conn.getInputStream()
                 val reader = conn.getInputStream().bufferedReader(Charset.forName("UTF-8"))
                 val powercfg = reader.readText()
-                if (powercfg.startsWith("#!/") && CpuConfigInstaller().installCustomConfig(this, powercfg)) {
+                if (powercfg.startsWith("#!/") && CpuConfigInstaller().installCustomConfig(this, powercfg, "downloader")) {
                     vtools_online.post {
                         DialogHelper.animDialog(AlertDialog.Builder(this)
                                 .setTitle("配置文件已安装")
@@ -120,7 +120,7 @@ class ActivityAddinOnline : AppCompatActivity() {
                         } else if (zipEntry.name == "powercfg.sh") {
                             val byteArray = zipInputStream.readBytes()
                             val powercfg = byteArray.toString(Charset.defaultCharset())
-                            if (powercfg.startsWith("#!/") && CpuConfigInstaller().installCustomConfig(this, powercfg)) {
+                            if (powercfg.startsWith("#!/") && CpuConfigInstaller().installCustomConfig(this, powercfg, "online")) {
                                 vtools_online.post {
                                     DialogHelper.animDialog(AlertDialog.Builder(this)
                                             .setTitle("配置文件已安装")

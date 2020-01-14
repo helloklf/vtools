@@ -134,6 +134,7 @@ class FragmentHome : Fragment() {
         if (isDetached) {
             return
         }
+        activity!!.title = getString(R.string.app_name)
         setModeState()
         maxFreqs.clear()
         minFreqs.clear()
@@ -336,10 +337,10 @@ class FragmentHome : Fragment() {
             return
         }
         if (configInstaller.configInstalled()) {
-            modeList.executePowercfgMode(action, context!!.packageName)
+            modeList.executePowercfgMode(context!!, action, context!!.packageName)
         } else {
             CpuConfigInstaller().installOfficialConfig(context!!);
-            modeList.executePowercfgMode(action)
+            modeList.executePowercfgMode(context!!, action)
         }
         setModeState()
         showMsg(message)
