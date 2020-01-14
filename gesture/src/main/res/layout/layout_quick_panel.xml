@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/quick_panel_bg"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/quick_question"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@null"
+            android:padding="6dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/gesture_quick_question" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:alpha="0.5"
+            android:text="@string/gesture_app_name"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+
+        <ImageButton
+            android:id="@+id/quick_edit"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@null"
+            android:padding="8dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/gesture_icon_edit" />
+
+        <ImageButton
+            android:id="@+id/quick_save"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@null"
+            android:padding="6dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/gesture_icon_ok" />
+    </LinearLayout>
+
+    <GridView
+        android:id="@+id/quick_apps"
+        android:layout_width="230dp"
+        android:layout_height="190dp"
+        android:numColumns="3"
+        android:paddingBottom="16dp"
+        android:scrollbars="none" />
+</LinearLayout>

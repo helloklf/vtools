@@ -17,16 +17,15 @@ class Scene : Application() {
         super.attachBaseContext(base)
         if (!Busybox.systemBusyboxInstalled()) {
             ShellExecutor.setExtraEnvPath(
-                    FileWrite.getPrivateFilePath(this, getString(R.string.toolkit_install_path))
+                FileWrite.getPrivateFilePath(this, getString(R.string.toolkit_install_path))
             )
         }
 
         // 锁屏状态监听
-        screenState = ScreenState(this).autoRegister()
+        // screenState = ScreenState(this)
+        // screenState.autoRegister()
 
         // 电池状态检测
-        BatteryService.startBatteryService(this.applicationContext)
-
-
+        BatteryService.startBatteryService(this)
     }
 }

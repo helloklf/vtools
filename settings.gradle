@@ -1,1 +1,1 @@
-include ':app', ':krscript', ':common'
+include ':app', ':krscript', ':common', ':gesture'

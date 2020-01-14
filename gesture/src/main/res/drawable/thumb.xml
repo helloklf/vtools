@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 按下状态 -->
+    <item android:drawable="@android:color/black" android:state_pressed="true" />
+
+    <!-- 普通无焦点状态 -->
+    <item android:drawable="@android:color/black" android:state_focused="false" android:state_pressed="false" />
+</selector>
