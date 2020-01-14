@@ -357,7 +357,7 @@
         <item>性能模式（游戏）</item>
         <item>极速模式（跑分）</item>
         <item>跟随默认模式</item>
-        <item>忽略切换</item>
+        <item>保持状态</item>
     </string-array>
     <string-array name="default_powercfg_mode_options">
         <item>省电模式</item>
@@ -371,8 +371,8 @@
         <item>均衡模式</item>
         <item>性能模式</item>
         <item>极速模式</item>
-        <item>跟随默认</item>
-        <item>忽略切换</item>
+        <item>全局默认</item>
+        <item>保持状态</item>
     </string-array>
     <string-array name="powercfg_apptype_filter">
         <item>用户程序</item>

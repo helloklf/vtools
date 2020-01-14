@@ -6,6 +6,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Handler
 import android.view.View
 import android.widget.TextView
@@ -99,7 +100,6 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         }
         dialogView.findViewById<TextView>(R.id.app_options_title).setText(app.appName)
 
-
         if (app.enabled) {
             dialogView.findViewById<View>(R.id.app_options_app_unfreeze).visibility = View.GONE
             dialogView.findViewById<View>(R.id.app_options_app_freeze).setOnClickListener {
@@ -111,6 +111,21 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
             dialogView.findViewById<View>(R.id.app_options_app_unfreeze).setOnClickListener {
                 dialog?.dismiss()
                 toggleEnable()
+            }
+        }
+
+        // suspend
+        dialogView.findViewById<View>(R.id.app_limit_p).visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) View.VISIBLE else View.GONE
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            // 暂停使用
+            dialogView.findViewById<View>(R.id.app_limit_p_suspend).setOnClickListener {
+                dialog?.dismiss()
+                suspendAll()
+            }
+            // 恢复使用
+            dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).setOnClickListener {
+                dialog?.dismiss()
+                unsuspendAll()
             }
         }
     }
@@ -208,6 +223,21 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
             dialogView.findViewById<View>(R.id.app_options_app_unfreeze).setOnClickListener {
                 dialog?.dismiss()
                 toggleEnable()
+            }
+        }
+
+        // suspend
+        dialogView.findViewById<View>(R.id.app_limit_p).visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) View.VISIBLE else View.GONE
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            // 暂停使用
+            dialogView.findViewById<View>(R.id.app_limit_p_suspend).setOnClickListener {
+                dialog?.dismiss()
+                suspendAll()
+            }
+            // 恢复使用
+            dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).setOnClickListener {
+                dialog?.dismiss()
+                unsuspendAll()
             }
         }
     }

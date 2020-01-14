@@ -21,6 +21,7 @@ import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.model.Appinfo
 import com.omarea.permissions.CheckRootStatus
+import com.omarea.scene_mode.SceneMode
 import com.omarea.store.SpfConfig
 import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
@@ -89,6 +90,21 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         }
         dialogView.findViewById<TextView>(R.id.app_options_title).text = "请选择操作"
 
+        // suspend
+        dialogView.findViewById<View>(R.id.app_limit_p).visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) View.VISIBLE else View.GONE
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            // 暂停使用
+            dialogView.findViewById<View>(R.id.app_limit_p_suspend).setOnClickListener {
+                dialog?.dismiss()
+                suspendAll()
+            }
+            // 恢复使用
+            dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).setOnClickListener {
+                dialog?.dismiss()
+                unsuspendAll()
+            }
+        }
+
         if (apps.any { it.enabled }) {
             dialogView.findViewById<View>(R.id.app_options_app_unfreeze).visibility = View.GONE
             dialogView.findViewById<View>(R.id.app_options_app_freeze).setOnClickListener {
@@ -143,6 +159,21 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         dialogView.findViewById<View>(R.id.app_options_app_freeze).setOnClickListener {
             dialog?.dismiss()
             disableAll()
+        }
+
+        // suspend
+        dialogView.findViewById<View>(R.id.app_limit_p).visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) View.VISIBLE else View.GONE
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            // 暂停使用
+            dialogView.findViewById<View>(R.id.app_limit_p_suspend).setOnClickListener {
+                dialog?.dismiss()
+                suspendAll()
+            }
+            // 恢复使用
+            dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).setOnClickListener {
+                dialog?.dismiss()
+                unsuspendAll()
+            }
         }
     }
 
@@ -448,6 +479,46 @@ open class DialogAppOptions(protected final var context: Context, protected var 
         confirm("隐藏应用", "确定隐藏选中的${apps.size}个应用？", Runnable {
             _hideAll()
         })
+    }
+    /**
+     * 暂停使用所选的应用
+     */
+    protected fun _suspendAll() {
+        val sb = StringBuilder()
+        for (item in apps) {
+            val packageName = item.packageName.toString()
+            sb.append("echo '[suspend ${item.appName}]'\n")
+
+            sb.append("pm suspend $packageName\n")
+        }
+
+        sb.append("echo '[operation completed]'\n")
+        execShell(sb)
+    }
+
+    /**
+     * 暂停使用所选的应用
+     */
+    protected fun suspendAll() {
+        confirm("暂停使用", "确定暂停使用选中的${apps.size}个应用？\n应用停用后，将在桌面上显示为灰色图标，需要恢复使用后才能打开", Runnable {
+            _suspendAll()
+        })
+    }
+
+    /**
+     * 恢复使用所选的应用
+     */
+    protected fun unsuspendAll() {
+        val sb = StringBuilder()
+        for (item in apps) {
+            val packageName = item.packageName.toString()
+            sb.append("echo '[unsuspend ${item.appName}]'\n")
+
+            sb.append("pm unsuspend $packageName\n")
+        }
+
+        sb.append("echo '[operation completed]'\n")
+        execShell(sb)
     }
 
     @SuppressLint("ApplySharedPref")

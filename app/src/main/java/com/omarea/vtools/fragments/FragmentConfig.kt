@@ -563,6 +563,15 @@ class FragmentConfig : Fragment() {
         if (configInfo.disButton) {
             desc.append("屏蔽按键  ")
         }
+        if (configInfo.freeze) {
+            desc.append("自动冻结  ")
+        }
+        if (configInfo.gpsOn) {
+            desc.append("打开GPS  ")
+        }
+        if (configInfo.dpi >= 96) {
+            desc.append("DIP " + configInfo.dpi + "  ")
+        }
         if (aidlConn != null) {
             try {
                 val configJson = aidlConn!!.getAppConfig(configInfo.packageName)

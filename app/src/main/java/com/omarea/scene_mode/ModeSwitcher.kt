@@ -28,7 +28,7 @@ open class ModeSwitcher {
                 FAST -> return "极速模式"
                 BALANCE -> return "均衡模式"
                 IGONED -> return "保持状态"
-                "" -> return "跟随默认"
+                "" -> return "全局默认"
                 else -> return "未知模式"
             }
         }

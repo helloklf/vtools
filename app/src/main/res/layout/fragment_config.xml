@@ -264,7 +264,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center_vertical"
                                     android:layout_weight="1"
-                                    android:text="默认模式" />
+                                    android:text="全局默认" />
 
                                 <Spinner
                                     android:id="@+id/first_mode"
