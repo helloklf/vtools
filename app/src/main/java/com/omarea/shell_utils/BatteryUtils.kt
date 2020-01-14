@@ -241,6 +241,7 @@ class BatteryUtils {
         return RootFile.itemExists("/sys/class/power_supply/battery/battery_charging_enabled") || RootFile.itemExists("/sys/class/power_supply/battery/input_suspend")
     }
 
+    // 设置充电速度限制
     fun setChargeInputLimit(limit: Int, context: Context): Boolean {
         if (changeLimitRunning) {
             return false

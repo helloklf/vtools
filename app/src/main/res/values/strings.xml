@@ -208,7 +208,7 @@
     <string name="battery_bp_level_desc">电量限制值（%）</string>
     <string name="battery_qc_charger">充电调速</string>
     <string name="battery_bp_status">达到%d%%停止充电，低于%d%%恢复</string>
-    <string name="battery_qc_charger_desc">尝试调整充电速度限制，但不代表实际充电速度\n此设置只在充电器已连接，且电量低于80%才生效</string>
+    <string name="battery_qc_charger_desc">尝试调整充电速度限制，但不代表实际充电速度\n修改设置后需要重新插拔充电器</string>
     <string name="battery_charge_disabled">充电功能已禁止！</string>
     <string name="battery_charge_resumed">充电功能已恢复！</string>
 
@@ -292,11 +292,11 @@
     <string name="swap_start">启动</string>
     <string name="swap_stop">关闭</string>
     <string name="swap_delete">删除</string>
-    <string name="swap_preferred">优先使用（如果有多个SWAP或ZRAM）</string>
+    <string name="swap_preferred">优先使用(如果有多个SWAP或ZRAM)</string>
     <string name="swap_use_loop">挂载为环回设备</string>
     <string name="swap_use_loop_desc">如果不开启此项也能正常使用SWAP，就没必要开。\n\n除非是无法启动SWAP，或启动SWAP后手机死机，才需要开启此选项！\n\n例如：小米手机升级到Android P后，就可能需要勾选此项才能正常使用SWAP</string>
     <string name="swap_swap_desc">说明：SWAP即磁盘交换技术，在RAM不足时，将一部分数据暂时转移到磁盘中暂存，对后台能力提升明显，但性能较差</string>
-    <string name="swap_auto_start">开机自启（要允许Scene自启动）</string>
+    <string name="swap_auto_start">开机自启(要允许Scene自启动)</string>
     <string name="swap_zram_stat">ZRAM 统计</string>
     <string name="swap_zram_stat_desc">ZRAM的压缩率在20~45%之间都是正常的</string>
     <string name="swap_zram_stat_format">数据压缩算法：%s\n原始数据大小：%s\n压缩后的大小：%s\n物理内存占用：%s\n最高内存占用：%s\n内存占用限制：%s\n压缩率：%s</string>

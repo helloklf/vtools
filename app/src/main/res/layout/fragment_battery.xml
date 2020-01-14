@@ -95,7 +95,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_marginTop="8dp"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <SeekBar
@@ -120,6 +121,8 @@
                 <TextView
                     android:id="@+id/settings_qc_limit_current"
                     style="@style/textSmall"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginStart="8dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 
@@ -211,7 +214,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:max="100"
+                    android:max="70"
                     android:paddingStart="6dp"
                     android:paddingEnd="6dp" />
 
@@ -220,7 +223,8 @@
                     style="@style/textSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginStart="8dp"
                     android:text="@string/battery_bp_level_desc" />
 
                 <LinearLayout

@@ -16,7 +16,7 @@ import android.view.KeyEvent
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityWindowInfo
 import android.widget.Toast
-import com.omarea.charger_booster.ServiceBattery
+import com.omarea.charger_booster.BatteryService
 import com.omarea.scene_mode.AppSwitchHandler
 import com.omarea.store.SceneConfigStore
 import com.omarea.utils.AutoClick
@@ -159,7 +159,7 @@ class AccessibilityScenceMode : AccessibilityService() {
             appSwitchHandler = AppSwitchHandler(this)
 
 
-        ServiceBattery.startBatteryService(this.applicationContext)
+        BatteryService.startBatteryService(this.applicationContext)
     }
 
     fun topAppPackageName(): String {

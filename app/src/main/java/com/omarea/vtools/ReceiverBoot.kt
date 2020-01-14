@@ -4,7 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import com.omarea.charger_booster.ServiceBattery
+import com.omarea.charger_booster.BatteryService
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.services.BootService
 import com.omarea.vtools.services.CompileService
@@ -25,7 +25,7 @@ class ReceiverBoot : BroadcastReceiver() {
             //判断是否开启了充电加速和充电保护，如果开启了，自动启动后台服务
             if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) || chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_BP, false)) {
                 try {
-                    val i = Intent(context, ServiceBattery::class.java)
+                    val i = Intent(context, BatteryService::class.java)
                     context.startService(i)
                 } catch (ex: Exception) {
                 }

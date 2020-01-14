@@ -12,6 +12,33 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+
+            <LinearLayout
+                android:id="@+id/zram_stat"
+                style="@style/ListCardItem">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/swap_zram_stat" />
+
+                <TextView
+                    android:id="@+id/zram0_stat"
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:text="" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:text="@string/swap_zram_stat_desc" />
+            </LinearLayout>
+
             <TableLayout
                 style="@style/ListCardItem"
                 android:showDividers="beginning"
@@ -180,32 +207,6 @@
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:text="@string/swap_zram_desc" />
             </TableLayout>
-
-            <LinearLayout
-                android:id="@+id/zram_stat"
-                style="@style/ListCardItem">
-
-                <TextView
-                    style="@style/textTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/swap_zram_stat" />
-
-                <TextView
-                    android:id="@+id/zram0_stat"
-                    style="@style/textSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:text="" />
-
-                <TextView
-                    style="@style/textSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:text="@string/swap_zram_stat_desc" />
-            </LinearLayout>
 
             <TableLayout
                 style="@style/ListCardItem"

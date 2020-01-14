@@ -17,9 +17,11 @@ import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import com.omarea.charger_booster.BatteryInfo
-import com.omarea.charger_booster.ServiceBattery
+import com.omarea.charger_booster.BatteryService
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
+import com.omarea.data_collection.EventBus
+import com.omarea.data_collection.EventTypes
 import com.omarea.shell_utils.BatteryUtils
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
@@ -55,9 +57,9 @@ class FragmentBattery : Fragment() {
 
         settings_qc.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)
         settings_bp.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_BP, false)
-        settings_bp_level.progress = spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, SpfConfig.CHARGE_SPF_BP_LEVEL_DEFAULT)
         val bpLevel = spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, SpfConfig.CHARGE_SPF_BP_LEVEL_DEFAULT)
-        battery_bp_level_desc.text = "达到$bpLevel%停止充电，低于${bpLevel - 20}%恢复"
+        settings_bp_level.progress = bpLevel - 30
+        battery_bp_level_desc.text = String.format(battery_bp_level_desc.context.getString(R.string.battery_bp_status), bpLevel, bpLevel - 10)
         settings_qc_limit.progress = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, SpfConfig.CHARGE_SPF_QC_LIMIT_DEFAULT) / 100
         settings_qc_limit_desc.text = "" + spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, SpfConfig.CHARGE_SPF_QC_LIMIT_DEFAULT) + "mA"
 
@@ -85,7 +87,7 @@ class FragmentBattery : Fragment() {
         val battrystatus = view.findViewById(R.id.battrystatus) as TextView
         batteryMAH = BatteryInfo().getBatteryCapacity(this.context!!).toString() + "mAh" + "   "
         val context = context!!.applicationContext
-        serviceRunning = ServiceBattery.serviceIsRunning(context)
+        serviceRunning = BatteryService.serviceIsRunning(context)
 
         timer = Timer()
 
@@ -314,7 +316,7 @@ class FragmentBattery : Fragment() {
 
     class OnSeekBarChangeListener(private var next: Runnable, private var spf: SharedPreferences, private var battery_bp_level_desc: TextView) : SeekBar.OnSeekBarChangeListener {
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
-            val progress = seekBar!!.progress
+            val progress = seekBar!!.progress + 30
             if (spf.getInt(SpfConfig.CHARGE_SPF_BP_LEVEL, Int.MIN_VALUE) == progress) {
                 return
             }
@@ -326,7 +328,7 @@ class FragmentBattery : Fragment() {
         }
 
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-            battery_bp_level_desc.text = String.format(battery_bp_level_desc.context.getString(R.string.battery_bp_status), progress, progress - 20)
+            battery_bp_level_desc.text = String.format(battery_bp_level_desc.context.getString(R.string.battery_bp_status), progress + 30, progress + 10)
         }
     }
 
@@ -351,7 +353,8 @@ class FragmentBattery : Fragment() {
 
     //启动电池服务
     private fun startBatteryService() {
-        serviceRunning = ServiceBattery.startBatteryService(context!!)
+        serviceRunning = BatteryService.startBatteryService(context!!)
+        EventBus.publish(EventTypes.BATTERY_CHANGED, null)
     }
 
     companion object {

@@ -9,7 +9,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
 import android.support.v4.app.NotificationCompat
-import com.omarea.charger_booster.ServiceBattery
+import com.omarea.charger_booster.BatteryService
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shared.RawText
 import com.omarea.common.shell.KeepShell
@@ -176,7 +176,7 @@ class BootService : IntentService("vtools-boot") {
         if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) || chargeConfig!!.getBoolean(SpfConfig.CHARGE_SPF_BP, false)) {
             updateNotification(getString(R.string.boot_charge_booster))
 
-            ServiceBattery.startBatteryService(context)
+            BatteryService.startBatteryService(context)
 
             BatteryUtils().setChargeInputLimit(chargeConfig.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, SpfConfig.CHARGE_SPF_QC_LIMIT_DEFAULT), this.applicationContext)
         }

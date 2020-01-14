@@ -12,12 +12,11 @@ import android.os.Bundle
 import android.provider.Settings
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import com.omarea.charger_booster.ServiceBattery
+import com.omarea.charger_booster.BatteryService
 import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
@@ -63,7 +62,7 @@ class ActivityMain : AppCompatActivity() {
             //判断是否开启了充电加速和充电保护，如果开启了，自动启动后台服务
             val chargeConfig = context.get()!!.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
             if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) || chargeConfig!!.getBoolean(SpfConfig.CHARGE_SPF_BP, false)) {
-                ServiceBattery.startBatteryService(context.get()!!)
+                BatteryService.startBatteryService(context.get()!!)
             }
         }
 

@@ -260,7 +260,7 @@
                 android:resource="@xml/keyevent_accessibility" />
         </service>
         <service
-            android:name="com.omarea.charger_booster.ServiceBattery"
+            android:name="com.omarea.charger_booster.BatteryService"
             android:enabled="true"
             android:permission="" />
         <service

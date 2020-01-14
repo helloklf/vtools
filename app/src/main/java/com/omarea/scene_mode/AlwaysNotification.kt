@@ -13,7 +13,7 @@ import android.widget.RemoteViews
 import com.omarea.model.BatteryStatus
 import com.omarea.store.BatteryHistoryStore
 import com.omarea.store.SpfConfig
-import com.omarea.utils.GlobalStatus
+import com.omarea.data_collection.GlobalStatus
 import com.omarea.vtools.R
 
 /**
