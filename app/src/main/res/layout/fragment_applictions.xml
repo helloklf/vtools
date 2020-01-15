@@ -46,8 +46,9 @@
 
                     <com.omarea.common.ui.OverScrollListView
                         android:id="@+id/apps_userlist"
+                        android:divider="@null"
                         android:scrollbars="none"
-                        android:background="@drawable/krscript_item_ripple_inactive"
+                        android:background="@drawable/list_view_bg"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
                 </FrameLayout>
@@ -68,8 +69,9 @@
 
                     <com.omarea.common.ui.OverScrollListView
                         android:id="@+id/apps_systemlist"
+                        android:divider="@null"
                         android:scrollbars="none"
-                        android:background="@drawable/krscript_item_ripple_inactive"
+                        android:background="@drawable/list_view_bg"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
 
@@ -91,8 +93,9 @@
 
                     <com.omarea.common.ui.OverScrollListView
                         android:id="@+id/apps_backupedlist"
+                        android:divider="@null"
                         android:scrollbars="none"
-                        android:background="@drawable/krscript_item_ripple_inactive"
+                        android:background="@drawable/list_view_bg"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
 

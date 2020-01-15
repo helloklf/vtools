@@ -225,6 +225,17 @@
         <item name="android:paddingRight">16dp</item>
     </style>
 
+    <style name="ListItem">
+        <item name="android:background">?attr/listChoiceBackgroundIndicator</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+    </style>
+
     <style name="ListCardItemLast" parent="ListCardItem">
         <item name="android:layout_marginBottom">@dimen/activity_vertical_margin</item>
     </style>

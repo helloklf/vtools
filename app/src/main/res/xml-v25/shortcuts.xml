@@ -14,50 +14,14 @@
     </shortcut>-->
     <shortcut
         android:enabled="true"
-        android:icon="@drawable/shortcut_p0"
+        android:icon="@drawable/freeze_logo"
         android:shortcutDisabledMessage="@string/shortcut_disabled"
         android:shortcutId="powersave"
-        android:shortcutLongLabel="@string/shortcut_p0"
-        android:shortcutShortLabel="@string/shortcut_p0_long">
+        android:shortcutLongLabel="@string/title_activity_freeze"
+        android:shortcutShortLabel="@string/title_activity_freeze">
         <intent
-            android:action="powersave"
-            android:targetClass="com.omarea.vtools.activities.ActivityShortcut"
-            android:targetPackage="com.omarea.vtools" />
-    </shortcut>
-    <shortcut
-        android:enabled="true"
-        android:icon="@drawable/shortcut_p1"
-        android:shortcutDisabledMessage="@string/shortcut_disabled"
-        android:shortcutId="balance"
-        android:shortcutLongLabel="@string/shortcut_p1"
-        android:shortcutShortLabel="@string/shortcut_p1_long">
-        <intent
-            android:action="balance"
-            android:targetClass="com.omarea.vtools.activities.ActivityShortcut"
-            android:targetPackage="com.omarea.vtools" />
-    </shortcut>
-    <shortcut
-        android:enabled="true"
-        android:icon="@drawable/shortcut_p2"
-        android:shortcutDisabledMessage="@string/shortcut_disabled"
-        android:shortcutId="performance"
-        android:shortcutLongLabel="@string/shortcut_p2"
-        android:shortcutShortLabel="@string/shortcut_p2_long">
-        <intent
-            android:action="performance"
-            android:targetClass="com.omarea.vtools.activities.ActivityShortcut"
-            android:targetPackage="com.omarea.vtools" />
-    </shortcut>
-    <shortcut
-        android:enabled="true"
-        android:icon="@drawable/shortcut_p3"
-        android:shortcutDisabledMessage="@string/shortcut_disabled"
-        android:shortcutId="fast"
-        android:shortcutLongLabel="@string/shortcut_p3"
-        android:shortcutShortLabel="@string/shortcut_p3_long">
-        <intent
-            android:action="fast"
-            android:targetClass="com.omarea.vtools.activities.ActivityShortcut"
+            android:action=""
+            android:targetClass="com.omarea.vtools.activities.ActivityFreezeApps"
             android:targetPackage="com.omarea.vtools" />
     </shortcut>
 </shortcuts>

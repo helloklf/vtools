@@ -71,7 +71,8 @@
                     </LinearLayout>
 
                     <com.omarea.common.ui.OverScrollListView
-                        android:background="@drawable/krscript_item_ripple_inactive"
+                        android:divider="@null"
+                        android:background="@drawable/list_view_bg"
                         android:scrollbars="none"
                         android:id="@+id/config_defaultlist"
                         android:layout_width="match_parent"

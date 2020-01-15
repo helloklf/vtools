@@ -795,12 +795,13 @@ class FragmentCpuControl : Fragment() {
             val modeName = ModeSwitcher.getModName(cpuModeName!!)
             cpu_apply_onboot.setText("自定义 " + modeName + " ")
             cpu_apply_onboot_desc.setText("自定义 [" + modeName + "] 的具体参数，覆盖Scene原始设定")
+            cpu_help_text.visibility = View.GONE
         }
     }
 
     private fun saveBootConfig() {
         if (!CpuConfigStorage().saveCpuConfig(context!!, if (cpu_apply_onboot.isChecked) status else null, cpuModeName)) {
-            Toast.makeText(context!!, "更新配置为启动设置失败！", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context!!, "保存配置文件失败！", Toast.LENGTH_SHORT).show()
             cpu_apply_onboot.isChecked = false
         }
     }
