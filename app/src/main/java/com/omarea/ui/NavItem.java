@@ -19,9 +19,6 @@ public class NavItem extends LinearLayout {
 
     public NavItem(Context context, AttributeSet attrs) {
         super(context, attrs);
-        for (int i = 0; i < attrs.getAttributeCount(); i++) {
-            Log.d(">>>>", "" + attrs.getAttributeName(i));
-        }
         setLayout(context, attrs);
     }
     public NavItem(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -42,7 +39,6 @@ public class NavItem extends LinearLayout {
             Drawable icon = attributes.getDrawable(R.styleable.NavItem_drawable);
             ((ImageView)(this.findViewById(android.R.id.icon))).setImageDrawable(icon);
             ((TextView)(this.findViewById(android.R.id.title))).setText(text);
-            Log.d(">>>>", "" + text + "  " + icon);
         }
 
         attributes.recycle();

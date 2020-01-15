@@ -195,7 +195,11 @@ public class CpuFrequencyUtil {
 
             String[] cores = getClusterInfo().get(cluster);
             ArrayList<String> commands = new ArrayList<>();
-            for (String core : cores) {
+            if (cores.length < 1) {
+                continue;
+            }
+            String core = cores[0];
+            // for (String core : cores) {
                 if (config.governor != null && !config.governor.isEmpty()) {
                     commands.add("chmod 0755 " + scaling_governor.replace("cpu0", "cpu" + core));
                     commands.add("echo " + config.governor + " > " + scaling_governor.replace("cpu0", "cpu" + core));
@@ -209,7 +213,7 @@ public class CpuFrequencyUtil {
                     commands.add("chmod 0664 " + scaling_min_freq.replace("cpu0", "cpu" + core));
                     commands.add("echo " + config.min_freq + " > " + scaling_min_freq.replace("cpu0", "cpu" + core));
                 }
-            }
+            // }
             commands.add("chmod 0664 /sys/module/msm_performance/parameters/cpu_max_freq");
             KeepShellPublic.INSTANCE.doCmdSync(commands);
         }
