@@ -75,10 +75,13 @@ echo $gpu_min_freq > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq
 echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/min_pwrlevel
 echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 
-echo 140 > /proc/sys/kernel/sched_upmigrate
-echo 100 > /proc/sys/kernel/sched_downmigrate
-echo 200 > /proc/sys/kernel/sched_group_upmigrate
-echo 150 > /proc/sys/kernel/sched_group_downmigrate
+# Setting b.L scheduler parameters
+# default sched up and down migrate values are 90 and 85
+echo 95 > /proc/sys/kernel/sched_downmigrate
+echo 92 > /proc/sys/kernel/sched_upmigrate
+# default sched up and down migrate values are 100 and 95
+echo 93 > /proc/sys/kernel/sched_group_downmigrate
+echo 100 > /proc/sys/kernel/sched_group_upmigrate
 
 function set_cpu_freq()
 {
