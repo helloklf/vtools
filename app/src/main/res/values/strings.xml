@@ -375,6 +375,7 @@
         <item>系统应用</item>
         <item>所有应用</item>
     </string-array>
+    <string name="title_activity_timing_task">定时任务</string>
     <string name="title_activity_file_selector">请选择文件</string>
     <string name="config_save_fail">配置保存失败！</string>
     <string name="boot_success">已完成开机自启动</string>

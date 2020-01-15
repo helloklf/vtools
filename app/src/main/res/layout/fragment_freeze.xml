@@ -28,7 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:text="应用偏见“场景模式”的一部分，场景模式开启时，离开偏见应用界面2分钟后，自动冻结" />
+                android:text="应用偏见“应用场景”的一部分，在场景模式开启时，离开偏见应用界面2分钟后，自动冻结" />
         </LinearLayout>
 
         <ImageButton
@@ -37,7 +37,6 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_gravity="center"
-            android:layout_marginRight="10dp"
             android:padding="0dp"
             android:scaleType="centerInside"
             android:src="@drawable/freeze_settings"
