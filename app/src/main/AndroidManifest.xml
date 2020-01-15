@@ -156,6 +156,16 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".activities.ActivityTimingTask"
+            android:excludeFromRecents="true"
+            android:label="@string/title_activity_timing_task"
+            android:launchMode="standard">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".activities.ActivityQuickStart"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:excludeFromRecents="true"

@@ -1,11 +1,12 @@
 package com.omarea.vtools.fragments
 
 import android.annotation.SuppressLint
-import android.content.*
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
-import android.os.IBinder
 import android.provider.Settings
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -21,8 +22,8 @@ import com.omarea.store.SpfConfig
 import com.omarea.ui.TabIconHelper
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.utils.AppListHelper
-import com.omarea.vaddin.IAppConfigAidlInterface
 import com.omarea.vtools.R
+import com.omarea.vtools.activities.ActivityTimingTask
 import kotlinx.android.synthetic.main.fragment_system_scene.*
 
 
@@ -136,6 +137,9 @@ class FragmentSystemScene : Fragment() {
 
         system_scene_add.setOnClickListener {
             Toast.makeText(context, "别急，这个功能还在开发...", Toast.LENGTH_SHORT).show()
+
+            val intent = Intent(activity, ActivityTimingTask::class.java)
+            startActivity(intent)
         }
     }
 
