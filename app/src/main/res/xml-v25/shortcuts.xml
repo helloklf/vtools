@@ -16,12 +16,12 @@
         android:enabled="true"
         android:icon="@drawable/freeze_logo"
         android:shortcutDisabledMessage="@string/shortcut_disabled"
-        android:shortcutId="powersave"
+        android:shortcutId="ActivityFreezeApps"
         android:shortcutLongLabel="@string/title_activity_freeze"
         android:shortcutShortLabel="@string/title_activity_freeze">
         <intent
-            android:action=""
-            android:targetClass="com.omarea.vtools.activities.ActivityFreezeApps"
+            android:action="a"
+            android:targetClass="com.omarea.vtools.activities.ActivityFreezeApps2"
             android:targetPackage="com.omarea.vtools" />
     </shortcut>
 </shortcuts>

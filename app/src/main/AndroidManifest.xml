@@ -167,6 +167,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <activity-alias
+            android:enabled="true"
+            android:name=".activities.ActivityFreezeApps2"
+            android:targetActivity=".activities.ActivityFreezeApps" />
         <activity
             android:name=".activities.ActivityFreezeApps"
             android:configChanges="orientation|keyboardHidden|screenSize"
