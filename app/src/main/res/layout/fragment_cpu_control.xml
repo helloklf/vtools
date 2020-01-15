@@ -35,7 +35,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="开机后应用" />
+                    android:text="开机后应用 " />
 
                 <TextView
                     android:id="@+id/cpu_apply_onboot_desc"

@@ -37,6 +37,7 @@
         <item>com.android.vpndialogs</item>
         <item>com.android.documentsui</item>
         <item>com.android.wallpapercropper</item>
+        <item>com.mfashiongallery.emag</item>
     </string-array>
     <string-array name="powercfg_game">
         <item>com.tencent.tmgp.speedmobile</item>
@@ -130,14 +131,10 @@
     <string name="backup_img_exists">/sdcard/%s.img已经存在，是否覆盖已有文件？\n</string>
     <string name="backup_space_small">存储空间不足，请至少预留200M可用空间！</string>
 
-
     <string name="autobooster_tab_details">黑名单设置</string>
     <string name="autobooster_tab_system_scene">系统场景</string>
     <string name="auto_clear_ignore_chager">充电状态忽略</string>
     <string name="auto_clear_ignore_chager_desc">充电状态下，息屏动作延迟到充电完成才执行</string>
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="settings_delay">延迟执行</string>
     <string name="settings_delay_desc">自启动过程延迟25秒，避免开机时卡顿</string>
@@ -355,9 +352,8 @@
         <item>均衡模式（日常）</item>
         <item>性能模式（游戏）</item>
         <item>极速模式（跑分）</item>
-        <item>跟随默认模式</item>
+        <item>全局默认</item>
         <item>保持上个应用状态</item>
-        <item>自定义配置</item>
     </string-array>
     <string-array name="default_powercfg_mode_options">
         <item>省电模式</item>
@@ -366,13 +362,13 @@
         <item>极速模式</item>
     </string-array>
     <string-array name="powercfg_modes_filter">
-        <item>全部模式</item>
-        <item>省电模式</item>
-        <item>均衡模式</item>
-        <item>性能模式</item>
-        <item>极速模式</item>
+        <item>所有模式</item>
+        <item>省电模式（阅读）</item>
+        <item>均衡模式（日常）</item>
+        <item>性能模式（游戏）</item>
+        <item>极速模式（跑分）</item>
         <item>全局默认</item>
-        <item>保持状态</item>
+        <item>保持上个应用状态</item>
     </string-array>
     <string-array name="powercfg_apptype_filter">
         <item>用户程序</item>
@@ -422,7 +418,6 @@
     <string name="scene_speed_compile">com.omarea.vtools.SpeedCompile</string>
     <string name="scene_everything_compile">com.omarea.vtools.EverythingCompile</string>
     <string name="scene_reset_compile">com.omarea.vtools.ResetCompile</string>
-    <string name="title_activity_home">Scene桌面</string>
 
     <string name="scene_contract">Scene是一款适用于玩机爱好者的应用，对于新手用户来说，其中的部分功能可能会过于危险。\n\n强烈建议不要在工作机，或有重要数据的手机上使用。\n\n使用过程中，务必认真阅读各个功能条目的提示和警告信息，以免误操作导致不可预料的后果。\n\n如果你的手机在系统故障不能开机时，没法恢复出厂设置和刷机，请不要使用！！！</string>
     <string name="permission_float">请先为Scene授权显示悬浮窗权限！</string>

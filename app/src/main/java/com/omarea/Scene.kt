@@ -21,9 +21,8 @@ class Scene : Application() {
             )
         }
 
-        // TODO:锁屏状态监听
-        // screenState = ScreenState(this)
-        // screenState.autoRegister()
+        screenState = ScreenState(this)
+        screenState.autoRegister()
 
         // 电池状态检测
         BatteryService.startBatteryService(this)

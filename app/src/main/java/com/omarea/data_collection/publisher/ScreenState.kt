@@ -53,17 +53,19 @@ class ScreenState(private var context: Context) : BroadcastReceiver() {
     }
 
     fun autoRegister(): ScreenState {
-        context.applicationContext.registerReceiver(this, IntentFilter(Intent.ACTION_SCREEN_OFF))
+        val c = if (context.applicationContext != null) context.applicationContext else context
+        c.registerReceiver(this, IntentFilter(Intent.ACTION_SCREEN_OFF))
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            context.applicationContext.registerReceiver(this, IntentFilter(Intent.ACTION_USER_UNLOCKED))
+            c.registerReceiver(this, IntentFilter(Intent.ACTION_USER_UNLOCKED))
         }
-        context.applicationContext.registerReceiver(this, IntentFilter(Intent.ACTION_SCREEN_ON))
-        context.applicationContext.registerReceiver(this, IntentFilter(Intent.ACTION_USER_PRESENT))
+        context.registerReceiver(this, IntentFilter(Intent.ACTION_SCREEN_ON))
+        c.registerReceiver(this, IntentFilter(Intent.ACTION_USER_PRESENT))
 
         return this;
     }
 
     fun unRegister() {
-        context.applicationContext.unregisterReceiver(this)
+        val c = if (context.applicationContext != null) context.applicationContext else context
+        c.unregisterReceiver(this)
     }
 }

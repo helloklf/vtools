@@ -48,6 +48,7 @@ class BootService : IntentService("vtools-boot") {
         if (!r.isEmpty()) {
             isFirstBoot = false
             bootCancel = true
+            this.hideNotification()
             return
         }
         updateNotification(getString(R.string.boot_script_running))

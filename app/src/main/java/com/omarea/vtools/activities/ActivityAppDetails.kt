@@ -311,7 +311,6 @@ class ActivityAppDetails : AppCompatActivity() {
                 ModeSwitcher.PERFORMANCE -> index = 2
                 ModeSwitcher.FAST -> index = 3
                 ModeSwitcher.IGONED -> index = 5
-                ModeSwitcher.CUSTOM -> index = 6
                 else -> index = 4
             }
             var selectedIndex = index
@@ -330,7 +329,6 @@ class ActivityAppDetails : AppCompatActivity() {
                                 3 -> modeName = ModeSwitcher.FAST
                                 4 -> modeName = ""
                                 5 -> modeName = ModeSwitcher.IGONED
-                                6 -> modeName = ModeSwitcher.CUSTOM
                             }
                             if (modeName.isEmpty()) {
                                 powercfg.edit().remove(app).apply()

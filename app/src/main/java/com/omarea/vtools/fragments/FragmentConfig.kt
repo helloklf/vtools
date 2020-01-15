@@ -219,7 +219,6 @@ class FragmentConfig : Fragment() {
                                 3 -> modeName = ModeSwitcher.FAST
                                 4 -> modeName = ""
                                 5 -> modeName = ModeSwitcher.IGONED
-                                6 -> modeName = ModeSwitcher.CUSTOM
                             }
 
                             if (modeName.isEmpty()) {

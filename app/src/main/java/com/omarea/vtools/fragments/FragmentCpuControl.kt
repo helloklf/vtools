@@ -771,7 +771,7 @@ class FragmentCpuControl : Fragment() {
 
         val globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         val dynamic = AccessibleServiceHelper().serviceRunning(context!!) && globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)
-        if (dynamic) {
+        if (dynamic && (cpuModeName == null)) {
             DialogHelper.animDialog(AlertDialog.Builder(context!!)
                     .setTitle("请注意")
                     .setMessage("检测到你已开启“性能调节”，你手动对CPU、GPU的修改随时可能被覆盖。\n\n同时，手动调整参数还可能对“性能调节”的工作造成不利影响！")
@@ -790,8 +790,8 @@ class FragmentCpuControl : Fragment() {
             ModeSwitcher().executePowercfgMode(context!!, cpuModeName!!)
 
             val modeName = ModeSwitcher.getModName(cpuModeName!!)
-            cpu_apply_onboot.setText(modeName)
-            cpu_apply_onboot_desc.setText("自定义[" + modeName + "]的性能参数")
+            cpu_apply_onboot.setText("自定义 " + modeName + " ")
+            cpu_apply_onboot_desc.setText("自定义 [" + modeName + "] 的具体参数，覆盖Scene原始设定")
         }
     }
 
@@ -818,7 +818,7 @@ class FragmentCpuControl : Fragment() {
                     }
                     updateState()
                 }
-            }, 1000, 3000)
+            }, 1000, 1000)
         }
     }
 

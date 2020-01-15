@@ -248,7 +248,7 @@
                         style="@style/textTitle"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="极限模式" />
+                        android:text="暖手模式" />
 
                     <TextView
                         style="@style/textSmall"

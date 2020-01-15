@@ -73,6 +73,7 @@ class CompileService : IntentService("vtools-compile") {
 
         if (compiling) {
             compileCanceled = true
+            this.hideNotification()
             return
         }
 
@@ -113,6 +114,7 @@ class CompileService : IntentService("vtools-compile") {
             }
             keepShell!!.doCmdSync("cmd package compile -m ${compile_method} ${packageName}")
         }
+        this.hideNotification()
         Thread.sleep(2000)
         keepShell!!.tryExit()
         keepShell = null
@@ -121,7 +123,7 @@ class CompileService : IntentService("vtools-compile") {
         this.stopSelf()
     }
 
-    override fun onDestroy() {
+    private fun hideNotification () {
         if (compileCanceled) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 nm.cancel(990)
@@ -131,6 +133,11 @@ class CompileService : IntentService("vtools-compile") {
         } else {
             updateNotification("complete!", getString(R.string.dex2oat_completed))
         }
+        // System.exit(0)
+    }
+
+    override fun onDestroy() {
+        this.hideNotification()
 
         super.onDestroy()
     }

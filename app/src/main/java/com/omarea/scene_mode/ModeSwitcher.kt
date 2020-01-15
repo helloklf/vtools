@@ -23,7 +23,6 @@ open class ModeSwitcher {
         internal var FAST = "fast"
         internal var BALANCE = "balance"
         internal var IGONED = "igoned"
-        internal var CUSTOM = "custom"
 
         internal fun getModName(mode: String): String {
             when (mode) {
@@ -32,7 +31,6 @@ open class ModeSwitcher {
                 FAST -> return "极速模式"
                 BALANCE -> return "均衡模式"
                 IGONED -> return "保持状态"
-                CUSTOM -> return "自定义"
                 "" -> return "全局默认"
                 else -> return "未知模式"
             }
