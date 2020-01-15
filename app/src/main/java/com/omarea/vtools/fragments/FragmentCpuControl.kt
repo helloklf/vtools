@@ -17,6 +17,7 @@ import com.omarea.model.CpuClusterStatus
 import com.omarea.model.CpuStatus
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.shell_utils.CpuFrequencyUtil
+import com.omarea.shell_utils.GpuUtils
 import com.omarea.shell_utils.ThermalControlUtils
 import com.omarea.store.CpuConfigStorage
 import com.omarea.store.SpfConfig
@@ -59,11 +60,11 @@ class FragmentCpuControl : Fragment() {
         val exynosCpuhotplugSupport = CpuFrequencyUtil.exynosCpuhotplugSupport()
         exynosHMP = CpuFrequencyUtil.exynosHMP()
 
-        adrenoGPU = CpuFrequencyUtil.isAdrenoGPU()
+        adrenoGPU = GpuUtils.isAdrenoGPU()
         if (adrenoGPU) {
-            adrenoGovernors = CpuFrequencyUtil.getAdrenoGPUGovernors()
-            adrenoFreqs = CpuFrequencyUtil.adrenoGPUFreqs()
-            adrenoPLevels = CpuFrequencyUtil.getAdrenoGPUPowerLevels()
+            adrenoGovernors = GpuUtils.getAdrenoGPUGovernors()
+            adrenoFreqs = GpuUtils.adrenoGPUFreqs()
+            adrenoPLevels = GpuUtils.getAdrenoGPUPowerLevels()
         }
 
         handler.post {
@@ -128,13 +129,13 @@ class FragmentCpuControl : Fragment() {
     private fun bindEvent() {
         try {
             thermal_core_control.setOnClickListener {
-                ThermalControlUtils.setCoreControlState((it as CheckBox).isChecked, this.context)
+                ThermalControlUtils.setCoreControlState((it as CheckBox).isChecked)
             }
             thermal_vdd.setOnClickListener {
-                ThermalControlUtils.setVDDRestrictionState((it as CheckBox).isChecked, this.context)
+                ThermalControlUtils.setVDDRestrictionState((it as CheckBox).isChecked)
             }
             thermal_paramters.setOnClickListener {
-                ThermalControlUtils.setTheramlState((it as CheckBox).isChecked, this.context)
+                ThermalControlUtils.setTheramlState((it as CheckBox).isChecked)
             }
             cpu_sched_boost.setOnClickListener {
                 CpuFrequencyUtil.setSechedBoostState((it as CheckBox).isChecked, this.context)
@@ -182,10 +183,10 @@ class FragmentCpuControl : Fragment() {
                         .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             if (index != currentIndex) {
                                 val g = adrenoFreqs[index]
-                                if (CpuFrequencyUtil.getAdrenoGPUMinFreq() == g) {
+                                if (GpuUtils.getAdrenoGPUMinFreq() == g) {
                                     return@setPositiveButton
                                 }
-                                CpuFrequencyUtil.setAdrenoGPUMinFreq(g)
+                                GpuUtils.setAdrenoGPUMinFreq(g)
                                 status.adrenoMinFreq = g
                                 setText(it as TextView?, subGPUFreqStr(g))
                             }
@@ -205,10 +206,10 @@ class FragmentCpuControl : Fragment() {
                         .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             if (index != currentIndex) {
                                 val g = adrenoFreqs[index]
-                                if (CpuFrequencyUtil.getAdrenoGPUMaxFreq() == g) {
+                                if (GpuUtils.getAdrenoGPUMaxFreq() == g) {
                                     return@setPositiveButton
                                 }
-                                CpuFrequencyUtil.setAdrenoGPUMaxFreq(g)
+                                GpuUtils.setAdrenoGPUMaxFreq(g)
                                 status.adrenoMaxFreq = g
                                 setText(it as TextView?, subGPUFreqStr(g))
                             }
@@ -228,10 +229,10 @@ class FragmentCpuControl : Fragment() {
                         .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             if (governor != currentIndex) {
                                 val g = adrenoGovernors[governor]
-                                if (CpuFrequencyUtil.getAdrenoGPUGovernor() == g) {
+                                if (GpuUtils.getAdrenoGPUGovernor() == g) {
                                     return@setPositiveButton
                                 }
-                                CpuFrequencyUtil.setAdrenoGPUGovernor(g)
+                                GpuUtils.setAdrenoGPUGovernor(g)
                                 status.adrenoGovernor = g
                                 setText(it as TextView?, g)
                             }
@@ -251,10 +252,10 @@ class FragmentCpuControl : Fragment() {
                         .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             if (index != currentIndex) {
                                 val g = adrenoPLevels[index]
-                                if (CpuFrequencyUtil.getAdrenoGPUMinPowerLevel() == g) {
+                                if (GpuUtils.getAdrenoGPUMinPowerLevel() == g) {
                                     return@setPositiveButton
                                 }
-                                CpuFrequencyUtil.setAdrenoGPUMinPowerLevel(g)
+                                GpuUtils.setAdrenoGPUMinPowerLevel(g)
                                 status.adrenoMinPL = g
                                 setText(it as TextView?, g)
                             }
@@ -274,10 +275,10 @@ class FragmentCpuControl : Fragment() {
                         .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             if (index != currentIndex) {
                                 val g = adrenoPLevels[index]
-                                if (CpuFrequencyUtil.getAdrenoGPUMaxPowerLevel() == g) {
+                                if (GpuUtils.getAdrenoGPUMaxPowerLevel() == g) {
                                     return@setPositiveButton
                                 }
-                                CpuFrequencyUtil.setAdrenoGPUMaxPowerLevel(g)
+                                GpuUtils.setAdrenoGPUMaxPowerLevel(g)
                                 status.adrenoMaxPL = g
                                 setText(it as TextView?, g)
                             }
@@ -297,10 +298,10 @@ class FragmentCpuControl : Fragment() {
                         .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             if (index != currentIndex) {
                                 val g = adrenoPLevels[index]
-                                if (CpuFrequencyUtil.getAdrenoGPUDefaultPowerLevel() == g) {
+                                if (GpuUtils.getAdrenoGPUDefaultPowerLevel() == g) {
                                     return@setPositiveButton
                                 }
-                                CpuFrequencyUtil.setAdrenoGPUDefaultPowerLevel(g)
+                                GpuUtils.setAdrenoGPUDefaultPowerLevel(g)
                                 status.adrenoDefaultPL = g
                                 updateUI()
                             }
@@ -437,7 +438,7 @@ class FragmentCpuControl : Fragment() {
                             if (CpuFrequencyUtil.getCurrentMinFrequency(cluster) == g) {
                                 return@setPositiveButton
                             }
-                            CpuFrequencyUtil.setMinFrequency(g, cluster, context)
+                            CpuFrequencyUtil.setMinFrequency(g, cluster)
                             status.cpuClusterStatuses[cluster].min_freq = g
                             setText(it as TextView?, subFreqStr(g))
                         }
@@ -460,7 +461,7 @@ class FragmentCpuControl : Fragment() {
                             if (CpuFrequencyUtil.getCurrentMinFrequency(cluster) == g) {
                                 return@setPositiveButton
                             }
-                            CpuFrequencyUtil.setMaxFrequency(g, cluster, context)
+                            CpuFrequencyUtil.setMaxFrequency(g, cluster)
                             status.cpuClusterStatuses[cluster].max_freq = g
                             setText(it as TextView?, subFreqStr(g))
                         }
@@ -484,7 +485,7 @@ class FragmentCpuControl : Fragment() {
                             if (CpuFrequencyUtil.getCurrentScalingGovernor(cluster) == v) {
                                 return@setPositiveButton
                             }
-                            CpuFrequencyUtil.setGovernor(v, cluster, context)
+                            CpuFrequencyUtil.setGovernor(v, cluster)
                             status.cpuClusterStatuses[cluster].governor = v
                             setText(it as TextView?, v)
                         }
@@ -613,12 +614,12 @@ class FragmentCpuControl : Fragment() {
             status.exynosHotplug = CpuFrequencyUtil.getExynosHotplug()
 
             if (adrenoGPU) {
-                status.adrenoDefaultPL = CpuFrequencyUtil.getAdrenoGPUDefaultPowerLevel()
-                status.adrenoMinPL = CpuFrequencyUtil.getAdrenoGPUMinPowerLevel()
-                status.adrenoMaxPL = CpuFrequencyUtil.getAdrenoGPUMaxPowerLevel()
-                status.adrenoMinFreq = getApproximation(adrenoFreqs, CpuFrequencyUtil.getAdrenoGPUMinFreq())
-                status.adrenoMaxFreq = getApproximation(adrenoFreqs, CpuFrequencyUtil.getAdrenoGPUMaxFreq())
-                status.adrenoGovernor = CpuFrequencyUtil.getAdrenoGPUGovernor()
+                status.adrenoDefaultPL = GpuUtils.getAdrenoGPUDefaultPowerLevel()
+                status.adrenoMinPL = GpuUtils.getAdrenoGPUMinPowerLevel()
+                status.adrenoMaxPL = GpuUtils.getAdrenoGPUMaxPowerLevel()
+                status.adrenoMinFreq = getApproximation(adrenoFreqs, GpuUtils.getAdrenoGPUMinFreq())
+                status.adrenoMaxFreq = getApproximation(adrenoFreqs, GpuUtils.getAdrenoGPUMaxFreq())
+                status.adrenoGovernor = GpuUtils.getAdrenoGPUGovernor()
             }
 
             status.coreOnline = arrayListOf<Boolean>()
@@ -787,7 +788,9 @@ class FragmentCpuControl : Fragment() {
         cpu_apply_onboot.isChecked = statusOnBoot != null
 
         if (cpuModeName != null) {
+            val time  = System.currentTimeMillis()
             ModeSwitcher().executePowercfgMode(context!!, cpuModeName!!)
+            Log.e(">>>>", "" + (System.currentTimeMillis() - time))
 
             val modeName = ModeSwitcher.getModName(cpuModeName!!)
             cpu_apply_onboot.setText("自定义 " + modeName + " ")

@@ -6,6 +6,7 @@ import android.widget.Toast;
 import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.common.shell.KernelProrp;
 import com.omarea.common.shell.RootFile;
+import com.omarea.model.CpuStatus;
 
 import java.util.ArrayList;
 
@@ -33,39 +34,46 @@ public class ThermalControlUtils {
         return KernelProrp.INSTANCE.getProp(thermal_parameters).trim();
     }
 
-    public static void setCoreControlState(Boolean online, Context context) {
+    public static void setCoreControlState(Boolean online) {
         String val = online ? "1" : "0";
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 " + thermal_core_control);
         commands.add("echo " + val + " > " + thermal_core_control);
-
-        boolean success = KeepShellPublic.INSTANCE.doCmdSync(commands);
-        if (success) {
-            Toast.makeText(context, "OK!", Toast.LENGTH_SHORT).show();
-        }
+        KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
-    public static void setVDDRestrictionState(Boolean online, Context context) {
+    public static void setVDDRestrictionState(Boolean online) {
         String val = online ? "1" : "0";
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 " + thermal_vdd_restriction);
         commands.add("echo " + val + " > " + thermal_vdd_restriction);
-
-        boolean success = KeepShellPublic.INSTANCE.doCmdSync(commands);
-        if (success) {
-            Toast.makeText(context, "OK!", Toast.LENGTH_SHORT).show();
-        }
+        KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
-    public static void setTheramlState(Boolean online, Context context) {
+    public static void setTheramlState(Boolean online) {
         String val = online ? "Y" : "N";
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 " + thermal_parameters);
         commands.add("echo " + val + " > " + thermal_parameters);
+        KeepShellPublic.INSTANCE.doCmdSync(commands);
+    }
 
-        boolean success = KeepShellPublic.INSTANCE.doCmdSync(commands);
-        if (success) {
-            Toast.makeText(context, "OK!", Toast.LENGTH_SHORT).show();
+    public static void setThermalParams(CpuStatus cpuStatus) {
+        ArrayList<String> commands = new ArrayList<>();
+
+        if (!(cpuStatus.coreControl == null || cpuStatus.coreControl.isEmpty())) {
+            commands.add("chmod 0664 " + thermal_core_control);
+            commands.add("echo " + cpuStatus.coreControl + " > " + thermal_core_control);
         }
+        if (!(cpuStatus.vdd == null || cpuStatus.vdd.isEmpty())) {
+            commands.add("chmod 0664 " + thermal_vdd_restriction);
+            commands.add("echo " + cpuStatus.vdd + " > " + thermal_vdd_restriction);
+        }
+        if (!(cpuStatus.msmThermal == null || cpuStatus.msmThermal.isEmpty())) {
+            commands.add("chmod 0664 " + thermal_parameters);
+            commands.add("echo " + cpuStatus.msmThermal + " > " + thermal_parameters);
+        }
+
+        KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 }

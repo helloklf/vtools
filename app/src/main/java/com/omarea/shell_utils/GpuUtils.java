@@ -1,7 +1,12 @@
 package com.omarea.shell_utils;
 
+import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.common.shell.KernelProrp;
 import com.omarea.common.shell.RootFile;
+import com.omarea.model.CpuStatus;
+
+import java.io.File;
+import java.util.ArrayList;
 
 public class GpuUtils {
     private static String GPU_LOAD_PATH = null;
@@ -60,5 +65,137 @@ public class GpuUtils {
                 return -1;
             }
         }
+    }
+
+
+    public static String[] adrenoGPUFreqs() {
+        String freqs = KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/devfreq/available_frequencies");
+        return freqs.split(" ");
+    }
+
+    public static boolean isAdrenoGPU() {
+        return new File("/sys/class/kgsl/kgsl-3d0").exists();
+    }
+
+    public static String[] getAdrenoGPUGovernors() {
+        String g = KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/devfreq/available_governors");
+        return g.split(" ");
+    }
+
+    public static String getAdrenoGPUMinFreq() {
+        return KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/devfreq/min_freq");
+    }
+
+    public static void setAdrenoGPUMinFreq(String value) {
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/devfreq/min_freq;");
+        commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq;");
+        KeepShellPublic.INSTANCE.doCmdSync(commands);
+    }
+
+    public static String getAdrenoGPUMaxFreq() {
+        return KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/devfreq/max_freq");
+    }
+
+    public static void setAdrenoGPUMaxFreq(String value) {
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/devfreq/max_freq;");
+        commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq;");
+        KeepShellPublic.INSTANCE.doCmdSync(commands);
+    }
+
+    public static String getAdrenoGPUGovernor() {
+        return KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/devfreq/governor");
+    }
+
+    public static void setAdrenoGPUGovernor(String value) {
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/devfreq/governor;");
+        commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/devfreq/governor;");
+        KeepShellPublic.INSTANCE.doCmdSync(commands);
+    }
+
+    public static String getAdrenoGPUMinPowerLevel() {
+        return KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/min_pwrlevel");
+    }
+
+    public static void setAdrenoGPUMinPowerLevel(String value) {
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/min_pwrlevel;");
+        commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/min_pwrlevel;");
+        KeepShellPublic.INSTANCE.doCmdSync(commands);
+    }
+
+    public static String getAdrenoGPUMaxPowerLevel() {
+        return KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/max_pwrlevel");
+    }
+
+    public static void setAdrenoGPUMaxPowerLevel(String value) {
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/max_pwrlevel;");
+        commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/max_pwrlevel;");
+        KeepShellPublic.INSTANCE.doCmdSync(commands);
+    }
+
+    public static String getAdrenoGPUDefaultPowerLevel() {
+        return KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/default_pwrlevel");
+    }
+
+    public static void setAdrenoGPUDefaultPowerLevel(String value) {
+        ArrayList<String> commands = new ArrayList<>();
+        commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/default_pwrlevel;");
+        commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/default_pwrlevel;");
+        KeepShellPublic.INSTANCE.doCmdSync(commands);
+    }
+
+    public static String[] getAdrenoGPUPowerLevels() {
+        String leves = KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/num_pwrlevels");
+        try {
+            int max = Integer.parseInt(leves);
+            ArrayList<String> arr = new ArrayList<>();
+            for (int i = 0; i < max; i++) {
+                arr.add("" + i);
+            }
+            return arr.toArray(new String[arr.size()]);
+        } catch (Exception ignored) {
+        }
+        return new String[]{};
+    }
+
+    public static void setAdrenoGPUParams(CpuStatus cpuState) {
+        ArrayList<String> commands = new ArrayList<>();
+
+        // governor
+        if (!cpuState.adrenoGovernor.equals("")) {
+            commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/governor;");
+            commands.add("echo " + cpuState.adrenoGovernor + " > /sys/class/kgsl/kgsl-3d0/governor;");
+        }
+        // min feq
+        if (!cpuState.adrenoMinFreq.equals("")) {
+            commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/min_freq;");
+            commands.add("echo " + cpuState.adrenoMinFreq + " > /sys/class/kgsl/kgsl-3d0/min_freq;");
+        }
+        // max freq
+        if (!cpuState.adrenoMaxFreq.equals("")) {
+            commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/max_freq;");
+            commands.add("echo " + cpuState.adrenoMaxFreq + " > /sys/class/kgsl/kgsl-3d0/max_freq;");
+        }
+        // min power level
+        if (!cpuState.adrenoMinPL.equals("")) {
+            commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/min_pwrlevel;");
+            commands.add("echo " + cpuState.adrenoMinPL + " > /sys/class/kgsl/kgsl-3d0/min_pwrlevel;");
+        }
+        // max power level
+        if (!cpuState.adrenoMaxPL.equals("")) {
+            commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/max_pwrlevel;");
+            commands.add("echo " + cpuState.adrenoMaxPL + " > /sys/class/kgsl/kgsl-3d0/max_pwrlevel;");
+        }
+        // default power level
+        if (!cpuState.adrenoDefaultPL.equals("")) {
+            commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/default_pwrlevel;");
+            commands.add("echo " + cpuState.adrenoDefaultPL + " > /sys/class/kgsl/kgsl-3d0/default_pwrlevel;");
+        }
+
+        KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 }
