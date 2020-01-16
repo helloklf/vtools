@@ -50,6 +50,14 @@
                 <action android:name="com.omarea.scene_mode.ReceiverSceneMode" />
             </intent-filter>
         </receiver>
+        <receiver
+            android:name="com.omarea.scene_mode.TimingTaskReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.omarea.scene_mode.TimingTaskReceiver" />
+            </intent-filter>
+        </receiver>
 
         <meta-data
             android:name="xposedmodule"

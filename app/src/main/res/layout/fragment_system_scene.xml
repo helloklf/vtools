@@ -32,7 +32,6 @@
 
                 <FrameLayout
                     android:id="@+id/blacklist_tab3"
-                    android:padding="@dimen/activity_horizontal_margin"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
                     <LinearLayout
@@ -41,7 +40,7 @@
                         android:layout_height="match_parent">
 
                         <LinearLayout
-                            android:background="@drawable/krscript_item_ripple_inactive"
+                            style="@style/ListCardItem"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
@@ -124,8 +123,7 @@
                         </LinearLayout>
 
                         <LinearLayout
-                            android:layout_marginTop="@dimen/activity_vertical_margin"
-                            android:background="@drawable/krscript_item_ripple_inactive"
+                            style="@style/ListCardItem"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
@@ -232,8 +230,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
                             <LinearLayout
-                                android:layout_marginTop="@dimen/activity_vertical_margin"
-                                android:background="@drawable/krscript_item_ripple_inactive"
+                                style="@style/ListCardItem"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:padding="12dp"
@@ -242,7 +239,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="电量高于" />
+                                    android:text="@string/system_scene_battery_right" />
 
                                 <TextView
                                     android:layout_marginStart="@dimen/activity_horizontal_margin"
@@ -254,14 +251,13 @@
                                 <TextView
                                     android:textColor="?android:colorAccent"
                                     android:textAlignment="center"
-                                    android:text="停止充电"
+                                    android:text="@string/system_scene_stop_charge"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content" />
                             </LinearLayout>
 
                             <LinearLayout
-                                android:layout_marginTop="@dimen/activity_vertical_margin"
-                                android:background="@drawable/krscript_item_ripple_inactive"
+                                style="@style/ListCardItem"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:padding="12dp"
@@ -270,7 +266,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="电量低于" />
+                                    android:text="@string/system_scene_battery_left" />
 
                                 <TextView
                                     android:layout_marginStart="@dimen/activity_horizontal_margin"
@@ -282,10 +278,33 @@
                                 <TextView
                                     android:textColor="?android:colorAccent"
                                     android:textAlignment="center"
-                                    android:text="恢复充电"
+                                    android:text="@string/system_scene_resume_charge"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content" />
                             </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/system_scene_next"
+                            style="@style/ListCardItemClickable"
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:text="@string/system_scene_next_task"
+                                style="@style/textTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content" />
+                            <TextView
+                                android:paddingStart="@dimen/activity_horizontal_margin"
+                                android:paddingEnd="@dimen/activity_horizontal_margin"
+                                android:paddingTop="@dimen/activity_vertical_margin"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAlignment="center"
+                                android:id="@+id/system_scene_next_content"
+                                android:text="@string/system_scene_none" />
                         </LinearLayout>
                     </LinearLayout>
 

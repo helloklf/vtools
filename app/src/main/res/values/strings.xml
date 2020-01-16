@@ -77,6 +77,7 @@
         <item>com.futuremark.dmandroid.application</item>
     </string-array>
 
+    <string name="format_hh_mm">%02d:%02d</string>
     <string name="btn_cancel">取消</string>
     <string name="btn_not_now">回头再说</string>
     <string name="btn_delete">删除</string>
@@ -535,4 +536,11 @@
     <string name="app_donate">打赏</string>
     <string name="app_nav">功能</string>
     <string name="app_home">概览</string>
+    <string name="system_scene_next_task">下一个任务</string>
+    <string name="system_scene_none">无任务</string>
+    <string name="system_scene_resume_charge">恢复充电</string>
+    <string name="system_scene_battery_left">电量低于</string>
+    <string name="system_scene_battery_right">电量高于</string>
+    <string name="system_scene_stop_charge">停止充电</string>
+    <string name="system_scene_task_canceled">任务已取消</string>
 </resources>

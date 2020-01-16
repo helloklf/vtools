@@ -4,14 +4,239 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <include
-        layout="@layout/layout_app_bar"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <FrameLayout
-        android:id="@+id/main_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="?android:actionBarSize" />
+        <include
+            layout="@layout/layout_app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.omarea.common.ui.OverScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    style="@style/ListCardItem"
+                    android:gravity="center_vertical"
+                    android:minHeight="65dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        style="@style/textTitle"
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                        android:text="执行时间" />
+
+
+                    <RadioButton
+                        android:id="@+id/taks_once"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="一次" />
+
+                    <RadioButton
+                        android:id="@+id/taks_repeat"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="每天" />
+                    <TextView
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:id="@+id/taks_trigger_time"
+                        android:text="00:00"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textAlignment="center"
+                        android:textColor="?colorAccent"
+                        android:timePickerMode="spinner" />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/ListCardItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/textTitle"
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                        android:text="额外条件" />
+
+                    <CheckBox
+                        android:id="@+id/task_after_screen_off"
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="如果当时正在使用手机，推迟到锁屏后执行" />
+
+                    <CheckBox
+                        android:id="@+id/task_before_execute_confirm"
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="执行前提示确认" />
+
+                    <LinearLayout
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <CheckBox
+                            android:id="@+id/task_battery_capacity_require"
+                            android:text="电量低于"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:id="@+id/task_battery_capacity"
+                            android:paddingStart="@dimen/activity_horizontal_margin"
+                            android:paddingEnd="@dimen/activity_horizontal_margin"
+                            android:textColor="?android:colorAccent"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:text="50"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:text="% 且[未充电]，跳过执行"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/ListCardItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/textTitle"
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                        android:text="任务动作" />
+
+                    <GridLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:columnCount="2">
+
+                        <CheckBox
+                            android:id="@+id/task_standby_on"
+                            style="@style/nav_item_wrap"
+                            android:text="待机模式 (开)" />
+
+                        <CheckBox
+                            android:id="@+id/task_standby_off"
+                            style="@style/nav_item_wrap_right"
+                            android:text="待机模式 (关)" />
+
+                        <CheckBox
+                            android:id="@+id/task_airplane_mode_on"
+                            style="@style/nav_item_wrap"
+                            android:text="飞行模式 (开)" />
+
+                        <CheckBox
+                            android:id="@+id/task_airplane_mode_off"
+                            style="@style/nav_item_wrap_right"
+                            android:text="飞行模式 (关)" />
+
+                        <CheckBox
+                            android:id="@+id/task_wifi_on"
+                            style="@style/nav_item_wrap"
+                            android:text="WIFI (开)" />
+                        <CheckBox
+                            android:id="@+id/task_wifi_off"
+                            style="@style/nav_item_wrap_right"
+                            android:text="WIFI (关)" />
+
+                        <CheckBox
+                            android:id="@+id/task_gps_on"
+                            style="@style/nav_item_wrap"
+                            android:text="定位功能 (开)" />
+
+                        <CheckBox
+                            android:id="@+id/task_gps_off"
+                            style="@style/nav_item_wrap_right"
+                            android:text="定位功能 (关)" />
+
+                        <CheckBox
+                            android:id="@+id/task_gprs_on"
+                            style="@style/nav_item_wrap"
+                            android:text="2/3/4/5G (开)" />
+
+                        <CheckBox
+                            android:id="@+id/task_gprs_off"
+                            style="@style/nav_item_wrap_right"
+                            android:text="2/3/4/5G (关)" />
+
+
+                        <CheckBox
+                            android:id="@+id/task_fstrim"
+                            android:layout_columnSpan="2"
+                            style="@style/nav_item_wrap"
+                            android:text="FSTRIM" />
+
+                        <CheckBox
+                            android:id="@+id/task_compile_speed"
+                            android:layout_columnSpan="2"
+                            style="@style/nav_item_wrap"
+                            android:text="执行 dex2oat编译 (speed)" />
+
+
+                        <CheckBox
+                            android:id="@+id/task_compile_everything"
+                            android:layout_columnSpan="2"
+                            style="@style/nav_item_wrap"
+                            android:text="执行 dex2oat编译 (everything)" />
+                    </GridLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/ListCardItemLast"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/textTitle"
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                        android:text="说明提示" />
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
+                        android:text="[待机模式] 是Scene的一项功能，其原理是冻结所有第三方应用，从而避免待机时由于后台活动掉电过快，要求Android P及更高版本！你可以在系统场景的设置界面，设置冻结名单。" />
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
+                        android:text="[FSTRIM] 操作有助于缓解闪存读写导致的速度下降，大多数情况下系统会自动择机运行，当然如果你乐意也可以添加到定时任务中。" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.omarea.common.ui.OverScrollView>
+    </LinearLayout>
 </RelativeLayout>

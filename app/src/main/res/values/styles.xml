@@ -271,6 +271,16 @@
         <item name="android:layout_column">1</item>
     </style>
 
+    <style name="nav_item_wrap_column_1" parent="nav_item_wrap" />
+    <style name="nav_item_wrap_column_2" parent="nav_item_wrap">
+        <item name="android:layout_marginLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:layout_column">1</item>
+    </style>
+    <style name="nav_item_wrap_column_3" parent="nav_item_wrap">
+        <item name="android:layout_marginLeft">@dimen/activity_horizontal_margin</item>
+        <item name="android:layout_column">2</item>
+    </style>
+
     <style name="scene_config_item">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:textStyle">normal</item>

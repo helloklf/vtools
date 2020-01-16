@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import android.widget.Switch
 import android.widget.Toast
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.scene_mode.ModeSwitcher
+import com.omarea.scene_mode.TimingTask
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.ui.TabIconHelper
@@ -135,12 +137,33 @@ class FragmentSystemScene : Fragment() {
             system_scene_bp_gt.text = limit.toString() + "%"
         }
 
-        system_scene_add.setOnClickListener {
-            Toast.makeText(context, "别急，这个功能还在开发...", Toast.LENGTH_SHORT).show()
+        val nextTask = TimingTask(this.context!!).getNextAlarmClock()
+        nextTask?.run {
+            system_scene_next_content.setText("在 " + formateTime(((this.triggerTime - System.currentTimeMillis()) / 1000)) + " 秒后")
+            system_scene_next.setOnLongClickListener {
+                showIntent?.run {
+                    TimingTask(context!!).cancelTask(this)
+                }
 
+                Toast.makeText(context!!, getString(R.string.system_scene_task_canceled), Toast.LENGTH_SHORT).show()
+                true
+            }
+        }
+
+        system_scene_add.setOnClickListener {
             val intent = Intent(activity, ActivityTimingTask::class.java)
             startActivity(intent)
         }
+    }
+
+    private fun formateTime(time:Long): String {
+        Log.d(">>>>time", "" + time)
+        val days = time / (24 * 3600)
+        val hours = time % (24 * 3600) / 3600
+        val minutes = time % 3600 / 60
+        val seconds = time % 60
+
+        return "${days}天 ${hours}时 ${minutes}分 ${seconds}秒"
     }
 
     /**

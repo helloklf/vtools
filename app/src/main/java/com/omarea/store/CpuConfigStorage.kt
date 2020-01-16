@@ -5,6 +5,7 @@ import android.widget.Toast
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KernelProrp
 import com.omarea.model.CpuStatus
+import com.omarea.model.TimingTaskInfo
 import com.omarea.shell_utils.CpuFrequencyUtil
 import com.omarea.shell_utils.GpuUtils
 import com.omarea.shell_utils.ThermalControlUtils
@@ -14,68 +15,15 @@ import java.io.*
  * 存储和读取CPU配置，在开机自启动时用于修改CPU频率和调度
  * Created by Hello on 2018/08/04.
  */
-class CpuConfigStorage {
+class CpuConfigStorage(private val context: Context) : ObjectStorage<CpuStatus>(context) {
     private val defaultFile = "cpuconfig.dat"
 
-    // 加载配置
-    fun loadCpuConfig(context: Context, configFile: String? = null): CpuStatus? {
-        val bootConfig = FileWrite.getPrivateFilePath(context, if(configFile == null) defaultFile else configFile)
-        val file = File(bootConfig)
-        if (file.exists()) {
-            var fileInputStream: FileInputStream? = null;
-            var objectInputStream: ObjectInputStream? = null;
-            try {
-                fileInputStream = FileInputStream(file)
-                objectInputStream = ObjectInputStream(fileInputStream)
-                return objectInputStream.readObject() as CpuStatus?
-            } catch (ex: Exception) {
-            } finally {
-                try {
-                    if (objectInputStream != null) {
-                        objectInputStream.close()
-                    }
-                    if (fileInputStream != null) {
-                        fileInputStream.close()
-                    }
-                } catch (ex: Exception) {
-                }
-            }
-        }
-        return null
+    fun load(configFile: String? = null): CpuStatus? {
+        return super.load( if(configFile == null) defaultFile else configFile)
     }
 
-    // 保存CPU配置参数
-    fun saveCpuConfig(context: Context, status: CpuStatus?, configFile: String? = null): Boolean {
-        val bootConfig = FileWrite.getPrivateFilePath(context, if(configFile == null) defaultFile else configFile)
-        val file = File(bootConfig)
-        if (status != null) {
-            var fileOutputStream: FileOutputStream? = null
-            var objectOutputStream: ObjectOutputStream? = null
-            try {
-                fileOutputStream = FileOutputStream(file)
-                objectOutputStream = ObjectOutputStream(fileOutputStream)
-                objectOutputStream.writeObject(status)
-                return true
-            } catch (ex: Exception) {
-                Toast.makeText(context, "更新配置为启动设置失败！", Toast.LENGTH_SHORT).show()
-                return false
-            } finally {
-                try {
-                    if (objectOutputStream != null) {
-                        objectOutputStream.close()
-                    }
-                    if (fileOutputStream != null) {
-                        fileOutputStream.close()
-                    }
-                } catch (ex: Exception) {
-                }
-            }
-        } else {
-            if (file.exists()) {
-                file.delete()
-            }
-        }
-        return true
+    fun saveCpuConfig(status: CpuStatus?, configFile: String? = null): Boolean {
+        return super.save(status, if(configFile == null) defaultFile else configFile)
     }
 
     // 应用CPU配置参数

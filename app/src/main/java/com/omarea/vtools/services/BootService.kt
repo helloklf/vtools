@@ -64,8 +64,8 @@ class BootService : IntentService("vtools-boot") {
         }
 
         val context = this.applicationContext
-        val cpuConfigStorage = CpuConfigStorage()
-        val cpuState = CpuConfigStorage().loadCpuConfig(context)
+        val cpuConfigStorage = CpuConfigStorage(context!!)
+        val cpuState = cpuConfigStorage.load()
         if (cpuState != null) {
             updateNotification(context.getString(R.string.boot_cpuset))
             cpuConfigStorage.applyCpuConfig(context, cpuState)

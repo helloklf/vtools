@@ -783,8 +783,8 @@ class FragmentCpuControl : Fragment() {
     }
 
     private fun loadBootConfig() {
-        val storage = CpuConfigStorage()
-        statusOnBoot = storage.loadCpuConfig(context!!, cpuModeName)
+        val storage = CpuConfigStorage(context!!)
+        statusOnBoot = storage.load(cpuModeName)
         cpu_apply_onboot.isChecked = statusOnBoot != null
 
         if (cpuModeName != null) {
@@ -800,7 +800,7 @@ class FragmentCpuControl : Fragment() {
     }
 
     private fun saveBootConfig() {
-        if (!CpuConfigStorage().saveCpuConfig(context!!, if (cpu_apply_onboot.isChecked) status else null, cpuModeName)) {
+        if (!CpuConfigStorage(context!!).saveCpuConfig(if (cpu_apply_onboot.isChecked) status else null, cpuModeName)) {
             Toast.makeText(context!!, "保存配置文件失败！", Toast.LENGTH_SHORT).show()
             cpu_apply_onboot.isChecked = false
         }

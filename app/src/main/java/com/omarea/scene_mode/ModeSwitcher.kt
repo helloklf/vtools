@@ -41,7 +41,6 @@ open class ModeSwitcher {
     }
 
     private var keepShellAsync: KeepShellAsync? = null
-    private val cpuConfigStorage = CpuConfigStorage()
 
     internal fun getModIcon(mode: String): Int {
         when (mode) {
@@ -100,7 +99,8 @@ open class ModeSwitcher {
     }
 
     internal fun executePowercfgMode(context: Context, mode: String): ModeSwitcher {
-        val replaced = cpuConfigStorage.loadCpuConfig(context, mode)
+        val cpuConfigStorage = CpuConfigStorage(context)
+        val replaced = cpuConfigStorage.load(mode)
         if (replaced != null) {
             cpuConfigStorage.applyCpuConfig(context, replaced)
         } else {
@@ -117,7 +117,7 @@ open class ModeSwitcher {
     }
 
     public fun modeReplaced(context: Context, mode: String): CpuStatus? {
-        return CpuConfigStorage().loadCpuConfig(context, mode)
+        return CpuConfigStorage(context).load(mode)
     }
 
     internal fun destroyKeepShell(): ModeSwitcher {
