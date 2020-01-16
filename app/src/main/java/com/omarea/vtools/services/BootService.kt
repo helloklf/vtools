@@ -237,7 +237,6 @@ class BootService : IntentService("vtools-boot") {
         }
     }
 
-
     private fun updateNotification(text: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             nm.createNotificationChannel(NotificationChannel("vtool-boot", getString(R.string.notice_channel_boot), NotificationManager.IMPORTANCE_LOW))

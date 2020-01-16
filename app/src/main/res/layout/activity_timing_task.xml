@@ -25,10 +25,10 @@
 
                 <LinearLayout
                     style="@style/ListCardItem"
-                    android:gravity="center_vertical"
-                    android:minHeight="65dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:minHeight="65dp"
                     android:orientation="horizontal">
 
                     <TextView
@@ -38,30 +38,37 @@
                         android:layout_marginEnd="@dimen/activity_horizontal_margin"
                         android:text="执行时间" />
 
-
-                    <RadioButton
-                        android:id="@+id/taks_once"
+                    <RadioGroup
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="一次" />
+                        android:layout_weight="2"
+                        android:orientation="horizontal">
 
-                    <RadioButton
-                        android:id="@+id/taks_repeat"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="每天" />
+                        <RadioButton
+                            android:id="@+id/taks_once"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="一次" />
+
+                        <RadioButton
+                            android:id="@+id/taks_repeat"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="每天" />
+                    </RadioGroup>
+
                     <TextView
-                        android:textSize="16sp"
-                        android:textStyle="bold"
                         android:id="@+id/taks_trigger_time"
-                        android:text="00:00"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:text="00:00"
                         android:textAlignment="center"
                         android:textColor="?colorAccent"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
                         android:timePickerMode="spinner" />
                 </LinearLayout>
 
@@ -80,43 +87,45 @@
 
                     <CheckBox
                         android:id="@+id/task_after_screen_off"
-                        android:layout_marginTop="@dimen/activity_vertical_margin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
                         android:text="如果当时正在使用手机，推迟到锁屏后执行" />
 
                     <CheckBox
                         android:id="@+id/task_before_execute_confirm"
-                        android:layout_marginTop="@dimen/activity_vertical_margin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
                         android:text="执行前提示确认" />
 
                     <LinearLayout
-                        android:layout_marginTop="@dimen/activity_vertical_margin"
-                        android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
+                        android:orientation="horizontal">
 
                         <CheckBox
                             android:id="@+id/task_battery_capacity_require"
-                            android:text="电量低于"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:text="电量低于" />
+
                         <TextView
                             android:id="@+id/task_battery_capacity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:paddingStart="@dimen/activity_horizontal_margin"
                             android:paddingEnd="@dimen/activity_horizontal_margin"
+                            android:text="50"
                             android:textColor="?android:colorAccent"
                             android:textSize="16sp"
-                            android:textStyle="bold"
-                            android:text="50"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:textStyle="bold" />
+
                         <TextView
-                            android:text="% 且[未充电]，跳过执行"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:text="% 且[未充电]，跳过执行" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -133,80 +142,149 @@
                         android:layout_marginEnd="@dimen/activity_horizontal_margin"
                         android:text="任务动作" />
 
-                    <GridLayout
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:columnCount="2">
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
-                        <CheckBox
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="待机模式" />
+
+                        <RadioButton
                             android:id="@+id/task_standby_on"
-                            style="@style/nav_item_wrap"
-                            android:text="待机模式 (开)" />
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:text="开" />
 
-                        <CheckBox
+                        <RadioButton
                             android:id="@+id/task_standby_off"
-                            style="@style/nav_item_wrap_right"
-                            android:text="待机模式 (关)" />
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:text="关" />
+                    </LinearLayout>
 
-                        <CheckBox
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="飞行模式" />
+
+                        <RadioButton
                             android:id="@+id/task_airplane_mode_on"
-                            style="@style/nav_item_wrap"
-                            android:text="飞行模式 (开)" />
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:text="开" />
 
-                        <CheckBox
+                        <RadioButton
                             android:id="@+id/task_airplane_mode_off"
-                            style="@style/nav_item_wrap_right"
-                            android:text="飞行模式 (关)" />
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:text="关" />
+                    </LinearLayout>
 
-                        <CheckBox
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="WIFI" />
+
+                        <RadioButton
                             android:id="@+id/task_wifi_on"
-                            style="@style/nav_item_wrap"
-                            android:text="WIFI (开)" />
-                        <CheckBox
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:text="开" />
+
+                        <RadioButton
                             android:id="@+id/task_wifi_off"
-                            style="@style/nav_item_wrap_right"
-                            android:text="WIFI (关)" />
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:text="关" />
+                    </LinearLayout>
 
-                        <CheckBox
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="定位功能" />
+
+                        <RadioButton
                             android:id="@+id/task_gps_on"
-                            style="@style/nav_item_wrap"
-                            android:text="定位功能 (开)" />
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:text="开" />
 
-                        <CheckBox
+                        <RadioButton
                             android:id="@+id/task_gps_off"
-                            style="@style/nav_item_wrap_right"
-                            android:text="定位功能 (关)" />
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:text="关" />
+                    </LinearLayout>
 
-                        <CheckBox
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="2/3/4/5G" />
+
+                        <RadioButton
                             android:id="@+id/task_gprs_on"
-                            style="@style/nav_item_wrap"
-                            android:text="2/3/4/5G (开)" />
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:text="开" />
 
-                        <CheckBox
+                        <RadioButton
                             android:id="@+id/task_gprs_off"
-                            style="@style/nav_item_wrap_right"
-                            android:text="2/3/4/5G (关)" />
+                            android:layout_width="70dp"
+                            android:layout_height="wrap_content"
+                            android:text="关" />
+                    </LinearLayout>
 
+                    <CheckBox
+                        android:id="@+id/task_fstrim"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:text="FSTRIM" />
 
-                        <CheckBox
-                            android:id="@+id/task_fstrim"
-                            android:layout_columnSpan="2"
-                            style="@style/nav_item_wrap"
-                            android:text="FSTRIM" />
+                    <CheckBox
+                        android:id="@+id/task_compile_speed"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="执行 dex2oat编译 (speed)" />
 
-                        <CheckBox
-                            android:id="@+id/task_compile_speed"
-                            android:layout_columnSpan="2"
-                            style="@style/nav_item_wrap"
-                            android:text="执行 dex2oat编译 (speed)" />
-
-
-                        <CheckBox
-                            android:id="@+id/task_compile_everything"
-                            android:layout_columnSpan="2"
-                            style="@style/nav_item_wrap"
-                            android:text="执行 dex2oat编译 (everything)" />
-                    </GridLayout>
+                    <CheckBox
+                        android:id="@+id/task_compile_everything"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="执行 dex2oat编译 (everything)" />
                 </LinearLayout>
 
                 <LinearLayout

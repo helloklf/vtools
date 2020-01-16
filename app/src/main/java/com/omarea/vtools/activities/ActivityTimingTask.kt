@@ -8,10 +8,14 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v4.app.FragmentActivity
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.AppCompatRadioButton
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.CheckBox
+import android.widget.Checkable
+import android.widget.CompoundButton
 import com.omarea.model.TaskAction
 import com.omarea.model.TimingTaskInfo
 import com.omarea.scene_mode.TimingTask
@@ -54,6 +58,13 @@ class ActivityTimingTask : AppCompatActivity() {
 
         val task = TimingTaskStorage(this).load(taskId)
         timingTaskInfo = if (task == null) TimingTaskInfo() else task
+
+        oneOf(task_standby_on, task_standby_off)
+        oneOf(task_airplane_mode_on, task_airplane_mode_off)
+        oneOf(task_wifi_on, task_wifi_on)
+        oneOf(task_gps_on, task_gps_on)
+        oneOf(task_gprs_on, task_gprs_off)
+
         updateUI()
     }
 
@@ -96,6 +107,28 @@ class ActivityTimingTask : AppCompatActivity() {
         }
     }
 
+    private fun oneOf(radioButton1: CompoundButton, radioButton2: CompoundButton) {
+        radioButton1.setOnClickListener {
+            if ((it as CompoundButton).isChecked && it.tag == true) {
+                it.tag = false
+                it.isChecked = false
+            } else {
+                it.tag = it.isChecked
+                radioButton2.tag  = false
+                radioButton2.isChecked = false
+            }
+        }
+        radioButton2.setOnClickListener {
+            if ((it as CompoundButton).isChecked && it.tag == true) {
+                it.tag = false
+                it.isChecked = false
+            } else {
+                it.tag = it.isChecked
+                radioButton1.tag  = false
+                radioButton1.isChecked = false
+            }
+        }
+    }
 
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

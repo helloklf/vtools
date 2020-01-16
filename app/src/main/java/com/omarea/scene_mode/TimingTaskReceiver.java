@@ -15,7 +15,7 @@ public class TimingTaskReceiver extends BroadcastReceiver {
                 String taskId = intent.getStringExtra("taskId");
                 if (taskId != null) {
                     Intent service = new Intent(context, SceneTaskIntentService.class);
-                    intent.putExtra("taskId", taskId);
+                    service.putExtra("taskId", taskId);
                     context.startService(service);
                     Log.d(">>>>time", "场景模式 - 定时任务 触发");
                     Toast.makeText(context, "场景模式 - 定时任务 触发", Toast.LENGTH_SHORT).show();
