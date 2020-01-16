@@ -12,7 +12,7 @@ import com.omarea.data_collection.EventTypes
 
 /**
  * 监听屏幕开关事件
- * Created by Hello airModeOn 2018/01/23.
+ * Created by Hello on 2018/01/23.
  */
 class ScreenState(private var context: Context) : BroadcastReceiver() {
     private var handler = Handler()

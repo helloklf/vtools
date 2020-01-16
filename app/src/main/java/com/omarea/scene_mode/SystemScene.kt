@@ -23,7 +23,7 @@ class SystemScene(private var context: Context) {
 
     // 是否开启飞行模式
     private fun isAirModeOn(): Boolean {
-        return Settings.System.getInt(context.contentResolver, Settings.System.AIRPLANE_MODE_ON, 0) == 1
+        return Settings.System.getInt(context.contentResolver, Settings.Global.AIRPLANE_MODE_ON, 0) == 1
     }
 
     private fun isWifiApOpen(context: Context): Boolean {

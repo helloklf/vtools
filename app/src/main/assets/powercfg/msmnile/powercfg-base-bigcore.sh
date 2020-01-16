@@ -25,17 +25,17 @@ echo 30 > /sys/devices/system/cpu/cpu7/core_ctl/busy_down_thres
 echo 100 > /sys/devices/system/cpu/cpu7/core_ctl/offline_delay_ms
 echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/task_thres
 
-# Controls how many more tasks should be eligible to run airModeOn gold CPUs
+# Controls how many more tasks should be eligible to run on gold CPUs
 # w.r.t number of gold CPUs available to trigger assist (max number of
-# tasks eligible to run airModeOn previous cluster minus number of CPUs in
+# tasks eligible to run on previous cluster minus number of CPUs in
 # the previous cluster).
 #
 # Setting to 1 by default which means there should be at least
-# 4 tasks eligible to run airModeOn gold cluster (tasks running airModeOn gold cores
-# plus misfit tasks airModeOn silver cores) to trigger assitance from gold+.
+# 4 tasks eligible to run on gold cluster (tasks running on gold cores
+# plus misfit tasks on silver cores) to trigger assitance from gold+.
 echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/nr_prev_assist_thresh
 
-# Disable Core control airModeOn silver
+# Disable Core control on silver
 echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
 
 # Setting b.L scheduler parameters
@@ -52,10 +52,10 @@ echo 4-7     > /dev/cpuset/foreground/boost/cpus
 echo 0-7 > /dev/cpuset/foreground/cpus
 echo 0-7     > /dev/cpuset/top-app/cpus
 
-# Turn airModeOff scheduler boost at the end
+# Turn off scheduler boost at the end
 echo 0 > /proc/sys/kernel/sched_boost
 
-# Turn airModeOn scheduler boost for top app main
+# Turn on scheduler boost for top app main
 echo 1 > /proc/sys/kernel/sched_boost_top_app
 
 # configure governor settings for silver cluster

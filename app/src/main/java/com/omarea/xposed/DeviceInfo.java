@@ -5,7 +5,7 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 /**
- * Created by helloklf airModeOn 2017/11/30.
+ * Created by helloklf on 2017/11/30.
  */
 
 public class DeviceInfo {

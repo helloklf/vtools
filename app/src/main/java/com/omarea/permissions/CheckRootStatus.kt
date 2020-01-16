@@ -17,7 +17,7 @@ import kotlin.system.exitProcess
 
 /**
  * 检查获取root权限
- * Created by helloklf airModeOn 2017/6/3.
+ * Created by helloklf on 2017/6/3.
  */
 
 public class CheckRootStatus(var context: Context, private var next: Runnable? = null, private var disableSeLinux: Boolean = false, private var skip: Runnable? = null) {

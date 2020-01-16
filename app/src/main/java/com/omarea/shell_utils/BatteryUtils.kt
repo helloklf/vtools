@@ -10,7 +10,7 @@ import com.omarea.model.BatteryStatus
 import java.io.File
 
 /**
- * Created by Hello airModeOn 2017/11/01.
+ * Created by Hello on 2017/11/01.
  */
 
 class BatteryUtils {

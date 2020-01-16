@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 /**
  * 管理应用的Shortcut
- * Created by Hello airModeOn 2018/03/20.
+ * Created by Hello on 2018/03/20.
  */
 
 public class AppShortcutManager {

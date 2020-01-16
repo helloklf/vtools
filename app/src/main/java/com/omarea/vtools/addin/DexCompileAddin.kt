@@ -23,7 +23,7 @@ import com.omarea.vtools.services.CompileService
 import java.util.*
 
 /**
- * Created by Hello airModeOn 2018/02/20.
+ * Created by Hello on 2018/02/20.
  */
 
 class DexCompileAddin(private var context: Context) : AddinBase(context) {

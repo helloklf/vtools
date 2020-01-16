@@ -12,7 +12,7 @@ import com.omarea.vtools.R
 import java.util.*
 
 /**
- * Created by Hello airModeOn 2018/01/26.
+ * Created by Hello on 2018/01/26.
  */
 class FreezeAppAdapter(private val context: Context, private var apps: ArrayList<Appinfo>) : BaseAdapter(), Filterable {
     private var filter: Filter? = null
