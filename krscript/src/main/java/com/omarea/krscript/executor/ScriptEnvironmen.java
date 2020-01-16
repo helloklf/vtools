@@ -1,6 +1,7 @@
 package com.omarea.krscript.executor;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.os.Build;
 import android.os.Environment;
@@ -31,7 +32,9 @@ public class ScriptEnvironmen {
     private static String TOOKIT_DIR = "";
 
     private static boolean init(Context context) {
-        return init(context, "kr-script/executor.sh", "kr-script/toolkit");
+        SharedPreferences configSpf = context.getSharedPreferences("kr-script-config", Context.MODE_PRIVATE);
+
+        return init(context, "kr-script/executor.sh", configSpf.getString("toolkitDir", "kr-script/toolkit"));
     }
 
     /**
@@ -78,6 +81,10 @@ public class ScriptEnvironmen {
                 environmentPath = outputPathAbs;
             }
 
+            SharedPreferences.Editor configSpf = context.getSharedPreferences("kr-script-config", Context.MODE_PRIVATE).edit();
+            configSpf.putString("executor", executor);
+            configSpf.putString("toolkitDir", toolkitDir);
+            configSpf.apply();
             return inited;
         } catch (Exception ex) {
             return false;
