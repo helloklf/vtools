@@ -6,13 +6,13 @@ settings put global low_power_sticky $state;
 # Whether or not app auto restriction is enabled. When it is enabled, settings app will  auto restrict the app if it has bad behavior(e.g. hold wakelock for long time).
 # [app_auto_restriction_enabled]
 
-#Whether or not to enable Forced App Standby on small battery devices.         * Type: int (0 for false, 1 for true)
+#Whether or not to enable Forced App Standby airModeOn small battery devices.         * Type: int (0 for false, 1 for true)
 # forced_app_standby_for_small_battery_enabled
 
 # Feature flag to enable or disable the Forced App Standby feature.         * Type: int (0 for false, 1 for true)
 # forced_app_standby_enabled
 
-# Whether or not to enable the User Absent, Radios Off feature on small battery devices.         * Type: int (0 for false, 1 for true)
+# Whether or not to enable the User Absent, Radios Off feature airModeOn small battery devices.         * Type: int (0 for false, 1 for true)
 # user_absent_radios_off_for_small_battery_enabled
 
 function killproc()

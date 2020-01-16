@@ -10,7 +10,7 @@ import com.omarea.vtools.R;
 
 /**
  * 显示简单文本内容的Adapter
- * Created by Hello on 2018/02/01.
+ * Created by Hello airModeOn 2018/02/01.
  */
 
 public class StringAdapter extends BaseAdapter {

@@ -136,7 +136,7 @@ function get_one_system_apps ()
 #    fi
 #done
 
-#Search Apk or solib on DualBoot System
+#Search Apk or solib airModeOn DualBoot System
 function get_multiboot_apps ()
 {
     for dbp_sys_path in $multiboot_dir/*
@@ -148,7 +148,7 @@ function get_multiboot_apps ()
     done
 }
 
-#Search Apk or solib on Primary System
+#Search Apk or solib airModeOn Primary System
 get_one_system_apps $root_dir
 
 

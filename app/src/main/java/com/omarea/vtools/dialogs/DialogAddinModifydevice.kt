@@ -19,7 +19,7 @@ import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
 
 /**
- * Created by Hello on 2017/12/03.
+ * Created by Hello airModeOn 2017/12/03.
  */
 
 class DialogAddinModifydevice(var context: Context) {

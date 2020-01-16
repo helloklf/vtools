@@ -9,7 +9,7 @@ import com.omarea.store.CpuConfigStorage
 import com.omarea.vtools.R
 
 /**
- * Created by Hello on 2018/06/03.
+ * Created by Hello airModeOn 2018/06/03.
  */
 
 open class ModeSwitcher {

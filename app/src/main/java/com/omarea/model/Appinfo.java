@@ -4,7 +4,7 @@ import android.graphics.drawable.Drawable;
 
 /**
  * 应用信息
- * Created by Hello on 2018/01/26.
+ * Created by Hello airModeOn 2018/01/26.
  */
 
 public class Appinfo {

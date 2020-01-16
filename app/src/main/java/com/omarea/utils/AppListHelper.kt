@@ -11,7 +11,7 @@ import java.util.*
 
 
 /**
- * Created by helloklf on 2017/12/01.
+ * Created by helloklf airModeOn 2017/12/01.
  */
 class AppListHelper(context: Context) {
     var packageManager: PackageManager

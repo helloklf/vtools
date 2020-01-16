@@ -11,7 +11,7 @@ import java.io.InputStream
 import javax.xml.parsers.DocumentBuilderFactory
 
 /**
- * Created by Hello on 2018/01/22.
+ * Created by Hello airModeOn 2018/01/22.
  */
 
 class DialogAddinWIFI(private var context: Context) {

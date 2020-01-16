@@ -9,7 +9,7 @@ import com.omarea.common.ui.DialogHelper
 import com.omarea.utils.CommonCmds
 
 /**
- * Created by Hello on 2017/11/01.
+ * Created by Hello airModeOn 2017/11/01.
  */
 
 class FullScreenAddin(private var context: Activity) : AddinBase(context) {

@@ -5,7 +5,7 @@ import android.view.inputmethod.InputMethodManager
 
 /**
  * 获取系统的输入法
- * Created by Hello on 2018/01/23.
+ * Created by Hello airModeOn 2018/01/23.
  */
 
 internal class InputMethodHelper(private var context: Context) {

@@ -9,7 +9,7 @@ import com.omarea.common.shell.RootFile
 import java.io.File
 
 /**
- * Created by Hello on 2017/11/01.
+ * Created by Hello airModeOn 2017/11/01.
  */
 
 class SwapUtils(private var context: Context) {

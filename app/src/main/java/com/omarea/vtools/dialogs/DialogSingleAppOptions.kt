@@ -20,7 +20,7 @@ import com.omarea.vtools.R
 import java.io.File
 
 /**
- * Created by Hello on 2018/01/26.
+ * Created by Hello airModeOn 2018/01/26.
  */
 
 class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handler) : DialogAppOptions(context, arrayListOf<Appinfo>(app), handler) {

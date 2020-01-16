@@ -3,7 +3,7 @@ package com.omarea.xposed;
 import android.util.Log;
 
 /**
- * Created by helloklf on 2017/6/3.
+ * Created by helloklf airModeOn 2017/6/3.
  */
 
 public class XposedCheck {

@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.activity_timing_task.*
 class ActivityTimingTask : AppCompatActivity() {
     private lateinit var taskConfig: SharedPreferences
     private lateinit var timingTaskInfo: TimingTaskInfo
+    private var taskId = "scene_task_1"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,10 +48,11 @@ class ActivityTimingTask : AppCompatActivity() {
         taks_trigger_time.setOnClickListener {
             TimePickerDialog(this, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
                 taks_trigger_time.setText(String.format(getString(R.string.format_hh_mm), hourOfDay, minute))
+                timingTaskInfo.triggerTime = hourOfDay * 60 + minute
             }, timingTaskInfo.triggerTime / 60, timingTaskInfo.triggerTime % 60, true).show()
         }
 
-        val task = TimingTaskStorage(this).load("scene_task_1")
+        val task = TimingTaskStorage(this).load(taskId)
         timingTaskInfo = if (task == null) TimingTaskInfo() else task
         updateUI()
     }
@@ -113,7 +115,29 @@ class ActivityTimingTask : AppCompatActivity() {
 
     // 保存并关闭界面
     private fun saveConfigAndFinish() {
+        timingTaskInfo.period = if (taks_repeat.isChecked) (24 * 3600) else -1
+        timingTaskInfo.afterScreenOff = task_after_screen_off.isChecked
+        timingTaskInfo.beforeExecuteConfirm = task_before_execute_confirm.isChecked
+        timingTaskInfo.batteryCapacityRequire = if(task_battery_capacity_require.isChecked) (task_battery_capacity.text).toString().toInt() else 0
+        timingTaskInfo.taskActions = ArrayList<TaskAction>().apply {
+            task_standby_on.isChecked && add(TaskAction.STANDBY_MODE_ON)
+            task_standby_off.isChecked && add(TaskAction.STANDBY_MODE_OFF)
+            task_airplane_mode_on.isChecked && add(TaskAction.AIRPLANE_MODE_ON)
+            task_airplane_mode_off.isChecked && add(TaskAction.AIRPLANE_MODE_OFF)
+            task_wifi_on.isChecked && add(TaskAction.WIFI_ON)
+            task_wifi_off.isChecked && add(TaskAction.WIFI_OFF)
+            task_gps_on.isChecked && add(TaskAction.GPS_ON)
+            task_gps_off.isChecked && add(TaskAction.GPS_OFF)
+            task_gprs_on.isChecked && add(TaskAction.GPRS_ON)
+            task_gprs_off.isChecked && add(TaskAction.GPRS_OFF)
+            task_fstrim.isChecked && add(TaskAction.FSTRIM)
+            task_compile_speed.isChecked && add(TaskAction.COMPILE_SPEED)
+            task_compile_everything.isChecked && add(TaskAction.COMPILE_EVERYTHING)
+        }
+        TimingTaskStorage(this).save(timingTaskInfo, taskId)
+
         val taskIntent = Intent(this.applicationContext, TimingTaskReceiver::class.java)
+        taskIntent.putExtra("taskId", taskId)
         val pendingIntent = PendingIntent.getBroadcast(this.applicationContext, 0, taskIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
         TimingTask(this).cancelTask(pendingIntent).setExact(pendingIntent, 10000)

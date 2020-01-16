@@ -2,7 +2,7 @@ package com.omarea.store;
 
 /**
  * 公共参数
- * Created by helloklf on 2017/11/02.
+ * Created by helloklf airModeOn 2017/11/02.
  */
 
 public class SpfConfig {

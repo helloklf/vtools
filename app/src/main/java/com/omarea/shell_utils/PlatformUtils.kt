@@ -2,7 +2,7 @@ package com.omarea.shell_utils
 
 /**
  * 读取CPU信息
- * Created by helloklf on 2017/6/3.
+ * Created by helloklf airModeOn 2017/6/3.
  */
 
 class PlatformUtils {

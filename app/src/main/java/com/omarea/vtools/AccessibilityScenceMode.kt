@@ -26,7 +26,7 @@ import com.omarea.utils.AutoClick
 import com.omarea.utils.CrashHandler
 
 /**
- * Created by helloklf on 2016/8/27.
+ * Created by helloklf airModeOn 2016/8/27.
  */
 class AccessibilityScenceMode : AccessibilityService() {
     private var flagReportViewIds = true

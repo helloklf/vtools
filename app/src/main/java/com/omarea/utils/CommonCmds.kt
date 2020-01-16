@@ -3,7 +3,7 @@ package com.omarea.utils
 import android.os.Environment
 
 /**
- * Created by Hello on 2017/2/22.
+ * Created by Hello airModeOn 2017/2/22.
  */
 
 object CommonCmds {
