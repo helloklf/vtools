@@ -16,18 +16,24 @@ public class TimingTaskManager(private var context: Context) {
 
     private fun getPendingIntent(timingTaskInfo: TimingTaskInfo): PendingIntent {
         val taskId = timingTaskInfo.taskId
-        val taskIntent = Intent(context.applicationContext, TimingTaskReceiver::class.java)
+        val taskIntent = Intent(context, TimingTaskReceiver::class.java)
         taskIntent.putExtra("taskId", taskId)
         taskIntent.setAction(taskId)
-        val pendingIntent = PendingIntent.getBroadcast(context.applicationContext, 0, taskIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = PendingIntent.getBroadcast(context, 0, taskIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         return pendingIntent
     }
 
-    public fun setTask(timingTaskInfo: TimingTaskInfo) {
+    public fun setTaskAndSave(timingTaskInfo: TimingTaskInfo) {
         TimingTaskStorage(context).save(timingTaskInfo)
 
         val taskId = timingTaskInfo.taskId
 
+        setTask(timingTaskInfo)
+
+        taskListConfig.edit().putBoolean(taskId, timingTaskInfo.enabled).apply()
+    }
+
+    public fun setTask(timingTaskInfo: TimingTaskInfo) {
         // 如果任务启用了，立即添加到队列
         if (timingTaskInfo.enabled) {
             val delay = GetUpTime(timingTaskInfo.triggerTimeMinutes).minutes.toLong() * 60 * 1000 // 下次执行
@@ -42,8 +48,13 @@ public class TimingTaskManager(private var context: Context) {
         } else {
             cancelTask(timingTaskInfo)
         }
+    }
 
-        taskListConfig.edit().putBoolean(taskId, timingTaskInfo.enabled).apply()
+    public fun updateAlarmManager() {
+        val tasks = listTask()
+        tasks.forEach {
+            setTask(it)
+        }
     }
 
     public fun listTask(): ArrayList<TimingTaskInfo> {

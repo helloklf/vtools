@@ -185,7 +185,7 @@ class ActivityTimingTask : AppCompatActivity() {
         }
         // timingTaskInfo.taskId = taskId
 
-        TimingTaskManager(this).setTask(timingTaskInfo)
+        TimingTaskManager(this).setTaskAndSave(timingTaskInfo)
 
         finish()
     }

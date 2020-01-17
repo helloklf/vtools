@@ -6,6 +6,7 @@ import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.ShellExecutor
 import com.omarea.data_collection.publisher.ScreenState
 import com.omarea.permissions.Busybox
+import com.omarea.scene_mode.TimingTaskManager
 import com.omarea.vtools.R
 import com.omarea.vtools.services.BatteryService
 
@@ -21,10 +22,14 @@ class Scene : Application() {
             )
         }
 
+        // 锁屏状态检测
         screenState = ScreenState(this)
         screenState.autoRegister()
 
         // 电池状态检测
         BatteryService.startBatteryService(this)
+
+        // 定时任务
+        TimingTaskManager(this).updateAlarmManager()
     }
 }
