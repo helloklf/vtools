@@ -13,7 +13,7 @@ import com.omarea.model.TaskAction
 import com.omarea.model.TimingTaskInfo
 import com.omarea.shell_utils.FstrimUtils
 import com.omarea.shell_utils.NetworkUtils
-import com.omarea.shell_utils.SceneStandbyMode
+import com.omarea.shell_utils.ZenModeUtils
 import com.omarea.vtools.R
 import com.omarea.vtools.services.CompileService
 import java.lang.Exception
@@ -91,6 +91,14 @@ class TimingTaskExecutor(private val timingTask: TimingTaskInfo, private val con
                             if (!this.contains(TaskAction.AIRPLANE_MODE_ON)) {
                                 NetworkUtils(context).wifiOn()
                             }
+                        }
+                        TaskAction.ZEN_MODE_ON -> {
+                            updateNotification("打开勿扰模式")
+                            ZenModeUtils(context).on()
+                        }
+                        TaskAction.ZEN_MODE_OFF -> {
+                            updateNotification("关闭勿扰模式")
+                            ZenModeUtils(context).off()
                         }
                         else -> { }
                     }

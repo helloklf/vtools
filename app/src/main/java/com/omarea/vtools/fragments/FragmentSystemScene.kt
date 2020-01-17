@@ -26,6 +26,7 @@ import com.omarea.ui.SceneTaskItem
 import com.omarea.ui.TabIconHelper
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.utils.AppListHelper
+import com.omarea.utils.GetUpTime
 import com.omarea.vtools.R
 import com.omarea.vtools.activities.ActivityTimingTask
 import kotlinx.android.synthetic.main.fragment_system_scene.*
@@ -52,9 +53,32 @@ class FragmentSystemScene : Fragment() {
         val serviceState = AccessibleServiceHelper().serviceRunning(context!!)
         btn_config_service_not_active.visibility = if (serviceState) View.GONE else View.VISIBLE
 
+        updateCustomList()
+    }
+
+    private fun updateCustomList() {
+        nextTask = null
         system_scene_task_list.removeAllViews()
         TimingTaskManager(this.context!!).listTask().map {
             addCustomTaskItemView(it)
+            checkNextTask(it)
+        }
+        updateNextTaskInfo()
+    }
+
+    private var nextTask:TimingTaskInfo? = null // 下一个要执行的任务
+    private fun checkNextTask(it: TimingTaskInfo) {
+        if (it.enabled) {
+            if (nextTask == null || GetUpTime(it.triggerTimeMinutes).minutes < GetUpTime(nextTask!!.triggerTimeMinutes).minutes) {
+                nextTask = it
+            }
+        }
+    }
+
+    private fun updateNextTaskInfo() {
+        system_scene_next_content.removeAllViews()
+        if (nextTask != null) {
+            system_scene_next_content.addView(buildCustomTaskItemView(nextTask!!))
         }
     }
 
@@ -144,29 +168,22 @@ class FragmentSystemScene : Fragment() {
             system_scene_bp_gt.text = limit.toString() + "%"
         }
 
-        val nextTask = TimingTaskManager(this.context!!).getNextAlarmClock()
-        nextTask?.run {
-            system_scene_next_content.setText("在 " + formateTime(((this.triggerTime - System.currentTimeMillis()) / 1000)) + " 秒后")
-            system_scene_next.setOnLongClickListener {
-                showIntent?.run {
-                    TimingTaskManager(context!!).cancelTask(this)
-                }
-
-                Toast.makeText(context!!, getString(R.string.system_scene_task_canceled), Toast.LENGTH_SHORT).show()
-                true
-            }
-        }
-
         system_scene_add.setOnClickListener {
             val intent = Intent(activity, ActivityTimingTask::class.java)
             startActivity(intent)
         }
     }
 
-    private fun addCustomTaskItemView(timingTaskInfo: TimingTaskInfo) {
+    private fun buildCustomTaskItemView(timingTaskInfo: TimingTaskInfo): SceneTaskItem {
         val sceneTaskItem = SceneTaskItem(context!!, timingTaskInfo)
         sceneTaskItem.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
         sceneTaskItem.isClickable = true
+        return sceneTaskItem
+    }
+
+    private fun addCustomTaskItemView(timingTaskInfo: TimingTaskInfo) {
+        val sceneTaskItem = buildCustomTaskItemView(timingTaskInfo)
+
         system_scene_task_list.addView(sceneTaskItem)
         sceneTaskItem.setOnClickListener {
             val intent = Intent(activity, ActivityTimingTask::class.java)
@@ -176,7 +193,7 @@ class FragmentSystemScene : Fragment() {
         sceneTaskItem.setOnLongClickListener {
             DialogHelper.animDialog(AlertDialog.Builder(context!!).setTitle("删除该任务？").setPositiveButton(R.string.btn_confirm) { _, _ ->
                 TimingTaskManager(context!!).removeTask(timingTaskInfo)
-                system_scene_task_list.removeView(sceneTaskItem)
+                updateCustomList()
             }.setNeutralButton(R.string.btn_cancel) { _, _ ->
             })
             true

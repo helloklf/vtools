@@ -1,6 +1,8 @@
 package com.omarea.krscript.executor;
 
 import android.content.Context;
+import android.os.Build;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.omarea.krscript.model.ShellHandlerBase;
@@ -39,9 +41,18 @@ public class ShellExecutor {
             final Runnable forceStopRunnable = interruptible ? (new Runnable() {
                 @Override
                 public void run() {
-                    try {
-                        finalProcess.destroy();
-                    } catch (Exception ignored) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        try {
+                            finalProcess.destroyForcibly();
+                        } catch (Exception ex) {
+                            Log.e("KrScriptError", "" + ex.getMessage());
+                        }
+                    } else {
+                        try {
+                            finalProcess.destroy();
+                        } catch (Exception ex) {
+                            Log.e("KrScriptError", "" + ex.getMessage());
+                        }
                     }
                 }
             }) : null;

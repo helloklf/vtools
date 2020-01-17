@@ -176,9 +176,21 @@
         <item name="android:textSize">14dp</item>
     </style>
 
+    <style name="textDefault">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">14dp</item>
+    </style>
+
     <style name="textSmall">
         <item name="android:textColor">?android:attr/textColorSecondary</item>
         <item name="android:textSize">11dp</item>
+    </style>
+
+    <style name="sceneSmallButton" parent="Widget.AppCompat.ButtonBar">
+        <item name="android:background">@drawable/btn_bg</item>
+        <item name="android:layout_width">60dp</item>
+        <item name="android:layout_height">32dp</item>
     </style>
 
     <!--activity 对话框样式  -->
@@ -248,6 +260,23 @@
 
     <style name="ListCardItemClickableLast" parent="ListCardItemClickable">
         <item name="android:layout_marginBottom">@dimen/activity_vertical_margin</item>
+    </style>
+
+    <style name="InCardListItem">
+        <item name="android:background">@drawable/in_card_item</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginRight">8dp</item>
+        <item name="android:paddingTop">8dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingRight">8dp</item>
+    </style>
+    <style name="InCardListItemLast" parent="InCardListItem">
+        <item name="android:layout_marginBottom">8dp</item>
     </style>
 
     <style name="nav_item_wrap">

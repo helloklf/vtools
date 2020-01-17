@@ -52,7 +52,7 @@
 
             <LinearLayout
                 android:id="@+id/cpu_config_p0"
-                style="@style/ListItem"
+                style="@style/InCardListItem"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -95,7 +95,7 @@
 
             <LinearLayout
                 android:id="@+id/cpu_config_p1"
-                style="@style/ListItem"
+                style="@style/InCardListItem"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -138,7 +138,7 @@
 
             <LinearLayout
                 android:id="@+id/cpu_config_p2"
-                style="@style/ListItem"
+                style="@style/InCardListItem"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -181,7 +181,7 @@
 
             <LinearLayout
                 android:id="@+id/cpu_config_p3"
-                style="@style/ListItem"
+                style="@style/InCardListItem"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -224,7 +224,7 @@
 
             <LinearLayout
                 android:id="@+id/cpu_config_p4"
-                style="@style/ListItem"
+                style="@style/InCardListItemLast"
                 android:alpha="0.7"
                 android:orientation="horizontal">
 

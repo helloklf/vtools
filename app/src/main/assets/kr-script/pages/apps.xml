@@ -84,12 +84,10 @@
             <getstate>. ./kr-script/apps/gcm_get.sh</getstate>
             <setstate>. ./kr-script/apps/gcm_set.sh</setstate>
         </switch>
-        <text>
-            <title>常用链接</title>
-            <slices>
-                <slice size="15" link="https://play.google.com/store/account/subscriptions">Play商店 订阅管理</slice>
-            </slices>
-        </text>
+        <page link="https://play.google.com/store/account/subscriptions">
+            <title>Google 订阅管理</title>
+            <desc>查看和管理你在Play商店上订阅的付费内容</desc>
+        </page>
     </group>
 
     <group title="其它">

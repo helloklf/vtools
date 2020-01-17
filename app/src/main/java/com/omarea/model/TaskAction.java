@@ -12,6 +12,8 @@ public enum TaskAction {
     GPRS_OFF,           // 数据关
     GPS_ON,             // GPS开
     GPS_OFF,            // GPS关
+    ZEN_MODE_ON,        // 勿扰模式开
+    ZEN_MODE_OFF,       // 勿扰模式关
     COMPILE_SPEED,      // Speed模式编译
     COMPILE_EVERYTHING, // Everything模式编译
 }

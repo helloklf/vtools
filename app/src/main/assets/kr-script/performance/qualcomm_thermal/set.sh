@@ -37,7 +37,10 @@ elif [[ $action = "delete" ]]; then
         sleep 3
     done
 
+    echo ''
     mount_all # 挂载目录为读写
+
+    echo ''
 
     for file in `find /vendor -name *thermal* -type f`; do
         rm -f $file

@@ -23,21 +23,13 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-            <LinearLayout
-                style="@style/ListCardItem"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:minHeight="65dp"
-                android:orientation="horizontal">
-
                 <Switch
                     android:id="@+id/system_scene_task_enable"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:text="启用任务 "
-                    android:gravity="center"
+                    android:layout_gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
-            </LinearLayout>
                 <LinearLayout
                     style="@style/ListCardItem"
                     android:layout_width="match_parent"
@@ -163,6 +155,7 @@
                         android:text="任务动作" />
 
                     <LinearLayout
+                        android:id="@+id/task_standby_mode"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/activity_vertical_margin"
@@ -297,6 +290,33 @@
                             android:layout_height="wrap_content"
                             android:text="关" />
                     </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/task_zen_mode"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:paddingStart="7dp"
+                            android:textColor="?android:textColorPrimary"
+                            android:text="勿扰模式" />
+
+                        <RadioButton
+                            android:id="@+id/task_zen_mode_on"
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:text="开" />
+
+                        <RadioButton
+                            android:id="@+id/task_zen_mode_off"
+                            android:layout_width="110dp"
+                            android:layout_height="wrap_content"
+                            android:text="关" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -319,6 +339,7 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:id="@+id/task_compile"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"

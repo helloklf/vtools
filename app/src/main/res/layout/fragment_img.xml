@@ -2,15 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.omarea.vtools.fragments.FragmentImg">
+    android:layout_height="match_parent">
 
     <com.omarea.common.ui.OverScrollListView
         android:id="@+id/img_action_listview"
+        android:scrollbars="none"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
+        android:layout_margin="@dimen/activity_horizontal_margin"
         android:divider="@null"
         android:dividerHeight="0dp"
         android:listSelector="@android:color/transparent" />

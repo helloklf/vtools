@@ -1,6 +1,10 @@
 package com.omarea.vtools.activities
 
 import android.app.TimePickerDialog
+import android.content.Context
+import android.media.AudioManager
+import android.opengl.Visibility
+import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -63,9 +67,17 @@ class ActivityTimingTask : AppCompatActivity() {
         oneOf(task_wifi_on, task_wifi_off)
         oneOf(task_gps_on, task_gps_off)
         oneOf(task_gprs_on, task_gprs_off)
+        oneOf(task_zen_mode_on, task_zen_mode_off)
 
         // 更新选中状态
         updateUI()
+
+        // dex2oat
+        task_compile.visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) View.VISIBLE else View.GONE
+        // 勿扰模式
+        task_zen_mode.visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) View.VISIBLE else View.GONE
+        // 待机模式
+        task_standby_mode.visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) View.VISIBLE else View.GONE
     }
 
     private fun updateUI() {
@@ -102,6 +114,8 @@ class ActivityTimingTask : AppCompatActivity() {
                 task_gps_off.isChecked = contains(TaskAction.GPS_OFF)
                 task_gprs_on.isChecked = contains(TaskAction.GPRS_ON)
                 task_gprs_off.isChecked = contains(TaskAction.GPRS_OFF)
+                task_zen_mode_on.isChecked = contains(TaskAction.ZEN_MODE_ON)
+                task_zen_mode_off.isChecked = contains(TaskAction.ZEN_MODE_OFF)
                 task_fstrim.isChecked = contains(TaskAction.FSTRIM)
                 task_compile_speed.isChecked = contains(TaskAction.COMPILE_SPEED)
                 task_compile_everything.isChecked = contains(TaskAction.COMPILE_EVERYTHING)
@@ -166,6 +180,8 @@ class ActivityTimingTask : AppCompatActivity() {
             task_gps_off.isChecked && add(TaskAction.GPS_OFF)
             task_gprs_on.isChecked && add(TaskAction.GPRS_ON)
             task_gprs_off.isChecked && add(TaskAction.GPRS_OFF)
+            task_zen_mode_on.isChecked && add(TaskAction.ZEN_MODE_ON)
+            task_zen_mode_off.isChecked && add(TaskAction.ZEN_MODE_OFF)
             task_fstrim.isChecked && add(TaskAction.FSTRIM)
             task_compile_speed.isChecked && add(TaskAction.COMPILE_SPEED)
             task_compile_everything.isChecked && add(TaskAction.COMPILE_EVERYTHING)

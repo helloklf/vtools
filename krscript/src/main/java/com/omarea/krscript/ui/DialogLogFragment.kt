@@ -67,8 +67,8 @@ class DialogLogFragment : DialogFragment() {
             closeView()
         }
         btn_exit.setOnClickListener {
-            if (running && forceStopRunnable != null) {
-                forceStopRunnable!!.run()
+            if (running) {
+                forceStopRunnable?.run()
             }
             closeView()
         }

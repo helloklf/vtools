@@ -11,10 +11,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
         android:alpha="0.5"
-        android:paddingLeft="23dp"
-        android:paddingRight="23dp"
+        android:paddingStart="6dp"
         android:textColor="?android:attr/textColorPrimary"
-        android:textSize="@dimen/kr_title_size" />
+        android:textSize="@dimen/kr_group_title_size" />
 
     <LinearLayout
         android:id="@android:id/content"

@@ -4,6 +4,7 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.SystemClock
 import com.omarea.model.TimingTaskInfo
 import com.omarea.store.TimingTaskStorage
@@ -17,6 +18,7 @@ public class TimingTaskManager(private var context: Context) {
         val taskId = timingTaskInfo.taskId
         val taskIntent = Intent(context.applicationContext, TimingTaskReceiver::class.java)
         taskIntent.putExtra("taskId", taskId)
+        taskIntent.setAction(taskId)
         val pendingIntent = PendingIntent.getBroadcast(context.applicationContext, 0, taskIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         return pendingIntent
     }
@@ -71,7 +73,11 @@ public class TimingTaskManager(private var context: Context) {
      */
     public fun setExact(pendingIntent: PendingIntent, delay: Long): TimingTaskManager {
         // val pendingIntent = PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime() + delay, pendingIntent)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + delay, pendingIntent)
+        } else {
+            alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + delay, pendingIntent)
+        }
         // alarmManager.cancel(pendingIntent)
         return this
     }
@@ -82,7 +88,7 @@ public class TimingTaskManager(private var context: Context) {
      */
     public fun setRepeating(pendingIntent: PendingIntent, delay: Long, period: Long): TimingTaskManager {
         // val pendingIntent = PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, SystemClock.elapsedRealtime() + delay, period, pendingIntent)
+        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + delay, period, pendingIntent)
         // alarmManager.cancel(pendingIntent)
         return this
     }

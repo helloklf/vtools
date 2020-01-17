@@ -138,7 +138,7 @@ class BatteryReceiver(private var service: Context) : EventReceiver {
                     // 计算预期还需要充入多少电量（mAh）
                     val target = (targetRatio - currentCapacityRatio) / 100F * batteryCapacity
                     // 距离起床的剩余时间（小时）
-                    var timeRemaining = GetUpTime(getUp).minutes / 60F
+                    val timeRemaining = GetUpTime(getUp).minutes / 60F
 
                     // 合理的充电速度 = 还需充入的电量(mAh) / timeRemaining
                     var limitValue = (target / timeRemaining).toInt()

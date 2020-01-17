@@ -7,11 +7,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TableLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
 
             <LinearLayout
                 android:id="@+id/zram_stat"
@@ -82,50 +81,41 @@
 
                         <Button
                             android:id="@+id/btn_swap_create"
-                            style="?android:buttonBarStyle"
-                            android:layout_width="60dp"
-                            android:layout_height="32dp"
+                            style="@style/sceneSmallButton"
                             android:layout_marginEnd="6dp"
-                            android:background="@drawable/btn_bg"
                             android:text="@string/swap_create" />
 
                         <Button
                             android:id="@+id/btn_swap_start"
-                            style="?android:buttonBarStyle"
-                            android:layout_width="60dp"
-                            android:layout_height="32dp"
+                            style="@style/sceneSmallButton"
                             android:layout_marginEnd="6dp"
-                            android:background="@drawable/btn_bg"
                             android:text="@string/swap_start" />
 
                         <Button
                             android:id="@+id/btn_swap_close"
-                            style="?android:buttonBarStyle"
-                            android:layout_width="60dp"
-                            android:layout_height="32dp"
+                            style="@style/sceneSmallButton"
                             android:layout_marginEnd="6dp"
-                            android:background="@drawable/btn_bg"
                             android:text="@string/swap_stop" />
 
                         <Button
                             android:id="@+id/btn_swap_delete"
-                            style="?android:buttonBarStyle"
-                            android:layout_width="60dp"
-                            android:layout_height="32dp"
-                            android:background="@drawable/btn_bg"
+                            style="@style/sceneSmallButton"
                             android:text="@string/swap_delete" />
                     </LinearLayout>
                 </TableRow>
 
                 <CheckBox
+                    style="@style/textDefault"
                     android:id="@+id/chk_swap_autostart"
                     android:text="@string/swap_auto_start" />
 
                 <CheckBox
+                    style="@style/textDefault"
                     android:id="@+id/chk_swap_preferred"
                     android:text="@string/swap_preferred" />
 
                 <CheckBox
+                    style="@style/textDefault"
                     android:id="@+id/chk_swap_use_loop"
                     android:layout_marginBottom="@dimen/activity_vertical_margin"
                     android:text="@string/swap_use_loop" />
@@ -166,7 +156,7 @@
                 <TableRow android:layout_marginTop="@dimen/activity_vertical_margin">
 
                     <TextView
-                        style="@style/textTitle"
+                        style="@style/textDefault"
                         android:layout_width="match_parent"
                         android:layout_gravity="center_vertical"
                         android:max="2048"
@@ -189,16 +179,15 @@
                     android:focusableInTouchMode="true">
 
                     <CheckBox
+                        style="@style/textDefault"
                         android:id="@+id/chk_zram_autostart"
                         android:layout_gravity="center_vertical"
                         android:text="@string/swap_auto_start" />
 
                     <Button
                         android:id="@+id/btn_zram_resize"
-                        android:layout_width="60dp"
-                        android:layout_height="32dp"
+                        style="@style/sceneSmallButton"
                         android:layout_gravity="center_vertical"
-                        android:background="@drawable/btn_bg"
                         android:text="@string/swap_zram_adjustment" />
                 </TableRow>
 
@@ -325,6 +314,6 @@
                         style="@style/textSmall" />
                 </TableRow>
             </TableLayout>
-        </TableLayout>
+        </LinearLayout>
     </com.omarea.common.ui.OverScrollView>
 </FrameLayout>
