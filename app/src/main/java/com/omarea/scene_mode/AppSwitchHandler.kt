@@ -298,7 +298,8 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
         ignoredList.addAll(InputMethodHelper(context).getInputMethods())
 
         if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)) {
-            if (configInstaller.configInstalled()) {
+            // 是否已经完成性能调节配置安装或自定义
+            if (configInstaller.configInstalled() || allModeReplaced(context)) {
                 dyamicCore = true
                 CpuConfigInstaller().configCodeVerify()
                 KeepShellPublic.doCmdSync(CommonCmds.ExecuteConfig)

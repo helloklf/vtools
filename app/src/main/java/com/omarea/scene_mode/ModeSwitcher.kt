@@ -116,8 +116,19 @@ open class ModeSwitcher {
         return this
     }
 
+    // 是否已经完成指定模式的自定义
     public fun modeReplaced(context: Context, mode: String): CpuStatus? {
         return CpuConfigStorage(context).load(mode)
+    }
+
+    // 是否已经完成所有模式的自定义
+    public fun allModeReplaced(context: Context): Boolean {
+        val storage  = CpuConfigStorage(context)
+
+        return storage.load(POWERSAVE) != null &&
+                storage.load(BALANCE) != null &&
+                storage.load(PERFORMANCE) != null &&
+                storage.load(FAST) != null
     }
 
     internal fun destroyKeepShell(): ModeSwitcher {

@@ -5,7 +5,6 @@ import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
@@ -31,7 +30,7 @@ import java.nio.charset.Charset
 
 class FragmentCpuModes : Fragment() {
     private lateinit var author: String
-    private var configInstalled: Boolean = false
+    private var configFileInstalled: Boolean = false
     private lateinit var modeSwitcher: ModeSwitcher
     private lateinit var globalSPF: SharedPreferences
 
@@ -41,14 +40,7 @@ class FragmentCpuModes : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-        configInstalled = CpuConfigInstaller().configInstalled()
         modeSwitcher = ModeSwitcher()
-
-        if (configInstalled) {
-            author = globalSPF.getString(SpfConfig.GLOBAL_SPF_CPU_CONFIG_AUTHOR, "unknown")!!
-        } else {
-            author = "none"
-        }
 
         cpu_config_p4.setOnClickListener {
             Toast.makeText(context!!, "该模式暂未开放使用", Toast.LENGTH_SHORT).show()
@@ -68,9 +60,9 @@ class FragmentCpuModes : Fragment() {
         dynamic_control.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
         dynamic_control.setOnClickListener {
             val value = (it as Switch).isChecked
-            if (value && !CpuConfigInstaller().configInstalled()) {
+            if (value && !(CpuConfigInstaller().configInstalled() || modeSwitcher.allModeReplaced(context!!))) {
                 dynamic_control.isChecked = false
-                Toast.makeText(context, "你需要先安装配置脚本", Toast.LENGTH_SHORT).show()
+                DialogHelper.helpInfo(context!!, "请先完成四个模式的配置！", "使用Scene自带配置(如果有显示选项)、本地导入、在线下载，均可快速完成四个模式的配置。\n\n如果都没找到适用的配置，不妨试试点击各个模式，自己动手设置参数！")
             } else {
                 globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, value).apply()
                 reStartService()
@@ -85,6 +77,13 @@ class FragmentCpuModes : Fragment() {
     }
 
     private fun updateState() {
+        configFileInstalled = CpuConfigInstaller().configInstalled()
+        if (configFileInstalled) {
+            author = globalSPF.getString(SpfConfig.GLOBAL_SPF_CPU_CONFIG_AUTHOR, "unknown")!!
+        } else {
+            author = "未配置"
+        }
+
         updateState(cpu_config_p0, ModeSwitcher.POWERSAVE)
         updateState(cpu_config_p1, ModeSwitcher.BALANCE)
         updateState(cpu_config_p2, ModeSwitcher.PERFORMANCE)
@@ -95,7 +94,7 @@ class FragmentCpuModes : Fragment() {
         val authorView = button.findViewWithTag<TextView>("author")
         val replaced = modeSwitcher.modeReplaced(context!!, mode) != null
         authorView.setText("Author : " + (if (replaced) "custom" else author))
-        button.alpha = if (configInstalled || replaced) 1f else 0.4f
+        button.alpha = if (configFileInstalled || replaced) 1f else 0.4f
     }
 
     override fun onResume() {
@@ -231,8 +230,6 @@ class FragmentCpuModes : Fragment() {
 
     //安装调频文件
     private fun installConfig(useBigCore: Boolean) {
-        if (context == null) return
-
         if (!configInstaller.dynamicSupport(context!!)) {
             Snackbar.make(view!!, R.string.not_support_config, Snackbar.LENGTH_LONG).show()
             return
@@ -250,8 +247,9 @@ class FragmentCpuModes : Fragment() {
             reStartService()
         } else {
             DialogHelper.animDialog(AlertDialog.Builder(context)
-                    .setMessage("配置脚本已安装，是否开启性能调节？")
+                    .setMessage("配置脚本已安装，是否开启 [性能调节] ？")
                     .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                        dynamic_control.isChecked = true
                         globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true).apply()
                         reStartService()
                     }
