@@ -284,12 +284,11 @@
     <string name="swap_zram_comp_algorithm_wran">更改未生效</string>
     <string name="swap_zram_comp_algorithm_wran_desc">ZRAM正在使用中，现在无法更改压缩算法。\n\n如需让设置生效，请点击下方的“调整”按钮</string>
     <string name="swap_swap">SWAP</string>
-    <string name="swap_path">存储位置：/data/swapfile</string>
     <string name="swap_create">创建</string>
     <string name="swap_start">启动</string>
     <string name="swap_stop">关闭</string>
     <string name="swap_delete">删除</string>
-    <string name="swap_preferred">优先使用(如果有多个SWAP或ZRAM)</string>
+    <string name="swap_preferred">优先于ZRAM</string>
     <string name="swap_use_loop">挂载为环回设备</string>
     <string name="swap_use_loop_desc">如果不开启此项也能正常使用SWAP，就没必要开。\n\n除非是无法启动SWAP，或启动SWAP后手机死机，才需要开启此选项！\n\n例如：小米手机升级到Android P后，就可能需要勾选此项才能正常使用SWAP</string>
     <string name="swap_swap_desc">说明：SWAP即磁盘交换技术，在RAM不足时，将一部分数据暂时转移到磁盘中暂存，对后台能力提升明显，但性能较差</string>
@@ -298,6 +297,9 @@
     <string name="swap_zram_stat_desc">ZRAM的压缩率通常在20~45%之间</string>
     <string name="swap_zram_stat_format">数据压缩算法：%s\n原始数据大小：%s\n压缩后的大小：%s\n物理内存占用：%s\n最高内存占用：%s\n内存占用限制：%s\n压缩率：%s</string>
     <string name="swap_zram_compact_algorithm">压缩算法</string>
+    <string name="swap_state_undefined">未创建</string>
+    <string name="swap_state_created">未启动</string>
+    <string name="swap_state_using">使用中</string>
 
     <string name="on_execute_please_wait">正在执行操作，请稍等…</string>
     <string name="please_wait">请稍等…</string>

@@ -93,33 +93,33 @@ class FragmentSwap : Fragment() {
 
         txt_mem.text = KernelProrp.getProp("/proc/meminfo")
         val swapFileExists = swapUtils.swapExists
-        btn_swap_create.isEnabled = !swapFileExists
+        btn_swap_create.visibility = if (swapFileExists) View.GONE else View.VISIBLE
         if (swapFileExists) {
-            seekbar_swap_size.isEnabled = false
-            seekbar_swap_size.isClickable = false
-            seekbar_swap_size.isFocusable = false
-            seekbar_swap_size.isSelected = false
+            seekbar_swap_size.visibility = View.GONE
         } else {
-            seekbar_swap_size.isEnabled = true
-            seekbar_swap_size.isClickable = true
-            seekbar_swap_size.isFocusable = true
-            seekbar_swap_size.isSelected = true
+            seekbar_swap_size.visibility = View.VISIBLE
         }
 
         val currentSwap = swapUtils.currentSwapDevice
         if (currentSwap.isNotEmpty()) {
-            btn_swap_start.isEnabled = false
-            btn_swap_delete.isEnabled = false
-            btn_swap_close.isEnabled = true
-            chk_swap_use_loop.isEnabled = false
-            chk_swap_preferred.isEnabled = false
+            btn_swap_start.visibility = View.GONE
+            btn_swap_delete.visibility = View.GONE
+            btn_swap_close.visibility = View.VISIBLE
+            chk_swap_use_loop.visibility = View.GONE
+            chk_swap_preferred.visibility = View.GONE
+            swap_state.setText(getString(R.string.swap_state_using))
         } else {
-            btn_swap_start.isEnabled = swapFileExists
-            btn_swap_delete.isEnabled = swapFileExists
+            btn_swap_start.visibility = if (swapFileExists) View.VISIBLE else View.GONE
+            btn_swap_delete.visibility = if (swapFileExists) View.VISIBLE else View.GONE
 
-            btn_swap_close.isEnabled = false
-            chk_swap_use_loop.isEnabled = true
-            chk_swap_preferred.isEnabled = true
+            btn_swap_close.visibility = View.GONE
+            chk_swap_use_loop.visibility = View.VISIBLE
+            chk_swap_preferred.visibility = View.VISIBLE
+            if (swapFileExists) {
+                swap_state.setText(getString(R.string.swap_state_created))
+            } else {
+                swap_state.setText(getString(R.string.swap_state_undefined))
+            }
         }
 
         swap_auto_lmk.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, false)

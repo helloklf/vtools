@@ -262,18 +262,23 @@
         <item name="android:layout_marginBottom">@dimen/activity_vertical_margin</item>
     </style>
 
-    <style name="InCardListItem">
+    <style name="InCardListItemOrigin">
         <item name="android:background">@drawable/in_card_item</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:orientation">vertical</item>
-        <item name="android:layout_marginTop">8dp</item>
-        <item name="android:layout_marginLeft">8dp</item>
-        <item name="android:layout_marginRight">8dp</item>
         <item name="android:paddingTop">8dp</item>
         <item name="android:paddingBottom">8dp</item>
         <item name="android:paddingLeft">8dp</item>
         <item name="android:paddingRight">8dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+    </style>
+    <style name="InCardListItemOriginLast" parent="InCardListItemOrigin">
+        <item name="android:layout_marginBottom">8dp</item>
+    </style>
+    <style name="InCardListItem" parent="@style/AppThemeOrange">
+        <item name="android:layout_marginLeft">8dp</item>
+        <item name="android:layout_marginRight">8dp</item>
     </style>
     <style name="InCardListItemLast" parent="InCardListItem">
         <item name="android:layout_marginBottom">8dp</item>
