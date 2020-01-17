@@ -44,6 +44,21 @@
                 android:visibility="gone" />
         </LinearLayout>
 
+        <Switch
+            android:id="@+id/dynamic_control"
+            style="@style/textTitle"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="性能调节  "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            style="@style/textSmall"
+            android:text="启用 [应用场景] 的 [性能调节] 功能\n根据前台应用，自动切换模式"
+            android:textAlignment="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
         <LinearLayout style="@style/ListCardItem">
             <LinearLayout
                 android:id="@+id/config_cfg_select"
@@ -128,7 +143,7 @@
                         style="@style/textSmall"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="从SdCard导入自己按照特定格式编写的脚本\n或在线下载YC定制的配置" />
+                        android:text="从SdCard导入自定义配置\n或在线下载YC大大分享的配置" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -162,9 +177,20 @@
         </LinearLayout>
 
         <LinearLayout
-            style="@style/ListCardItem"
+            style="@style/ListCardItemLast"
             android:orientation="vertical"
-            android:padding="0dp">
+            android:paddingTop="0dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="0dp">
+
+            <TextView
+                style="@style/textTitle"
+                android:paddingLeft="8dp"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:text="模式信息"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
             <LinearLayout
                 android:id="@+id/cpu_config_p0"
@@ -172,6 +198,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:layout_marginLeft="8dp"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center_vertical"
@@ -187,7 +214,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="@style/textTitle"
+                        style="@style/textDefault"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/powersave" />
@@ -215,6 +242,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:layout_marginLeft="8dp"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center_vertical"
@@ -230,7 +258,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="@style/textTitle"
+                        style="@style/textDefault"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/balance" />
@@ -258,6 +286,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:layout_marginLeft="8dp"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center_vertical"
@@ -273,7 +302,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="@style/textTitle"
+                        style="@style/textDefault"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/performance" />
@@ -301,6 +330,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:layout_marginLeft="8dp"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center_vertical"
@@ -316,7 +346,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="@style/textTitle"
+                        style="@style/textDefault"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/fast" />
@@ -345,6 +375,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:layout_marginLeft="8dp"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center_vertical"
@@ -360,7 +391,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="@style/textTitle"
+                        style="@style/textDefault"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="暖手模式" />

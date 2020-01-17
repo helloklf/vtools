@@ -180,51 +180,64 @@ class FragmentConfig : Fragment() {
             } catch (ex: Exception) {
             }
         }
-        scene_app_list.setOnItemLongClickListener { parent, view, position, id ->
-            val item = (parent.adapter.getItem(position) as Appinfo)
-            var originIndex = 0
-            when (spfPowercfg.getString(item.packageName.toString(), firstMode)) {
-                ModeSwitcher.POWERSAVE -> originIndex = 0
-                ModeSwitcher.BALANCE -> originIndex = 1
-                ModeSwitcher.PERFORMANCE -> originIndex = 2
-                ModeSwitcher.FAST -> originIndex = 3
-                ModeSwitcher.IGONED -> originIndex = 5
-                else -> originIndex = 4
-            }
-            var currentMode = originIndex
-            DialogHelper.animDialog(AlertDialog.Builder(context)
-                    .setTitle(item.appName.toString())
-                    .setSingleChoiceItems(
-                            R.array.powercfg_modes2,
-                            originIndex
-                    ) { dialog, which ->
-                        currentMode = which
-                    }
-                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                        if (currentMode != originIndex) {
-                            var modeName = ""
-                            when (currentMode) {
-                                0 -> modeName = ModeSwitcher.POWERSAVE
-                                1 -> modeName = ModeSwitcher.BALANCE
-                                2 -> modeName = ModeSwitcher.PERFORMANCE
-                                3 -> modeName = ModeSwitcher.FAST
-                                4 -> modeName = ""
-                                5 -> modeName = ModeSwitcher.IGONED
-                            }
 
-                            if (modeName.isEmpty()) {
-                                spfPowercfg.edit().remove(item.packageName.toString()).commit()
-                            } else {
-                                spfPowercfg.edit().putString(item.packageName.toString(), modeName).commit()
-                            }
-
-                            setAppRowDesc(item)
-                            (scene_app_list.adapter as SceneModeAdapter).updateRow(position, view)
-                            notifyService(item.packageName.toString(), modeName)
+        // 动态响应检测
+        val dynamicControl = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)
+        first_mode.isEnabled = dynamicControl
+        if (dynamicControl) {
+            dynamic_control_opts.visibility = View.VISIBLE
+            scene_app_list.setOnItemLongClickListener { parent, view, position, id ->
+                val item = (parent.adapter.getItem(position) as Appinfo)
+                var originIndex = 0
+                when (spfPowercfg.getString(item.packageName.toString(), firstMode)) {
+                    ModeSwitcher.POWERSAVE -> originIndex = 0
+                    ModeSwitcher.BALANCE -> originIndex = 1
+                    ModeSwitcher.PERFORMANCE -> originIndex = 2
+                    ModeSwitcher.FAST -> originIndex = 3
+                    ModeSwitcher.IGONED -> originIndex = 5
+                    else -> originIndex = 4
+                }
+                var currentMode = originIndex
+                DialogHelper.animDialog(AlertDialog.Builder(context)
+                        .setTitle(item.appName.toString())
+                        .setSingleChoiceItems(
+                                R.array.powercfg_modes2,
+                                originIndex
+                        ) { dialog, which ->
+                            currentMode = which
                         }
-                    }
-                    .setNeutralButton(R.string.btn_cancel, null))
-            true
+                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                            if (currentMode != originIndex) {
+                                var modeName = ""
+                                when (currentMode) {
+                                    0 -> modeName = ModeSwitcher.POWERSAVE
+                                    1 -> modeName = ModeSwitcher.BALANCE
+                                    2 -> modeName = ModeSwitcher.PERFORMANCE
+                                    3 -> modeName = ModeSwitcher.FAST
+                                    4 -> modeName = ""
+                                    5 -> modeName = ModeSwitcher.IGONED
+                                }
+
+                                if (modeName.isEmpty()) {
+                                    spfPowercfg.edit().remove(item.packageName.toString()).commit()
+                                } else {
+                                    spfPowercfg.edit().putString(item.packageName.toString(), modeName).commit()
+                                }
+
+                                setAppRowDesc(item)
+                                (scene_app_list.adapter as SceneModeAdapter).updateRow(position, view)
+                                notifyService(item.packageName.toString(), modeName)
+                            }
+                        }
+                        .setNeutralButton(R.string.btn_cancel, null))
+                true
+            }
+        } else {
+            dynamic_control_opts.visibility = View.GONE
+            scene_app_list.setOnItemLongClickListener { _, _, _, _ ->
+                DialogHelper.helpInfo(context!!, "", "请先回到功能列表，进入 [性能配置] 功能，开启 [性能调节] 功能")
+                true
+            }
         }
 
         config_search_box.addTextChangedListener(SearchTextWatcher(Runnable {
@@ -244,17 +257,6 @@ class FragmentConfig : Fragment() {
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 loadList()
-            }
-        }
-        dynamic_control.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)
-        dynamic_control.setOnClickListener {
-            val value = (it as Switch).isChecked
-            if (value && !CpuConfigInstaller().configInstalled()) {
-                dynamic_control.isChecked = false
-                Toast.makeText(context, "你需要先安装配置脚本", Toast.LENGTH_SHORT).show()
-            } else {
-                globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, value).commit()
-                reStartService()
             }
         }
 

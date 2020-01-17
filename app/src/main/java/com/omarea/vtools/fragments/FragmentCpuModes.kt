@@ -13,6 +13,7 @@ import android.support.v4.app.FragmentTransaction
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import com.omarea.common.ui.DialogHelper
@@ -64,6 +65,17 @@ class FragmentCpuModes : Fragment() {
             getOnlineConfig()
         }
         checkConfig()
+        dynamic_control.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)
+        dynamic_control.setOnClickListener {
+            val value = (it as Switch).isChecked
+            if (value && !CpuConfigInstaller().configInstalled()) {
+                dynamic_control.isChecked = false
+                Toast.makeText(context, "你需要先安装配置脚本", Toast.LENGTH_SHORT).show()
+            } else {
+                globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, value).apply()
+                reStartService()
+            }
+        }
     }
 
     private fun bindMode(button: View, mode: String) {

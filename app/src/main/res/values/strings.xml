@@ -403,7 +403,6 @@
     <string name="scene_addin_install_fail">“Scene - 高级设定”插件安装失败！</string>
     <string name="scene_addin_sync_fail">从“Scene-高级设定”插件同步Xposed设定失败！</string>
     <string name="scene_addin_version_toolow">“Scene-高级设定”插件版本过低！</string>
-    <string name="scene_config_notinstalled">未安装模式配置脚本，无法使用性能调节！</string>
     <string name="accessbility_autoclick">安装点击</string>
     <string name="scene_autoclick_desc">安装第三方应用时，自动帮你点“下一步”</string>
     <string name="scene_notify">常驻通知</string>

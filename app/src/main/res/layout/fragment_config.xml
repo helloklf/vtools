@@ -136,7 +136,7 @@
 
                         </LinearLayout>
 
-                        <LinearLayout style="@style/ListCardItem">
+                        <LinearLayout android:id="@+id/dynamic_control_opts" style="@style/ListCardItem">
 
                             <LinearLayout
                                 android:layout_width="match_parent"
@@ -165,23 +165,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
+                                android:layout_marginBottom="@dimen/activity_vertical_margin"
                                 android:text="没有单独设置模式的应用，将默认使用此模式" />
-
-                            <Switch
-                                android:id="@+id/dynamic_control"
-                                style="@style/textTitle"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="20dp"
-                                android:text="性能调节" />
-
-                            <TextView
-                                style="@style/textSmall"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:paddingBottom="8dp"
-                                android:text="你需要开启此选项，才能使性能调节设置生效。并且，场景模式运作需要Scene保持服务后台运行！" />
-
 
                             <Switch
                                 android:id="@+id/dynamic_lock_mode"

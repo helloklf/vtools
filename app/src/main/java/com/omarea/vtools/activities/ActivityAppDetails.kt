@@ -23,7 +23,6 @@ import com.omarea.common.ui.DialogHelper
 import com.omarea.model.SceneConfigInfo
 import com.omarea.permissions.NotificationListener
 import com.omarea.permissions.WriteSettings
-import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.scene_mode.ImmersivePolicyControl
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.SceneConfigStore
@@ -45,9 +44,8 @@ class ActivityAppDetails : AppCompatActivity() {
     private var _result = RESULT_CANCELED
     private var vAddinsInstalled = false
     private var aidlConn: IAppConfigAidlInterface? = null
-    private val configInstaller = CpuConfigInstaller()
     private lateinit var sceneBlackList:SharedPreferences
-
+    private lateinit var spfGlobal:SharedPreferences
     private var needKeyCapture = false
 
     fun getAddinVersion(): Int {
@@ -158,7 +156,7 @@ class ActivityAppDetails : AppCompatActivity() {
             try {
                 val apk = FileWrite.writeFile(applicationContext, addin, true)
 
-                val intent = Intent(Intent.ACTION_VIEW);
+                val intent = Intent(Intent.ACTION_VIEW)
                 intent.setDataAndType(Uri.fromFile(File((if (apk != null) apk else addinPath))), "application/vnd.android.package-archive");
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
@@ -256,6 +254,8 @@ class ActivityAppDetails : AppCompatActivity() {
             saveConfigAndFinish()
         }
 
+        spfGlobal = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+
         val intent = this.intent
         if (intent == null) {
             setResult(_result, this.intent)
@@ -294,16 +294,17 @@ class ActivityAppDetails : AppCompatActivity() {
 
         immersivePolicyControl = ImmersivePolicyControl(contentResolver)
 
-        dynamicCpu = configInstaller.dynamicSupport(this.applicationContext) || configInstaller.configInstalled()
+        dynamicCpu = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)
 
         app_details_dynamic.setOnClickListener {
             if (!dynamicCpu) {
-                Snackbar.make(it, getString(R.string.scene_config_notinstalled), Snackbar.LENGTH_SHORT).show()
+                DialogHelper.helpInfo(this, "", "请先回到功能列表，进入 [性能配置] 功能，开启 [性能调节] 功能")
                 return@setOnClickListener
             }
+
             val modeList = ModeSwitcher()
             val powercfg = getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
-            val currentMode = powercfg.getString(app, getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.BALANCE))
+            val currentMode = powercfg.getString(app, spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.BALANCE))
             var index = 0
             when (currentMode) {
                 ModeSwitcher.POWERSAVE -> index = 0
@@ -379,8 +380,7 @@ class ActivityAppDetails : AppCompatActivity() {
         app_details_icon.setOnClickListener {
             try {
                 saveConfig()
-                val intent = getPackageManager().getLaunchIntentForPackage(app)
-                startActivity(intent)
+                startActivity(getPackageManager().getLaunchIntentForPackage(app))
             } catch (ex: Exception) {
                 Toast.makeText(applicationContext, getString(R.string.start_app_fail), Toast.LENGTH_SHORT).show()
             }
@@ -541,9 +541,6 @@ class ActivityAppDetails : AppCompatActivity() {
         super.onResume()
         checkXposedState()
         val powercfg = getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
-        val spfGlobal = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-
-        dynamicCpu = configInstaller.dynamicSupport(this.applicationContext) || configInstaller.configInstalled()
 
         var packageInfo: PackageInfo? = null
         try {
