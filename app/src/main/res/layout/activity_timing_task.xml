@@ -23,6 +23,21 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+            <LinearLayout
+                style="@style/ListCardItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:minHeight="65dp"
+                android:orientation="horizontal">
+
+                <Switch
+                    android:id="@+id/system_scene_task_enable"
+                    android:text="启用任务 "
+                    android:gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
                 <LinearLayout
                     style="@style/ListCardItem"
                     android:layout_width="match_parent"
@@ -100,13 +115,11 @@
                         android:textStyle="normal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/activity_vertical_margin"
                         android:text="执行前提示确认" />
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/activity_vertical_margin"
                         android:orientation="horizontal">
 
                         <CheckBox
