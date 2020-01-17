@@ -321,7 +321,7 @@ class FragmentHome : Fragment() {
     }
 
     private fun installConfig(action: String, message: String) {
-        val dynamic = AccessibleServiceHelper().serviceRunning(context!!) && spf.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)
+        val dynamic = AccessibleServiceHelper().serviceRunning(context!!) && spf.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
         if (!dynamic && modeList.getCurrentPowerMode() == action) {
             modeList.setCurrent("", "")
             globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, "").apply()

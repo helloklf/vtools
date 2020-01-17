@@ -65,7 +65,7 @@ class FragmentCpuModes : Fragment() {
             getOnlineConfig()
         }
         checkConfig()
-        dynamic_control.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)
+        dynamic_control.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
         dynamic_control.setOnClickListener {
             val value = (it as Switch).isChecked
             if (value && !CpuConfigInstaller().configInstalled()) {
@@ -84,21 +84,25 @@ class FragmentCpuModes : Fragment() {
         }
     }
 
+    private fun updateState() {
+        updateState(cpu_config_p0, ModeSwitcher.POWERSAVE)
+        updateState(cpu_config_p1, ModeSwitcher.BALANCE)
+        updateState(cpu_config_p2, ModeSwitcher.PERFORMANCE)
+        updateState(cpu_config_p3, ModeSwitcher.FAST)
+    }
+
     private fun updateState(button: View, mode: String) {
         val authorView = button.findViewWithTag<TextView>("author")
         val replaced = modeSwitcher.modeReplaced(context!!, mode) != null
         authorView.setText("Author : " + (if (replaced) "custom" else author))
-        button.alpha = if (configInstalled || replaced) 1f else 0.5f
+        button.alpha = if (configInstalled || replaced) 1f else 0.4f
     }
 
     override fun onResume() {
         super.onResume()
         activity!!.title = getString(R.string.menu_cpu_modes)
 
-        updateState(cpu_config_p0, ModeSwitcher.POWERSAVE)
-        updateState(cpu_config_p1, ModeSwitcher.BALANCE)
-        updateState(cpu_config_p2, ModeSwitcher.PERFORMANCE)
-        updateState(cpu_config_p3, ModeSwitcher.FAST)
+        updateState()
     }
 
     private fun modifyCpuConfig(mode: String) {
@@ -169,57 +173,8 @@ class FragmentCpuModes : Fragment() {
             config_cfg_select_1.setOnClickListener {
                 installConfig(true)
             }
-        }
-        when {
-            configInstaller.configInstalled() -> {
-                //TODO：检查是否更新
-            }
-            support -> {
-                var i = 0
-                DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setTitle(getString(R.string.first_start_select_config))
-                        .setCancelable(false)
-                        .setSingleChoiceItems(
-                                arrayOf(
-                                        getString(R.string.conservative),
-                                        getString(R.string.radicalness),
-                                        getString(R.string.get_online_config),
-                                        getString(R.string.choose_local_config),
-                                        getString(R.string.skipnow)
-                                ), 0) { _, which ->
-                            i = which
-                        }
-                        .setNegativeButton(R.string.btn_confirm) { _, _ ->
-                            if (i == 4) {
-                                // 跳过配置安装时，关闭性能调节
-                                globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, false).apply()
-                            } else if (i == 3) {
-                                chooseLocalConfig()
-                            } else if (i == 2) {
-                                getOnlineConfig()
-                            } else if (i == 1) {
-                                installConfig(true)
-                            } else if (i == 0) {
-                                installConfig(false)
-                            }
-                        })
-            }
-            else -> {
-                DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setTitle(getString(R.string.not_support_config))
-                        .setMessage(R.string.not_support_config_desc)
-                        .setPositiveButton(getString(R.string.get_online_config)) { _, _ ->
-                            getOnlineConfig()
-                        }
-                        .setNegativeButton(getString(R.string.more)) { _, _ ->
-                            val intent = Intent()
-                            //Intent intent = new Intent(Intent.ACTION_VIEW,uri);
-                            intent.action = "android.intent.action.VIEW"
-                            val content_url = Uri.parse("https://github.com/helloklf/vtools")
-                            intent.data = content_url
-                            startActivity(intent)
-                        })
-            }
+        } else {
+            config_cfg_select.visibility = View.GONE
         }
     }
 
@@ -288,7 +243,9 @@ class FragmentCpuModes : Fragment() {
     }
 
     private fun configInstalled() {
-        if (globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)) {
+        updateState()
+
+        if (globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)) {
             Snackbar.make(view!!, getString(R.string.config_installed), Snackbar.LENGTH_LONG).show()
             reStartService()
         } else {

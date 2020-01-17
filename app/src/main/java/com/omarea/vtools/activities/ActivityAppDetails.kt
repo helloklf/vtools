@@ -294,7 +294,7 @@ class ActivityAppDetails : AppCompatActivity() {
 
         immersivePolicyControl = ImmersivePolicyControl(contentResolver)
 
-        dynamicCpu = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)
+        dynamicCpu = spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
 
         app_details_dynamic.setOnClickListener {
             if (!dynamicCpu) {

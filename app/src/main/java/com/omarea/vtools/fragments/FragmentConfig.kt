@@ -182,7 +182,7 @@ class FragmentConfig : Fragment() {
         }
 
         // 动态响应检测
-        val dynamicControl = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)
+        val dynamicControl = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
         first_mode.isEnabled = dynamicControl
         if (dynamicControl) {
             dynamic_control_opts.visibility = View.VISIBLE

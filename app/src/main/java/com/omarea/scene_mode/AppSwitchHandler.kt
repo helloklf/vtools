@@ -297,7 +297,7 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
         // 添加输入法到忽略列表
         ignoredList.addAll(InputMethodHelper(context).getInputMethods())
 
-        if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)) {
+        if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)) {
             if (configInstaller.configInstalled()) {
                 dyamicCore = true
                 CpuConfigInstaller().configCodeVerify()
