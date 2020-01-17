@@ -276,7 +276,7 @@
     <style name="InCardListItemOriginLast" parent="InCardListItemOrigin">
         <item name="android:layout_marginBottom">8dp</item>
     </style>
-    <style name="InCardListItem" parent="@style/AppThemeOrange">
+    <style name="InCardListItem" parent="@style/InCardListItemOrigin">
         <item name="android:layout_marginLeft">8dp</item>
         <item name="android:layout_marginRight">8dp</item>
     </style>
