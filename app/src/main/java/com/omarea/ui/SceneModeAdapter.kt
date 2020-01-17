@@ -127,13 +127,11 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
         val viewHolder = ViewHolder()
         viewHolder.itemTitle = convertView.findViewById(R.id.ItemTitle)
         viewHolder.enabledStateText = convertView.findViewById(R.id.ItemEnabledStateText)
-        viewHolder.itemText = convertView.findViewById(R.id.ItemText)
         viewHolder.itemDesc = convertView.findViewById(R.id.ItemDesc)
         viewHolder.imgView = convertView.findViewById(R.id.ItemIcon)
         viewHolder.imgView!!.setTag(getItem(position).packageName)
         // convertView.tag = viewHolder
         viewHolder.itemTitle!!.text = keywordHightLight(if (item.sceneConfigInfo.freeze) ("*" + item.appName) else item.appName.toString())
-        viewHolder.itemText!!.text = keywordHightLight(item.packageName.toString())
         if (item.icon == null) {
             loadIcon(viewHolder, item)
         } else {
@@ -180,7 +178,6 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
     inner class ViewHolder {
         internal var itemTitle: TextView? = null
         internal var imgView: ImageView? = null
-        internal var itemText: TextView? = null
         internal var itemDesc: TextView? = null
         internal var enabledStateText: TextView? = null
     }
