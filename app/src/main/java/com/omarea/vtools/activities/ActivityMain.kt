@@ -16,7 +16,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import com.omarea.vtools.services.BatteryService
 import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
@@ -30,11 +29,12 @@ import com.omarea.ui.TabIconHelper
 import com.omarea.utils.Update
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogPower
+import com.omarea.vtools.fragments.FragmentDonate
 import com.omarea.vtools.fragments.FragmentHome
 import com.omarea.vtools.fragments.FragmentNav
 import com.omarea.vtools.fragments.FragmentNotRoot
-import com.omarea.vtools.fragments.FragmentDonate
 import com.omarea.vtools.popup.FloatMonitor
+import com.omarea.vtools.services.BatteryService
 import kotlinx.android.synthetic.main.activity_main.*
 import java.lang.ref.WeakReference
 

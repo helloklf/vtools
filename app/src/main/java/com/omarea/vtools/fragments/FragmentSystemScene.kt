@@ -14,7 +14,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.CheckBox
+import android.widget.LinearLayout
+import android.widget.Switch
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.model.TimingTaskInfo
@@ -66,7 +68,7 @@ class FragmentSystemScene : Fragment() {
         updateNextTaskInfo()
     }
 
-    private var nextTask:TimingTaskInfo? = null // 下一个要执行的任务
+    private var nextTask: TimingTaskInfo? = null // 下一个要执行的任务
     private fun checkNextTask(it: TimingTaskInfo) {
         if (it.enabled) {
             if (nextTask == null || GetUpTime(it.triggerTimeMinutes).minutes < GetUpTime(nextTask!!.triggerTimeMinutes).minutes) {
@@ -200,7 +202,7 @@ class FragmentSystemScene : Fragment() {
         }
     }
 
-    private fun formateTime(time:Long): String {
+    private fun formateTime(time: Long): String {
         Log.d(">>>>time", "" + time)
         val days = time / (24 * 3600)
         val hours = time % (24 * 3600) / 3600

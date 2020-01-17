@@ -5,12 +5,10 @@ import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.*
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.provider.Settings
-import android.support.design.widget.Snackbar
 import android.support.v4.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
@@ -36,17 +34,12 @@ import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.utils.AppListHelper
 import com.omarea.vaddin.IAppConfigAidlInterface
 import com.omarea.vtools.R
-import com.omarea.vtools.activities.ActivityAddinOnline
 import com.omarea.vtools.activities.ActivityAdvSettings
 import com.omarea.vtools.activities.ActivityAppDetails
-import com.omarea.vtools.activities.ActivityFileSelector
 import kotlinx.android.synthetic.main.fragment_config.*
 import org.json.JSONObject
-import java.io.File
-import java.nio.charset.Charset
 import java.util.*
 import kotlin.collections.ArrayList
-
 
 class FragmentConfig : Fragment() {
     private lateinit var processBarDialog: ProgressBarDialog
@@ -61,7 +54,6 @@ class FragmentConfig : Fragment() {
     private lateinit var sceneConfigStore: SceneConfigStore
     private var firstMode = ModeSwitcher.DEFAULT
     private var aidlConn: IAppConfigAidlInterface? = null
-    private val configInstaller = CpuConfigInstaller()
 
     private var conn = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -156,7 +148,6 @@ class FragmentConfig : Fragment() {
         if (spfPowercfg.all.isEmpty()) {
             initDefaultConfig()
         }
-        checkConfig()
 
         btn_config_service_not_active.setOnClickListener {
             startService()
@@ -179,7 +170,7 @@ class FragmentConfig : Fragment() {
             Toast.makeText(context!!, "已自动清空耗电统计数据，以便于重新采集！", Toast.LENGTH_SHORT).show()
             reStartService()
         }
-        config_defaultlist.setOnItemClickListener { parent, view2, position, id ->
+        scene_app_list.setOnItemClickListener { parent, view2, position, id ->
             try {
                 val item = (parent.adapter.getItem(position) as Appinfo)
                 val intent = Intent(this.context, ActivityAppDetails::class.java)
@@ -189,7 +180,7 @@ class FragmentConfig : Fragment() {
             } catch (ex: Exception) {
             }
         }
-        config_defaultlist.setOnItemLongClickListener { parent, view, position, id ->
+        scene_app_list.setOnItemLongClickListener { parent, view, position, id ->
             val item = (parent.adapter.getItem(position) as Appinfo)
             var originIndex = 0
             when (spfPowercfg.getString(item.packageName.toString(), firstMode)) {
@@ -228,7 +219,7 @@ class FragmentConfig : Fragment() {
                             }
 
                             setAppRowDesc(item)
-                            (config_defaultlist.adapter as SceneModeAdapter).updateRow(position, view)
+                            (scene_app_list.adapter as SceneModeAdapter).updateRow(position, view)
                             notifyService(item.packageName.toString(), modeName)
                         }
                     }
@@ -258,7 +249,7 @@ class FragmentConfig : Fragment() {
         dynamic_control.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)
         dynamic_control.setOnClickListener {
             val value = (it as Switch).isChecked
-            if (value && !configInstaller.configInstalled()) {
+            if (value && !CpuConfigInstaller().configInstalled()) {
                 dynamic_control.isChecked = false
                 Toast.makeText(context, "你需要先安装配置脚本", Toast.LENGTH_SHORT).show()
             } else {
@@ -284,12 +275,6 @@ class FragmentConfig : Fragment() {
 
         bindSPF(dynamic_lock_mode, globalSPF, SpfConfig.GLOBAL_SPF_LOCK_MODE, false)
         bindSPF(settings_autoinstall, globalSPF, SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false)
-        config_customer_powercfg.setOnClickListener {
-            chooseLocalConfig()
-        }
-        config_customer_powercfg_online.setOnClickListener {
-            getOnlineConfig()
-        }
 
         config_adv.setOnClickListener {
             try {
@@ -306,8 +291,6 @@ class FragmentConfig : Fragment() {
         }
     }
 
-    private val REQUEST_POWERCFG_FILE = 1
-    private val REQUEST_POWERCFG_ONLINE = 2
     private val REQUEST_APP_CONFIG = 0
     private var lastClickRow: View? = null
 
@@ -316,42 +299,10 @@ class FragmentConfig : Fragment() {
         if (this.isDetached) {
             return
         }
-        if (requestCode == REQUEST_POWERCFG_FILE) {
-            if (resultCode == RESULT_OK && data != null) {
-                if (data.extras == null || !data.extras.containsKey("file")) {
-                    return
-                }
-                val path = data.extras.getString("file")
-                val file = File(path)
-                if (file.exists()) {
-                    if (file.length() > 200 * 1024) {
-                        Toast.makeText(context, "这个文件也太大了，配置脚本大小不能超过200KB！", Toast.LENGTH_LONG).show()
-                        return
-                    }
-                    val lines = file.readText(Charset.defaultCharset()).replace("\r", "")
-                    val configStar = lines.split("\n").firstOrNull()
-                    if (configStar != null && configStar.startsWith("#!/") && configStar.endsWith("sh")) {
-                        if (configInstaller.installCustomConfig(context!!, lines, "local file")) {
-                            configInstalled()
-                        } else {
-                            Toast.makeText(context, "由于某些原因，安装配置脚本失败，请重试！", Toast.LENGTH_LONG).show()
-                        }
-                    } else {
-                        Toast.makeText(context, "这似乎是个无效的脚本文件！", Toast.LENGTH_LONG).show()
-                    }
-                } else {
-                    Toast.makeText(context!!, "所选的文件没找到！", Toast.LENGTH_LONG).show()
-                }
-            }
-            return
-        } else if (requestCode == REQUEST_POWERCFG_ONLINE) {
-            if (resultCode == RESULT_OK) {
-                configInstalled()
-            }
-        } else if (requestCode == REQUEST_APP_CONFIG && data != null && displayList != null) {
+        if (requestCode == REQUEST_APP_CONFIG && data != null && displayList != null) {
             try {
                 if (resultCode == RESULT_OK) {
-                    val adapter = (config_defaultlist.adapter as SceneModeAdapter)
+                    val adapter = (scene_app_list.adapter as SceneModeAdapter)
                     var index = -1
                     val packageName = data.extras.getString("app")
                     for (i in 0 until displayList!!.size) {
@@ -364,7 +315,7 @@ class FragmentConfig : Fragment() {
                     }
                     val item = adapter.getItem(index)
                     setAppRowDesc(item)
-                    (config_defaultlist.adapter as SceneModeAdapter).updateRow(index, lastClickRow!!)
+                    (scene_app_list.adapter as SceneModeAdapter).updateRow(index, lastClickRow!!)
                     //loadList(false)
                 }
             } catch (ex: Exception) {
@@ -539,7 +490,7 @@ class FragmentConfig : Fragment() {
             sortAppList(displayList!!)
             myHandler.post {
                 processBarDialog.hideDialog()
-                setListData(displayList, config_defaultlist)
+                setListData(displayList, scene_app_list)
             }
             onLoading = false
         }).start()
@@ -601,152 +552,6 @@ class FragmentConfig : Fragment() {
             desc.append("滚动优化  ")
         }
         item.desc = desc.toString()
-    }
-
-    //检查配置脚本是否已经安装
-    private fun checkConfig() {
-        val support = configInstaller.dynamicSupport(context!!)
-        if (support) {
-            config_cfg_select.visibility = View.VISIBLE
-            config_cfg_select_0.setOnClickListener {
-                installConfig(false)
-            }
-            config_cfg_select_1.setOnClickListener {
-                installConfig(true)
-            }
-        }
-        when {
-            configInstaller.configInstalled() -> {
-                //TODO：检查是否更新
-            }
-            support -> {
-                var i = 0
-                DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setTitle(getString(R.string.first_start_select_config))
-                        .setCancelable(false)
-                        .setSingleChoiceItems(
-                                arrayOf(
-                                        getString(R.string.conservative),
-                                        getString(R.string.radicalness),
-                                        getString(R.string.get_online_config),
-                                        getString(R.string.choose_local_config),
-                                        getString(R.string.skipnow)
-                                ), 0) { _, which ->
-                            i = which
-                        }
-                        .setNegativeButton(R.string.btn_confirm) { _, _ ->
-                            if (i == 4) {
-                                // 跳过配置安装时，关闭性能调节
-                                globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, false).apply()
-                            } else if (i == 3) {
-                                chooseLocalConfig()
-                            } else if (i == 2) {
-                                getOnlineConfig()
-                            } else if (i == 1) {
-                                installConfig(true)
-                            } else if (i == 0) {
-                                installConfig(false)
-                            }
-                        })
-            }
-            else -> {
-                DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setTitle(getString(R.string.not_support_config))
-                        .setMessage(R.string.not_support_config_desc)
-                        .setPositiveButton(getString(R.string.get_online_config)) { _, _ ->
-                            getOnlineConfig()
-                        }
-                        .setNegativeButton(getString(R.string.more)) { _, _ ->
-                            val intent = Intent()
-                            //Intent intent = new Intent(Intent.ACTION_VIEW,uri);
-                            intent.action = "android.intent.action.VIEW"
-                            val content_url = Uri.parse("https://github.com/helloklf/vtools")
-                            intent.data = content_url
-                            startActivity(intent)
-                        })
-            }
-        }
-    }
-
-    private fun chooseLocalConfig() {
-        try {
-            val intent = Intent(this.context, ActivityFileSelector::class.java)
-            intent.putExtra("extension", "sh")
-            startActivityForResult(intent, REQUEST_POWERCFG_FILE)
-        } catch (ex: Exception) {
-            Toast.makeText(context!!, "启动内置文件选择器失败！", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun getOnlineConfig() {
-        var i = 0
-        DialogHelper.animDialog(AlertDialog.Builder(context)
-                .setTitle(getString(R.string.config_online_options))
-                .setCancelable(true)
-                .setSingleChoiceItems(
-                        arrayOf(
-                                getString(R.string.online_config_v1),
-                                getString(R.string.online_config_v2)
-                        ), 0) { _, which ->
-                    i = which
-                }
-                .setNegativeButton(R.string.btn_confirm) { _, _ ->
-                    if (i == 0) {
-                        getOnlineConfigV1()
-                    } else if (i == 1) {
-                        getOnlineConfigV2()
-                    }
-                })
-    }
-
-    private fun getOnlineConfigV1() {
-        try {
-            val intent = Intent(this.context, ActivityAddinOnline::class.java)
-            intent.putExtra("url", "https://github.com/yc9559/cpufreq-interactive-opt/tree/master/vtools-powercfg")
-            startActivityForResult(intent, REQUEST_POWERCFG_ONLINE)
-        } catch (ex: Exception) {
-            Toast.makeText(context!!, "启动在线页面失败！", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    private fun getOnlineConfigV2() {
-        try {
-            val intent = Intent(this.context, ActivityAddinOnline::class.java)
-            intent.putExtra("url", "https://github.com/yc9559/wipe-v2/releases")
-            startActivityForResult(intent, REQUEST_POWERCFG_ONLINE)
-        } catch (ex: Exception) {
-            Toast.makeText(context!!, "启动在线页面失败！", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    //安装调频文件
-    private fun installConfig(useBigCore: Boolean) {
-        if (context == null) return
-
-        if (!configInstaller.dynamicSupport(context!!)) {
-            Snackbar.make(view!!, R.string.not_support_config, Snackbar.LENGTH_LONG).show()
-            return
-        }
-
-        configInstaller.installOfficialConfig(context!!, "", useBigCore)
-        configInstalled()
-    }
-
-    private fun configInstalled() {
-        if (globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true)) {
-            Snackbar.make(view!!, getString(R.string.config_installed), Snackbar.LENGTH_LONG).show()
-            reStartService()
-        } else {
-            DialogHelper.animDialog(AlertDialog.Builder(context)
-                    .setMessage("配置脚本已安装，是否开启性能调节？")
-                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                        globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, true).apply()
-                        dynamic_control.isChecked = true
-                        reStartService()
-                    }
-                    .setNegativeButton(R.string.btn_cancel) { _, _ ->
-                    })
-        }
     }
 
     override fun onDestroy() {

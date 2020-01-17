@@ -1,8 +1,8 @@
 package com.omarea.scene_mode
 
 import android.app.IntentService
-import android.content.Intent
 import android.content.Context
+import android.content.Intent
 import com.omarea.data_collection.EventBus
 import com.omarea.data_collection.EventReceiver
 import com.omarea.data_collection.EventTypes

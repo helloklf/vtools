@@ -23,8 +23,8 @@ import com.omarea.common.ui.DialogHelper
 import com.omarea.model.SceneConfigInfo
 import com.omarea.permissions.NotificationListener
 import com.omarea.permissions.WriteSettings
-import com.omarea.scene_mode.ImmersivePolicyControl
 import com.omarea.scene_mode.CpuConfigInstaller
+import com.omarea.scene_mode.ImmersivePolicyControl
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig

@@ -1,10 +1,8 @@
 package com.omarea.charger_booster
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.BatteryManager
-import android.util.Log
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellAsync
 import com.omarea.data_collection.EventReceiver

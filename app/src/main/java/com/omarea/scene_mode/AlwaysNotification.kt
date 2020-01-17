@@ -10,10 +10,10 @@ import android.os.Build
 import android.support.v4.app.NotificationCompat
 import android.util.Log
 import android.widget.RemoteViews
+import com.omarea.data_collection.GlobalStatus
 import com.omarea.model.BatteryStatus
 import com.omarea.store.BatteryHistoryStore
 import com.omarea.store.SpfConfig
-import com.omarea.data_collection.GlobalStatus
 import com.omarea.vtools.R
 
 /**

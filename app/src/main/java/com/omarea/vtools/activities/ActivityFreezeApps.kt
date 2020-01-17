@@ -1,15 +1,12 @@
 package com.omarea.vtools.activities
 
 import android.graphics.Bitmap
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
 import android.support.v4.app.FragmentActivity
-import android.view.View
 import com.omarea.vtools.R
 import com.omarea.vtools.fragments.FragmentFreeze
 

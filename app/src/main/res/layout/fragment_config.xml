@@ -74,7 +74,7 @@
                         android:divider="@null"
                         android:background="@drawable/list_view_bg"
                         android:scrollbars="none"
-                        android:id="@+id/config_defaultlist"
+                        android:id="@+id/scene_app_list"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
                 </LinearLayout>
@@ -88,122 +88,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
-
-                        <LinearLayout style="@style/ListCardItem">
-
-                            <LinearLayout
-                                android:id="@+id/config_cfg_select"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="20dp"
-                                android:orientation="horizontal"
-                                android:visibility="gone">
-
-                                <LinearLayout
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="1"
-                                    android:orientation="vertical">
-
-                                    <TextView
-                                        style="@style/textTitle"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="安装内置配置脚本" />
-
-                                    <TextView
-                                        style="@style/textSmall"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="安装本应用内置的模式配置脚本，由本应用开发者提供" />
-                                </LinearLayout>
-
-                                <LinearLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_marginStart="20dp"
-                                    android:orientation="vertical">
-
-                                    <Button
-                                        android:id="@+id/config_cfg_select_0"
-                                        android:layout_width="75dp"
-                                        android:layout_height="30dp"
-                                        android:layout_gravity="center"
-                                        android:background="@android:color/transparent"
-                                        android:text="保守风格"
-                                        android:textColor="?colorAccent" />
-
-                                    <Button
-                                        android:id="@+id/config_cfg_select_1"
-                                        android:layout_width="75dp"
-                                        android:layout_height="30dp"
-                                        android:layout_gravity="center"
-                                        android:background="@android:color/transparent"
-                                        android:text="激进风格"
-                                        android:textColor="?colorAccent" />
-                                </LinearLayout>
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/config_cfg_customer"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center_vertical"
-                                android:orientation="horizontal">
-
-                                <LinearLayout
-                                    android:layout_width="0dp"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_weight="1"
-                                    android:gravity="center_vertical"
-                                    android:orientation="vertical">
-
-                                    <TextView
-                                        style="@style/textTitle"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginBottom="10dp"
-                                        android:text="自选配置脚本" />
-
-                                    <TextView
-                                        style="@style/textSmall"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:text="从SDCard下选择配置脚本，或在线获取YC提供的配置脚本" />
-                                </LinearLayout>
-
-                                <LinearLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center_vertical"
-                                    android:layout_marginStart="20dp"
-                                    android:gravity="center_vertical"
-                                    android:orientation="vertical">
-
-                                    <Button
-                                        android:id="@+id/config_customer_powercfg"
-                                        android:layout_width="75dp"
-                                        android:layout_height="30dp"
-                                        android:layout_gravity="center"
-                                        android:background="@android:color/transparent"
-                                        android:text="本地选择"
-                                        android:textColor="?colorAccent" />
-
-                                    <Button
-                                        android:id="@+id/config_customer_powercfg_online"
-                                        android:layout_width="75dp"
-                                        android:layout_height="30dp"
-                                        android:layout_gravity="center"
-                                        android:background="@android:color/transparent"
-                                        android:text="在线获取"
-                                        android:textColor="?colorAccent" />
-                                </LinearLayout>
-                            </LinearLayout>
-
-                        </LinearLayout>
 
                         <LinearLayout style="@style/ListCardItem">
 

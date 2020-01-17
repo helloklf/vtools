@@ -12,8 +12,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:padding="6dp">
+            android:orientation="vertical">
 
             <TextView
                 style="@style/textSmall"
@@ -32,6 +31,7 @@
 
         <ImageButton
             android:id="@+id/battery_stats_delete"
+            android:layout_marginLeft="6dp"
             style="?android:buttonBarButtonStyle"
             android:layout_width="40dp"
             android:layout_height="40dp"

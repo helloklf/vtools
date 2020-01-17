@@ -21,7 +21,6 @@ import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.model.Appinfo
 import com.omarea.permissions.CheckRootStatus
-import com.omarea.scene_mode.SceneMode
 import com.omarea.store.SpfConfig
 import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R

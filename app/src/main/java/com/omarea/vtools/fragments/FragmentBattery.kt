@@ -17,7 +17,6 @@ import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import com.omarea.charger_booster.BatteryInfo
-import com.omarea.vtools.services.BatteryService
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.data_collection.EventBus
@@ -25,6 +24,7 @@ import com.omarea.data_collection.EventTypes
 import com.omarea.shell_utils.BatteryUtils
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
+import com.omarea.vtools.services.BatteryService
 import kotlinx.android.synthetic.main.fragment_battery.*
 import java.util.*
 
@@ -268,14 +268,14 @@ class FragmentBattery : Fragment() {
                     .setPositiveButton(R.string.btn_confirm, DialogInterface.OnClickListener { dialog, which ->
                         KeepShellPublic.doCmdSync(
                                 "rm -f /data/system/batterystats-checkin.bin;" +
-                                "rm -f /data/system/batterystats-daily.xml;" +
-                                "rm -f /data/system/batterystats.bin;" +
-                                "rm -rf /data/system/battery-history;" +
-                                "rm -rf /data/charge_logger;" +
-                                "rm -rf /data/vendor/charge_logger;" +
-                                "sync;" +
-                                "sleep 2;" +
-                                "reboot;")
+                                        "rm -f /data/system/batterystats-daily.xml;" +
+                                        "rm -f /data/system/batterystats.bin;" +
+                                        "rm -rf /data/system/battery-history;" +
+                                        "rm -rf /data/charge_logger;" +
+                                        "rm -rf /data/vendor/charge_logger;" +
+                                        "sync;" +
+                                        "sleep 2;" +
+                                        "reboot;")
                     })
                     .setNegativeButton(R.string.btn_cancel, DialogInterface.OnClickListener { dialog, which -> }))
         }

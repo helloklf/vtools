@@ -16,7 +16,6 @@ import com.omarea.shell_utils.NetworkUtils
 import com.omarea.shell_utils.ZenModeUtils
 import com.omarea.vtools.R
 import com.omarea.vtools.services.CompileService
-import java.lang.Exception
 
 class TimingTaskExecutor(private val timingTask: TimingTaskInfo, private val context: Context) {
     private var nm = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager

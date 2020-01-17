@@ -1,9 +1,6 @@
 package com.omarea.vtools.activities
 
 import android.app.TimePickerDialog
-import android.content.Context
-import android.media.AudioManager
-import android.opengl.Visibility
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity

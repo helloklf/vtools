@@ -13,8 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:padding="6dp">
+            android:orientation="vertical">
 
             <TextView
                 style="@style/textSmall"
@@ -34,6 +33,7 @@
         <ImageButton
             android:id="@+id/freeze_menu"
             style="?android:buttonBarButtonStyle"
+            android:layout_marginLeft="6dp"
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_gravity="center"

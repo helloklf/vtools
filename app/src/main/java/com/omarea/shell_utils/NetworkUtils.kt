@@ -1,12 +1,8 @@
 package com.omarea.shell_utils
 
 import android.content.Context
-import android.os.Build
-import android.provider.Settings
-import com.omarea.common.shell.KeepShellPublic
-import java.lang.Compiler.enable
 import android.content.Intent
-
+import com.omarea.common.shell.KeepShellPublic
 
 
 // 飞行模式

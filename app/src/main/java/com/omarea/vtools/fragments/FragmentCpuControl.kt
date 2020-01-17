@@ -788,7 +788,7 @@ class FragmentCpuControl : Fragment() {
         cpu_apply_onboot.isChecked = statusOnBoot != null
 
         if (cpuModeName != null) {
-            val time  = System.currentTimeMillis()
+            val time = System.currentTimeMillis()
             ModeSwitcher().executePowercfgMode(context!!, cpuModeName!!)
             Log.e(">>>>", "" + (System.currentTimeMillis() - time))
 

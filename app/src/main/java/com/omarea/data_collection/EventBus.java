@@ -1,6 +1,7 @@
 package com.omarea.data_collection;
 
 import android.util.Log;
+
 import java.util.ArrayList;
 
 public class EventBus {

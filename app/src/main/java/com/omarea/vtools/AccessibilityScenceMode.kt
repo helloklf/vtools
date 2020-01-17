@@ -16,7 +16,6 @@ import android.view.KeyEvent
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityWindowInfo
 import android.widget.Toast
-import com.omarea.vtools.services.BatteryService
 import com.omarea.data_collection.EventBus
 import com.omarea.data_collection.EventTypes
 import com.omarea.data_collection.GlobalStatus

@@ -2,14 +2,13 @@ package com.omarea.scene_mode
 
 import android.content.ContentResolver
 import android.content.Context
-import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.model.SceneConfigInfo
-import com.omarea.store.SceneConfigStore
 import com.omarea.shell_utils.GApps
+import com.omarea.store.SceneConfigStore
 
 class SceneMode private constructor(context: Context, private var store: SceneConfigStore) {
     private var lastAppPackageName = "com.android.systemui"

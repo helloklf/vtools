@@ -1,15 +1,10 @@
 package com.omarea.store
 
 import android.content.Context
-import android.widget.Toast
-import com.omarea.common.shared.FileWrite
-import com.omarea.common.shell.KernelProrp
 import com.omarea.model.CpuStatus
-import com.omarea.model.TimingTaskInfo
 import com.omarea.shell_utils.CpuFrequencyUtil
 import com.omarea.shell_utils.GpuUtils
 import com.omarea.shell_utils.ThermalControlUtils
-import java.io.*
 
 /**
  * 存储和读取CPU配置，在开机自启动时用于修改CPU频率和调度

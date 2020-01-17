@@ -12,8 +12,8 @@ import android.view.View
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.permissions.CheckRootStatus
 import com.omarea.scene_mode.SceneMode
-import com.omarea.store.SpfConfig
 import com.omarea.shell_utils.GApps
+import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_quick_start.*
 import java.lang.ref.WeakReference

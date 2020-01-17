@@ -1,9 +1,7 @@
 package com.omarea.vtools.fragments
 
-import android.app.ActivityOptions
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
@@ -16,7 +14,6 @@ import android.widget.Toast
 import com.omarea.common.ui.ThemeMode
 import com.omarea.permissions.CheckRootStatus
 import com.omarea.shell_utils.BackupRestoreUtils
-import com.omarea.ui.NavItem
 import com.omarea.vtools.R
 import com.omarea.vtools.activities.AccessibilityKeySettings
 
@@ -38,9 +35,9 @@ class FragmentNav : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val nav = view.findViewById<LinearLayout>(R.id.nav)
-        for (index in 1..nav.childCount step 2){
+        for (index in 1..nav.childCount step 2) {
             val grid: GridLayout = nav.getChildAt(index) as GridLayout
-            for (index2 in 0 until grid.childCount){
+            for (index2 in 0 until grid.childCount) {
                 bindClickEvent(grid.getChildAt(index2))
             }
         }
