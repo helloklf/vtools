@@ -61,8 +61,8 @@ class ActivityTimingTask : AppCompatActivity() {
 
         oneOf(task_standby_on, task_standby_off)
         oneOf(task_airplane_mode_on, task_airplane_mode_off)
-        oneOf(task_wifi_on, task_wifi_on)
-        oneOf(task_gps_on, task_gps_on)
+        oneOf(task_wifi_on, task_wifi_off)
+        oneOf(task_gps_on, task_gps_off)
         oneOf(task_gprs_on, task_gprs_off)
 
         updateUI()
