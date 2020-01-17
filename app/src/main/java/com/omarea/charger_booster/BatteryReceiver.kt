@@ -12,6 +12,7 @@ import com.omarea.data_collection.EventTypes
 import com.omarea.data_collection.GlobalStatus
 import com.omarea.shell_utils.BatteryUtils
 import com.omarea.store.SpfConfig
+import com.omarea.utils.GetUpTime
 import java.util.*
 
 class BatteryReceiver(private var service: Context) : EventReceiver {
@@ -137,18 +138,7 @@ class BatteryReceiver(private var service: Context) : EventReceiver {
                     // 计算预期还需要充入多少电量（mAh）
                     val target = (targetRatio - currentCapacityRatio) / 100F * batteryCapacity
                     // 距离起床的剩余时间（小时）
-                    var timeRemaining = 0F
-                    // 和计算闹钟距离下一次还有多久响的逻辑有点像
-                    // 如果已经过了今天的起床时间，计算到明天的起床时间还有多久
-                    if (nowTimeValue > getUp) {
-                        // (24 * 60) => 1440
-                        // (今天剩余时间 + 明天的起床时间) / 60分钟 计算小时数
-                        timeRemaining = ((1440 - nowTimeValue) + getUp) / 60F
-                    }
-                    // 如果还没过今天的起床时间
-                    else {
-                        timeRemaining = (getUp - nowTimeValue) / 60F
-                    }
+                    var timeRemaining = GetUpTime(getUp).minutes / 60F
 
                     // 合理的充电速度 = 还需充入的电量(mAh) / timeRemaining
                     var limitValue = (target / timeRemaining).toInt()
