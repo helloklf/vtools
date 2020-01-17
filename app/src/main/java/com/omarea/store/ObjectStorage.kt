@@ -64,4 +64,12 @@ open class ObjectStorage<T : Serializable>(private val context: Context) {
         }
         return true
     }
+
+    protected open fun remove(configFile: String) {
+        val bootConfig = FileWrite.getPrivateFilePath(context, configFile)
+        val file = File(bootConfig)
+        if (file.exists()) {
+            file.delete()
+        }
+    }
 }

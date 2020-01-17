@@ -4,10 +4,22 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class TimingTaskInfo implements Serializable {
-    // 触发时间
-    public int triggerTime = 420;
+    public TimingTaskInfo() {}
+
+    public TimingTaskInfo(String taskId) {
+        this.taskId = taskId;
+    }
+
+    // 任务id
+    public String taskId;
+    // 任务名称
+    public String taskName;
+    // 是否启用
+    public boolean enabled;
+    // 触发时间 hours * 60 + minutes， 例如 6:30 表示为 6 * 60 + 30 = 390
+    public int triggerTimeMinutes = 420;
     // 重复周期（-1表示不重复）
-    public int period;
+    public int periodMillis;
     // 屏幕关闭后执行
     public boolean afterScreenOff;
     // 执行前请求确认

@@ -8,7 +8,11 @@ class TimingTaskStorage(private val context: Context) : ObjectStorage<TimingTask
         return super.load(configFile)
     }
 
-    override public fun save(obj: TimingTaskInfo?, configFile: String): Boolean {
-        return super.save(obj, configFile)
+    public fun save(obj: TimingTaskInfo): Boolean {
+        return super.save(obj, obj.taskId)
+    }
+
+    override public fun remove(configFile: String) {
+        super.remove(configFile)
     }
 }

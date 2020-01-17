@@ -1,34 +1,24 @@
 package com.omarea.vtools.activities
 
-import android.app.PendingIntent
 import android.app.TimePickerDialog
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.support.v4.app.FragmentActivity
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.AppCompatRadioButton
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.CheckBox
-import android.widget.Checkable
 import android.widget.CompoundButton
 import com.omarea.model.TaskAction
 import com.omarea.model.TimingTaskInfo
-import com.omarea.scene_mode.TimingTask
-import com.omarea.scene_mode.TimingTaskReceiver
-import com.omarea.store.SpfConfig
+import com.omarea.scene_mode.TimingTaskManager
 import com.omarea.store.TimingTaskStorage
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_timing_task.*
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ActivityTimingTask : AppCompatActivity() {
-    private lateinit var taskConfig: SharedPreferences
     private lateinit var timingTaskInfo: TimingTaskInfo
-    private var taskId = "scene_task_1"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,36 +37,48 @@ class ActivityTimingTask : AppCompatActivity() {
             finish()
         }
 
-        taskConfig = getSharedPreferences("", Context.MODE_PRIVATE)
+        // 读取或初始化任务模型
+        var taskId: String = "SCENE_TASK_" + UUID.randomUUID().toString()
+        intent?.run {
+            if (hasExtra("taskId")) {
+                intent.getStringExtra("taskId")?.run {
+                    taskId = this
+                }
+            }
+        }
+        val task = TimingTaskStorage(this@ActivityTimingTask).load(taskId)
+        timingTaskInfo = if (task == null) TimingTaskInfo(taskId) else task
 
+        // 时间选择
         taks_trigger_time.setOnClickListener {
             TimePickerDialog(this, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
                 taks_trigger_time.setText(String.format(getString(R.string.format_hh_mm), hourOfDay, minute))
-                timingTaskInfo.triggerTime = hourOfDay * 60 + minute
-            }, timingTaskInfo.triggerTime / 60, timingTaskInfo.triggerTime % 60, true).show()
+                timingTaskInfo.triggerTimeMinutes = hourOfDay * 60 + minute
+            }, timingTaskInfo.triggerTimeMinutes / 60, timingTaskInfo.triggerTimeMinutes % 60, true).show()
         }
 
-        val task = TimingTaskStorage(this).load(taskId)
-        timingTaskInfo = if (task == null) TimingTaskInfo() else task
-
+        // 设定当选关系
         oneOf(task_standby_on, task_standby_off)
         oneOf(task_airplane_mode_on, task_airplane_mode_off)
         oneOf(task_wifi_on, task_wifi_off)
         oneOf(task_gps_on, task_gps_off)
         oneOf(task_gprs_on, task_gprs_off)
 
+        // 更新选中状态
         updateUI()
     }
 
     private fun updateUI() {
         timingTaskInfo.run {
+            system_scene_task_enable.isChecked = enabled
+
             // 触发时间
-            val hourOfDay = triggerTime / 60
-            val minute = triggerTime % 60
+            val hourOfDay = triggerTimeMinutes / 60
+            val minute = triggerTimeMinutes % 60
             taks_trigger_time.setText(String.format(getString(R.string.format_hh_mm), hourOfDay, minute))
 
             // 重复周期
-            if (period < 1) {
+            if (periodMillis < 1) {
                 taks_once.isChecked = true
             } else {
                 taks_repeat.isChecked = true
@@ -148,7 +150,8 @@ class ActivityTimingTask : AppCompatActivity() {
 
     // 保存并关闭界面
     private fun saveConfigAndFinish() {
-        timingTaskInfo.period = if (taks_repeat.isChecked) (24 * 3600) else -1
+        timingTaskInfo.enabled = system_scene_task_enable.isChecked
+        timingTaskInfo.periodMillis = if (taks_repeat.isChecked) (24 * 3600 * 1000) else -1
         timingTaskInfo.afterScreenOff = task_after_screen_off.isChecked
         timingTaskInfo.beforeExecuteConfirm = task_before_execute_confirm.isChecked
         timingTaskInfo.batteryCapacityRequire = if(task_battery_capacity_require.isChecked) (task_battery_capacity.text).toString().toInt() else 0
@@ -167,13 +170,10 @@ class ActivityTimingTask : AppCompatActivity() {
             task_compile_speed.isChecked && add(TaskAction.COMPILE_SPEED)
             task_compile_everything.isChecked && add(TaskAction.COMPILE_EVERYTHING)
         }
-        TimingTaskStorage(this).save(timingTaskInfo, taskId)
+        // timingTaskInfo.taskId = taskId
 
-        val taskIntent = Intent(this.applicationContext, TimingTaskReceiver::class.java)
-        taskIntent.putExtra("taskId", taskId)
-        val pendingIntent = PendingIntent.getBroadcast(this.applicationContext, 0, taskIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        TimingTaskManager(this).setTask(timingTaskInfo)
 
-        TimingTask(this).cancelTask(pendingIntent).setExact(pendingIntent, 10000)
         finish()
     }
 
