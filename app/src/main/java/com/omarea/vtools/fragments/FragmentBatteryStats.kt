@@ -87,7 +87,11 @@ class FragmentBatteryStats : Fragment() {
                 battery_max_output_text.text = maxOutput.toString() + " mA"
                 battery_max_intput.setData(batteryInputMax.toFloat(), batteryInputMax - maxInput.toFloat())
                 battery_max_intput_text.text = maxInput.toString() + " mA"
-                battery_max_temperature.setData(batteryTemperatureMax.toFloat(), batteryTemperatureMax - maxTemperature.toFloat())
+                if (maxTemperature < 0) {
+                    battery_max_temperature.setData(batteryTemperatureMax.toFloat(), batteryTemperatureMax.toFloat())
+                } else {
+                    battery_max_temperature.setData(batteryTemperatureMax.toFloat(), batteryTemperatureMax - maxTemperature.toFloat())
+                }
                 battery_max_temperature_text.text = maxTemperature.toString() + "°C"
             } catch (ex: Exception) {
                 timer?.cancel()

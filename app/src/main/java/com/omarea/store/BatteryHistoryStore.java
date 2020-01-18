@@ -126,7 +126,7 @@ public class BatteryHistoryStore extends SQLiteOpenHelper {
     public ArrayList<BatteryAvgStatus> getAvgData(int batteryStatus) {
         try {
             SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-            Cursor cursor = sqLiteDatabase.rawQuery("select avg(io) AS io, avg(temperature) as temperature, package, mode, count(io) from battery_io where status = ? group by package, mode", new String[]{
+            Cursor cursor = sqLiteDatabase.rawQuery("select avg(io) AS io, avg(temperature) as temperature, package, mode, count(io) from battery_io where status = ? group by package, mode order by io", new String[]{
                     "" + batteryStatus
             });
             ArrayList<BatteryAvgStatus> data = new ArrayList<>();

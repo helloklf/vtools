@@ -92,7 +92,7 @@ class AdapterBatteryStats : BaseAdapter {
         convertView.findViewById<TextView>(R.id.itemTemperature).text = batteryStats.temperature.toString() + "°C"
         val time = (batteryStats.count * timerRate / 60.0).toInt()
         val total = batteryStats.count * batteryStats.io * timerRate / 3600.0
-        convertView.findViewById<TextView>(R.id.itemCounts).text = "基于 ${time} 分钟平均数据"
+        convertView.findViewById<TextView>(R.id.itemCounts).text = "前台运行 ${time} 分钟"
         loadIcon(convertView, batteryStats.packageName)
         return convertView
     }
