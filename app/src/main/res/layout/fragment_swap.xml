@@ -66,74 +66,95 @@
                         android:text="@string/swap_state_undefined" />
                     <TextView
                         android:id="@+id/txt_swap_size_display"
-                        android:layout_width="75dp"
+                        android:layout_width="71dp"
+                        android:layout_marginEnd="4dp"
                         android:textAlignment="textEnd"
                         android:layout_height="wrap_content"
-                        android:text="@string/swap_swap" />
+                        android:text="8192MB" />
                 </LinearLayout>
-
-                <SeekBar
-                    android:layout_marginTop="8dp"
-                    android:id="@+id/seekbar_swap_size"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:max="64"
-                    android:paddingStart="6dp"
-                    android:paddingEnd="6dp" />
 
                 <LinearLayout
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="8dp"
-                    android:gravity="end"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
+                    <SeekBar
+                        android:id="@+id/seekbar_swap_size"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:max="64"
+                        android:paddingStart="6dp"
+                        android:paddingEnd="6dp" />
                     <Button
                         android:id="@+id/btn_swap_create"
                         style="@style/sceneSmallButton"
-                        android:layout_marginEnd="6dp"
                         android:text="@string/swap_create" />
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content">
+                        <CheckBox
+                            android:id="@+id/chk_swap_preferred"
+                            style="@style/textDefault"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/swap_preferred" />
 
-                    <Button
-                        android:id="@+id/btn_swap_start"
-                        style="@style/sceneSmallButton"
-                        android:layout_marginEnd="6dp"
-                        android:text="@string/swap_start" />
+                        <CheckBox
+                            android:id="@+id/chk_swap_use_loop"
+                            style="@style/textDefault"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/swap_use_loop" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
 
+                        <Button
+                            android:id="@+id/btn_swap_start"
+                            style="@style/sceneSmallButton"
+                            android:layout_marginStart="6dp"
+                            android:text="@string/swap_start" />
+
+
+                        <Button
+                            android:layout_marginStart="6dp"
+                            android:id="@+id/btn_swap_delete"
+                            style="@style/sceneSmallButton"
+                            android:text="@string/swap_delete" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <CheckBox
+                        android:id="@+id/chk_swap_autostart"
+                        style="@style/textDefault"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/swap_auto_start" />
                     <Button
                         android:id="@+id/btn_swap_close"
                         style="@style/sceneSmallButton"
-                        android:layout_marginEnd="6dp"
+                        android:layout_marginStart="6dp"
                         android:text="@string/swap_stop" />
-
-                    <Button
-                        android:id="@+id/btn_swap_delete"
-                        style="@style/sceneSmallButton"
-                        android:text="@string/swap_delete" />
                 </LinearLayout>
-
-                <CheckBox
-                    android:id="@+id/chk_swap_preferred"
-                    style="@style/textDefault"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/swap_preferred" />
-
-                <CheckBox
-                    android:id="@+id/chk_swap_use_loop"
-                    style="@style/textDefault"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/swap_use_loop" />
-
-                <CheckBox
-                    android:id="@+id/chk_swap_autostart"
-                    style="@style/textDefault"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/swap_auto_start" />
 
                 <TextView
                     style="@style/textSmall"
@@ -158,19 +179,29 @@
 
                     <TextView
                         style="@style/textTitle"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/swap_zram" />
                     <TextView
-                        android:id="@+id/txt_zram_size_display"
-                        android:layout_width="wrap_content"
+                        android:id="@+id/zram_state"
+                        android:textAlignment="textEnd"
+                        android:textColor="?android:colorAccent"
+                        style="@style/textDefault"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="@string/swap_swap" />
+                        android:layout_weight="1"
+                        android:text="@string/swap_state_undefined" />
+                    <TextView
+                        android:layout_width="71dp"
+                        android:layout_marginEnd="4dp"
+                        android:textAlignment="textEnd"
+                        android:id="@+id/txt_zram_size_display"
+                        android:layout_height="wrap_content"
+                        android:text="0MB" />
                 </LinearLayout>
 
                 <SeekBar
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:id="@+id/seekbar_zram_size"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

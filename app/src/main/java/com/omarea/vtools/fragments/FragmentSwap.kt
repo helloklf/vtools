@@ -122,6 +122,12 @@ class FragmentSwap : Fragment() {
             }
         }
 
+        if (swapUtils.zramEnabled) {
+            zram_state.setText(getString(R.string.swap_state_using))
+        } else {
+            zram_state.setText(getString(R.string.swap_state_created))
+        }
+
         swap_auto_lmk.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, false)
         val lmk = KernelProrp.getProp("/sys/module/lowmemorykiller/parameters/minfree")
         swap_lmk_current.text = lmk
@@ -251,10 +257,10 @@ class FragmentSwap : Fragment() {
             val run = Runnable {
                 swapUtils.swapDelete()
 
-                myHandler.post({
+                myHandler.post {
                     processBarDialog.hideDialog()
                     getSwaps()
-                })
+                }
             }
             Thread(run).start()
         }
@@ -278,13 +284,13 @@ class FragmentSwap : Fragment() {
             var selectedIndex = options.indexOf(current)
             DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle(R.string.swap_zram_comp_options)
-                    .setSingleChoiceItems(options, selectedIndex, { _, index ->
+                    .setSingleChoiceItems(options, selectedIndex) { _, index ->
                         selectedIndex = index
-                    })
-                    .setNeutralButton(R.string.btn_help, { _, _ ->
+                    }
+                    .setNeutralButton(R.string.btn_help) { _, _ ->
                         DialogHelper.helpInfo(context!!, R.string.help, R.string.swap_zram_comp_algorithm_desc)
-                    })
-                    .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                    }
+                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
                         val algorithm = options.get(selectedIndex)
                         swapUtils.compAlgorithm = algorithm
                         swapConfig.edit().putString(SpfConfig.SWAP_SPF_ALGORITHM, algorithm).apply()
@@ -299,7 +305,7 @@ class FragmentSwap : Fragment() {
                             (it as TextView).text = swapUtils.compAlgorithm
                         }
                         //
-                    }))
+                    })
         }
     }
 
@@ -308,7 +314,6 @@ class FragmentSwap : Fragment() {
         processBarDialog.hideDialog()
     }
 
-    @SuppressLint("ApplySharedPref")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -322,16 +327,16 @@ class FragmentSwap : Fragment() {
 
             val run = Runnable {
                 val startTime = System.currentTimeMillis()
-                myHandler.post({
+                myHandler.post {
                     processBarDialog.showDialog(getString(R.string.file_creating))
-                })
+                }
                 swapUtils.mkswap(size)
                 myHandler.post(getSwaps)
                 val time = System.currentTimeMillis() - startTime
-                myHandler.post({
+                myHandler.post {
                     processBarDialog.hideDialog()
                     Toast.makeText(context, "Swapfile创建完毕，耗时${time / 1000}s，平均写入速度：${(size * 1000.0 / time).toInt()}MB/s", Toast.LENGTH_LONG).show()
-                })
+                }
             }
             Thread(run).start()
         }
@@ -343,7 +348,7 @@ class FragmentSwap : Fragment() {
             val edit = swapConfig.edit()
             edit.putBoolean(SpfConfig.SWAP_SPF_SWAP, autostart)
             edit.putBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, hightPriority)
-            edit.commit()
+            edit.apply()
 
             processBarDialog.showDialog("稍等...")
             Thread(Runnable {
@@ -357,54 +362,50 @@ class FragmentSwap : Fragment() {
         btn_zram_resize.setOnClickListener {
             val sizeVal = seekbar_zram_size.progress * 128
 
-            if (sizeVal < 8192 && sizeVal > -1) {
-                processBarDialog.showDialog(getString(R.string.zram_resizing))
+            processBarDialog.showDialog(getString(R.string.zram_resizing))
 
-                val run = Thread({
-                    val algorithm = swapConfig.getString(SpfConfig.SWAP_SPF_ALGORITHM, "")
-                    swapUtils.resizeZram(sizeVal, algorithm!!)
+            val run = Thread {
+                val algorithm = swapConfig.getString(SpfConfig.SWAP_SPF_ALGORITHM, "")
+                swapUtils.resizeZram(sizeVal, algorithm!!)
 
-                    myHandler.post(getSwaps)
-                    myHandler.post {
-                        processBarDialog.hideDialog()
-                    }
-                })
-                Thread(run).start()
-                swapConfig.edit().putInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, sizeVal).commit()
-            } else {
-                Snackbar.make(this.view, getString(R.string.zram_size_area), Snackbar.LENGTH_LONG).show()
+                myHandler.post(getSwaps)
+                myHandler.post {
+                    processBarDialog.hideDialog()
+                }
             }
+            Thread(run).start()
+            swapConfig.edit().putInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, sizeVal).apply()
         }
 
         chk_swap_preferred.setOnCheckedChangeListener { _, isChecked ->
             Toast.makeText(context, "该选项会在下次启动Swap时生效，而不是现在！", Toast.LENGTH_SHORT).show()
-            swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, isChecked).commit()
+            swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, isChecked).apply()
         }
         chk_zram_autostart.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 Toast.makeText(context, "注意：你需要允许Scene自启动，下次开机才会生效！", Toast.LENGTH_SHORT).show()
             }
-            swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_ZRAM, isChecked).commit()
+            swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_ZRAM, isChecked).apply()
         }
         chk_swap_autostart.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 Toast.makeText(context, "注意：你需要允许Scene自启动，下次开机才会生效！", Toast.LENGTH_SHORT).show()
             }
-            swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP, isChecked).commit()
+            swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP, isChecked).apply()
         }
         chk_swap_use_loop.setOnClickListener {
             if ((it as CheckBox).isChecked) {
                 DialogHelper.animDialog(AlertDialog.Builder(context!!)
                         .setTitle(R.string.swap_use_loop)
                         .setMessage(R.string.swap_use_loop_desc)
-                        .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             it.isChecked = true
                             swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, true).apply()
-                        })
-                        .setNeutralButton(R.string.btn_cancel, { _, _ ->
+                        }
+                        .setNeutralButton(R.string.btn_cancel) { _, _ ->
                             it.isChecked = false
                             swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false).apply()
-                        })
+                        }
                         .setCancelable(false))
             } else {
                 swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false).apply()
