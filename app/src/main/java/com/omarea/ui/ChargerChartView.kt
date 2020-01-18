@@ -11,7 +11,7 @@ import android.view.View
 import android.view.animation.DecelerateInterpolator
 import com.omarea.vtools.R
 
-class CpuChartView : View {
+class ChargerChartView : View {
     //-------------必须给的数据相关-------------
     private val str = arrayOf("已用", "可用")
     private var ratio = 0
@@ -156,14 +156,16 @@ class CpuChartView : View {
         }
         */
         // cyclePaint!!.alpha = 255
-        if (ratioState > 85) {
+        if (ratioState > 70) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_veryhight)
-        } else if (ratioState > 65) {
+        } else if (ratioState > 55) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_hight)
-        } else if (ratioState > 20) {
+        } else if (ratioState > 40) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_mid)
-        } else {
+        } else if (ratioState > 20) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_low)
+        } else {
+            cyclePaint!!.color = resources.getColor(R.color.color_load_none)
         }
 
         /*

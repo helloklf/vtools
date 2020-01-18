@@ -11,19 +11,25 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.omarea.model.BatteryAvgStatus
 import com.omarea.scene_mode.ModeSwitcher
-import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
-import java.util.*
+import kotlin.math.abs
 
-class AdapterBatteryStats(private val context: Context, private val list: ArrayList<BatteryAvgStatus>?) : BaseAdapter() {
-    private var accuMode: Boolean = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
+class AdapterBatteryStats : BaseAdapter {
+    private var context: Context
+    private var list: List<BatteryAvgStatus>
     private var timerRate: Int
+
+    constructor(context: Context, list: List<BatteryAvgStatus>, timerRate: Int) {
+        this.timerRate = timerRate
+        this.context = context
+        this.list = list
+    }
     override fun getCount(): Int {
-        return list?.size ?: 0
+        return list.size ?: 0
     }
 
     override fun getItem(position: Int): BatteryAvgStatus {
-        return list!![position]
+        return list[position]
     }
 
     override fun getItemId(position: Int): Long {
@@ -82,16 +88,12 @@ class AdapterBatteryStats(private val context: Context, private val list: ArrayL
                 modeView.setTextColor(Color.parseColor("#00B78A"))
             }
         }
-        convertView.findViewById<TextView>(R.id.itemAvgIO).text = batteryStats.io.toString() + "mA"
+        convertView.findViewById<TextView>(R.id.itemAvgIO).text = (abs(batteryStats.io)).toString() + "mA"
         convertView.findViewById<TextView>(R.id.itemTemperature).text = batteryStats.temperature.toString() + "°C"
         val time = (batteryStats.count * timerRate / 60.0).toInt()
         val total = batteryStats.count * batteryStats.io * timerRate / 3600.0
-        convertView.findViewById<TextView>(R.id.itemCounts).text = "约${time}分钟,耗电" + String.format("%.1f", total) + "mAh"
+        convertView.findViewById<TextView>(R.id.itemCounts).text = "基于 ${time} 分钟平均数据"
         loadIcon(convertView, batteryStats.packageName)
         return convertView
-    }
-
-    init {
-        timerRate = if (accuMode) 2 else 6
     }
 }

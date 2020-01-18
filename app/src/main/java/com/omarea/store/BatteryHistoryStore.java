@@ -62,10 +62,73 @@ public class BatteryHistoryStore extends SQLiteOpenHelper {
         }
     }
 
-    public ArrayList<BatteryAvgStatus> getAvgData(long timeStart) {
+    public int getMaxTemperature() {
+        SQLiteDatabase database = getWritableDatabase();
+        getWritableDatabase().beginTransaction();
+        try {
+            Cursor cursor = database.rawQuery("select max(temperature) AS io from battery_io", new String[]{});
+            ArrayList<BatteryAvgStatus> data = new ArrayList<>();
+            int temperature = 0;
+            while (cursor.moveToNext()) {
+                temperature = cursor.getInt(0);
+            }
+            cursor.close();
+            return temperature;
+        } catch (Exception ignored) {
+        } finally {
+            database.endTransaction();
+        }
+        return 0;
+    }
+
+    public int getMaxIO(int batteryStatus) {
+        SQLiteDatabase database = getWritableDatabase();
+        getWritableDatabase().beginTransaction();
+        try {
+            Cursor cursor = database.rawQuery("select max(io) AS io from battery_io where status = ? ", new String[]{
+                    "" + batteryStatus
+            });
+            ArrayList<BatteryAvgStatus> data = new ArrayList<>();
+            int io = 0;
+            while (cursor.moveToNext()) {
+                io = cursor.getInt(0);
+            }
+            cursor.close();
+            return io;
+        } catch (Exception ignored) {
+        } finally {
+            database.endTransaction();
+        }
+        return 0;
+    }
+
+    public int getMinIO(int batteryStatus) {
+        SQLiteDatabase database = getWritableDatabase();
+        getWritableDatabase().beginTransaction();
+        try {
+            Cursor cursor = database.rawQuery("select min(io) AS io from battery_io where status = ? ", new String[]{
+                    "" + batteryStatus
+            });
+            ArrayList<BatteryAvgStatus> data = new ArrayList<>();
+            int io = 0;
+            while (cursor.moveToNext()) {
+                io = cursor.getInt(0);
+            }
+            cursor.close();
+            return io;
+        } catch (Exception ignored) {
+        } finally {
+            database.endTransaction();
+        }
+        return 0;
+    }
+
+    public ArrayList<BatteryAvgStatus> getAvgData(int batteryStatus) {
         try {
             SQLiteDatabase sqLiteDatabase = getReadableDatabase();
-            Cursor cursor = sqLiteDatabase.rawQuery("select avg(io) AS io, avg(temperature) as temperature, package, mode, count(io) from battery_io group by package, mode", new String[]{});
+            Cursor cursor = sqLiteDatabase.rawQuery("select avg(io) AS io, avg(temperature) as temperature, package, mode, count(io) from battery_io where status = ? group by package, mode", new String[]{
+                    "" + batteryStatus
+            });
             ArrayList<BatteryAvgStatus> data = new ArrayList<>();
             while (cursor.moveToNext()) {
                 BatteryAvgStatus batteryAvgStatus = new BatteryAvgStatus();

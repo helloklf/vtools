@@ -114,7 +114,7 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
             batteryHistoryStore = BatteryHistoryStore(context)
         }
 
-        if (saveLog && GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_DISCHARGING) {
+        if (saveLog) {
             val status = BatteryStatus()
             status.packageName = packageName
             status.mode = mode
