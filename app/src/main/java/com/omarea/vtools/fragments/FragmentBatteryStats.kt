@@ -103,9 +103,6 @@ class FragmentBatteryStats : Fragment() {
     private fun loadData() {
         val storage = BatteryHistoryStore(context!!)
         val data = storage.getAvgData(BatteryManager.BATTERY_STATUS_DISCHARGING)
-        data.sortBy {
-            -(it.io * it.count)
-        }
 
         val accuMode = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
         val sampleTime = if (accuMode) 2 else 6
