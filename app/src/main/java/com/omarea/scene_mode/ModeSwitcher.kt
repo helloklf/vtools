@@ -13,6 +13,8 @@ import com.omarea.vtools.R
  */
 
 open class ModeSwitcher {
+    private var inited = false
+
     companion object {
         const val POWER_CFG_PATH = "/data/powercfg.sh"
         const val POWER_CFG_BASE = "/data/powercfg-base.sh"
@@ -23,6 +25,7 @@ open class ModeSwitcher {
         internal var FAST = "fast"
         internal var BALANCE = "balance"
         internal var IGONED = "igoned"
+        private var INIT = "init"
 
         internal fun getModName(mode: String): String {
             when (mode) {
@@ -98,7 +101,20 @@ open class ModeSwitcher {
         KeepShellPublic.doCmdSync(cmd)
     }
 
+    internal fun initPowercfg(context: Context): ModeSwitcher {
+        if (CpuConfigInstaller().configInstalled()) {
+            keepShellExec("sh $POWER_CFG_PATH $INIT")
+            setCurrentPowercfg("")
+        }
+        inited = true
+        return this
+    }
+
     internal fun executePowercfgMode(context: Context, mode: String): ModeSwitcher {
+        if (!inited) {
+            initPowercfg(context)
+        }
+
         val cpuConfigStorage = CpuConfigStorage(context)
         val replaced = cpuConfigStorage.load(mode)
         if (replaced != null) {

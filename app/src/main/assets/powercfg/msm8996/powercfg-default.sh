@@ -1,6 +1,11 @@
 #!/system/bin/sh
 
 action=$1
+if [[ "$action" = "init" ]] && [[ -f '/data/powercfg-base.sh' ]]; then
+    sh /data/powercfg-base.sh
+	exit 0
+fi
+
 stop perfd
 
 governor0=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`

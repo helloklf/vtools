@@ -22,10 +22,6 @@ object CommonCmds {
                     "busybox mount -o rw,remount /vendor 2>/dev/null\n" +
                     "mount -o rw,remount /vendor 2>/dev/null\n"
 
-    const val POWER_CFG_BASE = "/data/powercfg-base.sh"
-
-    const val ExecuteConfig = "sh ${POWER_CFG_BASE};\n"
-
     const val DisableSELinux = "setenforce 0;\n"
     const val ResumeSELinux = "setenforce 1;\n"
 }

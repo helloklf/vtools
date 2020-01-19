@@ -1,5 +1,10 @@
 #!/system/bin/sh
+
 action=$1
+if [[ "$action" = "init" ]] && [[ -f '/data/powercfg-base.sh' ]]; then
+    sh /data/powercfg-base.sh
+	exit 0
+fi
 
 # /sys/devices/system/cpu/cpufreq/mp-cpufreq/cluster0_freq_table
 # 1690000 1586000 1482000 1378000 1274000 1170000 1066000 962000 858000 754000 650000 546000 442000 338000
@@ -62,7 +67,7 @@ cpuset
 lock_value 0 /sys/devices/system/cpu/cpu0/cpufreq/interactive/boost
 lock_value 0 /sys/devices/system/cpu/cpu4/cpufreq/interactive/boost
 
-if [ "$action" = "powersave" ]; then
+if [[ "$action" = "powersave" ]]; then
     set_value 6 /sys/devices/system/cpu/cpuhotplug/max_online_cpu
     disabled_hotplug
     set_value 1 /sys/devices/system/cpu/cpu4/online
@@ -102,7 +107,7 @@ set_value 1 /sys/devices/system/cpu/cpu5/online
 set_value 1 /sys/devices/system/cpu/cpu6/online
 set_value 1 /sys/devices/system/cpu/cpu7/online
 
-if [ "$action" = "balance" ]; then
+if [[ "$action" = "balance" ]]; then
     set_value 100000 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
     set_value 1690000 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
     set_value 100000 /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq
@@ -128,7 +133,7 @@ if [ "$action" = "balance" ]; then
 	exit 0
 fi
 
-if [ "$action" = "performance" ]; then
+if [[ "$action" = "performance" ]]; then
 	set_value 100000 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 	set_value 1900000 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
 	set_value 100000 /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq
@@ -156,7 +161,7 @@ if [ "$action" = "performance" ]; then
 	exit 0
 fi
 
-if [ "$action" = "fast" ]; then
+if [[ "$action" = "fast" ]]; then
 	set_value 100000 /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq
 	set_value 3000000 /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
 	set_value 1248000 /sys/devices/system/cpu/cpu4/cpufreq/scaling_min_freq

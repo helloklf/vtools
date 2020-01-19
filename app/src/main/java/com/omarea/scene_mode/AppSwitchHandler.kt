@@ -302,7 +302,7 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
             if (configInstaller.configInstalled() || allModeReplaced(context)) {
                 dyamicCore = true
                 CpuConfigInstaller().configCodeVerify()
-                KeepShellPublic.doCmdSync(CommonCmds.ExecuteConfig)
+                initPowercfg(context)
             } else {
                 dyamicCore = false
             }

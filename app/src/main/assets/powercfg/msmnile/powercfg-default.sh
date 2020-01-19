@@ -1,6 +1,11 @@
 #!/system/bin/sh
 
 action=$1
+if [[ "$action" = "init" ]] && [[ -f '/data/powercfg-base.sh' ]]; then
+    sh /data/powercfg-base.sh
+	exit 0
+fi
+
 stop perfd
 
 echo 0 > /sys/module/msm_thermal/core_control/enabled

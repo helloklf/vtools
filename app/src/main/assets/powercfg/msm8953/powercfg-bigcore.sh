@@ -1,6 +1,10 @@
 #!/system/bin/sh
 
 action=$1
+if [[ "$action" = "init" ]] && [[ -f '/data/powercfg-base.sh' ]]; then
+    sh /data/powercfg-base.sh
+	exit 0
+fi
 
 governor=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
 if [ ! "$governor" = "interactive" ]; then

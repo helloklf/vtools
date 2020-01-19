@@ -1,6 +1,10 @@
 #!/system/bin/sh
 
 action=$1
+if [[ "$action" = "init" ]] && [[ -f '/data/powercfg-base.sh' ]]; then
+    sh /data/powercfg-base.sh
+	exit 0
+fi
 
 echo 1 > /sys/devices/system/cpu/cpu0/online
 echo 1 > /sys/devices/system/cpu/cpu1/online
