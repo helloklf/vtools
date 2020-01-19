@@ -64,7 +64,7 @@ class BatteryReceiver(private var service: Context) : EventReceiver {
             }
 
             // 夜间慢速充电
-            val isSleepTime = sleepChargeMode(GlobalStatus.batteryCapacity, bpLevel, qcLimit)
+            val isSleepTime = sleepChargeMode(GlobalStatus.batteryCapacity, if (bpAllowed) bpLevel else 100, qcLimit)
 
             // 充电加速
             if (!isSleepTime) {
