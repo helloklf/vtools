@@ -6,24 +6,25 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.provider.Settings
 import android.support.v4.app.Fragment
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.LinearLayout
-import android.widget.Switch
+import android.view.*
+import android.widget.*
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
+import com.omarea.model.Appinfo
 import com.omarea.model.TimingTaskInfo
 import com.omarea.scene_mode.ModeSwitcher
+import com.omarea.scene_mode.SceneStandbyMode
 import com.omarea.scene_mode.TimingTaskManager
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
+import com.omarea.ui.AppMultipleChoiceAdapter
+import com.omarea.ui.SceneModeAdapter
 import com.omarea.ui.SceneTaskItem
 import com.omarea.ui.TabIconHelper
 import com.omarea.utils.AccessibleServiceHelper
@@ -174,6 +175,64 @@ class FragmentSystemScene : Fragment() {
             val intent = Intent(activity, ActivityTimingTask::class.java)
             startActivity(intent)
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            system_scene_standby_apps.visibility = View.VISIBLE
+            system_scene_standby_apps.setOnClickListener {
+                standbyAppConfig()
+            }
+        } else {
+            system_scene_standby_apps.visibility = View.GONE
+        }
+    }
+
+    // 设置待机模式的应用
+    private fun standbyAppConfig() {
+        processBarDialog.showDialog()
+        val context = context!!
+        Thread(Runnable{
+            val configFile = context.getSharedPreferences(SceneStandbyMode.configSpfName, Context.MODE_PRIVATE)
+            val whiteList = context.resources.getStringArray(R.array.scene_standby_white_list)
+            val view = LayoutInflater.from(context).inflate(R.layout.layout_standby_apps, null)
+            val apps = AppListHelper(context).getAll().filter {
+                !whiteList.contains(it.packageName)
+            }.sortedBy {
+                it.appType
+            }.map {
+                it.apply {
+                    selectState = configFile.getBoolean(packageName.toString(), it.appType == Appinfo.AppType.USER && !it.updated)
+                }
+            }
+
+            myHandler.post {
+                processBarDialog.hideDialog()
+                val listview = view.findViewById<ListView>(R.id.standby_apps)
+                val adapter = AppMultipleChoiceAdapter(listview, apps)
+                listview.adapter = adapter
+
+                DialogHelper.animDialog(AlertDialog.Builder(context).setCancelable(false)
+                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                            saveStandbyAppConfig(adapter.getAll())
+                        }.setNeutralButton(R.string.btn_cancel) { _, _ -> }.setView(view)
+                )
+            }
+        }).start()
+    }
+
+    // 保存休眠应用配置
+    private fun saveStandbyAppConfig(apps: List<Appinfo>) {
+        val configFile = context!!.getSharedPreferences(SceneStandbyMode.configSpfName, Context.MODE_PRIVATE).edit()
+        configFile.clear()
+
+        apps.forEach {
+            if (it.selectState && it.appType == Appinfo.AppType.SYSTEM) {
+                configFile.putBoolean(it.packageName.toString(), true)
+            } else if ((!it.selectState) && it.appType == Appinfo.AppType.USER) {
+                configFile.putBoolean(it.packageName.toString(), false)
+            }
+        }
+
+        configFile.apply()
     }
 
     private fun buildCustomTaskItemView(timingTaskInfo: TimingTaskInfo): SceneTaskItem {

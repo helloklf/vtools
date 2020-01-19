@@ -8,11 +8,12 @@ import android.graphics.drawable.Drawable;
  */
 
 public class Appinfo {
+    public Boolean selectState = false;
+
     public CharSequence appName = "";
     public CharSequence packageName = "";
     public Drawable icon = null;
     public CharSequence enabledState = "";
-    public Boolean selectState = false;
     public CharSequence path = "";
     public CharSequence dir = "";
     public Boolean enabled = false;

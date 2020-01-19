@@ -8,20 +8,23 @@ import com.omarea.utils.AppListHelper
 import com.omarea.vtools.R
 
 class SceneStandbyMode(private val context: Context, private val keepShell: KeepShell) {
+    companion object {
+        public val configSpfName = "SceneStandbyList"
+    }
     private val stateProp = "persist.vtools.suspend"
 
     public fun getCmds(on: Boolean): String {
         val apps = AppListHelper(context).getAll()
         val command = if (on) "suspend" else "unsuspend"
 
-        val blackListConfig = context.getSharedPreferences("SceneStandbyList", Context.MODE_PRIVATE)
+        val blackListConfig = context.getSharedPreferences(configSpfName, Context.MODE_PRIVATE)
         val whiteList = context.resources.getStringArray(R.array.scene_standby_white_list)
         val cmds = StringBuffer()
         for (app in apps) {
             if (!whiteList.contains(app.packageName)) {
                 if (
-                        (app.appType == SYSTEM && blackListConfig.getBoolean(app.packageName.toString(), false)) ||
-                        (app.appType == USER && blackListConfig.getBoolean(app.packageName.toString(), true))
+                        ((app.appType == SYSTEM || app.updated) && blackListConfig.getBoolean(app.packageName.toString(), false)) ||
+                        (app.appType == USER && (!app.updated) && blackListConfig.getBoolean(app.packageName.toString(), true))
                 ) {
                     cmds.append("pm ")
                     cmds.append(command)

@@ -352,14 +352,51 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <TextView
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="20dp"
-                        android:text="敬请期待"
-                        android:textAlignment="center">
+                        android:orientation="vertical">
+                        <LinearLayout
+                            android:id="@+id/system_scene_standby_apps"
+                            style="@style/ListCardItemClickable"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
 
-                    </TextView>
+                            <LinearLayout
+                                android:orientation="vertical"
+                                android:layout_weight="1"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content">
+                                <TextView
+                                    android:text="待机模式名单"
+                                    style="@style/textTitle"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content" />
+                                <TextView
+                                    android:layout_marginTop="4dp"
+                                    android:text="设置待机模式要休眠的应用"
+                                    style="@style/textSmall"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content" />
+                            </LinearLayout>
+
+                            <ImageView
+                                android:src="@drawable/kr_picker"
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:alpha="0.8"
+                                android:padding="5dp"
+                                android:tint="?colorAccent" />
+                        </LinearLayout>
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="20dp"
+                            android:text="更多功能，敬请期待"
+                            android:textAlignment="center" />
+                    </LinearLayout>
                 </com.omarea.common.ui.OverScrollView>
             </FrameLayout>
 
