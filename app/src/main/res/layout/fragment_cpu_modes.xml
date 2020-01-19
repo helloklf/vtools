@@ -325,7 +325,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:visibility="gone"
                 android:id="@+id/cpu_config_p3"
                 style="@style/InCardListItem"
                 android:orientation="horizontal">
@@ -370,6 +369,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:visibility="gone"
                 android:id="@+id/cpu_config_p4"
                 style="@style/InCardListItemLast"
                 android:orientation="horizontal">
