@@ -16,4 +16,6 @@ public enum TaskAction {
     ZEN_MODE_OFF,       // 勿扰模式关
     COMPILE_SPEED,      // Speed模式编译
     COMPILE_EVERYTHING, // Everything模式编译
+    POWER_REBOOT,       // 重启手机
+    POWER_OFF,          // 关机手机
 }

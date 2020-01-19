@@ -9,6 +9,7 @@ import android.os.Build
 import android.support.v4.app.NotificationCompat
 import android.widget.Toast
 import com.omarea.common.shell.KeepShell
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.model.TaskAction
 import com.omarea.model.TimingTaskInfo
 import com.omarea.shell_utils.FstrimUtils
@@ -99,6 +100,14 @@ class TimingTaskExecutor(private val timingTask: TimingTaskInfo, private val con
                             updateNotification("关闭勿扰模式")
                             ZenModeUtils(context).off()
                         }
+                        TaskAction.POWER_REBOOT -> {
+                            updateNotification("重启手机")
+                            KeepShellPublic.doCmdSync("sync;reboot")
+                        }
+                        TaskAction.POWER_OFF -> {
+                            updateNotification("自动关机")
+                            KeepShellPublic.doCmdSync("sync;reboot -p")
+                        }
                         else -> { }
                     }
                 } catch (ex: Exception) {
@@ -114,20 +123,22 @@ class TimingTaskExecutor(private val timingTask: TimingTaskInfo, private val con
     private fun speedDex2oatCompile () {
         val service = Intent(context, CompileService::class.java)
         service.action = context.getString(R.string.scene_speed_compile)
+        service.putExtra("shutdown", true)
         context.startService(service)
     }
     private fun everythingDex2oatCompile () {
         val service = Intent(context, CompileService::class.java)
         service.action = context.getString(R.string.scene_everything_compile)
+        service.putExtra("reboot", true)
         context.startService(service)
     }
 
     private fun updateNotification(text: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             nm.createNotificationChannel(NotificationChannel("vtools-task", context.getString(R.string.notice_channel_task), NotificationManager.IMPORTANCE_LOW))
-            nm.notify(900, NotificationCompat.Builder(context, "vtool-task").setSmallIcon(R.drawable.ic_menu_digital).setContentTitle(context.getString(R.string.notice_channel_task)).setContentText(text).build())
+            nm.notify(920, NotificationCompat.Builder(context, "vtool-task").setSmallIcon(R.drawable.icon_clock).setContentTitle(context.getString(R.string.notice_channel_task)).setContentText(text).build())
         } else {
-            nm.notify(900, NotificationCompat.Builder(context).setSmallIcon(R.drawable.ic_menu_digital).setContentTitle(context.getString(R.string.notice_channel_task)).setContentText(text).build())
+            nm.notify(920, NotificationCompat.Builder(context).setSmallIcon(R.drawable.icon_clock).setContentTitle(context.getString(R.string.notice_channel_task)).setContentText(text).build())
         }
     }
 

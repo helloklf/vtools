@@ -67,6 +67,7 @@ class ActivityTimingTask : AppCompatActivity() {
         oneOf(task_zen_mode_on, task_zen_mode_off)
         oneOf(task_after_screen_off, task_before_execute_confirm)
         oneOf(task_battery_capacity_require, task_charge_only)
+        oneOf(task_power_off, task_power_reboot)
 
         // 更新选中状态
         updateUI()
@@ -117,6 +118,8 @@ class ActivityTimingTask : AppCompatActivity() {
                 task_zen_mode_on.isChecked = contains(TaskAction.ZEN_MODE_ON)
                 task_zen_mode_off.isChecked = contains(TaskAction.ZEN_MODE_OFF)
                 task_fstrim.isChecked = contains(TaskAction.FSTRIM)
+                task_power_off.isChecked = contains(TaskAction.POWER_OFF)
+                task_power_reboot.isChecked = contains(TaskAction.POWER_REBOOT)
                 task_compile_speed.isChecked = contains(TaskAction.COMPILE_SPEED)
                 task_compile_everything.isChecked = contains(TaskAction.COMPILE_EVERYTHING)
             }
@@ -186,6 +189,10 @@ class ActivityTimingTask : AppCompatActivity() {
             task_fstrim.isChecked && add(TaskAction.FSTRIM)
             task_compile_speed.isChecked && add(TaskAction.COMPILE_SPEED)
             task_compile_everything.isChecked && add(TaskAction.COMPILE_EVERYTHING)
+
+            // 关机和重启动作放在最后
+            task_power_off.isChecked && add(TaskAction.POWER_OFF)
+            task_power_reboot.isChecked && add(TaskAction.POWER_REBOOT)
         }
         // timingTaskInfo.taskId = taskId
 

@@ -346,6 +346,30 @@
                             android:layout_height="wrap_content"
                             android:text="开" />
                     </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:paddingStart="7dp"
+                            android:textColor="?android:textColorPrimary"
+                            android:text="手机电源" />
+                        <RadioButton
+                            android:id="@+id/task_power_off"
+                            android:layout_width="80dp"
+                            android:layout_height="wrap_content"
+                            android:text="关机" />
+                        <RadioButton
+                            android:id="@+id/task_power_reboot"
+                            android:layout_width="110dp"
+                            android:layout_height="wrap_content"
+                            android:text="重启" />
+                    </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/task_compile"
@@ -402,6 +426,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/activity_vertical_margin"
                         android:text="[FSTRIM] 操作有助于缓解闪存读写导致的速度下降，大多数情况下系统会自动择机运行，当然如果你乐意也可以添加到定时任务中。" />
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
+                        android:text="[注意] 关机、重启会导致dex2oat编译被中断，请不要同时勾选这两种操作。" />
                 </LinearLayout>
             </LinearLayout>
         </com.omarea.common.ui.OverScrollView>

@@ -94,6 +94,12 @@ class SceneTaskItem : LinearLayout {
                     TaskAction.COMPILE_EVERYTHING -> {
                         buffer.append("dex2oat(everything)")
                     }
+                    TaskAction.POWER_REBOOT -> {
+                        buffer.append("重启手机 √")
+                    }
+                    TaskAction.POWER_OFF -> {
+                        buffer.append("自动关机 √")
+                    }
                 }
                 buffer.append("     ")
             }
