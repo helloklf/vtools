@@ -11,7 +11,7 @@ public class MagiskExtend {
     // source /data/adb/util_functions.sh
 
     public static String MAGISK_PATH = "/sbin/.core/img/scene_systemless/";
-    private static String MAGISK_PATH_19 = "/sbin/.magisk/modules";
+    private static String MAGISK_PATH_19 = "/data/adb/modules"; //  "/sbin/.magisk/modules";
     private static String MAGISK_ROOT_PATH1 = "/sbin/.core/img";
     private static String MAGISK_ROOT_PATH2 = "/sbin/.magisk/img";
 
