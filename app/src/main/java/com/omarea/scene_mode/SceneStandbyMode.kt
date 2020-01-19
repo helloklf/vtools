@@ -8,6 +8,8 @@ import com.omarea.utils.AppListHelper
 import com.omarea.vtools.R
 
 class SceneStandbyMode(private val context: Context, private val keepShell: KeepShell) {
+    private val stateProp = "persist.vtools.suspend"
+
     public fun getCmds(on: Boolean): String {
         val apps = AppListHelper(context).getAll()
         val command = if (on) "suspend" else "unsuspend"
@@ -31,6 +33,10 @@ class SceneStandbyMode(private val context: Context, private val keepShell: Keep
                         cmds.append(" \"")
                         cmds.append(app.packageName)
                         cmds.append("\"\n")
+                        // TODO:真的要这么做吗？
+                        // if (app.packageName.equals("com.google.android.gsf")) {
+                        //     cmds.append("pm disable com.google.android.gsf 2> /dev/null\n")
+                        // }
                     }
                 }
             }
@@ -46,9 +52,15 @@ class SceneStandbyMode(private val context: Context, private val keepShell: Keep
             cmds.append("dumpsys deviceidle step\n")
             cmds.append("dumpsys deviceidle step\n")
             cmds.append("dumpsys deviceidle step\n")
+            cmds.append("setprop ")
+            cmds.append(stateProp)
+            cmds.append(" 1")
             cmds.append("\n")
         } else {
-
+            cmds.append("setprop ")
+            cmds.append(stateProp)
+            cmds.append(" 0")
+            cmds.append("\n")
         }
         return cmds.toString()
     }

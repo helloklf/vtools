@@ -20,12 +20,16 @@ public class TimingTaskInfo implements Serializable {
     public int triggerTimeMinutes = 420;
     // 重复周期（-1表示不重复）
     public int periodMillis;
+
     // 屏幕关闭后执行
     public boolean afterScreenOff;
     // 执行前请求确认
     public boolean beforeExecuteConfirm;
     // 电池电量要求（低于此值且未充电跳过）
     public int batteryCapacityRequire;
+    // 是否只在充电状态下才执行
+    public boolean chargeOnly;
+
     // 任务动作列表
     public ArrayList<TaskAction> taskActions;
 }

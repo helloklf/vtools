@@ -92,7 +92,7 @@
                         android:layout_marginEnd="@dimen/activity_horizontal_margin"
                         android:text="额外条件" />
 
-                    <CheckBox
+                    <RadioButton
                         android:id="@+id/task_after_screen_off"
                         android:textColor="?android:textColorPrimary"
                         android:textStyle="normal"
@@ -101,7 +101,7 @@
                         android:layout_marginTop="@dimen/activity_vertical_margin"
                         android:text="如果当时正在使用手机，推迟到锁屏后执行" />
 
-                    <CheckBox
+                    <RadioButton
                         android:id="@+id/task_before_execute_confirm"
                         android:textColor="?android:textColorPrimary"
                         android:textStyle="normal"
@@ -110,17 +110,18 @@
                         android:text="执行前提示确认" />
 
                     <LinearLayout
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <CheckBox
+                        <RadioButton
                             android:id="@+id/task_battery_capacity_require"
                             android:textColor="?android:textColorPrimary"
                             android:textStyle="normal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="电量低于" />
+                            android:text="电量高于" />
 
                         <TextView
                             android:id="@+id/task_battery_capacity"
@@ -137,8 +138,16 @@
                             android:textColor="?android:textColorPrimary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="% 且[未充电]，跳过执行" />
+                            android:text="%，或正在充电" />
                     </LinearLayout>
+
+                    <RadioButton
+                        android:id="@+id/task_charge_only"
+                        android:textColor="?android:textColorPrimary"
+                        android:textStyle="normal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="只在充电状态下执行" />
                 </LinearLayout>
 
                 <LinearLayout

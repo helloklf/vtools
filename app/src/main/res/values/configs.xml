@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="powercfg_force_igoned">
+        <item>android</item>
+        <item>com.android.systemui</item>
+        <item>com.miui.freeform</item>
+        <item>com.omarea.vtools</item>
+        <item>com.miui.touchassistant</item>
+        <item>com.miui.contentextension</item>
+        <item>com.miui.systemAdSolution</item>
+        <item>com.miui.securitycenter</item>
+    </string-array>
+    <string-array name="powercfg_igoned">
+        <item>com.omarea.gesture</item>
+        <item>com.zbar.lib</item>
+        <item>eu.chainfire.supersu</item>
+        <item>dev.nick.app.screencast</item>
+        <item>eu.chainfire.perfmon</item>
+        <item>com.c4x.roundcorner</item>
+        <item>com.tencent.gamehelper.smoba</item>
+        <item>com.miui.systemadsolution</item>
+        <item>com.waterdaaan.cpufloat</item>
+        <item>com.miui.contentextension</item>
+        <item>com.miui.systemAdSolution</item>
+        <item>com.sec.app.screenrecorder</item>
+        <item>com.cyngn.screencast</item>
+        <item>com.lbe.security.miui</item>
+        <item>com.bst.airmessage</item>
+        <item>com.gamebench.metricscollector</item>
+        <item>com.samsung.android.game.gametools</item>
+        <item>com.samsung.android.app.cocktailbarservice</item>
+        <item>com.samsung.android.app.assistantmenu</item>
+        <item>com.samsung.android.app.aodservice</item>
+        <item>com.samsung.android.MtpApplication</item>
+        <item>com.android.vpndialogs</item>
+        <item>com.android.documentsui</item>
+        <item>com.android.wallpapercropper</item>
+        <item>com.mfashiongallery.emag</item>
+        <item>com.miui.aod</item>
+        <item>com.topjohnwu.magisk</item>
+    </string-array>
+    <string-array name="powercfg_game">
+        <item>com.tencent.tmgp.speedmobile</item>
+        <item>com.tencent.tmgp.pubgm</item>
+        <item>com.tencent.tmgp.pubgmhd</item>
+        <item>com.rarlab.rar</item>
+        <item>com.stupeflix.replay</item>
+        <item>com.niksoftware.snapseed</item>
+        <item>com.goseet.vidtrim</item>
+        <item>com.netease.hyxd</item>
+        <item>com.mihoyo.bh3</item>
+        <item>com.mihoyo.bh3.mi</item>
+        <item>com.mihoyo.bh3.uc</item>
+        <item>com.pinguo.edit.sdk</item>
+        <item>com.ak.mi</item>
+        <item>com.tencent.cldts</item>
+        <item>com.miHoYo.bh3.wdj</item>
+        <item>com.netease.dwrg</item>
+        <item>com.netease.mrzh</item>
+        <item>com.netease.mrzh.aligames</item>
+    </string-array>
+    <string-array name="powercfg_fast">
+        <item>com.ludashi.benchmark</item>
+        <item>com.antutu.ABenchMark</item>
+        <item>com.antutu.benchmark.full</item>
+        <item>com.keramidas.TitaniumBackup</item>
+        <item>com.primatelabs.geekbench</item>
+        <item>com.andromeda.androbench2</item>
+        <item>com.xzr.La.bench</item>
+        <item>com.ioncannon.cpuburn.gpugflops</item>
+        <item>com.android.packageinstaller</item>
+        <item>com.miui.packageinstaller</item>
+        <item>com.google.android.packageinstaller</item>
+        <item>com.miui.backup</item>
+        <item>com.ludashi.vrbench</item>
+        <item>com.android.camera</item>
+        <item>com.futuremark.dmandroid.application</item>
+        <item>com.miui.huanji</item>
+    </string-array>
+    <string-array name="device_templates">
+        <item>Xiaomi MIX3</item>
+        <item>Xiaomi CC9 Pro</item>
+        <item>Redmi K20Pro</item>
+        <item>vivo X20</item>
+        <item>vivo IQOO</item>
+        <item>OPPO Reno 10X</item>
+        <item>OPPO Reno3 Pro 5G</item>
+        <item>Samsung S9+</item>
+        <item>8848钛金手机</item>
+        <item>HUAWEI MateRS</item>
+        <item>HUAWEI Mate20Pro</item>
+        <item>HUAWEI P30Pro</item>
+        <item>ONEPLUS 7 Pro</item>
+    </string-array>
+    <string-array name="device_templates_data">
+        <item>MIX 3@Xiaomi@Xiaomi@perseus@perseus</item>
+        <item>MI CC9 Pro@Xiaomi@Xiaomi@tucana@tucana</item>
+        <item>Redmi K20 Pro@Xiaomi@Xiaomi@raphael@raphael</item>
+        <item>vivo X20@vivo@vivo@X20@X20</item>
+        <item>v1824a@vivo@vivo@v1824a@v1824a</item>
+        <item>PCCM00@OPPO@OPPO@OPPO PCCM00@PCCM00</item>
+        <item>PCRM00@OPPO@OPPO@OPPO PCRM00@PCRM00</item>
+        <item>SM-G9650@samsung@samsung@star2qltechn@star2qltechn</item>
+        <item>EBEN M2@ERENEBEN@ERENEBEN@EBEN M2@EBEN M2</item>
+        <item>NEO-AL00@HUAWEI@HUAWEI@NEO-AL00@NEO-AL00</item>
+        <item>LYA-AL00@HUAWEI@HUAWEI@LYA-AL00@LYA-AL00</item>
+        <item>VOG-TL00@HUAWEI@HUAWEI@VOG-TL00@VOG-TL00</item>
+        <item>GM1910@ONEPLUS@ONEPLUS@GM1910@GM1910</item>
+    </string-array>
+
+    <!--待机模式强制排除名单-->
+    <string-array name="scene_standby_white_list">
+        <item>com.omarea.vtools</item>
+        <item>com.omarea.gesture</item>
+        <item>com.omarea.filter</item>
+        <item>com.topjohnwu.magisk</item>
+        <item>org.meowcat.edxposed.manager</item>
+        <item>com.mi.android.globallauncher </item>
+        <item>com.pittvandewitt.viperfx</item>
+        <item>com.omarea.vaddin</item>
+    </string-array>
+</resources>

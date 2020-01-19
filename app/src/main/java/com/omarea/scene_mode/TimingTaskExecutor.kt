@@ -124,8 +124,8 @@ class TimingTaskExecutor(private val timingTask: TimingTaskInfo, private val con
 
     private fun updateNotification(text: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            nm.createNotificationChannel(NotificationChannel("vtool-boot", context.getString(R.string.notice_channel_task), NotificationManager.IMPORTANCE_LOW))
-            nm.notify(900, NotificationCompat.Builder(context, "vtool-boot").setSmallIcon(R.drawable.ic_menu_digital).setContentTitle(context.getString(R.string.notice_channel_task)).setContentText(text).build())
+            nm.createNotificationChannel(NotificationChannel("vtools-task", context.getString(R.string.notice_channel_task), NotificationManager.IMPORTANCE_LOW))
+            nm.notify(900, NotificationCompat.Builder(context, "vtool-task").setSmallIcon(R.drawable.ic_menu_digital).setContentTitle(context.getString(R.string.notice_channel_task)).setContentText(text).build())
         } else {
             nm.notify(900, NotificationCompat.Builder(context).setSmallIcon(R.drawable.ic_menu_digital).setContentTitle(context.getString(R.string.notice_channel_task)).setContentText(text).build())
         }

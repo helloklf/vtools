@@ -65,6 +65,8 @@ class ActivityTimingTask : AppCompatActivity() {
         oneOf(task_gps_on, task_gps_off)
         oneOf(task_gprs_on, task_gprs_off)
         oneOf(task_zen_mode_on, task_zen_mode_off)
+        oneOf(task_after_screen_off, task_before_execute_confirm)
+        oneOf(task_battery_capacity_require, task_charge_only)
 
         // 更新选中状态
         updateUI()
@@ -98,6 +100,7 @@ class ActivityTimingTask : AppCompatActivity() {
             task_before_execute_confirm.isChecked = beforeExecuteConfirm
             task_battery_capacity_require.isChecked = batteryCapacityRequire >- 0
             task_battery_capacity.text = batteryCapacityRequire.toString()
+            task_charge_only.isChecked = chargeOnly
 
             // 功能动作
             taskActions?.run {
@@ -165,6 +168,7 @@ class ActivityTimingTask : AppCompatActivity() {
         timingTaskInfo.periodMillis = if (taks_repeat.isChecked) (24 * 3600 * 1000) else -1
         timingTaskInfo.afterScreenOff = task_after_screen_off.isChecked
         timingTaskInfo.beforeExecuteConfirm = task_before_execute_confirm.isChecked
+        timingTaskInfo.chargeOnly = task_charge_only.isChecked
         timingTaskInfo.batteryCapacityRequire = if(task_battery_capacity_require.isChecked) (task_battery_capacity.text).toString().toInt() else 0
         timingTaskInfo.taskActions = ArrayList<TaskAction>().apply {
             task_standby_on.isChecked && add(TaskAction.STANDBY_MODE_ON)
