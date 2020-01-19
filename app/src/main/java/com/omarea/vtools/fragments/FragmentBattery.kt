@@ -24,6 +24,7 @@ import com.omarea.data_collection.EventTypes
 import com.omarea.shell_utils.BatteryUtils
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
+import com.omarea.vtools.dialogs.DialogNumberInput
 import com.omarea.vtools.services.BatteryService
 import kotlinx.android.synthetic.main.fragment_battery.*
 import java.util.*
@@ -135,6 +136,64 @@ class FragmentBattery : Fragment() {
                 }
             }
         }, 0, 3000)
+        updateBatteryForgery()
+    }
+
+    private fun batteryForgeryRatio() {
+        DialogNumberInput(context!!).showDialog(object : DialogNumberInput.DialogNumberInputRequest {
+            override var min = -1
+            override var max = 100
+            override var default = batteryUnits.getCpacity()
+
+            override fun onApply(value: Int) {
+                batteryUnits.setCapacity(value)
+                updateBatteryForgery()
+            }
+        })
+    }
+
+    private fun batteryForgeryChargeFull() {
+        DialogNumberInput(context!!).showDialog(object : DialogNumberInput.DialogNumberInputRequest {
+            override var min = 1
+            override var max = 20000
+            override var default = batteryUnits.getChargeFull()
+
+            override fun onApply(value: Int) {
+                batteryUnits.setChargeFull(value)
+                updateBatteryForgery()
+            }
+        })
+    }
+
+    private fun updateBatteryForgery() {
+        val cpacity = batteryUnits.getCpacity()
+        val chargeFull = batteryUnits.getChargeFull()
+        if (cpacity > 0) {
+            battery_forgery_ratio.text = cpacity.toString() + "%"
+            battery_forgery_ratio.setOnClickListener {
+                batteryForgeryRatio()
+            }
+        } else {
+            battery_forgery_ratio.setOnClickListener {
+                Toast.makeText(context, getString(R.string.device_unsupport), Toast.LENGTH_SHORT).show()
+            }
+        }
+        if (chargeFull > 0) {
+            battery_forgery_full_now.text = chargeFull.toString() + "mAh"
+            battery_forgery_full_now.setOnClickListener {
+                batteryForgeryChargeFull()
+            }
+        } else {
+            battery_forgery_full_now.setOnClickListener {
+                Toast.makeText(context, getString(R.string.device_unsupport), Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        if (cpacity < 1 && chargeFull < 1) {
+            battery_forgery.visibility = View.GONE
+        } else {
+            battery_forgery.visibility = View.VISIBLE
+        }
     }
 
     internal var serviceRunning = false

@@ -275,8 +275,67 @@
                     android:layout_height="wrap_content" />
             </LinearLayout>
 
-            <LinearLayout style="@style/ListCardItemLast">
+            <LinearLayout
+                style="@style/ListCardItem"
+                android:id="@+id/battery_forgery"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:orientation="vertical">
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/battery_forgery" />
 
+                <LinearLayout
+                    style="@style/InCardListItem"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:textAlignment="textEnd"
+                        android:text="@string/battery_forgery_ratio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                    <TextView
+                        android:id="@+id/battery_forgery_ratio"
+                        android:textStyle="bold"
+                        android:textColor="?android:colorAccent"
+                        android:padding="8dp"
+                        android:text="--%"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:textAlignment="textEnd"
+                        android:text="@string/battery_forgery_full_now"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/battery_forgery_full_now"
+                        android:textStyle="bold"
+                        android:textColor="?android:colorAccent"
+                        android:padding="8dp"
+                        android:text="--mAh"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <TextView
+                    android:text="伪装数据并不会获得相应的续航能力，自欺欺人而已"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/ListCardItemLast">
                 <TextView
                     style="@style/textTitle"
                     android:layout_width="match_parent"

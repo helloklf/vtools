@@ -75,40 +75,40 @@ class DialogAddinModifyDPI(var context: Context) {
         }
 
         val rate = dm.heightPixels / 1.0 / dm.widthPixels
-        dialog.findViewById<Button>(R.id.dialog_dpi_720).setOnClickListener({
+        dialog.findViewById<Button>(R.id.dialog_dpi_720).setOnClickListener {
             val width = 720
             widthInput.setText(width.toString())
             val height = getHeightScaleValue(width)
             heightInput.setText(height.toString())
             dpiInput.setText((dm.densityDpi.toFloat() * width / point.x).toInt().toString())
-        })
-        dialog.findViewById<Button>(R.id.dialog_dpi_1080).setOnClickListener({
+        }
+        dialog.findViewById<Button>(R.id.dialog_dpi_1080).setOnClickListener {
             val width = 1080
             widthInput.setText(width.toString())
             heightInput.setText(getHeightScaleValue(width).toString())
             dpiInput.setText(getDpiScaleValue(width).toString())
-        })
-        dialog.findViewById<Button>(R.id.dialog_dpi_2k).setOnClickListener({
+        }
+        dialog.findViewById<Button>(R.id.dialog_dpi_2k).setOnClickListener {
             val width = 1440
             widthInput.setText(width.toString())
             heightInput.setText(getHeightScaleValue(width).toString())
             dpiInput.setText(getDpiScaleValue(width).toString())
-        })
-        dialog.findViewById<Button>(R.id.dialog_dpi_4k).setOnClickListener({
+        }
+        dialog.findViewById<Button>(R.id.dialog_dpi_4k).setOnClickListener {
             val width = 2160
             widthInput.setText(width.toString())
             heightInput.setText(getHeightScaleValue(width).toString())
             dpiInput.setText(getDpiScaleValue(width).toString())
-        })
-        dialog.findViewById<Button>(R.id.dialog_dpi_reset).setOnClickListener({
+        }
+        dialog.findViewById<Button>(R.id.dialog_dpi_reset).setOnClickListener {
             val cmd = StringBuilder()
             cmd.append("wm size reset\n")
             cmd.append("wm density reset\n")
             cmd.append("wm overscan reset\n")
             KeepShellPublic.doCmdSync(cmd.toString())
-        })
+        }
 
-        DialogHelper.animDialog(AlertDialog.Builder(context).setTitle("DPI、分辨率").setView(dialog).setNegativeButton("确定", { _, _ ->
+        DialogHelper.animDialog(AlertDialog.Builder(context).setTitle("DPI、分辨率").setView(dialog).setNegativeButton("确定") { _, _ ->
             val dpi = if (dpiInput.text.isNotEmpty()) (dpiInput.text.toString().toInt()) else (0)
             val width = if (widthInput.text.isNotEmpty()) (widthInput.text.toString().toInt()) else (0)
             val height = if (heightInput.text.isNotEmpty()) (heightInput.text.toString().toInt()) else (0)
@@ -145,6 +145,6 @@ class DialogAddinModifyDPI(var context: Context) {
             }
             if (cmd.isNotEmpty())
                 KeepShellPublic.doCmdSync(cmd.toString())
-        }))
+        })
     }
 }

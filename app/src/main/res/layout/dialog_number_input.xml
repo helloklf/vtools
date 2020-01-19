@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/activity_horizontal_margin">
+
+    <TextView
+        style="@style/textTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:text="请输入数值" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/number_input_minus"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@android:color/transparent"
+            android:padding="10dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/kr_minus"
+            android:tint="?colorAccent" />
+
+        <EditText
+            android:id="@+id/number_input_value"
+            style="@style/textTitle"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:textAlignment="center" />
+
+        <ImageButton
+            android:id="@+id/number_input_plus"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@android:color/transparent"
+            android:padding="10dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/kr_plus"
+            android:tint="?colorAccent" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/number_input_cancel"
+            android:layout_alignParentStart="true"
+            style="?android:buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="end"
+            android:text="@string/btn_cancel" />
+        <Button
+            android:id="@+id/number_input_applay"
+            android:layout_alignParentEnd="true"
+            style="?android:buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_gravity="end"
+            android:text="@string/btn_confirm" />
+    </RelativeLayout>
+</LinearLayout>

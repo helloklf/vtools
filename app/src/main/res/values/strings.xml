@@ -134,6 +134,9 @@
     <string name="battery_qc_charger_desc">尝试调整充电速度限制，但不代表实际充电速度\n修改设置后需要重新插拔充电器</string>
     <string name="battery_charge_disabled">充电功能已禁止！</string>
     <string name="battery_charge_resumed">充电功能已恢复！</string>
+    <string name="battery_forgery">数据伪装</string>
+    <string name="battery_forgery_ratio">电池电量</string>
+    <string name="battery_forgery_full_now">充满容量</string>
 
     <string name="home_hide_in_recents">强迫症</string>
     <string name="home_hide_in_recents_desc">不要在多任务界面显示Scene（本功能已下线，用返回键关闭Scene界面时自动隐藏后台）</string>
