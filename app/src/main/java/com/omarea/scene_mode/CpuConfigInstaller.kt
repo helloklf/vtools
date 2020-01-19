@@ -23,8 +23,8 @@ class CpuConfigInstaller {
             return false
         }
         try {
-            val powercfg = FileWrite.writePrivateShellFile(getPowerCfgDir() + (if (biCore) "/powercfg-bigcore.sh" else "/powercfg-default.sh"), "powercfg.sh", context)
-            val powercfgBase = FileWrite.writePrivateShellFile(getPowerCfgDir() + (if (biCore) "/powercfg-base-bigcore.sh" else "/powercfg-base-default.sh"), "powercfg-base.sh", context)
+            val powercfg = FileWrite.writePrivateShellFile(getPowerCfgDir() + (if (biCore) "/active.sh" else "/conservative.sh"), "powercfg.sh", context)
+            val powercfgBase = FileWrite.writePrivateShellFile(getPowerCfgDir() + (if (biCore) "/active-base.sh" else "/conservative-base.sh"), "powercfg-base.sh", context)
 
             if (powercfg == null) {
                 return false
