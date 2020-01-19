@@ -154,7 +154,7 @@ class FragmentBattery : Fragment() {
 
     private fun batteryForgeryChargeFull() {
         DialogNumberInput(context!!).showDialog(object : DialogNumberInput.DialogNumberInputRequest {
-            override var min = 1
+            override var min = 1000
             override var max = 20000
             override var default = batteryUnits.getChargeFull()
 

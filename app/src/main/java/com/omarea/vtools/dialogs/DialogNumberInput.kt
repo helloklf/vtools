@@ -4,8 +4,10 @@ import android.app.AlertDialog
 import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import com.omarea.common.ui.DialogHelper
@@ -42,34 +44,48 @@ class DialogNumberInput(private val context: Context) {
         }
 
         dialog.findViewById<Button>(R.id.number_input_applay).setOnClickListener {
-            alertDialog?.dismiss()
-            dialogRequest.onApply(current)
+            val text = value.text.toString()
+            if (text != current.toString()) {
+                if (Regex("^[-0-9]{1,10}").matches(text)) {
+                    try {
+                        val intValue = value.text.toString().toInt()
+                        if (intValue >= dialogRequest.min && intValue <= dialogRequest.max) {
+                            current = intValue
+                        }
+                    } catch (ex: Exception) {
+                    }
+                }
+            }
+            if (text == current.toString()) {
+                dialogRequest.onApply(current)
+                alertDialog?.dismiss()
+            } else {
+                value.text = current.toString()
+            }
         }
 
         dialog.findViewById<Button>(R.id.number_input_cancel).setOnClickListener {
             alertDialog?.dismiss()
         }
+        dialog.findViewById<TextView>(R.id.number_input_help).setText(dialogRequest.min.toString() + " ~ " + dialogRequest.max.toString())
 
-        value.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
+        value.setOnEditorActionListener { v, actionId, event ->
+            if (event.keyCode == KeyEvent.KEYCODE_ENTER) {
                 if (Regex("^[-0-9]{1,10}").matches(value.text.toString())) {
                     try {
                         val intValue = value.text.toString().toInt()
                         if (intValue >= dialogRequest.min && intValue <= dialogRequest.max) {
                             current = intValue
-                            return
+                            return@setOnEditorActionListener true
                         }
                     } catch (ex: Exception) {
                     }
                 }
                 value.text = current.toString()
+                return@setOnEditorActionListener true
             }
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-
-            }
-        })
+            return@setOnEditorActionListener false
+        }
 
         value.setText(dialogRequest.default.toString())
         alertDialog = DialogHelper.animDialog(AlertDialog.Builder(context).setView(dialog))

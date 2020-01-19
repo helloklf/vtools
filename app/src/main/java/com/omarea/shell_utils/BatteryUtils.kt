@@ -465,12 +465,12 @@ class BatteryUtils {
     }
 
     public fun getChargeFull(): Int {
-        val value = KernelProrp.getProp("/sys/class/power_supply/battery/charge_full")
+        val value = KernelProrp.getProp("/sys/class/power_supply/bms/charge_full")
         return if (Regex("^[0-9]+").matches(value)) (value.toInt() / 1000) else 0
     }
 
     public fun setChargeFull(mAh: Int) {
-        KernelProrp.setProp("/sys/class/power_supply/battery/charge_full", (mAh * 1000).toString())
+        KernelProrp.setProp("/sys/class/power_supply/bms/charge_full", (mAh * 1000).toString())
     }
 
     public fun getCpacity(): Int {

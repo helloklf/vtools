@@ -289,7 +289,7 @@
                     android:text="@string/battery_forgery" />
 
                 <LinearLayout
-                    style="@style/InCardListItem"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:layout_width="match_parent"
