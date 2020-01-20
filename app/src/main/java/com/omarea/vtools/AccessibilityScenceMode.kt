@@ -159,7 +159,7 @@ class AccessibilityScenceMode : AccessibilityService() {
 
         if (appSwitchHandler == null) {
             appSwitchHandler = AppSwitchHandler(this)
-            EventBus.subscibe(AppSwitchHandler(this))
+            EventBus.subscibe(appSwitchHandler)
         }
     }
 

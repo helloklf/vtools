@@ -8,6 +8,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.data_collection.EventBus
@@ -153,6 +154,7 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
         if (dyamicCore && !this.lastModePackage.isNullOrEmpty()) {
             handler.postDelayed({
                 if (screenOn) {
+                    Log.d("屏幕开启", "" + this.lastModePackage)
                     forceToggleMode(this.lastModePackage)
                 }
             }, 2000)
@@ -228,9 +230,7 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
             EventTypes.APP_SWITCH ->
                 onFocusAppChanged(GlobalStatus.lastPackageName)
             EventTypes.SCREEN_ON -> {
-                // if (!screenOn && screenState.isScreenOn()) {
-                    _onScreenOn()
-                // }
+                _onScreenOn()
             }
             EventTypes.SCREEN_OFF -> {
                 if (ScreenState(context).isScreenLocked()) {
@@ -243,7 +243,7 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
 
     override fun eventFilter(eventType: EventTypes): Boolean {
         return when (eventType) {
-            EventTypes.APP_SWITCH -> true
+            EventTypes.APP_SWITCH, EventTypes.SCREEN_OFF, EventTypes.SCREEN_ON -> true
             else -> false
         }
     }
