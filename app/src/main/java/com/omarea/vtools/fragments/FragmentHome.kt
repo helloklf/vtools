@@ -364,7 +364,7 @@ class FragmentHome : Fragment() {
                         AlertDialog
                                 .Builder(context)
                                 .setTitle("提示")
-                                .setMessage("如果你允许Scene自启动，下次开机后，Scene还会自动启用你刚刚选择的模式。\n\n如果你需要关闭调度，请再次点击相同的模式取消选中状态，然后重启手机！")
+                                .setMessage("如果你已允许Scene自启动，手机重启后，Scene还会自动激活刚刚选择的模式。\n\n如果需要恢复系统默认调度，请再次点击，然后重启手机！")
                                 .setNegativeButton(R.string.btn_confirm) { _, _ ->
                                 }
                                 .setPositiveButton(R.string.btn_dontshow) { _, _ ->
