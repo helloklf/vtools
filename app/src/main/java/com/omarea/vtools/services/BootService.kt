@@ -105,7 +105,7 @@ class BootService : IntentService("vtools-boot") {
             val modeList = ModeSwitcher()
             val configInstaller = CpuConfigInstaller()
             if (configInstaller.configInstalled()) {
-                modeList.executePowercfgMode(context!!, globalPowercfg, context!!.packageName)
+                modeList.executePowercfgMode(context, globalPowercfg, context.packageName)
             }
         }
 
@@ -147,7 +147,7 @@ class BootService : IntentService("vtools-boot") {
         if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, false)) {
             updateNotification(getString(R.string.boot_lmk))
 
-            val activityManager = context!!.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
             val info = ActivityManager.MemoryInfo()
             activityManager.getMemoryInfo(info)
             LMKUtils().autoSetLMK(info.totalMem, keepShell)
@@ -163,7 +163,6 @@ class BootService : IntentService("vtools-boot") {
 
         keepShell.tryExit()
         hideNotification()
-        Thread.sleep(2000)
         stopSelf()
     }
 
@@ -186,7 +185,6 @@ class BootService : IntentService("vtools-boot") {
         }
 
     fun enableSwap(keepShell: KeepShell, context: Context) {
-        Thread.sleep(10000)
         updateNotification(getString(R.string.boot_swapon))
         val swapControlScript = FileWrite.writePrivateShellFile("addin/swap_control.sh", "addin/swap_control.sh", context)
         if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false) && swapControlScript != null) {

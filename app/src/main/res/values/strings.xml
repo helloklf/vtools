@@ -437,5 +437,6 @@
     <string name="system_scene_battery_right">电量高于</string>
     <string name="system_scene_stop_charge">停止充电</string>
     <string name="system_scene_task_canceled">任务已取消</string>
-    <string name="system_scene_my_task">我添加的任务</string>
+    <string name="system_scene_timing_task">我的定时任务</string>
+    <string name="system_scene_trigger">我的触发器</string>
 </resources>
