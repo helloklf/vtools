@@ -155,15 +155,6 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
         startTimer() // 屏幕开启后开始定时更新通知
         updateModeNofity() // 屏幕点亮后更新通知
 
-        // if (dyamicCore && spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_LOCK_MODE, false) && !this.lastModePackage.isNullOrEmpty()) {
-        if (dyamicCore && !this.lastModePackage.isNullOrEmpty()) {
-            handler.postDelayed({
-                if (screenOn) {
-                    Log.d("屏幕开启", "" + this.lastModePackage)
-                    forceToggleMode(this.lastModePackage)
-                }
-            }, 2000)
-        }
         systemScene.onScreenOn()
     }
 
