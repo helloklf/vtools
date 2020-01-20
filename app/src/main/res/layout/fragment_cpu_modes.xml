@@ -80,13 +80,13 @@
                         android:layout_marginBottom="8dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="使用Scene自带配置" />
+                        android:text="使用Scene预设配置" />
 
                     <TextView
                         style="@style/textSmall"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Scene为你的设备定制了两套配置，每套配置包含四个模式，推荐使用" />
+                        android:text="Scene针对你使用的处理器定制了两套配置，每套配置包含四个模式，推荐使用" />
                 </LinearLayout>
 
                 <LinearLayout
