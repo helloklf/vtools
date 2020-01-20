@@ -40,7 +40,6 @@ class FragmentSystemScene : Fragment() {
     private lateinit var spfPowercfg: SharedPreferences
     private lateinit var globalSPF: SharedPreferences
     private lateinit var chargeConfig: SharedPreferences
-    private lateinit var editor: SharedPreferences.Editor
     private lateinit var applistHelper: AppListHelper
     internal val myHandler: Handler = Handler()
     private var packageManager: PackageManager? = null
@@ -111,7 +110,6 @@ class FragmentSystemScene : Fragment() {
         }).start()
     }
 
-    @SuppressLint("CommitPrefEdits", "ApplySharedPref")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (packageManager == null) {
             packageManager = context!!.packageManager
@@ -123,7 +121,6 @@ class FragmentSystemScene : Fragment() {
         spfPowercfg = context!!.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         chargeConfig = context!!.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
-        editor = spfPowercfg.edit()
         firstMode = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.DEFAULT)!!
         sceneConfigStore = SceneConfigStore(this.context)
 
@@ -303,6 +300,7 @@ class FragmentSystemScene : Fragment() {
     }
 
     private fun initDefaultConfig() {
+        val editor = spfPowercfg.edit()
         for (item in resources.getStringArray(R.array.powercfg_igoned)) {
             editor.putString(item, ModeSwitcher.IGONED)
         }
@@ -312,7 +310,7 @@ class FragmentSystemScene : Fragment() {
         for (item in resources.getStringArray(R.array.powercfg_game)) {
             editor.putString(item, ModeSwitcher.PERFORMANCE)
         }
-        editor.commit()
+        editor.apply()
     }
 
     override fun onDestroy() {
