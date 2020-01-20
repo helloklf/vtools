@@ -144,6 +144,11 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
      */
     private fun _onScreenOn() {
         lastScreenOnOff = System.currentTimeMillis()
+
+        if (dyamicCore && lastMode.isNotEmpty()) {
+            toggleConfig(lastMode)
+        }
+
         if (screenOn == true) return
 
         screenOn = true
@@ -210,12 +215,7 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
 
     private fun toggleConfig(mode: String) {
         if (configInstaller.configInstalled() || CpuConfigInstaller().installOfficialConfig(context, "")) {
-            if (screenOn) {
-                executePowercfgMode(context, mode)
-            } else {
-                executePowercfgMode(context, POWERSAVE)
-                updateModeNofity() //
-            }
+            executePowercfgMode(context, mode)
             lastMode = mode
         } else {
             dyamicCore = false
