@@ -99,11 +99,11 @@ function set_input_boost_freq() {
 }
 
 if [ "$action" = "powersave" ]; then
+	set_cpu_freq 5000 1612800 5000 5000
+	set_input_boost_freq 0 0 0
+
     echo 0 > /sys/devices/system/cpu/cpu6/online
     echo 0 > /sys/devices/system/cpu/cpu7/online
-
-	set_cpu_freq 5000 1612800 5000 1747200
-	set_input_boost_freq 0 0 0
 
 	echo 1209600 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
 	echo 825600 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
