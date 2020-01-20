@@ -47,7 +47,12 @@
         tools:ignore="GoogleAppIndexingWarning">
         <service
             android:name="com.omarea.scene_mode.SceneTaskIntentService"
-            android:exported="false" />
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.omarea.scene_mode.TimingTaskReceiver" />
+            </intent-filter>
+        </service>
 
         <receiver
             android:name="com.omarea.scene_mode.ReceiverSceneMode"
@@ -55,14 +60,6 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="com.omarea.scene_mode.ReceiverSceneMode" />
-            </intent-filter>
-        </receiver>
-        <receiver
-            android:name="com.omarea.scene_mode.TimingTaskReceiver"
-            android:enabled="true"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.omarea.scene_mode.TimingTaskReceiver" />
             </intent-filter>
         </receiver>
 

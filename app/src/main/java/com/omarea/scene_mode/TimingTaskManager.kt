@@ -16,10 +16,10 @@ public class TimingTaskManager(private var context: Context) {
 
     private fun getPendingIntent(timingTaskInfo: TimingTaskInfo): PendingIntent {
         val taskId = timingTaskInfo.taskId
-        val taskIntent = Intent(context, TimingTaskReceiver::class.java)
+        val taskIntent = Intent(context, SceneTaskIntentService::class.java)
         taskIntent.putExtra("taskId", taskId)
         taskIntent.setAction(taskId)
-        val pendingIntent = PendingIntent.getBroadcast(context, 0, taskIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = PendingIntent.getService(context, 0, taskIntent, PendingIntent.FLAG_UPDATE_CURRENT)
         return pendingIntent
     }
 
@@ -35,17 +35,17 @@ public class TimingTaskManager(private var context: Context) {
 
     public fun setTask(timingTaskInfo: TimingTaskInfo) {
         // 如果任务启用了，立即添加到队列
-        if (timingTaskInfo.enabled) {
+        if (timingTaskInfo.enabled && (timingTaskInfo.expireDate < 1 || timingTaskInfo.expireDate > System.currentTimeMillis())) {
             val delay = GetUpTime(timingTaskInfo.triggerTimeMinutes).minutes.toLong() * 60 * 1000 // 下次执行
-            val period = timingTaskInfo.periodMillis.toLong() // 重复周期
 
             val pendingIntent = getPendingIntent(timingTaskInfo)
-            if (period > 0) {
-                setRepeating(pendingIntent, delay, period)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                alarmManager.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + delay, pendingIntent)
             } else {
-                setExact(pendingIntent, delay)
+                alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + delay, pendingIntent)
             }
         } else {
+            timingTaskInfo.enabled = false
             cancelTask(timingTaskInfo)
         }
     }
@@ -80,42 +80,9 @@ public class TimingTaskManager(private var context: Context) {
     }
 
     /**
-     * 设置精准时间的任务
-     */
-    public fun setExact(pendingIntent: PendingIntent, delay: Long): TimingTaskManager {
-        // val pendingIntent = PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + delay, pendingIntent)
-        } else {
-            alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + delay, pendingIntent)
-        }
-        // alarmManager.cancel(pendingIntent)
-        return this
-    }
-
-    /**
-     * 设置重复任务
-     *
-     */
-    public fun setRepeating(pendingIntent: PendingIntent, delay: Long, period: Long): TimingTaskManager {
-        // val pendingIntent = PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + delay, period, pendingIntent)
-        // alarmManager.cancel(pendingIntent)
-        return this
-    }
-
-    /**
-     *
      */
     public fun cancelTask(pendingIntent: PendingIntent): TimingTaskManager {
         alarmManager.cancel(pendingIntent)
         return this
-    }
-
-    /**
-     * 获取下个任务信息
-     */
-    public fun getNextAlarmClock(): AlarmManager.AlarmClockInfo? {
-         return alarmManager.getNextAlarmClock()
     }
 }

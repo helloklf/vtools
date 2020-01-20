@@ -35,7 +35,7 @@ class SceneTaskItem : LinearLayout {
         } else {
             system_scene_task_name.text = taskInfo.taskName
         }
-        val timePrefix = if (taskInfo.periodMillis > 0) ("每 " + (taskInfo.periodMillis / 24 / 3600 / 1000).toString() + " 天，") else ""
+        val timePrefix = if (taskInfo.expireDate < 1) ("每天，") else ""
         system_scene_task_time.text = timePrefix + getTimeStr(taskInfo)
         system_scene_task_content.text = getTaskContentText(taskInfo)
     }

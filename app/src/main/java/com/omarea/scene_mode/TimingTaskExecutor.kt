@@ -123,13 +123,11 @@ class TimingTaskExecutor(private val timingTask: TimingTaskInfo, private val con
     private fun speedDex2oatCompile () {
         val service = Intent(context, CompileService::class.java)
         service.action = context.getString(R.string.scene_speed_compile)
-        service.putExtra("shutdown", true)
         context.startService(service)
     }
     private fun everythingDex2oatCompile () {
         val service = Intent(context, CompileService::class.java)
         service.action = context.getString(R.string.scene_everything_compile)
-        service.putExtra("reboot", true)
         context.startService(service)
     }
 

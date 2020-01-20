@@ -27,6 +27,13 @@ class SceneTaskIntentService : IntentService("SceneTaskIntentService") {
         val context = this
         val timingTask = TimingTaskStorage(context).load(taskId)
         timingTask?.run {
+            if (timingTask.expireDate > 0 && timingTask.expireDate <= System.currentTimeMillis()) {
+                this.enabled = false
+                TimingTaskManager(this@SceneTaskIntentService).setTask(this)
+            } else {
+                TimingTaskManager(this@SceneTaskIntentService).setTask(this)
+            }
+
             if (timingTask.taskActions != null && timingTask.taskActions.size > 0) {
                 if (chargeOnly && GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_DISCHARGING) {
                     Toast.makeText(context, "未在充电状态，跳过定时任务", Toast.LENGTH_LONG).show()

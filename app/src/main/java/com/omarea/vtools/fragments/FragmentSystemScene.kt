@@ -71,7 +71,7 @@ class FragmentSystemScene : Fragment() {
 
     private var nextTask: TimingTaskInfo? = null // 下一个要执行的任务
     private fun checkNextTask(it: TimingTaskInfo) {
-        if (it.enabled) {
+        if (it.enabled && (it.expireDate < 1 || it.expireDate > System.currentTimeMillis())) {
             if (nextTask == null || GetUpTime(it.triggerTimeMinutes).minutes < GetUpTime(nextTask!!.triggerTimeMinutes).minutes) {
                 nextTask = it
             }

@@ -18,8 +18,8 @@ public class TimingTaskInfo implements Serializable {
     public boolean enabled;
     // 触发时间 hours * 60 + minutes， 例如 6:30 表示为 6 * 60 + 30 = 390
     public int triggerTimeMinutes = 420;
-    // 重复周期（-1表示不重复）
-    public int periodMillis;
+    // 任务失效时间
+    public long expireDate;
 
     // 屏幕关闭后执行
     public boolean afterScreenOff;

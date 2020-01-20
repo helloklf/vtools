@@ -20,7 +20,7 @@ class CompileService : IntentService("vtools-compile") {
     }
 
     private var compileCanceled = false
-    private var keepShell: KeepShell? = KeepShell(true)
+    private var keepShell = KeepShell(true)
     private lateinit var nm: NotificationManager
     private var compile_method = "speed"
 
@@ -96,7 +96,7 @@ class CompileService : IntentService("vtools-compile") {
             for (packageName in packageNames) {
                 if (true) {
                     updateNotification(getString(R.string.dex2oat_reset_running), packageName, total, current)
-                    keepShell!!.doCmdSync("cmd package compile --reset ${packageName}")
+                    keepShell.doCmdSync("cmd package compile --reset ${packageName}")
                     current++
                 } else {
                     break
@@ -106,18 +106,17 @@ class CompileService : IntentService("vtools-compile") {
             for (packageName in packageNames) {
                 if (true) {
                     updateNotification(getString(R.string.dex2oat_compiling) + "[" + compile_method + "]", "[$current/$total]$packageName", total, current)
-                    keepShell!!.doCmdSync("cmd package compile -m ${compile_method} ${packageName}")
+                    keepShell.doCmdSync("cmd package compile -m ${compile_method} ${packageName}")
                     current++
                 } else {
                     break
                 }
             }
-            keepShell!!.doCmdSync("cmd package compile -m ${compile_method} ${packageName}")
+            keepShell.doCmdSync("cmd package compile -m ${compile_method} ${packageName}")
         }
         this.hideNotification()
         Thread.sleep(2000)
-        keepShell!!.tryExit()
-        keepShell = null
+        keepShell.tryExit()
         compiling = false
 
         this.stopSelf()

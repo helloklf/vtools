@@ -13,6 +13,7 @@ import com.omarea.model.TaskAction
 import com.omarea.model.TimingTaskInfo
 import com.omarea.scene_mode.TimingTaskManager
 import com.omarea.store.TimingTaskStorage
+import com.omarea.utils.GetUpTime
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_timing_task.*
 import java.util.*
@@ -90,7 +91,7 @@ class ActivityTimingTask : AppCompatActivity() {
             taks_trigger_time.setText(String.format(getString(R.string.format_hh_mm), hourOfDay, minute))
 
             // 重复周期
-            if (periodMillis < 1) {
+            if (expireDate > 0) {
                 taks_once.isChecked = true
             } else {
                 taks_repeat.isChecked = true
@@ -168,7 +169,7 @@ class ActivityTimingTask : AppCompatActivity() {
     // 保存并关闭界面
     private fun saveConfigAndFinish() {
         timingTaskInfo.enabled = system_scene_task_enable.isChecked
-        timingTaskInfo.periodMillis = if (taks_repeat.isChecked) (24 * 3600 * 1000) else -1
+        timingTaskInfo.expireDate = if (taks_repeat.isChecked) 0 else (GetUpTime(timingTaskInfo.triggerTimeMinutes).nextGetUpTime)
         timingTaskInfo.afterScreenOff = task_after_screen_off.isChecked
         timingTaskInfo.beforeExecuteConfirm = task_before_execute_confirm.isChecked
         timingTaskInfo.chargeOnly = task_charge_only.isChecked
