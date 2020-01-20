@@ -1,7 +1,6 @@
 package com.omarea.scene_mode
 
 import android.content.Context
-import android.os.Looper
 import com.omarea.data_collection.EventReceiver
 import com.omarea.data_collection.EventType
 import com.omarea.store.TriggerStorage
@@ -21,7 +20,7 @@ class TriggerEventMonitor(private val context: Context) : EventReceiver {
         items.forEach {
             val trigger = storage.load(it)
             if (trigger != null && trigger.enabled && trigger.taskActions != null && trigger.taskActions.size > 0) {
-                TimingTaskExecutor(trigger.taskActions, context).run()
+                TaskActionsExecutor(trigger.taskActions, context).run()
             }
         }
     }
@@ -32,7 +31,8 @@ class TriggerEventMonitor(private val context: Context) : EventReceiver {
             EventType.SCREEN_OFF,
             EventType.BOOT_COMPLETED,
             EventType.BATTERY_LOW,
-            EventType.POWER_CONNECTED -> {
+            EventType.POWER_CONNECTED,
+            EventType.POWER_DISCONNECTED -> {
                 return true
             }
             else -> return false

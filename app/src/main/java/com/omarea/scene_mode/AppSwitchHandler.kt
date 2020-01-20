@@ -283,7 +283,7 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
 
         if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)) {
             // 是否已经完成性能调节配置安装或自定义
-            if (configInstaller.configInstalled() || allModeReplaced(context)) {
+            if (modeConfigCompleted(context)) {
                 dyamicCore = true
                 CpuConfigInstaller().configCodeVerify()
                 initPowercfg(context)

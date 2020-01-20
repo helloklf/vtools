@@ -11,6 +11,7 @@ import android.widget.CompoundButton
 import com.omarea.data_collection.EventType
 import com.omarea.model.TaskAction
 import com.omarea.model.TriggerInfo
+import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.scene_mode.TriggerManager
 import com.omarea.store.TriggerStorage
 import com.omarea.vtools.R
@@ -60,6 +61,7 @@ class ActivityTrigger : AppCompatActivity() {
 
         // 设定单选关系
         oneOf(trigger_screen_on, trigger_screen_off)
+        oneOf(trigger_power_connected, trigger_power_disconnected)
 
         oneOf(task_standby_on, task_standby_off)
         oneOf(task_airplane_mode_on, task_airplane_mode_off)
@@ -123,7 +125,13 @@ class ActivityTrigger : AppCompatActivity() {
                 task_power_reboot.isChecked = contains(TaskAction.POWER_REBOOT)
                 task_compile_speed.isChecked = contains(TaskAction.COMPILE_SPEED)
                 task_compile_everything.isChecked = contains(TaskAction.COMPILE_EVERYTHING)
+
+                task_mode_powersave.isChecked = contains(TaskAction.MODE_POWERSAVE)
+                task_mode_balance.isChecked = contains(TaskAction.MODE_BALANCE)
+                task_mode_performance.isChecked = contains(TaskAction.MODE_PERFORMANCE)
+                task_mode_fast.isChecked = contains(TaskAction.MODE_FAST)
             }
+            task_mode_switch.visibility = if (ModeSwitcher().modeConfigCompleted(this@ActivityTrigger)) View.VISIBLE else View.GONE
         }
     }
 
@@ -193,6 +201,11 @@ class ActivityTrigger : AppCompatActivity() {
             task_compile_speed.isChecked && add(TaskAction.COMPILE_SPEED)
             task_compile_everything.isChecked && add(TaskAction.COMPILE_EVERYTHING)
 
+            task_mode_powersave.isChecked && add(TaskAction.MODE_POWERSAVE)
+            task_mode_balance.isChecked && add(TaskAction.MODE_BALANCE)
+            task_mode_performance.isChecked && add(TaskAction.MODE_PERFORMANCE)
+            task_mode_fast.isChecked && add(TaskAction.MODE_FAST)
+
             // 关机和重启动作放在最后
             task_power_off.isChecked && add(TaskAction.POWER_OFF)
             task_power_reboot.isChecked && add(TaskAction.POWER_REBOOT)
@@ -204,6 +217,7 @@ class ActivityTrigger : AppCompatActivity() {
             trigger_screen_off.isChecked && add(EventType.SCREEN_OFF)
             trigger_battery_low.isChecked && add(EventType.BATTERY_LOW)
             trigger_power_connected.isChecked && add(EventType.POWER_CONNECTED)
+            trigger_power_disconnected.isChecked && add(EventType.POWER_DISCONNECTED)
         }
 
         // timingTaskInfo.taskId = taskId

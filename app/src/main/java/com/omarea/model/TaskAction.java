@@ -18,4 +18,8 @@ public enum TaskAction {
     COMPILE_EVERYTHING, // Everything模式编译
     POWER_REBOOT,       // 重启手机
     POWER_OFF,          // 关机手机
+    MODE_POWERSAVE,     // 省电模式
+    MODE_BALANCE,      // 均衡模式
+    MODE_PERFORMANCE,  // 性能模式
+    MODE_FAST,         // 极速模式
 }

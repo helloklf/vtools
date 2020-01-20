@@ -60,7 +60,7 @@ class FragmentCpuModes : Fragment() {
         dynamic_control.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
         dynamic_control.setOnClickListener {
             val value = (it as Switch).isChecked
-            if (value && !(CpuConfigInstaller().configInstalled() || modeSwitcher.allModeReplaced(context!!))) {
+            if (value && !(modeSwitcher.modeConfigCompleted(context!!))) {
                 dynamic_control.isChecked = false
                 DialogHelper.helpInfo(context!!, "请先完成四个模式的配置！", "使用Scene自带配置(如果有显示选项)、本地导入、在线下载，均可快速完成四个模式的配置。\n\n如果都没找到适用的配置，不妨试试点击各个模式，自己动手设置参数！")
             } else {

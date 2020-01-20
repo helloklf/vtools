@@ -44,7 +44,7 @@ class SceneTaskIntentService : IntentService("SceneTaskIntentService") {
                     // 如果是个要求屏幕关闭后执行的任务，且现在屏幕还在点亮状态，放到息屏事件观测队列中
                     EventBus.subscibe(ScreenDelayTaskReceiver(this.taskActions, context.applicationContext))
                 } else {
-                    TimingTaskExecutor(this.taskActions, context).run()
+                    TaskActionsExecutor(this.taskActions, context).run()
                 }
             }
         }
@@ -53,7 +53,7 @@ class SceneTaskIntentService : IntentService("SceneTaskIntentService") {
     // 屏幕关闭后才执行的任务
     class ScreenDelayTaskReceiver(private val taskActions: ArrayList<TaskAction>, private val context: Context) :EventReceiver {
         override fun onReceive(eventType: EventType) {
-            TimingTaskExecutor(taskActions, context).run()
+            TaskActionsExecutor(taskActions, context).run()
         }
 
         override fun eventFilter(eventType: EventType): Boolean {

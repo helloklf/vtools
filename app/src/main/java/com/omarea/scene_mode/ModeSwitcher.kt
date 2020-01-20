@@ -137,6 +137,11 @@ open class ModeSwitcher {
         return CpuConfigStorage(context).load(mode)
     }
 
+    // 是否已完成四个模式的配置
+    public fun modeConfigCompleted(context: Context): Boolean {
+        return CpuConfigInstaller().configInstalled() || allModeReplaced(context)
+    }
+
     // 是否已经完成所有模式的自定义
     public fun allModeReplaced(context: Context): Boolean {
         val storage  = CpuConfigStorage(context)

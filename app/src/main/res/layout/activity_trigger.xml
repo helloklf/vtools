@@ -25,74 +25,81 @@
 
                 <Switch
                     android:id="@+id/system_scene_task_enable"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:text="启用触发器 "
-                    android:layout_gravity="center"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:text="启用触发器 " />
+
                 <LinearLayout
                     style="@style/ListCardItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:minHeight="65dp"
                     android:orientation="horizontal">
 
                     <TextView
                         style="@style/textTitle"
-                        android:layout_width="60dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
                         android:text="触发条件" />
 
                     <GridLayout
                         android:columnCount="2"
-                        android:layout_width="match_parent"
+                        android:layout_width="220dp"
                         android:layout_height="wrap_content">
+
                         <CheckBox
-                            android:layout_column="0"
-                            android:layout_columnWeight="1"
                             android:id="@+id/trigger_boot_completed"
                             android:layout_height="wrap_content"
+                            android:layout_column="0"
+                            android:layout_columnWeight="1"
                             android:text="开机完成" />
 
-                        <RadioButton
-                            android:layout_column="0"
-                            android:layout_columnWeight="1"
-                            android:id="@+id/trigger_screen_on"
-                            android:layout_height="wrap_content"
-                            android:text="屏幕点亮" />
-
-                        <RadioButton
-                            android:layout_column="1"
-                            android:layout_columnWeight="1"
-                            android:id="@+id/trigger_screen_off"
-                            android:layout_height="wrap_content"
-                            android:text="屏幕关闭" />
-
-                        <RadioButton
-                            android:layout_column="0"
-                            android:layout_columnWeight="1"
+                        <CheckBox
                             android:id="@+id/trigger_battery_low"
                             android:layout_height="wrap_content"
+                            android:layout_column="1"
+                            android:layout_columnWeight="1"
                             android:text="电量不足" />
 
                         <RadioButton
+                            android:id="@+id/trigger_screen_on"
+                            android:layout_height="wrap_content"
+                            android:layout_column="0"
+                            android:layout_columnWeight="1"
+                            android:text="屏幕点亮" />
+
+                        <RadioButton
+                            android:id="@+id/trigger_screen_off"
+                            android:layout_height="wrap_content"
                             android:layout_column="1"
                             android:layout_columnWeight="1"
+                            android:text="屏幕关闭" />
+
+                        <RadioButton
                             android:id="@+id/trigger_power_connected"
                             android:layout_height="wrap_content"
-                            android:text="开始充电" />
+                            android:layout_column="0"
+                            android:layout_columnWeight="1"
+                            android:text="插充电器" />
+                        <RadioButton
+                            android:id="@+id/trigger_power_disconnected"
+                            android:layout_height="wrap_content"
+                            android:layout_column="1"
+                            android:layout_columnWeight="1"
+                            android:text="拔充电器" />
                     </GridLayout>
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:visibility="gone"
                     style="@style/ListCardItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                     <TextView
                         style="@style/textTitle"
@@ -111,36 +118,37 @@
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:timePickerMode="spinner" />
+
                     <RadioButton
                         android:id="@+id/task_after_screen_off"
-                        android:textColor="?android:textColorPrimary"
-                        android:textStyle="normal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/activity_vertical_margin"
-                        android:text="如果当时正在使用手机，推迟到锁屏后执行" />
+                        android:text="如果当时正在使用手机，推迟到锁屏后执行"
+                        android:textColor="?android:textColorPrimary"
+                        android:textStyle="normal" />
 
                     <RadioButton
                         android:id="@+id/task_before_execute_confirm"
-                        android:textColor="?android:textColorPrimary"
-                        android:textStyle="normal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="执行前提示确认" />
+                        android:text="执行前提示确认"
+                        android:textColor="?android:textColorPrimary"
+                        android:textStyle="normal" />
 
                     <LinearLayout
-                        android:layout_marginTop="@dimen/activity_vertical_margin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
                         android:orientation="horizontal">
 
                         <RadioButton
                             android:id="@+id/task_battery_capacity_require"
-                            android:textColor="?android:textColorPrimary"
-                            android:textStyle="normal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="电量高于" />
+                            android:text="电量高于"
+                            android:textColor="?android:textColorPrimary"
+                            android:textStyle="normal" />
 
                         <TextView
                             android:id="@+id/task_battery_capacity"
@@ -154,19 +162,19 @@
                             android:textStyle="bold" />
 
                         <TextView
-                            android:textColor="?android:textColorPrimary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="%，或正在充电" />
+                            android:text="%，或正在充电"
+                            android:textColor="?android:textColorPrimary" />
                     </LinearLayout>
 
                     <RadioButton
                         android:id="@+id/task_charge_only"
-                        android:textColor="?android:textColorPrimary"
-                        android:textStyle="normal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="只在充电状态下执行" />
+                        android:text="只在充电状态下执行"
+                        android:textColor="?android:textColorPrimary"
+                        android:textStyle="normal" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -195,12 +203,12 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:paddingStart="7dp"
-                            android:textColor="?android:textColorPrimary"
-                            android:text="待机模式" />
+                            android:text="待机模式"
+                            android:textColor="?android:textColorPrimary" />
 
                         <RadioButton
                             android:id="@+id/task_standby_on"
-                            android:layout_width="80dp"
+                            android:layout_width="110dp"
                             android:layout_height="wrap_content"
                             android:text="开" />
 
@@ -222,12 +230,12 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:paddingStart="7dp"
-                            android:textColor="?android:textColorPrimary"
-                            android:text="飞行模式" />
+                            android:text="飞行模式"
+                            android:textColor="?android:textColorPrimary" />
 
                         <RadioButton
                             android:id="@+id/task_airplane_mode_on"
-                            android:layout_width="80dp"
+                            android:layout_width="110dp"
                             android:layout_height="wrap_content"
                             android:text="开" />
 
@@ -249,12 +257,12 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:paddingStart="7dp"
-                            android:textColor="?android:textColorPrimary"
-                            android:text="WIFI" />
+                            android:text="WIFI"
+                            android:textColor="?android:textColorPrimary" />
 
                         <RadioButton
                             android:id="@+id/task_wifi_on"
-                            android:layout_width="80dp"
+                            android:layout_width="110dp"
                             android:layout_height="wrap_content"
                             android:text="开" />
 
@@ -276,12 +284,12 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:paddingStart="7dp"
-                            android:textColor="?android:textColorPrimary"
-                            android:text="定位功能" />
+                            android:text="定位功能"
+                            android:textColor="?android:textColorPrimary" />
 
                         <RadioButton
                             android:id="@+id/task_gps_on"
-                            android:layout_width="80dp"
+                            android:layout_width="110dp"
                             android:layout_height="wrap_content"
                             android:text="开" />
 
@@ -303,12 +311,12 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:paddingStart="7dp"
-                            android:textColor="?android:textColorPrimary"
-                            android:text="2/3/4/5G" />
+                            android:text="2/3/4/5G"
+                            android:textColor="?android:textColorPrimary" />
 
                         <RadioButton
                             android:id="@+id/task_gprs_on"
-                            android:layout_width="80dp"
+                            android:layout_width="110dp"
                             android:layout_height="wrap_content"
                             android:text="开" />
 
@@ -318,6 +326,7 @@
                             android:layout_height="wrap_content"
                             android:text="关" />
                     </LinearLayout>
+
                     <LinearLayout
                         android:id="@+id/task_zen_mode"
                         android:layout_width="match_parent"
@@ -330,12 +339,12 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:paddingStart="7dp"
-                            android:textColor="?android:textColorPrimary"
-                            android:text="勿扰模式" />
+                            android:text="勿扰模式"
+                            android:textColor="?android:textColorPrimary" />
 
                         <RadioButton
                             android:id="@+id/task_zen_mode_on"
-                            android:layout_width="80dp"
+                            android:layout_width="110dp"
                             android:layout_height="wrap_content"
                             android:text="开" />
 
@@ -357,15 +366,39 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:paddingStart="7dp"
-                            android:textColor="?android:textColorPrimary"
-                            android:text="FSTRIM" />
-                        <CheckBox
-                            android:id="@+id/task_fstrim"
-                            android:layout_width="190dp"
+                            android:text="手机电源"
+                            android:textColor="?android:textColorPrimary" />
+
+                        <RadioButton
+                            android:id="@+id/task_power_off"
+                            android:layout_width="110dp"
                             android:layout_height="wrap_content"
-                            android:text="开" />
+                            android:text="关机" />
+
+                        <RadioButton
+                            android:id="@+id/task_power_reboot"
+                            android:layout_width="110dp"
+                            android:layout_height="wrap_content"
+                            android:text="重启" />
                     </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/ListCardItem"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/textTitle"
+                        android:layout_width="60dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                        android:text="维护任务" />
+
                     <LinearLayout
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
@@ -376,18 +409,14 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:paddingStart="7dp"
-                            android:textColor="?android:textColorPrimary"
-                            android:text="手机电源" />
-                        <RadioButton
-                            android:id="@+id/task_power_off"
-                            android:layout_width="80dp"
+                            android:text="磁盘维护"
+                            android:textColor="?android:textColorPrimary" />
+
+                        <CheckBox
+                            android:id="@+id/task_fstrim"
+                            android:layout_width="220dp"
                             android:layout_height="wrap_content"
-                            android:text="关机" />
-                        <RadioButton
-                            android:id="@+id/task_power_reboot"
-                            android:layout_width="110dp"
-                            android:layout_height="wrap_content"
-                            android:text="重启" />
+                            android:text="fstrim" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -402,12 +431,12 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:paddingStart="7dp"
-                            android:textColor="?android:textColorPrimary"
-                            android:text="dex2oat编译" />
+                            android:text="dex2oat编译"
+                            android:textColor="?android:textColorPrimary" />
 
                         <RadioButton
                             android:id="@+id/task_compile_speed"
-                            android:layout_width="80dp"
+                            android:layout_width="110dp"
                             android:layout_height="wrap_content"
                             android:text="speed" />
 
@@ -416,6 +445,63 @@
                             android:layout_width="110dp"
                             android:layout_height="wrap_content"
                             android:text="everything" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/task_mode_switch"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:paddingStart="7dp"
+                            android:text="性能调节"
+                            android:textColor="?android:textColorPrimary" />
+
+                        <RadioGroup
+                            android:layout_width="220dp"
+                            android:layout_height="wrap_content">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <RadioButton
+                                    android:id="@+id/task_mode_powersave"
+                                    android:layout_width="110dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="省电模式" />
+
+                                <RadioButton
+                                    android:id="@+id/task_mode_balance"
+                                    android:layout_width="110dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="均衡模式" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <RadioButton
+                                    android:id="@+id/task_mode_performance"
+                                    android:layout_width="110dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="性能模式" />
+
+                                <RadioButton
+                                    android:id="@+id/task_mode_fast"
+                                    android:layout_width="110dp"
+                                    android:layout_height="wrap_content"
+                                    android:text="极速模式" />
+                            </LinearLayout>
+                        </RadioGroup>
                     </LinearLayout>
                 </LinearLayout>
 

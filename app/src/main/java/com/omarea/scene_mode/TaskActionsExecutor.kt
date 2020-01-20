@@ -18,7 +18,7 @@ import com.omarea.vtools.R
 import com.omarea.vtools.services.CompileService
 import java.util.*
 
-class TimingTaskExecutor(private val taskActions: ArrayList<TaskAction>, private val context: Context) {
+class TaskActionsExecutor(private val taskActions: ArrayList<TaskAction>, private val context: Context) {
     private var nm = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
     public fun run() {
@@ -105,6 +105,22 @@ class TimingTaskExecutor(private val taskActions: ArrayList<TaskAction>, private
                     TaskAction.POWER_OFF -> {
                         updateNotification("自动关机")
                         KeepShellPublic.doCmdSync("sync;reboot -p")
+                    }
+                    TaskAction.MODE_POWERSAVE -> {
+                        updateNotification("切换省电模式")
+                        ModeSwitcher().setCurrentPowercfg(ModeSwitcher.POWERSAVE)
+                    }
+                    TaskAction.MODE_BALANCE -> {
+                        updateNotification("切换均衡模式")
+                        ModeSwitcher().setCurrentPowercfg(ModeSwitcher.BALANCE)
+                    }
+                    TaskAction.MODE_PERFORMANCE -> {
+                        updateNotification("切换性能模式")
+                        ModeSwitcher().setCurrentPowercfg(ModeSwitcher.PERFORMANCE)
+                    }
+                    TaskAction.MODE_FAST -> {
+                        updateNotification("切换极速模式")
+                        ModeSwitcher().setCurrentPowercfg(ModeSwitcher.FAST)
                     }
                     else -> { }
                 }
