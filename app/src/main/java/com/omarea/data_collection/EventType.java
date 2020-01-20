@@ -1,6 +1,6 @@
 package com.omarea.data_collection;
 
-public enum  EventTypes {
+public enum EventType {
     POWER_CONNECTED,        // 充电器连接
     POWER_DISCONNECTED,     // 充电器连接
     CHARGER_DISCONNECTED,   // 充电器断开连接

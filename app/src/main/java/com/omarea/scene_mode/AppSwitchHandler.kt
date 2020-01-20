@@ -8,12 +8,11 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.data_collection.EventBus
 import com.omarea.data_collection.EventReceiver
-import com.omarea.data_collection.EventTypes
+import com.omarea.data_collection.EventType
 import com.omarea.data_collection.GlobalStatus
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
@@ -210,14 +209,14 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
     }
     //#endregion
 
-    override fun onReceive(eventType: EventTypes) {
+    override fun onReceive(eventType: EventType) {
         when (eventType) {
-            EventTypes.APP_SWITCH ->
+            EventType.APP_SWITCH ->
                 onFocusAppChanged(GlobalStatus.lastPackageName)
-            EventTypes.SCREEN_ON -> {
+            EventType.SCREEN_ON -> {
                 _onScreenOn()
             }
-            EventTypes.SCREEN_OFF -> {
+            EventType.SCREEN_OFF -> {
                 if (ScreenState(context).isScreenLocked()) {
                     _onScreenOff()
                 }
@@ -226,9 +225,9 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
         }
     }
 
-    override fun eventFilter(eventType: EventTypes): Boolean {
+    override fun eventFilter(eventType: EventType): Boolean {
         return when (eventType) {
-            EventTypes.APP_SWITCH, EventTypes.SCREEN_OFF, EventTypes.SCREEN_ON -> true
+            EventType.APP_SWITCH, EventType.SCREEN_OFF, EventType.SCREEN_ON -> true
             else -> false
         }
     }

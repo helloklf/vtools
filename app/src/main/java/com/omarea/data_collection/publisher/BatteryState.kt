@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.BatteryManager
 import com.omarea.data_collection.EventBus
-import com.omarea.data_collection.EventTypes
+import com.omarea.data_collection.EventType
 import com.omarea.data_collection.GlobalStatus
 
 class BatteryState : BroadcastReceiver() {
@@ -27,13 +27,13 @@ class BatteryState : BroadcastReceiver() {
             GlobalStatus.batteryTemperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1) / 10.0f;
 
             if (action == Intent.ACTION_BATTERY_LOW) {
-                EventBus.publish(EventTypes.BATTERY_LOW);
+                EventBus.publish(EventType.BATTERY_LOW);
             } else if (action == Intent.ACTION_BATTERY_CHANGED) {
-                EventBus.publish(EventTypes.BATTERY_CHANGED);
+                EventBus.publish(EventType.BATTERY_CHANGED);
             } else if (action == Intent.ACTION_POWER_DISCONNECTED) {
-                EventBus.publish(EventTypes.CHARGER_DISCONNECTED);
+                EventBus.publish(EventType.CHARGER_DISCONNECTED);
             } else if (action == Intent.ACTION_POWER_CONNECTED) {
-                EventBus.publish(EventTypes.POWER_CONNECTED);
+                EventBus.publish(EventType.POWER_CONNECTED);
             }
         } catch (ex: Exception) {
         } finally {

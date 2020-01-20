@@ -8,7 +8,7 @@ import android.content.IntentFilter
 import android.os.Build
 import android.os.Handler
 import com.omarea.data_collection.EventBus
-import com.omarea.data_collection.EventTypes
+import com.omarea.data_collection.EventType
 
 /**
  * 监听屏幕开关事件
@@ -24,11 +24,11 @@ class ScreenState(private var context: Context) : BroadcastReceiver() {
         when (p1.action) {
             Intent.ACTION_SCREEN_OFF -> {
                 lastChange = System.currentTimeMillis()
-                EventBus.publish(EventTypes.SCREEN_OFF)
+                EventBus.publish(EventType.SCREEN_OFF)
             }
             Intent.ACTION_USER_PRESENT -> {
                 lastChange = System.currentTimeMillis()
-                EventBus.publish(EventTypes.SCREEN_ON)
+                EventBus.publish(EventType.SCREEN_ON)
             }
             Intent.ACTION_USER_UNLOCKED,
             Intent.ACTION_SCREEN_ON -> {
@@ -40,7 +40,7 @@ class ScreenState(private var context: Context) : BroadcastReceiver() {
                             try {
                                 val mKeyguardManager = p0!!.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
                                 if (!(mKeyguardManager.isKeyguardLocked || mKeyguardManager.inKeyguardRestrictedInputMode())) {
-                                    EventBus.publish(EventTypes.SCREEN_ON)
+                                    EventBus.publish(EventType.SCREEN_ON)
                                 }
                             } catch (ex: Exception) {
                             }

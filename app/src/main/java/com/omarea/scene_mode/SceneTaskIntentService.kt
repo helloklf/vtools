@@ -7,7 +7,7 @@ import android.os.BatteryManager
 import android.widget.Toast
 import com.omarea.data_collection.EventBus
 import com.omarea.data_collection.EventReceiver
-import com.omarea.data_collection.EventTypes
+import com.omarea.data_collection.EventType
 import com.omarea.data_collection.GlobalStatus
 import com.omarea.model.TimingTaskInfo
 import com.omarea.store.TimingTaskStorage
@@ -51,12 +51,12 @@ class SceneTaskIntentService : IntentService("SceneTaskIntentService") {
 
     // 屏幕关闭后才执行的任务
     class ScreenDelayTaskReceiver(private val timingTask: TimingTaskInfo, private val context: Context) :EventReceiver {
-        override fun onReceive(eventType: EventTypes?) {
+        override fun onReceive(eventType: EventType?) {
             TimingTaskExecutor(timingTask, context).run()
         }
 
-        override fun eventFilter(eventType: EventTypes?): Boolean {
-            return eventType == EventTypes.SCREEN_OFF
+        override fun eventFilter(eventType: EventType?): Boolean {
+            return eventType == EventType.SCREEN_OFF
         }
     }
 }

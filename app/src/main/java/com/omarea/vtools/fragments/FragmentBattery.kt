@@ -20,7 +20,7 @@ import com.omarea.charger_booster.BatteryInfo
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.data_collection.EventBus
-import com.omarea.data_collection.EventTypes
+import com.omarea.data_collection.EventType
 import com.omarea.shell_utils.BatteryUtils
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
@@ -416,7 +416,7 @@ class FragmentBattery : Fragment() {
     //启动电池服务
     private fun startBatteryService() {
         serviceRunning = BatteryService.startBatteryService(context!!)
-        EventBus.publish(EventTypes.BATTERY_CHANGED)
+        EventBus.publish(EventType.BATTERY_CHANGED)
     }
 
     companion object {

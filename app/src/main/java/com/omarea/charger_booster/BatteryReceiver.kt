@@ -6,7 +6,7 @@ import android.os.BatteryManager
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellAsync
 import com.omarea.data_collection.EventReceiver
-import com.omarea.data_collection.EventTypes
+import com.omarea.data_collection.EventType
 import com.omarea.data_collection.GlobalStatus
 import com.omarea.shell_utils.BatteryUtils
 import com.omarea.store.SpfConfig
@@ -14,9 +14,9 @@ import com.omarea.utils.GetUpTime
 import java.util.*
 
 class BatteryReceiver(private var service: Context) : EventReceiver {
-    override fun eventFilter(eventType: EventTypes): Boolean {
+    override fun eventFilter(eventType: EventType): Boolean {
         return when (eventType) {
-            EventTypes.BATTERY_CHANGED, EventTypes.BATTERY_LOW, EventTypes.POWER_CONNECTED, EventTypes.POWER_DISCONNECTED -> true
+            EventType.BATTERY_CHANGED, EventType.BATTERY_LOW, EventType.POWER_CONNECTED, EventType.POWER_DISCONNECTED -> true
             else -> false
         }
     }
@@ -45,7 +45,7 @@ class BatteryReceiver(private var service: Context) : EventReceiver {
             return bpAllowed && (GlobalStatus.batteryCapacity >= bpLevel || (chargeDisabled && GlobalStatus.batteryCapacity > bpLevel - 20))
         }
 
-    override fun onReceive(eventType: EventTypes) {
+    override fun onReceive(eventType: EventType) {
         if (GlobalStatus.batteryCapacity < 0) {
             return
         }

@@ -9,11 +9,15 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.provider.Settings
 import android.support.v4.app.Fragment
 import android.util.Log
-import android.view.*
-import android.widget.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.ListView
+import android.widget.Switch
+import android.widget.Toast
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.model.Appinfo
@@ -21,10 +25,8 @@ import com.omarea.model.TimingTaskInfo
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.scene_mode.SceneStandbyMode
 import com.omarea.scene_mode.TimingTaskManager
-import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.ui.AppMultipleChoiceAdapter
-import com.omarea.ui.SceneModeAdapter
 import com.omarea.ui.SceneTaskItem
 import com.omarea.ui.TabIconHelper
 import com.omarea.utils.AccessibleServiceHelper
@@ -37,14 +39,10 @@ import kotlinx.android.synthetic.main.fragment_system_scene.*
 
 class FragmentSystemScene : Fragment() {
     private lateinit var processBarDialog: ProgressBarDialog
-    private lateinit var spfPowercfg: SharedPreferences
     private lateinit var globalSPF: SharedPreferences
     private lateinit var chargeConfig: SharedPreferences
-    private lateinit var applistHelper: AppListHelper
     internal val myHandler: Handler = Handler()
     private var packageManager: PackageManager? = null
-    private lateinit var sceneConfigStore: SceneConfigStore
-    private var firstMode = ModeSwitcher.DEFAULT
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_system_scene, container, false)
     private lateinit var modeSwitcher: ModeSwitcher
@@ -52,8 +50,6 @@ class FragmentSystemScene : Fragment() {
     override fun onResume() {
         super.onResume()
         activity!!.title = getString(R.string.menu_system_scene)
-        val serviceState = AccessibleServiceHelper().serviceRunning(context!!)
-        btn_config_service_not_active.visibility = if (serviceState) View.GONE else View.VISIBLE
 
         updateCustomList()
     }
@@ -84,31 +80,6 @@ class FragmentSystemScene : Fragment() {
         }
     }
 
-    private fun startService() {
-        val dialog = ProgressBarDialog(context!!)
-        dialog.showDialog("尝试使用ROOT权限开启服务...")
-        Thread(Runnable {
-            if (!AccessibleServiceHelper().startSceneModeService(context!!)) {
-                try {
-                    myHandler.post {
-                        val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                        startActivity(intent)
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                } finally {
-                    myHandler.post {
-                        dialog.hideDialog()
-                    }
-                }
-            } else {
-                myHandler.post {
-                    dialog.hideDialog()
-                    btn_config_service_not_active.visibility = if (AccessibleServiceHelper().serviceRunning(context!!)) View.GONE else View.VISIBLE
-                }
-            }
-        }).start()
-    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (packageManager == null) {
@@ -117,20 +88,8 @@ class FragmentSystemScene : Fragment() {
 
         modeSwitcher = ModeSwitcher()
         processBarDialog = ProgressBarDialog(context!!)
-        applistHelper = AppListHelper(context!!)
-        spfPowercfg = context!!.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         chargeConfig = context!!.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
-        firstMode = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.DEFAULT)!!
-        sceneConfigStore = SceneConfigStore(this.context)
-
-        if (spfPowercfg.all.isEmpty()) {
-            initDefaultConfig()
-        }
-
-        btn_config_service_not_active.setOnClickListener {
-            startService()
-        }
 
         val tabIconHelper = TabIconHelper(configlist_tabhost, this.activity!!)
         configlist_tabhost.setup()
@@ -141,8 +100,6 @@ class FragmentSystemScene : Fragment() {
         configlist_tabhost.setOnTabChangedListener { tabId ->
             tabIconHelper.updateHighlight()
         }
-
-        val spfAutoConfig = context!!.getSharedPreferences(SpfConfig.BOOSTER_SPF_CFG_SPF, Context.MODE_PRIVATE)
 
         if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_BP, false)) {
             system_scene_bp.visibility = View.VISIBLE
@@ -273,30 +230,6 @@ class FragmentSystemScene : Fragment() {
         if (restartService) {
             reStartService()
         }
-    }
-
-    private fun bindSPF(checkBox: CheckBox, spf: SharedPreferences, prop: String, defValue: Boolean = false, restartService: Boolean = false) {
-        checkBox.isChecked = spf.getBoolean(prop, defValue)
-        checkBox.setOnCheckedChangeListener { _, isChecked ->
-            spf.edit().putBoolean(prop, isChecked).apply()
-        }
-        if (restartService) {
-            reStartService()
-        }
-    }
-
-    private fun initDefaultConfig() {
-        val editor = spfPowercfg.edit()
-        for (item in resources.getStringArray(R.array.powercfg_igoned)) {
-            editor.putString(item, ModeSwitcher.IGONED)
-        }
-        for (item in resources.getStringArray(R.array.powercfg_fast)) {
-            editor.putString(item, ModeSwitcher.FAST)
-        }
-        for (item in resources.getStringArray(R.array.powercfg_game)) {
-            editor.putString(item, ModeSwitcher.PERFORMANCE)
-        }
-        editor.apply()
     }
 
     override fun onDestroy() {

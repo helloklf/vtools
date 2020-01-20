@@ -17,7 +17,7 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityWindowInfo
 import android.widget.Toast
 import com.omarea.data_collection.EventBus
-import com.omarea.data_collection.EventTypes
+import com.omarea.data_collection.EventType
 import com.omarea.data_collection.GlobalStatus
 import com.omarea.scene_mode.AppSwitchHandler
 import com.omarea.store.SceneConfigStore
@@ -280,10 +280,10 @@ class AccessibilityScenceMode : AccessibilityService() {
                     }
                 }
                 GlobalStatus.lastPackageName = packageName
-                EventBus.publish(EventTypes.APP_SWITCH);
+                EventBus.publish(EventType.APP_SWITCH);
             } else {
                 GlobalStatus.lastPackageName = packageName
-                EventBus.publish(EventTypes.APP_SWITCH);
+                EventBus.publish(EventType.APP_SWITCH);
             }
 
             handler.postDelayed({
@@ -291,7 +291,7 @@ class AccessibilityScenceMode : AccessibilityService() {
                     val lastEvent = topAppPackageName()
                     if (lastEvent.isNotEmpty() && lastEvent != GlobalStatus.lastPackageName) {
                         GlobalStatus.lastPackageName = lastEvent
-                        EventBus.publish(EventTypes.APP_SWITCH);
+                        EventBus.publish(EventType.APP_SWITCH);
                     }
                 }
             }, 2000)

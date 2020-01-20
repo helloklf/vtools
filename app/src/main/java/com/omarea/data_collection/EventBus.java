@@ -11,7 +11,7 @@ public class EventBus {
      * 发布事件
      * @param eventType 事件类型
      */
-    public static void publish(EventTypes eventType) {
+    public static void publish(EventType eventType) {
         if (eventReceivers != null && eventReceivers.size() > 0) {
             for (EventReceiver eventReceiver : eventReceivers) {
                 try {
