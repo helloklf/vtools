@@ -428,7 +428,7 @@ class FragmentConfig : Fragment() {
 
     private fun setListData(dl: ArrayList<Appinfo>?, lv: OverScrollListView) {
         myHandler.post {
-            lv.adapter = SceneModeAdapter(lv, dl!!)
+            lv.adapter = SceneModeAdapter(context!!, dl!!)
             processBarDialog.hideDialog()
         }
     }
