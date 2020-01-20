@@ -104,6 +104,7 @@ class ActivityTrigger : AppCompatActivity() {
                 trigger_screen_off.isChecked = contains(EventType.SCREEN_OFF)
                 trigger_battery_low.isChecked = contains(EventType.BATTERY_LOW)
                 trigger_power_connected.isChecked = contains(EventType.POWER_CONNECTED)
+                trigger_power_disconnected.isChecked = contains(EventType.POWER_DISCONNECTED)
             }
 
             // 功能动作
