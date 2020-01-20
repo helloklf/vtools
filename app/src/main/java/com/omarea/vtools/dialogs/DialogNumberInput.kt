@@ -2,18 +2,13 @@ package com.omarea.vtools.dialogs
 
 import android.app.AlertDialog
 import android.content.Context
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import com.omarea.common.ui.DialogHelper
 import com.omarea.vtools.R
-import java.lang.Exception
-import kotlin.math.min
 
 class DialogNumberInput(private val context: Context) {
     interface DialogNumberInputRequest {

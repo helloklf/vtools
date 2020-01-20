@@ -6,18 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.omarea.data_collection.EventType
 import com.omarea.model.TaskAction
-import com.omarea.model.TimingTaskInfo
+import com.omarea.model.TriggerInfo
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.list_scene_task_item.view.*
 
-class SceneTaskItem : LinearLayout {
+class SceneTriggerItem : LinearLayout {
     constructor(context: Context) : super(context) {
         setLayout(context)
     }
 
-    constructor(context: Context, taskInfo: TimingTaskInfo) : super(context) {
-        setLayout(context, taskInfo)
+    constructor(context: Context, triggerInfo: TriggerInfo) : super(context) {
+        setLayout(context, triggerInfo)
     }
 
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs) {}
@@ -25,35 +26,57 @@ class SceneTaskItem : LinearLayout {
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes) {}
 
     private fun setLayout(context: Context) {
-        LayoutInflater.from(context).inflate(R.layout.list_scene_task_item, this, true)
+        LayoutInflater.from(context).inflate(R.layout.list_scene_trigger_item, this, true)
     }
-    private fun setLayout(context: Context, taskInfo: TimingTaskInfo) {
+    private fun setLayout(context: Context, triggerInfo: TriggerInfo) {
         setLayout(context)
 
-        if (taskInfo.taskName.isNullOrEmpty()) {
-            system_scene_task_name.text = "未命名任务"
-        } else {
-            system_scene_task_name.text = taskInfo.taskName
-        }
-        val timePrefix = if (taskInfo.expireDate < 1) ("每天，") else ""
-        system_scene_task_time.text = timePrefix + getTimeStr(taskInfo)
-        system_scene_task_content.text = getTaskContentText(taskInfo)
+        system_scene_task_time.text = getEvents(triggerInfo)
+        system_scene_task_content.text = getTaskContentText(triggerInfo)
     }
 
-    private fun getTimeStr(taskInfo: TimingTaskInfo) : String {
-        val hours = taskInfo.triggerTimeMinutes / 60
-        val minutes = taskInfo.triggerTimeMinutes % 60
-        val hoursStr = if (hours < 10) ("0" + hours) else hours.toString()
-        val minutesStr = if (minutes < 10) ("0" + minutes) else minutes.toString()
-        val stuffix = if (taskInfo.afterScreenOff) " 屏幕关闭后" else ""
-
-        return hoursStr + ":" + minutesStr + stuffix
-    }
-
-    private fun getTaskContentText(taskInfo: TimingTaskInfo): String {
+    private fun getEvents(triggerInfo: TriggerInfo) : String {
         val buffer = StringBuffer()
-        if (taskInfo.taskActions != null && taskInfo.taskActions.size > 0) {
-            taskInfo.taskActions.map {
+        if (triggerInfo.events != null && triggerInfo.events.size > 0) {
+            triggerInfo.events.forEach {
+                when(it) {
+                    EventType.BOOT_COMPLETED -> {
+                        buffer.append("开机完成")
+                    }
+                    EventType.APP_SWITCH -> {
+                        buffer.append("应用切换")
+                    }
+                    EventType.SCREEN_OFF -> {
+                        buffer.append("屏幕关闭")
+                    }
+                    EventType.SCREEN_ON -> {
+                        buffer.append("屏幕打开")
+                    }
+                    EventType.BATTERY_CHANGED -> {
+                        buffer.append("电池变化")
+                    }
+                    EventType.BATTERY_LOW -> {
+                        buffer.append("电量不足")
+                    }
+                    EventType.POWER_DISCONNECTED -> {
+                        buffer.append("充电器移除")
+                    }
+                    EventType.POWER_CONNECTED -> {
+                        buffer.append("充电器连接")
+                    }
+                }
+                buffer.append(", ")
+            }
+        } else {
+            buffer.append("---")
+        }
+        return buffer.toString()
+    }
+
+    private fun getTaskContentText(triggerInfo: TriggerInfo): String {
+        val buffer = StringBuffer()
+        if (triggerInfo.taskActions != null && triggerInfo.taskActions.size > 0) {
+            triggerInfo.taskActions.forEach {
                 when(it) {
                     TaskAction.STANDBY_MODE_ON -> {
                         buffer.append("休眠模式 √")

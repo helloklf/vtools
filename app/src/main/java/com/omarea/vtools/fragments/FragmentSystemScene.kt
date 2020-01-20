@@ -1,6 +1,5 @@
 package com.omarea.vtools.fragments
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
@@ -16,26 +15,26 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ListView
-import android.widget.Switch
-import android.widget.Toast
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.model.Appinfo
 import com.omarea.model.TimingTaskInfo
+import com.omarea.model.TriggerInfo
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.scene_mode.SceneStandbyMode
 import com.omarea.scene_mode.TimingTaskManager
+import com.omarea.scene_mode.TriggerManager
 import com.omarea.store.SpfConfig
 import com.omarea.ui.AppMultipleChoiceAdapter
 import com.omarea.ui.SceneTaskItem
+import com.omarea.ui.SceneTriggerItem
 import com.omarea.ui.TabIconHelper
-import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.utils.AppListHelper
 import com.omarea.utils.GetUpTime
 import com.omarea.vtools.R
 import com.omarea.vtools.activities.ActivityTimingTask
+import com.omarea.vtools.activities.ActivityTrigger
 import kotlinx.android.synthetic.main.fragment_system_scene.*
-
 
 class FragmentSystemScene : Fragment() {
     private lateinit var processBarDialog: ProgressBarDialog
@@ -57,11 +56,18 @@ class FragmentSystemScene : Fragment() {
     private fun updateCustomList() {
         nextTask = null
         system_scene_task_list.removeAllViews()
-        TimingTaskManager(this.context!!).listTask().map {
+        TimingTaskManager(this.context!!).listTask().forEach {
             addCustomTaskItemView(it)
             checkNextTask(it)
         }
         updateNextTaskInfo()
+
+        system_scene_trigger_list.removeAllViews()
+        TriggerManager(this.context!!).list().forEach {
+            it?.run {
+                addCustomTriggerView(it)
+            }
+        }
     }
 
     private var nextTask: TimingTaskInfo? = null // 下一个要执行的任务
@@ -79,7 +85,6 @@ class FragmentSystemScene : Fragment() {
             system_scene_next_content.addView(buildCustomTaskItemView(nextTask!!))
         }
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (packageManager == null) {
@@ -114,7 +119,8 @@ class FragmentSystemScene : Fragment() {
         }
 
         system_scene_add_trigger.setOnClickListener {
-            Toast.makeText(context!!, "敬请期待", Toast.LENGTH_SHORT).show()
+            val intent = Intent(activity, ActivityTrigger::class.java)
+            startActivity(intent)
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -202,6 +208,28 @@ class FragmentSystemScene : Fragment() {
         }
     }
 
+    private fun addCustomTriggerView(triggerInfo: TriggerInfo) {
+        val itemView = SceneTriggerItem(context!!, triggerInfo)
+        itemView.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
+        itemView.isClickable = true
+
+        system_scene_trigger_list.addView(itemView)
+
+        itemView.setOnClickListener {
+            val intent = Intent(activity, ActivityTrigger::class.java)
+            intent.putExtra("id", triggerInfo.id)
+            startActivity(intent)
+        }
+        itemView.setOnLongClickListener {
+            DialogHelper.animDialog(AlertDialog.Builder(context!!).setTitle("删除该触发器？").setPositiveButton(R.string.btn_confirm) { _, _ ->
+                TriggerManager(context!!).removeTrigger(triggerInfo)
+                updateCustomList()
+            }.setNeutralButton(R.string.btn_cancel) { _, _ ->
+            })
+            true
+        }
+    }
+
     private fun formateTime(time: Long): String {
         Log.d(">>>>time", "" + time)
         val days = time / (24 * 3600)
@@ -210,26 +238,6 @@ class FragmentSystemScene : Fragment() {
         val seconds = time % 60
 
         return "${days}天 ${hours}时 ${minutes}分 ${seconds}秒"
-    }
-
-    /**
-     * 重启辅助服务
-     */
-    private fun reStartService() {
-        if (AccessibleServiceHelper().serviceRunning(context!!)) {
-            context!!.sendBroadcast(Intent(context!!.getString(R.string.scene_change_action)))
-        }
-    }
-
-    @SuppressLint("ApplySharedPref")
-    private fun bindSPF(checkBox: Switch, spf: SharedPreferences, prop: String, defValue: Boolean = false, restartService: Boolean = false) {
-        checkBox.isChecked = spf.getBoolean(prop, defValue)
-        checkBox.setOnCheckedChangeListener { _, isChecked ->
-            spf.edit().putBoolean(prop, isChecked).commit()
-        }
-        if (restartService) {
-            reStartService()
-        }
     }
 
     override fun onDestroy() {

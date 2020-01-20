@@ -13,6 +13,8 @@ import com.omarea.common.shared.FileWrite
 import com.omarea.common.shared.RawText
 import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KernelProrp
+import com.omarea.data_collection.EventBus
+import com.omarea.data_collection.EventType
 import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.scene_mode.SceneMode
@@ -54,6 +56,7 @@ class BootService : IntentService("vtools-boot") {
             return
         }
         updateNotification(getString(R.string.boot_script_running))
+        EventBus.publish(EventType.BOOT_COMPLETED)
         autoBoot()
     }
 

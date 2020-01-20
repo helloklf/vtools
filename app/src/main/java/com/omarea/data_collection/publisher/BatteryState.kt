@@ -31,7 +31,7 @@ class BatteryState : BroadcastReceiver() {
             } else if (action == Intent.ACTION_BATTERY_CHANGED) {
                 EventBus.publish(EventType.BATTERY_CHANGED);
             } else if (action == Intent.ACTION_POWER_DISCONNECTED) {
-                EventBus.publish(EventType.CHARGER_DISCONNECTED);
+                EventBus.publish(EventType.POWER_DISCONNECTED);
             } else if (action == Intent.ACTION_POWER_CONNECTED) {
                 EventBus.publish(EventType.POWER_CONNECTED);
             }

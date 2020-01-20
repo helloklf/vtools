@@ -300,12 +300,13 @@
         <item>所有应用</item>
     </string-array>
     <string name="title_activity_timing_task">定时任务</string>
+    <string name="title_activity_trigger">触发器</string>
     <string name="title_activity_file_selector">请选择文件</string>
     <string name="config_save_fail">配置保存失败！</string>
     <string name="boot_success">已完成开机自启动</string>
     <string name="notice_channel_boot">自启动提示</string>
-    <string name="notice_channel_task">Scene定时任务</string>
-    <string name="notice_task_completed">Scene定时任务完成</string>
+    <string name="notice_channel_task">Scene计划任务</string>
+    <string name="notice_task_completed">Scene计划任务完成</string>
     <string name="boot_script_running">正在执行自启动脚本…</string>
     <string name="boot_cpuset">设置CPU控制参数…</string>
     <string name="boot_modify_mac">修改MAC地址…</string>

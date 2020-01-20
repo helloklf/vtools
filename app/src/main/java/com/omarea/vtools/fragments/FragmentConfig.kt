@@ -22,7 +22,6 @@ import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.OverScrollListView
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.model.Appinfo
-import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.BatteryHistoryStore
 import com.omarea.store.SceneConfigStore

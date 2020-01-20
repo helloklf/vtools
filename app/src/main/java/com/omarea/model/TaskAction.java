@@ -4,8 +4,8 @@ public enum TaskAction {
     FSTRIM,             // fstrim
     STANDBY_MODE_ON,    // 待机模式
     STANDBY_MODE_OFF,   // 待机模式
-    AIRPLANE_MODE_ON,   // 飞行模式开关
-    AIRPLANE_MODE_OFF,  // 飞行模式开关
+    AIRPLANE_MODE_ON,   // 飞行模式开
+    AIRPLANE_MODE_OFF,  // 飞行模式关
     WIFI_ON,            // wifi开
     WIFI_OFF,           // wifi关
     GPRS_ON,            // 数据开
