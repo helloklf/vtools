@@ -123,7 +123,7 @@ elif [ "$action" = "balance" ]; then
     echo 1 > /sys/devices/system/cpu/cpu6/online
     echo 1 > /sys/devices/system/cpu/cpu7/online
 
-	set_cpu_freq 5000 1804800 5000 1939200
+	set_cpu_freq 5000 1708800 5000 1708800
 	set_input_boost_freq 1248000 0 40
 
 	echo 1248000 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq

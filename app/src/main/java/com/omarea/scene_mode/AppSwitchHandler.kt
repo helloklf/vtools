@@ -205,14 +205,8 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
     }
 
     private fun toggleConfig(mode: String) {
-        if (configInstaller.configInstalled() || CpuConfigInstaller().installOfficialConfig(context, "")) {
-            executePowercfgMode(context, mode)
-            lastMode = mode
-        } else {
-            dyamicCore = false
-            spfGlobal.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, false).apply()
-            Toast.makeText(context, context.getString(R.string.dynamic_auto_disabled), Toast.LENGTH_LONG).show()
-        }
+        executePowercfgMode(context, mode)
+        lastMode = mode
     }
     //#endregion
 
@@ -295,6 +289,8 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
                 CpuConfigInstaller().configCodeVerify()
                 initPowercfg(context)
             } else {
+                spfGlobal.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, false).apply()
+                Toast.makeText(context, context.getString(R.string.dynamic_auto_disabled), Toast.LENGTH_LONG).show()
                 dyamicCore = false
             }
             spfGlobal.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, "").commit()

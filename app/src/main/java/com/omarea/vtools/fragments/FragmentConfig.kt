@@ -381,7 +381,7 @@ class FragmentConfig : Fragment() {
                 3 -> mode = ModeSwitcher.FAST
                 4 -> mode = ModeSwitcher.IGONED
             }
-            if (globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "") != mode) {
+            if (globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.DEFAULT) != mode) {
                 globalSPF.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, mode).commit()
                 runnable.run()
             }
