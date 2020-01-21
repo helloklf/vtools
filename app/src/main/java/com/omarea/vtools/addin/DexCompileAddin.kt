@@ -225,7 +225,6 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
 
     fun modifyConfig() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-            Toast.makeText(context, "系统版本过低，至少需要Android 7.0！", Toast.LENGTH_SHORT).show()
             modifyConfigOld()
             return
         }

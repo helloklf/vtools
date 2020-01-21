@@ -16,7 +16,11 @@ import java.util.*
 class BatteryReceiver(private var service: Context) : EventReceiver {
     override fun eventFilter(eventType: EventType): Boolean {
         return when (eventType) {
-            EventType.BATTERY_CHANGED, EventType.BATTERY_LOW, EventType.POWER_CONNECTED, EventType.POWER_DISCONNECTED -> true
+            // EventType.BATTERY_CAPACITY_CHANGED, // 电量百分比变化
+            EventType.BATTERY_CHANGED,              // 这个执行频率可能有点太高了，耗电
+            EventType.BATTERY_LOW,
+            EventType.POWER_CONNECTED,
+            EventType.POWER_DISCONNECTED -> true
             else -> false
         }
     }
@@ -63,12 +67,14 @@ class BatteryReceiver(private var service: Context) : EventReceiver {
                 }
             }
 
-            // 夜间慢速充电
-            val isSleepTime = sleepChargeMode(GlobalStatus.batteryCapacity, if (bpAllowed) bpLevel else 100, qcLimit)
+            if (onCharge) {
+                // 夜间慢速充电
+                val isSleepTime = sleepChargeMode(GlobalStatus.batteryCapacity, if (bpAllowed) bpLevel else 100, qcLimit)
 
-            // 充电加速
-            if (!isSleepTime) {
-                setChargerLimit()
+                // 充电加速
+                if (!isSleepTime) {
+                    setChargerLimit()
+                }
             }
         } catch (ex: Exception) {
         }

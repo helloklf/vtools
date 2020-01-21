@@ -16,24 +16,29 @@ class BatteryState : BroadcastReceiver() {
         GlobalStatus.batteryTemperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1) / 10.0f;
     }
 
+    private var currentCapacity = 0
     override fun onReceive(context: Context, intent: Intent) {
         val pendingResult = goAsync()
         try {
             saveState(intent);
 
             val action = intent.action
-            GlobalStatus.batteryCapacity = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-            GlobalStatus.batteryStatus = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
-            GlobalStatus.batteryTemperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1) / 10.0f;
+            GlobalStatus.batteryCapacity = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+            GlobalStatus.batteryStatus = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
+            GlobalStatus.batteryTemperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1) / 10.0f
 
             if (action == Intent.ACTION_BATTERY_LOW) {
-                EventBus.publish(EventType.BATTERY_LOW);
+                EventBus.publish(EventType.BATTERY_LOW)
             } else if (action == Intent.ACTION_BATTERY_CHANGED) {
-                EventBus.publish(EventType.BATTERY_CHANGED);
+                EventBus.publish(EventType.BATTERY_CHANGED)
             } else if (action == Intent.ACTION_POWER_DISCONNECTED) {
-                EventBus.publish(EventType.POWER_DISCONNECTED);
+                EventBus.publish(EventType.POWER_DISCONNECTED)
             } else if (action == Intent.ACTION_POWER_CONNECTED) {
-                EventBus.publish(EventType.POWER_CONNECTED);
+                EventBus.publish(EventType.POWER_CONNECTED)
+            }
+            if (currentCapacity != GlobalStatus.batteryCapacity) {
+                currentCapacity = GlobalStatus.batteryCapacity
+                EventBus.publish(EventType.BATTERY_CAPACITY_CHANGED)
             }
         } catch (ex: Exception) {
         } finally {
