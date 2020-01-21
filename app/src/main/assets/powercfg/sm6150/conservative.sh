@@ -107,11 +107,11 @@ function set_input_boost_freq() {
 }
 
 if [ "$action" = "powersave" ]; then
-    echo 0 > /sys/devices/system/cpu/cpu6/online
-    echo 0 > /sys/devices/system/cpu/cpu7/online
-
 	set_cpu_freq 5000 1612800 5000 5000
 	set_input_boost_freq 0 0 0
+
+    echo 0 > /sys/devices/system/cpu/cpu6/online
+    echo 0 > /sys/devices/system/cpu/cpu7/online
 
 	echo 1248000 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
 	echo 806400 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
@@ -119,18 +119,24 @@ if [ "$action" = "powersave" ]; then
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
 
-elif [ "$action" = "balance" ]; then
-	set_cpu_freq 5000 1708800 5000 1708800
-	set_input_boost_freq 1248000 0 40
+    echo 1 > /sys/devices/system/cpu/cpu0/core_ctl/enable
+    echo 1 > /sys/devices/system/cpu/cpu6/core_ctl/enable
 
+elif [ "$action" = "balance" ]; then
     echo 1 > /sys/devices/system/cpu/cpu6/online
     echo 1 > /sys/devices/system/cpu/cpu7/online
+
+	set_cpu_freq 5000 1708800 5000 1708800
+	set_input_boost_freq 1248000 0 40
 
 	echo 1248000 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
 	echo 1209600 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
 
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
+
+    echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
+    echo 1 > /sys/devices/system/cpu/cpu6/core_ctl/enable
 
 elif [ "$action" = "performance" ]; then
     echo 1 > /sys/devices/system/cpu/cpu6/online
@@ -144,6 +150,9 @@ elif [ "$action" = "performance" ]; then
 
 	echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
+
+    echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
+    echo 0 > /sys/devices/system/cpu/cpu6/core_ctl/enable
 
     sync
     sync
@@ -161,6 +170,9 @@ elif [ "$action" = "fast" ]; then
 
 	echo `expr $gpu_min_pl - 2` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 1 > /proc/sys/kernel/sched_boost
+
+    echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
+    echo 0 > /sys/devices/system/cpu/cpu6/core_ctl/enable
 
     sync
     sync

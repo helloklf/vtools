@@ -119,6 +119,9 @@ if [ "$action" = "powersave" ]; then
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
 
+    echo 1 > /sys/devices/system/cpu/cpu0/core_ctl/enable
+    echo 1 > /sys/devices/system/cpu/cpu6/core_ctl/enable
+
 elif [ "$action" = "balance" ]; then
     echo 1 > /sys/devices/system/cpu/cpu6/online
     echo 1 > /sys/devices/system/cpu/cpu7/online
@@ -132,6 +135,9 @@ elif [ "$action" = "balance" ]; then
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
 
+    echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
+    echo 1 > /sys/devices/system/cpu/cpu6/core_ctl/enable
+
 elif [ "$action" = "performance" ]; then
     echo 1 > /sys/devices/system/cpu/cpu6/online
     echo 1 > /sys/devices/system/cpu/cpu7/online
@@ -144,6 +150,9 @@ elif [ "$action" = "performance" ]; then
 
 	echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
+
+    echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
+    echo 0 > /sys/devices/system/cpu/cpu6/core_ctl/enable
 
     sync
     sync
@@ -161,6 +170,9 @@ elif [ "$action" = "fast" ]; then
 
 	echo `expr $gpu_min_pl - 2` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 1 > /proc/sys/kernel/sched_boost
+
+    echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
+    echo 0 > /sys/devices/system/cpu/cpu6/core_ctl/enable
 
     sync
     sync
