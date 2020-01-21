@@ -40,10 +40,7 @@ public class SpfConfig {
     public static String GLOBAL_SPF = "global"; //spf
     public static String GLOBAL_SPF_AUTO_INSTALL = "is_auto_install";
     public static String GLOBAL_SPF_DISABLE_ENFORCE = "enforce_0";
-    public static String GLOBAL_SPF_AUTO_STARTED_COMPILE = "auto_started_compile";
-    public static String GLOBAL_SPF_AUTO_STARTED_FSTRIM = "auto_started_fstrim";
     public static String GLOBAL_SPF_START_DELAY = "start_delay";
-    public static String GLOBAL_SPF_DELAY = "is_delay_start";
     public static String GLOBAL_SPF_NOTIFY = "scene_notify";
     public static String GLOBAL_SPF_AUTO_REMOVE_RECENT = "remove_recent";
     public static String GLOBAL_SPF_NIGHT_MODE = "app_night_mode";

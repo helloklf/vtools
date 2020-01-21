@@ -63,8 +63,6 @@
     <string name="auto_clear_ignore_chager">充电状态忽略</string>
     <string name="auto_clear_ignore_chager_desc">充电状态下，息屏动作延迟到充电完成才执行</string>
 
-    <string name="settings_delay">延迟执行</string>
-    <string name="settings_delay_desc">自启动过程延迟25秒，避免开机时卡顿</string>
     <string name="settings_disable_selinux">SeLinux宽容模式</string>
     <string name="settings_disable_selinux_desc">自动开启SELinux宽容模式（部分软件中称作“关闭Selinux”）。某些设备激活此选项会死机重启！</string>
     <string name="settings_theme">主题</string>
@@ -140,11 +138,6 @@
 
     <string name="home_hide_in_recents">强迫症</string>
     <string name="home_hide_in_recents_desc">不要在多任务界面显示Scene（本功能已下线，用返回键关闭Scene界面时自动隐藏后台）</string>
-    <string name="auto_start_compile">自动编译(Android N+)</string>
-    <string name="auto_start_compile_unsupported">Android N以后的系统才用得上本功能~</string>
-    <string name="auto_start_compile_desc">开机完成Scene自启动后，对新应用进行dex2oat编译</string>
-    <string name="auto_start_fstrim">自动fstrim</string>
-    <string name="auto_start_fstrim_desc">开机完成Scene自启动后，自动执行fstrim</string>
     <string name="applist_help">⚙ 已更新的系统应用\n✔ 已备份\n✘ 备份的版本比安装的版本更高\n★ 已安装的版本比备份的版本旧\n☆ 已备份数据未备份APK\n❄ 已冻结\n\n目前所提供的应用数据备份功能，需要系统集成busybox、toybox，使用tar+gz压缩数据（如果系统支持，将使用pigz提高压缩速度），仅备份 “/data/data/应用包名” 下的数据，且不保证兼容所有系统和应用。</string>
     <string name="dialog_addin_device_warn">机型信息请不要输入特殊符号！\n已兼容应用变量的机型代码，复制后重新打开此窗口即可使用！</string>
     <string name="dialog_addin_device_desc">修改后可点击“还原”->“确认”恢复修改前的机型，卸载Scene会导致备份的机型信息丢失，请务必还原后再卸载！\n\n或者，你也可以通过重新刷入完整ROM来恢复机型信息！\n\n使用DualBootPatcher多系统软件切勿使用本功能修改机型！！！</string>
@@ -314,7 +307,6 @@
     <string name="boot_use_powercfg">应用调度配置…</string>
     <string name="boot_resize_zram">设置ZRAM容量…</string>
     <string name="boot_swapon">启动SWAP…</string>
-    <string name="boot_trim">运行fstrim…</string>
     <string name="boot_lmk">调整LMK参数…</string>
     <string name="boot_freeze">冻结偏见应用…</string>
 

@@ -148,18 +148,6 @@ class BootService : IntentService("vtools-boot") {
             keepShell.doCmdSync("echo " + swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65) + " > /proc/sys/vm/swappiness\n")
         }
 
-        if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_STARTED_FSTRIM, false)) {
-            updateNotification(getString(R.string.boot_trim))
-            val trimCmd = StringBuilder()
-            trimCmd.append("setprop vtools.boot 1\n")
-            trimCmd.append("fstrim /data\n")
-            trimCmd.append("fstrim /system\n")
-            trimCmd.append("fstrim /cache\n")
-            trimCmd.append("fstrim /vendor\n")
-            keepShell.doCmdSync(trimCmd.toString())
-        }
-
-
         if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, false)) {
             updateNotification(getString(R.string.boot_lmk))
 

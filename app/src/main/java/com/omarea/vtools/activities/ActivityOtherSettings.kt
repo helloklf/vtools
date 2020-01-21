@@ -33,14 +33,10 @@ class ActivityOtherSettings : AppCompatActivity() {
 
         home_hide_in_recents.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, false)
 
-        settings_delaystart.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DELAY, false)
         settings_disable_selinux.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, false)
-        auto_start_compile.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_STARTED_COMPILE, false)
-        auto_start_fstrim.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_STARTED_FSTRIM, false)
         settings_theme_wallpaper.isChecked = spf.getInt(SpfConfig.GLOBAL_SPF_THEME, 1) == 10
     }
 
-    @SuppressLint("ApplySharedPref")
     override fun onCreate(savedInstanceState: Bundle?) {
         spf = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         ThemeSwitch.switchTheme(this)
@@ -60,21 +56,18 @@ class ActivityOtherSettings : AppCompatActivity() {
         }
 
         home_hide_in_recents.setOnCheckedChangeListener { _, checked ->
-            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, checked).commit()
+            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_REMOVE_RECENT, checked).apply()
         }
 
-        settings_delaystart.setOnCheckedChangeListener { _, checked ->
-            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DELAY, checked).commit()
-        }
         settings_disable_selinux.setOnClickListener {
             if (settings_disable_selinux.isChecked) {
                 KeepShellPublic.doCmdSync(CommonCmds.DisableSELinux)
                 myHandler.postDelayed({
-                    spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, settings_disable_selinux.isChecked).commit()
+                    spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, settings_disable_selinux.isChecked).apply()
                 }, 10000)
             } else {
                 KeepShellPublic.doCmdSync(CommonCmds.ResumeSELinux)
-                spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, settings_disable_selinux.isChecked).commit()
+                spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_DISABLE_ENFORCE, settings_disable_selinux.isChecked).apply()
             }
         }
         settings_logcat.setOnClickListener {
@@ -83,28 +76,6 @@ class ActivityOtherSettings : AppCompatActivity() {
             settings_log_content.setText(log)
             settings_log_content.setSelection(0, log.length)
         }
-        auto_start_compile.setOnClickListener {
-            val value = (it as Switch).isChecked
-            if (value) {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
-                    Toast.makeText(this, R.string.auto_start_compile_unsupported, Toast.LENGTH_LONG).show()
-                    it.isChecked = false
-                } else {
-                    spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_STARTED_COMPILE, value).commit()
-                }
-            } else {
-                spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_STARTED_COMPILE, value).commit()
-            }
-        }
-        auto_start_fstrim.setOnClickListener {
-            val value = (it as Switch).isChecked
-            if (value) {
-                spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_STARTED_FSTRIM, value).commit()
-            } else {
-                KeepShellPublic.doCmdSync(CommonCmds.ResumeSELinux)
-                spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_STARTED_FSTRIM, value).commit()
-            }
-        }
 
         val systemBusyboxInstalled = Busybox.systemBusyboxInstalled()
         settings_private_busybox.isChecked = (!systemBusyboxInstalled) && spf.getBoolean(SpfConfig.GLOBAL_USE_PRIVATE_BUSYBOX, false)
@@ -112,9 +83,9 @@ class ActivityOtherSettings : AppCompatActivity() {
         settings_private_busybox.setOnClickListener {
             val value = (it as Switch).isChecked
             if (value) {
-                spf.edit().putBoolean(SpfConfig.GLOBAL_USE_PRIVATE_BUSYBOX, value).commit()
+                spf.edit().putBoolean(SpfConfig.GLOBAL_USE_PRIVATE_BUSYBOX, value).apply()
             } else {
-                spf.edit().putBoolean(SpfConfig.GLOBAL_USE_PRIVATE_BUSYBOX, value).commit()
+                spf.edit().putBoolean(SpfConfig.GLOBAL_USE_PRIVATE_BUSYBOX, value).apply()
             }
             DialogHelper.animDialog(AlertDialog.Builder(this)
                     .setTitle(R.string.require_restart_app)

@@ -37,49 +37,6 @@
                     android:text="@string/home_hide_in_recents_desc" />
 
                 <Switch
-                    android:id="@+id/auto_start_compile"
-                    style="@style/textTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:text="@string/auto_start_compile" />
-
-                <TextView
-                    style="@style/textSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/auto_start_compile_desc" />
-
-                <Switch
-                    android:id="@+id/auto_start_fstrim"
-                    style="@style/textTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:text="@string/auto_start_fstrim" />
-
-                <TextView
-                    style="@style/textSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/auto_start_fstrim_desc" />
-
-                <Switch
-                    android:id="@+id/settings_delaystart"
-                    style="@style/textTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:text="@string/settings_delay" />
-
-                <TextView
-                    style="@style/textSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/settings_delay_desc" />
-
-
-                <Switch
                     android:id="@+id/settings_disable_selinux"
                     style="@style/textTitle"
                     android:layout_width="match_parent"

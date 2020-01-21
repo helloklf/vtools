@@ -35,14 +35,6 @@ class ReceiverBoot : BroadcastReceiver() {
             val service = Intent(context, BootService::class.java)
             //service.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startService(service)
-
-            val globalConfig = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-            // 自动dex2oat编译
-            if (globalConfig.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_STARTED_COMPILE, false)) {
-                val compileService = Intent(context, CompileService::class.java)
-                compileService.action = context.getString(R.string.scene_speed_compile)
-                context.startService(compileService)
-            }
             running = true
         } catch (ex: Exception) {
         }
