@@ -3,9 +3,12 @@ package com.omarea.vtools.services
 import android.app.IntentService
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
+import android.os.PowerManager
+import android.os.PowerManager.PARTIAL_WAKE_LOCK
 import android.support.v4.app.NotificationCompat
 import com.omarea.common.shell.KeepShell
 import com.omarea.vtools.R
@@ -68,7 +71,20 @@ class CompileService : IntentService("vtools-compile") {
         }
     }
 
+    private lateinit var mPowerManager: PowerManager
+    private lateinit var mWakeLock: PowerManager.WakeLock
     override fun onHandleIntent(intent: Intent?) {
+        mPowerManager = getSystemService(Context.POWER_SERVICE) as PowerManager;
+        /*
+            标记值                   CPU  屏幕  键盘
+            PARTIAL_WAKE_LOCK       开启  关闭  关闭
+            SCREEN_DIM_WAKE_LOCK    开启  变暗  关闭
+            SCREEN_BRIGHT_WAKE_LOCK 开启  变亮  关闭
+            FULL_WAKE_LOCK          开启  变亮  变亮
+        */
+        mWakeLock = mPowerManager.newWakeLock(PARTIAL_WAKE_LOCK, "scene:CompileService");
+        mWakeLock.acquire(60 * 60 * 1000) // 默认限制60分钟
+
         nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         if (compiling) {
@@ -136,6 +152,8 @@ class CompileService : IntentService("vtools-compile") {
     }
 
     override fun onDestroy() {
+        mWakeLock.release()
+
         this.hideNotification()
 
         super.onDestroy()

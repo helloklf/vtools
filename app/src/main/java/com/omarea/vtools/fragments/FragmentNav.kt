@@ -58,6 +58,35 @@ class FragmentNav : Fragment(), View.OnClickListener {
         activity!!.title = getString(R.string.app_name)
     }
 
+    private fun tryOpenApp(packageName: String) {
+        val pm = context!!.packageManager
+        try {
+            val intent = pm.getLaunchIntentForPackage(packageName)
+            if (intent != null) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+                return
+            }
+        } catch (ex: java.lang.Exception) {
+        }
+        openUrl("https://www.coolapk.com/apk/" + packageName)
+        /*
+            Uri uri = Uri.parse("market://details?id=" + appPkg);
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            if (marketPkg != null) {// 如果没给市场的包名，则系统会弹出市场的列表让你进行选择。
+                intent.setPackage(marketPkg);
+            }
+            try {
+                context.startActivity(intent);
+                return true;
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                return false;
+            }
+        */
+    }
+
     override fun onClick(v: View?) {
         v?.run {
 
@@ -115,11 +144,11 @@ class FragmentNav : Fragment(), View.OnClickListener {
                     fragment = FragmentMagisk.createPage()
                 }
                 R.id.nav_gesture -> {
-                    openUrl("https://www.coolapk.com/apk/com.omarea.gesture")
+                    tryOpenApp("com.omarea.gesture")
                     return
                 }
                 R.id.nav_filter -> {
-                    openUrl("https://www.coolapk.com/apk/com.omarea.filter")
+                    tryOpenApp("com.omarea.filter")
                     return
                 }
                 R.id.nav_additional -> fragment = FragmentAddin.createPage(themeMode)

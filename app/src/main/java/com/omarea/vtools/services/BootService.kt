@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Build
+import android.os.PowerManager
 import android.support.v4.app.NotificationCompat
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shared.RawText
@@ -38,7 +39,20 @@ class BootService : IntentService("vtools-boot") {
     private var bootCancel = false
     private lateinit var nm: NotificationManager
 
+    private lateinit var mPowerManager: PowerManager
+    private lateinit var mWakeLock: PowerManager.WakeLock
     override fun onHandleIntent(intent: Intent?) {
+        mPowerManager = getSystemService(Context.POWER_SERVICE) as PowerManager;
+        /*
+            标记值                   CPU  屏幕  键盘
+            PARTIAL_WAKE_LOCK       开启  关闭  关闭
+            SCREEN_DIM_WAKE_LOCK    开启  变暗  关闭
+            SCREEN_BRIGHT_WAKE_LOCK 开启  变亮  关闭
+            FULL_WAKE_LOCK          开启  变亮  变亮
+        */
+        mWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "scene:BootService");
+        mWakeLock.acquire(60 * 60 * 1000) // 默认限制60分钟
+
         nm = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         swapConfig = this.getSharedPreferences(SpfConfig.SWAP_SPF, Context.MODE_PRIVATE)
         globalConfig = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
@@ -59,7 +73,6 @@ class BootService : IntentService("vtools-boot") {
         EventBus.publish(EventType.BOOT_COMPLETED)
         autoBoot()
     }
-
 
     private fun autoBoot() {
         val keepShell = KeepShell()
@@ -263,7 +276,9 @@ class BootService : IntentService("vtools-boot") {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
+        mWakeLock.release()
         hideNotification()
+
+        super.onDestroy()
     }
 }
