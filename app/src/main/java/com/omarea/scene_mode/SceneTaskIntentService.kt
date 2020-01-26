@@ -14,7 +14,6 @@ import com.omarea.store.TimingTaskStorage
 import java.util.*
 
 class SceneTaskIntentService : IntentService("SceneTaskIntentService") {
-
     override fun onHandleIntent(intent: Intent?) {
         intent?.run {
             val taskId = if (intent.hasExtra("taskId")) intent.getStringExtra("taskId") else null

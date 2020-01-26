@@ -48,7 +48,6 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
     private var sceneConfigChanged: BroadcastReceiver? = null
     private var sceneAppChanged: BroadcastReceiver? = null
     private var screenState = ScreenState(context)
-    private var configInstaller = CpuConfigInstaller()
 
     /**
      * 更新设置
@@ -113,7 +112,6 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
 
         handler.postDelayed({
             if (!screenOn) {
-                stopTimer()
                 notifyHelper.hideNotify()
             }
         }, 10000)

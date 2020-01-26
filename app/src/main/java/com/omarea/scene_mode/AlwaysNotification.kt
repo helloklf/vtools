@@ -66,16 +66,14 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
     }
 
     private fun updateBatteryStatus() {
-        // 电池电流
-        val batteryCurrentNow = batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
-
-        val batteryCurrentNowMA = (batteryCurrentNow / globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT))
+        // 电流
+        GlobalStatus.batteryCurrentNow = (
+                batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW) /
+                        globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT)
+                )
 
         // 电量
-        val batteryCapacity = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY)
-
-        GlobalStatus.batteryCurrentNow = batteryCurrentNowMA;
-        GlobalStatus.batteryCapacity = batteryCapacity;
+        GlobalStatus.batteryCapacity = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // 状态
@@ -85,6 +83,21 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
     }
 
     private fun notifyPowerModeChange(packageName: String, mode: String, saveLog: Boolean = false) {
+        if (saveLog) {
+            val status = BatteryStatus()
+            status.packageName = packageName
+            status.mode = mode
+            status.time = System.currentTimeMillis()
+            status.temperature = GlobalStatus.batteryTemperature
+            status.status = GlobalStatus.batteryStatus
+            status.io = GlobalStatus.batteryCurrentNow.toInt()
+
+            if (batteryHistoryStore == null) {
+                batteryHistoryStore = BatteryHistoryStore(context)
+            }
+            batteryHistoryStore!!.insertHistory(status)
+        }
+
         if (!showNofity) {
             return
         }
@@ -108,22 +121,6 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
             modeImage = BitmapFactory.decodeResource(context.resources, getModImage(mode))
         } catch (ex: Exception) {
             Log.e("NotifyHelper", "" + ex.message)
-        }
-
-        if (batteryHistoryStore == null) {
-            batteryHistoryStore = BatteryHistoryStore(context)
-        }
-
-        if (saveLog) {
-            val status = BatteryStatus()
-            status.packageName = packageName
-            status.mode = mode
-            status.time = System.currentTimeMillis()
-            status.temperature = GlobalStatus.batteryTemperature
-            status.status = GlobalStatus.batteryStatus
-            status.io = GlobalStatus.batteryCurrentNow.toInt()
-
-            batteryHistoryStore!!.insertHistory(status)
         }
 
         val remoteViews = RemoteViews(context.packageName, R.layout.layout_notification)

@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.os.Build
+import android.os.PowerManager
 import android.support.v4.app.NotificationCompat
 import android.widget.Toast
 import com.omarea.common.shell.KeepShell
@@ -21,7 +22,21 @@ import java.util.*
 class TaskActionsExecutor(private val taskActions: ArrayList<TaskAction>, private val context: Context) {
     private var nm = context.getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
+    private lateinit var mPowerManager: PowerManager
+    private lateinit var mWakeLock: PowerManager.WakeLock
+
     public fun run() {
+        mPowerManager = context.getSystemService(Context.POWER_SERVICE) as PowerManager;
+        /*
+            标记值                   CPU  屏幕  键盘
+            PARTIAL_WAKE_LOCK       开启  关闭  关闭
+            SCREEN_DIM_WAKE_LOCK    开启  变暗  关闭
+            SCREEN_BRIGHT_WAKE_LOCK 开启  变亮  关闭
+            FULL_WAKE_LOCK          开启  变亮  变亮
+        */
+        mWakeLock = mPowerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "scene:TaskActionsExecutor");
+        mWakeLock.acquire(60 * 60 * 1000) // 默认限制60分钟
+
         var keepShell: KeepShell? = null
 
         taskActions.forEach {
@@ -130,7 +145,8 @@ class TaskActionsExecutor(private val taskActions: ArrayList<TaskAction>, privat
         }
 
         hideNotification()
-        Thread.sleep(1000)
+
+        mWakeLock.release()
     }
 
     private fun speedDex2oatCompile () {

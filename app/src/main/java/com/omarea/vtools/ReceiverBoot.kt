@@ -4,23 +4,21 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import com.omarea.data_collection.EventBus
-import com.omarea.data_collection.EventType
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.services.BatteryService
 import com.omarea.vtools.services.BootService
-import com.omarea.vtools.services.CompileService
 
 
 class ReceiverBoot : BroadcastReceiver() {
     companion object {
-        var running: Boolean = false
+        var bootCompleted: Boolean = false
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        if (running) {
+        if (bootCompleted) {
             return
         }
+        bootCompleted = true
 
         try {
             val chargeConfig: SharedPreferences = context.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
@@ -35,7 +33,6 @@ class ReceiverBoot : BroadcastReceiver() {
             val service = Intent(context, BootService::class.java)
             //service.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startService(service)
-            running = true
         } catch (ex: Exception) {
         }
     }
