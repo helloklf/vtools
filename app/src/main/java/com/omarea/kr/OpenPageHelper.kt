@@ -37,10 +37,11 @@ class OpenPageHelper(private var activity: Activity) {
     fun openPage(pageInfo: PageNode) {
         try {
             var intent: Intent? = null
-            if (!pageInfo.onlineHtmlPage.isEmpty()) {
-                intent = Intent(activity, ActivityAddinOnline::class.java)
-                intent.putExtra("config", pageInfo.onlineHtmlPage)
-            }
+            // TODO: 用于访问网页的页面
+            // if (!pageInfo.onlineHtmlPage.isEm=pty()) {
+            //     intent = Intent(activity, ActivityAddinOnline::class.java)
+            //     intent.putExtra("config", pageInfo.onlineHtmlPage)
+            // }
 
             if (!pageInfo.pageConfigSh.isEmpty()) {
                 if (intent == null) {

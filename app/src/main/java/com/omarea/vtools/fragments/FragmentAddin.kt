@@ -200,6 +200,7 @@ class FragmentAddin : Fragment() {
                 intent.putExtra("title", "" + pageNode.title)
                 intent.putExtra("beforeRead", "")
                 intent.putExtra("config", pageNode.pageConfigPath)
+                intent.putExtra("parentDir", pageNode.parentPageConfigDir)
                 intent.putExtra("pageConfigSh", pageNode.pageConfigSh)
                 intent.putExtra("afterRead", "")
                 intent.putExtra("loadSuccess", "")

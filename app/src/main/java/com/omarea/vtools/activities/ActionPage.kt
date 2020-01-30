@@ -22,7 +22,7 @@ import com.omarea.krscript.model.*
 import com.omarea.krscript.ui.ActionListFragment
 import com.omarea.krscript.ui.FileChooserRender
 import com.omarea.vtools.R
-import com.omarea.vtools.kr_script.PageConfigSh
+import com.omarea.kr.PageConfigSh
 import com.projectkr.shell.OpenPageHelper
 
 class ActionPage : AppCompatActivity() {
@@ -137,14 +137,7 @@ class ActionPage : AppCompatActivity() {
             val intent = Intent()
 
             intent.component = ComponentName(this@ActionPage.applicationContext, this@ActionPage.javaClass.name)
-            intent.putExtra("title", "" + title)
-            intent.putExtra("beforeRead", beforeRead)
-            intent.putExtra("config", pageConfig)
-            intent.putExtra("parentDir", parentDir)
-            intent.putExtra("pageConfigSh", pageConfigSh)
-            intent.putExtra("afterRead", afterRead)
-            intent.putExtra("loadSuccess", loadSuccess)
-            intent.putExtra("loadFail", loadFail)
+            intent.putExtras(getIntent())
 
             if (clickableNode is RunnableNode) {
                 intent.putExtra("autoRunItemId", clickableNode.key)

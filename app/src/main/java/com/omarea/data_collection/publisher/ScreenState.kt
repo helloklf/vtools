@@ -21,6 +21,8 @@ class ScreenState(private var context: Context) : BroadcastReceiver() {
         if (p1 == null) {
             return
         }
+        val pendingResult = goAsync()
+
         when (p1.action) {
             Intent.ACTION_SCREEN_OFF -> {
                 lastChange = System.currentTimeMillis()
@@ -50,6 +52,8 @@ class ScreenState(private var context: Context) : BroadcastReceiver() {
                 }
             }
         }
+
+        pendingResult.finish()
     }
 
     fun autoRegister(): ScreenState {
