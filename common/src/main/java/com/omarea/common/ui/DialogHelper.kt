@@ -20,6 +20,16 @@ class DialogHelper {
             return dialog
         }
 
+        fun helpInfo(context: Context, message: String): AlertDialog? {
+            val dialog = AlertDialog.Builder(context)
+                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                    }
+            if (message.isNotEmpty()) {
+                dialog.setMessage(message)
+            }
+            return animDialog(dialog)
+        }
+
         fun helpInfo(context: Context, title: String, message: String): AlertDialog? {
             val dialog = AlertDialog.Builder(context)
                     .setPositiveButton(R.string.btn_confirm) { _, _ ->

@@ -5,6 +5,7 @@ import android.os.Build
 import android.widget.Toast
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shared.MagiskExtend
+import com.omarea.common.ui.DialogHelper
 import com.omarea.shell_utils.PlatformUtils
 import com.omarea.utils.CommonCmds
 
@@ -21,6 +22,8 @@ class PerfBoostConfigAddin(private var context: Context) : AddinBase(context) {
             } else {
                 msm8898()
             }
+        } else if (soc == "sm6150") {
+            sm6150()
         } else if (soc == "msmnile") {
             msmnile()
         } else if (soc == "sdm845") {
@@ -38,7 +41,7 @@ class PerfBoostConfigAddin(private var context: Context) : AddinBase(context) {
                 sdm660()
             }
         } else {
-            Toast.makeText(context, "暂未适配这个处理器，暂时只支持 骁龙835、845、855、660AIE、630！", Toast.LENGTH_SHORT).show()
+            DialogHelper.helpInfo(context, "暂未适配这个处理器，暂时只支持 骁龙835、845、855、660AIE、630、730！")
         }
     }
 
@@ -63,6 +66,11 @@ class PerfBoostConfigAddin(private var context: Context) : AddinBase(context) {
         copyFile(path)
     }
 
+    private fun sm6150() {
+        val path = FileWrite.writePrivateFile(context.assets, "addin/perfboostsconfig_sm6150.xml", "perfboostsconfig_sm6150.xml", context)
+        copyFile(path)
+    }
+
     private fun sdm660() {
         val path = FileWrite.writePrivateFile(context.assets, "addin/perfboostsconfig_sdm660.xml", "perfboostsconfig_sdm660.xml", context)
         copyFile(path)
@@ -74,7 +82,7 @@ class PerfBoostConfigAddin(private var context: Context) : AddinBase(context) {
             if (MagiskExtend.moduleInstalled()) {
                 MagiskExtend.replaceSystemFile(installPath, path)
 
-                Toast.makeText(context, "已通过Magisk更改参数，请重启手机~", Toast.LENGTH_SHORT).show()
+                DialogHelper.helpInfo(context, "已通过Magisk更改参数，请重启手机~")
             } else {
                 command = StringBuilder()
                         .append(CommonCmds.MountSystemRW)
@@ -90,7 +98,7 @@ class PerfBoostConfigAddin(private var context: Context) : AddinBase(context) {
                 super.run()
             }
         } else {
-            Toast.makeText(context, "配置文件提取失败！", Toast.LENGTH_SHORT).show()
+            DialogHelper.helpInfo(context, "配置文件提取失败！")
         }
     }
 }
