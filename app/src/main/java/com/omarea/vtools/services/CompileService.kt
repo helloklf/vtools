@@ -26,6 +26,7 @@ class CompileService : IntentService("vtools-compile") {
     private var keepShell = KeepShell(true)
     private lateinit var nm: NotificationManager
     private var compile_method = "speed"
+    private var channelCreated = false
 
     private fun getAllPackageNames(): ArrayList<String> {
         val packageManager: PackageManager = packageManager
@@ -52,23 +53,24 @@ class CompileService : IntentService("vtools-compile") {
         }
     }
 
-    private fun updateNotification(title: String, text: String, total: Int, current: Int) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            nm.createNotificationChannel(NotificationChannel("vtool-compile", "后台编译", NotificationManager.IMPORTANCE_LOW))
-            nm.notify(990, NotificationCompat.Builder(this, "vtool-compile")
-                    .setSmallIcon(R.drawable.process)
-                    .setContentTitle(title)
-                    .setContentText(text)
-                    .setProgress(total, current, false)
-                    .build())
+    private fun updateNotification(title: String, text: String, total: Int, current: Int, autoCancel: Boolean = true) {
+        val builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (!channelCreated) {
+                nm.createNotificationChannel(NotificationChannel("vtool-compile", "后台编译", NotificationManager.IMPORTANCE_LOW))
+                channelCreated = true
+            }
+            NotificationCompat.Builder(this, "vtool-compile")
         } else {
-            nm.notify(990, NotificationCompat.Builder(this)
-                    .setSmallIcon(R.drawable.process)
-                    .setContentTitle(title)
-                    .setContentText(text)
-                    .setProgress(total, current, false)
-                    .build())
+            NotificationCompat.Builder(this)
         }
+
+        nm.notify(990, builder
+                .setSmallIcon(R.drawable.process)
+                .setContentTitle(title)
+                .setContentText(text)
+                .setAutoCancel(autoCancel)
+                .setProgress(total, current, false)
+                .build())
     }
 
     private lateinit var mPowerManager: PowerManager
@@ -131,11 +133,8 @@ class CompileService : IntentService("vtools-compile") {
             keepShell.doCmdSync("cmd package compile -m ${compile_method} ${packageName}")
         }
         this.hideNotification()
-        Thread.sleep(2000)
         keepShell.tryExit()
         compiling = false
-
-        this.stopSelf()
     }
 
     private fun hideNotification () {
@@ -146,15 +145,14 @@ class CompileService : IntentService("vtools-compile") {
                 nm.cancel(990)
             }
         } else {
-            updateNotification("complete!", getString(R.string.dex2oat_completed))
+            updateNotification("complete!", getString(R.string.dex2oat_completed), 100, 100, true)
         }
         // System.exit(0)
     }
 
     override fun onDestroy() {
-        mWakeLock.release()
-
         this.hideNotification()
+        mWakeLock.release()
 
         super.onDestroy()
     }

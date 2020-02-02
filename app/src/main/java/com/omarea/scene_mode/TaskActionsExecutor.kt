@@ -144,6 +144,7 @@ class TaskActionsExecutor(private val taskActions: ArrayList<TaskAction>, privat
             }
         }
 
+        keepShell?.tryExit()
         hideNotification()
 
         mWakeLock.release()

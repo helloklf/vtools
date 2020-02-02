@@ -1,5 +1,6 @@
 package com.omarea.vtools.fragments
 
+import android.content.ComponentName
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -60,6 +61,24 @@ class FragmentNav : Fragment(), View.OnClickListener {
 
     private fun tryOpenApp(packageName: String) {
         val pm = context!!.packageManager
+        if (packageName.equals("com.omarea.gesture")) {
+            try {
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.setComponent(ComponentName("com.omarea.gesture", "com.omarea.gesture.SettingsActivity"))
+                startActivity(intent)
+                return
+            } catch (ex: java.lang.Exception){ }
+        } else if (packageName.equals("com.omarea.filter")) {
+            try {
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.setComponent(ComponentName("com.omarea.filter", "com.omarea.filter.SettingsActivity"))
+                startActivity(intent)
+                return
+            } catch (ex: java.lang.Exception){ }
+        }
+
         try {
             val intent = pm.getLaunchIntentForPackage(packageName)
             if (intent != null) {
@@ -67,8 +86,8 @@ class FragmentNav : Fragment(), View.OnClickListener {
                 startActivity(intent)
                 return
             }
-        } catch (ex: java.lang.Exception) {
-        }
+        } catch (ex: java.lang.Exception) { }
+
         openUrl("https://www.coolapk.com/apk/" + packageName)
         /*
             Uri uri = Uri.parse("market://details?id=" + appPkg);

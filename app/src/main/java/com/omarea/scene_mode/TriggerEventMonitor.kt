@@ -1,6 +1,7 @@
 package com.omarea.scene_mode
 
 import android.content.Context
+import android.content.Intent
 import com.omarea.data_collection.EventReceiver
 import com.omarea.data_collection.EventType
 import com.omarea.store.TriggerStorage
@@ -17,12 +18,22 @@ class TriggerEventMonitor(private val context: Context) : EventReceiver {
         }.keys
 
         val storage = TriggerStorage(context)
+        val triggers = ArrayList<String>()
         items.forEach {
             val trigger = storage.load(it)
             if (trigger != null && trigger.enabled && trigger.taskActions != null && trigger.taskActions.size > 0) {
-                TaskActionsExecutor(trigger.taskActions, context).run()
+                triggers.add(it)
             }
         }
+        if (triggers.size > 0) {
+            startExecutor(triggers)
+        }
+    }
+
+    private fun startExecutor(triggers: ArrayList<String>) {
+        val taskIntent = Intent(context, TriggerExecutorService::class.java)
+        taskIntent.putExtra("triggers", triggers)
+        context.startService(taskIntent)
     }
 
     override fun eventFilter(eventType: EventType): Boolean {

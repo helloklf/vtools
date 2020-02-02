@@ -167,7 +167,6 @@ class BootService : IntentService("vtools-boot") {
 
         keepShell.tryExit()
         hideNotification()
-        stopSelf()
     }
 
     /**
@@ -241,16 +240,21 @@ class BootService : IntentService("vtools-boot") {
         }
     }
 
+    private var channelCreated = false
     private fun updateNotification(text: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            nm.createNotificationChannel(NotificationChannel("vtool-boot", getString(R.string.notice_channel_boot), NotificationManager.IMPORTANCE_LOW))
-            nm.notify(900, NotificationCompat.Builder(this, "vtool-boot").setSmallIcon(R.drawable.ic_menu_digital).setContentTitle(getString(R.string.notice_channel_boot)).setContentText(text).build())
+        val builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (!channelCreated) {
+                nm.createNotificationChannel(NotificationChannel("vtool-boot", getString(R.string.notice_channel_boot), NotificationManager.IMPORTANCE_LOW))
+                channelCreated = true
+            }
+            NotificationCompat.Builder(this, "vtool-boot")
         } else {
-            nm.notify(900, NotificationCompat.Builder(this).setSmallIcon(R.drawable.ic_menu_digital).setContentTitle(getString(R.string.notice_channel_boot)).setContentText(text).build())
+            NotificationCompat.Builder(this)
         }
+        nm.notify(900, builder.setSmallIcon(R.drawable.ic_menu_digital).setContentTitle(getString(R.string.notice_channel_boot)).setContentText(text).build())
     }
 
-    private fun hideNotification () {
+    private fun hideNotification() {
         if (bootCancel) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 nm.cancel(900)
@@ -264,8 +268,8 @@ class BootService : IntentService("vtools-boot") {
     }
 
     override fun onDestroy() {
-        mWakeLock.release()
         hideNotification()
+        mWakeLock.release()
 
         super.onDestroy()
     }

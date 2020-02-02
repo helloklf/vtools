@@ -73,6 +73,8 @@ class ActivityTrigger : AppCompatActivity() {
         oneOf(task_battery_capacity_require, task_charge_only)
         oneOf(task_power_off, task_power_reboot)
 
+        oneOf(task_compile_speed, task_compile_everything)
+
         // 更新选中状态
         updateUI()
 
