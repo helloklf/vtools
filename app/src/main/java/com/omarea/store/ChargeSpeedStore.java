@@ -4,29 +4,27 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
-import com.omarea.model.SceneConfigInfo;
+import com.omarea.model.ChargeSpeedHistory;
 
 import java.util.ArrayList;
 
-public class SceneConfigStore extends SQLiteOpenHelper {
+public class ChargeSpeedStore extends SQLiteOpenHelper {
     private static final int DB_VERSION = 1;
 
-    public SceneConfigStore(Context context) {
-        super(context, "scene3_config", null, DB_VERSION);
+    public ChargeSpeedStore(Context context) {
+        super(context, "charge_history", null, DB_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         try {
-            db.execSQL("create table scene_config3(" +
-                    "id text primary key, " +
-                    "alone_light int default(0), " +
-                    "light int default(-1), " +
-                    "dis_notice int default(0)," +
-                    "dis_button int default(0)," +
-                    "gps_on int default(0)," +
-                    "freeze int default(0)" +
+            db.execSQL("create table charge_history(" +
+                    "id INTEGER primary key AUTOINCREMENT, " +
+                    "time INTEGER, " +
+                    "io INTEGER, " +
+                    "capacity INTEGER " +
                     ")");
         } catch (Exception ignored) {
         }
@@ -36,41 +34,33 @@ public class SceneConfigStore extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
 
-    public SceneConfigInfo getAppConfig(String app) {
-        SceneConfigInfo sceneConfigInfo = new SceneConfigInfo();
-        sceneConfigInfo.packageName = app;
+    public ArrayList<ChargeSpeedHistory> statistics() {
+        ArrayList<ChargeSpeedHistory> histories = new ArrayList<>();
         try {
             SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-            Cursor cursor = sqLiteDatabase.rawQuery("select * from scene_config3 where id = ?", new String[]{app});
-            if (cursor.moveToNext()) {
-                sceneConfigInfo.aloneLight = cursor.getInt(cursor.getColumnIndex("alone_light")) == 1;
-                sceneConfigInfo.aloneLightValue = cursor.getInt(cursor.getColumnIndex("light"));
-                sceneConfigInfo.disNotice = cursor.getInt(cursor.getColumnIndex("dis_notice")) == 1;
-                sceneConfigInfo.disButton = cursor.getInt(cursor.getColumnIndex("dis_button")) == 1;
-                sceneConfigInfo.gpsOn = cursor.getInt(cursor.getColumnIndex("gps_on")) == 1;
-                sceneConfigInfo.freeze = cursor.getInt(cursor.getColumnIndex("freeze")) == 1;
+            final Cursor cursor = sqLiteDatabase.rawQuery("select capacity, avg(io) as io from charge_history group by capacity", new String[]{});
+            while (cursor.moveToNext()) {
+                histories.add(new ChargeSpeedHistory(){{
+                    capacity = cursor.getInt(cursor.getColumnIndex("capacity"));
+                    io = cursor.getLong(cursor.getColumnIndex("io"));
+                }});
             }
             cursor.close();
             sqLiteDatabase.close();
         } catch (Exception ignored) {
 
         }
-        return sceneConfigInfo;
+        return histories;
     }
 
-    public boolean setAppConfig(SceneConfigInfo sceneConfigInfo) {
+    public boolean addHistory(long io, int capacity) {
         SQLiteDatabase database = getWritableDatabase();
         getWritableDatabase().beginTransaction();
         try {
-            database.execSQL("delete from  scene_config3 where id = ?", new String[]{sceneConfigInfo.packageName});
-            database.execSQL("insert into scene_config3(id, alone_light, light, dis_notice, dis_button, gps_on, freeze) values (?, ?, ?, ?, ?, ?, ?)", new Object[]{
-                    sceneConfigInfo.packageName,
-                    sceneConfigInfo.aloneLight ? 1 : 0,
-                    sceneConfigInfo.aloneLightValue,
-                    sceneConfigInfo.disNotice ? 1 : 0,
-                    sceneConfigInfo.disButton ? 1 : 0,
-                    sceneConfigInfo.gpsOn ? 1 : 0,
-                    sceneConfigInfo.freeze ? 1 : 0
+            database.execSQL("insert into charge_history(time, io, capacity) values (?, ?, ?)", new Object[]{
+                    System.currentTimeMillis(),
+                    io,
+                    capacity
             });
             database.setTransactionSuccessful();
             return true;
@@ -81,6 +71,15 @@ public class SceneConfigStore extends SQLiteOpenHelper {
         }
     }
 
+    public boolean clearAll() {
+        try {
+            SQLiteDatabase database = getWritableDatabase();
+            database.execSQL("delete from  charge_history", new String[]{});
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
+    }
 
     public boolean removeAppConfig(String packageName) {
         try {

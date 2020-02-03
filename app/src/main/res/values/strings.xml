@@ -103,6 +103,7 @@
     <string name="battery_title">电池：</string>
     <string name="battery_title_desc1">使用充电加速建议保持Scene后台运行！</string>
     <string name="battery_title_desc2">电池保护功能，必须让Scene保持后台运行！</string>
+    <string name="charge_curve">充电曲线</string>
     <string name="battery_reality_limit">实际上限电流：</string>
     <string name="battery_pd_allowed">USB-PD快充</string>
     <string name="battery_pd_allowed_desc">启用USB-PD快充协议(强烈建议，不要尝试手动开关此选项！！！)</string>

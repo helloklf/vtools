@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.ShellExecutor
+import com.omarea.data_collection.ChargeCurve
 import com.omarea.data_collection.EventBus
 import com.omarea.data_collection.publisher.ScreenState
 import com.omarea.permissions.Busybox
@@ -37,5 +38,8 @@ class Scene : Application() {
 
         // 事件任务
         EventBus.subscibe(TriggerEventMonitor(this))
+
+        // 充电曲线
+        EventBus.subscibe(ChargeCurve(this))
     }
 }

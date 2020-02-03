@@ -131,6 +131,8 @@ class FragmentBattery : Fragment() {
                             settings_pd.isChecked = pdAllowed
                             settings_pd_state.text = if (pdActive) getString(R.string.battery_pd_active_1) else getString(R.string.battery_pd_active_0)
                         }
+
+                        charge_curve.invalidate()
                     } catch (ex: java.lang.Exception) {
                     }
                 }

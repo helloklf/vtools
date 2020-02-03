@@ -1,6 +1,7 @@
 prop="persist.vtools.suspend"
 status=`getprop $prop`
 
+function on() {
 apps=`pm list package -3 | grep -v com.omarea | grep -v launcher | grep -v xposed | grep -v magisk | cut -f2 -d ':'`
 system_apps="
 com.xiaomi.market
@@ -18,7 +19,6 @@ com.google.android.play.games
 com.google.android.syncadapters.contacts
 "
 
-function on() {
     echo '进入待机模式'
     echo ''
     echo '此过程可能需要 10~60 秒'
@@ -74,10 +74,7 @@ function off() {
     echo '此过程可能需要 10~60 秒'
     echo ''
 
-    for app in $apps; do
-      pm unsuspend $app 1 > /dev/null
-    done
-    for app in $system_apps; do
+    for app in `pm list package | cut -f2 -d ':'`; do
       pm unsuspend $app 1 > /dev/null
     done
 
