@@ -39,7 +39,7 @@
                     android:text="@string/battery_title_desc2" />
             </LinearLayout>
 
-            <LinearLayout style="@style/ListCardItem">
+            <LinearLayout style="@style/ListCardItem" android:paddingRight="0dp">
 
                 <TextView
                     style="@style/textTitle"
