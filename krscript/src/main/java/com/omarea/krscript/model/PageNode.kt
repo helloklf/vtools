@@ -21,9 +21,9 @@ public class PageNode : ClickableNode {
     public var onlineHtmlPage: String = ""
     public var statusBar: String = ""
     // 点击后要跳转的网页链接
-    internal var link: String = ""
+    public var link: String = ""
     // 点击后要打开的活动
-    internal var activity: String = ""
+    public var activity: String = ""
 
     // 读取页面配置前
     public var beforeRead = ""

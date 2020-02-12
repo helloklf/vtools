@@ -40,6 +40,7 @@ class OpenPageHelper(private var activity: Activity) {
             // TODO: 用于访问网页的页面
             // if (!pageInfo.onlineHtmlPage.isEm=pty()) {
             //     intent = Intent(activity, ActivityAddinOnline::class.java)
+            //     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             //     intent.putExtra("config", pageInfo.onlineHtmlPage)
             // }
 
@@ -54,6 +55,7 @@ class OpenPageHelper(private var activity: Activity) {
                 if (intent == null) {
                     intent = Intent(activity, ActionPage::class.java)
                 }
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 intent.putExtra("config", pageInfo.pageConfigPath)
             }
 

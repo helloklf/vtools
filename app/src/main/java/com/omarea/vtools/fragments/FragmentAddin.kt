@@ -172,18 +172,19 @@ class FragmentAddin : Fragment() {
         val progressBarDialog = ProgressBarDialog(context!!)
         progressBarDialog.showDialog("读取配置，稍等...")
         Thread(Runnable {
-            val items = getItems(krScriptConfig.pageListConfig)
+            val pageNode = krScriptConfig.pageListConfig
+            val items = getItems(pageNode)
             myHandler.post {
                 page2ConfigLoaded = true
 
-                val favoritesFragment = ActionListFragment.create(items, getKrScriptActionHandler(), null, themeMode)
+                val favoritesFragment = ActionListFragment.create(items, getKrScriptActionHandler(pageNode), null, themeMode)
                 activity!!.supportFragmentManager.beginTransaction().replace(R.id.list_page2, favoritesFragment).commit()
                 progressBarDialog.hideDialog()
             }
         }).start()
     }
 
-    private fun getKrScriptActionHandler(): KrScriptActionHandler {
+    private fun getKrScriptActionHandler(pageNode: PageNode): KrScriptActionHandler {
         return object : KrScriptActionHandler {
             override fun onActionCompleted(runnableNode: RunnableNode) {
                 if (runnableNode.reloadPage) {
@@ -192,25 +193,51 @@ class FragmentAddin : Fragment() {
             }
 
             override fun addToFavorites(clickableNode: ClickableNode, addToFavoritesHandler: KrScriptActionHandler.AddToFavoritesHandler) {
+                val page = if (clickableNode is PageNode) {
+                    clickableNode
+                } else if (clickableNode is RunnableNode) {
+                    pageNode
+                } else {
+                    return
+                }
+
                 val intent = Intent()
 
-                intent.component = ComponentName(activity!!.applicationContext, ActionPage::class.java)
-                val pageNode = krScriptConfig.pageListConfig
-
-                intent.putExtra("title", "" + pageNode.title)
-                intent.putExtra("beforeRead", "")
-                intent.putExtra("config", pageNode.pageConfigPath)
-                intent.putExtra("parentDir", pageNode.parentPageConfigDir)
-                intent.putExtra("pageConfigSh", pageNode.pageConfigSh)
-                intent.putExtra("afterRead", "")
-                intent.putExtra("loadSuccess", "")
-                intent.putExtra("loadFail", "")
+                intent.component = ComponentName(context!!, ActionPage::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
 
                 if (clickableNode is RunnableNode) {
                     intent.putExtra("autoRunItemId", clickableNode.key)
-                } else if (clickableNode is PageNode) {
+                }
+
+                page.run {
+                    intent.putExtra("title", "" + title)
+
+                    if (activity.isNotEmpty()) {
+                        intent.putExtra("activity", activity)
+                    }
+                    if (onlineHtmlPage.isNotEmpty()) {
+                        intent.putExtra("onlineHtmlPage", onlineHtmlPage)
+                    }
+                    if (beforeRead.isNotEmpty()) {
+                        intent.putExtra("beforeRead", beforeRead)
+                    }
+                    if (pageConfigPath.isNotEmpty()) {
+                        intent.putExtra("config", pageConfigPath)
+                    }
+                    if (pageConfigSh.isNotEmpty()) {
+                        intent.putExtra("pageConfigSh", pageConfigSh)
+                    }
+                    if (afterRead.isNotEmpty()) {
+                        intent.putExtra("afterRead", afterRead)
+                    }
+                    if (loadSuccess.isNotEmpty()) {
+                        intent.putExtra("loadSuccess", loadSuccess)
+                    }
+                    if (loadFail.isNotEmpty()) {
+                        intent.putExtra("loadFail", loadFail)
+                    }
                 }
 
                 addToFavoritesHandler.onAddToFavorites(clickableNode, intent)

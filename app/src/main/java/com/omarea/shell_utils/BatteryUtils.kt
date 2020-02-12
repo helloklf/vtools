@@ -122,7 +122,7 @@ class BatteryUtils {
                         } else if (info.startsWith("POWER_SUPPLY_CAPACITY=")) {
                             val keyrowd = "POWER_SUPPLY_CAPACITY="
                             stringBuilder.append("电池电量 = ")
-                            stringBuilder.append(info.substring(keyrowd.length, if (keyrowd.length + 2 > info.length) info.length else keyrowd.length + 2))
+                            stringBuilder.append(info.substring(keyrowd.length, info.length))
                             stringBuilder.append("%")
                         } else if (info.startsWith("POWER_SUPPLY_CURRENT_NOW=")) {
                             val keyrowd = "POWER_SUPPLY_CURRENT_NOW="
@@ -133,12 +133,138 @@ class BatteryUtils {
                         }
                         stringBuilder.append("\n")
                     } catch (ignored: Exception) {
+                        stringBuilder.append("\n")
                     }
                 }
 
                 if (io.isNotEmpty() && mahLength != 0) {
                     val `val` = if (mahLength < 5) Integer.parseInt(io) else (Integer.parseInt(io) / Math.pow(10.0, (mahLength - 4).toDouble())).toInt()
                     stringBuilder.insert(0, "放电速度 = " + `val` + "mA\n")
+                }
+
+                return stringBuilder.toString()
+            } else {
+                return ""
+            }
+        }
+
+    val usbInfo: String
+        get() {
+            if (RootFile.fileExists("/sys/class/power_supply/usb/uevent")) {
+                val batteryInfos = KernelProrp.getProp("/sys/class/power_supply/usb/uevent")
+                val infos = batteryInfos.split("\n".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                val stringBuilder = StringBuilder()
+                var voltage = 0F
+                var electricity = 0F
+                for (info in infos) {
+                    try {
+                        if (info.startsWith("POWER_SUPPLY_ONLINE=")) {
+                            val keyrowd = "POWER_SUPPLY_ONLINE="
+                            stringBuilder.append("USB供电 = ")
+                            if (info.substring(keyrowd.length, info.length).equals("1")) {
+                                stringBuilder.append("√")
+                            } else {
+                                stringBuilder.append("×")
+                            }
+                        } else if (info.startsWith("POWER_SUPPLY_VOLTAGE_NOW=")) {
+                            val keyrowd = "POWER_SUPPLY_VOLTAGE_NOW="
+                            stringBuilder.append("当前电压 = ")
+                            val v = Integer.parseInt(info.substring(keyrowd.length, info.length))
+                            voltage = v / 1000 / 1000.0f
+                            stringBuilder.append(voltage)
+                            stringBuilder.append("v")
+                        } else if (info.startsWith("POWER_SUPPLY_VOLTAGE_MAX=")) {
+                            val keyrowd = "POWER_SUPPLY_VOLTAGE_MAX="
+                            stringBuilder.append("最大电压 = ")
+                            val v = Integer.parseInt(info.substring(keyrowd.length, info.length))
+                            stringBuilder.append((v / 1000 / 1000.0f))
+                            stringBuilder.append("v")
+                        } else if (info.startsWith("POWER_SUPPLY_CURRENT_MAX=")) {
+                            val keyrowd = "POWER_SUPPLY_CURRENT_MAX="
+                            val v = Integer.parseInt(info.substring(keyrowd.length, info.length)) / 1000 / 1000.0f
+                            if (v > 0) {
+                                stringBuilder.append("最大电流 = ")
+                                stringBuilder.append(v)
+                                stringBuilder.append("A")
+                            } else {
+                                continue
+                            }
+                        } else if (info.startsWith("POWER_SUPPLY_PD_VOLTAGE_MAX=")) {
+                            val keyrowd = "POWER_SUPPLY_PD_VOLTAGE_MAX="
+                            stringBuilder.append("最大电压(PD) = ")
+                            val v = Integer.parseInt(info.substring(keyrowd.length, info.length))
+                            stringBuilder.append((v / 1000 / 1000.0f))
+                            stringBuilder.append("v")
+                        } else if (info.startsWith("POWER_SUPPLY_VOLTAGE_MAX_DESIGN=")) {
+                            val keyrowd = "POWER_SUPPLY_VOLTAGE_MAX_DESIGN="
+                            stringBuilder.append("最大电压(设计) = ")
+                            val v = Integer.parseInt(info.substring(keyrowd.length, info.length))
+                            stringBuilder.append((v / 1000 / 1000.0f))
+                            stringBuilder.append("v")
+                        } else if (info.startsWith("POWER_SUPPLY_PD_VOLTAGE_MIN=")) {
+                            val keyrowd = "POWER_SUPPLY_PD_VOLTAGE_MIN="
+                            stringBuilder.append("最小电压(PD) = ")
+                            val v = Integer.parseInt(info.substring(keyrowd.length, info.length))
+                            stringBuilder.append(v / 1000 / 1000.0f)
+                            stringBuilder.append("v")
+                        } else if (info.startsWith("POWER_SUPPLY_PD_CURRENT_MAX=")) {
+                            val keyrowd = "POWER_SUPPLY_PD_CURRENT_MAX="
+                            val v = Integer.parseInt(info.substring(keyrowd.length, info.length)) / 1000 / 1000.0f
+                            if (v > 0) {
+                                stringBuilder.append("最大电流(PD) = ")
+                                stringBuilder.append(v)
+                                stringBuilder.append("A")
+                            } else {
+                                continue
+                            }
+                        } else if (info.startsWith("POWER_SUPPLY_INPUT_CURRENT_NOW=")) {
+                            val keyrowd = "POWER_SUPPLY_INPUT_CURRENT_NOW="
+                            stringBuilder.append("当前电流 = ")
+                            val v = Integer.parseInt(info.substring(keyrowd.length, info.length))
+                            electricity = v / 1000 / 1000.0f
+                            stringBuilder.append(electricity)
+                            stringBuilder.append("A")
+                        } else if (info.startsWith("POWER_SUPPLY_QUICK_CHARGE_TYPE=")) {
+                            val keyrowd = "POWER_SUPPLY_QUICK_CHARGE_TYPE="
+                            stringBuilder.append("快充类型 = ")
+                            val type = info.substring(keyrowd.length, info.length)
+                            if (type == "0") {
+                                stringBuilder.append("慢速充电")
+                            } else {
+                                stringBuilder.append("类型")
+                                stringBuilder.append(type)
+                            }
+                        } else if (info.startsWith("POWER_SUPPLY_REAL_TYPE=")) {
+                            val keyrowd = "POWER_SUPPLY_REAL_TYPE="
+                            stringBuilder.append("实际类型 = ")
+                            stringBuilder.append(info.substring(keyrowd.length, info.length))
+                        } else if (info.startsWith("POWER_SUPPLY_HVDCP3_TYPE=")) {
+                            val keyrowd = "POWER_SUPPLY_HVDCP3_TYPE="
+                            stringBuilder.append("高压快充 = ")
+                            val type = info.substring(keyrowd.length, info.length)
+                            if (type == "0") {
+                                stringBuilder.append("否")
+                            } else {
+                                stringBuilder.append("类型")
+                                stringBuilder.append(type)
+                            }
+                        } else if (info.startsWith("POWER_SUPPLY_PD_AUTHENTICATION=")) {
+                            val keyrowd = "POWER_SUPPLY_PD_AUTHENTICATION="
+                            stringBuilder.append("PD认证 = ")
+                            stringBuilder.append(if (info.substring(keyrowd.length, info.length).equals("1")) "已认证" else "未认证")
+                        }
+                        else {
+                            continue
+                        }
+                        stringBuilder.append("\n")
+                    } catch (ignored: Exception) {
+                        stringBuilder.append("\n")
+                    }
+                }
+                if (voltage > 0 && electricity > 0) {
+                    stringBuilder.append("\n估测功率 = ")
+                    stringBuilder.append((voltage * electricity * 100).toInt() / 100f)
+                    stringBuilder.append("W")
                 }
 
                 return stringBuilder.toString()

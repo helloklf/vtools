@@ -326,7 +326,7 @@
 
             <LinearLayout
                 android:id="@+id/cpu_config_p3"
-                style="@style/InCardListItem"
+                style="@style/InCardListItemLast"
                 android:orientation="horizontal">
 
                 <ImageView

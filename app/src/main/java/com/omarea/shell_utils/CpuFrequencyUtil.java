@@ -186,7 +186,7 @@ public class CpuFrequencyUtil {
 
 
     public static void setClusterParams(CpuClusterStatus[] params) {
-        if (params.length >= getClusterInfo().size()) {
+        if (params.length > getClusterInfo().size()) {
             return;
         }
 

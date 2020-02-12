@@ -55,7 +55,7 @@ class SceneStandbyMode(private val context: Context, private val keepShell: Keep
         } else {
             cmds.append("for app in `pm list package | cut -f2 -d ':'`; do\n" +
                     "      pm unsuspend \$app 1 > /dev/null\n" +
-                    "    done")
+                    "    done\n")
             cmds.append("setprop ")
             cmds.append(stateProp)
             cmds.append(" 0")

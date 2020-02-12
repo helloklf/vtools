@@ -111,6 +111,11 @@ if [ "$action" = "powersave" ]; then
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
 
+    echo 120 > /proc/sys/kernel/sched_upmigrate
+    echo 100 > /proc/sys/kernel/sched_downmigrate
+    echo 400 > /proc/sys/kernel/sched_group_upmigrate
+    echo 300 > /proc/sys/kernel/sched_group_downmigrate
+
 elif [ "$action" = "balance" ]; then
     echo 1 > /sys/devices/system/cpu/cpu6/online
     echo 1 > /sys/devices/system/cpu/cpu7/online
@@ -124,10 +129,10 @@ elif [ "$action" = "balance" ]; then
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
 
-    echo 96 > /proc/sys/kernel/sched_upmigrate
-    echo 92 > /proc/sys/kernel/sched_downmigrate
-    echo 140 > /proc/sys/kernel/sched_group_upmigrate
-    echo 110 > /proc/sys/kernel/sched_group_downmigrate
+    echo 99 > /proc/sys/kernel/sched_upmigrate
+    echo 89 > /proc/sys/kernel/sched_downmigrate
+    echo 400 > /proc/sys/kernel/sched_group_upmigrate
+    echo 300 > /proc/sys/kernel/sched_group_downmigrate
 
 elif [ "$action" = "performance" ]; then
     echo 1 > /sys/devices/system/cpu/cpu6/online
@@ -146,10 +151,10 @@ elif [ "$action" = "performance" ]; then
     sync
 	echo 3 >/proc/sys/vm/drop_caches
 
-    echo 140 > /proc/sys/kernel/sched_upmigrate
-    echo 100 > /proc/sys/kernel/sched_downmigrate
-    echo 200 > /proc/sys/kernel/sched_group_upmigrate
-    echo 150 > /proc/sys/kernel/sched_group_downmigrate
+    echo 98 > /proc/sys/kernel/sched_upmigrate
+    echo 89 > /proc/sys/kernel/sched_downmigrate
+    echo 400 > /proc/sys/kernel/sched_group_upmigrate
+    echo 300 > /proc/sys/kernel/sched_group_downmigrate
 
 elif [ "$action" = "fast" ]; then
     echo 1 > /sys/devices/system/cpu/cpu6/online
@@ -168,8 +173,8 @@ elif [ "$action" = "fast" ]; then
     sync
 	echo 3 >/proc/sys/vm/drop_caches
 
-    echo 110 > /proc/sys/kernel/sched_upmigrate
-    echo 96 > /proc/sys/kernel/sched_downmigrate
-    echo 160 > /proc/sys/kernel/sched_group_upmigrate
-    echo 120 > /proc/sys/kernel/sched_group_downmigrate
+    echo 96 > /proc/sys/kernel/sched_upmigrate
+    echo 87 > /proc/sys/kernel/sched_downmigrate
+    echo 180 > /proc/sys/kernel/sched_group_upmigrate
+    echo 140 > /proc/sys/kernel/sched_group_downmigrate
 fi

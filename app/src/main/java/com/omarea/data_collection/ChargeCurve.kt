@@ -4,11 +4,14 @@ import android.content.Context
 import android.os.BatteryManager
 import android.util.Log
 import com.omarea.store.ChargeSpeedStore
+import com.omarea.store.SpfConfig
 import java.util.*
 
 class ChargeCurve(private val context: Context) : EventReceiver {
     private val storage = ChargeSpeedStore(context)
     private var timer: Timer? = null
+    private var batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+    private var globalSPF = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
     override fun eventFilter(eventType: EventType): Boolean {
         when (eventType) {
@@ -27,17 +30,48 @@ class ChargeCurve(private val context: Context) : EventReceiver {
                 storage.clearAll()
             }
             EventType.POWER_DISCONNECTED -> {
-                timer?.run {
-                    cancel()
-                    timer = null
-                }
+                cancelUpdate()
             }
             EventType.BATTERY_CHANGED -> {
-                if (GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_CHARGING) {
-                    storage.addHistory(GlobalStatus.batteryCurrentNow, GlobalStatus.batteryCapacity)
+                // saveLog()
+                if (timer == null && GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_CHARGING) {
+                    startUpdate()
                 }
             }
             else -> {}
+        }
+    }
+
+    private fun startUpdate() {
+        if (timer == null) {
+            timer = Timer().apply {
+                schedule(object : TimerTask() {
+                    override fun run() {
+                        saveLog()
+                    }
+                }, 5000, 1000)
+            }
+        }
+    }
+
+    private fun saveLog() {
+        if (GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_CHARGING) {
+            // 电流
+            GlobalStatus.batteryCurrentNow = (
+                    batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW) /
+                            globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT)
+                    )
+
+            storage.addHistory(GlobalStatus.batteryCurrentNow, GlobalStatus.batteryCapacity)
+        } else {
+            cancelUpdate()
+        }
+    }
+
+    private fun cancelUpdate() {
+        timer?.run {
+            cancel()
+            timer = null
         }
     }
 }

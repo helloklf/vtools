@@ -97,6 +97,7 @@ class FragmentBattery : Fragment() {
 
         var limit = ""
         var batteryInfo = ""
+        var usbInfo = ""
         timer!!.schedule(object : TimerTask() {
             override fun run() {
                 if (isDetached) {
@@ -112,6 +113,7 @@ class FragmentBattery : Fragment() {
                     limit = batteryUnits.getqcLimit()
                 }
                 batteryInfo = batteryUnits.batteryInfo
+                usbInfo = batteryUnits.usbInfo
 
                 myHandler.post {
                     try {
@@ -126,6 +128,7 @@ class FragmentBattery : Fragment() {
 
                         settings_qc.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) && serviceRunning
                         battery_uevent.text = batteryInfo
+                        battery_usb_uevent.text = usbInfo
 
                         if (pdSettingSupport) {
                             settings_pd.isChecked = pdAllowed

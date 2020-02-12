@@ -10,7 +10,6 @@ import com.omarea.charger_booster.BatteryReceiver
 import com.omarea.data_collection.EventBus
 import com.omarea.data_collection.publisher.BatteryState
 
-@Suppress("DEPRECATION")
 public class BatteryService : Service() {
     internal var batteryChangedReciver: BatteryState? = null
 

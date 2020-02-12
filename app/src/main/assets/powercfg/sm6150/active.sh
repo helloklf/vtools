@@ -122,6 +122,11 @@ if [ "$action" = "powersave" ]; then
     echo 1 > /sys/devices/system/cpu/cpu0/core_ctl/enable
     echo 1 > /sys/devices/system/cpu/cpu6/core_ctl/enable
 
+    echo 100 > /proc/sys/kernel/sched_downmigrate
+    echo 99 > /proc/sys/kernel/sched_upmigrate
+    echo 500 > /proc/sys/kernel/sched_group_downmigrate
+    echo 380 > /proc/sys/kernel/sched_group_upmigrate
+
 elif [ "$action" = "balance" ]; then
     echo 1 > /sys/devices/system/cpu/cpu6/online
     echo 1 > /sys/devices/system/cpu/cpu7/online
@@ -138,6 +143,11 @@ elif [ "$action" = "balance" ]; then
     echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
     echo 1 > /sys/devices/system/cpu/cpu6/core_ctl/enable
 
+    echo 98 > /proc/sys/kernel/sched_downmigrate
+    echo 88 > /proc/sys/kernel/sched_upmigrate
+    echo 400 > /proc/sys/kernel/sched_group_downmigrate
+    echo 300 > /proc/sys/kernel/sched_group_upmigrate
+
 elif [ "$action" = "performance" ]; then
     echo 1 > /sys/devices/system/cpu/cpu6/online
     echo 1 > /sys/devices/system/cpu/cpu7/online
@@ -153,6 +163,11 @@ elif [ "$action" = "performance" ]; then
 
     echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
     echo 0 > /sys/devices/system/cpu/cpu6/core_ctl/enable
+
+    echo 98 > /proc/sys/kernel/sched_downmigrate
+    echo 88 > /proc/sys/kernel/sched_upmigrate
+    echo 400 > /proc/sys/kernel/sched_group_downmigrate
+    echo 300 > /proc/sys/kernel/sched_group_upmigrate
 
     sync
     sync
@@ -173,6 +188,11 @@ elif [ "$action" = "fast" ]; then
 
     echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
     echo 0 > /sys/devices/system/cpu/cpu6/core_ctl/enable
+
+    echo 92 > /proc/sys/kernel/sched_downmigrate
+    echo 80 > /proc/sys/kernel/sched_upmigrate
+    echo 400 > /proc/sys/kernel/sched_group_downmigrate
+    echo 300 > /proc/sys/kernel/sched_group_upmigrate
 
     sync
     sync

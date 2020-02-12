@@ -31,10 +31,14 @@ public class ScriptEnvironmen {
     // 此目录将添加到PATH尾部，作为应用程序提供的拓展程序库目录，如有需要则需要在初始化executor.sh之前为该变量赋值
     private static String TOOKIT_DIR = "";
 
+    public static boolean isInited() {
+        return inited;
+    }
+
     private static boolean init(Context context) {
         SharedPreferences configSpf = context.getSharedPreferences("kr-script-config", Context.MODE_PRIVATE);
 
-        return init(context, "kr-script/executor.sh", configSpf.getString("toolkitDir", "kr-script/toolkit"));
+        return init(context, configSpf.getString("executor", "kr-script/executor.sh"), configSpf.getString("toolkitDir", "kr-script/toolkit"));
     }
 
     /**
