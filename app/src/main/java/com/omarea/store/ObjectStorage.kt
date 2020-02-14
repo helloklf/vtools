@@ -6,7 +6,7 @@ import com.omarea.common.shared.FileWrite
 import java.io.*
 
 open class ObjectStorage<T : Serializable>(private val context: Context) {
-    protected open fun load(configFile: String): T? {
+    public open fun load(configFile: String): T? {
         val bootConfig = FileWrite.getPrivateFilePath(context, configFile)
         val file = File(bootConfig)
         if (file.exists()) {
@@ -32,7 +32,7 @@ open class ObjectStorage<T : Serializable>(private val context: Context) {
         return null
     }
 
-    protected open fun save(obj: T?, configFile: String): Boolean {
+    public open fun save(obj: T?, configFile: String): Boolean {
         val bootConfig = FileWrite.getPrivateFilePath(context, configFile)
         val file = File(bootConfig)
         if (obj != null) {
@@ -65,11 +65,17 @@ open class ObjectStorage<T : Serializable>(private val context: Context) {
         return true
     }
 
-    protected open fun remove(configFile: String) {
+    public open fun remove(configFile: String) {
         val bootConfig = FileWrite.getPrivateFilePath(context, configFile)
         val file = File(bootConfig)
         if (file.exists()) {
             file.delete()
         }
+    }
+
+    public open fun exists(configFile: String): Boolean {
+        val bootConfig = FileWrite.getPrivateFilePath(context, configFile)
+        val file = File(bootConfig)
+        return file.exists()
     }
 }

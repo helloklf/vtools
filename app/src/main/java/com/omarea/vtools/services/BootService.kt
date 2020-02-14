@@ -86,7 +86,7 @@ class BootService : IntentService("vtools-boot") {
         val cpuState = cpuConfigStorage.load()
         if (cpuState != null) {
             updateNotification(context.getString(R.string.boot_cpuset))
-            cpuConfigStorage.applyCpuConfig(context, cpuState)
+            cpuConfigStorage.applyCpuConfig(context, cpuConfigStorage.default())
         }
 
         val macChangeMode = globalConfig.getInt(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE_MODE, 0)

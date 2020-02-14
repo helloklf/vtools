@@ -92,7 +92,7 @@ class FragmentCpuModes : Fragment() {
 
     private fun updateState(button: View, mode: String) {
         val authorView = button.findViewWithTag<TextView>("author")
-        val replaced = modeSwitcher.modeReplaced(context!!, mode) != null
+        val replaced = modeSwitcher.modeReplaced(context!!, mode)
         authorView.setText("Author : " + (if (replaced) "custom" else author))
         button.alpha = if (configFileInstalled || replaced) 1f else 0.4f
     }

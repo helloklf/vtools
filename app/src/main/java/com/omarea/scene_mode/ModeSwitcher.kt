@@ -1,9 +1,7 @@
 package com.omarea.scene_mode
 
 import android.content.Context
-import com.omarea.common.shell.KeepShellAsync
 import com.omarea.common.shell.KeepShellPublic
-import com.omarea.model.CpuStatus
 import com.omarea.shell_utils.PropsUtils
 import com.omarea.store.CpuConfigStorage
 import com.omarea.vtools.R
@@ -42,8 +40,6 @@ open class ModeSwitcher {
         private var currentPowercfg: String = ""
         private var currentPowercfgApp: String = ""
     }
-
-    private var keepShellAsync: KeepShellAsync? = null
 
     internal fun getModIcon(mode: String): Int {
         when (mode) {
@@ -116,9 +112,8 @@ open class ModeSwitcher {
         }
 
         val cpuConfigStorage = CpuConfigStorage(context)
-        val replaced = cpuConfigStorage.load(mode)
-        if (replaced != null) {
-            cpuConfigStorage.applyCpuConfig(context, replaced)
+        if (cpuConfigStorage.exists(mode)) {
+            cpuConfigStorage.applyCpuConfig(context, mode)
         } else {
             keepShellExec("sh $POWER_CFG_PATH $mode")
         }
@@ -133,8 +128,8 @@ open class ModeSwitcher {
     }
 
     // 是否已经完成指定模式的自定义
-    public fun modeReplaced(context: Context, mode: String): CpuStatus? {
-        return CpuConfigStorage(context).load(mode)
+    public fun modeReplaced(context: Context, mode: String): Boolean {
+        return CpuConfigStorage(context).exists(mode)
     }
 
     // 是否已完成四个模式的配置
@@ -146,17 +141,9 @@ open class ModeSwitcher {
     public fun allModeReplaced(context: Context): Boolean {
         val storage  = CpuConfigStorage(context)
 
-        return storage.load(POWERSAVE) != null &&
-                storage.load(BALANCE) != null &&
-                storage.load(PERFORMANCE) != null &&
-                storage.load(FAST) != null
-    }
-
-    internal fun destroyKeepShell(): ModeSwitcher {
-        if (keepShellAsync != null) {
-            keepShellAsync!!.tryExit()
-            keepShellAsync = null
-        }
-        return this
+        return storage.exists(POWERSAVE) &&
+                storage.exists(BALANCE) &&
+                storage.exists(PERFORMANCE) &&
+                storage.exists(FAST)
     }
 }

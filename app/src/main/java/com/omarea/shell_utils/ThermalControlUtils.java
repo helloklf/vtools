@@ -55,9 +55,8 @@ public class ThermalControlUtils {
         KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
-    public static void setThermalParams(CpuStatus cpuStatus) {
-        ArrayList<String> commands = new ArrayList<>();
 
+    public static ArrayList<String> buildSetThermalParams(CpuStatus cpuStatus, ArrayList<String> commands) {
         if (!(cpuStatus.coreControl == null || cpuStatus.coreControl.isEmpty())) {
             commands.add("chmod 0664 " + thermal_core_control);
             commands.add("echo " + cpuStatus.coreControl + " > " + thermal_core_control);
@@ -70,7 +69,10 @@ public class ThermalControlUtils {
             commands.add("chmod 0664 " + thermal_parameters);
             commands.add("echo " + cpuStatus.msmThermal + " > " + thermal_parameters);
         }
+        return commands;
+    }
 
-        KeepShellPublic.INSTANCE.doCmdSync(commands);
+    public static void setThermalParams(CpuStatus cpuStatus) {
+        KeepShellPublic.INSTANCE.doCmdSync(buildSetThermalParams(cpuStatus, new ArrayList<String>()));
     }
 }

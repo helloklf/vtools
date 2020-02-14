@@ -1,10 +1,12 @@
 package com.omarea.store
 
 import android.content.Context
+import com.omarea.common.shared.FileWrite
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.model.CpuStatus
 import com.omarea.shell_utils.CpuFrequencyUtil
-import com.omarea.shell_utils.GpuUtils
-import com.omarea.shell_utils.ThermalControlUtils
+import java.io.File
+import java.nio.charset.Charset
 
 /**
  * 存储和读取CPU配置，在开机自启动时用于修改CPU频率和调度
@@ -12,47 +14,41 @@ import com.omarea.shell_utils.ThermalControlUtils
  */
 class CpuConfigStorage(private val context: Context) : ObjectStorage<CpuStatus>(context) {
     private val defaultFile = "cpuconfig.dat"
+    fun default(): String {
+        return defaultFile
+    }
 
     fun load(configFile: String? = null): CpuStatus? {
         return super.load( if(configFile == null) defaultFile else configFile)
     }
 
     fun saveCpuConfig(status: CpuStatus?, configFile: String? = null): Boolean {
-        return super.save(status, if(configFile == null) defaultFile else configFile)
+        val name = if(configFile == null) defaultFile else configFile
+        remove(name + ".sh")
+        return super.save(status, name)
     }
 
     // 应用CPU配置参数
-    fun applyCpuConfig(context: Context, cpuState: CpuStatus? = null) {
-        if (cpuState != null) {
-            // thermal
-            ThermalControlUtils.setThermalParams(cpuState)
+    fun applyCpuConfig(context: Context, configFile: String? = null) {
+        val name = if(configFile == null) defaultFile else configFile
 
-            // core online
-            if (cpuState.coreOnline != null && cpuState.coreOnline.size > 0) {
-                CpuFrequencyUtil.setCoresOnlineState(cpuState.coreOnline.toBooleanArray())
+        if (exists(name + ".sh")) {
+            KeepShellPublic.doCmdSync(FileWrite.getPrivateFilePath(context, configFile + ".sh"))
+        } else if (exists(name)) {
+            load(name)?.run {
+                val commands = CpuFrequencyUtil.buikdShell(this).joinToString("\n")
+                saveCache(commands, name)
+                KeepShellPublic.doCmdSync(commands)
             }
-
-            // CPU
-            if (cpuState.cpuClusterStatuses != null && cpuState.cpuClusterStatuses.size > 0) {
-                CpuFrequencyUtil.setClusterParams(cpuState.cpuClusterStatuses.toTypedArray())
-            }
-
-            // Boost
-            CpuFrequencyUtil.setBoostParams(cpuState)
-
-            // GPU
-            GpuUtils.setAdrenoGPUParams(cpuState)
-
-            // exynos
-            if (CpuFrequencyUtil.exynosHMP()) {
-                CpuFrequencyUtil.setExynosHotplug(cpuState.exynosHotplug)
-                CpuFrequencyUtil.setExynosHmpDown(cpuState.exynosHmpDown)
-                CpuFrequencyUtil.setExynosHmpUP(cpuState.exynosHmpUP)
-                CpuFrequencyUtil.setExynosBooster(cpuState.exynosHmpBooster)
-            }
-
-            // cpuset
-            CpuFrequencyUtil.setCpuSet(cpuState)
         }
+    }
+
+    private fun saveCache(shellContent: String, configFile: String) {
+        val bootConfig = FileWrite.getPrivateFilePath(context, configFile + ".sh")
+        val file = File(bootConfig)
+        file.writeText(shellContent, Charsets.UTF_8)
+        file.setWritable(true)
+        file.setExecutable(true, false)
+        file.setReadable(true)
     }
 }

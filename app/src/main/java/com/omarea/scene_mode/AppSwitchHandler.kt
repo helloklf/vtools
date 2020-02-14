@@ -258,7 +258,6 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
     fun onInterrupt() {
         sceneMode.clearState()
         notifyHelper.hideNotify()
-        destroyKeepShell()
         stopTimer()
         if (sceneConfigChanged != null) {
             context.unregisterReceiver(sceneConfigChanged)

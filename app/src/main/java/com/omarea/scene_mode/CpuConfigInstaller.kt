@@ -6,8 +6,10 @@ import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.RootFile
 import com.omarea.shell_utils.PlatformUtils
+import com.omarea.store.CpuConfigStorage
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
+import java.io.File
 import java.nio.charset.Charset
 
 class CpuConfigInstaller {
@@ -15,6 +17,15 @@ class CpuConfigInstaller {
 
     private fun getPowerCfgDir(): String {
         return rootDir + "/" + PlatformUtils().getCPUName()
+    }
+
+    // 移除自定义的各个模式
+    fun removeCustomModes(context: Context) {
+        val storage = CpuConfigStorage(context)
+        storage.remove(ModeSwitcher.POWERSAVE)
+        storage.remove(ModeSwitcher.BALANCE)
+        storage.remove(ModeSwitcher.PERFORMANCE)
+        storage.remove(ModeSwitcher.FAST)
     }
 
     // 安装应用内自带的配置
@@ -40,6 +51,7 @@ class CpuConfigInstaller {
                     KeepShellPublic.doCmdSync(afterCmds)
                 }
                 context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).edit().putString(SpfConfig.GLOBAL_SPF_CPU_CONFIG_AUTHOR, context.getString(R.string.app_name)).apply()
+                removeCustomModes(context)
                 return true
             }
         } catch (ex: Exception) {
@@ -63,6 +75,7 @@ class CpuConfigInstaller {
             KeepShellPublic.doCmdSync(cmd.toString())
             ModeSwitcher().setCurrentPowercfg("")
             context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).edit().putString(SpfConfig.GLOBAL_SPF_CPU_CONFIG_AUTHOR, author).apply()
+            removeCustomModes(context)
             return true
         } catch (ex: Exception) {
             Log.e("script-parse", "" + ex.message)

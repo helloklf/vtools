@@ -262,7 +262,7 @@ class BatteryUtils {
                     }
                 }
                 if (voltage > 0 && electricity > 0) {
-                    stringBuilder.append("\n估测功率 = ")
+                    stringBuilder.append("\n参考功率 = ")
                     stringBuilder.append((voltage * electricity * 100).toInt() / 100f)
                     stringBuilder.append("W")
                 }

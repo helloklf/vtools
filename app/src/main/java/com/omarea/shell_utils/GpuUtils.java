@@ -162,23 +162,21 @@ public class GpuUtils {
         return new String[]{};
     }
 
-    public static void setAdrenoGPUParams(CpuStatus cpuState) {
-        ArrayList<String> commands = new ArrayList<>();
-
+    public static ArrayList<String> buildSetAdrenoGPUParams(CpuStatus cpuState, ArrayList<String> commands) {
         // governor
         if (!cpuState.adrenoGovernor.equals("")) {
-            commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/governor;");
-            commands.add("echo " + cpuState.adrenoGovernor + " > /sys/class/kgsl/kgsl-3d0/governor;");
+            commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/devfreq/governor;");
+            commands.add("echo " + cpuState.adrenoGovernor + " > /sys/class/kgsl/kgsl-3d0/devfreq/governor;");
         }
         // min feq
         if (!cpuState.adrenoMinFreq.equals("")) {
-            commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/min_freq;");
-            commands.add("echo " + cpuState.adrenoMinFreq + " > /sys/class/kgsl/kgsl-3d0/min_freq;");
+            commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/devfreq/min_freq;");
+            commands.add("echo " + cpuState.adrenoMinFreq + " > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq;");
         }
         // max freq
         if (!cpuState.adrenoMaxFreq.equals("")) {
-            commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/max_freq;");
-            commands.add("echo " + cpuState.adrenoMaxFreq + " > /sys/class/kgsl/kgsl-3d0/max_freq;");
+            commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/devfreq/max_freq;");
+            commands.add("echo " + cpuState.adrenoMaxFreq + " > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq;");
         }
         // min power level
         if (!cpuState.adrenoMinPL.equals("")) {
@@ -195,7 +193,6 @@ public class GpuUtils {
             commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/default_pwrlevel;");
             commands.add("echo " + cpuState.adrenoDefaultPL + " > /sys/class/kgsl/kgsl-3d0/default_pwrlevel;");
         }
-
-        KeepShellPublic.INSTANCE.doCmdSync(commands);
+        return commands;
     }
 }
