@@ -13,7 +13,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Switch
-import android.widget.TextView
 import android.widget.Toast
 import com.omarea.common.ui.DialogHelper
 import com.omarea.scene_mode.CpuConfigInstaller
@@ -29,7 +28,7 @@ import java.nio.charset.Charset
 
 
 class FragmentCpuModes : Fragment() {
-    private lateinit var author: String
+    private var author: String = ""
     private var configFileInstalled: Boolean = false
     private lateinit var modeSwitcher: ModeSwitcher
     private lateinit var globalSPF: SharedPreferences
@@ -51,16 +50,20 @@ class FragmentCpuModes : Fragment() {
         bindMode(cpu_config_p3, ModeSwitcher.FAST)
 
         config_customer_powercfg.setOnClickListener {
-            chooseLocalConfig()
+            if (!outsideOverrided()) {
+                chooseLocalConfig()
+            }
         }
         config_customer_powercfg_online.setOnClickListener {
-            getOnlineConfig()
+            if (!outsideOverrided()) {
+                getOnlineConfig()
+            }
         }
         checkConfig()
         dynamic_control.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
         dynamic_control.setOnClickListener {
             val value = (it as Switch).isChecked
-            if (value && !(modeSwitcher.modeConfigCompleted(context!!))) {
+            if (value && !(modeSwitcher.modeConfigCompleted())) {
                 dynamic_control.isChecked = false
                 DialogHelper.helpInfo(context!!, "请先完成四个模式的配置！", "使用Scene自带配置(如果有显示选项)、本地导入、在线下载，均可快速完成四个模式的配置。\n\n如果都没找到适用的配置，不妨试试点击各个模式，自己动手设置参数！")
             } else {
@@ -68,6 +71,25 @@ class FragmentCpuModes : Fragment() {
                 reStartService()
             }
         }
+
+        cpu_mode_delete_outside.setOnClickListener {
+            DialogHelper.animDialog(AlertDialog.Builder(context!!).setTitle("确定删除?")
+                    .setMessage("确定删除安装在 /data/powercfg.sh 的外部配置脚本吗？\n它可能是Scene2遗留下来的，也可能是其它优化模块创建的")
+                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                        configInstaller.removeOutsideConfig()
+                        cpu_mode_outside.visibility = View.GONE
+                        reStartService()
+                        updateState()
+                    }.setNegativeButton(R.string.btn_cancel, { _, _ -> }))
+        }
+    }
+
+    private fun outsideOverrided(): Boolean {
+        if (configInstaller.outsideConfigInstalled()) {
+            DialogHelper.helpInfo(context!!, "你需要先删除外部配置，因为Scene3会优先使用它！")
+            return true
+        }
+        return false
     }
 
     private fun bindMode(button: View, mode: String) {
@@ -77,31 +99,67 @@ class FragmentCpuModes : Fragment() {
     }
 
     private fun updateState() {
-        configFileInstalled = CpuConfigInstaller().configInstalled()
-        if (configFileInstalled) {
+        val outsideInstalled = configInstaller.outsideConfigInstalled()
+        configFileInstalled = outsideInstalled || configInstaller.insideConfigInstalled()
+
+        if (ModeSwitcher().anyModeReplaced()) {
+            author = "custom"
+        } else if (outsideInstalled) {
+            author = "outside"
+        } else if (configFileInstalled) {
             author = globalSPF.getString(SpfConfig.GLOBAL_SPF_CPU_CONFIG_AUTHOR, "unknown")!!
         } else {
-            author = "未配置"
+            author = "none"
         }
+
+        if (outsideInstalled && configInstaller.dynamicSupport(context!!)) {
+            cpu_mode_outside.visibility = View.VISIBLE
+        } else {
+            cpu_mode_outside.visibility = View.GONE
+        }
+
+        config_author.text = getProviderName(author)
 
         updateState(cpu_config_p0, ModeSwitcher.POWERSAVE)
         updateState(cpu_config_p1, ModeSwitcher.BALANCE)
         updateState(cpu_config_p2, ModeSwitcher.PERFORMANCE)
         updateState(cpu_config_p3, ModeSwitcher.FAST)
+
+        if (globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT) && !modeSwitcher.modeConfigCompleted()) {
+            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, false).apply()
+            dynamic_control.isChecked = false
+            reStartService()
+        }
+    }
+
+    private fun getProviderName(name: String): String {
+        return when(name.toLowerCase()) {
+            "scene" -> "Scene自带"
+            "downloader" -> "在线下载"
+            "outside" -> "外部配置"
+            "custom" -> "自定义"
+            "import-file" -> "外部导入"
+            "none" -> "未配置"
+            else -> name
+        }
     }
 
     private fun updateState(button: View, mode: String) {
-        val authorView = button.findViewWithTag<TextView>("author")
-        val replaced = modeSwitcher.modeReplaced(context!!, mode)
-        authorView.setText("Author : " + (if (replaced) "custom" else author))
-        button.alpha = if (configFileInstalled || replaced) 1f else 0.4f
+        button.alpha = if ((configFileInstalled && author != "custom") || modeSwitcher.modeReplaced(mode)) 1f else 0.4f
     }
 
     override fun onResume() {
         super.onResume()
         activity!!.title = getString(R.string.menu_cpu_modes)
 
+        val currentAuthor = author
+
         updateState()
+
+        // 如果开启了动态响应 并且配置作者变了，重启后台服务
+        if (dynamic_control.isChecked && !currentAuthor.isNullOrEmpty() && currentAuthor != author) {
+            reStartService()
+        }
     }
 
     private fun modifyCpuConfig(mode: String) {
@@ -141,7 +199,7 @@ class FragmentCpuModes : Fragment() {
                     val lines = file.readText(Charset.defaultCharset()).replace("\r", "")
                     val configStar = lines.split("\n").firstOrNull()
                     if (configStar != null && configStar.startsWith("#!/") && configStar.endsWith("sh")) {
-                        if (configInstaller.installCustomConfig(context!!, lines, "local file")) {
+                        if (configInstaller.installCustomConfig(context!!, lines, "import-file")) {
                             configInstalled()
                         } else {
                             Toast.makeText(context, "由于某些原因，安装配置脚本失败，请重试！", Toast.LENGTH_LONG).show()
@@ -167,10 +225,14 @@ class FragmentCpuModes : Fragment() {
         if (support) {
             config_cfg_select.visibility = View.VISIBLE
             config_cfg_select_0.setOnClickListener {
-                installConfig(false)
+                if (!outsideOverrided()) {
+                    installConfig(false)
+                }
             }
             config_cfg_select_1.setOnClickListener {
-                installConfig(true)
+                if (!outsideOverrided()) {
+                    installConfig(true)
+                }
             }
         } else {
             config_cfg_select.visibility = View.GONE

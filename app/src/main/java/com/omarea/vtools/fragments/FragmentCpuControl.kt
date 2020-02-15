@@ -789,7 +789,7 @@ class FragmentCpuControl : Fragment() {
 
         if (cpuModeName != null) {
             val time = System.currentTimeMillis()
-            ModeSwitcher().executePowercfgMode(context!!, cpuModeName!!)
+            ModeSwitcher().executePowercfgMode(cpuModeName!!)
 
             val modeName = ModeSwitcher.getModName(cpuModeName!!)
             cpu_apply_onboot.setText("自定义 " + modeName + " ")

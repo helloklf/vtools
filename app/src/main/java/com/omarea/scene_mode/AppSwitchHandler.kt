@@ -202,7 +202,7 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
     }
 
     private fun toggleConfig(mode: String) {
-        executePowercfgMode(context, mode)
+        executePowercfgMode(mode)
         lastMode = mode
     }
     //#endregion
@@ -280,13 +280,16 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
 
         if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)) {
             // 是否已经完成性能调节配置安装或自定义
-            if (modeConfigCompleted(context)) {
+            if (modeConfigCompleted()) {
                 dyamicCore = true
-                CpuConfigInstaller().configCodeVerify()
-                initPowercfg(context)
+                val installer = CpuConfigInstaller()
+                if (installer.outsideConfigInstalled()) {
+                    installer.configCodeVerify()
+                }
+                initPowercfg()
             } else {
                 spfGlobal.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, false).apply()
-                Toast.makeText(context, context.getString(R.string.dynamic_auto_disabled), Toast.LENGTH_LONG).show()
+                // Toast.makeText(context, context.getString(R.string.dynamic_auto_disabled), Toast.LENGTH_LONG).show()
                 dyamicCore = false
             }
             spfGlobal.edit().putString(SpfConfig.GLOBAL_SPF_POWERCFG, "").commit()

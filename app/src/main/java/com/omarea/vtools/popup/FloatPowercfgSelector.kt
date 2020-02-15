@@ -159,7 +159,7 @@ class FloatPowercfgSelector {
         }
         val switchMode = Runnable {
             updateUI.run()
-            modeList.executePowercfgMode(context, selectedMode, packageName)
+            modeList.executePowercfgMode(selectedMode, packageName)
             if (dynamic) {
                 if (selectedMode == defaultMode) {
                     spfPowercfg.edit().remove(packageName).commit()

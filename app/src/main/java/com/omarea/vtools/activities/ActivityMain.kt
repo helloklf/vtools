@@ -68,13 +68,6 @@ class ActivityMain : AppCompatActivity() {
 
     }
 
-    private class ConfigInstallerThread : Thread() {
-        override fun run() {
-            super.run()
-            CpuConfigInstaller().configCodeVerify()
-        }
-    }
-
     private class ThermalCheckThread(private var context: Context) : Thread() {
         override fun run() {
             super.run()
@@ -193,7 +186,6 @@ class ActivityMain : AppCompatActivity() {
                             recreate()
                         })
             }
-            ConfigInstallerThread().start()
             ServiceCreateThread(this).run()
             ThermalCheckThread(this).run()
         } else {

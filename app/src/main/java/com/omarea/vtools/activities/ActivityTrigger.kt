@@ -134,7 +134,7 @@ class ActivityTrigger : AppCompatActivity() {
                 task_mode_performance.isChecked = contains(TaskAction.MODE_PERFORMANCE)
                 task_mode_fast.isChecked = contains(TaskAction.MODE_FAST)
             }
-            task_mode_switch.visibility = if (ModeSwitcher().modeConfigCompleted(this@ActivityTrigger)) View.VISIBLE else View.GONE
+            task_mode_switch.visibility = if (ModeSwitcher().modeConfigCompleted()) View.VISIBLE else View.GONE
         }
     }
 

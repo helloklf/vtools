@@ -1,6 +1,8 @@
 package com.omarea.scene_mode
 
-import android.content.Context
+import android.util.Log
+import com.omarea.Scene
+import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.shell_utils.PropsUtils
 import com.omarea.store.CpuConfigStorage
@@ -14,8 +16,8 @@ open class ModeSwitcher {
     private var inited = false
 
     companion object {
-        const val POWER_CFG_PATH = "/data/powercfg.sh"
-        const val POWER_CFG_BASE = "/data/powercfg-base.sh"
+        const val OUTSIDE_POWER_CFG_PATH = "/data/powercfg.sh"
+        const val OUTSIDE_POWER_CFG_BASE = "/data/powercfg-base.sh"
 
         internal var DEFAULT = "balance"
         internal var POWERSAVE = "powersave"
@@ -97,53 +99,77 @@ open class ModeSwitcher {
         KeepShellPublic.doCmdSync(cmd)
     }
 
-    internal fun initPowercfg(context: Context): ModeSwitcher {
-        if (CpuConfigInstaller().configInstalled()) {
-            keepShellExec("sh $POWER_CFG_PATH $INIT")
+    private var configProvider: String = ""
+
+    // init
+    internal fun initPowercfg(): ModeSwitcher {
+        if (configProvider.isEmpty()) {
+            val installer = CpuConfigInstaller()
+            if (installer.outsideConfigInstalled()) {
+                configProvider = OUTSIDE_POWER_CFG_PATH
+            } else {
+                configProvider = FileWrite.getPrivateFilePath(Scene.context, "powercfg.sh")
+            }
+        }
+
+        if (configProvider.isNotEmpty()) {
+            keepShellExec("sh $configProvider $INIT")
             setCurrentPowercfg("")
         }
+
         inited = true
         return this
     }
 
-    internal fun executePowercfgMode(context: Context, mode: String): ModeSwitcher {
+    // 切换模式
+    internal fun executePowercfgMode(mode: String): ModeSwitcher {
         if (!inited) {
-            initPowercfg(context)
+            initPowercfg()
         }
 
-        val cpuConfigStorage = CpuConfigStorage(context)
+        val cpuConfigStorage = CpuConfigStorage(Scene.context)
         if (cpuConfigStorage.exists(mode)) {
-            cpuConfigStorage.applyCpuConfig(context, mode)
+            cpuConfigStorage.applyCpuConfig(Scene.context, mode)
+        } else if (configProvider.isNotEmpty()) {
+            keepShellExec("sh $configProvider $mode")
         } else {
-            keepShellExec("sh $POWER_CFG_PATH $mode")
+            return this
         }
         setCurrentPowercfg(mode)
         return this
     }
 
-    internal fun executePowercfgMode(context: Context, mode: String, app: String): ModeSwitcher {
-        executePowercfgMode(context, mode)
+    internal fun executePowercfgMode(mode: String, app: String): ModeSwitcher {
+        executePowercfgMode(mode)
         setCurrentPowercfgApp(app)
         return this
     }
 
     // 是否已经完成指定模式的自定义
-    public fun modeReplaced(context: Context, mode: String): Boolean {
-        return CpuConfigStorage(context).exists(mode)
+    public fun modeReplaced(mode: String): Boolean {
+        return CpuConfigStorage(Scene.context).exists(mode)
     }
 
     // 是否已完成四个模式的配置
-    public fun modeConfigCompleted(context: Context): Boolean {
-        return CpuConfigInstaller().configInstalled() || allModeReplaced(context)
+    public fun modeConfigCompleted(): Boolean {
+        return ((CpuConfigInstaller().insideConfigInstalled() || CpuConfigInstaller().outsideConfigInstalled()) && !anyModeReplaced()) || allModeReplaced()
     }
 
     // 是否已经完成所有模式的自定义
-    public fun allModeReplaced(context: Context): Boolean {
-        val storage  = CpuConfigStorage(context)
+    public fun allModeReplaced(): Boolean {
+        val storage  = CpuConfigStorage(Scene.context)
 
         return storage.exists(POWERSAVE) &&
                 storage.exists(BALANCE) &&
                 storage.exists(PERFORMANCE) &&
+                storage.exists(FAST)
+    }
+    public fun anyModeReplaced(): Boolean {
+        val storage  = CpuConfigStorage(Scene.context)
+
+        return storage.exists(POWERSAVE) ||
+                storage.exists(BALANCE) ||
+                storage.exists(PERFORMANCE) ||
                 storage.exists(FAST)
     }
 }

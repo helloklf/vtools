@@ -63,7 +63,7 @@ class FragmentHome : Fragment() {
 
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
-        if (configInstaller.dynamicSupport(context!!) || configInstaller.configInstalled()) {
+        if (configInstaller.dynamicSupport(context!!) || configInstaller.outsideConfigInstalled()) {
             powermode_toggles.visibility = View.VISIBLE
         } else {
             powermode_toggles.visibility = View.GONE
@@ -336,11 +336,11 @@ class FragmentHome : Fragment() {
             setModeState()
             return
         }
-        if (configInstaller.configInstalled()) {
-            modeList.executePowercfgMode(context!!, action, context!!.packageName)
+        if (modeList.modeConfigCompleted()) {
+            modeList.executePowercfgMode(action, context!!.packageName)
         } else {
             CpuConfigInstaller().installOfficialConfig(context!!);
-            modeList.executePowercfgMode(context!!, action)
+            modeList.executePowercfgMode(action)
         }
         setModeState()
         showMsg(message)

@@ -14,11 +14,16 @@ import com.omarea.vtools.R
 import com.omarea.vtools.services.BatteryService
 
 class Scene : Application() {
+    companion object {
+        public lateinit var context: Application
+    }
+
     // 锁屏状态监听
     private lateinit var screenState: ScreenState
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
+        context = this
 
         if (!Busybox.systemBusyboxInstalled()) {
             ShellExecutor.setExtraEnvPath(

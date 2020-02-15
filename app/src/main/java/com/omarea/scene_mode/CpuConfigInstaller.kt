@@ -2,6 +2,7 @@ package com.omarea.scene_mode
 
 import android.content.Context
 import android.util.Log
+import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.RootFile
@@ -28,6 +29,11 @@ class CpuConfigInstaller {
         storage.remove(ModeSwitcher.FAST)
     }
 
+    fun removeOutsideConfig() {
+        KeepShellPublic.doCmdSync("rm -f " + ModeSwitcher.OUTSIDE_POWER_CFG_PATH)
+        KeepShellPublic.doCmdSync("rm -f " + ModeSwitcher.OUTSIDE_POWER_CFG_BASE)
+    }
+
     // 安装应用内自带的配置
     fun installOfficialConfig(context: Context, afterCmds: String = "", biCore: Boolean = false): Boolean {
         if (!dynamicSupport(context)) {
@@ -40,12 +46,19 @@ class CpuConfigInstaller {
             if (powercfg == null) {
                 return false
             } else {
-                val cmd = StringBuilder("cp ${powercfg} ${ModeSwitcher.POWER_CFG_PATH};").append("chmod 0777 ${ModeSwitcher.POWER_CFG_PATH};")
-                if (powercfgBase != null) {
-                    cmd.append("cp ${powercfgBase} ${ModeSwitcher.POWER_CFG_BASE};").append("chmod 0777 ${ModeSwitcher.POWER_CFG_BASE};")
+                File(powercfg).run {
+                    setExecutable(true, false)
+                    setWritable(true)
+                    setReadable(true)
                 }
-                KeepShellPublic.doCmdSync(cmd.toString())
-                configCodeVerify()
+                if (powercfgBase != null) {
+                    File(powercfgBase).run {
+                        setExecutable(true, false)
+                        setWritable(true)
+                        setReadable(true)
+                    }
+                }
+
                 ModeSwitcher().setCurrentPowercfg("")
                 if (!afterCmds.isEmpty()) {
                     KeepShellPublic.doCmdSync(afterCmds)
@@ -63,16 +76,14 @@ class CpuConfigInstaller {
     // 安装自定义配置
     fun installCustomConfig(context: Context, powercfg: String, author: String): Boolean {
         try {
-            FileWrite.writePrivateFile(powercfg.replace("\r", "")
+            FileWrite.writePrivateFile(powercfg
+                    .replace(Regex("\r\n"), "\n").replace(Regex("\r\t"), "\t")
                     .toByteArray(Charset.forName("UTF-8")), "powercfg.sh", context)
-            FileWrite.writePrivateFile("#!/system/bin/sh".toByteArray(Charset.forName("UTF-8")), "powercfg-base.sh", context)
-            val cmd = StringBuilder()
-                    .append("cp ${FileWrite.getPrivateFilePath(context, "powercfg.sh")} ${ModeSwitcher.POWER_CFG_PATH};")
-                    .append("cp ${FileWrite.getPrivateFilePath(context, "powercfg-base.sh")} ${ModeSwitcher.POWER_CFG_BASE};")
-                    .append("chmod 0777 ${ModeSwitcher.POWER_CFG_PATH};")
-                    .append("chmod 0777 ${ModeSwitcher.POWER_CFG_BASE};")
-            //KeepShellPublic.doCmdSync(CommonCmds.InstallPowerToggleConfigToCache + "\n\n" + CommonCmds.ExecuteConfig + "\n" + after)
-            KeepShellPublic.doCmdSync(cmd.toString())
+            File(FileWrite.getPrivateFilePath(context, "powercfg.sh")).run {
+                setExecutable(true, false)
+                setWritable(true)
+                setReadable(true)
+            }
             ModeSwitcher().setCurrentPowercfg("")
             context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).edit().putString(SpfConfig.GLOBAL_SPF_CPU_CONFIG_AUTHOR, author).apply()
             removeCustomModes(context)
@@ -87,13 +98,13 @@ class CpuConfigInstaller {
     fun configCodeVerify() {
         try {
             val cmd = StringBuilder()
-            cmd.append("if [[ -f ${ModeSwitcher.POWER_CFG_PATH} ]]; then \n")
-            cmd.append("busybox sed -i 's/\\r//' ${ModeSwitcher.POWER_CFG_PATH};\n")
-            cmd.append("chmod 0775 ${ModeSwitcher.POWER_CFG_PATH};\n")
+            cmd.append("if [[ -f ${ModeSwitcher.OUTSIDE_POWER_CFG_PATH} ]]; then \n")
+            cmd.append("busybox sed -i 's/\\r//' ${ModeSwitcher.OUTSIDE_POWER_CFG_PATH};\n")
+            cmd.append("chmod 0775 ${ModeSwitcher.OUTSIDE_POWER_CFG_PATH};\n")
             cmd.append("fi;\n")
-            cmd.append("if [[ -f ${ModeSwitcher.POWER_CFG_BASE} ]]; then \n")
-            cmd.append("busybox sed -i 's/\\r//' ${ModeSwitcher.POWER_CFG_BASE};\n")
-            cmd.append("chmod 0777 ${ModeSwitcher.POWER_CFG_BASE};\n")
+            cmd.append("if [[ -f ${ModeSwitcher.OUTSIDE_POWER_CFG_BASE} ]]; then \n")
+            cmd.append("busybox sed -i 's/\\r//' ${ModeSwitcher.OUTSIDE_POWER_CFG_BASE};\n")
+            cmd.append("chmod 0777 ${ModeSwitcher.OUTSIDE_POWER_CFG_BASE};\n")
             cmd.append("fi;\n")
             KeepShellPublic.doCmdSync(cmd.toString())
         } catch (ex: Exception) {
@@ -115,8 +126,13 @@ class CpuConfigInstaller {
         return false;
     }
 
-    // 检查是否已经安装好配置
-    fun configInstalled(): Boolean {
-        return RootFile.fileNotEmpty(ModeSwitcher.POWER_CFG_PATH)
+    // 是否已经安装外部配置文件
+    fun outsideConfigInstalled(): Boolean {
+        return RootFile.fileNotEmpty(ModeSwitcher.OUTSIDE_POWER_CFG_PATH)
+    }
+
+    // 是否已经安装内部配置文件
+    fun insideConfigInstalled(): Boolean {
+        return File(FileWrite.getPrivateFilePath(Scene.context, "powercfg.sh")).exists()
     }
 }

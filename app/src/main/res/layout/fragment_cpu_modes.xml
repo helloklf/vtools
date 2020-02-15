@@ -35,10 +35,10 @@
 
             <ImageButton
                 style="?android:buttonBarButtonStyle"
-                android:layout_marginLeft="6dp"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
+                android:layout_marginLeft="6dp"
                 android:padding="0dp"
                 android:src="@drawable/delete"
                 android:visibility="gone" />
@@ -47,26 +47,28 @@
         <Switch
             android:id="@+id/dynamic_control"
             style="@style/textTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:text="性能调节  "
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:text="性能调节  " />
 
         <TextView
             style="@style/textSmall"
-            android:text="启用 [应用场景] 的 [性能调节] 功能\n根据前台应用，自动切换模式"
-            android:textAlignment="center"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="启用 [应用场景] 的 [性能调节] 功能\n根据前台应用，自动切换模式"
+            android:textAlignment="center" />
+
         <LinearLayout style="@style/ListCardItem">
+
             <LinearLayout
                 android:id="@+id/config_cfg_select"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/activity_vertical_margin"
-                android:orientation="horizontal"
-                android:baselineAligned="false">
+                android:baselineAligned="false"
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -77,9 +79,9 @@
 
                     <TextView
                         style="@style/textTitle"
-                        android:layout_marginBottom="8dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="8dp"
                         android:text="使用Scene预设配置" />
 
                     <TextView
@@ -120,9 +122,9 @@
                 android:id="@+id/config_cfg_customer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:baselineAligned="false"
                 android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:baselineAligned="false">
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -177,31 +179,79 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/cpu_mode_outside"
+            android:visibility="gone"
+            android:padding="@dimen/activity_horizontal_margin"
+            style="@style/ListCardItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:orientation="horizontal">
+
+            <TextView
+                android:textSize="13dp"
+                android:text="正在使用外部配置(/data/powercfg.sh)\n如需换回Scene3自带配置，或通过Scene导入配置，请点右侧删除按钮"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content" />
+
+            <ImageButton
+                android:id="@+id/cpu_mode_delete_outside"
+                android:layout_marginLeft="6dp"
+                style="?android:buttonBarButtonStyle"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:padding="0dp"
+                android:src="@drawable/delete" />
+        </LinearLayout>
+
+        <LinearLayout
             style="@style/ListCardItemLast"
             android:orientation="vertical"
-            android:paddingTop="0dp"
             android:paddingStart="8dp"
+            android:paddingTop="0dp"
             android:paddingEnd="8dp"
             android:paddingBottom="8dp">
 
-            <TextView
-                style="@style/textTitle"
-                android:paddingLeft="8dp"
+            <LinearLayout
                 android:layout_marginTop="@dimen/activity_vertical_margin"
-                android:text="模式信息"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:paddingEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="模式信息" />
 
+                <TextView
+                    style="@style/textDefault"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="来源/作者：" />
+
+                <TextView
+                    android:textColor="?android:colorAccent"
+                    android:text="@string/app_name"
+                    android:id="@+id/config_author"
+                    style="@style/textDefault"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
             <LinearLayout
                 android:id="@+id/cpu_config_p0"
                 style="@style/InCardListItem"
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_marginLeft="8dp"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="8dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/shortcut_p0" />
 
@@ -224,14 +274,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="尽可能的限制性能，从而获得更长的续航。适用于观看视频、阅读小说这类不需要太多性能的应用" />
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:tag="author"
-                        android:text="@string/app_name"
-                        android:textColor="?android:colorAccent" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -242,10 +284,10 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_marginLeft="8dp"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="8dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/shortcut_p1" />
 
@@ -268,14 +310,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="平衡耗电与性能，适用于大多数应用，如购物软件、聊天工具、网页浏览、娱乐小游戏" />
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:tag="author"
-                        android:text="@string/app_name"
-                        android:textColor="?android:colorAccent" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -286,10 +320,10 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_marginLeft="8dp"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="8dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/shortcut_p2" />
 
@@ -312,14 +346,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="充分释放性能，兼顾持续性能和响应速度，适用于大型游戏" />
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:tag="author"
-                        android:text="@string/app_name"
-                        android:textColor="?android:colorAccent" />
                 </LinearLayout>
 
             </LinearLayout>
@@ -330,10 +356,10 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:layout_marginLeft="8dp"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="8dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/shortcut_p3" />
 
@@ -356,29 +382,21 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="激进的调度，用于短时间突发性能需要，如性能测试、视频编辑、解压缩" />
-
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:tag="author"
-                        android:text="@string/app_name"
-                        android:textColor="?android:colorAccent" />
                 </LinearLayout>
 
             </LinearLayout>
 
             <LinearLayout
-                android:visibility="gone"
                 android:id="@+id/cpu_config_p4"
                 style="@style/InCardListItemLast"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                 <ImageView
-                    android:layout_marginLeft="8dp"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="8dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/shortcut_p4" />
 
@@ -402,15 +420,7 @@
                         android:layout_height="wrap_content"
                         android:text="已经放弃调度，直接锁定最高频率" />
 
-                    <TextView
-                        style="@style/textSmall"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:tag="author"
-                        android:text="Author : "
-                        android:textColor="?android:colorAccent" />
                 </LinearLayout>
-
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
