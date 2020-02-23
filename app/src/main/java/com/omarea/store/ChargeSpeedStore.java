@@ -80,47 +80,4 @@ public class ChargeSpeedStore extends SQLiteOpenHelper {
             return false;
         }
     }
-
-    public boolean removeAppConfig(String packageName) {
-        try {
-            SQLiteDatabase database = getWritableDatabase();
-            database.execSQL("delete from  scene_config3 where id = ?", new String[]{packageName});
-            return true;
-        } catch (Exception ex) {
-            return false;
-        }
-    }
-
-
-    public ArrayList<String> getFreezeAppList() {
-        ArrayList<String> list = new ArrayList<String>();
-        try {
-            SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-            Cursor cursor = sqLiteDatabase.rawQuery("select * from scene_config3 where freeze == 1", null);
-            while (cursor.moveToNext()) {
-                list.add(cursor.getString(0));
-            }
-            cursor.close();
-            sqLiteDatabase.close();
-        } catch (Exception ignored) {
-        }
-        return list;
-    }
-
-    public boolean needKeyCapture() {
-        boolean r = false;
-        try {
-            SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-            Cursor cursor = sqLiteDatabase.rawQuery("select * from scene_config3 where dis_button == 1", new String[]{});
-            cursor.moveToFirst();
-            if (cursor.moveToNext()) {
-                r = true;
-            }
-            cursor.close();
-            sqLiteDatabase.close();
-        } catch (Exception ignored) {
-
-        }
-        return r;
-    }
 }

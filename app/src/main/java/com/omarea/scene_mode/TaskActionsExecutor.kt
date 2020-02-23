@@ -161,13 +161,18 @@ class TaskActionsExecutor(private val taskActions: ArrayList<TaskAction>, privat
         context.startService(service)
     }
 
+    private var channelCreated = false
     private fun updateNotification(text: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            nm.createNotificationChannel(NotificationChannel("vtools-task", context.getString(R.string.notice_channel_task), NotificationManager.IMPORTANCE_LOW))
-            nm.notify(920, NotificationCompat.Builder(context, "vtool-task").setSmallIcon(R.drawable.icon_clock).setContentTitle(context.getString(R.string.notice_channel_task)).setContentText(text).build())
+        val notic = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            if (!channelCreated) {
+                nm.createNotificationChannel(NotificationChannel("vtools-task", context.getString(R.string.notice_channel_task), NotificationManager.IMPORTANCE_LOW))
+                channelCreated = true
+            }
+            NotificationCompat.Builder(context, "vtools-task")
         } else {
-            nm.notify(920, NotificationCompat.Builder(context).setSmallIcon(R.drawable.icon_clock).setContentTitle(context.getString(R.string.notice_channel_task)).setContentText(text).build())
+            NotificationCompat.Builder(context)
         }
+        nm.notify(920, notic.setSmallIcon(R.drawable.icon_clock).setWhen(System.currentTimeMillis()).setContentTitle(context.getString(R.string.notice_channel_task)).setContentText(text).build())
     }
 
     private fun hideNotification () {

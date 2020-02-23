@@ -174,7 +174,7 @@ elif [ "$action" = "fast" ]; then
 	echo 3 >/proc/sys/vm/drop_caches
 
     echo 96 > /proc/sys/kernel/sched_upmigrate
-    echo 87 > /proc/sys/kernel/sched_downmigrate
-    echo 180 > /proc/sys/kernel/sched_group_upmigrate
-    echo 140 > /proc/sys/kernel/sched_group_downmigrate
+    echo 75 > /proc/sys/kernel/sched_downmigrate
+    echo 420 > /proc/sys/kernel/sched_group_upmigrate
+    echo 320 > /proc/sys/kernel/sched_group_downmigrate
 fi

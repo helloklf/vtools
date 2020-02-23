@@ -62,7 +62,9 @@ class ChargeCurve(private val context: Context) : EventReceiver {
                             globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT)
                     )
 
-            storage.addHistory(GlobalStatus.batteryCurrentNow, GlobalStatus.batteryCapacity)
+            if (Math.abs(GlobalStatus.batteryCurrentNow) > 100) {
+                storage.addHistory(GlobalStatus.batteryCurrentNow, GlobalStatus.batteryCapacity)
+            }
         } else {
             cancelUpdate()
         }

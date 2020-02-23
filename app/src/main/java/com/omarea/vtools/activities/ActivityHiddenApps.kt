@@ -18,6 +18,7 @@ import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShell
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
+import com.omarea.krscript.FileOwner
 import com.omarea.model.Appinfo
 import com.omarea.ui.AppListAdapter
 import com.omarea.utils.AppListHelper2
@@ -77,6 +78,7 @@ class ActivityHiddenApps : AppCompatActivity() {
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
+        /*
         val dir = filesDir
         val uid = dir.parentFile.parentFile.name
         val configPath = "/data/system/users/$uid/package-restrictions.xml"
@@ -88,6 +90,7 @@ class ActivityHiddenApps : AppCompatActivity() {
                 }
                 .setCancelable(false)
         )
+        */
     }
 
     private fun getAppInfo(it: ApplicationInfo): Appinfo {
@@ -210,8 +213,15 @@ class ActivityHiddenApps : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-
     private fun reInstallAppShell(apps: ArrayList<Appinfo>): Boolean {
+        val uid = FileOwner(this).userId
+        for (app in apps) {
+            keepShell.doCmdSync("pm install-existing --user $uid ${app.packageName}")
+        }
+        return true
+    }
+
+    private fun reInstallAppShellOld(apps: ArrayList<Appinfo>): Boolean {
         val dir = filesDir
         val uid = dir.parentFile.parentFile.name
         val configPath = "/data/system/users/$uid/package-restrictions.xml"

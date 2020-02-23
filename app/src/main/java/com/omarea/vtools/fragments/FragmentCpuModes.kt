@@ -112,7 +112,7 @@ class FragmentCpuModes : Fragment() {
             author = "none"
         }
 
-        if (outsideInstalled && configInstaller.dynamicSupport(context!!)) {
+        if (outsideInstalled) {
             cpu_mode_outside.visibility = View.VISIBLE
         } else {
             cpu_mode_outside.visibility = View.GONE
