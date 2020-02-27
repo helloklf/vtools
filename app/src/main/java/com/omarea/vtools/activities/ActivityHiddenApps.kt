@@ -213,6 +213,7 @@ class ActivityHiddenApps : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
     private fun reInstallAppShell(apps: ArrayList<Appinfo>): Boolean {
         val uid = FileOwner(this).userId
         for (app in apps) {

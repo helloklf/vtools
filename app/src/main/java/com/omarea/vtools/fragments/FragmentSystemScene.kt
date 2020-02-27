@@ -137,7 +137,7 @@ class FragmentSystemScene : Fragment() {
     private fun standbyAppConfig() {
         processBarDialog.showDialog()
         val context = context!!
-        Thread(Runnable{
+        Thread(Runnable {
             val configFile = context.getSharedPreferences(SceneStandbyMode.configSpfName, Context.MODE_PRIVATE)
             val whiteList = context.resources.getStringArray(R.array.scene_standby_white_list)
             val view = LayoutInflater.from(context).inflate(R.layout.layout_standby_apps, null)

@@ -102,7 +102,7 @@ class ActivityTimingTask : AppCompatActivity() {
             // 额外条件
             task_after_screen_off.isChecked = afterScreenOff
             task_before_execute_confirm.isChecked = beforeExecuteConfirm
-            task_battery_capacity_require.isChecked = batteryCapacityRequire >- 0
+            task_battery_capacity_require.isChecked = batteryCapacityRequire > -0
             task_battery_capacity.text = batteryCapacityRequire.toString()
             task_charge_only.isChecked = chargeOnly
 
@@ -136,7 +136,7 @@ class ActivityTimingTask : AppCompatActivity() {
                 it.isChecked = false
             } else {
                 it.tag = it.isChecked
-                radioButton2.tag  = false
+                radioButton2.tag = false
                 radioButton2.isChecked = false
             }
         }
@@ -146,7 +146,7 @@ class ActivityTimingTask : AppCompatActivity() {
                 it.isChecked = false
             } else {
                 it.tag = it.isChecked
-                radioButton1.tag  = false
+                radioButton1.tag = false
                 radioButton1.isChecked = false
             }
         }
@@ -175,7 +175,7 @@ class ActivityTimingTask : AppCompatActivity() {
         timingTaskInfo.afterScreenOff = task_after_screen_off.isChecked
         timingTaskInfo.beforeExecuteConfirm = task_before_execute_confirm.isChecked
         timingTaskInfo.chargeOnly = task_charge_only.isChecked
-        timingTaskInfo.batteryCapacityRequire = if(task_battery_capacity_require.isChecked) (task_battery_capacity.text).toString().toInt() else 0
+        timingTaskInfo.batteryCapacityRequire = if (task_battery_capacity_require.isChecked) (task_battery_capacity.text).toString().toInt() else 0
         timingTaskInfo.taskActions = ArrayList<TaskAction>().apply {
             task_standby_on.isChecked && add(TaskAction.STANDBY_MODE_ON)
             task_standby_off.isChecked && add(TaskAction.STANDBY_MODE_OFF)

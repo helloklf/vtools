@@ -7,7 +7,7 @@ import java.util.*
 class GetUpTime(private val getUp: Int) {
     // 现在时间
     val currentTime: Int
-        get () {
+        get() {
             val now = Calendar.getInstance()
             return now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)
         }
@@ -29,7 +29,7 @@ class GetUpTime(private val getUp: Int) {
             else {
                 timeRemaining = (getUp - nowTimeValue)
             }
-            return  timeRemaining.toInt()
+            return timeRemaining.toInt()
         }
 
     val nextGetUpTime: Long

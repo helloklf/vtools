@@ -19,7 +19,7 @@ import kotlin.math.abs
 
 
 class FragmentBatteryStats : Fragment() {
-    private lateinit var storage:BatteryHistoryStore
+    private lateinit var storage: BatteryHistoryStore
     private var timer: Timer? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

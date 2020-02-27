@@ -143,11 +143,11 @@ class Busybox(private var context: Context) {
         if (!systemBusyboxInstalled()) {
             DialogHelper.animDialog(
                     AlertDialog.Builder(context)
-                    .setMessage(R.string.busybox_install_fail)
-                    .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                        forceInstall(onSuccess)
-                    }
-                    .setCancelable(false))
+                            .setMessage(R.string.busybox_install_fail)
+                            .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                                forceInstall(onSuccess)
+                            }
+                            .setCancelable(false))
         } else {
             onSuccess?.run()
         }
@@ -163,11 +163,11 @@ class Busybox(private var context: Context) {
                         onSuccess?.run()
                     } else {
                         DialogHelper.animDialog(AlertDialog.Builder(context)
-                                        .setMessage(R.string.busybox_nonsupport)
-                                        .setCancelable(false)
-                                        .setPositiveButton(R.string.btn_exit) { _, _ ->
-                                            android.os.Process.killProcess(android.os.Process.myPid())
-                                        })
+                                .setMessage(R.string.busybox_nonsupport)
+                                .setCancelable(false)
+                                .setPositiveButton(R.string.btn_exit) { _, _ ->
+                                    android.os.Process.killProcess(android.os.Process.myPid())
+                                })
                     }
                 }
                 .setNeutralButton(R.string.busybox_install_classical) { _, _ ->

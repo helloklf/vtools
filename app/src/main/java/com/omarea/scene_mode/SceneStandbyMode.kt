@@ -11,6 +11,7 @@ class SceneStandbyMode(private val context: Context, private val keepShell: Keep
     companion object {
         public val configSpfName = "SceneStandbyList"
     }
+
     private val stateProp = "persist.vtools.suspend"
 
     public fun getCmds(on: Boolean): String {
@@ -65,10 +66,16 @@ class SceneStandbyMode(private val context: Context, private val keepShell: Keep
     }
 
     public fun on() {
+        if (keepShell.doCmdSync("getprop $stateProp").equals("1")) {
+            return
+        }
         keepShell.doCmdSync(getCmds(true))
     }
 
     public fun off() {
+        if (keepShell.doCmdSync("getprop $stateProp").equals("0")) {
+            return
+        }
         keepShell.doCmdSync(getCmds(false))
     }
 }

@@ -27,7 +27,7 @@ class DialogNumberInput(private val context: Context) {
 
         dialog.findViewById<ImageButton>(R.id.number_input_minus).setOnClickListener {
             if (current > dialogRequest.min) {
-                current-=1
+                current -= 1
             }
             value.setText(current.toString())
         }

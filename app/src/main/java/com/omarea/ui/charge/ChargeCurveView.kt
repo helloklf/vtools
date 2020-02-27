@@ -1,4 +1,4 @@
-package com.omarea.filter
+package com.omarea.ui.charge
 
 import android.content.Context
 import android.graphics.Canvas
@@ -9,7 +9,6 @@ import android.util.AttributeSet
 import android.view.View
 import com.omarea.store.ChargeSpeedStore
 import com.omarea.vtools.R
-import kotlin.math.abs
 
 class ChargeCurveView : View {
     private lateinit var storage: ChargeSpeedStore
@@ -63,8 +62,8 @@ class ChargeCurveView : View {
         val dpSize = dp2px(this.context, 1f)
         val innerPadding = dpSize * 24f
 
-        val maxIO = samples.map { abs(it.io) }.max()
-        val maxAmpere = if (maxIO != null) (maxIO / 1000 + 1) else 10
+        val maxIO = samples.map { it.io }.max()
+        var maxAmpere = if (maxIO != null) (maxIO / 1000 + 1) else 10
 
         val ratioX = (this.width - innerPadding - innerPadding) * 1.0 / 100 // 横向比率
         val ratioY = ((this.height - innerPadding - innerPadding) * 1.0 / maxAmpere).toFloat() // 纵向比率
@@ -95,7 +94,12 @@ class ChargeCurveView : View {
                 )
             }
             if (point % 5 == 0) {
-                paint.color = Color.parseColor("#88888888")
+                paint.strokeWidth = if (point == 0) potintRadius else 2f
+                if (point == 0) {
+                    paint.color = Color.parseColor("#888888")
+                } else {
+                    paint.color = Color.parseColor("#aa888888")
+                }
                 canvas.drawLine(
                         (point * ratioX).toInt() + innerPadding, innerPadding,
                         (point * ratioX).toInt() + innerPadding, this.height - innerPadding, paint)
@@ -109,7 +113,12 @@ class ChargeCurveView : View {
                 canvas.drawText(point.toString() + "A", innerPadding - dpSize * 4, innerPadding + ((maxAmpere - point) * ratioY).toInt() + textSize / 2.2f, paint)
                 canvas.drawCircle(innerPadding, innerPadding + ((maxAmpere - point) * ratioY).toInt(), potintRadius, paint)
             }
-            paint.color = Color.parseColor("#88888888")
+            paint.strokeWidth = if (point == 0L) potintRadius else 2f
+            if (point == 0L) {
+                paint.color = Color.parseColor("#888888")
+            } else {
+                paint.color = Color.parseColor("#aa888888")
+            }
             canvas.drawLine(
                     innerPadding, innerPadding + ((maxAmpere - point) * ratioY).toInt(),
                     (this.width - innerPadding), innerPadding + ((maxAmpere - point) * ratioY).toInt(), paint)
@@ -118,12 +127,12 @@ class ChargeCurveView : View {
         paint.color = getColorAccent()
         for (sample in samples) {
             val pointX = (sample.capacity * ratioX).toFloat() + innerPadding
-            val io = abs(sample.io) / 1000F // mA -> A
+            val io = sample.io / 1000F // mA -> A
 
             if (isFirstPoint) {
                 pathFilterAlpha.moveTo(pointX, stratY - (io * ratioY))
                 isFirstPoint = false
-                canvas.drawCircle(pointX, stratY - (io * ratioY), dpSize.toFloat(), paint)
+                canvas.drawCircle(pointX, stratY - (io * ratioY), potintRadius, paint)
             } else {
                 pathFilterAlpha.lineTo(pointX, stratY - (io * ratioY))
             }
@@ -136,5 +145,10 @@ class ChargeCurveView : View {
 
         paint.color = Color.parseColor("#8BC34A")
         canvas.drawPath(pathFilterAlpha, paint)
+
+        // paint.textSize = dpSize * 12f
+        // paint.textAlign = Paint.Align.RIGHT
+        // paint.style = Paint.Style.FILL
+        // canvas.drawText("电池电流/电量", width - innerPadding, innerPadding - (dpSize * 4f), paint)
     }
 }

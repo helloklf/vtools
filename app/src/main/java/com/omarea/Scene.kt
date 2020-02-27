@@ -6,12 +6,12 @@ import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.ShellExecutor
 import com.omarea.data_collection.ChargeCurve
 import com.omarea.data_collection.EventBus
+import com.omarea.data_collection.publisher.BatteryState
 import com.omarea.data_collection.publisher.ScreenState
 import com.omarea.permissions.Busybox
 import com.omarea.scene_mode.TimingTaskManager
 import com.omarea.scene_mode.TriggerEventMonitor
 import com.omarea.vtools.R
-import com.omarea.vtools.services.BatteryService
 
 class Scene : Application() {
     companion object {
@@ -27,7 +27,7 @@ class Scene : Application() {
 
         if (!Busybox.systemBusyboxInstalled()) {
             ShellExecutor.setExtraEnvPath(
-                FileWrite.getPrivateFilePath(this, getString(R.string.toolkit_install_path))
+                    FileWrite.getPrivateFilePath(this, getString(R.string.toolkit_install_path))
             )
         }
 
@@ -36,7 +36,7 @@ class Scene : Application() {
         screenState.autoRegister()
 
         // 电池状态检测
-        BatteryService.startBatteryService(this)
+        BatteryState(context).registerReceiver()
 
         // 定时任务
         TimingTaskManager(this).updateAlarmManager()

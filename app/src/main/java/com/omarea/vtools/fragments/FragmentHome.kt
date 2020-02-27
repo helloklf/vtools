@@ -37,7 +37,6 @@ import java.math.RoundingMode
 import java.util.*
 import kotlin.collections.HashMap
 
-
 class FragmentHome : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -63,7 +62,7 @@ class FragmentHome : Fragment() {
 
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
-        if (configInstaller.dynamicSupport(context!!) || configInstaller.outsideConfigInstalled()) {
+        if (configInstaller.dynamicSupport(context!!) || configInstaller.insideConfigInstalled() || configInstaller.outsideConfigInstalled()) {
             powermode_toggles.visibility = View.VISIBLE
         } else {
             powermode_toggles.visibility = View.GONE
@@ -124,7 +123,7 @@ class FragmentHome : Fragment() {
         }
 
         home_battery_edit.setOnClickListener {
-            DialogElectricityUnit().showDialog(this, batteryCurrentNow)
+            DialogElectricityUnit().showDialog(context!!)
         }
     }
 

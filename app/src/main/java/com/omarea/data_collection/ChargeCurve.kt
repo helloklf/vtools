@@ -2,7 +2,6 @@ package com.omarea.data_collection
 
 import android.content.Context
 import android.os.BatteryManager
-import android.util.Log
 import com.omarea.store.ChargeSpeedStore
 import com.omarea.store.SpfConfig
 import java.util.*
@@ -38,7 +37,8 @@ class ChargeCurve(private val context: Context) : EventReceiver {
                     startUpdate()
                 }
             }
-            else -> {}
+            else -> {
+            }
         }
     }
 
@@ -49,7 +49,7 @@ class ChargeCurve(private val context: Context) : EventReceiver {
                     override fun run() {
                         saveLog()
                     }
-                }, 5000, 1000)
+                }, 15000, 1000)
             }
         }
     }
@@ -63,7 +63,7 @@ class ChargeCurve(private val context: Context) : EventReceiver {
                     )
 
             if (Math.abs(GlobalStatus.batteryCurrentNow) > 100) {
-                storage.addHistory(GlobalStatus.batteryCurrentNow, GlobalStatus.batteryCapacity)
+                storage.addHistory(GlobalStatus.batteryCurrentNow, GlobalStatus.batteryCapacity, GlobalStatus.batteryTemperature)
             }
         } else {
             cancelUpdate()

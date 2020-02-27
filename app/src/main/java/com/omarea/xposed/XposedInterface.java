@@ -266,11 +266,11 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
                 break;
             case "com.android.quicksearchbox":
             case "com.android.settings":
-            // nova
+                // nova
             case "com.teslacoilsw.launcher":
-            // poco
+                // poco
             case "com.mi.android.globallauncher":
-            // miui
+                // miui
             case "com.miui.home": {
                 new AppFreezeInjector().appFreezeInject(loadPackageParam);
             }

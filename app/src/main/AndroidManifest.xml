@@ -294,10 +294,6 @@
                 android:resource="@xml/keyevent_accessibility" />
         </service>
         <service
-            android:name=".services.BatteryService"
-            android:enabled="true"
-            android:permission="" />
-        <service
             android:name=".services.BootService"
             android:enabled="true"
             android:permission="" />

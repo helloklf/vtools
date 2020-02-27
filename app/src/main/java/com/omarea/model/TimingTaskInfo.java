@@ -4,12 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class TimingTaskInfo implements Serializable {
-    public TimingTaskInfo() {}
-
-    public TimingTaskInfo(String taskId) {
-        this.taskId = taskId;
-    }
-
     // 任务id
     public String taskId;
     // 任务名称
@@ -20,7 +14,6 @@ public class TimingTaskInfo implements Serializable {
     public int triggerTimeMinutes = 420;
     // 任务失效时间
     public long expireDate;
-
     // 屏幕关闭后执行
     public boolean afterScreenOff;
     // 执行前请求确认
@@ -29,7 +22,12 @@ public class TimingTaskInfo implements Serializable {
     public int batteryCapacityRequire;
     // 是否只在充电状态下才执行
     public boolean chargeOnly;
-
     // 任务动作列表
     public ArrayList<TaskAction> taskActions;
+    public TimingTaskInfo() {
+    }
+
+    public TimingTaskInfo(String taskId) {
+        this.taskId = taskId;
+    }
 }

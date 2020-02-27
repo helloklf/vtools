@@ -60,7 +60,7 @@ public class TimingTaskManager(private var context: Context) {
     public fun listTask(): ArrayList<TimingTaskInfo> {
         val taskList = ArrayList<TimingTaskInfo>()
         val storage = TimingTaskStorage(context)
-        taskListConfig.all.keys.forEach{
+        taskListConfig.all.keys.forEach {
             storage.load(it)?.run {
                 taskList.add(this)
             }

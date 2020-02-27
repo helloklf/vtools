@@ -24,6 +24,7 @@ class AdapterBatteryStats : BaseAdapter {
         this.context = context
         this.list = list
     }
+
     override fun getCount(): Int {
         return list.size ?: 0
     }

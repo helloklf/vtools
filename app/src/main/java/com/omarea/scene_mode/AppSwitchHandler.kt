@@ -158,7 +158,7 @@ class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher
     /**
      * 更新通知
      */
-    private fun updateModeNofity(saveLog:Boolean = false) {
+    private fun updateModeNofity(saveLog: Boolean = false) {
         if (screenOn) {
             notifyHelper.notify(saveLog)
         }

@@ -479,6 +479,7 @@ open class DialogAppOptions(protected final var context: Context, protected var 
             _hideAll()
         })
     }
+
     /**
      * 暂停使用所选的应用
      */

@@ -18,8 +18,7 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 public class AppFreezeInjector {
 
-    private String getHomeLauncher(Context context)
-    {
+    private String getHomeLauncher(Context context) {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_HOME);
         ResolveInfo resolveInfo = context.getPackageManager().resolveActivity(intent, 0);

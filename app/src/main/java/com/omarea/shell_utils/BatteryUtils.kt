@@ -252,8 +252,7 @@ class BatteryUtils {
                             val keyrowd = "POWER_SUPPLY_PD_AUTHENTICATION="
                             stringBuilder.append("PD认证 = ")
                             stringBuilder.append(if (info.substring(keyrowd.length, info.length).equals("1")) "已认证" else "未认证")
-                        }
-                        else {
+                        } else {
                             continue
                         }
                         stringBuilder.append("\n")

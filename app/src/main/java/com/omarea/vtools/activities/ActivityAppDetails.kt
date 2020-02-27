@@ -43,8 +43,8 @@ class ActivityAppDetails : AppCompatActivity() {
     private var _result = RESULT_CANCELED
     private var vAddinsInstalled = false
     private var aidlConn: IAppConfigAidlInterface? = null
-    private lateinit var sceneBlackList:SharedPreferences
-    private lateinit var spfGlobal:SharedPreferences
+    private lateinit var sceneBlackList: SharedPreferences
+    private lateinit var spfGlobal: SharedPreferences
     private var needKeyCapture = false
 
     fun getAddinVersion(): Int {

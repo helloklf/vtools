@@ -137,7 +137,8 @@ class TaskActionsExecutor(private val taskActions: ArrayList<TaskAction>, privat
                         updateNotification("切换极速模式")
                         ModeSwitcher().setCurrentPowercfg(ModeSwitcher.FAST)
                     }
-                    else -> { }
+                    else -> {
+                    }
                 }
             } catch (ex: Exception) {
                 Toast.makeText(context, "定时任务出错：" + ex.message, Toast.LENGTH_LONG).show()
@@ -150,12 +151,13 @@ class TaskActionsExecutor(private val taskActions: ArrayList<TaskAction>, privat
         mWakeLock.release()
     }
 
-    private fun speedDex2oatCompile () {
+    private fun speedDex2oatCompile() {
         val service = Intent(context, CompileService::class.java)
         service.action = context.getString(R.string.scene_speed_compile)
         context.startService(service)
     }
-    private fun everythingDex2oatCompile () {
+
+    private fun everythingDex2oatCompile() {
         val service = Intent(context, CompileService::class.java)
         service.action = context.getString(R.string.scene_everything_compile)
         context.startService(service)
@@ -175,7 +177,7 @@ class TaskActionsExecutor(private val taskActions: ArrayList<TaskAction>, privat
         nm.notify(920, notic.setSmallIcon(R.drawable.icon_clock).setWhen(System.currentTimeMillis()).setContentTitle(context.getString(R.string.notice_channel_task)).setContentText(text).build())
     }
 
-    private fun hideNotification () {
+    private fun hideNotification() {
         updateNotification(context.getString(R.string.notice_task_completed))
     }
 }

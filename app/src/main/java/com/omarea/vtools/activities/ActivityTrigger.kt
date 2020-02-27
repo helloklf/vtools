@@ -1,5 +1,6 @@
 package com.omarea.vtools.activities
 
+import android.app.TimePickerDialog
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -7,7 +8,9 @@ import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Checkable
 import android.widget.CompoundButton
+import android.widget.Switch
 import com.omarea.data_collection.EventType
 import com.omarea.model.TaskAction
 import com.omarea.model.TriggerInfo
@@ -52,12 +55,21 @@ class ActivityTrigger : AppCompatActivity() {
         triggerInfo = if (task == null) TriggerInfo(id) else task
 
         // 时间选择
-        // taks_trigger_time.setOnClickListener {
-        //     TimePickerDialog(this, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
-        //         taks_trigger_time.setText(String.format(getString(R.string.format_hh_mm), hourOfDay, minute))
-        //         timingTaskInfo.triggerTimeMinutes = hourOfDay * 60 + minute
-        //     }, timingTaskInfo.triggerTimeMinutes / 60, timingTaskInfo.triggerTimeMinutes % 60, true).show()
-        // }
+        trigger_time_start.setOnClickListener {
+            TimePickerDialog(this, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+                trigger_time_start.setText(String.format(getString(R.string.format_hh_mm), hourOfDay, minute))
+                triggerInfo.timeStart = hourOfDay * 60 + minute
+            }, triggerInfo.timeStart / 60, triggerInfo.timeStart % 60, true).show()
+        }
+        trigger_time_end.setOnClickListener {
+            TimePickerDialog(this, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+                trigger_time_end.setText(String.format(getString(R.string.format_hh_mm), hourOfDay, minute))
+                triggerInfo.timeEnd = hourOfDay * 60 + minute
+            }, triggerInfo.timeEnd / 60, triggerInfo.timeEnd % 60, true).show()
+        }
+        trigger_time_limit.setOnClickListener {
+            triggerInfo.timeLimited = (it as Checkable).isChecked
+        }
 
         // 设定单选关系
         oneOf(trigger_screen_on, trigger_screen_off)
@@ -69,8 +81,6 @@ class ActivityTrigger : AppCompatActivity() {
         oneOf(task_gps_on, task_gps_off)
         oneOf(task_gprs_on, task_gprs_off)
         oneOf(task_zen_mode_on, task_zen_mode_off)
-        oneOf(task_after_screen_off, task_before_execute_confirm)
-        oneOf(task_battery_capacity_require, task_charge_only)
         oneOf(task_power_off, task_power_reboot)
 
         oneOf(task_compile_speed, task_compile_everything)
@@ -89,15 +99,10 @@ class ActivityTrigger : AppCompatActivity() {
     private fun updateUI() {
         triggerInfo.run {
             system_scene_task_enable.isChecked = enabled
-
-            // taks_trigger_time.setText(String.format(getString(R.string.format_hh_mm), hourOfDay, minute))
-
-            // 额外条件
-            // task_after_screen_off.isChecked = afterScreenOff
-            // task_before_execute_confirm.isChecked = beforeExecuteConfirm
-            // task_battery_capacity_require.isChecked = batteryCapacityRequire >- 0
-            // task_battery_capacity.text = batteryCapacityRequire.toString()
-            // task_charge_only.isChecked = chargeOnly
+            trigger_time_limit.isChecked = triggerInfo.timeLimited
+            // 触发时间
+            trigger_time_start.setText(String.format(getString(R.string.format_hh_mm), triggerInfo.timeStart / 60, triggerInfo.timeStart % 60))
+            trigger_time_end.setText(String.format(getString(R.string.format_hh_mm), triggerInfo.timeEnd / 60, triggerInfo.timeEnd % 60))
 
             // 触发事件
             events?.run {
@@ -145,7 +150,7 @@ class ActivityTrigger : AppCompatActivity() {
                 it.isChecked = false
             } else {
                 it.tag = it.isChecked
-                radioButton2.tag  = false
+                radioButton2.tag = false
                 radioButton2.isChecked = false
             }
         }
@@ -155,7 +160,7 @@ class ActivityTrigger : AppCompatActivity() {
                 it.isChecked = false
             } else {
                 it.tag = it.isChecked
-                radioButton1.tag  = false
+                radioButton1.tag = false
                 radioButton1.isChecked = false
             }
         }

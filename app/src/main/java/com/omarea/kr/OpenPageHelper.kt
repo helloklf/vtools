@@ -8,7 +8,6 @@ import android.widget.Toast
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.model.PageNode
 import com.omarea.vtools.activities.ActionPage
-import com.omarea.vtools.activities.ActivityAddinOnline
 
 class OpenPageHelper(private var activity: Activity) {
     private var progressBarDialog: ProgressBarDialog? = null

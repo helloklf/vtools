@@ -133,7 +133,7 @@ class FragmentCpuModes : Fragment() {
     }
 
     private fun getProviderName(name: String): String {
-        return when(name.toLowerCase()) {
+        return when (name.toLowerCase()) {
             "scene" -> "Scene自带"
             "downloader" -> "在线下载"
             "outside" -> "外部配置"

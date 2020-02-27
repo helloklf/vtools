@@ -1,6 +1,5 @@
 package com.omarea.scene_mode
 
-import android.util.Log
 import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
@@ -157,15 +156,16 @@ open class ModeSwitcher {
 
     // 是否已经完成所有模式的自定义
     public fun allModeReplaced(): Boolean {
-        val storage  = CpuConfigStorage(Scene.context)
+        val storage = CpuConfigStorage(Scene.context)
 
         return storage.exists(POWERSAVE) &&
                 storage.exists(BALANCE) &&
                 storage.exists(PERFORMANCE) &&
                 storage.exists(FAST)
     }
+
     public fun anyModeReplaced(): Boolean {
-        val storage  = CpuConfigStorage(Scene.context)
+        val storage = CpuConfigStorage(Scene.context)
 
         return storage.exists(POWERSAVE) ||
                 storage.exists(BALANCE) ||

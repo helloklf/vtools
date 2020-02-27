@@ -6,11 +6,11 @@ public class GApps {
     public void enable(KeepShell keepShell) {
         keepShell.doCmdSync(
                 "pm enable com.google.android.gsf 2> /dev/null\n" +
-                "pm enable com.google.android.gsf.login 2> /dev/null\n" +
-                "pm enable com.google.android.gms 2> /dev/null\n" +
-                "pm enable com.android.vending 2> /dev/null\n" +
-                "pm enable com.google.android.play.games 2> /dev/null\n" +
-                "pm enable com.google.android.syncadapters.contacts 2> /dev/null");
+                        "pm enable com.google.android.gsf.login 2> /dev/null\n" +
+                        "pm enable com.google.android.gms 2> /dev/null\n" +
+                        "pm enable com.android.vending 2> /dev/null\n" +
+                        "pm enable com.google.android.play.games 2> /dev/null\n" +
+                        "pm enable com.google.android.syncadapters.contacts 2> /dev/null");
     }
 
     public void disable(KeepShell keepShell) {

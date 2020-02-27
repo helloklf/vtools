@@ -41,14 +41,14 @@
                     <TextView
                         style="@style/textTitle"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
                         android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:text="触发条件" />
 
                     <GridLayout
-                        android:columnCount="2"
                         android:layout_width="220dp"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:columnCount="2">
 
                         <CheckBox
                             android:id="@+id/trigger_boot_completed"
@@ -84,6 +84,7 @@
                             android:layout_column="0"
                             android:layout_columnWeight="1"
                             android:text="插充电器" />
+
                         <RadioButton
                             android:id="@+id/trigger_power_disconnected"
                             android:layout_height="wrap_content"
@@ -98,83 +99,55 @@
                     style="@style/ListCardItem"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone">
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                    <TextView
+                    <Switch
+                        android:id="@+id/trigger_time_limit"
                         style="@style/textTitle"
-                        android:layout_width="60dp"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                        android:text="额外条件" />
-
-                    <TextView
-                        android:id="@+id/taks_trigger_time"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="00:00"
-                        android:textAlignment="center"
-                        android:textColor="?colorAccent"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        android:timePickerMode="spinner" />
-
-                    <RadioButton
-                        android:id="@+id/task_after_screen_off"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/activity_vertical_margin"
-                        android:text="如果当时正在使用手机，推迟到锁屏后执行"
-                        android:textColor="?android:textColorPrimary"
-                        android:textStyle="normal" />
-
-                    <RadioButton
-                        android:id="@+id/task_before_execute_confirm"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="执行前提示确认"
-                        android:textColor="?android:textColorPrimary"
-                        android:textStyle="normal" />
+                        android:layout_weight="1"
+                        android:text="时段限制" />
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="220dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/activity_vertical_margin"
                         android:orientation="horizontal">
 
-                        <RadioButton
-                            android:id="@+id/task_battery_capacity_require"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="电量高于"
-                            android:textColor="?android:textColorPrimary"
-                            android:textStyle="normal" />
-
                         <TextView
-                            android:id="@+id/task_battery_capacity"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/trigger_time_start"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:paddingStart="@dimen/activity_horizontal_margin"
-                            android:paddingEnd="@dimen/activity_horizontal_margin"
-                            android:text="50"
-                            android:textColor="?android:colorAccent"
+                            android:layout_weight="1"
+                            android:text="00:00"
+                            android:textAlignment="center"
+                            android:textColor="?colorAccent"
                             android:textSize="16sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:timePickerMode="spinner" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="%，或正在充电"
-                            android:textColor="?android:textColorPrimary" />
-                    </LinearLayout>
+                            android:text="至"
+                            android:textAlignment="center"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:timePickerMode="spinner" />
 
-                    <RadioButton
-                        android:id="@+id/task_charge_only"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="只在充电状态下执行"
-                        android:textColor="?android:textColorPrimary"
-                        android:textStyle="normal" />
+                        <TextView
+                            android:id="@+id/trigger_time_end"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="00:00"
+                            android:textAlignment="center"
+                            android:textColor="?colorAccent"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:timePickerMode="spinner" />
+                    </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -398,9 +371,9 @@
                         android:text="维护任务" />
 
                     <LinearLayout
-                        android:layout_marginTop="@dimen/activity_vertical_margin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
                         android:gravity="center_vertical"
                         android:orientation="horizontal">
 
@@ -463,6 +436,7 @@
                             android:textColor="?android:textColorPrimary" />
 
                         <RadioGroup
+
                             android:layout_width="220dp"
                             android:layout_height="wrap_content">
 

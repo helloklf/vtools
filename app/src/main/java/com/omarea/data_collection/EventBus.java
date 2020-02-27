@@ -9,6 +9,7 @@ public class EventBus {
 
     /**
      * 发布事件
+     *
      * @param eventType 事件类型
      */
     public static void publish(EventType eventType) {
@@ -27,6 +28,7 @@ public class EventBus {
 
     /**
      * 订阅事件
+     *
      * @param eventReceiver 事件接收器
      */
     public static void subscibe(EventReceiver eventReceiver) {
@@ -41,6 +43,7 @@ public class EventBus {
 
     /**
      * 取消订阅事件
+     *
      * @param eventReceiver 事件接收器
      */
     public static void unsubscibe(EventReceiver eventReceiver) {

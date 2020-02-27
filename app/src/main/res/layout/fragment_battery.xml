@@ -38,20 +38,6 @@
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:text="@string/battery_title_desc2" />
             </LinearLayout>
-
-            <LinearLayout style="@style/ListCardItem" android:paddingRight="0dp">
-
-                <TextView
-                    style="@style/textTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/charge_curve" />
-
-                <com.omarea.filter.ChargeCurveView
-                    android:id="@+id/charge_curve"
-                    android:layout_width="match_parent"
-                    android:layout_height="200dp" />
-            </LinearLayout>
             <LinearLayout
                 android:id="@+id/settings_pd_support"
                 style="@style/ListCardItem">

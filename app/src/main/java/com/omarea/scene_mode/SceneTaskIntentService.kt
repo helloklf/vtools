@@ -41,7 +41,7 @@ class SceneTaskIntentService : IntentService("SceneTaskIntentService") {
                     Toast.makeText(context, "电量低于" + batteryCapacityRequire + "%，跳过定时任务", Toast.LENGTH_LONG).show()
                 } else if (afterScreenOff && ScreenState(context).isScreenOn()) {
                     // 如果是个要求屏幕关闭后执行的任务，且现在屏幕还在点亮状态，放到息屏事件观测队列中
-                    EventBus.subscibe(ScreenDelayTaskReceiver(this.taskActions, context.applicationContext))
+                    EventBus.subscibe(ScreenDelayTaskReceiver(taskId, context.applicationContext))
                 } else {
                     TaskActionsExecutor(this.taskActions, context).run()
                 }
@@ -50,11 +50,14 @@ class SceneTaskIntentService : IntentService("SceneTaskIntentService") {
     }
 
     // 屏幕关闭后才执行的任务
-    class ScreenDelayTaskReceiver(private val taskActions: ArrayList<TaskAction>, private val context: Context) :EventReceiver {
+    class ScreenDelayTaskReceiver(private val taskId: String, private val context: Context) : EventReceiver {
         override fun onReceive(eventType: EventType) {
             EventBus.unsubscibe(this)
+            val taskIntent = Intent(context, SceneTaskIntentService::class.java)
+            taskIntent.putExtra("taskId", taskId)
+            taskIntent.setAction(taskId)
 
-            TaskActionsExecutor(taskActions, context).run()
+            this.context.startService(taskIntent)
         }
 
         override fun eventFilter(eventType: EventType): Boolean {

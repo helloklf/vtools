@@ -2,22 +2,29 @@ package com.omarea.vtools.dialogs
 
 import android.app.AlertDialog
 import android.content.Context
-import android.support.v4.app.Fragment
+import android.os.BatteryManager
+import android.os.Handler
+import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
-import com.omarea.common.ui.DialogHelper
+import com.omarea.store.ChargeSpeedStore
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
+import java.util.*
 
 class DialogElectricityUnit {
-    fun showDialog(fragment: Fragment, sampleValue: Long) {
-        val globalSPF = fragment.context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+    fun showDialog(context: Context) {
+        val globalSPF = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         var alertDialog: AlertDialog? = null
-        val dialog = fragment.layoutInflater.inflate(R.layout.dialog_electricity_unit, null)
+        val dialog = LayoutInflater.from(context).inflate(R.layout.dialog_electricity_unit, null)
         val electricity_adj_unit = dialog.findViewById<TextView>(R.id.electricity_adj_unit)
         var unit = globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT)
         val electricity_adj_sample = dialog.findViewById<TextView>(R.id.electricity_adj_sample)
+
+        val batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+        val currentNow = batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
+
         dialog.findViewById<ImageButton>(R.id.electricity_adj_minus).setOnClickListener {
             if (unit == -1) {
                 unit = -10
@@ -29,7 +36,8 @@ class DialogElectricityUnit {
                 unit *= 10
             }
             electricity_adj_unit.setText(unit.toString())
-            electricity_adj_sample.setText((sampleValue / unit).toString() + "mA")
+            val currentMA = currentNow / unit
+            electricity_adj_sample.setText((if (currentMA >= 0) "+" else "") + currentMA + "mA")
         }
         dialog.findViewById<ImageButton>(R.id.electricity_adj_plus).setOnClickListener {
             if (unit == -1) {
@@ -40,14 +48,33 @@ class DialogElectricityUnit {
                 unit *= 10
             }
             electricity_adj_unit.setText(unit.toString())
-            electricity_adj_sample.setText((sampleValue / unit).toString() + "mA")
+            val currentMA = currentNow / unit
+            electricity_adj_sample.setText((if (currentMA >= 0) "+" else "") + currentMA + "mA")
         }
         dialog.findViewById<Button>(R.id.electricity_adj_applay).setOnClickListener {
             globalSPF.edit().putInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, unit).apply()
             alertDialog?.dismiss()
         }
         electricity_adj_unit.setText(unit.toString())
-        electricity_adj_sample.setText((sampleValue / unit).toString() + "mA")
-        alertDialog = DialogHelper.animDialog(AlertDialog.Builder(fragment.context).setView(dialog))
+        val handler = Handler()
+        val timer = Timer().apply {
+            schedule(object : TimerTask() {
+                override fun run() {
+                    handler.post {
+                        batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
+                        try {
+                            val currentMA = currentNow / unit
+                            electricity_adj_sample.setText((if (currentMA >= 0) "+" else "") + currentMA + "mA")
+                        } catch (ex: Exception) {}
+                    }
+                }
+            }, 10, 1000)
+        }
+
+        alertDialog = AlertDialog.Builder(context).setView(dialog).setCancelable(false).setOnDismissListener {
+            ChargeSpeedStore(context).clearAll()
+            timer.cancel()
+        }.create()
+        alertDialog.show()
     }
 }

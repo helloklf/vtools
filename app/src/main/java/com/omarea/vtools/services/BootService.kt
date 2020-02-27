@@ -16,7 +16,6 @@ import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KernelProrp
 import com.omarea.data_collection.EventBus
 import com.omarea.data_collection.EventType
-import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.scene_mode.SceneMode
 import com.omarea.shell_utils.BatteryUtils
@@ -108,9 +107,6 @@ class BootService : IntentService("vtools-boot") {
         val chargeConfig = getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
         if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) || chargeConfig!!.getBoolean(SpfConfig.CHARGE_SPF_BP, false)) {
             updateNotification(getString(R.string.boot_charge_booster))
-
-            BatteryService.startBatteryService(context)
-
             BatteryUtils().setChargeInputLimit(chargeConfig.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, SpfConfig.CHARGE_SPF_QC_LIMIT_DEFAULT), this.applicationContext)
         }
 

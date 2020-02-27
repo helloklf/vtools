@@ -28,6 +28,7 @@ class SceneTriggerItem : LinearLayout {
     private fun setLayout(context: Context) {
         LayoutInflater.from(context).inflate(R.layout.list_scene_trigger_item, this, true)
     }
+
     private fun setLayout(context: Context, triggerInfo: TriggerInfo) {
         setLayout(context)
 
@@ -35,11 +36,11 @@ class SceneTriggerItem : LinearLayout {
         system_scene_task_content.text = getTaskContentText(triggerInfo)
     }
 
-    private fun getEvents(triggerInfo: TriggerInfo) : String {
+    private fun getEvents(triggerInfo: TriggerInfo): String {
         val buffer = StringBuffer()
         if (triggerInfo.events != null && triggerInfo.events.size > 0) {
             triggerInfo.events.forEach {
-                when(it) {
+                when (it) {
                     EventType.BOOT_COMPLETED -> {
                         buffer.append("开机完成")
                     }
@@ -77,7 +78,7 @@ class SceneTriggerItem : LinearLayout {
         val buffer = StringBuffer()
         if (triggerInfo.taskActions != null && triggerInfo.taskActions.size > 0) {
             triggerInfo.taskActions.forEach {
-                when(it) {
+                when (it) {
                     TaskAction.STANDBY_MODE_ON -> {
                         buffer.append("休眠模式 √")
                     }

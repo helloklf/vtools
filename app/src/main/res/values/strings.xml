@@ -85,7 +85,8 @@
     <string name="menu_additional">附加功能</string>
     <string name="menu_applictions">应用管理</string>
     <string name="menu_swap">SWAP设置</string>
-    <string name="menu_battery">电池充电</string>
+    <string name="menu_battery">充电控制</string>
+    <string name="menu_charge">充电统计</string>
     <string name="menu_app_magisk">Magisk助手</string>
     <string name="menu_keymap">按键辅助</string>
     <string name="menu_gesture">手势导航</string>
@@ -103,7 +104,6 @@
     <string name="battery_title">电池：</string>
     <string name="battery_title_desc1">使用充电加速建议保持Scene后台运行！</string>
     <string name="battery_title_desc2">电池保护功能，必须让Scene保持后台运行！</string>
-    <string name="charge_curve">充电过程</string>
     <string name="battery_reality_limit">实际上限电流：</string>
     <string name="battery_pd_allowed">USB-PD快充</string>
     <string name="battery_pd_allowed_desc">启用USB-PD快充协议(强烈建议，不要尝试手动开关此选项！！！)</string>
@@ -137,6 +137,16 @@
     <string name="battery_forgery">数据伪装</string>
     <string name="battery_forgery_ratio">电池电量</string>
     <string name="battery_forgery_full_now">充满容量</string>
+
+    <string name="battery_status_discharging">当前状态：未充电</string>
+    <string name="battery_status_charging">当前状态：充电中</string>
+    <string name="battery_status_full">当前状态：已充满</string>
+    <string name="battery_status_not_charging">当前状态：未充电</string>
+    <string name="battery_status_unknown">当前状态：未知</string>
+    <string name="electricity_unit_adj">电流单位校准</string>
+    <string name="electricity_unit_adj_desc">当前充电速度，除以：</string>
+    <string name="electricity_unit_as">显示为：</string>
+    <string name="electricity_unit_adj_desc2">充电应为正数，放电应为负数</string>
 
     <string name="home_hide_in_recents">强迫症</string>
     <string name="home_hide_in_recents_desc">不要在多任务界面显示Scene（本功能已下线，用返回键关闭Scene界面时自动隐藏后台）</string>
@@ -413,9 +423,6 @@
     <string name="kr_page_load_success">页面加载成功</string>
     <string name="kr_auto_run_item_losted">指定项已丢失</string>
 
-    <string name="electricity_unit_adj">电流单位校准</string>
-    <string name="electricity_unit_adj_desc">将系统数值除以：</string>
-    <string name="electricity_unit_as">显示为：</string>
     <string name="toolkit_install_path">toolkit</string>
 
     <string name="magisk_install_desc">Scene对系统的大部分修改操作，现在都可以通过Magisk模块的形式进行了。但是，你先要同意Scene在你的手机上自动安装附加模块，并重启手机（建议）！</string>

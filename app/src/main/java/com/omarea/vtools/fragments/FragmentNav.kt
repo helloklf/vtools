@@ -68,7 +68,8 @@ class FragmentNav : Fragment(), View.OnClickListener {
                 intent.setComponent(ComponentName("com.omarea.gesture", "com.omarea.gesture.SettingsActivity"))
                 startActivity(intent)
                 return
-            } catch (ex: java.lang.Exception){ }
+            } catch (ex: java.lang.Exception) {
+            }
         } else if (packageName.equals("com.omarea.filter")) {
             try {
                 val intent = Intent(Intent.ACTION_VIEW)
@@ -76,7 +77,8 @@ class FragmentNav : Fragment(), View.OnClickListener {
                 intent.setComponent(ComponentName("com.omarea.filter", "com.omarea.filter.SettingsActivity"))
                 startActivity(intent)
                 return
-            } catch (ex: java.lang.Exception){ }
+            } catch (ex: java.lang.Exception) {
+            }
         }
 
         try {
@@ -86,7 +88,8 @@ class FragmentNav : Fragment(), View.OnClickListener {
                 startActivity(intent)
                 return
             }
-        } catch (ex: java.lang.Exception) { }
+        } catch (ex: java.lang.Exception) {
+        }
 
         openUrl("https://www.coolapk.com/apk/" + packageName)
         /*
@@ -123,6 +126,7 @@ class FragmentNav : Fragment(), View.OnClickListener {
                 R.id.nav_applictions -> fragment = FragmentApplistions.createPage()
                 R.id.nav_swap -> fragment = FragmentSwap.createPage()
                 R.id.nav_battery -> fragment = FragmentBattery.createPage()
+                R.id.nav_charge -> fragment = FragmentCharge()
                 R.id.nav_img -> {
                     if (!BackupRestoreUtils.isSupport()) {
                         Toast.makeText(context, "此功能不支持你的手机", Toast.LENGTH_SHORT).show()

@@ -27,6 +27,7 @@ class SceneTaskItem : LinearLayout {
     private fun setLayout(context: Context) {
         LayoutInflater.from(context).inflate(R.layout.list_scene_task_item, this, true)
     }
+
     private fun setLayout(context: Context, taskInfo: TimingTaskInfo) {
         setLayout(context)
 
@@ -40,7 +41,7 @@ class SceneTaskItem : LinearLayout {
         system_scene_task_content.text = getTaskContentText(taskInfo)
     }
 
-    private fun getTimeStr(taskInfo: TimingTaskInfo) : String {
+    private fun getTimeStr(taskInfo: TimingTaskInfo): String {
         val hours = taskInfo.triggerTimeMinutes / 60
         val minutes = taskInfo.triggerTimeMinutes % 60
         val hoursStr = if (hours < 10) ("0" + hours) else hours.toString()
@@ -54,7 +55,7 @@ class SceneTaskItem : LinearLayout {
         val buffer = StringBuffer()
         if (taskInfo.taskActions != null && taskInfo.taskActions.size > 0) {
             taskInfo.taskActions.map {
-                when(it) {
+                when (it) {
                     TaskAction.STANDBY_MODE_ON -> {
                         buffer.append("休眠模式 √")
                     }

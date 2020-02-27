@@ -93,17 +93,17 @@ class BatteryReceiver(private var service: Context) : EventReceiver {
 
     // 起床时间
     val getUpTime: Int
-        get () {
+        get() {
             return chargeConfig.getInt(SpfConfig.CHARGE_SPF_TIME_GET_UP, SpfConfig.CHARGE_SPF_TIME_GET_UP_DEFAULT)
         }
     // 去睡觉的时间
     val goToBedTime: Int
-        get () {
+        get() {
             return chargeConfig.getInt(SpfConfig.CHARGE_SPF_TIME_SLEEP, SpfConfig.CHARGE_SPF_TIME_SLEEP_DEFAULT)
         }
     // 现在时间
     val currentTime: Int
-        get () {
+        get() {
             val now = Calendar.getInstance()
             return now.get(Calendar.HOUR_OF_DAY) * 60 + now.get(Calendar.MINUTE)
         }

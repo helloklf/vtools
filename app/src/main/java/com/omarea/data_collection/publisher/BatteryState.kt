@@ -3,12 +3,14 @@ package com.omarea.data_collection.publisher
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.BatteryManager
+import com.omarea.charger_booster.BatteryReceiver
 import com.omarea.data_collection.EventBus
 import com.omarea.data_collection.EventType
 import com.omarea.data_collection.GlobalStatus
 
-class BatteryState : BroadcastReceiver() {
+class BatteryState(private val applicationContext: Context) : BroadcastReceiver() {
     // 保存状态
     private fun saveState(intent: Intent) {
         GlobalStatus.batteryCapacity = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
@@ -44,5 +46,23 @@ class BatteryState : BroadcastReceiver() {
         } finally {
             pendingResult.finish()
         }
+    }
+
+    fun registerReceiver() {
+        val batteryChangedReciver = this
+        applicationContext.run {
+            //启动完成
+            registerReceiver(batteryChangedReciver, IntentFilter(Intent.ACTION_BOOT_COMPLETED))
+            //电源连接
+            registerReceiver(batteryChangedReciver, IntentFilter(Intent.ACTION_POWER_CONNECTED))
+            //电源断开
+            registerReceiver(batteryChangedReciver, IntentFilter(Intent.ACTION_POWER_DISCONNECTED))
+            //电量变化
+            registerReceiver(batteryChangedReciver, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+            //电量不足
+            registerReceiver(batteryChangedReciver, IntentFilter(Intent.ACTION_BATTERY_LOW))
+        }
+        // 充电控制模块
+        EventBus.subscibe(BatteryReceiver(applicationContext))
     }
 }

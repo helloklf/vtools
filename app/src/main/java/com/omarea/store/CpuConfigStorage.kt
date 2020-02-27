@@ -6,7 +6,6 @@ import com.omarea.common.shell.KeepShellPublic
 import com.omarea.model.CpuStatus
 import com.omarea.shell_utils.CpuFrequencyUtil
 import java.io.File
-import java.nio.charset.Charset
 
 /**
  * 存储和读取CPU配置，在开机自启动时用于修改CPU频率和调度
@@ -19,18 +18,18 @@ class CpuConfigStorage(private val context: Context) : ObjectStorage<CpuStatus>(
     }
 
     fun load(configFile: String? = null): CpuStatus? {
-        return super.load( if(configFile == null) defaultFile else configFile)
+        return super.load(if (configFile == null) defaultFile else configFile)
     }
 
     fun saveCpuConfig(status: CpuStatus?, configFile: String? = null): Boolean {
-        val name = if(configFile == null) defaultFile else configFile
+        val name = if (configFile == null) defaultFile else configFile
         remove(name + ".sh")
         return super.save(status, name)
     }
 
     // 应用CPU配置参数
     fun applyCpuConfig(context: Context, configFile: String? = null) {
-        val name = if(configFile == null) defaultFile else configFile
+        val name = if (configFile == null) defaultFile else configFile
 
         if (exists(name + ".sh")) {
             KeepShellPublic.doCmdSync(FileWrite.getPrivateFilePath(context, configFile + ".sh"))

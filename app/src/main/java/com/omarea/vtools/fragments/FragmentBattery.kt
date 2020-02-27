@@ -25,7 +25,6 @@ import com.omarea.shell_utils.BatteryUtils
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogNumberInput
-import com.omarea.vtools.services.BatteryService
 import kotlinx.android.synthetic.main.fragment_battery.*
 import java.util.*
 
@@ -90,8 +89,6 @@ class FragmentBattery : Fragment() {
 
         val battrystatus = view.findViewById(R.id.battrystatus) as TextView
         batteryMAH = BatteryInfo().getBatteryCapacity(this.context!!).toString() + "mAh" + "   "
-        val context = context!!.applicationContext
-        serviceRunning = BatteryService.serviceIsRunning(context)
 
         timer = Timer()
 
@@ -126,7 +123,7 @@ class FragmentBattery : Fragment() {
                                 level + "%    " +
                                 voltage + "v"
 
-                        settings_qc.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) && serviceRunning
+                        settings_qc.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)
                         battery_uevent.text = batteryInfo
                         battery_usb_uevent.text = usbInfo
 
@@ -134,8 +131,6 @@ class FragmentBattery : Fragment() {
                             settings_pd.isChecked = pdAllowed
                             settings_pd_state.text = if (pdActive) getString(R.string.battery_pd_active_1) else getString(R.string.battery_pd_active_0)
                         }
-
-                        charge_curve.invalidate()
                     } catch (ex: java.lang.Exception) {
                     }
                 }
@@ -201,8 +196,6 @@ class FragmentBattery : Fragment() {
         }
     }
 
-    internal var serviceRunning = false
-
     override fun onPause() {
         super.onPause()
         if (timer != null) {
@@ -241,8 +234,7 @@ class FragmentBattery : Fragment() {
             val checked = (it as Switch).isChecked
             spf.edit().putBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, checked).apply()
             if (checked) {
-                //启用电池服务
-                startBatteryService()
+                EventBus.publish(EventType.BATTERY_CHANGED)
                 Snackbar.make(this.view, R.string.battery_auto_boot_desc, Snackbar.LENGTH_LONG).show()
             } else {
                 Snackbar.make(this.view, R.string.battery_qc_rehoot_desc, Snackbar.LENGTH_LONG).show()
@@ -261,18 +253,17 @@ class FragmentBattery : Fragment() {
             if (!settings_bp.isChecked) {
                 KeepShellPublic.doCmdSync(ResumeCharge)
             } else {
-                //启用电池服务
-                startBatteryService()
+                EventBus.publish(EventType.BATTERY_CHANGED)
                 Snackbar.make(this.view, R.string.battery_auto_boot_desc, Snackbar.LENGTH_LONG).show()
             }
         }
 
         settings_bp_level.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
-            startBatteryService()
+            EventBus.publish(EventType.BATTERY_CHANGED)
         }, spf, battery_bp_level_desc))
         settings_qc_limit.setOnSeekBarChangeListener(OnSeekBarChangeListener2(Runnable {
             val level = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, SpfConfig.CHARGE_SPF_QC_LIMIT_DEFAULT)
-            startBatteryService()
+            EventBus.publish(EventType.BATTERY_CHANGED)
             if (spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
                 batteryUnits.setChargeInputLimit(level, context!!)
             }
@@ -416,12 +407,6 @@ class FragmentBattery : Fragment() {
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
             settings_qc_limit_desc.text = "" + progress * 100 + "mA"
         }
-    }
-
-    //启动电池服务
-    private fun startBatteryService() {
-        serviceRunning = BatteryService.startBatteryService(context!!)
-        EventBus.publish(EventType.BATTERY_CHANGED)
     }
 
     companion object {

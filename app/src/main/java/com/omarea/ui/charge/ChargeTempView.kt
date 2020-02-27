@@ -1,4 +1,4 @@
-package com.omarea.filter
+package com.omarea.ui.charge
 
 import android.content.Context
 import android.graphics.Canvas
@@ -9,9 +9,8 @@ import android.util.AttributeSet
 import android.view.View
 import com.omarea.store.ChargeSpeedStore
 import com.omarea.vtools.R
-import kotlin.math.abs
 
-class ChargeCurveView : View {
+class ChargeTempView : View {
     private lateinit var storage: ChargeSpeedStore
 
     constructor(context: Context) : super(context) {
@@ -22,7 +21,11 @@ class ChargeCurveView : View {
         init(attrs, 0)
     }
 
-    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
+    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(
+            context,
+            attrs,
+            defStyle
+    ) {
         init(attrs, defStyle)
     }
 
@@ -53,8 +56,9 @@ class ChargeCurveView : View {
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        val samples = storage.statistics()
+        val samples = storage.temperature
         samples.sortBy { it.capacity }
+        // Toast.makeText(context, "" + samples.map { "" + it.capacity + ":" + it.temperature }.joinToString(",    "), Toast.LENGTH_SHORT).show()
 
         val potintRadius = 4f
         val paint = Paint()
@@ -63,11 +67,14 @@ class ChargeCurveView : View {
         val dpSize = dp2px(this.context, 1f)
         val innerPadding = dpSize * 24f
 
-        val maxIO = samples.map { abs(it.io) }.max()
-        val maxAmpere = if (maxIO != null) (maxIO / 1000 + 1) else 10
+        val minTemperature = samples.map { it.temperature }.min()
+        val maxTemperature = samples.map { it.temperature }.max()
+
+        val maxY =
+                if (maxTemperature != null && maxTemperature > 50) (maxTemperature.toInt() + 2) else 51
 
         val ratioX = (this.width - innerPadding - innerPadding) * 1.0 / 100 // 横向比率
-        val ratioY = ((this.height - innerPadding - innerPadding) * 1.0 / maxAmpere).toFloat() // 纵向比率
+        val ratioY = ((this.height - innerPadding - innerPadding) * 1.0 / maxY).toFloat() // 纵向比率
         val stratY = height - innerPadding
 
         val pathFilterAlpha = Path()
@@ -95,37 +102,68 @@ class ChargeCurveView : View {
                 )
             }
             if (point % 5 == 0) {
-                paint.color = Color.parseColor("#88888888")
+                if (point == 0) {
+                    paint.strokeWidth = potintRadius
+                    paint.color = Color.parseColor("#888888")
+                } else {
+                    paint.strokeWidth = 2f
+                    paint.color = Color.parseColor("#aa888888")
+                }
                 canvas.drawLine(
                         (point * ratioX).toInt() + innerPadding, innerPadding,
-                        (point * ratioX).toInt() + innerPadding, this.height - innerPadding, paint)
+                        (point * ratioX).toInt() + innerPadding, this.height - innerPadding, paint
+                )
             }
         }
 
         paint.textAlign = Paint.Align.RIGHT
-        for (point in 0..maxAmpere) {
-            paint.color = Color.parseColor("#888888")
-            if (point > 0) {
-                canvas.drawText(point.toString() + "A", innerPadding - dpSize * 4, innerPadding + ((maxAmpere - point) * ratioY).toInt() + textSize / 2.2f, paint)
-                canvas.drawCircle(innerPadding, innerPadding + ((maxAmpere - point) * ratioY).toInt(), potintRadius, paint)
+        for (point in 0..maxY) {
+            if (point % 5 == 0) {
+                if (point > 0) {
+                    paint.color = Color.parseColor("#888888")
+                    canvas.drawText(
+                            point.toString() + "°C",
+                            innerPadding - dpSize * 4,
+                            innerPadding + ((maxY - point) * ratioY).toInt() + textSize / 2.2f,
+                            paint
+                    )
+                    canvas.drawCircle(
+                            innerPadding,
+                            innerPadding + ((maxY - point) * ratioY).toInt(),
+                            potintRadius,
+                            paint
+                    )
+                }
+                paint.color = Color.parseColor("#aa888888")
+            } else {
+                paint.color = Color.parseColor("#40888888")
             }
-            paint.color = Color.parseColor("#88888888")
+            if (point == 0) {
+                paint.strokeWidth = potintRadius
+                paint.color = Color.parseColor("#888888")
+            } else {
+                paint.strokeWidth = 2f
+            }
             canvas.drawLine(
-                    innerPadding, innerPadding + ((maxAmpere - point) * ratioY).toInt(),
-                    (this.width - innerPadding), innerPadding + ((maxAmpere - point) * ratioY).toInt(), paint)
+                    innerPadding,
+                    innerPadding + ((maxY - point) * ratioY).toInt(),
+                    (this.width - innerPadding),
+                    innerPadding + ((maxY - point) * ratioY).toInt(),
+                    paint
+            )
         }
 
         paint.color = getColorAccent()
         for (sample in samples) {
             val pointX = (sample.capacity * ratioX).toFloat() + innerPadding
-            val io = abs(sample.io) / 1000F // mA -> A
+            val temperature = sample.temperature
 
             if (isFirstPoint) {
-                pathFilterAlpha.moveTo(pointX, stratY - (io * ratioY))
+                pathFilterAlpha.moveTo(pointX, stratY - (temperature * ratioY))
                 isFirstPoint = false
-                canvas.drawCircle(pointX, stratY - (io * ratioY), dpSize.toFloat(), paint)
+                canvas.drawCircle(pointX, stratY - (temperature * ratioY), potintRadius, paint)
             } else {
-                pathFilterAlpha.lineTo(pointX, stratY - (io * ratioY))
+                pathFilterAlpha.lineTo(pointX, stratY - (temperature * ratioY))
             }
         }
 
@@ -136,5 +174,10 @@ class ChargeCurveView : View {
 
         paint.color = Color.parseColor("#8BC34A")
         canvas.drawPath(pathFilterAlpha, paint)
+
+        // paint.textSize = dpSize * 12f
+        // paint.textAlign = Paint.Align.RIGHT
+        // paint.style = Paint.Style.FILL
+        // canvas.drawText("温度/电量", width - innerPadding, innerPadding - (dpSize * 4f), paint)
     }
 }

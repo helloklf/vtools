@@ -21,10 +21,12 @@ public class NavItem extends LinearLayout {
         super(context, attrs);
         setLayout(context, attrs);
     }
+
     public NavItem(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setLayout(context, attrs);
     }
+
     public NavItem(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         setLayout(context, attrs);
@@ -37,15 +39,15 @@ public class NavItem extends LinearLayout {
         if (attrs != null) {
             String text = "" + attributes.getText(R.styleable.NavItem_text);
             Drawable icon = attributes.getDrawable(R.styleable.NavItem_drawable);
-            ((ImageView)(this.findViewById(android.R.id.icon))).setImageDrawable(icon);
-            ((TextView)(this.findViewById(android.R.id.title))).setText(text);
+            ((ImageView) (this.findViewById(android.R.id.icon))).setImageDrawable(icon);
+            ((TextView) (this.findViewById(android.R.id.title))).setText(text);
         }
 
         attributes.recycle();
     }
 
     public CharSequence getText() {
-        return ((TextView)(this.findViewById(android.R.id.title))).getText();
+        return ((TextView) (this.findViewById(android.R.id.title))).getText();
     }
 
     public void setEnabled(boolean enabled) {

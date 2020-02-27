@@ -451,19 +451,19 @@ public class CpuFrequencyUtil {
 
             // cpuset
             if (!(cpuStatus.cpusetBackground == null || cpuStatus.cpusetBackground.isEmpty())) {
-                commands.add("echo "  + cpuStatus.cpusetBackground + " > /dev/cpuset/background/cpus");
+                commands.add("echo " + cpuStatus.cpusetBackground + " > /dev/cpuset/background/cpus");
             }
             if (!(cpuStatus.cpusetSysBackground == null || cpuStatus.cpusetSysBackground.isEmpty())) {
-                commands.add("echo "  + cpuStatus.cpusetSysBackground + " > /dev/cpuset/system-background/cpus");
+                commands.add("echo " + cpuStatus.cpusetSysBackground + " > /dev/cpuset/system-background/cpus");
             }
             if (!(cpuStatus.cpusetForeground == null || cpuStatus.cpusetForeground.isEmpty())) {
-                commands.add("echo "  + cpuStatus.cpusetForeground + " > /dev/cpuset/foreground/cpus");
+                commands.add("echo " + cpuStatus.cpusetForeground + " > /dev/cpuset/foreground/cpus");
             }
             if (!(cpuStatus.cpusetForegroundBoost == null || cpuStatus.cpusetForegroundBoost.isEmpty())) {
-                commands.add("echo "  + cpuStatus.cpusetForegroundBoost + " > /dev/cpuset/foreground/boost/cpus");
+                commands.add("echo " + cpuStatus.cpusetForegroundBoost + " > /dev/cpuset/foreground/boost/cpus");
             }
             if (!(cpuStatus.cpusetTopApp == null || cpuStatus.cpusetTopApp.isEmpty())) {
-                commands.add("echo "  + cpuStatus.cpusetTopApp + " > /dev/cpuset/top-app/cpus");
+                commands.add("echo " + cpuStatus.cpusetTopApp + " > /dev/cpuset/top-app/cpus");
             }
         }
 

@@ -137,7 +137,7 @@ class CompileService : IntentService("vtools-compile") {
         compiling = false
     }
 
-    private fun hideNotification () {
+    private fun hideNotification() {
         if (compileCanceled) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 nm.cancel(990)

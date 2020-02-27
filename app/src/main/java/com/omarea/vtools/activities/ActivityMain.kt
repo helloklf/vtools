@@ -23,7 +23,6 @@ import com.omarea.common.shell.RootFile
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ThemeMode
 import com.omarea.permissions.CheckRootStatus
-import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.store.SpfConfig
 import com.omarea.ui.TabIconHelper
 import com.omarea.utils.Update
@@ -34,9 +33,7 @@ import com.omarea.vtools.fragments.FragmentHome
 import com.omarea.vtools.fragments.FragmentNav
 import com.omarea.vtools.fragments.FragmentNotRoot
 import com.omarea.vtools.popup.FloatMonitor
-import com.omarea.vtools.services.BatteryService
 import kotlinx.android.synthetic.main.activity_main.*
-import java.lang.ref.WeakReference
 
 class ActivityMain : AppCompatActivity() {
     private var globalSPF: SharedPreferences? = null
@@ -54,18 +51,6 @@ class ActivityMain : AppCompatActivity() {
             }
         } catch (ex: Exception) {
         }
-    }
-
-    private class ServiceCreateThread(context: Context) : Runnable {
-        private var context: WeakReference<Context> = WeakReference(context)
-        override fun run() {
-            //判断是否开启了充电加速和充电保护，如果开启了，自动启动后台服务
-            val chargeConfig = context.get()!!.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
-            if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false) || chargeConfig!!.getBoolean(SpfConfig.CHARGE_SPF_BP, false)) {
-                BatteryService.startBatteryService(context.get()!!)
-            }
-        }
-
     }
 
     private class ThermalCheckThread(private var context: Context) : Thread() {
@@ -186,7 +171,6 @@ class ActivityMain : AppCompatActivity() {
                             recreate()
                         })
             }
-            ServiceCreateThread(this).run()
             ThermalCheckThread(this).run()
         } else {
             try {

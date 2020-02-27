@@ -145,8 +145,13 @@
                 app:drawable="@drawable/battery"
                 app:text="@string/menu_battery" />
             <com.omarea.ui.NavItem
-                android:tag="root"
                 style="@style/nav_item_wrap_right"
+                android:id="@+id/nav_charge"
+                app:drawable="@drawable/battery"
+                app:text="@string/menu_charge" />
+            <com.omarea.ui.NavItem
+                android:tag="root"
+                style="@style/nav_item_wrap"
                 android:id="@+id/nav_app_magisk"
                 app:drawable="@drawable/mask"
                 app:text="@string/menu_app_magisk" />

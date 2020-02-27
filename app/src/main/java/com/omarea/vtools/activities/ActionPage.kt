@@ -16,16 +16,15 @@ import android.widget.Toast
 import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.common.ui.ThemeMode
+import com.omarea.kr.PageConfigSh
+import com.omarea.krscript.TryOpenActivity
 import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.*
 import com.omarea.krscript.ui.ActionListFragment
 import com.omarea.krscript.ui.FileChooserRender
 import com.omarea.vtools.R
-import com.omarea.kr.PageConfigSh
-import com.omarea.krscript.TryOpenActivity
 import com.projectkr.shell.OpenPageHelper
-import java.lang.Exception
 
 class ActionPage : AppCompatActivity() {
     private val progressBarDialog = ProgressBarDialog(this)
@@ -88,7 +87,7 @@ class ActionPage : AppCompatActivity() {
             val extras = intent.extras
             if (extras != null) {
                 if (extras.containsKey("activity")) {
-                    if(TryOpenActivity(this, extras.getString("activity")!!).tryOpen()) {
+                    if (TryOpenActivity(this, extras.getString("activity")!!).tryOpen()) {
                         finish()
                         return
                     }
@@ -277,6 +276,7 @@ class ActionPage : AppCompatActivity() {
             progressBarDialog.showDialog(msg)
         }
     }
+
     private fun hideDialog() {
         handler.post {
             progressBarDialog.hideDialog()

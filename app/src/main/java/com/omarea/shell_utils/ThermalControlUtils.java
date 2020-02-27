@@ -23,14 +23,6 @@ public class ThermalControlUtils {
         return KernelProrp.INSTANCE.getProp(thermal_core_control).trim();
     }
 
-    public static String getVDDRestrictionState() {
-        return KernelProrp.INSTANCE.getProp(thermal_vdd_restriction).trim();
-    }
-
-    public static String getTheramlState() {
-        return KernelProrp.INSTANCE.getProp(thermal_parameters).trim();
-    }
-
     public static void setCoreControlState(Boolean online) {
         String val = online ? "1" : "0";
         ArrayList<String> commands = new ArrayList<>();
@@ -39,12 +31,20 @@ public class ThermalControlUtils {
         KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
+    public static String getVDDRestrictionState() {
+        return KernelProrp.INSTANCE.getProp(thermal_vdd_restriction).trim();
+    }
+
     public static void setVDDRestrictionState(Boolean online) {
         String val = online ? "1" : "0";
         ArrayList<String> commands = new ArrayList<>();
         commands.add("chmod 0664 " + thermal_vdd_restriction);
         commands.add("echo " + val + " > " + thermal_vdd_restriction);
         KeepShellPublic.INSTANCE.doCmdSync(commands);
+    }
+
+    public static String getTheramlState() {
+        return KernelProrp.INSTANCE.getProp(thermal_parameters).trim();
     }
 
     public static void setTheramlState(Boolean online) {

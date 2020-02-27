@@ -3,13 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="@dimen/activity_horizontal_margin">
+    android:padding="16dp">
 
     <TextView
         style="@style/textTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="16dp"
         android:text="@string/electricity_unit_adj" />
 
     <TextView
@@ -20,7 +20,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 
@@ -32,7 +31,7 @@
             android:padding="10dp"
             android:scaleType="centerInside"
             android:src="@drawable/kr_minus"
-            android:tint="?colorAccent" />
+            android:tint="?android:colorAccent" />
 
         <TextView
             android:id="@+id/electricity_adj_unit"
@@ -50,10 +49,11 @@
             android:padding="10dp"
             android:scaleType="centerInside"
             android:src="@drawable/kr_plus"
-            android:tint="?colorAccent" />
+            android:tint="?android:colorAccent" />
     </LinearLayout>
 
     <LinearLayout
+        android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
@@ -66,19 +66,28 @@
 
         <TextView
             android:id="@+id/electricity_adj_sample"
+            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="0mA"
             android:textAlignment="center" />
     </LinearLayout>
 
+    <TextView
+        android:paddingTop="6dp"
+        android:textSize="12dp"
+        android:layout_margin="6dp"
+        android:textAlignment="center"
+        android:text="@string/electricity_unit_adj_desc2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
     <Button
         android:id="@+id/electricity_adj_applay"
         style="?android:buttonBarButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_gravity="end"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginTop="16dp"
         android:layout_weight="1"
         android:text="@string/btn_confirm" />
 </LinearLayout>

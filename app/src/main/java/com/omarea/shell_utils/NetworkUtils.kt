@@ -24,7 +24,6 @@ class NetworkUtils(private val context: Context) {
     }
 
 
-
     /*
     // <uses-permission android:name="android.permission.MODIFY_PHONE_STATE" />
     fun setMobileDataState(context: Context, enabled: Boolean) {

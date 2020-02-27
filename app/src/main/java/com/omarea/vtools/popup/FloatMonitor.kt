@@ -284,7 +284,8 @@ class FloatMonitor(context: Context) {
                                 }
                             }
                             otherInfo?.append(otherInfos.toString())
-                        } catch (ex: Exception){}
+                        } catch (ex: Exception) {
+                        }
                     }
                     clusterIndex++
                 }

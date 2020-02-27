@@ -5,6 +5,7 @@ import android.content.Intent
 import com.omarea.data_collection.EventReceiver
 import com.omarea.data_collection.EventType
 import com.omarea.store.TriggerStorage
+import com.omarea.utils.GetUpTime
 
 class TriggerEventMonitor(private val context: Context) : EventReceiver {
     private val triggerListConfig = context.getSharedPreferences("scene_trigger_list", Context.MODE_PRIVATE)
@@ -22,6 +23,20 @@ class TriggerEventMonitor(private val context: Context) : EventReceiver {
         items.forEach {
             val trigger = storage.load(it)
             if (trigger != null && trigger.enabled && trigger.taskActions != null && trigger.taskActions.size > 0) {
+                if (trigger.timeLimited) {
+                    val nowTimeValue = GetUpTime(trigger.timeStart).currentTime
+                    val getUp = trigger.timeEnd
+                    val sleep = trigger.timeStart
+
+                    val inTimeSection =
+                            // 如果【起床时间】比【睡觉时间】要大，如 2:00 睡到 9:00 起床
+                            (getUp > sleep && (nowTimeValue >= sleep && nowTimeValue <= getUp)) ||
+                            // 正常时间睡觉【睡觉时间】大于【起床时间】，如 23:00 睡到 7:00 起床
+                            (getUp < sleep && (nowTimeValue >= sleep || nowTimeValue <= getUp))
+                    if (!inTimeSection) {
+                        return
+                    }
+                }
                 triggers.add(it)
             }
         }
