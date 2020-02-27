@@ -62,7 +62,7 @@ class FragmentHome : Fragment() {
 
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
-        if (configInstaller.dynamicSupport(context!!) || configInstaller.insideConfigInstalled() || configInstaller.outsideConfigInstalled()) {
+        if (ModeSwitcher().modeConfigCompleted()) {
             powermode_toggles.visibility = View.VISIBLE
         } else {
             powermode_toggles.visibility = View.GONE

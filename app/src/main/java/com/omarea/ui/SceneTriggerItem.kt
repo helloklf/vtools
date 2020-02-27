@@ -38,6 +38,11 @@ class SceneTriggerItem : LinearLayout {
 
     private fun getEvents(triggerInfo: TriggerInfo): String {
         val buffer = StringBuffer()
+        if (triggerInfo.enabled) {
+            buffer.append("● ")
+        } else {
+            buffer.append("○ ")
+        }
         if (triggerInfo.events != null && triggerInfo.events.size > 0) {
             triggerInfo.events.forEach {
                 when (it) {
@@ -70,6 +75,11 @@ class SceneTriggerItem : LinearLayout {
             }
         } else {
             buffer.append("---")
+        }
+        if (triggerInfo.timeLimited) {
+            buffer.append(String.format(context.getString(R.string.format_hh_mm), triggerInfo.timeStart / 60, triggerInfo.timeStart % 60))
+            buffer.append(" ~ ")
+            buffer.append(String.format(context.getString(R.string.format_hh_mm), triggerInfo.timeEnd / 60, triggerInfo.timeEnd % 60))
         }
         return buffer.toString()
     }

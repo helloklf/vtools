@@ -230,16 +230,6 @@ class FragmentSystemScene : Fragment() {
         }
     }
 
-    private fun formateTime(time: Long): String {
-        Log.d(">>>>time", "" + time)
-        val days = time / (24 * 3600)
-        val hours = time % (24 * 3600) / 3600
-        val minutes = time % 3600 / 60
-        val seconds = time % 60
-
-        return "${days}天 ${hours}时 ${minutes}分 ${seconds}秒"
-    }
-
     override fun onDestroy() {
         processBarDialog.hideDialog()
         super.onDestroy()

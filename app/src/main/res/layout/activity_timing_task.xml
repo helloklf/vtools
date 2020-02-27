@@ -103,6 +103,7 @@
                         android:textStyle="normal" />
 
                     <RadioButton
+                        android:visibility="gone"
                         android:enabled="false"
                         android:id="@+id/task_before_execute_confirm"
                         android:layout_width="match_parent"
@@ -112,6 +113,7 @@
                         android:textStyle="normal" />
 
                     <LinearLayout
+                        android:visibility="gone"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/activity_vertical_margin"

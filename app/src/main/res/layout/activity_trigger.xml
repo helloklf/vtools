@@ -436,7 +436,6 @@
                             android:textColor="?android:textColorPrimary" />
 
                         <RadioGroup
-
                             android:layout_width="220dp"
                             android:layout_height="wrap_content">
 
