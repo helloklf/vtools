@@ -6,9 +6,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentTransaction
+import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,7 +27,7 @@ import java.io.File
 import java.nio.charset.Charset
 
 
-class FragmentCpuModes : Fragment() {
+class FragmentCpuModes : androidx.fragment.app.Fragment() {
     private var author: String = ""
     private var configFileInstalled: Boolean = false
     private lateinit var modeSwitcher: ModeSwitcher
@@ -164,7 +164,7 @@ class FragmentCpuModes : Fragment() {
 
     private fun modifyCpuConfig(mode: String) {
         val transaction = activity!!.supportFragmentManager.beginTransaction()
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        transaction.setTransition(androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         // transaction.setCustomAnimations(R.animator.fragment_enter, R.animator.fragment_exit)
         val fragment = FragmentCpuControl.newInstance(mode)
 
@@ -330,7 +330,7 @@ class FragmentCpuModes : Fragment() {
     }
 
     companion object {
-        fun createPage(): Fragment {
+        fun createPage(): androidx.fragment.app.Fragment {
             val fragment = FragmentCpuModes()
             return fragment
         }

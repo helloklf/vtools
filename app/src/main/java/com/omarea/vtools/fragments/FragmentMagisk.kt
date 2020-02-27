@@ -3,7 +3,7 @@ package com.omarea.vtools.fragments
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.fragment_magisk.*
 import java.io.File
 
 
-class FragmentMagisk : Fragment() {
+class FragmentMagisk : androidx.fragment.app.Fragment() {
     private var adapterFileSelector: AdapterRootFileSelector? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -138,7 +138,7 @@ class FragmentMagisk : Fragment() {
     }
 
     companion object {
-        fun createPage(): Fragment {
+        fun createPage(): androidx.fragment.app.Fragment {
             val fragment = FragmentMagisk()
             return fragment
         }

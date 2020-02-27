@@ -7,8 +7,8 @@ import android.content.*
 import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Handler
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
+import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.main.fragment_battery.*
 import java.util.*
 
 
-class FragmentBattery : Fragment() {
+class FragmentBattery : androidx.fragment.app.Fragment() {
     internal lateinit var view: View
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -410,7 +410,7 @@ class FragmentBattery : Fragment() {
     }
 
     companion object {
-        fun createPage(): Fragment {
+        fun createPage(): androidx.fragment.app.Fragment {
             val fragment = FragmentBattery()
             return fragment
         }

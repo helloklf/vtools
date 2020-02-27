@@ -8,8 +8,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
+import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,7 +35,7 @@ import kotlinx.android.synthetic.main.fragment_applictions.*
 import java.lang.ref.WeakReference
 
 
-class FragmentApplistions : Fragment() {
+class FragmentApplistions : androidx.fragment.app.Fragment() {
     private lateinit var processBarDialog: ProgressBarDialog
     private lateinit var appListHelper: AppListHelper
     private var installedList: ArrayList<Appinfo>? = null
@@ -300,7 +300,7 @@ class FragmentApplistions : Fragment() {
     }
 
     companion object {
-        fun createPage(): Fragment {
+        fun createPage(): androidx.fragment.app.Fragment {
             val fragment = FragmentApplistions()
             return fragment
         }

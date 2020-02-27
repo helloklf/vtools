@@ -4,7 +4,7 @@ import android.content.Context
 import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Handler
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,7 +18,7 @@ import java.util.*
 import kotlin.math.abs
 
 
-class FragmentBatteryStats : Fragment() {
+class FragmentBatteryStats : androidx.fragment.app.Fragment() {
     private lateinit var storage: BatteryHistoryStore
     private var timer: Timer? = null
 
@@ -111,7 +111,7 @@ class FragmentBatteryStats : Fragment() {
     }
 
     companion object {
-        fun createPage(): Fragment {
+        fun createPage(): androidx.fragment.app.Fragment {
             val fragment = FragmentBatteryStats()
             return fragment
         }

@@ -8,7 +8,7 @@ import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
 import android.os.Message
-import android.support.v4.app.DialogFragment
+import androidx.fragment.app.DialogFragment
 import android.text.SpannableString
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +24,7 @@ import com.omarea.krscript.model.ShellHandlerBase
 import kotlinx.android.synthetic.main.kr_dialog_log.*
 
 
-class DialogLogFragment : DialogFragment() {
+class DialogLogFragment : androidx.fragment.app.DialogFragment() {
     private lateinit var dialogInstance: Dialog
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // val view = inflater.inflate(R.layout.kr_dialog_log, container, false)

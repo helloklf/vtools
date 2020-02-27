@@ -8,7 +8,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -36,7 +36,7 @@ import com.omarea.vtools.activities.ActivityTimingTask
 import com.omarea.vtools.activities.ActivityTrigger
 import kotlinx.android.synthetic.main.fragment_system_scene.*
 
-class FragmentSystemScene : Fragment() {
+class FragmentSystemScene : androidx.fragment.app.Fragment() {
     private lateinit var processBarDialog: ProgressBarDialog
     private lateinit var globalSPF: SharedPreferences
     private lateinit var chargeConfig: SharedPreferences
@@ -236,7 +236,7 @@ class FragmentSystemScene : Fragment() {
     }
 
     companion object {
-        fun createPage(): Fragment {
+        fun createPage(): androidx.fragment.app.Fragment {
             val fragment = FragmentSystemScene()
             return fragment
         }

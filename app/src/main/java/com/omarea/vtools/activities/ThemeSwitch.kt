@@ -15,7 +15,7 @@ import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
-import android.support.v4.content.PermissionChecker
+import androidx.core.content.PermissionChecker
 import android.view.View
 import android.view.WindowManager
 import com.omarea.common.ui.DialogHelper

@@ -4,8 +4,8 @@ import android.content.ComponentName
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentTransaction
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,11 +18,11 @@ import com.omarea.shell_utils.BackupRestoreUtils
 import com.omarea.vtools.R
 import com.omarea.vtools.activities.AccessibilityKeySettings
 
-class FragmentNav : Fragment(), View.OnClickListener {
+class FragmentNav : androidx.fragment.app.Fragment(), View.OnClickListener {
     private lateinit var themeMode: ThemeMode
 
     companion object {
-        fun createPage(themeMode: ThemeMode): Fragment {
+        fun createPage(themeMode: ThemeMode): androidx.fragment.app.Fragment {
             val fragment = FragmentNav()
             fragment.themeMode = themeMode;
             return fragment
@@ -117,9 +117,9 @@ class FragmentNav : Fragment(), View.OnClickListener {
                 return
             }
             val transaction = activity!!.supportFragmentManager.beginTransaction()
-            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+            transaction.setTransition(androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             // transaction.setCustomAnimations(R.animator.fragment_enter, R.animator.fragment_exit)
-            var fragment: Fragment? = null
+            var fragment: androidx.fragment.app.Fragment? = null
 
             when (id) {
                 R.id.nav_freeze -> fragment = FragmentFreeze.createPage()

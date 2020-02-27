@@ -10,7 +10,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -48,7 +48,7 @@ import kotlinx.android.synthetic.main.fragment_addin.*
 import java.util.*
 
 
-class FragmentAddin : Fragment() {
+class FragmentAddin : androidx.fragment.app.Fragment() {
     private lateinit var krScriptConfig: KrScriptConfig
 
     private var myHandler = Handler()
@@ -331,7 +331,7 @@ class FragmentAddin : Fragment() {
     private lateinit var themeMode: ThemeMode
 
     companion object {
-        fun createPage(themeMode: ThemeMode): Fragment {
+        fun createPage(themeMode: ThemeMode): androidx.fragment.app.Fragment {
             val fragment = FragmentAddin()
             fragment.themeMode = themeMode
 

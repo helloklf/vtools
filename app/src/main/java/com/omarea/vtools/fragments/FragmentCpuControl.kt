@@ -5,7 +5,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -29,7 +29,7 @@ import java.util.concurrent.locks.ReentrantLock
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class FragmentCpuControl : Fragment() {
+class FragmentCpuControl : androidx.fragment.app.Fragment() {
     // 应用到指定的配置模式
     private var cpuModeName: String? = null
 

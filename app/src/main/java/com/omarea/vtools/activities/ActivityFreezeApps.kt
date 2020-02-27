@@ -6,11 +6,11 @@ import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
-import android.support.v4.app.FragmentActivity
+import androidx.fragment.app.FragmentActivity
 import com.omarea.vtools.R
 import com.omarea.vtools.fragments.FragmentFreeze
 
-class ActivityFreezeApps : FragmentActivity() {
+class ActivityFreezeApps : androidx.fragment.app.FragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         ThemeSwitch.switchTheme(this)

@@ -6,8 +6,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.os.StatFs
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
+import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,7 +24,7 @@ import java.io.File
 import java.util.*
 
 
-class FragmentImg : Fragment() {
+class FragmentImg : androidx.fragment.app.Fragment() {
     fun createItem(title: String, desc: String): HashMap<String, Any> {
         val item = HashMap<String, Any>()
         item.put("Title", title)
@@ -165,7 +165,7 @@ class FragmentImg : Fragment() {
     }
 
     companion object {
-        fun createPage(): Fragment {
+        fun createPage(): androidx.fragment.app.Fragment {
             val fragment = FragmentImg()
             return fragment
         }

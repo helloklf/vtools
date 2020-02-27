@@ -9,8 +9,8 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.PermissionChecker
+import androidx.core.app.ActivityCompat
+import androidx.core.content.PermissionChecker
 import android.util.TypedValue
 import android.view.View
 import com.omarea.permissions.Busybox

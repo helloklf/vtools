@@ -7,8 +7,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
-import android.support.design.widget.Snackbar
-import android.support.v4.app.Fragment
+import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,7 +27,7 @@ import java.util.*
 import kotlin.collections.LinkedHashMap
 
 
-class FragmentSwap : Fragment() {
+class FragmentSwap : androidx.fragment.app.Fragment() {
     private lateinit var processBarDialog: ProgressBarDialog
     internal lateinit var view: View
     private val myHandler = Handler()
@@ -438,7 +438,7 @@ class FragmentSwap : Fragment() {
     }
 
     companion object {
-        fun createPage(): Fragment {
+        fun createPage(): androidx.fragment.app.Fragment {
             val fragment = FragmentSwap()
             return fragment
         }

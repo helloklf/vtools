@@ -3,7 +3,7 @@ package com.omarea.vtools.fragments
 import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Handler
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +14,7 @@ import com.omarea.vtools.dialogs.DialogElectricityUnit
 import kotlinx.android.synthetic.main.fragment_charge.*
 import java.util.*
 
-class FragmentCharge : Fragment() {
+class FragmentCharge : androidx.fragment.app.Fragment() {
     private lateinit var storage: BatteryHistoryStore
     private var timer: Timer? = null
 

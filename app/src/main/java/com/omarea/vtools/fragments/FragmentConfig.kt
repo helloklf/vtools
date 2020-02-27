@@ -9,7 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.provider.Settings
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -40,7 +40,7 @@ import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayList
 
-class FragmentConfig : Fragment() {
+class FragmentConfig : androidx.fragment.app.Fragment() {
     private lateinit var processBarDialog: ProgressBarDialog
     private lateinit var spfPowercfg: SharedPreferences
     private lateinit var globalSPF: SharedPreferences
@@ -565,7 +565,7 @@ class FragmentConfig : Fragment() {
     }
 
     companion object {
-        fun createPage(): Fragment {
+        fun createPage(): androidx.fragment.app.Fragment {
             val fragment = FragmentConfig()
             return fragment
         }

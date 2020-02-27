@@ -11,7 +11,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.UserManager
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -35,7 +35,7 @@ import com.omarea.vtools.activities.ActivityFreezeApps
 import kotlinx.android.synthetic.main.fragment_freeze.*
 
 
-class FragmentFreeze : Fragment() {
+class FragmentFreeze : androidx.fragment.app.Fragment() {
     private lateinit var processBarDialog: ProgressBarDialog
     private var freezeApps = java.util.ArrayList<String>()
     private var handler: Handler = Handler()
@@ -476,7 +476,7 @@ class FragmentFreeze : Fragment() {
     }
 
     companion object {
-        fun createPage(): Fragment {
+        fun createPage(): androidx.fragment.app.Fragment {
             val fragment = FragmentFreeze()
             return fragment
         }

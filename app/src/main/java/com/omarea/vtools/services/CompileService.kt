@@ -9,7 +9,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.os.PowerManager
 import android.os.PowerManager.PARTIAL_WAKE_LOCK
-import android.support.v4.app.NotificationCompat
+import androidx.core.app.NotificationCompat
 import com.omarea.common.shell.KeepShell
 import com.omarea.vtools.R
 import java.util.*
