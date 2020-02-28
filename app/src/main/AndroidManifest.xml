@@ -35,6 +35,7 @@
 
     <application
         android:usesCleartextTraffic="true"
+        android:hardwareAccelerated="false"
         android:name="com.omarea.Scene"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"

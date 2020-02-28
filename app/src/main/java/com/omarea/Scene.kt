@@ -23,6 +23,7 @@ class Scene : Application() {
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
+
         context = this
 
         if (!Busybox.systemBusyboxInstalled()) {

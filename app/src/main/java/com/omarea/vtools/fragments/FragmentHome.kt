@@ -20,6 +20,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
+import com.omarea.data_collection.GlobalStatus
 import com.omarea.model.CpuCoreInfo
 import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
@@ -247,6 +248,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
             try {
                 home_battery_now.text = (batteryCurrentNow / globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT)).toString() + "mA"
                 home_battery_capacity.text = "$batteryCapacity%"
+                home_battery_temperature.text = "${GlobalStatus.batteryTemperature}°C"
 
                 home_gpu_freq.text = gpuFreq
                 home_gpu_load.text = "负载：$gpuLoad%"
