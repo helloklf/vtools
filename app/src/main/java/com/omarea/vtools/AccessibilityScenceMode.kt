@@ -196,8 +196,9 @@ class AccessibilityScenceMode : AccessibilityService() {
                 return
 
             var packageName = event.packageName.toString()
+
             // com.miui.freeform 是miui的应用多窗口（快速回复、游戏模式QQ微信小窗口）管理器
-            if (packageName == "android" || packageName == "com.android.systemui" || packageName == "com.miui.freeform") {
+            if (packageName == "android" || packageName == "com.android.systemui" || packageName == "com.miui.freeform" || packageName == "com.omarea.gesture") {
                 return
             }
             // 横屏时屏蔽 QQ、微信事件，因为游戏模式下通常会在横屏使用悬浮窗打开QQ 微信

@@ -20,13 +20,26 @@ class BatteryState(private val applicationContext: Context) : BroadcastReceiver(
 
     private var currentCapacity = 0
     override fun onReceive(context: Context, intent: Intent) {
+        val action = intent.action
+        if (action == null) {
+            return
+        }
+
         val pendingResult = goAsync()
         try {
             saveState(intent);
 
-            val action = intent.action
+            val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
+
             GlobalStatus.batteryCapacity = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
-            GlobalStatus.batteryStatus = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
+            if (status != GlobalStatus.batteryStatus) {
+                GlobalStatus.batteryStatus = status
+                if (status.equals(BatteryManager.BATTERY_STATUS_CHARGING)) {
+                    EventBus.publish(EventType.POWER_CONNECTED)
+                } else if (status.equals(BatteryManager.BATTERY_STATUS_FULL)) {
+                    EventBus.publish(EventType.BATTERY_FULL)
+                }
+            }
             GlobalStatus.batteryTemperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1) / 10.0f
 
             if (action == Intent.ACTION_BATTERY_LOW) {

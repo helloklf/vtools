@@ -34,6 +34,7 @@ class ChargeCurve(private val context: Context) : EventReceiver {
             EventType.BATTERY_CHANGED -> {
                 // saveLog()
                 if (timer == null && GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_CHARGING) {
+                    storage.clearAll()
                     startUpdate()
                 }
             }

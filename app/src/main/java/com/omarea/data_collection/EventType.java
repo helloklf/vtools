@@ -6,6 +6,7 @@ public enum EventType {
     BATTERY_LOW,                // 电池电量不足
     BATTERY_CAPACITY_CHANGED,   // 电池电量变化
     BATTERY_CHANGED,            // 电池状态变化
+    BATTERY_FULL,               // 电池充满
     SCREEN_ON,                  // 屏幕打开
     SCREEN_OFF,                 // 屏幕关闭
     APP_SWITCH,                 // 应用切换
