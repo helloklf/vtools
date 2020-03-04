@@ -10,13 +10,19 @@ then
     SDCARD_PATH="/data/media/$ANDROID_UID"
 fi
 
-if [[ -d "$SDCARD_PATH/Tencent" ]]
+version828='1346' # 8.2.8 版本开始QQ将数据目录移动到了 Android/data/com.tencent.mobileqq
+versionCode=`dumpsys package com.tencent.mobileqq | grep versionCode | cut -f2 -d '=' | cut -f1 -d ' '`
+
+if [[ -d "$SDCARD_PATH/Android/data/com.tencent.mobileqq/Tencent/MobileQQ" ]] && ([[ "$versionCode" -eq "$version828" ]] || [[ "$versionCode" -gt "$version828" ]])
+then
+    qqsdcard="$SDCARD_PATH/Android/data/com.tencent.mobileqq/Tencent/MobileQQ"
+elif [[ -d "$SDCARD_PATH/Tencent" ]]
 then
     qqsdcard="$SDCARD_PATH/Tencent/MobileQQ"
 else
     qqsdcard="$SDCARD_PATH/tencent/MobileQQ"
 fi
-qqdata="/data/user/$ANDROID_UID/com.tencent.mobileqq"
+qqdata="/data/user/$ANDROID_UID/com.tencent.mobileqq/files"
 
 echo "位于："
 echo $qqsdcard

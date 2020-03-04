@@ -12,3 +12,4 @@ app/release_mini
 /captures
 app/release/app-release.apk
 app/build.gradle
+.cxx

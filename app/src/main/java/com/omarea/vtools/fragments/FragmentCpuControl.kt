@@ -163,7 +163,6 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
                 saveBootConfig()
             }
         } catch (ex: Exception) {
-            Log.e("bindEvent", "" + ex.message)
         }
     }
 

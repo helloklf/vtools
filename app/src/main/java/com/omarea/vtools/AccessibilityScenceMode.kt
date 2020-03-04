@@ -92,7 +92,6 @@ class AccessibilityScenceMode : AccessibilityService() {
         } else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             isLandscapf = true
         }
-        Log.d("ConfigurationChanged", "$isLandscapf")
     }
 
     private fun updateConfig() {
@@ -272,7 +271,6 @@ class AccessibilityScenceMode : AccessibilityService() {
                                     return
                                 }
                                 packageName = windowRoot.packageName!!.toString()
-                                Log.d("Scene Fix Top App", "" + windowRoot.packageName)
                             }
                         } catch (ex: Exception) {
                             return

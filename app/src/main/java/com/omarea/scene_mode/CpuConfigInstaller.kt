@@ -68,7 +68,6 @@ class CpuConfigInstaller {
                 return true
             }
         } catch (ex: Exception) {
-            Log.e("script-parse", "" + ex.message)
         }
         return false
     }
@@ -89,7 +88,6 @@ class CpuConfigInstaller {
             removeCustomModes(context)
             return true
         } catch (ex: Exception) {
-            Log.e("script-parse", "" + ex.message)
             return false
         }
     }
@@ -108,7 +106,6 @@ class CpuConfigInstaller {
             cmd.append("fi;\n")
             KeepShellPublic.doCmdSync(cmd.toString())
         } catch (ex: Exception) {
-            Log.e("script-parse", "" + ex.message)
         }
     }
 

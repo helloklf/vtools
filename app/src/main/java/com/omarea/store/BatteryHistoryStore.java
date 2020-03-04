@@ -144,7 +144,6 @@ public class BatteryHistoryStore extends SQLiteOpenHelper {
             cursor.close();
             return data;
         } catch (Exception ex) {
-            Log.e("query-data-base", "" + ex.getMessage());
         }
         return new ArrayList<>();
     }

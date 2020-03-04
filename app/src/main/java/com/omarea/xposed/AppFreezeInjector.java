@@ -28,7 +28,6 @@ public class AppFreezeInjector {
 
     public void appFreezeInject(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            XposedBridge.log("Scene Hook MIUI Home");
             XposedHelpers.findAndHookMethod(
                     XposedHelpers.findClass(
                             Activity.class.getName(),
@@ -39,9 +38,7 @@ public class AppFreezeInjector {
                     Bundle.class,
                     new XC_MethodHook() {
                         protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                            XposedBridge.log("Scene Hook MIUI Home >> 1");
                             if (param.args.length > 0 && param.args[0] != null) {
-                                XposedBridge.log("Scene Hook MIUI Home >> 2");
                                 Intent intent = (Intent) param.args[0];
                                 String packageName = intent.getPackage();
                                 ComponentName component = intent.getComponent();
@@ -50,13 +47,11 @@ public class AppFreezeInjector {
                                 }
 
                                 if (packageName != null) {
-                                    XposedBridge.log("Scene Hook MIUI Home >> 3");
                                     Context context = (Context) param.thisObject;
                                     PackageManager packageManager = context.getPackageManager();
                                     Method method = packageManager.getClass().getMethod("isPackageSuspended", String.class);
                                     if ((Boolean) (method.invoke(packageManager, packageName))) {
                                         // Toast.makeText(context, "通过Scene启动冻结的应用！", Toast.LENGTH_SHORT).show();
-                                        XposedBridge.log("Scene Hook MIUI Home >> 4");
                                         // 方式1： 由Scene通过ROOT启动
                                         intent.setClassName("com.omarea.vtools", "com.omarea.vtools.activities.ActivityQuickStart");
                                         intent.putExtra("packageName", packageName);
@@ -68,7 +63,7 @@ public class AppFreezeInjector {
                                         // setPackagesSuspended.invoke(packageManager, new String[]{ packageName }, false, null, null, "通过Scene启动冻结的应用！");
                                     }
                                 } else {
-                                    XposedBridge.log("Action: " + intent.getAction() + "getPackage: " + intent.getPackage() + "ComponentName: " + (component != null ? component.getClassName() : null));
+                                    // XposedBridge.log("Action: " + intent.getAction() + "getPackage: " + intent.getPackage() + "ComponentName: " + (component != null ? component.getClassName() : null));
                                 }
                             }
                             // param.setResult(0x0);

@@ -61,7 +61,6 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
 
             notifyPowerModeChange(currentApp, currentMode, saveLog)
         } catch (ex: Exception) {
-            Log.e("NotifyHelper", "" + ex.localizedMessage)
         }
     }
 
@@ -120,7 +119,6 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
             }
             modeImage = BitmapFactory.decodeResource(context.resources, getModImage(mode))
         } catch (ex: Exception) {
-            Log.e("NotifyHelper", "" + ex.message)
         }
 
         val remoteViews = RemoteViews(context.packageName, R.layout.layout_notification)

@@ -216,9 +216,8 @@ class FragmentHome : androidx.fragment.app.Fragment() {
             }
         }
         val cores = ArrayList<CpuCoreInfo>()
-        val loads = cpuLoadUtils.cpuLoad
         for (coreIndex in 0 until coreCount) {
-            val core = CpuCoreInfo()
+            val core = CpuCoreInfo(coreIndex)
 
             core.currentFreq = CpuFrequencyUtil.getCurrentFrequency("cpu$coreIndex")
             if (!maxFreqs.containsKey(coreIndex) || (core.currentFreq != "" && maxFreqs.get(coreIndex).isNullOrEmpty())) {
@@ -230,12 +229,15 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                 minFreqs.put(coreIndex, CpuFrequencyUtil.getCurrentMinFrequency("cpu$coreIndex"))
             }
             core.minFreq = minFreqs[coreIndex]
-
-            if (loads.containsKey(coreIndex)) {
-                core.loadRatio = loads[coreIndex]!!
-            }
             cores.add(core)
         }
+        val loads = cpuLoadUtils.cpuLoad
+        for (core in cores) {
+            if (loads.containsKey(core.coreIndex)) {
+                core.loadRatio = loads[core.coreIndex]!!
+            }
+        }
+
         val gpuFreq = GpuUtils.getGpuFreq() + "Mhz"
         val gpuLoad = GpuUtils.getGpuLoad()
 

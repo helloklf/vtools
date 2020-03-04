@@ -1,11 +1,13 @@
 package com.omarea.shell_utils;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.common.shell.KernelProrp;
 import com.omarea.model.CpuClusterStatus;
 import com.omarea.model.CpuStatus;
+import com.omarea.vtools.SceneJNI;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,6 +29,16 @@ public class CpuFrequencyUtil {
     private static final Object cpuClusterInfoLoading = true;
     private static ArrayList<String[]> cpuClusterInfo;
     private static String lastCpuState = "";
+
+    private static SceneJNI JNI = new SceneJNI();
+
+    private static String getCpuFreqValue(String path) {
+        long freqValue = JNI.getKernelPropLong(path);
+        if (freqValue > -1) {
+            return "" + freqValue;
+        }
+        return "";
+    }
 
     public static String[] getAvailableFrequencies(Integer cluster) {
         if (cluster >= getClusterInfo().size()) {
@@ -62,35 +74,13 @@ public class CpuFrequencyUtil {
         if (cluster >= getClusterInfo().size()) {
             return "";
         }
+
         String cpu = "cpu" + getClusterInfo().get(cluster)[0];
-        return KernelProrp.INSTANCE.getProp(scaling_cur_freq.replace("cpu0", cpu));
+        return getCpuFreqValue(scaling_cur_freq.replace("cpu0", cpu));
     }
 
-    /**
-     * 获取当前所有核心中最高的频率
-     *
-     * @return
-     */
-    public static int getCurrentFrequency() {
-        String freqs = KeepShellPublic.INSTANCE.doCmdSync("cat /sys/devices/system/cpu/cpu*/cpufreq/cpuinfo_cur_freq");
-        int max = 0;
-        if (!freqs.equals("error")) {
-            String[] freqArr = freqs.split("\n");
-            for (String aFreqArr : freqArr) {
-                try {
-                    int freq = Integer.parseInt(aFreqArr);
-                    if (freq > max) {
-                        max = freq;
-                    }
-                } catch (Exception ignored) {
-                }
-            }
-        }
-        return max;
-    }
-
-    public static String getCurrentFrequency(String core) {
-        return KernelProrp.INSTANCE.getProp(scaling_cur_freq.replace("cpu0", core));
+    public static String getCurrentFrequency(String cpu) {
+        return getCpuFreqValue(scaling_cur_freq.replace("cpu0", cpu));
     }
 
     public static String getCurrentMinFrequency(Integer cluster) {
@@ -338,10 +328,6 @@ public class CpuFrequencyUtil {
         commands.add("chmod 0664 " + sched_boost);
         commands.add("echo " + val + " > " + sched_boost);
         KeepShellPublic.INSTANCE.doCmdSync(commands);
-    }
-
-    public static String getParametersCpuMaxFreq() {
-        return KernelProrp.INSTANCE.getProp("/sys/module/msm_performance/parameters/cpu_max_freq");
     }
 
     public static String[] toMhz(String... values) {

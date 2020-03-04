@@ -420,7 +420,6 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                                 "fi\n" +
                                 "done\n")
                 //sb.append("chown -R --reference=$userdataPath/$packageName *\n")
-                Log.d("userdataPath", "cd $userdataPath/$packageName\n")
                 sb.append(" else ")
                 sb.append("echo '[skip ${item.appName}]'\n")
                 sb.append("sleep 1\n")

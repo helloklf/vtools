@@ -202,11 +202,11 @@ class FloatMonitor(context: Context) {
             coreCount = CpuFrequencyUtil.getCoreCount()
             clusters = CpuFrequencyUtil.getClusterInfo()
         }
-        val loads = cpuLoadUtils.cpuLoad
         clustersFreq.clear()
         for (coreIndex in 0 until clusters.size) {
             clustersFreq.add(CpuFrequencyUtil.getCurrentFrequency(coreIndex))
         }
+        val loads = cpuLoadUtils.cpuLoad
         val gpuFreq = GpuUtils.getGpuFreq() + "Mhz"
         val gpuLoad = GpuUtils.getGpuLoad()
 

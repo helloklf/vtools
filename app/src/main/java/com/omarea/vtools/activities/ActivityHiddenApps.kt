@@ -111,8 +111,6 @@ class ActivityHiddenApps : AppCompatActivity() {
             val appList = ArrayList<Appinfo>()
             uninstalledApp.forEach {
                 // spf.edit().putString(it.packageName, it.loadLabel(pm).toString())
-                Log.d("uninstalledApp", "" + it.packageName + "  " + it.sourceDir)
-
                 appList.add(getAppInfo(it))
             }
             handler.post {
@@ -264,7 +262,6 @@ class ActivityHiddenApps : AppCompatActivity() {
                         keepShell.doCmdSync("if [[ ! -f $configPath.bak ]]\nthen\ncp $configPath $configPath.bak\nfi\ncp $copyPath $configPath\nchown system:system $configPath\nchmod 664 $configPath")
                     }
                 } catch (ex: Exception) {
-                    Log.e("reInstallAppShell", "" + ex.message)
                 }
             }
         }

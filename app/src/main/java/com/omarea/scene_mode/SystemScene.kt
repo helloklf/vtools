@@ -40,7 +40,6 @@ class SystemScene(private var context: Context) {
             //判断是否开启
             return state == value
         } catch (e: Exception) {
-            Log.e("isWifiApOpen", "" + "" + e.localizedMessage)
         }
 
         return false

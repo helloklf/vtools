@@ -42,7 +42,6 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 if (disServiceForeground) {
-                    XposedBridge.log("禁止前台模式，hook setForeground in" + AndroidAppHelper.currentPackageName());
                     param.args[0] = false;
                 }
                 super.afterHookedMethod(param);
@@ -52,7 +51,6 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 super.afterHookedMethod(param);
                 try {
-                    XposedBridge.log("param.args[0]：" + param.args[0]);
                     if ((Boolean) param.args[0]) {
                         callMethod(param.thisObject, "setForeground", false);
                     }
@@ -75,7 +73,6 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
 
                     }
                     */
-                    XposedBridge.log("禁止前台模式，hook startForeground in " + AndroidAppHelper.currentPackageName());
                 }
             }
         });

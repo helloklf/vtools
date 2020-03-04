@@ -57,7 +57,6 @@ class DialogCustomMAC(private var context: Context) {
             }
             val shell = "mac=\"$mac\"\n" + raw
             val r = KeepShellPublic.doCmdSync(shell)
-            Log.e("getRawText", shell)
             if (r == "error") {
                 Toast.makeText(context, "修改失败！", Toast.LENGTH_SHORT).show()
             } else {

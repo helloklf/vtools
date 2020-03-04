@@ -172,14 +172,12 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
             if (Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL)) {
                 contentResolver.notifyChange(Settings.System.getUriFor(Settings.System.SCREEN_BRIGHTNESS_MODE), null)
             } else {
-                Log.e("screen_brightness", "修改亮度失败！")
                 return false
             }
 
             if (lightValue > -1 && Settings.System.putInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS, lightValue)) {
                 contentResolver.notifyChange(Settings.System.getUriFor(Settings.System.SCREEN_BRIGHTNESS), null)
             } else {
-                Log.e("screen_brightness", "修改亮度失败！")
                 return false
             }
         } catch (ex: Exception) {
@@ -330,7 +328,6 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
 
             lastAppPackageName = packageName
         } catch (ex: Exception) {
-            Log.e("onAppEnter", "" + ex.message)
         }
     }
 

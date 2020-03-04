@@ -18,8 +18,13 @@ android {
         applicationId "com.omarea.vtools"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 11208
-        versionName "3.0.0 Preview"
+        versionCode 11211
+        versionName "3.0.0 Beta2"
+        externalNativeBuild {
+            cmake {
+                cppFlags ""
+            }
+        }
     }
     buildTypes {
         release {
@@ -35,7 +40,7 @@ android {
             minifyEnabled true
         }
         debug {
-            // signingConfig signingConfigs.omarea_Signing
+            signingConfig signingConfigs.omarea_Signing
             minifyEnabled false
         }
     }
@@ -49,6 +54,12 @@ android {
         }
     }
     */
+    externalNativeBuild {
+        cmake {
+            path "src/main/cpp/CMakeLists.txt"
+            version "3.10.2"
+        }
+    }
 }
 
 dependencies {
