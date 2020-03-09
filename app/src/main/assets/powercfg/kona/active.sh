@@ -136,6 +136,11 @@ if [[ "$action" = "powersave" ]]; then
     echo 1-3 > /dev/cpuset/background/cpus
     echo 1-4 > /dev/cpuset/system-background/cpus
 
+	echo 96 96 > /proc/sys/kernel/sched_upmigrate
+	echo 85 85 > /proc/sys/kernel/sched_downmigrate
+	echo 260 > /proc/sys/kernel/sched_group_upmigrate
+	echo 160 > /proc/sys/kernel/sched_group_downmigrate
+
 	exit 0
 fi
 
@@ -156,6 +161,11 @@ if [[ "$action" = "balance" ]]; then
 
     echo 1-3 > /dev/cpuset/background/cpus
     echo 1-4 > /dev/cpuset/system-background/cpus
+
+	echo 96 96 > /proc/sys/kernel/sched_upmigrate
+	echo 85 85 > /proc/sys/kernel/sched_downmigrate
+	echo 200 > /proc/sys/kernel/sched_group_upmigrate
+	echo 120 > /proc/sys/kernel/sched_group_downmigrate
 
 	exit 0
 fi
@@ -178,6 +188,11 @@ if [[ "$action" = "performance" ]]; then
     echo 1-3 > /dev/cpuset/background/cpus
     echo 1-4 > /dev/cpuset/system-background/cpus
 
+	echo 95 95 > /proc/sys/kernel/sched_upmigrate
+	echo 85 85 > /proc/sys/kernel/sched_downmigrate
+	echo 100 > /proc/sys/kernel/sched_group_upmigrate
+	echo 85 > /proc/sys/kernel/sched_group_downmigrate
+
 	exit 0
 fi
 
@@ -198,6 +213,11 @@ if [[ "$action" = "fast" ]]; then
 
     echo 1-2 > /dev/cpuset/background/cpus
     echo 1-4 > /dev/cpuset/system-background/cpus
+
+	echo 95 95 > /proc/sys/kernel/sched_upmigrate
+	echo 85 85 > /proc/sys/kernel/sched_downmigrate
+	echo 100 > /proc/sys/kernel/sched_group_upmigrate
+	echo 85 > /proc/sys/kernel/sched_group_downmigrate
 
 	exit 0
 fi
