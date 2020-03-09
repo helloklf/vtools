@@ -3,6 +3,8 @@ package com.omarea.charger_booster
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.BatteryManager
+import android.widget.Toast
+import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellAsync
 import com.omarea.data_collection.EventReceiver
@@ -174,11 +176,13 @@ class BatteryReceiver(private var service: Context) : EventReceiver {
     }
 
     internal fun disableCharge() {
+        Toast.makeText(Scene.context, "充电保护策略已为您暂停充电！", Toast.LENGTH_SHORT).show()
         keepShellAsync?.doCmd(DisableCharge)
         chargeDisabled = true
     }
 
     internal fun resumeCharge() {
+        Toast.makeText(Scene.context, "充电保护策略已为您恢复充电！", Toast.LENGTH_SHORT).show()
         keepShellAsync!!.doCmd(ResumeCharge)
         chargeDisabled = false
     }
