@@ -39,6 +39,24 @@
                     android:text="@string/battery_title_desc2" />
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/settings_step_charge"
+                style="@style/ListCardItem">
+
+                <Switch
+                    android:id="@+id/settings_step_charge_enabled"
+                    style="@style/textTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/battery_step_charge" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/battery_step_charge_desc" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/settings_pd_support"
                 style="@style/ListCardItem">
 

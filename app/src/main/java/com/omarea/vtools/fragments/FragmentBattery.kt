@@ -8,14 +8,10 @@ import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Handler
 import com.google.android.material.snackbar.Snackbar
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SeekBar
-import android.widget.Switch
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import com.omarea.charger_booster.BatteryInfo
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
@@ -227,7 +223,7 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
         super.onActivityCreated(savedInstanceState)
         ResumeCharge = "sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("addin/resume_charge.sh", "addin/resume_charge.sh", this.context!!)
         spf = context!!.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
-        qcSettingSuupport = batteryUnits.qcSettingSuupport()
+        qcSettingSuupport = batteryUnits.qcSettingSupport()
         pdSettingSupport = batteryUnits.pdSupported()
 
         settings_qc.setOnClickListener {
@@ -276,7 +272,7 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
             settings_qc_limit_current.visibility = View.GONE
         }
 
-        if (!batteryUnits.bpSettingSuupport()) {
+        if (!batteryUnits.bpSettingSupport()) {
             settings_bp.isEnabled = false
             spf.edit().putBoolean(SpfConfig.CHARGE_SPF_BP, false).apply()
 
@@ -295,6 +291,16 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
             settings_pd_state.text = if (batteryUnits.pdActive()) getString(R.string.battery_pd_active_1) else getString(R.string.battery_pd_active_0)
         } else {
             settings_pd_support.visibility = View.GONE
+        }
+
+        if (batteryUnits.stepChargeSupport()) {
+            settings_step_charge.visibility = View.VISIBLE
+            settings_step_charge_enabled.setOnClickListener {
+                batteryUnits.setStepCharge((it as Checkable).isChecked)
+            }
+            settings_step_charge_enabled.isChecked = batteryUnits.getStepCharge()
+        } else {
+            settings_step_charge.visibility = View.GONE
         }
 
         btn_battery_history.setOnClickListener {

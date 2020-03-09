@@ -24,7 +24,7 @@ class BatteryUtils {
 
     //是否兼容此设备
     val isSupport: Boolean
-        get() = RootFile.itemExists("/sys/class/power_supply/bms/uevent") || qcSettingSuupport() || bpSettingSuupport() || pdSupported()
+        get() = RootFile.itemExists("/sys/class/power_supply/bms/uevent") || qcSettingSupport() || bpSettingSupport() || pdSupported()
 
     //获取电池信息
     /*else if (info.startsWith("POWER_SUPPLY_TIME_TO_EMPTY_AVG=")) {
@@ -339,8 +339,18 @@ class BatteryUtils {
         }
 
     //快充是否支持修改充电速度设置
-    fun qcSettingSuupport(): Boolean {
+    fun qcSettingSupport(): Boolean {
         return RootFile.itemExists("/sys/class/power_supply/battery/constant_charge_current_max")
+    }
+
+    fun stepChargeSupport(): Boolean {
+        return RootFile.itemExists("/sys/class/power_supply/battery/step_charging_enabled")
+    }
+    fun getStepCharge(): Boolean {
+        return KernelProrp.getProp("/sys/class/power_supply/battery/step_charging_enabled").equals("1")
+    }
+    fun setStepCharge(stepCharge: Boolean) {
+        KernelProrp.setProp("/sys/class/power_supply/battery/step_charging_enabled", if (stepCharge) "1" else "0")
     }
 
     fun getqcLimit(): String {
@@ -362,7 +372,7 @@ class BatteryUtils {
     }
 
     //快充是否支持电池保护
-    fun bpSettingSuupport(): Boolean {
+    fun bpSettingSupport(): Boolean {
         return RootFile.itemExists("/sys/class/power_supply/battery/battery_charging_enabled") || RootFile.itemExists("/sys/class/power_supply/battery/input_suspend")
     }
 

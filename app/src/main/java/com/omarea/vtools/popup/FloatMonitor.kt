@@ -20,10 +20,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
-import com.omarea.shell_utils.BatteryUtils
-import com.omarea.shell_utils.CpuFrequencyUtil
-import com.omarea.shell_utils.CpuLoadUtils
-import com.omarea.shell_utils.GpuUtils
+import com.omarea.shell_utils.*
 import com.omarea.ui.FloatMonitorBatteryView
 import com.omarea.ui.FloatMonitorChartView
 import com.omarea.vtools.R
@@ -197,6 +194,8 @@ class FloatMonitor(context: Context) {
     private var clusters = ArrayList<Array<String>>()
     private var clustersFreq = ArrayList<String>()
 
+    private val fpsUtils = FpsUtils()
+
     private fun updateInfo() {
         if (coreCount < 1) {
             coreCount = CpuFrequencyUtil.getCoreCount()
@@ -240,7 +239,7 @@ class FloatMonitor(context: Context) {
 
                 totalMem = (info.totalMem / 1024 / 1024f).toInt()
                 availMem = (info.availMem / 1024 / 1024f).toInt()
-                val ramInfoText = "DRAM  " + ((totalMem - availMem) * 100 / totalMem).toString() + "%"
+                val ramInfoText = "#RAM  " + ((totalMem - availMem) * 100 / totalMem).toString() + "%"
 
                 val ramSpannable = SpannableString(ramInfoText);
                 val styleSpan = StyleSpan(Typeface.BOLD);
@@ -288,6 +287,16 @@ class FloatMonitor(context: Context) {
                         }
                     }
                     clusterIndex++
+                }
+
+                fpsUtils.currentFps?.run {
+                    otherInfo?.append("\n")
+
+                    val fpsInfo = "#FPS  " + this
+                    val fpsSpannable = SpannableString(fpsInfo);
+                    fpsSpannable.setSpan(ForegroundColorSpan(Color.WHITE), 0, fpsInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    fpsSpannable.setSpan(StyleSpan(Typeface.BOLD), 0, fpsInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    otherInfo?.append(fpsSpannable)
                 }
             }
 

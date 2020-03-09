@@ -18,7 +18,7 @@ class DialogPower(var context: Context) {
                     when (w) {
                         0 -> KeepShellPublic.doCmdSync("sync;reboot -p;")
                         1 -> KeepShellPublic.doCmdSync("sync;reboot;")
-                        2 -> KeepShellPublic.doCmdSync("sync;busybox killall system_server;")
+                        2 -> KeepShellPublic.doCmdSync("sync;am restart || busybox killall system_server;")
                         3 -> KeepShellPublic.doCmdSync("sync;reboot bootloader;")
                         4 -> KeepShellPublic.doCmdSync("sync;reboot recovery;")
                         5 -> KeepShellPublic.doCmdSync("sync;reboot edl;")

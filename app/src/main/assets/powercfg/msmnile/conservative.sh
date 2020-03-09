@@ -12,19 +12,20 @@ echo 0 > /sys/module/msm_thermal/core_control/enabled
 echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
 echo N > /sys/module/msm_thermal/parameters/enabled
 
-governor0=`cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor`
-governor4=`cat /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor`
-governor7=`cat /sys/devices/system/cpu/cpu7/cpufreq/scaling_governor`
+governor0=`cat /sys/devices/system/cpu/cpufreq/policy0/scaling_governor`
+governor4=`cat /sys/devices/system/cpu/cpufreq/policy4/scaling_governor`
+governor7=`cat /sys/devices/system/cpu/cpufreq/policy7/scaling_governor`
 
 if [[ ! "$governor0" = "schedutil" ]]; then
-	echo 'schedutil' > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
+	echo 'schedutil' > /sys/devices/system/cpu/cpufreq/policy0/scaling_governor
 fi
 if [[ ! "$governor4" = "schedutil" ]]; then
-	echo 'schedutil' > /sys/devices/system/cpu/cpu4/cpufreq/scaling_governor
+	echo 'schedutil' > /sys/devices/system/cpu/cpufreq/policy4/scaling_governor
 fi
 if [[ ! "$governor7" = "schedutil" ]]; then
-	echo 'schedutil' > /sys/devices/system/cpu/cpu7/cpufreq/scaling_governor
+	echo 'schedutil' > /sys/devices/system/cpu/cpufreq/policy7/scaling_governor
 fi
+
 
 # /sys/devices/system/cpu/cpu0/cpufreq/scaling_available_frequencies
 # 300000 403200 499200 576000 672000 768000 844800 940800 1036800 1113600 1209600 1305600 1382400 1478400 1555200 1632000 1708800 1785600
