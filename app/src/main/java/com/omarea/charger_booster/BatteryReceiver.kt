@@ -7,10 +7,12 @@ import android.widget.Toast
 import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellAsync
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.data_collection.EventReceiver
 import com.omarea.data_collection.EventType
 import com.omarea.data_collection.GlobalStatus
 import com.omarea.shell_utils.BatteryUtils
+import com.omarea.shell_utils.PropsUtils
 import com.omarea.store.SpfConfig
 import com.omarea.utils.GetUpTime
 import java.util.*
@@ -82,7 +84,7 @@ class BatteryReceiver(private var service: Context) : EventReceiver {
         }
     }
 
-    private var chargeDisabled: Boolean = false
+    private var chargeDisabled: Boolean = PropsUtils.getProp("vtools.bp").equals("1")
     private var keepShellAsync: KeepShellAsync? = null
 
     private var chargeConfig: SharedPreferences
