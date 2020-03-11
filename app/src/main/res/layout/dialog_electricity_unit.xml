@@ -78,6 +78,7 @@
         android:textSize="12dp"
         android:layout_margin="6dp"
         android:textAlignment="center"
+        android:textColor="@android:color/holo_red_dark"
         android:text="@string/electricity_unit_adj_desc2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

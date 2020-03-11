@@ -148,7 +148,7 @@
     <string name="electricity_unit_adj">电流单位校准</string>
     <string name="electricity_unit_adj_desc">当前充电速度，除以：</string>
     <string name="electricity_unit_as">显示为：</string>
-    <string name="electricity_unit_adj_desc2">充电应为正数，放电应为负数</string>
+    <string name="electricity_unit_adj_desc2">充电应显示为正数，放电应显示为负数</string>
 
     <string name="home_hide_in_recents">强迫症</string>
     <string name="home_hide_in_recents_desc">不要在多任务界面显示Scene（本功能已下线，用返回键关闭Scene界面时自动隐藏后台）</string>

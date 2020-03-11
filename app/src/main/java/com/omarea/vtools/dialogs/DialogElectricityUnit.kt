@@ -3,11 +3,13 @@ package com.omarea.vtools.dialogs
 import android.app.AlertDialog
 import android.content.Context
 import android.os.BatteryManager
+import android.os.Build
 import android.os.Handler
 import android.view.LayoutInflater
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
+import com.omarea.data_collection.GlobalStatus
 import com.omarea.store.ChargeSpeedStore
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
@@ -16,14 +18,41 @@ import java.util.*
 class DialogElectricityUnit {
     fun showDialog(context: Context) {
         val globalSPF = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-        var alertDialog: AlertDialog? = null
-        val dialog = LayoutInflater.from(context).inflate(R.layout.dialog_electricity_unit, null)
-        val electricity_adj_unit = dialog.findViewById<TextView>(R.id.electricity_adj_unit)
-        var unit = globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT)
-        val electricity_adj_sample = dialog.findViewById<TextView>(R.id.electricity_adj_sample)
 
         val batteryManager = context.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
         val currentNow = batteryManager.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
+        var defaultUnit = if (Build.MANUFACTURER.toUpperCase() == "XIAOMI") {
+            SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT
+        } else {
+            if (GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_DISCHARGING) {
+                if (currentNow > 20000) {
+                    -1000
+                } else if (currentNow < -20000) {
+                    1000
+                } else if (currentNow > 0) {
+                    -1
+                } else {
+                    1
+                }
+            } else if (GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_CHARGING) {
+                if (currentNow > 20000) {
+                    1000
+                } else if (currentNow < -20000) {
+                    -1000
+                } else if (currentNow > 0) {
+                    1
+                } else {
+                    -1
+                }
+            } else {
+                SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT
+            }
+        }
+        var unit = globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, defaultUnit)
+        var alertDialog: AlertDialog? = null
+        val dialog = LayoutInflater.from(context).inflate(R.layout.dialog_electricity_unit, null)
+        val electricity_adj_unit = dialog.findViewById<TextView>(R.id.electricity_adj_unit)
+        val electricity_adj_sample = dialog.findViewById<TextView>(R.id.electricity_adj_sample)
 
         dialog.findViewById<ImageButton>(R.id.electricity_adj_minus).setOnClickListener {
             if (unit == -1) {
