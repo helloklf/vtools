@@ -98,6 +98,16 @@ function set_input_boost_freq() {
 	echo $ms > /sys/module/cpu_boost/parameters/input_boost_ms
 }
 
+function sched_config() {
+    echo "$1" > /proc/sys/kernel/sched_downmigrate
+    echo "$2" > /proc/sys/kernel/sched_upmigrate
+    echo "$1" > /proc/sys/kernel/sched_downmigrate
+    echo "$3" > /proc/sys/kernel/sched_group_downmigrate
+    echo "$4" > /proc/sys/kernel/sched_group_upmigrate
+    echo "$3" > /proc/sys/kernel/sched_group_downmigrate
+    echo "$4" > /proc/sys/kernel/sched_group_upmigrate
+}
+
 if [ "$action" = "powersave" ]; then
 	set_cpu_freq 5000 1612800 5000 5000
 	set_input_boost_freq 0 0 0
@@ -111,10 +121,7 @@ if [ "$action" = "powersave" ]; then
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
 
-    echo 120 > /proc/sys/kernel/sched_upmigrate
-    echo 100 > /proc/sys/kernel/sched_downmigrate
-    echo 400 > /proc/sys/kernel/sched_group_upmigrate
-    echo 300 > /proc/sys/kernel/sched_group_downmigrate
+    sched_config 100 120 300 400
 
 elif [ "$action" = "balance" ]; then
     echo 1 > /sys/devices/system/cpu/cpu6/online
@@ -129,10 +136,7 @@ elif [ "$action" = "balance" ]; then
 	echo $gpu_min_pl > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
 
-    echo 99 > /proc/sys/kernel/sched_upmigrate
-    echo 89 > /proc/sys/kernel/sched_downmigrate
-    echo 400 > /proc/sys/kernel/sched_group_upmigrate
-    echo 300 > /proc/sys/kernel/sched_group_downmigrate
+    sched_config 89 99 300 400
 
 elif [ "$action" = "performance" ]; then
     echo 1 > /sys/devices/system/cpu/cpu6/online
@@ -147,14 +151,7 @@ elif [ "$action" = "performance" ]; then
 	echo `expr $gpu_min_pl - 1` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 0 > /proc/sys/kernel/sched_boost
 
-    sync
-    sync
-	echo 3 >/proc/sys/vm/drop_caches
-
-    echo 98 > /proc/sys/kernel/sched_upmigrate
-    echo 89 > /proc/sys/kernel/sched_downmigrate
-    echo 400 > /proc/sys/kernel/sched_group_upmigrate
-    echo 300 > /proc/sys/kernel/sched_group_downmigrate
+    sched_config 89 98 300 400
 
 elif [ "$action" = "fast" ]; then
     echo 1 > /sys/devices/system/cpu/cpu6/online
@@ -169,12 +166,5 @@ elif [ "$action" = "fast" ]; then
 	echo `expr $gpu_min_pl - 2` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 1 > /proc/sys/kernel/sched_boost
 
-    sync
-    sync
-	echo 3 >/proc/sys/vm/drop_caches
-
-    echo 96 > /proc/sys/kernel/sched_upmigrate
-    echo 75 > /proc/sys/kernel/sched_downmigrate
-    echo 420 > /proc/sys/kernel/sched_group_upmigrate
-    echo 320 > /proc/sys/kernel/sched_group_downmigrate
+    sched_config 75 96 320 420
 fi

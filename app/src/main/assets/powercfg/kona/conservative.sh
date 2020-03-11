@@ -118,6 +118,18 @@ function set_cpu_freq()
 	echo $6 > /sys/devices/system/cpu/cpufreq/policy7/scaling_max_freq
 }
 
+function sched_config() {
+    echo "$1" > /proc/sys/kernel/sched_downmigrate
+    echo "$2" > /proc/sys/kernel/sched_upmigrate
+    echo "$1" > /proc/sys/kernel/sched_downmigrate
+    echo "$2" > /proc/sys/kernel/sched_upmigrate
+
+    echo "$3" > /proc/sys/kernel/sched_group_downmigrate
+    echo "$4" > /proc/sys/kernel/sched_group_upmigrate
+    echo "$3" > /proc/sys/kernel/sched_group_downmigrate
+    echo "$4" > /proc/sys/kernel/sched_group_upmigrate
+}
+
 if [[ "$action" = "powersave" ]]; then
     echo 1 > /sys/devices/system/cpu/cpu4/core_ctl/enable
     echo 1 > /sys/devices/system/cpu/cpu7/core_ctl/enable
@@ -136,10 +148,7 @@ if [[ "$action" = "powersave" ]]; then
     echo 1-3 > /dev/cpuset/background/cpus
     echo 1-4 > /dev/cpuset/system-background/cpus
 
-	echo 96 96 > /proc/sys/kernel/sched_upmigrate
-	echo 85 85 > /proc/sys/kernel/sched_downmigrate
-	echo 260 > /proc/sys/kernel/sched_group_upmigrate
-	echo 160 > /proc/sys/kernel/sched_group_downmigrate
+	sched_config "85 85" "96 96" "160" "260"
 
 	exit 0
 fi
@@ -162,10 +171,7 @@ if [[ "$action" = "balance" ]]; then
     echo 1-3 > /dev/cpuset/background/cpus
     echo 1-4 > /dev/cpuset/system-background/cpus
 
-	echo 96 96 > /proc/sys/kernel/sched_upmigrate
-	echo 85 85 > /proc/sys/kernel/sched_downmigrate
-	echo 200 > /proc/sys/kernel/sched_group_upmigrate
-	echo 120 > /proc/sys/kernel/sched_group_downmigrate
+	sched_config "85 85" "96 96" "120" "200"
 
 	exit 0
 fi
@@ -188,10 +194,7 @@ if [[ "$action" = "performance" ]]; then
     echo 1-3 > /dev/cpuset/background/cpus
     echo 1-4 > /dev/cpuset/system-background/cpus
 
-	echo 95 95 > /proc/sys/kernel/sched_upmigrate
-	echo 85 85 > /proc/sys/kernel/sched_downmigrate
-	echo 100 > /proc/sys/kernel/sched_group_upmigrate
-	echo 85 > /proc/sys/kernel/sched_group_downmigrate
+	sched_config "85 85" "95 95" "85" "100"
 
 	exit 0
 fi
@@ -214,10 +217,7 @@ if [[ "$action" = "fast" ]]; then
     echo 1-2 > /dev/cpuset/background/cpus
     echo 1-4 > /dev/cpuset/system-background/cpus
 
-	echo 95 95 > /proc/sys/kernel/sched_upmigrate
-	echo 85 85 > /proc/sys/kernel/sched_downmigrate
-	echo 100 > /proc/sys/kernel/sched_group_upmigrate
-	echo 85 > /proc/sys/kernel/sched_group_downmigrate
+	sched_config "85 85" "95 95" "85" "100"
 
 	exit 0
 fi

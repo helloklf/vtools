@@ -106,6 +106,18 @@ function set_input_boost_freq() {
 	echo $ms > /sys/module/cpu_boost/parameters/input_boost_ms
 }
 
+function sched_config() {
+    echo "$1" > /proc/sys/kernel/sched_downmigrate
+    echo "$2" > /proc/sys/kernel/sched_upmigrate
+    echo "$1" > /proc/sys/kernel/sched_downmigrate
+    echo "$2" > /proc/sys/kernel/sched_upmigrate
+
+    echo "$3" > /proc/sys/kernel/sched_group_downmigrate
+    echo "$4" > /proc/sys/kernel/sched_group_upmigrate
+    echo "$3" > /proc/sys/kernel/sched_group_downmigrate
+    echo "$4" > /proc/sys/kernel/sched_group_upmigrate
+}
+
 if [ "$action" = "powersave" ]; then
 	set_cpu_freq 5000 1612800 5000 5000
 	set_input_boost_freq 0 0 0
@@ -122,10 +134,7 @@ if [ "$action" = "powersave" ]; then
     echo 1 > /sys/devices/system/cpu/cpu0/core_ctl/enable
     echo 1 > /sys/devices/system/cpu/cpu6/core_ctl/enable
 
-    echo 100 > /proc/sys/kernel/sched_downmigrate
-    echo 99 > /proc/sys/kernel/sched_upmigrate
-    echo 500 > /proc/sys/kernel/sched_group_downmigrate
-    echo 380 > /proc/sys/kernel/sched_group_upmigrate
+    sched_config 99 100 380 500
 
 elif [ "$action" = "balance" ]; then
     echo 1 > /sys/devices/system/cpu/cpu6/online
@@ -143,10 +152,7 @@ elif [ "$action" = "balance" ]; then
     echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
     echo 1 > /sys/devices/system/cpu/cpu6/core_ctl/enable
 
-    echo 98 > /proc/sys/kernel/sched_downmigrate
-    echo 88 > /proc/sys/kernel/sched_upmigrate
-    echo 400 > /proc/sys/kernel/sched_group_downmigrate
-    echo 300 > /proc/sys/kernel/sched_group_upmigrate
+    sched_config 88 98 300 400
 
 elif [ "$action" = "performance" ]; then
     echo 1 > /sys/devices/system/cpu/cpu6/online
@@ -164,14 +170,7 @@ elif [ "$action" = "performance" ]; then
     echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
     echo 0 > /sys/devices/system/cpu/cpu6/core_ctl/enable
 
-    echo 98 > /proc/sys/kernel/sched_downmigrate
-    echo 88 > /proc/sys/kernel/sched_upmigrate
-    echo 400 > /proc/sys/kernel/sched_group_downmigrate
-    echo 300 > /proc/sys/kernel/sched_group_upmigrate
-
-    sync
-    sync
-	echo 3 >/proc/sys/vm/drop_caches
+    sched_config 88 98 300 400
 
 elif [ "$action" = "fast" ]; then
     echo 1 > /sys/devices/system/cpu/cpu6/online
@@ -189,13 +188,6 @@ elif [ "$action" = "fast" ]; then
     echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
     echo 0 > /sys/devices/system/cpu/cpu6/core_ctl/enable
 
-    echo 92 > /proc/sys/kernel/sched_downmigrate
-    echo 80 > /proc/sys/kernel/sched_upmigrate
-    echo 400 > /proc/sys/kernel/sched_group_downmigrate
-    echo 300 > /proc/sys/kernel/sched_group_upmigrate
-
-    sync
-    sync
-	echo 3 >/proc/sys/vm/drop_caches
+    sched_config 80 92 300 400
 
 fi
