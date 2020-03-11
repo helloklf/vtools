@@ -102,6 +102,8 @@ function sched_config() {
     echo "$1" > /proc/sys/kernel/sched_downmigrate
     echo "$2" > /proc/sys/kernel/sched_upmigrate
     echo "$1" > /proc/sys/kernel/sched_downmigrate
+    echo "$2" > /proc/sys/kernel/sched_upmigrate
+
     echo "$3" > /proc/sys/kernel/sched_group_downmigrate
     echo "$4" > /proc/sys/kernel/sched_group_upmigrate
     echo "$3" > /proc/sys/kernel/sched_group_downmigrate
