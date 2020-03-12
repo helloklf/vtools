@@ -10,14 +10,12 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
-import com.omarea.vtools.SceneJNI
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
@@ -27,6 +25,7 @@ import com.omarea.common.ui.ThemeMode
 import com.omarea.permissions.CheckRootStatus
 import com.omarea.store.SpfConfig
 import com.omarea.ui.TabIconHelper
+import com.omarea.utils.ElectricityUnit
 import com.omarea.utils.Update
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogPower
@@ -113,6 +112,9 @@ class ActivityMain : AppCompatActivity() {
 
         if (globalSPF == null) {
             globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+            if (!globalSPF!!.contains(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT)) {
+                globalSPF!!.edit().putInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, ElectricityUnit().getDefaultElectricityUnit(this)).apply()
+            }
         }
 
         themeMode = ThemeSwitch.switchTheme(this)
