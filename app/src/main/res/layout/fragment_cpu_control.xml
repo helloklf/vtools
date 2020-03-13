@@ -291,7 +291,7 @@
                     android:layout_columnSpan="2"
                     android:layout_gravity="fill_horizontal"
                     android:layout_marginTop="4dp"
-                    android:text="大多数时候，GPU性能受功耗级别（Power Level）限制而不是频率设定。\n注意：功耗级别0表示最大高性能，数值越大则性能越低" />
+                    android:text="大多数时候，GPU性能受功耗级别（Power Level）限制而不是频率设定。\n注意：功耗级别0拥有最高性能，功耗级别数值越大性能越低" />
             </GridLayout>
 
             <GridLayout style="@style/ListCardItem">

@@ -54,7 +54,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
 
         fun unfreezeApp(app: String) {
             if (app.equals("com.android.vending")) {
-                GApps().disable(KeepShellPublic.getDefaultInstance());
+                GApps().enable(KeepShellPublic.getDefaultInstance());
             } else {
                 if (freezeUseSuspend) {
                     KeepShellPublic.doCmdSync("pm unsuspend ${app}")

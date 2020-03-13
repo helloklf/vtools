@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.omarea.charger_booster.BatteryInfo
+import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.data_collection.EventBus
@@ -221,7 +222,7 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        ResumeCharge = "sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("addin/resume_charge.sh", "addin/resume_charge.sh", this.context!!)
+        ResumeCharge = "sh " + FileWrite.writePrivateShellFile("addin/resume_charge.sh", "addin/resume_charge.sh", this.context!!)
         spf = context!!.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
         qcSettingSuupport = batteryUnits.qcSettingSupport()
         pdSettingSupport = batteryUnits.pdSupported()
@@ -342,12 +343,12 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
         }
 
         bp_disable_charge.setOnClickListener {
-            KeepShellPublic.doCmdSync("sh " + com.omarea.common.shared.FileWrite.writePrivateShellFile("addin/disable_charge.sh", "addin/disable_charge.sh", this.context!!))
-            Snackbar.make(this.view, R.string.battery_charge_disabled, Toast.LENGTH_LONG).show()
+            KeepShellPublic.doCmdSync("sh " + FileWrite.writePrivateShellFile("addin/disable_charge.sh", "addin/disable_charge.sh", this.context!!))
+            Snackbar.make(this.view, R.string.battery_charge_disabled, Snackbar.LENGTH_LONG).show()
         }
         bp_enable_charge.setOnClickListener {
             KeepShellPublic.doCmdSync(ResumeCharge)
-            Snackbar.make(this.view, R.string.battery_charge_resumed, Toast.LENGTH_LONG).show()
+            Snackbar.make(this.view, R.string.battery_charge_resumed, Snackbar.LENGTH_LONG).show()
         }
 
         val nightModeGetUp = spf.getInt(SpfConfig.CHARGE_SPF_TIME_GET_UP, SpfConfig.CHARGE_SPF_TIME_GET_UP_DEFAULT)
