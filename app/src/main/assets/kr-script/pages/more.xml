@@ -76,6 +76,12 @@
             desc="其它杂七杂八的功能" title="杂项" />
     </group>
 
+    <group>
+        <page
+            html="https://vtools.oss-cn-beijing.aliyuncs.com/"
+            desc="Scene的在线页面" title="在线页面" />
+    </group>
+
     <text>
         <slice bold="true" size="17">提示</slice>
         <slice break="true" size="13">附加功能中部分对系统的文件修改已支持通过Magisk执行。如果你正在使用Magisk（17.4或更高版本），可以在Scene左侧抽屉菜单中点击“Magisk助手”，根据提示安装Scene的附加模块，</slice>

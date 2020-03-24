@@ -1,22 +1,29 @@
 package com.omarea.vtools.activities
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
+import com.omarea.krscript.WebViewInjector
+import com.omarea.krscript.ui.FileChooserRender
 import com.omarea.scene_mode.CpuConfigInstaller
+import com.omarea.utils.Flags
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_addin_online.*
 import java.io.File
@@ -52,11 +59,12 @@ class ActivityAddinOnline : AppCompatActivity() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (vtools_online.canGoBack()) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && vtools_online.canGoBack()) {
             vtools_online.goBack()
-            return true;
+            return true
+        } else {
+            return super.onKeyDown(keyCode, event)
         }
-        return super.onKeyDown(keyCode, event)
     }
 
     private fun downloadPowercfg(url: String) {
@@ -169,8 +177,57 @@ class ActivityAddinOnline : AppCompatActivity() {
         } else {
             vtools_online.loadUrl("https://helloklf.github.io/vtools-online.html#/scripts")
         }
-        //vtools_online.setWebChromeClient(object : WebChromeClient() { })
+        val context = this@ActivityAddinOnline
+        val progressBarDialog = ProgressBarDialog(context)
+
+        // 处理alert、confirm
+        vtools_online.webChromeClient = object : WebChromeClient() {
+            override fun onJsAlert(view: WebView?, url: String?, message: String?, result: JsResult?): Boolean {
+                DialogHelper.animDialog(
+                        AlertDialog.Builder(context)
+                                .setMessage(message)
+                                .setCancelable(false)
+                                .setPositiveButton(R.string.btn_confirm, { _, _ -> })
+                                .setOnDismissListener {
+                                    result?.confirm()
+                                }
+                                .create()
+                )
+                return true // super.onJsAlert(view, url, message, result)
+            }
+
+            override fun onJsConfirm(view: WebView?, url: String?, message: String?, result: JsResult?): Boolean {
+                DialogHelper.animDialog(
+                        AlertDialog.Builder(context)
+                                .setMessage(message)
+                                .setCancelable(false)
+                                .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                                    result?.confirm()
+                                }
+                                .setNeutralButton(R.string.btn_cancel) { _, _ ->
+                                    result?.cancel()
+                                }
+                                .create()
+                )
+                return true // super.onJsConfirm(view, url, message, result)
+            }
+        }
+
+        // 处理loading、文件下载
         vtools_online.setWebViewClient(object : WebViewClient() {
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                progressBarDialog.hideDialog()
+                view?.run {
+                    setTitle(this.title)
+                }
+            }
+
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                super.onPageStarted(view, url, favicon)
+                progressBarDialog.showDialog(getString(R.string.please_wait))
+            }
+
             private fun tryGetPowercfg(view: WebView?, url: String?): Boolean {
                 if (url != null && view != null) {
                     // v1
@@ -182,14 +239,14 @@ class ActivityAddinOnline : AppCompatActivity() {
                         DialogHelper.animDialog(AlertDialog.Builder(vtools_online.context)
                                 .setTitle("可用的配置脚本")
                                 .setMessage("在当前页面上检测到可用于性能调节的配置脚本，是否立即将其安装到本地？\n\n配置：$configPath\n\n作者：yc9559\n\n")
-                                .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                                .setPositiveButton(R.string.btn_confirm) { _, _ ->
                                     val configAbsPath = "https://github.com/yc9559/cpufreq-interactive-opt/raw/master/$configPath"
                                     downloadPowercfg(configAbsPath)
-                                })
+                                }
                                 .setCancelable(false)
-                                .setNeutralButton(R.string.btn_cancel, { _, _ ->
+                                .setNeutralButton(R.string.btn_cancel) { _, _ ->
                                     view.loadUrl(url)
-                                }))
+                                })
                     } else if (url.startsWith("https://github.com/yc9559/wipe-v2/releases/download/") && url.endsWith(".zip")) {
                         // v2
                         // https://github.com/yc9559/wipe-v2/releases/download/0.1.190503-dev/sdm625.zip
@@ -197,14 +254,14 @@ class ActivityAddinOnline : AppCompatActivity() {
                         DialogHelper.animDialog(AlertDialog.Builder(vtools_online.context)
                                 .setTitle("配置安装提示")
                                 .setMessage("你刚刚点击的内容，似乎是一个可用于性能调节的配置脚本，是否立即将其安装到本地？\n\n配置：$configPath\n\n作者：yc9559\n\n")
-                                .setPositiveButton(R.string.btn_confirm, { _, _ ->
+                                .setPositiveButton(R.string.btn_confirm) { _, _ ->
                                     val configAbsPath = url
                                     downloadPowercfgV2(configAbsPath)
-                                })
+                                }
                                 .setCancelable(false)
-                                .setNeutralButton(R.string.btn_cancel, { _, _ ->
+                                .setNeutralButton(R.string.btn_cancel) { _, _ ->
                                     view.loadUrl(url)
-                                }))
+                                })
                     } else {
                         view.loadUrl(url)
                     }
@@ -225,11 +282,120 @@ class ActivityAddinOnline : AppCompatActivity() {
                 return super.shouldOverrideUrlLoading(view, request)
             }
         })
+
         vtools_online.settings.javaScriptEnabled = true
         vtools_online.settings.setLoadWithOverviewMode(true);
         vtools_online.settings.setUseWideViewPort(true);
 
-        // vtools_online.addJavascriptInterface(VToolsOnlineNative(this, vtools_online), "VToolsNative")
+        val url = vtools_online.url
+        if (url != null) {
+            if (url.startsWith("https://vtools.oss-cn-beijing.aliyuncs.com/") || url.startsWith("https://vtools.omarea.com/")) {
+                // 添加kr-script for web
+                WebViewInjector(vtools_online,
+                        object : FileChooserRender.FileChooserInterface {
+                            override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
+                                return chooseFilePath(fileSelectedInterface)
+                            }
+                        }).inject(this)
+            }
+        }
+        vtools_online.addJavascriptInterface(object {
+            @JavascriptInterface
+            public fun setStatusBarColor(colorStr: String): Boolean {
+                try {
+                    val color = Color.parseColor(colorStr)
+                    vtools_online.post {
+                        window.statusBarColor = color
+                        if (Build.VERSION.SDK_INT >= 23) {
+                            if (Color.red(color) > 180 && Color.green(color) > 180 && Color.blue(color) > 180) {
+                                window.decorView.systemUiVisibility = Flags(window.decorView.systemUiVisibility).addFlag(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+                            } else {
+                                window.decorView.systemUiVisibility = Flags(window.decorView.systemUiVisibility).removeFlag(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+                            }
+                        }
+                    }
+                    return true
+                } catch (ex: java.lang.Exception) {
+                    return false
+                }
+            }
+
+            @JavascriptInterface
+            public fun setNavigationBarColor(colorStr: String): Boolean {
+                try {
+                    val color = Color.parseColor(colorStr)
+                    vtools_online.post {
+                        window.navigationBarColor = color
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            if (Color.red(color) > 180 && Color.green(color) > 180 && Color.blue(color) > 180) {
+                                window.decorView.systemUiVisibility = Flags(window.decorView.systemUiVisibility).addFlag(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR)
+                            } else {
+                                window.decorView.systemUiVisibility = Flags(window.decorView.systemUiVisibility).removeFlag(View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR)
+                            }
+                        }
+                    }
+
+                    return true
+                } catch (ex: java.lang.Exception) {
+                    return false
+                }
+            }
+
+            @JavascriptInterface
+            public fun showToast(str: String) {
+                try {
+                    vtools_online.post {
+                        Toast.makeText(context, str, Toast.LENGTH_LONG).show()
+                    }
+                } catch (ex: java.lang.Exception) {
+                }
+            }
+        }, "SceneUI")
+    }
+
+    private var fileSelectedInterface: FileChooserRender.FileSelectedInterface? = null
+    private val ACTION_FILE_PATH_CHOOSER = 65400
+    private fun chooseFilePath(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 2);
+            Toast.makeText(this, getString(R.string.kr_write_external_storage), Toast.LENGTH_LONG).show()
+            return false
+        } else {
+            try {
+                val intent = Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("*/*")
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                startActivityForResult(intent, ACTION_FILE_PATH_CHOOSER);
+                this.fileSelectedInterface = fileSelectedInterface
+                return true;
+            } catch (ex: java.lang.Exception) {
+                return false
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == ACTION_FILE_PATH_CHOOSER) {
+            val result = if (data == null || resultCode != Activity.RESULT_OK) null else data.data
+            if (fileSelectedInterface != null) {
+                if (result != null) {
+                    val absPath = getPath(result)
+                    fileSelectedInterface?.onFileSelected(absPath)
+                } else {
+                    fileSelectedInterface?.onFileSelected(null)
+                }
+            }
+            this.fileSelectedInterface = null
+        }
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun getPath(uri: Uri): String? {
+        try {
+            return FilePathResolver().getPath(this, uri)
+        } catch (ex: java.lang.Exception) {
+            return null
+        }
     }
 
     override fun onDestroy() {

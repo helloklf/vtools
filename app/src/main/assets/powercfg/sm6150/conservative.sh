@@ -82,11 +82,11 @@ echo $gpu_max_pl > /sys/class/kgsl/kgsl-3d0/max_pwrlevel
 
 # Setting b.L scheduler parameters
 # default sched up and down migrate values are 90 and 85
-echo 95 > /proc/sys/kernel/sched_downmigrate
-echo 92 > /proc/sys/kernel/sched_upmigrate
+# echo 95 > /proc/sys/kernel/sched_downmigrate
+# echo 92 > /proc/sys/kernel/sched_upmigrate
 # default sched up and down migrate values are 100 and 95
-echo 93 > /proc/sys/kernel/sched_group_downmigrate
-echo 100 > /proc/sys/kernel/sched_group_upmigrate
+# echo 93 > /proc/sys/kernel/sched_group_downmigrate
+# echo 100 > /proc/sys/kernel/sched_group_upmigrate
 
 function set_cpu_freq()
 {
@@ -134,7 +134,7 @@ if [ "$action" = "powersave" ]; then
     echo 1 > /sys/devices/system/cpu/cpu0/core_ctl/enable
     echo 1 > /sys/devices/system/cpu/cpu6/core_ctl/enable
 
-    sched_config 99 100 380 500
+    sched_config 89 99 380 500
 
 elif [ "$action" = "balance" ]; then
     echo 1 > /sys/devices/system/cpu/cpu6/online
@@ -152,7 +152,7 @@ elif [ "$action" = "balance" ]; then
     echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
     echo 1 > /sys/devices/system/cpu/cpu6/core_ctl/enable
 
-    sched_config 88 98 300 400
+    sched_config 84 96 300 400
 
 elif [ "$action" = "performance" ]; then
     echo 1 > /sys/devices/system/cpu/cpu6/online
@@ -170,7 +170,7 @@ elif [ "$action" = "performance" ]; then
     echo 0 > /sys/devices/system/cpu/cpu0/core_ctl/enable
     echo 0 > /sys/devices/system/cpu/cpu6/core_ctl/enable
 
-    sched_config 88 98 300 400
+    sched_config 82 95 300 400
 
 elif [ "$action" = "fast" ]; then
     echo 1 > /sys/devices/system/cpu/cpu6/online
@@ -179,8 +179,8 @@ elif [ "$action" = "fast" ]; then
 	set_cpu_freq 1708800 2500000 1209600 2750000
 	set_input_boost_freq 1804800 1939200 120
 
-	echo 1708800 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
-	echo 2169600 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
+	echo 300000 > /sys/devices/system/cpu/cpu0/cpufreq/schedutil/hispeed_freq
+	echo 300000 > /sys/devices/system/cpu/cpu6/cpufreq/schedutil/hispeed_freq
 
 	echo `expr $gpu_min_pl - 2` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 1 > /proc/sys/kernel/sched_boost

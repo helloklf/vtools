@@ -8,6 +8,7 @@ import android.widget.Toast
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.model.PageNode
 import com.omarea.vtools.activities.ActionPage
+import com.omarea.vtools.activities.ActivityAddinOnline
 
 class OpenPageHelper(private var activity: Activity) {
     private var progressBarDialog: ProgressBarDialog? = null
@@ -36,12 +37,11 @@ class OpenPageHelper(private var activity: Activity) {
     fun openPage(pageInfo: PageNode) {
         try {
             var intent: Intent? = null
-            // TODO: 用于访问网页的页面
-            // if (!pageInfo.onlineHtmlPage.isEm=pty()) {
-            //     intent = Intent(activity, ActivityAddinOnline::class.java)
-            //     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            //     intent.putExtra("config", pageInfo.onlineHtmlPage)
-            // }
+            if (!pageInfo.onlineHtmlPage.isEmpty()) {
+                intent = Intent(activity, ActivityAddinOnline::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                intent.putExtra("url", pageInfo.onlineHtmlPage)
+            }
 
             if (!pageInfo.pageConfigSh.isEmpty()) {
                 if (intent == null) {
