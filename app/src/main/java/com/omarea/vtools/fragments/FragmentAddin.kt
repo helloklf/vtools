@@ -34,7 +34,6 @@ import com.omarea.vtools.R
 import com.omarea.vtools.activities.ActionPage
 import com.omarea.vtools.addin.DexCompileAddin
 import com.omarea.vtools.addin.FullScreenAddin
-import com.omarea.vtools.addin.PerfBoostConfigAddin
 import com.omarea.vtools.dialogs.DialogAddinModifyDPI
 import com.omarea.vtools.dialogs.DialogAddinModifydevice
 import com.omarea.vtools.dialogs.DialogAddinWIFI
@@ -101,7 +100,6 @@ class FragmentAddin : androidx.fragment.app.Fragment() {
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
                 add(createItem(getString(R.string.addin_pm_dexopt), getString(R.string.addin_pm_dexopt_desc), Runnable { DexCompileAddin(context!!).modifyConfig() }, false))
             }
-            add(createItem(getString(R.string.addin_bpc), getString(R.string.addin_bpc_desc), Runnable { PerfBoostConfigAddin(context!!).install() }))
         }
 
         val mSimpleAdapter = SimpleAdapter(
