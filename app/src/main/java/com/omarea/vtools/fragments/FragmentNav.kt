@@ -18,11 +18,11 @@ import com.omarea.shell_utils.BackupRestoreUtils
 import com.omarea.vtools.R
 import com.omarea.vtools.activities.AccessibilityKeySettings
 
-class FragmentNav : androidx.fragment.app.Fragment(), View.OnClickListener {
+class FragmentNav : Fragment(), View.OnClickListener {
     private lateinit var themeMode: ThemeMode
 
     companion object {
-        fun createPage(themeMode: ThemeMode): androidx.fragment.app.Fragment {
+        fun createPage(themeMode: ThemeMode): Fragment {
             val fragment = FragmentNav()
             fragment.themeMode = themeMode;
             return fragment
@@ -119,7 +119,7 @@ class FragmentNav : androidx.fragment.app.Fragment(), View.OnClickListener {
             val transaction = activity!!.supportFragmentManager.beginTransaction()
             transaction.setTransition(androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
             // transaction.setCustomAnimations(R.animator.fragment_enter, R.animator.fragment_exit)
-            var fragment: androidx.fragment.app.Fragment? = null
+            var fragment: Fragment? = null
 
             when (id) {
                 R.id.nav_freeze -> fragment = FragmentFreeze.createPage()

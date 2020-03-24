@@ -3,50 +3,55 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:layout_marginTop="@dimen/activity_vertical_margin"
     android:paddingLeft="26dp"
     android:paddingRight="26dp">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="DPI"
-        android:textColor="#888"
-        android:textSize="12dp" />
+        android:orientation="horizontal">
 
-    <EditText
-        android:id="@+id/dialog_addin_dpi_dpiinput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="min:96"
-        android:inputType="number"
-        android:maxLength="3" />
+        <TextView
+            style="@style/textDefault"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="DPI" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="分辨率"
-        android:textColor="#888"
-        android:textSize="12dp" />
+        <EditText
+            android:id="@+id/dialog_addin_dpi_dpiinput"
+            android:layout_width="160dp"
+            android:layout_height="wrap_content"
+            android:hint="min:96"
+            android:inputType="number"
+            android:maxLength="3" />
+    </LinearLayout>
+
 
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+        <TextView
+            style="@style/textDefault"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:text="分辨率" />
 
         <EditText
             android:id="@+id/dialog_addin_dpi_height"
-            android:layout_width="60dp"
+            android:layout_width="70dp"
             android:layout_row="0"
             android:hint="min:480"
             android:inputType="number"
             android:maxLength="4" />
 
-        <TextView android:text="×" />
+        <TextView android:text="×"
+            android:textAlignment="center"
+            android:layout_width="20dp" />
 
         <EditText
             android:id="@+id/dialog_addin_dpi_width"
-            android:layout_width="60dp"
+            android:layout_width="70dp"
             android:layout_row="0"
             android:hint="min:320"
             android:inputType="number"
@@ -57,20 +62,19 @@
 
     <CheckBox
         android:id="@+id/dialog_addin_dpi_quickchange"
+        style="@style/textDefault"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginTop="8dp"
         android:text="快速更改（Android7.0+）" />
 
     <TextView
+        style="@style/textSmall"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="6dp"
-        android:text="@string/dialog_addin_device_inner"
-        android:textColor="#888"
-        android:textSize="12dp" />
+        android:text="@string/dialog_addin_device_inner" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -122,4 +126,12 @@
             android:text="重置"
             android:textSize="12dp" />
     </LinearLayout>
+
+    <TextView
+        style="@style/textSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:text="警告：修改分辨率、DPI可能导致触摸失灵，或界面错位无法正常操作！"
+        android:textColor="@android:color/holo_red_dark" />
 </LinearLayout>

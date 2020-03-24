@@ -81,7 +81,7 @@
 
         <activity
             android:name=".activities.ActivityStartSplash"
-            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:configChanges="orientation|keyboardHidden|screenSize|uiMode"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
@@ -97,10 +97,13 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
+        <!--
+            android:configChanges="keyboardHidden|orientation|screenSize|uiMode|density|colorMode|fontScale|screenLayout|layoutDirection|smallestScreenSize|touchscreen"
+        -->
         <activity
             android:name=".activities.ActivityMain"
             android:autoRemoveFromRecents="false"
-            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboardHidden|orientation"
             android:excludeFromRecents="false"
             android:exported="true"
             android:label="@string/app_name"

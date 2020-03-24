@@ -180,32 +180,33 @@
 
         <LinearLayout
             android:id="@+id/cpu_mode_outside"
-            android:visibility="gone"
-            android:padding="@dimen/activity_horizontal_margin"
             style="@style/ListCardItem"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:orientation="horizontal">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:visibility="gone">
 
             <TextView
-                android:textSize="13dp"
-                android:text="正在使用外部配置(/data/powercfg.sh)\n如需换回Scene3自带配置，或通过Scene导入配置，请点右侧删除按钮"
                 android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_height="wrap_content" />
+                android:text="正在使用外部配置(/data/powercfg.sh)\n如需换回Scene3自带配置，或通过Scene导入配置，请点右侧删除按钮"
+                android:textSize="13dp" />
 
             <ImageButton
                 android:id="@+id/cpu_mode_delete_outside"
-                android:layout_marginLeft="6dp"
                 style="?android:buttonBarButtonStyle"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
+                android:layout_marginLeft="6dp"
                 android:padding="0dp"
                 android:src="@drawable/delete" />
         </LinearLayout>
 
         <LinearLayout
-            style="@style/ListCardItemLast"
+            style="@style/ListCardItem"
             android:orientation="vertical"
             android:paddingStart="8dp"
             android:paddingTop="0dp"
@@ -213,19 +214,20 @@
             android:paddingBottom="8dp">
 
             <LinearLayout
-                android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:paddingEnd="8dp"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:layout_marginBottom="8dp"
                 android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingEnd="8dp">
+
                 <TextView
                     style="@style/textTitle"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="模式信息" />
 
                 <TextView
@@ -235,13 +237,14 @@
                     android:text="来源/作者：" />
 
                 <TextView
-                    android:textColor="?android:colorAccent"
-                    android:text="@string/app_name"
                     android:id="@+id/config_author"
                     style="@style/textDefault"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:text="@string/app_name"
+                    android:textColor="?android:colorAccent" />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/cpu_config_p0"
                 style="@style/InCardListItem"
@@ -422,6 +425,25 @@
 
                 </LinearLayout>
             </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/ListCardItemLast"
+            android:orientation="vertical"
+            android:padding="@dimen/activity_horizontal_margin">
+
+            <TextView
+                style="@style/textTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:text="其它说明" />
+
+            <TextView
+                style="@style/textSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="在Scene安装的配置(包括自带的两套预设 [偏向省电]、[偏向性能]；[本地导入]；[在线下载]；手动[自定义])，卸载Scene后无需手动删除。\n\n如果是通过刷入模块创建的[外部配置]，删除相关模块即可，如果你有强迫症请自行删除 /data/powercfg.sh" />
         </LinearLayout>
     </LinearLayout>
 </com.omarea.common.ui.OverScrollView>
