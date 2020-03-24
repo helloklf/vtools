@@ -196,10 +196,6 @@
     <string name="addin_dex2oat_helplink">https://source.android.com/devices/tech/dalvik/jit-compiler?hl=zh-cn</string>
     <string name="addin_pm_dexopt">应用安装dex2oat策略</string>
     <string name="addin_pm_dexopt_desc">适用于Android N+，调整PackageManager应用安装时的dex2oat编译策略，更新系统后需要重新设置</string>
-    <string name="addin_thermal_remove">删除、恢复、禁用温控</string>
-    <string name="addin_thermal_remove_desc">删除、禁用温控可以让手机持续高性能，但会增加发热、导致智能调度失效，还可能导致相机启动缓慢</string>
-    <string name="addin_thermal_remove2">MIUI解除性能限制</string>
-    <string name="addin_thermal_remove2_desc">适用于部分手机，全局使用“无限制”模式，理论上没有副作用，比直接删除温控可靠，需要重启手机。</string>
     <string name="addin_wifi">查看保存的WIFI</string>
     <string name="addin_wifi_desc">解析/data/misc/wifi目录下的wpa_supplicant.conf或WifiConfigStore.xml</string>
     <string name="addin_bpc">Performance Boost Config精简</string>

@@ -10,7 +10,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,7 +18,6 @@ import android.widget.SimpleAdapter
 import android.widget.TabHost
 import android.widget.Toast
 import com.omarea.common.shared.FilePathResolver
-import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.common.ui.ThemeMode
@@ -29,7 +27,6 @@ import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.model.*
 import com.omarea.krscript.ui.ActionListFragment
 import com.omarea.krscript.ui.FileChooserRender
-import com.omarea.shell_utils.PlatformUtils
 import com.omarea.shell_utils.SysUtils
 import com.omarea.store.SpfConfig
 import com.omarea.ui.TabIconHelper
@@ -38,7 +35,6 @@ import com.omarea.vtools.activities.ActionPage
 import com.omarea.vtools.addin.DexCompileAddin
 import com.omarea.vtools.addin.FullScreenAddin
 import com.omarea.vtools.addin.PerfBoostConfigAddin
-import com.omarea.vtools.addin.ThermalAddin
 import com.omarea.vtools.dialogs.DialogAddinModifyDPI
 import com.omarea.vtools.dialogs.DialogAddinModifydevice
 import com.omarea.vtools.dialogs.DialogAddinWIFI
@@ -75,23 +71,6 @@ class FragmentAddin : androidx.fragment.app.Fragment() {
     private fun initAddin(view: View) {
         val listItem = ArrayList<HashMap<String, Any>>().apply {
             add(createItem(getString(R.string.addin_fullscreen_on), getString(R.string.addin_fullscreen_on_desc), Runnable { FullScreenAddin(activity!!).fullScreen() }, false))
-
-            val platform = PlatformUtils().getCPUName()
-
-            // if (!(platform == "sdm845" || platform == "msm8998" || platform == "msmnile")) {
-            add(createItem(getString(R.string.addin_thermal_remove), getString(R.string.addin_thermal_remove_desc), Runnable { ThermalAddin(context!!).showOption() }, false))
-            // }
-
-            if (!(MagiskExtend.moduleInstalled() && (
-                            platform == "sdm845" ||
-                                    platform == "msm8998" ||
-                                    platform == "sdm710" ||
-                                    platform == "msmnile"
-                            ))) {
-                add(createItem(getString(R.string.addin_thermal_remove2), getString(R.string.addin_thermal_remove2_desc), Runnable {
-                    ThermalAddin(context!!).miuiSetThermalNo()
-                }, false))
-            }
 
             add(createItem(getString(R.string.addin_wifi), getString(R.string.addin_wifi_desc), Runnable { DialogAddinWIFI(context!!).show() }, false))
 
