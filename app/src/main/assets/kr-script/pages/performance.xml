@@ -55,18 +55,6 @@
         </action>
     </group>
 
-    <group title="温控">
-        <action>
-            <title>硬删温控 *不推荐</title>
-            <desc>用于骁龙处理器设备，删除/system和/vendor目录中，名称包含thermal的文件，这是非常危险的操作</desc>
-            <params>
-                <param name="action" title="操作"
-                    options-sh=". ./kr-script/performance/qualcomm_thermal/options.sh" />
-            </params>
-            <script>. ./kr-script/performance/qualcomm_thermal/set.sh</script>
-        </action>
-    </group>
-
     <group title="图形渲染">
         <switch>
             <title>Force Software GLES</title>
@@ -77,22 +65,12 @@
                 echo '可能需要重启才会生效'
             </setstate>
         </switch>
-        <switch visible=". ./kr-script/common/android_q.sh">
+        <switch visible=". ./kr-script/common/android_q.sh" confirm="true">
             <title>HWUI使用Vulkan</title>
-            <desc>使用基于Vulkan的HWUI渲染引擎，这是Android Q的新特性，已知会导致“播放视频”严重卡顿，部分软件偶尔未响应</desc>
+            <desc>使用基于Vulkan的HWUI渲染引擎，这是Android Q的新特性，已知会导致“播放视频”严重卡顿，部分软件偶尔未响应。有些手机甚至可能无法进入桌面！</desc>
             <get>. ./kr-script/performance/hwui_vulkan/get.sh</get>
             <set>. ./kr-script/performance/hwui_vulkan/set.sh</set>
         </switch>
-        <!--
-            <action visible=". ./kr-script/common/android_o.sh">
-                <title>HWUI渲染引擎</title>
-                <desc>切换HWUI渲染引擎（Skia Vulkan 仅支持Android P及更高版本！）</desc>
-                <summary sh=". ./kr-script/performance/hwui_render/summary.sh" />
-                <param name="renderer"
-                    options-sh=". ./kr-script/performance/hwui_render/options.sh"
-                    value-sh=". ./kr-script/performance/hwui_render/get.sh" />
-                <script>. ./kr-script/performance/hwui_render/set.sh</script>
-            </action>-->
     </group>
 
     <group title="磁盘IO">
