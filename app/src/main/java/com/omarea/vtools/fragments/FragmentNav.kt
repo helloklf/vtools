@@ -4,19 +4,20 @@ import android.content.ComponentName
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.GridLayout
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.omarea.common.ui.ThemeMode
+import com.omarea.kr.KrScriptConfig
 import com.omarea.permissions.CheckRootStatus
 import com.omarea.shell_utils.BackupRestoreUtils
 import com.omarea.vtools.R
 import com.omarea.vtools.activities.AccessibilityKeySettings
+import com.projectkr.shell.OpenPageHelper
 
 class FragmentNav : Fragment(), View.OnClickListener {
     private lateinit var themeMode: ThemeMode
@@ -174,7 +175,17 @@ class FragmentNav : Fragment(), View.OnClickListener {
                     tryOpenApp("com.omarea.filter")
                     return
                 }
-                R.id.nav_additional -> fragment = FragmentAddin.createPage(themeMode)
+                R.id.nav_additional -> fragment = FragmentAddin()
+                R.id.nav_additional_all -> {
+                    val krScriptConfig = KrScriptConfig().init(context!!)
+                    val activity = activity!!
+                    krScriptConfig.pageListConfig?.run {
+                        OpenPageHelper(activity).openPage(this.apply {
+                            title = getString(R.string.menu_additional)
+                        })
+                    }
+                    return
+                }
                 R.id.nav_keyevent -> {
                     try {
                         val intent = Intent(activity, AccessibilityKeySettings::class.java)

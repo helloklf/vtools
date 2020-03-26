@@ -3,12 +3,6 @@
     <resource dir="file:///android_asset/kr-script/apps" />
 
     <group title="流氓杀手">
-        <switch>
-            <title>网易云首屏广告</title>
-            <desc>如果禁用，则会通过修改Ad缓存文件夹写入权限，达到禁用广告的目的</desc>
-            <getstate>. ./kr-script/apps/cloudmusic_ad_get.sh</getstate>
-            <setstate>. ./kr-script/apps/cloudmusic_ad_set.sh</setstate>
-        </switch>
         <action>
             <title>QQ个性化</title>
             <desc>禁用此选项将去除QQ的个性化字体、气泡、头像挂件</desc>
@@ -42,22 +36,6 @@
             <title>修复淘宝闪退</title>
             <desc>清理优酷和淘宝下载的热更新文件，出现淘宝或优酷闪退的，可以试试</desc>
             <script>. ./kr-script/apps/taobao_fix.sh</script>
-        </action>
-    </group>
-
-    <group title="性能优化"
-        visible=". ./kr-script/apps/tmgp/support.sh">
-        <action id="tgmp_config"
-            title="王者荣耀配置修改"
-            desc="开启OpenGLES3、Vulkan特性（可能会花屏或闪退）">
-            <summary sh=". ./kr-script/apps/tmgp/summary.sh" />
-            <set>. ./kr-script/apps/tmgp/set.sh</set>
-            <param name="render"
-                options-sh=". ./kr-script/apps/tmgp/options.sh" />
-            <param name="thread" value="0">
-                <option val="1">多线程优化</option>
-                <option val="3">默认</option>
-            </param>
         </action>
     </group>
 

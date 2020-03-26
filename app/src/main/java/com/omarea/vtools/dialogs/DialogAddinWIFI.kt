@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Context
 import android.os.Build
 import android.widget.Toast
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.shell_utils.SysUtils
 import java.io.ByteArrayInputStream
@@ -16,8 +17,8 @@ import javax.xml.parsers.DocumentBuilderFactory
 
 class DialogAddinWIFI(private var context: Context) {
     fun showOld() {
-        var wifiInfo = SysUtils.executeCommandWithOutput(true, "cat /data/misc/wifi/wpa_supplicant.conf")
-        if (wifiInfo != null && wifiInfo.isNotEmpty()) {
+        var wifiInfo = KeepShellPublic.doCmdSync("cat /data/misc/wifi/wpa_supplicant.conf")
+        if (wifiInfo.isNotEmpty()) {
             val infos = wifiInfo.split("\n\n")
             val sb = StringBuilder()
 
@@ -57,8 +58,8 @@ class DialogAddinWIFI(private var context: Context) {
 
     fun show() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val wifiInfo = SysUtils.executeCommandWithOutput(true, "cat /data/misc/wifi/WifiConfigStore.xml")
-            if (wifiInfo != null && wifiInfo.isNotEmpty()) {
+            val wifiInfo = KeepShellPublic.doCmdSync("cat /data/misc/wifi/WifiConfigStore.xml")
+            if (wifiInfo.isNotEmpty()) {
                 val factory = DocumentBuilderFactory.newInstance()
                 val builder = factory.newDocumentBuilder()
                 //获得Document对象

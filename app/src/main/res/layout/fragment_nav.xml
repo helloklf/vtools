@@ -103,15 +103,21 @@
             <com.omarea.ui.NavItem
                 android:tag="root"
                 style="@style/nav_item_wrap_right"
-                android:id="@+id/nav_additional"
-                app:drawable="@drawable/ic_menu_vboot"
-                app:text="@string/menu_additional" />
-            <com.omarea.ui.NavItem
-                android:tag="root"
-                style="@style/nav_item_wrap"
                 android:id="@+id/nav_applictions"
                 app:drawable="@drawable/ic_menu_modules"
                 app:text="@string/menu_applictions" />
+            <com.omarea.ui.NavItem
+                android:tag="root"
+                style="@style/nav_item_wrap"
+                android:id="@+id/nav_additional"
+                app:drawable="@drawable/ic_menu_vboot"
+                app:text="@string/menu_sundry" />
+            <com.omarea.ui.NavItem
+                android:tag="root"
+                style="@style/nav_item_wrap_right"
+                android:id="@+id/nav_additional_all"
+                app:drawable="@drawable/ic_menu_command"
+                app:text="@string/menu_additional" />
         </GridLayout>
 
         <TextView

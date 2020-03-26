@@ -109,7 +109,6 @@ class FloatPowercfgSelector {
         }
     }
 
-    @SuppressLint("ApplySharedPref")
     private fun setUpView(context: Context, packageName: String): View {
         val store = SceneConfigStore(context)
         val appConfig = store.getAppConfig(packageName)
@@ -119,7 +118,7 @@ class FloatPowercfgSelector {
 
         val spfPowercfg = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         val globalSPF = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-        val dynamic = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
+        val dynamic = AccessibleServiceHelper().serviceRunning(context) && globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
         val defaultMode = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance")
         var selectedMode = if (dynamic) spfPowercfg.getString(packageName, defaultMode) else modeList.getCurrentPowerMode()
 
@@ -161,15 +160,17 @@ class FloatPowercfgSelector {
             updateUI.run()
             modeList.executePowercfgMode(selectedMode, packageName)
             if (dynamic) {
-                if (selectedMode == defaultMode) {
-                    spfPowercfg.edit().remove(packageName).commit()
-                } else {
-                    spfPowercfg.edit().putString(packageName, selectedMode).commit()
+                if (!packageName.equals(context.packageName)) {
+                    if (selectedMode == defaultMode) {
+                        spfPowercfg.edit().remove(packageName).apply()
+                    } else {
+                        spfPowercfg.edit().putString(packageName, selectedMode).apply()
+                    }
+                    reStartService(packageName, selectedMode)
                 }
-                reStartService(packageName, selectedMode)
-            }
 
-            AlwaysNotification(context, true).notify()
+                AlwaysNotification(context, true).notify()
+            }
         }
 
         btn_powersave.setOnClickListener {
@@ -262,6 +263,7 @@ class FloatPowercfgSelector {
             }
         }
 
+        // 性能监视悬浮窗开关
         fw_float_monitor.alpha = if (FloatMonitor.isShown == true) 1f else 0.5f
         fw_float_monitor.setOnClickListener {
             if (FloatMonitor.isShown == true) {
@@ -271,6 +273,12 @@ class FloatPowercfgSelector {
                 FloatMonitor(context).showPopupWindow()
                 fw_float_monitor.alpha = 1f
             }
+        }
+
+        if (!dynamic || packageName.equals(context.packageName)) {
+            fw_app_light.isEnabled = false
+            fw_app_dis_button.isEnabled = false
+            fw_app_dis_notice.isEnabled = false
         }
 
         view.findViewById<ImageButton>(R.id.fw_float_close).setOnClickListener {

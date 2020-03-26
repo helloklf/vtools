@@ -1,45 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<com.omarea.common.ui.OverScrollListView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/addin_system_listview"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <TabHost
-        android:id="@+id/addin_tabhost"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <FrameLayout
-                android:id="@android:id/tabcontent"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1">
-
-                <com.omarea.common.ui.OverScrollListView
-                    android:id="@+id/addin_system_listview"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:divider="@color/color_list_divider"
-                    android:dividerHeight="0sp"
-                    android:scrollbars="none"
-                    android:listSelector="@android:color/transparent"
-                    android:layout_margin="@dimen/activity_horizontal_margin" />
-
-                <FrameLayout
-                    android:id="@+id/list_page2"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </FrameLayout>
-
-            <TabWidget
-                android:id="@android:id/tabs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/tab_widget_background" />
-        </LinearLayout>
-    </TabHost>
-</RelativeLayout>
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/activity_horizontal_margin"
+    android:divider="@color/color_list_divider"
+    android:dividerHeight="0sp"
+    android:listSelector="@android:color/transparent"
+    android:scrollbars="none" />

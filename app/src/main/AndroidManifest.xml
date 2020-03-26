@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.omarea.vtools"
     android:installLocation="internalOnly">
-
     <!-- <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/> -->
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
@@ -34,17 +33,28 @@
     <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
 
     <application
-        android:usesCleartextTraffic="true"
-        android:hardwareAccelerated="true"
         android:name="com.omarea.Scene"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_descriptor"
+        android:hardwareAccelerated="true"
         android:icon="@drawable/linux"
         android:label="@string/app_name"
         android:persistent="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity
+            android:name=".activities.ActivityPowerModeTile"
+            android:exported="true"
+            android:screenOrientation="behind">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+        </activity>
+
         <service
             android:name="com.omarea.scene_mode.TriggerExecutorService"
             android:exported="false" />
@@ -87,7 +97,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
+                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES"/>
                 <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -97,9 +107,7 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
-        <!--
-            android:configChanges="keyboardHidden|orientation|screenSize|uiMode|density|colorMode|fontScale|screenLayout|layoutDirection|smallestScreenSize|touchscreen"
-        -->
+        <!--             android:configChanges="keyboardHidden|orientation|screenSize|uiMode|density|colorMode|fontScale|screenLayout|layoutDirection|smallestScreenSize|touchscreen" -->
         <activity
             android:name=".activities.ActivityMain"
             android:autoRemoveFromRecents="false"
@@ -305,6 +313,15 @@
             android:name=".services.CompileService"
             android:enabled="true"
             android:permission="" />
+        <service
+            android:name="com.omarea.scene_mode.SceneTileService"
+            android:icon="@drawable/p4"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
