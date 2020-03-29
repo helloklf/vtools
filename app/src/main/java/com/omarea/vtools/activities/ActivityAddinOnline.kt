@@ -18,6 +18,7 @@ import android.webkit.*
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.omarea.common.shared.FilePathResolver
+import com.omarea.common.shared.FileWrite
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.WebViewInjector
@@ -39,7 +40,7 @@ class ActivityAddinOnline : AppCompatActivity() {
         delegate.onPostResume()
     }
 
-    @SuppressLint("ApplySharedPref")
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         ThemeSwitch.switchTheme(this)
         super.onCreate(savedInstanceState)
@@ -56,116 +57,7 @@ class ActivityAddinOnline : AppCompatActivity() {
         } else if (Build.VERSION.SDK_INT >= 23) {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
-    }
 
-    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK && vtools_online.canGoBack()) {
-            vtools_online.goBack()
-            return true
-        } else {
-            return super.onKeyDown(keyCode, event)
-        }
-    }
-
-    private fun downloadPowercfg(url: String) {
-        val progressBarDialog = ProgressBarDialog(this)
-        progressBarDialog.showDialog("正在获取配置，稍等...")
-        Thread(Runnable {
-            try {
-                val myURL = URL(url)
-                val conn = myURL.openConnection()
-                conn.connect()
-                conn.getInputStream()
-                val reader = conn.getInputStream().bufferedReader(Charset.forName("UTF-8"))
-                val powercfg = reader.readText()
-                if (powercfg.startsWith("#!/") && CpuConfigInstaller().installCustomConfig(this, powercfg, "downloader")) {
-                    vtools_online.post {
-                        DialogHelper.animDialog(AlertDialog.Builder(this)
-                                .setTitle("配置文件已安装")
-                                .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                                    setResult(Activity.RESULT_OK)
-                                    finish()
-                                }
-                                .setCancelable(false))
-                    }
-                } else {
-                    vtools_online.post {
-                        Toast.makeText(applicationContext, "下载配置文件失败或文件无效！", Toast.LENGTH_LONG).show()
-                    }
-                }
-                vtools_online.post {
-                    progressBarDialog.hideDialog()
-                }
-            } catch (ex: Exception) {
-                vtools_online.post {
-                    progressBarDialog.hideDialog()
-                    Toast.makeText(applicationContext, "下载配置文件失败！", Toast.LENGTH_LONG).show()
-                }
-            }
-        }).start()
-    }
-
-    private fun downloadPowercfgV2(url: String) {
-        val progressBarDialog = ProgressBarDialog(this)
-        progressBarDialog.showDialog("正在获取配置，稍等...")
-        Thread(Runnable {
-            try {
-                val myURL = URL(url)
-                val conn = myURL.openConnection()
-                conn.connect()
-                conn.getInputStream()
-                val inputStream = conn.getInputStream()
-                val buffer = inputStream.readBytes()
-                val cacheName = "caches/powercfg_downloaded.zip"
-                if (com.omarea.common.shared.FileWrite.writePrivateFile(buffer, cacheName, baseContext)) {
-                    val cachePath = com.omarea.common.shared.FileWrite.getPrivateFilePath(baseContext, cacheName)
-
-                    val zipInputStream = ZipInputStream(FileInputStream(File(cachePath)))
-                    while (true) {
-                        val zipEntry = zipInputStream.nextEntry
-                        if (zipEntry == null) {
-                            throw java.lang.Exception("下载的文件无效，未从中找到powercfg.sh")
-                        } else if (zipEntry.name == "powercfg.sh") {
-                            val byteArray = zipInputStream.readBytes()
-                            val powercfg = byteArray.toString(Charset.defaultCharset())
-                            if (powercfg.startsWith("#!/") && CpuConfigInstaller().installCustomConfig(this, powercfg, "online")) {
-                                vtools_online.post {
-                                    DialogHelper.animDialog(AlertDialog.Builder(this)
-                                            .setTitle("配置文件已安装")
-                                            .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                                                setResult(Activity.RESULT_OK)
-                                                finish()
-                                            }
-                                            .setCancelable(false))
-                                }
-                            } else {
-                                vtools_online.post {
-                                    Toast.makeText(applicationContext, "下载配置文件失败或文件无效！", Toast.LENGTH_LONG).show()
-                                }
-                            }
-                            vtools_online.post {
-                                progressBarDialog.hideDialog()
-                            }
-                            break
-                        } else {
-                            zipInputStream.skip(zipEntry.size)
-                        }
-                    }
-                } else {
-                    throw IOException("文件存储失败")
-                }
-            } catch (ex: Exception) {
-                vtools_online.post {
-                    progressBarDialog.hideDialog()
-                    Toast.makeText(applicationContext, "下载配置文件失败！", Toast.LENGTH_LONG).show()
-                }
-            }
-        }).start()
-    }
-
-    @SuppressLint("SetJavaScriptEnabled")
-    override fun onStart() {
-        super.onStart()
 
         if (this.intent.extras != null) {
             val extraData = intent.extras
@@ -351,6 +243,111 @@ class ActivityAddinOnline : AppCompatActivity() {
                 }
             }
         }, "SceneUI")
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK && vtools_online.canGoBack()) {
+            vtools_online.goBack()
+            return true
+        } else {
+            return super.onKeyDown(keyCode, event)
+        }
+    }
+
+    private fun downloadPowercfg(url: String) {
+        val progressBarDialog = ProgressBarDialog(this)
+        progressBarDialog.showDialog("正在获取配置，稍等...")
+        Thread(Runnable {
+            try {
+                val myURL = URL(url)
+                val conn = myURL.openConnection()
+                conn.connect()
+                conn.getInputStream()
+                val reader = conn.getInputStream().bufferedReader(Charset.forName("UTF-8"))
+                val powercfg = reader.readText()
+                if (powercfg.startsWith("#!/") && CpuConfigInstaller().installCustomConfig(this, powercfg, "downloader")) {
+                    vtools_online.post {
+                        DialogHelper.animDialog(AlertDialog.Builder(this)
+                                .setTitle("配置文件已安装")
+                                .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                                    setResult(Activity.RESULT_OK)
+                                    finish()
+                                }
+                                .setCancelable(false))
+                    }
+                } else {
+                    vtools_online.post {
+                        Toast.makeText(applicationContext, "下载配置文件失败或文件无效！", Toast.LENGTH_LONG).show()
+                    }
+                }
+                vtools_online.post {
+                    progressBarDialog.hideDialog()
+                }
+            } catch (ex: Exception) {
+                vtools_online.post {
+                    progressBarDialog.hideDialog()
+                    Toast.makeText(applicationContext, "下载配置文件失败！", Toast.LENGTH_LONG).show()
+                }
+            }
+        }).start()
+    }
+
+    private fun downloadPowercfgV2(url: String) {
+        val progressBarDialog = ProgressBarDialog(this)
+        progressBarDialog.showDialog("正在获取配置，稍等...")
+        Thread(Runnable {
+            try {
+                val myURL = URL(url)
+                val conn = myURL.openConnection()
+                conn.connect()
+                conn.getInputStream()
+                val inputStream = conn.getInputStream()
+                val buffer = inputStream.readBytes()
+                val cacheName = "caches/powercfg_downloaded.zip"
+                if (FileWrite.writePrivateFile(buffer, cacheName, baseContext)) {
+                    val cachePath = FileWrite.getPrivateFilePath(baseContext, cacheName)
+
+                    val zipInputStream = ZipInputStream(FileInputStream(File(cachePath)))
+                    while (true) {
+                        val zipEntry = zipInputStream.nextEntry
+                        if (zipEntry == null) {
+                            throw java.lang.Exception("下载的文件无效，未从中找到powercfg.sh")
+                        } else if (zipEntry.name == "powercfg.sh") {
+                            val byteArray = zipInputStream.readBytes()
+                            val powercfg = byteArray.toString(Charset.defaultCharset())
+                            if (powercfg.startsWith("#!/") && CpuConfigInstaller().installCustomConfig(this, powercfg, "online")) {
+                                vtools_online.post {
+                                    DialogHelper.animDialog(AlertDialog.Builder(this)
+                                            .setTitle("配置文件已安装")
+                                            .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                                                setResult(Activity.RESULT_OK)
+                                                finish()
+                                            }
+                                            .setCancelable(false))
+                                }
+                            } else {
+                                vtools_online.post {
+                                    Toast.makeText(applicationContext, "下载配置文件失败或文件无效！", Toast.LENGTH_LONG).show()
+                                }
+                            }
+                            vtools_online.post {
+                                progressBarDialog.hideDialog()
+                            }
+                            break
+                        } else {
+                            zipInputStream.skip(zipEntry.size)
+                        }
+                    }
+                } else {
+                    throw IOException("文件存储失败")
+                }
+            } catch (ex: Exception) {
+                vtools_online.post {
+                    progressBarDialog.hideDialog()
+                    Toast.makeText(applicationContext, "下载配置文件失败！", Toast.LENGTH_LONG).show()
+                }
+            }
+        }).start()
     }
 
     private var fileSelectedInterface: FileChooserRender.FileSelectedInterface? = null

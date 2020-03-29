@@ -78,14 +78,15 @@
 
     <group>
         <page
-            html="https://vtools.oss-cn-beijing.aliyuncs.com/"
-            desc="Scene的在线页面" title="在线页面" />
+            id="page-outdated"
+            config="kr-script/pages/outdated.xml"
+            confirm="true"
+            desc="一些由于效用不佳而被废弃的功能" title="废弃的功能" />
     </group>
 
-    <text>
-        <slice bold="true" size="17">提示</slice>
-        <slice break="true" size="13">附加功能中部分对系统的文件修改已支持通过Magisk执行。如果你正在使用Magisk（17.4或更高版本），可以在Scene左侧抽屉菜单中点击“Magisk助手”，根据提示安装Scene的附加模块，</slice>
-        <slice color="#ff0000" size="13">并重启手机</slice>
-        <slice break="true" size="13">由于安卓系统版本众多，且各家定制后都有所不同，各位对系统的修改程度也不一致。无法保证所有功能在大家的手机上都能正常使用，还请谅解~</slice>
-    </text>
+    <group>
+        <page
+            html="https://vtools.oss-cn-beijing.aliyuncs.com/"
+            desc="Scene 官网" title="Scene 官网在线页面" />
+    </group>
 </pages>

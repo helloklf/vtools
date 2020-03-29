@@ -55,24 +55,6 @@
         </action>
     </group>
 
-    <group title="图形渲染">
-        <switch>
-            <title>Force Software GLES</title>
-            <desc>强制软件GLES渲染，开启此选项可能增加耗电甚至界面黑屏，如果默认开启，可尝试关闭</desc>
-            <getstate>getprop persist.sys.force_sw_gles</getstate>
-            <setstate>
-                setprop persist.sys.force_sw_gles $state
-                echo '可能需要重启才会生效'
-            </setstate>
-        </switch>
-        <switch visible=". ./kr-script/common/android_q.sh" confirm="true">
-            <title>HWUI使用Vulkan</title>
-            <desc>使用基于Vulkan的HWUI渲染引擎，这是Android Q的新特性，已知会导致“播放视频”严重卡顿，部分软件偶尔未响应。有些手机甚至可能无法进入桌面！</desc>
-            <get>. ./kr-script/performance/hwui_vulkan/get.sh</get>
-            <set>. ./kr-script/performance/hwui_vulkan/set.sh</set>
-        </switch>
-    </group>
-
     <group title="磁盘IO">
         <action>
             <title>执行FSTRIM</title>

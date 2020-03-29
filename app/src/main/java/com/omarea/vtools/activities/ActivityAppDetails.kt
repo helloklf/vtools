@@ -24,6 +24,7 @@ import com.omarea.permissions.NotificationListener
 import com.omarea.permissions.WriteSettings
 import com.omarea.scene_mode.ImmersivePolicyControl
 import com.omarea.scene_mode.ModeSwitcher
+import com.omarea.scene_mode.SceneMode
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.ui.IntInputFilter
@@ -433,6 +434,9 @@ class ActivityAppDetails : AppCompatActivity() {
 
         app_details_freeze.setOnClickListener {
             sceneConfigInfo.freeze = (it as Switch).isChecked
+            if (!sceneConfigInfo.freeze) {
+                SceneMode.unfreezeApp(sceneConfigInfo.packageName)
+            }
         }
 
         if (XposedCheck.xposedIsRunning()) {

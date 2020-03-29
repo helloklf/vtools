@@ -3,6 +3,19 @@
     <resource dir="file:///android_asset/kr-script/apps" />
 
     <group title="流氓杀手">
+        <switch>
+            <title>网易云音乐首屏广告</title>
+            <desc>如果禁用，则会通过修改Ad缓存文件夹写入权限，达到禁用广告的目的</desc>
+            <getstate>. ./kr-script/apps/cloudmusic_ad_get.sh</getstate>
+            <setstate>. ./kr-script/apps/cloudmusic_ad_set.sh</setstate>
+        </switch>
+        <switch>
+            <title>抖音首屏广告</title>
+            <desc>如果禁用，则会通过修改Ad缓存文件夹写入权限，达到禁用广告的目的</desc>
+            <getstate>. ./kr-script/apps/douyin_ad_get.sh</getstate>
+            <setstate>. ./kr-script/apps/douyin_ad_set.sh</setstate>
+        </switch>
+
         <action>
             <title>QQ个性化</title>
             <desc>禁用此选项将去除QQ的个性化字体、气泡、头像挂件</desc>
