@@ -102,7 +102,7 @@ case "$mode" in
     "default")
         uninstall_thermal
      ;;
-    "performance" | "extreme" | "danger")
+    "powerfrugal" | "performance" | "extreme" | "danger")
         install_thermal
     ;;
     *)

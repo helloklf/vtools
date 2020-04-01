@@ -18,7 +18,7 @@ android {
         applicationId "com.omarea.vtools"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 11220
+        versionCode 11221
         versionName "3.0.3"
         externalNativeBuild {
             cmake {
@@ -31,6 +31,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             debuggable true
             zipAlignEnabled true
+            jniDebuggable = false
             // signingConfig signingConfigs.omarea_Signing
         }
         release_mini {
@@ -42,6 +43,7 @@ android {
         debug {
             signingConfig signingConfigs.omarea_Signing
             minifyEnabled false
+            jniDebuggable = false
         }
     }
     productFlavors {

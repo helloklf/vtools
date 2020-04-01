@@ -17,6 +17,9 @@ case "$mode" in
     "default")
         modename="系统默认 (default)"
      ;;
+    "powerfrugal")
+        modename="节能降温 (powerfrugal)"
+     ;;
     "high")
         modename="提高阈值 (旧版配置)"
     ;;
