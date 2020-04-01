@@ -54,11 +54,11 @@ open class ModeSwitcher {
 
     internal fun getModImage(mode: String): Int {
         return when (mode) {
-            POWERSAVE -> R.drawable.shortcut_p0
-            BALANCE -> R.drawable.shortcut_p1
-            PERFORMANCE -> R.drawable.shortcut_p2
-            FAST -> R.drawable.shortcut_p3
-            else -> R.drawable.shortcut_p2
+            POWERSAVE -> R.drawable.shortcut_p1
+            BALANCE -> R.drawable.shortcut_p2
+            PERFORMANCE -> R.drawable.shortcut_p3
+            FAST -> R.drawable.shortcut_p4
+            else -> R.drawable.shortcut_p3
         }
     }
 

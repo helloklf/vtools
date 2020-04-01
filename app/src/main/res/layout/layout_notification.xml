@@ -23,7 +23,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:gravity="center_vertical"
-            android:src="@drawable/shortcut_p2" />
+            android:src="@drawable/shortcut_p3" />
 
         <LinearLayout
             android:layout_width="0dp"

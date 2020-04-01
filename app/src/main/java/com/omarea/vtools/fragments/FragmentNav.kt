@@ -16,7 +16,6 @@ import com.omarea.kr.KrScriptConfig
 import com.omarea.permissions.CheckRootStatus
 import com.omarea.shell_utils.BackupRestoreUtils
 import com.omarea.vtools.R
-import com.omarea.vtools.activities.AccessibilityKeySettings
 import com.projectkr.shell.OpenPageHelper
 
 class FragmentNav : Fragment(), View.OnClickListener {
@@ -137,7 +136,6 @@ class FragmentNav : Fragment(), View.OnClickListener {
                 }
                 R.id.nav_battery_stats -> fragment = FragmentBatteryStats.createPage()
                 R.id.nav_core_control -> fragment = FragmentCpuControl.newInstance()
-                R.id.nav_paypal -> fragment = FragmentDonate.createPage()
                 R.id.nav_qq -> {
                     val key = "6ffXO4eTZVN0eeKmp-2XClxizwIc7UIu" //""e-XL2In7CgIpeK_sG75s-vAiu7n5DnlS"
                     val intent = Intent()
@@ -171,10 +169,6 @@ class FragmentNav : Fragment(), View.OnClickListener {
                     tryOpenApp("com.omarea.gesture")
                     return
                 }
-                R.id.nav_filter -> {
-                    tryOpenApp("com.omarea.filter")
-                    return
-                }
                 R.id.nav_additional -> fragment = FragmentAddin()
                 R.id.nav_additional_all -> {
                     val krScriptConfig = KrScriptConfig().init(context!!)
@@ -185,13 +179,6 @@ class FragmentNav : Fragment(), View.OnClickListener {
                         })
                     }
                     return
-                }
-                R.id.nav_keyevent -> {
-                    try {
-                        val intent = Intent(activity, AccessibilityKeySettings::class.java)
-                        startActivity(intent)
-                    } catch (ex: Exception) {
-                    }
                 }
             }
 

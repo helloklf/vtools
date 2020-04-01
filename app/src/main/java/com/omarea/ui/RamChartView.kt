@@ -10,7 +10,7 @@ import android.view.View
 import com.omarea.vtools.R
 
 
-class RamChatView : View {
+class RamChartView : View {
     //-------------必须给的数据相关-------------
     private val str = arrayOf("已用", "可用")
     private var ratio = 0
@@ -35,8 +35,19 @@ class RamChatView : View {
     //View自身的宽和高
     private var mHeight: Int = 0
     private var mWidth: Int = 0
+    private var accentColor = 0x22888888
 
-    constructor(context: Context) : super(context) {}
+    private fun getColorAccent() {
+        val defaultColor = -0x1000000
+        val attrsArray = intArrayOf(android.R.attr.colorAccent)
+        val typedArray = context.obtainStyledAttributes(attrsArray)
+        accentColor = typedArray.getColor(0, defaultColor)
+        typedArray.recycle()
+    }
+
+    constructor(context: Context) : super(context) {
+        getColorAccent()
+    }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         @SuppressLint("CustomViewStyleable") val array = context.obtainStyledAttributes(attrs, R.styleable.RamInfo)
@@ -46,6 +57,7 @@ class RamChatView : View {
         ratio = 100 - feeRatio
         //strPercent = new int[]{100 - feeRatio, feeRatio};
         array.recycle()
+        getColorAccent()
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
@@ -56,6 +68,7 @@ class RamChatView : View {
         ratio = feeRatio
         //strPercent = new int[]{100 - feeRatio, feeRatio};
         array.recycle()
+        getColorAccent()
     }
 
     /**
@@ -134,14 +147,17 @@ class RamChatView : View {
         if (ratio == 0) {
             return
         }
-        if (ratioState > 90) {
+        if (ratio > 85) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_veryhight)
-        } else if (ratioState > 75) {
+        } else if (ratio > 65) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_hight)
-        } else if (ratioState > 20) {
-            cyclePaint!!.color = resources.getColor(R.color.color_load_mid)
         } else {
-            cyclePaint!!.color = resources.getColor(R.color.color_load_low)
+            cyclePaint!!.color = accentColor
+        }
+        if (ratio > 50) {
+            cyclePaint?.alpha = 255
+        } else {
+            cyclePaint?.alpha = 127 + ((ratio / 100.0f) * 255).toInt()
         }
         cyclePaint!!.setStrokeCap(Paint.Cap.ROUND)
         canvas.drawArc(RectF(0f, 0f, mRadius, mRadius), -90f, (ratioState * 3.6f) + 1f, false, cyclePaint!!)

@@ -70,7 +70,7 @@ class FragmentApplistions : androidx.fragment.app.Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         processBarDialog = ProgressBarDialog(this.context!!)
 
-        val tabHost = view.findViewById(R.id.blacklist_tabhost) as TabHost
+        val tabHost = view.findViewById(R.id.applications_tabhost) as TabHost
         tabHost.setup()
         val tabIconHelper = TabIconHelper(tabHost, this.activity!!)
 

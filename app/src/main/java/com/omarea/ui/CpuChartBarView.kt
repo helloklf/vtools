@@ -6,36 +6,42 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.omarea.vtools.R
 import java.util.concurrent.LinkedBlockingQueue
+
 
 class CpuChartBarView : View {
     private var mainPaint: Paint? = null
     private var mHeight: Float = 0f
     private var mWidth: Float = 0f
-    private var loadHisotry = LinkedBlockingQueue<Int>();
+    private var loadHisotry = LinkedBlockingQueue<Int>().apply {
+        add(0)
+        add(0)
+        add(0)
+        add(0)
+    };
     private var strokeWidth = 0f
+    private var accentColor = 0x22888888
+
+    private fun getColorAccent() {
+        val defaultColor = -0x1000000
+        val attrsArray = intArrayOf(android.R.attr.colorAccent)
+        val typedArray = context.obtainStyledAttributes(attrsArray)
+        accentColor = typedArray.getColor(0, defaultColor)
+        typedArray.recycle()
+    }
 
     constructor(context: Context) : super(context) {
-        for (i in 0..4) {
-            loadHisotry.put(0)
-        }
+        getColorAccent()
     }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        @SuppressLint("CustomViewStyleable") val array = context.obtainStyledAttributes(attrs, R.styleable.RamInfo)
-        for (i in 0..4) {
-            loadHisotry.put(0)
-        }
-        array.recycle()
+        getColorAccent()
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        @SuppressLint("CustomViewStyleable") val array = context.obtainStyledAttributes(attrs, R.styleable.RamInfo)
-        for (i in 0..5) {
-            loadHisotry.put(0)
-        }
-        array.recycle()
+        getColorAccent()
     }
 
     /**
@@ -69,13 +75,15 @@ class CpuChartBarView : View {
                 mainPaint!!.color = resources.getColor(R.color.color_load_veryhight)
             } else if (ratio > 65) {
                 mainPaint!!.color = resources.getColor(R.color.color_load_hight)
-            } else if (ratio > 20) {
-                mainPaint!!.color = resources.getColor(R.color.color_load_mid)
-            } else if (ratio <= 2) {
-                mainPaint!!.color = 0x22888888
             } else {
-                mainPaint!!.color = resources.getColor(R.color.color_load_low)
+                mainPaint!!.color = accentColor
             }
+            if (ratio > 50) {
+                mainPaint?.alpha = 255
+            } else {
+                mainPaint?.alpha = 127 + ((ratio / 100.0f) * 255).toInt()
+            }
+
             var top = 0f
             if (ratio <= 2) {
                 top = mHeight - 10f
@@ -84,7 +92,6 @@ class CpuChartBarView : View {
             } else {
                 top = (100 - ratio) * mHeight / 100
             }
-
             canvas.drawRoundRect((barWidth) * index, top, (barWidth) * index + (barWidth * 0.9f), mHeight, 5f, 5f, mainPaint!!)
 
             index++

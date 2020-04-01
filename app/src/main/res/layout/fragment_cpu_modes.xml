@@ -256,7 +256,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="8dp"
                     android:scaleType="centerInside"
-                    android:src="@drawable/shortcut_p0" />
+                    android:src="@drawable/shortcut_p1" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -292,7 +292,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="8dp"
                     android:scaleType="centerInside"
-                    android:src="@drawable/shortcut_p1" />
+                    android:src="@drawable/shortcut_p2" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -328,7 +328,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="8dp"
                     android:scaleType="centerInside"
-                    android:src="@drawable/shortcut_p2" />
+                    android:src="@drawable/shortcut_p3" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -364,7 +364,7 @@
                     android:layout_gravity="center_vertical"
                     android:layout_marginLeft="8dp"
                     android:scaleType="centerInside"
-                    android:src="@drawable/shortcut_p3" />
+                    android:src="@drawable/shortcut_p4" />
 
                 <LinearLayout
                     android:layout_width="0dp"

@@ -48,28 +48,28 @@ public class AppShortcutManager {
                     .setShortLabel("省电模式")
                     .setLongLabel("性能配置-省电")
                     .setDisabledMessage("Disabled")
-                    .setIcon(Icon.createWithResource(context, R.drawable.shortcut_p0))
+                    .setIcon(Icon.createWithResource(context, R.drawable.shortcut_p1))
                     .setIntent(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.trinea.cn/")))
                     .build());
             shortcutInfos.add(new ShortcutInfo.Builder(context, "balance")
                     .setShortLabel("省电模式")
                     .setLongLabel("性能配置-均衡")
                     .setDisabledMessage("Disabled")
-                    .setIcon(Icon.createWithResource(context, R.drawable.shortcut_p1))
+                    .setIcon(Icon.createWithResource(context, R.drawable.shortcut_p2))
                     .setIntent(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.trinea.cn/")))
                     .build());
             shortcutInfos.add(new ShortcutInfo.Builder(context, "performance")
                     .setShortLabel("性能模式")
                     .setLongLabel("性能配置-性能")
                     .setDisabledMessage("Disabled")
-                    .setIcon(Icon.createWithResource(context, R.drawable.shortcut_p2))
+                    .setIcon(Icon.createWithResource(context, R.drawable.shortcut_p3))
                     .setIntent(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.trinea.cn/")))
                     .build());
             shortcutInfos.add(new ShortcutInfo.Builder(context, "fast")
                     .setShortLabel("极速模式")
                     .setLongLabel("性能配置-极速")
                     .setDisabledMessage("Disabled")
-                    .setIcon(Icon.createWithResource(context, R.drawable.shortcut_p3))
+                    .setIcon(Icon.createWithResource(context, R.drawable.shortcut_p4))
                     .setIntent(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.trinea.cn/")))
                     .build());
             assert shortcutManager != null;

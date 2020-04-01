@@ -30,6 +30,8 @@
     <color name="pretty">#e2259a</color>
     <color name="violet">#7800c2</color>
     <color name="lightPink">#BC8DE4</color>
+    <color name="lightBlue">#70bef9</color>
+    <color name="darkBlue">#1475e1</color>
 
     <color name="black_overlay">#66000000</color>
     <!--<color name="colorAccent">#FF4081</color>-->

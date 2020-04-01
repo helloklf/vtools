@@ -16,40 +16,59 @@ class CpuChartView : View {
     private val str = arrayOf("已用", "可用")
     private var ratio = 0
     private var ratioState = 0
+
     //圆的直径
     private var mRadius = 300f
+
     //圆的粗细
     private var mStrokeWidth = 40f
+
     //文字大小
     private var textSize = 20
+
     //-------------画笔相关-------------
     //圆环的画笔
     private var cyclePaint: Paint? = null
+
     //文字的画笔
     private var textPaint: Paint? = null
+
     //标注的画笔
     private var labelPaint: Paint? = null
-    //-------------颜色相关-------------
-    //边框颜色和标注颜色
-    private val mColor = intArrayOf(-0xec712a, 0x55888888, -0x1a8c8d, -0xb03c09, -0xe8a, -0x7e387c)
-    // private int[] mColor = new int[]{0xFFF06292, 0xFF9575CD, 0xFFE57373, 0xFF4FC3F7, 0xFFFFF176, 0xFF81C784};
+
     //文字颜色
     private val textColor = -0x777778
+
     //-------------View相关-------------
     //View自身的宽和高
     private var mHeight: Int = 0
     private var mWidth: Int = 0
 
-    constructor(context: Context) : super(context) {}
+    private var accentColor = 0x22888888
+
+    private fun getColorAccent() {
+        val defaultColor = -0x1000000
+        val attrsArray = intArrayOf(android.R.attr.colorAccent)
+        val typedArray = context.obtainStyledAttributes(attrsArray)
+        accentColor = typedArray.getColor(0, defaultColor)
+        typedArray.recycle()
+    }
+
+
+    constructor(context: Context) : super(context) {
+        getColorAccent()
+    }
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        @SuppressLint("CustomViewStyleable") val array = context.obtainStyledAttributes(attrs, R.styleable.RamInfo)
+        @SuppressLint("CustomViewStyleable")
+        val array = context.obtainStyledAttributes(attrs, R.styleable.RamInfo)
         val total = array.getInteger(R.styleable.RamInfo_total, 1)
         val fee = array.getInteger(R.styleable.RamInfo_free, 1)
         val feeRatio = (fee * 100.0 / total).toInt()
         ratio = 100 - feeRatio
         //strPercent = new int[]{100 - feeRatio, feeRatio};
         array.recycle()
+        getColorAccent()
     }
 
     constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
@@ -60,6 +79,7 @@ class CpuChartView : View {
         ratio = feeRatio
         //strPercent = new int[]{100 - feeRatio, feeRatio};
         array.recycle()
+        getColorAccent()
     }
 
     /**
@@ -148,45 +168,19 @@ class CpuChartView : View {
      */
     private fun drawCycle(canvas: Canvas) {
         cyclePaint!!.color = 0x22888888
-        // cyclePaint!!.alpha = 128
         canvas.drawArc(RectF(0f, 0f, mRadius, mRadius), 0f, 360f, false, cyclePaint)
-        /*
-        if (ratio == 0) {
-            return
-        }
-        */
-        // cyclePaint!!.alpha = 255
-        if (ratioState > 85) {
+        if (ratio > 85) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_veryhight)
-        } else if (ratioState > 65) {
+        } else if (ratio > 65) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_hight)
-        } else if (ratioState > 20) {
-            cyclePaint!!.color = resources.getColor(R.color.color_load_mid)
         } else {
-            cyclePaint!!.color = resources.getColor(R.color.color_load_low)
+            cyclePaint!!.color = accentColor
         }
-
-        /*
-        val dashPathEffect = DashPathEffect(floatArrayOf(15 / 3f, 15 * 2 / 3f), 0f)
-
-        val mSweepGradient = SweepGradient(
-            canvas.getWidth() / 2f,
-            canvas.getHeight() / 2f, //以圆弧中心作为扫描渲染的中心以便实现需要的效果
-            intArrayOf(
-                    resources.getColor(R.color.color_load_low),
-                    resources.getColor(R.color.color_load_mid),
-                    resources.getColor(R.color.color_load_hight),
-                    resources.getColor(R.color.color_load_veryhight)
-            ),
-            floatArrayOf(0f, 0.33f, 0.67f, 1f)
-        );
-        val matrix = Matrix()
-        matrix.setRotate(-108f, canvas.width / 2f, canvas.height / 2f)
-        mSweepGradient.setLocalMatrix(matrix)
-
-        cyclePaint!!.setShader(mSweepGradient)
-        cyclePaint!!.setPathEffect(dashPathEffect);
-        */
+        if (ratio > 50) {
+            cyclePaint?.alpha = 255
+        } else {
+            cyclePaint?.alpha = 127 + ((ratio / 100.0f) * 255).toInt()
+        }
 
         cyclePaint!!.setStrokeCap(Paint.Cap.ROUND)
         if (ratio < 1 && (ratioState <= 2)) {
