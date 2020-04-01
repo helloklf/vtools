@@ -85,8 +85,10 @@ public class KeepShell(private var rootMode: Boolean = true) {
                 p = if (rootMode) ShellExecutor.getSuperUserRuntime() else ShellExecutor.getRuntime()
                 out = p!!.outputStream
                 reader = p!!.inputStream.bufferedReader()
-                out!!.write(checkRootState.toByteArray(Charset.defaultCharset()))
-                out!!.flush()
+                out?.run {
+                    write(checkRootState.toByteArray(Charset.defaultCharset()))
+                    flush()
+                }
                 Thread(Runnable {
                     try {
                         val errorReader =
@@ -115,68 +117,61 @@ public class KeepShell(private var rootMode: Boolean = true) {
 
     private var br = "\n\n".toByteArray(Charset.defaultCharset())
 
+    private val shellOutputCache = StringBuilder()
+
     //执行脚本
     public fun doCmdSync(cmd: String): String {
         if (mLock.isLocked && enterLockTime > 0 && System.currentTimeMillis() - enterLockTime > LOCK_TIMEOUT) {
             tryExit()
             Log.e("doCmdSync-Lock", "线程等待超时${System.currentTimeMillis()} - $enterLockTime > $LOCK_TIMEOUT")
         }
-        val uuid = UUID.randomUUID().toString().subSequence(0, 8)
+        val uuid = UUID.randomUUID().toString().subSequence(0, 4)
         getRuntimeShell()
-        if (out != null) {
-            val startTag = "--start--$uuid--"
-            val endTag = "--end--$uuid--"
-            // Log.e("shell-lock", cmd)
-            try {
-                mLock.lockInterruptibly()
 
-                val out = p!!.outputStream
-                if (out != null) {
-                    try {
-                        out.write(br)
-                        out.write("echo '$startTag'".toByteArray(Charset.defaultCharset()))
-                        out.write(br)
-                        out.write(cmd.toByteArray(Charset.defaultCharset()))
-                        out.write(br)
-                        out.write("echo \"\"".toByteArray(Charset.defaultCharset()))
-                        out.write(br)
-                        out.write("echo '$endTag'".toByteArray(Charset.defaultCharset()))
-                        out.write(br)
-                        out.flush()
-                    } catch (ex: java.lang.Exception) {
-                        Log.e("out!!.write", "" + ex.message)
-                    }
+        val startTag = "|$uuid>"
+        val endTag = "<$uuid|"
 
-                    val results = StringBuilder()
-                    var unstart = true
-                    while (true && reader != null) {
-                        val line = reader!!.readLine()
-                        if (line == null || line.contains("--end--")) {
-                            break
-                        } else if (line.equals(startTag)) {
-                            unstart = false
-                        } else if (!unstart) {
-                            results.append(line)
-                            results.append("\n")
-                        }
-                    }
-                    // Log.e("shell-unlock", cmd)
-                    // Log.d("Shell", cmd.toString() + "\n" + "Result:"+results.toString().trim())
-                    return results.toString().trim()
-                } else {
-                    return "error"
-                }
-            } catch (e: IOException) {
-                tryExit()
-                Log.e("KeepShellAsync", "" + e.message)
-                return "error"
-            } finally {
-                enterLockTime = 0L
-                mLock.unlock()
+        try {
+            mLock.lockInterruptibly()
+
+            out!!.run {
+                write(br)
+                write("echo '$startTag'".toByteArray(Charset.defaultCharset()))
+                write(br)
+                write(cmd.toByteArray(Charset.defaultCharset()))
+                write(br)
+                write("echo \"\"".toByteArray(Charset.defaultCharset()))
+                write(br)
+                write("echo '$endTag'".toByteArray(Charset.defaultCharset()))
+                write(br)
+                flush()
             }
-        } else {
+
+            var unstart = true
+            while (true && reader != null) {
+                val line = reader!!.readLine()
+                if (line == null || line.contains(endTag)) {
+                    shellOutputCache.append(line.substring(0, line.indexOf(endTag)))
+                    break
+                } else if (line.contains(startTag)) {
+                    shellOutputCache.clear()
+                    shellOutputCache.append(line.substring(line.indexOf(startTag) + startTag.length))
+                    unstart = false
+                } else if (!unstart) {
+                    shellOutputCache.append(line)
+                    shellOutputCache.append("\n")
+                }
+            }
+            // Log.e("shell-unlock", cmd)
+            // Log.d("Shell", cmd.toString() + "\n" + "Result:"+results.toString().trim())
+            return shellOutputCache.toString().trim()
+        } catch (e: IOException) {
             tryExit()
+            Log.e("KeepShellAsync", "" + e.message)
             return "error"
+        } finally {
+            enterLockTime = 0L
+            mLock.unlock()
         }
     }
 }
