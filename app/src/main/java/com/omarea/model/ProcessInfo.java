@@ -6,4 +6,5 @@ public class ProcessInfo {
     public float cpu;
     public float rss;
     public String user;
+    public float vsz;
 }

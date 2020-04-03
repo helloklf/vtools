@@ -30,6 +30,7 @@
 
         <TextView
             android:id="@+id/ProcessName"
+            android:textColor="?android:attr/textColorPrimary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="1"
@@ -41,7 +42,7 @@
                 android:id="@+id/ProcessUSER"
                 style="@style/textSmall"
                 android:layout_width="0dp"
-                android:layout_weight="3"
+                android:layout_weight="4"
                 android:layout_height="wrap_content" />
             <TextView
                 android:id="@+id/ProcessPID"
@@ -59,7 +60,7 @@
                 android:id="@+id/ProcessRSS"
                 style="@style/textSmall"
                 android:layout_width="0dp"
-                android:layout_weight="6"
+                android:layout_weight="4"
                 android:layout_height="wrap_content" />
         </LinearLayout>
     </LinearLayout>

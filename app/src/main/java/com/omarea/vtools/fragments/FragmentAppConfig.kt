@@ -39,7 +39,7 @@ import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayList
 
-class FragmentConfig : androidx.fragment.app.Fragment() {
+class FragmentAppConfig : androidx.fragment.app.Fragment() {
     private lateinit var processBarDialog: ProgressBarDialog
     private lateinit var spfPowercfg: SharedPreferences
     private lateinit var globalSPF: SharedPreferences
@@ -565,7 +565,7 @@ class FragmentConfig : androidx.fragment.app.Fragment() {
 
     companion object {
         fun createPage(): androidx.fragment.app.Fragment {
-            val fragment = FragmentConfig()
+            val fragment = FragmentAppConfig()
             return fragment
         }
     }

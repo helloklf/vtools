@@ -154,7 +154,7 @@ class FragmentNav : Fragment(), View.OnClickListener {
                     startActivity(sendIntent)
                 }
                 R.id.nav_app_scene -> {
-                    fragment = FragmentConfig.createPage()
+                    fragment = FragmentAppConfig.createPage()
                 }
                 R.id.nav_cpu_modes -> {
                     fragment = FragmentCpuModes.createPage()
