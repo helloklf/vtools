@@ -89,7 +89,7 @@
                 style="@style/textSmallTitle"
                 android:layout_width="55dp"
                 android:layout_height="wrap_content"
-                android:text="RAM占用" />
+                android:text="RSS" />
 
             <TextView
                 android:id="@+id/ProcessRSS"
@@ -143,7 +143,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="end"
-            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginTop="50dp"
             android:orientation="horizontal">
 
             <Button

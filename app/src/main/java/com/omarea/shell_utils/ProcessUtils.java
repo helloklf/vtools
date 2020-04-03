@@ -9,6 +9,20 @@ import com.omarea.model.ProcessInfo;
 import java.util.ArrayList;
 
 public class ProcessUtils {
+
+    /*
+    VSS- Virtual Set Size 虚拟耗用内存（包含共享库占用的内存）
+    RSS- Resident Set Size 实际使用物理内存（包含共享库占用的内存）
+    PSS- Proportional Set Size 实际使用的物理内存（比例分配共享库占用的内存）
+    USS- Unique Set Size 进程独自占用的物理内存（不包含共享库占用的内存）
+    一般来说内存占用大小有如下规律：VSS >= RSS >= PSS >= USS
+    ————————————————
+    版权声明：本文为CSDN博主「火山石」的原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接及本声明。
+    原文链接：https://blog.csdn.net/zhangcanyan/java/article/details/84556808
+    */
+
+    // pageSize 获取 : getconf PAGESIZE
+
     private final String PS_COMMAND = "ps -e -o %CPU,RSS,NAME,PID,USER";
     private final String PS_DETAIL_COMMAND = "ps -e -o %CPU,RSS,NAME,PID,USER,COMMAND";
 
