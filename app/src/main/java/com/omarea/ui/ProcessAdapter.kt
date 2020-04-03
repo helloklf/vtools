@@ -140,7 +140,7 @@ class ProcessAdapter(private val context: Context,
                     }
                 }
             } else {
-                item.friendlyName = name
+                item.friendlyName = item.name
             }
         }
     }
