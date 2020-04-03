@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
 import android.provider.Settings
-import androidx.fragment.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -35,7 +34,7 @@ import com.omarea.vaddin.IAppConfigAidlInterface
 import com.omarea.vtools.R
 import com.omarea.vtools.activities.ActivityAdvSettings
 import com.omarea.vtools.activities.ActivityAppDetails
-import kotlinx.android.synthetic.main.fragment_config.*
+import kotlinx.android.synthetic.main.fragment_appconfig.*
 import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayList
@@ -91,7 +90,7 @@ class FragmentConfig : androidx.fragment.app.Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_config, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_appconfig, container, false)
     private lateinit var modeSwitcher: ModeSwitcher
 
     override fun onResume() {

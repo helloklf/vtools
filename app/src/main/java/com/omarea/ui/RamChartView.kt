@@ -147,9 +147,9 @@ class RamChartView : View {
         if (ratio == 0) {
             return
         }
-        if (ratio > 85) {
+        if (ratio > 89) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_veryhight)
-        } else if (ratio > 65) {
+        } else if (ratio > 80) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_hight)
         } else {
             cyclePaint!!.color = accentColor

@@ -174,7 +174,7 @@ class TaskActionsExecutor(private val taskActions: ArrayList<TaskAction>, privat
         } else {
             NotificationCompat.Builder(context)
         }
-        nm.notify(920, notic.setSmallIcon(R.drawable.icon_clock).setWhen(System.currentTimeMillis()).setContentTitle(context.getString(R.string.notice_channel_task)).setContentText(text).build())
+        nm.notify(920, notic.setSmallIcon(R.drawable.ic_clock).setWhen(System.currentTimeMillis()).setContentTitle(context.getString(R.string.notice_channel_task)).setContentText(text).build())
     }
 
     private fun hideNotification() {

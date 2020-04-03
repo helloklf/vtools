@@ -5,8 +5,6 @@ import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
-import androidx.fragment.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,8 +35,9 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
     private var handler = Handler()
     private var coreCount = 0
     private var cores = arrayListOf<CheckBox>()
-    private var exynosHMP = false;
-    private var adrenoGPU = false;
+    private var exynosHMP = false
+    private var supportedGPU = false
+    private var adrenoGPU = false
     private var adrenoFreqs = arrayOf("")
     private var adrenoGovernors = arrayOf("")
     private var adrenoPLevels = arrayOf("")
@@ -60,10 +59,12 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
         val exynosCpuhotplugSupport = CpuFrequencyUtil.exynosCpuhotplugSupport()
         exynosHMP = CpuFrequencyUtil.exynosHMP()
 
+        supportedGPU = GpuUtils.supported()
         adrenoGPU = GpuUtils.isAdrenoGPU()
-        if (adrenoGPU) {
-            adrenoGovernors = GpuUtils.getAdrenoGPUGovernors()
-            adrenoFreqs = GpuUtils.adrenoGPUFreqs()
+
+        if (supportedGPU) {
+            adrenoGovernors = GpuUtils.getGovernors()
+            adrenoFreqs = GpuUtils.getFreqs()
             adrenoPLevels = GpuUtils.getAdrenoGPUPowerLevels()
         }
 
@@ -79,8 +80,16 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
                     cpu_exynos.visibility = View.GONE
                 }
 
-                if (!adrenoGPU) {
-                    adreno_gpu.visibility = View.GONE
+                if (supportedGPU) {
+                    gpu_params.visibility = View.VISIBLE
+                    if (adrenoGPU) {
+                        adreno_gpu_power.visibility = View.VISIBLE
+                    } else {
+                        adreno_gpu_power.visibility = View.GONE
+                    }
+                } else {
+                    gpu_params.visibility = View.GONE
+                    adreno_gpu_power.visibility = View.GONE
                 }
 
                 for (i in 0 until coreCount) {
@@ -147,7 +156,7 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
                 }
             }
 
-            bindAdrenoConfig()
+            bindGPUConfig()
 
             for (i in 0 until cores.size) {
                 val core = i
@@ -166,9 +175,9 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
         }
     }
 
-    private fun bindAdrenoConfig() {
-        if (adrenoGPU) {
-            adreno_gpu_min_freq.setOnClickListener {
+    private fun bindGPUConfig() {
+        if (supportedGPU) {
+            gpu_min_freq.setOnClickListener {
                 var currentIndex = adrenoFreqs.indexOf(status.adrenoMinFreq)
                 if (currentIndex < 0) {
                     currentIndex = 0
@@ -182,16 +191,16 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
                         .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             if (index != currentIndex) {
                                 val g = adrenoFreqs[index]
-                                if (GpuUtils.getAdrenoGPUMinFreq() == g) {
+                                if (GpuUtils.getMinFreq() == g) {
                                     return@setPositiveButton
                                 }
-                                GpuUtils.setAdrenoGPUMinFreq(g)
+                                GpuUtils.setMinFreq(g)
                                 status.adrenoMinFreq = g
                                 setText(it as TextView?, subGPUFreqStr(g))
                             }
                         })
             }
-            adreno_gpu_max_freq.setOnClickListener {
+            gpu_max_freq.setOnClickListener {
                 var currentIndex = adrenoFreqs.indexOf(status.adrenoMaxFreq)
                 if (currentIndex < 0) {
                     currentIndex = 0
@@ -205,16 +214,16 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
                         .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             if (index != currentIndex) {
                                 val g = adrenoFreqs[index]
-                                if (GpuUtils.getAdrenoGPUMaxFreq() == g) {
+                                if (GpuUtils.getMaxFreq() == g) {
                                     return@setPositiveButton
                                 }
-                                GpuUtils.setAdrenoGPUMaxFreq(g)
+                                GpuUtils.setMaxFreq(g)
                                 status.adrenoMaxFreq = g
                                 setText(it as TextView?, subGPUFreqStr(g))
                             }
                         })
             }
-            adreno_gpu_governor.setOnClickListener {
+            gpu_governor.setOnClickListener {
                 var currentIndex = adrenoGovernors.indexOf(status.adrenoGovernor)
                 if (currentIndex < 0) {
                     currentIndex = 0
@@ -222,89 +231,91 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
                 var governor = currentIndex
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("选择Adreno GPU调度")
-                        .setSingleChoiceItems((adrenoGovernors), currentIndex) { dialog, which ->
+                        .setSingleChoiceItems((adrenoGovernors), currentIndex) { _, which ->
                             governor = which
                         }
                         .setPositiveButton(R.string.btn_confirm) { _, _ ->
                             if (governor != currentIndex) {
                                 val g = adrenoGovernors[governor]
-                                if (GpuUtils.getAdrenoGPUGovernor() == g) {
+                                if (GpuUtils.getGovernor() == g) {
                                     return@setPositiveButton
                                 }
-                                GpuUtils.setAdrenoGPUGovernor(g)
+                                GpuUtils.setGovernor(g)
                                 status.adrenoGovernor = g
                                 setText(it as TextView?, g)
                             }
                         })
             }
-            adreno_gpu_min_pl.setOnClickListener {
-                var currentIndex = adrenoPLevels.indexOf(status.adrenoMinPL)
-                if (currentIndex < 0) {
-                    currentIndex = 0
-                }
-                var index = currentIndex
-                DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setTitle("选择GPU最小功耗级别")
-                        .setSingleChoiceItems((adrenoPLevels), currentIndex) { dialog, which ->
-                            index = which
-                        }
-                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                            if (index != currentIndex) {
-                                val g = adrenoPLevels[index]
-                                if (GpuUtils.getAdrenoGPUMinPowerLevel() == g) {
-                                    return@setPositiveButton
-                                }
-                                GpuUtils.setAdrenoGPUMinPowerLevel(g)
-                                status.adrenoMinPL = g
-                                setText(it as TextView?, g)
+            if(adrenoGPU) {
+                adreno_gpu_min_pl.setOnClickListener {
+                    var currentIndex = adrenoPLevels.indexOf(status.adrenoMinPL)
+                    if (currentIndex < 0) {
+                        currentIndex = 0
+                    }
+                    var index = currentIndex
+                    DialogHelper.animDialog(AlertDialog.Builder(context)
+                            .setTitle("选择GPU最小功耗级别")
+                            .setSingleChoiceItems((adrenoPLevels), currentIndex) { dialog, which ->
+                                index = which
                             }
-                        })
-            }
-            adreno_gpu_max_pl.setOnClickListener {
-                var currentIndex = adrenoPLevels.indexOf(status.adrenoMaxPL)
-                if (currentIndex < 0) {
-                    currentIndex = 0
-                }
-                var index = currentIndex
-                DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setTitle("选择GPU最大功耗级别")
-                        .setSingleChoiceItems((adrenoPLevels), currentIndex) { dialog, which ->
-                            index = which
-                        }
-                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                            if (index != currentIndex) {
-                                val g = adrenoPLevels[index]
-                                if (GpuUtils.getAdrenoGPUMaxPowerLevel() == g) {
-                                    return@setPositiveButton
+                            .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                                if (index != currentIndex) {
+                                    val g = adrenoPLevels[index]
+                                    if (GpuUtils.getAdrenoGPUMinPowerLevel() == g) {
+                                        return@setPositiveButton
+                                    }
+                                    GpuUtils.setAdrenoGPUMinPowerLevel(g)
+                                    status.adrenoMinPL = g
+                                    setText(it as TextView?, g)
                                 }
-                                GpuUtils.setAdrenoGPUMaxPowerLevel(g)
-                                status.adrenoMaxPL = g
-                                setText(it as TextView?, g)
-                            }
-                        })
-            }
-            adreno_gpu_default_pl.setOnClickListener {
-                var currentIndex = adrenoPLevels.indexOf(status.adrenoDefaultPL)
-                if (currentIndex < 0) {
-                    currentIndex = 0
+                            })
                 }
-                var index = currentIndex
-                DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setTitle("选择GPU默认功耗级别")
-                        .setSingleChoiceItems((adrenoPLevels), currentIndex) { dialog, which ->
-                            index = which
-                        }
-                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                            if (index != currentIndex) {
-                                val g = adrenoPLevels[index]
-                                if (GpuUtils.getAdrenoGPUDefaultPowerLevel() == g) {
-                                    return@setPositiveButton
-                                }
-                                GpuUtils.setAdrenoGPUDefaultPowerLevel(g)
-                                status.adrenoDefaultPL = g
-                                updateUI()
+                adreno_gpu_max_pl.setOnClickListener {
+                    var currentIndex = adrenoPLevels.indexOf(status.adrenoMaxPL)
+                    if (currentIndex < 0) {
+                        currentIndex = 0
+                    }
+                    var index = currentIndex
+                    DialogHelper.animDialog(AlertDialog.Builder(context)
+                            .setTitle("选择GPU最大功耗级别")
+                            .setSingleChoiceItems((adrenoPLevels), currentIndex) { dialog, which ->
+                                index = which
                             }
-                        })
+                            .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                                if (index != currentIndex) {
+                                    val g = adrenoPLevels[index]
+                                    if (GpuUtils.getAdrenoGPUMaxPowerLevel() == g) {
+                                        return@setPositiveButton
+                                    }
+                                    GpuUtils.setAdrenoGPUMaxPowerLevel(g)
+                                    status.adrenoMaxPL = g
+                                    setText(it as TextView?, g)
+                                }
+                            })
+                }
+                adreno_gpu_default_pl.setOnClickListener {
+                    var currentIndex = adrenoPLevels.indexOf(status.adrenoDefaultPL)
+                    if (currentIndex < 0) {
+                        currentIndex = 0
+                    }
+                    var index = currentIndex
+                    DialogHelper.animDialog(AlertDialog.Builder(context)
+                            .setTitle("选择GPU默认功耗级别")
+                            .setSingleChoiceItems((adrenoPLevels), currentIndex) { _, which ->
+                                index = which
+                            }
+                            .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                                if (index != currentIndex) {
+                                    val g = adrenoPLevels[index]
+                                    if (GpuUtils.getAdrenoGPUDefaultPowerLevel() == g) {
+                                        return@setPositiveButton
+                                    }
+                                    GpuUtils.setAdrenoGPUDefaultPowerLevel(g)
+                                    status.adrenoDefaultPL = g
+                                    updateUI()
+                                }
+                            })
+                }
             }
         }
     }
@@ -326,7 +337,7 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
                 val coreState = parsetCpuset(status.cpusetBackground)
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("选择要使用的核心")
-                        .setMultiChoiceItems(getCoreList(), coreState) { dialog, which, isChecked ->
+                        .setMultiChoiceItems(getCoreList(), coreState) { _, which, isChecked ->
                             coreState[which] = isChecked
                         }
                         .setPositiveButton(R.string.btn_confirm) { _, _ ->
@@ -412,7 +423,7 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
         val view = View.inflate(this.context!!, R.layout.fragment_cpu_cluster, null)
         cpu_cluster_list.addView(view)
         view.findViewById<TextView>(R.id.cluster_title).text = "Cluster $cluster"
-        view.setTag("cluster_$cluster")
+        view.tag = "cluster_$cluster"
 
         val cluster_min_freq = view.findViewById<TextView>(R.id.cluster_min_freq)
         val cluster_max_freq = view.findViewById<TextView>(R.id.cluster_max_freq)
@@ -492,6 +503,8 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
             return@setOnClickListener
         }
         cluster_governor_params.setOnClickListener {
+            status.cpuClusterStatuses[cluster].governor_params = CpuFrequencyUtil.getCurrentScalingGovernorParams(cluster)
+
             if (status.cpuClusterStatuses[cluster].governor_params != null) {
                 val msg = StringBuilder()
                 for (param in status.cpuClusterStatuses[cluster].governor_params) {
@@ -596,7 +609,7 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
                 config.min_freq = CpuFrequencyUtil.getCurrentMinFrequency(cluster)
                 config.max_freq = CpuFrequencyUtil.getCurrentMaxFrequency(cluster)
                 config.governor = CpuFrequencyUtil.getCurrentScalingGovernor(cluster)
-                config.governor_params = CpuFrequencyUtil.getCurrentScalingGovernorParams(cluster)
+                // TODO: 要不要加载 config.governor_params = CpuFrequencyUtil.getCurrentScalingGovernorParams(cluster)
             }
 
             status.coreControl = ThermalControlUtils.getCoreControlState()
@@ -612,13 +625,15 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
             status.exynosHmpBooster = CpuFrequencyUtil.getExynosBooster()
             status.exynosHotplug = CpuFrequencyUtil.getExynosHotplug()
 
-            if (adrenoGPU) {
-                status.adrenoDefaultPL = GpuUtils.getAdrenoGPUDefaultPowerLevel()
-                status.adrenoMinPL = GpuUtils.getAdrenoGPUMinPowerLevel()
-                status.adrenoMaxPL = GpuUtils.getAdrenoGPUMaxPowerLevel()
-                status.adrenoMinFreq = getApproximation(adrenoFreqs, GpuUtils.getAdrenoGPUMinFreq())
-                status.adrenoMaxFreq = getApproximation(adrenoFreqs, GpuUtils.getAdrenoGPUMaxFreq())
-                status.adrenoGovernor = GpuUtils.getAdrenoGPUGovernor()
+            if (supportedGPU) {
+                if (adrenoGPU) {
+                    status.adrenoDefaultPL = GpuUtils.getAdrenoGPUDefaultPowerLevel()
+                    status.adrenoMinPL = GpuUtils.getAdrenoGPUMinPowerLevel()
+                    status.adrenoMaxPL = GpuUtils.getAdrenoGPUMaxPowerLevel()
+                }
+                status.adrenoMinFreq = getApproximation(adrenoFreqs, GpuUtils.getMinFreq())
+                status.adrenoMaxFreq = getApproximation(adrenoFreqs, GpuUtils.getMaxFreq())
+                status.adrenoGovernor = GpuUtils.getGovernor()
             }
 
             status.coreOnline = arrayListOf<Boolean>()
@@ -657,10 +672,10 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
         if (freq.isNullOrEmpty()) {
             return ""
         }
-        if (freq.length > 6) {
-            return freq.substring(0, freq.length - 6) + " Mhz"
+        return if (freq.length > 6) {
+            freq.substring(0, freq.length - 6) + " Mhz"
         } else {
-            return freq
+            freq
         }
     }
 
@@ -723,20 +738,22 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
             }
             cpu_sched_boost.isChecked = status.boost == "1"
 
-            exynos_hmp_down.setProgress(status.exynosHmpDown)
-            exynos_hmp_down_text.setText(status.exynosHmpDown.toString())
-            exynos_hmp_up.setProgress(status.exynosHmpUP)
-            exynos_hmp_up_text.setText(status.exynosHmpUP.toString())
+            exynos_hmp_down.progress = status.exynosHmpDown
+            exynos_hmp_down_text.text = status.exynosHmpDown.toString()
+            exynos_hmp_up.progress = status.exynosHmpUP
+            exynos_hmp_up_text.text = status.exynosHmpUP.toString()
             exynos_cpuhotplug.isChecked = status.exynosHotplug
             exynos_hmp_booster.isChecked = status.exynosHmpBooster
 
-            if (adrenoGPU) {
-                adreno_gpu_default_pl.setText(status.adrenoDefaultPL)
-                adreno_gpu_min_pl.setText(status.adrenoMinPL)
-                adreno_gpu_max_pl.setText(status.adrenoMaxPL)
-                adreno_gpu_min_freq.setText(subGPUFreqStr(status.adrenoMinFreq))
-                adreno_gpu_max_freq.setText(subGPUFreqStr(status.adrenoMaxFreq))
-                adreno_gpu_governor.setText(status.adrenoGovernor)
+            if (supportedGPU) {
+                if (adrenoGPU) {
+                    adreno_gpu_default_pl.text = status.adrenoDefaultPL
+                    adreno_gpu_min_pl.text = status.adrenoMinPL
+                    adreno_gpu_max_pl.text = status.adrenoMaxPL
+                }
+                gpu_min_freq.text = subGPUFreqStr(status.adrenoMinFreq)
+                gpu_max_freq.text = subGPUFreqStr(status.adrenoMaxFreq)
+                gpu_governor.text = status.adrenoGovernor
             }
 
             if (status.boostFreq.isEmpty()) {
@@ -787,12 +804,11 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
         cpu_apply_onboot.isChecked = statusOnBoot != null
 
         if (cpuModeName != null) {
-            val time = System.currentTimeMillis()
             ModeSwitcher().executePowercfgMode(cpuModeName!!)
 
             val modeName = ModeSwitcher.getModName(cpuModeName!!)
-            cpu_apply_onboot.setText("自定义 " + modeName + " ")
-            cpu_apply_onboot_desc.setText("自定义 [" + modeName + "] 的具体参数，覆盖Scene原始设定")
+            cpu_apply_onboot.setText("自定义 $modeName ")
+            cpu_apply_onboot_desc.setText("自定义 [$modeName] 的具体参数，覆盖Scene原始设定")
             cpu_help_text.visibility = View.GONE
         }
     }
@@ -810,6 +826,10 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
         if (isDetached) {
             return
         }
+        if (cpuModeName == null) {
+            activity!!.title = getString(R.string.menu_core_control)
+        }
+
         loadBootConfig()
         if (timer == null) {
             timer = Timer()

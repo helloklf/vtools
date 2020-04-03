@@ -14,8 +14,8 @@ public class GpuUtils {
 
     public static String getGpuFreq() {
         if (GPU_FREQ_PATH == null) {
-            String path1 = "/sys/kernel/gpu/gpu_clock";
-            String path2 = "/sys/class/kgsl/kgsl-3d0/devfreq/cur_freq";
+            String path1 = getGpuParamsDir() + "/cur_freq";
+            String path2 = "/sys/kernel/gpu/gpu_clock";
             if (RootFile.INSTANCE.fileExists(path1)) {
                 GPU_FREQ_PATH = path1;
             } else if (RootFile.INSTANCE.fileExists(path2)) {
@@ -36,22 +36,21 @@ public class GpuUtils {
         }
     }
 
+    // Adreno Only
     public static int getGpuLoad() {
         if (GPU_LOAD_PATH == null) {
-            String path1 = "/sys/kernel/gpu/gpu_busy";
-            String path2 = "/sys/class/kgsl/kgsl-3d0/devfreq/gpu_load";
-            String path3 = "/sys/class/kgsl/kgsl-3d0/gpu_busy_percentage";
-            String path4 = "/sys/class/kgsl/kgsl-3d0/gpuload";
-            if (RootFile.INSTANCE.fileExists(path1)) {
-                GPU_LOAD_PATH = path1;
-            } else if (RootFile.INSTANCE.fileExists(path2)) {
-                GPU_LOAD_PATH = path2;
-            } else if (RootFile.INSTANCE.fileExists(path3)) {
-                GPU_LOAD_PATH = path3;
-            } else if (RootFile.INSTANCE.fileExists(path4)) {
-                GPU_LOAD_PATH = path4;
-            } else {
-                GPU_LOAD_PATH = "";
+            String[] paths = new String[]{
+                    "/sys/kernel/gpu/gpu_busy",
+                    "/sys/class/kgsl/kgsl-3d0/devfreq/gpu_load",
+                    "/sys/class/kgsl/kgsl-3d0/gpu_busy_percentage",
+                    "/sys/class/kgsl/kgsl-3d0/gpuload",
+                    "/sys/class/devfreq/gpufreq/mali_ondemand/utilisation"
+            };
+            GPU_LOAD_PATH = "";
+            for (String path : paths) {
+                if (RootFile.INSTANCE.fileExists(path)) {
+                    GPU_LOAD_PATH = path;
+                }
             }
         }
 
@@ -67,54 +66,89 @@ public class GpuUtils {
         }
     }
 
-
-    public static String[] adrenoGPUFreqs() {
-        String freqs = KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/devfreq/available_frequencies");
+    public static String[] getFreqs() {
+        String freqs = KernelProrp.INSTANCE.getProp(getGpuParamsDir() + "/available_frequencies");
         return freqs.split(" ");
     }
 
-    public static boolean isAdrenoGPU() {
-        return new File("/sys/class/kgsl/kgsl-3d0").exists();
+    public static boolean supported() {
+        return isAdrenoGPU() || isMaliGPU();
     }
 
-    public static String[] getAdrenoGPUGovernors() {
-        String g = KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/devfreq/available_governors");
+    private static Boolean $isAdrenoGPU = null;
+
+    public static boolean isAdrenoGPU() {
+        if ($isAdrenoGPU == null) {
+            $isAdrenoGPU = new File(gpuParamsDirAdreno).exists() || RootFile.INSTANCE.dirExists(gpuParamsDirAdreno);
+        }
+        return $isAdrenoGPU;
+    }
+
+    private static Boolean $isMaliGPU = null;
+
+    public static boolean isMaliGPU() {
+        if ($isMaliGPU == null) {
+            $isMaliGPU = new File(gpuParamsDirMali).exists() || RootFile.INSTANCE.dirExists(gpuParamsDirMali);
+        }
+        return $isMaliGPU;
+    }
+
+    private static String gpuParamsDirAdreno = "/sys/class/kgsl/kgsl-3d0";
+    private static String gpuParamsDirMali = "/sys/class/devfreq/gpufreq";
+    private static String gpuParamsDir = null;
+
+    private static String getGpuParamsDir() {
+        if (gpuParamsDir == null) {
+            if (isAdrenoGPU()) {
+                gpuParamsDir = gpuParamsDirAdreno + "/devfreq";
+            } else if (isMaliGPU()) {
+                gpuParamsDir = gpuParamsDirMali;
+            } else {
+                gpuParamsDir = "";
+            }
+        }
+        return gpuParamsDir;
+    }
+
+    public static String[] getGovernors() {
+        String g = KernelProrp.INSTANCE.getProp(getGpuParamsDir() + "/available_governors");
         return g.split(" ");
     }
 
-    public static String getAdrenoGPUMinFreq() {
-        return KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/devfreq/min_freq");
+    public static String getMinFreq() {
+        return KernelProrp.INSTANCE.getProp(getGpuParamsDir() + "/min_freq");
     }
 
-    public static void setAdrenoGPUMinFreq(String value) {
+    public static void setMinFreq(String value) {
         ArrayList<String> commands = new ArrayList<>();
-        commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/devfreq/min_freq;");
-        commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq;");
+        commands.add("chmod 0664 " + getGpuParamsDir() + "/min_freq;");
+        commands.add("echo " + value + " > " + getGpuParamsDir() + "/min_freq;");
         KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
-    public static String getAdrenoGPUMaxFreq() {
-        return KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/devfreq/max_freq");
+    public static String getMaxFreq() {
+        return KernelProrp.INSTANCE.getProp(getGpuParamsDir() + "/max_freq");
     }
 
-    public static void setAdrenoGPUMaxFreq(String value) {
+    public static void setMaxFreq(String value) {
         ArrayList<String> commands = new ArrayList<>();
-        commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/devfreq/max_freq;");
-        commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq;");
+        commands.add("chmod 0664 " + getGpuParamsDir() + "/max_freq;");
+        commands.add("echo " + value + " > " + getGpuParamsDir() + "/max_freq;");
         KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
-    public static String getAdrenoGPUGovernor() {
-        return KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/devfreq/governor");
+    public static String getGovernor() {
+        return KernelProrp.INSTANCE.getProp(getGpuParamsDir() + "/governor");
     }
 
-    public static void setAdrenoGPUGovernor(String value) {
+    public static void setGovernor(String value) {
         ArrayList<String> commands = new ArrayList<>();
-        commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/devfreq/governor;");
-        commands.add("echo " + value + " > /sys/class/kgsl/kgsl-3d0/devfreq/governor;");
+        commands.add("chmod 0664 " + getGpuParamsDir() + "/governor;");
+        commands.add("echo " + value + " > " + getGpuParamsDir() + "/governor;");
         KeepShellPublic.INSTANCE.doCmdSync(commands);
     }
 
+    // #region Adreno GPU Power Level
     public static String getAdrenoGPUMinPowerLevel() {
         return KernelProrp.INSTANCE.getProp("/sys/class/kgsl/kgsl-3d0/min_pwrlevel");
     }
@@ -161,23 +195,25 @@ public class GpuUtils {
         }
         return new String[]{};
     }
+    // #endregion Adreno GPU Power Level
 
     public static ArrayList<String> buildSetAdrenoGPUParams(CpuStatus cpuState, ArrayList<String> commands) {
         // governor
         if (!cpuState.adrenoGovernor.equals("")) {
-            commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/devfreq/governor;");
-            commands.add("echo " + cpuState.adrenoGovernor + " > /sys/class/kgsl/kgsl-3d0/devfreq/governor;");
+            commands.add("chmod 0664 " + getGpuParamsDir() + "/governor;");
+            commands.add("echo " + cpuState.adrenoGovernor + " > " + getGpuParamsDir() + "/governor;");
         }
         // min feq
         if (!cpuState.adrenoMinFreq.equals("")) {
-            commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/devfreq/min_freq;");
-            commands.add("echo " + cpuState.adrenoMinFreq + " > /sys/class/kgsl/kgsl-3d0/devfreq/min_freq;");
+            commands.add("chmod 0664 " + getGpuParamsDir() + "/min_freq;");
+            commands.add("echo " + cpuState.adrenoMinFreq + " > " + getGpuParamsDir() + "/min_freq;");
         }
         // max freq
         if (!cpuState.adrenoMaxFreq.equals("")) {
-            commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/devfreq/max_freq;");
-            commands.add("echo " + cpuState.adrenoMaxFreq + " > /sys/class/kgsl/kgsl-3d0/devfreq/max_freq;");
+            commands.add("chmod 0664 " + getGpuParamsDir() + "/max_freq;");
+            commands.add("echo " + cpuState.adrenoMaxFreq + " > " + getGpuParamsDir() + "/max_freq;");
         }
+
         // min power level
         if (!cpuState.adrenoMinPL.equals("")) {
             commands.add("chmod 0664 /sys/class/kgsl/kgsl-3d0/min_pwrlevel;");

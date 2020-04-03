@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_vertical"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#22dddddd">
+
+            <EditText
+                android:id="@+id/config_search_box"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@android:color/transparent"
+                android:hint="搜索进程名"
+                android:inputType="textFilter"
+                android:padding="8dp"
+                android:singleLine="true"
+                android:textSize="16dp" />
+
+            <Spinner
+                android:id="@+id/process_sort_mode"
+                android:layout_width="110dp"
+                android:layout_height="match_parent"
+                android:entries="@array/process_sort_modes"
+                android:focusable="false"
+                android:padding="0dp" />
+
+            <Spinner
+                android:id="@+id/process_filter"
+                android:layout_width="110dp"
+                android:layout_height="match_parent"
+                android:entries="@array/process_filter"
+                android:focusable="false"
+                android:padding="0dp" />
+        </LinearLayout>
+
+        <com.omarea.common.ui.OverScrollListView
+            android:id="@+id/process_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+    <TextView
+        android:visibility="gone"
+        android:id="@+id/process_unsupported"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:textAlignment="center"
+        android:text="该功能暂不支持你的手机系统"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</FrameLayout>

@@ -169,6 +169,13 @@ class FragmentNav : Fragment(), View.OnClickListener {
                     tryOpenApp("com.omarea.gesture")
                     return
                 }
+                R.id.nav_filter -> {
+                    tryOpenApp("com.omarea.filter")
+                    return
+                }
+                R.id.nav_processes -> {
+                    fragment = FragmentProcess()
+                }
                 R.id.nav_additional -> fragment = FragmentAddin()
                 R.id.nav_additional_all -> {
                     val krScriptConfig = KrScriptConfig().init(context!!)

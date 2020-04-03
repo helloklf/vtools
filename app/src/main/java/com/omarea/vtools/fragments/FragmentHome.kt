@@ -9,15 +9,12 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.net.Uri
-import android.os.BatteryManager
-import android.os.Bundle
-import android.os.Handler
-import com.google.android.material.snackbar.Snackbar
-import androidx.fragment.app.Fragment
+import android.os.*
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.google.android.material.snackbar.Snackbar
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.data_collection.GlobalStatus
@@ -126,6 +123,27 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         home_battery_edit.setOnClickListener {
             DialogElectricityUnit().showDialog(context!!)
         }
+
+        // 点击CPU核心 查看详细参数
+        cpu_core_list.setOnItemClickListener { _, _, position, _ ->
+            CpuFrequencyUtil.getCoregGovernorParams(position)?.run {
+                val msg = StringBuilder()
+                for (param in this) {
+                    msg.append("\n")
+                    msg.append(param.key)
+                    msg.append("：")
+                    msg.append(param.value)
+                    msg.append("\n")
+                }
+                DialogHelper.animDialog(AlertDialog.Builder(context)
+                        .setTitle("调度器参数")
+                        .setMessage(msg.toString())
+                        .setPositiveButton(R.string.btn_confirm) { _, _ ->
+                        })
+            }
+        }
+
+        home_device_name.text = Build.MANUFACTURER + " " + Build.MODEL + "\n" + Build.VERSION.BASE_OS
     }
 
     @SuppressLint("SetTextI18n")
@@ -201,9 +219,15 @@ class FragmentHome : androidx.fragment.app.Fragment() {
         return (dpValue * scale + 0.5f).toInt()
     }
 
+    private fun elapsedRealtimeStr(): String {
+        val timer = SystemClock.elapsedRealtime() / 1000
+        return String.format("%02d:%02d:%02d", timer / 3600, timer % 3600 / 60, timer % 60)
+    }
+
     private var updateTick = 0;
 
     private var batteryCurrentNow = 0L
+
     @SuppressLint("SetTextI18n")
     private fun updateInfo() {
         if (coreCount < 1) {
@@ -248,6 +272,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
 
         myHandler.post {
             try {
+                home_running_time.text = elapsedRealtimeStr()
                 home_battery_now.text = (batteryCurrentNow / globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT)).toString() + "mA"
                 home_battery_capacity.text = "$batteryCapacity%"
                 home_battery_temperature.text = "${GlobalStatus.batteryTemperature}°C"

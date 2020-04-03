@@ -124,6 +124,12 @@ public class CpuFrequencyUtil {
         return new FileValueMap().mapFileValue(cpu_dir.replace("cpu0", cpu) + "cpufreq/" + governor);
     }
 
+    public static HashMap<String, String> getCoregGovernorParams(Integer cluster) {
+        String cpu = "cpu" + cluster;
+        String governor = getCurrentScalingGovernor(cpu);
+        return new FileValueMap().mapFileValue(cpu_dir.replace("cpu0", cpu) + "cpufreq/" + governor);
+    }
+
     public static void setMinFrequency(String minFrequency, Integer cluster) {
         if (cluster >= getClusterInfo().size()) {
             return;

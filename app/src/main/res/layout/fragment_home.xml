@@ -292,9 +292,9 @@
                     android:padding="10dp">
 
                     <ImageButton
-                        android:layout_marginLeft="-4dp"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
+                        android:layout_marginStart="-4dp"
                         android:background="@android:color/transparent"
                         android:padding="5dp"
                         android:scaleType="centerInside"
@@ -303,11 +303,11 @@
 
                     <TextView
                         android:id="@+id/home_battery_now"
-                        android:textSize="13dp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:textAlignment="center" />
+                        android:textAlignment="center"
+                        android:textSize="13dp" />
 
                     <ImageButton
                         android:id="@+id/home_battery_edit"
@@ -322,9 +322,9 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_marginEnd="8dp"
                     android:layout_width="0dp"
                     android:layout_height="50dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_weight="5"
                     android:background="@drawable/krscript_item_ripple"
                     android:gravity="center_vertical"
@@ -332,10 +332,10 @@
                     android:padding="10dp">
 
                     <ImageButton
-                        android:layout_marginLeft="-4dp"
                         android:id="@+id/home_battery_settings"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
+                        android:layout_marginLeft="-4dp"
                         android:background="@android:color/transparent"
                         android:padding="5dp"
                         android:scaleType="centerInside"
@@ -344,11 +344,11 @@
 
                     <TextView
                         android:id="@+id/home_battery_capacity"
-                        android:textSize="13dp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:textAlignment="center" />
+                        android:textAlignment="center"
+                        android:textSize="13dp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -359,10 +359,11 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:padding="10dp">
+
                     <ImageButton
-                        android:layout_marginLeft="-4dp"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
+                        android:layout_marginLeft="-4dp"
                         android:background="@android:color/transparent"
                         android:padding="5dp"
                         android:scaleType="centerInside"
@@ -371,12 +372,114 @@
 
                     <TextView
                         android:id="@+id/home_battery_temperature"
-                        android:textSize="13dp"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:textAlignment="center" />
+                        android:textAlignment="center"
+                        android:textSize="13dp" />
 
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/krscript_item_ripple_inactive"
+                android:padding="10dp"
+                android:layout_margin="4dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginStart="-4dp"
+                    android:background="@android:color/transparent"
+                    android:padding="5dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/icon_android"
+                    android:tint="#ff888888" />
+
+                <TextView
+                    android:tint="#ff888888"
+                    android:textAlignment="center"
+                    android:id="@+id/home_device_name"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="4dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/krscript_item_ripple_inactive"
+                    android:padding="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginStart="-4dp"
+                        android:background="@android:color/transparent"
+                        android:padding="5dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_clock"
+                        android:tint="#ff888888" />
+
+                    <TextView
+                        android:layout_marginStart="8dp"
+                        android:tint="#ff888888"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="已开机" />
+
+                    <TextView
+                        android:tint="#ff888888"
+                        android:id="@+id/home_running_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="0s" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/home_help"
+                    android:layout_width="0dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/krscript_item_ripple_inactive"
+                    android:padding="10dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageButton
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginStart="-4dp"
+                        android:background="@android:color/transparent"
+                        android:padding="5dp"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/icon_global"
+                        android:tint="#ff888888" />
+
+                    <TextView
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                        android:textAlignment="center"
+                        android:tint="#ff888888"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="访问 Scene官网" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -386,8 +489,8 @@
         android:id="@+id/powermode_toggles"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
         android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="4dp"
         android:orientation="horizontal"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
@@ -436,19 +539,4 @@
             android:textColor="#66ffffff"
             android:textStyle="bold" />
     </LinearLayout>
-
-    <Button
-        android:id="@+id/home_help"
-        style="@style/textSmall"
-        android:layout_width="match_parent"
-        android:layout_height="20dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="8dp"
-        android:autoLink="none"
-        android:background="@android:color/transparent"
-        android:padding="0dp"
-        android:text="点击 访问🌍Scene官网"
-        android:textAlignment="center"
-        android:textColor="?colorAccent" />
 </LinearLayout>
