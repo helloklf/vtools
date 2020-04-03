@@ -10,13 +10,9 @@
 
     <ImageView
         android:id="@+id/ProcessIcon"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_gravity="center"
-        android:maxWidth="30dp"
-        android:maxHeight="30dp"
-        android:minWidth="30dp"
-        android:minHeight="30dp"
         android:src="@drawable/process_linux" />
 
     <LinearLayout
@@ -29,8 +25,14 @@
         android:layout_marginLeft="8dp">
 
         <TextView
-            android:id="@+id/ProcessName"
+            android:id="@+id/ProcessFriendlyName"
             android:textColor="?android:attr/textColorPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            style="@style/textSmall" />
+        <TextView
+            android:id="@+id/ProcessName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:lines="1"
@@ -42,7 +44,7 @@
                 android:id="@+id/ProcessUSER"
                 style="@style/textSmall"
                 android:layout_width="0dp"
-                android:layout_weight="4"
+                android:layout_weight="3"
                 android:layout_height="wrap_content" />
             <TextView
                 android:id="@+id/ProcessPID"

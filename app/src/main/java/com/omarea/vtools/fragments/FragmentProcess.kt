@@ -1,19 +1,19 @@
 package com.omarea.vtools.fragments
 
 import android.os.Bundle
+import android.os.Handler
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
-import android.widget.EditText
+import androidx.fragment.app.Fragment
 import com.omarea.shell_utils.ProcessUtils
 import com.omarea.ui.ProcessAdapter
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.fragment_process.*
-import kotlinx.android.synthetic.main.nav_item.*
+import java.util.*
 
 class FragmentProcess : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -22,6 +22,8 @@ class FragmentProcess : Fragment() {
 
     private val processUtils = ProcessUtils()
     private val supported = processUtils.supported()
+    private val handle = Handler()
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         if (supported) {
             process_unsupported.visibility = View.GONE
@@ -32,15 +34,17 @@ class FragmentProcess : Fragment() {
         }
 
         if (supported) {
-            process_list.adapter = ProcessAdapter(this.context!!, processUtils.allProcess, "")
+            process_list.adapter = ProcessAdapter(this.context!!)
         }
 
         // 搜索关键字
-        process_search.addTextChangedListener(object : TextWatcher{
+        process_search.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
             }
+
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
+
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 s?.run {
                     (process_list.adapter as ProcessAdapter?)?.updateKeywords(s.toString())
@@ -52,8 +56,9 @@ class FragmentProcess : Fragment() {
         process_sort_mode.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
+
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                (process_list.adapter as ProcessAdapter?)?.updateSortMode(when(position) {
+                (process_list.adapter as ProcessAdapter?)?.updateSortMode(when (position) {
                     0 -> ProcessAdapter.SORT_MODE_CPU
                     1 -> ProcessAdapter.SORT_MODE_MEM
                     2 -> ProcessAdapter.SORT_MODE_PID
@@ -66,8 +71,9 @@ class FragmentProcess : Fragment() {
         process_filter.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }
+
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                (process_list.adapter as ProcessAdapter?)?.updateFilterMode(when(position) {
+                (process_list.adapter as ProcessAdapter?)?.updateFilterMode(when (position) {
                     0 -> ProcessAdapter.FILTER_USER
                     1 -> ProcessAdapter.FILTER_KERNEL
                     else -> ProcessAdapter.FILTER_ALL
@@ -76,8 +82,41 @@ class FragmentProcess : Fragment() {
         }
     }
 
+    // 更新任务列表
+    private fun updateData() {
+        val data = processUtils.allProcess
+        handle.post {
+            (process_list?.adapter as ProcessAdapter?)?.setList(data)
+        }
+    }
+
+    private fun resume() {
+        if (supported && timer == null) {
+            timer = Timer()
+            timer!!.schedule(object : TimerTask() {
+                override fun run() {
+                    updateData()
+                }
+            }, 0, 3000)
+        }
+    }
+
+    private fun pause() {
+        if (timer != null) {
+            timer?.cancel()
+            timer = null
+        }
+    }
+
+    private var timer: Timer? = null
     override fun onResume() {
         super.onResume()
         activity!!.title = getString(R.string.menu_processes)
+        resume()
+    }
+
+    override fun onPause() {
+        pause()
+        super.onPause()
     }
 }

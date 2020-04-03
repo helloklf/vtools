@@ -12,7 +12,7 @@ public class ProcessUtils {
 
     // 兼容性检查
     public boolean supported() {
-        String result = KeepShellPublic.INSTANCE.doCmdSync(PS_COMMAND);
+        String result = KeepShellPublic.INSTANCE.doCmdSync(PS_COMMAND + " 2>&1");
         return !(result.contains("bad -o") || result.contains("Unknown option"));
     }
 

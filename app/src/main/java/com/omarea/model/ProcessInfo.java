@@ -7,4 +7,6 @@ public class ProcessInfo {
     public float rss;
     public String user;
     public float vsz;
+
+    public String friendlyName = "";
 }

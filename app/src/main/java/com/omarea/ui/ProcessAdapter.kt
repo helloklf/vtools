@@ -13,14 +13,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.omarea.model.ProcessInfo
 import com.omarea.vtools.R
-import java.util.*
 
 /**
  * Created by Hello on 2018/01/26.
  */
 
 class ProcessAdapter(private val context: Context,
-                     private var processes: ArrayList<ProcessInfo>,
+                     private var processes: ArrayList<ProcessInfo> = ArrayList(),
                      private var keywords: String = "",
                      private var sortMode: Int = SORT_MODE_CPU,
                      private var filterMode: Int = FILTER_USER) : BaseAdapter() {
@@ -35,9 +34,12 @@ class ProcessAdapter(private val context: Context,
         val FILTER_USER = 8;
     }
 
+    private val pm = context.packageManager
     private lateinit var list: ArrayList<ProcessInfo>
+    private val nameCache = HashMap<String, String>()
 
     init {
+        loadLabel()
         setList()
     }
 
@@ -55,10 +57,11 @@ class ProcessAdapter(private val context: Context,
 
     private fun setList() {
         this.list = filterAppList()
+        notifyDataSetChanged()
     }
 
     private fun keywordSearch(item: ProcessInfo, text: String): Boolean {
-        return item.name.toString().toLowerCase().contains(text) || item.user.toString().toLowerCase().contains(text)
+        return item.friendlyName.toString().toLowerCase().contains(text) || item.name.toString().toLowerCase().contains(text) || item.user.toString().toLowerCase().contains(text)
     }
 
     private fun filterAppList(): ArrayList<ProcessInfo> {
@@ -88,28 +91,57 @@ class ProcessAdapter(private val context: Context,
     }
 
     private fun loadIcon(imageView: ImageView, item: ProcessInfo) {
-        if (isUserProcess(item)) {
-            Thread(Runnable {
-                var icon: Drawable? = null
-                try {
-                    val name = if (item.name.contains(":")) item.name.substring(0, item.name.indexOf(":")) else item.name
-                    val installInfo = context.packageManager.getPackageInfo(name, 0)
-                    icon = installInfo.applicationInfo.loadIcon(context.packageManager)
-                } catch (ex: Exception) {
-                } finally {
-                    if (icon != null) {
-                        imageView.post {
-                            imageView.setImageDrawable(icon)
-                        }
-                    } else {
-                        imageView.post {
-                            imageView.setImageDrawable(context.getDrawable(R.drawable.process_android))
+        if (("" + imageView.tag).equals(item.name)) {
+            return
+        } else {
+            if (isUserProcess(item)) {
+                Thread(Runnable {
+                    var icon: Drawable? = null
+                    try {
+                        val name = if (item.name.contains(":")) item.name.substring(0, item.name.indexOf(":")) else item.name
+                        val installInfo = pm.getPackageInfo(name, 0)
+                        icon = installInfo.applicationInfo.loadIcon(pm)
+                    } catch (ex: Exception) {
+                    } finally {
+                        if (icon != null) {
+                            imageView.post {
+                                imageView.setImageDrawable(icon)
+                                imageView.tag = item.name
+                            }
+                        } else {
+                            imageView.post {
+                                imageView.setImageDrawable(context.getDrawable(R.drawable.process_android))
+                                imageView.tag = item.name
+                            }
                         }
                     }
+                }).start()
+            } else {
+                imageView.setImageDrawable(context.getDrawable(R.drawable.process_linux))
+                imageView.tag = item.name
+            }
+        }
+    }
+
+    private fun loadLabel() {
+        for (item in processes) {
+            if (isUserProcess(item)) {
+                if (nameCache.containsKey(item.name)) {
+                    item.friendlyName = nameCache.get(item.name)
+                } else {
+                    val name = if (item.name.contains(":")) item.name.substring(0, item.name.indexOf(":")) else item.name
+                    try {
+                        val app = pm.getApplicationInfo(name, 0)
+                        item.friendlyName = "" + app.loadLabel(pm)
+                    } catch (ex: java.lang.Exception) {
+                        item.friendlyName = name
+                    } finally {
+                        nameCache[item.name] = item.friendlyName
+                    }
                 }
-            }).start()
-        } else {
-            imageView.setImageDrawable(context.getDrawable(R.drawable.process_linux))
+            } else {
+                item.friendlyName = name
+            }
         }
     }
 
@@ -153,21 +185,23 @@ class ProcessAdapter(private val context: Context,
 
     fun setList(processes: ArrayList<ProcessInfo>) {
         this.processes = processes
+        loadLabel()
         setList()
     }
 
     private fun updateRow(position: Int, view: View) {
         val processInfo = getItem(position);
         view.run {
+            findViewById<TextView>(R.id.ProcessFriendlyName).text = keywordHightLight(processInfo.friendlyName)
             findViewById<TextView>(R.id.ProcessName).text = keywordHightLight(processInfo.name)
-            findViewById<TextView>(R.id.ProcessPID).text = "PID:" + processInfo.pid
-            findViewById<TextView>(R.id.ProcessCPU).text = "CPU:" + processInfo.cpu + "%"
+            findViewById<TextView>(R.id.ProcessPID).text = "PID: " + processInfo.pid
+            findViewById<TextView>(R.id.ProcessCPU).text = "CPU: " + processInfo.cpu + "%"
             if (processInfo.rss > 8192) {
-                findViewById<TextView>(R.id.ProcessRSS).text = "MEM:" + (processInfo.rss / 1024).toInt() + "MB"
+                findViewById<TextView>(R.id.ProcessRSS).text = "RAM: " + (processInfo.rss / 1024).toInt() + "MB"
             } else {
-                findViewById<TextView>(R.id.ProcessRSS).text = "MEM:" + processInfo.rss + "KB"
+                findViewById<TextView>(R.id.ProcessRSS).text = "RAM: " + processInfo.rss + "KB"
             }
-            findViewById<TextView>(R.id.ProcessUSER).text = "User:" + keywordHightLight(processInfo.user)
+            findViewById<TextView>(R.id.ProcessUSER).text = keywordHightLight(processInfo.user)
             loadIcon(findViewById<ImageView>(R.id.ProcessIcon), processInfo)
         }
     }
