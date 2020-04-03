@@ -175,6 +175,11 @@
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">14dp</item>
     </style>
+    <style name="textSmallTitle">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">11dp</item>
+    </style>
 
     <style name="textDefault">
         <item name="android:textColor">?android:attr/textColorPrimary</item>

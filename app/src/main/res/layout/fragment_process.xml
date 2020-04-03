@@ -45,6 +45,9 @@
         </LinearLayout>
 
         <com.omarea.common.ui.OverScrollListView
+            android:background="@drawable/list_view_bg"
+            android:divider="@null"
+            android:fastScrollEnabled="true"
             android:id="@+id/process_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

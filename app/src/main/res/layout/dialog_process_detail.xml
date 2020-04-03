@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#11888888"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/ProcessIcon"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center"
+            android:src="@drawable/process_linux" />
+
+        <TextView
+            android:id="@+id/ProcessName"
+            style="@style/textTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/textSmallTitle"
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:text="PID" />
+
+            <TextView
+                android:id="@+id/ProcessPID"
+                style="@style/textSmall"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                style="@style/textSmallTitle"
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:text="User" />
+
+            <TextView
+                android:id="@+id/ProcessUSER"
+                style="@style/textSmall"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/textSmallTitle"
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:text="CPU占用" />
+
+            <TextView
+                android:id="@+id/ProcessCPU"
+                style="@style/textSmall"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                style="@style/textSmallTitle"
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:text="RAM占用" />
+
+            <TextView
+                android:id="@+id/ProcessRSS"
+                style="@style/textSmall"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/textSmallTitle"
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:text="应用名" />
+
+            <TextView
+                android:id="@+id/ProcessFriendlyName"
+                style="@style/textSmall"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/textSmallTitle"
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:text="命令行" />
+
+            <TextView
+                android:id="@+id/ProcessCommand"
+                style="@style/textSmall"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/ProcessKill"
+                style="@style/sceneSmallButton"
+                android:text="停止" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

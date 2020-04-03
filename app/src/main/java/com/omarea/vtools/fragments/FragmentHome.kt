@@ -143,7 +143,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
             }
         }
 
-        home_device_name.text = Build.MANUFACTURER + " " + Build.MODEL + "\n" + Build.VERSION.BASE_OS
+        home_device_name.text = (Build.MANUFACTURER + " " + Build.MODEL + " (SDK" + Build.VERSION.SDK_INT + ")\n" + Build.VERSION.BASE_OS).trim()
     }
 
     @SuppressLint("SetTextI18n")

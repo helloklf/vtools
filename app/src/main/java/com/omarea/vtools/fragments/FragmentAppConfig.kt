@@ -34,7 +34,7 @@ import com.omarea.vaddin.IAppConfigAidlInterface
 import com.omarea.vtools.R
 import com.omarea.vtools.activities.ActivityAdvSettings
 import com.omarea.vtools.activities.ActivityAppDetails
-import kotlinx.android.synthetic.main.fragment_appconfig.*
+import kotlinx.android.synthetic.main.fragment_app_config.*
 import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayList
@@ -90,7 +90,7 @@ class FragmentAppConfig : androidx.fragment.app.Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_appconfig, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_app_config, container, false)
     private lateinit var modeSwitcher: ModeSwitcher
 
     override fun onResume() {

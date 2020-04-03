@@ -1,5 +1,8 @@
 package com.omarea.vtools.fragments
 
+import android.app.AlertDialog
+import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
 import android.text.Editable
@@ -8,7 +11,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.omarea.common.ui.DialogHelper
+import com.omarea.model.ProcessInfo
 import com.omarea.shell_utils.ProcessUtils
 import com.omarea.ui.ProcessAdapter
 import com.omarea.vtools.R
@@ -35,6 +43,9 @@ class FragmentProcess : Fragment() {
 
         if (supported) {
             process_list.adapter = ProcessAdapter(this.context!!)
+            process_list.setOnItemClickListener { _, _, position, _ ->
+                openProcessDetail((process_list.adapter as ProcessAdapter).getItem(position) as ProcessInfo)
+            }
         }
 
         // 搜索关键字
@@ -118,5 +129,77 @@ class FragmentProcess : Fragment() {
     override fun onPause() {
         pause()
         super.onPause()
+    }
+
+    private fun isUserProcess(processInfo: ProcessInfo): Boolean {
+        return processInfo.user.matches(Regex("u[0-9]+_.*"))
+    }
+
+    private var pm: PackageManager? = null
+    private fun loadIcon(imageView: ImageView, item: ProcessInfo) {
+        if (isUserProcess(item)) {
+            Thread(Runnable {
+                var icon: Drawable? = null
+                try {
+                    val name = if (item.name.contains(":")) item.name.substring(0, item.name.indexOf(":")) else item.name
+                    val installInfo = pm!!.getPackageInfo(name, 0)
+                    icon = installInfo.applicationInfo.loadIcon(pm)
+                } catch (ex: Exception) {
+                } finally {
+                    if (icon != null) {
+                        imageView.post {
+                            imageView.setImageDrawable(icon)
+                        }
+                    } else {
+                        imageView.post {
+                            imageView.setImageDrawable(context!!.getDrawable(R.drawable.process_android))
+                        }
+                    }
+                }
+            }).start()
+        }
+    }
+
+    private fun openProcessDetail(processInfo: ProcessInfo) {
+        val detail = processUtils.getProcessDetail(processInfo.pid)
+        if (detail != null) {
+            val view = LayoutInflater.from(context).inflate(R.layout.dialog_process_detail, null)
+
+            if (pm == null) {
+                pm = context!!.packageManager
+            }
+
+            val name = if (detail.name.contains(":")) detail.name.substring(0, detail.name.indexOf(":")) else detail.name
+            try {
+                val app = pm!!.getApplicationInfo(name, 0)
+                detail.friendlyName = "" + app.loadLabel(pm)
+            } catch (ex: java.lang.Exception) {
+                detail.friendlyName = name
+            }
+            val dialog = AlertDialog.Builder(context).setView(view).create()
+
+            view.run {
+                findViewById<TextView>(R.id.ProcessFriendlyName).text = detail.friendlyName
+                findViewById<TextView>(R.id.ProcessName).text = detail.name
+                findViewById<TextView>(R.id.ProcessCommand).text = detail.command
+                findViewById<TextView>(R.id.ProcessPID).text = detail.pid.toString()
+                findViewById<TextView>(R.id.ProcessCPU).text = detail.cpu.toString() + "%"
+                if (processInfo.rss > 8192) {
+                    findViewById<TextView>(R.id.ProcessRSS).text = (detail.rss / 1024).toInt().toString() + "MB"
+                } else {
+                    findViewById<TextView>(R.id.ProcessRSS).text = detail.rss.toString() + "KB"
+                }
+                findViewById<TextView>(R.id.ProcessUSER).text = processInfo.user
+                loadIcon(findViewById<ImageView>(R.id.ProcessIcon), processInfo)
+                findViewById<View>(R.id.ProcessKill).setOnClickListener {
+                    processUtils.killProcess(detail.pid)
+                    dialog.dismiss()
+                }
+            }
+
+            DialogHelper.animDialog(dialog)
+        } else {
+            Toast.makeText(context, "无法获取详情，该进程可能已经退出!", Toast.LENGTH_SHORT).show()
+        }
     }
 }

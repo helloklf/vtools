@@ -437,10 +437,10 @@
 
 
     <string-array name="process_sort_modes">
-        <item>按CPU%</item>
+        <item>按CPU</item>
         <item>按内存</item>
         <item>按PID</item>
-        <item>默认顺序</item>
+        <item>不排序</item>
     </string-array>
     <string-array name="process_filter">
         <item>用户进程</item>
