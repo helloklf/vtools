@@ -85,9 +85,11 @@ public class KeepShell(private var rootMode: Boolean = true) {
                 p = if (rootMode) ShellExecutor.getSuperUserRuntime() else ShellExecutor.getRuntime()
                 out = p!!.outputStream
                 reader = p!!.inputStream.bufferedReader()
-                out?.run {
-                    write(checkRootState.toByteArray(Charset.defaultCharset()))
-                    flush()
+                if (rootMode) {
+                    out?.run {
+                        write(checkRootState.toByteArray(Charset.defaultCharset()))
+                        flush()
+                    }
                 }
                 Thread(Runnable {
                     try {
@@ -151,7 +153,9 @@ public class KeepShell(private var rootMode: Boolean = true) {
             while (true && reader != null) {
                 val line = reader!!.readLine()
                 if (line == null || line.contains(endTag)) {
-                    shellOutputCache.append(line.substring(0, line.indexOf(endTag)))
+                    if (line != null) {
+                        shellOutputCache.append(line.substring(0, line.indexOf(endTag)))
+                    }
                     break
                 } else if (line.contains(startTag)) {
                     shellOutputCache.clear()
@@ -165,7 +169,14 @@ public class KeepShell(private var rootMode: Boolean = true) {
             // Log.e("shell-unlock", cmd)
             // Log.d("Shell", cmd.toString() + "\n" + "Result:"+results.toString().trim())
             return shellOutputCache.toString().trim()
-        } catch (e: IOException) {
+        }
+        /* catch (e: IOException) {
+            tryExit()
+            Log.e("KeepShellAsync", "" + e.message)
+            return "error"
+        }
+        */
+        catch (e: Exception) {
             tryExit()
             Log.e("KeepShellAsync", "" + e.message)
             return "error"

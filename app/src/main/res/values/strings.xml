@@ -443,8 +443,10 @@
         <item>不排序</item>
     </string-array>
     <string-array name="process_filter">
-        <item>用户进程</item>
-        <item>内核进程</item>
-        <item>所有进程</item>
+        <item>普通应用</item>
+        <item>系统应用</item>
+        <item>所有应用</item>
+        <item>其它进程</item>
+        <item>所有类型</item>
     </string-array>
 </resources>

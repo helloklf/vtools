@@ -104,7 +104,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                 myHandler.postDelayed({
                     try {
                         updateRamInfo()
-                        Toast.makeText(context, "内存碎片已整理...", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "emmmm...", Toast.LENGTH_SHORT).show()
                     } catch (ex: java.lang.Exception) {
                     }
                 }, 600)
@@ -143,7 +143,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
             }
         }
 
-        home_device_name.text = (Build.MANUFACTURER + " " + Build.MODEL + " (SDK" + Build.VERSION.SDK_INT + ")\n" + Build.VERSION.BASE_OS).trim()
+        home_device_name.text = (Build.MANUFACTURER + " " + Build.MODEL + " (SDK" + Build.VERSION.SDK_INT + ")").trim()
     }
 
     @SuppressLint("SetTextI18n")

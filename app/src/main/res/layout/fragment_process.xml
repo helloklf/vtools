@@ -48,6 +48,7 @@
             android:background="@drawable/list_view_bg"
             android:divider="@null"
             android:fastScrollEnabled="true"
+            android:fastScrollAlwaysVisible="true"
             android:id="@+id/process_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -57,7 +58,7 @@
         android:id="@+id/process_unsupported"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:textAlignment="center"
-        android:text="该功能暂不支持你的手机系统"
+        android:text="该功能暂不支持你的手机系统\n你也可以去试试具有相似功能的3C Toolbox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </FrameLayout>

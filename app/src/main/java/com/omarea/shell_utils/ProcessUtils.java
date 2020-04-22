@@ -1,11 +1,8 @@
 package com.omarea.shell_utils;
 
 import android.util.Log;
-
 import com.omarea.common.shell.KeepShellPublic;
-import com.omarea.model.ProcessDetail;
 import com.omarea.model.ProcessInfo;
-
 import java.util.ArrayList;
 
 public class ProcessUtils {
@@ -23,19 +20,20 @@ public class ProcessUtils {
 
     // pageSize 获取 : getconf PAGESIZE
 
-    private final String PS_COMMAND = "ps -e -o %CPU,RSS,NAME,PID,USER";
-    private final String PS_DETAIL_COMMAND = "ps -e -o %CPU,RSS,NAME,PID,USER,COMMAND";
+    private final String PS_COMMAND = "ps -e -o %CPU,RSS,NAME,PID,USER,COMMAND,CMDLINE";
+    private final String PS_DETAIL_COMMAND = "ps -e -o %CPU,RSS,NAME,PID,USER,COMMAND,CMDLINE";
 
     // 兼容性检查
     public boolean supported() {
-        String result = KeepShellPublic.INSTANCE.doCmdSync(PS_COMMAND + " 2>&1");
-        return !(result.contains("bad -o") || result.contains("Unknown option"));
+        String[] rows = KeepShellPublic.INSTANCE.doCmdSync(PS_COMMAND + " 2>&1").split("\n");
+        String result = rows[0];
+        return rows.length > 10 && !(result.contains("bad -o") || result.contains("Unknown option") || result.contains("bad"));
     }
 
     // 解析单行数据
     private ProcessInfo readRow(String row) {
         String[] columns = row.split(" +");
-        if (columns.length == 5) {
+        if (columns.length >= 6) {
             try {
                 ProcessInfo processInfo = new ProcessInfo();
                 processInfo.cpu = Float.parseFloat(columns[0]);
@@ -43,6 +41,8 @@ public class ProcessUtils {
                 processInfo.name = columns[2];
                 processInfo.pid = Integer.parseInt(columns[3]);
                 processInfo.user = columns[4];
+                processInfo.command = columns[5];
+                processInfo.cmdline = row.substring(row.indexOf(processInfo.command) + processInfo.command.length()).trim();
                 return processInfo;
             } catch (Exception ex) {
                 Log.e("Scene-Process", "" + ex.getMessage());
@@ -68,35 +68,16 @@ public class ProcessUtils {
                 processInfoList.add(processInfo);
             }
         }
-
-        // Log.d("Scene-Process", "" + processInfoList.size());
         return processInfoList;
     }
 
     // 获取进程详情
-    public ProcessDetail getProcessDetail(int pid) {
+    public ProcessInfo getProcessDetail(int pid) {
         Log.d("Scene-Process", PS_DETAIL_COMMAND + " --pid " + pid);
 
         String[] rows = KeepShellPublic.INSTANCE.doCmdSync(PS_DETAIL_COMMAND + " --pid " + pid).split("\n");
         if (rows.length > 1) {
-            String row = rows[1].trim();
-            String[] columns = row.split(" +");
-            if (columns.length == 6) {
-                try {
-                    ProcessDetail processInfo = new ProcessDetail();
-                    processInfo.cpu = Float.parseFloat(columns[0]);
-                    processInfo.rss = Integer.parseInt(columns[1]);
-                    processInfo.name = columns[2];
-                    processInfo.pid = Integer.parseInt(columns[3]);
-                    processInfo.user = columns[4];
-                    processInfo.command = columns[5];
-                    return processInfo;
-                } catch (Exception ex) {
-                    Log.e("Scene-Process", "" + ex.getMessage());
-                }
-            } else {
-                Log.e("Scene-Process", "" + row);
-            }
+            return readRow(rows[1].trim());
         }
         return null;
     }
@@ -104,5 +85,20 @@ public class ProcessUtils {
     // 强制结束进程
     public void killProcess(int pid) {
         KeepShellPublic.INSTANCE.doCmdSync("kill -9 " + pid);
+    }
+
+    private boolean isAndroidProcess(ProcessInfo processInfo) {
+        return (processInfo.command.contains("app_process") && processInfo.name.matches(".*\\..*"));
+    }
+
+
+    // 强制结束进程
+    public void killProcess(ProcessInfo processInfo) {
+        if (isAndroidProcess(processInfo)) {
+            String packageName = processInfo.name.contains(":") ? processInfo.name.substring(0, processInfo.name.indexOf(":")) : processInfo.name;
+            KeepShellPublic.INSTANCE.doCmdSync(String.format("killall -9 %s;am force-stop %s", packageName, packageName));
+        } else {
+            killProcess(processInfo.pid);
+        }
     }
 }

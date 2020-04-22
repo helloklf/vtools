@@ -85,8 +85,11 @@ class FragmentProcess : Fragment() {
 
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 (process_list.adapter as ProcessAdapter?)?.updateFilterMode(when (position) {
-                    0 -> ProcessAdapter.FILTER_USER
-                    1 -> ProcessAdapter.FILTER_KERNEL
+                    0 -> ProcessAdapter.FILTER_ANDROID_USER
+                    1 -> ProcessAdapter.FILTER_ANDROID_SYSTEM
+                    2 -> ProcessAdapter.FILTER_ANDROID
+                    3 -> ProcessAdapter.FILTER_OTHER
+                    4 -> ProcessAdapter.FILTER_ALL
                     else -> ProcessAdapter.FILTER_ALL
                 })
             }
@@ -131,13 +134,16 @@ class FragmentProcess : Fragment() {
         super.onPause()
     }
 
-    private fun isUserProcess(processInfo: ProcessInfo): Boolean {
-        return processInfo.user.matches(Regex("u[0-9]+_.*"))
+
+    private val regexUser = Regex("u[0-9]+_.*")
+    private val regexPackageName = Regex(".*\\..*")
+    private fun isAndroidProcess(processInfo: ProcessInfo): Boolean {
+        return (processInfo.command.contains("app_process") && processInfo.name.matches(regexPackageName))
     }
 
     private var pm: PackageManager? = null
     private fun loadIcon(imageView: ImageView, item: ProcessInfo) {
-        if (isUserProcess(item)) {
+        if (isAndroidProcess(item)) {
             Thread(Runnable {
                 var icon: Drawable? = null
                 try {
@@ -182,6 +188,7 @@ class FragmentProcess : Fragment() {
                 findViewById<TextView>(R.id.ProcessFriendlyName).text = detail.friendlyName
                 findViewById<TextView>(R.id.ProcessName).text = detail.name
                 findViewById<TextView>(R.id.ProcessCommand).text = detail.command
+                findViewById<TextView>(R.id.ProcessCmdline).text = detail.cmdline
                 findViewById<TextView>(R.id.ProcessPID).text = detail.pid.toString()
                 findViewById<TextView>(R.id.ProcessCPU).text = detail.cpu.toString() + "%"
                 if (processInfo.rss > 8192) {

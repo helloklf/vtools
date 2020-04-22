@@ -23,6 +23,9 @@ export PACKAGE_VERSION_NAME=$({PACKAGE_VERSION_NAME})
 export PACKAGE_VERSION_CODE=$({PACKAGE_VERSION_CODE})
 export APP_USER_ID=$({APP_USER_ID})
 
+# 修复非ROOT权限执行脚本时，无法写入默认的缓存目录 /data/local/tmp
+export TMPDIR=$TEMP_DIR
+
 # toolkit工具目录
 export TOOLKIT=$({TOOLKIT})
 # 添加toolkit添加为应用程序目录

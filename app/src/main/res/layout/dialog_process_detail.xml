@@ -129,10 +129,29 @@
                 style="@style/textSmallTitle"
                 android:layout_width="55dp"
                 android:layout_height="wrap_content"
-                android:text="命令行" />
+                android:text="命令" />
 
             <TextView
                 android:id="@+id/ProcessCommand"
+                style="@style/textSmall"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/textSmallTitle"
+                android:layout_width="55dp"
+                android:layout_height="wrap_content"
+                android:text="命令行" />
+
+            <TextView
+                android:id="@+id/ProcessCmdline"
                 style="@style/textSmall"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

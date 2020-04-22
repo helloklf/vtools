@@ -13,6 +13,7 @@ public class ShellExecutor {
     }
 
     private static String[] getEnv() {
+        // FIXME:非root模式下，默认的 TMPDIR=/data/local/tmp 变量可能会导致某些需要写缓存的场景（例如使用source指令）脚本执行失败！
         if (extraEnvPath != null && !extraEnvPath.isEmpty()) {
             if (defaultEnvPath.isEmpty()) {
                 try {

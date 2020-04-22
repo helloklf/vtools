@@ -2,7 +2,7 @@
 
 if [[ ! "$state" = "1" ]]
 then
-    setprop service.adb.tcp.port ""
+    setprop service.adb.tcp.port -1
     stop adbd
     killall -9 adbd 2>/dev/null
     start adbd

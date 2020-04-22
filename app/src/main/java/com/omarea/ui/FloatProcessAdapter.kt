@@ -18,11 +18,11 @@ import com.omarea.vtools.R
  * Created by Hello on 2018/01/26.
  */
 
-class ProcessAdapter(private val context: Context,
-                     private var processes: ArrayList<ProcessInfo> = ArrayList(),
-                     private var keywords: String = "",
-                     private var sortMode: Int = SORT_MODE_CPU,
-                     private var filterMode: Int = FILTER_ANDROID_USER) : BaseAdapter() {
+class FloatProcessAdapter(private val context: Context,
+                          private var processes: ArrayList<ProcessInfo> = ArrayList(),
+                          private var keywords: String = "",
+                          private var sortMode: Int = SORT_MODE_CPU,
+                          private var filterMode: Int = FILTER_ANDROID) : BaseAdapter() {
     companion object {
         val SORT_MODE_DEFAULT = 1;
         val SORT_MODE_CPU = 4;
@@ -58,7 +58,24 @@ class ProcessAdapter(private val context: Context,
     }
 
     private fun setList() {
-        this.list = filterAppList()
+        val result = filterAppList()
+        val groups = result.groupBy {
+            if (it.name.contains(":") && isAndroidProcess(it)) {
+                it.name.substring(0, it.name.indexOf(":"))
+            } else {
+                it.name
+            }
+        }
+        val processes = groups.map {
+            val info = it.value.first()
+            var cpuTotal = 0f
+            it.value.forEach {
+                cpuTotal += it.cpu
+            }
+            info.cpu = cpuTotal
+            info
+        }
+        this.list = ArrayList(processes)
         notifyDataSetChanged()
     }
 
@@ -181,7 +198,7 @@ class ProcessAdapter(private val context: Context,
     override fun getView(position: Int, view: View?, parent: ViewGroup): View {
         var convertView = view
         if (convertView == null) {
-            convertView = View.inflate(context, R.layout.list_item_process_item, null)
+            convertView = View.inflate(context, R.layout.list_item_process_small, null)
         }
         updateRow(position, convertView!!)
         return convertView
@@ -212,15 +229,7 @@ class ProcessAdapter(private val context: Context,
         val processInfo = getItem(position);
         view.run {
             findViewById<TextView>(R.id.ProcessFriendlyName).text = keywordHightLight(processInfo.friendlyName)
-            findViewById<TextView>(R.id.ProcessName).text = keywordHightLight(processInfo.name)
-            findViewById<TextView>(R.id.ProcessPID).text = "PID: " + processInfo.pid
-            findViewById<TextView>(R.id.ProcessCPU).text = "CPU: " + processInfo.cpu + "%"
-            if (processInfo.rss > 8192) {
-                findViewById<TextView>(R.id.ProcessRSS).text = "RSS: " + (processInfo.rss / 1024).toInt() + "MB"
-            } else {
-                findViewById<TextView>(R.id.ProcessRSS).text = "RSS: " + processInfo.rss + "KB"
-            }
-            findViewById<TextView>(R.id.ProcessUSER).text = keywordHightLight(processInfo.user)
+            findViewById<TextView>(R.id.ProcessCPU).text = String.format("%.1f%%", processInfo.cpu)
             loadIcon(findViewById<ImageView>(R.id.ProcessIcon), processInfo)
         }
     }

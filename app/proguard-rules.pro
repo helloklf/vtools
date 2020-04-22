@@ -20,6 +20,8 @@
 -keepclassmembers public class * extends android.app.Application
 -keepclassmembers public class * extends android.app.Service
 -keepclassmembers public class * extends android.content.BroadcastReceiver
+-keepclassmembers public class * extends java.io.Serializable
+-keepclassmembers public class * implements java.io.Serializable
 #-keepclassmembers public class * extends android.content.ContentProvider
 #-keepclassmembers public class * extends android.app.backup.BackupAgentHelper
 #-keepclassmembers public class * extends android.preference.Preference
