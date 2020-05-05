@@ -206,17 +206,17 @@
     <string name="swap_on_close">正在关闭SWAP，这可能很慢</string>
     <string name="swap_current_state">当前状态：</string>
     <string name="swap_memory_info">Memory Info</string>
-    <string name="swap_swappiness_desc">说明：Swappiness决定ZRAM/SWAP使用积极程度，0表示尽量不用，100表示尽量使用</string>
+    <string name="swap_swappiness_desc">说明：Swappiness决定ZRAM/SWAP使用积极程度，100表示尽量使用</string>
     <string name="swap_swappiness">Swappiness</string>
     <string name="swap_zram">ZRAM</string>
     <string name="swap_zram_adjustment">调整</string>
-    <string name="swap_zram_desc">说明：ZRAM即内存压缩技术，通过压缩RAM中的数据减少其空间占用，大量使用会增加CPU负担</string>
+    <string name="swap_zram_desc">说明：ZRAM即内存压缩技术，通过压缩RAM中的数据降低占用，会给CPU带来额外负担</string>
     <string name="swap_zram_comp_options">压缩算法</string>
     <string name="swap_zram_comp_algorithm_desc">建议\n\n压缩速度快的算法：lzo、lz4\n压缩率低的算法：deflate\n注意：“压缩率”是指“压缩后大小/原始大小”，越低越好！\n\n具体对比\n\n 压缩速度：\n lz4 &gt; lzo &gt; gz &gt; snappy &gt; deflate &gt; bz2\n 压缩率：\n defalte &lt; gz &lt; lz4 &lt; bz2 &lt; lzo &lt; snappy\n 解压速度：\n lzo &gt; lz4 &gt; deflate &gt; gz &gt; snappy &gt; bz2
     </string>
     <string name="swap_zram_comp_algorithm_wran">更改未生效</string>
     <string name="swap_zram_comp_algorithm_wran_desc">ZRAM正在使用中，现在无法更改压缩算法。\n\n如需让设置生效，请点击下方的“调整”按钮</string>
-    <string name="swap_swap">SWAP</string>
+    <string name="swap_swap">Swapfile</string>
     <string name="swap_create">创建</string>
     <string name="swap_start">启动</string>
     <string name="swap_stop">关闭</string>
@@ -224,7 +224,7 @@
     <string name="swap_preferred">优先于ZRAM</string>
     <string name="swap_use_loop">挂载为环回设备</string>
     <string name="swap_use_loop_desc">如果不开启此项也能正常使用SWAP，就没必要开。\n\n除非是无法启动SWAP，或启动SWAP后手机死机，才需要开启此选项！\n\n例如：小米手机升级到Android P后，就可能需要勾选此项才能正常使用SWAP</string>
-    <string name="swap_swap_desc">说明：SWAP即磁盘交换技术，在RAM不足时，将一部分数据暂时转移到磁盘中暂存，对后台能力提升明显，但性能较差</string>
+    <string name="swap_swap_desc">说明：类似于Windows的虚拟内存，受限于磁盘性能，体验可能会比较差</string>
     <string name="swap_auto_start">开机自启(要允许Scene自启动)</string>
     <string name="swap_zram_stat">ZRAM 统计</string>
     <string name="swap_zram_stat_desc">ZRAM的压缩率通常在20~45%之间</string>
@@ -233,6 +233,8 @@
     <string name="swap_state_undefined">未创建</string>
     <string name="swap_state_created">未启动</string>
     <string name="swap_state_using">使用中</string>
+    <string name="min_free_kbytes">最小空余内存(KB)</string>
+    <string name="min_free_kbytes_desc">简单地说min_free_kbytes设置越大，会导致内核越勤快的把RAM中的数据搬到SWAP</string>
 
     <string name="on_execute_please_wait">正在执行操作，请稍等…</string>
     <string name="please_wait">请稍等…</string>

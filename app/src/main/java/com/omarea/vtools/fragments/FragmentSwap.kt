@@ -7,12 +7,11 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
-import com.google.android.material.snackbar.Snackbar
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.google.android.material.snackbar.Snackbar
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.ui.DialogHelper
@@ -86,7 +85,7 @@ class FragmentSwap : androidx.fragment.app.Fragment() {
         }
 
         val swappiness = KernelProrp.getProp("/proc/sys/vm/swappiness")
-        swap_swappiness_display.text = "Swappiness: $swappiness"
+        swap_swappiness_display.text = "/proc/sys/vm/swappiness :  $swappiness"
 
         val datas = AdapterSwaplist(context, list)
         list_swaps2.adapter = datas
@@ -131,6 +130,16 @@ class FragmentSwap : androidx.fragment.app.Fragment() {
         swap_auto_lmk.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, false)
         val lmk = KernelProrp.getProp("/sys/module/lowmemorykiller/parameters/minfree")
         swap_lmk_current.text = lmk
+
+        val min_free_kbytes = KernelProrp.getProp("/proc/sys/vm/min_free_kbytes")
+        try {
+            val bytes = min_free_kbytes.toInt()
+            if (seekbar_min_free_kbytes.max < bytes) {
+                seekbar_min_free_kbytes.max = bytes
+            }
+            min_free_kbytes_display.text = "/proc/sys/vm/min_free_kbytes : " + min_free_kbytes
+        } catch (ex: Exception) {
+        }
 
         // 压缩算法
         val comp_algorithm = swapUtils.compAlgorithm
@@ -227,28 +236,50 @@ class FragmentSwap : androidx.fragment.app.Fragment() {
         txt_zram_size_display.text = "${zramSize}MB"
         seekbar_swap_swappiness.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65)
         txt_zramstus_swappiness.text = seekbar_swap_swappiness.progress.toString()
+        seekbar_min_free_kbytes.progress = swapConfig.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 65)
+        txt_min_free_kbytes.text = seekbar_min_free_kbytes.progress.toString()
 
         seekbar_swap_size.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
             txt_swap_size_display.text = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 0).toString() + "MB"
-        }, swapConfig, SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 128))
+        }, null, swapConfig, SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 128))
         seekbar_zram_size.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
             txt_zram_size_display.text = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0).toString() + "MB"
-        }, swapConfig, SpfConfig.SWAP_SPF_ZRAM_SIZE, 128))
+        }, null, swapConfig, SpfConfig.SWAP_SPF_ZRAM_SIZE, 128))
         seekbar_swap_swappiness.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
             val swappiness = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 0)
             txt_zramstus_swappiness.text = swappiness.toString()
+        }, Runnable {
+            val swappiness = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 0)
+            txt_zramstus_swappiness.text = swappiness.toString()
             KeepShellPublic.doCmdSync("echo $swappiness > /proc/sys/vm/swappiness;")
-            swap_swappiness_display.text = "Swappiness: " + KernelProrp.getProp("/proc/sys/vm/swappiness")
+            swap_swappiness_display.text = "/proc/sys/vm/swappiness :  " + KernelProrp.getProp("/proc/sys/vm/swappiness")
         }, swapConfig, SpfConfig.SWAP_SPF_SWAPPINESS))
+
+        seekbar_min_free_kbytes.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
+            val value = swapConfig.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 32768)
+            txt_min_free_kbytes.text = value.toString()
+        }, Runnable {
+            val value = swapConfig.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 32768)
+            txt_min_free_kbytes.text = value.toString()
+            processBarDialog.showDialog(getString(R.string.swap_on_close))
+            val run = Runnable {
+                KeepShellPublic.doCmdSync("echo $value > /proc/sys/vm/min_free_kbytes")
+                myHandler.post {
+                    processBarDialog.hideDialog()
+                    getSwaps()
+                }
+            }
+            Thread(run).start()
+        }, swapConfig, SpfConfig.SWAP_MIN_FREE_KBYTES))
 
         btn_swap_close.setOnClickListener {
             processBarDialog.showDialog(getString(R.string.swap_on_close))
             val run = Runnable {
                 swapUtils.swapOff()
-                myHandler.post({
+                myHandler.post {
                     processBarDialog.hideDialog()
                     getSwaps()
-                })
+                }
             }
             Thread(run).start()
         }
@@ -413,8 +444,14 @@ class FragmentSwap : androidx.fragment.app.Fragment() {
         }
     }
 
-    class OnSeekBarChangeListener(private var next: Runnable, private var spf: SharedPreferences, private var spfProp: String, private var ratio: Int = 1) : SeekBar.OnSeekBarChangeListener {
+    class OnSeekBarChangeListener(
+            private var onValueChange: Runnable?,
+            private var omCompleted: Runnable?,
+            private var spf: SharedPreferences,
+            private var spfProp: String,
+            private var ratio: Int = 1) : SeekBar.OnSeekBarChangeListener {
         override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            omCompleted?.run()
         }
 
         override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -427,7 +464,7 @@ class FragmentSwap : androidx.fragment.app.Fragment() {
                 return
             }
             spf.edit().putInt(spfProp, value).commit()
-            next.run()
+            onValueChange?.run()
         }
     }
 

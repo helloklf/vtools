@@ -143,6 +143,10 @@ class BootService : IntentService("vtools-boot") {
             keepShell.doCmdSync("echo " + swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65) + " > /proc/sys/vm/swappiness\n")
         }
 
+        if (swapConfig.contains(SpfConfig.SWAP_MIN_FREE_KBYTES)) {
+            keepShell.doCmdSync("echo ${swapConfig.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 32768)} > /proc/sys/vm/min_free_kbytes\n")
+        }
+
         if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, false)) {
             updateNotification(getString(R.string.boot_lmk))
 

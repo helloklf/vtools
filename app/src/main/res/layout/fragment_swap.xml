@@ -299,14 +299,54 @@
 
                 <TextView
                     style="@style/textTitle"
-                    android:text="Swaps" />
+                    android:text="@string/min_free_kbytes" />
+
+                <TableRow android:layout_marginTop="@dimen/activity_vertical_margin">
+
+                    <SeekBar
+                        android:id="@+id/seekbar_min_free_kbytes"
+                        android:max="1048576"
+                        android:layout_width="match_parent"
+                        android:paddingStart="6dp"
+                        android:paddingEnd="6dp" />
+
+                    <TextView
+                        android:id="@+id/txt_min_free_kbytes"
+                        style="@style/textSmall"
+                        android:layout_width="45dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="@dimen/activity_horizontal_margin"
+                        android:textAlignment="center" />
+                </TableRow>
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:text="@string/min_free_kbytes_desc" />
+
+            </TableLayout>
+
+            <TableLayout
+                style="@style/ListCardItem"
+                android:showDividers="beginning"
+                android:stretchColumns="0">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:text="当前状态" />
 
                 <TextView
                     android:id="@+id/swap_swappiness_display"
                     style="@style/textSmall"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:layout_marginBottom="4dp"
+                    android:text="swappiness" />
+
+                <TextView
+                    android:id="@+id/min_free_kbytes_display"
+                    style="@style/textSmall"
                     android:layout_marginBottom="@dimen/activity_vertical_margin"
-                    android:text="Swappiness" />
+                    android:text="min_free_kbytes" />
 
                 <ListView
                     android:id="@+id/list_swaps2"
