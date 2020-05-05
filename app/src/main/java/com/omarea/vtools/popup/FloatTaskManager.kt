@@ -65,7 +65,11 @@ class FloatTaskManager(private val context: Context) {
         params.x = monitorStorage.getInt("x", 0)
         params.y = monitorStorage.getInt("y", 0)
 
-        params.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+        params.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_FULLSCREEN
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        }
 
         mWindowManager.addView(mView, params)
 
@@ -110,7 +114,7 @@ class FloatTaskManager(private val context: Context) {
                             }
                         }
                         MotionEvent.ACTION_UP -> {
-                            monitorStorage.edit().putInt("x", params.x).putInt("y", params.x).apply()
+                            monitorStorage.edit().putInt("x", params.x).putInt("y", params.y).apply()
                         }
                         MotionEvent.ACTION_OUTSIDE,
                         MotionEvent.ACTION_CANCEL -> {
@@ -125,7 +129,7 @@ class FloatTaskManager(private val context: Context) {
         val fw_float_pin = mView?.findViewById<View>(R.id.fw_float_pin)!!
 
         fw_float_pin.setOnLongClickListener {
-            params.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+            params.flags = WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_FULLSCREEN or WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
             mView!!.setBackgroundColor(Color.argb(128, 255, 255, 255))
             mWindowManager.updateViewLayout(mView, params)
             true

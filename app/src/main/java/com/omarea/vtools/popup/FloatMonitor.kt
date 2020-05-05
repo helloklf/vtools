@@ -72,7 +72,11 @@ class FloatMonitor(context: Context) {
         params.x = monitorStorage.getInt("x", 0)
         params.y = monitorStorage.getInt("y", 0)
 
-        params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE
+        params.flags = LayoutParams.FLAG_NOT_TOUCH_MODAL or LayoutParams.FLAG_NOT_FOCUSABLE or LayoutParams.FLAG_FULLSCREEN
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            params.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES
+        }
 
         val navHeight = 0
         if (navHeight > 0) {
@@ -127,7 +131,7 @@ class FloatMonitor(context: Context) {
                                 if (Math.abs(event.rawX - touchStartRawX) < 15 && Math.abs(event.rawY - touchStartRawY) < 15) {
                                     onClick()
                                 } else {
-                                    monitorStorage.edit().putInt("x", params.x).putInt("y", params.x).apply()
+                                    monitorStorage.edit().putInt("x", params.x).putInt("y", params.y).apply()
                                 }
                             }
                             isTouchDown = false
