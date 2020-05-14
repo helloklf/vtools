@@ -2,12 +2,23 @@ package com.omarea.shell_utils
 
 import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KeepShellPublic
+import com.omarea.common.shell.KernelProrp
+import com.omarea.common.shell.RootFile
 
 /**
  * Created by Hello on 2018/08/05.
  */
 
 class LMKUtils {
+    private val path = "/sys/module/lowmemorykiller/parameters/minfree"
+    fun supported (): Boolean {
+        return RootFile.fileExists(path)
+    }
+
+    fun getCurrent(): String {
+        return KernelProrp.getProp(path)
+    }
+
     fun autoSetLMK(totalRamBytes: Long, keepShell: KeepShell? = null) {
         //echo "0,100,200,300,900,906" > /sys/module/lowmemorykiller/parameters/adj
         //echo "14746,18432,22118,25805,40000,55000" > /sys/module/lowmemorykiller/parameters/minfree
@@ -15,21 +26,25 @@ class LMKUtils {
 
         var ratio = 1f
 
+        // 8GB+
+        if (totalRamBytes > (8192 * 1024 * 1024L)) {
+            ratio = 2f
+        }
         // 8GB
         if (totalRamBytes > (6144 * 1024 * 1024L)) {
-            ratio = 2f
+            ratio = 1.5f
         }
         // 6GB
         else if (totalRamBytes > (4096 * 1024 * 1024L)) {
-            ratio = 1.5f
+            ratio = 1f
         }
         // 4GB
         else if (totalRamBytes > (3072 * 1024 * 1024L)) {
-            ratio = 1.2f
+            ratio = 1f
         }
         // 3GB
         else if (totalRamBytes > (2048 * 1024 * 1024L)) {
-            ratio = 1f
+            ratio = 0.7f
         }
         // 2GB
         else if (totalRamBytes > 1024 * 1024 * 1024) {

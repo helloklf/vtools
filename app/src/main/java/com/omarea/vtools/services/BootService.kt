@@ -120,22 +120,16 @@ class BootService : IntentService("vtools-boot") {
             }
         }
 
+        if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)) {
+            enableSwap(keepShell, context)
+        }
+
         if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) {
             val sizeVal = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0)
             val algorithm = swapConfig.getString(SpfConfig.SWAP_SPF_ALGORITHM, "")
-            if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false) && swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, false)) {
-                enableSwap(keepShell, context)
-                updateNotification(getString(R.string.boot_resize_zram))
-                resizeZram(sizeVal, algorithm!!, keepShell, true)
-            } else {
-                updateNotification(getString(R.string.boot_resize_zram))
-                resizeZram(sizeVal, algorithm!!, keepShell)
-                if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)) {
-                    enableSwap(keepShell, context)
-                }
-            }
-        } else if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)) {
-            enableSwap(keepShell, context)
+
+            updateNotification(getString(R.string.boot_resize_zram))
+            resizeZram(sizeVal, algorithm!!, keepShell, true)
         }
 
         if (swapConfig.contains(SpfConfig.SWAP_SPF_SWAPPINESS)) {
@@ -144,7 +138,7 @@ class BootService : IntentService("vtools-boot") {
         }
 
         if (swapConfig.contains(SpfConfig.SWAP_MIN_FREE_KBYTES)) {
-            keepShell.doCmdSync("echo ${swapConfig.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 32768)} > /proc/sys/vm/min_free_kbytes\n")
+            keepShell.doCmdSync("echo ${swapConfig.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 32768)} > /proc/sys/vm/extra_free_kbytes\n")
         }
 
         if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, false)) {
@@ -189,19 +183,9 @@ class BootService : IntentService("vtools-boot") {
     fun enableSwap(keepShell: KeepShell, context: Context) {
         updateNotification(getString(R.string.boot_swapon))
         val swapControlScript = FileWrite.writePrivateShellFile("addin/swap_control.sh", "addin/swap_control.sh", context)
-        if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false) && swapControlScript != null) {
-            if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, false)) {
-                keepShell.doCmdSync("sh $swapControlScript enable_swap 32760\n")
-            } else {
-                keepShell.doCmdSync("sh $swapControlScript enable_swap\n")
-            }
-        } else {
-            if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, false)) {
-                keepShell.doCmdSync("swapon /data/swapfile -p 32760\n")
-            } else {
-                keepShell.doCmdSync("swapon /data/swapfile\n")
-            }
-        }
+        val swapPriority = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_PRIORITY, -2)
+        val useLoop = if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false)) "1" else "0"
+        keepShell.doCmdSync("sh $swapControlScript enable_swap $useLoop $swapPriority\n")
     }
 
     /**
@@ -233,7 +217,7 @@ class BootService : IntentService("vtools-boot") {
 
             sb.append("echo 3 > /sys/block/zram0/max_comp_streams\n")
             sb.append("mkswap /dev/block/zram0 >/dev/null 2>&1\n")
-            sb.append("swapon /dev/block/zram0 >/dev/null 2>&1\n")
+            sb.append("swapon /dev/block/zram0 -p 0 >/dev/null 2>&1\n")
             sb.append("echo \$swappiness_bak > /proc/sys/vm/swappiness")
             keepShell.doCmdSync(sb.toString())
         }

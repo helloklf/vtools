@@ -103,12 +103,32 @@
                         android:layout_weight="1"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content">
-                        <CheckBox
-                            android:id="@+id/chk_swap_preferred"
-                            style="@style/textDefault"
+                        <RadioGroup
+                            android:id="@+id/chk_swap_order"
+                            android:orientation="vertical"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="@string/swap_preferred" />
+                            android:layout_height="wrap_content">
+
+                            <RadioButton
+                                android:id="@+id/swap_zram_preferred"
+                                android:checked="true"
+                                android:text="@string/swap_zram_preferred"
+                                style="@style/textDefault"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            <RadioButton
+                                android:id="@+id/swap_zram_equitable"
+                                android:text="@string/swap_zram_equitable"
+                                style="@style/textDefault"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            <RadioButton
+                                android:id="@+id/swap_swap_preferred"
+                                android:text="@string/swap_swap_preferred"
+                                style="@style/textDefault"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </RadioGroup>
 
                         <CheckBox
                             android:id="@+id/chk_swap_use_loop"
@@ -299,19 +319,19 @@
 
                 <TextView
                     style="@style/textTitle"
-                    android:text="@string/min_free_kbytes" />
+                    android:text="@string/extra_free_kbytes" />
 
                 <TableRow android:layout_marginTop="@dimen/activity_vertical_margin">
 
                     <SeekBar
-                        android:id="@+id/seekbar_min_free_kbytes"
+                        android:id="@+id/seekbar_extra_free_kbytes"
                         android:max="1048576"
                         android:layout_width="match_parent"
                         android:paddingStart="6dp"
                         android:paddingEnd="6dp" />
 
                     <TextView
-                        android:id="@+id/txt_min_free_kbytes"
+                        android:id="@+id/txt_extra_free_kbytes"
                         style="@style/textSmall"
                         android:layout_width="45dp"
                         android:layout_gravity="center_vertical"
@@ -322,7 +342,7 @@
                 <TextView
                     style="@style/textSmall"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:text="@string/min_free_kbytes_desc" />
+                    android:text="@string/extra_free_kbytes_desc" />
 
             </TableLayout>
 
@@ -343,10 +363,10 @@
                     android:text="swappiness" />
 
                 <TextView
-                    android:id="@+id/min_free_kbytes_display"
+                    android:id="@+id/extra_free_kbytes_display"
                     style="@style/textSmall"
                     android:layout_marginBottom="@dimen/activity_vertical_margin"
-                    android:text="min_free_kbytes" />
+                    android:text="extra_free_kbytes" />
 
                 <ListView
                     android:id="@+id/list_swaps2"
@@ -355,7 +375,7 @@
                     android:textSize="10dp" />
             </TableLayout>
 
-            <LinearLayout style="@style/ListCardItem">
+            <LinearLayout style="@style/ListCardItem" android:id="@+id/swap_auto_lmk_wrap">
 
                 <TextView
                     style="@style/textTitle"

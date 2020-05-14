@@ -15,6 +15,7 @@ import java.io.File
 class SwapUtils(private var context: Context) {
     private var swapfilePath: String = "/data/swapfile"
     private var swapControlScript = FileWrite.writePrivateShellFile("addin/swap_control.sh", "addin/swap_control.sh", context)
+    private var swapForceKswapdScript = FileWrite.writePrivateShellFile("addin/force_compact.sh", "addin/force_compact.sh", context)
     private var zramControlScript = FileWrite.writePrivateShellFile("addin/zram_control.sh", "addin/zram_control.sh", context)
 
     val swapExists: Boolean
@@ -22,8 +23,8 @@ class SwapUtils(private var context: Context) {
             return RootFile.itemExists(swapfilePath)
         }
 
-    // 当前已经激活的swap设备
-    val currentSwapDevice: String
+    // 当前已由Scene激活的swap
+    val sceneSwaps: String
         get() {
             if (swapExists) {
                 val ret = KernelProrp.getProp("/proc/swaps")
@@ -68,26 +69,20 @@ class SwapUtils(private var context: Context) {
         keepShell.tryExit()
     }
 
-    fun swapOn(hightPriority: Boolean, useLoop: Boolean = false) {
+    fun swapOn(priority: Int, useLoop: Boolean = false) {
         val sb = StringBuilder()
 
-        if (useLoop && swapControlScript != null) {
-            sb.append("sh ")
-            sb.append(swapControlScript)
-            sb.append(" ")
-            sb.append("enable_swap")
-            if (hightPriority) {
-                sb.append(" ")
-                sb.append("32760")
-            }
+        sb.append("sh ")
+        sb.append(swapControlScript)
+        sb.append(" enable_swap ")
+        if (useLoop) {
+            sb.append("1")
         } else {
-            // sb.append("echo 3 > /sys/block/zram0/max_comp_streams\n")
-            sb.append("mkswap $swapfilePath;\n")
-            if (hightPriority) {
-                sb.append("swapon $swapfilePath -p 32760\n")
-            } else {
-                sb.append("swapon $swapfilePath\n")
-            }
+            sb.append("0")
+        }
+        if (priority >-2) {
+            sb.append(" ")
+            sb.append(priority)
         }
 
         val keepShell = KeepShell()
@@ -98,13 +93,13 @@ class SwapUtils(private var context: Context) {
     fun swapOff() {
         val sb = StringBuilder("sync\necho 3 > /proc/sys/vm/drop_caches\n")
 
-        if (currentSwapDevice.contains("loop") && swapControlScript != null) {
-            sb.append("sh ")
-            sb.append(swapControlScript)
-            sb.append(" ")
-            sb.append("diable_swap")
+        sb.append("sh ")
+        sb.append(swapControlScript)
+        sb.append(" diable_swap ")
+        if (sceneSwaps.contains("loop")) {
+            sb.append("1")
         } else {
-            sb.append("busybox swapoff $swapfilePath > /dev/null 2>&1")
+            sb.append("0")
         }
 
         val keepShell = KeepShell()
@@ -115,14 +110,15 @@ class SwapUtils(private var context: Context) {
     fun swapDelete() {
         val sb = StringBuilder("sync\necho 3 > /proc/sys/vm/drop_caches\n")
 
-        if (currentSwapDevice.contains("loop") && swapControlScript != null) {
-            sb.append("sh ")
-            sb.append(swapControlScript)
-            sb.append(" ")
-            sb.append("diable_swap")
+        sb.append("sh ")
+        sb.append(swapControlScript)
+        sb.append(" diable_swap ")
+        if (sceneSwaps.contains("loop")) {
+            sb.append("1")
         } else {
-            sb.append("busybox swapoff $swapfilePath > /dev/null 2>&1")
+            sb.append("0")
         }
+
         sb.append("\nrm -f $swapfilePath;")
 
         val keepShell = KeepShell()
@@ -163,7 +159,7 @@ class SwapUtils(private var context: Context) {
 
             sb.append("echo 3 > /sys/block/zram0/max_comp_streams\n")
             sb.append("mkswap /dev/block/zram0 >/dev/null 2>&1\n")
-            sb.append("swapon /dev/block/zram0 >/dev/null 2>&1\n")
+            sb.append("swapon /dev/block/zram0 -p 0 >/dev/null 2>&1\n")
             keepShell.doCmdSync(sb.toString())
         }
 
@@ -198,4 +194,14 @@ class SwapUtils(private var context: Context) {
         set(value) {
             KernelProrp.setProp("/sys/block/zram0/comp_algorithm", value)
         }
+
+    fun forceKswapd(): String {
+        if (swapForceKswapdScript != null) {
+            val keepShell = KeepShell()
+            val result = keepShell.doCmdSync("sh " + swapForceKswapdScript)
+            keepShell.tryExit()
+            return result
+        }
+        return "Fail!"
+    }
 }

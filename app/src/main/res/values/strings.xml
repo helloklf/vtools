@@ -221,7 +221,9 @@
     <string name="swap_start">启动</string>
     <string name="swap_stop">关闭</string>
     <string name="swap_delete">删除</string>
-    <string name="swap_preferred">优先于ZRAM</string>
+    <string name="swap_zram_preferred">用完ZRAM再使用</string>
+    <string name="swap_zram_equitable">与ZRAM同时使用</string>
+    <string name="swap_swap_preferred">优先于ZRAM使用</string>
     <string name="swap_use_loop">挂载为环回设备</string>
     <string name="swap_use_loop_desc">如果不开启此项也能正常使用SWAP，就没必要开。\n\n除非是无法启动SWAP，或启动SWAP后手机死机，才需要开启此选项！\n\n例如：小米手机升级到Android P后，就可能需要勾选此项才能正常使用SWAP</string>
     <string name="swap_swap_desc">说明：类似于Windows的虚拟内存，受限于磁盘性能，体验可能会比较差</string>
@@ -233,8 +235,8 @@
     <string name="swap_state_undefined">未创建</string>
     <string name="swap_state_created">未启动</string>
     <string name="swap_state_using">使用中</string>
-    <string name="min_free_kbytes">最小空余内存(KB)</string>
-    <string name="min_free_kbytes_desc">简单地说min_free_kbytes设置越大，会导致内核越勤快的把RAM中的数据搬到SWAP</string>
+    <string name="extra_free_kbytes">额外空余内存(KB)</string>
+    <string name="extra_free_kbytes_desc">简单地说extra_free_kbytes设置越大，会导致内核越勤快的把RAM中的数据搬到SWAP</string>
 
     <string name="on_execute_please_wait">正在执行操作，请稍等…</string>
     <string name="please_wait">请稍等…</string>

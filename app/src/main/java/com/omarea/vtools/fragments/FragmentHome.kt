@@ -24,6 +24,7 @@ import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.shell_utils.CpuFrequencyUtil
 import com.omarea.shell_utils.CpuLoadUtils
 import com.omarea.shell_utils.GpuUtils
+import com.omarea.shell_utils.SwapUtils
 import com.omarea.store.SpfConfig
 import com.omarea.ui.AdapterCpuCores
 import com.omarea.utils.AccessibleServiceHelper
@@ -104,11 +105,25 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                 myHandler.postDelayed({
                     try {
                         updateRamInfo()
-                        Toast.makeText(context, "emmmm...", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "已对RAM中的碎片进行整理\n如需强制压缩RAM，请长按", Toast.LENGTH_SHORT).show()
                     } catch (ex: java.lang.Exception) {
                     }
                 }, 600)
             }).start()
+        }
+        home_clear_swap.setOnLongClickListener {
+            home_zramsize_text.text = getText(R.string.please_wait)
+            Thread(Runnable {
+                val result = SwapUtils(context!!).forceKswapd()
+                myHandler.postDelayed({
+                    try {
+                        updateRamInfo()
+                        Toast.makeText(context, result, Toast.LENGTH_SHORT).show()
+                    } catch (ex: java.lang.Exception) {
+                    }
+                }, 600)
+            }).start()
+            true
         }
         home_help.setOnClickListener {
             try {

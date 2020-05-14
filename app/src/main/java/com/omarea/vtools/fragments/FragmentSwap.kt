@@ -99,21 +99,21 @@ class FragmentSwap : androidx.fragment.app.Fragment() {
             seekbar_swap_size.visibility = View.VISIBLE
         }
 
-        val currentSwap = swapUtils.currentSwapDevice
+        val currentSwap = swapUtils.sceneSwaps
         if (currentSwap.isNotEmpty()) {
             btn_swap_start.visibility = View.GONE
             btn_swap_delete.visibility = View.GONE
             btn_swap_close.visibility = View.VISIBLE
             chk_swap_use_loop.visibility = View.GONE
-            chk_swap_preferred.visibility = View.GONE
+            chk_swap_order.visibility = View.GONE
             swap_state.setText(getString(R.string.swap_state_using))
         } else {
             btn_swap_start.visibility = if (swapFileExists) View.VISIBLE else View.GONE
             btn_swap_delete.visibility = if (swapFileExists) View.VISIBLE else View.GONE
 
             btn_swap_close.visibility = View.GONE
-            chk_swap_use_loop.visibility = View.VISIBLE
-            chk_swap_preferred.visibility = View.VISIBLE
+            chk_swap_use_loop.visibility = if (swapFileExists) View.VISIBLE else View.GONE
+            chk_swap_order.visibility = if (swapFileExists) View.VISIBLE else View.GONE
             if (swapFileExists) {
                 swap_state.setText(getString(R.string.swap_state_created))
             } else {
@@ -128,16 +128,20 @@ class FragmentSwap : androidx.fragment.app.Fragment() {
         }
 
         swap_auto_lmk.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, false)
-        val lmk = KernelProrp.getProp("/sys/module/lowmemorykiller/parameters/minfree")
-        swap_lmk_current.text = lmk
+        val lmkUtils = LMKUtils()
+        if (lmkUtils.supported()) {
+            swap_lmk_current.text = lmkUtils.getCurrent()
+        } else {
+            swap_auto_lmk_wrap.visibility = View.GONE
+        }
 
-        val min_free_kbytes = KernelProrp.getProp("/proc/sys/vm/min_free_kbytes")
+        val extra_free_kbytes = KernelProrp.getProp("/proc/sys/vm/extra_free_kbytes")
         try {
-            val bytes = min_free_kbytes.toInt()
-            if (seekbar_min_free_kbytes.max < bytes) {
-                seekbar_min_free_kbytes.max = bytes
+            val bytes = extra_free_kbytes.toInt()
+            if (seekbar_extra_free_kbytes.max < bytes) {
+                seekbar_extra_free_kbytes.max = bytes
             }
-            min_free_kbytes_display.text = "/proc/sys/vm/min_free_kbytes : " + min_free_kbytes
+            extra_free_kbytes_display.text = "/proc/sys/vm/extra_free_kbytes : " + extra_free_kbytes
         } catch (ex: Exception) {
         }
 
@@ -214,7 +218,15 @@ class FragmentSwap : androidx.fragment.app.Fragment() {
         super.onViewCreated(view, savedInstanceState)
         processBarDialog = ProgressBarDialog(this.context!!)
 
-        chk_swap_preferred.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, false)
+        val swapPriority = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_PRIORITY, -2)
+        if (swapPriority == 5) {
+            swap_swap_preferred.isChecked = true
+        } else if (swapPriority == 0) {
+            swap_zram_equitable.isChecked = true
+        } else {
+            swap_zram_preferred.isChecked = true
+        }
+
         chk_swap_autostart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)
         chk_zram_autostart.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)
         chk_swap_use_loop.isChecked = swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false)
@@ -236,8 +248,8 @@ class FragmentSwap : androidx.fragment.app.Fragment() {
         txt_zram_size_display.text = "${zramSize}MB"
         seekbar_swap_swappiness.progress = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65)
         txt_zramstus_swappiness.text = seekbar_swap_swappiness.progress.toString()
-        seekbar_min_free_kbytes.progress = swapConfig.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 65)
-        txt_min_free_kbytes.text = seekbar_min_free_kbytes.progress.toString()
+        seekbar_extra_free_kbytes.progress = swapConfig.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 29615)
+        txt_extra_free_kbytes.text = seekbar_extra_free_kbytes.progress.toString() + "\n(" + (seekbar_extra_free_kbytes.progress / 1024) + "MB)"
 
         seekbar_swap_size.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
             txt_swap_size_display.text = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAP_SWAPSIZE, 0).toString() + "MB"
@@ -251,19 +263,19 @@ class FragmentSwap : androidx.fragment.app.Fragment() {
         }, Runnable {
             val swappiness = swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 0)
             txt_zramstus_swappiness.text = swappiness.toString()
-            KeepShellPublic.doCmdSync("echo $swappiness > /proc/sys/vm/swappiness;")
+            KeepShellPublic.doCmdSync("echo $swappiness > /proc/sys/vm/swappiness")
             swap_swappiness_display.text = "/proc/sys/vm/swappiness :  " + KernelProrp.getProp("/proc/sys/vm/swappiness")
         }, swapConfig, SpfConfig.SWAP_SPF_SWAPPINESS))
 
-        seekbar_min_free_kbytes.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
+        seekbar_extra_free_kbytes.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
             val value = swapConfig.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 32768)
-            txt_min_free_kbytes.text = value.toString()
+            txt_extra_free_kbytes.text = value.toString() + "\n(" + (value / 1024) + "MB)"
         }, Runnable {
             val value = swapConfig.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 32768)
-            txt_min_free_kbytes.text = value.toString()
+            txt_extra_free_kbytes.text = value.toString() + "\n(" + (value / 1024) + "MB)"
             processBarDialog.showDialog(getString(R.string.swap_on_close))
             val run = Runnable {
-                KeepShellPublic.doCmdSync("echo $value > /proc/sys/vm/min_free_kbytes")
+                KeepShellPublic.doCmdSync("echo $value > /proc/sys/vm/extra_free_kbytes")
                 myHandler.post {
                     processBarDialog.hideDialog()
                     getSwaps()
@@ -302,8 +314,9 @@ class FragmentSwap : androidx.fragment.app.Fragment() {
                 val activityManager = context!!.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
                 val info = ActivityManager.MemoryInfo()
                 activityManager.getMemoryInfo(info)
-                LMKUtils().autoSetLMK(info.totalMem)
-                swap_lmk_current.text = KernelProrp.getProp("/sys/module/lowmemorykiller/parameters/minfree")
+                val utils = LMKUtils()
+                utils.autoSetLMK(info.totalMem)
+                swap_lmk_current.text = utils.getCurrent()
             } else {
                 Toast.makeText(context!!, "需要重启手机才会恢复默认的LMK参数！", Toast.LENGTH_SHORT).show()
             }
@@ -374,16 +387,23 @@ class FragmentSwap : androidx.fragment.app.Fragment() {
 
         btn_swap_start.setOnClickListener {
             val autostart = chk_swap_autostart.isChecked
-            val hightPriority = chk_swap_preferred.isChecked
+            val priority = if (swap_swap_preferred.isChecked) {
+                5
+            } else if (swap_zram_equitable.isChecked) {
+                0
+            } else {
+                -2
+            }
+            swapConfig.edit().putInt(SpfConfig.SWAP_SPF_SWAP_PRIORITY, priority).apply()
 
             val edit = swapConfig.edit()
             edit.putBoolean(SpfConfig.SWAP_SPF_SWAP, autostart)
-            edit.putBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, hightPriority)
+            edit.putInt(SpfConfig.SWAP_SPF_SWAP_PRIORITY, priority)
             edit.apply()
 
             processBarDialog.showDialog("稍等...")
             Thread(Runnable {
-                swapUtils.swapOn(hightPriority, swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false))
+                swapUtils.swapOn(priority, swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false))
 
                 myHandler.post(getSwaps)
                 myHandler.post(showSwapOpened)
@@ -408,10 +428,6 @@ class FragmentSwap : androidx.fragment.app.Fragment() {
             swapConfig.edit().putInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, sizeVal).apply()
         }
 
-        chk_swap_preferred.setOnCheckedChangeListener { _, isChecked ->
-            Toast.makeText(context, "该选项会在下次启动Swap时生效，而不是现在！", Toast.LENGTH_SHORT).show()
-            swapConfig.edit().putBoolean(SpfConfig.SWAP_SPF_SWAP_FIRST, isChecked).apply()
-        }
         chk_zram_autostart.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 Toast.makeText(context, "注意：你需要允许Scene自启动，下次开机才会生效！", Toast.LENGTH_SHORT).show()

@@ -69,12 +69,12 @@ public class SpfConfig {
     public static String SWAP_SPF = "swap"; //spf
     public static String SWAP_SPF_SWAP = "swap";
     public static String SWAP_SPF_SWAP_SWAPSIZE = "swap_size";
-    public static String SWAP_SPF_SWAP_FIRST = "swap_first";
+    public static String SWAP_SPF_SWAP_PRIORITY = "swap_priority";
     public static String SWAP_SPF_SWAP_USE_LOOP = "swap_use_loop";
     public static String SWAP_SPF_ZRAM = "zram";
     public static String SWAP_SPF_ZRAM_SIZE = "zram_size";
     public static String SWAP_SPF_SWAPPINESS = "swappiness";
-    public static String SWAP_MIN_FREE_KBYTES = "min_free_kbytes";
+    public static String SWAP_MIN_FREE_KBYTES = "extra_free_kbytes";
     public static String SWAP_SPF_AUTO_LMK = "auto_lmk";
     public static String SWAP_SPF_ALGORITHM = "comp_algorithm"; // zram 压缩算法
 

@@ -184,7 +184,7 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
                 }
                 var index = currentIndex
                 DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setTitle("选择Adreno GPU最小频率")
+                        .setTitle("选择GPU最小频率")
                         .setSingleChoiceItems(parseGPUFreqList(adrenoFreqs), currentIndex) { dialog, which ->
                             index = which
                         }
@@ -207,7 +207,7 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
                 }
                 var index = currentIndex
                 DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setTitle("选择Adreno GPU最大频率")
+                        .setTitle("选择GPU最大频率")
                         .setSingleChoiceItems(parseGPUFreqList(adrenoFreqs), currentIndex) { dialog, which ->
                             index = which
                         }
@@ -230,7 +230,7 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
                 }
                 var governor = currentIndex
                 DialogHelper.animDialog(AlertDialog.Builder(context)
-                        .setTitle("选择Adreno GPU调度")
+                        .setTitle("选择GPU调度")
                         .setSingleChoiceItems((adrenoGovernors), currentIndex) { _, which ->
                             governor = which
                         }

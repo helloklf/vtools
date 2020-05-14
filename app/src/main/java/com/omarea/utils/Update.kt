@@ -74,9 +74,11 @@ class Update {
                     }
                 }
             } catch (ex: Exception) {
+                /*
                 handler.post {
                     Toast.makeText(context, "检查更新失败！\n" + ex.message, Toast.LENGTH_SHORT).show()
                 }
+                */
             }
         }).start()
     }
