@@ -9,11 +9,13 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
+import android.graphics.Point
 import android.graphics.Rect
 import android.os.Build
 import android.os.Handler
 import android.util.Log
 import android.view.KeyEvent
+import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityWindowInfo
 import android.widget.Toast
@@ -42,6 +44,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
     private var displayWidth = 1080
     private var displayHeight = 2340
+
     companion object {
         const val useXposed = false
     }
@@ -100,7 +103,20 @@ public class AccessibilityScenceMode : AccessibilityService() {
         } else if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             isLandscapf = true
         }
+        getDisplaySize()
     }
+
+    private fun getDisplaySize() {
+        // 重新获取屏幕分辨率
+        val wm = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        val point = Point()
+        wm.defaultDisplay.getRealSize(point)
+        if (point.x != displayWidth || point.y != displayHeight) {
+            displayWidth = point.x
+            displayHeight = point.y
+        }
+    }
+
     private fun updateConfig() {
         if (useXposed && XposedCheck.xposedIsRunning()) {
             val spf = getSharedPreferences("adv", Context.MODE_PRIVATE)
@@ -182,6 +198,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
             appSwitchHandler = AppSwitchHandler(this)
             EventBus.subscibe(appSwitchHandler)
         }
+        getDisplaySize()
     }
 
     fun topAppPackageName(): String {
