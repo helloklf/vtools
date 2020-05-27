@@ -4,12 +4,11 @@ import android.content.ContentResolver
 import android.content.Context
 import android.os.Build
 import android.provider.Settings
-import android.util.Log
-import com.omarea.common.shell.KeepShell
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.model.SceneConfigInfo
 import com.omarea.shell_utils.GApps
 import com.omarea.store.SceneConfigStore
+import com.omarea.store.SpfConfig
 
 class SceneMode private constructor(context: Context, private var store: SceneConfigStore) {
     private var lastAppPackageName = "com.android.systemui"
@@ -19,9 +18,9 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
     private val freezAppLimit = 5 // 5个
     // 偏见应用后台超时时间
     private val freezAppTimeLimit = 300000 // 5 分钟
+    private val config = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
     companion object {
-        private val freezeUseSuspend = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P // TODO:改为可设置
 
         @Volatile
         private var instance: SceneMode? = null
@@ -41,15 +40,19 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
             return instance!!
         }
 
+        fun suspendApp(app: String) {
+            if (app.equals("com.android.vending")) {
+                GApps().disable(KeepShellPublic.getDefaultInstance());
+            } else {
+                KeepShellPublic.doCmdSync("pm suspend ${app}\nam force-stop ${app}")
+            }
+        }
+
         fun freezeApp(app: String) {
             if (app.equals("com.android.vending")) {
                 GApps().disable(KeepShellPublic.getDefaultInstance());
             } else {
-                if (freezeUseSuspend) {
-                    KeepShellPublic.doCmdSync("pm suspend ${app}\nam force-stop ${app}")
-                } else {
-                    KeepShellPublic.doCmdSync("pm disable ${app}")
-                }
+                KeepShellPublic.doCmdSync("pm disable ${app}")
             }
         }
 
@@ -109,7 +112,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
     // 当解冻的偏见应用数量超过限制，冻结最先解冻的应用
     fun clearFreezeAppCountLimit() {
         while (freezList.size > freezAppLimit) {
-            freezeApp(freezList.first(), KeepShellPublic.getDefaultInstance())
+            freezeApp(freezList.first())
         }
     }
 
@@ -118,14 +121,18 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
         val currentTime = System.currentTimeMillis()
         freezList.filter {
             it.leaveTime > -1 && currentTime - it.leaveTime > freezAppTimeLimit && it.packageName != lastAppPackageName
-        }.forEach { freezeApp(it, KeepShellPublic.getDefaultInstance()) }
+        }.forEach { freezeApp(it) }
     }
 
     // 冻结指定应用
-    fun freezeApp(app: FreezeAppHistory, keepShell: KeepShell) {
+    fun freezeApp(app: FreezeAppHistory) {
         val currentAppConfig = store.getAppConfig(app.packageName)
         if (currentAppConfig.freeze) {
-            freezeApp(app.packageName)
+            if (config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)) {
+                suspendApp(app.packageName)
+            } else {
+                freezeApp(app.packageName)
+            }
         }
         freezList.remove(app)
     }

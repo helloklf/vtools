@@ -101,6 +101,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                    <LinearLayout style="@style/ListCardItem">
+
+                        <Switch
+                            android:id="@+id/freeze_suspend_mode"
+                            style="@style/textTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="保留图标" />
+
+                        <TextView
+                            style="@style/textSmall"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="冻结应用时不隐藏桌面图标，而仅仅将其置灰（与应用管理中的[暂停使用]效果相同），从而避免冻结应用时破坏桌面布局，此功能需要Android P+" />
+                    </LinearLayout>
                 </LinearLayout>
             </FrameLayout>
             <TabWidget

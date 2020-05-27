@@ -18,6 +18,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Filterable
+import android.widget.Switch
 import android.widget.TabHost
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
@@ -43,6 +44,7 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
     private var freezeApps = java.util.ArrayList<String>()
     private var handler: Handler = Handler()
     private lateinit var config: SharedPreferences
+    private var useSuspendMode = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
@@ -66,6 +68,18 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
         }
 
         config = this.context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+
+        freeze_suspend_mode.isEnabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+        useSuspendMode  = config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+        freeze_suspend_mode.isChecked = useSuspendMode
+        freeze_suspend_mode.setOnClickListener {
+            val checked = (it as Switch).isChecked
+            switchSuspendMode(checked)
+
+            useSuspendMode = checked
+            config.edit().putBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, useSuspendMode).apply();
+        }
+
         processBarDialog = ProgressBarDialog(context!!)
 
         processBarDialog.showDialog()
@@ -168,8 +182,7 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
      * 显示快捷方式丢失，提示添加
      */
     private fun shortcutsLostDialog(lostedShortcutsName: String, lostedShortcuts: ArrayList<Appinfo>) {
-        val global = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-        if (!global.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_ICON_NOTIFY, true)) {
+        if (!config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_ICON_NOTIFY, true)) {
             return
         }
         DialogHelper.animDialog(AlertDialog.Builder(context)
@@ -187,7 +200,7 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
                 .setNegativeButton(R.string.btn_cancel) { _, _ ->
                 }
                 .setNeutralButton(R.string.btn_dontshow) { _, _ ->
-                    global.edit().putBoolean(SpfConfig.GLOBAL_SPF_FREEZE_ICON_NOTIFY, false).apply()
+                    config.edit().putBoolean(SpfConfig.GLOBAL_SPF_FREEZE_ICON_NOTIFY, false).apply()
                 })
     }
 
@@ -233,6 +246,7 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
         FreezeAppShortcutHelper().removeShortcut(this.context!!, packageName)
     }
 
+    // TODO:替换公共方法
     fun getUserId(context: Context): Int {
         val um = context.getSystemService(Context.USER_SERVICE) as UserManager
         val userHandle = android.os.Process.myUserHandle()
@@ -244,6 +258,20 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
         }
 
         return value
+    }
+
+    // 切换[图标置灰模式]
+    private fun switchSuspendMode(enabled: Boolean) {
+        processBarDialog.showDialog()
+        if (enabled) {
+        } else {
+        }
+        processBarDialog.showDialog()
+        for (it in freezeApps) {
+            enableApp(it)
+        }
+        processBarDialog.hideDialog()
+        loadData()
     }
 
     private fun removeAndUninstall(appInfo: Appinfo) {
@@ -264,7 +292,11 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
     }
 
     private fun disableApp(packageName: String) {
-        SceneMode.freezeApp(packageName)
+        if (useSuspendMode) {
+            SceneMode.suspendApp(packageName)
+        } else {
+            SceneMode.freezeApp(packageName)
+        }
     }
 
     private fun toggleEnable(appInfo: Appinfo) {
@@ -282,7 +314,7 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
     }
 
     private fun startApp(appInfo: Appinfo) {
-        if (((!appInfo.enabled) || appInfo.suspended) || config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, false)) {
+        if (((!appInfo.enabled) || appInfo.suspended)) {
             enableApp(appInfo)
         }
         try {
