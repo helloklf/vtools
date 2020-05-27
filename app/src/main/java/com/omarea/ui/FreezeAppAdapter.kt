@@ -91,7 +91,7 @@ class FreezeAppAdapter(private val context: Context, private var apps: ArrayList
     private val iconCaches = LruCache<String, Drawable>(100)
 
     init {
-        filterApps.sortBy { !it.enabled }
+        filterApps.sortBy { !it.enabled || it.suspended }
     }
 
     override fun getCount(): Int {
@@ -157,7 +157,7 @@ class FreezeAppAdapter(private val context: Context, private var apps: ArrayList
         viewHolder.imgView = convertView.findViewById(R.id.ItemIcon)
         viewHolder.imgView!!.setTag(getItem(position).packageName)
         viewHolder.itemTitle!!.text = item.appName.toString()
-        viewHolder.imgView!!.alpha = if (item.enabled) 1f else 0.3f
+        viewHolder.imgView!!.alpha = if (item.enabled && !item.suspended) 1f else 0.3f
         if (item.icon == null) {
             loadIcon(viewHolder, item.packageName.toString())
         } else {

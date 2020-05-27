@@ -18,6 +18,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Filterable
+import android.widget.TabHost
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
@@ -29,9 +30,11 @@ import com.omarea.scene_mode.SceneMode
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.ui.FreezeAppAdapter
+import com.omarea.ui.TabIconHelper
 import com.omarea.utils.AppListHelper
 import com.omarea.vtools.R
 import com.omarea.vtools.activities.ActivityFreezeApps
+import com.omarea.vtools.activities.ActivityMain
 import kotlinx.android.synthetic.main.fragment_freeze.*
 
 
@@ -52,6 +55,16 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val tabHost = freeze_tabhost
+        tabHost.setup()
+        val tabIconHelper = TabIconHelper(tabHost, this.activity!!)
+        tabIconHelper.newTabSpec("应用", context!!.getDrawable(R.drawable.tab_app)!!, R.id.tab_freeze_apps)
+        tabIconHelper.newTabSpec("设置", context!!.getDrawable(R.drawable.tab_settings)!!, R.id.tab_freeze_settings)
+        tabHost.setOnTabChangedListener { tabId ->
+            tabIconHelper.updateHighlight()
+        }
+
         config = this.context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         processBarDialog = ProgressBarDialog(context!!)
 
@@ -105,7 +118,7 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
 
                 // 遍历应用 检测已添加快捷方式并冻结的应用（如果不在数据库中，自动添加到数据，通常由于Scene数据被清理导致）
                 allApp.forEach {
-                    if (pinnedShortcuts.contains(it.packageName) && !it.enabled) {
+                    if (pinnedShortcuts.contains(it.packageName) && ((!it.enabled) || it.suspended)) {
                         if (!freezeApps.contains(it.packageName)) {
                             val config = store.getAppConfig(it.packageName.toString())
                             config.freeze = true
@@ -205,7 +218,7 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
     }
 
     private fun removeConfig(appInfo: Appinfo) {
-        if (!appInfo.enabled) {
+        if ((!appInfo.enabled) || appInfo.suspended) {
             enableApp(appInfo)
         }
 
@@ -255,18 +268,21 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
     }
 
     private fun toggleEnable(appInfo: Appinfo) {
-        if (appInfo.enabled) {
-            disableApp(appInfo)
-            Toast.makeText(this.context, getString(R.string.freeze_disable_completed), Toast.LENGTH_SHORT).show()
-        } else {
+        if (!appInfo.enabled || appInfo.suspended) {
             enableApp(appInfo)
             Toast.makeText(this.context, getString(R.string.freeze_enable_completed), Toast.LENGTH_SHORT).show()
+            appInfo.enabled = true
+            appInfo.suspended = false
+        } else {
+            disableApp(appInfo)
+            Toast.makeText(this.context, getString(R.string.freeze_disable_completed), Toast.LENGTH_SHORT).show()
+            appInfo.enabled = false
+            appInfo.suspended = true
         }
-        appInfo.enabled = !appInfo.enabled
     }
 
     private fun startApp(appInfo: Appinfo) {
-        if ((!appInfo.enabled) || config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, false)) {
+        if (((!appInfo.enabled) || appInfo.suspended) || config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, false)) {
             enableApp(appInfo)
         }
         try {
@@ -278,11 +294,14 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
             }
         } catch (ex: java.lang.Exception) {
         }
-        this.activity!!.finish()
+
+        if (this.activity!!.javaClass.name == ActivityFreezeApps::javaClass.name) {
+            this.activity!!.finish()
+        }
     }
 
     private fun createShortcut(appInfo: Appinfo) {
-        if (!appInfo.enabled) {
+        if ((!appInfo.enabled) || appInfo.suspended) {
             enableApp(appInfo)
         }
         if (FreezeAppShortcutHelper().createShortcut(this.context!!, appInfo.packageName.toString())) {
@@ -294,12 +313,12 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
 
     private class CreateShortcutThread(private var apps: ArrayList<Appinfo>, private var context: Context, private var onCompleted: Runnable) : Thread() {
         override fun run() {
-            for (appinfo in apps) {
-                if (!appinfo.enabled) {
-                    KeepShellPublic.doCmdSync("pm enable ${appinfo.packageName}")
+            for (appInfo in apps) {
+                if ((!appInfo.enabled) || appInfo.suspended) {
+                    KeepShellPublic.doCmdSync("pm enable ${appInfo.packageName}")
                 }
                 sleep(3000)
-                FreezeAppShortcutHelper().createShortcut(this.context, appinfo.packageName.toString())
+                FreezeAppShortcutHelper().createShortcut(this.context, appInfo.packageName.toString())
             }
             onCompleted.run()
         }

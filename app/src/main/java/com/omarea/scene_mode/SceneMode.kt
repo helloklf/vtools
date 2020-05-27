@@ -2,6 +2,7 @@ package com.omarea.scene_mode
 
 import android.content.ContentResolver
 import android.content.Context
+import android.os.Build
 import android.provider.Settings
 import android.util.Log
 import com.omarea.common.shell.KeepShell
@@ -20,7 +21,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
     private val freezAppTimeLimit = 300000 // 5 分钟
 
     companion object {
-        private val freezeUseSuspend = false; // Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+        private val freezeUseSuspend = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P // TODO:改为可设置
 
         @Volatile
         private var instance: SceneMode? = null
@@ -56,11 +57,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
             if (app.equals("com.android.vending")) {
                 GApps().enable(KeepShellPublic.getDefaultInstance());
             } else {
-                if (freezeUseSuspend) {
-                    KeepShellPublic.doCmdSync("pm unsuspend ${app}")
-                } else {
-                    KeepShellPublic.doCmdSync("pm enable ${app}")
-                }
+                KeepShellPublic.doCmdSync("pm unsuspend ${app}\npm enable ${app}")
             }
         }
     }

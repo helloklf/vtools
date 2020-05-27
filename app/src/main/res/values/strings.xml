@@ -381,8 +381,8 @@
     <string name="freeze_shortcut_lost_desc">以下被加入偏见模式的应用，启动快捷方式已丢失或未创建成功，是否立即重新创建？</string>
     <string name="freeze_add">添加偏见应用</string>
     <string name="freeze_apps_manage">偏好应用管理</string>
-    <string name="freeze_disable_completed">× 已冻结应用</string>
-    <string name="freeze_enable_completed">√ 已解冻应用</string>
+    <string name="freeze_disable_completed">已冻结应用 ×</string>
+    <string name="freeze_enable_completed">已解冻应用 √</string>
     <string name="freeze_shortcut_add_success">创建完成</string>
     <string name="freeze_shortcut_add_fail">创建失败</string>
     <string name="freeze_add_app">添加偏见</string>

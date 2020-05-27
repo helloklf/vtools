@@ -8,14 +8,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import com.google.android.material.snackbar.Snackbar
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
+import com.google.android.material.snackbar.Snackbar
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.OverScrollListView

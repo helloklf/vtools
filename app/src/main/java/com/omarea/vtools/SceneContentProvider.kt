@@ -42,7 +42,12 @@ class SceneContentProvider : ContentProvider() {
             val packageName = values.get("packageName").toString();
 
             // com.miui.freeform 是miui的应用多窗口（快速回复、游戏模式QQ微信小窗口）管理器
-            if (packageName == "android" || packageName == "com.android.systemui" || packageName == "com.miui.freeform" || packageName == "com.omarea.gesture") {
+            if (
+                    packageName == "android" ||
+                    packageName == "com.android.systemui" ||
+                    packageName == "com.miui.freeform" ||
+                    packageName == "com.omarea.gesture"
+            ) {
                 //
             } else {
                 ModeSwitcher().setCurrentPowercfgApp(packageName);
