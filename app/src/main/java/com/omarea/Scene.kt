@@ -2,6 +2,7 @@ package com.omarea
 
 import android.app.Application
 import android.content.Context
+import android.widget.Toast
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.ShellExecutor
 import com.omarea.data_collection.ChargeCurve
@@ -16,6 +17,9 @@ import com.omarea.vtools.R
 class Scene : Application() {
     companion object {
         public lateinit var context: Application
+        public fun toast(message: String, time: Int) {
+            Toast.makeText(context, message, time).show()
+        }
     }
 
     // 锁屏状态监听
