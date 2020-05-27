@@ -6,9 +6,9 @@ android {
     signingConfigs {
         omarea_Signing {
             keyAlias 'omarea.com'
-            keyPassword 'asdf1234'
+            keyPassword 'I0140728'
             storeFile file('D:/omoarea.jks')
-            storePassword 'asdf1234'
+            storePassword 'I0140728'
         }
     }
     compileSdkVersion 28
@@ -18,8 +18,8 @@ android {
         applicationId "com.omarea.vtools"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 11230
-        versionName "3.1.4"
+        versionCode 11231
+        versionName "3.1.5"
         externalNativeBuild {
             cmake {
                 cppFlags ""

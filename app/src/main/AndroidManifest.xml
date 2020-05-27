@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.omarea.vtools"
     android:installLocation="internalOnly">
+
     <!-- <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/> -->
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
@@ -44,15 +45,21 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
+        <provider
+            android:name=".SceneContentProvider"
+            android:enabled="true"
+            android:exported="true"
+            android:authorities="vtools-scene" />
+
         <activity
             android:name=".activities.ActivityPowerModeTile"
             android:exported="true"
             android:screenOrientation="behind">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
         </activity>
 
         <service
@@ -97,7 +104,8 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES"/>
+                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
+
                 <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -106,8 +114,7 @@
             <meta-data
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
-        </activity>
-        <!--             android:configChanges="keyboardHidden|orientation|screenSize|uiMode|density|colorMode|fontScale|screenLayout|layoutDirection|smallestScreenSize|touchscreen" -->
+        </activity> <!-- android:configChanges="keyboardHidden|orientation|screenSize|uiMode|density|colorMode|fontScale|screenLayout|layoutDirection|smallestScreenSize|touchscreen" -->
         <activity
             android:name=".activities.ActivityMain"
             android:autoRemoveFromRecents="false"
@@ -283,7 +290,6 @@
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
-
         <service
             android:name=".services.BootService"
             android:enabled="true"

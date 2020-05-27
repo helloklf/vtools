@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.os.Build
 import com.omarea.model.Appinfo
 import java.io.File
 import java.util.*
@@ -28,6 +29,9 @@ class AppListHelper(context: Context) {
         try {
             if (!applicationInfo.enabled) {
                 stateTags.append("❄")
+            }
+            if ((applicationInfo.flags and ApplicationInfo.FLAG_SUSPENDED) != 0) {
+                stateTags.append("■")
             }
             if (isSystemApp(applicationInfo) && applicationInfo.sourceDir.startsWith("/data")) {
                 stateTags.append("⚙")
@@ -75,7 +79,7 @@ class AppListHelper(context: Context) {
     }
 
     fun isSystemApp(applicationInfo: ApplicationInfo): Boolean {
-        return (applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0 || (applicationInfo.flags and ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0
+        return (applicationInfo.flags and ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0
     }
 
     fun getAppList(systemApp: Boolean? = null, removeIgnore: Boolean = true): ArrayList<Appinfo> {
@@ -93,12 +97,13 @@ class AppListHelper(context: Context) {
             }
 
             if (
-                    appPath.startsWith("/vendor") ||
-                    (systemApp == false && !appPath.startsWith("/data")) ||
-                    (systemApp == true && !appPath.startsWith("/system"))
+                    // appPath.startsWith("/vendor") ||
+                    (systemApp == false && !(appPath.startsWith("/data") || (applicationInfo.flags and ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0)) ||
+                    (systemApp == true && (appPath.startsWith("/data") || (applicationInfo.flags and ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0))
             ) {
                 continue
             }
+
             // ApplicationInfo.FLAG_SYSTEM
 
             val file = File(applicationInfo.publicSourceDir)
@@ -112,11 +117,20 @@ class AppListHelper(context: Context) {
             //item.icon = d
             item.dir = file.parent
             item.enabled = applicationInfo.enabled
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                item.suspended = (applicationInfo.flags and ApplicationInfo.FLAG_SUSPENDED) != 0
+            }
             item.enabledState = getTags(applicationInfo)
             item.path = appPath
-            item.updated = isSystemApp(applicationInfo) && appPath.startsWith("/data")
-            // item.appType = if (applicationInfo.sourceDir.startsWith("/system")) Appinfo.AppType.SYSTEM else Appinfo.AppType.USER
-            item.appType = if ((applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) == 0) Appinfo.AppType.USER else Appinfo.AppType.SYSTEM
+            item.updated = isSystemApp(applicationInfo) && (appPath.startsWith("/data") || (applicationInfo.flags and ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0)
+            item.appType = (if ((applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM) != 0) {
+                Appinfo.AppType.SYSTEM
+            } else if ((appPath.startsWith("/data") || (applicationInfo.flags and ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0)) {
+                Appinfo.AppType.USER
+            } else  {
+                Appinfo.AppType.SYSTEM
+            })
+
             try {
                 val packageInfo = packageManager.getPackageInfo(applicationInfo.packageName, 0)
                 item.versionName = packageInfo.versionName

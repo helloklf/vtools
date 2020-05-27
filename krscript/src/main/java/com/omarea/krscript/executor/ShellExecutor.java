@@ -27,29 +27,25 @@ public class ShellExecutor {
             return null;
         }
 
-        Process process = null;
-        try {
-            process = Runtime.getRuntime().exec("su");
-        } catch (Exception ex) {
-            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_SHORT).show();
-            if (onExit != null)
+        final Process process = ScriptEnvironmen.getRuntime();
+        if (process == null) {
+            Toast.makeText(context, "未能启动命令行进程", Toast.LENGTH_SHORT).show();
+            if (onExit != null) {
                 onExit.run();
-        }
-
-        if (process != null) {
-            final Process finalProcess = process;
+            }
+        } else {
             final Runnable forceStopRunnable = interruptible ? (new Runnable() {
                 @Override
                 public void run() {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         try {
-                            finalProcess.destroyForcibly();
+                            process.destroyForcibly();
                         } catch (Exception ex) {
                             Log.e("KrScriptError", "" + ex.getMessage());
                         }
                     } else {
                         try {
-                            finalProcess.destroy();
+                            process.destroy();
                         } catch (Exception ex) {
                             Log.e("KrScriptError", "" + ex.getMessage());
                         }

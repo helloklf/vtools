@@ -17,6 +17,7 @@ public class Appinfo {
     public CharSequence path = "";
     public CharSequence dir = "";
     public Boolean enabled = false;
+    public Boolean suspended = false;
     public Boolean updated = false;
     public String versionName = "";
     public int versionCode = 0;

@@ -2,11 +2,17 @@
 
 platform=`getprop ro.board.platform`
 
-if [[ "$platform" = "sdm845" ]] || [[ "$platform" = "msm8998" ]] || [[ "$platform" = "msmnile" ]] || [[ "$platform" = "sdm710" ]] || [[ "$platform" = "sm6150" ]] || [[ "$platform" = "kona" ]]
-then
-    if [[ -n `getprop ro.miui.ui.version.name` ]]
+ANDROID_SDK=`getprop ro.build.version.sdk`
+
+if [[ "$ANDROID_SDK" -gt 24 ]];then
+    if [[ "$platform" = "sdm845" ]] || [[ "$platform" = "msm8998" ]] || [[ "$platform" = "msm8996" ]] || [[ "$platform" = "msmnile" ]] || [[ "$platform" = "sdm710" ]] || [[ "$platform" = "sm6150" ]] || [[ "$platform" = "kona" ]]
     then
-        echo 1
+        if [[ -n `getprop ro.miui.ui.version.name` ]]
+        then
+            echo 1
+        else
+            echo 0
+        fi
     else
         echo 0
     fi

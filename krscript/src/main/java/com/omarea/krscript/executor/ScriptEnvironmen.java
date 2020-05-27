@@ -5,11 +5,10 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.os.Build;
 import android.os.Environment;
-import android.os.Process;
-import android.os.UserManager;
 
 import com.omarea.common.shared.FileWrite;
 import com.omarea.common.shared.MagiskExtend;
+import com.omarea.common.shell.KeepShell;
 import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.krscript.FileOwner;
 
@@ -30,6 +29,8 @@ public class ScriptEnvironmen {
     private static String environmentPath = "";
     // 此目录将添加到PATH尾部，作为应用程序提供的拓展程序库目录，如有需要则需要在初始化executor.sh之前为该变量赋值
     private static String TOOKIT_DIR = "";
+    private static boolean rooted = false;
+    private static KeepShell privateShell;
 
     public static boolean isInited() {
         return inited;
@@ -52,6 +53,8 @@ public class ScriptEnvironmen {
         if (inited) {
             return true;
         }
+
+        rooted = KeepShellPublic.INSTANCE.checkRoot();
 
         try {
             if (toolkitDir != null && !toolkitDir.isEmpty()) {
@@ -89,6 +92,9 @@ public class ScriptEnvironmen {
             configSpf.putString("executor", executor);
             configSpf.putString("toolkitDir", toolkitDir);
             configSpf.apply();
+
+            privateShell = rooted ? KeepShellPublic.INSTANCE.getDefaultInstance() : new KeepShell(rooted);
+
             return inited;
         } catch (Exception ex) {
             return false;
@@ -183,7 +189,7 @@ public class ScriptEnvironmen {
             init(context);
         }
 
-        return KeepShellPublic.INSTANCE.doCmdSync(environmentPath + " \"" + scriptPath + "\"" + " \"" + getStartPath(context) + "\"");
+        return privateShell.doCmdSync(environmentPath + " \"" + scriptPath + "\"" + " \"" + getStartPath(context) + "\"");
     }
 
     private static String getStartPath(Context context) {
@@ -240,6 +246,8 @@ public class ScriptEnvironmen {
         }
 
         params.put("ANDROID_SDK", "" + Build.VERSION.SDK_INT);
+        // params.put("ROOT_PERMISSION", rooted ? "granted" : "denied");
+        params.put("ROOT_PERMISSION", rooted ? "true" : "false");
         params.put("SDCARD_PATH", Environment.getExternalStorageDirectory().getAbsolutePath());
         String busyboxPath = FileWrite.INSTANCE.getPrivateFilePath(context, "busybox");
         if (new File(FileWrite.INSTANCE.getPrivateFilePath(context, "busybox")).exists()) {
@@ -309,6 +317,18 @@ public class ScriptEnvironmen {
         // FIXME:主进程退出后，可能会有未回收的子进程（孤儿进程）
         // pstree
         return environmentPath + " \"" + cachePath + "\"" + " \"" + startPath + "\"";
+    }
+
+    public static Process getRuntime() {
+        try {
+            if (rooted) {
+                return Runtime.getRuntime().exec("su");
+            } else {
+                return Runtime.getRuntime().exec("sh");
+            }
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     /**

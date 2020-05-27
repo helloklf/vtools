@@ -93,7 +93,7 @@ public class MagiskExtend {
                                     "LOOP=`imgtool mount /data/adb/magisk_merge.img /data/adb/magisk_merge_tmnt`\n");
                 }
 
-                String output = "/data/adb/magisk_merge_tmnt/" + moduleName + (orginPath.startsWith("/vendor") ? ("/system" + orginPath) : orginPath);
+                String output = "/data/adb/magisk_merge_tmnt/" + moduleName + ((orginPath.startsWith("/vendor") || orginPath.startsWith("/product")) ? ("/system" + orginPath) : orginPath);
                 String dir = new File(output).getParent();
                 KeepShellPublic.INSTANCE.doCmdSync(
                         "mkdir -p \"" + dir + "\"\n" +
@@ -112,7 +112,7 @@ public class MagiskExtend {
                 }
                 KeepShellPublic.INSTANCE.doCmdSync("imgtool umount /data/adb/magisk_merge_tmnt $LOOP");
             } else {
-                String output = MAGISK_PATH_19 + "/" + moduleName + (orginPath.startsWith("/vendor") ? ("/system" + orginPath) : orginPath);
+                String output = MAGISK_PATH_19 + "/" + moduleName + ((orginPath.startsWith("/vendor") || orginPath.startsWith("/product")) ? ("/system" + orginPath) : orginPath);
                 String dir = new File(output).getParent();
                 KeepShellPublic.INSTANCE.doCmdSync(
                         "mkdir -p \"" + dir + "\"\n" +
@@ -246,7 +246,7 @@ public class MagiskExtend {
 
     public static void deleteSystemPath(String orginPath) {
         if (RootFile.INSTANCE.itemExists(orginPath)) {
-            String output = MAGISK_PATH.substring(0, MAGISK_PATH.length() - 1) + (orginPath.startsWith("/vendor") ? ("/system" + orginPath) : orginPath);
+            String output = getMagiskReplaceFilePath(orginPath);
             String dir = new File(output).getParent();
             KeepShellPublic.INSTANCE.doCmdSync("mkdir -p \"" + dir + "\"\necho '' > \"" + output + "\"");
         }
@@ -269,7 +269,7 @@ public class MagiskExtend {
     }
 
     public static String getMagiskReplaceFilePath(String systemPath) {
-        return MAGISK_PATH.substring(0, MAGISK_PATH.length() - 1) + (systemPath.startsWith("/vendor") ? ("/system" + systemPath) : systemPath);
+        return MAGISK_PATH.substring(0, MAGISK_PATH.length() - 1) + ((systemPath.startsWith("/vendor") || systemPath.startsWith("/product")) ? ("/system" + systemPath) : systemPath);
     }
 
     public static boolean replaceSystemDir(String orginPath, String newfile) {

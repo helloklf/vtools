@@ -53,7 +53,7 @@ class ActionParamsLayoutRender {
         fun getParamOptionsSelectedStatus(actionParamInfo: ActionParamInfo, options: ArrayList<HashMap<String, Any>>): BooleanArray {
             val status = BooleanArray(options.size)
             val value = if (actionParamInfo.valueFromShell != null) actionParamInfo.valueFromShell else actionParamInfo.value
-            val values = value?.split("\n")
+            val values = value?.split(if (actionParamInfo.separator.isNotEmpty()) actionParamInfo.separator else "\n")
 
             for (index in 0 until options.size) {
                 val item = options[index]["item"]
@@ -143,7 +143,9 @@ class ActionParamsLayoutRender {
                 editText.filters = arrayOf(ParamInfoFilter(actionParamInfo))
                 editText.isEnabled = !actionParamInfo.readonly
                 editText.setPadding(dp2px(context, 8f), 0, dp2px(context, 8f), 0)
-                if (
+                if (actionParamInfo.placeholder.isNotEmpty()) {
+                    editText.hint = actionParamInfo.placeholder
+                } else if (
                         (actionParamInfo.type == "int" || actionParamInfo.type == "number")
                         &&
                         (actionParamInfo.min != Int.MIN_VALUE || actionParamInfo.max != Int.MAX_VALUE)

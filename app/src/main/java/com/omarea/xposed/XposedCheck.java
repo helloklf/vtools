@@ -10,6 +10,8 @@ public class XposedCheck {
     //判断Xposed插件是否已经激活（将在Xposed部分中hook返回值为true）
     public static boolean xposedIsRunning() {
         Log.i("SceneXposed", "Inspect Xposed");
+        int a = 1+1;
+        System.out.println(a);
         return false;
     }
 }

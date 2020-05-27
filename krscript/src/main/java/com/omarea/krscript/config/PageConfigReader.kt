@@ -233,10 +233,52 @@ class PageConfigReader {
                 when {
                     attrName == "name" -> actionParamInfo.name = attrValue
                     attrName == "label" -> actionParamInfo.label = attrValue
+                    attrName == "placeholder" -> actionParamInfo.placeholder = attrValue
                     attrName == "title" -> actionParamInfo.title = attrValue
                     attrName == "desc" -> actionParamInfo.desc = attrValue
                     attrName == "value" -> actionParamInfo.value = attrValue
                     attrName == "type" -> actionParamInfo.type = attrValue.toLowerCase().trim { it <= ' ' }
+                    attrName == "suffix" -> {
+                        val suffix = attrValue.toLowerCase().trim { it <= ' ' }
+                        when (suffix) {
+                            "zip" -> {
+                                actionParamInfo.mime = "application/zip"
+                            }
+                            "rar" -> {
+                                actionParamInfo.mime = "application/x-rar-compressed"
+                            }
+                            "gz" -> {
+                                actionParamInfo.mime = "application/x-gzip"
+                            }
+                            "tar,taz,tgz" -> {
+                                actionParamInfo.mime = "application/x-tar"
+                            }
+                            "img" -> {
+                                actionParamInfo.mime = "application/x-img"
+                            }
+                            "apk" -> {
+                                actionParamInfo.mime = "application/vnd.android"
+                            }
+                            "jpg,jpeg,jpe" -> {
+                                actionParamInfo.mime = "image/jpeg"
+                            }
+                            "png" -> {
+                                actionParamInfo.mime = "image/png"
+                            }
+                            "txt" -> {
+                                actionParamInfo.mime = "text/plain"
+                            }
+                            "xml" -> {
+                                actionParamInfo.mime = "text/xml"
+                            }
+                            "html,htm,shtml" -> {
+                                actionParamInfo.mime = "text/html"
+                            }
+                        }
+                    }
+                    attrName == "mime" -> {
+                        actionParamInfo.mime = attrValue.toLowerCase()
+                    }
                     attrName == "readonly" -> {
                         val value = attrValue.toLowerCase().trim { it <= ' ' }
                         actionParamInfo.readonly = (value == "readonly" || value == "true" || value == "1")
@@ -457,6 +499,9 @@ class PageConfigReader {
                 }
                 "multiple" -> {
                     pickerNode.multiple = attrValue == "multiple" || attrValue == "true" || attrValue == "1"
+                }
+                "separator" -> {
+                    pickerNode.separator = attrValue
                 }
             }
         }

@@ -228,7 +228,12 @@ class ActionPage : AppCompatActivity() {
         } else {
             return try {
                 val intent = Intent(Intent.ACTION_GET_CONTENT);
-                intent.type = "*/*"
+                val mimeType = fileSelectedInterface.mimeType()
+                if (mimeType != null) {
+                    intent.type = mimeType
+                } else {
+                    intent.type = "*/*"
+                }
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
                 startActivityForResult(intent, ACTION_FILE_PATH_CHOOSER);
                 this.fileSelectedInterface = fileSelectedInterface

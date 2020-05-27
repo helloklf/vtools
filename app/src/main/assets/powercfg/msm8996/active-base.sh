@@ -166,3 +166,12 @@ echo 1 > /sys/devices/system/cpu/cpu3/online
 echo "0" > /sys/module/cpu_boost/parameters/input_boost_freq
 echo 0 > /sys/module/cpu_boost/parameters/input_boost_ms
 echo 1 > /proc/sys/kernel/sched_prefer_sync_wakee_to_waker
+
+echo 0 > /sys/module/msm_thermal/core_control/enabled
+echo 0 > /sys/module/msm_thermal/vdd_restriction/enabled
+#echo N > /sys/module/msm_thermal/parameters/enabled
+echo 0 > /proc/sys/kernel/sched_boost
+stop thermanager
+stop thermal-engine
+killall -9 vendor.qti.hardware.perf@1.0-service
+

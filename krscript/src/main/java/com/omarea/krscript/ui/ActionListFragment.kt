@@ -6,7 +6,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -173,12 +172,13 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
     }
 
     /**
-     * 单选列表点击
+     * Picker点击
      */
     override fun onPickerClick(item: PickerNode, onCompleted: Runnable) {
         val paramInfo = ActionParamInfo()
         paramInfo.options = item.options
         paramInfo.optionsSh = item.optionsSh
+        paramInfo.separator = item.separator
 
         val handler = Handler()
 
@@ -203,7 +203,14 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
 
                 // 多选
                 if (item.multiple) {
-                    val status = if (options == null) booleanArrayOf() else ActionParamsLayoutRender.getParamOptionsSelectedStatus(paramInfo, options)
+                    val status = if (options == null) {
+                        booleanArrayOf()
+                    } else {
+                        ActionParamsLayoutRender.getParamOptionsSelectedStatus(
+                                paramInfo,
+                                options
+                        )
+                    }
                     builder.setMultiChoiceItems(labels, status) { _, index, isChecked ->
                         status[index] = isChecked
                     }.setPositiveButton(R.string.btn_confirm) { _, _ ->
@@ -215,7 +222,7 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
                                 }
                             }
                         }
-                        pickerExecute(item, "" + result.joinToString("\n"), onCompleted)
+                        pickerExecute(item, "" + result.joinToString(if (item.separator.isNotEmpty()) item.separator else "\n"), onCompleted)
                     }
                 } else {
                     // 单选

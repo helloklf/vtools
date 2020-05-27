@@ -28,6 +28,12 @@ class ActionParamInfo {
     var multiple: Boolean = false
     // 是否支持
     var supported: Boolean = true
+    // 文本框的水印（提示占位符）
+    var placeholder: String = ""
+    // 文件mime类型（仅限type=file有效）
+    var mime: String = ""
+    // 多个值的分隔符（仅限多选下拉）
+    var separator: String = "\n"
 
     open class ActionParamOption {
         var value: String? = null

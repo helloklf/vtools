@@ -43,6 +43,32 @@
             <get>settings get system user_rotation</get>
             <set>. ./kr-script/aosp/rotation.sh</set>
         </picker>
+        <picker multiple="multiple" separator="," visible=". ./kr-script/common/android_n.sh">
+            <title>隐藏状态栏图标</title>
+            <desc>设置隐藏的状态栏图标</desc>
+            <options>
+                <option value="mobile">手机信号</option>
+                <option value="volte">VoLTE</option>
+                <option value="airplane">飞行模式</option>
+                <option value="location">定位图标</option>
+                <option value="wifi">WIFI</option>
+                <option value="nfc">NFC</option>
+                <option value="vpn">VPN</option>
+                <option value="bluetooth">蓝牙</option>
+                <option value="volume">音量/静音</option>
+                <option value="zen">勿扰模式</option>
+                <option value="alarm_clock">闹钟</option>
+                <option value="headset">耳机</option>
+                <option value="ime">输入法</option>
+                <option value="battery">电池图标</option>
+            </options>
+            <get>
+                settings get secure icon_blacklist
+            </get>
+            <set>
+                settings put secure icon_blacklist "$state"
+            </set>
+        </picker>
     </group>
 
     <group title="性能">

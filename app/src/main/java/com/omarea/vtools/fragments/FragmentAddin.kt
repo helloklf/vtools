@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.SimpleAdapter
 import com.omarea.common.ui.DialogHelper
-import com.omarea.shell_utils.SysUtils
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
 import com.omarea.vtools.addin.DexCompileAddin

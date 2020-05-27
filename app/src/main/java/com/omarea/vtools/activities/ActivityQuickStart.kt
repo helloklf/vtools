@@ -51,7 +51,7 @@ class ActivityQuickStart : Activity() {
             }
             // SysApi Target Api28(Android P) 但普通应用无法访问
             // val isPackageSuspended = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && pm.isPackageSuspended(appPackageName)
-            if (appInfo != null && appInfo.enabled && Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+            if (appInfo != null && appInfo.enabled && (appInfo.flags and ApplicationInfo.FLAG_SUSPENDED) == 0) {
                 startApp()
             } else {
                 checkRoot(CheckRootSuccess(this, appPackageName))
