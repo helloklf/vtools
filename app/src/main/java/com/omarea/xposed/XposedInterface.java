@@ -5,11 +5,16 @@ import android.app.ActivityManager;
 import android.app.AndroidAppHelper;
 import android.app.Notification;
 import android.app.Service;
+import android.content.ComponentName;
+import android.content.ContentProvider;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.content.res.XModuleResources;
 import android.content.res.XResources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Display;
@@ -22,6 +27,7 @@ import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
+import static android.content.Context.ACTIVITY_SERVICE;
 import static de.robv.android.xposed.XposedHelpers.callMethod;
 
 /**
@@ -198,27 +204,31 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
 
         // 从最近任务列表隐藏
         if (prefs.getBoolean(packageName + "_hide_recent", false)) {
-            XposedHelpers.findAndHookMethod("android.app.Activity", loadPackageParam.classLoader, "onCreate", Bundle.class, new XC_MethodHook() {
-                @Override
-                protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                    super.afterHookedMethod(param);
-                    Activity activity = (Activity) param.thisObject;
-                    if (activity != null) {
-                        ActivityManager service = (ActivityManager) (activity.getSystemService(Context.ACTIVITY_SERVICE));
-                        if (service == null)
-                            return;
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                            for (ActivityManager.AppTask task : service.getAppTasks()) {
-                                if (task.getTaskInfo().id == activity.getTaskId()) {
-                                    task.setExcludeFromRecents(true);
+            XposedHelpers.findAndHookMethod(
+                    "android.app.Activity",
+                    loadPackageParam.classLoader,
+                    "onCreate",
+                    Bundle.class, new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            super.afterHookedMethod(param);
+                            Activity activity = (Activity) param.thisObject;
+                            if (activity != null) {
+                                ActivityManager service = (ActivityManager) (activity.getSystemService(ACTIVITY_SERVICE));
+                                if (service == null)
+                                    return;
+                                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                                    for (ActivityManager.AppTask task : service.getAppTasks()) {
+                                        if (task.getTaskInfo().id == activity.getTaskId()) {
+                                            task.setExcludeFromRecents(true);
+                                        }
+                                    }
+                                } else {
+                                    //TODO：隐藏最近任务，暂不支持5.0以下
                                 }
                             }
-                        } else {
-                            //TODO：隐藏最近任务，暂不支持5.0以下
                         }
-                    }
-                }
-            });
+                    });
         }
 
         // 专属选项
@@ -338,5 +348,42 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
             });
             */
         }
+
+        // 场景模式 - 应用切换
+        XposedHelpers.findAndHookMethod(
+                "android.app.Activity",
+                loadPackageParam.classLoader,
+                "onResume",
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        super.afterHookedMethod(param);
+                        Activity activity = (Activity) param.thisObject;
+
+                        XposedBridge.log("Scene Hook Activity State [Enter]: " + activity.getPackageName());
+                        // 在手机刚开机未解锁的情况下，访问SceneContentProvider 会出现Unknown URL
+                        Uri uri = Uri.parse("content://com.omarea.vtools.SceneContentProvider");
+                        ContentResolver contentProvider = activity.getContentResolver();
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put("packageName", activity.getPackageName());
+                        contentProvider.insert(uri, contentValues);
+                    }
+                });
+        XposedHelpers.findAndHookMethod(
+                "android.app.Activity",
+                loadPackageParam.classLoader,
+                "onPause",
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        super.afterHookedMethod(param);
+                        Activity activity = (Activity) param.thisObject;
+                        XposedBridge.log("Scene Hook Activity State [Exit]: " + activity.getPackageName());
+                        // 在手机刚开机未解锁的情况下，访问SceneContentProvider 会出现Unknown URL
+                        Uri uri = Uri.parse("content://com.omarea.vtools.SceneContentProvider");
+                        ContentResolver contentProvider = activity.getContentResolver();
+                        contentProvider.delete(uri, "packageName", new String[]{ activity.getPackageName() });
+                    }
+                });
     }
 }

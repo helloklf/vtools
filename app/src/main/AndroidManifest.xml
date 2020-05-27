@@ -49,7 +49,7 @@
             android:name=".SceneContentProvider"
             android:enabled="true"
             android:exported="true"
-            android:authorities="vtools-scene" />
+            android:authorities="com.omarea.vtools.SceneContentProvider" />
 
         <activity
             android:name=".activities.ActivityPowerModeTile"

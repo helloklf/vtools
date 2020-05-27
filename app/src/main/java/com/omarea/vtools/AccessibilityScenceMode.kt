@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.res.Configuration
+import android.graphics.Rect
 import android.os.Build
 import android.os.Handler
 import android.util.Log
@@ -23,6 +24,7 @@ import com.omarea.scene_mode.AppSwitchHandler
 import com.omarea.store.SceneConfigStore
 import com.omarea.utils.AutoClick
 import com.omarea.utils.CrashHandler
+import com.omarea.xposed.XposedCheck
 
 /**
  * Created by helloklf on 2016/8/27.
@@ -37,6 +39,9 @@ class AccessibilityScenceMode : AccessibilityService() {
     private var eventViewClick = false
     private var sceneConfigChanged: BroadcastReceiver? = null
     private var isLandscapf = false
+
+    private var displayWidth = 1080
+    private var displayHeight = 2340
 
     /*
     override fun onCreate() {
@@ -95,48 +100,63 @@ class AccessibilityScenceMode : AccessibilityService() {
     }
 
     private fun updateConfig() {
-        val spf = getSharedPreferences("adv", Context.MODE_PRIVATE)
-        flagReportViewIds = spf.getBoolean("adv_find_viewid", flagReportViewIds)
-        flagRequestKeyEvent = spf.getBoolean("adv_keyevent", SceneConfigStore(this.applicationContext).needKeyCapture())
-        flagRetriveWindow = spf.getBoolean("adv_retrieve_window", flagRetriveWindow)
+        if (XposedCheck.xposedIsRunning()) {
+            val spf = getSharedPreferences("adv", Context.MODE_PRIVATE)
+            flagRequestKeyEvent = spf.getBoolean("adv_keyevent", SceneConfigStore(this.applicationContext).needKeyCapture())
 
-        eventWindowStateChange = spf.getBoolean("adv_event_window_state", eventWindowStateChange)
-        eventWindowContentChange = spf.getBoolean("adv_event_content_change", eventWindowContentChange)
-        eventViewClick = spf.getBoolean("adv_event_view_click", eventViewClick)
+            val info = serviceInfo
+            if (flagRequestKeyEvent) {
+                info.flags = info.flags or AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS
+            } else {
+                info.eventTypes = 0
+            }
 
-        val info = serviceInfo // AccessibilityServiceInfo();
-        // We are interested in all types of accessibility events.
-        info.eventTypes = AccessibilityEvent.TYPE_WINDOWS_CHANGED
-        if (eventWindowStateChange) {
-            info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
-        }
-        if (eventWindowContentChange) {
-            info.eventTypes = info.eventTypes or AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
-        }
-        if (eventViewClick) {
-            info.eventTypes = info.eventTypes or AccessibilityEvent.TYPE_VIEW_CLICKED
-        }
-        // We want to provide specific type of feedback.
-        info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
-        // We want to receive events in a certain interval.
-        info.notificationTimeout = 0;
-        // We want to receive accessibility events only from certain packages.
-        info.packageNames = null;
+            setServiceInfo(info);
+            GlobalStatus.homeMessage = "正在通过Xposed运行场景模式";
+        } else {
+            val spf = getSharedPreferences("adv", Context.MODE_PRIVATE)
+            flagReportViewIds = spf.getBoolean("adv_find_viewid", flagReportViewIds)
+            flagRequestKeyEvent = spf.getBoolean("adv_keyevent", SceneConfigStore(this.applicationContext).needKeyCapture())
+            flagRetriveWindow = spf.getBoolean("adv_retrieve_window", flagRetriveWindow)
 
-        info.flags = AccessibilityServiceInfo.DEFAULT
-        if (flagRetriveWindow) {
-            info.flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS
+            eventWindowStateChange = spf.getBoolean("adv_event_window_state", eventWindowStateChange)
+            eventWindowContentChange = spf.getBoolean("adv_event_content_change", eventWindowContentChange)
+            eventViewClick = spf.getBoolean("adv_event_view_click", eventViewClick)
+
+            val info = serviceInfo // AccessibilityServiceInfo();
+            // We are interested in all types of accessibility events.
+            info.eventTypes = AccessibilityEvent.TYPE_WINDOWS_CHANGED
+            if (eventWindowStateChange) {
+                info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+            }
+            if (eventWindowContentChange) {
+                info.eventTypes = info.eventTypes or AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
+            }
+            if (eventViewClick) {
+                info.eventTypes = info.eventTypes or AccessibilityEvent.TYPE_VIEW_CLICKED
+            }
+            // We want to provide specific type of feedback.
+            info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
+            // We want to receive events in a certain interval.
+            info.notificationTimeout = 0;
+            // We want to receive accessibility events only from certain packages.
+            info.packageNames = null;
+
+            info.flags = AccessibilityServiceInfo.DEFAULT
+            if (flagRetriveWindow) {
+                info.flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS
+            }
+            if (flagReportViewIds) {
+                info.flags = info.flags or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS
+            }
+            if (flagRequestKeyEvent) {
+                info.flags = info.flags or AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && flagRequestAccessbilityButton) {
+                info.flags = info.flags or AccessibilityServiceInfo.FLAG_REQUEST_ACCESSIBILITY_BUTTON
+            }
+            setServiceInfo(info);
         }
-        if (flagReportViewIds) {
-            info.flags = info.flags or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS
-        }
-        if (flagRequestKeyEvent) {
-            info.flags = info.flags or AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && flagRequestAccessbilityButton) {
-            info.flags = info.flags or AccessibilityServiceInfo.FLAG_REQUEST_ACCESSIBILITY_BUTTON
-        }
-        setServiceInfo(info);
     }
 
     public override fun onServiceConnected() {
@@ -201,6 +221,7 @@ class AccessibilityScenceMode : AccessibilityService() {
             if (packageName == "android" || packageName == "com.android.systemui" || packageName == "com.miui.freeform" || packageName == "com.omarea.gesture") {
                 return
             }
+
             // 横屏时屏蔽 QQ、微信事件，因为游戏模式下通常会在横屏使用悬浮窗打开QQ 微信
             if (isLandscapf && (packageName == "com.tencent.mobileqq" || packageName == "com.tencent.mm")) {
                 return
@@ -264,6 +285,7 @@ class AccessibilityScenceMode : AccessibilityService() {
                         */
                         lastWindow = effectiveWindows.get(0)
 
+                        /*
                         try {
                             val source = event.source
                             if (source == null || source.windowId != lastWindow.id) {
@@ -271,7 +293,34 @@ class AccessibilityScenceMode : AccessibilityService() {
                                 if (windowRoot == null || windowRoot.packageName == null) {
                                     return
                                 }
+                                val outBounds = Rect()
+                                windowRoot.window.getBoundsInScreen(outBounds)
+                                Log.d(">>>>", "${windowRoot.packageName} left:${outBounds.left}, top:${outBounds.top}, right:${outBounds.right}, bottom:${outBounds.bottom}")
                                 packageName = windowRoot.packageName!!.toString()
+                            }
+                        } catch (ex: Exception) {
+                            return
+                        }
+                        */
+                        try {
+                            val source = event.source
+                            var lastWindowPackageName: String? = null
+                            for (window in effectiveWindows) {
+                                val wp = window.root?.packageName
+                                if (wp == null || packageName == "android" || packageName == "com.android.systemui" || packageName == "com.miui.freeform" || packageName == "com.omarea.gesture") {
+                                    continue
+                                }
+                                val outBounds = Rect()
+                                window.getBoundsInScreen(outBounds)
+                                Log.d(">>>>", "${wp} left:${outBounds.left}, top:${outBounds.top}, right:${outBounds.right}, bottom:${outBounds.bottom}")
+                                if (outBounds.left == 0 && outBounds.top == 0 && (outBounds.right == displayWidth || outBounds.right == displayHeight) && (outBounds.bottom == displayWidth || outBounds.bottom == displayHeight)) {
+                                    lastWindowPackageName = wp.toString()
+                                }
+                            }
+                            if (lastWindowPackageName != null) {
+                                packageName = lastWindowPackageName
+                            } else {
+                                return
                             }
                         } catch (ex: Exception) {
                             return

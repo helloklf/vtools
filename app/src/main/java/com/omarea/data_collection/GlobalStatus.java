@@ -8,4 +8,5 @@ public class GlobalStatus {
     public static long batteryCurrentNow = -1;
     public static int batteryStatus = BatteryManager.BATTERY_STATUS_UNKNOWN;
     public static String lastPackageName = "";
+    public static String homeMessage;
 }

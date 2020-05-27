@@ -1,6 +1,5 @@
 package com.omarea.scene_mode
 
-import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -25,7 +24,7 @@ import kotlin.collections.ArrayList
  *
  * Created by helloklf on 2016/10/1.
  */
-class AppSwitchHandler(private var context: AccessibilityService) : ModeSwitcher(), EventReceiver {
+class AppSwitchHandler(private var context: Context) : ModeSwitcher(), EventReceiver {
     private var systemScene = SystemScene(context)
     private var lastPackage: String? = null
     private var lastModePackage: String? = "com.system.ui"

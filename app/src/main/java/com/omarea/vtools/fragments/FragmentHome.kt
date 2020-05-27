@@ -80,6 +80,11 @@ class FragmentHome : androidx.fragment.app.Fragment() {
             installConfig(ModeSwitcher.FAST, getString(R.string.power_chagne_fast))
         }
 
+        if (!GlobalStatus.homeMessage.isNullOrEmpty()) {
+            home_message.visibility = View.VISIBLE
+            home_message.text = GlobalStatus.homeMessage
+        }
+
         spf = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
         home_clear_ram.setOnClickListener {

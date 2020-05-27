@@ -381,6 +381,20 @@
                 </LinearLayout>
             </LinearLayout>
 
+
+            <TextView
+                android:padding="10dp"
+                android:layout_margin="4dp"
+                android:background="@drawable/krscript_item_ripple_inactive"
+                android:tint="?colorAccent"
+                android:textAlignment="center"
+                android:id="@+id/home_message"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
