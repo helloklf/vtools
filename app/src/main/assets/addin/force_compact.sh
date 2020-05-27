@@ -30,7 +30,7 @@ SwapFreeStr=`cat /proc/meminfo | grep SwapFree`
 SwapFree=${SwapFreeStr:16:8}
 
 if [[ $friendly == "true" ]]; then
-  TargetRecycle=$(($MemTotal / 100 * 50))
+  TargetRecycle=$(($MemTotal / 100 * 60))
 else
   TargetRecycle=$(($MemTotal / 100 * 25))
 fi
@@ -65,12 +65,13 @@ else
     fi
 
     echo $TargetRecycle > $modify_path
-    sleep_time=$(($RecyclingSize / 1024 / 100 + 2))
+    sleep_time=$(($RecyclingSize / 1024 / 60 + 2))
+
     echo '等待 ' $sleep_time '秒'
     sleep $sleep_time
     # 还原原始设置
     echo $min_free_kbytes > $modify_path
-    echo '已尝试将可用内存提高到' $(($TargetRecycle / 1024)) 'MB'
+    echo '好咯，内存回收完毕~'
 
     # 清除执行状态标记
     setprop vtools.state.force_compact 0

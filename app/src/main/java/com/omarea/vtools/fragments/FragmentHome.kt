@@ -44,7 +44,6 @@ class FragmentHome : androidx.fragment.app.Fragment() {
 
     private lateinit var globalSPF: SharedPreferences
     private var timer: Timer? = null
-    private val configInstaller = CpuConfigInstaller()
     private fun showMsg(msg: String) {
         this.view?.let { Snackbar.make(it, msg, Snackbar.LENGTH_LONG).show() }
     }
@@ -93,43 +92,34 @@ class FragmentHome : androidx.fragment.app.Fragment() {
                 KeepShellPublic.doCmdSync("sync\n" +
                         "echo 3 > /proc/sys/vm/drop_caches\n" +
                         "echo 1 > /proc/sys/vm/compact_memory")
-                myHandler.postDelayed({
-                    try {
-                        updateRamInfo()
-                        Toast.makeText(context, "缓存已清理...", Toast.LENGTH_SHORT).show()
-                    } catch (ex: java.lang.Exception) {
-                    }
-                }, 600)
+                myHandler.post {
+                    Toast.makeText(context, "缓存已清理...", Toast.LENGTH_SHORT).show()
+                }
             }).start()
         }
+
         home_clear_swap.setOnClickListener {
             home_zramsize_text.text = getText(R.string.please_wait)
             Thread(Runnable {
                 KeepShellPublic.doCmdSync("sync\n" +
                         "echo 1 > /proc/sys/vm/compact_memory")
-                myHandler.postDelayed({
-                    try {
-                        updateRamInfo()
-                        Toast.makeText(context, "已对RAM中的碎片进行整理\n如需强制压缩RAM，请长按", Toast.LENGTH_SHORT).show()
-                    } catch (ex: java.lang.Exception) {
-                    }
-                }, 600)
+                myHandler.post {
+                    Toast.makeText(context, "已对RAM中的碎片进行整理\n如需强制压缩RAM，请长按", Toast.LENGTH_SHORT).show()
+                }
             }).start()
         }
+
         home_clear_swap.setOnLongClickListener {
             home_zramsize_text.text = getText(R.string.please_wait)
             Thread(Runnable {
                 val result = SwapUtils(context!!).forceKswapd()
-                myHandler.postDelayed({
-                    try {
-                        updateRamInfo()
-                        Toast.makeText(context, result, Toast.LENGTH_SHORT).show()
-                    } catch (ex: java.lang.Exception) {
-                    }
-                }, 600)
+                myHandler.post {
+                    Toast.makeText(context, result, Toast.LENGTH_SHORT).show()
+                }
             }).start()
             true
         }
+
         home_help.setOnClickListener {
             try {
                 val uri = Uri.parse("http://vtools.omarea.com/")
@@ -182,7 +172,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
             override fun run() {
                 updateInfo()
             }
-        }, 0, 1000)
+        }, 0, 1500)
         updateRamInfo()
     }
 
@@ -292,6 +282,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
 
         myHandler.post {
             try {
+                updateRamInfo()
                 home_running_time.text = elapsedRealtimeStr()
                 home_battery_now.text = (batteryCurrentNow / globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT)).toString() + "mA"
                 home_battery_capacity.text = "$batteryCapacity%"
