@@ -29,7 +29,7 @@ import com.omarea.xposed.XposedCheck
 /**
  * Created by helloklf on 2016/8/27.
  */
-class AccessibilityScenceMode : AccessibilityService() {
+public class AccessibilityScenceMode : AccessibilityService() {
     private var flagReportViewIds = true
     private var flagRequestKeyEvent = true
     private var flagRetriveWindow = true
@@ -42,6 +42,9 @@ class AccessibilityScenceMode : AccessibilityService() {
 
     private var displayWidth = 1080
     private var displayHeight = 2340
+    companion object {
+        const val useXposed = false
+    }
 
     /*
     override fun onCreate() {
@@ -98,9 +101,8 @@ class AccessibilityScenceMode : AccessibilityService() {
             isLandscapf = true
         }
     }
-
     private fun updateConfig() {
-        if (XposedCheck.xposedIsRunning()) {
+        if (useXposed && XposedCheck.xposedIsRunning()) {
             val spf = getSharedPreferences("adv", Context.MODE_PRIVATE)
             flagRequestKeyEvent = spf.getBoolean("adv_keyevent", SceneConfigStore(this.applicationContext).needKeyCapture())
 

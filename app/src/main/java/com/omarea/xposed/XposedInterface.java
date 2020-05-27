@@ -19,6 +19,8 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Display;
 
+import com.omarea.vtools.AccessibilityScenceMode;
+
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
@@ -349,41 +351,43 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
             */
         }
 
-        // 场景模式 - 应用切换
-        XposedHelpers.findAndHookMethod(
-                "android.app.Activity",
-                loadPackageParam.classLoader,
-                "onResume",
-                new XC_MethodHook() {
-                    @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        super.afterHookedMethod(param);
-                        Activity activity = (Activity) param.thisObject;
+        if (AccessibilityScenceMode.useXposed) {
+            // 场景模式 - 应用切换
+            XposedHelpers.findAndHookMethod(
+                    "android.app.Activity",
+                    loadPackageParam.classLoader,
+                    "onResume",
+                    new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            super.afterHookedMethod(param);
+                            Activity activity = (Activity) param.thisObject;
 
-                        XposedBridge.log("Scene Hook Activity State [Enter]: " + activity.getPackageName());
-                        // 在手机刚开机未解锁的情况下，访问SceneContentProvider 会出现Unknown URL
-                        Uri uri = Uri.parse("content://com.omarea.vtools.SceneContentProvider");
-                        ContentResolver contentProvider = activity.getContentResolver();
-                        ContentValues contentValues = new ContentValues();
-                        contentValues.put("packageName", activity.getPackageName());
-                        contentProvider.insert(uri, contentValues);
-                    }
-                });
-        XposedHelpers.findAndHookMethod(
-                "android.app.Activity",
-                loadPackageParam.classLoader,
-                "onPause",
-                new XC_MethodHook() {
-                    @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        super.afterHookedMethod(param);
-                        Activity activity = (Activity) param.thisObject;
-                        XposedBridge.log("Scene Hook Activity State [Exit]: " + activity.getPackageName());
-                        // 在手机刚开机未解锁的情况下，访问SceneContentProvider 会出现Unknown URL
-                        Uri uri = Uri.parse("content://com.omarea.vtools.SceneContentProvider");
-                        ContentResolver contentProvider = activity.getContentResolver();
-                        contentProvider.delete(uri, "packageName", new String[]{ activity.getPackageName() });
-                    }
-                });
+                            XposedBridge.log("Scene Hook Activity State [Enter]: " + activity.getPackageName());
+                            // 在手机刚开机未解锁的情况下，访问SceneContentProvider 会出现Unknown URL
+                            Uri uri = Uri.parse("content://com.omarea.vtools.SceneContentProvider");
+                            ContentResolver contentProvider = activity.getContentResolver();
+                            ContentValues contentValues = new ContentValues();
+                            contentValues.put("packageName", activity.getPackageName());
+                            contentProvider.insert(uri, contentValues);
+                        }
+                    });
+            XposedHelpers.findAndHookMethod(
+                    "android.app.Activity",
+                    loadPackageParam.classLoader,
+                    "onPause",
+                    new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            super.afterHookedMethod(param);
+                            Activity activity = (Activity) param.thisObject;
+                            XposedBridge.log("Scene Hook Activity State [Exit]: " + activity.getPackageName());
+                            // 在手机刚开机未解锁的情况下，访问SceneContentProvider 会出现Unknown URL
+                            Uri uri = Uri.parse("content://com.omarea.vtools.SceneContentProvider");
+                            ContentResolver contentProvider = activity.getContentResolver();
+                            contentProvider.delete(uri, "packageName", new String[]{activity.getPackageName()});
+                        }
+                    });
+        }
     }
 }
