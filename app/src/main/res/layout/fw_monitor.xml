@@ -155,7 +155,7 @@
         android:paddingBottom="4dp"
         android:text="Loading……"
         android:textColor="#bbffffff"
-        android:textSize="8dp"
+        android:textSize="7dp"
         android:typeface="monospace"
         android:visibility="gone" />
 </LinearLayout>

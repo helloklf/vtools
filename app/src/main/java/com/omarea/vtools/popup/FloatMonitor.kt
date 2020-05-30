@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.Point
 import android.graphics.Typeface
+import android.os.BatteryManager
 import android.os.Build
 import android.os.Handler
 import android.provider.Settings
@@ -21,16 +22,18 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import com.omarea.shell_utils.*
+import com.omarea.store.SpfConfig
 import com.omarea.ui.FloatMonitorBatteryView
 import com.omarea.ui.FloatMonitorChartView
 import com.omarea.vtools.R
 import java.util.*
 
-class FloatMonitor(context: Context) {
-    private var mContext: Context? = context
+class FloatMonitor(private val mContext: Context) {
     private var timer: Timer? = null
     private var startMonitorTime = 0L
     private var cpuLoadUtils = CpuLoadUtils()
+
+    private val globalSPF = mContext.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
     /**
      * 显示弹出框
@@ -41,20 +44,23 @@ class FloatMonitor(context: Context) {
             return
         }
         startMonitorTime = System.currentTimeMillis()
+        if (batteryManager == null) {
+            batteryManager = mContext.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+        }
 
         if (Build.VERSION.SDK_INT >= 23 && !Settings.canDrawOverlays(mContext)) {
-            Toast.makeText(mContext, mContext!!.getString(R.string.permission_float), Toast.LENGTH_LONG).show()
+            Toast.makeText(mContext, mContext.getString(R.string.permission_float), Toast.LENGTH_LONG).show()
             return
         }
 
         isShown = true
         // 获取WindowManager
-        mWindowManager = mContext!!.getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        mWindowManager = mContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
-        mView = setUpView(mContext!!)
+        mView = setUpView(mContext)
 
         val params = LayoutParams()
-        val monitorStorage = mContext!!.getSharedPreferences("float_monitor_storage", Context.MODE_PRIVATE)
+        val monitorStorage = mContext.getSharedPreferences("float_monitor_storage", Context.MODE_PRIVATE)
 
         // 类型
         params.type = LayoutParams.TYPE_SYSTEM_ALERT
@@ -199,6 +205,7 @@ class FloatMonitor(context: Context) {
     private var clustersFreq = ArrayList<String>()
 
     private val fpsUtils = FpsUtils()
+    private var batteryManager: BatteryManager? = null
 
     private fun updateInfo() {
         if (coreCount < 1) {
@@ -237,6 +244,14 @@ class FloatMonitor(context: Context) {
 
         val batteryStatus = batteryUnit.getBatteryTemperature()
 
+        // 电池电流
+        val batteryCurrentNow = batteryManager?.getLongProperty(BatteryManager.BATTERY_PROPERTY_CURRENT_NOW)
+        val batteryCurrentNowMa = if (batteryCurrentNow != null) {
+            (batteryCurrentNow / globalSPF.getInt(SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT, SpfConfig.GLOBAL_SPF_CURRENT_NOW_UNIT_DEFAULT))
+        } else {
+            null
+        }
+
         myHandler.post {
             if (showOtherInfo) {
                 otherInfo!!.setText("")
@@ -245,7 +260,7 @@ class FloatMonitor(context: Context) {
                 availMem = (info.availMem / 1024 / 1024f).toInt()
                 val ramInfoText = "#RAM  " + ((totalMem - availMem) * 100 / totalMem).toString() + "%"
 
-                val ramSpannable = SpannableString(ramInfoText);
+                val ramSpannable = SpannableString(ramInfoText)
                 val styleSpan = StyleSpan(Typeface.BOLD);
                 ramSpannable.setSpan(ForegroundColorSpan(Color.WHITE), 0, ramInfoText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                 ramSpannable.setSpan(styleSpan, 0, ramInfoText.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -260,8 +275,8 @@ class FloatMonitor(context: Context) {
                     if (cluster.size > 0) {
                         try {
                             val title = "#" + cluster[0] + "~" + cluster[cluster.size - 1] + "  " + subFreqStr(clustersFreq.get(clusterIndex)) + "Mhz";
-                            val titleSpannable = SpannableString(title);
-                            val styleSpan = StyleSpan(Typeface.BOLD);
+                            val titleSpannable = SpannableString(title)
+                            val styleSpan = StyleSpan(Typeface.BOLD)
                             titleSpannable.setSpan(ForegroundColorSpan(Color.WHITE), 0, title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                             titleSpannable.setSpan(styleSpan, 0, title.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                             otherInfo?.append(titleSpannable)
@@ -301,6 +316,18 @@ class FloatMonitor(context: Context) {
                     fpsSpannable.setSpan(ForegroundColorSpan(Color.WHITE), 0, fpsInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     fpsSpannable.setSpan(StyleSpan(Typeface.BOLD), 0, fpsInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
                     otherInfo?.append(fpsSpannable)
+                }
+
+                batteryCurrentNowMa?.run {
+                    if (this > -20000 && this < 20000) {
+                        otherInfo?.append("\n")
+
+                        val batteryInfo = "#BAT  " + (if (this > 0) ("+" + this) else this) + "mA"
+                        val batterySpannable = SpannableString(batteryInfo);
+                        batterySpannable.setSpan(ForegroundColorSpan(Color.WHITE), 0, batteryInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        batterySpannable.setSpan(StyleSpan(Typeface.BOLD), 0, batteryInfo.length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                        otherInfo?.append(batterySpannable)
+                    }
                 }
             }
 
@@ -379,6 +406,7 @@ class FloatMonitor(context: Context) {
     companion object {
         private var mWindowManager: WindowManager? = null
         public var isShown: Boolean? = false
+
         @SuppressLint("StaticFieldLeak")
         private var mView: View? = null
     }
