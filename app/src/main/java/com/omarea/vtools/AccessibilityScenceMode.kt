@@ -201,169 +201,87 @@ public class AccessibilityScenceMode : AccessibilityService() {
         getDisplaySize()
     }
 
-    fun topAppPackageName(): String {
-        var packageName = "";
+    override fun onAccessibilityEvent(event: AccessibilityEvent) {
+        if (event.packageName == null || event.className == null)
+            return
 
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-            val end = System.currentTimeMillis();
-            val usageStatsManager = getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager?
-            if (null == usageStatsManager) {
-                return packageName;
-            }
-            val events = usageStatsManager.queryEvents((end - 5 * 1000), end);
-            if (null == events) {
-                return packageName;
-            }
-            val usageEvent = UsageEvents.Event();
-            var lastMoveToFGEvent: UsageEvents.Event? = null;
-            while (events.hasNextEvent()) {
-                events.getNextEvent(usageEvent);
-                if (usageEvent.getEventType() == UsageEvents.Event.MOVE_TO_FOREGROUND) {
-                    lastMoveToFGEvent = usageEvent
+        var packageName = event.packageName.toString()
+
+        // com.miui.freeform 是miui的应用多窗口（快速回复、游戏模式QQ微信小窗口）管理器
+        if (packageName == "android" || packageName == "com.android.systemui" || packageName == "com.miui.freeform" || packageName == "com.omarea.gesture") {
+            return
+        }
+
+        // 横屏时屏蔽 QQ、微信事件，因为游戏模式下通常会在横屏使用悬浮窗打开QQ 微信
+        if (isLandscapf && (packageName == "com.tencent.mobileqq" || packageName == "com.tencent.mm")) {
+            return
+        }
+
+        /*
+         if (appSwitchHandler!!.isIgnoredApp(packageName, isLandscapf)) {
+             return
+         }
+        */
+
+        if (flagRetriveWindow) {
+            if (packageName.contains("packageinstaller")) {
+                if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity")
+                    return
+
+                try {
+                    AutoClick().packageinstallerAutoClick(this.applicationContext, event)
+                } catch (ex: Exception) {
                 }
-            }
-            if (lastMoveToFGEvent != null) {
-                packageName = lastMoveToFGEvent.getPackageName();
+            } else if (packageName == "com.miui.securitycenter") {
+                try {
+                    AutoClick().miuiUsbInstallAutoClick(this.applicationContext, event)
+                } catch (ex: Exception) {
+                }
+                return
             }
         }
-        return packageName;
-    }
 
-    override fun onAccessibilityEvent(event: AccessibilityEvent) {
-        try {
-            if (event.packageName == null || event.className == null)
+        // 针对一加部分系统的修复
+        if ((packageName == "net.oneplus.h2launcher" || packageName == "net.oneplus.launcher") && event.className == "android.widget.LinearLayout") {
+            return
+        }
+
+        if (flagReportViewIds && event.source != null) {
+            val windows_ = windows
+            if (windows_ == null || windows_.isEmpty()) {
                 return
+            } else if (windows_.size > 1) {
+                val effectiveWindows = windows_.filter {
+                    (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && it.isInPictureInPictureMode)) && (it.type == AccessibilityWindowInfo.TYPE_APPLICATION)
+                }.sortedBy { it.layer }
 
-            var packageName = event.packageName.toString()
-
-            // com.miui.freeform 是miui的应用多窗口（快速回复、游戏模式QQ微信小窗口）管理器
-            if (packageName == "android" || packageName == "com.android.systemui" || packageName == "com.miui.freeform" || packageName == "com.omarea.gesture") {
-                return
-            }
-
-            // 横屏时屏蔽 QQ、微信事件，因为游戏模式下通常会在横屏使用悬浮窗打开QQ 微信
-            if (isLandscapf && (packageName == "com.tencent.mobileqq" || packageName == "com.tencent.mm")) {
-                return
-            }
-
-            /*
-             if (appSwitchHandler!!.isIgnoredApp(packageName, isLandscapf)) {
-                 return
-             }
-            */
-
-            if (flagRetriveWindow) {
-                if (packageName.contains("packageinstaller")) {
-                    if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity")
+                if (effectiveWindows.size > 0) {
+                    try {
+                        var lastWindowPackageName: String? = null
+                        for (window in effectiveWindows) {
+                            val wp = window.root?.packageName
+                            if (wp == null || packageName == "android" || packageName == "com.android.systemui" || packageName == "com.miui.freeform" || packageName == "com.omarea.gesture") {
+                                continue
+                            }
+                            val outBounds = Rect()
+                            window.getBoundsInScreen(outBounds)
+                            Log.d(">>>>", "${wp} left:${outBounds.left}, top:${outBounds.top}, right:${outBounds.right}, bottom:${outBounds.bottom}")
+                            if (outBounds.left == 0 && outBounds.top == 0 && (outBounds.right == displayWidth || outBounds.right == displayHeight) && (outBounds.bottom == displayWidth || outBounds.bottom == displayHeight)) {
+                                lastWindowPackageName = wp.toString()
+                            }
+                        }
+                        if (lastWindowPackageName != null) {
+                            packageName = lastWindowPackageName
+                            GlobalStatus.lastPackageName = packageName
+                            EventBus.publish(EventType.APP_SWITCH);
+                        } else {
+                            return
+                        }
+                    } catch (ex: Exception) {
                         return
-
-                    try {
-                        AutoClick().packageinstallerAutoClick(this.applicationContext, event)
-                    } catch (ex: Exception) {
-                    }
-                } else if (packageName == "com.miui.securitycenter") {
-                    try {
-                        AutoClick().miuiUsbInstallAutoClick(this.applicationContext, event)
-                    } catch (ex: Exception) {
-                    }
-                    return
-                }
-            }
-
-            // 针对一加部分系统的修复
-            if ((packageName == "net.oneplus.h2launcher" || packageName == "net.oneplus.launcher") && event.className == "android.widget.LinearLayout") {
-                return
-            }
-
-            if (flagReportViewIds && event.source != null) {
-                val windows_ = windows
-                if (windows_ == null || windows_.isEmpty()) {
-                    return
-                } else if (windows_.size > 1) {
-                    // Log.d("onAccessibilityEvent", ">>>" + event.contentChangeTypes)
-                    var lastWindow: AccessibilityWindowInfo? = null
-                    val effectiveWindows = windows_.filter {
-                        (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && it.isInPictureInPictureMode)) && (it.type == AccessibilityWindowInfo.TYPE_APPLICATION)
-                    }.sortedBy { it.layer }
-
-                    if (effectiveWindows.size > 0) {
-                        /*
-                        for (window in windows_.iterator()) {
-                            if (window.type == AccessibilityWindowInfo.TYPE_SPLIT_SCREEN_DIVIDER) {
-                                Log.d("onAccessibilityEvent", "分屏组件")
-                            } else if (window.isFocused) {
-                                if (window.root != null) {
-                                    Log.d("onAccessibilityEvent", "active " + window.root.packageName + "   " + window.id + "  " + window.layer)
-                                } else {
-                                    Log.d("onAccessibilityEvent", "active " + window.title + "   " + window.id + "  " + window.layer)
-                                }
-                            } else {
-                                Log.d("onAccessibilityEvent", "inactive " + window.title + "   " + window.id + "  " + window.layer)
-                            }
-                        }
-                        */
-                        lastWindow = effectiveWindows.get(0)
-
-                        /*
-                        try {
-                            val source = event.source
-                            if (source == null || source.windowId != lastWindow.id) {
-                                val windowRoot = lastWindow!!.root
-                                if (windowRoot == null || windowRoot.packageName == null) {
-                                    return
-                                }
-                                val outBounds = Rect()
-                                windowRoot.window.getBoundsInScreen(outBounds)
-                                Log.d(">>>>", "${windowRoot.packageName} left:${outBounds.left}, top:${outBounds.top}, right:${outBounds.right}, bottom:${outBounds.bottom}")
-                                packageName = windowRoot.packageName!!.toString()
-                            }
-                        } catch (ex: Exception) {
-                            return
-                        }
-                        */
-                        try {
-                            val source = event.source
-                            var lastWindowPackageName: String? = null
-                            for (window in effectiveWindows) {
-                                val wp = window.root?.packageName
-                                if (wp == null || packageName == "android" || packageName == "com.android.systemui" || packageName == "com.miui.freeform" || packageName == "com.omarea.gesture") {
-                                    continue
-                                }
-                                val outBounds = Rect()
-                                window.getBoundsInScreen(outBounds)
-                                Log.d(">>>>", "${wp} left:${outBounds.left}, top:${outBounds.top}, right:${outBounds.right}, bottom:${outBounds.bottom}")
-                                if (outBounds.left == 0 && outBounds.top == 0 && (outBounds.right == displayWidth || outBounds.right == displayHeight) && (outBounds.bottom == displayWidth || outBounds.bottom == displayHeight)) {
-                                    lastWindowPackageName = wp.toString()
-                                }
-                            }
-                            if (lastWindowPackageName != null) {
-                                packageName = lastWindowPackageName
-                            } else {
-                                return
-                            }
-                        } catch (ex: Exception) {
-                            return
-                        }
                     }
                 }
-                GlobalStatus.lastPackageName = packageName
-                EventBus.publish(EventType.APP_SWITCH);
-            } else {
-                GlobalStatus.lastPackageName = packageName
-                EventBus.publish(EventType.APP_SWITCH);
             }
-
-            handler.postDelayed({
-                if (GlobalStatus.lastPackageName != packageName) {
-                    val lastEvent = topAppPackageName()
-                    if (lastEvent.isNotEmpty() && lastEvent != GlobalStatus.lastPackageName) {
-                        GlobalStatus.lastPackageName = lastEvent
-                        EventBus.publish(EventType.APP_SWITCH);
-                    }
-                }
-            }, 2000)
-        } finally {
-            // event.recycle()
         }
     }
 

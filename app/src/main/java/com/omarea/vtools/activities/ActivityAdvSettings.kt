@@ -18,7 +18,6 @@ import kotlinx.android.synthetic.main.activity_adv_settings.*
 
 class ActivityAdvSettings : AppCompatActivity() {
     private lateinit var spf: SharedPreferences
-    private var myHandler = Handler()
 
     override fun onPostResume() {
         super.onPostResume()
@@ -64,31 +63,6 @@ class ActivityAdvSettings : AppCompatActivity() {
         adv_event_view_click.setOnClickListener {
             spf.edit().putBoolean("adv_event_view_click", (it as Switch).isChecked).commit()
         }
-        adv_event_usage_stats.setOnClickListener {
-            val intent = Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            try {
-                startActivity(intent);
-            } catch (e: ActivityNotFoundException) {
-                val item = (it as Switch)
-                item.isChecked = !item.isChecked
-            }
-        }
-    }
-
-    fun checkAppUsagePermission(): Boolean {
-        val usageStatsManager = getSystemService(Context.USAGE_STATS_SERVICE) as UsageStatsManager?
-        if (usageStatsManager == null) {
-            return false;
-        }
-        val currentTime = System.currentTimeMillis()
-        // try to get app usage state in last 1 min
-        val stats = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, currentTime - 60 * 1000, currentTime);
-        if (stats.size == 0) {
-            return false;
-        }
-
-        return true;
     }
 
     override fun onResume() {
@@ -100,7 +74,6 @@ class ActivityAdvSettings : AppCompatActivity() {
         adv_event_window_state.isChecked = spf.getBoolean("adv_event_window_state", true)
         adv_event_content_change.isChecked = spf.getBoolean("adv_event_content_change", false)
         adv_event_view_click.isChecked = spf.getBoolean("adv_event_view_click", false)
-        adv_event_usage_stats.isChecked = checkAppUsagePermission()
     }
 
     public override fun onPause() {
