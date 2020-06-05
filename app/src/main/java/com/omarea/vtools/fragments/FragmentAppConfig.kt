@@ -1,9 +1,11 @@
 package com.omarea.vtools.fragments
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.*
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
@@ -520,6 +522,13 @@ class FragmentAppConfig : androidx.fragment.app.Fragment() {
         }
         if (configInfo.dpi >= 96) {
             desc.append("DIP " + configInfo.dpi + "  ")
+        }
+        if (configInfo.screenOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE) {
+            desc.append("横屏显示  ")
+        } else if (configInfo.screenOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT) {
+            desc.append("竖屏显示  ")
+        } else if (configInfo.screenOrientation == ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR) {
+            desc.append("自动旋转  ")
         }
         if (aidlConn != null) {
             try {

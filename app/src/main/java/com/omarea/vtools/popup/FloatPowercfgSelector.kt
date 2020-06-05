@@ -1,6 +1,5 @@
 package com.omarea.vtools.popup
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -13,6 +12,7 @@ import android.view.WindowManager.LayoutParams
 import android.widget.*
 import com.omarea.permissions.NotificationListener
 import com.omarea.scene_mode.AlwaysNotification
+import com.omarea.scene_mode.LocationHelper
 import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
@@ -24,9 +24,9 @@ import com.omarea.vtools.R
  *
  * @ClassName WindowUtils
  */
-class FloatPowercfgSelector {
+class FloatPowercfgSelector(context: Context) {
+    private val mContext: Context = context.applicationContext
     private var mView: View? = null
-    private var mContext: Context? = null
     private var modeList = ModeSwitcher()
 
     /**
@@ -34,42 +34,39 @@ class FloatPowercfgSelector {
      *
      * @param context
      */
-    fun showPopupWindow(context: Context, packageName: String) {
+    fun open(packageName: String) {
         if (isShown!!) {
             return
         }
 
         isShown = true
-        // 获取应用的Context
-        this.mContext = context.applicationContext
         // 获取WindowManager
-        mWindowManager = mContext!!
-                .getSystemService(Context.WINDOW_SERVICE) as WindowManager
+        mWindowManager = mContext.getSystemService(Context.WINDOW_SERVICE) as WindowManager
 
-        this.mView = setUpView(context, packageName)
+        this.mView = setUpView(mContext, packageName)
 
-        val params = WindowManager.LayoutParams()
+        val params = LayoutParams()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (Settings.canDrawOverlays(this.mContext)) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {//6.0+
-                    params.type = WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
+                    params.type = LayoutParams.TYPE_APPLICATION_OVERLAY
                 } else {
-                    params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
+                    params.type = LayoutParams.TYPE_SYSTEM_ALERT
                 }
             } else {
-                params.type = WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
+                params.type = LayoutParams.TYPE_ACCESSIBILITY_OVERLAY
             }
         } else {
-            params.type = WindowManager.LayoutParams.TYPE_SYSTEM_ALERT
+            params.type = LayoutParams.TYPE_SYSTEM_ALERT
         }
 
         // 设置flag
 
-        val flags = WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM
-        flags.and(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        // | WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE;
-        // 如果设置了WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE，弹出的View收不到Back键的事件
+        val flags = LayoutParams.FLAG_ALT_FOCUSABLE_IM
+        flags.and(LayoutParams.FLAG_FULLSCREEN)
+        // | LayoutParams.FLAG_NOT_FOCUSABLE;
+        // 如果设置了LayoutParams.FLAG_NOT_FOCUSABLE，弹出的View收不到Back键的事件
         params.flags = flags
         // 不设置这个弹出框的透明遮罩显示为黑色
         params.format = PixelFormat.TRANSLUCENT
@@ -89,7 +86,7 @@ class FloatPowercfgSelector {
     /**
      * 隐藏弹出框
      */
-    fun hidePopupWindow() {
+    fun close() {
         if (isShown!! &&
                 null != this.mView) {
             mWindowManager!!.removeView(mView)
@@ -101,11 +98,11 @@ class FloatPowercfgSelector {
      * 重启辅助服务
      */
     private fun reStartService(app: String, mode: String) {
-        if (AccessibleServiceHelper().serviceRunning(mContext!!)) {
-            val intent = Intent(mContext!!.getString(R.string.scene_appchange_action))
+        if (AccessibleServiceHelper().serviceRunning(mContext)) {
+            val intent = Intent(mContext.getString(R.string.scene_appchange_action))
             intent.putExtra("app", app)
             intent.putExtra("mode", mode)
-            mContext!!.sendBroadcast(intent)
+            mContext.sendBroadcast(intent)
         }
     }
 
@@ -118,7 +115,8 @@ class FloatPowercfgSelector {
 
         val spfPowercfg = context.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
         val globalSPF = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-        val dynamic = AccessibleServiceHelper().serviceRunning(context) && globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
+        val serviceRunning = AccessibleServiceHelper().serviceRunning(context)
+        val dynamic = serviceRunning && globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
         val defaultMode = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance")
         var selectedMode = if (dynamic) spfPowercfg.getString(packageName, defaultMode) else modeList.getCurrentPowerMode()
 
@@ -130,7 +128,14 @@ class FloatPowercfgSelector {
             (view.findViewById<View>(R.id.fw_title) as TextView).text = packageName
         }
 
-        view.findViewById<CheckBox>(R.id.fw_dynamic_state).isChecked = dynamic
+        // 性能调节（动态响应）
+        val fw_dynamic_state = view.findViewById<Switch>(R.id.fw_dynamic_state)
+        fw_dynamic_state.isChecked = dynamic
+        fw_dynamic_state.isEnabled = serviceRunning && ModeSwitcher().modeConfigCompleted()
+        fw_dynamic_state.setOnClickListener {
+            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, (it as Switch).isChecked).apply()
+            reStartService()
+        }
 
         if (!context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_NIGHT_MODE, false)) {
             view.findViewById<LinearLayout>(R.id.popup_window).setBackgroundColor(Color.WHITE)
@@ -143,7 +148,6 @@ class FloatPowercfgSelector {
         val btn_fastmode = view.findViewById<TextView>(R.id.btn_fastmode)
         val fw_float_monitor = view.findViewById<ImageButton>(R.id.fw_float_monitor)
         val fw_float_task = view.findViewById<ImageButton>(R.id.fw_float_task)
-        val fw_screen_record = view.findViewById<ImageButton>(R.id.fw_screen_record)
 
         val updateUI = Runnable {
             btn_powersave.setTextColor(0x66ffffff)
@@ -212,19 +216,11 @@ class FloatPowercfgSelector {
             context.sendBroadcast(intent)
         }
 
-        // 点击禁用通知
+        // 点击禁用按键
         val fw_app_dis_button = view.findViewById<CheckBox>(R.id.fw_app_dis_button)
         fw_app_dis_button.isChecked = appConfig.disButton
         fw_app_dis_button.setOnClickListener {
             val isChecked = (it as CheckBox).isChecked
-            if (isChecked) {
-                if (!NotificationListener().getPermission(context)) {
-                    NotificationListener().setPermission(context)
-                    Toast.makeText(context, context.getString(R.string.scene_need_notic_listing), Toast.LENGTH_SHORT).show()
-                    it.isChecked = false
-                    return@setOnClickListener
-                }
-            }
             appConfig.disButton = isChecked
             store.setAppConfig(appConfig)
             if (isChecked && !needKeyCapture) {
@@ -237,6 +233,22 @@ class FloatPowercfgSelector {
             context.sendBroadcast(intent)
         }
 
+        // GPS开关
+        val fw_app_gps = view.findViewById<CheckBox>(R.id.fw_app_gps).apply {
+            isChecked = appConfig.gpsOn
+            setOnClickListener {
+                val isChecked = (it as CheckBox).isChecked
+                appConfig.gpsOn = isChecked
+                store.setAppConfig(appConfig)
+                if (isChecked) {
+                    LocationHelper().enableGPS()
+                } else {
+                    LocationHelper().disableGPS()
+                }
+            }
+        }
+
+
         // 点击窗口外部区域可消除
         // 这点的实现主要将悬浮窗设置为全屏大小，外层有个透明背景，中间一部分视为内容区域
         // 所以点击内容区域外部视为点击悬浮窗外部
@@ -248,7 +260,7 @@ class FloatPowercfgSelector {
             val rect = Rect()
             popupWindowView.getGlobalVisibleRect(rect)
             if (!rect.contains(x, y)) {
-                hidePopupWindow()
+                close()
             }
             false
         }
@@ -257,7 +269,7 @@ class FloatPowercfgSelector {
         view.setOnKeyListener { v, keyCode, event ->
             when (keyCode) {
                 KeyEvent.KEYCODE_BACK -> {
-                    hidePopupWindow()
+                    close()
                     true
                 }
                 else -> false
@@ -286,18 +298,28 @@ class FloatPowercfgSelector {
             }
         }
 
-        if (!dynamic || packageName.equals(context.packageName)) {
+        if (!serviceRunning || packageName.equals(context.packageName)) {
             fw_app_light.isEnabled = false
             fw_app_dis_button.isEnabled = false
             fw_app_dis_notice.isEnabled = false
+            fw_app_gps.isEnabled = false
         }
 
         view.findViewById<ImageButton>(R.id.fw_float_close).setOnClickListener {
-            hidePopupWindow()
+            close()
         }
 
         updateUI.run()
         return view
+    }
+
+    /**
+     * 重启辅助服务
+     */
+    private fun reStartService() {
+        if (AccessibleServiceHelper().serviceRunning(mContext)) {
+            mContext.sendBroadcast(Intent(mContext.getString(R.string.scene_change_action)))
+        }
     }
 
     companion object {

@@ -1,5 +1,7 @@
 package com.omarea.model;
 
+import android.content.pm.ActivityInfo;
+
 public class SceneConfigInfo {
     public String packageName;
 
@@ -15,6 +17,8 @@ public class SceneConfigInfo {
     public boolean gpsOn = false;
     // 应用偏见（自动冻结）
     public boolean freeze = false;
+    // 屏幕旋转方向
+    public int screenOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
 
     // Xposed
     public int dpi = -1;

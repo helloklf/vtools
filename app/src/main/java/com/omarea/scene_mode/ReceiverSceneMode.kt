@@ -25,7 +25,7 @@ class ReceiverSceneMode : BroadcastReceiver() {
                 overlayPermission.data = Uri.fromParts("package", context.packageName, null)
                 Toast.makeText(context, "为Scene授权显示悬浮窗权限，从而在应用中快速切换模式！", Toast.LENGTH_SHORT).show();
             } else {
-                FloatPowercfgSelector().showPopupWindow(context.applicationContext, parameterValue)
+                FloatPowercfgSelector(context.applicationContext).open(parameterValue)
             }
         }
     }

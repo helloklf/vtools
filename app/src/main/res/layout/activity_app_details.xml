@@ -113,6 +113,44 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="自动打开GPS（离开后还原）" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            style="@style/scene_config_item"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="屏幕旋转" />
+                        <RadioGroup
+                            android:orientation="horizontal"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content"
+                            android:gravity="end">
+                            <RadioButton
+                                android:id="@+id/scene_orientation_default"
+                                android:text="默认"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            <RadioButton
+                                android:id="@+id/scene_orientation_auto"
+                                android:text="自动"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            <RadioButton
+                                android:id="@+id/scene_orientation_portrait"
+                                android:text="竖屏"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                            <RadioButton
+                                android:id="@+id/scene_orientation_landscape"
+                                android:text="横屏"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content" />
+                        </RadioGroup>
+                    </LinearLayout>
                 </LinearLayout>
 
                 <LinearLayout

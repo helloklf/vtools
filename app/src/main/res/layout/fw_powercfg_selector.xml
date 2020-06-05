@@ -9,16 +9,16 @@
     android:orientation="vertical">
 
     <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_margin="6dp"
         android:background="@drawable/krscript_item_ripple_inactive"
-        app:cardCornerRadius="8dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        app:cardCornerRadius="8dp">
 
         <LinearLayout
             android:id="@+id/popup_window"
             android:layout_width="290dp"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <LinearLayout
@@ -52,14 +52,14 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginLeft="15dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
                 android:layout_marginRight="15dp"
-                android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:layout_marginLeft="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp">
@@ -143,12 +143,6 @@
                         android:text="屏蔽通知"
                         android:textColor="#888"
                         android:textSize="12dp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
 
                     <CheckBox
                         android:id="@+id/fw_app_dis_button"
@@ -158,42 +152,40 @@
                         android:text="屏蔽按键"
                         android:textColor="#888"
                         android:textSize="12dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
                     <CheckBox
-                        android:id="@+id/fw_dynamic_state"
+                        android:id="@+id/fw_app_gps"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:enabled="false"
-                        android:lines="1"
-                        android:text="性能调节"
+                        android:text="GPS"
                         android:textColor="#888"
                         android:textSize="12dp" />
                 </LinearLayout>
 
             </LinearLayout>
 
+            <View
+                android:layout_marginTop="5dp"
+                android:layout_width="match_parent"
+                android:background="#e0e0e0"
+                android:layout_height="1dp" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="left"
+                android:layout_marginTop="5dp"
+                android:gravity="start"
                 android:orientation="horizontal"
-                android:paddingLeft="15dp"
-                android:paddingRight="15dp"
-                android:paddingBottom="10dp">
-
-                <ImageButton
-                    android:id="@+id/fw_screen_record"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginRight="10dp"
-                    android:background="@android:color/transparent"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/record"
-                    android:visibility="gone" />
+                android:paddingStart="15dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="5dp">
 
                 <ImageButton
                     android:id="@+id/fw_float_monitor"
@@ -207,14 +199,27 @@
 
                 <ImageButton
                     android:id="@+id/fw_float_task"
-                    android:layout_marginLeft="10dp"
                     android:layout_width="25dp"
                     android:layout_height="25dp"
                     android:layout_gravity="center_vertical"
+                    android:layout_marginStart="10dp"
                     android:alpha="0.3"
                     android:background="@android:color/transparent"
                     android:scaleType="fitCenter"
                     android:src="@drawable/dialog_performance" />
+
+                <View
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp" />
+                <Switch
+                    android:id="@+id/fw_dynamic_state"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="性能调节 "
+                    android:textColor="#888"
+                    android:textSize="12dp" />
             </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>

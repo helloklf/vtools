@@ -6,9 +6,9 @@ android {
     signingConfigs {
         omarea_Signing {
             keyAlias 'omarea.com'
-            keyPassword 'asdf1234'
+            keyPassword 'I0140728'
             storeFile file('D:/omoarea.jks')
-            storePassword 'asdf1234'
+            storePassword 'I0140728'
         }
     }
     compileSdkVersion 28
@@ -41,7 +41,7 @@ android {
             minifyEnabled true
         }
         debug {
-            // signingConfig signingConfigs.omarea_Signing
+            signingConfig signingConfigs.omarea_Signing
             minifyEnabled false
             jniDebuggable = false
         }

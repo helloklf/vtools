@@ -10,7 +10,7 @@ import com.omarea.model.SceneConfigInfo;
 import java.util.ArrayList;
 
 public class SceneConfigStore extends SQLiteOpenHelper {
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 2;
 
     public SceneConfigStore(Context context) {
         super(context, "scene3_config", null, DB_VERSION);
@@ -20,13 +20,13 @@ public class SceneConfigStore extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         try {
             db.execSQL("create table scene_config3(" +
-                    "id text primary key, " +
-                    "alone_light int default(0), " +
-                    "light int default(-1), " +
-                    "dis_notice int default(0)," +
-                    "dis_button int default(0)," +
-                    "gps_on int default(0)," +
-                    "freeze int default(0)" +
+                    "id text primary key, " + // id
+                    "alone_light int default(0), " + // 独立亮度
+                    "light int default(-1), " + // 亮度
+                    "dis_notice int default(0)," + // 拦截通知
+                    "dis_button int default(0)," + // 停用按键
+                    "gps_on int default(0)," + // 打开GPS
+                    "freeze int default(0)" + // 休眠
                     ")");
         } catch (Exception ignored) {
         }
@@ -34,6 +34,10 @@ public class SceneConfigStore extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if (oldVersion < 2) {
+            // 屏幕方向
+            db.execSQL("alter table scene_config3 add column screen_orientation int default(-1)");
+        }
     }
 
     public SceneConfigInfo getAppConfig(String app) {
@@ -49,6 +53,7 @@ public class SceneConfigStore extends SQLiteOpenHelper {
                 sceneConfigInfo.disButton = cursor.getInt(cursor.getColumnIndex("dis_button")) == 1;
                 sceneConfigInfo.gpsOn = cursor.getInt(cursor.getColumnIndex("gps_on")) == 1;
                 sceneConfigInfo.freeze = cursor.getInt(cursor.getColumnIndex("freeze")) == 1;
+                sceneConfigInfo.screenOrientation = cursor.getInt(cursor.getColumnIndex("screen_orientation"));
             }
             cursor.close();
             sqLiteDatabase.close();
@@ -63,14 +68,15 @@ public class SceneConfigStore extends SQLiteOpenHelper {
         getWritableDatabase().beginTransaction();
         try {
             database.execSQL("delete from  scene_config3 where id = ?", new String[]{sceneConfigInfo.packageName});
-            database.execSQL("insert into scene_config3(id, alone_light, light, dis_notice, dis_button, gps_on, freeze) values (?, ?, ?, ?, ?, ?, ?)", new Object[]{
+            database.execSQL("insert into scene_config3(id, alone_light, light, dis_notice, dis_button, gps_on, freeze, screen_orientation) values (?, ?, ?, ?, ?, ?, ?, ?)", new Object[]{
                     sceneConfigInfo.packageName,
                     sceneConfigInfo.aloneLight ? 1 : 0,
                     sceneConfigInfo.aloneLightValue,
                     sceneConfigInfo.disNotice ? 1 : 0,
                     sceneConfigInfo.disButton ? 1 : 0,
                     sceneConfigInfo.gpsOn ? 1 : 0,
-                    sceneConfigInfo.freeze ? 1 : 0
+                    sceneConfigInfo.freeze ? 1 : 0,
+                    sceneConfigInfo.screenOrientation
             });
             database.setTransactionSuccessful();
             return true;

@@ -3,6 +3,7 @@ package com.omarea.vtools.activities
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.*
+import android.content.pm.ActivityInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -492,7 +493,6 @@ class ActivityAppDetails : AppCompatActivity() {
         }
     }
 
-
     // 通知辅助服务配置变化
     private fun notifyService(app: String, mode: String) {
         if (AccessibleServiceHelper().serviceRunning(this)) {
@@ -501,27 +501,6 @@ class ActivityAppDetails : AppCompatActivity() {
             intent.putExtra("mode", mode)
             sendBroadcast(intent)
         }
-    }
-
-    private fun getTotalSizeOfFilesInDir(file: File): Long {
-        if (!file.exists()) {
-            return 0
-        }
-        if (file.isFile)
-            return file.length()
-        val children = file.listFiles()
-        var total: Long = 0
-        if (children != null)
-            for (child in children)
-                total += getTotalSizeOfFilesInDir(child)
-        return total
-    }
-
-    private fun checkPermission(permissionName: String, app: String): Boolean {
-        val pm = packageManager;
-        val permission = (PackageManager.PERMISSION_GRANTED ==
-                pm.checkPermission(permissionName, app));
-        return permission
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -579,6 +558,22 @@ class ActivityAppDetails : AppCompatActivity() {
 
         scene_mode_allow.isChecked = !sceneBlackList.contains(app)
         scene_mode_config.visibility = if (scene_mode_config.visibility == View.VISIBLE && scene_mode_allow.isChecked) View.VISIBLE else View.GONE
+
+        val screenOrientation = sceneConfigInfo.screenOrientation
+        when (screenOrientation) {
+            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED -> {
+                scene_orientation_default.isChecked = true
+            }
+            ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE -> {
+                scene_orientation_landscape.isChecked = true
+            }
+            ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT -> {
+                scene_orientation_portrait.isChecked = true
+            }
+            ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR -> {
+                scene_orientation_auto.isChecked = true
+            }
+        }
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -595,7 +590,18 @@ class ActivityAppDetails : AppCompatActivity() {
 
     private fun saveConfig() {
         val originConfig = SceneConfigStore(this).getAppConfig(sceneConfigInfo.packageName)
+        sceneConfigInfo.screenOrientation = (if (scene_orientation_auto.isChecked) {
+            ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
+        } else if (scene_orientation_landscape.isChecked) {
+            ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        } else if (scene_orientation_portrait.isChecked) {
+            ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+        } else {
+            ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        })
+
         if (
+                sceneConfigInfo.screenOrientation != originConfig.screenOrientation ||
                 sceneConfigInfo.aloneLight != originConfig.aloneLight ||
                 sceneConfigInfo.disNotice != originConfig.disNotice ||
                 sceneConfigInfo.disButton != originConfig.disButton ||
@@ -614,7 +620,6 @@ class ActivityAppDetails : AppCompatActivity() {
             aidlConn!!.setBooleanValue("com.android.systemui_hide_su", app_details_hide_su.isChecked)
             aidlConn!!.setBooleanValue("android_webdebug", app_details_webview_debug.isChecked)
             aidlConn!!.setBooleanValue("android_dis_service_foreground", app_details_service_running.isChecked)
-        } else {
         }
         if (!SceneConfigStore(this).setAppConfig(sceneConfigInfo)) {
             Toast.makeText(applicationContext, getString(R.string.config_save_fail), Toast.LENGTH_LONG).show()

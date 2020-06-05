@@ -4,11 +4,13 @@ import android.content.ContentResolver
 import android.content.Context
 import android.os.Build
 import android.provider.Settings
+import android.util.Log
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.model.SceneConfigInfo
 import com.omarea.shell_utils.GApps
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
+import com.omarea.vtools.popup.FloatScreenRotation
 
 class SceneMode private constructor(context: Context, private var store: SceneConfigStore) {
     private var lastAppPackageName = "com.android.systemui"
@@ -19,6 +21,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
     // 偏见应用后台超时时间
     private val freezAppTimeLimit = 300000 // 5 分钟
     private val config = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+    private val floatScreenRotation = FloatScreenRotation(context)
 
     companion object {
 
@@ -141,7 +144,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
     var screenBrightness = -1;
     var currentSceneConfig: SceneConfigInfo? = null
 
-    private fun backupState(): Int {
+    private fun backupBrightnessState(): Int {
         if (brightnessMode == -1) {
             try {
                 brightnessMode = Settings.System.getInt(contentResolver, Settings.System.SCREEN_BRIGHTNESS_MODE)
@@ -153,7 +156,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
         return brightnessMode
     }
 
-    private fun resumeState() {
+    private fun resumeBrightnessState() {
         try {
             val modeBackup = brightnessMode;
             if (modeBackup > -1) {
@@ -188,6 +191,13 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
             return false
         }
         return true
+    }
+
+    // 设置屏幕旋转
+    private fun updateScreenRotation() {
+        currentSceneConfig?.run {
+            floatScreenRotation.update(screenOrientation)
+        }
     }
 
     /**
@@ -291,14 +301,14 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
             currentSceneConfig = store.getAppConfig(packageName)
             if (currentSceneConfig == null) {
                 restoreLocationModeState()
-                resumeState()
+                resumeBrightnessState()
                 restoreHeaddUp()
             } else {
                 if (currentSceneConfig!!.aloneLight) {
-                    backupState()
+                    backupBrightnessState()
                     autoLightOff(currentSceneConfig!!.aloneLightValue)
                 } else {
-                    resumeState()
+                    resumeBrightnessState()
                 }
 
                 if (currentSceneConfig!!.gpsOn) {
@@ -330,8 +340,10 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
                 }
             }
 
+            updateScreenRotation()
             lastAppPackageName = packageName
         } catch (ex: Exception) {
+            Log.e(">>>>", "" + ex.message)
         }
     }
 
@@ -344,7 +356,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
     fun clearState() {
         lastAppPackageName = "com.android.systemui"
         restoreLocationModeState()
-        resumeState()
+        resumeBrightnessState()
         currentSceneConfig = null
     }
 

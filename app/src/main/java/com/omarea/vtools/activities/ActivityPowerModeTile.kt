@@ -25,7 +25,7 @@ class ActivityPowerModeTile : AppCompatActivity() {
                 overlayPermission.data = Uri.fromParts("package", this.packageName, null)
                 Toast.makeText(this, "为Scene授权显示悬浮窗权限，从而在应用中快速切换模式！", Toast.LENGTH_SHORT).show();
             } else {
-                FloatPowercfgSelector().showPopupWindow(this.applicationContext, this.packageName)
+                FloatPowercfgSelector(this.applicationContext).open(this.packageName)
             }
 
         } else {
