@@ -180,8 +180,14 @@ public class WebViewInjector {
                 return fileChooser.openFileChooser(new FileChooserRender.FileSelectedInterface() {
                     @Nullable
                     @Override
+                    public String suffix() {
+                        return null; // TODO
+                    }
+
+                    @Nullable
+                    @Override
                     public String mimeType() {
-                        return "*/*";
+                        return "*/*"; // TODO
                     }
 
                     @Override

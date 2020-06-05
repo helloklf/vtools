@@ -155,11 +155,16 @@ public class CpuFrequencyUtil {
         ArrayList<String> commands = new ArrayList<>();
         if (maxFrequency != null) {
             commands.add("chmod 0664 /sys/module/msm_performance/parameters/cpu_max_freq");
+            StringBuilder stringBuilder = new StringBuilder();
             for (String core : cores) {
                 commands.add("chmod 0664 " + scaling_max_freq.replace("cpu0", "cpu" + core));
                 commands.add("echo " + maxFrequency + " > " + scaling_max_freq.replace("cpu0", "cpu" + core));
-                commands.add("echo " + core + ":" + maxFrequency + "> /sys/module/msm_performance/parameters/cpu_max_freq");
+                stringBuilder.append(core);
+                stringBuilder.append(":");
+                stringBuilder.append(maxFrequency);
+                stringBuilder.append(" ");
             }
+            commands.add("echo " + stringBuilder.toString() + "> /sys/module/msm_performance/parameters/cpu_max_freq");
             KeepShellPublic.INSTANCE.doCmdSync(commands);
         }
     }
@@ -393,17 +398,22 @@ public class CpuFrequencyUtil {
                             commands.add("chmod 0755 " + scaling_governor.replace("cpu0", "cpu" + core));
                             commands.add("echo " + config.governor + " > " + scaling_governor.replace("cpu0", "cpu" + core));
                         }
+                        commands.add("chmod 0664 /sys/module/msm_performance/parameters/cpu_max_freq");
+                        StringBuilder stringBuilder = new StringBuilder();
                         if (config.max_freq != null && !config.max_freq.isEmpty()) {
                             commands.add("chmod 0664 " + scaling_max_freq.replace("cpu0", "cpu" + core));
                             commands.add("echo " + config.max_freq + " > " + scaling_max_freq.replace("cpu0", "cpu" + core));
-                            commands.add("echo " + core + ":" + config.max_freq + "> /sys/module/msm_performance/parameters/cpu_max_freq");
+                            stringBuilder.append(core);
+                            stringBuilder.append(":");
+                            stringBuilder.append(config.max_freq);
+                            stringBuilder.append(" ");
                         }
+                        commands.add("echo " + stringBuilder.toString() + "> /sys/module/msm_performance/parameters/cpu_max_freq");
                         if (config.min_freq != null && !config.min_freq.isEmpty()) {
                             commands.add("chmod 0664 " + scaling_min_freq.replace("cpu0", "cpu" + core));
                             commands.add("echo " + config.min_freq + " > " + scaling_min_freq.replace("cpu0", "cpu" + core));
                         }
                         // }
-                        commands.add("chmod 0664 /sys/module/msm_performance/parameters/cpu_max_freq");
                         KeepShellPublic.INSTANCE.doCmdSync(commands);
                     }
                 }

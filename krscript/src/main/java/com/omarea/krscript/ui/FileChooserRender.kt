@@ -16,6 +16,7 @@ class FileChooserRender(private var actionParamInfo: ActionParamInfo, private va
     interface FileSelectedInterface {
         fun onFileSelected(path: String?)
         fun mimeType():String?
+        fun suffix():String?
     }
 
     fun render(): View {
@@ -39,6 +40,13 @@ class FileChooserRender(private var actionParamInfo: ActionParamInfo, private va
                 override fun mimeType(): String? {
                     if (actionParamInfo.mime.isNotEmpty()) {
                         return actionParamInfo.mime
+                    }
+                    return null
+                }
+
+                override fun suffix(): String? {
+                    if (actionParamInfo.suffix.isNotEmpty()) {
+                        return actionParamInfo.suffix
                     }
                     return null
                 }

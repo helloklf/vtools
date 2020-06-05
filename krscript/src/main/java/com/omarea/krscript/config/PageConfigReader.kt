@@ -240,41 +240,46 @@ class PageConfigReader {
                     attrName == "type" -> actionParamInfo.type = attrValue.toLowerCase().trim { it <= ' ' }
                     attrName == "suffix" -> {
                         val suffix = attrValue.toLowerCase().trim { it <= ' ' }
-                        when (suffix) {
-                            "zip" -> {
-                                actionParamInfo.mime = "application/zip"
-                            }
-                            "rar" -> {
-                                actionParamInfo.mime = "application/x-rar-compressed"
-                            }
-                            "gz" -> {
-                                actionParamInfo.mime = "application/x-gzip"
-                            }
-                            "tar,taz,tgz" -> {
-                                actionParamInfo.mime = "application/x-tar"
-                            }
-                            "img" -> {
-                                actionParamInfo.mime = "application/x-img"
-                            }
-                            "apk" -> {
-                                actionParamInfo.mime = "application/vnd.android"
-                            }
-                            "jpg,jpeg,jpe" -> {
-                                actionParamInfo.mime = "image/jpeg"
-                            }
-                            "png" -> {
-                                actionParamInfo.mime = "image/png"
-                            }
-                            "txt" -> {
-                                actionParamInfo.mime = "text/plain"
-                            }
-                            "xml" -> {
-                                actionParamInfo.mime = "text/xml"
-                            }
-                            "html,htm,shtml" -> {
-                                actionParamInfo.mime = "text/html"
+
+                        if (actionParamInfo.mime.isEmpty()) {
+                            when (suffix) {
+                                "zip" -> {
+                                    actionParamInfo.mime = "application/zip"
+                                }
+                                "rar" -> {
+                                    actionParamInfo.mime = "application/x-rar-compressed"
+                                }
+                                "gz" -> {
+                                    actionParamInfo.mime = "application/x-gzip"
+                                }
+                                "tar,taz,tgz" -> {
+                                    actionParamInfo.mime = "application/x-tar"
+                                }
+                                "img" -> {
+                                    actionParamInfo.mime = "application/x-img"
+                                }
+                                "apk" -> {
+                                    actionParamInfo.mime = "application/vnd.android"
+                                }
+                                "jpg,jpeg,jpe" -> {
+                                    actionParamInfo.mime = "image/jpeg"
+                                }
+                                "png" -> {
+                                    actionParamInfo.mime = "image/png"
+                                }
+                                "txt" -> {
+                                    actionParamInfo.mime = "text/plain"
+                                }
+                                "xml" -> {
+                                    actionParamInfo.mime = "text/xml"
+                                }
+                                "html,htm,shtml" -> {
+                                    actionParamInfo.mime = "text/html"
+                                }
                             }
                         }
+
+                        actionParamInfo.suffix = suffix
                     }
                     attrName == "mime" -> {
                         actionParamInfo.mime = attrValue.toLowerCase()

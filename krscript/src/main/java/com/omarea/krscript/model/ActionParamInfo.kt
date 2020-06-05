@@ -32,6 +32,8 @@ class ActionParamInfo {
     var placeholder: String = ""
     // 文件mime类型（仅限type=file有效）
     var mime: String = ""
+    // 文件后缀（仅限type=file有效）
+    var suffix: String = ""
     // 多个值的分隔符（仅限多选下拉）
     var separator: String = "\n"
 
