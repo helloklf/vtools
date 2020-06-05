@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
+    android:theme="@style/AppThemeWhite"
     android:fitsSystemWindows="true"
     android:gravity="center"
     android:orientation="vertical">
@@ -75,6 +76,7 @@
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
                         android:text="@string/powersave_short"
+                        android:textColor="@android:color/white"
                         android:textAlignment="center"
                         android:textSize="12dp" />
 
@@ -88,6 +90,7 @@
                         android:background="@drawable/powercfg_balance"
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
+                        android:textColor="@android:color/white"
                         android:text="@string/balance_short"
                         android:textAlignment="center"
                         android:textSize="12dp" />
@@ -102,6 +105,7 @@
                         android:background="@drawable/powercfg_performance"
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
+                        android:textColor="@android:color/white"
                         android:text="@string/performance_short"
                         android:textAlignment="center"
                         android:textSize="12dp" />
@@ -115,6 +119,7 @@
                         android:background="@drawable/powercfg_fast"
                         android:paddingTop="10dp"
                         android:paddingBottom="10dp"
+                        android:textColor="@android:color/white"
                         android:text="@string/fast_short"
                         android:textAlignment="center"
                         android:textSize="12dp" />
@@ -124,6 +129,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
+                    android:paddingStart="5dp"
                     android:orientation="horizontal">
 
                     <CheckBox
@@ -157,6 +163,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingStart="5dp"
                     android:orientation="horizontal">
 
                     <CheckBox
@@ -195,7 +202,7 @@
                     android:alpha="0.3"
                     android:background="@android:color/transparent"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/dialog" />
+                    android:src="@drawable/fw_float_monitor" />
 
                 <ImageButton
                     android:id="@+id/fw_float_task"
