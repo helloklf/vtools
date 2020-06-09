@@ -20,14 +20,29 @@ public class ProcessUtils {
 
     // pageSize 获取 : getconf PAGESIZE
 
-    private final String PS_COMMAND = "ps -e -o %CPU,RSS,NAME,PID,USER,COMMAND,CMDLINE";
-    private final String PS_DETAIL_COMMAND = "ps -e -o %CPU,RSS,NAME,PID,USER,COMMAND,CMDLINE";
+    private String PS_COMMAND = null;
+    private final String[] PS_COMMANDS = new String[]{"ps -e -o %CPU,RSS,NAME,PID,USER,COMMAND,CMDLINE", "toybox-outside ps -e -o %CPU,RSS,NAME,PID,USER,COMMAND,CMDLINE"};
+    private final String[] PS_DETAIL_COMMANDS = new String[]{"ps -e -o %CPU,RSS,NAME,PID,USER,COMMAND,CMDLINE", "toybox-outside ps -e -o %CPU,RSS,NAME,PID,USER,COMMAND,CMDLINE"};
+    private String PS_DETAIL_COMMAND = "";
 
     // 兼容性检查
     public boolean supported() {
-        String[] rows = KeepShellPublic.INSTANCE.doCmdSync(PS_COMMAND + " 2>&1").split("\n");
-        String result = rows[0];
-        return rows.length > 10 && !(result.contains("bad -o") || result.contains("Unknown option") || result.contains("bad"));
+        if (PS_COMMAND == null) {
+            PS_COMMAND = "";
+            int index = 0;
+            for (String cmd : PS_COMMANDS) {
+                String[] rows = KeepShellPublic.INSTANCE.doCmdSync(cmd + " 2>&1").split("\n");
+                String result = rows[0];
+                if (rows.length > 10 && !(result.contains("bad -o") || result.contains("Unknown option") || result.contains("bad"))) {
+                    PS_COMMAND = cmd;
+                    PS_DETAIL_COMMAND = PS_DETAIL_COMMANDS[index];
+                    break;
+                }
+                index++;
+            }
+        }
+
+        return !PS_COMMAND.isEmpty();
     }
 
     // 解析单行数据
