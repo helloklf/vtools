@@ -41,7 +41,7 @@ android {
             minifyEnabled true
         }
         debug {
-            signingConfig signingConfigs.omarea_Signing
+            // signingConfig signingConfigs.omarea_Signing
             minifyEnabled false
             jniDebuggable = false
         }
