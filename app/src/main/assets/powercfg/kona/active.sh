@@ -145,8 +145,8 @@ if [[ "$action" = "powersave" ]]; then
 	echo 710400 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_freq
 	echo 844800 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
 
-    echo 1-3 > /dev/cpuset/background/cpus
-    echo 1-4 > /dev/cpuset/system-background/cpus
+    echo 0-2 > /dev/cpuset/background/cpus
+    echo 0-3 > /dev/cpuset/system-background/cpus
 
 	sched_config "85 85" "96 96" "160" "260"
     echo 0 > /sys/devices/system/cpu/cpu7/online
@@ -170,8 +170,8 @@ if [[ "$action" = "balance" ]]; then
 	echo 1056000 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_freq
 	echo 1305600 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
 
-    echo 1-3 > /dev/cpuset/background/cpus
-    echo 1-4 > /dev/cpuset/system-background/cpus
+    echo 0-2 > /dev/cpuset/background/cpus
+    echo 0-3 > /dev/cpuset/system-background/cpus
 
 	sched_config "85 85" "96 96" "120" "200"
 
@@ -194,8 +194,8 @@ if [[ "$action" = "performance" ]]; then
     echo 1766400 > /sys/devices/system/cpu/cpufreq/policy4/schedutil/hispeed_freq
     echo 2073600 > /sys/devices/system/cpu/cpufreq/policy7/schedutil/hispeed_freq
 
-    echo 1-3 > /dev/cpuset/background/cpus
-    echo 1-4 > /dev/cpuset/system-background/cpus
+    echo 0-1 > /dev/cpuset/background/cpus
+    echo 0-2 > /dev/cpuset/system-background/cpus
 
 	sched_config "85 85" "95 95" "85" "100"
 
@@ -218,8 +218,8 @@ if [[ "$action" = "fast" ]]; then
 	echo `expr $gpu_min_pl - 2` > /sys/class/kgsl/kgsl-3d0/default_pwrlevel
 	echo 1 > /proc/sys/kernel/sched_boost
 
-    echo 1-2 > /dev/cpuset/background/cpus
-    echo 1-4 > /dev/cpuset/system-background/cpus
+    echo 0 > /dev/cpuset/background/cpus
+    echo 0-1 > /dev/cpuset/system-background/cpus
 
 	sched_config "85 85" "95 95" "85" "100"
 

@@ -265,7 +265,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
                             }
                             val outBounds = Rect()
                             window.getBoundsInScreen(outBounds)
-                            Log.d(">>>>", "${wp} left:${outBounds.left}, top:${outBounds.top}, right:${outBounds.right}, bottom:${outBounds.bottom}")
+                            // Log.d(">>>>", "${wp} left:${outBounds.left}, top:${outBounds.top}, right:${outBounds.right}, bottom:${outBounds.bottom}")
                             if (outBounds.left == 0 && outBounds.top == 0 && (outBounds.right == displayWidth || outBounds.right == displayHeight) && (outBounds.bottom == displayWidth || outBounds.bottom == displayHeight)) {
                                 lastWindowPackageName = wp.toString()
                             }
