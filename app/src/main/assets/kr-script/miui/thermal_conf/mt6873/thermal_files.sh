@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-thermal_file_prefix="thermal-$platform"
+thermal_file_prefix="thermal-"
 thermal_file_suffix=".conf"
 thermal_files=(
 "${thermal_file_prefix}-chg-only${thermal_file_suffix}"
