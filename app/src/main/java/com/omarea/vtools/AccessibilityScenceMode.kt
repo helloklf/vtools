@@ -241,11 +241,6 @@ public class AccessibilityScenceMode : AccessibilityService() {
             }
         }
 
-        // 针对一加部分系统的修复
-        if ((packageName == "net.oneplus.h2launcher" || packageName == "net.oneplus.launcher") && event.className == "android.widget.LinearLayout") {
-            return
-        }
-
         if (flagReportViewIds && event.source != null) {
             val windows_ = windows
             if (windows_ == null || windows_.isEmpty()) {

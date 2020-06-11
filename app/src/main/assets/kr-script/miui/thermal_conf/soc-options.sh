@@ -23,4 +23,7 @@ then
 elif [[ "$platform" = "msm8996" ]]
 then
     echo 'msm8996|骁龙820\821'
+elif [[ "$platform" = "mt6873" ]]
+then
+    echo 'mt6873|天玑800\820'
 fi

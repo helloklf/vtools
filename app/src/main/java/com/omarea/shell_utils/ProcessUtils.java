@@ -20,10 +20,10 @@ public class ProcessUtils {
 
     // pageSize 获取 : getconf PAGESIZE
 
-    private String PS_COMMAND = null;
+    private static String PS_COMMAND = null;
     private final String[] PS_COMMANDS = new String[]{"ps -e -o %CPU,RSS,NAME,PID,USER,COMMAND,CMDLINE", "toybox-outside ps -e -o %CPU,RSS,NAME,PID,USER,COMMAND,CMDLINE"};
     private final String[] PS_DETAIL_COMMANDS = new String[]{"ps -e -o %CPU,RSS,NAME,PID,USER,COMMAND,CMDLINE", "toybox-outside ps -e -o %CPU,RSS,NAME,PID,USER,COMMAND,CMDLINE"};
-    private String PS_DETAIL_COMMAND = "";
+    private static String PS_DETAIL_COMMAND = "";
 
     // 兼容性检查
     public boolean supported() {

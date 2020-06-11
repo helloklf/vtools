@@ -10,10 +10,12 @@ import android.provider.Settings
 import android.view.*
 import android.view.WindowManager.LayoutParams
 import android.widget.*
+import com.omarea.Scene
 import com.omarea.permissions.NotificationListener
 import com.omarea.scene_mode.AlwaysNotification
 import com.omarea.scene_mode.LocationHelper
 import com.omarea.scene_mode.ModeSwitcher
+import com.omarea.shell_utils.ProcessUtils
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.utils.AccessibleServiceHelper
@@ -279,6 +281,7 @@ class FloatPowercfgSelector(context: Context) {
         // 性能监视悬浮窗开关
         fw_float_monitor.alpha = if (FloatMonitor.isShown == true) 1f else 0.5f
         fw_float_monitor.setOnClickListener {
+
             if (FloatMonitor.isShown == true) {
                 FloatMonitor(context).hidePopupWindow()
                 fw_float_monitor.alpha = 0.3f
@@ -287,14 +290,20 @@ class FloatPowercfgSelector(context: Context) {
                 fw_float_monitor.alpha = 1f
             }
         }
+
+        // 进程管理器
         fw_float_task.alpha = if (FloatTaskManager.isShown) 1f else 0.5f
         fw_float_task.setOnClickListener {
             if (FloatTaskManager.isShown) {
                 FloatTaskManager(context).hidePopupWindow()
                 fw_float_task.alpha = 0.3f
             } else {
-                FloatTaskManager(context).showPopupWindow()
-                fw_float_task.alpha = 1f
+                if (ProcessUtils().supported()) {
+                    FloatTaskManager(context).showPopupWindow()
+                    fw_float_task.alpha = 1f
+                } else {
+                    Scene.toast("进程管理器暂未兼容你的手机！", Toast.LENGTH_SHORT)
+                }
             }
         }
 

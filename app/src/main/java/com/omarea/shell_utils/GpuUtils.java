@@ -1,5 +1,7 @@
 package com.omarea.shell_utils;
 
+import android.util.Log;
+
 import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.common.shell.KernelProrp;
 import com.omarea.common.shell.RootFile;
@@ -10,25 +12,29 @@ import java.util.ArrayList;
 
 public class GpuUtils {
     private static String GPU_LOAD_PATH = null;
-    private static String GPU_FREQ_PATH = null;
+    private static String GPU_FREQ_CMD = null;
 
     public static String getGpuFreq() {
-        if (GPU_FREQ_PATH == null) {
-            String path1 = getGpuParamsDir() + "/cur_freq";
+        if (GPU_FREQ_CMD == null) {
+            String path1 = getGpuParamsDir() + "/cur_freq"; // 骁龙
             String path2 = "/sys/kernel/gpu/gpu_clock";
+            String path3 = "/sys/kernel/debug/ged/hal/current_freqency"; // 天玑820
             if (RootFile.INSTANCE.fileExists(path1)) {
-                GPU_FREQ_PATH = path1;
+                GPU_FREQ_CMD = "cat " + path1;
             } else if (RootFile.INSTANCE.fileExists(path2)) {
-                GPU_FREQ_PATH = path2;
+                GPU_FREQ_CMD = "cat " + path2;
+            } else if (RootFile.INSTANCE.fileExists(path3)) {
+                // 天玑820
+                GPU_FREQ_CMD = "echo $((`cat /sys/kernel/debug/ged/hal/current_freqency | cut -f2 -d ' '` / 1000))";
             } else {
-                GPU_FREQ_PATH = "";
+                GPU_FREQ_CMD = "";
             }
         }
 
-        if (GPU_FREQ_PATH.isEmpty()) {
+        if (GPU_FREQ_CMD.isEmpty()) {
             return "";
         } else {
-            String freq = KernelProrp.INSTANCE.getProp(GPU_FREQ_PATH);
+            String freq = KeepShellPublic.INSTANCE.doCmdSync(GPU_FREQ_CMD);
             if (freq.length() > 6) {
                 return freq.substring(0, freq.length() - 6);
             }
@@ -40,11 +46,15 @@ public class GpuUtils {
     public static int getGpuLoad() {
         if (GPU_LOAD_PATH == null) {
             String[] paths = new String[]{
+                    // 旧骁龙
                     "/sys/kernel/gpu/gpu_busy",
+                    // 骁龙
                     "/sys/class/kgsl/kgsl-3d0/devfreq/gpu_load",
                     "/sys/class/kgsl/kgsl-3d0/gpu_busy_percentage",
                     "/sys/class/kgsl/kgsl-3d0/gpuload",
-                    "/sys/class/devfreq/gpufreq/mali_ondemand/utilisation"
+
+                    "/sys/class/devfreq/gpufreq/mali_ondemand/utilisation", // 麒麟
+                    "/sys/module/ged/parameters/gpu_loading" // 天玑820 （或者 cat /sys/kernel/debug/ged/hal/gpu_utilization | cut -f1 -d ' '）
             };
             GPU_LOAD_PATH = "";
             for (String path : paths) {
