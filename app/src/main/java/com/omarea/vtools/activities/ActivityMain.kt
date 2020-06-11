@@ -67,7 +67,7 @@ class ActivityMain : AppCompatActivity() {
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("注意事项")
                         .setMessage("附加功 - MIUI专属 - 温控模式切换，现已全面升级。因为此前设计的模式文件，已经无法很好的兼容最新系统，建议尽快切换到新的配置模式！")
-                        .setCancelable(true)
+                        .setCancelable(false)
                         .setPositiveButton(R.string.btn_iknow) { _, _ ->
                         })
             }

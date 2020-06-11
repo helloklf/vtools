@@ -1,5 +1,6 @@
 package com.omarea.common.shell
 
+import android.util.Log
 import com.omarea.common.shared.RootFileInfo
 
 /**
@@ -35,68 +36,28 @@ object RootFile {
 
         val file = RootFileInfo()
 
-        val buffer = StringBuffer()
-        var spaceCount = 0
-        for (i in 0 until row.length) {
-            if (spaceCount < 7 && row[i] == ' ') {
-                if (buffer.length > 0) {
-                    when (spaceCount) {
-                        0 -> {
-                            file.permissions = buffer.toString()
-                        }
-                        1 -> {
-                            file.inodeCount = buffer.toString().toInt()
-                        }
-                        2 -> {
-                            file.owner = buffer.toString()
-                        }
-                        3 -> {
-                            file.ownerGroup = buffer.toString()
-                        }
-                        4 -> {
-                            file.fileSize = buffer.toString().toLong()
-                        }
-                        5 -> {
-                            file.lastModifyDateTime = buffer.toString()
-                        }
-                        6 -> {
-                            file.lastModifyDateTime += buffer
-                        }
-                    }
-                    spaceCount++
-                    buffer.delete(0, buffer.length)
-                }
-            } else {
-                buffer.append(row[i])
-            }
-        }
-        val fileName = buffer.toString()
+        val columns = row.trim().split(" ");
+        val size = columns[0]
+        file.fileSize = size.toLong();
+
+        //  8 /data/adb/modules/scene_systemless/ => /data/adb/modules/scene_systemless/
+        val fileName = row.substring(row.indexOf(size) + size.length + 1);
 
         if (fileName == "./" || fileName == "../") {
             return null
         }
 
+        // -F  append /dir *exe @sym |FIFO
+
         if (fileName.endsWith("/")) {
             file.filePath = fileName.substring(0, fileName.length - 1)
             file.isDirectory = true
+        } else if (fileName.endsWith("@")) {
+            file.filePath = fileName.substring(0, fileName.length - 1)
+        } else if (fileName.endsWith("|")) {
+            file.filePath = fileName.substring(0, fileName.length - 1)
         } else if (fileName.endsWith("*")) {
             file.filePath = fileName.substring(0, fileName.length - 1)
-            file.executable = true
-        } else if (fileName.contains(" -> ")) {
-            val index = fileName.indexOf(" -> ")
-            file.filePath = fileName.substring(0, index)
-            file.softLink = fileName.substring(index + 4)
-            if (file.softLink.endsWith("@")) {
-                file.softLink = file.softLink.substring(0, file.softLink.length - 1)
-            }
-            if (RootFile.dirExists(file.softLink)) {
-                file.isDirectory = true
-            } else if (RootFile.fileExists(file.softLink)) {
-                file.isDirectory = false
-            } else {
-                // 软链无效！
-                // return null
-            }
         } else {
             file.filePath = fileName
         }
@@ -110,24 +71,31 @@ object RootFile {
         val absPath = if (path.endsWith("/")) path.subSequence(0, path.length - 1).toString() else path
         val files = ArrayList<RootFileInfo>()
         if (dirExists(absPath)) {
-            val outputInfo = KeepShellPublic.doCmdSync("ls -laF \"$absPath\"")
+            val outputInfo = KeepShellPublic.doCmdSync("ls -1Fs \"$absPath\"")
+            Log.d(">>>> files", outputInfo)
             if (outputInfo != "error") {
                 val rows = outputInfo.split("\n")
                 for (row in rows) {
                     val file = shellFileInfoRow(row, absPath)
                     if (file != null) {
                         files.add(file)
+                    } else {
+                        Log.e(">>>> Scene", "MapDirError Row -> " + row)
                     }
                 }
             }
+        } else {
+            Log.e(">>>> dir lost", absPath)
         }
+        Log.d(">>>> files", "count " + files.size)
 
         return files
     }
 
     fun fileInfo(path: String): RootFileInfo? {
         val absPath = if (path.endsWith("/")) path.subSequence(0, path.length - 1).toString() else path
-        val outputInfo = KeepShellPublic.doCmdSync("ls -ldF \"$absPath\"")
+        val outputInfo = KeepShellPublic.doCmdSync("ls -1dFs \"$absPath\"")
+        Log.d(">>>> file", outputInfo)
         if (outputInfo != "error") {
             val rows = outputInfo.split("\n")
             for (row in rows) {
@@ -136,6 +104,8 @@ object RootFile {
                     file.filePath = absPath.substring(absPath.lastIndexOf("/") + 1)
                     file.parentDir = absPath.substring(0, absPath.lastIndexOf("/"))
                     return file
+                } else {
+                    Log.e(">>>> Scene", "MapDirError Row -> " + row)
                 }
             }
         }

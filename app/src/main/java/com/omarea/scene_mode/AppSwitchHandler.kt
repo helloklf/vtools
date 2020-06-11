@@ -123,7 +123,7 @@ class AppSwitchHandler(private var context: Context) : ModeSwitcher(), EventRece
         if (!screenOn) {
             if (dyamicCore && !screenOn) {
                 if (spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_LOCK_MODE, false)) {
-                    updateModeNofity() //
+                    updateModeNofity() // 屏幕关闭后
                     toggleConfig(POWERSAVE)
                 }
             }
@@ -163,40 +163,21 @@ class AppSwitchHandler(private var context: Context) : ModeSwitcher(), EventRece
         }
     }
 
-    //#region 模式切换
-    //强制执行模式切换，无论当前应用是什么模式是什么
-    private fun forceToggleMode(packageName: String?) {
-        if (packageName == null || packageName.isNullOrEmpty())
-            return
-        val mode = spfPowercfg.getString(packageName, firstMode)
-        when (mode) {
-            IGONED -> return
-            else -> {
-                toggleConfig(mode)
-                lastModePackage = packageName
-                updateModeNofity() // 模式切换后更新通知
-            }
-        }
-    }
-
     //自动切换模式
     private fun autoToggleMode(packageName: String?) {
         if (packageName != null && packageName != lastModePackage) {
             if (dyamicCore) {
                 val mode = spfPowercfg.getString(packageName, firstMode)
-                if (mode != IGONED) {
-                    if (lastMode != mode) {
-                        toggleConfig(mode)
-                    }
-
-                    lastModePackage = packageName
-                    setCurrentPowercfgApp(packageName)
-                    updateModeNofity()
+                if (mode == IGONED) {
+                    return
                 }
-            } else {
-                setCurrentPowercfgApp(packageName)
-                updateModeNofity()
+                if (lastMode != mode) {
+                    toggleConfig(mode)
+                }
             }
+            lastModePackage = packageName
+            setCurrentPowercfgApp(packageName)
+            updateModeNofity() // 应用改变后更新通知
         }
     }
 

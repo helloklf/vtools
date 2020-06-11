@@ -86,7 +86,7 @@ class Update {
     private fun update(context: Context, jsonObject: JSONObject) {
         DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setTitle("下载新版本" + jsonObject.getString("versionName") + " ？")
-                .setMessage("更新内容：" + "\n\n" + jsonObject.getString("message") + "\n\n如果下载速度过慢，也可以前往“酷安”自行下载")
+                .setMessage("更新内容：" + "\n\n" + jsonObject.getString("message"))
                 .setPositiveButton(R.string.btn_confirm) { _, _ ->
                     var downloadUrl = "http://vtools.oss-cn-beijing.aliyuncs.com/app-release${jsonObject.getInt("versionCode")}.apk"// "http://47.106.224.127/publish/app-release.apk"
                     if (jsonObject.has("downloadUrl")) {
