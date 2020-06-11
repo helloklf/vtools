@@ -36,7 +36,7 @@
 
     <group title="温控">
         <action
-            visible=". ./kr-script/miui/thermal_conf/support.sh" title="更改温控配置" desc="目前已适配 骁龙710、730、835、845、855、865，仅限MIUI官方系统！">
+            visible=". ./kr-script/miui/thermal_conf/support.sh" title="更改温控配置" desc="已适配 骁龙710、730、835、845、855、865、天玑820，仅限MIUI官方系统！">
             <summary sh=". ./kr-script/miui/thermal_conf/summary.sh" />
             <param name="mode" title="温控模式"
                 options-sh=". ./kr-script/miui/thermal_conf/options.sh"
