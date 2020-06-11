@@ -35,16 +35,14 @@
     </group>
 
     <group title="温控">
-        <action
-            visible=". ./kr-script/miui/thermal_conf/support.sh" title="更改温控配置" desc="已适配 骁龙710、730、835、845、855、865、天玑820，仅限MIUI官方系统！">
+        <picker
+            visible=". ./kr-script/miui/thermal_conf/support.sh"
+            title="温控配置切换" desc="小米骁龙710、730、835、845、855、865、天玑820系列机型专享！"
+            options-sh=". ./kr-script/miui/thermal_conf/options.sh">
             <summary sh=". ./kr-script/miui/thermal_conf/summary.sh" />
-            <param name="mode" title="温控模式"
-                options-sh=". ./kr-script/miui/thermal_conf/options.sh"
-                value-sh=". ./kr-script/miui/thermal_conf/current.sh" />
-            <param name="platform" title="处理器(SOC)"
-                options-sh=". ./kr-script/miui/thermal_conf/soc-options.sh" />
+            <get>. ./kr-script/miui/thermal_conf/current.sh</get>
             <set>. ./kr-script/miui/thermal_conf/config.sh</set>
-        </action>
+        </picker>
         <text>
             <slices>
                 <slice size="13">如果你自认为是高手，可以试试自己修改温控配置文件（</slice>

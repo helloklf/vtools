@@ -1,5 +1,3 @@
-#!/system/bin/sh
-
 soc_platform=`getprop ro.board.platform`
 resource_dir="./kr-script/miui/thermal_conf/$soc_platform/"
 

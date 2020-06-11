@@ -1,11 +1,4 @@
-#!/system/bin/sh
-
-if [[ -n "$platform" ]]; then
-    echo "处理器平台：$platform"
-else
-    echo '暂不支持该处理器' 1>&2
-    exit 3
-fi
+platform=`getprop ro.board.platform`
 
 if [[ ! -n "$MAGISK_PATH" ]]; then
     echo 'Scene 附加模块未启用，请先前往Magisk助手初始化模块' 1>&2
@@ -21,7 +14,6 @@ thermal_files=(
 
 # 覆盖 thermal_files
 source ./kr-script/miui/thermal_conf/$platform/thermal_files.sh
-
 
 function ulock_dir() {
     local dir="$1"

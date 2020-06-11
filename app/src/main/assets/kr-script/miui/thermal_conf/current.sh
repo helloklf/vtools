@@ -1,5 +1,3 @@
-#!/system/bin/sh
-
 dir="${MAGISK_PATH}/system/vendor/etc"
 
 if [[ -f "$dir/thermal-engine.current.ini" ]]; then

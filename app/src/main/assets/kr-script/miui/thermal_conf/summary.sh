@@ -46,4 +46,48 @@ case "$mode" in
     ;;
 esac
 
-echo "当前：$modename"
+echo -n "当前："
+platform=`getprop ro.board.platform`
+
+if [[ "$platform" = "sdm845" ]]
+then
+    echo -n '骁龙845'
+
+
+elif [[ "$platform" = "sdm710" ]]
+then
+    echo -n '骁龙710AIE'
+
+
+elif [[ "$platform" = "kona" ]]
+then
+    echo -n '骁龙865'
+
+
+elif [[ "$platform" = "msmnile" ]]
+then
+    echo -n '骁龙855'
+
+
+elif [[ "$platform" = "sm6150" ]]
+then
+    echo -n '骁龙730'
+
+
+elif [[ "$platform" = "msm8998" ]]
+then
+    echo -n '骁龙835'
+
+
+elif [[ "$platform" = "msm8996" ]]
+then
+    echo -n '骁龙820\821'
+
+
+elif [[ "$platform" = "mt6873" ]]
+then
+    echo -n '天玑800\820'
+fi
+
+
+echo " $modename"
