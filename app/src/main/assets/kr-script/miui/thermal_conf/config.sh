@@ -1,4 +1,5 @@
 platform=`getprop ro.board.platform`
+mode="$state"
 
 if [[ ! -n "$MAGISK_PATH" ]]; then
     echo 'Scene 附加模块未启用，请先前往Magisk助手初始化模块' 1>&2
@@ -98,7 +99,7 @@ case "$mode" in
         install_thermal
     ;;
     *)
-        echo '错误，选择的模式无效' 1>&2
+        echo '错误，选择的模式'$mode'无效' 1>&2
         exit 1
     ;;
 esac

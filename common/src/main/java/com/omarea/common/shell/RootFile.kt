@@ -87,7 +87,6 @@ object RootFile {
         } else {
             Log.e(">>>> dir lost", absPath)
         }
-        Log.d(">>>> files", "count " + files.size)
 
         return files
     }

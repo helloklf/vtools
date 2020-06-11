@@ -1,8 +1,14 @@
 package com.omarea.shell_utils;
 
+import android.content.Context;
 import android.util.Log;
+
+import com.omarea.common.shared.FileWrite;
 import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.model.ProcessInfo;
+import com.omarea.vtools.R;
+
+import java.io.File;
 import java.util.ArrayList;
 
 public class ProcessUtils {
@@ -21,24 +27,30 @@ public class ProcessUtils {
     // pageSize 获取 : getconf PAGESIZE
 
     private static String PS_COMMAND = null;
-    private final String[] PS_COMMANDS = new String[]{"ps -e -o %CPU,RSS,NAME,PID,USER,COMMAND,CMDLINE", "toybox-outside ps -e -o %CPU,RSS,NAME,PID,USER,COMMAND,CMDLINE"};
-    private final String[] PS_DETAIL_COMMANDS = new String[]{"ps -e -o %CPU,RSS,NAME,PID,USER,COMMAND,CMDLINE", "toybox-outside ps -e -o %CPU,RSS,NAME,PID,USER,COMMAND,CMDLINE"};
-    private static String PS_DETAIL_COMMAND = "";
 
     // 兼容性检查
-    public boolean supported() {
+    public boolean supported(Context context) {
         if (PS_COMMAND == null) {
             PS_COMMAND = "";
-            int index = 0;
-            for (String cmd : PS_COMMANDS) {
+            String installPath = context.getString(R.string.toolkit_install_path);
+            String toyboxInstallPath = installPath + "/toybox-outside";
+            String outsideToybox = FileWrite.INSTANCE.getPrivateFilePath(context, toyboxInstallPath);
+
+            if (!new File(outsideToybox).exists()) {
+                FileWrite.INSTANCE.writePrivateFile(context.getAssets(), "toolkit/toybox-outside", toyboxInstallPath, context);
+            }
+
+            String insideCmd = "ps -e -o %CPU,RSS,NAME,PID,USER,COMMAND,CMDLINE";
+            String outsideCmd = outsideToybox + " " + insideCmd;
+            Log.d(">>>>", outsideCmd);
+
+            for (String cmd : new String[]{ insideCmd, outsideCmd }) {
                 String[] rows = KeepShellPublic.INSTANCE.doCmdSync(cmd + " 2>&1").split("\n");
                 String result = rows[0];
                 if (rows.length > 10 && !(result.contains("bad -o") || result.contains("Unknown option") || result.contains("bad"))) {
                     PS_COMMAND = cmd;
-                    PS_DETAIL_COMMAND = PS_DETAIL_COMMANDS[index];
                     break;
                 }
-                index++;
             }
         }
 
@@ -88,9 +100,9 @@ public class ProcessUtils {
 
     // 获取进程详情
     public ProcessInfo getProcessDetail(int pid) {
-        Log.d("Scene-Process", PS_DETAIL_COMMAND + " --pid " + pid);
+        // Log.d("Scene-Process", PS_COMMAND + " --pid " + pid);
 
-        String[] rows = KeepShellPublic.INSTANCE.doCmdSync(PS_DETAIL_COMMAND + " --pid " + pid).split("\n");
+        String[] rows = KeepShellPublic.INSTANCE.doCmdSync(PS_COMMAND + " --pid " + pid).split("\n");
         if (rows.length > 1) {
             return readRow(rows[1].trim());
         }

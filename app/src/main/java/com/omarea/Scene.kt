@@ -32,14 +32,11 @@ class Scene : Application() {
         context = this
 
         // 安装busybox
-        val installPath = context.getString(R.string.toolkit_install_path)
-        val toyboxInstallPath = "$installPath/toybox-outside"
-        if (!File(FileWrite.getPrivateFilePath(context, toyboxInstallPath)).exists()) {
-            FileWrite.writePrivateFile(context.assets, "toolkit/toybox-outside", toyboxInstallPath, context)
+        if (!Busybox.systemBusyboxInstalled()) {
+            ShellExecutor.setExtraEnvPath(
+                    FileWrite.getPrivateFilePath(this, getString(R.string.toolkit_install_path))
+            )
         }
-        ShellExecutor.setExtraEnvPath(
-            FileWrite.getPrivateFilePath(this, installPath)
-        )
 
         // 锁屏状态检测
         screenState = ScreenState(this)

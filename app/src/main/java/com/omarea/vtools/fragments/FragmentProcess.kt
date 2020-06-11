@@ -29,10 +29,12 @@ class FragmentProcess : Fragment() {
             inflater.inflate(R.layout.fragment_process, container, false)
 
     private val processUtils = ProcessUtils()
-    private val supported = processUtils.supported()
+    private var supported: Boolean = false
     private val handle = Handler()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        supported = processUtils.supported(context)
+
         if (supported) {
             process_unsupported.visibility = View.GONE
             process_view.visibility = View.VISIBLE

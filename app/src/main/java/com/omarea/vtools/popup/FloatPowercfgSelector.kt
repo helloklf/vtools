@@ -298,7 +298,7 @@ class FloatPowercfgSelector(context: Context) {
                 FloatTaskManager(context).hidePopupWindow()
                 fw_float_task.alpha = 0.3f
             } else {
-                if (ProcessUtils().supported()) {
+                if (ProcessUtils().supported(context)) {
                     FloatTaskManager(context).showPopupWindow()
                     fw_float_task.alpha = 1f
                 } else {
