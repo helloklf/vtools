@@ -68,6 +68,10 @@
     <string name="settings_theme">主题</string>
     <string name="settings_theme_wallpaper">使用壁纸</string>
     <string name="settings_theme_wallpaper_desc">使用系统壁纸作为窗口背景，显示为半透明界面</string>
+    <string name="settings_debug_layer">调试窗口</string>
+    <string name="settings_debug_layer_desc">显示Scene判定前台应用过程的日志（需重启辅助服务）</string>
+    <string name="settings_classic_mode">经典模式</string>
+    <string name="settings_classic_mode_desc">场景模式使用旧版Scene(3.2以前)的前台应用检测逻辑（需重启辅助服务）</string>
     <string name="settings_private_busybox">私有Busybox</string>
     <string name="settings_private_busybox_desc">在Scene的私有目录下安装Busybox，兼容性较差可能导致Scene功能异常，但可以避免修改系统分区</string>
     <string name="settings_logcat_title">错误日志</string>

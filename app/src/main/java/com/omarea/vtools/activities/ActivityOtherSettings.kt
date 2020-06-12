@@ -90,6 +90,16 @@ class ActivityOtherSettings : AppCompatActivity() {
                         // KeepShellPublic.doCmdSync("am force-stop ${this.packageName}\nkillall -9 ${this.packageName}")
                     }.setCancelable(false))
         }
+
+        settings_debug_layer.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_SCENE_LOG, false)
+        settings_debug_layer.setOnClickListener {
+            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_SCENE_LOG, (it as Switch).isChecked).apply()
+        }
+
+        settings_classic_mode.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_SCENE_CLASSIC, false)
+        settings_classic_mode.setOnClickListener {
+            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_SCENE_CLASSIC, (it as Switch).isChecked).apply()
+        }
     }
 
     private fun checkPermission(context: Context, permission: String): Boolean = PermissionChecker.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED

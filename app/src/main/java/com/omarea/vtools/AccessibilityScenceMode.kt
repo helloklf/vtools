@@ -24,21 +24,19 @@ import com.omarea.data_collection.EventType
 import com.omarea.data_collection.GlobalStatus
 import com.omarea.scene_mode.AppSwitchHandler
 import com.omarea.store.SceneConfigStore
+import com.omarea.store.SpfConfig
 import com.omarea.utils.AutoClick
 import com.omarea.utils.CrashHandler
+import com.omarea.vtools.popup.FloatLogView
 import com.omarea.xposed.XposedCheck
+import java.lang.StringBuilder
+import kotlin.math.log
 
 /**
  * Created by helloklf on 2016/8/27.
  */
 public class AccessibilityScenceMode : AccessibilityService() {
-    private var flagReportViewIds = true
     private var flagRequestKeyEvent = true
-    private var flagRetriveWindow = true
-    private var flagRequestAccessbilityButton = false
-    private var eventWindowStateChange = true
-    private var eventWindowContentChange = false
-    private var eventViewClick = false
     private var sceneConfigChanged: BroadcastReceiver? = null
     private var isLandscapf = false
 
@@ -48,6 +46,8 @@ public class AccessibilityScenceMode : AccessibilityService() {
     companion object {
         const val useXposed = false
     }
+
+    private var floatLogView: FloatLogView? = null
 
     /*
     override fun onCreate() {
@@ -118,9 +118,9 @@ public class AccessibilityScenceMode : AccessibilityService() {
     }
 
     private fun updateConfig() {
+        // TODO:去掉
         if (useXposed && XposedCheck.xposedIsRunning()) {
-            val spf = getSharedPreferences("adv", Context.MODE_PRIVATE)
-            flagRequestKeyEvent = spf.getBoolean("adv_keyevent", SceneConfigStore(this.applicationContext).needKeyCapture())
+            flagRequestKeyEvent = SceneConfigStore(this.applicationContext).needKeyCapture()
 
             val info = serviceInfo
             if (flagRequestKeyEvent) {
@@ -132,46 +132,18 @@ public class AccessibilityScenceMode : AccessibilityService() {
             setServiceInfo(info);
             GlobalStatus.homeMessage = "正在通过Xposed运行场景模式";
         } else {
-            val spf = getSharedPreferences("adv", Context.MODE_PRIVATE)
-            flagReportViewIds = spf.getBoolean("adv_find_viewid", flagReportViewIds)
-            flagRequestKeyEvent = spf.getBoolean("adv_keyevent", SceneConfigStore(this.applicationContext).needKeyCapture())
-            flagRetriveWindow = spf.getBoolean("adv_retrieve_window", flagRetriveWindow)
-
-            eventWindowStateChange = spf.getBoolean("adv_event_window_state", eventWindowStateChange)
-            eventWindowContentChange = spf.getBoolean("adv_event_content_change", eventWindowContentChange)
-            eventViewClick = spf.getBoolean("adv_event_view_click", eventViewClick)
+            flagRequestKeyEvent = SceneConfigStore(this.applicationContext).needKeyCapture()
 
             val info = serviceInfo // AccessibilityServiceInfo();
-            // We are interested in all types of accessibility events.
-            info.eventTypes = AccessibilityEvent.TYPE_WINDOWS_CHANGED
-            if (eventWindowStateChange) {
-                info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
-            }
-            if (eventWindowContentChange) {
-                info.eventTypes = info.eventTypes or AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED
-            }
-            if (eventViewClick) {
-                info.eventTypes = info.eventTypes or AccessibilityEvent.TYPE_VIEW_CLICKED
-            }
-            // We want to provide specific type of feedback.
+            info.eventTypes = AccessibilityEvent.TYPE_WINDOWS_CHANGED or AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
             info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
-            // We want to receive events in a certain interval.
             info.notificationTimeout = 0;
-            // We want to receive accessibility events only from certain packages.
             info.packageNames = null;
 
-            info.flags = AccessibilityServiceInfo.DEFAULT
-            if (flagRetriveWindow) {
-                info.flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS
-            }
-            if (flagReportViewIds) {
-                info.flags = info.flags or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS
-            }
             if (flagRequestKeyEvent) {
-                info.flags = info.flags or AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS
-            }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && flagRequestAccessbilityButton) {
-                info.flags = info.flags or AccessibilityServiceInfo.FLAG_REQUEST_ACCESSIBILITY_BUTTON
+                info.flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS or AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS
+            } else {
+                info.flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS
             }
             setServiceInfo(info);
         }
@@ -199,9 +171,20 @@ public class AccessibilityScenceMode : AccessibilityService() {
             EventBus.subscibe(appSwitchHandler)
         }
         getDisplaySize()
+
+        val spf = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+        if (spf.getBoolean(SpfConfig.GLOBAL_SPF_SCENE_LOG, false)) {
+            floatLogView = FloatLogView(this)
+        }
+        classicModel = spf.getBoolean(SpfConfig.GLOBAL_SPF_SCENE_CLASSIC, false)
+        if(!classicModel) {
+
+        }
     }
 
-    override fun onAccessibilityEvent(event: AccessibilityEvent) {
+    private var classicModel = false
+
+    private fun classicModelEvent(event: AccessibilityEvent) {
         if (event.packageName == null || event.className == null)
             return
 
@@ -211,19 +194,93 @@ public class AccessibilityScenceMode : AccessibilityService() {
         if (packageName == "android" || packageName == "com.android.systemui" || packageName == "com.miui.freeform" || packageName == "com.omarea.gesture") {
             return
         }
-
         // 横屏时屏蔽 QQ、微信事件，因为游戏模式下通常会在横屏使用悬浮窗打开QQ 微信
         if (isLandscapf && (packageName == "com.tencent.mobileqq" || packageName == "com.tencent.mm")) {
             return
         }
 
-        /*
-         if (appSwitchHandler!!.isIgnoredApp(packageName, isLandscapf)) {
-             return
-         }
-        */
+        if (packageName.contains("packageinstaller")) {
+            if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity")
+                return
 
-        if (flagRetriveWindow) {
+            try {
+                AutoClick().packageinstallerAutoClick(this.applicationContext, event)
+            } catch (ex: Exception) {
+            }
+        } else if (packageName == "com.miui.securitycenter") {
+            try {
+                AutoClick().miuiUsbInstallAutoClick(this.applicationContext, event)
+            } catch (ex: Exception) {
+            }
+            return
+        }
+
+        // 针对一加部分系统的修复
+        if ((packageName == "net.oneplus.h2launcher" || packageName == "net.oneplus.launcher") && event.className == "android.widget.LinearLayout") {
+            return
+        }
+
+        if (event.source != null) {
+            val logs = StringBuilder()
+            logs.append("Scene窗口检测\n", "屏幕: ${displayHeight}x${displayWidth}\n")
+            logs.append("事件: ${event.source.packageName}\n")
+
+            val windows_ = windows
+            if (windows_ == null || windows_.isEmpty()) {
+                return
+            } else if (windows_.size > 1) {
+                var lastWindow: AccessibilityWindowInfo? = null
+                val effectiveWindows = windows_.filter {
+                    (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && it.isInPictureInPictureMode)) && (it.type == AccessibilityWindowInfo.TYPE_APPLICATION)
+                }.sortedBy { it.layer }
+
+                if (effectiveWindows.size > 0) {
+                    lastWindow = effectiveWindows.get(0)
+
+                    for (window in effectiveWindows) {
+                        val wp = window.root?.packageName
+                        if (wp != null) {
+                            logs.append("\n层级: ${window.layer} ${wp}")
+                        }
+                    }
+
+                    try {
+                        val source = event.source
+                        if (source == null || source.windowId != lastWindow.id) {
+                            val windowRoot = lastWindow!!.root
+                            if (windowRoot == null || windowRoot.packageName == null) {
+                                return
+                            }
+                            packageName = windowRoot.packageName!!.toString()
+                        }
+                    } catch (ex: Exception) {
+                        return
+                    } finally {
+                        logs.append("\n\n命中: $packageName")
+                        floatLogView?.update(logs.toString())
+                    }
+                }
+            }
+            GlobalStatus.lastPackageName = packageName
+            EventBus.publish(EventType.APP_SWITCH);
+        } else {
+            GlobalStatus.lastPackageName = packageName
+            EventBus.publish(EventType.APP_SWITCH);
+        }
+    }
+
+    override fun onAccessibilityEvent(event: AccessibilityEvent) {
+        if (!classicModel) {
+            if (event.packageName == null || event.className == null)
+                return
+
+            var packageName = event.packageName.toString()
+
+            // com.miui.freeform 是miui的应用多窗口（快速回复、游戏模式QQ微信小窗口）管理器
+            if (packageName == "android" || packageName == "com.android.systemui" || packageName == "com.miui.freeform" || packageName == "com.omarea.gesture") {
+                return
+            }
+
             if (packageName.contains("packageinstaller")) {
                 if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity")
                     return
@@ -239,44 +296,59 @@ public class AccessibilityScenceMode : AccessibilityService() {
                 }
                 return
             }
-        }
 
-        if (flagReportViewIds && event.source != null) {
-            val windows_ = windows
-            if (windows_ == null || windows_.isEmpty()) {
-                return
-            } else if (windows_.size > 1) {
-                val effectiveWindows = windows_.filter {
-                    (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && it.isInPictureInPictureMode)) && (it.type == AccessibilityWindowInfo.TYPE_APPLICATION)
-                }.sortedBy { it.layer }
+            if (event.source != null) {
+                val windows_ = windows
+                if (windows_ == null || windows_.isEmpty()) {
+                    return
+                } else if (windows_.size > 1) {
+                    val effectiveWindows = windows_.filter {
+                        (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && it.isInPictureInPictureMode)) && (it.type == AccessibilityWindowInfo.TYPE_APPLICATION)
+                    }.sortedBy { it.layer }
 
-                if (effectiveWindows.size > 0) {
-                    try {
-                        var lastWindowPackageName: String? = null
-                        for (window in effectiveWindows) {
-                            val wp = window.root?.packageName
-                            if (wp == null || packageName == "android" || packageName == "com.android.systemui" || packageName == "com.miui.freeform" || packageName == "com.omarea.gesture") {
-                                continue
+                    if (effectiveWindows.size > 0) {
+                        try {
+                            var lastWindowPackageName: String? = null
+                            val logs = StringBuilder()
+                            logs.append("Scene窗口检测\n", "屏幕: ${displayHeight}x${displayWidth}\n")
+                            logs.append("事件: ${event.source.packageName}\n")
+                            val displaySize = displayHeight * displayWidth * 0.8
+                            for (window in effectiveWindows) {
+                                val wp = window.root?.packageName
+                                if (wp == null || packageName == "android" || packageName == "com.android.systemui" || packageName == "com.miui.freeform" || packageName == "com.omarea.gesture") {
+                                    continue
+                                }
+                                val outBounds = Rect()
+                                window.getBoundsInScreen(outBounds)
+                                logs.append("\n层级: ${window.layer} ${wp}\n类型: ${window.type} Rect[${outBounds.left},${outBounds.top},${outBounds.right},${outBounds.bottom}]")
+                                if (outBounds.left == 0 && outBounds.top == 0 && outBounds.right * outBounds.bottom > displaySize) {
+                                    lastWindowPackageName = wp.toString()
+                                }
                             }
-                            val outBounds = Rect()
-                            window.getBoundsInScreen(outBounds)
-                            // Log.d(">>>>", "${wp} left:${outBounds.left}, top:${outBounds.top}, right:${outBounds.right}, bottom:${outBounds.bottom}")
-                            if (outBounds.left == 0 && outBounds.top == 0 && (outBounds.right == displayWidth || outBounds.right == displayHeight) && (outBounds.bottom == displayWidth || outBounds.bottom == displayHeight)) {
-                                lastWindowPackageName = wp.toString()
+                            logs.append("\n")
+                            if (lastWindowPackageName != null) {
+                                logs.append("\n转到: $lastWindowPackageName")
                             }
-                        }
-                        if (lastWindowPackageName != null) {
-                            packageName = lastWindowPackageName
-                            GlobalStatus.lastPackageName = packageName
-                            EventBus.publish(EventType.APP_SWITCH);
-                        } else {
+                            if (lastWindowPackageName != null) {
+                                packageName = lastWindowPackageName
+                                GlobalStatus.lastPackageName = packageName
+                                EventBus.publish(EventType.APP_SWITCH);
+
+                                logs.append("\n命中: ${GlobalStatus.lastPackageName}")
+                                floatLogView?.update(logs.toString())
+                            } else {
+                                logs.append("\n命中: ${GlobalStatus.lastPackageName}")
+                                floatLogView?.update(logs.toString())
+                                return
+                            }
+                        } catch (ex: Exception) {
                             return
                         }
-                    } catch (ex: Exception) {
-                        return
                     }
                 }
             }
+        } else {
+            classicModelEvent(event)
         }
     }
 

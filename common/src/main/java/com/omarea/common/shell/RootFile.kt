@@ -2,6 +2,7 @@ package com.omarea.common.shell
 
 import android.util.Log
 import com.omarea.common.shared.RootFileInfo
+import java.lang.Exception
 
 /**
  * Created by Hello on 2018/07/06.
@@ -34,37 +35,41 @@ object RootFile {
             return null
         }
 
-        val file = RootFileInfo()
+        try {
+            val file = RootFileInfo()
 
-        val columns = row.trim().split(" ");
-        val size = columns[0]
-        file.fileSize = size.toLong();
+            val columns = row.trim().split(" ");
+            val size = columns[0]
+            file.fileSize = size.toLong();
 
-        //  8 /data/adb/modules/scene_systemless/ => /data/adb/modules/scene_systemless/
-        val fileName = row.substring(row.indexOf(size) + size.length + 1);
+            //  8 /data/adb/modules/scene_systemless/ => /data/adb/modules/scene_systemless/
+            val fileName = row.substring(row.indexOf(size) + size.length + 1);
 
-        if (fileName == "./" || fileName == "../") {
+            if (fileName == "./" || fileName == "../") {
+                return null
+            }
+
+            // -F  append /dir *exe @sym |FIFO
+
+            if (fileName.endsWith("/")) {
+                file.filePath = fileName.substring(0, fileName.length - 1)
+                file.isDirectory = true
+            } else if (fileName.endsWith("@")) {
+                file.filePath = fileName.substring(0, fileName.length - 1)
+            } else if (fileName.endsWith("|")) {
+                file.filePath = fileName.substring(0, fileName.length - 1)
+            } else if (fileName.endsWith("*")) {
+                file.filePath = fileName.substring(0, fileName.length - 1)
+            } else {
+                file.filePath = fileName
+            }
+
+            file.parentDir = parent
+
+            return file
+        } catch (ex: Exception) {
             return null
         }
-
-        // -F  append /dir *exe @sym |FIFO
-
-        if (fileName.endsWith("/")) {
-            file.filePath = fileName.substring(0, fileName.length - 1)
-            file.isDirectory = true
-        } else if (fileName.endsWith("@")) {
-            file.filePath = fileName.substring(0, fileName.length - 1)
-        } else if (fileName.endsWith("|")) {
-            file.filePath = fileName.substring(0, fileName.length - 1)
-        } else if (fileName.endsWith("*")) {
-            file.filePath = fileName.substring(0, fileName.length - 1)
-        } else {
-            file.filePath = fileName
-        }
-
-        file.parentDir = parent
-
-        return file
     }
 
     fun list(path: String): ArrayList<RootFileInfo> {
