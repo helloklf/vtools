@@ -1,7 +1,6 @@
 package com.omarea.vtools.fragments
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.*
@@ -34,7 +33,6 @@ import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.utils.AppListHelper
 import com.omarea.vaddin.IAppConfigAidlInterface
 import com.omarea.vtools.R
-import com.omarea.vtools.activities.ActivityAdvSettings
 import com.omarea.vtools.activities.ActivityAppDetails
 import kotlinx.android.synthetic.main.fragment_app_config.*
 import org.json.JSONObject
