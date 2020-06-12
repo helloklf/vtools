@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.CheckBox
 import android.widget.Switch
@@ -238,9 +239,13 @@ class FragmentAppConfig : androidx.fragment.app.Fragment() {
             }
         }
 
-        config_search_box.addTextChangedListener(SearchTextWatcher(Runnable {
-            loadList()
-        }))
+        config_search_box.setOnEditorActionListener { v, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE) {
+                loadList()
+            }
+            true
+        }
+
         configlist_modes.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
             }

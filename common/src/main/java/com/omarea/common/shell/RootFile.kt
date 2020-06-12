@@ -71,7 +71,7 @@ object RootFile {
         val absPath = if (path.endsWith("/")) path.subSequence(0, path.length - 1).toString() else path
         val files = ArrayList<RootFileInfo>()
         if (dirExists(absPath)) {
-            val outputInfo = KeepShellPublic.doCmdSync("ls -1Fs \"$absPath\"")
+            val outputInfo = KeepShellPublic.doCmdSync("busybox ls -1Fs \"$absPath\"")
             Log.d(">>>> files", outputInfo)
             if (outputInfo != "error") {
                 val rows = outputInfo.split("\n")
@@ -93,7 +93,7 @@ object RootFile {
 
     fun fileInfo(path: String): RootFileInfo? {
         val absPath = if (path.endsWith("/")) path.subSequence(0, path.length - 1).toString() else path
-        val outputInfo = KeepShellPublic.doCmdSync("ls -1dFs \"$absPath\"")
+        val outputInfo = KeepShellPublic.doCmdSync("busybox ls -1dFs \"$absPath\"")
         Log.d(">>>> file", outputInfo)
         if (outputInfo != "error") {
             val rows = outputInfo.split("\n")

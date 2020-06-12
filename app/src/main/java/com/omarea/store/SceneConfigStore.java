@@ -10,7 +10,7 @@ import com.omarea.model.SceneConfigInfo;
 import java.util.ArrayList;
 
 public class SceneConfigStore extends SQLiteOpenHelper {
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 3;
 
     public SceneConfigStore(Context context) {
         super(context, "scene3_config", null, DB_VERSION);
@@ -26,7 +26,8 @@ public class SceneConfigStore extends SQLiteOpenHelper {
                     "dis_notice int default(0)," + // 拦截通知
                     "dis_button int default(0)," + // 停用按键
                     "gps_on int default(0)," + // 打开GPS
-                    "freeze int default(0)" + // 休眠
+                    "freeze int default(0)," + // 休眠
+                    "screen_orientation int default(-1)" + // 屏幕旋转方向
                     ")");
         } catch (Exception ignored) {
         }
@@ -34,9 +35,12 @@ public class SceneConfigStore extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 2) {
+        if (oldVersion < 3) {
             // 屏幕方向
-            db.execSQL("alter table scene_config3 add column screen_orientation int default(-1)");
+            try {
+                db.execSQL("alter table scene_config3 add column screen_orientation int default(-1)");
+            } catch (Exception ignored) {
+            }
         }
     }
 
