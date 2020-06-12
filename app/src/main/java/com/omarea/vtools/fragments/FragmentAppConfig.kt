@@ -278,13 +278,6 @@ class FragmentAppConfig : androidx.fragment.app.Fragment() {
         bindSPF(dynamic_lock_mode, globalSPF, SpfConfig.GLOBAL_SPF_LOCK_MODE, false)
         bindSPF(settings_autoinstall, globalSPF, SpfConfig.GLOBAL_SPF_AUTO_INSTALL, false)
 
-        config_adv.setOnClickListener {
-            try {
-                val intent = Intent(this.context, ActivityAdvSettings::class.java)
-                startActivity(intent)
-            } catch (ex: Exception) {
-            }
-        }
         scene_notify.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true)
         scene_notify.setOnClickListener {
             val checked = (it as Switch).isChecked

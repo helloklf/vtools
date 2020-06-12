@@ -183,23 +183,6 @@
 
                         </LinearLayout>
 
-                        <LinearLayout style="@style/ListCardItemLast">
-
-                            <TextView
-                                android:id="@+id/config_adv"
-                                style="@style/textTitle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="10dp"
-                                android:text="专家选项 >>"
-                                android:textColor="?colorAccent" />
-
-                            <TextView
-                                style="@style/textSmall"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="改变“场景模式”辅助功能基本运作逻辑的选项。一般保持默认就好了！！！" />
-                        </LinearLayout>
                     </LinearLayout>
                 </com.omarea.common.ui.OverScrollView>
             </FrameLayout>

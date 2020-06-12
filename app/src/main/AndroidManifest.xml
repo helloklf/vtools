@@ -136,13 +136,6 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.ActivityAdvSettings"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:excludeFromRecents="true"
-            android:label="辅助功能逻辑"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".activities.ActivityHiddenApps"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:excludeFromRecents="true"
