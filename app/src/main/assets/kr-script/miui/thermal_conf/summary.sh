@@ -17,7 +17,7 @@ case "$mode" in
     "default")
         modename="系统默认 (default)"
      ;;
-    "powerfrugal")
+    "powerfrugal" | "powerfrugal_cmi")
         modename="节能降温 (powerfrugal)"
      ;;
     "high")
@@ -35,14 +35,17 @@ case "$mode" in
     "pro")
         modename="深度定制 (pro)"
     ;;
-    "extreme")
+    "extreme" | "extreme_cmi")
         modename="极致性能 (extreme)"
     ;;
     "danger")
         modename="丧心病狂 (danger)"
     ;;
-    *)
+    "")
         modename="未替换"
+    ;;
+    *)
+        # modename="未替换"
     ;;
 esac
 

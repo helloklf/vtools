@@ -2,6 +2,8 @@
 
 thermal_file_prefix="thermal-"
 thermal_file_suffix=".conf"
+device=`getprop ro.product.device`
+if [[ $device == "cmi" ]] || [[ $device == "umi" ]]; then
 thermal_files=(
 "${thermal_file_prefix}${thermal_file_suffix}"
 "${thermal_file_prefix}camera${thermal_file_suffix}"
@@ -13,3 +15,14 @@ thermal_files=(
 "${thermal_file_prefix}nolimits${thermal_file_suffix}"
 "${thermal_file_prefix}tgame${thermal_file_suffix}"
 )
+else
+thermal_files=(
+"${thermal_file_prefix}${thermal_file_suffix}"
+"${thermal_file_prefix}camera${thermal_file_suffix}"
+"${thermal_file_prefix}normal${thermal_file_suffix}"
+"${thermal_file_prefix}notlimits${thermal_file_suffix}"
+"${thermal_file_prefix}chg-only${thermal_file_suffix}"
+"${thermal_file_prefix}nolimits${thermal_file_suffix}"
+"${thermal_file_prefix}tgame${thermal_file_suffix}"
+)
+fi

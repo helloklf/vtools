@@ -1,4 +1,0 @@
-default|系统默认(default)
-powerfrugal|节能降温 (powerfrugal)
-extreme|极致性能(extreme)
-danger|丧心病狂(danger)

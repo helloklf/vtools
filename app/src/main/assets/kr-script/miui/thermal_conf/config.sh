@@ -95,12 +95,13 @@ case "$mode" in
     "default")
         uninstall_thermal
      ;;
-    "powerfrugal" | "performance" | "extreme" | "danger" | "pro")
-        install_thermal
-    ;;
     *)
-        echo '错误，选择的模式'$mode'无效' 1>&2
-        exit 1
+        if [[ -d $resource_dir ]]; then
+            install_thermal
+        else
+            echo '错误，选择的模式'$mode'无效' 1>&2
+            exit 1
+        fi
     ;;
 esac
 
