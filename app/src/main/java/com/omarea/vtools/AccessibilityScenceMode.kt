@@ -2,8 +2,6 @@ package com.omarea.vtools
 
 import android.accessibilityservice.AccessibilityService
 import android.accessibilityservice.AccessibilityServiceInfo
-import android.app.usage.UsageEvents
-import android.app.usage.UsageStatsManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -29,8 +27,7 @@ import com.omarea.utils.AutoClick
 import com.omarea.utils.CrashHandler
 import com.omarea.vtools.popup.FloatLogView
 import com.omarea.xposed.XposedCheck
-import java.lang.StringBuilder
-import kotlin.math.log
+import java.util.*
 
 /**
  * Created by helloklf on 2016/8/27.
@@ -134,11 +131,11 @@ public class AccessibilityScenceMode : AccessibilityService() {
         } else {
             flagRequestKeyEvent = SceneConfigStore(this.applicationContext).needKeyCapture()
 
-            val info = serviceInfo // AccessibilityServiceInfo();
+            val info = serviceInfo // AccessibilityServiceInfo()
             info.eventTypes = AccessibilityEvent.TYPE_WINDOWS_CHANGED or AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
-            info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC;
-            info.notificationTimeout = 0;
-            info.packageNames = null;
+            info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC
+            info.notificationTimeout = 0
+            info.packageNames = null
 
             if (flagRequestKeyEvent) {
                 info.flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS or AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS
@@ -191,7 +188,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
         var packageName = event.packageName.toString()
 
         // com.miui.freeform 是miui的应用多窗口（快速回复、游戏模式QQ微信小窗口）管理器
-        if (packageName == "android" || packageName == "com.android.systemui" || packageName == "com.miui.freeform" || packageName == "com.omarea.gesture") {
+        if (packageName == "android" || packageName == "com.android.systemui" || packageName == "com.miui.freeform" || packageName == "com.omarea.gesture" || packageName == "com.omarea.filter") {
             return
         }
         // 横屏时屏蔽 QQ、微信事件，因为游戏模式下通常会在横屏使用悬浮窗打开QQ 微信
@@ -271,17 +268,9 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         if (!classicModel) {
-            if (event.packageName == null || event.className == null)
-                return
+            val packageName = event.source?.packageName
 
-            var packageName = event.packageName.toString()
-
-            // com.miui.freeform 是miui的应用多窗口（快速回复、游戏模式QQ微信小窗口）管理器
-            if (packageName == "android" || packageName == "com.android.systemui" || packageName == "com.miui.freeform" || packageName == "com.omarea.gesture") {
-                return
-            }
-
-            if (packageName.contains("packageinstaller")) {
+            if (packageName != null && packageName.contains("packageinstaller")) {
                 if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity")
                     return
 
@@ -296,61 +285,99 @@ public class AccessibilityScenceMode : AccessibilityService() {
                 }
                 return
             }
-
-            if (event.source != null) {
-                val windows_ = windows
-                if (windows_ == null || windows_.isEmpty()) {
-                    return
-                } else if (windows_.size > 1) {
-                    val effectiveWindows = windows_.filter {
-                        (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && it.isInPictureInPictureMode)) && (it.type == AccessibilityWindowInfo.TYPE_APPLICATION)
-                    }.sortedBy { it.layer }
-
-                    if (effectiveWindows.size > 0) {
-                        try {
-                            var lastWindowPackageName: String? = null
-                            val logs = StringBuilder()
-                            logs.append("Scene窗口检测\n", "屏幕: ${displayHeight}x${displayWidth}\n")
-                            logs.append("事件: ${event.source.packageName}\n")
-                            val displaySize = displayHeight * displayWidth * 0.8
-                            for (window in effectiveWindows) {
-                                val wp = window.root?.packageName
-                                if (wp == null || packageName == "android" || packageName == "com.android.systemui" || packageName == "com.miui.freeform" || packageName == "com.omarea.gesture") {
-                                    continue
-                                }
-                                val outBounds = Rect()
-                                window.getBoundsInScreen(outBounds)
-                                logs.append("\n层级: ${window.layer} ${wp}\n类型: ${window.type} Rect[${outBounds.left},${outBounds.top},${outBounds.right},${outBounds.bottom}]")
-                                if (outBounds.left == 0 && outBounds.top == 0 && outBounds.right * outBounds.bottom > displaySize) {
-                                    lastWindowPackageName = wp.toString()
-                                }
-                            }
-                            logs.append("\n")
-                            if (lastWindowPackageName != null) {
-                                logs.append("\n转到: $lastWindowPackageName")
-                            }
-                            if (lastWindowPackageName != null) {
-                                packageName = lastWindowPackageName
-                                GlobalStatus.lastPackageName = packageName
-                                EventBus.publish(EventType.APP_SWITCH);
-
-                                logs.append("\n命中: ${GlobalStatus.lastPackageName}")
-                                floatLogView?.update(logs.toString())
-                            } else {
-                                logs.append("\n命中: ${GlobalStatus.lastPackageName}")
-                                floatLogView?.update(logs.toString())
-                                return
-                            }
-                        } catch (ex: Exception) {
-                            return
-                        }
-                    }
-                }
-            }
+            modernModeEvent(event)
         } else {
             classicModelEvent(event)
         }
     }
+
+    private fun modernModeEvent(event: AccessibilityEvent? = null) {
+        val windows_ = windows
+        if (windows_ == null || windows_.isEmpty()) {
+            return
+        } else if (windows_.size > 1) {
+            val effectiveWindows = windows_.filter {
+                (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && it.isInPictureInPictureMode)) && (it.type == AccessibilityWindowInfo.TYPE_APPLICATION)
+            }.sortedBy { it.layer }
+
+            if (effectiveWindows.size > 0) {
+                try {
+                    var lastWindowPackageName: String? = null
+                    val logs = StringBuilder()
+                    logs.append("Scene窗口检测\n", "屏幕: ${displayHeight}x${displayWidth}\n")
+                    if (event != null) {
+                        logs.append("事件: ${event.source?.packageName}\n")
+                    } else {
+                        logs.append("事件: 主动轮询${Date().time / 1000}\n")
+                    }
+                    val displaySize = displayHeight * displayWidth * 0.8
+                    for (window in effectiveWindows) {
+                        val wp = window.root?.packageName
+                        if (wp == null || wp == "android" || wp == "com.android.systemui" || wp == "com.miui.freeform" || wp == "com.omarea.gesture" || wp == "com.omarea.filter") {
+                            continue
+                        }
+                        val outBounds = Rect()
+                        window.getBoundsInScreen(outBounds)
+                        logs.append("\n层级: ${window.layer} ${wp}\n类型: ${window.type} Rect[${outBounds.left},${outBounds.top},${outBounds.right},${outBounds.bottom}]")
+                        if (outBounds.left == 0 && outBounds.top == 0 && outBounds.right * outBounds.bottom > displaySize) {
+                            lastWindowPackageName = wp.toString()
+                        }
+                    }
+                    logs.append("\n")
+                    if (lastWindowPackageName != null) {
+                        logs.append("\n此前: ${GlobalStatus.lastPackageName}")
+                        GlobalStatus.lastPackageName = lastWindowPackageName
+                        EventBus.publish(EventType.APP_SWITCH)
+                        if (event != null) {
+                            startColorPolling()
+                        }
+
+                        logs.append("\n现在: ${GlobalStatus.lastPackageName}")
+                        floatLogView?.update(logs.toString())
+                    } else {
+                        logs.append("\n现在: ${GlobalStatus.lastPackageName}")
+                        floatLogView?.update(logs.toString())
+                        return
+                    }
+                } catch (ex: Exception) {
+                    return
+                }
+            }
+        }
+    }
+
+    private var pollingTimer: Timer? = null // 轮询定时器
+    private var lastEventTime: Long = 0 // 最后一次触发事件的时间
+    private val pollingTimeout: Long = 10000 // 轮询超时时间
+    private val pollingInterval: Long = 3000 // 轮询间隔
+    private fun startColorPolling() {
+        stopColorPolling()
+        lastEventTime = System.currentTimeMillis()
+        if (pollingTimer == null) {
+            pollingTimer = Timer()
+            pollingTimer!!.scheduleAtFixedRate(object : TimerTask() {
+                override fun run() {
+                    val interval = System.currentTimeMillis() - lastEventTime
+                    if (interval < pollingTimeout && interval >= pollingInterval) {
+
+                        Log.d(">>>>", "Scene Get Windows")
+                        modernModeEvent()
+                    } else {
+                        stopColorPolling()
+                    }
+                }
+            }, pollingInterval, pollingInterval)
+        }
+    }
+
+    private fun stopColorPolling() {
+        if (pollingTimer != null) {
+            pollingTimer?.cancel()
+            pollingTimer?.purge();
+            pollingTimer = null
+        }
+    }
+
 
     private fun deestory() {
         Toast.makeText(applicationContext, "Scene - 辅助服务已关闭！", Toast.LENGTH_SHORT).show()

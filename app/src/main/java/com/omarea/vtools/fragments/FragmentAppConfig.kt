@@ -19,6 +19,7 @@ import android.widget.AdapterView
 import android.widget.CheckBox
 import android.widget.Switch
 import android.widget.Toast
+import com.omarea.Scene
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.OverScrollListView
 import com.omarea.common.ui.ProgressBarDialog
@@ -28,7 +29,6 @@ import com.omarea.store.BatteryHistoryStore
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.ui.SceneModeAdapter
-import com.omarea.ui.SearchTextWatcher
 import com.omarea.ui.TabIconHelper
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.utils.AppListHelper
@@ -104,6 +104,9 @@ class FragmentAppConfig : androidx.fragment.app.Fragment() {
     }
 
     private fun startService() {
+        /* 使用ROOT权限激活辅助服务会导致某些授权拿不到，导致事件触发不完整 */
+        /*
+
         val dialog = ProgressBarDialog(context!!)
         dialog.showDialog("尝试使用ROOT权限开启服务...")
         Thread(Runnable {
@@ -127,6 +130,13 @@ class FragmentAppConfig : androidx.fragment.app.Fragment() {
                 }
             }
         }).start()
+        */
+        Scene.toast("请在系统设置里激活[Scene - 场景模式]选项", Toast.LENGTH_SHORT)
+        try {
+            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+            startActivity(intent)
+        } catch (e: Exception) {
+        }
     }
 
     @SuppressLint("CommitPrefEdits", "ApplySharedPref")

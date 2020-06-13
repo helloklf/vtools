@@ -112,29 +112,16 @@ class FragmentMagisk : androidx.fragment.app.Fragment() {
                 Toast.makeText(context!!, "保存失败!_*", Toast.LENGTH_LONG).show()
             }
         }
-
-        val sdcard = File(CommonCmds.SDCardDir)
-        if (sdcard.exists() && sdcard.isDirectory) {
-            val list = sdcard.listFiles()
-            if (list == null) {
-                Toast.makeText(context, "没有读取文件的权限！", Toast.LENGTH_LONG).show()
-                return
+        adapterFileSelector = AdapterRootFileSelector(RootFileInfo(MagiskExtend.MAGISK_PATH + "system"), Runnable {
+            val file: RootFileInfo? = adapterFileSelector!!.selectedFile
+        }, ProgressBarDialog(this.context!!), null, false, true, Runnable {
+            val file: RootFileInfo? = adapterFileSelector!!.selectedFile
+            if (file != null) {
+                RootFile.deleteDirOrFile(file.absolutePath);
+                adapterFileSelector!!.refresh();
             }
-            adapterFileSelector = AdapterRootFileSelector(RootFileInfo(MagiskExtend.MAGISK_PATH + "system"), Runnable {
-                val file: RootFileInfo? = adapterFileSelector!!.selectedFile
-                if (file != null) {
-                }
-            }, ProgressBarDialog(this.context!!), null, false, true, Runnable {
-                val file: RootFileInfo? = adapterFileSelector!!.selectedFile
-                if (file != null) {
-                    RootFile.deleteDirOrFile(file.absolutePath);
-                    adapterFileSelector!!.refresh();
-                }
-            }, false)
-            magisk_files.adapter = adapterFileSelector
-        } else {
-
-        }
+        }, false)
+        magisk_files.adapter = adapterFileSelector
     }
 
     companion object {
