@@ -174,9 +174,6 @@ public class AccessibilityScenceMode : AccessibilityService() {
             floatLogView = FloatLogView(this)
         }
         classicModel = spf.getBoolean(SpfConfig.GLOBAL_SPF_SCENE_CLASSIC, false)
-        if(!classicModel) {
-
-        }
     }
 
     private var classicModel = false

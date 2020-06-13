@@ -40,7 +40,7 @@ object RootFile {
 
             val columns = row.trim().split(" ");
             val size = columns[0]
-            file.fileSize = size.toLong();
+            file.fileSize = size.toLong() * 1024;
 
             //  8 /data/adb/modules/scene_systemless/ => /data/adb/modules/scene_systemless/
             val fileName = row.substring(row.indexOf(size) + size.length + 1);
