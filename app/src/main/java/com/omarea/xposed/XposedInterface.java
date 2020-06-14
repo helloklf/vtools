@@ -295,6 +295,8 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
             case "org.lineageos.trebuchet":
                 // 魔趣桌面
             case "org.mokee.lawnchair":
+                // Pixel 启动器
+            case "com.google.android.apps.nexuslauncher":
             {
                 new AppFreezeInjector().appFreezeInject(loadPackageParam);
             }

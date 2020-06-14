@@ -188,13 +188,14 @@ public class AccessibilityScenceMode : AccessibilityService() {
         if (packageName == "android" || packageName == "com.android.systemui" || packageName == "com.miui.freeform" || packageName == "com.omarea.gesture" || packageName == "com.omarea.filter") {
             return
         }
+
         // 横屏时屏蔽 QQ、微信事件，因为游戏模式下通常会在横屏使用悬浮窗打开QQ 微信
         if (isLandscapf && (packageName == "com.tencent.mobileqq" || packageName == "com.tencent.mm")) {
             return
         }
 
         if (packageName.contains("packageinstaller")) {
-            if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity")
+            if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity") // MIUI权限控制器
                 return
 
             try {
@@ -206,6 +207,8 @@ public class AccessibilityScenceMode : AccessibilityService() {
                 AutoClick().miuiUsbInstallAutoClick(this.applicationContext, event)
             } catch (ex: Exception) {
             }
+            return
+        } else if (packageName == "com.android.permissioncontroller") { // 原生权限控制器
             return
         }
 
@@ -267,20 +270,24 @@ public class AccessibilityScenceMode : AccessibilityService() {
         if (!classicModel) {
             val packageName = event.source?.packageName
 
-            if (packageName != null && packageName.contains("packageinstaller")) {
-                if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity")
-                    return
+            if (packageName != null) {
+                if (packageName.contains("packageinstaller")) {
+                    if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity") // MIUI权限控制器
+                        return
 
-                try {
-                    AutoClick().packageinstallerAutoClick(this.applicationContext, event)
-                } catch (ex: Exception) {
+                    try {
+                        AutoClick().packageinstallerAutoClick(this.applicationContext, event)
+                    } catch (ex: Exception) {
+                    }
+                } else if (packageName == "com.miui.securitycenter") {
+                    try {
+                        AutoClick().miuiUsbInstallAutoClick(this.applicationContext, event)
+                    } catch (ex: Exception) {
+                    }
+                    return
+                } else if (packageName == "com.android.permissioncontroller") { // 原生权限控制器
+                    return
                 }
-            } else if (packageName == "com.miui.securitycenter") {
-                try {
-                    AutoClick().miuiUsbInstallAutoClick(this.applicationContext, event)
-                } catch (ex: Exception) {
-                }
-                return
             }
             modernModeEvent(event)
         } else {
@@ -307,17 +314,26 @@ public class AccessibilityScenceMode : AccessibilityService() {
                     } else {
                         logs.append("事件: 主动轮询${Date().time / 1000}\n")
                     }
-                    val displaySize = displayHeight * displayWidth * 0.8
+                    // TODO:
+                    //      此前在MIUI系统上测试，只判定全屏显示（即窗口大小和屏幕分辨率完全一致）的应用，逻辑非常准确
+                    //      但在类原生系统上表现并不好，例如：有缺口的屏幕或有导航键的系统，报告的窗口大小则可能不包括缺口高度区域和导航键区域高度
+                    //      因此，现在将逻辑调整为：从所有应用窗口中选出最接近全屏的一个，判定为前台应用
+                    //      当然，这并不意味着完美，只是暂时没有更好的解决方案……
+
+                    var lastWindowSize = 0
                     for (window in effectiveWindows) {
                         val wp = window.root?.packageName
                         if (wp == null || wp == "android" || wp == "com.android.systemui" || wp == "com.miui.freeform" || wp == "com.omarea.gesture" || wp == "com.omarea.filter") {
                             continue
                         }
+
                         val outBounds = Rect()
                         window.getBoundsInScreen(outBounds)
                         logs.append("\n层级: ${window.layer} ${wp}\n类型: ${window.type} Rect[${outBounds.left},${outBounds.top},${outBounds.right},${outBounds.bottom}]")
-                        if (outBounds.left == 0 && outBounds.top == 0 && outBounds.right * outBounds.bottom > displaySize) {
+                        val size = (outBounds.right - outBounds.left) * (outBounds.bottom - outBounds.top)
+                        if (size > lastWindowSize) {
                             lastWindowPackageName = wp.toString()
+                            lastWindowSize = size
                         }
                     }
                     logs.append("\n")

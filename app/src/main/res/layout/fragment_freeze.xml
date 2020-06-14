@@ -115,7 +115,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="冻结应用时不隐藏桌面图标，而仅仅将其置灰（与应用管理中的[暂停使用]效果相同），从而避免冻结应用时破坏桌面布局，此功能需要Android P+\n\n配合Xposed可在以下桌面中从冻结状态直接启动：\n一加桌面、一加Hydrogen桌面、一加氢桌面、Lawnchair测试版、Lawnchair魔趣版、MIUI桌面、LineageOS Trebuchet、MIUI桌面、MIUI全局搜索、POCO桌面、系统设置" />
+                            android:text="冻结应用时不隐藏桌面图标，而仅仅将其置灰（与应用管理中的[暂停使用]效果相同），从而避免冻结应用时破坏桌面布局，此功能需要Android P+\n\n配合Xposed可在以下桌面中从冻结状态直接启动：\n一加桌面、一加Hydrogen桌面、一加氢桌面、Lawnchair测试版、Lawnchair魔趣版、MIUI桌面、LineageOS Trebuchet、MIUI桌面、MIUI全局搜索、POCO桌面、系统设置、Pixel 启动器" />
                     </LinearLayout>
                 </LinearLayout>
             </FrameLayout>
