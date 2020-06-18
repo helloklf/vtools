@@ -61,6 +61,9 @@
                 <option value="headset">耳机</option>
                 <option value="ime">输入法</option>
                 <option value="battery">电池图标</option>
+                <option value="rotate">屏幕旋转</option>
+                <option value="cast">屏幕捕获(录屏)</option>
+                <option value="su">ROOT权限</option>
             </options>
             <get>
                 settings get secure icon_blacklist

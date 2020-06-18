@@ -9,7 +9,7 @@ echo "default|系统默认(default)
 powerfrugal_cmi|节能降温(powerfrugal)
 extreme_cmi|极致性能(extreme)
 danger|丧心病狂(danger)"
-elif [[ $device == "lmi" ]]; then
+elif [[ $device == "lmi" ]] || [[ $device == "lmipro" ]]; then
 echo "default|系统默认(default)
 extreme|极致性能(extreme)
 danger|丧心病狂(danger)"

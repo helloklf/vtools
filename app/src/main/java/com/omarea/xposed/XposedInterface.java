@@ -261,18 +261,10 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
 
             // 用于检查xposed是否激活
             case "com.omarea.vtools":
-                new ActiveCheck().isActive(loadPackageParam);
-                break;
             case "com.omarea.vboot":
                 new ActiveCheck().isActive(loadPackageParam);
                 break;
 
-            //王者荣耀 高帧率模式
-            case "com.tencent.tmgp.sgame":
-                if (prefs.getBoolean(packageName + "_hight_fps", false)) {
-                    new DeviceInfo().simulationR11(loadPackageParam);
-                }
-                break;
             case "com.android.quicksearchbox": // 搜索
             case "com.android.settings": // 设置
                 // nova

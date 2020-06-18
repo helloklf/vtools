@@ -323,7 +323,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
                     var lastWindowSize = 0
                     for (window in effectiveWindows) {
                         val wp = window.root?.packageName
-                        if (wp == null || wp == "android" || wp == "com.android.systemui" || wp == "com.miui.freeform" || wp == "com.omarea.gesture" || wp == "com.omarea.filter") {
+                        if (wp == null || wp == "android" || wp == "com.android.systemui" || wp == "com.miui.freeform" || wp == "com.omarea.gesture" || wp == "com.omarea.filter" || wp == "com.android.permissioncontroller") {
                             continue
                         }
 

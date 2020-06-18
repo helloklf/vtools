@@ -210,7 +210,17 @@ class FloatPowercfgSelector(context: Context) {
         val fw_app_dis_notice = view.findViewById<CheckBox>(R.id.fw_app_dis_notice)
         fw_app_dis_notice.isChecked = appConfig.disNotice
         fw_app_dis_notice.setOnClickListener {
-            appConfig.disNotice = (it as CheckBox).isChecked
+            val isChecked = (it as CheckBox).isChecked
+
+            if (isChecked) {
+                if (!NotificationListener().getPermission(context)) {
+                    NotificationListener().setPermission(context)
+                    Toast.makeText(context, context.getString(R.string.scene_need_notic_listing), Toast.LENGTH_SHORT).show()
+                    it.isChecked = false
+                    return@setOnClickListener
+                }
+            }
+            appConfig.disNotice = isChecked
             store.setAppConfig(appConfig)
 
             val intent = Intent(context.getString(R.string.scene_appchange_action))
