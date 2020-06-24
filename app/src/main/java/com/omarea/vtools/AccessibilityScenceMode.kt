@@ -77,7 +77,6 @@ public class AccessibilityScenceMode : AccessibilityService() {
     */
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        CrashHandler().init(this)
         return super.onStartCommand(intent, flags, startId)
     }
 

@@ -17,6 +17,40 @@
             android:layout_height="wrap_content"
             android:text="@string/menu_scene_mode" />
 
+        <LinearLayout
+            android:id="@+id/nav_scene_service_not_active"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
+            style="@style/ListCardItem">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:src="@drawable/nav_icon_warn"
+                    android:tint="?colorAccent"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp" />
+                <TextView
+                    style="@style/textDefault"
+                    android:layout_marginLeft="4dp"
+                    android:text="请先点击此处，去激活辅助服务"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_marginTop="4dp"
+                style="@style/textSmall"
+                android:text="场景模式需要辅助服务提供支持。放心，Scene不会窃取界面上的内容，只会分析界面层次和显示大小并用于判断前台应用状态。"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -122,15 +156,15 @@
 
             <com.omarea.ui.NavItem
                 android:id="@+id/nav_charge"
-                android:tag="root"
                 style="@style/nav_item_wrap_right"
+                android:tag="root"
                 app:drawable="@drawable/battery"
                 app:text="@string/menu_charge" />
 
             <com.omarea.ui.NavItem
                 android:id="@+id/nav_processes"
-                android:tag="root"
                 style="@style/nav_item_wrap"
+                android:tag="root"
                 app:drawable="@drawable/ic_processes"
                 app:text="@string/menu_processes" />
         </GridLayout>

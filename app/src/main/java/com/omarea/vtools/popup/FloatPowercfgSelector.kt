@@ -121,6 +121,7 @@ class FloatPowercfgSelector(context: Context) {
         val dynamic = serviceRunning && globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
         val defaultMode = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, "balance")
         var selectedMode = if (dynamic) spfPowercfg.getString(packageName, defaultMode) else modeList.getCurrentPowerMode()
+        val modeConfigCompleted = ModeSwitcher().modeConfigCompleted()
 
         try {
             val pm = context.packageManager
@@ -133,7 +134,7 @@ class FloatPowercfgSelector(context: Context) {
         // 性能调节（动态响应）
         val fw_dynamic_state = view.findViewById<Switch>(R.id.fw_dynamic_state)
         fw_dynamic_state.isChecked = dynamic
-        fw_dynamic_state.isEnabled = serviceRunning && ModeSwitcher().modeConfigCompleted()
+        fw_dynamic_state.isEnabled = serviceRunning && modeConfigCompleted
         fw_dynamic_state.setOnClickListener {
             globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, (it as Switch).isChecked).apply()
             reStartService()
@@ -180,22 +181,25 @@ class FloatPowercfgSelector(context: Context) {
             }
         }
 
-        btn_powersave.setOnClickListener {
-            selectedMode = ModeSwitcher.POWERSAVE
-            switchMode.run()
+        if (modeConfigCompleted) {
+            btn_powersave.setOnClickListener {
+                selectedMode = ModeSwitcher.POWERSAVE
+                switchMode.run()
+            }
+            btn_defaultmode.setOnClickListener {
+                selectedMode = ModeSwitcher.BALANCE
+                switchMode.run()
+            }
+            btn_gamemode.setOnClickListener {
+                selectedMode = ModeSwitcher.PERFORMANCE
+                switchMode.run()
+            }
+            btn_fastmode.setOnClickListener {
+                selectedMode = ModeSwitcher.FAST
+                switchMode.run()
+            }
         }
-        btn_defaultmode.setOnClickListener {
-            selectedMode = ModeSwitcher.BALANCE
-            switchMode.run()
-        }
-        btn_gamemode.setOnClickListener {
-            selectedMode = ModeSwitcher.PERFORMANCE
-            switchMode.run()
-        }
-        btn_fastmode.setOnClickListener {
-            selectedMode = ModeSwitcher.FAST
-            switchMode.run()
-        }
+
         val fw_app_light = view.findViewById<CheckBox>(R.id.fw_app_light)
         fw_app_light.isChecked = appConfig.aloneLight
         fw_app_light.setOnClickListener {

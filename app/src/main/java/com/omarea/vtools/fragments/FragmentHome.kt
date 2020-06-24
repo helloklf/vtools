@@ -61,7 +61,7 @@ class FragmentHome : androidx.fragment.app.Fragment() {
 
         globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
-        if (ModeSwitcher().modeConfigCompleted()) {
+        if (ModeSwitcher().modeConfigCompleted() || CpuConfigInstaller().dynamicSupport(Scene.context)) {
             powermode_toggles.visibility = View.VISIBLE
         } else {
             powermode_toggles.visibility = View.GONE

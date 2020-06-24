@@ -12,6 +12,7 @@ import com.omarea.data_collection.publisher.ScreenState
 import com.omarea.permissions.Busybox
 import com.omarea.scene_mode.TimingTaskManager
 import com.omarea.scene_mode.TriggerEventMonitor
+import com.omarea.utils.CrashHandler
 import com.omarea.vtools.R
 import java.io.File
 
@@ -28,6 +29,8 @@ class Scene : Application() {
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
+
+        CrashHandler().init(this)
 
         context = this
 

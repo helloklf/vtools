@@ -164,6 +164,15 @@
             android:gravity="end"
             android:layout_marginTop="50dp"
             android:orientation="horizontal">
+            <Button
+                android:id="@+id/ProcessStopApp"
+                android:visibility="gone"
+                android:layout_marginEnd="10dp"
+                android:layout_width="wrap_content"
+                android:paddingRight="6dp"
+                android:paddingLeft="6dp"
+                style="@style/sceneSmallButton"
+                android:text="杀死安卓应用" />
 
             <Button
                 android:id="@+id/ProcessKill"

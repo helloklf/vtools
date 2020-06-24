@@ -10,10 +10,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import com.omarea.common.ui.DialogHelper
 import com.omarea.model.ProcessInfo
@@ -145,27 +142,25 @@ class FragmentProcess : Fragment() {
 
     private var pm: PackageManager? = null
     private fun loadIcon(imageView: ImageView, item: ProcessInfo) {
-        if (isAndroidProcess(item)) {
-            Thread(Runnable {
-                var icon: Drawable? = null
-                try {
-                    val name = if (item.name.contains(":")) item.name.substring(0, item.name.indexOf(":")) else item.name
-                    val installInfo = pm!!.getPackageInfo(name, 0)
-                    icon = installInfo.applicationInfo.loadIcon(pm)
-                } catch (ex: Exception) {
-                } finally {
-                    if (icon != null) {
-                        imageView.post {
-                            imageView.setImageDrawable(icon)
-                        }
-                    } else {
-                        imageView.post {
-                            imageView.setImageDrawable(context!!.getDrawable(R.drawable.process_android))
-                        }
+        Thread(Runnable {
+            var icon: Drawable? = null
+            try {
+                val name = if (item.name.contains(":")) item.name.substring(0, item.name.indexOf(":")) else item.name
+                val installInfo = pm!!.getPackageInfo(name, 0)
+                icon = installInfo.applicationInfo.loadIcon(pm)
+            } catch (ex: Exception) {
+            } finally {
+                if (icon != null) {
+                    imageView.post {
+                        imageView.setImageDrawable(icon)
+                    }
+                } else {
+                    imageView.post {
+                        imageView.setImageDrawable(context!!.getDrawable(R.drawable.process_android))
                     }
                 }
-            }).start()
-        }
+            }
+        }).start()
     }
 
     private fun openProcessDetail(processInfo: ProcessInfo) {
@@ -199,7 +194,15 @@ class FragmentProcess : Fragment() {
                     findViewById<TextView>(R.id.ProcessRSS).text = detail.rss.toString() + "KB"
                 }
                 findViewById<TextView>(R.id.ProcessUSER).text = processInfo.user
-                loadIcon(findViewById<ImageView>(R.id.ProcessIcon), processInfo)
+                if (isAndroidProcess(processInfo)) {
+                    loadIcon(findViewById<ImageView>(R.id.ProcessIcon), processInfo)
+                    val btn = findViewById<Button>(R.id.ProcessStopApp)
+                    btn.setOnClickListener {
+                        processUtils.killProcess(processInfo)
+                        dialog.dismiss()
+                    }
+                    btn.visibility = View.VISIBLE
+                }
                 findViewById<View>(R.id.ProcessKill).setOnClickListener {
                     processUtils.killProcess(detail.pid)
                     dialog.dismiss()

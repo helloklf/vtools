@@ -95,7 +95,7 @@
 
         <activity
             android:name=".activities.ActivityStartSplash"
-            android:configChanges="orientation|keyboardHidden|screenSize|uiMode"
+            android:configChanges="keyboardHidden|orientation|uiMode"
             android:label="@string/app_name"
             android:launchMode="singleTop"
             android:screenOrientation="portrait">
@@ -115,7 +115,7 @@
         <activity
             android:name=".activities.ActivityMain"
             android:autoRemoveFromRecents="false"
-            android:configChanges="keyboardHidden|orientation"
+            android:configChanges="keyboardHidden|orientation|uiMode"
             android:excludeFromRecents="false"
             android:exported="true"
             android:label="@string/app_name"
@@ -130,20 +130,21 @@
         </activity>
         <activity
             android:name=".activities.ActivityOtherSettings"
-            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboardHidden|orientation|uiMode"
             android:excludeFromRecents="true"
             android:label="Scene 杂项设置"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.ActivityHiddenApps"
-            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:configChanges="keyboardHidden|orientation|uiMode"
             android:excludeFromRecents="true"
             android:label="[隐藏/卸载]的应用"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.ActivityAddinOnline"
+            android:configChanges="keyboardHidden|orientation|uiMode"
             android:excludeFromRecents="true"
             android:finishOnTaskLaunch="false"
             android:label="@string/title_activity_online"
@@ -152,6 +153,7 @@
             android:theme="@style/AppThemeLight" />
         <activity
             android:name=".activities.ActivityAppDetails"
+            android:configChanges="keyboardHidden|orientation|uiMode"
             android:excludeFromRecents="true"
             android:label="应用场景">
             <intent-filter>
@@ -162,6 +164,7 @@
         </activity>
         <activity
             android:name=".activities.ActivityFileSelector"
+            android:configChanges="keyboardHidden|orientation|uiMode"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_file_selector"
             android:launchMode="standard">
@@ -173,6 +176,7 @@
         </activity>
         <activity
             android:name=".activities.ActivityTimingTask"
+            android:configChanges="keyboardHidden|orientation|uiMode"
             android:label="@string/title_activity_timing_task"
             android:launchMode="standard">
             <intent-filter>
@@ -183,6 +187,7 @@
         </activity>
         <activity
             android:name=".activities.ActivityTrigger"
+            android:configChanges="keyboardHidden|orientation|uiMode"
             android:label="@string/title_activity_trigger"
             android:launchMode="standard">
             <intent-filter>
@@ -193,7 +198,7 @@
         </activity>
         <activity
             android:name=".activities.ActivityQuickStart"
-            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:configChanges="keyboardHidden|orientation|uiMode"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_shortcut"
             android:theme="@style/AppThemeTransparent">
@@ -205,7 +210,7 @@
         </activity>
         <activity
             android:name=".activities.ActivityFreezeApps"
-            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:configChanges="keyboardHidden|orientation|uiMode"
             android:enabled="false"
             android:excludeFromRecents="false"
             android:icon="@drawable/freeze_logo"

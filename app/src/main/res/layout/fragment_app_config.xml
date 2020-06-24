@@ -29,13 +29,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <Button
-                        android:id="@+id/btn_config_service_not_active"
-                        android:layout_width="match_parent"
-                        android:layout_height="55dp"
-                        android:background="@drawable/krscript_item_ripple"
-                        android:text="未激活辅助服务 - 点击去激活" />
-
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="50dp"

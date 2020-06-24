@@ -99,44 +99,6 @@ class FragmentAppConfig : androidx.fragment.app.Fragment() {
         activity!!.title = getString(R.string.menu_scene_mode)
 
         bindService()
-        val serviceState = AccessibleServiceHelper().serviceRunning(context!!)
-        btn_config_service_not_active.visibility = if (serviceState) View.GONE else View.VISIBLE
-    }
-
-    private fun startService() {
-        /* 使用ROOT权限激活辅助服务会导致某些授权拿不到，导致事件触发不完整 */
-        /*
-
-        val dialog = ProgressBarDialog(context!!)
-        dialog.showDialog("尝试使用ROOT权限开启服务...")
-        Thread(Runnable {
-            if (!AccessibleServiceHelper().startSceneModeService(context!!)) {
-                try {
-                    myHandler.post {
-                        val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-                        startActivity(intent)
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                } finally {
-                    myHandler.post {
-                        dialog.hideDialog()
-                    }
-                }
-            } else {
-                myHandler.post {
-                    dialog.hideDialog()
-                    btn_config_service_not_active.visibility = if (AccessibleServiceHelper().serviceRunning(context!!)) View.GONE else View.VISIBLE
-                }
-            }
-        }).start()
-        */
-        Scene.toast("请在系统设置里激活[Scene - 场景模式]选项", Toast.LENGTH_SHORT)
-        try {
-            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
-            startActivity(intent)
-        } catch (e: Exception) {
-        }
     }
 
     @SuppressLint("CommitPrefEdits", "ApplySharedPref")
@@ -156,10 +118,6 @@ class FragmentAppConfig : androidx.fragment.app.Fragment() {
 
         if (spfPowercfg.all.isEmpty()) {
             initDefaultConfig()
-        }
-
-        btn_config_service_not_active.setOnClickListener {
-            startService()
         }
 
         val tabIconHelper = TabIconHelper(configlist_tabhost, this.activity!!)

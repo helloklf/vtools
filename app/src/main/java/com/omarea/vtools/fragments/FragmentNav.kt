@@ -4,6 +4,7 @@ import android.content.ComponentName
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,12 +12,15 @@ import android.widget.GridLayout
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.omarea.Scene
 import com.omarea.common.ui.ThemeMode
 import com.omarea.kr.KrScriptConfig
 import com.omarea.permissions.CheckRootStatus
 import com.omarea.shell_utils.BackupRestoreUtils
+import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vtools.R
 import com.projectkr.shell.OpenPageHelper
+import kotlinx.android.synthetic.main.fragment_nav.*
 
 class FragmentNav : Fragment(), View.OnClickListener {
     private lateinit var themeMode: ThemeMode
@@ -36,11 +40,54 @@ class FragmentNav : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val nav = view.findViewById<LinearLayout>(R.id.nav)
-        for (index in 1..nav.childCount step 2) {
-            val grid: GridLayout = nav.getChildAt(index) as GridLayout
-            for (index2 in 0 until grid.childCount) {
-                bindClickEvent(grid.getChildAt(index2))
+        for (index in 1..nav.childCount) {
+            val ele = nav.getChildAt(index)
+            if (ele is GridLayout) {
+                for (index2 in 0 until ele.childCount) {
+                    bindClickEvent(ele.getChildAt(index2))
+                }
             }
+        }
+
+        // 激活辅助服务按钮
+        nav_scene_service_not_active.setOnClickListener {
+            startService()
+        }
+    }
+
+    private fun startService() {
+        /* 使用ROOT权限激活辅助服务会导致某些授权拿不到，导致事件触发不完整 */
+        /*
+
+        val dialog = ProgressBarDialog(context!!)
+        dialog.showDialog("尝试使用ROOT权限开启服务...")
+        Thread(Runnable {
+            if (!AccessibleServiceHelper().startSceneModeService(context!!)) {
+                try {
+                    myHandler.post {
+                        val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                        startActivity(intent)
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                } finally {
+                    myHandler.post {
+                        dialog.hideDialog()
+                    }
+                }
+            } else {
+                myHandler.post {
+                    dialog.hideDialog()
+                    btn_config_service_not_active.visibility = if (AccessibleServiceHelper().serviceRunning(context!!)) View.GONE else View.VISIBLE
+                }
+            }
+        }).start()
+        */
+        Scene.toast("请在系统设置里激活[Scene - 场景模式]选项", Toast.LENGTH_SHORT)
+        try {
+            val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+            startActivity(intent)
+        } catch (e: Exception) {
         }
     }
 
@@ -56,6 +103,11 @@ class FragmentNav : Fragment(), View.OnClickListener {
         if (isDetached) {
             return
         }
+
+        // 辅助服务激活状态
+        val serviceState = AccessibleServiceHelper().serviceRunning(context!!)
+        nav_scene_service_not_active.visibility = if (serviceState) View.GONE else View.VISIBLE
+
         activity!!.title = getString(R.string.app_name)
     }
 
@@ -111,7 +163,6 @@ class FragmentNav : Fragment(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         v?.run {
-
             if (!CheckRootStatus.lastCheckResult && "root".equals(getTag())) {
                 Toast.makeText(context, "没有获得ROOT权限，不能使用本功能", Toast.LENGTH_SHORT).show()
                 return
