@@ -371,7 +371,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
                 override fun run() {
                     val interval = System.currentTimeMillis() - lastEventTime
                     if (interval < pollingTimeout && interval >= pollingInterval) {
-                        Log.d(">>>>", "Scene Get Windows")
+                        // Log.d(">>>>", "Scene Get Windows")
                         modernModeEvent()
                     } else {
                         stopColorPolling()

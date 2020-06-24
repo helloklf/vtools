@@ -101,10 +101,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
-
-                <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
-                <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
@@ -123,8 +119,10 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
+                <action android:name="android.service.quicksettings.action.QS_TILE_PREFERENCES" />
+                <category android:name="de.robv.android.xposed.category.MODULE_SETTINGS" />
+                <category android:name="android.intent.category.LAUNCHER" />
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -149,8 +147,7 @@
             android:finishOnTaskLaunch="false"
             android:label="@string/title_activity_online"
             android:launchMode="standard"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppThemeLight" />
+            android:screenOrientation="portrait" />
         <activity
             android:name=".activities.ActivityAppDetails"
             android:configChanges="keyboardHidden|orientation|uiMode"
@@ -212,7 +209,8 @@
             android:name=".activities.ActivityFreezeApps"
             android:configChanges="keyboardHidden|orientation|uiMode"
             android:enabled="false"
-            android:excludeFromRecents="false"
+            android:noHistory="true"
+            android:excludeFromRecents="true"
             android:icon="@drawable/freeze_logo"
             android:label="@string/title_activity_freeze"
             android:launchMode="singleTask"

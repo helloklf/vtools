@@ -10,6 +10,7 @@ import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
@@ -95,6 +96,15 @@ class ActivityMain : AppCompatActivity() {
 
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
+        if (!ActivityStartSplash.finished) {
+            val intent = Intent(this.applicationContext, ActivityStartSplash::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+            // intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
+            startActivity(intent)
+            finish()
+        }
+
         /*
         StrictMode.setThreadPolicy(StrictMode.ThreadPolicy.Builder()
                 .detectDiskReads()
@@ -156,7 +166,6 @@ class ActivityMain : AppCompatActivity() {
 
         if (CheckRootStatus.lastCheckResult) {
             try {
-
                 if (MagiskExtend.magiskSupported() &&
                         !(MagiskExtend.moduleInstalled() || globalSPF!!.getBoolean("magisk_dot_show", false))
                 ) {

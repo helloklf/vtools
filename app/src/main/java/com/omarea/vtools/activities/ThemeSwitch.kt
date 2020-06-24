@@ -15,9 +15,12 @@ import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
+import android.util.Log
 import androidx.core.content.PermissionChecker
 import android.view.View
 import android.view.WindowManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ThemeMode
 import com.omarea.store.SpfConfig
@@ -33,11 +36,7 @@ object ThemeSwitch {
             R.style.AppThemeRed,
             R.style.AppThemePink,
             R.style.AppThemePretty,
-            R.style.AppThemeViolet,
-            // 深色 + 灰
-            R.style.AppThemeNoActionBarNight,
-            // 白色 + 粉紫
-            R.style.AppThemeWhite
+            R.style.AppThemeViolet
     )
 
     private var globalSPF: SharedPreferences? = null
@@ -50,24 +49,45 @@ object ThemeSwitch {
             globalSPF = activity.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         }
 
-        var theme = 1
-        if (!globalSPF!!.contains(SpfConfig.GLOBAL_SPF_THEME) || globalSPF!!.getInt(SpfConfig.GLOBAL_SPF_THEME, -1) == -1) {
-            val uiModeManager = activity.applicationContext.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
-            if (uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES) {
-                theme = 8
-            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                theme = 9
-            }
-        } else {
-            theme = globalSPF!!.getInt(SpfConfig.GLOBAL_SPF_THEME, 1)
-        }
+        val theme = globalSPF!!.getInt(SpfConfig.GLOBAL_SPF_THEME, -1)
 
         if (theme < themeMap.size) {
-            val themeId = themeMap[theme]
-            activity.setTheme(themeId)
+            val uiModeManager = activity.applicationContext.getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
+            themeMode.isDarkMode = uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES
 
-            themeMode.isDarkMode = (themeId == R.style.AppThemeNoActionBarNight)
-            themeMode.isLightStatusBar = (theme == 9)
+            val themeId = when(theme) {
+                -1 -> {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                    if (themeMode.isDarkMode) {
+                        themeMode.isLightStatusBar  = false
+                        R.style.AppThemeNoActionBarNight
+                    } else {
+                        themeMode.isLightStatusBar  = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                        R.style.AppThemeWhite
+                    }
+                }
+                -2 -> {
+                    themeMode.isDarkMode = true
+                    themeMode.isLightStatusBar = false
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    R.style.AppThemeNoActionBarNight
+                }
+                -3 -> {
+                    themeMode.isDarkMode = false
+                    themeMode.isLightStatusBar  = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    R.style.AppThemeWhite
+                }
+                else -> {
+                    themeMode.isLightStatusBar  = false
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                    themeMap[theme]
+                }
+            }
+            if (activity is AppCompatActivity) {
+                activity.getDelegate().setLocalNightMode(AppCompatDelegate.getDefaultNightMode())
+            }
+            activity.setTheme(themeId)
 
             if (themeMode.isLightStatusBar) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -97,9 +117,6 @@ object ThemeSwitch {
 
                         themeMode.isDarkMode = true
                     } else {
-                        // 浅色的静态壁纸
-                        activity.setTheme(R.style.AppThemeWallpaperLight)
-
                         themeMode.isDarkMode = false
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
@@ -110,6 +127,12 @@ object ThemeSwitch {
                     activity.window.setBackgroundDrawable(wallpaperDrawable)
                     // 使用壁纸高斯模糊作为窗口背景
                     // activity.window.setBackgroundDrawable(BitmapDrawable(activity.resources, rsBlur((wallPaper as BitmapDrawable).bitmap, 25, activity)))
+                }
+
+                if (themeMode.isDarkMode) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                } else {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 }
             } else {
                 DialogHelper.helpInfo(activity, "", activity.getString(R.string.wallpaper_rw_permission))
@@ -128,7 +151,7 @@ object ThemeSwitch {
         var lightPoint = 0
 
         // 采样点数
-        val pointCount = if (h > 8 && w > 8) 8 else 1
+        val pointCount = if (h > 24 && w > 24) 24 else 1
 
         for (i in 0..pointCount) {
             val y = h / pointCount * i

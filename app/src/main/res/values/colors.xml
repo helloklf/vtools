@@ -15,17 +15,17 @@
     <color name="color_load_mid">#87cb00</color>
     <color name="color_load_hight">#fc8a1b</color>
     <color name="color_load_veryhight">#f9592f</color>
-    <color name="blue">#138ed6</color>
 
-    <color name="colorAccent">#00b9c2</color>
-    <color name="colorPrimary">#00b9c2</color>
-    <color name="colorPrimaryDark">#00b9c2</color>
+    <color name="colorAccent">#BC8DE4</color>
+    <color name="colorPrimary">#BC8DE4</color>
+    <color name="colorPrimaryDark">#BC8DE4</color>
 
     <color name="newYearAccent">#dc4b2f</color>
     <color name="newYearBgColor">#F5EFE7</color>
     <!--<color name="newYearBgColor">#fffaf2</color>-->
 
-    <color name="colorBlue">#138ed6</color>
+    <color name="cyan">#00b9c2</color>
+    <color name="blue">#138ed6</color>
     <color name="pink">#fc6bc5</color>
     <color name="pretty">#e2259a</color>
     <color name="violet">#7800c2</color>

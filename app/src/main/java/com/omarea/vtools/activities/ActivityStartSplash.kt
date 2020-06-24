@@ -13,6 +13,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.PermissionChecker
 import android.util.TypedValue
 import android.view.View
+import com.omarea.common.ui.ThemeMode
 import com.omarea.permissions.Busybox
 import com.omarea.permissions.CheckRootStatus
 import com.omarea.permissions.WriteSettings
@@ -22,15 +23,17 @@ import kotlinx.android.synthetic.main.activity_start_splash.*
 import java.lang.ref.WeakReference
 
 class ActivityStartSplash : Activity() {
+    companion object {
+        public var finished = false
+    }
+
     private var globalSPF: SharedPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        if (CheckRootStatus.lastCheckResult) {
+        if (CheckRootStatus.lastCheckResult || finished) {
             if (isTaskRoot) {
                 val intent = Intent(this.applicationContext, ActivityMain::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                // intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 startActivity(intent)
                 // overridePendingTransition(0, 0)
             }
@@ -43,12 +46,11 @@ class ActivityStartSplash : Activity() {
         if (globalSPF == null) {
             globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         }
-        if (globalSPF!!.getInt(SpfConfig.GLOBAL_SPF_THEME, 1) != 8) {
-            ThemeSwitch.switchTheme(this)
-        }
+        val themeMode = ThemeSwitch.switchTheme(this)
+        super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_start_splash)
-        updateThemeStyle()
+        updateThemeStyle(themeMode)
 
         if (getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_CONTRACT, false) != true) {
             initContractAction()
@@ -77,12 +79,14 @@ class ActivityStartSplash : Activity() {
     /**
      * 界面主题样式调整
      */
-    private fun updateThemeStyle() {
-        if (globalSPF!!.getInt(SpfConfig.GLOBAL_SPF_THEME, 1) == 8) {
+    private fun updateThemeStyle(themeMode: ThemeMode) {
+        if (themeMode.isDarkMode) {
             splash_root.setBackgroundColor(Color.argb(255, 0, 0, 0))
             getWindow().setNavigationBarColor(Color.argb(255, 0, 0, 0))
         } else {
-            getWindow().setNavigationBarColor(getColorAccent())
+            // getWindow().setNavigationBarColor(getColorAccent())
+            splash_root.setBackgroundColor(Color.argb(255, 255, 255, 255))
+            getWindow().setNavigationBarColor(Color.argb(255, 255, 255, 255))
         }
 
         //  得到当前界面的装饰视图
@@ -235,5 +239,10 @@ class ActivityStartSplash : Activity() {
         val intent = Intent(this.applicationContext, ActivityMain::class.java)
         startActivity(intent)
         finish()
+    }
+
+    override fun finish() {
+        finished = true
+        super.finish()
     }
 }

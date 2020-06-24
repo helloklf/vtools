@@ -1,6 +1,7 @@
 package com.omarea
 
 import android.app.Application
+import android.app.UiModeManager
 import android.content.Context
 import android.widget.Toast
 import com.omarea.common.shared.FileWrite
@@ -31,6 +32,10 @@ class Scene : Application() {
         super.attachBaseContext(base)
 
         CrashHandler().init(this)
+        val uiModeManager = getSystemService(Context.UI_MODE_SERVICE) as UiModeManager
+        if (uiModeManager.nightMode == UiModeManager.MODE_NIGHT_YES) {
+            setTheme(R.style.AppThemeNight)
+        }
 
         context = this
 
