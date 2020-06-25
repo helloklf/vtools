@@ -10,14 +10,6 @@
         <item name="android:colorForegroundInverse">#ffffff</item>
     </style>
 
-    <style name="AppThemeWallpaperLight" parent="AppThemeWhite">
-        <item name="android:navigationBarColor">#00ffffff</item>
-        <item name="android:statusBarColor">#c0ffffff</item>
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:colorForegroundInverse">#c0ffffff</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-    </style>
-
     <style name="AppThemeWallpaper" parent="AppThemeNight">
         <item name="android:navigationBarColor">#a0000000</item>
         <item name="android:statusBarColor">#a0000000</item>

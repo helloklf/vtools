@@ -101,9 +101,10 @@ object ThemeSwitch {
             if (checkPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) && checkPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 val wallpaper = WallpaperManager.getInstance(activity)
                 val wallpaperInfo = wallpaper.wallpaperInfo
+                activity.setTheme(R.style.AppThemeWallpaper)
+
                 // 动态壁纸
                 if (wallpaperInfo != null && wallpaperInfo.packageName != null) {
-                    activity.setTheme(R.style.AppThemeWallpaper)
                     // activity.window.setBackgroundDrawable(activity.getDrawable(R.drawable.window_transparent));
                     activity.window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER)
 
@@ -113,14 +114,19 @@ object ThemeSwitch {
 
                     // 深色的静态壁纸
                     if (isDarkColor(wallpaperDrawable)) {
-                        activity.setTheme(R.style.AppThemeWallpaper)
-
                         themeMode.isDarkMode = true
                     } else {
+                        // 浅色的静态壁纸
                         themeMode.isDarkMode = false
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        themeMode.isLightStatusBar = true
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+                        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             activity.window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                            themeMode.isLightStatusBar = true
+                        }
+
+                        if (!(activity is ActivityMain)) {
+                            activity.window.navigationBarColor = Color.TRANSPARENT
                         }
                     }
 
