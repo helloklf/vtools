@@ -11,15 +11,14 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.UserManager
-import androidx.fragment.app.Fragment
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Filterable
+import android.widget.SeekBar
 import android.widget.Switch
-import android.widget.TabHost
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
@@ -36,7 +35,6 @@ import com.omarea.ui.TabIconHelper
 import com.omarea.utils.AppListHelper
 import com.omarea.vtools.R
 import com.omarea.vtools.activities.ActivityFreezeApps
-import com.omarea.vtools.activities.ActivityMain
 import kotlinx.android.synthetic.main.fragment_freeze.*
 
 
@@ -71,7 +69,7 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
         config = this.context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
         freeze_suspend_mode.isEnabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
-        useSuspendMode  = config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+        useSuspendMode = config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
         freeze_suspend_mode.isChecked = useSuspendMode
         freeze_suspend_mode.setOnClickListener {
             val checked = (it as Switch).isChecked
@@ -81,19 +79,69 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
             config.edit().putBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, useSuspendMode).apply();
         }
 
+        freeze_click_open.isChecked = config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_CLICK_OPEN, false)
+        freeze_click_open.setOnClickListener {
+            config.edit().putBoolean(SpfConfig.GLOBAL_SPF_FREEZE_CLICK_OPEN, (it as Switch).isChecked).apply()
+        }
+
+        freeze_shortcut_suggest.isChecked = config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_ICON_NOTIFY, true)
+        freeze_shortcut_suggest.setOnClickListener {
+            config.edit().putBoolean(SpfConfig.GLOBAL_SPF_FREEZE_ICON_NOTIFY, (it as Switch).isChecked).apply()
+        }
+
+        freeze_time_limit.apply {
+            progress = config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_TIME_LIMIT, 2)
+            freeze_time_limit_text.text = (progress + 1).toString()
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                    freeze_time_limit_text.text = progress.toString()
+                }
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                }
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                    seekBar?.run {
+                        config.edit().putInt(SpfConfig.GLOBAL_SPF_FREEZE_TIME_LIMIT, seekBar.progress + 1).apply()
+                    }
+                }
+            })
+        }
+
+        freeze_item_limit.apply {
+            progress = config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_ITEM_LIMIT, 5)
+            freeze_item_limit_text.text =  (progress + 1).toString()
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                    freeze_item_limit_text.text = progress.toString()
+                }
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                }
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                    seekBar?.run {
+                        config.edit().putInt(SpfConfig.GLOBAL_SPF_FREEZE_TIME_LIMIT, seekBar.progress + 1).apply()
+                    }
+                }
+            })
+        }
+
         processBarDialog = ProgressBarDialog(context!!)
 
         processBarDialog.showDialog()
 
+        // 点击应用图标
         freeze_apps.setOnItemClickListener { parent, itemView, position, _ ->
             try {
                 val appInfo = (parent.adapter.getItem(position) as Appinfo)
-                toggleEnable(appInfo)
-                (freeze_apps.adapter as FreezeAppAdapter).updateRow(position, freeze_apps, appInfo)
+                if (config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_CLICK_OPEN, false)) {
+                    startApp(appInfo)
+                } else {
+                    toggleEnable(appInfo)
+                    (freeze_apps.adapter as FreezeAppAdapter).updateRow(position, freeze_apps, appInfo)
+                }
             } catch (ex: Exception) {
             }
         }
 
+        // 长按图标
         freeze_apps.setOnItemLongClickListener { parent, itemView, position, _ ->
             val item = (parent.adapter.getItem(position) as Appinfo)
             showOptions(item, position, itemView)
@@ -186,6 +234,7 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
         if (!config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_ICON_NOTIFY, true)) {
             return
         }
+
         DialogHelper.animDialog(AlertDialog.Builder(context)
                 .setTitle(getString(R.string.freeze_shortcut_lost))
                 .setMessage(getString(R.string.freeze_shortcut_lost_desc) + "\n\n$lostedShortcutsName")
@@ -213,6 +262,7 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
                                 getString(R.string.freeze_open),
                                 getString(R.string.freeze_shortcut_rebuild),
                                 getString(R.string.freeze_remove),
+                                if (appInfo.suspended || !appInfo.enabled) getString(R.string.freeze_enable)  else getString(R.string.freeze_diasble),
                                 getString(R.string.freeze_remove_uninstall))) { _, which ->
 
                     when (which) {
@@ -223,6 +273,10 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
                             loadData()
                         }
                         3 -> {
+                            toggleEnable(appInfo)
+                            loadData()
+                        }
+                        4 -> {
                             removeAndUninstall(appInfo)
                             loadData()
                         }
@@ -320,7 +374,25 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
         }
         try {
             val intent = this.context!!.packageManager.getLaunchIntentForPackage(appInfo.packageName.toString())
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_HISTORY)
+            // intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_HISTORY or Intent.FLAG_ACTIVITY_TASK_ON_HOME)
+
+            // i.setFlags((i.getFlags() & ~Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED) | Intent.FLAG_ACTIVITY_NEW_TASK);
+            // i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            // i.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            // i.addFlags(Intent.FLAG_ACTIVITY_TASK_ON_HOME);
+            // i.addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY);
+            // i.setFlags(0x10200000);
+            // Log.d("getAppSwitchIntent", "" + i.getFlags());
+            intent.setFlags(intent.getFlags() and Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED.inv() or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            intent.addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY)
+            // i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            // @参考 https://blog.csdn.net/weixin_34335458/article/details/88020972
+            // i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            // @参考 https://blog.csdn.net/weixin_34335458/article/details/88020972
+            intent.setPackage(null) // 加上这句代
+
             if (intent != null) {
                 this.context!!.startActivity(intent)
                 SceneMode.getCurrentInstance()?.setFreezeAppStartTime(appInfo.packageName.toString())

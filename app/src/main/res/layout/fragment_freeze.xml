@@ -19,11 +19,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1">
+
                 <LinearLayout
                     android:id="@+id/tab_freeze_apps"
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
                     <LinearLayout
                         style="@style/ListCardItem"
@@ -48,16 +49,16 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="5dp"
-                                android:text="应用偏见“应用场景”的一部分，在场景模式开启时，离开偏见应用界面2分钟后，自动冻结" />
+                                android:text="应用偏见需要激活场景模式(辅助服务)，才能自动冻结应用" />
                         </LinearLayout>
 
                         <ImageButton
                             android:id="@+id/freeze_menu"
                             style="?android:buttonBarButtonStyle"
-                            android:layout_marginLeft="6dp"
                             android:layout_width="28dp"
                             android:layout_height="28dp"
                             android:layout_gravity="center"
+                            android:layout_marginLeft="6dp"
                             android:padding="0dp"
                             android:scaleType="centerInside"
                             android:src="@drawable/freeze_settings"
@@ -66,14 +67,14 @@
 
                     <LinearLayout
                         style="@style/ListCardItemLast"
-                        android:paddingLeft="0dp"
-                        android:paddingRight="0dp"
-                        android:paddingTop="0dp"
-                        android:paddingBottom="10dp"
                         android:layout_height="0dp"
                         android:layout_weight="1"
                         android:alpha="0.9"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:paddingLeft="0dp"
+                        android:paddingTop="0dp"
+                        android:paddingRight="0dp"
+                        android:paddingBottom="10dp">
 
                         <EditText
                             android:id="@+id/freeze_apps_search"
@@ -95,11 +96,12 @@
                             android:numColumns="4" />
                     </LinearLayout>
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/tab_freeze_settings"
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
                     <LinearLayout style="@style/ListCardItem">
 
@@ -116,9 +118,127 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:text="冻结应用时不隐藏桌面图标，而仅仅将其置灰（与应用管理中的[暂停使用]效果相同），从而避免冻结应用时破坏桌面布局，此功能需要Android P+\n\n配合Xposed可在以下桌面中从冻结状态直接启动：\n一加桌面、一加Hydrogen桌面、一加氢桌面、Lawnchair测试版、Lawnchair魔趣版、MIUI桌面、LineageOS Trebuchet、MIUI桌面、MIUI全局搜索、POCO桌面、系统设置、Pixel 启动器" />
+
                     </LinearLayout>
+
+                    <LinearLayout style="@style/ListCardItem">
+
+                        <Switch
+                            android:id="@+id/freeze_click_open"
+                            style="@style/textTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="单击启动应用" />
+
+                        <TextView
+                            style="@style/textSmall"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="点击偏见列表中的应用时打开应用，而不是切换冻结状态" />
+
+                        <Switch
+                            android:id="@+id/freeze_shortcut_suggest"
+                            style="@style/textTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/activity_vertical_margin"
+                            android:text="提示创建快捷方式" />
+
+                        <TextView
+                            style="@style/textSmall"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="有未添加快捷方式到桌面的偏见应用时，弹出添加快捷方式提示" />
+                    </LinearLayout>
+
+                <LinearLayout style="@style/ListCardItem">
+
+                    <TextView
+                        android:text="活动时间限制（分）"
+                        style="@style/textTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <LinearLayout
+                        android:layout_marginTop="6dp"
+                        android:paddingBottom="6dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <SeekBar
+                            android:id="@+id/freeze_item_limit"
+                            android:paddingStart="6dp"
+                            android:paddingEnd="6dp"
+                            android:progress="2"
+                            android:min="0"
+                            android:max="10"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:id="@+id/freeze_item_limit_text"
+                            android:text="1"
+                            style="@style/textSmall"
+                            android:textAlignment="center"
+                            android:layout_width="30dp"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="偏见应用后台离开主界面超过此时间后重新冻结" />
+
+                    <TextView
+                        android:text="活动数量限制（个）"
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
+                        style="@style/textTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                    <LinearLayout
+                        android:layout_marginTop="6dp"
+                        android:paddingBottom="6dp"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <SeekBar
+                            android:id="@+id/freeze_time_limit"
+                            android:paddingStart="6dp"
+                            android:paddingEnd="6dp"
+                            android:progress="5"
+                            android:min="0"
+                            android:max="10"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            android:id="@+id/freeze_time_limit_text"
+                            android:text="5"
+                            style="@style/textSmall"
+                            android:textAlignment="center"
+                            android:layout_width="30dp"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="能同时处于解冻状态的偏见应用最大数量" />
+                </LinearLayout>
                 </LinearLayout>
             </FrameLayout>
+
             <TabWidget
                 android:id="@android:id/tabs"
                 android:layout_width="match_parent"

@@ -103,10 +103,6 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
-            <meta-data
-                android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts" />
         </activity> <!-- android:configChanges="keyboardHidden|orientation|screenSize|uiMode|density|colorMode|fontScale|screenLayout|layoutDirection|smallestScreenSize|touchscreen" -->
         <activity
             android:name=".activities.ActivityMain"
@@ -125,6 +121,9 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
+            <meta-data
+                android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
         <activity
             android:name=".activities.ActivityOtherSettings"

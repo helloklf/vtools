@@ -16,11 +16,25 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
     private var lastAppPackageName = "com.android.systemui"
     private var contentResolver: ContentResolver = context.contentResolver
     private var freezList = ArrayList<FreezeAppHistory>()
-    // 偏见应用解冻数量限制
-    private val freezAppLimit = 5 // 5个
-    // 偏见应用后台超时时间
-    private val freezAppTimeLimit = 300000 // 5 分钟
     private val config = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+
+    // 偏见应用解冻数量限制
+    private val freezAppLimit:Int
+        get() {
+            return  config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_ITEM_LIMIT, 5)
+        }
+
+    // 偏见应用后台超时时间
+    private val freezAppTimeLimit:Int
+        get() {
+            return  config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_TIME_LIMIT, 2) * 60 * 1000
+        }
+
+    private val freezAppPause: Boolean
+        get() {
+            return  config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_FORCE_PAUSE, false)
+        }
+
     private val floatScreenRotation = FloatScreenRotation(context)
 
     companion object {
@@ -88,6 +102,8 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
 
         freezList.add(history)
         clearFreezeAppCountLimit()
+
+
     }
 
     fun setFreezeAppStartTime(packageName: String) {
