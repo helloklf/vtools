@@ -30,11 +30,6 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
             return  config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_TIME_LIMIT, 2) * 60 * 1000
         }
 
-    private val freezAppPause: Boolean
-        get() {
-            return  config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_FORCE_PAUSE, false)
-        }
-
     private val floatScreenRotation = FloatScreenRotation(context)
 
     companion object {
