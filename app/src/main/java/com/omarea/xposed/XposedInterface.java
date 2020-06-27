@@ -264,35 +264,10 @@ public class XposedInterface implements IXposedHookLoadPackage, IXposedHookZygot
             case "com.omarea.vboot":
                 new ActiveCheck().isActive(loadPackageParam);
                 break;
-
-            case "com.android.quicksearchbox": // 搜索
-            case "com.android.settings": // 设置
-                // nova
-            case "com.teslacoilsw.launcher":
-                // poco
-            case "com.mi.android.globallauncher":
-                // miui
-            case "com.miui.home":
-                // lawnchair 测试版
-            case "ch.deletescape.lawnchair.ci":
-                // 一加桌面
-            case "net.oneplus.launcher":
-                // 一加氢桌面
-            case "net.oneplus.h2launcher":
-                // 一加hydrogen桌面
-            case "com.oneplus.hydrogen.launcher":
-                // 微软桌面
-            case "com.microsoft.launcher":
-                // LineageOS桌面
-            case "org.lineageos.trebuchet":
-                // 魔趣桌面
-            case "org.mokee.lawnchair":
-                // Pixel 启动器
-            case "com.google.android.apps.nexuslauncher":
-            {
-                new AppFreezeInjector().appFreezeInject(loadPackageParam);
-            }
         }
+
+        // 通过Xposed 启动 冻结的偏见应用
+        new AppFreezeInjector().appFreezeInject(loadPackageParam);
 
         // WebView 调试（全局）
         if (prefs.getBoolean("android_webdebug", false)) {

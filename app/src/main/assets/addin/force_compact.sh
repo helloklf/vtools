@@ -54,7 +54,7 @@ else
   # 最后计算出最终要回收的内存大小
   TargetRecycle=$(($RecyclingSize + $MemMemFree))
 
-  if [[ $RecyclingSize != "" ]]; then
+  if [[ $RecyclingSize != "" ]] && [[ $RecyclingSize -gt 0 ]]; then
     running_tag=`getprop vtools.state.force_compact`
     # 状态记录，避免同时执行多次
     if [[ "$running_tag" == "1" ]]; then

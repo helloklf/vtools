@@ -117,7 +117,22 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="冻结应用时不隐藏桌面图标，而仅仅将其置灰（与应用管理中的[暂停使用]效果相同），从而避免冻结应用时破坏桌面布局，此功能需要Android P+\n\n配合Xposed可在以下桌面中从冻结状态直接启动：\n一加桌面、一加Hydrogen桌面、一加氢桌面、Lawnchair测试版、Lawnchair魔趣版、MIUI桌面、LineageOS Trebuchet、MIUI桌面、MIUI全局搜索、POCO桌面、系统设置、Pixel 启动器" />
+                            android:text="冻结应用时不隐藏桌面图标，而仅仅将其置灰（与应用管理中的[暂停使用]效果相同），从而避免冻结应用时破坏桌面布局，此功能需要Android P+" />
+
+                        <Switch
+                            android:layout_marginTop="@dimen/activity_vertical_margin"
+                            android:id="@+id/freeze_any_unfreeze"
+                            style="@style/textTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Xposed授权通融" />
+
+                        <TextView
+                            style="@style/textSmall"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:text="Scene作为Xposed模块激活[且被允许自启动]后，以下桌面可直接打开冻结的应用：\n[一加桌面、一加Hydrogen桌面、一加氢桌面、Lawnchair测试版、Lawnchair魔趣版、MIUI桌面、LineageOS Trebuchet、MIUI桌面、MIUI全局搜索、POCO桌面、系统设置、Pixel 启动器]\n\n开启授权通融后，则所有应用都可以打开冻结的应用" />
 
                     </LinearLayout>
 
@@ -170,7 +185,7 @@
                         android:layout_height="wrap_content">
 
                         <SeekBar
-                            android:id="@+id/freeze_item_limit"
+                            android:id="@+id/freeze_time_limit"
                             android:paddingStart="6dp"
                             android:paddingEnd="6dp"
                             android:progress="2"
@@ -180,7 +195,7 @@
                             android:layout_weight="1"
                             android:layout_height="wrap_content" />
                         <TextView
-                            android:id="@+id/freeze_item_limit_text"
+                            android:id="@+id/freeze_time_limit_text"
                             android:text="1"
                             style="@style/textSmall"
                             android:textAlignment="center"
@@ -193,7 +208,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:text="偏见应用后台离开主界面超过此时间后重新冻结" />
+                        android:text="离开应用界面超过此时间后冻结，0表示不限制" />
 
                     <TextView
                         android:text="活动数量限制（个）"
@@ -211,7 +226,7 @@
                         android:layout_height="wrap_content">
 
                         <SeekBar
-                            android:id="@+id/freeze_time_limit"
+                            android:id="@+id/freeze_item_limit"
                             android:paddingStart="6dp"
                             android:paddingEnd="6dp"
                             android:progress="5"
@@ -221,7 +236,7 @@
                             android:layout_weight="1"
                             android:layout_height="wrap_content" />
                         <TextView
-                            android:id="@+id/freeze_time_limit_text"
+                            android:id="@+id/freeze_item_limit_text"
                             android:text="5"
                             style="@style/textSmall"
                             android:textAlignment="center"
@@ -234,7 +249,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:text="能同时处于解冻状态的偏见应用最大数量" />
+                        android:text="能同时处于解冻状态的偏见应用最大数量，0表示不限制" />
                 </LinearLayout>
                 </LinearLayout>
             </FrameLayout>

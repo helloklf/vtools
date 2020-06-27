@@ -330,7 +330,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
                         window.getBoundsInScreen(outBounds)
                         logs.append("\n层级: ${window.layer} ${wp}\n类型: ${window.type} Rect[${outBounds.left},${outBounds.top},${outBounds.right},${outBounds.bottom}]")
                         val size = (outBounds.right - outBounds.left) * (outBounds.bottom - outBounds.top)
-                        if (size > lastWindowSize) {
+                        if (size >= lastWindowSize) {
                             lastWindowPackageName = wp.toString()
                             lastWindowSize = size
                         }

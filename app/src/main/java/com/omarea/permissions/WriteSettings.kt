@@ -36,7 +36,7 @@ class WriteSettings {
             // intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             // context.startActivity(intent)
             try {
-                Toast.makeText(context, "请为Scene授予“修改系统设置”权限！", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, "请为Scene授予“修改系统设置”权限，以确保“场景模式”功能能正常运行！", Toast.LENGTH_LONG).show()
                 val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                 val uri = Uri.fromParts("package", context.getPackageName(), null)
                 intent.setData(uri)

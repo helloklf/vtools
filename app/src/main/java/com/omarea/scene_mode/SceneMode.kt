@@ -125,17 +125,22 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
 
     // 当解冻的偏见应用数量超过限制，冻结最先解冻的应用
     fun clearFreezeAppCountLimit() {
-        while (freezList.size > freezAppLimit) {
-            freezeApp(freezList.first())
+        if (freezAppLimit > 0 ) {
+            while (freezList.size > freezAppLimit) {
+                freezeApp(freezList.first())
+            }
         }
     }
 
     // 冻结已经后台超时的偏见应用
     fun clearFreezeAppTimeLimit() {
-        val currentTime = System.currentTimeMillis()
-        freezList.filter {
-            it.leaveTime > -1 && currentTime - it.leaveTime > freezAppTimeLimit && it.packageName != lastAppPackageName
-        }.forEach { freezeApp(it) }
+        val freezAppTimeLimit = this.freezAppTimeLimit
+        if (freezAppTimeLimit > 0) {
+            val currentTime = System.currentTimeMillis()
+            freezList.filter {
+                it.leaveTime > -1 && currentTime - it.leaveTime > freezAppTimeLimit && it.packageName != lastAppPackageName
+            }.forEach { freezeApp(it) }
+        }
     }
 
     // 冻结指定应用

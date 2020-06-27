@@ -68,15 +68,27 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
 
         config = this.context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
 
-        freeze_suspend_mode.isEnabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
         useSuspendMode = config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
-        freeze_suspend_mode.isChecked = useSuspendMode
-        freeze_suspend_mode.setOnClickListener {
-            val checked = (it as Switch).isChecked
-            switchSuspendMode(checked)
+        freeze_suspend_mode.run {
+            isEnabled = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+            isChecked = useSuspendMode
+            setOnClickListener {
+                val checked = (it as Switch).isChecked
+                switchSuspendMode(checked)
 
-            useSuspendMode = checked
-            config.edit().putBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, useSuspendMode).apply();
+                useSuspendMode = checked
+                config.edit().putBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, useSuspendMode).apply()
+
+                freeze_any_unfreeze.isEnabled = checked
+            }
+        }
+
+        freeze_any_unfreeze.run {
+            isEnabled = useSuspendMode
+            isChecked = config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_XPOSED_OPEN, false)
+            setOnClickListener {
+                config.edit().putBoolean(SpfConfig.GLOBAL_SPF_FREEZE_XPOSED_OPEN, (it as Switch).isChecked).apply()
+            }
         }
 
         freeze_click_open.isChecked = config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_CLICK_OPEN, false)
@@ -89,9 +101,9 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
             config.edit().putBoolean(SpfConfig.GLOBAL_SPF_FREEZE_ICON_NOTIFY, (it as Switch).isChecked).apply()
         }
 
-        freeze_time_limit.apply {
+        freeze_time_limit.run {
             progress = config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_TIME_LIMIT, 2)
-            freeze_time_limit_text.text = (progress + 1).toString()
+            freeze_time_limit_text.text = progress.toString()
             setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                     freeze_time_limit_text.text = progress.toString()
@@ -100,15 +112,15 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
                 }
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
                     seekBar?.run {
-                        config.edit().putInt(SpfConfig.GLOBAL_SPF_FREEZE_TIME_LIMIT, seekBar.progress + 1).apply()
+                        config.edit().putInt(SpfConfig.GLOBAL_SPF_FREEZE_TIME_LIMIT, seekBar.progress).apply()
                     }
                 }
             })
         }
 
-        freeze_item_limit.apply {
+        freeze_item_limit.run {
             progress = config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_ITEM_LIMIT, 5)
-            freeze_item_limit_text.text =  (progress + 1).toString()
+            freeze_item_limit_text.text =  progress.toString()
             setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                     freeze_item_limit_text.text = progress.toString()
@@ -117,7 +129,7 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
                 }
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
                     seekBar?.run {
-                        config.edit().putInt(SpfConfig.GLOBAL_SPF_FREEZE_TIME_LIMIT, seekBar.progress + 1).apply()
+                        config.edit().putInt(SpfConfig.GLOBAL_SPF_FREEZE_ITEM_LIMIT, seekBar.progress).apply()
                     }
                 }
             })
@@ -277,8 +289,12 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
                             loadData()
                         }
                         4 -> {
-                            removeAndUninstall(appInfo)
-                            loadData()
+                            DialogHelper.animDialog(
+                                AlertDialog.Builder(context).setTitle("确定要卸载【${appInfo.appName}】？").setNeutralButton(R.string.btn_cancel) { _, _ ->
+                                }.setPositiveButton(R.string.btn_confirm) { _, _ ->
+                                    removeAndUninstall(appInfo)
+                                    loadData()
+                                })
                         }
                     }
                 }

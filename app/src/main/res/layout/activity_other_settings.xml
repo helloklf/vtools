@@ -95,7 +95,7 @@
                         android:layout_height="27dp"
                         android:layout_marginStart="6dp"
                         android:layout_weight="1"
-                        android:background="@color/colorAccent"
+                        android:background="@color/cyan"
                         android:onClick="onThemeClick"
                         android:tag="1" />
 

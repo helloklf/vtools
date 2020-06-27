@@ -47,6 +47,11 @@
             android:enabled="true"
             android:exported="true"
             android:authorities="com.omarea.vtools.SceneContentProvider" />
+        <provider
+            android:name=".SceneFreezeProvider"
+            android:enabled="true"
+            android:exported="true"
+            android:authorities="com.omarea.vtools.SceneFreezeProvider" />
 
         <activity
             android:name=".activities.ActivityPowerModeTile"

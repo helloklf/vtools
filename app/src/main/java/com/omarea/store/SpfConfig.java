@@ -67,6 +67,7 @@ public class SpfConfig {
     public static String GLOBAL_SPF_FREEZE_SUSPEND = "freeze_suspend";
     public static String GLOBAL_SPF_FREEZE_TIME_LIMIT = "freeze_suspend_time_limit";
     public static String GLOBAL_SPF_FREEZE_ITEM_LIMIT = "freeze_suspend_item_limit";
+    public static String GLOBAL_SPF_FREEZE_XPOSED_OPEN = "freeze_xposed_open";
     public static String GLOBAL_SPF_FREEZE_CLICK_OPEN = "freeze_click_open";
     public static String GLOBAL_USE_PRIVATE_BUSYBOX = "use_private_busybox";
 
