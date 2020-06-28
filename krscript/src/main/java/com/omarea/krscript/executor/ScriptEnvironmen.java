@@ -242,7 +242,7 @@ public class ScriptEnvironmen {
             // params.put("APP_UID", "" + android.os.Process.myPid());
             // params.put("APP_PID", "" + android.os.Process.myPid());
             // params.put("APP_TID", "" + android.os.Process.myTid());
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
 
         params.put("ANDROID_SDK", "" + Build.VERSION.SDK_INT);

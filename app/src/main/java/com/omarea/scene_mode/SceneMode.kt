@@ -30,6 +30,12 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
             return  config.getInt(SpfConfig.GLOBAL_SPF_FREEZE_TIME_LIMIT, 2) * 60 * 1000
         }
 
+    // 是否使用suspend命令冻结应用，不隐藏图标
+    private val suspendMode: Boolean
+        get () {
+            return config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
+        }
+
     private val floatScreenRotation = FloatScreenRotation(context)
 
     companion object {
@@ -147,7 +153,7 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
     fun freezeApp(app: FreezeAppHistory) {
         val currentAppConfig = store.getAppConfig(app.packageName)
         if (currentAppConfig.freeze) {
-            if (config.getBoolean(SpfConfig.GLOBAL_SPF_FREEZE_SUSPEND, Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)) {
+            if (suspendMode) {
                 suspendApp(app.packageName)
             } else {
                 freezeApp(app.packageName)
@@ -384,11 +390,16 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
      * 冻结所有解冻的偏见应用
      */
     fun clearFreezeApp() {
+        val suspendMode = this.suspendMode
         while (freezList.size > 0) {
             val firstItem = freezList.first()
             val config = store.getAppConfig(firstItem.packageName)
             if (config.freeze) {
-                KeepShellPublic.doCmdSync("pm disable " + firstItem.packageName)
+                if (suspendMode) {
+                    suspendApp(firstItem.packageName)
+                } else {
+                    freezeApp(firstItem.packageName)
+                }
             }
             freezList.remove(firstItem)
         }
