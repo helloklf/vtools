@@ -20,28 +20,30 @@ import java.io.FileFilter;
 public class AdapterFileSelector extends BaseAdapter {
     private File[] fileArray;
     private Runnable fileSelected;
-    private Runnable fileDelete;
     private File currentDir;
     private File selectedFile;
     private Handler handler = new Handler();
     private ProgressBarDialog progressBarDialog;
     private String extension;
-    private boolean clickSelected = true; // 点击选中
-    private boolean longClickDelete = false; // 长按选项
     private boolean hasParent = false; // 是否还有父级
     private String rootDir = "/"; // 根目录
     private boolean leaveRootDir = true; // 是否允许离开设定的rootDir到更父级的目录去
+    private boolean folderChooserMode = false; // 是否是目录选择模式（目录选择模式下不显示文件，长按目录选中）
 
-    public AdapterFileSelector(File rootDir, Runnable fileSelected, ProgressBarDialog progressBarDialog, String extension) {
+    private AdapterFileSelector(File rootDir, Runnable fileSelected, ProgressBarDialog progressBarDialog, String extension) {
         init(rootDir, fileSelected, progressBarDialog, extension);
     }
 
-    public AdapterFileSelector(File rootDir, Runnable fileSelected, ProgressBarDialog progressBarDialog, String extension, boolean clickSelected, boolean longClickDelete, Runnable fileDelete, boolean leaveRootDir) {
-        this.leaveRootDir = leaveRootDir;
-        this.clickSelected = clickSelected;
-        this.longClickDelete = longClickDelete;
-        this.fileDelete = fileDelete;
-        init(rootDir, fileSelected, progressBarDialog, extension);
+    public static AdapterFileSelector FolderChooser(File rootDir, Runnable fileSelected, ProgressBarDialog progressBarDialog) {
+        AdapterFileSelector adapterFileSelector = new AdapterFileSelector(rootDir, fileSelected, progressBarDialog, null);
+        adapterFileSelector.folderChooserMode = true;
+        return adapterFileSelector;
+    }
+
+    public static AdapterFileSelector FileChooser(File rootDir, Runnable fileSelected, ProgressBarDialog progressBarDialog, String extension) {
+        AdapterFileSelector adapterFileSelector = new AdapterFileSelector(rootDir, fileSelected, progressBarDialog, extension);
+        adapterFileSelector.folderChooserMode = false;
+        return adapterFileSelector;
     }
 
     private void init(File rootDir, Runnable fileSelected, ProgressBarDialog progressBarDialog, String extension) {
@@ -68,11 +70,14 @@ public class AdapterFileSelector extends BaseAdapter {
                 hasParent = parent.exists() && parent.canRead() && (leaveRootDir || !(rootDir.startsWith(parentPath) && rootDir.length() > parentPath.length()));
 
                 if (dir.exists() && dir.canRead()) {
-
                     File[] files = dir.listFiles(new FileFilter() {
                         @Override
-                        public boolean accept(File pathname) {
-                            return pathname.exists() && (!pathname.isFile() || extension == null || extension.isEmpty() || pathname.getName().endsWith(extension));
+                        public boolean accept(File fileItem) {
+                            if (folderChooserMode) {
+                                return fileItem.isDirectory();
+                            } else {
+                                return fileItem.exists() && (!fileItem.isFile() || extension == null || extension.isEmpty() || fileItem.getName().endsWith(extension));
+                            }
                         }
                     });
 
@@ -183,6 +188,33 @@ public class AdapterFileSelector extends BaseAdapter {
                         }
                     }
                 });
+                if (folderChooserMode) {
+                    view.setOnLongClickListener(new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            DialogHelper.Companion.animDialog(new AlertDialog.Builder(view.getContext()).setTitle("选定目录？")
+                                    .setMessage(file.getAbsolutePath())
+                                    .setPositiveButton(R.string.btn_confirm, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            if (!file.exists()) {
+                                                Toast.makeText(view.getContext(), "所选的目录已被删除，请重新选择！", Toast.LENGTH_SHORT).show();
+                                                return;
+                                            }
+                                            selectedFile = file;
+                                            fileSelected.run();
+                                        }
+                                    })
+                                    .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    }));
+                            return true;
+                        }
+                    });
+                }
             } else {
                 view = View.inflate(parent.getContext(), R.layout.list_item_file, null);
                 long fileLength = file.length();
@@ -198,38 +230,11 @@ public class AdapterFileSelector extends BaseAdapter {
                 }
 
                 ((TextView) (view.findViewById(R.id.ItemText))).setText(fileSize);
-                if (clickSelected) {
-                    view.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            DialogHelper.Companion.animDialog(new AlertDialog.Builder(view.getContext()).setTitle("选定文件？")
-                                    .setMessage(file.getAbsolutePath())
-                                    .setPositiveButton(R.string.btn_confirm, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            if (!file.exists()) {
-                                                Toast.makeText(view.getContext(), "所选的文件已被删除，请重新选择！", Toast.LENGTH_SHORT).show();
-                                                return;
-                                            }
-                                            selectedFile = file;
-                                            fileSelected.run();
-                                        }
-                                    })
-                                    .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
 
-                                        }
-                                    }));
-                        }
-                    });
-                }
-            }
-            if (longClickDelete) {
-                view.setOnLongClickListener(new View.OnLongClickListener() {
+                view.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public boolean onLongClick(View v) {
-                        DialogHelper.Companion.animDialog(new AlertDialog.Builder(view.getContext()).setTitle("删除所选文件？")
+                    public void onClick(View v) {
+                        DialogHelper.Companion.animDialog(new AlertDialog.Builder(view.getContext()).setTitle("选定文件？")
                                 .setMessage(file.getAbsolutePath())
                                 .setPositiveButton(R.string.btn_confirm, new DialogInterface.OnClickListener() {
                                     @Override
@@ -239,7 +244,7 @@ public class AdapterFileSelector extends BaseAdapter {
                                             return;
                                         }
                                         selectedFile = file;
-                                        fileDelete.run();
+                                        fileSelected.run();
                                     }
                                 })
                                 .setNegativeButton(R.string.btn_cancel, new DialogInterface.OnClickListener() {
@@ -248,7 +253,6 @@ public class AdapterFileSelector extends BaseAdapter {
 
                                     }
                                 }));
-                        return true;
                     }
                 });
             }

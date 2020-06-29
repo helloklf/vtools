@@ -16,9 +16,15 @@ import kotlinx.android.synthetic.main.activity_file_selector.*
 import java.io.File
 
 class ActivityFileSelector : AppCompatActivity() {
+    companion object {
+        val MODE_FILE = 0
+        val MODE_FOLDER = 1
+    }
 
     private var adapterFileSelector: AdapterFileSelector? = null
     var extension = ""
+    var mode = MODE_FILE
+
     override fun onCreate(savedInstanceState: Bundle?) {
         ThemeSwitch.switchTheme(this)
 
@@ -36,13 +42,24 @@ class ActivityFileSelector : AppCompatActivity() {
             finish()
         }
 
-        if (intent.extras.containsKey("extension")) {
-            extension = intent.extras.getString("extension")
-            if (!extension.startsWith(".")) {
-                this.extension = ".$extension"
+        intent.extras?.run {
+            if (containsKey("extension") == true) {
+                extension = "" + intent.extras.getString("extension")
+                if (!extension.startsWith(".")) {
+                    extension = ".$extension"
+                }
+                if (extension.isNotEmpty()) {
+                    title = title.toString() + "($extension)"
+                }
+            }
+
+            if (containsKey("mode") == true) {
+                mode = getInt("mode")
+                if (mode == MODE_FOLDER) {
+                    title = getString(R.string.title_activity_folder_selector)
+                }
             }
         }
-        this.title = this.title.toString() + "($extension)"
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -63,13 +80,18 @@ class ActivityFileSelector : AppCompatActivity() {
                 Toast.makeText(applicationContext, "没有读取文件的权限！", Toast.LENGTH_LONG).show()
                 return
             }
-            adapterFileSelector = AdapterFileSelector(sdcard, Runnable {
+            val onSelected =  Runnable {
                 val file: File? = adapterFileSelector!!.selectedFile
                 if (file != null) {
-                    this.setResult(Activity.RESULT_OK, android.content.Intent().putExtra("file", file.absolutePath))
+                    this.setResult(Activity.RESULT_OK, Intent().putExtra("file", file.absolutePath))
                     this.finish()
                 }
-            }, ProgressBarDialog(this), extension)
+            }
+            adapterFileSelector = if (mode == MODE_FOLDER) {
+                AdapterFileSelector.FolderChooser(sdcard, onSelected, ProgressBarDialog(this))
+            } else {
+                AdapterFileSelector.FileChooser(sdcard, onSelected, ProgressBarDialog(this), extension)
+            }
             file_selector_list.adapter = adapterFileSelector
         } else {
 

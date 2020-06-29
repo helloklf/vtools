@@ -314,6 +314,7 @@
     <string name="title_activity_timing_task">定时任务</string>
     <string name="title_activity_trigger">触发器</string>
     <string name="title_activity_file_selector">请选择文件</string>
+    <string name="title_activity_folder_selector">请长按选择目录</string>
     <string name="config_save_fail">配置保存失败！</string>
     <string name="boot_success">已完成开机自启动</string>
     <string name="notice_channel_boot">自启动提示</string>
