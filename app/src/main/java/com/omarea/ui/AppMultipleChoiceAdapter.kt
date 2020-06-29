@@ -13,7 +13,7 @@ class AppMultipleChoiceAdapter(private val listview: ListView, private val apps:
     private val context = listview.context
 
     override fun getCount(): Int {
-        return apps.size ?: 0
+        return apps.size
     }
 
     override fun getItem(position: Int): Appinfo {

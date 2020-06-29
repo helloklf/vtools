@@ -140,14 +140,13 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
 
         val icon = getModIcon(mode)
         notificationManager = context.getSystemService(Service.NOTIFICATION_SERVICE) as NotificationManager
-        var builder: NotificationCompat.Builder? = null
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val builder = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             if (notificationManager!!.getNotificationChannel("vtool-long-time") == null) {
                 notificationManager!!.createNotificationChannel(NotificationChannel("vtool-long-time", "常驻通知", NotificationManager.IMPORTANCE_LOW))
             }
-            builder = NotificationCompat.Builder(context, "vtool-long-time")
+            NotificationCompat.Builder(context, "vtool-long-time")
         } else {
-            builder = NotificationCompat.Builder(context)
+            NotificationCompat.Builder(context)
         }
         notification =
                 builder.setSmallIcon(if (false) R.drawable.fanbox else icon)

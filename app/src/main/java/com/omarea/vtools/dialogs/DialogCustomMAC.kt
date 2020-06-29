@@ -33,7 +33,7 @@ class DialogCustomMAC(private var context: Context) {
         macInput.setText(spf!!.getString(SpfConfig.GLOBAL_SPF_MAC, "ec:d0:9f:af:95:01"))
 
         autoChange.isChecked = spf!!.getInt(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE_MODE, 0).equals(mode)
-        autoChange.setOnCheckedChangeListener { buttonView, isChecked ->
+        autoChange.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 spf!!.edit().putInt(SpfConfig.GLOBAL_SPF_MAC_AUTOCHANGE_MODE, mode).apply()
             } else {

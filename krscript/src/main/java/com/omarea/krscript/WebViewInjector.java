@@ -22,7 +22,7 @@ import com.omarea.krscript.downloader.Downloader;
 import com.omarea.krscript.executor.ExtractAssets;
 import com.omarea.krscript.executor.ScriptEnvironmen;
 import com.omarea.krscript.model.ShellHandlerBase;
-import com.omarea.krscript.ui.FileChooserRender;
+import com.omarea.krscript.ui.ParamsFileChooserRender;
 
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
@@ -40,10 +40,10 @@ import java.util.UUID;
 public class WebViewInjector {
     private WebView webView;
     private Context context;
-    private FileChooserRender.FileChooserInterface fileChooser;
+    private ParamsFileChooserRender.FileChooserInterface fileChooser;
 
     @SuppressLint("SetJavaScriptEnabled")
-    public WebViewInjector(WebView webView, FileChooserRender.FileChooserInterface fileChooser) {
+    public WebViewInjector(WebView webView, ParamsFileChooserRender.FileChooserInterface fileChooser) {
         this.webView = webView;
         this.context = webView.getContext();
         this.fileChooser = fileChooser;
@@ -177,7 +177,12 @@ public class WebViewInjector {
         @JavascriptInterface
         public boolean fileChooser(final String callbackFunction) {
             if (fileChooser != null) {
-                return fileChooser.openFileChooser(new FileChooserRender.FileSelectedInterface() {
+                return fileChooser.openFileChooser(new ParamsFileChooserRender.FileSelectedInterface() {
+                    @Override
+                    public int type() {
+                        return ParamsFileChooserRender.FileSelectedInterface.Companion.getTYPE_FILE(); // TODO
+                    }
+
                     @Nullable
                     @Override
                     public String suffix() {

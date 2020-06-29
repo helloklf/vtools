@@ -72,6 +72,6 @@ class ListItemGroup(context: Context,
     }
 
     init {
-        title = config.separator
+        title = config.title
     }
 }

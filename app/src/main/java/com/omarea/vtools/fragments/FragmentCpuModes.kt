@@ -186,7 +186,7 @@ class FragmentCpuModes : androidx.fragment.app.Fragment() {
         }
         if (requestCode == REQUEST_POWERCFG_FILE) {
             if (resultCode == Activity.RESULT_OK && data != null) {
-                if (data.extras == null || !data.extras.containsKey("file")) {
+                if (data.extras?.containsKey("file") != true) {
                     return
                 }
                 val path = data.extras.getString("file")

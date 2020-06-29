@@ -165,7 +165,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                     DialogHelper.animDialog(AlertDialog.Builder(context)
                             .setTitle("说明")
                             .setMessage(R.string.addin_dex2oat_helpinfo)
-                            .setNegativeButton("了解更多") { dialog, which ->
+                            .setNegativeButton("了解更多") { _, _ ->
                                 context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(context.getString(R.string.addin_dex2oat_helplink))))
                             })
                 })
@@ -315,7 +315,7 @@ class DexCompileAddin(private var context: Context) : AddinBase(context) {
                     DialogHelper.animDialog(AlertDialog.Builder(context)
                             .setTitle("说明")
                             .setMessage(R.string.addin_dexopt_helpinfo)
-                            .setNegativeButton("了解更多") { dialog, which ->
+                            .setNegativeButton("了解更多") { _, _ ->
                                 context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(context.getString(R.string.addin_dex2oat_helplink))))
                             })
                 })

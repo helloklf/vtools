@@ -21,6 +21,7 @@ import java.io.InputStream
 class PageConfigReader {
     private var context: Context
     private var pageConfig: String = ""
+
     // 读取pageConfig时自动获得
     private var pageConfigAbsPath: String = ""
     private var pageConfigStream: InputStream? = null
@@ -242,41 +243,7 @@ class PageConfigReader {
                         val suffix = attrValue.toLowerCase().trim { it <= ' ' }
 
                         if (actionParamInfo.mime.isEmpty()) {
-                            when (suffix) {
-                                "zip" -> {
-                                    actionParamInfo.mime = "application/zip"
-                                }
-                                "rar" -> {
-                                    actionParamInfo.mime = "application/x-rar-compressed"
-                                }
-                                "gz" -> {
-                                    actionParamInfo.mime = "application/x-gzip"
-                                }
-                                "tar,taz,tgz" -> {
-                                    actionParamInfo.mime = "application/x-tar"
-                                }
-                                "img" -> {
-                                    actionParamInfo.mime = "application/x-img"
-                                }
-                                "apk" -> {
-                                    actionParamInfo.mime = "application/vnd.android"
-                                }
-                                "jpg,jpeg,jpe" -> {
-                                    actionParamInfo.mime = "image/jpeg"
-                                }
-                                "png" -> {
-                                    actionParamInfo.mime = "image/png"
-                                }
-                                "txt" -> {
-                                    actionParamInfo.mime = "text/plain"
-                                }
-                                "xml" -> {
-                                    actionParamInfo.mime = "text/xml"
-                                }
-                                "html,htm,shtml" -> {
-                                    actionParamInfo.mime = "text/html"
-                                }
-                            }
+                            actionParamInfo.mime = Suffix2Mime().toMime(suffix)
                         }
 
                         actionParamInfo.suffix = suffix
@@ -296,7 +263,7 @@ class PageConfigReader {
                         val script = attrValue
                         actionParamInfo.valueShell = script
                     }
-                    attrName == "options-sh" || attrName == "options-su" -> {
+                    attrName == "options-sh" || attrName == "option-sh" || attrName == "options-su" -> {
                         if (actionParamInfo.options == null)
                             actionParamInfo.options = ArrayList<ActionParamInfo.ActionParamOption>()
                         val script = attrValue
@@ -309,6 +276,9 @@ class PageConfigReader {
                     }
                     attrName == "multiple" -> {
                         actionParamInfo.multiple = attrValue == "multiple" || attrValue == "true" || attrValue == "1"
+                    }
+                    attrName == "separator" -> {
+                        actionParamInfo.separator = attrValue
                     }
                 }
             }
@@ -350,25 +320,61 @@ class PageConfigReader {
     }
 
     private fun tagStartInPage(node: PageNode, parser: XmlPullParser) {
-        when {
-            "title" == parser.name -> node.title = parser.nextText()
-            "desc" == parser.name -> descNode(node, parser)
-            "summary" == parser.name -> summaryNode(node, parser)
-            "resource" == parser.name -> resourceNode(parser)
-            "html" == parser.name -> node.onlineHtmlPage = parser.nextText()
-            "config" == parser.name -> node.pageConfigPath = parser.nextText()
-            ("status" == parser.name || "status-bar" == parser.name) -> node.statusBar = parser.nextText()
+        when (parser.name) {
+            "title" -> node.title = parser.nextText()
+            "desc" -> descNode(node, parser)
+            "summary" -> summaryNode(node, parser)
+            "resource" -> resourceNode(parser)
+            "html" -> node.onlineHtmlPage = parser.nextText()
+            "config" -> node.pageConfigPath = parser.nextText()
+            "handler-sh", "handler", "set", "getstate", "script" -> node.pageHandlerSh = parser.nextText()
+            "option", "page-option", "menu", "menu-item" -> {
+                val option = runnableNode(PageMenuOption(), parser) as PageMenuOption?
+                if (option != null) {
+                    for (i in 0 until parser.attributeCount) {
+                        when (parser.getAttributeName(i)) {
+                            "type" -> {
+                                option.type = parser.getAttributeValue(i)
+                            }
+                            "style" -> {
+                                option.isFab = parser.getAttributeValue(i) == "fab"
+                            }
+                            "suffix" -> {
+                                val suffix = parser.getAttributeValue(i).toLowerCase().trim { it <= ' ' }
+
+                                if (option.mime.isEmpty()) {
+                                    option.mime = Suffix2Mime().toMime(suffix)
+                                }
+
+                                option.suffix = suffix
+                            }
+                            "mime" -> {
+                                option.mime = parser.getAttributeValue(i).toLowerCase()
+                            }
+                        }
+                    }
+                    option.title = parser.nextText()
+                    if (option.key.isEmpty()) {
+                        option.key = option.title
+                    }
+
+                    if (node.pageMenuOptions == null) {
+                        node.pageMenuOptions = ArrayList()
+                    }
+                    node.pageMenuOptions?.add(option)
+                }
+            }
         }
     }
 
     private fun tagStartInSwitch(switchNode: SwitchNode, parser: XmlPullParser) {
-        when {
-            "title" == parser.name -> switchNode.title = parser.nextText()
-            "desc" == parser.name -> descNode(switchNode, parser)
-            "summary" == parser.name -> summaryNode(switchNode, parser)
-            "get" == parser.name || "getstate" == parser.name -> switchNode.getState = parser.nextText()
-            "set" == parser.name || "setstate" == parser.name -> switchNode.setState = parser.nextText()
-            "resource" == parser.name -> resourceNode(parser)
+        when (parser.name) {
+            "title" -> switchNode.title = parser.nextText()
+            "desc" -> descNode(switchNode, parser)
+            "summary" -> summaryNode(switchNode, parser)
+            "get", "getstate" -> switchNode.getState = parser.nextText()
+            "set", "setstate" -> switchNode.setState = parser.nextText()
+            "resource" -> resourceNode(parser)
         }
     }
 
@@ -379,7 +385,7 @@ class PageConfigReader {
             val attrValue = parser.getAttributeValue(i)
             when (attrName) {
                 "key", "index", "id" -> groupInfo.key = attrValue.trim()
-                "title" -> groupInfo.separator = attrValue
+                "title" -> groupInfo.title = attrValue
                 "support", "visible" -> groupInfo.supported = executeResultRoot(context, attrValue) == "1"
             }
         }
@@ -487,6 +493,8 @@ class PageConfigReader {
                 "config-sh" -> page.pageConfigSh = attrValue
                 "link", "href" -> page.link = attrValue
                 "activity", "a", "intent" -> page.activity = attrValue
+                "option-sh", "option-su", "options-sh" -> page.pageMenuOptionsSh = attrValue
+                "handler-sh", "handler", "set", "getstate", "script" -> page.pageHandlerSh = attrValue
             }
         }
         return page
@@ -497,7 +505,7 @@ class PageConfigReader {
             val attrName = parser.getAttributeName(attrIndex)
             val attrValue = parser.getAttributeValue(attrIndex)
             when (attrName) {
-                "options-sh", "options-su" -> {
+                "option-sh", "options-sh", "options-su" -> {
                     if (pickerNode.options == null)
                         pickerNode.options = ArrayList()
                     pickerNode.optionsSh = attrValue

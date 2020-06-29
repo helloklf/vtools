@@ -2,10 +2,10 @@ package com.omarea.krscript.model
 
 import android.content.Intent
 import android.view.View
-import com.omarea.krscript.ui.FileChooserRender
+import com.omarea.krscript.ui.ParamsFileChooserRender
 
 interface KrScriptActionHandler {
-    fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean
+    fun openFileChooser(fileSelectedInterface: ParamsFileChooserRender.FileSelectedInterface): Boolean
     fun onSubPageClick(pageNode: PageNode)
     fun onActionCompleted(runnableNode: RunnableNode)
     fun addToFavorites(clickableNode: ClickableNode, addToFavoritesHandler: AddToFavoritesHandler)

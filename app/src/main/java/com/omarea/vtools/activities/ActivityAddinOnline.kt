@@ -22,7 +22,7 @@ import com.omarea.common.shared.FileWrite
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.krscript.WebViewInjector
-import com.omarea.krscript.ui.FileChooserRender
+import com.omarea.krscript.ui.ParamsFileChooserRender
 import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.utils.Flags
 import com.omarea.vtools.R
@@ -184,8 +184,8 @@ class ActivityAddinOnline : AppCompatActivity() {
             if (url.startsWith("https://vtools.oss-cn-beijing.aliyuncs.com/") || url.startsWith("https://vtools.omarea.com/")) {
                 // 添加kr-script for web
                 WebViewInjector(vtools_online,
-                        object : FileChooserRender.FileChooserInterface {
-                            override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
+                        object : ParamsFileChooserRender.FileChooserInterface {
+                            override fun openFileChooser(fileSelectedInterface: ParamsFileChooserRender.FileSelectedInterface): Boolean {
                                 return chooseFilePath(fileSelectedInterface)
                             }
                         }).inject(this)
@@ -350,9 +350,9 @@ class ActivityAddinOnline : AppCompatActivity() {
         }).start()
     }
 
-    private var fileSelectedInterface: FileChooserRender.FileSelectedInterface? = null
+    private var fileSelectedInterface: ParamsFileChooserRender.FileSelectedInterface? = null
     private val ACTION_FILE_PATH_CHOOSER = 65400
-    private fun chooseFilePath(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
+    private fun chooseFilePath(fileSelectedInterface: ParamsFileChooserRender.FileSelectedInterface): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE), 2);
             Toast.makeText(this, getString(R.string.kr_write_external_storage), Toast.LENGTH_LONG).show()

@@ -53,7 +53,7 @@ class ActionParamsLayoutRender {
         fun getParamOptionsSelectedStatus(actionParamInfo: ActionParamInfo, options: ArrayList<HashMap<String, Any>>): BooleanArray {
             val status = BooleanArray(options.size)
             val value = if (actionParamInfo.valueFromShell != null) actionParamInfo.valueFromShell else actionParamInfo.value
-            val values = value?.split(if (actionParamInfo.separator.isNotEmpty()) actionParamInfo.separator else "\n")
+            val values = value?.split(actionParamInfo.separator)
 
             for (index in 0 until options.size) {
                 val item = options[index]["item"]
@@ -72,11 +72,11 @@ class ActionParamsLayoutRender {
         this.context = linearLayout.context
     }
 
-    fun renderList(actionParamInfos: ArrayList<ActionParamInfo>, fileChooser: FileChooserRender.FileChooserInterface?) {
+    fun renderList(actionParamInfos: ArrayList<ActionParamInfo>, fileChooser: ParamsFileChooserRender.FileChooserInterface?) {
         for (actionParamInfo in actionParamInfos) {
             val options = actionParamInfo.optionsFromShell
             // 下拉框渲染
-            if (options != null) {
+            if (options != null && actionParamInfo.type != "app") {
                 if (actionParamInfo.multiple) {
                     val view = ParamsMultipleSelect(actionParamInfo, context).render()
                     addToLayout(view, actionParamInfo, false)
@@ -95,13 +95,13 @@ class ActionParamsLayoutRender {
             }
             // 选择框渲染
             else if (actionParamInfo.type == "bool" || actionParamInfo.type == "checkbox") {
-                val checkBox = CheckBox(context)
-                checkBox.isChecked = getCheckState(actionParamInfo, false)
-                checkBox.isEnabled = !actionParamInfo.readonly
-                if (!actionParamInfo.label.isNullOrEmpty()) {
-                    checkBox.text = actionParamInfo.label
-                }
-                addToLayout(checkBox, actionParamInfo)
+                addToLayout(CheckBox(context).apply {
+                    isChecked = getCheckState(actionParamInfo, false)
+                    isEnabled = !actionParamInfo.readonly
+                    if (!actionParamInfo.label.isNullOrEmpty()) {
+                        text = actionParamInfo.label
+                    }
+                }, actionParamInfo)
             }
             // 开关渲染
             else if (actionParamInfo.type == "switch") {
@@ -121,8 +121,14 @@ class ActionParamsLayoutRender {
                 addToLayout(layout, actionParamInfo, false)
             }
             // 文件选择
-            else if (actionParamInfo.type == "file") {
-                val layout = FileChooserRender(actionParamInfo, context, fileChooser).render()
+            else if (actionParamInfo.type == "file" || actionParamInfo.type == "folder") {
+                val layout = ParamsFileChooserRender(actionParamInfo, context, fileChooser).render()
+
+                addToLayout(layout, actionParamInfo, false)
+            }
+            // 应用选择
+            else if (actionParamInfo.type == "app") {
+                val layout = ParamsAppChooserRender(actionParamInfo, context).render()
 
                 addToLayout(layout, actionParamInfo, false)
             }

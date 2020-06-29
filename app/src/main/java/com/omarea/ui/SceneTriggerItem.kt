@@ -70,6 +70,7 @@ class SceneTriggerItem : LinearLayout {
                     EventType.POWER_CONNECTED -> {
                         buffer.append("充电器连接")
                     }
+                    else -> {}
                 }
                 buffer.append(", ")
             }
@@ -89,6 +90,8 @@ class SceneTriggerItem : LinearLayout {
         if (triggerInfo.taskActions != null && triggerInfo.taskActions.size > 0) {
             triggerInfo.taskActions.forEach {
                 when (it) {
+                    null -> {
+                    }
                     TaskAction.STANDBY_MODE_ON -> {
                         buffer.append("休眠模式 √")
                     }

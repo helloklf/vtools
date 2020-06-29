@@ -222,7 +222,7 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
                                 }
                             }
                         }
-                        pickerExecute(item, "" + result.joinToString(if (item.separator.isNotEmpty()) item.separator else "\n"), onCompleted)
+                        pickerExecute(item, "" + result.joinToString(item.separator), onCompleted)
                     }
                 } else {
                     // 单选
@@ -302,8 +302,8 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
                     }
                     handler.post {
                         val render = ActionParamsLayoutRender(linearLayout)
-                        render.renderList(actionParamInfos, object : FileChooserRender.FileChooserInterface {
-                            override fun openFileChooser(fileSelectedInterface: FileChooserRender.FileSelectedInterface): Boolean {
+                        render.renderList(actionParamInfos, object : ParamsFileChooserRender.FileChooserInterface {
+                            override fun openFileChooser(fileSelectedInterface: ParamsFileChooserRender.FileSelectedInterface): Boolean {
                                 return if (krScriptActionHandler == null) {
                                     false
                                 } else {

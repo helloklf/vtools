@@ -62,7 +62,7 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
         val tabIconHelper = TabIconHelper(tabHost, this.activity!!)
         tabIconHelper.newTabSpec("应用", context!!.getDrawable(R.drawable.tab_app)!!, R.id.tab_freeze_apps)
         tabIconHelper.newTabSpec("设置", context!!.getDrawable(R.drawable.tab_settings)!!, R.id.tab_freeze_settings)
-        tabHost.setOnTabChangedListener { tabId ->
+        tabHost.setOnTabChangedListener { _ ->
             tabIconHelper.updateHighlight()
         }
 

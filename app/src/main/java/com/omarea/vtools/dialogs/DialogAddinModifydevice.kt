@@ -218,7 +218,7 @@ class DialogAddinModifydevice(var context: Context) {
                 .setSingleChoiceItems(R.array.device_templates, index) { dialog, which ->
                     index = which
                 }
-                .setPositiveButton(R.string.btn_confirm) { dialog, which ->
+                .setPositiveButton(R.string.btn_confirm) { _, _ ->
                     val codeStr = context.resources.getStringArray(R.array.device_templates_data)[index]
                     splitCodeStr(codeStr)
                 })

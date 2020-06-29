@@ -255,7 +255,7 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
                     var index = currentIndex
                     DialogHelper.animDialog(AlertDialog.Builder(context)
                             .setTitle("选择GPU最小功耗级别")
-                            .setSingleChoiceItems((adrenoPLevels), currentIndex) { dialog, which ->
+                            .setSingleChoiceItems((adrenoPLevels), currentIndex) { _, which ->
                                 index = which
                             }
                             .setPositiveButton(R.string.btn_confirm) { _, _ ->
@@ -278,7 +278,7 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
                     var index = currentIndex
                     DialogHelper.animDialog(AlertDialog.Builder(context)
                             .setTitle("选择GPU最大功耗级别")
-                            .setSingleChoiceItems((adrenoPLevels), currentIndex) { dialog, which ->
+                            .setSingleChoiceItems((adrenoPLevels), currentIndex) { _, which ->
                                 index = which
                             }
                             .setPositiveButton(R.string.btn_confirm) { _, _ ->
@@ -354,7 +354,7 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
                 val coreState = parsetCpuset(status.cpusetSysBackground)
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("选择要使用的核心")
-                        .setMultiChoiceItems(getCoreList(), coreState) { dialog, which, isChecked ->
+                        .setMultiChoiceItems(getCoreList(), coreState) { _, which, isChecked ->
                             coreState[which] = isChecked
                         }
                         .setPositiveButton(R.string.btn_confirm) { _, _ ->
@@ -388,7 +388,7 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
                 val coreState = parsetCpuset(status.cpusetTopApp)
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("选择要使用的核心")
-                        .setMultiChoiceItems(getCoreList(), coreState) { dialog, which, isChecked ->
+                        .setMultiChoiceItems(getCoreList(), coreState) { _, which, isChecked ->
                             coreState[which] = isChecked
                         }
                         .setPositiveButton(R.string.btn_confirm) { _, _ ->
@@ -405,7 +405,7 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
                 val coreState = parsetCpuset(status.cpusetForegroundBoost)
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("选择要使用的核心")
-                        .setMultiChoiceItems(getCoreList(), coreState) { dialog, which, isChecked ->
+                        .setMultiChoiceItems(getCoreList(), coreState) { _, which, isChecked ->
                             coreState[which] = isChecked
                         }
                         .setPositiveButton(R.string.btn_confirm) { _, _ ->
@@ -439,7 +439,7 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
 
             DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle("选择最小频率")
-                    .setSingleChoiceItems(parseFreqList(cluterFreqs[cluster]!!), currentIndex) { dialog, which ->
+                    .setSingleChoiceItems(parseFreqList(cluterFreqs[cluster]!!), currentIndex) { _, which ->
                         index = which
                     }
                     .setPositiveButton(R.string.btn_confirm) { _, _ ->
@@ -462,7 +462,7 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
             var index = currentIndex
             DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle("选择最大频率")
-                    .setSingleChoiceItems(parseFreqList(cluterFreqs[cluster]!!), currentIndex) { dialog, which ->
+                    .setSingleChoiceItems(parseFreqList(cluterFreqs[cluster]!!), currentIndex) { _, which ->
                         index = which
                     }
                     .setPositiveButton(R.string.btn_confirm) { _, _ ->
@@ -486,7 +486,7 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
             var index = currentIndex
             DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle("选择调度模式")
-                    .setSingleChoiceItems((cluterGovernors[cluster]!!), currentIndex) { dialog, which ->
+                    .setSingleChoiceItems((cluterGovernors[cluster]!!), currentIndex) { _, which ->
                         index = which
                     }
                     .setPositiveButton(R.string.btn_confirm) { _, _ ->

@@ -57,6 +57,8 @@ class SceneTaskItem : LinearLayout {
         if (taskInfo.taskActions != null && taskInfo.taskActions.size > 0) {
             taskInfo.taskActions.map {
                 when (it) {
+                    null -> {
+                    }
                     TaskAction.STANDBY_MODE_ON -> {
                         buffer.append("休眠模式 √")
                     }
