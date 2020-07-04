@@ -9,5 +9,6 @@ launchers=$(pm query-activities --brief -a android.intent.action.MAIN -c android
 
 for launcher in $launchers ; do
     packageName=`echo $launcher | cut -f1 -d '/'`
-    echo "$launcher|$packageName"
+    # echo "$launcher|$packageName"
+    echo "$packageName"
 done
