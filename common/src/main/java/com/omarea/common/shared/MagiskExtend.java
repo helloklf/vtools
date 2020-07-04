@@ -190,6 +190,10 @@ public class MagiskExtend {
             String path = FileWrite.INSTANCE.getPrivateFilePath(context, name);
             String output = MAGISK_PATH + name;
             KeepShellPublic.INSTANCE.doCmdSync("cp " + path + " " + output + "\nchmod 777 " + output);
+            File cache = new File(path);
+            if (cache.exists()) {
+                cache.delete();
+            }
         }
     }
 

@@ -64,7 +64,6 @@ class AppSwitchHandler(private var context: Context) : ModeSwitcher(), EventRece
         }
     }
 
-
     private fun startTimer() {
         if (timer == null && screenOn) {
             timer = Timer(true).apply {
@@ -84,6 +83,8 @@ class AppSwitchHandler(private var context: Context) : ModeSwitcher(), EventRece
             }
         }
     }
+
+
 
     private fun stopTimer() {
         try {
@@ -112,6 +113,7 @@ class AppSwitchHandler(private var context: Context) : ModeSwitcher(), EventRece
         handler.postDelayed({
             if (!screenOn) {
                 notifyHelper.hideNotify()
+                stopTimer()
             }
         }, 10000)
     }
@@ -145,13 +147,13 @@ class AppSwitchHandler(private var context: Context) : ModeSwitcher(), EventRece
             toggleConfig(lastMode)
         }
 
-        if (screenOn == true) return
+        if (!screenOn) {
+            screenOn = true
+            startTimer() // 屏幕开启后开始定时更新通知
+            updateModeNofity() // 屏幕点亮后更新通知
 
-        screenOn = true
-        startTimer() // 屏幕开启后开始定时更新通知
-        updateModeNofity() // 屏幕点亮后更新通知
-
-        systemScene.onScreenOn()
+            systemScene.onScreenOn()
+        }
     }
 
     /**
