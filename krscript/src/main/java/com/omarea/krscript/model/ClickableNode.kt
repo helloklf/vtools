@@ -1,6 +1,9 @@
 package com.omarea.krscript.model
 
-open class ClickableNode : NodeInfoBase() {
+import java.io.File
+
+open class ClickableNode(currentPageConfigPath: String) : NodeInfoBase(currentPageConfigPath) {
+
     // 功能图标路径（列表中）
     var iconPath = ""
 

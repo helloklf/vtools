@@ -34,49 +34,31 @@ class OpenPageHelper(private var activity: Activity) {
         }
     }
 
-    fun openPage(pageInfo: PageNode) {
+    fun openPage(pageNode: PageNode) {
         try {
             var intent: Intent? = null
-            if (!pageInfo.onlineHtmlPage.isEmpty()) {
+            if (!pageNode.onlineHtmlPage.isEmpty()) {
                 intent = Intent(activity, ActivityAddinOnline::class.java)
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                intent.putExtra("url", pageInfo.onlineHtmlPage)
+                intent.putExtra("url", pageNode.onlineHtmlPage)
             }
 
-            if (!pageInfo.pageConfigSh.isEmpty()) {
-                if (intent == null) {
-                    intent = Intent(activity, ActionPage::class.java)
-                }
-                intent.putExtra("pageConfigSh", pageInfo.pageConfigSh)
-            }
-
-            if (!pageInfo.pageConfigPath.isEmpty()) {
+            if (!pageNode.pageConfigSh.isEmpty()) {
                 if (intent == null) {
                     intent = Intent(activity, ActionPage::class.java)
                 }
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                intent.putExtra("config", pageInfo.pageConfigPath)
+            }
+
+            if (!pageNode.pageConfigPath.isEmpty()) {
+                if (intent == null) {
+                    intent = Intent(activity, ActionPage::class.java)
+                }
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             }
 
             intent?.run {
-                putExtra("title", pageInfo.title)
-
-                if (pageInfo.beforeRead.isNotBlank()) {
-                    intent.putExtra("beforeRead", pageInfo.beforeRead)
-                }
-                if (pageInfo.afterRead.isNotBlank()) {
-                    intent.putExtra("afterRead", pageInfo.afterRead)
-                }
-                if (pageInfo.loadSuccess.isNotBlank()) {
-                    intent.putExtra("loadSuccess", pageInfo.loadSuccess)
-                }
-                if (pageInfo.loadFail.isNotBlank()) {
-                    intent.putExtra("loadFail", pageInfo.loadFail)
-                }
-                if (pageInfo.parentPageConfigDir.isNotEmpty()) {
-                    intent.putExtra("parentDir", pageInfo.parentPageConfigDir)
-                }
-
+                intent.putExtra("page", pageNode)
                 activity.startActivity(intent)
             }
         } catch (ex: Exception) {

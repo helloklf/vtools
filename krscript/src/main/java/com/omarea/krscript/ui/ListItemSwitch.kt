@@ -7,7 +7,7 @@ import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.SwitchNode
 
 class ListItemSwitch(private val context: Context,
-                     private val config: SwitchNode = SwitchNode()) : ListItemClickable(context, R.layout.kr_switch_list_item, config) {
+                     private val config: SwitchNode) : ListItemClickable(context, R.layout.kr_switch_list_item, config) {
     protected var switchView = layout.findViewById<Switch?>(R.id.kr_switch)
 
     var checked: Boolean
@@ -21,8 +21,8 @@ class ListItemSwitch(private val context: Context,
     override fun updateViewByShell() {
         super.updateViewByShell()
 
-        if (config.getState != null && !config.getState.isEmpty()) {
-            val shellResult = ScriptEnvironmen.executeResultRoot(context, config.getState)
+        if (config.getState.isNotEmpty()) {
+            val shellResult = ScriptEnvironmen.executeResultRoot(context, config.getState, config)
             config.checked = shellResult == "1" || shellResult.toLowerCase() == "true"
         }
         checked = config.checked

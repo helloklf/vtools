@@ -20,7 +20,7 @@ public class ExtractAssets {
         this.context = context;
     }
 
-    String extractScript(String fileName) {
+    private String extractScript(String fileName) {
         if (fileName == null || fileName.isEmpty()) {
             return null;
         }
@@ -88,7 +88,7 @@ public class ExtractAssets {
                     String relativePath = dir + "/" + file;
                     extractResources(relativePath);
                 }
-                String outputDir = FileWrite.INSTANCE.getPrivateFilePath(context, dir);
+                String outputDir = getExtractPath(dir);
                 extractHisotry.put(dir, outputDir);
                 return outputDir;
             } else {
@@ -98,5 +98,12 @@ public class ExtractAssets {
         }
 
         return "";
+    }
+
+    public String getExtractPath(String file) {
+        return FileWrite.INSTANCE.getPrivateFilePath(
+                context,
+                (file.startsWith("file:///android_asset/") ? (file.substring("file:///android_asset/".length())) : file)
+        );
     }
 }

@@ -7,7 +7,7 @@ import com.omarea.krscript.model.GroupNode
 
 class ListItemGroup(context: Context,
                     final var isRootGroup: Boolean,
-                    config: GroupNode = GroupNode()) :
+                    config: GroupNode) :
         ListItemView(
                 context,
                 if (isRootGroup) R.layout.kr_group_list_root else R.layout.kr_group_list_item,

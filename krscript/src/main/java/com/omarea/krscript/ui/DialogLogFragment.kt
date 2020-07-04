@@ -56,7 +56,7 @@ class DialogLogFragment : androidx.fragment.app.DialogFragment() {
         val shellHandler = openExecutor()
 
         if (shellHandler != null) {
-            ShellExecutor().execute(this.activity, nodeInfo.interruptable, script, onExit, params, shellHandler)
+            ShellExecutor().execute(this.activity, nodeInfo, script, onExit, params, shellHandler)
         }
     }
 

@@ -11,25 +11,35 @@ import com.omarea.krscript.model.ClickableNode
 
 class IconPathAnalysis {
     // 获取快捷方式的图标
-    fun loadIcon(context: Context, clickableNode: ClickableNode): Drawable {
-        return loadIcon(context, clickableNode, true)!!
+    fun loadLogo(context: Context, clickableNode: ClickableNode): Drawable {
+        return loadLogo(context, clickableNode, true)!!
     }
 
     // 获取快捷方式的图标
-    fun loadIcon(context: Context, clickableNode: ClickableNode, useDefault: Boolean): Drawable? {
+    fun loadLogo(context: Context, clickableNode: ClickableNode, useDefault: Boolean): Drawable? {
         if (!clickableNode.logoPath.isEmpty()) {
-            val inputStream = PathAnalysis(context).parsePath(clickableNode.logoPath)
+            val inputStream = PathAnalysis(context, clickableNode.pageConfigDir).parsePath(clickableNode.logoPath)
             inputStream?.run {
                 return bitmap2Drawable(BitmapFactory.decodeStream(this)) // BitmapDrawable.createFromStream(inputStream, "")
             }
         }
         if (!clickableNode.iconPath.isEmpty()) {
-            val inputStream = PathAnalysis(context).parsePath(clickableNode.iconPath)
+            val inputStream = PathAnalysis(context, clickableNode.pageConfigDir).parsePath(clickableNode.iconPath)
             inputStream?.run {
                 return bitmap2Drawable(BitmapFactory.decodeStream(this)) // BitmapDrawable.createFromStream(inputStream, "")
             }
         }
         return if (useDefault) context.getDrawable(R.drawable.kr_shortcut_logo)!! else null
+    }
+
+    fun loadIcon(context: Context, clickableNode: ClickableNode): Drawable? {
+        if (!clickableNode.iconPath.isEmpty()) {
+            val inputStream = PathAnalysis(context, clickableNode.pageConfigDir).parsePath(clickableNode.iconPath)
+            inputStream?.run {
+                return bitmap2Drawable(BitmapFactory.decodeStream(this)) // BitmapDrawable.createFromStream(inputStream, "")
+            }
+        }
+        return null
     }
 
     // Bitmap转换成Drawable

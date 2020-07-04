@@ -69,7 +69,7 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
         super.onViewCreated(view, savedInstanceState)
         this.progressBarDialog = ProgressBarDialog(this.context!!)
 
-        rootGroup = ListItemGroup(this.context!!, true)
+        rootGroup = ListItemGroup(this.context!!, true, GroupNode(""))
 
         if (actionInfos != null) {
             PageLayoutRender(this.context!!, actionInfos!!, this, rootGroup)
@@ -156,7 +156,7 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
                                 .setMessage(String.format(getString(R.string.kr_shortcut_create_desc), clickableNode.title))
                                 .setPositiveButton(R.string.btn_confirm) { _, _ ->
                                     val result = ActionShortcutManager(context!!)
-                                            .addShortcut(intent, IconPathAnalysis().loadIcon(context!!, clickableNode), clickableNode)
+                                            .addShortcut(intent, IconPathAnalysis().loadLogo(context!!, clickableNode), clickableNode)
                                     if (!result) {
                                         Toast.makeText(context, R.string.kr_shortcut_create_fail, Toast.LENGTH_SHORT).show()
                                     } else {
@@ -186,11 +186,11 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
         Thread(Runnable {
             // 获取当前值
             if (item.getState != null) {
-                paramInfo.valueFromShell = executeScriptGetResult(item.getState!!)
+                paramInfo.valueFromShell = executeScriptGetResult(item.getState!!, item)
             }
 
             // 获取可选项（合并options-sh和静态options的结果）
-            val options = getParamOptions(paramInfo)
+            val options = getParamOptions(paramInfo, item)
 
             val labels = if (options != null) options.map { (it["item"] as ActionParamInfo.ActionParamOption).desc }.toTypedArray() else arrayOf()
             val values = if (options != null) options.map { (it["item"] as ActionParamInfo.ActionParamOption).value }.toTypedArray() else arrayOf()
@@ -290,12 +290,12 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
                             progressBarDialog.showDialog(this.context!!.getString(R.string.kr_param_load) + if (!actionParamInfo.label.isNullOrEmpty()) actionParamInfo.label else actionParamInfo.name)
                         }
                         if (actionParamInfo.valueShell != null) {
-                            actionParamInfo.valueFromShell = executeScriptGetResult(actionParamInfo.valueShell!!)
+                            actionParamInfo.valueFromShell = executeScriptGetResult(actionParamInfo.valueShell!!, action)
                         }
                         handler.post {
                             progressBarDialog.showDialog(this.context!!.getString(R.string.kr_param_options_load) + if (!actionParamInfo.label.isNullOrEmpty()) actionParamInfo.label else actionParamInfo.name)
                         }
-                        actionParamInfo.optionsFromShell = getParamOptions(actionParamInfo) // 获取参数的可用选项
+                        actionParamInfo.optionsFromShell = getParamOptions(actionParamInfo, action) // 获取参数的可用选项
                     }
                     handler.post {
                         progressBarDialog.showDialog(this.context!!.getString(R.string.kr_params_render))
@@ -370,11 +370,11 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
     /**
      * 获取Param的Options
      */
-    private fun getParamOptions(actionParamInfo: ActionParamInfo): ArrayList<HashMap<String, Any>>? {
+    private fun getParamOptions(actionParamInfo: ActionParamInfo, nodeInfoBase: NodeInfoBase): ArrayList<HashMap<String, Any>>? {
         val options = ArrayList<HashMap<String, Any>>()
         var shellResult = ""
         if (!actionParamInfo.optionsSh.isEmpty()) {
-            shellResult = executeScriptGetResult(actionParamInfo.optionsSh)
+            shellResult = executeScriptGetResult(actionParamInfo.optionsSh, nodeInfoBase)
         }
 
         if (!(shellResult == "error" || shellResult == "null" || shellResult.isEmpty())) {
@@ -424,8 +424,8 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
         return options
     }
 
-    private fun executeScriptGetResult(shellScript: String): String {
-        return ScriptEnvironmen.executeResultRoot(this.context!!, shellScript);
+    private fun executeScriptGetResult(shellScript: String, nodeInfoBase: NodeInfoBase): String {
+        return ScriptEnvironmen.executeResultRoot(this.context!!, shellScript, nodeInfoBase)
     }
 
     private val taskResultReceiver = ArrayList<BroadcastReceiver>()

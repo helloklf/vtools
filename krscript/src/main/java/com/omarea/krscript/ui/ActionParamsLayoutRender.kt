@@ -76,7 +76,7 @@ class ActionParamsLayoutRender {
         for (actionParamInfo in actionParamInfos) {
             val options = actionParamInfo.optionsFromShell
             // 下拉框渲染
-            if (options != null && actionParamInfo.type != "app") {
+            if (options != null && !(actionParamInfo.type == "app" || actionParamInfo.type == "packages")) {
                 if (actionParamInfo.multiple) {
                     val view = ParamsMultipleSelect(actionParamInfo, context).render()
                     addToLayout(view, actionParamInfo, false)
@@ -127,7 +127,7 @@ class ActionParamsLayoutRender {
                 addToLayout(layout, actionParamInfo, false)
             }
             // 应用选择
-            else if (actionParamInfo.type == "app") {
+            else if (actionParamInfo.type == "app" || actionParamInfo.type == "packages") {
                 val layout = ParamsAppChooserRender(actionParamInfo, context).render()
 
                 addToLayout(layout, actionParamInfo, false)
@@ -312,9 +312,5 @@ class ActionParamsLayoutRender {
     private fun dp2px(context: Context, dpValue: Float): Int {
         val scale = context.resources.displayMetrics.density
         return (dpValue * scale + 0.5f).toInt()
-    }
-
-    private fun executeScriptGetResult(context: Context, shellScript: String): String {
-        return ScriptEnvironmen.executeResultRoot(context, shellScript);
     }
 }

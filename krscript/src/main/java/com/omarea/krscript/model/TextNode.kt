@@ -2,7 +2,7 @@ package com.omarea.krscript.model
 
 import android.text.Layout
 
-class TextNode : NodeInfoBase() {
+class TextNode(currentPageConfigPath: String) : NodeInfoBase(currentPageConfigPath) {
     val rows = ArrayList<TextRow>()
 
     class TextRow {

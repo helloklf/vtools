@@ -5,6 +5,7 @@ import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.omarea.krscript.model.RunnableNode;
 import com.omarea.krscript.model.ShellHandlerBase;
 
 import java.io.DataOutputStream;
@@ -19,10 +20,8 @@ public class ShellExecutor {
 
     /**
      * 执行脚本
-     *
-     * @return
      */
-    public Process execute(Context context, Boolean interruptible, String cmds, Runnable onExit, HashMap<String, String> params, ShellHandlerBase shellHandlerBase) {
+    public Process execute(Context context, RunnableNode nodeInfo, String cmds, Runnable onExit, HashMap<String, String> params, ShellHandlerBase shellHandlerBase) {
         if (started) {
             return null;
         }
@@ -34,7 +33,7 @@ public class ShellExecutor {
                 onExit.run();
             }
         } else {
-            final Runnable forceStopRunnable = interruptible ? (new Runnable() {
+            final Runnable forceStopRunnable = nodeInfo.getInterruptable()? (new Runnable() {
                 @Override
                 public void run() {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -62,7 +61,7 @@ public class ShellExecutor {
                 shellHandlerBase.onStart(forceStopRunnable);
                 dataOutputStream.writeBytes("sleep 0.2;\n");
 
-                ScriptEnvironmen.executeShell(context, dataOutputStream, cmds, params);
+                ScriptEnvironmen.executeShell(context, dataOutputStream, cmds, params, nodeInfo);
             } catch (Exception ex) {
                 process.destroy();
             }
@@ -70,5 +69,4 @@ public class ShellExecutor {
         }
         return process;
     }
-
 }

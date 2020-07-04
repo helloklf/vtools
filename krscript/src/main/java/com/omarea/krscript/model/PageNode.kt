@@ -2,20 +2,7 @@ package com.omarea.krscript.model
 
 import java.io.File
 
-public class PageNode : ClickableNode {
-    constructor(parentPageConfigPath: String) : super() {
-        this.parentPageConfigPath = parentPageConfigPath
-    }
-
-    public var parentPageConfigPath: String = ""
-    public val parentPageConfigDir: String
-        get() {
-            if (parentPageConfigPath.isNotEmpty()) {
-                return File(parentPageConfigPath).parent
-            }
-            return ""
-        }
-
+public class PageNode(currentConfigXml: String) : ClickableNode(currentConfigXml) {
     public var pageConfigPath: String = ""
     public var pageConfigSh: String = ""
     public var onlineHtmlPage: String = ""

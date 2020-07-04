@@ -10,6 +10,7 @@ thermal_files=(
 "${thermal_file_prefix}engine${thermal_file_suffix}"
 "${thermal_file_prefix}extreme${thermal_file_suffix}"
 "${thermal_file_prefix}notlimits${thermal_file_suffix}"
+"${thermal_file_prefix}nolimits${thermal_file_suffix}"
 "${thermal_file_prefix}normal${thermal_file_suffix}"
 "${thermal_file_prefix}phone${thermal_file_suffix}"
 "${thermal_file_prefix}tgame${thermal_file_suffix}"

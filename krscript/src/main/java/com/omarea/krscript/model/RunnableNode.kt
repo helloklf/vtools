@@ -1,6 +1,6 @@
 package com.omarea.krscript.model
 
-open class RunnableNode : ClickableNode() {
+open class RunnableNode(currentConfigXml: String) : ClickableNode(currentConfigXml) {
 
     // 是否在开始前显示操作确认提示
     var confirm: Boolean = false

@@ -34,6 +34,8 @@ class ActionParamInfo {
     var mime: String = ""
     // 文件后缀（仅限type=file有效）
     var suffix: String = ""
+    // 是否允许用户手动输入路径
+    var editable: Boolean = false
     // 多个值的分隔符（仅限多选下拉）
     var separator: String = "\n"
 

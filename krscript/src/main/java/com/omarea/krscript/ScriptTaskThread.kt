@@ -162,7 +162,7 @@ class ScriptTaskThread(private var process: Process) : Thread() {
             val handler = ServiceShellHandlerBase(applicationContext, nodeInfo, notificationCounter, finishedIntent)
             val process = ShellExecutor().execute(
                     context,
-                    nodeInfo.interruptable,
+                    nodeInfo,
                     script,
                     {
                         context.sendBroadcast(finishedIntent)

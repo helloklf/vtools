@@ -3,9 +3,10 @@ package com.omarea.krscript
 import android.content.Context
 import android.content.Intent
 import android.widget.Toast
+import com.omarea.common.shell.KeepShellPublic
 
 class TryOpenActivity(private val context:  Context, private val activity:String) {
-    fun getIntent(): Intent? {
+    private fun getIntent(): Intent? {
         try {
             val intent = if (activity.contains("/")) (Intent(Intent.ACTION_VIEW).apply {
                 val info = activity.split("/")
@@ -22,12 +23,29 @@ class TryOpenActivity(private val context:  Context, private val activity:String
         }
     }
     fun tryOpen(): Boolean {
-        try {
-            context.startActivity(getIntent())
-            return true
-        } catch (ex: Exception) {
-            Toast.makeText(context, context.getString(R.string.kr_slice_activity_fail), Toast.LENGTH_SHORT).show()
-            return false
+        if (activity.startsWith("am ")) {
+            return KeepShellPublic.doCmdSync(activity).contains("Start")
+            // am start -W -n com.miui.voiceassist/com.xiaomi.voiceassistant.AiSettings.AiShortcutActivity -a action.intent.action.VIEW
+        } else {
+            try {
+                context.startActivity(getIntent())
+                return true
+            } catch (ex: SecurityException) {
+                val success = if (activity.contains("/")) {
+                    KeepShellPublic.doCmdSync("am start-activity -W -n " + activity).contains("ok")
+                } else {
+                    KeepShellPublic.doCmdSync("am start-activity -W -a " + activity).contains("ok")
+                }
+                if (success) {
+                    return true
+                } else {
+                    Toast.makeText(context, context.getString(R.string.kr_slice_activity_fail), Toast.LENGTH_SHORT).show()
+                    return false
+                }
+            } catch (ex: Exception) {
+                Toast.makeText(context, context.getString(R.string.kr_slice_activity_fail), Toast.LENGTH_SHORT).show()
+                return false
+            }
         }
     }
 }

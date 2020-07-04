@@ -1,8 +1,6 @@
 package com.omarea.krscript.model
 
-import java.io.Serializable
-
-public class PageMenuOption : RunnableNode() {
+public class PageMenuOption(currentConfigXml: String) : RunnableNode(currentConfigXml) {
     // 类型为普通菜单项还是其它具有特定行为的菜单项
     // 例如，类型为finish 点击后会关闭当前页面，类型为refresh点击后会刷新当前页面，而类型为file点击后则需要先选择文件
     public var type: String = ""

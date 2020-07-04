@@ -6,6 +6,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.view.View
 import android.widget.ImageView
 import com.omarea.krscript.R
+import com.omarea.krscript.config.IconPathAnalysis
 import com.omarea.krscript.config.PathAnalysis
 import com.omarea.krscript.model.ClickableNode
 
@@ -53,8 +54,8 @@ open class ListItemClickable(context: Context,
         if (iconView != null) {
             iconView?.visibility = View.GONE
             if (config.iconPath.isNotEmpty()) {
-                PathAnalysis(context).parsePath(config.iconPath)?.run {
-                    iconView?.setImageDrawable(BitmapDrawable(BitmapFactory.decodeStream(this)))
+                IconPathAnalysis().loadIcon(context, config)?.run {
+                    iconView?.setImageDrawable(this)
                     iconView?.visibility = View.VISIBLE
                 }
             }

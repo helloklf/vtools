@@ -10,7 +10,7 @@ import com.omarea.krscript.model.NodeInfoBase
 
 open class ListItemView(private val context: Context,
                         private val layoutId: Int,
-                        private val config: NodeInfoBase = NodeInfoBase()) {
+                        private val config: NodeInfoBase) {
     protected var layout = LayoutInflater.from(context).inflate(layoutId, null)
 
     protected var descView = layout.findViewById<TextView?>(R.id.kr_desc)
@@ -69,12 +69,12 @@ open class ListItemView(private val context: Context,
 
     open fun updateViewByShell() {
         if (config.descSh.isNotEmpty()) {
-            config.desc = ScriptEnvironmen.executeResultRoot(context, config.descSh)
+            config.desc = ScriptEnvironmen.executeResultRoot(context, config.descSh, config)
             desc = config.desc
         }
 
         if (config.summarySh.isNotEmpty()) {
-            config.summary = ScriptEnvironmen.executeResultRoot(context, config.summarySh)
+            config.summary = ScriptEnvironmen.executeResultRoot(context, config.summarySh, config)
             summary = config.summary
         }
     }

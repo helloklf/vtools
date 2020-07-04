@@ -99,16 +99,16 @@ class PageConfigReader {
                                     }
                                 }
                             } else if ("action" == parser.name) {
-                                action = runnableNode(ActionNode(), parser) as ActionNode?
+                                action = runnableNode(ActionNode(pageConfigAbsPath), parser) as ActionNode?
                             } else if ("switch" == parser.name) {
-                                switch = runnableNode(SwitchNode(), parser) as SwitchNode?
+                                switch = runnableNode(SwitchNode(pageConfigAbsPath), parser) as SwitchNode?
                             } else if ("picker" == parser.name) {
-                                picker = runnableNode(PickerNode(), parser) as PickerNode?
+                                picker = runnableNode(PickerNode(pageConfigAbsPath), parser) as PickerNode?
                                 if (picker != null) {
                                     pickerNode(picker, parser)
                                 }
                             } else if ("text" == parser.name) {
-                                text = mainNode(TextNode(), parser) as TextNode?
+                                text = mainNode(TextNode(pageConfigAbsPath), parser) as TextNode?
                             } else if (page != null) {
                                 tagStartInPage(page, parser)
                             } else if (action != null) {
@@ -277,6 +277,9 @@ class PageConfigReader {
                     attrName == "multiple" -> {
                         actionParamInfo.multiple = attrValue == "multiple" || attrValue == "true" || attrValue == "1"
                     }
+                    attrName == "editable" -> {
+                        actionParamInfo.editable = attrValue == "editable" || attrValue == "true" || attrValue == "1"
+                    }
                     attrName == "separator" -> {
                         actionParamInfo.separator = attrValue
                     }
@@ -329,7 +332,7 @@ class PageConfigReader {
             "config" -> node.pageConfigPath = parser.nextText()
             "handler-sh", "handler", "set", "getstate", "script" -> node.pageHandlerSh = parser.nextText()
             "option", "page-option", "menu", "menu-item" -> {
-                val option = runnableNode(PageMenuOption(), parser) as PageMenuOption?
+                val option = runnableNode(PageMenuOption(pageConfigAbsPath), parser) as PageMenuOption?
                 if (option != null) {
                     for (i in 0 until parser.attributeCount) {
                         when (parser.getAttributeName(i)) {
@@ -379,7 +382,7 @@ class PageConfigReader {
     }
 
     private fun groupNode(parser: XmlPullParser): GroupNode {
-        val groupInfo = GroupNode()
+        val groupInfo = GroupNode(pageConfigAbsPath)
         for (i in 0 until parser.attributeCount) {
             val attrName = parser.getAttributeName(i)
             val attrValue = parser.getAttributeValue(i)
@@ -548,14 +551,10 @@ class PageConfigReader {
         for (i in 0 until parser.attributeCount) {
             if (parser.getAttributeName(i) == "file") {
                 val file = parser.getAttributeValue(i).trim()
-                if (file.startsWith(ASSETS_FILE)) {
-                    ExtractAssets(context).extractResource(file)
-                }
+                ExtractAssets(context).extractResource(file)
             } else if (parser.getAttributeName(i) == "dir") {
                 val file = parser.getAttributeValue(i).trim()
-                if (file.startsWith(ASSETS_FILE)) {
-                    ExtractAssets(context).extractResources(file)
-                }
+                ExtractAssets(context).extractResources(file)
             }
         }
     }
@@ -678,7 +677,12 @@ class PageConfigReader {
     private fun tagEndInText(textNode: TextNode?, parser: XmlPullParser) {
     }
 
+    private var vitualRootNode: NodeInfoBase? = null
     private fun executeResultRoot(context: Context, scriptIn: String): String {
-        return ScriptEnvironmen.executeResultRoot(context, scriptIn);
+        if (vitualRootNode == null) {
+            vitualRootNode = NodeInfoBase(pageConfigAbsPath)
+        }
+
+        return ScriptEnvironmen.executeResultRoot(context, scriptIn, vitualRootNode);
     }
 }

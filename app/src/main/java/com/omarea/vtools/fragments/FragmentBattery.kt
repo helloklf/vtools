@@ -220,6 +220,12 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
     private var pdSettingSupport = false
     private var ResumeCharge = ""
 
+    private fun notifyConfigChanged() {
+        Thread(Runnable {
+            EventBus.publish(EventType.BATTERY_CHANGED)
+        }).start()
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         ResumeCharge = "sh " + FileWrite.writePrivateShellFile("addin/resume_charge.sh", "addin/resume_charge.sh", this.context!!)
@@ -231,7 +237,7 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
             val checked = (it as Switch).isChecked
             spf.edit().putBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, checked).apply()
             if (checked) {
-                EventBus.publish(EventType.BATTERY_CHANGED)
+                notifyConfigChanged()
                 Snackbar.make(this.view, R.string.battery_auto_boot_desc, Snackbar.LENGTH_LONG).show()
             } else {
                 Snackbar.make(this.view, R.string.battery_qc_rehoot_desc, Snackbar.LENGTH_LONG).show()
@@ -250,17 +256,17 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
             if (!settings_bp.isChecked) {
                 KeepShellPublic.doCmdSync(ResumeCharge)
             } else {
-                EventBus.publish(EventType.BATTERY_CHANGED)
+                notifyConfigChanged()
                 Snackbar.make(this.view, R.string.battery_auto_boot_desc, Snackbar.LENGTH_LONG).show()
             }
         }
 
         settings_bp_level.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
-            EventBus.publish(EventType.BATTERY_CHANGED)
+            notifyConfigChanged()
         }, spf, battery_bp_level_desc))
         settings_qc_limit.setOnSeekBarChangeListener(OnSeekBarChangeListener2(Runnable {
             val level = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, SpfConfig.CHARGE_SPF_QC_LIMIT_DEFAULT)
-            EventBus.publish(EventType.BATTERY_CHANGED)
+            notifyConfigChanged()
             if (spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
                 batteryUnits.setChargeInputLimit(level, context!!)
             }

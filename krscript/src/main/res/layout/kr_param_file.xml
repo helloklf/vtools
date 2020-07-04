@@ -18,10 +18,14 @@
         android:marqueeRepeatLimit="marquee_forever"
         android:textSize="15dp" />
 
-    <TextView
+    <EditText
         android:id="@+id/kr_param_file_path"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:background="@android:color/transparent"
+        android:textSize="15dp"
         android:visibility="gone" />
 
     <ImageButton

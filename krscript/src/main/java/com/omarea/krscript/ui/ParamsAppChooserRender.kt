@@ -2,6 +2,7 @@ package com.omarea.krscript.ui
 
 import android.app.AlertDialog
 import android.content.Context
+import android.content.pm.PackageManager
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.ImageButton
@@ -22,7 +23,7 @@ class ParamsAppChooserRender(private var actionParamInfo: ActionParamInfo, priva
 
     fun render(): View {
         options = actionParamInfo.optionsFromShell
-        val packages =  ArrayList(loadPackages())
+        val packages =  ArrayList(loadPackages(actionParamInfo.type == "packages"))
         val validOptions = ArrayList(packages.map {
             HashMap<String, Any>().apply {
                 put("title", "" + it.desc)
@@ -53,32 +54,37 @@ class ParamsAppChooserRender(private var actionParamInfo: ActionParamInfo, priva
             openDialog(valueView, nameView)
         }
 
-        if (actionParamInfo.valueFromShell != null) {
-            // TODO
-            // pathView.text = actionParamInfo.valueFromShell
-        } else if (!actionParamInfo.value.isNullOrEmpty()) {
-            // TODO
-            // pathView.text = actionParamInfo.value
-        }
-
         valueView.tag = actionParamInfo.name
 
         return layout
     }
 
-    private fun loadPackages(): List<ActionParamInfo.ActionParamOption> {
+    private fun loadPackages(includeMissing: Boolean = false): List<ActionParamInfo.ActionParamOption> {
         val pm = context.packageManager
         val filter = actionParamInfo.optionsFromShell?.map {
             (it.get("item") as ActionParamInfo.ActionParamOption).value
         }
-        val packages = pm.getInstalledPackages(0).filter {
+
+        val packages = pm.getInstalledPackages(PackageManager.GET_UNINSTALLED_PACKAGES).filter {
             filter == null || filter.contains(it.packageName)
         }
 
-        val options = packages.map {
+        val options = ArrayList(packages.map {
             ActionParamInfo.ActionParamOption().apply {
                 desc = "" + it.applicationInfo.loadLabel(pm)
                 value = it.packageName
+            }
+        })
+
+        // 是否包含丢失的应用程序
+        if (includeMissing && actionParamInfo.optionsFromShell != null) {
+            for (item in actionParamInfo.optionsFromShell!!.map { (it.get("item") as ActionParamInfo.ActionParamOption) }) {
+                if (options.filter { it.value == item.value }.size < 1) {
+                    options.add(ActionParamInfo.ActionParamOption().apply {
+                        desc = item.desc
+                        value = item.value
+                    })
+                }
             }
         }
 

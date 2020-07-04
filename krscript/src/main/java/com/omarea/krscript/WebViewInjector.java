@@ -21,6 +21,7 @@ import com.omarea.common.ui.DialogHelper;
 import com.omarea.krscript.downloader.Downloader;
 import com.omarea.krscript.executor.ExtractAssets;
 import com.omarea.krscript.executor.ScriptEnvironmen;
+import com.omarea.krscript.model.NodeInfoBase;
 import com.omarea.krscript.model.ShellHandlerBase;
 import com.omarea.krscript.ui.ParamsFileChooserRender;
 
@@ -58,6 +59,8 @@ public class WebViewInjector {
             webSettings.setAllowFileAccess(true);
             webSettings.setAllowUniversalAccessFromFileURLs(true);
             webSettings.setAllowFileAccessFromFileURLs(true);
+            webSettings.setAllowContentAccess(true);
+            webSettings.setUseWideViewPort(true);
 
             webView.addJavascriptInterface(
                     new KrScriptEngine(context),
@@ -95,6 +98,7 @@ public class WebViewInjector {
 
     private class KrScriptEngine {
         private Context context;
+        private NodeInfoBase vitualRootNode = new NodeInfoBase("");
 
         private KrScriptEngine(Context context) {
             this.context = context;
@@ -119,7 +123,7 @@ public class WebViewInjector {
         @JavascriptInterface
         public String executeShell(String script) {
             if (script != null && !script.isEmpty()) {
-                return ScriptEnvironmen.executeResultRoot(context, script);
+                return ScriptEnvironmen.executeResultRoot(context, script, vitualRootNode);
             }
             return "";
         }
@@ -155,7 +159,7 @@ public class WebViewInjector {
                     }
                 });
 
-                ScriptEnvironmen.executeShell(context, dataOutputStream, script, params);
+                ScriptEnvironmen.executeShell(context, dataOutputStream, script, params, null);
                 return true;
             } else {
                 return false;

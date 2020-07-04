@@ -13,11 +13,11 @@ class PageMenuLoader(private val applicationContext: Context, private val pageNo
             if (menuOptions == null) {
                 pageNode.run {
                     if (pageMenuOptionsSh.isNotEmpty()) {
-                        val result = ScriptEnvironmen.executeResultRoot(applicationContext, pageMenuOptionsSh)
+                        val result = ScriptEnvironmen.executeResultRoot(applicationContext, pageMenuOptionsSh, this)
                         if (result != "error") {
                             val items = result.split("\n")
                             for (item in items) {
-                                val option = PageMenuOption()
+                                val option = PageMenuOption(pageConfigPath)
                                 if (item.contains("|")) {
                                     item.split("|").run {
                                         option.key = this[0]

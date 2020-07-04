@@ -208,7 +208,7 @@ class ActionPage : AppCompatActivity() {
             if (menuOption.type == "file" && menuOption.iconPath.isEmpty()) {
                 setImageDrawable(getDrawable(R.drawable.kr_folder))
             } else if (menuOption.iconPath.isNotEmpty()) {
-                val icon = IconPathAnalysis().loadIcon(context, menuOption, false)
+                val icon = IconPathAnalysis().loadLogo(context, menuOption, false)
                 if (icon != null) {
                     setImageDrawable(icon)
                 } else {
@@ -396,7 +396,7 @@ class ActionPage : AppCompatActivity() {
             currentPageConfig.run {
                 if (beforeRead.isNotEmpty()) {
                     showDialog(getString(R.string.kr_page_before_load))
-                    ScriptEnvironmen.executeResultRoot(activity, beforeRead)
+                    ScriptEnvironmen.executeResultRoot(activity, beforeRead, currentPageConfig)
                 }
 
                 showDialog(getString(R.string.kr_page_loading))
@@ -407,18 +407,18 @@ class ActionPage : AppCompatActivity() {
                 }
 
                 if (items == null && pageConfigPath.isNotEmpty()) {
-                    items = PageConfigReader(applicationContext, pageConfigPath, parentPageConfigDir).readConfigXml()
+                    items = PageConfigReader(applicationContext, pageConfigPath, pageConfigDir).readConfigXml()
                 }
 
                 if (afterRead.isNotEmpty()) {
                     showDialog(getString(R.string.kr_page_after_load))
-                    ScriptEnvironmen.executeResultRoot(activity, afterRead)
+                    ScriptEnvironmen.executeResultRoot(activity, afterRead, this)
                 }
 
                 if (items != null && items.size != 0) {
                     if (loadSuccess.isNotEmpty()) {
                         showDialog(getString(R.string.kr_page_load_success))
-                        ScriptEnvironmen.executeResultRoot(activity, loadSuccess)
+                        ScriptEnvironmen.executeResultRoot(activity, loadSuccess, this)
                     }
 
                     handler.post {
@@ -439,7 +439,7 @@ class ActionPage : AppCompatActivity() {
                 } else {
                     if (loadFail.isNotEmpty()) {
                         showDialog(getString(R.string.kr_page_load_fail))
-                        ScriptEnvironmen.executeResultRoot(activity, loadFail)
+                        ScriptEnvironmen.executeResultRoot(activity, loadFail, this)
                         hideDialog()
                     }
 

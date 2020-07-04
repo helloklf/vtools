@@ -6,7 +6,7 @@ import android.widget.ImageView
 import com.omarea.krscript.R
 import com.omarea.krscript.model.ActionNode
 
-class ListItemAction(context: Context, config: ActionNode = ActionNode()) : ListItemClickable(context, R.layout.kr_action_list_item, config) {
+class ListItemAction(context: Context, config: ActionNode) : ListItemClickable(context, R.layout.kr_action_list_item, config) {
     private val widgetView = layout.findViewById<ImageView?>(R.id.kr_widget)
 
     init {
