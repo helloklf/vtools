@@ -99,15 +99,14 @@
             <desc>删除对所有系统应用程序的更新，并回退到系统自带的版本</desc>
             <script>pm uninstall-system-updates</script>
         </action>
-        <action
-            auto-off="true"
-            visible=". ./kr-script/common/android_p.sh">
+        <picker auto-off="true"
+            visible=". ./kr-script/common/android_p.sh"
+            options-sh=". ./kr-script/apps/launcher/options.sh">
             <title>更换桌面</title>
             <desc>将系统默认桌面，换成你安装的第三方桌面程序</desc>
-            <param name="state" type="app" value-sh=". ./kr-script/apps/launcher/get.sh"
-                options-sh=". ./kr-script/apps/launcher/options.sh" />
+            <get>. ./kr-script/apps/launcher/get.sh</get>
             <set>. ./kr-script/apps/launcher/set.sh</set>
-        </action>
+        </picker>
         <page id="livepicker" activity="com.android.wallpaper.livepicker/com.android.wallpaper.livepicker.LiveWallpaperActivity">
             <title>动态壁纸选择器</title>
             <desc>打开动态壁纸选择器（如果有的话），方便一些隐藏了动态壁纸选择入口的定制系统</desc>
