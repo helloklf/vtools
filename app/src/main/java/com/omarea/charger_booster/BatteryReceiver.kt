@@ -3,6 +3,7 @@ package com.omarea.charger_booster
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.BatteryManager
+import android.util.Log
 import android.widget.Toast
 import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
@@ -117,6 +118,7 @@ class BatteryReceiver(private var service: Context) : EventReceiver {
             return chargeConfig.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, SpfConfig.CHARGE_SPF_QC_LIMIT_DEFAULT)
         }
 
+    private var lastLimitValue = -1
     /**
      * 计算并使用合理的夜间充电速度
      * @param currentCapacityRatio 当前电量百分比（0~100）
@@ -141,7 +143,10 @@ class BatteryReceiver(private var service: Context) : EventReceiver {
             if (inSleepTime) {
                 if (currentCapacityRatio >= targetRatio) {
                     // 如果已经超出了电池保护的电量，限制为50mA
-                    batteryUnits.setChargeInputLimit(50, service)
+                    if (lastLimitValue != 50) { // 避免重复执行操作
+                        lastLimitValue = 50
+                        batteryUnits.setChargeInputLimit(lastLimitValue, service)
+                    }
                 } else {
                     // 计算预期还需要充入多少电量（mAh）
                     val target = (targetRatio - currentCapacityRatio) / 100F * batteryCapacity
@@ -156,7 +161,10 @@ class BatteryReceiver(private var service: Context) : EventReceiver {
                         limitValue = qcLimit
                     }
 
-                    batteryUnits.setChargeInputLimit(limitValue, service)
+                    if (lastLimitValue != limitValue) { // 避免重复执行操作
+                        lastLimitValue = limitValue
+                        batteryUnits.setChargeInputLimit(limitValue, service)
+                    }
                 }
                 return true
             }
@@ -189,11 +197,16 @@ class BatteryReceiver(private var service: Context) : EventReceiver {
         chargeDisabled = false
     }
 
+    private var lastSetChargeLimit = 0L
     //快速充电
     private fun setChargerLimit() {
         try {
-            if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
-                batteryUnits.setChargeInputLimit(qcLimit, service)
+            if (System.currentTimeMillis() - lastSetChargeLimit >= 1000) {
+                lastSetChargeLimit = System.currentTimeMillis()
+                if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
+                    lastLimitValue = qcLimit
+                    batteryUnits.setChargeInputLimit(qcLimit, service)
+                }
             }
         } catch (ex: Exception) {
         }

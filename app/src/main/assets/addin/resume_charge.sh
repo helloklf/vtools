@@ -16,17 +16,21 @@ suspend='/sys/class/power_supply/battery/input_suspend'
 
 if [[ -f $max ]] && [[ `cat $max` = "0" ]]
 then
-    echo '>>'
     set_value $max 3000000
+    current_max_path=$max
+    # "/sys/class/power_supply/battery/constant_charge_current_max"
+    current_max_backup="vtools.charge.current.max"
+    current_max=`getprop $current_max_backup`
+    if [[ ! "$current_max" == "" ]] ; then
+    set_value $current_max_path $current_max
+    fi
+
 fi;
 
 
-if [[ -f $bce ]]
+if [[ -f $bce ]] || [[ -f $suspend ]]
 then
     set_value $bce 1
-    setprop vtools.bp 0
-elif [[ -f $suspend ]]
-then
     set_value $suspend 0
     setprop vtools.bp 0
 else

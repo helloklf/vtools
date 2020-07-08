@@ -11,7 +11,6 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.os.Build
 import android.os.Handler
-import android.util.Log
 import android.view.KeyEvent
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
@@ -24,7 +23,6 @@ import com.omarea.scene_mode.AppSwitchHandler
 import com.omarea.store.SceneConfigStore
 import com.omarea.store.SpfConfig
 import com.omarea.utils.AutoClick
-import com.omarea.utils.CrashHandler
 import com.omarea.vtools.popup.FloatLogView
 import com.omarea.xposed.XposedCheck
 import java.util.*
@@ -42,6 +40,8 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
     companion object {
         const val useXposed = false
+
+        private var lastParsingThread: Long = 0
     }
 
     private var floatLogView: FloatLogView? = null
@@ -177,6 +177,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
     private var classicModel = false
 
+    // 经典模式
     private fun classicModelEvent(event: AccessibilityEvent) {
         if (event.packageName == null || event.className == null)
             return
@@ -294,6 +295,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
         }
     }
 
+    // 新的前台应用窗口判定逻辑
     private fun modernModeEvent(event: AccessibilityEvent? = null) {
         val windows_ = windows
         if (windows_ == null || windows_.isEmpty()) {
@@ -305,13 +307,15 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
             if (effectiveWindows.size > 0) {
                 try {
-                    var lastWindowPackageName: String? = null
-                    val logs = StringBuilder()
-                    logs.append("Scene窗口检测\n", "屏幕: ${displayHeight}x${displayWidth}\n")
-                    if (event != null) {
-                        logs.append("事件: ${event.source?.packageName}\n")
-                    } else {
-                        logs.append("事件: 主动轮询${Date().time / 1000}\n")
+                    var lastWindow: AccessibilityWindowInfo? = null
+                    val logs = if (floatLogView == null) null else StringBuilder()
+                    logs?.run {
+                        append("Scene窗口检测\n", "屏幕: ${displayHeight}x${displayWidth}\n")
+                        if (event != null) {
+                            append("事件: ${event.source?.packageName}\n")
+                        } else {
+                            append("事件: 主动轮询${Date().time / 1000}\n")
+                        }
                     }
                     // TODO:
                     //      此前在MIUI系统上测试，只判定全屏显示（即窗口大小和屏幕分辨率完全一致）的应用，逻辑非常准确
@@ -321,39 +325,74 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
                     var lastWindowSize = 0
                     for (window in effectiveWindows) {
-                        val wp = window.root?.packageName
-                        if (wp == null || wp == "android" || wp == "com.android.systemui" || wp == "com.miui.freeform" || wp == "com.omarea.gesture" || wp == "com.omarea.filter" || wp == "com.android.permissioncontroller") {
-                            continue
-                        }
 
                         val outBounds = Rect()
                         window.getBoundsInScreen(outBounds)
-                        logs.append("\n层级: ${window.layer} ${wp}\n类型: ${window.type} Rect[${outBounds.left},${outBounds.top},${outBounds.right},${outBounds.bottom}]")
+
+                        /*
+                        val wp = window.root?.packageName
+                        // 获取窗口 root节点 会有性能问题，因此去掉此判断逻辑
+                        if (wp == null || wp == "android" || wp == "com.android.systemui" || wp == "com.miui.freeform" || wp == "com.omarea.gesture" || wp == "com.omarea.filter" || wp == "com.android.permissioncontroller") {
+                            continue
+                        }
+                        */
+
+                        logs?.run {
+                            val wp = window.root?.packageName
+                            append("\n层级: ${window.layer} ${wp}\n类型: ${window.type} Rect[${outBounds.left},${outBounds.top},${outBounds.right},${outBounds.bottom}]")
+                        }
+
                         val size = (outBounds.right - outBounds.left) * (outBounds.bottom - outBounds.top)
                         if (size >= lastWindowSize) {
-                            lastWindowPackageName = wp.toString()
+                            lastWindow = window
                             lastWindowSize = size
                         }
                     }
-                    logs.append("\n")
-                    if (lastWindowPackageName != null) {
-                        logs.append("\n此前: ${GlobalStatus.lastPackageName}")
-                        GlobalStatus.lastPackageName = lastWindowPackageName
-                        EventBus.publish(EventType.APP_SWITCH)
-                        if (event != null) {
-                            startColorPolling()
-                        }
+                    logs?.append("\n")
+                    if (lastWindow != null) {
+                        if (logs == null) {
+                            lastParsingThread = System.currentTimeMillis()
+                            // try {
+                            val thread: Thread = WindowParsingThread(lastWindow, lastParsingThread)
+                            thread.start()
+                            if (event != null) {
+                                startColorPolling()
+                            }
+                            // thread.wait(300);
+                            // } catch (Exception ignored){}
+                        } else {
+                            val wp = lastWindow.root.packageName
+                            if (wp != null) {
+                                logs.append("\n此前: ${GlobalStatus.lastPackageName}")
+                                GlobalStatus.lastPackageName = wp.toString()
+                                EventBus.publish(EventType.APP_SWITCH)
+                                if (event != null) {
+                                    startColorPolling()
+                                }
+                            }
 
-                        logs.append("\n现在: ${GlobalStatus.lastPackageName}")
-                        floatLogView?.update(logs.toString())
+                            logs.append("\n现在: ${GlobalStatus.lastPackageName}")
+                            floatLogView?.update(logs.toString())
+                        }
                     } else {
-                        logs.append("\n现在: ${GlobalStatus.lastPackageName}")
+                        logs?.append("\n现在: ${GlobalStatus.lastPackageName}")
                         floatLogView?.update(logs.toString())
                         return
                     }
                 } catch (ex: Exception) {
                     return
                 }
+            }
+        }
+    }
+
+    class WindowParsingThread constructor(private val windowInfo: AccessibilityWindowInfo, private val tid: Long) : Thread() {
+        override fun run() {
+            // 如果当前window锁属的APP处于未响应状态，此过程可能会等待5秒后超时返回null，因此需要在线程中异步进行此操作
+            val wp = windowInfo.root?.packageName
+            if (lastParsingThread == tid && wp != null) {
+                GlobalStatus.lastPackageName = wp.toString()
+                EventBus.publish(EventType.APP_SWITCH)
             }
         }
     }

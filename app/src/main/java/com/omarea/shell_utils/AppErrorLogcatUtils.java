@@ -6,7 +6,7 @@ import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.common.shell.RootFile;
 
 public class AppErrorLogcatUtils {
-    private String logPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/vtools-error.log";
+    private String logPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Android/vtools-error.log";
 
     public String catLogInfo() {
         if (!RootFile.INSTANCE.fileExists(logPath)) {

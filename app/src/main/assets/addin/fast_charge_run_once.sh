@@ -37,3 +37,9 @@ do
     chmod 0664 $path
 done
 
+current_max_path="/sys/class/power_supply/battery/constant_charge_current_max"
+current_max_backup="vtools.charge.current.max"
+current_max=`getprop $current_max_backup`
+if [[ "$current_max" == "" ]] && [[ -f $current_max_path ]]; then
+    setprop $current_max_backup `cat $current_max_path`
+fi

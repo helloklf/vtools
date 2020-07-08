@@ -63,6 +63,7 @@
                 <Switch
                     android:id="@+id/settings_pd"
                     style="@style/textTitle"
+                    android:enabled="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/battery_pd_allowed" />

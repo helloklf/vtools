@@ -24,6 +24,7 @@ import com.omarea.krscript.config.IconPathAnalysis
 import com.omarea.krscript.config.PageConfigReader
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.*
+import com.omarea.krscript.shortcut.ActionShortcutManager
 import com.omarea.krscript.ui.ActionListFragment
 import com.omarea.krscript.ui.DialogLogFragment
 import com.omarea.krscript.ui.PageMenuLoader
@@ -76,32 +77,41 @@ class ActionPage : AppCompatActivity() {
         val intent = this.intent
         if (intent.extras != null) {
             val extras = intent.extras
-            if (extras != null && extras.containsKey("page")) {
-                val page = extras.getSerializable("page") as PageNode
+            if (extras != null && (extras.containsKey("page") || extras.containsKey("shortcutId"))) {
+                val page = if (extras.containsKey("page")) {
+                    extras.getSerializable("page") as PageNode?
+                } else {
+                    ActionShortcutManager(this@ActionPage).getShortcutTarget("" + extras.getString("shortcutId"))
+                }
 
-                autoRunItemId = if(extras.containsKey("autoRunItemId")) ("" + extras.getString("autoRunItemId")) else ""
+                if (page != null) {
+                    autoRunItemId = if (extras.containsKey("autoRunItemId")) ("" + extras.getString("autoRunItemId")) else ""
 
-                if (page.activity.isNotEmpty()) {
-                    if (TryOpenActivity(this, page.activity).tryOpen()) {
-                        finish()
-                        return
+                    if (page.activity.isNotEmpty()) {
+                        if (TryOpenActivity(this, page.activity).tryOpen()) {
+                            finish()
+                            return
+                        }
                     }
-                }
 
-                if (page.onlineHtmlPage.isNotEmpty()) {
-                    try {
-                        startActivity(Intent(this, ActionPageOnline::class.java).apply {
-                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            putExtra("config", page.onlineHtmlPage)
-                        })
-                    } catch (ex: Exception) {
+                    if (page.onlineHtmlPage.isNotEmpty()) {
+                        try {
+                            startActivity(Intent(this, ActionPageOnline::class.java).apply {
+                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                putExtra("config", page.onlineHtmlPage)
+                            })
+                        } catch (ex: Exception) {
+                        }
                     }
-                }
 
-                if (page.title.isNotEmpty()) {
-                    title = page.title
+                    if (page.title.isNotEmpty()) {
+                        title = page.title
+                    }
+                    currentPageConfig = page
+                } else {
+                    Toast.makeText(this, "页面信息无效", Toast.LENGTH_SHORT).show()
+                    finish()
                 }
-                currentPageConfig = page
             }
         }
 

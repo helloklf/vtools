@@ -59,27 +59,27 @@ class AppSwitchHandler(private var context: Context) : ModeSwitcher(), EventRece
         initConfig()
         notifyHelper.setNotify(spfGlobal.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true))
         stopTimer()
-        if (screenState.isScreenOn()) {
-            startTimer() // 如果屏幕出于开启状态 启动定时器
-        }
+        startTimer()
     }
 
     private fun startTimer() {
-        if (timer == null && screenOn) {
-            timer = Timer(true).apply {
-                val interval = if (batteryMonitro) 2 else 6
-                scheduleAtFixedRate(object : TimerTask() {
-                    private var ticks = 0
-                    override fun run() {
-                        updateModeNofity(true) // 耗电统计 定时更新通知显示
+        if (timer == null && screenOn && screenState.isScreenOn()) {
+            if (screenOn) {
+                timer = Timer(true).apply {
+                    val interval = if (batteryMonitro) 2 else 6
+                    scheduleAtFixedRate(object : TimerTask() {
+                        private var ticks = 0
+                        override fun run() {
+                            updateModeNofity(true) // 耗电统计 定时更新通知显示
 
-                        ticks += interval
-                        ticks %= 60
-                        if (ticks == 0) {
-                            sceneMode.clearFreezeAppTimeLimit()
+                            ticks += interval
+                            ticks %= 60
+                            if (ticks == 0) {
+                                sceneMode.clearFreezeAppTimeLimit()
+                            }
                         }
-                    }
-                }, 0, interval * 1000L)
+                    }, 0, interval * 1000L)
+                }
             }
         }
     }
