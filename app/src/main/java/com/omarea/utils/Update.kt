@@ -94,6 +94,7 @@ class Update {
                     }
                     try {
                         val intent = Intent()
+                        intent.setAction(Intent.ACTION_VIEW)
                         intent.data = Uri.parse(downloadUrl)
                         context.startActivity(intent)
                     } catch (ex: java.lang.Exception) {
