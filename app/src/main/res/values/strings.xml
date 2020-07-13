@@ -107,11 +107,10 @@
     <string name="accessibility_stoped">点击此处去激活辅助服务</string>
 
     <string name="battery_title">电池：</string>
-    <string name="battery_title_desc1">使用充电加速建议保持Scene后台运行！</string>
-    <string name="battery_title_desc2">电池保护功能，必须让Scene保持后台运行！</string>
+    <string name="battery_title_desc1">如需使用“充电调速”、“充电保护”功能，请务必保持Scene后台运行！</string>
     <string name="battery_reality_limit">实际上限电流：</string>
     <string name="battery_pd_allowed">USB-PD快充</string>
-    <string name="battery_pd_allowed_desc">启用USB-PD快充协议(强烈建议，不要尝试手动开关此选项！！！)</string>
+    <string name="battery_pd_allowed_desc">手机会根兼容情况决定是否激活USB-PD充电，无需手动设置</string>
     <string name="battery_pd_active_state">当前状态：</string>
     <string name="battery_pd_active_1">已进入PD快充模式</string>
     <string name="battery_pd_active_0">未进入PD快充模式</string>
@@ -122,7 +121,7 @@
     <string name="battery_usb_uevent_title">$ cat /sys/class/power_supply/usb/uevent</string>
     <string name="battery_night_mode_time">%02d:%02d</string>
     <string name="battery_night_mode">动态充电速度</string>
-    <string name="battery_night_mode_desc">你睡觉期间降低充电速度，在睡醒时接近充满</string>
+    <string name="battery_night_mode_desc">在接近充满时调至缓慢充电，并在夜间主动降低充电速度</string>
     <string name="battery_time_get_up">起床时间</string>
     <string name="battery_time_sleep">入睡时间</string>
     <string name="battery_manual_control">手动控制</string>
@@ -132,18 +131,18 @@
     <string name="battery_view_history">查看记录</string>
     <string name="battery_delete_history">删除记录</string>
     <string name="battery_bp">充电保护</string>
-    <string name="battery_bp_desc">充电到指定百分比时自动禁止充电功能，浅充浅放有助于保护电池。但可能导致电量显示不精准。</string>
+    <string name="battery_bp_desc">达到指定电量后停止充电，长期使用可能导致电量显示失准</string>
     <string name="battery_bp_level_desc">电量限制值（%）</string>
     <string name="battery_qc_charger">充电调速</string>
     <string name="battery_bp_status">达到%d%%停止充电，低于%d%%恢复</string>
-    <string name="battery_qc_charger_desc">尝试调整充电速度限制，但不代表实际充电速度\n修改设置后需要重新插拔充电器</string>
+    <string name="battery_qc_charger_desc">调整充电速度限制，建议数值设在可实际达到的充电速度范围内</string>
     <string name="battery_charge_disabled">充电功能已禁止！</string>
     <string name="battery_charge_resumed">充电功能已恢复！</string>
     <string name="battery_forgery">数据伪装</string>
     <string name="battery_forgery_ratio">电池电量</string>
     <string name="battery_forgery_full_now">充满容量</string>
     <string name="battery_step_charge">阶梯式充电</string>
-    <string name="battery_step_charge_desc">根据电量将充电过程分为几个阶段，分别限制充电功率。\n关闭后仅根据温度和电池电压调节充电速度。\n你可以通过观察充电统计曲线，对比开/关状态的充电速度差异。\n但是如果默认开启，建议不要关掉，它或许能保护电池！</string>
+    <string name="battery_step_charge_desc">系统根据电量分阶段调整充电速度上限，有助于保护电池寿命</string>
 
     <string name="battery_status_discharging">当前状态：未充电</string>
     <string name="battery_status_charging">当前状态：充电中</string>

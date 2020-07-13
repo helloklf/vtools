@@ -7,11 +7,15 @@ import android.content.*
 import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Handler
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.AbsoluteSizeSpan
 import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.omarea.Scene
 import com.omarea.charger_booster.BatteryInfo
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
@@ -35,11 +39,19 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        battery_capacity_wrap.setOnClickListener {
+            Scene.toast("这是一项正在试验中的功能，如果数值显示错误请在评论区反馈！", Toast.LENGTH_SHORT)
+        }
+    }
+
     private var myHandler: Handler = Handler()
     private var timer: Timer? = null
     private lateinit var batteryMAH: String
     private var temp = 0.0
     private var level = 0
+    private var kernelCapacity = -1f
     private var powerChonnected = false
     private var voltage: Double = 0.toDouble()
     private var batteryUnits = BatteryUtils()
@@ -108,6 +120,7 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
                 }
                 batteryInfo = batteryUnits.batteryInfo
                 usbInfo = batteryUnits.usbInfo
+                kernelCapacity = batteryUnits.getKernelCapacity()
 
                 myHandler.post {
                     try {
@@ -117,8 +130,22 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
                         battrystatus.text = getString(R.string.battery_title) +
                                 batteryMAH +
                                 temp + "°C   " +
-                                level + "%    " +
                                 voltage + "v"
+                        if (kernelCapacity > -1) {
+                            val str = "" + kernelCapacity + "%"
+                            val ss = SpannableString(str)
+                            if (str.contains(".")) {
+                                val small = AbsoluteSizeSpan((battrystatus_level.textSize * 0.3).toInt(), false)
+                                ss.setSpan(small, str.indexOf("."), str.lastIndexOf("%"), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                                val medium = AbsoluteSizeSpan((battrystatus_level.textSize * 0.5).toInt(), false)
+                                ss.setSpan(medium, str.indexOf("%"), str.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                            }
+                            battrystatus_level.text = ss
+                        } else {
+                            battrystatus_level.text = "" + level + "%"
+                        }
+
+                        battery_capacity_chart.setData(100f, 100f - level, temp.toFloat())
 
                         settings_qc.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)
                         battery_uevent.text = batteryInfo

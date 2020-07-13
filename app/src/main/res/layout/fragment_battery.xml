@@ -15,29 +15,82 @@
             android:focusableInTouchMode="true"
             android:orientation="vertical">
 
-            <LinearLayout style="@style/ListCardItem">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/battrystatus"
-                    style="@style/textTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/battery_title" />
+                <FrameLayout
+                    android:id="@+id/battery_capacity_wrap"
+                    style="@style/ListCardItem"
+                    android:layout_width="0dp"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="8dp"
+                    android:layout_weight="1">
 
-                <TextView
-                    style="@style/textSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    <com.omarea.ui.BatteryView
+                        android:layout_gravity="center"
+                        android:id="@+id/battery_capacity_chart"
+                        android:layout_width="140dp"
+                        android:layout_height="140dp" />
+
+                    <TextView
+                        android:id="@+id/battrystatus_level"
+                        android:layout_gravity="center_vertical"
+                        style="@style/textTitle"
+                        android:textAlignment="center"
+                        android:textSize="30dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="0%" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_marginLeft="8dp"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:text="@string/battery_title_desc1" />
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="170dp">
+                    <LinearLayout
+                        android:layout_marginTop="0dp"
+                        android:layout_marginLeft="0dp"
+                        style="@style/ListCardItem"
+                        android:layout_height="0dp"
+                        android:layout_width="match_parent"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        android:gravity="center_vertical"
+                        android:layout_weight="1">
 
-                <TextView
-                    style="@style/textSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:text="@string/battery_title_desc2" />
+                        <TextView
+                            android:id="@+id/battrystatus"
+                            style="@style/textTitle"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/battery_title" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_marginLeft="0dp"
+                        android:layout_marginBottom="0dp"
+                        style="@style/ListCardItem"
+                        android:layout_height="0dp"
+                        android:layout_width="match_parent"
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp"
+                        android:gravity="center_vertical"
+                        android:layout_weight="1">
+                        <TextView
+                            style="@style/textSmall"
+                            android:textColor="?android:colorAccent"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/battery_title_desc1" />
+                    </LinearLayout>
+                </LinearLayout>
+
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/settings_step_charge"
                 style="@style/ListCardItem">
@@ -63,9 +116,9 @@
                 <Switch
                     android:id="@+id/settings_pd"
                     style="@style/textTitle"
-                    android:enabled="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="false"
                     android:text="@string/battery_pd_allowed" />
 
                 <TextView
@@ -139,10 +192,10 @@
                 <TextView
                     android:id="@+id/settings_qc_limit_current"
                     style="@style/textSmall"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginStart="8dp"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp" />
 
                 <LinearLayout
                     android:id="@+id/battery_night_mode_configs"
@@ -241,8 +294,8 @@
                     style="@style/textSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
                     android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
                     android:text="@string/battery_bp_level_desc" />
 
                 <LinearLayout
@@ -310,12 +363,13 @@
             </LinearLayout>
 
             <LinearLayout
-                style="@style/ListCardItem"
                 android:id="@+id/battery_forgery"
+                style="@style/ListCardItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/activity_vertical_margin"
                 android:orientation="vertical">
+
                 <TextView
                     style="@style/textTitle"
                     android:layout_width="match_parent"
@@ -323,53 +377,55 @@
                     android:text="@string/battery_forgery" />
 
                 <LinearLayout
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
                     <TextView
-                        android:textAlignment="textEnd"
-                        android:text="@string/battery_forgery_ratio"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="@string/battery_forgery_ratio"
+                        android:textAlignment="textEnd" />
+
                     <TextView
                         android:id="@+id/battery_forgery_ratio"
-                        android:textStyle="bold"
-                        android:textColor="?android:colorAccent"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:padding="8dp"
                         android:text="--%"
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content" />
+                        android:textColor="?android:colorAccent"
+                        android:textStyle="bold" />
 
                     <TextView
-                        android:textAlignment="textEnd"
-                        android:text="@string/battery_forgery_full_now"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:text="@string/battery_forgery_full_now"
+                        android:textAlignment="textEnd" />
 
                     <TextView
                         android:id="@+id/battery_forgery_full_now"
-                        android:textStyle="bold"
-                        android:textColor="?android:colorAccent"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
                         android:padding="8dp"
                         android:text="--mAh"
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content" />
+                        android:textColor="?android:colorAccent"
+                        android:textStyle="bold" />
                 </LinearLayout>
 
                 <TextView
-                    android:text="伪装数据并不会获得相应的续航能力，自欺欺人而已"
-                    android:layout_marginTop="@dimen/activity_vertical_margin"
                     style="@style/textSmall"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:text="伪装数据并不会获得相应的续航能力，自欺欺人而已" />
             </LinearLayout>
 
             <LinearLayout style="@style/ListCardItemLast">
+
                 <TextView
                     style="@style/textTitle"
                     android:layout_width="match_parent"

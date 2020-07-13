@@ -346,9 +346,11 @@ class BatteryUtils {
     fun stepChargeSupport(): Boolean {
         return RootFile.itemExists("/sys/class/power_supply/battery/step_charging_enabled")
     }
+
     fun getStepCharge(): Boolean {
         return KernelProrp.getProp("/sys/class/power_supply/battery/step_charging_enabled").equals("1")
     }
+
     fun setStepCharge(stepCharge: Boolean) {
         KernelProrp.setProp("/sys/class/power_supply/battery/step_charging_enabled", if (stepCharge) "1" else "0")
     }
@@ -615,5 +617,43 @@ class BatteryUtils {
 
     public fun setCapacity(capacity: Int) {
         KernelProrp.setProp("/sys/class/power_supply/battery/capacity", capacity.toString())
+    }
+
+    private var kernelCapacityMod = -1
+    public fun getKernelCapacity(): Float {
+        if (kernelCapacityMod < 0) {
+            if (RootFile.fileExists("/sys/class/power_supply/bms/capacity_raw")) {
+                kernelCapacityMod = 1
+            } else if (RootFile.fileExists("/sys/class/power_supply/battery/charge_counter") && RootFile.fileExists("/sys/class/power_supply/battery/charge_full")) {
+                kernelCapacityMod = 2
+            } else {
+                kernelCapacityMod = 0;
+            }
+        }
+        when (kernelCapacityMod) {
+            1 -> {
+                try {
+                    val capacity_raw = KernelProrp.getProp("/sys/class/power_supply/bms/capacity_raw")
+                    val capacityValue = (capacity_raw).toInt()
+                    if (capacity_raw.length > 2 || capacityValue > 100) {
+                        return capacityValue / 100f
+                    } else {
+                        return capacity_raw.toFloat()
+                    }
+                } catch (ex: java.lang.Exception) {
+                    kernelCapacityMod = 0;
+                }
+            }
+            2 -> {
+                try {
+                    val charge_counter = KernelProrp.getProp("/sys/class/power_supply/battery/charge_counter")
+                    val charge_full = KernelProrp.getProp("/sys/class/power_supply/battery/charge_full")
+                    return ((charge_counter.toInt() * 100f / charge_full.toInt()) * 100).toInt() / 100f
+                } catch (ex: java.lang.Exception) {
+                    kernelCapacityMod = 0;
+                }
+            }
+        }
+        return -1f
     }
 }

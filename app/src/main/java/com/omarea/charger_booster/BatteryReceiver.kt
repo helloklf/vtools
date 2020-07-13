@@ -78,7 +78,7 @@ class BatteryReceiver(private var service: Context) : EventReceiver {
 
                 // 充电加速
                 if (!isSleepTime) {
-                    setChargerLimit()
+                    setChargerLimit(chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_NIGHT_MODE, false), if (bpAllowed) bpLevel else 100)
                 }
             }
         } catch (ex: Exception) {
@@ -199,16 +199,30 @@ class BatteryReceiver(private var service: Context) : EventReceiver {
 
     private var lastSetChargeLimit = 0L
     //快速充电
-    private fun setChargerLimit() {
-        try {
-            if (System.currentTimeMillis() - lastSetChargeLimit >= 1000) {
-                lastSetChargeLimit = System.currentTimeMillis()
-                if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
-                    lastLimitValue = qcLimit
-                    batteryUnits.setChargeInputLimit(qcLimit, service)
+    private fun setChargerLimit(dynamicSpeed: Boolean, bpLevel: Int) {
+        // 如果开启了动态调速并且快充满了
+        if (dynamicSpeed && GlobalStatus.batteryCapacity >= ( bpLevel + 10)) {
+            try {
+                if (System.currentTimeMillis() - lastSetChargeLimit >= 5000) {
+                    lastSetChargeLimit = System.currentTimeMillis()
+                    if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
+                        lastLimitValue = 100 // 快充满了就限制充电速度为100mA保护电池吧！
+                        batteryUnits.setChargeInputLimit(lastLimitValue, service)
+                    }
                 }
+            } catch (ex: Exception) {
             }
-        } catch (ex: Exception) {
+        } else {
+            try {
+                if (System.currentTimeMillis() - lastSetChargeLimit >= 1000) {
+                    lastSetChargeLimit = System.currentTimeMillis()
+                    if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
+                        lastLimitValue = qcLimit
+                        batteryUnits.setChargeInputLimit(qcLimit, service)
+                    }
+                }
+            } catch (ex: Exception) {
+            }
         }
     }
 }
