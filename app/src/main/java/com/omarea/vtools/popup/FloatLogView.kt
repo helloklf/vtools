@@ -49,6 +49,8 @@ class FloatLogView(mContext: Context) {
             wm.addView(view, params)
             show = true
         }
-        logView.text = logs
+        logView.post {
+            logView.text = logs
+        }
     }
 }

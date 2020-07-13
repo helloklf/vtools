@@ -11,6 +11,7 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.os.Build
 import android.os.Handler
+import android.util.Log
 import android.view.KeyEvent
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
@@ -120,9 +121,9 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
             val info = serviceInfo
             if (flagRequestKeyEvent) {
-                info.flags = info.flags or AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS
+                info.flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS or AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS
             } else {
-                info.eventTypes = 0
+                info.flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS // or AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS
             }
 
             setServiceInfo(info);
@@ -131,7 +132,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
             flagRequestKeyEvent = SceneConfigStore(this.applicationContext).needKeyCapture()
 
             val info = serviceInfo // AccessibilityServiceInfo()
-            info.eventTypes = AccessibilityEvent.TYPE_WINDOWS_CHANGED or AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+            info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or AccessibilityEvent.TYPE_WINDOWS_CHANGED
             info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC
             info.notificationTimeout = 0
             info.packageNames = null
@@ -139,7 +140,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
             if (flagRequestKeyEvent) {
                 info.flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS or AccessibilityServiceInfo.FLAG_REQUEST_FILTER_KEY_EVENTS
             } else {
-                info.flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS
+                info.flags = AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS or AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS // or AccessibilityServiceInfo.FLAG_INCLUDE_NOT_IMPORTANT_VIEWS
             }
             setServiceInfo(info);
         }
@@ -268,8 +269,24 @@ public class AccessibilityScenceMode : AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
         if (!classicModel) {
-            val packageName = event.source?.packageName
+            /*
+            when(event.eventType) {
+                AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED -> {
+                    Log.e(">>>>", "TYPE_WINDOW_CONTENT_CHANGED " + event.eventType)
+                }
+                AccessibilityEvent.TYPE_WINDOWS_CHANGED -> {
+                    Log.e(">>>>", "TYPE_WINDOWS_CHANGED " + event.eventType)
+                }
+                AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED -> {
+                    Log.e(">>>>", "TYPE_WINDOW_STATE_CHANGED " + event.eventType)
+                }
+                else -> {
+                    Log.e(">>>>", "???? " + event.eventType)
+                }
+            }
+            */
 
+            val packageName = event.packageName
             if (packageName != null) {
                 if (packageName.contains("packageinstaller")) {
                     if (event.className == "com.android.packageinstaller.permission.ui.GrantPermissionsActivity") // MIUI权限控制器
@@ -289,6 +306,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
                     return
                 }
             }
+
             modernModeEvent(event)
         } else {
             classicModelEvent(event)
@@ -338,7 +356,11 @@ public class AccessibilityScenceMode : AccessibilityService() {
                         */
 
                         logs?.run {
-                            val wp = window.root?.packageName
+                            val wp = try {
+                                window.root?.packageName
+                            } catch (ex: java.lang.Exception) {
+                                null
+                            }
                             append("\n层级: ${window.layer} ${wp}\n类型: ${window.type} Rect[${outBounds.left},${outBounds.top},${outBounds.right},${outBounds.bottom}]")
                         }
 
@@ -350,18 +372,34 @@ public class AccessibilityScenceMode : AccessibilityService() {
                     }
                     logs?.append("\n")
                     if (lastWindow != null) {
+                        val eventWindowId = event?.windowId
+                        val lastWindowId = lastWindow.id
+
                         if (logs == null) {
-                            lastParsingThread = System.currentTimeMillis()
-                            // try {
-                            val thread: Thread = WindowParsingThread(lastWindow, lastParsingThread)
-                            thread.start()
-                            if (event != null) {
-                                startColorPolling()
+                            if (eventWindowId == lastWindowId) {
+                                GlobalStatus.lastPackageName = event.packageName.toString()
+                                EventBus.publish(EventType.APP_SWITCH)
+                            } else {
+                                lastParsingThread = System.currentTimeMillis()
+                                // try {
+                                val thread: Thread = WindowParsingThread(lastWindow, lastParsingThread)
+                                thread.start()
+                                if (event != null) {
+                                    startColorPolling()
+                                }
+                                // thread.wait(300);
+                                // } catch (Exception ignored){}
                             }
-                            // thread.wait(300);
-                            // } catch (Exception ignored){}
                         } else {
-                            val wp = lastWindow.root.packageName
+                            val wp = if (eventWindowId == lastWindowId) {
+                                event.packageName
+                            } else {
+                                try {
+                                    lastWindow.root.packageName
+                                } catch (ex: java.lang.Exception) {
+                                    null
+                                }
+                            }
                             if (wp != null) {
                                 logs.append("\n此前: ${GlobalStatus.lastPackageName}")
                                 GlobalStatus.lastPackageName = wp.toString()
@@ -389,7 +427,12 @@ public class AccessibilityScenceMode : AccessibilityService() {
     class WindowParsingThread constructor(private val windowInfo: AccessibilityWindowInfo, private val tid: Long) : Thread() {
         override fun run() {
             // 如果当前window锁属的APP处于未响应状态，此过程可能会等待5秒后超时返回null，因此需要在线程中异步进行此操作
-            val wp = windowInfo.root?.packageName
+            val wp = (try {
+                windowInfo.root?.packageName
+            } catch (ex: Exception) {
+                null
+            })
+
             if (lastParsingThread == tid && wp != null) {
                 GlobalStatus.lastPackageName = wp.toString()
                 EventBus.publish(EventType.APP_SWITCH)
