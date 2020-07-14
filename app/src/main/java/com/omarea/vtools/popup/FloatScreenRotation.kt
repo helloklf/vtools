@@ -61,4 +61,11 @@ class FloatScreenRotation(mContext: Context) {
             }
         }
     }
+
+    public fun remove() {
+        if (show) {
+            wm.removeViewImmediate(view)
+        }
+        this.show = false;
+    }
 }

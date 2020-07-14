@@ -103,8 +103,10 @@ class AppSwitchHandler(private var context: Context) : ModeSwitcher(), EventRece
     private fun _onScreenOff() {
         if (screenOn == false)
             return
+
         screenOn = false
         lastScreenOnOff = System.currentTimeMillis()
+        sceneMode.onScreenOff()
 
         handler.postDelayed({
             onScreenOffCloseNetwork()
@@ -130,7 +132,7 @@ class AppSwitchHandler(private var context: Context) : ModeSwitcher(), EventRece
                 }
             }
             if (System.currentTimeMillis() - lastScreenOnOff >= SCREEN_OFF_SWITCH_NETWORK_DELAY) {
-                sceneMode.onScreenOff()
+                sceneMode.onScreenOffDelay()
                 systemScene.onScreenOff()
                 System.gc()
             }
@@ -146,6 +148,7 @@ class AppSwitchHandler(private var context: Context) : ModeSwitcher(), EventRece
         if (dyamicCore && lastMode.isNotEmpty()) {
             toggleConfig(lastMode)
         }
+        sceneMode.onScreenOn()
 
         if (!screenOn) {
             screenOn = true
@@ -226,11 +229,6 @@ class AppSwitchHandler(private var context: Context) : ModeSwitcher(), EventRece
         autoToggleMode(packageName)
         sceneMode.onAppEnter(packageName)
         lastPackage = packageName
-    }
-
-    fun isIgnoredApp(packageName: String, isLandscapf: Boolean): Boolean {
-        // 排除列表 || 横屏时屏蔽 QQ、微信事件，因为游戏模式下通常会在横屏使用悬浮窗打开QQ 微信
-        return ignoredList.contains(packageName) || (isLandscapf && (packageName == "com.tencent.mobileqq" || packageName == "com.tencent.mm"))
     }
 
     fun onKeyDown(): Boolean {

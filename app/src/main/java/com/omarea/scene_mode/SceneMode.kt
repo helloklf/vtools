@@ -2,6 +2,7 @@ package com.omarea.scene_mode
 
 import android.content.ContentResolver
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.provider.Settings
 import android.util.Log
@@ -380,9 +381,21 @@ class SceneMode private constructor(context: Context, private var store: SceneCo
         restoreLocationModeState()
         resumeBrightnessState()
         currentSceneConfig = null
+        floatScreenRotation.remove()
+    }
+
+    fun onScreenOn() {
+        // 屏幕点亮后恢复屏幕自动旋转设置
+        updateScreenRotation()
     }
 
     fun onScreenOff() {
+        // 息屏时暂停屏幕旋转修改
+        floatScreenRotation.update(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+    }
+
+
+    fun onScreenOffDelay() {
         clearFreezeApp()
     }
 
