@@ -18,6 +18,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.omarea.Scene
 import com.omarea.common.shared.MagiskExtend
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
@@ -78,12 +79,21 @@ class ActivityMain : AppCompatActivity() {
                     KernelProrp.getProp("${MagiskExtend.MAGISK_PATH}system/vendor/etc/thermal.current.ini") != ""
             ) {
                 when {
-                    RootFile.list("/data/thermal/config").size > 0 -> KeepShellPublic.doCmdSync(
-                            "chattr -R -i /data/thermal 2> /dev/null\n" +
-                                    "rm -rf /data/thermal 2> /dev/null\n")
-                    RootFile.list("/data/vendor/thermal/config").size > 0 -> KeepShellPublic.doCmdSync(
-                            "chattr -R -i /data/vendor/thermal 2> /dev/null\n" +
-                                    "rm -rf /data/vendor/thermal 2> /dev/null\n")
+                    RootFile.list("/data/thermal/config").size > 0 -> {
+                        KeepShellPublic.doCmdSync(
+                                "chattr -R -i /data/thermal 2> /dev/null\n" +
+                                        "rm -rf /data/thermal 2> /dev/null\n")
+                    }
+                    RootFile.list("/data/vendor/thermal/config").size > 0 -> {
+                        if (RootFile.fileEquals("/data/vendor/thermal/config/thermal-normal.conf", MagiskExtend.getMagiskReplaceFilePath("/system/vendor/etc/thermal-normal.conf"))) {
+                            // Scene.toast("文件相同，跳过温控清理", Toast.LENGTH_SHORT)
+                            return
+                        } else {
+                            KeepShellPublic.doCmdSync(
+                                    "chattr -R -i /data/vendor/thermal 2> /dev/null\n" +
+                                            "rm -rf /data/vendor/thermal 2> /dev/null\n")
+                        }
+                    }
                     else -> return
                 }
                 DialogHelper.helpInfo(
