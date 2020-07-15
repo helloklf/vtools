@@ -31,11 +31,12 @@
                     <com.omarea.ui.BatteryView
                         android:layout_gravity="center"
                         android:id="@+id/battery_capacity_chart"
-                        android:layout_width="140dp"
-                        android:layout_height="140dp" />
+                        android:layout_width="160dp"
+                        android:layout_height="160dp" />
 
                     <TextView
                         android:id="@+id/battrystatus_level"
+                        android:alpha="0.7"
                         android:layout_gravity="center_vertical"
                         style="@style/textTitle"
                         android:textAlignment="center"
@@ -51,7 +52,7 @@
                     android:orientation="vertical"
                     android:layout_weight="1"
                     android:layout_width="0dp"
-                    android:layout_height="170dp">
+                    android:layout_height="190dp">
                     <LinearLayout
                         android:layout_marginTop="0dp"
                         android:layout_marginLeft="0dp"

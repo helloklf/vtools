@@ -8,6 +8,7 @@ import android.os.Build
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import com.omarea.Scene
 
 class FloatScreenRotation(mContext: Context) {
     private var view: View = View(mContext)
@@ -45,21 +46,24 @@ class FloatScreenRotation(mContext: Context) {
             return
         }
 
-        Log.d(">>>>", "" + screenOrientation)
         params.screenOrientation = screenOrientation
-        if (screenOrientation == ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
-            if (show) {
-                wm.removeViewImmediate(view)
-                show = false
-            }
-        } else {
-            if (show) {
-                wm.updateViewLayout(view, params)
+        Scene.post(Runnable{
+            if (screenOrientation == ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
+                // Log.d(">>>>", "恢复" + screenOrientation)
+                if (show) {
+                    wm.removeViewImmediate(view)
+                    show = false
+                }
             } else {
-                wm.addView(view, params)
-                show = true
+                // Log.d(">>>>", "旋转" + screenOrientation)
+                if (show) {
+                    wm.updateViewLayout(view, params)
+                } else {
+                    wm.addView(view, params)
+                    show = true
+                }
             }
-        }
+        })
     }
 
     public fun remove() {

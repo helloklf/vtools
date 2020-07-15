@@ -321,7 +321,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
         } else if (windows_.size > 1) {
             val effectiveWindows = windows_.filter {
                 (!(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && it.isInPictureInPictureMode)) && (it.type == AccessibilityWindowInfo.TYPE_APPLICATION)
-            }.sortedBy { it.layer }
+            } // .sortedBy { it.layer }
 
             if (effectiveWindows.size > 0) {
                 try {
@@ -376,8 +376,9 @@ public class AccessibilityScenceMode : AccessibilityService() {
                         val lastWindowId = lastWindow.id
 
                         if (logs == null) {
-                            if (eventWindowId == lastWindowId) {
-                                GlobalStatus.lastPackageName = event.packageName.toString()
+                            if (eventWindowId == lastWindowId && event.packageName != null) {
+                                val pa = event.packageName
+                                GlobalStatus.lastPackageName = pa.toString()
                                 EventBus.publish(EventType.APP_SWITCH)
                             } else {
                                 lastParsingThread = System.currentTimeMillis()

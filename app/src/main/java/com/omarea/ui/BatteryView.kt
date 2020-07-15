@@ -76,7 +76,7 @@ class BatteryView : View {
         super.onSizeChanged(w, h, oldw, oldh)
         mWidth = w
         mHeight = h
-        val mStrokeWidth = dp2px(context, 10f)
+        val mStrokeWidth = dp2px(context, 20f)
         this.mStrokeWidth = mStrokeWidth.toFloat()
         this.textSize = dp2px(context, 18f)
         if (w > h) {
@@ -132,7 +132,7 @@ class BatteryView : View {
         labelPaint = Paint()
         labelPaint!!.isAntiAlias = true
         labelPaint!!.style = Paint.Style.FILL
-        labelPaint!!.strokeWidth = 10f
+        labelPaint!!.strokeWidth = 20f
     }
 
     fun cgangePer(per: Int) {
@@ -153,7 +153,7 @@ class BatteryView : View {
      * @param canvas
      */
     private fun drawCycle(canvas: Canvas) {
-        cyclePaint!!.color = 0x22FFFFFF
+        cyclePaint!!.color = 0x22888888
         // cyclePaint!!.alpha = 128
         canvas.drawArc(RectF(0f, 0f, mRadius, mRadius), 0f, 360f, false, cyclePaint)
         /*

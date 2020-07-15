@@ -3,6 +3,8 @@ package com.omarea
 import android.app.Application
 import android.app.UiModeManager
 import android.content.Context
+import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.ShellExecutor
@@ -15,13 +17,19 @@ import com.omarea.scene_mode.TimingTaskManager
 import com.omarea.scene_mode.TriggerEventMonitor
 import com.omarea.utils.CrashHandler
 import com.omarea.vtools.R
-import java.io.File
 
 class Scene : Application() {
     companion object {
+        private val handler = Handler(Looper.getMainLooper())
         public lateinit var context: Application
         public fun toast(message: String, time: Int) {
             Toast.makeText(context, message, time).show()
+        }
+        public fun post(runnable: Runnable) {
+            handler.post(runnable)
+        }
+        public fun postDelayed(runnable: Runnable, delayMillis: Long) {
+            handler.postDelayed(runnable, delayMillis)
         }
     }
 
