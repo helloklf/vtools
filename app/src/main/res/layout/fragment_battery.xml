@@ -29,40 +29,41 @@
                     android:layout_weight="1">
 
                     <com.omarea.ui.BatteryView
-                        android:layout_gravity="center"
                         android:id="@+id/battery_capacity_chart"
                         android:layout_width="160dp"
-                        android:layout_height="160dp" />
+                        android:layout_height="160dp"
+                        android:layout_gravity="center" />
 
                     <TextView
                         android:id="@+id/battrystatus_level"
-                        android:alpha="0.7"
-                        android:layout_gravity="center_vertical"
                         style="@style/textTitle"
-                        android:textAlignment="center"
-                        android:textSize="30dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="0%" />
+                        android:layout_gravity="center_vertical"
+                        android:alpha="0.7"
+                        android:text="0%"
+                        android:textAlignment="center"
+                        android:textSize="30dp" />
                 </FrameLayout>
 
                 <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="190dp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
-                    android:orientation="vertical"
                     android:layout_weight="1"
-                    android:layout_width="0dp"
-                    android:layout_height="190dp">
+                    android:orientation="vertical">
+
                     <LinearLayout
-                        android:layout_marginTop="0dp"
-                        android:layout_marginLeft="0dp"
                         style="@style/ListCardItem"
-                        android:layout_height="0dp"
                         android:layout_width="match_parent"
-                        android:paddingTop="4dp"
-                        android:paddingBottom="4dp"
+                        android:layout_height="0dp"
+                        android:layout_marginLeft="0dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_weight="1"
                         android:gravity="center_vertical"
-                        android:layout_weight="1">
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp">
 
                         <TextView
                             android:id="@+id/battrystatus"
@@ -71,22 +72,24 @@
                             android:layout_height="wrap_content"
                             android:text="@string/battery_title" />
                     </LinearLayout>
+
                     <LinearLayout
+                        style="@style/ListCardItem"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
                         android:layout_marginLeft="0dp"
                         android:layout_marginBottom="0dp"
-                        style="@style/ListCardItem"
-                        android:layout_height="0dp"
-                        android:layout_width="match_parent"
-                        android:paddingTop="4dp"
-                        android:paddingBottom="4dp"
+                        android:layout_weight="1"
                         android:gravity="center_vertical"
-                        android:layout_weight="1">
+                        android:paddingTop="4dp"
+                        android:paddingBottom="4dp">
+
                         <TextView
                             style="@style/textSmall"
-                            android:textColor="?android:colorAccent"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/battery_title_desc1" />
+                            android:text="@string/battery_title_desc1"
+                            android:textColor="?android:colorAccent" />
                     </LinearLayout>
                 </LinearLayout>
 
@@ -331,36 +334,50 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <LinearLayout style="@style/ListCardItem">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-                <TextView
-                    style="@style/textTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/activity_vertical_margin"
-                    android:text="@string/battery_uevent_title" />
+                <LinearLayout
+                    style="@style/ListCardItem"
+                    android:layout_width="0dp"
+                    android:layout_marginRight="0dp"
+                    android:layout_weight="1">
 
-                <TextView
-                    android:id="@+id/battery_uevent"
-                    style="@style/textSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
+                    <TextView
+                        style="@style/textTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/activity_vertical_margin"
+                        android:text="@string/battery_uevent_title" />
 
-            <LinearLayout style="@style/ListCardItem">
+                    <TextView
+                        android:id="@+id/battery_uevent"
+                        style="@style/textSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
 
-                <TextView
-                    style="@style/textTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/activity_vertical_margin"
-                    android:text="@string/battery_usb_uevent_title" />
+                <LinearLayout
+                    style="@style/ListCardItem"
+                    android:layout_width="0dp"
+                    android:layout_weight="1">
 
-                <TextView
-                    android:id="@+id/battery_usb_uevent"
-                    style="@style/textSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    <TextView
+                        style="@style/textTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/activity_vertical_margin"
+                        android:text="@string/battery_usb_uevent_title" />
+
+                    <TextView
+                        android:id="@+id/battery_usb_uevent"
+                        style="@style/textSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
             </LinearLayout>
 
             <LinearLayout

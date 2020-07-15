@@ -117,8 +117,8 @@
     <string name="battery_auto_boot_desc">OK，如果你要手机重启后自动开启本功能，请允许Scene开机自启！</string>
     <string name="battery_qc_rehoot_desc">充电加速服务已禁用，可能需要重启手机才能恢复默认设置！</string>
     <string name="battery_pd_active_unknown">未知</string>
-    <string name="battery_uevent_title">$ cat /sys/class/power_supply/bms/uevent</string>
-    <string name="battery_usb_uevent_title">$ cat /sys/class/power_supply/usb/uevent</string>
+    <string name="battery_uevent_title">$ bms/uevent</string>
+    <string name="battery_usb_uevent_title">$ usb/uevent</string>
     <string name="battery_night_mode_time">%02d:%02d</string>
     <string name="battery_night_mode">动态充电速度</string>
     <string name="battery_night_mode_desc">在接近充满时调至缓慢充电，并在夜间主动降低充电速度</string>
