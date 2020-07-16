@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.opengl.Visibility
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -167,7 +168,7 @@ class AppListAdapter(apps: ArrayList<Appinfo>, private var keywords: String = ""
             viewHolder!!.itemText = convertView.findViewById(R.id.ItemText)
             viewHolder!!.imgView = convertView.findViewById(R.id.ItemIcon)
             viewHolder!!.itemChecke = convertView.findViewById(R.id.select_state)
-            viewHolder!!.itemPath = convertView.findViewById(R.id.ItemPath)
+            // viewHolder!!.itemPath = convertView.findViewById(R.id.ItemPath)
             viewHolder!!.imgView!!.setTag(getItem(position).packageName)
             convertView.tag = viewHolder
         } else {
@@ -175,26 +176,33 @@ class AppListAdapter(apps: ArrayList<Appinfo>, private var keywords: String = ""
         }
 
         val item = getItem(position)
-        viewHolder!!.itemTitle!!.text = keywordHightLight(item.appName.toString())
-        viewHolder!!.itemText!!.text = keywordHightLight(item.packageName.toString())
+        viewHolder!!.itemTitle?.text = keywordHightLight(item.appName.toString())
+        viewHolder!!.itemText?.text = keywordHightLight(item.packageName.toString())
         if (item.icon == null) {
             loadIcon(context, viewHolder!!, item)
         } else {
             viewHolder!!.imgView!!.setImageDrawable(item.icon)
         }
-        if (item.enabledState != null)
-            viewHolder!!.enabledStateText!!.text = item.enabledState
-        else
-            viewHolder!!.enabledStateText!!.text = ""
+
+        viewHolder!!.enabledStateText?.run {
+            if (item.enabledState.isNullOrEmpty()){
+                text = ""
+                visibility = View.GONE
+            }
+            else {
+                text = item.enabledState
+                visibility = View.VISIBLE
+            }
+        }
 
         //为checkbox添加复选监听,把当前位置的checkbox的状态存进一个HashMap里面
-        viewHolder!!.itemChecke!!.setOnCheckedChangeListener { buttonView, isChecked ->
+        viewHolder!!.itemChecke?.setOnCheckedChangeListener { buttonView, isChecked ->
             states[position] = isChecked
         }
         //从hashmap里面取出我们的状态值,然后赋值给listview对应位置的checkbox
-        viewHolder!!.itemChecke!!.setChecked(states[position] == true)
+        viewHolder!!.itemChecke?.setChecked(states[position] == true)
 
-        viewHolder!!.itemPath!!.text = item.path
+        // viewHolder?.itemPath?.text = item.path
 
         return convertView
     }

@@ -4,17 +4,16 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.CheckBox
-import com.omarea.common.shared.FileWrite
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.omarea.common.shell.KeepShell
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
@@ -24,17 +23,7 @@ import com.omarea.ui.AppListAdapter
 import com.omarea.utils.AppListHelper2
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.activity_hidden_apps.*
-import org.w3c.dom.Document
-import org.w3c.dom.Element
-import java.io.File
-import java.io.StringWriter
 import java.lang.ref.WeakReference
-import java.nio.charset.Charset
-import javax.xml.parsers.DocumentBuilderFactory
-import javax.xml.transform.TransformerFactory
-import javax.xml.transform.dom.DOMSource
-import javax.xml.transform.stream.StreamResult
-
 
 class ActivityHiddenApps : AppCompatActivity() {
     private lateinit var progressBarDialog: ProgressBarDialog
@@ -160,6 +149,9 @@ class ActivityHiddenApps : AppCompatActivity() {
                     for (app in items) {
                         cmds.append("pm unhide ${app.packageName}\n")
                         cmds.append("pm enable ${app.packageName}\n")
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                            cmds.append("pm unsuspend ${app.packageName}\n")
+                        }
                     }
                     progressBarDialog.showDialog(getString(R.string.please_wait))
                     Thread {
@@ -220,6 +212,7 @@ class ActivityHiddenApps : AppCompatActivity() {
         return true
     }
 
+    /*
     private fun reInstallAppShellOld(apps: ArrayList<Appinfo>): Boolean {
         val dir = filesDir
         val uid = dir.parentFile.parentFile.name
@@ -280,4 +273,5 @@ class ActivityHiddenApps : AppCompatActivity() {
 
         return sw.toString()
     }
+   */
 }

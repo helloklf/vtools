@@ -120,7 +120,7 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
                 }
                 batteryInfo = batteryUnits.batteryInfo
                 usbInfo = batteryUnits.usbInfo
-                kernelCapacity = batteryUnits.getKernelCapacity()
+                kernelCapacity = batteryUnits.getKernelCapacity(level)
 
                 myHandler.post {
                     try {

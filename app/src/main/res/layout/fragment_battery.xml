@@ -180,16 +180,16 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center_vertical"
-                        android:max="60"
+                        android:max="120"
                         android:paddingStart="6dp"
                         android:paddingEnd="6dp" />
 
                     <TextView
                         android:id="@+id/settings_qc_limit_desc"
                         style="@style/textSmall"
-                        android:layout_width="45dp"
+                        android:layout_width="55dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/activity_horizontal_margin"
+                        android:layout_marginStart="8dp"
                         android:gravity="center_vertical" />
                 </LinearLayout>
 

@@ -620,7 +620,8 @@ class BatteryUtils {
     }
 
     private var kernelCapacitySupported: Boolean? = null
-    public fun getKernelCapacity(): Float {
+    // 从内核读取可以精确到0.01的电量，但有些内核数值是错的，所以需要和系统反馈的电量(approximate)比对，如果差距太大则认为内核数值无效，不再读取
+    public fun getKernelCapacity(approximate:Int): Float {
         if (kernelCapacitySupported == null) {
             kernelCapacitySupported = RootFile.fileExists("/sys/class/power_supply/bms/capacity_raw")
         }
@@ -628,6 +629,12 @@ class BatteryUtils {
             try {
                 val capacity_raw = KernelProrp.getProp("/sys/class/power_supply/bms/capacity_raw")
                 val capacityValue = (capacity_raw).toInt()
+                // 如果和系统反馈的电量差距超过5%，则认为数值无效，不再读取
+                if (Math.abs(capacityValue - approximate) > 5) {
+                    kernelCapacitySupported = false;
+                    return  -1f
+                }
+
                 if (capacity_raw.length > 2 || capacityValue > 100) {
                     return capacityValue / 100f
                 } else {

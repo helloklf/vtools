@@ -46,13 +46,13 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                 .setCancelable(true)
                 .setView(dialogView))
         dialogView.findViewById<View>(R.id.app_options_single_only).visibility = View.VISIBLE
-        dialogView.findViewById<View>(R.id.app_options_open).setOnClickListener {
-            dialog?.dismiss()
-            startApp()
-        }
         dialogView.findViewById<View>(R.id.app_options_copay_package).setOnClickListener {
             dialog?.dismiss()
             copyPackageName()
+        }
+        dialogView.findViewById<View>(R.id.app_options_copay_path).setOnClickListener {
+            dialog?.dismiss()
+            copyInstallPath()
         }
         dialogView.findViewById<View>(R.id.app_options_open_detail).setOnClickListener {
             dialog?.dismiss()
@@ -117,28 +117,23 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         // suspend
         dialogView.findViewById<View>(R.id.app_limit_p).visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) View.VISIBLE else View.GONE
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            // 暂停使用
-            dialogView.findViewById<View>(R.id.app_limit_p_suspend).setOnClickListener {
-                dialog?.dismiss()
-                suspendAll()
+            if (app.suspended) {
+                // 暂停使用
+                dialogView.findViewById<View>(R.id.app_limit_p_suspend).visibility = View.GONE
+                // 恢复使用
+                dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).setOnClickListener {
+                    dialog?.dismiss()
+                    unsuspendAll()
+                }
+            } else {
+                // 暂停使用
+                dialogView.findViewById<View>(R.id.app_limit_p_suspend).setOnClickListener {
+                    dialog?.dismiss()
+                    suspendAll()
+                }
+                // 恢复使用
+                dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).visibility = View.GONE
             }
-            // 恢复使用
-            dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).setOnClickListener {
-                dialog?.dismiss()
-                unsuspendAll()
-            }
-        }
-    }
-
-    private fun startApp() {
-        if (!app.enabled) {
-            enableAll()
-        }
-        val intent = this.context.getPackageManager().getLaunchIntentForPackage(app.packageName.toString())
-        if (intent != null) {
-            this.context.startActivity(intent)
-        } else {
-            Toast.makeText(context, "这个应用程序可能没有界面入口", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -152,13 +147,13 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
                 .setCancelable(true)
                 .setView(dialogView))
         dialogView.findViewById<View>(R.id.app_options_single_only).visibility = View.VISIBLE
-        dialogView.findViewById<View>(R.id.app_options_open).setOnClickListener {
-            dialog?.dismiss()
-            startApp()
-        }
         dialogView.findViewById<View>(R.id.app_options_copay_package).setOnClickListener {
             dialog?.dismiss()
             copyPackageName()
+        }
+        dialogView.findViewById<View>(R.id.app_options_copay_path).setOnClickListener {
+            dialog?.dismiss()
+            copyInstallPath()
         }
         dialogView.findViewById<View>(R.id.app_options_open_detail).setOnClickListener {
             dialog?.dismiss()
@@ -229,15 +224,22 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         // suspend
         dialogView.findViewById<View>(R.id.app_limit_p).visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) View.VISIBLE else View.GONE
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            // 暂停使用
-            dialogView.findViewById<View>(R.id.app_limit_p_suspend).setOnClickListener {
-                dialog?.dismiss()
-                suspendAll()
-            }
-            // 恢复使用
-            dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).setOnClickListener {
-                dialog?.dismiss()
-                unsuspendAll()
+            if (app.suspended) {
+                // 暂停使用
+                dialogView.findViewById<View>(R.id.app_limit_p_suspend).visibility = View.GONE
+                // 恢复使用
+                dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).setOnClickListener {
+                    dialog?.dismiss()
+                    unsuspendAll()
+                }
+            } else {
+                // 暂停使用
+                dialogView.findViewById<View>(R.id.app_limit_p_suspend).setOnClickListener {
+                    dialog?.dismiss()
+                    suspendAll()
+                }
+                // 恢复使用
+                dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).visibility = View.GONE
             }
         }
     }
@@ -286,6 +288,12 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         val cm = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         cm.text = app.packageName
         Toast.makeText(context, "已复制：${app.packageName}", Toast.LENGTH_LONG).show()
+    }
+
+    private fun copyInstallPath() {
+        val cm = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        cm.text = app.path
+        Toast.makeText(context, "已复制：${app.path}", Toast.LENGTH_LONG).show()
     }
 
     private fun showInMarket() {

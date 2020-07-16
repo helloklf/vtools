@@ -3,6 +3,7 @@ package com.omarea.charger_booster
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.BatteryManager
+import android.os.Build
 import android.util.Log
 import android.widget.Toast
 import com.omarea.Scene
@@ -198,15 +199,21 @@ class BatteryReceiver(private var service: Context) : EventReceiver {
     }
 
     private var lastSetChargeLimit = 0L
+    private val isXIAOMI = try {
+        Build.MANUFACTURER.toLowerCase().equals("xiaomi")
+    } catch (ex: java.lang.Exception) {
+        false
+    }
+
     //快速充电
     private fun setChargerLimit(dynamicSpeed: Boolean, bpLevel: Int) {
         // 如果开启了动态调速并且快充满了
-        if (dynamicSpeed && GlobalStatus.batteryCapacity >= ( bpLevel + 10)) {
+        if (dynamicSpeed && GlobalStatus.batteryCapacity >= ( bpLevel - 10)) {
             try {
-                if (System.currentTimeMillis() - lastSetChargeLimit >= 5000) {
+                if (!isXIAOMI || System.currentTimeMillis() - lastSetChargeLimit >= 5000) {
                     lastSetChargeLimit = System.currentTimeMillis()
                     if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
-                        lastLimitValue = 100 // 快充满了就限制充电速度为100mA保护电池吧！
+                        lastLimitValue = 50 // 快充满了就限制充电速度为50mA保护电池吧！
                         batteryUnits.setChargeInputLimit(lastLimitValue, service)
                     }
                 }
@@ -214,7 +221,7 @@ class BatteryReceiver(private var service: Context) : EventReceiver {
             }
         } else {
             try {
-                if (System.currentTimeMillis() - lastSetChargeLimit >= 1000) {
+                if (!isXIAOMI || isXIAOMI && System.currentTimeMillis() - lastSetChargeLimit >= 1000) {
                     lastSetChargeLimit = System.currentTimeMillis()
                     if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
                         lastLimitValue = qcLimit

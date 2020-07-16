@@ -28,13 +28,13 @@ class AppListHelper(context: Context) {
         val stateTags = StringBuilder()
         try {
             if (!applicationInfo.enabled) {
-                stateTags.append("❄")
+                stateTags.append("已冻结\n")
             }
             if ((applicationInfo.flags and ApplicationInfo.FLAG_SUSPENDED) != 0) {
-                stateTags.append("■")
+                stateTags.append("已停用\n")
             }
             if (isSystemApp(applicationInfo) && applicationInfo.sourceDir.startsWith("/data")) {
-                stateTags.append("⚙")
+                stateTags.append("已更新\n")
             }
             val packageName = applicationInfo.packageName
             val absPath = CommonCmds.AbsBackUpDir + packageName + ".apk"
@@ -44,18 +44,18 @@ class AppListHelper(context: Context) {
                 if (installInfo == null)
                     return ""
                 if (backupInfo.versionCode == installInfo.versionCode) {
-                    stateTags.append("✔")
+                    stateTags.append("已备份\n")
                 } else if (backupInfo.versionCode > installInfo.versionCode) {
-                    stateTags.append("✘")
+                    stateTags.append("低于备份版本\n")
                 } else {
-                    stateTags.append("★")
+                    stateTags.append("高于备份版本\n")
                 }
             } else if (File(CommonCmds.BackUpDir + packageName + ".tar.gz").exists()) {
-                stateTags.append("☆")
+                stateTags.append("有备份数据\n")
             }
         } catch (ex: Exception) {
         }
-        return stateTags.toString()
+        return stateTags.toString().trim()
     }
 
     /**
