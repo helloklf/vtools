@@ -11,12 +11,6 @@ import com.omarea.data_collection.EventType
 import com.omarea.data_collection.GlobalStatus
 
 class BatteryState(private val applicationContext: Context) : BroadcastReceiver() {
-    // 保存状态
-    private fun saveState(intent: Intent) {
-        GlobalStatus.batteryCapacity = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
-        GlobalStatus.batteryStatus = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
-        GlobalStatus.batteryTemperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1) / 10.0f;
-    }
 
     // 最后的电量百分比（用于判断是否有电量变化）
     private var lastCapacity = 0
@@ -31,8 +25,6 @@ class BatteryState(private val applicationContext: Context) : BroadcastReceiver(
 
         val pendingResult = goAsync()
         try {
-            saveState(intent);
-
             val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_UNKNOWN)
             val capacity = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
             val temp = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1) / 10.0f
