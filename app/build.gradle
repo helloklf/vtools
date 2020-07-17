@@ -18,8 +18,8 @@ android {
         applicationId "com.omarea.vtools"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 11257
-        versionName "3.2.19"
+        versionCode 11259
+        versionName "3.2.21"
         externalNativeBuild {
             cmake {
                 cppFlags ""
@@ -43,7 +43,7 @@ android {
             jniDebuggable = false
         }
         debug {
-            // signingConfig signingConfigs.omarea_Signing
+            signingConfig signingConfigs.omarea_Signing
             minifyEnabled false
             debuggable true
             jniDebuggable = false

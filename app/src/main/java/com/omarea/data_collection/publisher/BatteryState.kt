@@ -18,7 +18,11 @@ class BatteryState(private val applicationContext: Context) : BroadcastReceiver(
         GlobalStatus.batteryTemperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1) / 10.0f;
     }
 
-    private var currentCapacity = 0
+    // 最后的电量百分比（用于判断是否有电量变化）
+    private var lastCapacity = 0
+    // 最后的充电状态（用于判断是否有状态）
+    private var lastStatus = BatteryManager.BATTERY_STATUS_UNKNOWN
+
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action
         if (action == null) {
@@ -29,17 +33,27 @@ class BatteryState(private val applicationContext: Context) : BroadcastReceiver(
         try {
             saveState(intent);
 
-            val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, -1)
+            val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_UNKNOWN)
+            val capacity = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+            val temp = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1) / 10.0f
 
-            GlobalStatus.batteryCapacity = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
-            if (status != GlobalStatus.batteryStatus) {
-                GlobalStatus.batteryStatus = status
+            GlobalStatus.batteryStatus = status
+            GlobalStatus.batteryCapacity = capacity
+            GlobalStatus.batteryTemperature = temp
+
+            // 判断是否在充电
+            // val chargePlug = intent.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1)
+            // val onCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC || chargePlug == BatteryManager.BATTERY_PLUGGED_USB || chargePlug == BatteryManager.BATTERY_PLUGGED_WIRELESS
+
+            if (status != BatteryManager.BATTERY_STATUS_UNKNOWN && status != lastStatus) {
+                lastStatus = status
                 if (status.equals(BatteryManager.BATTERY_STATUS_CHARGING)) {
                     EventBus.publish(EventType.POWER_CONNECTED)
                 } else if (status.equals(BatteryManager.BATTERY_STATUS_FULL)) {
                     EventBus.publish(EventType.BATTERY_FULL)
                 }
             }
+
             GlobalStatus.batteryTemperature = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1) / 10.0f
 
             if (action == Intent.ACTION_BATTERY_LOW) {
@@ -51,8 +65,8 @@ class BatteryState(private val applicationContext: Context) : BroadcastReceiver(
             } else if (action == Intent.ACTION_POWER_CONNECTED) {
                 EventBus.publish(EventType.POWER_CONNECTED)
             }
-            if (currentCapacity != GlobalStatus.batteryCapacity) {
-                currentCapacity = GlobalStatus.batteryCapacity
+            if (lastCapacity != capacity) {
+                lastCapacity = capacity
                 EventBus.publish(EventType.BATTERY_CAPACITY_CHANGED)
             }
         } catch (ex: Exception) {

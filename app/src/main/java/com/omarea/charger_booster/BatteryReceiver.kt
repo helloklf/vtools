@@ -3,6 +3,7 @@ package com.omarea.charger_booster
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.BatteryManager
+import android.util.Log
 import android.widget.Toast
 import com.omarea.Scene
 import com.omarea.common.shared.FileWrite
@@ -75,7 +76,7 @@ class BatteryReceiver(private var service: Context) : EventReceiver {
                 val isSleepTime = sleepChargeMode(GlobalStatus.batteryCapacity, if (bpAllowed) bpLevel else 100, qcLimit)
 
                 // 充电加速
-                if (!isSleepTime) {
+                if (!isSleepTime && chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
                     autoChangeLimitValue(eventType)
                 }
             }
@@ -87,6 +88,7 @@ class BatteryReceiver(private var service: Context) : EventReceiver {
     private var keepShellAsync: KeepShellAsync? = null
 
     private var chargeConfig: SharedPreferences
+
     // 电池总容量（mAh）
     private val batteryCapacity = BatteryInfo().getBatteryCapacity(service)
 
@@ -99,11 +101,13 @@ class BatteryReceiver(private var service: Context) : EventReceiver {
         get() {
             return chargeConfig.getInt(SpfConfig.CHARGE_SPF_TIME_GET_UP, SpfConfig.CHARGE_SPF_TIME_GET_UP_DEFAULT)
         }
+
     // 去睡觉的时间
     val goToBedTime: Int
         get() {
             return chargeConfig.getInt(SpfConfig.CHARGE_SPF_TIME_SLEEP, SpfConfig.CHARGE_SPF_TIME_SLEEP_DEFAULT)
         }
+
     // 现在时间
     val currentTime: Int
         get() {
@@ -233,9 +237,10 @@ class BatteryReceiver(private var service: Context) : EventReceiver {
         }
     }
 
-    private var governorTimer:Timer? = null
+    private var governorTimer: Timer? = null
     private fun startGovernorTimer() {
         if (governorTimer == null) {
+            Log.d("@Scene", "Start ForceQuickChargeTimer")
             governorTimer = Timer().apply {
                 schedule(object : TimerTask() {
                     override fun run() {
@@ -249,6 +254,7 @@ class BatteryReceiver(private var service: Context) : EventReceiver {
 
     private fun stopGovernorTimer() {
         if (governorTimer != null) {
+            Log.d("@Scene", "Stop ForceQuickChargeTimer")
             governorTimer?.cancel()
             governorTimer?.purge()
             governorTimer = null
@@ -271,15 +277,22 @@ class BatteryReceiver(private var service: Context) : EventReceiver {
     private fun setChargerLimitToValue(speedMa: Int, eventType: EventType, protectedMode: Boolean) {
         val execMode = chargeConfig.getInt(SpfConfig.CHARGE_SPF_EXEC_MODE, SpfConfig.CHARGE_SPF_EXEC_MODE_DEFAULT)
         try {
-            val required = when(execMode) {
+            val required = when (execMode) {
                 // 如果目标是降低充电速度，则不比频繁尝试调节速度，只需要在电量变化或者插拔充电器时执行即可
                 SpfConfig.CHARGE_SPF_EXEC_MODE_SPEED_DOWN -> {
+                    if (eventType != EventType.BATTERY_CHANGED) {
+                        Log.d("@Scene", "CHARGE_SPF_EXEC_MODE_SPEED_DOWN > " + eventType.name)
+                    }
                     eventType == EventType.BATTERY_CAPACITY_CHANGED || eventType == EventType.POWER_CONNECTED || eventType == EventType.POWER_DISCONNECTED
                 }
                 // 如果是暴力充电加速，则要尽可能高频率的执行速度调节，并且开启定时任务不断执行（除非已经进入动态调速保护阶段）
                 SpfConfig.CHARGE_SPF_EXEC_MODE_SPEED_FORCE -> {
                     if (!protectedMode) {
-                        startGovernorTimer()
+                        if (eventType != EventType.TIMER) {
+                            startGovernorTimer()
+                        } else {
+                            Log.d("@Scene", "Exec ForceQuickChargeTimer")
+                        }
                         true
                     } else {
                         stopGovernorTimer()
@@ -297,10 +310,8 @@ class BatteryReceiver(private var service: Context) : EventReceiver {
 
             if (required) {
                 lastSetChargeLimit = System.currentTimeMillis()
-                if (chargeConfig.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
-                    lastLimitValue = speedMa
-                    batteryUnits.setChargeInputLimit(lastLimitValue, service)
-                }
+                lastLimitValue = speedMa
+                batteryUnits.setChargeInputLimit(lastLimitValue, service)
             }
         } catch (ex: Exception) {
         }
