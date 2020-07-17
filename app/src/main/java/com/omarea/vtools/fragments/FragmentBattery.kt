@@ -41,8 +41,26 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        battery_capacity_wrap.setOnClickListener {
-            Scene.toast("这是一项正在试验中的功能，如果数值显示错误请在评论区反馈！", Toast.LENGTH_SHORT)
+
+        battery_exec_options.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+                val defaultValue = spf.getInt(SpfConfig.CHARGE_SPF_EXEC_MODE, SpfConfig.CHARGE_SPF_EXEC_MODE_DEFAULT)
+                val currentValue = when(position) {
+                    0 -> SpfConfig.CHARGE_SPF_EXEC_MODE_SPEED_DOWN
+                    1 -> SpfConfig.CHARGE_SPF_EXEC_MODE_SPEED_UP
+                    2 -> SpfConfig.CHARGE_SPF_EXEC_MODE_SPEED_FORCE
+                    else -> SpfConfig.CHARGE_SPF_EXEC_MODE_SPEED_UP
+                }
+                if (currentValue == defaultValue) {
+                    return
+                } else {
+                    spf.edit().putInt(SpfConfig.CHARGE_SPF_EXEC_MODE, currentValue).apply()
+                }
+            }
         }
     }
 
@@ -74,6 +92,12 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
         battery_bp_level_desc.text = String.format(battery_bp_level_desc.context.getString(R.string.battery_bp_status), bpLevel, bpLevel - 20)
         settings_qc_limit.progress = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, SpfConfig.CHARGE_SPF_QC_LIMIT_DEFAULT) / 100
         settings_qc_limit_desc.text = "" + spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, SpfConfig.CHARGE_SPF_QC_LIMIT_DEFAULT) + "mA"
+        battery_exec_options.setSelection(when(spf.getInt(SpfConfig.CHARGE_SPF_EXEC_MODE, SpfConfig.CHARGE_SPF_EXEC_MODE_DEFAULT)) {
+            SpfConfig.CHARGE_SPF_EXEC_MODE_SPEED_DOWN -> 0
+            SpfConfig.CHARGE_SPF_EXEC_MODE_SPEED_UP -> 1
+            SpfConfig.CHARGE_SPF_EXEC_MODE_SPEED_FORCE -> 2
+            else -> 0
+        })
 
         if (broadcast == null) {
             broadcast = object : BroadcastReceiver() {
@@ -271,7 +295,7 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
             }
         }
         settings_qc.setOnCheckedChangeListener { buttonView, isChecked ->
-            battery_night_mode_configs.visibility = if (isChecked) View.VISIBLE else View.GONE
+            battery_charge_speed_ext.visibility = if (isChecked) View.VISIBLE else View.GONE
             if (!isChecked) {
                 battery_night_mode.isChecked = false
                 spf.edit().putBoolean(SpfConfig.CHARGE_SPF_NIGHT_MODE, false).apply()

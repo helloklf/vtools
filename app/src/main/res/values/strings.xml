@@ -143,6 +143,13 @@
     <string name="battery_forgery_full_now">充满容量</string>
     <string name="battery_step_charge">阶梯式充电</string>
     <string name="battery_step_charge_desc">系统根据电量分阶段调整充电速度上限，有助于保护电池寿命</string>
+    <string name="battery_exec_option">充电调速目的</string>
+    <string-array name="battery_exec_options">
+        <item>降低速度</item>
+        <item>加速充电</item>
+        <item>往死里充</item>
+    </string-array>
+    <string name="battery_exec_desc">Scene会根据你所选目的在最佳的实际调整充电速率</string>
 
     <string name="battery_status_discharging">当前状态：未充电</string>
     <string name="battery_status_charging">当前状态：充电中</string>

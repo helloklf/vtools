@@ -402,7 +402,7 @@ class BatteryUtils {
                 return if (fastChargeScript.isNotEmpty()) {
                     if (limit > 3000) {
                         var current = 3000
-                        while (current < limit - 300 && current < 9700) {
+                        while (current < (limit - 300) && current < 5000) {
                             KeepShellAsync.getInstance("setChargeInputLimit").doCmd(fastChargeScript + current + " 1")
                             current += 300
                         }
@@ -629,16 +629,18 @@ class BatteryUtils {
             try {
                 val capacity_raw = KernelProrp.getProp("/sys/class/power_supply/bms/capacity_raw")
                 val capacityValue = (capacity_raw).toInt()
+
+                val valueMA = if (capacity_raw.length > 2 || capacityValue > 100) {
+                    capacityValue / 100f
+                } else {
+                    capacity_raw.toFloat()
+                }
                 // 如果和系统反馈的电量差距超过5%，则认为数值无效，不再读取
-                if (Math.abs(capacityValue - approximate) > 5) {
+                if (Math.abs(valueMA - approximate) > 5) {
                     kernelCapacitySupported = false;
                     return  -1f
-                }
-
-                if (capacity_raw.length > 2 || capacityValue > 100) {
-                    return capacityValue / 100f
                 } else {
-                    return capacity_raw.toFloat()
+                    return valueMA
                 }
             } catch (ex: java.lang.Exception) {
                 kernelCapacitySupported = false;

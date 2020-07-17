@@ -196,20 +196,50 @@
                 <TextView
                     android:id="@+id/settings_qc_limit_current"
                     style="@style/textSmall"
+                    android:text="@string/battery_reality_limit"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp" />
 
                 <LinearLayout
-                    android:id="@+id/battery_night_mode_configs"
+                    android:id="@+id/battery_charge_speed_ext"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/activity_vertical_margin"
                     android:orientation="vertical"
                     android:visibility="gone">
 
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            style="@style/textTitle"
+                            android:layout_gravity="center_vertical"
+                            android:text="@string/battery_exec_option"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content" />
+
+                        <Spinner
+                            android:id="@+id/battery_exec_options"
+                            android:entries="@array/battery_exec_options"
+                            android:paddingEnd="0dp"
+                            android:paddingStart="0dp"
+                            android:layout_width="110dp"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <TextView
+                        style="@style/textSmall"
+                        android:text="@string/battery_exec_desc"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp" />
+
                     <Switch
+                        android:layout_marginTop="@dimen/activity_vertical_margin"
                         android:id="@+id/battery_night_mode"
                         style="@style/textTitle"
                         android:layout_width="match_parent"
