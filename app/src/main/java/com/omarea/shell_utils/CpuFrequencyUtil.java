@@ -1,7 +1,6 @@
 package com.omarea.shell_utils;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.common.shell.KernelProrp;
@@ -461,8 +460,8 @@ public class CpuFrequencyUtil {
             if (!(cpuStatus.cpusetForeground == null || cpuStatus.cpusetForeground.isEmpty())) {
                 commands.add("echo " + cpuStatus.cpusetForeground + " > /dev/cpuset/foreground/cpus");
             }
-            if (!(cpuStatus.cpusetForegroundBoost == null || cpuStatus.cpusetForegroundBoost.isEmpty())) {
-                commands.add("echo " + cpuStatus.cpusetForegroundBoost + " > /dev/cpuset/foreground/boost/cpus");
+            if (!(cpuStatus.cpusetRestricted == null || cpuStatus.cpusetRestricted.isEmpty())) {
+                commands.add("echo " + cpuStatus.cpusetRestricted + " > /dev/cpuset/restricted/cpus");
             }
             if (!(cpuStatus.cpusetTopApp == null || cpuStatus.cpusetTopApp.isEmpty())) {
                 commands.add("echo " + cpuStatus.cpusetTopApp + " > /dev/cpuset/top-app/cpus");

@@ -10,4 +10,6 @@ public class ProcessInfo {
     public String cmdline;
 
     public String friendlyName = "";
+
+    public String cpuSet;
 }

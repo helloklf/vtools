@@ -34,5 +34,5 @@ public class CpuStatus implements Serializable {
     public String cpusetSysBackground = "";
     public String cpusetForeground = "";
     public String cpusetTopApp = "";
-    public String cpusetForegroundBoost = "";
+    public String cpusetRestricted = "";
 }

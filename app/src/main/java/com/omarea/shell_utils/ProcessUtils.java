@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.omarea.common.shared.FileWrite;
 import com.omarea.common.shell.KeepShellPublic;
+import com.omarea.common.shell.KernelProrp;
 import com.omarea.model.ProcessInfo;
 import com.omarea.vtools.R;
 
@@ -104,7 +105,11 @@ public class ProcessUtils {
 
         String[] rows = KeepShellPublic.INSTANCE.doCmdSync(PS_COMMAND + " --pid " + pid).split("\n");
         if (rows.length > 1) {
-            return readRow(rows[1].trim());
+            ProcessInfo row = readRow(rows[1].trim());
+            if (row != null) {
+                row.cpuSet = KernelProrp.INSTANCE.getProp("/proc/" + pid + "/cpuset");
+            }
+            return row;
         }
         return null;
     }

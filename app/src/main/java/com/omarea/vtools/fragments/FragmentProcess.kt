@@ -188,6 +188,7 @@ class FragmentProcess : Fragment() {
                 findViewById<TextView>(R.id.ProcessCmdline).text = detail.cmdline
                 findViewById<TextView>(R.id.ProcessPID).text = detail.pid.toString()
                 findViewById<TextView>(R.id.ProcessCPU).text = detail.cpu.toString() + "%"
+                findViewById<TextView>(R.id.ProcessCpuSet).text = "" + detail.cpuSet
                 if (processInfo.rss > 8192) {
                     findViewById<TextView>(R.id.ProcessRSS).text = (detail.rss / 1024).toInt().toString() + "MB"
                 } else {

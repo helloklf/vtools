@@ -137,10 +137,10 @@
                     android:layout_column="0"
                     android:layout_gravity="fill"
                     android:gravity="center_vertical"
-                    android:text="前台应用加速核心" />
+                    android:text="受限制的应用" />
 
                 <TextView
-                    android:id="@+id/cpuset_boost"
+                    android:id="@+id/cpuset_restricted"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:layout_row="5"
