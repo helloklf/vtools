@@ -28,13 +28,13 @@ class AppListHelper(context: Context) {
         val stateTags = StringBuilder()
         try {
             if (!applicationInfo.enabled) {
-                stateTags.append("已冻结\n")
+                stateTags.append("已冻结 ")
             }
             if ((applicationInfo.flags and ApplicationInfo.FLAG_SUSPENDED) != 0) {
-                stateTags.append("已停用\n")
+                stateTags.append("已停用 ")
             }
             if (isSystemApp(applicationInfo) && applicationInfo.sourceDir.startsWith("/data")) {
-                stateTags.append("已更新\n")
+                stateTags.append("已更新 ")
             }
             val packageName = applicationInfo.packageName
             val absPath = CommonCmds.AbsBackUpDir + packageName + ".apk"
@@ -44,14 +44,14 @@ class AppListHelper(context: Context) {
                 if (installInfo == null)
                     return ""
                 if (backupInfo.versionCode == installInfo.versionCode) {
-                    stateTags.append("已备份\n")
+                    stateTags.append("已备份 ")
                 } else if (backupInfo.versionCode > installInfo.versionCode) {
-                    stateTags.append("低于备份版本\n")
+                    stateTags.append("低于备份版本 ")
                 } else {
-                    stateTags.append("高于备份版本\n")
+                    stateTags.append("高于备份版本 ")
                 }
             } else if (File(CommonCmds.BackUpDir + packageName + ".tar.gz").exists()) {
-                stateTags.append("有备份数据\n")
+                stateTags.append("有备份数据 ")
             }
         } catch (ex: Exception) {
         }
@@ -67,11 +67,11 @@ class AppListHelper(context: Context) {
             if (installInfo == null)
                 return ""
             if (backupInfo.versionCode == installInfo.versionCode) {
-                return "✔"
+                return "已安装 "
             } else if (backupInfo.versionCode > installInfo.versionCode) {
-                return "✘"
+                return "已安装旧版 "
             } else {
-                return "★"
+                return "已安装新版 "
             }
         } catch (e: PackageManager.NameNotFoundException) {
             return ""
@@ -184,6 +184,9 @@ class AppListHelper(context: Context) {
             //item.icon = d
             item.dir = file.parent
             item.enabled = applicationInfo.enabled
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                item.suspended = (applicationInfo.flags and ApplicationInfo.FLAG_SUSPENDED) != 0
+            }
             item.enabledState = getTags(applicationInfo)
             item.path = applicationInfo.sourceDir
             item.updated = isSystemApp(applicationInfo) && file.parent.startsWith("/data")
@@ -216,9 +219,9 @@ class AppListHelper(context: Context) {
             return list
         }
 
-        val files = dir.listFiles({ name ->
+        val files = dir.listFiles { name ->
             name.extension.toLowerCase() == "apk"
-        })
+        }
 
         if (files == null) {
             return list

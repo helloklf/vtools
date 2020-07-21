@@ -493,7 +493,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        android:text="访问 Scene官网" />
+                        android:text="访问Scene官网" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>

@@ -46,11 +46,11 @@
 
                     <com.omarea.common.ui.OverScrollListView
                         android:id="@+id/apps_userlist"
-                        android:divider="@null"
-                        android:scrollbars="none"
-                        android:background="@drawable/list_view_bg"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:background="@drawable/list_view_bg"
+                        android:divider="@null"
+                        android:scrollbars="none" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -69,11 +69,11 @@
 
                     <com.omarea.common.ui.OverScrollListView
                         android:id="@+id/apps_systemlist"
-                        android:divider="@null"
-                        android:scrollbars="none"
-                        android:background="@drawable/list_view_bg"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:background="@drawable/list_view_bg"
+                        android:divider="@null"
+                        android:scrollbars="none" />
 
                 </FrameLayout>
 
@@ -93,62 +93,97 @@
 
                     <com.omarea.common.ui.OverScrollListView
                         android:id="@+id/apps_backupedlist"
-                        android:divider="@null"
-                        android:scrollbars="none"
-                        android:background="@drawable/list_view_bg"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                        android:layout_height="match_parent"
+                        android:background="@drawable/list_view_bg"
+                        android:divider="@null"
+                        android:scrollbars="none" />
 
                 </FrameLayout>
 
-                <FrameLayout
+                <com.omarea.common.ui.OverScrollView
                     android:id="@+id/tab_apps_helper"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="match_parent">
 
                     <LinearLayout
-                        android:background="@drawable/krscript_item_ripple_inactive"
-                        android:layout_margin="@dimen/activity_vertical_margin"
-                        android:padding="@dimen/activity_horizontal_margin"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:padding="@dimen/activity_horizontal_margin">
 
-                        <TextView
-                            style="@style/textTitle"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
-                            android:text="说明" />
+                            android:background="@drawable/krscript_item_ripple_inactive"
+                            android:orientation="vertical"
+                            android:padding="@dimen/activity_horizontal_margin">
 
-                        <TextView
-                            style="@style/textSmall"
+                            <TextView
+                                style="@style/textTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="10dp"
+                                android:text="警告" />
+
+                            <TextView
+                                style="@style/textSmall"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/applist_warn" />
+                        </LinearLayout>
+
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/applist_help" />
+                            android:layout_marginTop="@dimen/activity_vertical_margin"
+                            android:background="@drawable/krscript_item_ripple_inactive"
+                            android:orientation="vertical"
+                            android:padding="@dimen/activity_horizontal_margin">
 
-                        <Button
-                            android:id="@+id/app_btn_hide"
-                            android:layout_width="wrap_content"
-                            android:layout_height="36dp"
-                            android:layout_marginTop="30dp"
-                            android:background="@drawable/btn_bg"
-                            android:paddingLeft="10dp"
-                            android:paddingRight="10dp"
-                            android:text="应用隐藏记录" />
+                            <TextView
+                                style="@style/textTitle"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="10dp"
+                                android:text="功能说明" />
 
-                        <Button
-                            android:id="@+id/app_btn_hide2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="36dp"
-                            android:layout_marginTop="30dp"
-                            android:background="@drawable/btn_bg"
-                            android:paddingLeft="10dp"
-                            android:paddingRight="10dp"
-                            android:text="已[隐藏/卸载]的应用" />
+                            <TextView
+                                style="@style/textSmall"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/applist_help" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/activity_vertical_margin"
+                            android:background="@drawable/krscript_item_ripple_inactive"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/activity_horizontal_margin">
+
+                            <Button
+                                android:id="@+id/app_btn_hide"
+                                android:layout_width="wrap_content"
+                                android:layout_height="36dp"
+                                android:background="@drawable/btn_bg"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:text="应用隐藏记录" />
+
+                            <Button
+                                android:id="@+id/app_btn_hide2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="36dp"
+                                android:layout_marginStart="@dimen/activity_horizontal_margin"
+                                android:background="@drawable/btn_bg"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:text="已[隐藏/卸载]的应用" />
+                        </LinearLayout>
                     </LinearLayout>
-                </FrameLayout>
+                </com.omarea.common.ui.OverScrollView>
             </FrameLayout>
 
             <TabWidget

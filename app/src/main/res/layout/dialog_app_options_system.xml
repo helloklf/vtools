@@ -236,6 +236,7 @@
                 android:background="@drawable/krscript_item_ripple"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
+                android:layout_marginEnd="6dp"
                 android:padding="6dp">
 
                 <ImageView
@@ -254,7 +255,6 @@
             <!--启用-->
             <LinearLayout
                 android:id="@+id/app_limit_p_unsuspend"
-                android:visibility="gone"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

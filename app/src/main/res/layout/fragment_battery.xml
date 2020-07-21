@@ -364,23 +364,17 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <GridLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:alignmentMode="alignMargins"
-                android:rowCount="1"
-                android:columnCount="2">
+                android:orientation="horizontal">
 
                 <LinearLayout
-                    android:layout_width="-1dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_marginEnd="8dp"
                     android:layout_marginStart="@dimen/activity_horizontal_margin"
-                    style="@style/ListCardItem"
-                    android:layout_columnSpan="1"
-                    android:layout_columnWeight="1"
-                    android:layout_rowWeight="1"
-                    android:layout_column="0">
+                    style="@style/ListCardItem">
 
                     <TextView
                         style="@style/textTitle"
@@ -397,14 +391,11 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="-1dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                    style="@style/ListCardItem"
-                    android:layout_columnSpan="1"
-                    android:layout_columnWeight="1"
-                    android:layout_rowWeight="1"
-                    android:layout_column="1">
+                    style="@style/ListCardItem">
 
                     <TextView
                         style="@style/textTitle"
@@ -420,7 +411,7 @@
                         android:layout_height="wrap_content" />
                 </LinearLayout>
 
-            </GridLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/battery_forgery"

@@ -117,22 +117,15 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         // suspend
         dialogView.findViewById<View>(R.id.app_limit_p).visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) View.VISIBLE else View.GONE
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            if (app.suspended) {
-                // 暂停使用
-                dialogView.findViewById<View>(R.id.app_limit_p_suspend).visibility = View.GONE
-                // 恢复使用
-                dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).setOnClickListener {
-                    dialog?.dismiss()
-                    unsuspendAll()
-                }
-            } else {
-                // 暂停使用
-                dialogView.findViewById<View>(R.id.app_limit_p_suspend).setOnClickListener {
-                    dialog?.dismiss()
-                    suspendAll()
-                }
-                // 恢复使用
-                dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).visibility = View.GONE
+            // 恢复使用
+            dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).setOnClickListener {
+                dialog?.dismiss()
+                unsuspendAll()
+            }
+            // 暂停使用
+            dialogView.findViewById<View>(R.id.app_limit_p_suspend).setOnClickListener {
+                dialog?.dismiss()
+                suspendAll()
             }
         }
     }
@@ -224,22 +217,15 @@ class DialogSingleAppOptions(context: Context, var app: Appinfo, handler: Handle
         // suspend
         dialogView.findViewById<View>(R.id.app_limit_p).visibility = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) View.VISIBLE else View.GONE
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            if (app.suspended) {
-                // 暂停使用
-                dialogView.findViewById<View>(R.id.app_limit_p_suspend).visibility = View.GONE
-                // 恢复使用
-                dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).setOnClickListener {
-                    dialog?.dismiss()
-                    unsuspendAll()
-                }
-            } else {
-                // 暂停使用
-                dialogView.findViewById<View>(R.id.app_limit_p_suspend).setOnClickListener {
-                    dialog?.dismiss()
-                    suspendAll()
-                }
-                // 恢复使用
-                dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).visibility = View.GONE
+            // 恢复使用
+            dialogView.findViewById<View>(R.id.app_limit_p_unsuspend).setOnClickListener {
+                dialog?.dismiss()
+                unsuspendAll()
+            }
+            // 暂停使用
+            dialogView.findViewById<View>(R.id.app_limit_p_suspend).setOnClickListener {
+                dialog?.dismiss()
+                suspendAll()
             }
         }
     }
