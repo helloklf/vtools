@@ -149,7 +149,7 @@
         <item>加速充电</item>
         <item>往死里充</item>
     </string-array>
-    <string name="battery_exec_desc">Scene会根据你所选目的在最佳的实际调整充电速率</string>
+    <string name="battery_exec_desc">将根据你所选目的在最佳时机调整充电速率</string>
 
     <string name="battery_status_discharging">当前状态：未充电</string>
     <string name="battery_status_charging">当前状态：充电中</string>

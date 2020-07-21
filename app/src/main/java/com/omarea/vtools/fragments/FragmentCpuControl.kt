@@ -400,17 +400,17 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
                         })
             }
         }
-        cpuset_boost.setOnClickListener {
-            if (status.cpusetForegroundBoost.isNotEmpty()) {
-                val coreState = parsetCpuset(status.cpusetForegroundBoost)
+        cpuset_restricted.setOnClickListener {
+            if (status.cpusetRestricted.isNotEmpty()) {
+                val coreState = parsetCpuset(status.cpusetRestricted)
                 DialogHelper.animDialog(AlertDialog.Builder(context)
                         .setTitle("选择要使用的核心")
                         .setMultiChoiceItems(getCoreList(), coreState) { _, which, isChecked ->
                             coreState[which] = isChecked
                         }
                         .setPositiveButton(R.string.btn_confirm) { _, _ ->
-                            status.cpusetForegroundBoost = parsetCpuset(coreState)
-                            KernelProrp.setProp("/dev/cpuset/foreground/boost/cpus", status.cpusetForegroundBoost)
+                            status.cpusetRestricted = parsetCpuset(coreState)
+                            KernelProrp.setProp("/dev/cpuset/restricted/cpus", status.cpusetRestricted)
                             updateUI()
                         }
                         .setNegativeButton(R.string.btn_cancel) { _, _ ->
@@ -649,7 +649,7 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
             status.cpusetBackground = KernelProrp.getProp("/dev/cpuset/background/cpus")
             status.cpusetSysBackground = KernelProrp.getProp("/dev/cpuset/system-background/cpus")
             status.cpusetForeground = KernelProrp.getProp("/dev/cpuset/foreground/cpus")
-            status.cpusetForegroundBoost = KernelProrp.getProp("/dev/cpuset/foreground/boost/cpus")
+            status.cpusetRestricted = KernelProrp.getProp("/dev/cpuset/restricted/cpus")
             status.cpusetTopApp = KernelProrp.getProp("/dev/cpuset/top-app/cpus")
 
             handler.post {
@@ -775,7 +775,7 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
             cpuset_system_bg.text = status.cpusetSysBackground
             cpuset_foreground.text = status.cpusetForeground
             cpuset_top_app.text = status.cpusetTopApp
-            cpuset_boost.text = status.cpusetForegroundBoost
+            cpuset_restricted.text = status.cpusetRestricted
         } catch (ex: Exception) {
         }
     }

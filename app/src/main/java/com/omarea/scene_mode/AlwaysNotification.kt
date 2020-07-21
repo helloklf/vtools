@@ -76,7 +76,9 @@ internal class AlwaysNotification(private var context: Context, notify: Boolean 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // 状态
             val batteryStatus = batteryManager.getIntProperty(BatteryManager.BATTERY_PROPERTY_STATUS)
-            GlobalStatus.batteryStatus = batteryStatus;
+            if (batteryStatus != BatteryManager.BATTERY_STATUS_UNKNOWN) {
+                GlobalStatus.batteryStatus = batteryStatus;
+            }
         }
     }
 
