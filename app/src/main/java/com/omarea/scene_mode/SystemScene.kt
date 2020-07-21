@@ -7,7 +7,6 @@ import android.content.SharedPreferences
 import android.net.wifi.WifiManager
 import android.os.Build
 import android.provider.Settings
-import android.util.Log
 import com.omarea.common.shell.KeepShellAsync
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.store.SpfConfig
@@ -122,7 +121,7 @@ class SystemScene(private var context: Context) {
             // context.performGlobalAction(GLOBAL_ACTION_HOME)
             val intent = Intent(Intent.ACTION_MAIN)
             intent.addCategory(Intent.CATEGORY_HOME)
-            val res = context.getPackageManager().resolveActivity(intent, 0)
+            val res = context.getPackageManager().resolveActivity(intent, 0)!!
             if (res.activityInfo == null) {
             } else if (res.activityInfo.packageName == "android") {
             } else {

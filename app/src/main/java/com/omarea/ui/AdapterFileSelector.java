@@ -3,13 +3,13 @@ package com.omarea.ui;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Handler;
-import com.google.android.material.snackbar.Snackbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.omarea.common.ui.DialogHelper;
 import com.omarea.common.ui.ProgressBarDialog;
 import com.omarea.vtools.R;

@@ -3,14 +3,13 @@ package com.omarea.vtools.activities
 import android.app.TimePickerDialog
 import android.os.Build
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Checkable
 import android.widget.CompoundButton
-import android.widget.Switch
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.omarea.data_collection.EventType
 import com.omarea.model.TaskAction
 import com.omarea.model.TriggerInfo

@@ -1,7 +1,6 @@
 package com.omarea.shell_utils;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.common.shell.KernelProrp;

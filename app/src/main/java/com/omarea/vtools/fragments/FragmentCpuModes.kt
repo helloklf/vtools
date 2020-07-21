@@ -6,14 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Switch
 import android.widget.Toast
+import com.google.android.material.snackbar.Snackbar
 import com.omarea.common.ui.DialogHelper
 import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
@@ -189,7 +187,7 @@ class FragmentCpuModes : androidx.fragment.app.Fragment() {
                 if (data.extras?.containsKey("file") != true) {
                     return
                 }
-                val path = data.extras.getString("file")
+                val path = data.extras!!.getString("file")
                 val file = File(path)
                 if (file.exists()) {
                     if (file.length() > 200 * 1024) {

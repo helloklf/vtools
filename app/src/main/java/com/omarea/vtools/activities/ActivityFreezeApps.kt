@@ -6,7 +6,6 @@ import android.renderscript.Allocation
 import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
-import androidx.fragment.app.FragmentActivity
 import com.omarea.vtools.R
 import com.omarea.vtools.fragments.FragmentFreeze
 

@@ -399,15 +399,17 @@ class FragmentFreeze : androidx.fragment.app.Fragment() {
             // i.addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY);
             // i.setFlags(0x10200000);
             // Log.d("getAppSwitchIntent", "" + i.getFlags());
-            intent.setFlags(intent.getFlags() and Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED.inv() or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_ANIMATION)
-            intent.addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY)
-            // i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent?.run {
+                setFlags(getFlags() and Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED.inv() or Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                addFlags(Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY)
+                // setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-            // @参考 https://blog.csdn.net/weixin_34335458/article/details/88020972
-            // i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                // @参考 https://blog.csdn.net/weixin_34335458/article/details/88020972
+                // setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-            // @参考 https://blog.csdn.net/weixin_34335458/article/details/88020972
-            intent.setPackage(null) // 加上这句代
+                // @参考 https://blog.csdn.net/weixin_34335458/article/details/88020972
+                setPackage(null) // 加上这句代
+            }
 
             if (intent != null) {
                 this.context!!.startActivity(intent)

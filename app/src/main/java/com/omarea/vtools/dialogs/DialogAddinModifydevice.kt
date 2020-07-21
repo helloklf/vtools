@@ -135,9 +135,9 @@ class DialogAddinModifydevice(var context: Context) {
         try {
             val cm = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
             val data = cm.primaryClip
-            val item = data.run { getItemAt(0) }
-            val content = item.text
-            if (content.isNotEmpty()) {
+            val item = data?.run { getItemAt(0) }
+            val content = item?.text
+            if (!content.isNullOrEmpty()) {
                 val copyData = String(Base64.decode(content.toString().trim(), Base64.DEFAULT))
                 if (Regex("^.*@.*@.*@.*@.*\$").matches(copyData)) {
                     DialogHelper.animDialog(AlertDialog.Builder(context)

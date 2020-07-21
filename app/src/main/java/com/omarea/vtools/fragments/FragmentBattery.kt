@@ -10,12 +10,11 @@ import android.os.Handler
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.AbsoluteSizeSpan
-import com.google.android.material.snackbar.Snackbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import com.omarea.Scene
+import com.google.android.material.snackbar.Snackbar
 import com.omarea.charger_booster.BatteryInfo
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic

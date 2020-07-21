@@ -2,6 +2,7 @@ package com.omarea.xposed;
 
 import android.os.Build;
 import android.view.WindowManager;
+
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;

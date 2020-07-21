@@ -168,7 +168,7 @@ class CpuChartView : View {
      */
     private fun drawCycle(canvas: Canvas) {
         cyclePaint!!.color = 0x22888888
-        canvas.drawArc(RectF(0f, 0f, mRadius, mRadius), 0f, 360f, false, cyclePaint)
+        canvas.drawArc(RectF(0f, 0f, mRadius, mRadius), 0f, 360f, false, cyclePaint!!)
         if (ratio > 85) {
             cyclePaint!!.color = resources.getColor(R.color.color_load_veryhight)
         } else if (ratio > 65) {

@@ -5,8 +5,6 @@ import android.app.ActivityManager;
 import android.app.AndroidAppHelper;
 import android.app.Notification;
 import android.app.Service;
-import android.content.ComponentName;
-import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;

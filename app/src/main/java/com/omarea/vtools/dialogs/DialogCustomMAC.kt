@@ -3,7 +3,6 @@ package com.omarea.vtools.dialogs
 import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.CheckBox
 import android.widget.EditText

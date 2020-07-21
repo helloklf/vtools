@@ -9,7 +9,6 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
-import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +18,6 @@ import android.widget.AdapterView
 import android.widget.CheckBox
 import android.widget.Switch
 import android.widget.Toast
-import com.omarea.Scene
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.OverScrollListView
 import com.omarea.common.ui.ProgressBarDialog
@@ -270,7 +268,7 @@ class FragmentAppConfig : androidx.fragment.app.Fragment() {
                 if (resultCode == RESULT_OK) {
                     val adapter = (scene_app_list.adapter as SceneModeAdapter)
                     var index = -1
-                    val packageName = data.extras.getString("app")
+                    val packageName = data.extras!!.getString("app")
                     for (i in 0 until displayList!!.size) {
                         if (displayList!![i].packageName == packageName) {
                             index = i

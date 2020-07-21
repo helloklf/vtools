@@ -9,10 +9,10 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import androidx.core.app.ActivityCompat
-import androidx.core.content.PermissionChecker
 import android.util.TypedValue
 import android.view.View
+import androidx.core.app.ActivityCompat
+import androidx.core.content.PermissionChecker
 import com.omarea.common.ui.ThemeMode
 import com.omarea.permissions.Busybox
 import com.omarea.permissions.CheckRootStatus

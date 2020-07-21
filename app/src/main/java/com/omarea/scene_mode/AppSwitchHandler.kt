@@ -172,7 +172,7 @@ class AppSwitchHandler(private var context: Context) : ModeSwitcher(), EventRece
     private fun autoToggleMode(packageName: String?) {
         if (packageName != null && packageName != lastModePackage) {
             if (dyamicCore) {
-                val mode = spfPowercfg.getString(packageName, firstMode)
+                val mode = spfPowercfg.getString(packageName, firstMode)!!
                 if (mode == IGONED) {
                     return
                 }
@@ -304,7 +304,7 @@ class AppSwitchHandler(private var context: Context) : ModeSwitcher(), EventRece
                 val extras = intent.extras
                 if (extras != null && extras.containsKey("app")) {
                     if (extras.containsKey("mode")) {
-                        val mode = intent.getStringExtra("mode")
+                        val mode = intent.getStringExtra("mode")!!
                         val app = intent.getStringExtra("app")
                         if (dyamicCore && screenOn && app == lastModePackage) {
                             toggleConfig(mode)

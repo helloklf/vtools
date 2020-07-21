@@ -61,8 +61,8 @@ class ActivityAddinOnline : AppCompatActivity() {
 
         if (this.intent.extras != null) {
             val extraData = intent.extras
-            if (extraData.containsKey("url")) {
-                vtools_online.loadUrl(extraData.getString("url"))
+            if (extraData?.containsKey("url") == true) {
+                vtools_online.loadUrl(extraData.getString("url")!!)
             } else {
                 vtools_online.loadUrl("https://helloklf.github.io/vtools-online.html#/scripts")
             }

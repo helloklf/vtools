@@ -7,9 +7,8 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.BatteryManager
 import android.os.Build
-import androidx.core.app.NotificationCompat
-import android.util.Log
 import android.widget.RemoteViews
+import androidx.core.app.NotificationCompat
 import com.omarea.data_collection.GlobalStatus
 import com.omarea.model.BatteryStatus
 import com.omarea.store.BatteryHistoryStore

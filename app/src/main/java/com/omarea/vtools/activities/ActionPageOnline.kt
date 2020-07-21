@@ -15,13 +15,13 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import android.view.KeyEvent
 import android.view.View
 import android.view.WindowManager
 import android.webkit.*
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
@@ -122,14 +122,14 @@ class ActionPageOnline : AppCompatActivity() {
                 */
                 setWindowTitleBar()
                 when {
-                    extras.containsKey("config") -> initWebview(extras.getString("config"))
-                    extras.containsKey("url") -> initWebview(extras.getString("url"))
+                    extras.containsKey("config") -> initWebview(extras.getString("config")!!)
+                    extras.containsKey("url") -> initWebview(extras.getString("url")!!)
                 }
 
                 if (extras.containsKey("downloadUrl")) {
                     val downloader = Downloader(this)
                     val url = extras.getString("downloadUrl")!!
-                    val taskAliasId = if (extras.containsKey("taskId")) extras.getString("taskId") else UUID.randomUUID().toString()
+                    val taskAliasId = if (extras.containsKey("taskId")) extras.getString("taskId")!! else UUID.randomUUID().toString()
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                         downloader.saveTaskStatus(taskAliasId, 0)
@@ -153,7 +153,7 @@ class ActionPageOnline : AppCompatActivity() {
         }
     }
 
-    private fun initWebview(url: String?) {
+    private fun initWebview(url: String) {
         kr_online_webview.visibility = View.VISIBLE
         kr_online_webview.webChromeClient = object : WebChromeClient() {
             override fun onJsAlert(view: WebView?, url: String?, message: String?, result: JsResult?): Boolean {

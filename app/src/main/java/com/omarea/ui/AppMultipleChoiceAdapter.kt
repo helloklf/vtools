@@ -35,7 +35,7 @@ class AppMultipleChoiceAdapter(private val listview: ListView, private val apps:
                     val file = File(item.path.toString())
                     if (file.exists() && file.canRead()) {
                         val pm = context.packageManager
-                        icon = pm.getPackageArchiveInfo(file.absolutePath, PackageManager.GET_ACTIVITIES).applicationInfo.loadIcon(pm)
+                        icon = pm.getPackageArchiveInfo(file.absolutePath, PackageManager.GET_ACTIVITIES)?.applicationInfo?.loadIcon(pm)
                     }
                 } catch (ex: Exception) {
                 }

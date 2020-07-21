@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,8 +52,8 @@ class FragmentDonate : androidx.fragment.app.Fragment() {
             val cm = context!!.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             // 创建普通字符型ClipData
             val mClipData = ClipData.newPlainText("支付宝红包码", "511531087")
-            // 将ClipData内容放到系统剪贴板里。
-            cm.primaryClip = mClipData
+            // 将ClipData内容放到系统剪贴板里
+            cm.setPrimaryClip(mClipData)
             Toast.makeText(context!!, "红包码已复制！", Toast.LENGTH_SHORT).show()
             try {
                 val packageManager = context!!.getApplicationContext().getPackageManager()
@@ -69,7 +68,7 @@ class FragmentDonate : androidx.fragment.app.Fragment() {
             // 创建普通字符型ClipData
             val mClipData = ClipData.newPlainText("支付宝口令", "支付宝发红包啦！即日起还有机会额外获得余额宝消费红包！长按复制此消息，打开最新版支付宝就能领取！Z3DGmD87Rf")
             // 将ClipData内容放到系统剪贴板里。
-            cm.primaryClip = mClipData
+            cm.setPrimaryClip(mClipData)
             Toast.makeText(context!!, "红包口令已复制！", Toast.LENGTH_SHORT).show()
             try {
                 val packageManager = context!!.getApplicationContext().getPackageManager()

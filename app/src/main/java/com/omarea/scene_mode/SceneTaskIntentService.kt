@@ -9,9 +9,7 @@ import com.omarea.data_collection.EventBus
 import com.omarea.data_collection.EventReceiver
 import com.omarea.data_collection.EventType
 import com.omarea.data_collection.GlobalStatus
-import com.omarea.model.TaskAction
 import com.omarea.store.TimingTaskStorage
-import java.util.*
 
 class SceneTaskIntentService : IntentService("SceneTaskIntentService") {
     override fun onHandleIntent(intent: Intent?) {

@@ -10,13 +10,13 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
@@ -136,7 +136,7 @@ class ActivityAppDetails : AppCompatActivity() {
         }
         try {
             // 判断应用内部集成的插件文件是否和应用版本匹配（不匹配则取消安装）
-            if (packageManager.getPackageArchiveInfo(addinPath, PackageManager.GET_ACTIVITIES).versionCode < getAddinMinimumVersion()) {
+            if (packageManager.getPackageArchiveInfo(addinPath, PackageManager.GET_ACTIVITIES)!!.versionCode < getAddinMinimumVersion()) {
                 Toast.makeText(applicationContext, getString(R.string.scene_inner_addin_invalid), Toast.LENGTH_SHORT).show()
                 return
             }
@@ -540,7 +540,7 @@ class ActivityAppDetails : AppCompatActivity() {
         app_details_icon.setImageDrawable(applicationInfo.loadIcon(packageManager))
 
         val firstMode = spfGlobal.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.BALANCE))
-        app_details_dynamic.text = ModeSwitcher.getModName(powercfg.getString(app, firstMode))
+        app_details_dynamic.text = ModeSwitcher.getModName(powercfg.getString(app, firstMode)!!)
 
         if (immersivePolicyControl.isFullScreen(app)) {
             app_details_hidenav.isChecked = true

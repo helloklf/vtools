@@ -175,7 +175,7 @@ class FragmentProcess : Fragment() {
             val name = if (detail.name.contains(":")) detail.name.substring(0, detail.name.indexOf(":")) else detail.name
             try {
                 val app = pm!!.getApplicationInfo(name, 0)
-                detail.friendlyName = "" + app.loadLabel(pm)
+                detail.friendlyName = "" + app.loadLabel(pm!!)
             } catch (ex: java.lang.Exception) {
                 detail.friendlyName = name
             }

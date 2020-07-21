@@ -6,7 +6,6 @@ import android.os.Build
 import android.widget.Toast
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
-import com.omarea.shell_utils.SysUtils
 import java.io.ByteArrayInputStream
 import java.io.InputStream
 import javax.xml.parsers.DocumentBuilderFactory

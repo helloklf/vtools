@@ -3,7 +3,6 @@ package com.omarea.vtools.fragments
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,10 +14,8 @@ import com.omarea.common.shell.RootFile
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.ui.AdapterRootFileSelector
-import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
 import kotlinx.android.synthetic.main.fragment_magisk.*
-import java.io.File
 
 
 class FragmentMagisk : androidx.fragment.app.Fragment() {

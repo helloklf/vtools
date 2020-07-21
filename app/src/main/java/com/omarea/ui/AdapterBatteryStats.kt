@@ -48,7 +48,7 @@ class AdapterBatteryStats : BaseAdapter {
                 }
                 val installInfo = packageManager!!.getPackageInfo(packageName.toString(), 0)
                 val icon = installInfo.applicationInfo.loadIcon(context.packageManager)
-                val appName = if (packageName != "") installInfo.applicationInfo.loadLabel(packageManager) else "未知场景"
+                val appName = if (packageName != "") installInfo.applicationInfo.loadLabel(packageManager!!) else "未知场景"
                 convertView.post {
                     convertView.findViewById<TextView>(R.id.itemTitle).text = appName
                     convertView.findViewById<ImageView>(R.id.itemIcon).setImageDrawable(icon)

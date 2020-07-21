@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.opengl.Visibility
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
@@ -129,7 +128,7 @@ class AppListAdapter(apps: ArrayList<Appinfo>, private var keywords: String = ""
                     val file = File(item.path.toString())
                     if (file.exists() && file.canRead()) {
                         val pm = context.packageManager
-                        icon = pm.getPackageArchiveInfo(file.absolutePath, PackageManager.GET_ACTIVITIES).applicationInfo.loadIcon(pm)
+                        icon = pm.getPackageArchiveInfo(file.absolutePath, PackageManager.GET_ACTIVITIES)?.applicationInfo?.loadIcon(pm)
                     }
                 } catch (ex: Exception) {
                 }

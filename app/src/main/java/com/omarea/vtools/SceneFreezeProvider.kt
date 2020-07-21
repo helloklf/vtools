@@ -1,15 +1,12 @@
 package com.omarea.vtools
 
-import android.content.*
+import android.content.ContentProvider
+import android.content.ContentValues
+import android.content.Context
+import android.content.SharedPreferences
 import android.database.Cursor
 import android.net.Uri
-import android.util.Log
-import android.widget.Toast
 import com.omarea.Scene
-import com.omarea.data_collection.EventBus
-import com.omarea.data_collection.EventType
-import com.omarea.data_collection.GlobalStatus
-import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.scene_mode.SceneMode
 import com.omarea.store.SpfConfig
 

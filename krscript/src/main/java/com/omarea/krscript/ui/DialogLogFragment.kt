@@ -233,7 +233,7 @@ class DialogLogFragment : androidx.fragment.app.DialogFragment() {
     }
 
     private var onDismissRunnable: Runnable? = null
-    override fun onDismiss(dialog: DialogInterface?) {
+    override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
         onDismissRunnable?.run()
         onDismissRunnable = null

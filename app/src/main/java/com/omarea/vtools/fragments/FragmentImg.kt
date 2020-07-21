@@ -6,14 +6,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.os.StatFs
-import com.google.android.material.snackbar.Snackbar
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.SimpleAdapter
 import android.widget.Toast
+import com.google.android.material.snackbar.Snackbar
 import com.omarea.common.ui.DialogHelper
 import com.omarea.shell_utils.BackupRestoreUtils
 import com.omarea.utils.CommonCmds
@@ -135,8 +134,8 @@ class FragmentImg : androidx.fragment.app.Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && data != null && data.extras.containsKey("file")) {
-            val path = data.extras.getString("file")
+        if (resultCode == Activity.RESULT_OK && data != null && data.extras?.containsKey("file") == true) {
+            val path = data.extras!!.getString("file")!!
             //刷入recovery
             if (File(path).exists()) {
                 var partition = ""

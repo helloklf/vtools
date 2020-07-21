@@ -36,6 +36,15 @@ public class ShellExecutor {
             final Runnable forceStopRunnable = nodeInfo.getInterruptable()? (new Runnable() {
                 @Override
                 public void run() {
+                    try {
+                        process.getInputStream().close();
+                    } catch (Exception ignored) {}
+                    try {
+                        process.getOutputStream().close();
+                    } catch (Exception ignored) {}
+                    try {
+                        process.getErrorStream().close();
+                    } catch (Exception ignored) {}
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         try {
                             process.destroyForcibly();

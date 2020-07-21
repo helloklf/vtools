@@ -70,7 +70,7 @@ class SceneModeAdapter(private val context: Context, apps: ArrayList<Appinfo>, p
                     val file = File(item.path.toString())
                     if (file.exists() && file.canRead()) {
                         val pm = context.packageManager
-                        icon = pm.getPackageArchiveInfo(file.absolutePath, PackageManager.GET_ACTIVITIES).applicationInfo.loadIcon(pm)
+                        icon = pm.getPackageArchiveInfo(file.absolutePath, PackageManager.GET_ACTIVITIES)?.applicationInfo?.loadIcon(pm)
                     }
                 } catch (ex: Exception) {
                 }

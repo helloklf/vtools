@@ -5,8 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
-import androidx.core.content.PermissionChecker
 import android.widget.Toast
+import androidx.core.content.PermissionChecker
 import com.omarea.common.shell.KeepShellPublic
 
 

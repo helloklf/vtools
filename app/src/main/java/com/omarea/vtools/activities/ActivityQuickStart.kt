@@ -41,7 +41,7 @@ class ActivityQuickStart : Activity() {
         if (extras == null || !extras.containsKey("packageName")) {
             start_state_text.text = "无效的快捷方式！"
         } else {
-            appPackageName = intent.getStringExtra("packageName");
+            appPackageName = intent.getStringExtra("packageName")!!;
             val pm = packageManager
 
             var appInfo: ApplicationInfo? = null

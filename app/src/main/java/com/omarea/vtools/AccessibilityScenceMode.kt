@@ -11,7 +11,6 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.os.Build
 import android.os.Handler
-import android.util.Log
 import android.view.KeyEvent
 import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
@@ -87,11 +86,9 @@ public class AccessibilityScenceMode : AccessibilityService() {
     /**
      * 屏幕配置改变（旋转、分辨率更改、DPI更改等）
      */
-    override fun onConfigurationChanged(newConfig: Configuration?) {
+    override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        if (newConfig != null) {
-            onScreenConfigurationChanged(newConfig)
-        }
+        onScreenConfigurationChanged(newConfig)
     }
 
     private fun onScreenConfigurationChanged(newConfig: Configuration) {

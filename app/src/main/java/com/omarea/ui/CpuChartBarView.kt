@@ -1,12 +1,10 @@
 package com.omarea.ui
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
-import androidx.core.content.ContextCompat
 import com.omarea.vtools.R
 import java.util.concurrent.LinkedBlockingQueue
 

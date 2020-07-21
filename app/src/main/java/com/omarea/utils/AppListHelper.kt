@@ -39,7 +39,7 @@ class AppListHelper(context: Context) {
             val packageName = applicationInfo.packageName
             val absPath = CommonCmds.AbsBackUpDir + packageName + ".apk"
             if (File(absPath).exists()) {
-                val backupInfo = packageManager.getPackageArchiveInfo(absPath, PackageManager.GET_ACTIVITIES)
+                val backupInfo = packageManager.getPackageArchiveInfo(absPath, PackageManager.GET_ACTIVITIES)!!
                 val installInfo = packageManager.getPackageInfo(applicationInfo.packageName, 0)
                 if (installInfo == null)
                     return ""

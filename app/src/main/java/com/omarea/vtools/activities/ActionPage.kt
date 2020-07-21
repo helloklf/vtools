@@ -11,10 +11,10 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.common.ui.ThemeMode
@@ -231,8 +231,8 @@ class ActionPage : AppCompatActivity() {
     }
 
     // 右上角菜单的点击操作
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        if (item?.itemId == null || menuOptions == null) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (menuOptions == null) {
             return false
         }
 
