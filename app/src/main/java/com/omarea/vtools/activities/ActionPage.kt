@@ -18,10 +18,10 @@ import androidx.appcompat.widget.Toolbar
 import com.omarea.common.shared.FilePathResolver
 import com.omarea.common.ui.ProgressBarDialog
 import com.omarea.common.ui.ThemeMode
-import com.omarea.kr.PageConfigSh
 import com.omarea.krscript.TryOpenActivity
 import com.omarea.krscript.config.IconPathAnalysis
 import com.omarea.krscript.config.PageConfigReader
+import com.omarea.krscript.config.PageConfigSh
 import com.omarea.krscript.executor.ScriptEnvironmen
 import com.omarea.krscript.model.*
 import com.omarea.krscript.shortcut.ActionShortcutManager
@@ -413,7 +413,7 @@ class ActionPage : AppCompatActivity() {
                 var items: ArrayList<NodeInfoBase>? = null
 
                 if (pageConfigSh.isNotEmpty()) {
-                    items = PageConfigSh(this@ActionPage, pageConfigSh).execute()
+                    items = PageConfigSh(this@ActionPage, pageConfigSh, this).execute()
                 }
 
                 if (items == null && pageConfigPath.isNotEmpty()) {

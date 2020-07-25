@@ -159,7 +159,7 @@ public class WebViewInjector {
                     }
                 });
 
-                ScriptEnvironmen.executeShell(context, dataOutputStream, script, params, null);
+                ScriptEnvironmen.executeShell(context, dataOutputStream, script, params, null, null);
                 return true;
             } else {
                 return false;

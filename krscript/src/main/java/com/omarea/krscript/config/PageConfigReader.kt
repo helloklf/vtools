@@ -27,15 +27,10 @@ class PageConfigReader {
     private var pageConfigStream: InputStream? = null
     private var parentDir: String = ""
 
-    constructor(context: Context, pageConfig: String) {
+    constructor(context: Context, pageConfig: String, parentDir: String?) {
         this.context = context;
         this.pageConfig = pageConfig;
-    }
-
-    constructor(context: Context, pageConfig: String, parentDir: String) {
-        this.context = context;
-        this.pageConfig = pageConfig;
-        this.parentDir = parentDir;
+        this.parentDir = parentDir ?: "";
     }
 
     constructor(context: Context, pageConfigStream: InputStream) {

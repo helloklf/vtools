@@ -45,4 +45,13 @@
     <string name="kr_bg_task_start_desc">你可以通过系统的通知中心，查看任务运行进度和日志</string>
     <string name="kr_slice_script_result">脚本输出内容</string>
     <string name="kr_slice_activity_fail">无法打开活动~</string>
+
+    <string name="kr_page_before_load">准备解析配置</string>
+    <string name="kr_page_loading">解析配置中</string>
+    <string name="kr_page_after_load">配置解析完成</string>
+    <string name="kr_page_sh_invalid">无效的页面配置输出</string>
+    <string name="kr_page_sh_file_permission">指定的配置文件不存在或无读取权限</string>
+    <string name="kr_page_load_fail">页面加载失败</string>
+    <string name="kr_page_load_success">页面加载成功</string>
+    <string name="kr_auto_run_item_losted">指定项已丢失</string>
 </resources>

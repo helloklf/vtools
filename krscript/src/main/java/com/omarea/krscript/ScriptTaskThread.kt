@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
@@ -26,7 +27,7 @@ class ScriptTaskThread(private var process: Process) : Thread() {
         }
     }
 
-    class ServiceShellHandlerBase(private val context: Context, private val runnableNode: RunnableNode, private val notificationID: Int, private val finishedIntent: Intent) : ShellHandlerBase() {
+    class ServiceShellHandler(private val context: Context, private val runnableNode: RunnableNode, private val notificationID: Int) : ShellHandlerBase() {
         private var notificationManager: NotificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         private val notificationTitle = runnableNode.title
         private var notificationMessageRows = ArrayList<String>()
@@ -36,7 +37,19 @@ class ScriptTaskThread(private var process: Process) : Thread() {
         private var someIgnored = false
         private var forceStop: Runnable? = null
         private var isFinished = false
-        private val stopIntent = PendingIntent.getBroadcast(context, 0, finishedIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        private var STOP_CLICK_ACTION_NAME = context.packageName + ".TaskStop." + "N" + notificationID
+        private val stopIntent = PendingIntent.getBroadcast(context, 0, Intent(STOP_CLICK_ACTION_NAME).apply {
+            putExtra("id", notificationID)
+        }, PendingIntent.FLAG_UPDATE_CURRENT)
+        private val receiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                if (intent != null && intent.hasExtra("id")) {
+                    if (intent.getIntExtra("id", 0) == notificationID) {
+                        forceStop?.run()
+                    }
+                }
+            }
+        }
 
         private fun updateNotification() {
             if (notificationMessageRows.size > 8) {
@@ -47,7 +60,7 @@ class ScriptTaskThread(private var process: Process) : Thread() {
             }
 
             val expandView = RemoteViews(context.getPackageName(), R.layout.kr_task_notification)
-            expandView.setTextViewText(R.id.kr_task_title, notificationTitle)
+            expandView.setTextViewText(R.id.kr_task_title, notificationTitle + "(" + notificationID + ")")
             expandView.setTextViewText(R.id.kr_task_log, notificationMessageRows.joinToString("", if (someIgnored) "……\n" else "").trim())
             expandView.setProgressBar(R.id.kr_task_progress, progressTotal, progressCurrent, progressTotal < 0)
             expandView.setViewVisibility(R.id.kr_task_progress, if (progressTotal == progressCurrent) View.GONE else View.VISIBLE)
@@ -57,7 +70,7 @@ class ScriptTaskThread(private var process: Process) : Thread() {
             }
 
             val notificationBuilder = Notification.Builder(context)
-                    .setContentTitle("" + notificationTitle)
+                    .setContentTitle("" + notificationTitle + "(" + notificationID + ")")
                     .setContentText("" + notificationMShortMsg + " >> " + notificationMessageRows.lastOrNull())
                     .setSmallIcon(R.drawable.kr_run)
                     .setAutoCancel(true)
@@ -91,6 +104,10 @@ class ScriptTaskThread(private var process: Process) : Thread() {
                 notification.bigContentView = expandView
             }
 
+            if (!isFinished) {
+                notification!!.flags = Notification.FLAG_NO_CLEAR or Notification.FLAG_ONGOING_EVENT
+            }
+
             notificationManager.notify(notificationID, notification); // 发送通知
         }
 
@@ -116,6 +133,10 @@ class ScriptTaskThread(private var process: Process) : Thread() {
         }
 
         override fun onExit(msg: Any?) {
+            try {
+                // context.unregisterReceiver(receiver)
+            } catch (ex: java.lang.Exception) {
+            }
             isFinished = true
             notificationMShortMsg = context.getString(R.string.kr_script_task_finished)
             synchronized(notificationMessageRows) {
@@ -130,6 +151,8 @@ class ScriptTaskThread(private var process: Process) : Thread() {
 
         override fun onStart(forceStop: Runnable?) {
             this.forceStop = forceStop
+            context.registerReceiver(receiver, IntentFilter(STOP_CLICK_ACTION_NAME))
+
             updateNotification()
         }
 
@@ -147,51 +170,32 @@ class ScriptTaskThread(private var process: Process) : Thread() {
     companion object {
         private var channelCreated = false
         private val channelId = "kr_script_task_notification"
-        private val ACTION_NAME = ".KrScriptTaskFinished"
         private var notificationCounter = 34050
 
-        fun startTask(context: Context, script: String, params: HashMap<String, String>?, nodeInfo: RunnableNode, onExit: Runnable, onDismiss: Runnable): BroadcastReceiver {
+        fun startTask(context: Context, script: String, params: HashMap<String, String>?, nodeInfo: RunnableNode, onExit: Runnable, onDismiss: Runnable) {
             val applicationContext = context.applicationContext
             notificationCounter += 1
-            val notificationID = notificationCounter
 
-            val finishedIntent = Intent(context.packageName + ACTION_NAME).apply {
-                putExtra("id", notificationID)
-            }
-
-            val handler = ServiceShellHandlerBase(applicationContext, nodeInfo, notificationCounter, finishedIntent)
-            val process = ShellExecutor().execute(
+            val handler = ServiceShellHandler(applicationContext, nodeInfo, notificationCounter)
+            ShellExecutor().execute(
                     context,
                     nodeInfo,
                     script,
                     {
-                        context.sendBroadcast(finishedIntent)
+                        /*
+                        try {
+                            process.destroy()
+                        } catch (ex: java.lang.Exception) {
+                        }
+                        */
+                        try {
+                            onExit.run()
+                            onDismiss.run()
+                        } catch (ex: Exception) {
+                        }
                     },
                     params,
                     handler)
-            val receiver = object : BroadcastReceiver() {
-                override fun onReceive(context: Context?, intent: Intent?) {
-                    if (intent != null && intent.hasExtra("id")) {
-                        if (intent.getIntExtra("id", 0) == notificationID) {
-                            try {
-                                process.destroy()
-                            } catch (ex: java.lang.Exception) {
-                            }
-
-                            try {
-                                onExit.run()
-                                onDismiss.run()
-                            } catch (ex: Exception) {
-                            }
-                            try {
-                                applicationContext.unregisterReceiver(this)
-                            } catch (ex: java.lang.Exception) {
-                            }
-                        }
-                    }
-                }
-            }
-            applicationContext.registerReceiver(receiver, IntentFilter(applicationContext.packageName + ACTION_NAME))
 
             val bundle = Bundle()
             params?.run {
@@ -199,8 +203,6 @@ class ScriptTaskThread(private var process: Process) : Thread() {
             }
             DialogHelper.helpInfo(context, context.getString(R.string.kr_bg_task_start), context.getString(R.string.kr_bg_task_start_desc))
             // Toast.makeText(applicationContext, applicationContext.getString(R.string.kr_bg_task_start), Toast.LENGTH_SHORT).show()
-
-            return receiver
         }
     }
 }

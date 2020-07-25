@@ -428,24 +428,14 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
         return ScriptEnvironmen.executeResultRoot(this.context!!, shellScript, nodeInfoBase)
     }
 
-    private val taskResultReceiver = ArrayList<BroadcastReceiver>()
-
     private fun actionExecute(nodeInfo: RunnableNode, script: String, onExit: Runnable, params: HashMap<String, String>?) {
         val context = context!!
-        val applicationContext = context.applicationContext
 
         if (nodeInfo.backgroundTask) {
-            var receiver: BroadcastReceiver? = null
             val onDismiss = Runnable {
                 krScriptActionHandler?.onActionCompleted(nodeInfo)
-                try {
-                    taskResultReceiver.remove(receiver)
-                    applicationContext.unregisterReceiver(receiver)
-                } catch (ex: java.lang.Exception) {
-                }
             }
-            receiver = ScriptTaskThread.startTask(context, script, params, nodeInfo, onExit, onDismiss)
-            taskResultReceiver.add(receiver)
+            ScriptTaskThread.startTask(context, script, params, nodeInfo, onExit, onDismiss)
         } else {
             val onDismiss = Runnable {
                 krScriptActionHandler?.onActionCompleted(nodeInfo)
