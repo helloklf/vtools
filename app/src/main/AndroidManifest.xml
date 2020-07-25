@@ -112,7 +112,7 @@
         <activity
             android:name=".activities.ActivityMain"
             android:autoRemoveFromRecents="false"
-            android:configChanges="keyboardHidden|orientation|uiMode"
+            android:configChanges="keyboardHidden|orientation|uiMode|layoutDirection|screenLayout|fontScale"
             android:excludeFromRecents="false"
             android:exported="true"
             android:label="@string/app_name"

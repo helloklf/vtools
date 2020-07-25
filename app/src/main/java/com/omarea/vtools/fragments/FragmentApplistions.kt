@@ -65,10 +65,13 @@ class FragmentApplistions : androidx.fragment.app.Fragment() {
         activity!!.title = getString(R.string.menu_applictions)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        processBarDialog = ProgressBarDialog(this.context!!)
+    }
+
     @SuppressLint("InflateParams")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        processBarDialog = ProgressBarDialog(this.context!!)
-
         val tabHost = view.findViewById(R.id.applications_tabhost) as TabHost
         tabHost.setup()
         val tabIconHelper = TabIconHelper(tabHost, this.activity!!)
@@ -248,9 +251,15 @@ class FragmentApplistions : androidx.fragment.app.Fragment() {
             systemList = appListHelper.getSystemAppList()
             installedList = appListHelper.getUserAppList()
             backupedList = appListHelper.getApkFilesInfoList(CommonCmds.AbsBackUpDir)
-            setListData(installedList, apps_userlist)
-            setListData(systemList, apps_systemlist)
-            setListData(backupedList, apps_backupedlist)
+            apps_userlist?.run {
+                setListData(installedList, this)
+            }
+            apps_systemlist?.run {
+                setListData(systemList, this)
+            }
+            apps_backupedlist?.run {
+                setListData(backupedList, this)
+            }
         }).start()
     }
 
@@ -261,9 +270,7 @@ class FragmentApplistions : androidx.fragment.app.Fragment() {
             myHandler!!.post {
                 try {
                     processBarDialog.hideDialog()
-                    if (isDetached) {
-                        return@post
-                    }
+                    isDetached && return@post
                     val adapterObj = AppListAdapter(dl, apps_search_box.text.toString().toLowerCase())
                     val adapter: WeakReference<AppListAdapter> = WeakReference(adapterObj)
                     lv.adapter = adapterObj
@@ -292,10 +299,12 @@ class FragmentApplistions : androidx.fragment.app.Fragment() {
         }
     }
 
-    override fun onDetach() {
-        processBarDialog.hideDialog()
+    override fun onDestroy() {
+        try {
+            processBarDialog.hideDialog()
+        }catch (ex: java.lang.Exception) {}
         myHandler = null
-        super.onDetach()
+        super.onDestroy()
     }
 
     companion object {
