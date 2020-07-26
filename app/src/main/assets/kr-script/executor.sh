@@ -1,13 +1,9 @@
-#!/system/bin/sh
-
 # 参数说明
 # $1 脚本路径
-# $2 执行的目录
+# $2 任务id
 
 # 将要执行的具体脚本，执行 executor.sh 时传入，如 ./executor.sh test.sh
 script_path="$1"
-# 脚本执行目录（目前该参数已被废弃使用）
-execute_path="$2"
 
 # 定义全局变量
 export EXECUTOR_PATH=$({EXECUTOR_PATH})
@@ -41,9 +37,9 @@ fi
 
 
 # 判断是否有指定执行目录
-if [[ "$execute_path" != "" ]] && [[ -d "$execute_path" ]]
+if [[ "$START_DIR" != "" ]] && [[ -d "$START_DIR" ]]
 then
-    cd "$execute_path"
+    cd "$START_DIR"
 fi
 
 
