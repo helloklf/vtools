@@ -89,7 +89,7 @@ class ActionShortcutManager(private var context: Context) {
                         .setActivity(intent.component!!) // 只有“主要”活动 - 定义过滤器Intent#ACTION_MAIN 和Intent#CATEGORY_LAUNCHER意图过滤器的活动 - 才能成为目标活动
                         .build()
 
-                val shortcutCallbackIntent = PendingIntent.getBroadcast(context, 0, Intent(), PendingIntent.FLAG_CANCEL_CURRENT)
+                val shortcutCallbackIntent = PendingIntent.getBroadcast(context, 0, Intent(), PendingIntent.FLAG_UPDATE_CURRENT)
                 if (shortcutManager.isRequestPinShortcutSupported) {
                     val items = shortcutManager.pinnedShortcuts
                     for (item in items) {
