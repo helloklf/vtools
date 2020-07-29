@@ -247,9 +247,15 @@ class ActivityApplistions : ActivityBase() {
             systemList = appListHelper.getSystemAppList()
             installedList = appListHelper.getUserAppList()
             backupedList = appListHelper.getApkFilesInfoList(CommonCmds.AbsBackUpDir)
-            setListData(installedList, apps_userlist)
-            setListData(systemList, apps_systemlist)
-            setListData(backupedList, apps_backupedlist)
+            apps_userlist?.run {
+                setListData(installedList, this)
+            }
+            apps_systemlist?.run {
+                setListData(systemList, this)
+            }
+            apps_backupedlist?.run {
+                setListData(backupedList, this)
+            }
         }).start()
     }
 

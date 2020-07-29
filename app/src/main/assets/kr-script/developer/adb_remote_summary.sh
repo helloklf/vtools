@@ -20,9 +20,9 @@ fi
 if [[ -n "$stared" ]] || [[ -n "$stared2" ]]; then
     if [[ -n "$ip" ]]
     then
-        echo "$ip:5555"
+        echo "$ip:$port"
     else
-        echo "手机IP:5555"
+        echo "手机IP:$port"
     fi
 else
     echo ""

@@ -72,4 +72,38 @@
             </set>
         </action>
     </group>
+
+    <group>
+        <action
+            visible="if [[ -f /sys/class/power_supply/battery/constant_charge_current_max ]]; then echo 1; fi;"
+            title="模拟脉冲充电"
+            desc="使用脚本周期性调整充电速度，从而实现模拟器脉冲充电过程">
+            <param name="level_high" label="充电上限速度(mA)" type="int" required="true" max="10000" min="3000" value="6000" />
+            <param name="capacity_max" label="停止电量(%)" type="int" required="true" max="99" min="10" value="80" />
+            <set>
+                level_low=100
+                # level_high=10000
+                # capacity_max=80
+
+                chmod 664 /sys/class/power_supply/battery/constant_charge_current_max
+                chmod 664 /sys/class/power_supply/main/constant_charge_current_max
+                while [ 1 = 1 ]
+                do
+                capacity=$(cat /sys/class/power_supply/battery/capacity)
+                if  [[ $capacity -gt $capacity_max ]]; then
+                echo "charger completed, capacity > ${capacity_max}%"
+                exit 0
+                fi
+                echo limit $level_low
+                echo ${level_low}000 > /sys/class/power_supply/main/constant_charge_current_max
+                echo ${level_low}000 > /sys/class/power_supply/battery/constant_charge_current_max
+                sleep 1.5
+                echo resume $level_high
+                echo ${level_high}000 > /sys/class/power_supply/main/constant_charge_current_max
+                echo ${level_high}000 > /sys/class/power_supply/battery/constant_charge_current_max
+                sleep 5
+                done
+            </set>
+        </action>
+    </group>
 </group>

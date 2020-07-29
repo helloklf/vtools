@@ -11,14 +11,11 @@ import com.omarea.common.shared.MagiskExtend;
 import com.omarea.common.shell.KeepShell;
 import com.omarea.common.shell.KeepShellPublic;
 import com.omarea.krscript.FileOwner;
-import com.omarea.krscript.model.ClickableNode;
 import com.omarea.krscript.model.NodeInfoBase;
 
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -212,7 +209,7 @@ public class ScriptEnvironmen {
         }
 
         stringBuilder.append("\n\n");
-        stringBuilder.append(environmentPath + " \"" + path + "\"" + " \"" + getStartPath(context) + "\"");
+        stringBuilder.append(environmentPath + " \"" + path + "\"");
         return privateShell.doCmdSync(stringBuilder.toString());
     }
 
@@ -314,7 +311,7 @@ public class ScriptEnvironmen {
         return envp;
     }
 
-    private static String getExecuteScript(Context context, String script) {
+    private static String getExecuteScript(Context context, String script, String tag) {
         if (!inited) {
             init(context);
         }
@@ -324,7 +321,6 @@ public class ScriptEnvironmen {
         }
 
         String script2 = script.trim();
-        String startPath = getStartPath(context);
         String cachePath = "";
         if (script2.startsWith(ASSETS_FILE)) {
             cachePath = extractScript(context, script2);
@@ -338,9 +334,7 @@ public class ScriptEnvironmen {
         }
 
 
-        // FIXME:主进程退出后，可能会有未回收的子进程（孤儿进程）
-        // pstree
-        return environmentPath + " \"" + cachePath + "\"" + " \"" + startPath + "\"";
+        return environmentPath + " \"" + cachePath + "\" \"" + tag +  "\"";
     }
 
     static Process getRuntime() {
@@ -368,7 +362,8 @@ public class ScriptEnvironmen {
             DataOutputStream dataOutputStream,
             String cmds,
             HashMap<String, String> params,
-            NodeInfoBase nodeInfo) {
+            NodeInfoBase nodeInfo,
+            String tag) {
 
         if (params == null) {
             params = new HashMap<>();
@@ -404,17 +399,14 @@ public class ScriptEnvironmen {
         try {
             dataOutputStream.write(envpCmds.toString().getBytes("UTF-8"));
 
-            dataOutputStream.write(String.format("cd \"%s\"\n\n", getStartPath(context)).getBytes("UTF-8"));
-
-            dataOutputStream.write(getExecuteScript(context, cmds).getBytes("UTF-8"));
+            dataOutputStream.write(getExecuteScript(context, cmds, tag).getBytes("UTF-8"));
 
             dataOutputStream.writeBytes("\n\n");
             dataOutputStream.writeBytes("sleep 0.2;\n");
             dataOutputStream.writeBytes("exit\n");
             dataOutputStream.writeBytes("exit\n");
             dataOutputStream.flush();
-        } catch (UnsupportedEncodingException ex) {
-        } catch (IOException ex) {
+        } catch (Exception ignored) {
         }
     }
 }

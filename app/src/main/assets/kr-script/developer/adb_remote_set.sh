@@ -7,6 +7,7 @@ then
     killall -9 adbd 2>/dev/null
     start adbd
     echo '远程调试服务已停止'
+    setprop service.adb.tcp.port ""
     return 0
 fi
 
