@@ -736,6 +736,12 @@ class ActivityCpuControl : ActivityBase() {
             }
             cpu_sched_boost.isChecked = status.boost == "1"
 
+            if (thermal_core_control.isEnabled || thermal_vdd.isEnabled || thermal_paramters.isEnabled) {
+                qualcomm_thermal.visibility = View.VISIBLE
+            } else {
+                qualcomm_thermal.visibility = View.GONE
+            }
+
             exynos_hmp_down.progress = status.exynosHmpDown
             exynos_hmp_down_text.text = status.exynosHmpDown.toString()
             exynos_hmp_up.progress = status.exynosHmpUP

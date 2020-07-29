@@ -355,8 +355,18 @@ class BatteryUtils {
         KernelProrp.setProp("/sys/class/power_supply/battery/step_charging_enabled", if (stepCharge) "1" else "0")
     }
 
+    private var useMainConstant:Boolean? = null
     fun getqcLimit(): String {
-        var limit = KernelProrp.getProp("/sys/class/power_supply/battery/constant_charge_current_max")
+        if (useMainConstant == null) {
+            val value = RootFile.fileExists("/sys/class/power_supply/main/constant_charge_current_max")
+            useMainConstant = RootFile.fileExists("/sys/class/power_supply/main/constant_charge_current_max")
+        }
+
+        var limit = if (useMainConstant == true) {
+            KernelProrp.getProp("/sys/class/power_supply/main/constant_charge_current_max")
+        } else {
+            KernelProrp.getProp("/sys/class/power_supply/battery/constant_charge_current_max")
+        }
         if (limit.length > 3) {
             limit = limit.substring(0, limit.length - 3) + "mA"
         } else if (limit.isNotEmpty()) {

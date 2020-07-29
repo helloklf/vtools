@@ -321,7 +321,7 @@
                     android:text="有时候，GPU会受到功耗级别（Power Level）限制。功耗级别0拥有最高性能，功耗级别数值越大性能越低" />
             </GridLayout>
 
-            <GridLayout style="@style/ListCardItem">
+            <GridLayout style="@style/ListCardItem" android:id="@+id/qualcomm_thermal">
 
                 <TextView
                     android:layout_row="0"
