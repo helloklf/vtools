@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:backgroundTintMode="screen"
-    android:clipToPadding="true"
-    android:fitsSystemWindows="false">
+    android:layout_height="match_parent">
+    <include
+        android:id="@+id/layout_app_bar"
+        layout="@layout/layout_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <TabHost
+        android:layout_below="@id/layout_app_bar"
         android:id="@+id/freeze_tabhost"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -271,4 +274,4 @@
                 android:background="@drawable/tab_widget_background" />
         </LinearLayout>
     </TabHost>
-</FrameLayout>
+</RelativeLayout>

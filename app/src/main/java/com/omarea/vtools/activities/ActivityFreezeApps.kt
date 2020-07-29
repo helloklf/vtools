@@ -50,7 +50,7 @@ class ActivityFreezeApps : ActivityBase() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_freeze_apps)
-        actionBar?.setDisplayHomeAsUpEnabled(true)
+        setBackArrow()
 
         onViewCreated()
 

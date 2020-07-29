@@ -62,7 +62,8 @@ class ActivityImg :  ActivityBase() {
         listItem.add(createItem(getString(R.string.restore_action_title_persist), getString(R.string.restore_action_desc_persist)))
 
         val mSimpleAdapter = SimpleAdapter(
-                this, listItem,
+                this,
+                listItem,
                 R.layout.list_item_action,
                 arrayOf("Title", "Desc"),
                 intArrayOf(R.id.Title, R.id.Desc)
