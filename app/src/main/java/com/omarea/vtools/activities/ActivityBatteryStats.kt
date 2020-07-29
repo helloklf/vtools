@@ -1,48 +1,43 @@
-package com.omarea.vtools.fragments
+package com.omarea.vtools.activities
 
 import android.content.Context
 import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Handler
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import com.omarea.store.BatteryHistoryStore
 import com.omarea.store.SpfConfig
 import com.omarea.ui.AdapterBatteryStats
 import com.omarea.vtools.R
-import kotlinx.android.synthetic.main.fragment_battery_stats.*
+import kotlinx.android.synthetic.main.activity_battery_stats.*
 import java.util.*
 import kotlin.math.abs
 
 
-class FragmentBatteryStats : androidx.fragment.app.Fragment() {
+class ActivityBatteryStats : ActivityBase() {
     private lateinit var storage: BatteryHistoryStore
     private var timer: Timer? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_battery_stats)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_battery_stats, container, false)
+        setBackArrow()
+        onViewCreated()
+    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private fun onViewCreated() {
         battery_stats_delete.setOnClickListener {
-            BatteryHistoryStore(context!!).clearData()
-            Toast.makeText(context!!, "统计记录已清理", Toast.LENGTH_SHORT).show()
+            BatteryHistoryStore(context).clearData()
+            Toast.makeText(context, "统计记录已清理", Toast.LENGTH_SHORT).show()
             loadData()
         }
-        storage = BatteryHistoryStore(context!!)
+        storage = BatteryHistoryStore(context)
     }
 
     override fun onResume() {
         super.onResume()
-        if (isDetached) {
-            return
-        }
-
         loadData()
-        activity!!.title = getString(R.string.menu_battery_stats)
+        title = getString(R.string.menu_battery_stats)
         timer = Timer().apply {
             schedule(object : TimerTask() {
                 override fun run() {
@@ -98,21 +93,14 @@ class FragmentBatteryStats : androidx.fragment.app.Fragment() {
     }
 
     private fun loadData() {
-        val storage = BatteryHistoryStore(context!!)
+        val storage = BatteryHistoryStore(context)
         val data = storage.getAvgData(BatteryManager.BATTERY_STATUS_DISCHARGING)
 
-        val accuMode = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
+        val accuMode = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
         val sampleTime = if (accuMode) 2 else 6
-        battery_stats.adapter = AdapterBatteryStats(context!!, (data.filter {
+        battery_stats.adapter = AdapterBatteryStats(context, (data.filter {
             // 仅显示运行时间超过2分钟的应用数据，避免误差过大
             (it.count * sampleTime) > 120
         }), sampleTime)
-    }
-
-    companion object {
-        fun createPage(): androidx.fragment.app.Fragment {
-            val fragment = FragmentBatteryStats()
-            return fragment
-        }
     }
 }

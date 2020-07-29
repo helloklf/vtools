@@ -4,7 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <include
+        android:id="@+id/layout_app_bar"
+        layout="@layout/layout_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <com.omarea.common.ui.OverScrollListView
+        android:layout_below="@id/img_action_listview"
         android:id="@+id/img_action_listview"
         android:scrollbars="none"
         android:layout_width="match_parent"

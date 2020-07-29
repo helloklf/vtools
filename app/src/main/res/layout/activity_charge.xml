@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/layout_app_bar"
+        layout="@layout/layout_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <com.omarea.common.ui.OverScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_app_bar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
+
+            <LinearLayout style="@style/ListCardItem">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="功能介绍" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:text="本界面显示的是，你上次充电时，电量、温度、充电速度的变化过程" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/activity_vertical_margin"
+                    android:text="你需要在充电时让本应用保持运行状态，才能获得数据" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/charge_state"
+                style="@style/ListCardItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                android:textColor="?android:attr/textColorPrimary"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                style="@style/ListCardItem"
+                android:paddingRight="0dp"
+                android:paddingBottom="4dp">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="电池电流/电量" />
+
+                <com.omarea.ui.charge.ChargeCurveView
+                    android:id="@+id/view_speed"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/ListCardItem"
+                android:paddingRight="0dp"
+                android:paddingBottom="4dp">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="电量/时间" />
+
+                <com.omarea.ui.charge.ChargeTimeView
+                    android:id="@+id/view_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/ListCardItem"
+                android:paddingRight="0dp"
+                android:paddingBottom="4dp">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="温度/电量" />
+
+                <com.omarea.ui.charge.ChargeTempView
+                    android:id="@+id/view_temperature"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/ListCardItem"
+                android:paddingRight="0dp">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="使用方法" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="① 启动本应用" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="② 连接充电器" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="③ 熄灭屏幕，直至充电完成" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="④ 查看曲线" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="你需要让本应用保持后台运行，才能获得统计数据！" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/electricity_adj_unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:text="电流单位校准"
+                android:textColor="?android:colorAccent"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+    </com.omarea.common.ui.OverScrollView>
+</RelativeLayout>

@@ -1,4 +1,4 @@
-package com.omarea.vtools.fragments
+package com.omarea.vtools.activities
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
@@ -10,9 +10,7 @@ import android.os.Handler
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.AbsoluteSizeSpan
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
 import com.google.android.material.snackbar.Snackbar
 import com.omarea.charger_booster.BatteryInfo
@@ -25,27 +23,24 @@ import com.omarea.shell_utils.BatteryUtils
 import com.omarea.store.SpfConfig
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogNumberInput
-import kotlinx.android.synthetic.main.fragment_battery.*
+import kotlinx.android.synthetic.main.activity_battery.*
 import java.util.*
 
 
-class FragmentBattery : androidx.fragment.app.Fragment() {
-    internal lateinit var view: View
+class ActivityBattery:  ActivityBase() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_battery)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        view = inflater.inflate(R.layout.fragment_battery, container, false)
-        return view
+        setBackArrow()
+
+        onViewCreated()
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private fun onViewCreated() {
 
         battery_exec_options.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(parent: AdapterView<*>?) {
-
             }
-
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 val defaultValue = spf.getInt(SpfConfig.CHARGE_SPF_EXEC_MODE, SpfConfig.CHARGE_SPF_EXEC_MODE_DEFAULT)
                 val currentValue = when(position) {
@@ -59,6 +54,163 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
                 } else {
                     spf.edit().putInt(SpfConfig.CHARGE_SPF_EXEC_MODE, currentValue).apply()
                 }
+            }
+        }
+
+
+        ResumeCharge = "sh " + FileWrite.writePrivateShellFile("addin/resume_charge.sh", "addin/resume_charge.sh", this)
+        spf = getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
+        qcSettingSuupport = batteryUnits.qcSettingSupport()
+        pdSettingSupport = batteryUnits.pdSupported()
+
+        settings_qc.setOnClickListener {
+            val checked = (it as Switch).isChecked
+            spf.edit().putBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, checked).apply()
+            if (checked) {
+                notifyConfigChanged()
+                Snackbar.make(layout_app_bar, R.string.battery_auto_boot_desc, Snackbar.LENGTH_LONG).show()
+            } else {
+                Snackbar.make(layout_app_bar, R.string.battery_qc_rehoot_desc, Snackbar.LENGTH_LONG).show()
+            }
+        }
+        settings_qc.setOnCheckedChangeListener { buttonView, isChecked ->
+            battery_charge_speed_ext.visibility = if (isChecked) View.VISIBLE else View.GONE
+            if (!isChecked) {
+                battery_night_mode.isChecked = false
+                spf.edit().putBoolean(SpfConfig.CHARGE_SPF_NIGHT_MODE, false).apply()
+            }
+        }
+        settings_bp.setOnClickListener {
+            spf.edit().putBoolean(SpfConfig.CHARGE_SPF_BP, settings_bp.isChecked).apply()
+            //禁用电池保护：恢复充电功能
+            if (!settings_bp.isChecked) {
+                KeepShellPublic.doCmdSync(ResumeCharge)
+            } else {
+                notifyConfigChanged()
+                Snackbar.make(layout_app_bar, R.string.battery_auto_boot_desc, Snackbar.LENGTH_LONG).show()
+            }
+        }
+
+        settings_bp_level.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
+            notifyConfigChanged()
+        }, spf, battery_bp_level_desc))
+        settings_qc_limit.setOnSeekBarChangeListener(OnSeekBarChangeListener2(Runnable {
+            val level = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, SpfConfig.CHARGE_SPF_QC_LIMIT_DEFAULT)
+            notifyConfigChanged()
+            if (spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
+                batteryUnits.setChargeInputLimit(level, this)
+            }
+        }, spf, settings_qc_limit_desc))
+
+        if (!qcSettingSuupport) {
+            settings_qc.isEnabled = false
+            spf.edit().putBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false).putBoolean(SpfConfig.CHARGE_SPF_NIGHT_MODE, false).apply()
+            settings_qc_limit.isEnabled = false
+            settings_qc_limit_current.visibility = View.GONE
+        }
+
+        if (!batteryUnits.bpSettingSupport()) {
+            settings_bp.isEnabled = false
+            spf.edit().putBoolean(SpfConfig.CHARGE_SPF_BP, false).apply()
+
+            bp_cardview.visibility = View.GONE
+        } else {
+            bp_cardview.visibility = View.VISIBLE
+        }
+
+        if (pdSettingSupport) {
+            settings_pd_support.visibility = View.VISIBLE
+            settings_pd.setOnClickListener {
+                val isChecked = (it as Switch).isChecked
+                batteryUnits.setAllowed(isChecked)
+            }
+            settings_pd.isChecked = batteryUnits.pdAllowed()
+            settings_pd_state.text = if (batteryUnits.pdActive()) getString(R.string.battery_pd_active_1) else getString(R.string.battery_pd_active_0)
+        } else {
+            settings_pd_support.visibility = View.GONE
+        }
+
+        if (batteryUnits.stepChargeSupport()) {
+            settings_step_charge.visibility = View.VISIBLE
+            settings_step_charge_enabled.setOnClickListener {
+                batteryUnits.setStepCharge((it as Checkable).isChecked)
+            }
+            settings_step_charge_enabled.isChecked = batteryUnits.getStepCharge()
+        } else {
+            settings_step_charge.visibility = View.GONE
+        }
+
+        btn_battery_history.setOnClickListener {
+            try {
+                val powerUsageIntent = Intent(Intent.ACTION_POWER_USAGE_SUMMARY)
+                val resolveInfo = packageManager.resolveActivity(powerUsageIntent, 0)
+                // check that the Battery app exists on this device
+                if (resolveInfo != null) {
+                    startActivity(powerUsageIntent)
+                }
+                /*
+                Intent intent = new Intent("/");
+                ComponentName cm = new ComponentName("com.android.settings","com.android.settings.BatteryInfo ");
+                intent.setComponent(cm);
+                intent.setAction("android.intent.action.VIEW");
+                activity.startActivityForResult( intent , 0);
+                */
+            } catch (ex: Exception) {
+
+            }
+        }
+        btn_battery_history_del.setOnClickListener {
+            DialogHelper.animDialog(AlertDialog.Builder(this)
+                    .setTitle("需要重启")
+                    .setMessage("删除电池使用记录需要立即重启手机，是否继续？")
+                    .setPositiveButton(R.string.btn_confirm, DialogInterface.OnClickListener { dialog, which ->
+                        KeepShellPublic.doCmdSync(
+                                "rm -f /data/system/batterystats-checkin.bin;" +
+                                        "rm -f /data/system/batterystats-daily.xml;" +
+                                        "rm -f /data/system/batterystats.bin;" +
+                                        "rm -rf /data/system/battery-history;" +
+                                        "rm -rf /data/charge_logger;" +
+                                        "rm -rf /data/vendor/charge_logger;" +
+                                        "sync;" +
+                                        "sleep 2;" +
+                                        "reboot;")
+                    })
+                    .setNegativeButton(R.string.btn_cancel, DialogInterface.OnClickListener { dialog, which -> }))
+        }
+
+        bp_disable_charge.setOnClickListener {
+            KeepShellPublic.doCmdSync("sh " + FileWrite.writePrivateShellFile("addin/disable_charge.sh", "addin/disable_charge.sh", this.context))
+            Snackbar.make(layout_app_bar, R.string.battery_charge_disabled, Snackbar.LENGTH_LONG).show()
+        }
+        bp_enable_charge.setOnClickListener {
+            KeepShellPublic.doCmdSync(ResumeCharge)
+            Snackbar.make(layout_app_bar, R.string.battery_charge_resumed, Snackbar.LENGTH_LONG).show()
+        }
+
+        val nightModeGetUp = spf.getInt(SpfConfig.CHARGE_SPF_TIME_GET_UP, SpfConfig.CHARGE_SPF_TIME_GET_UP_DEFAULT)
+        battery_get_up.setText(String.format(getString(R.string.battery_night_mode_time), nightModeGetUp / 60, nightModeGetUp % 60))
+        battery_get_up.setOnClickListener {
+            TimePickerDialog(this.context, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+                spf.edit().putInt(SpfConfig.CHARGE_SPF_TIME_GET_UP, hourOfDay * 60 + minute).apply()
+                battery_get_up.setText(String.format(getString(R.string.battery_night_mode_time), hourOfDay, minute))
+            }, nightModeGetUp / 60, nightModeGetUp % 60, true).show()
+        }
+        val nightModeSleep = spf.getInt(SpfConfig.CHARGE_SPF_TIME_SLEEP, SpfConfig.CHARGE_SPF_TIME_SLEEP_DEFAULT)
+        battery_sleep.setText(String.format(getString(R.string.battery_night_mode_time), nightModeSleep / 60, nightModeSleep % 60))
+        battery_sleep.setOnClickListener {
+            TimePickerDialog(this.context, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+                spf.edit().putInt(SpfConfig.CHARGE_SPF_TIME_SLEEP, hourOfDay * 60 + minute).apply()
+                battery_sleep.setText(String.format(getString(R.string.battery_night_mode_time), hourOfDay, minute))
+            }, nightModeSleep / 60, nightModeSleep % 60, true).show()
+        }
+        battery_night_mode.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_NIGHT_MODE, false)
+        battery_night_mode.setOnClickListener {
+            val checked = (it as Switch).isChecked
+            if (checked && !spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
+                Toast.makeText(this.context, "需要开启 " + getString(R.string.battery_qc_charger), Toast.LENGTH_LONG).show()
+                it.isChecked = false
+            } else {
+                spf.edit().putBoolean(SpfConfig.CHARGE_SPF_NIGHT_MODE, checked).apply()
             }
         }
     }
@@ -78,11 +230,7 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
     override fun onResume() {
         super.onResume()
 
-        if (isDetached) {
-            return
-        }
-
-        activity!!.title = getString(R.string.menu_battery)
+        title = getString(R.string.menu_battery)
 
         settings_qc.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)
         settings_bp.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_BP, false)
@@ -116,11 +264,11 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
                     print(ex.message)
                 }
             }
-            context!!.registerReceiver(broadcast, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
+            registerReceiver(broadcast, IntentFilter(Intent.ACTION_BATTERY_CHANGED))
         }
 
-        val battrystatus = view.findViewById(R.id.battrystatus) as TextView
-        batteryMAH = BatteryInfo().getBatteryCapacity(this.context!!).toString() + "mAh" + "   "
+        val battrystatus = findViewById(R.id.battrystatus) as TextView
+        batteryMAH = BatteryInfo().getBatteryCapacity(this).toString() + "mAh" + "   "
 
         timer = Timer()
 
@@ -129,9 +277,6 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
         var usbInfo = ""
         timer!!.schedule(object : TimerTask() {
             override fun run() {
-                if (isDetached) {
-                    return
-                }
                 var pdAllowed = false
                 var pdActive = false
                 if (pdSettingSupport) {
@@ -187,7 +332,7 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
     }
 
     private fun batteryForgeryRatio() {
-        DialogNumberInput(context!!).showDialog(object : DialogNumberInput.DialogNumberInputRequest {
+        DialogNumberInput(this).showDialog(object : DialogNumberInput.DialogNumberInputRequest {
             override var min = -1
             override var max = 100
             override var default = batteryUnits.getCpacity()
@@ -200,7 +345,7 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
     }
 
     private fun batteryForgeryChargeFull() {
-        DialogNumberInput(context!!).showDialog(object : DialogNumberInput.DialogNumberInputRequest {
+        DialogNumberInput(this).showDialog(object : DialogNumberInput.DialogNumberInputRequest {
             override var min = 1000
             override var max = 20000
             override var default = batteryUnits.getChargeFull()
@@ -222,7 +367,7 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
             }
         } else {
             battery_forgery_ratio.setOnClickListener {
-                Toast.makeText(context, getString(R.string.device_unsupport), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.device_unsupport), Toast.LENGTH_SHORT).show()
             }
         }
         if (chargeFull > 0) {
@@ -232,7 +377,7 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
             }
         } else {
             battery_forgery_full_now.setOnClickListener {
-                Toast.makeText(context, getString(R.string.device_unsupport), Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, getString(R.string.device_unsupport), Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -251,7 +396,7 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
         }
         try {
             if (broadcast != null)
-                context!!.unregisterReceiver(broadcast)
+                unregisterReceiver(broadcast)
         } catch (ex: Exception) {
         }
     }
@@ -259,7 +404,7 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
     override fun onDestroy() {
         try {
             if (broadcast != null)
-                context!!.unregisterReceiver(broadcast)
+                unregisterReceiver(broadcast)
         } catch (ex: Exception) {
         }
         super.onDestroy()
@@ -274,165 +419,6 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
         Thread(Runnable {
             EventBus.publish(EventType.BATTERY_CHANGED)
         }).start()
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        ResumeCharge = "sh " + FileWrite.writePrivateShellFile("addin/resume_charge.sh", "addin/resume_charge.sh", this.context!!)
-        spf = context!!.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
-        qcSettingSuupport = batteryUnits.qcSettingSupport()
-        pdSettingSupport = batteryUnits.pdSupported()
-
-        settings_qc.setOnClickListener {
-            val checked = (it as Switch).isChecked
-            spf.edit().putBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, checked).apply()
-            if (checked) {
-                notifyConfigChanged()
-                Snackbar.make(this.view, R.string.battery_auto_boot_desc, Snackbar.LENGTH_LONG).show()
-            } else {
-                Snackbar.make(this.view, R.string.battery_qc_rehoot_desc, Snackbar.LENGTH_LONG).show()
-            }
-        }
-        settings_qc.setOnCheckedChangeListener { buttonView, isChecked ->
-            battery_charge_speed_ext.visibility = if (isChecked) View.VISIBLE else View.GONE
-            if (!isChecked) {
-                battery_night_mode.isChecked = false
-                spf.edit().putBoolean(SpfConfig.CHARGE_SPF_NIGHT_MODE, false).apply()
-            }
-        }
-        settings_bp.setOnClickListener {
-            spf.edit().putBoolean(SpfConfig.CHARGE_SPF_BP, settings_bp.isChecked).apply()
-            //禁用电池保护：恢复充电功能
-            if (!settings_bp.isChecked) {
-                KeepShellPublic.doCmdSync(ResumeCharge)
-            } else {
-                notifyConfigChanged()
-                Snackbar.make(this.view, R.string.battery_auto_boot_desc, Snackbar.LENGTH_LONG).show()
-            }
-        }
-
-        settings_bp_level.setOnSeekBarChangeListener(OnSeekBarChangeListener(Runnable {
-            notifyConfigChanged()
-        }, spf, battery_bp_level_desc))
-        settings_qc_limit.setOnSeekBarChangeListener(OnSeekBarChangeListener2(Runnable {
-            val level = spf.getInt(SpfConfig.CHARGE_SPF_QC_LIMIT, SpfConfig.CHARGE_SPF_QC_LIMIT_DEFAULT)
-            notifyConfigChanged()
-            if (spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
-                batteryUnits.setChargeInputLimit(level, context!!)
-            }
-        }, spf, settings_qc_limit_desc))
-
-        if (!qcSettingSuupport) {
-            settings_qc.isEnabled = false
-            spf.edit().putBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false).putBoolean(SpfConfig.CHARGE_SPF_NIGHT_MODE, false).apply()
-            settings_qc_limit.isEnabled = false
-            settings_qc_limit_current.visibility = View.GONE
-        }
-
-        if (!batteryUnits.bpSettingSupport()) {
-            settings_bp.isEnabled = false
-            spf.edit().putBoolean(SpfConfig.CHARGE_SPF_BP, false).apply()
-
-            bp_cardview.visibility = View.GONE
-        } else {
-            bp_cardview.visibility = View.VISIBLE
-        }
-
-        if (pdSettingSupport) {
-            settings_pd_support.visibility = View.VISIBLE
-            settings_pd.setOnClickListener {
-                val isChecked = (it as Switch).isChecked
-                batteryUnits.setAllowed(isChecked)
-            }
-            settings_pd.isChecked = batteryUnits.pdAllowed()
-            settings_pd_state.text = if (batteryUnits.pdActive()) getString(R.string.battery_pd_active_1) else getString(R.string.battery_pd_active_0)
-        } else {
-            settings_pd_support.visibility = View.GONE
-        }
-
-        if (batteryUnits.stepChargeSupport()) {
-            settings_step_charge.visibility = View.VISIBLE
-            settings_step_charge_enabled.setOnClickListener {
-                batteryUnits.setStepCharge((it as Checkable).isChecked)
-            }
-            settings_step_charge_enabled.isChecked = batteryUnits.getStepCharge()
-        } else {
-            settings_step_charge.visibility = View.GONE
-        }
-
-        btn_battery_history.setOnClickListener {
-            try {
-                val powerUsageIntent = Intent(Intent.ACTION_POWER_USAGE_SUMMARY)
-                val resolveInfo = context!!.packageManager.resolveActivity(powerUsageIntent, 0)
-                // check that the Battery app exists on this device
-                if (resolveInfo != null) {
-                    startActivity(powerUsageIntent)
-                }
-                /*
-                Intent intent = new Intent("/");
-                ComponentName cm = new ComponentName("com.android.settings","com.android.settings.BatteryInfo ");
-                intent.setComponent(cm);
-                intent.setAction("android.intent.action.VIEW");
-                activity.startActivityForResult( intent , 0);
-                */
-            } catch (ex: Exception) {
-
-            }
-        }
-        btn_battery_history_del.setOnClickListener {
-            DialogHelper.animDialog(AlertDialog.Builder(context!!)
-                    .setTitle("需要重启")
-                    .setMessage("删除电池使用记录需要立即重启手机，是否继续？")
-                    .setPositiveButton(R.string.btn_confirm, DialogInterface.OnClickListener { dialog, which ->
-                        KeepShellPublic.doCmdSync(
-                                "rm -f /data/system/batterystats-checkin.bin;" +
-                                        "rm -f /data/system/batterystats-daily.xml;" +
-                                        "rm -f /data/system/batterystats.bin;" +
-                                        "rm -rf /data/system/battery-history;" +
-                                        "rm -rf /data/charge_logger;" +
-                                        "rm -rf /data/vendor/charge_logger;" +
-                                        "sync;" +
-                                        "sleep 2;" +
-                                        "reboot;")
-                    })
-                    .setNegativeButton(R.string.btn_cancel, DialogInterface.OnClickListener { dialog, which -> }))
-        }
-
-        bp_disable_charge.setOnClickListener {
-            KeepShellPublic.doCmdSync("sh " + FileWrite.writePrivateShellFile("addin/disable_charge.sh", "addin/disable_charge.sh", this.context!!))
-            Snackbar.make(this.view, R.string.battery_charge_disabled, Snackbar.LENGTH_LONG).show()
-        }
-        bp_enable_charge.setOnClickListener {
-            KeepShellPublic.doCmdSync(ResumeCharge)
-            Snackbar.make(this.view, R.string.battery_charge_resumed, Snackbar.LENGTH_LONG).show()
-        }
-
-        val nightModeGetUp = spf.getInt(SpfConfig.CHARGE_SPF_TIME_GET_UP, SpfConfig.CHARGE_SPF_TIME_GET_UP_DEFAULT)
-        battery_get_up.setText(String.format(getString(R.string.battery_night_mode_time), nightModeGetUp / 60, nightModeGetUp % 60))
-        battery_get_up.setOnClickListener {
-            TimePickerDialog(this.context, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
-                spf.edit().putInt(SpfConfig.CHARGE_SPF_TIME_GET_UP, hourOfDay * 60 + minute).apply()
-                battery_get_up.setText(String.format(getString(R.string.battery_night_mode_time), hourOfDay, minute))
-            }, nightModeGetUp / 60, nightModeGetUp % 60, true).show()
-        }
-        val nightModeSleep = spf.getInt(SpfConfig.CHARGE_SPF_TIME_SLEEP, SpfConfig.CHARGE_SPF_TIME_SLEEP_DEFAULT)
-        battery_sleep.setText(String.format(getString(R.string.battery_night_mode_time), nightModeSleep / 60, nightModeSleep % 60))
-        battery_sleep.setOnClickListener {
-            TimePickerDialog(this.context, TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
-                spf.edit().putInt(SpfConfig.CHARGE_SPF_TIME_SLEEP, hourOfDay * 60 + minute).apply()
-                battery_sleep.setText(String.format(getString(R.string.battery_night_mode_time), hourOfDay, minute))
-            }, nightModeSleep / 60, nightModeSleep % 60, true).show()
-        }
-        battery_night_mode.isChecked = spf.getBoolean(SpfConfig.CHARGE_SPF_NIGHT_MODE, false)
-        battery_night_mode.setOnClickListener {
-            val checked = (it as Switch).isChecked
-            if (checked && !spf.getBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, false)) {
-                Toast.makeText(this.context, "需要开启 " + getString(R.string.battery_qc_charger), Toast.LENGTH_LONG).show()
-                it.isChecked = false
-            } else {
-                spf.edit().putBoolean(SpfConfig.CHARGE_SPF_NIGHT_MODE, checked).apply()
-            }
-        }
     }
 
     class OnSeekBarChangeListener(private var next: Runnable, private var spf: SharedPreferences, private var battery_bp_level_desc: TextView) : SeekBar.OnSeekBarChangeListener {
@@ -469,13 +455,6 @@ class FragmentBattery : androidx.fragment.app.Fragment() {
 
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
             settings_qc_limit_desc.text = "" + progress * 100 + "mA"
-        }
-    }
-
-    companion object {
-        fun createPage(): androidx.fragment.app.Fragment {
-            val fragment = FragmentBattery()
-            return fragment
         }
     }
 }

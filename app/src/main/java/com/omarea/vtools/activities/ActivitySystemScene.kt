@@ -1,16 +1,14 @@
-package com.omarea.vtools.fragments
+package com.omarea.vtools.activities
 
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ListView
 import com.omarea.common.ui.DialogHelper
@@ -30,23 +28,26 @@ import com.omarea.ui.TabIconHelper
 import com.omarea.utils.AppListHelper
 import com.omarea.utils.GetUpTime
 import com.omarea.vtools.R
-import com.omarea.vtools.activities.ActivityTimingTask
-import com.omarea.vtools.activities.ActivityTrigger
-import kotlinx.android.synthetic.main.fragment_system_scene.*
+import kotlinx.android.synthetic.main.activity_system_scene.*
 
-class FragmentSystemScene : androidx.fragment.app.Fragment() {
+class ActivitySystemScene : ActivityBase() {
     private lateinit var processBarDialog: ProgressBarDialog
     private lateinit var globalSPF: SharedPreferences
     private lateinit var chargeConfig: SharedPreferences
     internal val myHandler: Handler = Handler()
-    private var packageManager: PackageManager? = null
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_system_scene, container, false)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_system_scene)
+
+        setBackArrow()
+        onViewCreated()
+    }
     private lateinit var modeSwitcher: ModeSwitcher
 
     override fun onResume() {
         super.onResume()
-        activity!!.title = getString(R.string.menu_system_scene)
+        title = getString(R.string.menu_system_scene)
 
         updateCustomList()
     }
@@ -54,14 +55,14 @@ class FragmentSystemScene : androidx.fragment.app.Fragment() {
     private fun updateCustomList() {
         nextTask = null
         system_scene_task_list.removeAllViews()
-        TimingTaskManager(this.context!!).listTask().forEach {
+        TimingTaskManager(context).listTask().forEach {
             addCustomTaskItemView(it)
             checkNextTask(it)
         }
         updateNextTaskInfo()
 
         system_scene_trigger_list.removeAllViews()
-        TriggerManager(this.context!!).list().forEach {
+        TriggerManager(context).list().forEach {
             it?.run {
                 addCustomTriggerView(it)
             }
@@ -84,21 +85,17 @@ class FragmentSystemScene : androidx.fragment.app.Fragment() {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if (packageManager == null) {
-            packageManager = context!!.packageManager
-        }
-
+    private fun onViewCreated() {
         modeSwitcher = ModeSwitcher()
-        processBarDialog = ProgressBarDialog(context!!)
-        globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-        chargeConfig = context!!.getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
+        processBarDialog = ProgressBarDialog(context)
+        globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+        chargeConfig = getSharedPreferences(SpfConfig.CHARGE_SPF, Context.MODE_PRIVATE)
 
-        val tabIconHelper = TabIconHelper(configlist_tabhost, this.activity!!)
+        val tabIconHelper = TabIconHelper(configlist_tabhost, this)
         configlist_tabhost.setup()
 
-        tabIconHelper.newTabSpec("系统场景", context!!.getDrawable(R.drawable.tab_security)!!, R.id.blacklist_tab3)
-        tabIconHelper.newTabSpec("设置", context!!.getDrawable(R.drawable.tab_settings)!!, R.id.configlist_tab5)
+        tabIconHelper.newTabSpec("系统场景", getDrawable(R.drawable.tab_security)!!, R.id.blacklist_tab3)
+        tabIconHelper.newTabSpec("设置", getDrawable(R.drawable.tab_settings)!!, R.id.configlist_tab5)
         configlist_tabhost.currentTab = 0
         configlist_tabhost.setOnTabChangedListener { tabId ->
             tabIconHelper.updateHighlight()
@@ -112,12 +109,12 @@ class FragmentSystemScene : androidx.fragment.app.Fragment() {
         }
 
         system_scene_add_task.setOnClickListener {
-            val intent = Intent(activity, ActivityTimingTask::class.java)
+            val intent = Intent(this, ActivityTimingTask::class.java)
             startActivity(intent)
         }
 
         system_scene_add_trigger.setOnClickListener {
-            val intent = Intent(activity, ActivityTrigger::class.java)
+            val intent = Intent(this, ActivityTrigger::class.java)
             startActivity(intent)
         }
 
@@ -134,7 +131,6 @@ class FragmentSystemScene : androidx.fragment.app.Fragment() {
     // 设置待机模式的应用
     private fun standbyAppConfig() {
         processBarDialog.showDialog()
-        val context = context!!
         Thread(Runnable {
             val configFile = context.getSharedPreferences(SceneStandbyMode.configSpfName, Context.MODE_PRIVATE)
             val whiteList = context.resources.getStringArray(R.array.scene_standby_white_list)
@@ -166,7 +162,7 @@ class FragmentSystemScene : androidx.fragment.app.Fragment() {
 
     // 保存休眠应用配置
     private fun saveStandbyAppConfig(apps: List<Appinfo>) {
-        val configFile = context!!.getSharedPreferences(SceneStandbyMode.configSpfName, Context.MODE_PRIVATE).edit()
+        val configFile = getSharedPreferences(SceneStandbyMode.configSpfName, Context.MODE_PRIVATE).edit()
         configFile.clear()
 
         apps.forEach {
@@ -181,7 +177,7 @@ class FragmentSystemScene : androidx.fragment.app.Fragment() {
     }
 
     private fun buildCustomTaskItemView(timingTaskInfo: TimingTaskInfo): SceneTaskItem {
-        val sceneTaskItem = SceneTaskItem(context!!, timingTaskInfo)
+        val sceneTaskItem = SceneTaskItem(context, timingTaskInfo)
         sceneTaskItem.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
         sceneTaskItem.isClickable = true
         return sceneTaskItem
@@ -192,13 +188,13 @@ class FragmentSystemScene : androidx.fragment.app.Fragment() {
 
         system_scene_task_list.addView(sceneTaskItem)
         sceneTaskItem.setOnClickListener {
-            val intent = Intent(activity, ActivityTimingTask::class.java)
+            val intent = Intent(this, ActivityTimingTask::class.java)
             intent.putExtra("taskId", timingTaskInfo.taskId)
             startActivity(intent)
         }
         sceneTaskItem.setOnLongClickListener {
-            DialogHelper.animDialog(AlertDialog.Builder(context!!).setTitle("删除该任务？").setPositiveButton(R.string.btn_confirm) { _, _ ->
-                TimingTaskManager(context!!).removeTask(timingTaskInfo)
+            DialogHelper.animDialog(AlertDialog.Builder(context).setTitle("删除该任务？").setPositiveButton(R.string.btn_confirm) { _, _ ->
+                TimingTaskManager(context).removeTask(timingTaskInfo)
                 updateCustomList()
             }.setNeutralButton(R.string.btn_cancel) { _, _ ->
             })
@@ -207,20 +203,20 @@ class FragmentSystemScene : androidx.fragment.app.Fragment() {
     }
 
     private fun addCustomTriggerView(triggerInfo: TriggerInfo) {
-        val itemView = SceneTriggerItem(context!!, triggerInfo)
+        val itemView = SceneTriggerItem(context, triggerInfo)
         itemView.setLayoutParams(LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
         itemView.isClickable = true
 
         system_scene_trigger_list.addView(itemView)
 
         itemView.setOnClickListener {
-            val intent = Intent(activity, ActivityTrigger::class.java)
+            val intent = Intent(this, ActivityTrigger::class.java)
             intent.putExtra("id", triggerInfo.id)
             startActivity(intent)
         }
         itemView.setOnLongClickListener {
-            DialogHelper.animDialog(AlertDialog.Builder(context!!).setTitle("删除该触发器？").setPositiveButton(R.string.btn_confirm) { _, _ ->
-                TriggerManager(context!!).removeTrigger(triggerInfo)
+            DialogHelper.animDialog(AlertDialog.Builder(context).setTitle("删除该触发器？").setPositiveButton(R.string.btn_confirm) { _, _ ->
+                TriggerManager(context).removeTrigger(triggerInfo)
                 updateCustomList()
             }.setNeutralButton(R.string.btn_cancel) { _, _ ->
             })
@@ -231,12 +227,5 @@ class FragmentSystemScene : androidx.fragment.app.Fragment() {
     override fun onDestroy() {
         processBarDialog.hideDialog()
         super.onDestroy()
-    }
-
-    companion object {
-        fun createPage(): androidx.fragment.app.Fragment {
-            val fragment = FragmentSystemScene()
-            return fragment
-        }
     }
 }

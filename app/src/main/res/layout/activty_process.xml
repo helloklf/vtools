@@ -1,10 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <include
+        android:id="@+id/layout_app_bar"
+        layout="@layout/layout_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
     <LinearLayout
+        android:layout_below="@+id/layout_app_bar"
         android:id="@+id/process_view"
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -55,10 +62,11 @@
     </LinearLayout>
     <TextView
         android:visibility="gone"
+        android:layout_below="@+id/layout_app_bar"
         android:id="@+id/process_unsupported"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:textAlignment="center"
         android:text="该功能暂不支持你的手机系统\n你也可以去试试具有相似功能的3C Toolbox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
-</FrameLayout>
+</RelativeLayout>

@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.omarea.vtools.fragments.FragmentAppConfig">
+    android:layout_height="match_parent">
+    <include
+        android:id="@+id/layout_app_bar"
+        layout="@layout/layout_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <TabHost
+        android:layout_below="@id/layout_app_bar"
         android:id="@+id/configlist_tabhost"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -248,4 +252,4 @@
 
     </TabHost>
 
-</LinearLayout>
+</RelativeLayout>

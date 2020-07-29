@@ -19,6 +19,7 @@ import com.omarea.permissions.CheckRootStatus
 import com.omarea.shell_utils.BackupRestoreUtils
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vtools.R
+import com.omarea.vtools.activities.*
 import com.projectkr.shell.OpenPageHelper
 import kotlinx.android.synthetic.main.fragment_nav.*
 
@@ -173,20 +174,51 @@ class FragmentNav : Fragment(), View.OnClickListener {
             var fragment: Fragment? = null
 
             when (id) {
-                R.id.nav_freeze -> fragment = FragmentFreeze.createPage()
-                R.id.nav_applictions -> fragment = FragmentApplistions.createPage()
-                R.id.nav_swap -> fragment = FragmentSwap.createPage()
-                R.id.nav_battery -> fragment = FragmentBattery.createPage()
-                R.id.nav_charge -> fragment = FragmentCharge()
-                R.id.nav_img -> {
-                    if (!BackupRestoreUtils.isSupport()) {
-                        Toast.makeText(context, "此功能不支持你的手机", Toast.LENGTH_SHORT).show()
-                        return
-                    }
-                    fragment = FragmentImg.createPage()
+                R.id.nav_freeze -> {
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.setClassName("com.omarea.vtools", "com.omarea.vtools.activities.ActivityFreezeApps2")
+                    startActivity(intent)
+                    return
                 }
-                R.id.nav_battery_stats -> fragment = FragmentBatteryStats.createPage()
-                R.id.nav_core_control -> fragment = FragmentCpuControl.newInstance()
+                R.id.nav_applictions -> {
+                    val intent = Intent(context, ActivityApplistions::class.java)
+                    startActivity(intent)
+                    return
+                }
+                R.id.nav_swap -> {
+                    val intent = Intent(context, ActivitySwap::class.java)
+                    startActivity(intent)
+                    return
+                }
+                R.id.nav_battery -> {
+                    val intent = Intent(context, ActivityBattery::class.java)
+                    startActivity(intent)
+                    return
+                }
+                R.id.nav_charge -> {
+                    val intent = Intent(context, ActivityCharge::class.java)
+                    startActivity(intent)
+                    return
+                }
+                R.id.nav_img -> {
+                    if (BackupRestoreUtils.isSupport()) {
+                        val intent = Intent(context, ActivityImg::class.java)
+                        startActivity(intent)
+                    } else {
+                        Toast.makeText(context, "此功能不支持你的手机", Toast.LENGTH_SHORT).show()
+                    }
+                    return
+                }
+                R.id.nav_battery_stats -> {
+                    val intent = Intent(context, ActivityBatteryStats::class.java)
+                    startActivity(intent)
+                    return
+                }
+                R.id.nav_core_control -> {
+                    val intent = Intent(context, ActivityCpuControl::class.java)
+                    startActivity(intent)
+                    return
+                }
                 R.id.nav_qq -> {
                     val key = "6ffXO4eTZVN0eeKmp-2XClxizwIc7UIu" //""e-XL2In7CgIpeK_sG75s-vAiu7n5DnlS"
                     val intent = Intent()
@@ -205,16 +237,24 @@ class FragmentNav : Fragment(), View.OnClickListener {
                     startActivity(sendIntent)
                 }
                 R.id.nav_app_scene -> {
-                    fragment = FragmentAppConfig.createPage()
+                    val intent = Intent(context, ActivityAppConfig::class.java)
+                    startActivity(intent)
+                    return
                 }
                 R.id.nav_cpu_modes -> {
-                    fragment = FragmentCpuModes.createPage()
+                    val intent = Intent(context, ActivityCpuModes::class.java)
+                    startActivity(intent)
+                    return
                 }
                 R.id.nav_system_scene -> {
-                    fragment = FragmentSystemScene.createPage()
+                    val intent = Intent(context, ActivitySystemScene::class.java)
+                    startActivity(intent)
+                    return
                 }
                 R.id.nav_app_magisk -> {
-                    fragment = FragmentMagisk.createPage()
+                    val intent = Intent(context, ActivityMagisk::class.java)
+                    startActivity(intent)
+                    return
                 }
                 R.id.nav_gesture -> {
                     tryOpenApp("com.omarea.gesture")
@@ -225,9 +265,15 @@ class FragmentNav : Fragment(), View.OnClickListener {
                     return
                 }
                 R.id.nav_processes -> {
-                    fragment = FragmentProcess()
+                    val intent = Intent(context, ActivityProcess::class.java)
+                    startActivity(intent)
+                    return
                 }
-                R.id.nav_additional -> fragment = FragmentAddin()
+                R.id.nav_additional -> {
+                    val intent = Intent(context, ActivityAddin::class.java)
+                    startActivity(intent)
+                    return
+                }
                 R.id.nav_additional_all -> {
                     val krScriptConfig = KrScriptConfig().init(context!!)
                     val activity = activity!!

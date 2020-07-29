@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/layout_app_bar"
+        layout="@layout/layout_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layout_app_bar"
+        android:orientation="vertical">
+
+        <LinearLayout
+            style="@style/ListCardItem"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="场景模式统计的耗电记录"
+                    android:textColor="?colorAccent" />
+
+                <TextView
+                    style="@style/textSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="注意：这里统计的只是每个应用在前台显示时的整机耗电，这意味着数据会后台数量影响！" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/battery_stats_delete"
+                style="?android:buttonBarButtonStyle"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginLeft="6dp"
+                android:padding="0dp"
+                android:src="@drawable/delete" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/ListCardItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                style="@style/textTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="峰值统计" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:orientation="vertical">
+
+                    <com.omarea.ui.CpuChartView
+                        android:id="@+id/battery_max_temperature"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:layout_alignTop="@id/battery_max_temperature"
+                        android:gravity="center_vertical"
+                        android:text="温度"
+                        android:textAlignment="center"
+                        android:textColor="#77888888"
+                        android:textSize="15dp" />
+
+                    <TextView
+                        android:id="@+id/battery_max_temperature_text"
+                        style="@style/textSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/battery_max_temperature"
+                        android:layout_marginTop="4dp"
+                        android:text="0°C"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                    android:orientation="vertical">
+
+                    <com.omarea.ui.CpuChartView
+                        android:id="@+id/battery_max_output"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:layout_alignTop="@id/battery_max_output"
+                        android:gravity="center_vertical"
+                        android:text="耗电"
+                        android:textAlignment="center"
+                        android:textColor="#77888888"
+                        android:textSize="15dp" />
+
+                    <TextView
+                        android:id="@+id/battery_max_output_text"
+                        style="@style/textSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/battery_max_output"
+                        android:layout_marginTop="4dp"
+                        android:text="0mA"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="70dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/activity_horizontal_margin"
+                    android:orientation="vertical">
+
+                    <com.omarea.ui.CpuChartView
+                        android:id="@+id/battery_max_intput"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="70dp"
+                        android:layout_alignTop="@id/battery_max_intput"
+                        android:gravity="center_vertical"
+                        android:text="充电"
+                        android:textAlignment="center"
+                        android:textColor="#77888888"
+                        android:textSize="15dp" />
+
+                    <TextView
+                        android:id="@+id/battery_max_intput_text"
+                        style="@style/textSmall"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/battery_max_intput"
+                        android:layout_marginTop="4dp"
+                        android:text="0mA"
+                        android:textAlignment="center" />
+                </RelativeLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/ListCardItemLast"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="0dp">
+
+            <TextView
+                style="@style/textTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:text="按应用前台应用" />
+
+            <com.omarea.common.ui.OverScrollListView
+                android:id="@+id/battery_stats"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:divider="@null"
+                android:padding="8dp"
+                android:scrollbars="none" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.omarea.common.ui.OverScrollView
+    <include
+        android:id="@+id/layout_app_bar"
+        layout="@layout/layout_app_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content" />
+
+    <com.omarea.common.ui.OverScrollView
+        android:layout_below="@id/layout_app_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -440,4 +447,4 @@
             </TableLayout>
         </LinearLayout>
     </com.omarea.common.ui.OverScrollView>
-</FrameLayout>
+</RelativeLayout>

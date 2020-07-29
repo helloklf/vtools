@@ -1,6 +1,7 @@
-package com.omarea.vtools.fragments
+package com.omarea.vtools.activities
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -9,27 +10,30 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
-import androidx.fragment.app.Fragment
 import com.omarea.common.ui.DialogHelper
 import com.omarea.model.ProcessInfo
 import com.omarea.shell_utils.ProcessUtils
 import com.omarea.ui.ProcessAdapter
 import com.omarea.vtools.R
-import kotlinx.android.synthetic.main.fragment_process.*
+import kotlinx.android.synthetic.main.activty_process.*
 import java.util.*
 
-class FragmentProcess : Fragment() {
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_process, container, false)
+class ActivityProcess : ActivityBase() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activty_process)
+
+        setBackArrow()
+
+        onViewCreated(this)
+    }
 
     private val processUtils = ProcessUtils()
     private var supported: Boolean = false
     private val handle = Handler()
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    private fun onViewCreated(context: Context) {
         supported = processUtils.supported(context)
 
         if (supported) {
@@ -41,7 +45,7 @@ class FragmentProcess : Fragment() {
         }
 
         if (supported) {
-            process_list.adapter = ProcessAdapter(this.context!!)
+            process_list.adapter = ProcessAdapter(context)
             process_list.setOnItemClickListener { _, _, position, _ ->
                 openProcessDetail((process_list.adapter as ProcessAdapter).getItem(position) as ProcessInfo)
             }
@@ -124,7 +128,7 @@ class FragmentProcess : Fragment() {
     private var timer: Timer? = null
     override fun onResume() {
         super.onResume()
-        activity!!.title = getString(R.string.menu_processes)
+        title = getString(R.string.menu_processes)
         resume()
     }
 
@@ -156,7 +160,7 @@ class FragmentProcess : Fragment() {
                     }
                 } else {
                     imageView.post {
-                        imageView.setImageDrawable(context!!.getDrawable(R.drawable.process_android))
+                        imageView.setImageDrawable(getDrawable(R.drawable.process_android))
                     }
                 }
             }
@@ -166,10 +170,10 @@ class FragmentProcess : Fragment() {
     private fun openProcessDetail(processInfo: ProcessInfo) {
         val detail = processUtils.getProcessDetail(processInfo.pid)
         if (detail != null) {
-            val view = LayoutInflater.from(context).inflate(R.layout.dialog_process_detail, null)
+            val view = LayoutInflater.from(this).inflate(R.layout.dialog_process_detail, null)
 
             if (pm == null) {
-                pm = context!!.packageManager
+                pm = packageManager
             }
 
             val name = if (detail.name.contains(":")) detail.name.substring(0, detail.name.indexOf(":")) else detail.name
@@ -179,7 +183,7 @@ class FragmentProcess : Fragment() {
             } catch (ex: java.lang.Exception) {
                 detail.friendlyName = name
             }
-            val dialog = AlertDialog.Builder(context).setView(view).create()
+            val dialog = AlertDialog.Builder(this).setView(view).create()
 
             view.run {
                 findViewById<TextView>(R.id.ProcessFriendlyName).text = detail.friendlyName
@@ -212,7 +216,7 @@ class FragmentProcess : Fragment() {
 
             DialogHelper.animDialog(dialog)
         } else {
-            Toast.makeText(context, "无法获取详情，该进程可能已经退出!", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "无法获取详情，该进程可能已经退出!", Toast.LENGTH_SHORT).show()
         }
     }
 }

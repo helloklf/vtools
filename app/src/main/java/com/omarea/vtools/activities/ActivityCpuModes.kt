@@ -1,4 +1,4 @@
-package com.omarea.vtools.fragments
+package com.omarea.vtools.activities
 
 import android.app.Activity
 import android.app.AlertDialog
@@ -6,9 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Switch
 import android.widget.Toast
 import com.google.android.material.snackbar.Snackbar
@@ -18,29 +16,30 @@ import com.omarea.scene_mode.ModeSwitcher
 import com.omarea.store.SpfConfig
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vtools.R
-import com.omarea.vtools.activities.ActivityAddinOnline
-import com.omarea.vtools.activities.ActivityFileSelector
-import kotlinx.android.synthetic.main.fragment_cpu_modes.*
+import kotlinx.android.synthetic.main.activity_cpu_modes.*
 import java.io.File
 import java.nio.charset.Charset
 
 
-class FragmentCpuModes : androidx.fragment.app.Fragment() {
+class ActivityCpuModes : ActivityBase() {
     private var author: String = ""
     private var configFileInstalled: Boolean = false
     private lateinit var modeSwitcher: ModeSwitcher
     private lateinit var globalSPF: SharedPreferences
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_cpu_modes)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_cpu_modes, container, false)
+        setBackArrow()
+        onViewCreated()
+    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+    private fun onViewCreated() {
+        globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         modeSwitcher = ModeSwitcher()
 
         cpu_config_p4.setOnClickListener {
-            Toast.makeText(context!!, "该模式暂未开放使用", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "该模式暂未开放使用", Toast.LENGTH_SHORT).show()
         }
         bindMode(cpu_config_p0, ModeSwitcher.POWERSAVE)
         bindMode(cpu_config_p1, ModeSwitcher.BALANCE)
@@ -148,7 +147,7 @@ class FragmentCpuModes : androidx.fragment.app.Fragment() {
 
     override fun onResume() {
         super.onResume()
-        activity!!.title = getString(R.string.menu_cpu_modes)
+        title = getString(R.string.menu_cpu_modes)
 
         val currentAuthor = author
 
@@ -161,17 +160,9 @@ class FragmentCpuModes : androidx.fragment.app.Fragment() {
     }
 
     private fun modifyCpuConfig(mode: String) {
-        val transaction = activity!!.supportFragmentManager.beginTransaction()
-        transaction.setTransition(androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        // transaction.setCustomAnimations(R.animator.fragment_enter, R.animator.fragment_exit)
-        val fragment = FragmentCpuControl.newInstance(mode)
-
-        val pageTitle = ModeSwitcher.getModName(mode)
-        // transaction.disallowAddToBackStack()
-        transaction.replace(R.id.app_more, fragment)
-        transaction.addToBackStack(pageTitle);
-        transaction.commitAllowingStateLoss()
-        activity!!.title = pageTitle
+        val intent = Intent(context, ActivityCpuControl::class.java)
+        intent.putExtra("cpuModeName", mode)
+        startActivity(intent)
     }
 
     private val REQUEST_POWERCFG_FILE = 1
@@ -179,9 +170,6 @@ class FragmentCpuModes : androidx.fragment.app.Fragment() {
     private val configInstaller = CpuConfigInstaller()
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (this.isDetached) {
-            return
-        }
         if (requestCode == REQUEST_POWERCFG_FILE) {
             if (resultCode == Activity.RESULT_OK && data != null) {
                 if (data.extras?.containsKey("file") != true) {
@@ -197,7 +185,7 @@ class FragmentCpuModes : androidx.fragment.app.Fragment() {
                     val lines = file.readText(Charset.defaultCharset()).replace("\r", "")
                     val configStar = lines.split("\n").firstOrNull()
                     if (configStar != null && configStar.startsWith("#!/") && configStar.endsWith("sh")) {
-                        if (configInstaller.installCustomConfig(context!!, lines, "import-file")) {
+                        if (configInstaller.installCustomConfig(context, lines, "import-file")) {
                             configInstalled()
                         } else {
                             Toast.makeText(context, "由于某些原因，安装配置脚本失败，请重试！", Toast.LENGTH_LONG).show()
@@ -206,7 +194,7 @@ class FragmentCpuModes : androidx.fragment.app.Fragment() {
                         Toast.makeText(context, "这似乎是个无效的脚本文件！", Toast.LENGTH_LONG).show()
                     }
                 } else {
-                    Toast.makeText(context!!, "所选的文件没找到！", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "所选的文件没找到！", Toast.LENGTH_LONG).show()
                 }
             }
             return
@@ -219,7 +207,7 @@ class FragmentCpuModes : androidx.fragment.app.Fragment() {
 
     //检查配置脚本是否已经安装
     private fun checkConfig() {
-        val support = configInstaller.dynamicSupport(context!!)
+        val support = configInstaller.dynamicSupport(context)
         if (support) {
             config_cfg_select.visibility = View.VISIBLE
             config_cfg_select_0.setOnClickListener {
@@ -243,7 +231,7 @@ class FragmentCpuModes : androidx.fragment.app.Fragment() {
             intent.putExtra("extension", "sh")
             startActivityForResult(intent, REQUEST_POWERCFG_FILE)
         } catch (ex: Exception) {
-            Toast.makeText(context!!, "启动内置文件选择器失败！", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "启动内置文件选择器失败！", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -274,7 +262,7 @@ class FragmentCpuModes : androidx.fragment.app.Fragment() {
             intent.putExtra("url", "https://github.com/yc9559/cpufreq-interactive-opt/tree/master/vtools-powercfg")
             startActivityForResult(intent, REQUEST_POWERCFG_ONLINE)
         } catch (ex: Exception) {
-            Toast.makeText(context!!, "启动在线页面失败！", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "启动在线页面失败！", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -284,18 +272,18 @@ class FragmentCpuModes : androidx.fragment.app.Fragment() {
             intent.putExtra("url", "https://github.com/yc9559/wipe-v2/releases")
             startActivityForResult(intent, REQUEST_POWERCFG_ONLINE)
         } catch (ex: Exception) {
-            Toast.makeText(context!!, "启动在线页面失败！", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "启动在线页面失败！", Toast.LENGTH_SHORT).show()
         }
     }
 
     //安装调频文件
     private fun installConfig(useBigCore: Boolean) {
-        if (!configInstaller.dynamicSupport(context!!)) {
-            Snackbar.make(view!!, R.string.not_support_config, Snackbar.LENGTH_LONG).show()
+        if (!configInstaller.dynamicSupport(context)) {
+            Snackbar.make(dynamic_control, R.string.not_support_config, Snackbar.LENGTH_LONG).show()
             return
         }
 
-        configInstaller.installOfficialConfig(context!!, "", useBigCore)
+        configInstaller.installOfficialConfig(context, "", useBigCore)
         configInstalled()
     }
 
@@ -303,7 +291,7 @@ class FragmentCpuModes : androidx.fragment.app.Fragment() {
         updateState()
 
         if (globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)) {
-            Snackbar.make(view!!, getString(R.string.config_installed), Snackbar.LENGTH_LONG).show()
+            Snackbar.make(dynamic_control, getString(R.string.config_installed), Snackbar.LENGTH_LONG).show()
             reStartService()
         } else {
             DialogHelper.animDialog(AlertDialog.Builder(context)
@@ -322,15 +310,8 @@ class FragmentCpuModes : androidx.fragment.app.Fragment() {
      * 重启辅助服务
      */
     private fun reStartService() {
-        if (AccessibleServiceHelper().serviceRunning(context!!)) {
-            context!!.sendBroadcast(Intent(context!!.getString(R.string.scene_change_action)))
-        }
-    }
-
-    companion object {
-        fun createPage(): androidx.fragment.app.Fragment {
-            val fragment = FragmentCpuModes()
-            return fragment
+        if (AccessibleServiceHelper().serviceRunning(context)) {
+            context.sendBroadcast(Intent(context.getString(R.string.scene_change_action)))
         }
     }
 }

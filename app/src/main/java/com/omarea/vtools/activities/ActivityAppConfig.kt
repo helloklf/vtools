@@ -1,23 +1,19 @@
-package com.omarea.vtools.fragments
+package com.omarea.vtools.activities
 
 import android.annotation.SuppressLint
-import android.app.Activity.RESULT_OK
 import android.app.AlertDialog
 import android.content.*
 import android.content.pm.ActivityInfo
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.Handler
 import android.os.IBinder
 import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.AdapterView
 import android.widget.CheckBox
 import android.widget.Switch
 import android.widget.Toast
+import com.omarea.Scene
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.OverScrollListView
 import com.omarea.common.ui.ProgressBarDialog
@@ -32,25 +28,30 @@ import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.utils.AppListHelper
 import com.omarea.vaddin.IAppConfigAidlInterface
 import com.omarea.vtools.R
-import com.omarea.vtools.activities.ActivityAppDetails
-import kotlinx.android.synthetic.main.fragment_app_config.*
+import kotlinx.android.synthetic.main.activity_app_config.*
 import org.json.JSONObject
 import java.util.*
 import kotlin.collections.ArrayList
 
-class FragmentAppConfig : androidx.fragment.app.Fragment() {
+class ActivityAppConfig : ActivityBase() {
     private lateinit var processBarDialog: ProgressBarDialog
     private lateinit var spfPowercfg: SharedPreferences
     private lateinit var globalSPF: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
     private lateinit var applistHelper: AppListHelper
-    internal val myHandler: Handler = Handler()
     private var installedList: ArrayList<Appinfo>? = null
     private var displayList: ArrayList<Appinfo>? = null
-    private var packageManager: PackageManager? = null
     private lateinit var sceneConfigStore: SceneConfigStore
     private var firstMode = ModeSwitcher.DEFAULT
     private var aidlConn: IAppConfigAidlInterface? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_app_config)
+
+        setBackArrow()
+
+        onViewCreated()
+    }
 
     private var conn = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
@@ -80,7 +81,7 @@ class FragmentAppConfig : androidx.fragment.app.Fragment() {
             //新版本（5.0后）必须显式intent启动 绑定服务
             intent.setComponent(ComponentName("com.omarea.vaddin", "com.omarea.vaddin.ConfigUpdateService"));
             //绑定的时候服务端自动创建
-            if (context!!.bindService(intent, conn, Context.BIND_AUTO_CREATE)) {
+            if (bindService(intent, conn, Context.BIND_AUTO_CREATE)) {
             } else {
                 throw Exception("")
             }
@@ -89,27 +90,21 @@ class FragmentAppConfig : androidx.fragment.app.Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? = inflater.inflate(R.layout.fragment_app_config, container, false)
     private lateinit var modeSwitcher: ModeSwitcher
 
     override fun onResume() {
         super.onResume()
-        activity!!.title = getString(R.string.menu_scene_mode)
+        title = getString(R.string.menu_scene_mode)
 
         bindService()
     }
 
-    @SuppressLint("CommitPrefEdits", "ApplySharedPref")
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        if (packageManager == null) {
-            packageManager = context!!.packageManager
-        }
-
+    private fun onViewCreated() {
         modeSwitcher = ModeSwitcher()
-        processBarDialog = ProgressBarDialog(context!!)
-        applistHelper = AppListHelper(context!!)
-        spfPowercfg = context!!.getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
-        globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+        processBarDialog = ProgressBarDialog(context)
+        applistHelper = AppListHelper(context)
+        spfPowercfg = getSharedPreferences(SpfConfig.POWER_CONFIG_SPF, Context.MODE_PRIVATE)
+        globalSPF = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         editor = spfPowercfg.edit()
         firstMode = globalSPF.getString(SpfConfig.GLOBAL_SPF_POWERCFG_FIRST_MODE, ModeSwitcher.DEFAULT)!!
         sceneConfigStore = SceneConfigStore(this.context)
@@ -118,11 +113,11 @@ class FragmentAppConfig : androidx.fragment.app.Fragment() {
             initDefaultConfig()
         }
 
-        val tabIconHelper = TabIconHelper(configlist_tabhost, this.activity!!)
+        val tabIconHelper = TabIconHelper(configlist_tabhost, this)
         configlist_tabhost.setup()
 
-        tabIconHelper.newTabSpec("APP场景", context!!.getDrawable(R.drawable.tab_app)!!, R.id.configlist_tab0)
-        tabIconHelper.newTabSpec("设置", context!!.getDrawable(R.drawable.tab_settings)!!, R.id.configlist_tab5)
+        tabIconHelper.newTabSpec("APP场景", getDrawable(R.drawable.tab_app)!!, R.id.configlist_tab0)
+        tabIconHelper.newTabSpec("设置", getDrawable(R.drawable.tab_settings)!!, R.id.configlist_tab5)
         configlist_tabhost.currentTab = 0
         configlist_tabhost.setOnTabChangedListener { tabId ->
             tabIconHelper.updateHighlight()
@@ -130,9 +125,9 @@ class FragmentAppConfig : androidx.fragment.app.Fragment() {
 
         battery_monitor.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, false)
         battery_monitor.setOnClickListener {
-            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, (it as Switch).isChecked).commit()
-            BatteryHistoryStore(context!!).clearData()
-            Toast.makeText(context!!, "已自动清空耗电统计数据，以便于重新采集！", Toast.LENGTH_SHORT).show()
+            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_BATTERY_MONITORY, (it as Switch).isChecked).apply()
+            BatteryHistoryStore(context).clearData()
+            Toast.makeText(context, "已自动清空耗电统计数据，以便于重新采集！", Toast.LENGTH_SHORT).show()
             reStartService()
         }
         scene_app_list.setOnItemClickListener { parent, view2, position, id ->
@@ -184,9 +179,9 @@ class FragmentAppConfig : androidx.fragment.app.Fragment() {
                                 }
 
                                 if (modeName.isEmpty()) {
-                                    spfPowercfg.edit().remove(item.packageName.toString()).commit()
+                                    spfPowercfg.edit().remove(item.packageName.toString()).apply()
                                 } else {
-                                    spfPowercfg.edit().putString(item.packageName.toString(), modeName).commit()
+                                    spfPowercfg.edit().putString(item.packageName.toString(), modeName).apply()
                                 }
 
                                 setAppRowDesc(item)
@@ -200,7 +195,7 @@ class FragmentAppConfig : androidx.fragment.app.Fragment() {
         } else {
             dynamic_control_opts.visibility = View.GONE
             scene_app_list.setOnItemLongClickListener { _, _, _, _ ->
-                DialogHelper.helpInfo(context!!, "", "请先回到功能列表，进入 [性能配置] 功能，开启 [性能调节] 功能")
+                DialogHelper.helpInfo(context, "", "请先回到功能列表，进入 [性能配置] 功能，开启 [性能调节] 功能")
                 true
             }
         }
@@ -250,7 +245,7 @@ class FragmentAppConfig : androidx.fragment.app.Fragment() {
         scene_notify.isChecked = globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, true)
         scene_notify.setOnClickListener {
             val checked = (it as Switch).isChecked
-            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, checked).commit()
+            globalSPF.edit().putBoolean(SpfConfig.GLOBAL_SPF_NOTIFY, checked).apply()
             reStartService()
         }
     }
@@ -260,9 +255,6 @@ class FragmentAppConfig : androidx.fragment.app.Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (this.isDetached) {
-            return
-        }
         if (requestCode == REQUEST_APP_CONFIG && data != null && displayList != null) {
             try {
                 if (resultCode == RESULT_OK) {
@@ -290,11 +282,11 @@ class FragmentAppConfig : androidx.fragment.app.Fragment() {
 
     // 通知辅助服务配置变化
     private fun notifyService(app: String, mode: String) {
-        if (AccessibleServiceHelper().serviceRunning(context!!)) {
-            val intent = Intent(context!!.getString(R.string.scene_appchange_action))
+        if (AccessibleServiceHelper().serviceRunning(context)) {
+            val intent = Intent(getString(R.string.scene_appchange_action))
             intent.putExtra("app", app)
             intent.putExtra("mode", mode)
-            context!!.sendBroadcast(intent)
+            sendBroadcast(intent)
         }
     }
 
@@ -302,8 +294,8 @@ class FragmentAppConfig : androidx.fragment.app.Fragment() {
      * 重启辅助服务
      */
     private fun reStartService() {
-        if (AccessibleServiceHelper().serviceRunning(context!!)) {
-            context!!.sendBroadcast(Intent(context!!.getString(R.string.scene_change_action)))
+        if (AccessibleServiceHelper().serviceRunning(context)) {
+            sendBroadcast(Intent(getString(R.string.scene_change_action)))
         }
     }
 
@@ -389,18 +381,15 @@ class FragmentAppConfig : androidx.fragment.app.Fragment() {
     }
 
     private fun setListData(dl: ArrayList<Appinfo>?, lv: OverScrollListView) {
-        myHandler.post {
-            lv.adapter = SceneModeAdapter(context!!, dl!!)
+        Scene.post(Runnable {
+            lv.adapter = SceneModeAdapter(context, dl!!)
             processBarDialog.hideDialog()
-        }
+        })
     }
 
     private var onLoading = false
     @SuppressLint("ApplySharedPref")
     private fun loadList(foreceReload: Boolean = false) {
-        if (this.isDetached) {
-            return
-        }
         if (onLoading) {
             return
         }
@@ -413,9 +402,9 @@ class FragmentAppConfig : androidx.fragment.app.Fragment() {
                 installedList = applistHelper.getAll()
             }
             if (config_search_box == null) {
-                myHandler.post {
+                Scene.post(Runnable {
                     processBarDialog.hideDialog()
-                }
+                })
                 return@Runnable
             }
             val keyword = config_search_box.text.toString().toLowerCase()
@@ -452,10 +441,10 @@ class FragmentAppConfig : androidx.fragment.app.Fragment() {
                 }
             }
             sortAppList(displayList!!)
-            myHandler.post {
+            Scene.post(Runnable {
                 processBarDialog.hideDialog()
                 setListData(displayList, scene_app_list)
-            }
+            })
             onLoading = false
         }).start()
     }
@@ -527,17 +516,10 @@ class FragmentAppConfig : androidx.fragment.app.Fragment() {
 
     override fun onDestroy() {
         if (aidlConn != null) {
-            context!!.unbindService(conn)
+            unbindService(conn)
             aidlConn = null
         }
         processBarDialog.hideDialog()
         super.onDestroy()
-    }
-
-    companion object {
-        fun createPage(): androidx.fragment.app.Fragment {
-            val fragment = FragmentAppConfig()
-            return fragment
-        }
     }
 }

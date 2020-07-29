@@ -1,40 +1,33 @@
-package com.omarea.vtools.fragments
+package com.omarea.vtools.activities
 
 import android.os.BatteryManager
 import android.os.Bundle
 import android.os.Handler
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import com.omarea.data_collection.GlobalStatus
 import com.omarea.store.BatteryHistoryStore
 import com.omarea.vtools.R
 import com.omarea.vtools.dialogs.DialogElectricityUnit
-import kotlinx.android.synthetic.main.fragment_charge.*
+import kotlinx.android.synthetic.main.activity_charge.*
 import java.util.*
 
-class FragmentCharge : androidx.fragment.app.Fragment() {
+class ActivityCharge : ActivityBase() {
     private lateinit var storage: BatteryHistoryStore
     private var timer: Timer? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_charge)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_charge, container, false)
+        setBackArrow()
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        storage = BatteryHistoryStore(context!!)
+        storage = BatteryHistoryStore(this)
         electricity_adj_unit.setOnClickListener {
-            DialogElectricityUnit().showDialog(context!!)
+            DialogElectricityUnit().showDialog(this)
         }
     }
 
     override fun onResume() {
         super.onResume()
-        if (isDetached) {
-            return
-        }
-        activity!!.title = getString(R.string.menu_charge)
+        title = getString(R.string.menu_charge)
         timer = Timer().apply {
             schedule(object : TimerTask() {
                 override fun run() {

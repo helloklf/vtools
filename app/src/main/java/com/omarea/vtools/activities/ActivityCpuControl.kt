@@ -1,13 +1,11 @@
-package com.omarea.vtools.fragments
+package com.omarea.vtools.activities
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.ui.DialogHelper
@@ -21,13 +19,13 @@ import com.omarea.store.CpuConfigStorage
 import com.omarea.store.SpfConfig
 import com.omarea.utils.AccessibleServiceHelper
 import com.omarea.vtools.R
-import kotlinx.android.synthetic.main.fragment_cpu_control.*
+import kotlinx.android.synthetic.main.activity_cpu_control.*
 import java.util.*
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class FragmentCpuControl : androidx.fragment.app.Fragment() {
+class ActivityCpuControl : ActivityBase() {
     // 应用到指定的配置模式
     private var cpuModeName: String? = null
 
@@ -147,7 +145,7 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
                 ThermalControlUtils.setTheramlState((it as CheckBox).isChecked)
             }
             cpu_sched_boost.setOnClickListener {
-                CpuFrequencyUtil.setSechedBoostState((it as CheckBox).isChecked, this.context)
+                CpuFrequencyUtil.setSechedBoostState((it as CheckBox).isChecked, context)
             }
 
             for (cluster in 0 until clusterCount) {
@@ -420,7 +418,7 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
     }
 
     private fun bindClusterConfig(cluster: Int) {
-        val view = View.inflate(this.context!!, R.layout.fragment_cpu_cluster, null)
+        val view = View.inflate(context, R.layout.fragment_cpu_cluster, null)
         cpu_cluster_list.addView(view)
         view.findViewById<TextView>(R.id.cluster_title).text = "Cluster $cluster"
         view.tag = "cluster_$cluster"
@@ -706,7 +704,7 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
         try {
             for (cluster in 0 until clusterCount) {
                 if (status.cpuClusterStatuses.size > cluster) {
-                    val cluster_view = view!!.findViewWithTag<View>("cluster_" + cluster)
+                    val cluster_view = cpu_cluster_list.findViewWithTag<View>("cluster_" + cluster)
                     val cluster_min_freq = cluster_view.findViewById<TextView>(R.id.cluster_min_freq)
                     val cluster_max_freq = cluster_view.findViewById<TextView>(R.id.cluster_max_freq)
                     val cluster_governor = cluster_view.findViewById<TextView>(R.id.cluster_governor)
@@ -780,16 +778,20 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private fun onViewCreated() {
+        if (intent.hasExtra("cpuModeName")) {
+            cpuModeName = intent.getStringExtra("cpuModeName")
+            title = ModeSwitcher.getModName("" + cpuModeName)
+        }
+
         Thread(Runnable {
             initData()
         }).start()
 
-        val globalSPF = context!!.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
-        val dynamic = AccessibleServiceHelper().serviceRunning(context!!) && globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
+        val globalSPF = context.getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+        val dynamic = AccessibleServiceHelper().serviceRunning(context) && globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)
         if (dynamic && (cpuModeName == null)) {
-            DialogHelper.animDialog(AlertDialog.Builder(context!!)
+            DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle("请注意")
                     .setMessage("检测到你已开启“性能调节”，你手动对CPU、GPU的修改随时可能被覆盖。\n\n同时，手动调整参数还可能对“性能调节”的工作造成不利影响！")
                     .setPositiveButton(R.string.btn_confirm) { _, _ ->
@@ -799,7 +801,7 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
     }
 
     private fun loadBootConfig() {
-        val storage = CpuConfigStorage(context!!)
+        val storage = CpuConfigStorage(context)
         statusOnBoot = storage.load(cpuModeName)
         cpu_apply_onboot.isChecked = statusOnBoot != null
 
@@ -814,8 +816,8 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
     }
 
     private fun saveBootConfig() {
-        if (!CpuConfigStorage(context!!).saveCpuConfig(if (cpu_apply_onboot.isChecked) status else null, cpuModeName)) {
-            Toast.makeText(context!!, "保存配置文件失败！", Toast.LENGTH_SHORT).show()
+        if (!CpuConfigStorage(context).saveCpuConfig(if (cpu_apply_onboot.isChecked) status else null, cpuModeName)) {
+            Toast.makeText(context, "保存配置文件失败！", Toast.LENGTH_SHORT).show()
             cpu_apply_onboot.isChecked = false
         }
     }
@@ -823,11 +825,8 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
     private var timer: Timer? = null
     override fun onResume() {
         super.onResume()
-        if (isDetached) {
-            return
-        }
         if (cpuModeName == null) {
-            activity!!.title = getString(R.string.menu_core_control)
+            title = getString(R.string.menu_core_control)
         }
 
         loadBootConfig()
@@ -850,10 +849,6 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
         cancel()
     }
 
-    override fun onDetach() {
-        super.onDetach()
-    }
-
     override fun onDestroy() {
         cancel()
         super.onDestroy()
@@ -869,21 +864,11 @@ class FragmentCpuControl : androidx.fragment.app.Fragment() {
 
         }
     }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_cpu_control)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_cpu_control, container, false)
-    }
-
-    companion object {
-        fun newInstance(): FragmentCpuControl {
-            val fragment = FragmentCpuControl()
-            return fragment
-        }
-
-        fun newInstance(mode: String): FragmentCpuControl {
-            val fragment = FragmentCpuControl()
-            fragment.cpuModeName = mode
-            return fragment
-        }
+        setBackArrow()
+        this.onViewCreated()
     }
 }

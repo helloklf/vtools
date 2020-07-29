@@ -1,4 +1,4 @@
-package com.omarea.vtools.fragments
+package com.omarea.vtools.activities
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -8,9 +8,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Message
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
@@ -27,14 +24,13 @@ import com.omarea.ui.TabIconHelper
 import com.omarea.utils.AppListHelper
 import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
-import com.omarea.vtools.activities.ActivityHiddenApps
 import com.omarea.vtools.dialogs.DialogAppOptions
 import com.omarea.vtools.dialogs.DialogSingleAppOptions
-import kotlinx.android.synthetic.main.fragment_applictions.*
+import kotlinx.android.synthetic.main.activity_applictions.*
 import java.lang.ref.WeakReference
 
 
-class FragmentApplistions : androidx.fragment.app.Fragment() {
+class ActivityApplistions : ActivityBase() {
     private lateinit var processBarDialog: ProgressBarDialog
     private lateinit var appListHelper: AppListHelper
     private var installedList: ArrayList<Appinfo>? = null
@@ -55,28 +51,25 @@ class FragmentApplistions : androidx.fragment.app.Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_applictions, container, false)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_applictions)
 
-    override fun onResume() {
-        super.onResume()
+        setBackArrow()
 
-        activity!!.title = getString(R.string.menu_applictions)
-    }
 
-    @SuppressLint("InflateParams")
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        processBarDialog = ProgressBarDialog(this.context!!)
+        val context = this
+        val activity = this
+        processBarDialog = ProgressBarDialog(this)
 
-        val tabHost = view.findViewById(R.id.applications_tabhost) as TabHost
+        val tabHost = findViewById(R.id.applications_tabhost) as TabHost
         tabHost.setup()
-        val tabIconHelper = TabIconHelper(tabHost, this.activity!!)
+        val tabIconHelper = TabIconHelper(tabHost, this)
 
-        tabIconHelper.newTabSpec("data", context!!.getDrawable(R.drawable.tab_app)!!, R.id.tab_apps_user)
-        tabIconHelper.newTabSpec("system", context!!.getDrawable(R.drawable.tab_security)!!, R.id.tab_apps_system)
-        tabIconHelper.newTabSpec("backups", context!!.getDrawable(R.drawable.tab_package)!!, R.id.tab_apps_backuped)
-        tabIconHelper.newTabSpec("帮助", context!!.getDrawable(R.drawable.tab_help)!!, R.id.tab_apps_helper)
+        tabIconHelper.newTabSpec("data", getDrawable(R.drawable.tab_app)!!, R.id.tab_apps_user)
+        tabIconHelper.newTabSpec("system", getDrawable(R.drawable.tab_security)!!, R.id.tab_apps_system)
+        tabIconHelper.newTabSpec("backups", getDrawable(R.drawable.tab_package)!!, R.id.tab_apps_backuped)
+        tabIconHelper.newTabSpec("帮助", getDrawable(R.drawable.tab_help)!!, R.id.tab_apps_helper)
         tabHost.setOnTabChangedListener { tabId ->
             tabIconHelper.updateHighlight()
         }
@@ -90,7 +83,7 @@ class FragmentApplistions : androidx.fragment.app.Fragment() {
                 return@OnItemLongClickListener true
             val adapter = (parent.adapter as HeaderViewListAdapter).wrappedAdapter
             val app = adapter.getItem(position - 1) as Appinfo
-            DialogSingleAppOptions(context!!, app, myHandler!!).showSingleAppOptions(this.activity!!)
+            DialogSingleAppOptions(context, app, myHandler!!).showSingleAppOptions(activity)
             true
         }
 
@@ -99,16 +92,16 @@ class FragmentApplistions : androidx.fragment.app.Fragment() {
         apps_backupedlist.onItemLongClickListener = onItemLongClick
 
         fab_apps_user.setOnClickListener {
-            getSelectedAppShowOptions(Appinfo.AppType.USER, this.activity!!)
+            getSelectedAppShowOptions(Appinfo.AppType.USER, activity)
         }
         fab_apps_system.setOnClickListener {
-            getSelectedAppShowOptions(Appinfo.AppType.SYSTEM, this.activity!!)
+            getSelectedAppShowOptions(Appinfo.AppType.SYSTEM, activity)
         }
         fab_apps_backuped.setOnClickListener {
-            getSelectedAppShowOptions(Appinfo.AppType.BACKUPFILE, this.activity!!)
+            getSelectedAppShowOptions(Appinfo.AppType.BACKUPFILE, activity)
         }
 
-        appListHelper = AppListHelper(context!!)
+        appListHelper = AppListHelper(context)
         setList()
         apps_search_box.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
@@ -124,7 +117,7 @@ class FragmentApplistions : androidx.fragment.app.Fragment() {
             showHideAppDialog()
         }
         app_btn_hide2.setOnClickListener {
-            val intent = Intent(this.context, ActivityHiddenApps::class.java)
+            val intent = Intent(context, ActivityHiddenApps::class.java)
             startActivity(intent)
         }
     }
@@ -132,7 +125,7 @@ class FragmentApplistions : androidx.fragment.app.Fragment() {
     @SuppressLint("ApplySharedPref")
     private fun showHideAppDialog() {
         // pm list -u
-        val spf = context!!.getSharedPreferences(SpfConfig.APP_HIDE_HISTORY_SPF, Context.MODE_PRIVATE)
+        val spf = getSharedPreferences(SpfConfig.APP_HIDE_HISTORY_SPF, Context.MODE_PRIVATE)
 
         val all = spf.all
         val apps = ArrayList<String>()
@@ -142,7 +135,7 @@ class FragmentApplistions : androidx.fragment.app.Fragment() {
             selected.add(false)
         }
 
-        DialogHelper.animDialog(AlertDialog.Builder(context).setTitle("应用隐藏记录")
+        DialogHelper.animDialog(AlertDialog.Builder(this).setTitle("应用隐藏记录")
                 .setMultiChoiceItems(apps.toTypedArray(), selected.toBooleanArray()) { _, which, isChecked ->
                     selected[which] = isChecked
                 }
@@ -220,20 +213,26 @@ class FragmentApplistions : androidx.fragment.app.Fragment() {
         adapter = (adapter as HeaderViewListAdapter).wrappedAdapter
         val selectedItems = (adapter as AppListAdapter).getSelectedItems()
         if (selectedItems.size == 0) {
-            Snackbar.make(this.view!!, getString(R.string.app_selected_none), Snackbar.LENGTH_SHORT).show()
+            Snackbar.make(applications_tabhost, getString(R.string.app_selected_none), Snackbar.LENGTH_SHORT).show()
             return
         }
 
         when (apptype) {
             Appinfo.AppType.SYSTEM ->
-                DialogAppOptions(context!!, selectedItems, myHandler!!).selectSystemAppOptions(activity)
+                DialogAppOptions(this, selectedItems, myHandler!!).selectSystemAppOptions(activity)
             Appinfo.AppType.USER ->
-                DialogAppOptions(context!!, selectedItems, myHandler!!).selectUserAppOptions(activity)
+                DialogAppOptions(this, selectedItems, myHandler!!).selectUserAppOptions(activity)
             Appinfo.AppType.BACKUPFILE ->
-                DialogAppOptions(context!!, selectedItems, myHandler!!).selectBackupOptions()
+                DialogAppOptions(this, selectedItems, myHandler!!).selectBackupOptions()
             else -> {
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        title = getString(R.string.menu_applictions)
     }
 
     private fun searchApp() {
@@ -261,9 +260,6 @@ class FragmentApplistions : androidx.fragment.app.Fragment() {
             myHandler!!.post {
                 try {
                     processBarDialog.hideDialog()
-                    if (isDetached) {
-                        return@post
-                    }
                     val adapterObj = AppListAdapter(dl, apps_search_box.text.toString().toLowerCase())
                     val adapter: WeakReference<AppListAdapter> = WeakReference(adapterObj)
                     lv.adapter = adapterObj
@@ -292,16 +288,9 @@ class FragmentApplistions : androidx.fragment.app.Fragment() {
         }
     }
 
-    override fun onDetach() {
+    override fun onDestroy() {
         processBarDialog.hideDialog()
         myHandler = null
-        super.onDetach()
-    }
-
-    companion object {
-        fun createPage(): androidx.fragment.app.Fragment {
-            val fragment = FragmentApplistions()
-            return fragment
-        }
+        super.onDestroy()
     }
 }
