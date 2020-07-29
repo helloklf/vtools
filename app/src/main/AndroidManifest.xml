@@ -116,7 +116,7 @@
             android:excludeFromRecents="false"
             android:exported="true"
             android:label="@string/app_name"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="behind"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -135,14 +135,14 @@
             android:configChanges="keyboardHidden|orientation|uiMode"
             android:excludeFromRecents="true"
             android:label="Scene 杂项设置"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="behind" />
         <activity
             android:name=".activities.ActivityHiddenApps"
             android:configChanges="keyboardHidden|orientation|uiMode"
             android:excludeFromRecents="true"
             android:label="[隐藏/卸载]的应用"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="behind" />
         <activity
             android:name=".activities.ActivityAddinOnline"
@@ -223,7 +223,7 @@
             android:icon="@drawable/freeze_logo"
             android:label="@string/title_activity_freeze"
             android:screenOrientation="behind"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:roundIcon="@drawable/freeze_logo">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
