@@ -81,8 +81,7 @@
             desc="使用代码有规律的控制充电速度，模拟低频脉冲，这也许能降低息屏充电温度">
             <param name="level_high" label="上限速度(mA)" type="int" required="true" max="10000" min="3000" value="6000" />
             <param name="capacity_max" label="停止电量(%)" type="int" required="true" max="99" min="10" value="80" />
-            <param name="charging_time" label="充电时长(s)" type="int" required="true" max="30" min="5" value="6" />
-            <param name="pause_time" label="暂停时长(s)" type="int" required="true" max="5" min="1" value="1" />
+            <param name="charging_time" label="脉冲周期(s)" type="int" required="true" max="30" min="5" value="6" />
             <set>. ./kr-script/other/pulse_charge.sh</set>
         </action>
     </group>

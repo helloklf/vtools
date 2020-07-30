@@ -16,6 +16,8 @@ class BatteryState(private val applicationContext: Context) : BroadcastReceiver(
     private var lastCapacity = 0
     // 最后的充电状态（用于判断是否有状态）
     private var lastStatus = BatteryManager.BATTERY_STATUS_UNKNOWN
+    // bms
+    private var batteryManager:BatteryManager? = null
 
     override fun onReceive(context: Context, intent: Intent) {
         val action = intent.action
@@ -26,8 +28,14 @@ class BatteryState(private val applicationContext: Context) : BroadcastReceiver(
         val pendingResult = goAsync()
         try {
             val status = intent.getIntExtra(BatteryManager.EXTRA_STATUS, BatteryManager.BATTERY_STATUS_UNKNOWN)
-            val capacity = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+            var capacity = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
             val temp = intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, -1) / 10.0f
+            if (capacity == -1) {
+                if (batteryManager == null) {
+                    batteryManager = context.applicationContext.getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+                }
+                capacity = batteryManager!!.getIntProperty(BatteryManager.BATTERY_PROPERTY_CAPACITY);
+            }
 
             GlobalStatus.batteryStatus = status
             GlobalStatus.batteryCapacity = capacity

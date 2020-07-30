@@ -26,18 +26,22 @@ class ChargeCurve(private val context: Context) : EventReceiver {
     override fun onReceive(eventType: EventType) {
         when (eventType) {
             EventType.POWER_CONNECTED -> {
-                storage.clearAll()
+                val last = storage.lastCapacity();
+                if (GlobalStatus.batteryCapacity != -1 && GlobalStatus.batteryCapacity != last) {
+                    storage.clearAll()
+                }
             }
             EventType.POWER_DISCONNECTED -> {
                 cancelUpdate()
             }
             EventType.BATTERY_CHANGED -> {
-                // saveLog()
+                /*
                 if (timer == null && GlobalStatus.batteryStatus == BatteryManager.BATTERY_STATUS_CHARGING) {
                     storage.handleConflics(GlobalStatus.batteryCapacity)
 
                     startUpdate()
                 }
+                */
             }
             else -> {
             }

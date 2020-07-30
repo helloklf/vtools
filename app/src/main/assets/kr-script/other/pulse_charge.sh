@@ -1,8 +1,8 @@
-level_low=200
+level_low=100
 # level_high=10000
 # capacity_max=80
 # charging_time=6
-# pause_time=1
+pause_time=1.5
 
 main_constant=/sys/class/power_supply/main/constant_charge_current_max
 battery_constant=/sys/class/power_supply/battery/constant_charge_current_max

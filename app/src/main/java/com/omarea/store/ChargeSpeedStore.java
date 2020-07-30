@@ -112,6 +112,22 @@ public class ChargeSpeedStore extends SQLiteOpenHelper {
         }
     }
 
+    public int lastCapacity() {
+        try {
+            SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+            final Cursor cursor = sqLiteDatabase.rawQuery("select max(capacity) AS capacity from charge_history", new String[]{});
+            try {
+                if(cursor.moveToNext()) {
+                    return cursor.getInt(0);
+                }
+            } finally {
+                cursor.close();
+                sqLiteDatabase.close();
+            }
+        } catch (Exception ignored){}
+        return 0;
+    }
+
     public boolean clearAll() {
         try {
             SQLiteDatabase database = getWritableDatabase();
