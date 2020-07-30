@@ -7,14 +7,14 @@
         <switch confirm="true" visible=". ./kr-script/qualcomm/msm_booster_support.sh">
             <title>Performance Boost Config</title>
             <desc>系统根据用户操作短时间内提高CPU频率，极大的提高流畅度，关闭后可能会出现卡顿</desc>
-            <getstate>. ./kr-script/qualcomm/msm_booster_get.sh</getstate>
-            <setstate>. ./kr-script/qualcomm/msm_booster_set.sh</setstate>
+            <get>. ./kr-script/qualcomm/msm_booster_get.sh</get>
+            <set>. ./kr-script/qualcomm/msm_booster_set.sh</set>
         </switch>
         <switch confirm="true" visible=". ./kr-script/qualcomm/msm_perfd_support.sh">
             <title>Perfd</title>
             <desc>系统根据用户操作短时间内提高CPU频率，极大的提高流畅度，关闭后可能会出现卡顿</desc>
-            <getstate>. ./kr-script/qualcomm/msm_perfd_get.sh</getstate>
-            <setstate>. ./kr-script/qualcomm/msm_perfd_set.sh</setstate>
+            <get>. ./kr-script/qualcomm/msm_perfd_get.sh</get>
+            <set>. ./kr-script/qualcomm/msm_perfd_set.sh</set>
         </switch>
     </group>
 
@@ -22,16 +22,16 @@
         <action visible=". ./kr-script/common/android_n.sh">
             <title>修改dex2oat线程数</title>
             <desc>增加核心线程数（不超过CPU核心数量）可以提高应用安装效率，但会造成应用安装过程中卡顿！</desc>
-            <set>. ./kr-script/performance/dex2oat/threads_set.sh</set>
+            <set>run dex2oat/threads_set.sh</set>
             <params>
                 <param name="boot" title="启动时(boot-dex2oat-threads)"
-                    options-sh=". ./kr-script/performance/thread_count_options.sh"
+                    options-sh="run thread_count_options.sh"
                     value-sh="getprop dalvik.vm.boot-dex2oat-threads" />
                 <param name="dex2oat" title="启动后(dex2oat-threads)"
-                    options-sh=". ./kr-script/performance/thread_count_options.sh"
+                    options-sh="run thread_count_options.sh"
                     value-sh="getprop dalvik.vm.dex2oat-threads" />
                 <param name="image" title="编译启动映像(image-dex2oat-threads)"
-                    options-sh=". ./kr-script/performance/thread_count_options.sh"
+                    options-sh="run thread_count_options.sh"
                     value-sh="getprop dalvik.vm.image-dex2oat-threads" />
                 <param name="other" title="dex2oat_thread_count" readonly="readonly">
                     <option value="">默认</option>
@@ -51,7 +51,7 @@
                 <option value="speed">Speed模式（推荐）</option>
                 <option value="everything">Everything模式</option>
             </param>
-            <script>. ./kr-script/performance/dex2oat/compile.sh</script>
+            <set>run dex2oat/compile.sh</set>
         </action>
     </group>
 
@@ -59,35 +59,35 @@
         <action>
             <title>执行FSTRIM</title>
             <desc>一般系统会定时执行</desc>
-            <script>
+            <set>
                 echo 'fstrim /data'; fstrim /data;
                 echo 'fstrim /cache'; fstrim /cache;
                 echo 'fstrim /system'; fstrim /system;
                 echo '命令已执行';
-            </script>
+            </set>
         </action>
         <action>
             <title>写入缓冲</title>
             <desc>调整写入缓冲区容量</desc>
             <params>
                 <param name="dirty_background_ratio" title="写入 - 最小缓冲容量"
-                    options-sh=". ./kr-script/performance/io/cache_ratio_options.sh"
+                    options-sh="run io/cache_ratio_options.sh"
                     value-sh="cat /proc/sys/vm/dirty_background_ratio" />
                 <param name="dirty_ratio" title="写入 - 最大缓冲容量"
-                    options-sh=". ./kr-script/performance/io/cache_ratio_options.sh"
+                    options-sh="run io/cache_ratio_options.sh"
                     value-sh="cat /proc/sys/vm/dirty_ratio" />
                 <param name="dirty_writeback_centisecs" title="写入 - 缓存刷写频率(小于失效时间)"
-                    options-sh=". ./kr-script/performance/io/write_time_options.sh"
+                    options-sh="run io/write_time_options.sh"
                     value-sh="cat /proc/sys/vm/dirty_writeback_centisecs" />
                 <param name="dirty_expire_centisecs" title="写入 - 缓存失效时间"
-                    options-sh=". ./kr-script/performance/io/write_time_options.sh"
+                    options-sh="run io/write_time_options.sh"
                     value-sh="cat /proc/sys/vm/dirty_expire_centisecs" />
 
                 <param name="read_ahead_kb" title="读取 - 缓冲大小"
-                    options-sh=". ./kr-script/performance/io/read_cache_options.sh"
+                    options-sh="run io/read_cache_options.sh"
                     value-sh="cat /sys/block/sda/queue/read_ahead_kb" />
             </params>
-            <script>. ./kr-script/performance/io/write_cache.sh</script>
+            <set>run io/write_cache.sh</set>
         </action>
     </group>
 
@@ -99,13 +99,13 @@
             auto-finish="true">
             <title>清理RAM</title>
             <desc>清理RAM中缓存的内容，如：缓存的进程、销毁的进程、读写预读</desc>
-            <script>. ./kr-script/performance/drop_cache.sh</script>
+            <set>run drop_cache.sh</set>
         </action>
 
         <action confirm="true">
             <title>清空dalvik-cache</title>
             <desc>清空dalvik缓存，会立刻重启手机，并在下次启动时耗费大量时间重建缓存！此操作并不会提升性能，如果你不知道是什么，请不要乱点！</desc>
-            <script>. ./kr-script/performance/drop-dalvik-cache.sh</script>
+            <set>run drop-dalvik-cache.sh</set>
         </action>
     </group>
 </items>

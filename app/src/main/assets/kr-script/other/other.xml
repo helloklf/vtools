@@ -5,22 +5,22 @@
     <action auto-off="true" id="addin_restart_systemui">
         <title>重启SystemUI</title>
         <desc>结束SystemUI进程，使其重新加载</desc>
-        <script>
+        <set>
             am kill com.android.systemui 2> /dev/null
             killall -9 com.android.systemui 2> /dev/null
-        </script>
+        </set>
     </action>
 
     <group>
         <action>
             <title>查看已挂载分区</title>
             <desc>通过简单的命令，查看当前已挂载的分区</desc>
-            <script>df -h</script>
+            <set>df -h</set>
         </action>
         <action confirm="true">
             <title>磁盘测速</title>
             <desc>使用简单的命令检测磁盘连续读写速度，需要好几分钟</desc>
-            <script>. ./kr-script/other/disk_test.sh</script>
+            <set>run disk_test.sh</set>
         </action>
     </group>
 
@@ -28,12 +28,12 @@
         <action confirm="false">
             <title>硬件参数</title>
             <desc>查看系统提供的硬件参数信息</desc>
-            <script>. ./kr-script/other/hw_properties.sh</script>
+            <set>run hw_properties.sh</set>
         </action>
         <action confirm="false">
             <title>温度传感器</title>
             <desc>查看温度传感器当前数值</desc>
-            <script>. ./kr-script/other/sensor_values.sh</script>
+            <set>run sensor_values.sh</set>
         </action>
     </group>
 
@@ -82,7 +82,7 @@
             <param name="level_high" label="上限速度(mA)" type="int" required="true" max="10000" min="3000" value="6000" />
             <param name="capacity_max" label="停止电量(%)" type="int" required="true" max="99" min="10" value="80" />
             <param name="charging_time" label="脉冲周期(s)" type="int" required="true" max="30" min="5" value="6" />
-            <set>. ./kr-script/other/pulse_charge.sh</set>
+            <set>run pulse_charge.sh</set>
         </action>
     </group>
 </group>

@@ -11,16 +11,16 @@
     </text>
 
     <group title="应用程序"
-        visible=". ./kr-script/outdated/tmgp/support.sh">
+        visible="run tmgp/support.sh">
         <action id="tgmp_config"
             auto-off="true"
-            logo="file:///android_asset/kr-script/outdated/tmgp/tgmp.png"
+            logo="tmgp/tgmp.png"
             title="王者荣耀配置修改"
             desc="开启OpenGLES3、Vulkan特性（可能会花屏或闪退）">
-            <summary sh=". ./kr-script/outdated/tmgp/summary.sh" />
-            <set>. ./kr-script/outdated/tmgp/set.sh</set>
+            <summary sh="run tmgp/summary.sh" />
+            <set>run tmgp/set.sh</set>
             <param name="render"
-                options-sh=". ./kr-script/outdated/tmgp/options.sh" />
+                options-sh="run tmgp/options.sh" />
             <param name="thread" value="0">
                 <option val="1">多线程优化</option>
                 <option val="3">默认</option>
@@ -34,20 +34,20 @@
             <desc>用于骁龙处理器设备，删除/system和/vendor目录中，名称包含thermal的文件，这是非常危险的操作</desc>
             <params>
                 <param name="action" title="操作"
-                    options-sh=". ./kr-script/outdated/qualcomm_thermal/options.sh" />
+                    options-sh="run qualcomm_thermal/options.sh" />
             </params>
-            <script>. ./kr-script/outdated/qualcomm_thermal/set.sh</script>
+            <set>run qualcomm_thermal/set.sh</set>
         </action>
-        <switch visible=". ./kr-script/outdated/thermal-engine/supported.sh" confirm="true">
+        <switch visible="run thermal-engine/supported.sh" confirm="true">
             <title>thermal-engine</title>
             <desc>关闭此开关将删除thermal-engine相关文件，在820同代及更早的设备上得到删除温控的效果</desc>
-            <get>. ./kr-script/outdated/thermal-engine/get.sh</get>
-            <set>. ./kr-script/outdated/thermal-engine/set.sh</set>
+            <get>run thermal-engine/get.sh</get>
+            <set>run thermal-engine/set.sh</set>
         </switch>
         <action confirm="true">
             <title>临时关闭温控</title>
             <desc>关闭存在于系统中的温控服务，重启后失效</desc>
-            <script>. ./kr-script/outdated/thermal-engine/killer.sh</script>
+            <set>run thermal-engine/killer.sh</set>
         </action>
     </group>
 
@@ -55,26 +55,26 @@
         <switch>
             <title>Force Software GLES</title>
             <desc>强制软件GLES渲染，开启此选项可能增加耗电甚至界面黑屏，如果默认开启，可尝试关闭</desc>
-            <getstate>getprop persist.sys.force_sw_gles</getstate>
-            <setstate>
+            <get>getprop persist.sys.force_sw_gles</get>
+            <set>
                 setprop persist.sys.force_sw_gles $state
                 echo '可能需要重启才会生效'
-            </setstate>
+            </set>
         </switch>
         <action visible=". ./kr-script/common/android_o.sh">
             <title>HWUI渲染引擎</title>
             <desc>切换HWUI渲染引擎，本功能仅支持Android O(8.x)、Android P(9.0)</desc>
-            <summary sh=". ./kr-script/outdated/hwui_render/summary.sh" />
+            <summary sh="run hwui_render/summary.sh" />
             <param name="renderer"
-                options-sh=". ./kr-script/outdated/hwui_render/options.sh"
-                value-sh=". ./kr-script/outdated/hwui_render/get.sh" />
-            <script>. ./kr-script/outdated/hwui_render/set.sh</script>
+                options-sh="run hwui_render/options.sh"
+                value-sh="run hwui_render/get.sh" />
+            <set>run hwui_render/set.sh</set>
         </action>
         <switch visible=". ./kr-script/common/android_q.sh" confirm="true">
             <title>HWUI使用Vulkan</title>
             <desc>使用基于Vulkan的HWUI渲染引擎，这是Android Q的新特性，已知会导致“播放视频”严重卡顿，部分软件偶尔未响应。有些手机甚至可能无法进入桌面！</desc>
-            <get>. ./kr-script/outdated/hwui_vulkan/get.sh</get>
-            <set>. ./kr-script/outdated/hwui_vulkan/set.sh</set>
+            <get>run hwui_vulkan/get.sh</get>
+            <set>run hwui_vulkan/set.sh</set>
         </switch>
     </group>
 </items>

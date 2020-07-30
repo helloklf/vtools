@@ -6,15 +6,15 @@
         <switch id="developer_remote_adb">
             <title>远程ADB调试</title>
             <desc>开启设备的网络调试端口，方便开发人员免数据线连接电脑，千万不要在公共WIFI网络环境下开启本选项！</desc>
-            <summary sh=". ./kr-script/developer/adb_remote_summary.sh" />
-            <getstate>. ./kr-script/developer/adb_remote_get.sh</getstate>
-            <setstate>. ./kr-script/developer/adb_remote_set.sh</setstate>
+            <summary sh="run adb_remote_summary.sh" />
+            <get>run adb_remote_get.sh</get>
+            <set>run adb_remote_set.sh</set>
         </switch>
         <switch id="developer_error_dialog">
             <title>隐藏错误弹窗</title>
             <desc>不要显示应用崩溃和未响应弹窗</desc>
-            <getstate>. ./kr-script/developer/hide_errordialog_get.sh</getstate>
-            <setstate>. ./kr-script/developer/hide_errordialog_set.sh</setstate>
+            <get>run hide_errordialog_get.sh</get>
+            <set>run hide_errordialog_set.sh</set>
         </switch>
         <switch id="developer_anr">
             <title>一律显示崩溃对话框</title>
@@ -25,8 +25,8 @@
         <switch id="developer_anr">
             <title>显示后台应用未响应</title>
             <desc>为后台应用程序显示“应用程序未响应（ANR）”对话框</desc>
-            <getstate>. ./kr-script/developer/anr_get.sh</getstate>
-            <setstate>. ./kr-script/developer/anr_set.sh</setstate>
+            <get>run anr_get.sh</get>
+            <set>run anr_set.sh</set>
         </switch>
     </group>
 

@@ -12,6 +12,7 @@
     <EditText
         android:layout_below="@id/layout_app_bar"
         android:background="@android:color/transparent"
+        android:typeface="monospace"
         android:id="@+id/thermal_config"
         android:padding="5dp"
         android:textSize="12dp"

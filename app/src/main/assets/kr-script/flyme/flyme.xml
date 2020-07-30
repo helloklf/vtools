@@ -4,7 +4,7 @@
     <switch>
         <title>[Flyme6]下拉动态模糊</title>
         <desc>关闭此项后，Flyme6下拉通知中心的动态模糊功能会被关闭</desc>
-        <getstate>. ./kr-script/flyme/flyme_blur_get.sh</getstate>
-        <setstate>. ./kr-script/flyme/flyme_blur_set.sh</setstate>
+        <get>run flyme_blur_get.sh</get>
+        <set>run flyme_blur_set.sh</set>
     </switch>
 </group>
