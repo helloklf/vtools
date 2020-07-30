@@ -44,8 +44,7 @@ class DialogAddinWIFI(private var context: Context) {
             DialogHelper.animDialog(AlertDialog.Builder(context)
                     .setTitle("已保存的WIFI记录")
                     .setMessage(wifiInfo)
-                    .setNeutralButton("确定", { _, _ -> })
-                    .create())
+                    .setNeutralButton("确定") { _, _ -> })
         } else {
             Toast.makeText(context, "没有读取到这个文件，也许不支持您的设备吧！", Toast.LENGTH_LONG).show()
         }

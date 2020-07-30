@@ -20,7 +20,7 @@ class DialogNumberInput(private val context: Context) {
     }
 
     fun showDialog(dialogRequest: DialogNumberInputRequest) {
-        var alertDialog: AlertDialog? = null
+        var alertDialog: DialogHelper.DialogWrap? = null
         val dialog = LayoutInflater.from(context).inflate(R.layout.dialog_number_input, null)
         val value = dialog.findViewById<TextView>(R.id.number_input_value)
         var current = dialogRequest.default

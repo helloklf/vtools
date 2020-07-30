@@ -100,6 +100,11 @@ class ActivityOtherSettings : AppCompatActivity() {
         settings_classic_mode.setOnClickListener {
             spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_SCENE_CLASSIC, (it as Switch).isChecked).apply()
         }
+
+        settings_auto_exit.isChecked = spf.getBoolean(SpfConfig.GLOBAL_SPF_AUTO_EXIT, true)
+        settings_auto_exit.setOnClickListener {
+            spf.edit().putBoolean(SpfConfig.GLOBAL_SPF_AUTO_EXIT, (it as Switch).isChecked).apply()
+        }
     }
 
     private fun checkPermission(context: Context, permission: String): Boolean = PermissionChecker.checkSelfPermission(context, permission) == PermissionChecker.PERMISSION_GRANTED

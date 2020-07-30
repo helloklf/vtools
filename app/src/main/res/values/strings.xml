@@ -72,6 +72,8 @@
     <string name="settings_debug_layer_desc">显示Scene判定前台应用过程的日志（需重启辅助服务）</string>
     <string name="settings_classic_mode">经典模式</string>
     <string name="settings_classic_mode_desc">场景模式使用旧版Scene(3.2以前)的前台应用检测逻辑（需重启辅助服务）</string>
+    <string name="settings_auto_exit">自动退出</string>
+    <string name="settings_auto_exit_desc">运行过程出现异常时自动结束进程，避免卡死白屏</string>
     <string name="settings_private_busybox">私有Busybox</string>
     <string name="settings_private_busybox_desc">在Scene的私有目录下安装Busybox，兼容性较差可能导致Scene功能异常，但可以避免修改系统分区</string>
     <string name="settings_logcat_title">错误日志</string>

@@ -477,7 +477,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
             appSwitchHandler = null
             // disableSelf()
             stopSelf()
-            System.exit(0)
+            // System.exit(0)
         }
     }
 

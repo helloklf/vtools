@@ -150,8 +150,10 @@ class DialogAddinModifyDPI(var context: Context) {
 
         dialog.findViewById<Button>(R.id.dialog_dpi_reset).setOnClickListener {
             resetDisplay()
-            if (dialogInstance?.isShowing == true) {
-                dialogInstance.dismiss()
+            if (dialogInstance.isShowing == true) {
+                try {
+                    dialogInstance.dismiss()
+                } catch (ex: java.lang.Exception) {}
             }
         }
     }

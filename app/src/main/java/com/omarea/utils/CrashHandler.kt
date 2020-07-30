@@ -1,9 +1,13 @@
 package com.omarea.utils
 
+import android.app.ActivityManager
 import android.content.Context
 import android.os.Environment
+import com.omarea.Scene
+import com.omarea.common.shell.KeepShellPublic
 import com.omarea.scene_mode.AlwaysNotification
 import com.omarea.shell_utils.AppErrorLogcatUtils
+import com.omarea.store.SpfConfig
 import java.io.File
 import java.io.FileOutputStream
 import java.io.PrintWriter
@@ -45,11 +49,17 @@ class CrashHandler : Thread.UncaughtExceptionHandler {
 
         }
         mContext?.run {
-            val serviceHelper = AccessibleServiceHelper()
-            if (serviceHelper.serviceRunning(mContext!!)) {
-                serviceHelper.stopSceneModeService(mContext!!)
+            if (getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE).getBoolean(SpfConfig.GLOBAL_SPF_AUTO_EXIT, true)) {
+                val serviceHelper = AccessibleServiceHelper()
+                if (serviceHelper.serviceRunning(mContext!!)) {
+                    serviceHelper.stopSceneModeService(mContext!!)
+                }
+                KeepShellPublic.doCmdSync("killall -9 $packageName || am force-stop $packageName")
+                // System.exit(0)
+            } else {
+                // val am = getSystemService (Context.ACTIVITY_SERVICE) as ActivityManager
+                // am.restartPackage(getPackageName());
             }
         }
-        System.exit(0)
     }
 }

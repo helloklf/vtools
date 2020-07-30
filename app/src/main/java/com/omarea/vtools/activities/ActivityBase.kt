@@ -34,7 +34,12 @@ open class ActivityBase : AppCompatActivity() {
         supportActionBar!!.setHomeButtonEnabled(true)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         toolbar.setNavigationOnClickListener {
-            finish()
+            this.onBackPressed()
         }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
     }
 }

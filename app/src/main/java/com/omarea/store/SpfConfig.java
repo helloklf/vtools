@@ -49,6 +49,7 @@ public class SpfConfig {
     public static String GLOBAL_SPF_START_DELAY = "start_delay";
     public static String GLOBAL_SPF_SCENE_LOG = "scene_logview";
     public static String GLOBAL_SPF_SCENE_CLASSIC = "classic_mode";
+    public static String GLOBAL_SPF_AUTO_EXIT = "auto_exit";
     public static String GLOBAL_SPF_NOTIFY = "scene_notify";
     public static String GLOBAL_SPF_AUTO_REMOVE_RECENT = "remove_recent";
     public static String GLOBAL_SPF_NIGHT_MODE = "app_night_mode";

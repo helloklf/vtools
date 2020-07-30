@@ -36,10 +36,8 @@ import com.omarea.vtools.fragments.FragmentNotRoot
 import com.omarea.vtools.popup.FloatMonitor
 import kotlinx.android.synthetic.main.activity_main.*
 
-class ActivityMain : AppCompatActivity() {
-
+class ActivityMain : ActivityBase() {
     private var globalSPF: SharedPreferences? = null
-    private lateinit var themeMode: ThemeMode
 
     private fun setExcludeFromRecents(exclude: Boolean? = null) {
         try {
@@ -135,19 +133,11 @@ class ActivityMain : AppCompatActivity() {
             }
         }
 
-        themeMode = ThemeSwitch.switchTheme(this)
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-
-        // 显示返回按钮
-        toolbar.setNavigationOnClickListener { _ ->
-            // finish()
-            this.onBackPressed()
-        }
 
         val tabIconHelper = TabIconHelper(configlist_tabhost, this, R.layout.list_item_tab2)
         configlist_tabhost.setup()

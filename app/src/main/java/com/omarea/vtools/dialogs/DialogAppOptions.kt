@@ -24,6 +24,7 @@ import com.omarea.store.SpfConfig
 import com.omarea.utils.CommonCmds
 import com.omarea.vtools.R
 import java.io.File
+import java.lang.Exception
 import java.util.*
 
 
@@ -235,8 +236,10 @@ open class DialogAppOptions(protected final var context: Context, protected var 
                         progressBar.progress = 100
                         textView.text = "操作完成！"
                         handler.postDelayed({
-                            alert.dismiss()
-                            alert.hide()
+                            try {
+                                alert.dismiss()
+                                alert.hide()
+                            } catch (ex: Exception) {}
                             if (error.isNotEmpty()) {
                                 DialogHelper.animDialog(AlertDialog.Builder(alert.context).setTitle("出现了一些错误").setMessage(error.toString()))
                             }

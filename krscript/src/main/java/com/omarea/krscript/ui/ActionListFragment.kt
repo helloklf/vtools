@@ -346,13 +346,15 @@ class ActionListFragment : androidx.fragment.app.Fragment(), PageLayoutRender.On
                             dialogView.findViewById<TextView>(R.id.title).text = action.title
 
                             dialogView.findViewById<View>(R.id.btn_cancel).setOnClickListener {
-                                dialog!!.dismiss()
+                                try {
+                                    dialog!!.dismiss()
+                                } catch (ex: java.lang.Exception) {}
                             }
                             dialogView.findViewById<View>(R.id.btn_confirm).setOnClickListener {
                                 try {
                                     val params = render.readParamsValue(actionParamInfos)
-                                    dialog!!.dismiss()
                                     actionExecute(action, script, onExit, params)
+                                    dialog!!.dismiss()
                                 } catch (ex: Exception) {
                                     Toast.makeText(this.context!!, "" + ex.message, Toast.LENGTH_LONG).show()
                                 }
