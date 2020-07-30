@@ -24,6 +24,7 @@ class ActivityFileSelector : AppCompatActivity() {
     private var adapterFileSelector: AdapterFileSelector? = null
     var extension = ""
     var mode = MODE_FILE
+    var start = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ThemeSwitch.switchTheme(this)
@@ -43,7 +44,7 @@ class ActivityFileSelector : AppCompatActivity() {
         }
 
         intent.extras?.run {
-            if (containsKey("extension") == true) {
+            if (containsKey("extension")) {
                 extension = "" + intent.extras!!.getString("extension")
                 if (!extension.startsWith(".")) {
                     extension = ".$extension"
@@ -53,11 +54,15 @@ class ActivityFileSelector : AppCompatActivity() {
                 }
             }
 
-            if (containsKey("mode") == true) {
+            if (containsKey("mode")) {
                 mode = getInt("mode")
                 if (mode == MODE_FOLDER) {
                     title = getString(R.string.title_activity_folder_selector)
                 }
+            }
+
+            if (containsKey("start")) {
+                start = getString("start")!!
             }
         }
     }
@@ -73,9 +78,9 @@ class ActivityFileSelector : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val sdcard = File(CommonCmds.SDCardDir)
-        if (sdcard.exists() && sdcard.isDirectory) {
-            val list = sdcard.listFiles()
+        val startDir = if (start.isNotEmpty()) File(start) else File(CommonCmds.SDCardDir)
+        if (startDir.exists() && startDir.isDirectory) {
+            val list = startDir.listFiles()
             if (list == null) {
                 Toast.makeText(applicationContext, "没有读取文件的权限！", Toast.LENGTH_LONG).show()
                 return
@@ -88,13 +93,11 @@ class ActivityFileSelector : AppCompatActivity() {
                 }
             }
             adapterFileSelector = if (mode == MODE_FOLDER) {
-                AdapterFileSelector.FolderChooser(sdcard, onSelected, ProgressBarDialog(this))
+                AdapterFileSelector.FolderChooser(startDir, onSelected, ProgressBarDialog(this))
             } else {
-                AdapterFileSelector.FileChooser(sdcard, onSelected, ProgressBarDialog(this), extension)
+                AdapterFileSelector.FileChooser(startDir, onSelected, ProgressBarDialog(this), extension)
             }
             file_selector_list.adapter = adapterFileSelector
-        } else {
-
         }
     }
 }

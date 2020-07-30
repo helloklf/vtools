@@ -219,6 +219,11 @@ class FragmentNav : Fragment(), View.OnClickListener {
                     startActivity(intent)
                     return
                 }
+                R.id.nav_miui_thermal -> {
+                    val intent = Intent(context, ActivityMiuiThermal::class.java)
+                    startActivity(intent)
+                    return
+                }
                 R.id.nav_qq -> {
                     val key = "6ffXO4eTZVN0eeKmp-2XClxizwIc7UIu" //""e-XL2In7CgIpeK_sG75s-vAiu7n5DnlS"
                     val intent = Intent()

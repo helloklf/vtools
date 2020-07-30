@@ -100,6 +100,7 @@
     <string name="menu_qq">交流讨论</string>
     <string name="menu_menu_title">反馈交流</string>
     <string name="menu_share">分享应用</string>
+    <string name="menu_miui_thermal">MIUI温控</string>
 
     <string name="system">系统</string>
 
@@ -465,5 +466,13 @@
         <item>所有应用</item>
         <item>其它进程</item>
         <item>所有类型</item>
+    </string-array>
+    <string-array name="start_dir_options">
+        <item>/sdcard</item>
+        <item>/data/adb/modules</item>
+        <item>/system/etc</item>
+        <item>/vendor/etc</item>
+        <item>/data/thermal/config</item>
+        <item>/data/vendor/thermal/config</item>
     </string-array>
 </resources>

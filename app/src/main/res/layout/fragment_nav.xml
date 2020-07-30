@@ -216,6 +216,13 @@
                 android:tag="root"
                 app:drawable="@drawable/mask"
                 app:text="@string/menu_app_magisk" />
+
+            <com.omarea.ui.NavItem
+                android:id="@+id/nav_miui_thermal"
+                style="@style/nav_item_wrap_right"
+                android:tag="root"
+                app:drawable="@drawable/ic_menu_hot"
+                app:text="@string/menu_miui_thermal" />
         </GridLayout>
 
 
