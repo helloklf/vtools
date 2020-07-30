@@ -363,7 +363,7 @@ class BatteryUtils {
 
     // 判断是否使用了bq2597x电荷泵
     fun getBq2597xUsed(): Boolean {
-        return RootFile.fileEquals("/sys/class/power_supply/bq2597x-master/charging_enabled");
+        return RootFile.fileExists("/sys/class/power_supply/bq2597x-master/charging_enabled");
     }
 
     fun setStepCharge(stepCharge: Boolean) {
