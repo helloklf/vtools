@@ -39,16 +39,16 @@
     <group>
         <page
             id="page-xiaomi"
-            config="kr-script/pages/miui.xml"
+            config="kr-script/miui/miui.xml"
             desc="适用于MIUI系统的选项" title="MIUI专属"
             visible=". ./kr-script/common/miui_support.sh" />
         <page
             id="page-google"
-            config="kr-script/pages/aosp.xml"
+            config="kr-script/aosp/aosp.xml"
             desc="越接近原生的系统越适用" title="AOSP专属" />
         <page
             id="page-meizu"
-            config="kr-script/pages/flyme.xml"
+            config="kr-script/flyme/flyme.xml"
             desc="适用于Flyme系统的选项" title="Flyme专属"
             visible=". ./kr-script/common/flyme_support.sh" />
     </group>
@@ -56,30 +56,30 @@
     <group>
         <page
             id="page-performance"
-            config="kr-script/pages/performance.xml"
+            config="kr-script/performance/performance.xml"
             desc="设备性能调节和性能优化" title="运行性能" />
         <page
             id="page-battery"
-            config="kr-script/pages/power.xml"
+            config="kr-script/battery/battery.xml"
             desc="耗电记录、低电量" title="电池、充电" />
         <page
             id="page-apps"
-            config="kr-script/pages/apps.xml"
+            config="kr-script/apps/apps.xml"
             desc="第三方应用程序相关选项" title="应用程序" />
         <page
             id="page-developer"
-            config="kr-script/pages/developer.xml"
+            config="kr-script/developer/developer.xml"
             desc="适用于开发者的功能" title="开发者工具" />
         <page
             id="page-other"
-            config="kr-script/pages/other.xml"
+            config="kr-script/other/other.xml"
             desc="其它杂七杂八的功能" title="杂项" />
     </group>
 
     <group>
         <page
             id="page-outdated"
-            config="kr-script/pages/outdated.xml"
+            config="kr-script/outdated/outdated.xml"
             confirm="true"
             desc="一些由于效用不佳而被废弃的功能" title="废弃的功能" />
     </group>

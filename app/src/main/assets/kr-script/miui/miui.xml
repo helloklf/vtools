@@ -72,4 +72,7 @@
             <set>. ./kr-script/miui/miui_security_keyboard_set.sh</set>
         </switch>
     </group>
+
+    <group title="其它">
+    </group>
 </items>
