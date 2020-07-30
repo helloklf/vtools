@@ -101,11 +101,8 @@ class DialogAddinModifyDPI(var context: Context) {
             heightInput.setText(getHeightScaleValue(width).toString())
             dpiInput.setText(getDpiScaleValue(width).toString())
         }
-        dialog.findViewById<Button>(R.id.dialog_dpi_reset).setOnClickListener {
-            resetDisplay()
-        }
 
-        DialogHelper.animDialog(AlertDialog.Builder(context).setTitle("DPI、分辨率").setView(dialog)
+        val dialogInstance = DialogHelper.animDialog(AlertDialog.Builder(context).setTitle("DPI、分辨率").setView(dialog)
                 .setPositiveButton(R.string.btn_confirm) { _, _ ->
                     val dpi = if (dpiInput.text.isNotEmpty()) (dpiInput.text.toString().toInt()) else (0)
                     val width = if (widthInput.text.isNotEmpty()) (widthInput.text.toString().toInt()) else (0)
@@ -150,6 +147,13 @@ class DialogAddinModifyDPI(var context: Context) {
                     }
                 }
                 .setNegativeButton(R.string.btn_cancel) { _, _ -> })
+
+        dialog.findViewById<Button>(R.id.dialog_dpi_reset).setOnClickListener {
+            resetDisplay()
+            if (dialogInstance?.isShowing == true) {
+                dialogInstance.dismiss()
+            }
+        }
     }
 
     private fun autoResetConfirm() {

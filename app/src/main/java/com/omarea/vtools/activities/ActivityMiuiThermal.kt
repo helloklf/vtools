@@ -40,14 +40,19 @@ class ActivityMiuiThermal : ActivityBase() {
     private fun openDir() {
         try {
             val options = applicationContext.resources.getTextArray(R.array.start_dir_options)
-            var currentIndex = 3
-            DialogHelper.animDialog(AlertDialog.Builder(this).setSingleChoiceItems(options, currentIndex) { dialog, index ->
+            var currentIndex = 0
+            DialogHelper.animDialog(
+                    AlertDialog.Builder(this)
+                    .setTitle("选择配置来源目录")
+                    .setSingleChoiceItems(options, currentIndex) { dialog, index ->
                 currentIndex = index
             }.setPositiveButton("浏览选定目录") { _, _ ->
-                val intent = Intent(this.applicationContext, ActivityFileSelector::class.java)
-                intent.putExtra("extension", "conf")
-                intent.putExtra("start", options.get(currentIndex))
-                startActivityForResult(intent, REQUEST_CFG_FILE)
+                if (currentIndex > -1) {
+                    val intent = Intent(this.applicationContext, ActivityFileSelector::class.java)
+                    intent.putExtra("extension", "conf")
+                    intent.putExtra("start", options.get(currentIndex))
+                    startActivityForResult(intent, REQUEST_CFG_FILE)
+                }
             })
         } catch (ex: Exception) {
             Toast.makeText(this, "启动内置文件选择器失败！", Toast.LENGTH_SHORT).show()

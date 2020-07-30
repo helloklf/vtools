@@ -20,8 +20,8 @@
 -keepclassmembers public class * extends android.app.Application
 -keepclassmembers public class * extends android.app.Service
 -keepclassmembers public class * extends android.content.BroadcastReceiver
--keepclassmembers public class * extends java.io.Serializable
--keepclassmembers public class * implements java.io.Serializable
+-keepclassmembers class * extends java.io.Serializable{*;}
+-keepclassmembers class * implements java.io.Serializable{*;}
 #-keepclassmembers public class * extends android.content.ContentProvider
 #-keepclassmembers public class * extends android.app.backup.BackupAgentHelper
 #-keepclassmembers public class * extends android.preference.Preference
@@ -33,12 +33,10 @@
 -keep class com.omarea.xposed.XposedCheck{*;}
 -keep class com.omarea.charger_booster.ServiceBattery{*;}
 -keep class com.omarea.vtools.activities.ActivityFreezeApps{*;}
--keep class com.omarea.model{*;}
--keep class com.omarea.krscript.model{*;}
+-keep class com.omarea.model.**{*;}
+-keep class com.omarea.krscript.model.**{*;}
 
 -keepclassmembers class com.omarea.xposed.XposedInterface{*;}
 -keepclassmembers class com.omarea.xposed.XposedCheck{*;}
 -keepclassmembers class com.omarea.charger_booster.ServiceBattery{*;}
 -keepclassmembers class com.omarea.vtools.activities.ActivityFreezeApps{*;}
--keepclassmembers class com.omarea.model{*;}
--keepclassmembers class com.omarea.krscript.model{*;}

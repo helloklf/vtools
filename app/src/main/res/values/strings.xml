@@ -468,11 +468,12 @@
         <item>所有类型</item>
     </string-array>
     <string-array name="start_dir_options">
-        <item>/sdcard</item>
-        <item>/data/adb/modules</item>
-        <item>/system/etc</item>
-        <item>/vendor/etc</item>
+        <!--<item>/data/adb/modules/scene_systemless/vendor/etc</item>
         <item>/data/thermal/config</item>
         <item>/data/vendor/thermal/config</item>
+        <item>/data/adb/modules</item>-->
+        <item>/sdcard</item>
+        <item>/system/etc</item>
+        <item>/vendor/etc</item>
     </string-array>
 </resources>
