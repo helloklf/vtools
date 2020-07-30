@@ -351,6 +351,21 @@ class BatteryUtils {
         return KernelProrp.getProp("/sys/class/power_supply/battery/step_charging_enabled").equals("1")
     }
 
+    // 判断bq2597x激活状态
+    fun getBq2597xMasterActivated(): Boolean {
+        return KernelProrp.getProp("/sys/class/power_supply/bq2597x-master/charging_enabled").equals("1")
+    }
+
+    // 判断bq2597x电荷泵激活状态
+    fun getBq2597xSlaveActivated(): Boolean {
+        return KernelProrp.getProp("/sys/class/power_supply/bq2597x-slave/charging_enabled").equals("1")
+    }
+
+    // 判断是否使用了bq2597x电荷泵
+    fun getBq2597xUsed(): Boolean {
+        return RootFile.fileEquals("/sys/class/power_supply/bq2597x-master/charging_enabled");
+    }
+
     fun setStepCharge(stepCharge: Boolean) {
         KernelProrp.setProp("/sys/class/power_supply/battery/step_charging_enabled", if (stepCharge) "1" else "0")
     }
