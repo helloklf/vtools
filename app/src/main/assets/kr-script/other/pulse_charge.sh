@@ -5,18 +5,20 @@ level_low=100
 pause_time=1.5
 
 main_constant=/sys/class/power_supply/main/constant_charge_current_max
+bms_constant=/sys/class/power_supply/bms/constant_charge_current_max
 battery_constant=/sys/class/power_supply/battery/constant_charge_current_max
 step=/sys/class/power_supply/battery/step_charging_enabled
 
 chmod 664 $step
 echo 0 > $step
 chmod 664 $battery_constant
+chmod 664 $bms_constant
 chmod 664 $main_constant
 
-if [[ -f $main_constant ]]; then
+if [[ -f $battery_constant ]]; then
     test_value=${level_high}000
-    echo $test_value > $main_constant
-    result=`cat $main_constant`
+    echo $test_value > $battery_constant
+    result=`cat $battery_constant`
     if [[ ! "$result" == "$test_value" ]]; then
         echo '输入的数值超出系统限制范围！' 1>&2
         echo '输入限制数值：'${level_high} 1>&2
@@ -49,6 +51,7 @@ do
     echo "progress:[$capacity/100]"
     # echo limit $level_low
     echo ${level_low}000 > $main_constant
+    echo ${level_low}000 > $bms_constant
     echo ${level_low}000 > $battery_constant
     sleep $pause_time
 
