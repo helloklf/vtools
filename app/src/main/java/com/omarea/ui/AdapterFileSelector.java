@@ -65,9 +65,13 @@ public class AdapterFileSelector extends BaseAdapter {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                File parent = new File(dir.getParent());
-                String parentPath = parent.getAbsolutePath();
-                hasParent = parent.exists() && parent.canRead() && (leaveRootDir || !(rootDir.startsWith(parentPath) && rootDir.length() > parentPath.length()));
+                File parent = dir.getParentFile();
+                if (parent != null) {
+                    String parentPath = parent.getAbsolutePath();
+                    hasParent = parent.exists() && parent.canRead() && (leaveRootDir || !(rootDir.startsWith(parentPath) && rootDir.length() > parentPath.length()));
+                } else {
+                    hasParent = false;
+                }
 
                 if (dir.exists() && dir.canRead()) {
                     File[] files = dir.listFiles(new FileFilter() {
