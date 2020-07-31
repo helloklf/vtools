@@ -3,6 +3,7 @@ package com.omarea.vtools.activities
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -133,6 +134,16 @@ class ActivityMiuiThermal : ActivityBase() {
         return true
     }
 
+
+    private fun openUrl(link: String) {
+        try {
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+        } catch (ex: Exception) {
+        }
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val id = item.itemId
 
@@ -145,6 +156,9 @@ class ActivityMiuiThermal : ActivityBase() {
             } else {
                 Toast.makeText(this, "你都还没打开文件呢，保存个毛啊！", Toast.LENGTH_SHORT).show()
             }
+            true
+        } else if (id == R.id.action_hele) {
+            openUrl("https://github.com/helloklf/vtools/blob/scene3/docs/MIUI%E6%B8%A9%E6%8E%A7%E8%AF%B4%E6%98%8E.md")
             true
         } else super.onOptionsItemSelected(item)
     }
