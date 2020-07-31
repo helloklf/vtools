@@ -73,7 +73,7 @@
         </action>
     </group>
 
-    <group>
+    <group visible="echo 0">
         <action
             visible="if [[ -f /sys/class/power_supply/battery/constant_charge_current_max ]]; then echo 1; fi;"
             summary="试验性功能"

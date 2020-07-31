@@ -2,6 +2,6 @@
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <solid android:color="?android:colorForegroundInverse" />
+    <solid android:color="?attr/cardBg" />
     <corners android:radius="8dp" />
 </shape>
