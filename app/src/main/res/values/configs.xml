@@ -9,25 +9,23 @@
         <item>com.miui.contentextension</item>
         <item>com.miui.systemAdSolution</item>
         <item>com.miui.securitycenter</item>
-    </string-array>
-    <string-array name="powercfg_igoned">
         <item>com.android.permissioncontroller</item>
         <item>com.lbe.security.miui</item>
-        <item>com.miui.home</item>
+        <item>com.miui.aod</item>
         <item>com.omarea.gesture</item>
+    </string-array>
+    <string-array name="powercfg_igoned">
+        <item>com.miui.home</item>
         <item>com.zbar.lib</item>
         <item>eu.chainfire.supersu</item>
         <item>dev.nick.app.screencast</item>
         <item>eu.chainfire.perfmon</item>
         <item>com.c4x.roundcorner</item>
         <item>com.tencent.gamehelper.smoba</item>
-        <item>com.miui.systemadsolution</item>
         <item>com.waterdaaan.cpufloat</item>
         <item>com.miui.contentextension</item>
-        <item>com.miui.systemAdSolution</item>
         <item>com.sec.app.screenrecorder</item>
         <item>com.cyngn.screencast</item>
-        <item>com.lbe.security.miui</item>
         <item>com.bst.airmessage</item>
         <item>com.gamebench.metricscollector</item>
         <item>com.samsung.android.game.gametools</item>
@@ -39,7 +37,6 @@
         <item>com.android.documentsui</item>
         <item>com.android.wallpapercropper</item>
         <item>com.mfashiongallery.emag</item>
-        <item>com.miui.aod</item>
         <item>com.topjohnwu.magisk</item>
     </string-array>
     <string-array name="powercfg_game">

@@ -92,6 +92,7 @@
         </picker>
         <picker auto-off="true"
             visible=". ./kr-script/common/android_p.sh"
+            summary-sh="run launcher/get.sh"
             options-sh="run launcher/options.sh">
             <title>默认桌面</title>
             <get>run launcher/get.sh</get>
