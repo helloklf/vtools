@@ -16,6 +16,7 @@ import android.view.WindowManager
 import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityWindowInfo
 import android.widget.Toast
+import com.omarea.Scene
 import com.omarea.data_collection.EventBus
 import com.omarea.data_collection.EventType
 import com.omarea.data_collection.GlobalStatus
@@ -129,7 +130,11 @@ public class AccessibilityScenceMode : AccessibilityService() {
             flagRequestKeyEvent = SceneConfigStore(this.applicationContext).needKeyCapture()
 
             val info = serviceInfo // AccessibilityServiceInfo()
-            info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or AccessibilityEvent.TYPE_WINDOWS_CHANGED
+            if (classicModel) {
+                info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or AccessibilityEvent.TYPE_WINDOWS_CHANGED
+            } else {
+                info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
+            }
             info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC
             info.notificationTimeout = 0
             info.packageNames = null
@@ -148,6 +153,10 @@ public class AccessibilityScenceMode : AccessibilityService() {
         onScreenConfigurationChanged(this.resources.configuration)
 
         serviceIsConnected = true
+
+        val spf = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
+        classicModel = spf.getBoolean(SpfConfig.GLOBAL_SPF_SCENE_CLASSIC, false)
+
         updateConfig()
         if (sceneConfigChanged == null) {
             sceneConfigChanged = object : BroadcastReceiver() {
@@ -166,11 +175,9 @@ public class AccessibilityScenceMode : AccessibilityService() {
         }
         getDisplaySize()
 
-        val spf = getSharedPreferences(SpfConfig.GLOBAL_SPF, Context.MODE_PRIVATE)
         if (spf.getBoolean(SpfConfig.GLOBAL_SPF_SCENE_LOG, false)) {
             floatLogView = FloatLogView(this)
         }
-        classicModel = spf.getBoolean(SpfConfig.GLOBAL_SPF_SCENE_CLASSIC, false)
     }
 
     private var classicModel = false
@@ -380,7 +387,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
                             } else {
                                 lastParsingThread = System.currentTimeMillis()
                                 // try {
-                                val thread: Thread = WindowParsingThread(lastWindow, lastParsingThread)
+                                val thread: Thread = WindowAnalyzeThread(lastWindow, lastParsingThread)
                                 thread.start()
                                 if (event != null) {
                                     startColorPolling()
@@ -422,7 +429,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
         }
     }
 
-    class WindowParsingThread constructor(private val windowInfo: AccessibilityWindowInfo, private val tid: Long) : Thread() {
+    class WindowAnalyzeThread constructor(private val windowInfo: AccessibilityWindowInfo, private val tid: Long) : Thread() {
         override fun run() {
             // 如果当前window锁属的APP处于未响应状态，此过程可能会等待5秒后超时返回null，因此需要在线程中异步进行此操作
             val wp = (try {
@@ -444,28 +451,32 @@ public class AccessibilityScenceMode : AccessibilityService() {
     private val pollingInterval: Long = 3000 // 轮询间隔
     private fun startColorPolling() {
         stopColorPolling()
-        lastEventTime = System.currentTimeMillis()
-        if (pollingTimer == null) {
-            pollingTimer = Timer()
-            pollingTimer!!.scheduleAtFixedRate(object : TimerTask() {
-                override fun run() {
-                    val interval = System.currentTimeMillis() - lastEventTime
-                    if (interval < pollingTimeout && interval >= pollingInterval) {
-                        // Log.d(">>>>", "Scene Get Windows")
-                        modernModeEvent()
-                    } else {
-                        stopColorPolling()
+        synchronized(this) {
+            lastEventTime = System.currentTimeMillis()
+            if (pollingTimer == null) {
+                pollingTimer = Timer()
+                pollingTimer?.scheduleAtFixedRate(object : TimerTask() {
+                    override fun run() {
+                        val interval = System.currentTimeMillis() - lastEventTime
+                        if (interval < pollingTimeout && interval >= pollingInterval) {
+                            // Log.d(">>>>", "Scene Get Windows")
+                            modernModeEvent()
+                        } else {
+                            stopColorPolling()
+                        }
                     }
-                }
-            }, pollingInterval, pollingInterval)
+                }, pollingInterval, pollingInterval)
+            }
         }
     }
 
     private fun stopColorPolling() {
-        if (pollingTimer != null) {
-            pollingTimer?.cancel()
-            pollingTimer?.purge();
-            pollingTimer = null
+        synchronized(this) {
+            if (pollingTimer != null) {
+                pollingTimer?.cancel()
+                pollingTimer?.purge();
+                pollingTimer = null
+            }
         }
     }
 

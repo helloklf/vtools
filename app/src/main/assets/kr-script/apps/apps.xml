@@ -68,7 +68,8 @@
         </switch>
         <switch auto-off="true" id="google_hal_eis">
             <title>Camera2 HAL、EIS</title>
-            <desc>启用HAL和EIS，从而支持谷歌相机HDR+功能或避免闪退（谷歌相机需要自行下载适合自己机型的版本）。可能导致相机无法开启或切换缓慢</desc>
+            <desc>启用HAL和EIS，从而支持谷歌相机HDR+功能或避免闪退。可能导致相机无法开启或切换缓慢</desc>
+            <summary>谷歌相机需要自行下载适合自己机型的版本</summary>
             <get>run gcm_get.sh</get>
             <set>run gcm_set.sh</set>
         </switch>
@@ -79,37 +80,28 @@
     </group>
 
     <group title="其它">
-        <action>
-            <title>应用安装位置</title>
-            <desc>更改应用的默认安装位置</desc>
-            <params>
-                <param name="location" value-sh="pm get-install-location | cut -f1 -d '['">
-                    <option value="0">自动（系统决定最佳安装位置）</option>
-                    <option value="1">安装在内部设备存储器上</option>
-                    <option value="2">安装在外部介质上</option>
-                </param>
-            </params>
+        <picker title="应用安装位置" auto-off="true" summary-sh="run install-location-summary.sh">
+            <option value="0">自动（系统自动决定）</option>
+            <option value="1">内部存储（本机）</option>
+            <option value="2">外部存储(SD卡)</option>
+            <get>pm get-install-location | cut -f1 -d '['</get>
             <set>
-                pm set-install-location $location
+                pm set-install-location $state
                 echo '注意：部分应用在清单文件里指定了安装路径，安装位置可能不受此设置控制'
             </set>
-        </action>
-        <action confirm="true">
-            <title>卸载所有更新</title>
-            <desc>删除对所有系统应用程序的更新，并回退到系统自带的版本</desc>
-            <set>pm uninstall-system-updates</set>
-        </action>
+        </picker>
         <picker auto-off="true"
             visible=". ./kr-script/common/android_p.sh"
             options-sh="run launcher/options.sh">
-            <title>更换桌面</title>
-            <desc>将系统默认桌面，换成你安装的第三方桌面程序</desc>
+            <title>默认桌面</title>
             <get>run launcher/get.sh</get>
             <set>run launcher/set.sh</set>
         </picker>
-        <page id="livepicker" activity="com.android.wallpaper.livepicker/com.android.wallpaper.livepicker.LiveWallpaperActivity">
-            <title>动态壁纸选择器</title>
-            <desc>打开动态壁纸选择器（如果有的话），方便一些隐藏了动态壁纸选择入口的定制系统</desc>
-        </page>
+        <page title="选择动态壁纸" id="livepicker"
+            activity="com.android.wallpaper.livepicker/com.android.wallpaper.livepicker.LiveWallpaperActivity" />
+        <page
+            title="默认应用设置"
+            activity="com.android.permissioncontroller/com.android.packageinstaller.role.ui.DefaultAppListActivity"
+            visible="pm query-activities --brief -n com.android.permissioncontroller/com.android.packageinstaller.role.ui.DefaultAppListActivity | grep '/' > /dev/null &amp;&amp; echo 1" />
     </group>
 </items>
