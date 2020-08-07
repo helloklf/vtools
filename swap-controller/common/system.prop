@@ -1,0 +1,30 @@
+# This file will be read by resetprop
+
+ro.vendor.qti.sys.fw.bservice_enable=false
+# ro.vendor.qti.sys.fw.bservice_limit=15
+# ro.vendor.qti.sys.fw.bservice_age=5000
+ro.sys.fw.bg_apps_limit=80
+ro.vendor.qti.sys.fw.bg_apps_limit=80
+
+ro.lmk.kill_heaviest_task=false
+ro.lmk.kill_timeout_ms=150
+
+ro.lmk.use_minfree_levels=true
+
+sys.lmk.minfree_levels=12800:0,16384:100,18432:200,20480:250,24576:900,32768:950
+
+# ZRAM、SWAP
+ro.vendor.qti.config.zram=true
+ro.vendor.qti.config.swap=false
+
+# ro.lmk.use_psi=true
+ro.lmk.low=1001
+ro.lmk.medium=900
+ro.lmk.critical=0
+ro.lmk.critical_upgrade=true
+ro.lmk.upgrade_pressure=100
+ro.lmk.downgrade_pressure=60
+# ro.lmk.kill_timeout_ms=100
+
+# 标识SWAP控制模块是否已安装，Scene3.3.3+ 会读取此参数
+vtools.swap.controller=magisk

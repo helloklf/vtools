@@ -120,34 +120,37 @@ class BootService : IntentService("vtools-boot") {
             }
         }
 
-        if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)) {
-            enableSwap(keepShell, context)
-        }
+        // 如果没有单独安装Magisk模块来处理虚拟内存，则在Scene的自启动中控制
+        if (!keepShell.doCmdSync("getprop vtools.swap.controller").equals("magisk")) {
+            if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP, false)) {
+                enableSwap(keepShell, context)
+            }
 
-        if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) {
-            val sizeVal = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0)
-            val algorithm = swapConfig.getString(SpfConfig.SWAP_SPF_ALGORITHM, "")
+            if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_ZRAM, false)) {
+                val sizeVal = swapConfig.getInt(SpfConfig.SWAP_SPF_ZRAM_SIZE, 0)
+                val algorithm = swapConfig.getString(SpfConfig.SWAP_SPF_ALGORITHM, "")
 
-            updateNotification(getString(R.string.boot_resize_zram))
-            resizeZram(sizeVal, algorithm!!, keepShell, true)
-        }
+                updateNotification(getString(R.string.boot_resize_zram))
+                resizeZram(sizeVal, algorithm!!, keepShell, true)
+            }
 
-        if (swapConfig.contains(SpfConfig.SWAP_SPF_SWAPPINESS)) {
-            keepShell.doCmdSync("echo 65 > /proc/sys/vm/swappiness\n")
-            keepShell.doCmdSync("echo " + swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65) + " > /proc/sys/vm/swappiness\n")
-        }
+            if (swapConfig.contains(SpfConfig.SWAP_SPF_SWAPPINESS)) {
+                keepShell.doCmdSync("echo 65 > /proc/sys/vm/swappiness\n")
+                keepShell.doCmdSync("echo " + swapConfig.getInt(SpfConfig.SWAP_SPF_SWAPPINESS, 65) + " > /proc/sys/vm/swappiness\n")
+            }
 
-        if (swapConfig.contains(SpfConfig.SWAP_MIN_FREE_KBYTES)) {
-            keepShell.doCmdSync("echo ${swapConfig.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 32768)} > /proc/sys/vm/extra_free_kbytes\n")
-        }
+            if (swapConfig.contains(SpfConfig.SWAP_MIN_FREE_KBYTES)) {
+                keepShell.doCmdSync("echo ${swapConfig.getInt(SpfConfig.SWAP_MIN_FREE_KBYTES, 32768)} > /proc/sys/vm/extra_free_kbytes\n")
+            }
 
-        if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, false)) {
-            updateNotification(getString(R.string.boot_lmk))
+            if (swapConfig.getBoolean(SpfConfig.SWAP_SPF_AUTO_LMK, false)) {
+                updateNotification(getString(R.string.boot_lmk))
 
-            val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
-            val info = ActivityManager.MemoryInfo()
-            activityManager.getMemoryInfo(info)
-            LMKUtils().autoSetLMK(info.totalMem, keepShell)
+                val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+                val info = ActivityManager.MemoryInfo()
+                activityManager.getMemoryInfo(info)
+                LMKUtils().autoSetLMK(info.totalMem, keepShell)
+            }
         }
 
         updateNotification(getString(R.string.boot_freeze))
