@@ -18,8 +18,8 @@ android {
         applicationId "com.omarea.vtools"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 11267
-        versionName "3.3.1"
+        versionCode 11268
+        versionName "3.3.2"
         externalNativeBuild {
             cmake {
                 cppFlags ""
@@ -75,7 +75,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'com.google.android.material:material:1.2.0'
     // implementation 'com.android.support:cardview-v7:28.0.0'
     implementation project(':common')
     implementation project(':krscript')

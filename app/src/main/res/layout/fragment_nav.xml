@@ -60,7 +60,6 @@
             <com.omarea.ui.NavItem
                 android:id="@+id/nav_app_scene"
                 style="@style/nav_item_wrap"
-                android:tag="root"
                 app:drawable="@drawable/ic_menu_profile"
                 app:text="@string/menu_app_scene" />
 
@@ -81,7 +80,6 @@
             <com.omarea.ui.NavItem
                 android:id="@+id/nav_battery_stats"
                 style="@style/nav_item_wrap_right"
-                android:tag="root"
                 app:drawable="@drawable/battery"
                 app:text="@string/menu_battery_stats" />
 
@@ -157,7 +155,6 @@
             <com.omarea.ui.NavItem
                 android:id="@+id/nav_charge"
                 style="@style/nav_item_wrap_right"
-                android:tag="root"
                 app:drawable="@drawable/battery"
                 app:text="@string/menu_charge" />
 
@@ -220,7 +217,6 @@
             <com.omarea.ui.NavItem
                 android:id="@+id/nav_miui_thermal"
                 style="@style/nav_item_wrap_right"
-                android:tag="root"
                 app:drawable="@drawable/ic_menu_hot"
                 app:text="@string/menu_miui_thermal" />
         </GridLayout>
