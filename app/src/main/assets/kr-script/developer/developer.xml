@@ -28,6 +28,24 @@
             <get>run anr_get.sh</get>
             <set>run anr_set.sh</set>
         </switch>
+        <picker value=" "
+            auto-off="true"
+            visible=". ./kr-script/common/android_q.sh">
+            <title>沙箱机制</title>
+            <desc>开启沙箱后，所有应用程序将无法访问本机存储根目录（而不仅限于TargetAPI >= Q的应用）</desc>
+            <options>
+                <option value="default">默认</option>
+                <option value="on">开启</option>
+                <option value="off">关闭</option>
+            </options>
+            <set>
+                if [[ $state ]]; then
+                    echo '设备将在5秒重启~'
+                    sleep 5
+                    sm set-isolated-storage $state
+                fi
+            </set>
+        </picker>
     </group>
 
     <group title="其它入口">
