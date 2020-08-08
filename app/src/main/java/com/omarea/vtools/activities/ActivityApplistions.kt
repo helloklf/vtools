@@ -11,7 +11,7 @@ import android.os.Message
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
-import com.google.android.material.snackbar.Snackbar
+import com.omarea.Scene
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.ui.DialogHelper
 import com.omarea.common.ui.OverScrollListView
@@ -213,7 +213,7 @@ class ActivityApplistions : ActivityBase() {
         adapter = (adapter as HeaderViewListAdapter).wrappedAdapter
         val selectedItems = (adapter as AppListAdapter).getSelectedItems()
         if (selectedItems.size == 0) {
-            Snackbar.make(applications_tabhost, getString(R.string.app_selected_none), Snackbar.LENGTH_SHORT).show()
+            Scene.toast(R.string.app_selected_none, Toast.LENGTH_SHORT)
             return
         }
 

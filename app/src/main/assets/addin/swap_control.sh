@@ -7,7 +7,7 @@ priority="$3"   # 优先级
 swapsize="$4"   # SWAP大小MB
 
 loop_save="vtools.swap.loop"
-
+next_loop_path=""
 # 获取下一个loop设备的索引
 function get_next_loop() {
     local current_loop=`getprop $loop_save`
@@ -28,18 +28,27 @@ function get_next_loop() {
             then
                 return $loop_index
             fi
-        else
-            local loop_index=`expr $loop_index + 1`
         fi
+        local loop_index=`expr $loop_index + 1`
     done
 
-    return 5
+    if [[ -e "/dev/block/loop$loop_index" ]]; then
+        next_loop_path="/dev/block/loop$loop_index"
+    else
+        next_loop_path=""
+    fi
+
+    return $loop_index
 }
 
 if [[ $loop == "1" ]]; then
     get_next_loop
-    next_loop_index="$?"
-    swap_mount="/dev/block/loop$next_loop_index"
+    if [[ "$next_loop_path" != "" ]]; then
+        swap_mount=$next_loop_path
+    else
+        echo '所有回环设备都已被占用，无法完成挂载！'
+        return
+    fi
 else
     swap_mount=$swapfile
 fi

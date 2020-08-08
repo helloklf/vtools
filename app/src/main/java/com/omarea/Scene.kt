@@ -23,7 +23,14 @@ class Scene : Application() {
         private val handler = Handler(Looper.getMainLooper())
         public lateinit var context: Application
         public fun toast(message: String, time: Int) {
-            Toast.makeText(context, message, time).show()
+            handler.post {
+                Toast.makeText(context, message, time).show()
+            }
+        }
+        public fun toast(message: Int, time: Int) {
+            handler.post {
+                Toast.makeText(context, message, time).show()
+            }
         }
         public fun post(runnable: Runnable) {
             handler.post(runnable)

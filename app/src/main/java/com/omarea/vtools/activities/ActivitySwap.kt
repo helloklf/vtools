@@ -9,7 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.widget.*
-import com.google.android.material.snackbar.Snackbar
+import com.omarea.Scene
 import com.omarea.common.shell.KeepShellPublic
 import com.omarea.common.shell.KernelProrp
 import com.omarea.common.ui.DialogHelper
@@ -26,7 +26,6 @@ import kotlin.collections.LinkedHashMap
 
 class ActivitySwap : ActivityBase() {
     private lateinit var processBarDialog: ProgressBarDialog
-    internal lateinit var view: View
     private val myHandler = Handler()
     private lateinit var swapConfig: SharedPreferences
     private var totalMem = 2048
@@ -231,7 +230,10 @@ class ActivitySwap : ActivityBase() {
 
             processBarDialog.showDialog("稍等...")
             Thread(Runnable {
-                swapUtils.swapOn(priority, swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false))
+                val result = swapUtils.swapOn(priority, swapConfig.getBoolean(SpfConfig.SWAP_SPF_SWAP_USE_LOOP, false))
+                if (result.isNotEmpty()) {
+                    Scene.toast(result, Toast.LENGTH_LONG)
+                }
 
                 myHandler.post(getSwaps)
                 myHandler.post(showSwapOpened)
@@ -450,7 +452,7 @@ class ActivitySwap : ActivityBase() {
     }
 
     private var showSwapOpened = {
-        Snackbar.make(view, getString(R.string.executed), Snackbar.LENGTH_LONG).show()
+        Toast.makeText(context, getString(R.string.executed), Toast.LENGTH_LONG).show()
         processBarDialog.hideDialog()
     }
 
@@ -482,5 +484,4 @@ class ActivitySwap : ActivityBase() {
         processBarDialog.hideDialog()
         super.onDestroy()
     }
-
 }

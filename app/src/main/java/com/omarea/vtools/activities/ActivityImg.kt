@@ -9,7 +9,7 @@ import android.os.StatFs
 import android.widget.AdapterView
 import android.widget.SimpleAdapter
 import android.widget.Toast
-import com.google.android.material.snackbar.Snackbar
+import com.omarea.Scene
 import com.omarea.common.ui.DialogHelper
 import com.omarea.shell_utils.BackupRestoreUtils
 import com.omarea.utils.CommonCmds
@@ -90,7 +90,7 @@ class ActivityImg :  ActivityBase() {
 
     private fun backupImg(action: Int) {
         if (getSDFreeSizeMB() < 200) {
-            Snackbar.make(img_action_listview, getString(R.string.backup_space_small), Snackbar.LENGTH_LONG).show()
+            Scene.toast(getString(R.string.backup_space_small), Toast.LENGTH_LONG)
             return
         } else {
             var fileName = ""

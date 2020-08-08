@@ -12,7 +12,7 @@ import android.text.Spanned
 import android.text.style.AbsoluteSizeSpan
 import android.view.View
 import android.widget.*
-import com.google.android.material.snackbar.Snackbar
+import com.omarea.Scene
 import com.omarea.charger_booster.BatteryInfo
 import com.omarea.common.shared.FileWrite
 import com.omarea.common.shell.KeepShellPublic
@@ -68,9 +68,9 @@ class ActivityBattery:  ActivityBase() {
             spf.edit().putBoolean(SpfConfig.CHARGE_SPF_QC_BOOSTER, checked).apply()
             if (checked) {
                 notifyConfigChanged()
-                Snackbar.make(layout_app_bar, R.string.battery_auto_boot_desc, Snackbar.LENGTH_LONG).show()
+                Scene.toast(R.string.battery_auto_boot_desc, Toast.LENGTH_LONG)
             } else {
-                Snackbar.make(layout_app_bar, R.string.battery_qc_rehoot_desc, Snackbar.LENGTH_LONG).show()
+                Scene.toast(R.string.battery_qc_rehoot_desc, Toast.LENGTH_LONG)
             }
         }
         settings_qc.setOnCheckedChangeListener { buttonView, isChecked ->
@@ -87,7 +87,7 @@ class ActivityBattery:  ActivityBase() {
                 KeepShellPublic.doCmdSync(ResumeCharge)
             } else {
                 notifyConfigChanged()
-                Snackbar.make(layout_app_bar, R.string.battery_auto_boot_desc, Snackbar.LENGTH_LONG).show()
+                Scene.toast(R.string.battery_auto_boot_desc, Toast.LENGTH_LONG)
             }
         }
 
@@ -180,11 +180,11 @@ class ActivityBattery:  ActivityBase() {
 
         bp_disable_charge.setOnClickListener {
             KeepShellPublic.doCmdSync("sh " + FileWrite.writePrivateShellFile("addin/disable_charge.sh", "addin/disable_charge.sh", this.context))
-            Snackbar.make(layout_app_bar, R.string.battery_charge_disabled, Snackbar.LENGTH_LONG).show()
+            Scene.toast(R.string.battery_charge_disabled, Toast.LENGTH_LONG)
         }
         bp_enable_charge.setOnClickListener {
             KeepShellPublic.doCmdSync(ResumeCharge)
-            Snackbar.make(layout_app_bar, R.string.battery_charge_resumed, Snackbar.LENGTH_LONG).show()
+            Scene.toast(R.string.battery_charge_resumed, Toast.LENGTH_LONG)
         }
 
         val nightModeGetUp = spf.getInt(SpfConfig.CHARGE_SPF_TIME_GET_UP, SpfConfig.CHARGE_SPF_TIME_GET_UP_DEFAULT)

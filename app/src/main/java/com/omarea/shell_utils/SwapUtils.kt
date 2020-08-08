@@ -69,7 +69,7 @@ class SwapUtils(private var context: Context) {
         keepShell.tryExit()
     }
 
-    fun swapOn(priority: Int, useLoop: Boolean = false) {
+    fun swapOn(priority: Int, useLoop: Boolean = false): String {
         val sb = StringBuilder()
 
         sb.append("sh ")
@@ -86,8 +86,9 @@ class SwapUtils(private var context: Context) {
         }
 
         val keepShell = KeepShell()
-        keepShell.doCmdSync(sb.toString())
+        val result = keepShell.doCmdSync(sb.toString())
         keepShell.tryExit()
+        return result
     }
 
     fun swapOff() {

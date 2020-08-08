@@ -9,7 +9,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Switch
 import android.widget.Toast
-import com.google.android.material.snackbar.Snackbar
+import com.omarea.Scene
 import com.omarea.common.ui.DialogHelper
 import com.omarea.scene_mode.CpuConfigInstaller
 import com.omarea.scene_mode.ModeSwitcher
@@ -279,7 +279,7 @@ class ActivityCpuModes : ActivityBase() {
     //安装调频文件
     private fun installConfig(useBigCore: Boolean) {
         if (!configInstaller.dynamicSupport(context)) {
-            Snackbar.make(dynamic_control, R.string.not_support_config, Snackbar.LENGTH_LONG).show()
+            Scene.toast(R.string.not_support_config, Toast.LENGTH_LONG)
             return
         }
 
@@ -291,7 +291,7 @@ class ActivityCpuModes : ActivityBase() {
         updateState()
 
         if (globalSPF.getBoolean(SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL, SpfConfig.GLOBAL_SPF_DYNAMIC_CONTROL_DEFAULT)) {
-            Snackbar.make(dynamic_control, getString(R.string.config_installed), Snackbar.LENGTH_LONG).show()
+            Scene.toast(getString(R.string.config_installed), Toast.LENGTH_LONG)
             reStartService()
         } else {
             DialogHelper.animDialog(AlertDialog.Builder(context)
