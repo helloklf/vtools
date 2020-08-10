@@ -194,13 +194,13 @@ echo 1000 > /proc/sys/vm/dirty_expire_centisecs
 echo 3000 > /proc/sys/vm/dirty_writeback_centisecs
 
 # ZRAM、SWAP
-if [[ $allow_zram ]] && [[ "$config_zram_size" != "" ]]; then
+if [[ $allow_zram == "true" ]] && [[ "$config_zram_size" != "" ]]; then
     configure_zram
 else
     swapoff /dev/block/zram0
 fi
 
-if [[ $allow_swap ]] && ([[ "$config_swap_size" != "" ]] || [[ -f ${swapfile} ]]); then
+if [[ $allow_swap == "true" ]] && ([[ "$config_swap_size" != "" ]] || [[ -f ${swapfile} ]]); then
     configure_swap
 fi
 
