@@ -51,14 +51,14 @@ public class WebViewInjector {
     }
 
     @SuppressLint({"JavascriptInterface", "SetJavaScriptEnabled"})
-    public void inject(final Activity activity) {
+    public void inject(final Activity activity, final boolean credible) {
         if (webView != null) {
 
             WebSettings webSettings = webView.getSettings();
             webSettings.setJavaScriptEnabled(true);
-            webSettings.setAllowFileAccess(true);
-            webSettings.setAllowUniversalAccessFromFileURLs(true);
-            webSettings.setAllowFileAccessFromFileURLs(true);
+            webSettings.setAllowFileAccess(credible);
+            webSettings.setAllowUniversalAccessFromFileURLs(credible);
+            webSettings.setAllowFileAccessFromFileURLs(credible);
             webSettings.setAllowContentAccess(true);
             webSettings.setUseWideViewPort(true);
 

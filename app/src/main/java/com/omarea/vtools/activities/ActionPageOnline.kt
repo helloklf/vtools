@@ -218,7 +218,7 @@ class ActionPageOnline : ActivityBase() {
                     override fun openFileChooser(fileSelectedInterface: ParamsFileChooserRender.FileSelectedInterface): Boolean {
                         return chooseFilePath(fileSelectedInterface)
                     }
-                }).inject(this)
+                }).inject(this, url.startsWith("file:///android_asset"))
     }
 
     private var fileSelectedInterface: ParamsFileChooserRender.FileSelectedInterface? = null

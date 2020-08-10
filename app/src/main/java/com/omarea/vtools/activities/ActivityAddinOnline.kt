@@ -186,7 +186,7 @@ class ActivityAddinOnline : ActivityBase() {
                             override fun openFileChooser(fileSelectedInterface: ParamsFileChooserRender.FileSelectedInterface): Boolean {
                                 return chooseFilePath(fileSelectedInterface)
                             }
-                        }).inject(this)
+                        }).inject(this, false)
             }
         }
         vtools_online.addJavascriptInterface(object {
