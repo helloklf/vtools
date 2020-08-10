@@ -130,11 +130,7 @@ public class AccessibilityScenceMode : AccessibilityService() {
             flagRequestKeyEvent = SceneConfigStore(this.applicationContext).needKeyCapture()
 
             val info = serviceInfo // AccessibilityServiceInfo()
-            if (classicModel) {
-                info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or AccessibilityEvent.TYPE_WINDOWS_CHANGED
-            } else {
-                info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED
-            }
+            info.eventTypes = AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED or AccessibilityEvent.TYPE_WINDOWS_CHANGED
             info.feedbackType = AccessibilityServiceInfo.FEEDBACK_GENERIC
             info.notificationTimeout = 0
             info.packageNames = null
